@@ -1,0 +1,22 @@
+//
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans:300,400|Open+Sans:400|Ruslan+Display:300,400&display=swap');
+
+$primaryFont : 'Open Sans', sans-serif;
+
+body{font-family: $primaryFont;}
+.navbar-brand{font-family: 'Ruslan Display', sans-serif;}
+
+
+@import 'node_modules/bootstrap/scss/bootstrap';
+@import 'node_modules/bootstrap-vue/src/index.scss';
+@import 'general.scss';
+
+body.darkMode{
+background-color: $gray-800; color:white;
+table{color:white;}
+}
+
+.image-popup-img{width: 50px; height: 50px; float:left; margin-right: 10px;
+  img{width: 50px; height: 50px;}
+
+ }
