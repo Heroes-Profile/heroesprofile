@@ -4,14 +4,16 @@
       <b-spinner></b-spinner>
     </div>
     <div class="error" v-else-if="error.length > 0">
-      GET URL incorrect.
+      Error retreiving data.
     </div>
     <div class="error" v-else-if="tabledata.length === 0">
       No Data Found.
     </div>
     <b-table striped bordered responsive :sticky-header="false" small  :items="tabledata" :fields="tablefields" >
-      <template v-slot:cell(name)="data">
-        <image-popup  :alttext="data.value.hero_name" :imgSrc="'/images/heroes/'+data.value.short_name+'.png'" :popupdata="'Hero info for '+data.value.hero_name"></image-popup>  <b class="text-info">{{ data.value.hero_name }}</b>
+      <template v-slot:cell(name)="data" >
+        <div class="image-with-name">
+          <image-popup  :alttext="data.value.hero_name" :imgSrc="'/images/heroes/'+data.value.short_name+'.png'" :popupdata="'Hero info for '+data.value.hero_name"></image-popup>  <b class="text-info">{{ data.value.hero_name }}</b>
+        </div>
       </template>
       <template v-slot:cell(win_rate)="data">
         {{data.value}}%
@@ -22,7 +24,7 @@
       <template v-slot:cell(popularity)="data">
         {{data.value}}%
       </template>
-      <template v-slot:cell(show_details)="row">
+      <template v-slot:cell(talent_builds)="row">
         <b-button size="sm" @click="row.toggleDetails" class="mr-2">
           {{ row.detailsShowing ? 'Hide' : 'Show'}} Talent Builds
         </b-button>
@@ -84,7 +86,7 @@ export default {
 
              })
              // Add "Showdetails" support for the talent info
-            tf.push({key: "show_details"});
+            tf.push({key: "talent_builds"});
             this.tablefields = tf;
             this.loading = false;
         })

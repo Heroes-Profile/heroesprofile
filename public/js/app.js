@@ -1886,6 +1886,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['dataurl'],
   data: function data() {
@@ -1929,7 +1931,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
           tf.push({
-            key: "show_details"
+            key: "talent_builds"
           });
           _this.tablefields = tf;
           _this.loading = false;
@@ -52200,7 +52202,7 @@ var render = function() {
         ? _c("div", { staticClass: "loading" }, [_c("b-spinner")], 1)
         : _vm.error.length > 0
         ? _c("div", { staticClass: "error" }, [
-            _vm._v("\n    GET URL incorrect.\n  ")
+            _vm._v("\n    Error retreiving data.\n  ")
           ])
         : _vm.tabledata.length === 0
         ? _c("div", { staticClass: "error" }, [
@@ -52223,17 +52225,25 @@ var render = function() {
             key: "cell(name)",
             fn: function(data) {
               return [
-                _c("image-popup", {
-                  attrs: {
-                    alttext: data.value.hero_name,
-                    imgSrc: "/images/heroes/" + data.value.short_name + ".png",
-                    popupdata: "Hero info for " + data.value.hero_name
-                  }
-                }),
-                _vm._v(" "),
-                _c("b", { staticClass: "text-info" }, [
-                  _vm._v(_vm._s(data.value.hero_name))
-                ])
+                _c(
+                  "div",
+                  { staticClass: "image-with-name" },
+                  [
+                    _c("image-popup", {
+                      attrs: {
+                        alttext: data.value.hero_name,
+                        imgSrc:
+                          "/images/heroes/" + data.value.short_name + ".png",
+                        popupdata: "Hero info for " + data.value.hero_name
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("b", { staticClass: "text-info" }, [
+                      _vm._v(_vm._s(data.value.hero_name))
+                    ])
+                  ],
+                  1
+                )
               ]
             }
           },
@@ -52256,7 +52266,7 @@ var render = function() {
             }
           },
           {
-            key: "cell(show_details)",
+            key: "cell(talent_builds)",
             fn: function(row) {
               return [
                 _c(
@@ -68224,8 +68234,8 @@ var routes = [{
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\tasha\Documents\Github\heroesprofile\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\tasha\Documents\Github\heroesprofile\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\tasha\Documents\Tasha's Documents\Websites\heroesprofile\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\tasha\Documents\Tasha's Documents\Websites\heroesprofile\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

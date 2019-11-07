@@ -16,16 +16,12 @@ Route::group([
 ], function () {
   Route::view('/Global/Leaderboard', 'Global/Leaderboard');
 
-/*
   Route::get('login', function () {
       return view('login',
         ['title' => 'Login'],
         ['paragraph' => 'This is the login page'],
       );
   });
-*/
-
-Route::get('login', 'LoginController@redirectToProvider');
 
   Route::get('/Global/Talents/Builds', 'HeroController@getHeroBuildsTableData');
   //Route::view('/', 'index');
