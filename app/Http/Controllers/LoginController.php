@@ -5,29 +5,30 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Socialite;
 
+
 class LoginController extends Controller
 {
   public function redirectToProvider()
   {
-    //return Socialite::driver('github')->redirect();
     return Socialite::with('battlenet')->redirect();
-
   }
 
   /**
-  * Obtain the user information from GitHub.
+  * Obtain the user information from Battlenet.
   *
   * @return \Illuminate\Http\Response
   */
-  public function handleProviderCallback()
+  public function handleProviderCallback(\App\BattlenetAccountServicer $battlenetServicer)
   {
-    /*
-    $user = Socialite::driver('github')->user();
-    // $user->token;
-    */
-    /*
-    $user = Socialite::driver('battlenet')->user();
-    $accessTokenResponseBody = $user->accessTokenResponseBody;
-    */
+    try {
+      $user = Socialite::driver('battlenet')->user();
+    } catch (\Exception $e) {
+        return redirect('/login');
+    }
+    $authUser = $battlenetServicer->findOrCreate(
+        $user
+    );
+    auth()->login($authUser, true);
+    return redirect()->to('/');
   }
 }
