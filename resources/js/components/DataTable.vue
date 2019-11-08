@@ -29,12 +29,12 @@
           {{ row.detailsShowing ? 'Hide' : 'Show'}} Talent Builds
         </b-button>
       </template>
-      <template v-slot:row-details="row">
+      <template v-slot:row-details="row" :loaded="false">
         <b-card>
           <b-row class="mb-2">
-            <hero-talent-data :hero="row.item.name"></hero-talent-data>
+            <hero-talent-data :hero="row.item.name" @loading-status="talentsLoaded=true"></hero-talent-data>
           </b-row>
-          <b-button size="sm" @click="row.toggleDetails; ">Hide Builds</b-button>
+        
         </b-card>
       </template>
     </b-table>
@@ -52,7 +52,8 @@ export default {
         loading: false,
         tableitems: [{hero_name:"Abathur" }],
         tablefields: [],
-        error: ""
+        error: "",
+        talentsLoaded: false
 
 
       }
@@ -100,6 +101,11 @@ export default {
       param = param.replace(/_/g, ' ')
       param = decodeURI(param)
       return param
+    },
+    loaded(){
+
+      this.talentsLoaded = true
+      console.log('this.talentsloaded', this.talentsLoaded);
     }
   }
 }

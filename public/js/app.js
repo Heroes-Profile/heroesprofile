@@ -1898,7 +1898,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         hero_name: "Abathur"
       }],
       tablefields: [],
-      error: ""
+      error: "",
+      talentsLoaded: false
     };
   },
   created: function created() {
@@ -1945,6 +1946,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       param = param.replace(/_/g, ' ');
       param = decodeURI(param);
       return param;
+    },
+    loaded: function loaded() {
+      this.talentsLoaded = true;
+      console.log('this.talentsloaded', this.talentsLoaded);
     }
   }
 });
@@ -1989,7 +1994,6 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   created: function created() {
-    console.log(this.hero);
     this.getTalentData();
   },
   watch: {},
@@ -2003,8 +2007,9 @@ __webpack_require__.r(__webpack_exports__);
         }
       }).then(function (response) {
         _this.talentData = response.data;
-        console.log(_this.talentData);
         _this.loading = false;
+
+        _this.$emit('loading-status', true);
       });
     }
   }
@@ -2086,12 +2091,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(source, true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(source).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
 //
 //
 //
@@ -2150,8 +2152,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   watch: {
     '$route': 'fetchData',
     updatePage: function updatePage(value) {
+      //this.$router.push({ query: { ...this.$route.query, update: value }});
       this.$router.push({
-        query: _objectSpread({}, this.$route.query, {
+        query: Object.assign(this.$route.query, {
           update: value
         })
       });
@@ -2167,23 +2170,39 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     onChange: function onChange(event) {
       this.multiselects = Object.assign(this.form);
 
-      for (var item in this.form) {
-        if (Array.isArray(this.form[item])) {
-          var formvalues = "";
-
-          for (var val in this.form[item]) {
-            formvalues += this.form[item][val].key + ",";
-          }
-
-          console.log(formvalues);
-          this.multiselects[item] = formvalues.substring(0, formvalues.length - 1);
-        } //console.log("formvalues", this.form[item][0]);
+      for (var item in this.fields) {
+        /*  if(Array.isArray(this.form[item])){
+              var formvalues = "";
+            for (var val in this.form[item]){
+                formvalues += this.form[item][val].key+",";
+            }
+            console.log(formvalues);
+          }*/
+        //this.multiselects[item] = formvalues.substring(0, formvalues.length - 1);
+        //console.log("formvalues", this.form[item][0]);
         //  this.$router.push({ query: { ...this.$route.query, : {form[item]} }});
 
+        /*    $.each(fields, function(field, value) {
+              this.$router.replace({ query: Object.assign({},this.$route.query, { [field]: this.form }) })
+            }*/
+        console.log('thequery', this.form[item]);
+        var multi = [];
 
+        for (var val in this.form[item]) {
+          console.log('val', val);
+          multi.push(this.form[item][val]["key"]);
+        }
+
+        multi = multi.join(',');
         this.$router.replace({
-          query: _objectSpread({}, this.$route.query, _defineProperty({}, item, this.sanitizeParams(this.form[item])))
+          query: Object.assign({}, this.$route.query, _defineProperty({}, item, multi))
         });
+        /*  this.$router.replace({
+                query: {
+        	          ...this.$route.query,
+        	           [item]: this.sanitizeParams(this.form[item])
+                   }
+                 })*/
       }
     },
     fetchData: function fetchData() {
@@ -52299,23 +52318,15 @@ var render = function() {
                       { staticClass: "mb-2" },
                       [
                         _c("hero-talent-data", {
-                          attrs: { hero: row.item.name }
+                          attrs: { hero: row.item.name },
+                          on: {
+                            "loading-status": function($event) {
+                              _vm.talentsLoaded = true
+                            }
+                          }
                         })
                       ],
                       1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "b-button",
-                      {
-                        attrs: { size: "sm" },
-                        on: {
-                          click: function($event) {
-                            row.toggleDetails
-                          }
-                        }
-                      },
-                      [_vm._v("Hide Builds")]
                     )
                   ],
                   1
@@ -52565,6 +52576,11 @@ var render = function() {
                     options: field,
                     searchable: true,
                     "allow-empty": false
+                  },
+                  on: {
+                    input: function($event) {
+                      return _vm.onChange($event)
+                    }
                   },
                   model: {
                     value: _vm.form[fieldname],
@@ -68234,8 +68250,8 @@ var routes = [{
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\tasha\Documents\Github\heroesprofile\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\tasha\Documents\Github\heroesprofile\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\tasha\Documents\Tasha's Documents\Websites\heroesprofile\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\tasha\Documents\Tasha's Documents\Websites\heroesprofile\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

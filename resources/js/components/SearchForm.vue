@@ -21,7 +21,7 @@
 
      <div>
 
-    <multiselect v-model="form[fieldname]"  track-by="value" label="key" placeholder="All" :multiple="true" :options="field" :searchable="true" :allow-empty="false" ><!--@input="onChange($event)"-->
+    <multiselect v-model="form[fieldname]"  track-by="value" label="key" placeholder="All" :multiple="true" :options="field" :searchable="true" :allow-empty="false" @input="onChange($event)" ><!--@input="onChange($event)"-->
     <!--  <template slot="selection" slot-scope="{ option }"><strong>{{ option.key }}</strong> is written in<strong>  {{ option.key }}</strong></template>
       { option }-->
     </multiselect>
@@ -34,6 +34,7 @@
   </form>
   <!--</b-popover>-->
 </div>
+
 </template>
 
 <script type="text/ecmascript-6">
@@ -66,7 +67,9 @@ created (){
 
     updatePage: function (value) {
 
-            this.$router.push({ query: { ...this.$route.query, update: value }});
+            //this.$router.push({ query: { ...this.$route.query, update: value }});
+
+            this.$router.push({ query: Object.assign(this.$route.query, { update: value }) })
     },
     '$route.query.update': function(val) {
         this.update = val;
@@ -79,11 +82,11 @@ created (){
           },
           onChange(event){
 
-            this.multiselects = Object.assign(this.form);
+           this.multiselects = Object.assign(this.form);
 
-            for (var item in this.form){
+            for (var item in this.fields){
 
-              if(Array.isArray(this.form[item])){
+            /*  if(Array.isArray(this.form[item])){
 
                 var formvalues = "";
                 for (var val in this.form[item]){
@@ -91,16 +94,31 @@ created (){
                   formvalues += this.form[item][val].key+",";
                 }
                 console.log(formvalues);
-                this.multiselects[item] = formvalues.substring(0, formvalues.length - 1);
-              }
+              }*/
+                //this.multiselects[item] = formvalues.substring(0, formvalues.length - 1);
+
               //console.log("formvalues", this.form[item][0]);
           //  this.$router.push({ query: { ...this.$route.query, : {form[item]} }});
-             this.$router.replace({
+
+      /*    $.each(fields, function(field, value) {
+            this.$router.replace({ query: Object.assign({},this.$route.query, { [field]: this.form }) })
+          }*/
+          console.log('thequery', this.form[item]);
+          var multi = [];
+          for (var val in this.form[item]){
+            console.log('val', val);
+            multi.push(this.form[item][val]["key"]);
+
+          }
+          multi = multi.join(',');
+          
+          this.$router.replace({ query: Object.assign({},this.$route.query, { [item]: multi }) })
+        /*  this.$router.replace({
       	         query: {
         	          ...this.$route.query,
         	           [item]: this.sanitizeParams(this.form[item])
                    }
-                 })
+                 })*/
             }
 
           },

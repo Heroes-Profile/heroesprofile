@@ -142,10 +142,12 @@ class HeroController extends Controller
     }
 
     if(isset($request["game_map"]) && $request["game_map"] != ""){
-      $this->game_map =  array($request["game_map"]);
+      $this->game_map =  explode(',', $request["game_map"]);
+
       for($i = 0; $i < count($this->game_map); $i++){
         $this->game_map[$i] = $maps[$this->game_map[$i]];
       }
+        
     }
 
     if(isset($request["hero_level"]) && $request["hero_level"] != ""){

@@ -1,6 +1,6 @@
 <template>
   <div class="hero-talent">
-    <div class="loading" v-if="loading">
+    <div class="loading"  v-if="loading"  >
       <b-spinner></b-spinner>
     </div>
     <div class="build flex-wrap" v-for="(build, index) in talentData">
@@ -30,7 +30,7 @@ export default {
     },
 
   created () {
-    console.log(this.hero);
+    
       this.getTalentData();
   },
   watch: {
@@ -39,14 +39,16 @@ export default {
   methods: {
     getTalentData () {
 
+
       axios.get("/Global/Talents/Builds", {
         params: {
           "hero" : this.hero.hero_name
         }
       }).then(response => {
            this.talentData = response.data;
-           console.log(this.talentData);
+
            this.loading = false;
+           this.$emit('loading-status', true);
       });
 
     }
