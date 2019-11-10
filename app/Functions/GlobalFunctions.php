@@ -1,6 +1,8 @@
 <?php
 namespace App\Functions;
 use Illuminate\Support\Facades\DB;
+use App\LeagueTier;
+use DateTime;
 
 class GlobalFunctions
 {
@@ -344,6 +346,58 @@ class GlobalFunctions
       $return_data[$talent_data[$i]["talent_id"]] = $data;
     }
     return $return_data;
+  }
+
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | getLeagueTiers
+  |--------------------------------------------------------------------------
+  |
+  | This function returns the league tiers
+  |
+  */
+
+  public function getLeagueTiers(){
+    return LeagueTier::where('name', '<>', 'all')->get();
+  }
+
+  public function sortKeyValueArray($array, $sort_type){
+
+    switch ($sort_type) {
+    case "game_date_desc":
+        uasort($array, [$this, 'cmp_game_date_desc']);
+        break;
+    case "mmr_parsed_sorted_desc":
+        uasort($array, [$this, 'cmp_mmr_parsed_desc']);
+        break;
+    case 2:
+        echo "i equals 2";
+        break;
+    }
+
+    return $array;
+  }
+
+  private function cmp_game_date_desc( $a, $b ) {
+    $ad = new DateTime($a['game_date']);
+    $bd = new DateTime($b['game_date']);
+
+    if($ad ==  $bd){
+      return 0 ;
+    }
+    return ($ad > $bd) ? -1 : 1;
+  }
+
+  private function cmp_mmr_parsed_desc( $a, $b ) {
+    $ad = new DateTime($a['mmr_date_parsed']);
+    $bd = new DateTime($b['mmr_date_parsed']);
+
+    if($ad ==  $bd){
+      return 0 ;
+    }
+    return ($ad > $bd) ? -1 : 1;
   }
 
 
