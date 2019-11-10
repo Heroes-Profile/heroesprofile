@@ -92,6 +92,10 @@ class SessionMiddleware
         session(['league_tiers' => $this->setLeagueTierSession()]);
       }
 
+      if (!$request->session()->has('season_dates')) {
+        session(['season_dates' => $this->setSeasonDatesSession()]);
+      }
+
       return $next($request);
     }
     private function setMapsFilterFormatSession($maps){
@@ -158,6 +162,9 @@ class SessionMiddleware
       return \GlobalFunctions::instance()->getLeagueTiers();
     }
 
+    private function setSeasonDatesSession(){
+      return \GlobalFunctions::instance()->getSeasonDates();
+    }
 
 
 }

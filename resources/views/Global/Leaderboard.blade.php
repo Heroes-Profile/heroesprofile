@@ -27,9 +27,11 @@ print_r(json_encode($data));
 
   $player_instance = \ProfileData::instance(67280, 1);
   $data = $player_instance->getPlayerData();
-  $player_stats = $player_instance->getPlayerSummaryStats("", "");
+  $player_stats = $player_instance->getPlayerSummaryStats("", 13);
+  $player_hero_stats = $player_instance->getPlayerHeroSummary("", "");
 
-print_r($player_stats);
+  //print_r($player_stats);
+  print_r(json_encode($player_hero_stats, true));
 
   //print_r(json_encode($data, true));
   //$latest_played = $player_instance->getLatestPlayed(5);
