@@ -34,7 +34,7 @@ class HeroController extends Controller
 
   public function show()
   {
-
+$global = \GlobalFunctions::instance();
 
 
 // Add code here to get markdown file for the site content.
@@ -60,7 +60,12 @@ class HeroController extends Controller
       "role" => $this->convertSessionToArray(session('role_names')),
       "game_map" => $this->convertSessionToArray(session('maps_by_id')),
     */
-    "game_map" => session('maps_by_name_filter_format')
+    "game_map" => session('maps_by_name_filter_format'),
+    "hero_level" => $global->convertToFilter($global->getHerolevels()),
+    "major_patch" =>  $global->convertToFilter($global->getAllMajorPatches()),
+    "league_tier" => $global->convertToFilter($global->getLeagueTiers())
+    //"timeframe_type" =>  '[{"key": "Major", "value": "major"}, { "key": "Minor", "value": "minor"}]'   /// this is not a multi select
+
     ],
   ]);
   }
@@ -138,7 +143,7 @@ class HeroController extends Controller
     }
 
     if(isset($request["league_tier"]) && $request["league_tier"] != ""){
-      $this->league_tier = array($request["league_tier"]);
+      $this->league_tier =  explode(',', $request["league_tier"]);
     }
 
     if(isset($request["game_map"]) && $request["game_map"] != ""){
@@ -147,7 +152,7 @@ class HeroController extends Controller
       for($i = 0; $i < count($this->game_map); $i++){
         $this->game_map[$i] = $maps[$this->game_map[$i]];
       }
-        
+
     }
 
     if(isset($request["hero_level"]) && $request["hero_level"] != ""){

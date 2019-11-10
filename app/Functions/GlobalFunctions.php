@@ -4,10 +4,13 @@ use Illuminate\Support\Facades\DB;
 
 class GlobalFunctions
 {
+
   public static function instance()
   {
       return new GlobalFunctions();
   }
+
+
 
   /*
   |--------------------------------------------------------------------------
@@ -17,6 +20,18 @@ class GlobalFunctions
   | This function gets all of the maps and their internal IDs
   |
   */
+  public function convertToFilter($array){
+    $return_data = array();
+    $counter = 0;
+    foreach ($array as $key => $value){
+      $data = array();
+      $data["key"] = $key;
+      $data["value"] = $value;
+      $return_data[$counter] = $data;
+      $counter++;
+    }
+    return $return_data;
+  }
 
   public function getMaps($key_value){
 
@@ -293,6 +308,7 @@ class GlobalFunctions
     );
   }
 
+
   /*
   |--------------------------------------------------------------------------
   | getRoleNames
@@ -310,6 +326,29 @@ class GlobalFunctions
 
     return $roles;
   }
+
+  public function getLeagueTiersByName(){
+    $tiers = DB::table('heroesprofile.league_tiers')->select('name', 'tier_id')->get();
+    $tiers = json_decode(json_encode($tiers), true);
+    $returnData = array();
+
+    foreach($tiers as $index => $tier){
+      $returnData[$tier['name']] = $tier['tier_id'];
+    }
+    return $returnData;
+
+}
+public function getLeagueTiers(){
+  $tiers = DB::table('heroesprofile.league_tiers')->select('name', 'tier_id')->get();
+  $tiers = json_decode(json_encode($tiers), true);
+  $returnData = array();
+
+  foreach($tiers as $index => $tier){
+    $returnData[$tier['name']] = $tier['name'];
+  }
+  return $returnData;
+
+}
 
 
   /*

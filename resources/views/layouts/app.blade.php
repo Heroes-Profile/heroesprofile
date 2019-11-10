@@ -3,16 +3,16 @@
     <head>
       @include('scripts.header')
     </head>
-    <body >
+    <body class="darkMode">
       <div id="app">
         @include('nav.primary')
-        <div class="container-fluid" >
+
             <div class="intro">
               <h2>{{$title}}</h2>
-              <p>{{$paragraph}}</p>
+              <div><p>{{$paragraph}}</p></div>
             </div>
-          </div>
-          <div class="container-fluid bg-dark">
+
+          <div class="container-fluid">
             @yield('content')
             @yield('datatable')
           </div>

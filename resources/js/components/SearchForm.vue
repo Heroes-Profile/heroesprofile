@@ -5,25 +5,18 @@
   </b-button>
   <!--<b-popover target="popover-target-1" triggers="click" placement="bottom">-->
 
-
   <form class="search-form" method="get" @submit.prevent="submitForm">
    <div  style="width: 100%;" v-for="(field, fieldname, index) in rawfields">
-
      <label class="control-label">
-       {{ fieldname }}
+       {{ fieldname | caps }}
     </label>
-
    <!--<select class="form-control" v-model="form[fieldname]" @change="onChange($event)">
      <option value="">All</option>
      <option v-for="(name, id, index) in field" v-bind:value="name">{{ name.key }}</option>
    </select>-->
-
-
      <div>
 
-    <multiselect v-model="form[fieldname]"  track-by="value" label="key" placeholder="All" :multiple="true" :options="field" :searchable="true" :allow-empty="false" @input="onChange($event)" ><!--@input="onChange($event)"-->
-    <!--  <template slot="selection" slot-scope="{ option }"><strong>{{ option.key }}</strong> is written in<strong>  {{ option.key }}</strong></template>
-      { option }-->
+    <multiselect v-model="form[fieldname]"  track-by="value" label="key" placeholder="All" :multiple="true" :options="field" :searchable="true" :allow-empty="true" @input="onChange($event)" @remove="onChange($event)" ><!--@input="onChange($event)"-->
     </multiselect>
 
 
@@ -84,42 +77,23 @@ created (){
 
            this.multiselects = Object.assign(this.form);
 
+           this.$router.replace({ query: Object.assign({},this.$route.query, {  }) })
             for (var item in this.fields){
 
-            /*  if(Array.isArray(this.form[item])){
+              var multi = [];
+              for (var val in this.form[item]){
+                multi.push(this.form[item][val]["key"]);
+              }
+              multi = multi.join(',');
+              if(multi.length>0){
+                this.$router.replace({ query: Object.assign({},this.$route.query, { [item]: multi }) })
+              }
+              else{
+                this.$router.replace({ query: Object.assign({},this.$route.query, { [item]: undefined }) })
+              }
 
-                var formvalues = "";
-                for (var val in this.form[item]){
-
-                  formvalues += this.form[item][val].key+",";
-                }
-                console.log(formvalues);
-              }*/
-                //this.multiselects[item] = formvalues.substring(0, formvalues.length - 1);
-
-              //console.log("formvalues", this.form[item][0]);
-          //  this.$router.push({ query: { ...this.$route.query, : {form[item]} }});
-
-      /*    $.each(fields, function(field, value) {
-            this.$router.replace({ query: Object.assign({},this.$route.query, { [field]: this.form }) })
-          }*/
-          console.log('thequery', this.form[item]);
-          var multi = [];
-          for (var val in this.form[item]){
-            console.log('val', val);
-            multi.push(this.form[item][val]["key"]);
-
-          }
-          multi = multi.join(',');
-          
-          this.$router.replace({ query: Object.assign({},this.$route.query, { [item]: multi }) })
-        /*  this.$router.replace({
-      	         query: {
-        	          ...this.$route.query,
-        	           [item]: this.sanitizeParams(this.form[item])
-                   }
-                 })*/
             }
+            console.log(this.$route.query);
 
           },
     fetchData () {
@@ -146,8 +120,14 @@ created (){
       param = encodeURI(param)
       return param
     }
-  }
+  },
+  filters: {
+        caps: function(value) {
+            if (!value) return ''
+            return value.split('_').map(function(item) {
+                return item.charAt(0).toUpperCase() + item.substring(1);
+            }).join(' ');
+        }
+    }
 }
 </script>
-
-<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
