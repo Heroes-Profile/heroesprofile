@@ -1,6 +1,10 @@
 <?php
 namespace App\Functions;
 use Illuminate\Support\Facades\DB;
+use App\LeagueTier;
+use App\SeasonDate;
+
+use DateTime;
 
 class GlobalFunctions
 {
@@ -384,6 +388,85 @@ public function getLeagueTiers(){
     }
     return $return_data;
   }
+
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | getLeagueTiers
+  |--------------------------------------------------------------------------
+  |
+  | This function returns the league tiers
+  |
+  */
+
+  public function getLeagueTiers(){
+    return LeagueTier::where('name', '<>', 'all')->get();
+  }
+
+  public function getSeasonDates(){
+    $season_data = SeasonDate::all();
+    $season_data = json_decode(json_encode($season_data),true);
+
+    $return_data = array();
+    for($i = 0; $i < count($season_data); $i++){
+      $data = array();
+      $data["season"] = $season_data[$i]["season"];
+      $data["year"] = $season_data[$i]["year"];
+      $data["start_date"] = $season_data[$i]["start_date"];
+      $data["end_date"] = $season_data[$i]["end_date"];
+
+      $return_data[$season_data[$i]["id"]] = $data;
+    }
+    return $return_data;
+  }
+
+
+
+
+  public function sortKeyValueArray($array, $sort_type){
+
+    switch ($sort_type) {
+    case "game_date_desc":
+        uasort($array, [$this, 'cmp_game_date_desc']);
+        break;
+    case "mmr_parsed_sorted_desc":
+        uasort($array, [$this, 'cmp_mmr_parsed_desc']);
+        break;
+    case "games_played_desc"
+    uasort($array, [$this, 'cmp_games_played_desc']);
+        break;
+    }
+
+    return $array;
+  }
+
+  private function cmp_game_date_desc( $a, $b ) {
+    $ad = new DateTime($a['game_date']);
+    $bd = new DateTime($b['game_date']);
+
+    if($ad ==  $bd){
+      return 0 ;
+    }
+    return ($ad > $bd) ? -1 : 1;
+  }
+
+  private function cmp_mmr_parsed_desc( $a, $b ) {
+    $ad = new DateTime($a['mmr_date_parsed']);
+    $bd = new DateTime($b['mmr_date_parsed']);
+
+    if($ad ==  $bd){
+      return 0 ;
+    }
+    return ($ad > $bd) ? -1 : 1;
+  }
+
+  function cmp_games_played_desc( $a, $b ) {
+  if(  $a["games_played"] ==  $b["games_played"] ){
+    return 0 ;
+  }
+  return ($a["games_played"] > $b["games_played"]) ? -1 : 1;
+}
 
 
 }

@@ -227,7 +227,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'GlobalFunctions' => App\Functions\GlobalFunctions::class,
-        'PlayerData' => App\Data\PlayerData::class,
+        'ProfileData' => App\Data\ProfileData::class,
 
     ],
 

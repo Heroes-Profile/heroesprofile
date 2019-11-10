@@ -43,9 +43,6 @@ class SessionMiddleware
         }
         session(['maps_by_name_filter_format' => $this->setMapsFilterFormatSession($request->session()->get('maps_by_name'))]);
       }
-      //print_r($request->session()->get('maps_by_name_filter_format'), true);
-
-
 
       if (!$request->session()->has('roles_by_name')) {
         session(['roles_by_name' => $this->setRolesBySession("name")]);
@@ -89,6 +86,14 @@ class SessionMiddleware
 
       if (!$request->session()->has('talent_data')) {
         session(['talent_data' => $this->setTalentDataSession()]);
+      }
+
+      if (!$request->session()->has('league_tiers')) {
+        session(['league_tiers' => $this->setLeagueTierSession()]);
+      }
+
+      if (!$request->session()->has('season_dates')) {
+        session(['season_dates' => $this->setSeasonDatesSession()]);
       }
 
       return $next($request);
@@ -153,6 +158,13 @@ class SessionMiddleware
       return \GlobalFunctions::instance()->getMajorMinorPatchMapping();
     }
 
+    private function setLeagueTierSession(){
+      return \GlobalFunctions::instance()->getLeagueTiers();
+    }
+
+    private function setSeasonDatesSession(){
+      return \GlobalFunctions::instance()->getSeasonDates();
+    }
 
 
 }
