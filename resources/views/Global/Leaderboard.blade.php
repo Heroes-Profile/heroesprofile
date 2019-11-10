@@ -25,9 +25,13 @@ print_r(json_encode($data));
 //$league_tiers = \GlobalFunctions::instance()->getLeagueTiers();
 //print_r(json_encode($league_tiers, true));
 
-  $player_instance = \ProfileData::instance();
+  $player_instance = \ProfileData::instance(67280, 1);
   $data = $player_instance->getPlayerData();
-  print_r(json_encode($data, true));
+  $player_stats = $player_instance->getPlayerSummaryStats("", "");
+
+print_r($player_stats);
+
+  //print_r(json_encode($data, true));
   //$latest_played = $player_instance->getLatestPlayed(5);
   //print_r(json_encode(array_slice($data, 0, 5), true));
 
