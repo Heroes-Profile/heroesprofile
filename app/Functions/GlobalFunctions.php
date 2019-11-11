@@ -5,6 +5,7 @@ use App\LeagueTier;
 use App\SeasonDate;
 
 use DateTime;
+use Session;
 
 class GlobalFunctions
 {
@@ -331,6 +332,15 @@ class GlobalFunctions
     return $roles;
   }
 
+  /*
+  |--------------------------------------------------------------------------
+  | getLeagueTiersByName
+  |--------------------------------------------------------------------------
+  |
+  | This function maps league tier names to their id value
+  |
+  */
+
   public function getLeagueTiersByName(){
     $tiers = DB::table('heroesprofile.league_tiers')->select('name', 'tier_id')->get();
     $tiers = json_decode(json_encode($tiers), true);
@@ -342,6 +352,8 @@ class GlobalFunctions
     return $returnData;
 
 }
+
+/*
 public function getLeagueTiers(){
   $tiers = DB::table('heroesprofile.league_tiers')->select('name', 'tier_id')->get();
   $tiers = json_decode(json_encode($tiers), true);
@@ -353,6 +365,7 @@ public function getLeagueTiers(){
   return $returnData;
 
 }
+*/
 
 
   /*
@@ -396,7 +409,7 @@ public function getLeagueTiers(){
   | getLeagueTiers
   |--------------------------------------------------------------------------
   |
-  | This function returns the league tiers
+  | This function returns the league tiers as a collection
   |
   */
 
@@ -404,6 +417,14 @@ public function getLeagueTiers(){
     return LeagueTier::where('name', '<>', 'all')->get();
   }
 
+  /*
+  |--------------------------------------------------------------------------
+  | getSeasonDates
+  |--------------------------------------------------------------------------
+  |
+  | This function maps season id values to its data. (season, year, start and end dates)
+  |
+  */
   public function getSeasonDates(){
     $season_data = SeasonDate::all();
     $season_data = json_decode(json_encode($season_data),true);
@@ -421,30 +442,16 @@ public function getLeagueTiers(){
     return $return_data;
   }
 
+  /*
+  |--------------------------------------------------------------------------
+  | getLeagueTierBreakdowns
+  |--------------------------------------------------------------------------
+  |
+  | This function returns the league breakdowns for each league
+  |
+  */
 
-
-
-  public function sortKeyValueArray($array, $sort_type){
-
-    switch ($sort_type) {
-    case "game_date_desc":
-        uasort($array, [$this, 'cmp_game_date_desc']);
-        break;
-    case "mmr_parsed_sorted_desc":
-        uasort($array, [$this, 'cmp_mmr_parsed_desc']);
-        break;
-    case "games_played_desc":
-        uasort($array, [$this, 'cmp_games_played_desc']);
-        break;
-    case "win_rate_desc":
-        uasort($array, [$this, 'cmp_win_rate_desc']);
-        break;
-    }
-
-    return $array;
-  }
-
-  public function getLeagueBreakdowns(){
+  public function getLeagueTierBreakdowns(){
     $qm = $this->getLeaguesBreakDowns("1");
     $hl = $this->getLeaguesBreakDowns("2");
     $tl = $this->getLeaguesBreakDowns("3");
@@ -461,24 +468,28 @@ public function getLeagueTiers(){
     return $league_breakdowns;
   }
 
+  /*
+  |--------------------------------------------------------------------------
+  | getLeaguesBreakDowns
+  |--------------------------------------------------------------------------
+  |
+  | This function grabs league breakdown data for a specific game mode
+  |
+  */
+
   private function getLeaguesBreakDowns($league){
     $query = DB::table('heroesprofile.league_breakdowns');
     $query->where('type_role_hero', '10000');
     $query->where('game_type', $league);
-    $data = $query->get();
-    $data = json_decode(json_encode($data),true);
-    //print_r(json_encode($data, true));
-    print_r($data);
-    echo "<br>";
-    echo "<br>";
-
+    $league_data = $query->get();
+    $league_data = json_decode(json_encode($league_data),true);
     $prevMin = 0;
     $returnData = array();
-    for($i = 0; $i < count($data); $i++){
+    for($i = 0; $i < count($league_data); $i++){
       $data = array();
       $data["min_mmr"] = $prevMin;
-      $data["max_mmr"] = round($data[$i]["min_mmr"]);
-      $prevMin = round($data[$i]["min_mmr"]);
+      $data["max_mmr"] = round($league_data[$i]["min_mmr"]);
+      $prevMin = round($league_data[$i]["min_mmr"]);
 
       if($data["min_mmr"] == 0){
         $data["split"] = ($data["max_mmr"] - 1800) / 5;
@@ -487,15 +498,15 @@ public function getLeagueTiers(){
         $data["split"] = ($data["max_mmr"] - $data["min_mmr"]) / 5;
       }
 
-      if($row["league_tier"] == "2"){
+      if($league_data[$i]["league_tier"] == "2"){
         $returnData["bronze"] = $data;
-      }else if($row["league_tier"] == "3"){
+      }else if($league_data[$i]["league_tier"] == "3"){
         $returnData["silver"] = $data;
-      }else if($row["league_tier"] == "4"){
+      }else if($league_data[$i]["league_tier"] == "4"){
         $returnData["gold"] = $data;
-      }else if($row["league_tier"] == "5"){
+      }else if($league_data[$i]["league_tier"] == "5"){
         $returnData["platinum"] = $data;
-      }else if($row["league_tier"] == "6"){
+      }else if($league_data[$i]["league_tier"] == "6"){
         $returnData["diamond"] = $data;
       }
     }
@@ -507,6 +518,107 @@ public function getLeagueTiers(){
 
   }
 
+  /*
+  |--------------------------------------------------------------------------
+  | getPlayerLeagueTier
+  |--------------------------------------------------------------------------
+  |
+  | This function is used to return the league tier for a player.
+  | It returns anything below master with a number denoting how low/high they are in that tier.
+  | Example:  Bronze 5
+  |
+  */
+
+  public function getPlayerLeagueTier($game_type, $mmr){
+    $leagues = Session::get('leagues_breakdowns')[$game_type];
+    //print_r(json_encode($leagues, true));
+    if($mmr >= $leagues["master"]["min_mmr"]){
+      return "Master";
+    }else if($mmr < $leagues["master"]["min_mmr"] && $mmr >= $leagues["diamond"]["min_mmr"]){
+      for($i = 0; $i < 5; $i++){
+        if($mmr >= ($leagues["diamond"]["min_mmr"] + ($i * $leagues["diamond"]["split"])) && $mmr < ($leagues["diamond"]["min_mmr"]  + (($i + 1) * $leagues["diamond"]["split"]))){
+          return "Diamond " . (5 - $i);
+        }
+      }
+      return "Diamond";
+    }else if($mmr < $leagues["diamond"]["min_mmr"] && $mmr >= $leagues["platinum"]["min_mmr"]){
+      for($i = 0; $i < 5; $i++){
+        if($mmr >= ($leagues["platinum"]["min_mmr"] + ($i * $leagues["platinum"]["split"])) && $mmr < ($leagues["platinum"]["min_mmr"]  + (($i + 1) * $leagues["platinum"]["split"]))){
+          return "Platinum " . (5 - $i);
+        }
+      }
+      return "Platinum";
+    }else if($mmr < $leagues["platinum"]["min_mmr"] && $mmr >= $leagues["gold"]["min_mmr"]){
+      for($i = 0; $i < 5; $i++){
+        if($mmr >= ($leagues["gold"]["min_mmr"] + ($i * $leagues["gold"]["split"])) && $mmr < ($leagues["gold"]["min_mmr"]  + (($i + 1) * $leagues["gold"]["split"]))){
+          return "Gold " . (5 - $i);
+        }
+      }
+      return "Gold";
+    }else if($mmr < $leagues["gold"]["min_mmr"] && $mmr >= $leagues["silver"]["min_mmr"]){
+      for($i = 0; $i < 5; $i++){
+        if($mmr >= ($leagues["silver"]["min_mmr"] + ($i * $leagues["silver"]["split"])) && $mmr < ($leagues["silver"]["min_mmr"]  + (($i + 1) * $leagues["silver"]["split"]))){
+          return "Silver " . (5 - $i);
+        }
+      }
+      return "Silver";
+    }else{
+      for($i = 0; $i < 5; $i++){
+        if($mmr >= ($leagues["bronze"]["min_mmr"] + ($i * $leagues["bronze"]["split"])) && $mmr < ($leagues["bronze"]["min_mmr"]  + (($i + 1) * $leagues["bronze"]["split"]))){
+          return "Bronze " . (5 - $i);
+        }
+      }
+      return "Bronze";
+    }
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | sortKeyValueArray
+  |--------------------------------------------------------------------------
+  |
+  | This function is a switch case for determining which custom sorter to use
+  |
+  */
+
+  public function sortKeyValueArray($array, $sort_type){
+
+    switch ($sort_type) {
+    case "game_date_desc":
+        uasort($array, [$this, 'cmp_game_date_desc']);
+        break;
+    case "game_date_desc":
+        uasort($array, [$this, 'cmp_game_date_asc']);
+        break;
+    case "mmr_parsed_sorted_desc":
+        uasort($array, [$this, 'cmp_mmr_parsed_desc']);
+        break;
+  case "mmr_parsed_sorted_asc":
+      uasort($array, [$this, 'cmp_mmr_parsed_asc']);
+      break;
+    case "games_played_desc":
+        uasort($array, [$this, 'cmp_games_played_desc']);
+        break;
+    case "win_rate_desc":
+        uasort($array, [$this, 'cmp_win_rate_desc']);
+        break;
+    case "sort_dates":
+        uasort($array, [$this, 'cmp_sort_dates']);
+        break;
+    }
+
+    return $array;
+  }
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | cmp_game_date_desc
+  |--------------------------------------------------------------------------
+  |
+  | Sorts on game_date Descending
+  |
+  */
 
   private function cmp_game_date_desc( $a, $b ) {
     $ad = new DateTime($a['game_date']);
@@ -518,6 +630,34 @@ public function getLeagueTiers(){
     return ($ad > $bd) ? -1 : 1;
   }
 
+  /*
+  |--------------------------------------------------------------------------
+  | cmp_game_date_asc
+  |--------------------------------------------------------------------------
+  |
+  | Sorts on game_date ascending
+  |
+  */
+
+  private function cmp_game_date_asc( $a, $b ) {
+    $ad = new DateTime($a['game_date']);
+    $bd = new DateTime($b['game_date']);
+
+    if($ad ==  $bd){
+      return 0 ;
+    }
+    return ($ad < $bd) ? -1 : 1;
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | cmp_mmr_parsed_desc
+  |--------------------------------------------------------------------------
+  |
+  | Sorts on mmr_date_parsed Descending
+  |
+  */
+
   private function cmp_mmr_parsed_desc( $a, $b ) {
     $ad = new DateTime($a['mmr_date_parsed']);
     $bd = new DateTime($b['mmr_date_parsed']);
@@ -528,6 +668,33 @@ public function getLeagueTiers(){
     return ($ad > $bd) ? -1 : 1;
   }
 
+  /*
+  |--------------------------------------------------------------------------
+  | cmp_mmr_parsed_asc
+  |--------------------------------------------------------------------------
+  |
+  | Sorts on mmr_date_parsed ascending
+  |
+  */
+
+  private function cmp_mmr_parsed_asc( $a, $b ) {
+    $ad = new DateTime($a['mmr_date_parsed']);
+    $bd = new DateTime($b['mmr_date_parsed']);
+
+    if($ad ==  $bd){
+      return 0 ;
+    }
+    return ($ad < $bd) ? -1 : 1;
+  }
+
+  /*
+  |--------------------------------------------------------------------------
+  | cmp_games_played_desc
+  |--------------------------------------------------------------------------
+  |
+  | Sorts on games_played Descending
+  |
+  */
   function cmp_games_played_desc( $a, $b ) {
     if(  $a["games_played"] ==  $b["games_played"] ){
       return 0 ;
@@ -535,11 +702,34 @@ public function getLeagueTiers(){
     return ($a["games_played"] > $b["games_played"]) ? -1 : 1;
   }
 
+  /*
+  |--------------------------------------------------------------------------
+  | cmp_win_rate_desc
+  |--------------------------------------------------------------------------
+  |
+  | Sorts on win_rate Descending
+  |
+  */
   function cmp_win_rate_desc( $a, $b ) {
     if(  $a["win_rate"] ==  $b["win_rate"] ){
       return 0 ;
     }
     return ($a["win_rate"] > $b["win_rate"]) ? -1 : 1;
+  }
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | cmp_sort_dates
+  |--------------------------------------------------------------------------
+  |
+  | sorts an array of dates
+  |
+  */
+  function cmp_sort_dates( $a, $b ) {
+    $t1 = strtotime($a['game_date']);
+    $t2 = strtotime($b['game_date']);
+    return $t1 - $t2;
   }
 }
 

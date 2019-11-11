@@ -38,6 +38,7 @@ class ProfileData
     $query->where('blizz_id', $this->blizz_id);
     $cache_data = $query->get();
     $cache_data = json_decode(json_encode($cache_data),true);
+
     $found = false;
     if(count($cache_data) > 0){
       if($cache_data[0]["data"] == "null"){
@@ -51,6 +52,8 @@ class ProfileData
       $this->grabAllReplays();
       $found = "true";
     }
+
+
     $this->player_data = \GlobalFunctions::instance()->sortKeyValueArray($this->player_data, "game_date_desc");
     $this->player_data_mmr_sorted = \GlobalFunctions::instance()->sortKeyValueArray($this->player_data, "mmr_parsed_sorted_asc");
 
@@ -104,8 +107,10 @@ class ProfileData
       "(region, blizz_id, battletag, data, updated_at) VALUES ($this->region, $this->blizz_id, 'Zemill#1940','" . $data . "', '" . date('Y-m-d H:i:s') . "')" .
       " ON DUPLICATE KEY UPDATE data = VALUES(data), updated_at = VALUES(updated_at)");
     }
+
     $this->getPlayerMMRData();
     return $this->player_data;
+
   }
 
   private function grabAllReplays(){
@@ -365,7 +370,7 @@ class ProfileData
     return collect($data);
   }
 
-  public function getPlayerHeroSummary($game_type, $season){
+  public function getPlayerHeroMapSummary($game_type, $season, $hero_or_map){
     $game_types_array = array();
     if($game_type == ""){
       $game_types_array[0] = 1;
@@ -389,15 +394,15 @@ class ProfileData
 
     }
 
-    $hero_data = array();
+    $hero_or_map_data = array();
     foreach ($this->player_data as $replayID => $replay_data){
       $game_date = new DateTime($replay_data['game_date']);
 
       if($game_date >= $start_date && $game_date <= $end_date){
         if(in_array($replay_data["game_type"], $game_types_array)){
 
-          if(!array_key_exists($replay_data["hero"], $hero_data)){
-            $hero_data[$replay_data["hero"]] = array(
+          if(!array_key_exists($replay_data[$hero_or_map], $hero_or_map_data)){
+            $hero_or_map_data[$replay_data[$hero_or_map]] = array(
               "wins" => 0,
               "losses" => 0,
               "games_played" => 0
@@ -405,71 +410,71 @@ class ProfileData
           }
 
           if($replay_data["winner"] == 1){
-            $hero_data[$replay_data["hero"]]["wins"]++;
+            $hero_or_map_data[$replay_data[$hero_or_map]]["wins"]++;
           }else{
-            $hero_data[$replay_data["hero"]]["losses"]++;
+            $hero_or_map_data[$replay_data[$hero_or_map]]["losses"]++;
           }
 
-          $hero_data[$replay_data["hero"]]["games_played"]++;
+          $hero_or_map_data[$replay_data[$hero_or_map]]["games_played"]++;
 
         }
       }
     }
 
-    foreach ($hero_data as $hero => $data){
+    foreach ($hero_or_map_data as $h_m => $data){
       if($data["games_played"] > 0){
-        $hero_data[$hero]["win_rate"] = ($data["wins"] / $data["games_played"]) * 100;
+        $hero_or_map_data[$h_m]["win_rate"] = ($data["wins"] / $data["games_played"]) * 100;
       }else{
-        $hero_data[$hero]["win_rate"] = 0;
+        $hero_or_map_data[$h_m]["win_rate"] = 0;
       }
     }
 
-    $games_played_sorted = array_slice(\GlobalFunctions::instance()->sortKeyValueArray($hero_data, "games_played_desc"), 0, 3, true);
-    $latest_played_sorted = array_slice($hero_data, 0, 3, true);
+    $games_played_sorted = array_slice(\GlobalFunctions::instance()->sortKeyValueArray($hero_or_map_data, "games_played_desc"), 0, 3, true);
+    $latest_played_sorted = array_slice($hero_or_map_data, 0, 3, true);
 
 
-    $highest_win_rate_sorted = \GlobalFunctions::instance()->sortKeyValueArray($hero_data, "win_rate_desc");
+    $highest_win_rate_sorted = \GlobalFunctions::instance()->sortKeyValueArray($hero_or_map_data, "win_rate_desc");
 
 
     $return_highest_win_rate = array();
-    foreach ($hero_data as $hero => $data){
-      if($highest_win_rate_sorted[$hero]["games_played"] >= 20){
-        $return_highest_win_rate[$hero] = $data;
+    foreach ($hero_or_map_data as $h_m => $data){
+      if($highest_win_rate_sorted[$h_m]["games_played"] >= 20){
+        $return_highest_win_rate[$h_m] = $data;
       }
     }
 
     if(count($return_highest_win_rate) < 3){
       $return_highest_win_rate = array();
-      foreach ($hero_data as $hero => $data){
-        if($highest_win_rate_sorted[$hero]["games_played"] >= 15){
-          $return_highest_win_rate[$hero] = $data;
+      foreach ($hero_or_map_data as $h_m => $data){
+        if($highest_win_rate_sorted[$h_m]["games_played"] >= 15){
+          $return_highest_win_rate[$h_m] = $data;
         }
       }
     }
 
     if(count($return_highest_win_rate) < 3){
       $return_highest_win_rate = array();
-      foreach ($hero_data as $hero => $data){
-        if($highest_win_rate_sorted[$hero]["games_played"] >= 10){
-          $return_highest_win_rate[$hero] = $data;
+      foreach ($hero_or_map_data as $h_m => $data){
+        if($highest_win_rate_sorted[$h_m]["games_played"] >= 10){
+          $return_highest_win_rate[$h_m] = $data;
         }
       }
     }
 
     if(count($return_highest_win_rate) < 3){
       $return_highest_win_rate = array();
-      foreach ($hero_data as $hero => $data){
-        if($highest_win_rate_sorted[$hero]["games_played"] >= 5){
-          $return_highest_win_rate[$hero] = $data;
+      foreach ($hero_or_map_data as $h_m => $data){
+        if($highest_win_rate_sorted[$h_m]["games_played"] >= 5){
+          $return_highest_win_rate[$h_m] = $data;
         }
       }
     }
 
     if(count($return_highest_win_rate) < 3){
       $return_highest_win_rate = array();
-      foreach ($hero_data as $hero => $data){
-        if($highest_win_rate_sorted[$hero]["games_played"] >= 1){
-          $return_highest_win_rate[$hero] = $data;
+      foreach ($hero_or_map_data as $h_m => $data){
+        if($highest_win_rate_sorted[$h_m]["games_played"] >= 1){
+          $return_highest_win_rate[$h_m] = $data;
         }
       }
     }
@@ -516,75 +521,16 @@ class ProfileData
     $this->mmr_data = $query->get();
     $this->mmr_data = json_decode(json_encode($this->mmr_data),true);
 
-    $this->getPlayerLeagueTier();
+    for($i = 0; $i < count($this->mmr_data); $i++){
+      $this->mmr_data[$i]["league_tier"] = \GlobalFunctions::instance()->getPlayerLeagueTier($this->mmr_data[$i]["game_type"], (1800 + 40 * $this->mmr_data[$i]["conservative_rating"]));
+    }
     collect($this->mmr_data);
   }
 
-  private function getPlayerLeagueTier(){
-    $leagues = Session::get('leagues_breakdowns');
-    //print_r(json_encode($leagues, true));
-    if($mmr >= $leagues["master"]["min_mmr"]){
-      return "Master";
-    }else if($mmr < $leagues["master"]["min_mmr"] && $mmr >= $leagues["diamond"]["min_mmr"]){
-      for($i = 0; $i < 5; $i++){
-        if($mmr >= ($leagues["diamond"]["min_mmr"] + ($i * $leagues["diamond"]["split"])) && $mmr < ($leagues["diamond"]["min_mmr"]  + (($i + 1) * $leagues["diamond"]["split"]))){
-          return "Diamond " . (5 - $i);
-        }
-      }
-      return "Diamond";
-    }else if($mmr < $leagues["diamond"]["min_mmr"] && $mmr >= $leagues["platinum"]["min_mmr"]){
-      for($i = 0; $i < 5; $i++){
-        if($mmr >= ($leagues["platinum"]["min_mmr"] + ($i * $leagues["platinum"]["split"])) && $mmr < ($leagues["platinum"]["min_mmr"]  + (($i + 1) * $leagues["platinum"]["split"]))){
-          return "Platinum " . (5 - $i);
-        }
-      }
-      return "Platinum";
-    }else if($mmr < $leagues["platinum"]["min_mmr"] && $mmr >= $leagues["gold"]["min_mmr"]){
-      for($i = 0; $i < 5; $i++){
-        if($mmr >= ($leagues["gold"]["min_mmr"] + ($i * $leagues["gold"]["split"])) && $mmr < ($leagues["gold"]["min_mmr"]  + (($i + 1) * $leagues["gold"]["split"]))){
-          return "Gold " . (5 - $i);
-        }
-      }
-      return "Gold";
-    }else if($mmr < $leagues["gold"]["min_mmr"] && $mmr >= $leagues["silver"]["min_mmr"]){
-      for($i = 0; $i < 5; $i++){
-        if($mmr >= ($leagues["silver"]["min_mmr"] + ($i * $leagues["silver"]["split"])) && $mmr < ($leagues["silver"]["min_mmr"]  + (($i + 1) * $leagues["silver"]["split"]))){
-          return "Silver " . (5 - $i);
-        }
-      }
-      return "Silver";
-    }else{
-      for($i = 0; $i < 5; $i++){
-        if($mmr >= ($leagues["bronze"]["min_mmr"] + ($i * $leagues["bronze"]["split"])) && $mmr < ($leagues["bronze"]["min_mmr"]  + (($i + 1) * $leagues["bronze"]["split"]))){
-          return "Bronze " . (5 - $i);
-        }
-      }
-      return "Bronze";
-    }
-    /*
-    for($i = 0; $i < count($this->mmr_data); $i++){
-      $query = DB::table('heroesprofile.league_breakdowns');
-      $query->where('type_role_hero', '10000');
-      $query->where('game_type', $this->mmr_data[$i]["game_type"]);
-      $query->where('min_mmr', '<=', (1800 + 40 * $this->mmr_data[$i]["conservative_rating"]));
-      $query->orderBy('min_mmr', 'DESC');
-      $query->limit(1);
-      $data = $query->get();
-      //print_r($query->toSql());
-      //print_r($query->getBindings());
-
-      $data = json_decode(json_encode($data),true);
-      $this->mmr_data[$i]["league_tier"] = getPlayerLeagueTierSplit($this->mmr_data[$i]["game_type"] , (1800 + 40 * $this->mmr_data[$i]["conservative_rating"]), $data[0]['league_tier']);
-    }
-    */
-  }
-
-  private function getPlayerLeagueTierSplit($game_type, $player_mmr, $league_tier){
-  }
-
-  public function getMMRVar(){
+  public function getMMRData(){
     return $this->mmr_data;
   }
+
   private function secondsToTime($inputSeconds) {
     $secondsInAMinute = 60;
     $secondsInAnHour = 60 * $secondsInAMinute;
@@ -624,7 +570,132 @@ class ProfileData
     return implode(', ', $timeParts);
   }
 
+  public function graphMMRData(){
+    $player_data = array();
+
+    foreach (\GlobalFunctions::instance()->sortKeyValueArray($this->player_data, "game_date_asc") as $replayID => $data){
+      $player_data[$data["game_type"]][$data["game_date"]] = 0;
+    }
+
+    $player_mmr_data = array();
+    $qm_counter = 0;
+    $ud_counter = 0;
+    $hl_counter = 0;
+    $tl_counter = 0;
+    $sl_counter = 0;
+
+    foreach (\GlobalFunctions::instance()->sortKeyValueArray($this->player_data, "mmr_parsed_sorted_desc") as $replayID => $data){
+      $counter = 0;
+      if($data["game_type"] == 1){
+        $counter = $qm_counter;
+        $qm_counter++;
+      }else if($data["game_type"] == 2){
+        $counter = $ud_counter;
+        $ud_counter++;
+      }else if($data["game_type"] == 3){
+        $counter = $hl_counter;
+        $hl_counter++;
+      }else if($data["game_type"] == 4){
+        $counter = $tl_counter;
+        $tl_counter++;
+      }else if($data["game_type"] == 5){
+        $counter = $sl_counter;
+        $sl_counter++;
+      }
+
+      $player_mmr_data[$data["game_type"]][$counter] = 1800 + 40 * $data["player_conservative_rating"];
+    }
+
+    $game_dates = array();
+    $game_date_counter = 0;
+    foreach ($player_data as $game_type => $data){
+      $counter = 0;
+      foreach ($data as $game_date => $mmr){
+        $player_data[$game_type][$game_date] = $player_mmr_data[$game_type][$counter];
+        $counter++;
+
+        $game_dates[$game_date_counter]["game_date"] = $game_date;
+        $game_date_counter++;
+      }
+    }
+
+    $game_dates = \GlobalFunctions::instance()->sortKeyValueArray($game_dates, "sort_dates");
+    //$game_dates = array_reverse($game_dates);
+    $qm_data = array();
+    $ud_data = array();
+    $hl_data = array();
+    $tl_data = array();
+    $sl_data = array();
+
+    $prevMMR = array();
+    $prevMMR[1] = 1800;
+    $prevMMR[2] = 1800;
+    $prevMMR[3] = 1800;
+    $prevMMR[4] = 1800;
+    $prevMMR[5] = 1800;
+
+    $qm_counter = 0;
+
+    foreach ($game_dates as $d => $date_time){
+      if(!array_key_exists($date_time["game_date"], $player_data[1])){
+        $qm_data[$date_time["game_date"]] = $prevMMR[1];
+      }else{
+        if(abs($player_data[1][$date_time["game_date"]] - $prevMMR[1]) < 300){
+          $qm_data[$date_time["game_date"]] = $player_data[1][$date_time["game_date"]];
+          $prevMMR[1] = $player_data[1][$date_time["game_date"]];
+        }
+      }
+
+
+      if(!array_key_exists($date_time["game_date"], $player_data[2])){
+        $ud_data[$date_time["game_date"]] = $prevMMR[2];
+      }else{
+        if(abs($player_data[2][$date_time["game_date"]] - $prevMMR[2]) < 300){
+          $ud_data[$date_time["game_date"]] = $player_data[2][$date_time["game_date"]];
+          $prevMMR[2] = $player_data[2][$date_time["game_date"]];
+        }
+      }
+
+      if(!array_key_exists($date_time["game_date"], $player_data[3])){
+        $hl_data[$date_time["game_date"]] = $prevMMR[3];
+      }else{
+        if(abs($player_data[3][$date_time["game_date"]] - $prevMMR[3]) < 300){
+          $hl_data[$date_time["game_date"]] = $player_data[3][$date_time["game_date"]];
+          $prevMMR[3] = $player_data[3][$date_time["game_date"]];
+        }
+      }
+
+      if(!array_key_exists($date_time["game_date"], $player_data[4])){
+        $tl_data[$date_time["game_date"]] = $prevMMR[4];
+      }else{
+        if(abs($player_data[4][$date_time["game_date"]] - $prevMMR[4]) < 300){
+          $tl_data[$date_time["game_date"]] = $player_data[4][$date_time["game_date"]];
+          $prevMMR[4] = $player_data[4][$date_time["game_date"]];
+        }
+      }
+
+      if(!array_key_exists($date_time["game_date"], $player_data[5])){
+        $sl_data[$date_time["game_date"]] = $prevMMR[5];
+      }else{
+        if(abs($player_data[5][$date_time["game_date"]] - $prevMMR[5]) < 300){
+          $sl_data[$date_time["game_date"]] = $player_data[5][$date_time["game_date"]];
+          $prevMMR[5] = $player_data[5][$date_time["game_date"]];
+        }
+      }
+
+      //echo $dddd["game_date"];
+      //echo "<br>";
+    }
+
+    return array(
+      1 => $qm_data,
+      2 => $ud_data,
+      3 => $hl_data,
+      4 => $tl_data,
+      5 => $sl_data,
+    );
+  }
   public function getLatestPlayed($count_return){
-     return array_slice($player_data, 0, $count_return);
+     return array_slice($this->player_data, 0, $count_return, true);
   }
 }

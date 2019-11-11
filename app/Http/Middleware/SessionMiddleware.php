@@ -171,6 +171,6 @@ class SessionMiddleware
     }
 
     private function setLeagueBreakdownsSession(){
-      return \GlobalFunctions::instance()->getLeagueBreakdowns();
+      return \GlobalFunctions::instance()->getLeagueTierBreakdowns();
     }
 }

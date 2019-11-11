@@ -27,15 +27,21 @@ print_r(json_encode($data));
 
   $player_instance = \ProfileData::instance(67280, 1);
   $data = $player_instance->getPlayerData();
+    /*
   $player_stats = $player_instance->getPlayerSummaryStats("", 13);
-  $player_hero_stats = $player_instance->getPlayerHeroSummary("", "");
+  $player_hero_stats = $player_instance->getPlayerHeroMapSummary("", "", "hero");
 
-  //print_r($player_stats);
-  print_r(json_encode($player_instance->getMMRVar(), true));
+  print_r(json_encode($player_instance->getMMRData(), true));
 
-  //print_r(json_encode($data, true));
-  //$latest_played = $player_instance->getLatestPlayed(5);
-  //print_r(json_encode(array_slice($data, 0, 5), true));
+  $mmr_graph_data = $player_instance->graphMMRData();
+  print_r(json_encode($mmr_graph_data, true));
 
+
+  $player_map_stats = $player_instance->getPlayerHeroMapSummary("", "", "game_map");
+  print_r(json_encode($player_map_stats, true));
+  */
+
+  $latest_played = $player_instance->getLatestPlayed(5);
+  print_r(json_encode($latest_played, true));
 
  ?>
