@@ -13,7 +13,7 @@ class CreateBattlenetLoginTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroeprofile.battlenet_login', function (Blueprint $table) {
+        Schema::create('heroesprofile.battlenet_login', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
         });

@@ -9,10 +9,10 @@
     <div class="error" v-else-if="tabledata.length === 0">
       No Data Found.
     </div>
-    <b-table striped bordered responsive :sticky-header="false" small  :items="tabledata" :fields="tablefields" >
+    <b-table striped bordered responsive :sticky-header="false" small  :items="tabledata" :fields="tablefields" :busy="loading" >
       <template v-slot:cell(name)="data" >
         <div class="image-with-name">
-          <image-popup  :alttext="data.value.hero_name" :imgSrc="'/images/heroes/'+data.value.short_name+'.png'" :popupdata="'Hero info for '+data.value.hero_name"></image-popup>  <b class="text-info">{{ data.value.hero_name }}</b>
+          <image-popup  :alttext="data.value.hero_name" :imgSrc="'/images/heroes/'+data.value.short_name+'.png'" :popupdata="'Hero info for '+data.value.hero_name"></image-popup>  <span class="emphasis">{{ data.value.hero_name }}</span>
         </div>
       </template>
       <template v-slot:cell(win_rate)="data">
@@ -34,7 +34,7 @@
           <b-row class="mb-2">
             <hero-talent-data :hero="row.item.name" @loading-status="talentsLoaded=true"></hero-talent-data>
           </b-row>
-        
+
         </b-card>
       </template>
     </b-table>
@@ -54,8 +54,6 @@ export default {
         tablefields: [],
         error: "",
         talentsLoaded: false
-
-
       }
     },
 

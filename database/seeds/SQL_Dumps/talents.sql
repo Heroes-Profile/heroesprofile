@@ -1,5 +1,6 @@
 -- MySQL dump 10.13  Distrib 8.0.13, for Win64 (x86_64)
----- ------------------------------------------------------
+--
+-- ------------------------------------------------------
 -- Server version	5.7.14-google
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;

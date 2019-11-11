@@ -3,6 +3,7 @@ $font-family-sans-serif: 'Roboto Condensed', sans-serif;
 $green: #007272;
 $blue: #213d7a;
 $red: #b33616;
+$cyan: #007272;
 
 $primary: $green;
 $secondary: $blue;
@@ -35,12 +36,41 @@ $font-family-sans-serif: 'Roboto', sans-serif;
 
 
 .intro{
-  text-align:center;
-  margin: 3em 5em;
-  margin-right:auto;
-  margin-left:auto;
-  h2{font-size: 3.5rem; text-transform: uppercase; margin-bottom: 0.2rem;}
-  p{  max-width: 30em; margin-left: auto; margin-right: auto;}
+
+  display:flex;
+  display: flex;
+  align-content: stretch;
+  border-bottom: 4px solid $blue;
+
+  h2{
+    text-transform: uppercase;
+
+   padding: .5rem 1rem;
+   border-radius: 0px 0px .5rem 0px;
+   border-radius: .5rem,0rem,0rem,0rem;
+   margin: 0;
+
+  }
+  div{
+    background-color: $green;
+    text-align: middle;
+    display: block;
+    padding: .5rem 1rem;
+    color:white;
+    margin: 0;
+    align-self: stretch;
+    flex:1;
+    display:flex;
+    align-content:center;
+
+    p{
+      margin:0;
+    padding:0;
+    margin-bottom:0;
+    margin-top:auto;
+    margin-bottom:auto;
+  }
+  }
 }
 
 
@@ -49,28 +79,77 @@ $font-family-sans-serif: 'Roboto', sans-serif;
 @import 'node_modules/bootstrap/scss/bootstrap';
 @import 'node_modules/bootstrap-vue/src/index.scss';
 @import 'general.scss';
+@import 'multiselect.scss';
 
+.container-fluid{padding-left:0; padding-right:0;}
+.search-form .multiselect {
+
+.multiselect__tag{
+  background: #213d7a;
+  color: #fff;
+}
+.multiselect__option--selected.multiselect__option--highlight{
+  background: inherit;
+  color: inherit;
+}
+.multiselect__option--highlight{
+  background: #213d7a;
+  color: #fff;
+}
+.multiselect__option--selected.multiselect__option--highlight{
+  //background: $red;
+}
+.multiselect__tag-icon:after{content:"\D7";color:#266d4d;font-size:14px}
+.multiselect__option--group{background:#ededed;color:#35495e}
+.multiselect__option--group.multiselect__option--highlight{background:#35495e;color:#fff}
+}
 
 body{
-  color: #343a40;
+  background-color: white;   color: #343a40;
+  table{
+    color: #343a40;
+    background-color: white;
+  }
+  .table-striped tbody tr:nth-of-type(odd) {
+      background-color: rgba(0, 0, 0, 0.02);
+  }
+
 }
+
 
 body.darkMode{
-  background-color: $gray-800; color:white;
-  table{color:white;}
+
+//  background-color: #2e344f;
+  //color:white;
+//  background-color: #dce0f2;
+background-color: #0F121D;
+color:white;
+
+
+.table{
+    color: white;
+    background-color: $gray-800;
+
 }
 .table-striped tbody tr:nth-of-type(odd) {
-    background-color: rgba(0, 0, 0, 0.02);
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
-//table td{display:flex; justify-content:center; align-content: center; text-align: center;}
+
+
+.table-bordered td{border: 1px solid #666;}
 .table{
-  background-color:white;
 
+thead{background-color: $green;}
+.emphasis{ color: lighten($green, 15%); font-weight: 500;}
 
-td,th{ vertical-align:middle; text-align: center;}
 }
 
+.popover{color: #343a40}
+
+}
+
+.table td,th{ vertical-align:middle; text-align: center;}
 
 .loading{display:flex; justify-content: center; text-align:center;}
 .hero-talent{width: 100%;}
