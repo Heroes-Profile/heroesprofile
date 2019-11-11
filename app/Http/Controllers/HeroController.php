@@ -192,7 +192,7 @@ class HeroController extends Controller
     }
 
     if(isset($request["hero"]) && $request["hero"] != ""){
-      $this->hero = $request["hero"];
+      $this->hero = $this->session_data['heroes_by_name'][$request["hero"]];
     }
 
     if(isset($request["stat"]) && $request["stat"] != ""){
