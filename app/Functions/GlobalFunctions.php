@@ -342,7 +342,7 @@ class GlobalFunctions
     return $returnData;
 
 }
-public function getLeagueTiers(){
+/*public function getLeagueTiers(){
   $tiers = DB::table('heroesprofile.league_tiers')->select('name', 'tier_id')->get();
   $tiers = json_decode(json_encode($tiers), true);
   $returnData = array();
@@ -352,7 +352,7 @@ public function getLeagueTiers(){
   }
   return $returnData;
 
-}
+}*/
 
 
   /*
@@ -433,7 +433,7 @@ public function getLeagueTiers(){
     case "mmr_parsed_sorted_desc":
         uasort($array, [$this, 'cmp_mmr_parsed_desc']);
         break;
-    case "games_played_desc"
+    case "games_played_desc":
     uasort($array, [$this, 'cmp_games_played_desc']);
         break;
     }

@@ -1,12 +1,14 @@
 <template>
-  <div class="">
-    <b-button id="popover-target-1">
+  <div class="search-filter-wrapper">
+
+  <!--  <b-button id="popover-target-1">
     Filter
   </b-button>
-  <!--<b-popover target="popover-target-1" triggers="click" placement="bottom">-->
+  <b-popover target="popover-target-1" triggers="click" placement="bottomleft"  boundary-padding="5">-->
 
-  <form class="search-form" method="get" @submit.prevent="submitForm">
-   <div  style="width: 100%;" v-for="(field, fieldname, index) in rawfields">
+  <form class="search-form" method="get" @submit.prevent="submitForm" >
+    
+   <div v-for="(field, fieldname, index) in rawfields">
      <label class="control-label">
        {{ fieldname | caps }}
     </label>
@@ -25,7 +27,8 @@
  </div>
 
   </form>
-  <!--</b-popover>-->
+<!--  </b-popover>-->
+
 </div>
 
 </template>

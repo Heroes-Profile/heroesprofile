@@ -116,6 +116,19 @@ body{
 
 }
 
+.search-filter-wrapper{
+
+  .popover{width:100%;}
+}
+body .popover{ width:100%;}
+
+.search-form{
+  display:flex;
+  flex-wrap:wrap;
+}
+
+.multiselect{min-width:1500px;}
+.search-filters{width:100%;}
 
 body.darkMode{
 

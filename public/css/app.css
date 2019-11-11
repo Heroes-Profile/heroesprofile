@@ -13061,7 +13061,6 @@ fieldset[disabled] .multiselect {
   top: 1px;
   width: 48px;
   height: 35px;
-  background: #fff;
   display: block;
 }
 
@@ -13166,7 +13165,6 @@ fieldset[disabled] .multiselect {
   line-height: 20px;
   border: none;
   border-radius: 5px;
-  background: #fff;
   padding: 0 0 0 5px;
   width: 100%;
   transition: border 0.1s ease;
@@ -13283,7 +13281,9 @@ fieldset[disabled] .multiselect {
   position: relative;
   right: 0;
   top: 65%;
+  color: #999;
   margin-top: 4px;
+  border-color: #999 transparent transparent;
   border-style: solid;
   border-width: 5px 5px 0;
   content: "";
@@ -13302,7 +13302,7 @@ fieldset[disabled] .multiselect {
 .multiselect__content-wrapper {
   position: absolute;
   display: block;
-  background: #fff;
+  background: #eee;
   width: 100%;
   max-height: 240px;
   overflow: auto;
@@ -13312,6 +13312,7 @@ fieldset[disabled] .multiselect {
   border-bottom-right-radius: 5px;
   z-index: 50;
   -webkit-overflow-scrolling: touch;
+  color: black;
 }
 
 .multiselect__content {
@@ -13511,6 +13512,27 @@ body table {
 
 body .table-striped tbody tr:nth-of-type(odd) {
   background-color: rgba(0, 0, 0, 0.02);
+}
+
+.search-filter-wrapper .popover {
+  width: 100%;
+}
+
+body .popover {
+  width: 100%;
+}
+
+.search-form {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.multiselect {
+  min-width: 1500px;
+}
+
+.search-filters {
+  width: 100%;
 }
 
 body.darkMode {
