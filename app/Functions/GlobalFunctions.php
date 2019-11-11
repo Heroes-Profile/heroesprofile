@@ -15,8 +15,6 @@ class GlobalFunctions
       return new GlobalFunctions();
   }
 
-
-
   /*
   |--------------------------------------------------------------------------
   | getMaps
@@ -328,8 +326,12 @@ class GlobalFunctions
     ->orderBy('role', 'asc')
     ->get();
     $roles = json_decode(json_encode($roles),true);
+    $return_array = array();
+    for($i = 0; $i < count($roles); $i++){
+      $return_array[$roles[$i]["role"]] = $roles[$i]["role"];
+    }
 
-    return $roles;
+    return $return_array;
   }
 
   /*
@@ -342,12 +344,12 @@ class GlobalFunctions
   */
 
   public function getLeagueTiersByName(){
-    $tiers = DB::table('heroesprofile.league_tiers')->select('name', 'tier_id')->get();
+    $tiers = DB::table('heroesprofile.league_tiers')->select('name', 'tier_id')->where('name', '<>', 'all')->get();
     $tiers = json_decode(json_encode($tiers), true);
     $returnData = array();
 
     foreach($tiers as $index => $tier){
-      $returnData[$tier['name']] = $tier['tier_id'];
+      $returnData[ucfirst($tier['name'])] = $tier['tier_id'];
     }
     return $returnData;
 
