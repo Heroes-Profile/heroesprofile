@@ -394,13 +394,80 @@ class GlobalFunctions
     case "mmr_parsed_sorted_desc":
         uasort($array, [$this, 'cmp_mmr_parsed_desc']);
         break;
-    case "games_played_desc"
-    uasort($array, [$this, 'cmp_games_played_desc']);
+    case "games_played_desc":
+        uasort($array, [$this, 'cmp_games_played_desc']);
+        break;
+    case "win_rate_desc":
+        uasort($array, [$this, 'cmp_win_rate_desc']);
         break;
     }
 
     return $array;
   }
+
+  public function getLeagueBreakdowns(){
+    $qm = $this->getLeaguesBreakDowns("1");
+    $hl = $this->getLeaguesBreakDowns("2");
+    $tl = $this->getLeaguesBreakDowns("3");
+    $ud = $this->getLeaguesBreakDowns("4");
+    $sl = $this->getLeaguesBreakDowns("5");
+
+    $league_breakdowns = array(
+        "1"  => $qm,
+        "2" => $ud,
+        "3" => $tl,
+        "4" => $ud,
+        "5" => $sl,
+      );
+    return $league_breakdowns;
+  }
+
+  private function getLeaguesBreakDowns($league){
+    $query = DB::table('heroesprofile.league_breakdowns');
+    $query->where('type_role_hero', '10000');
+    $query->where('game_type', $league);
+    $data = $query->get();
+    $data = json_decode(json_encode($data),true);
+    //print_r(json_encode($data, true));
+    print_r($data);
+    echo "<br>";
+    echo "<br>";
+
+    $prevMin = 0;
+    $returnData = array();
+    for($i = 0; $i < count($data); $i++){
+      $data = array();
+      $data["min_mmr"] = $prevMin;
+      $data["max_mmr"] = round($data[$i]["min_mmr"]);
+      $prevMin = round($data[$i]["min_mmr"]);
+
+      if($data["min_mmr"] == 0){
+        $data["split"] = ($data["max_mmr"] - 1800) / 5;
+
+      }else{
+        $data["split"] = ($data["max_mmr"] - $data["min_mmr"]) / 5;
+      }
+
+      if($row["league_tier"] == "2"){
+        $returnData["bronze"] = $data;
+      }else if($row["league_tier"] == "3"){
+        $returnData["silver"] = $data;
+      }else if($row["league_tier"] == "4"){
+        $returnData["gold"] = $data;
+      }else if($row["league_tier"] == "5"){
+        $returnData["platinum"] = $data;
+      }else if($row["league_tier"] == "6"){
+        $returnData["diamond"] = $data;
+      }
+    }
+
+    $data["min_mmr"] = $prevMin;
+    $data["max_mmr"] = "";
+    $returnData["master"] = $data;
+    return $returnData;
+
+  }
+
 
   private function cmp_game_date_desc( $a, $b ) {
     $ad = new DateTime($a['game_date']);
@@ -423,13 +490,18 @@ class GlobalFunctions
   }
 
   function cmp_games_played_desc( $a, $b ) {
-  if(  $a["games_played"] ==  $b["games_played"] ){
-    return 0 ;
+    if(  $a["games_played"] ==  $b["games_played"] ){
+      return 0 ;
+    }
+    return ($a["games_played"] > $b["games_played"]) ? -1 : 1;
   }
-  return ($a["games_played"] > $b["games_played"]) ? -1 : 1;
-}
 
-
+  function cmp_win_rate_desc( $a, $b ) {
+    if(  $a["win_rate"] ==  $b["win_rate"] ){
+      return 0 ;
+    }
+    return ($a["win_rate"] > $b["win_rate"]) ? -1 : 1;
+  }
 }
 
 ?>
