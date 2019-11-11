@@ -31,7 +31,7 @@ print_r(json_encode($data));
   $player_hero_stats = $player_instance->getPlayerHeroSummary("", "");
 
   //print_r($player_stats);
-  print_r(json_encode($player_hero_stats, true));
+  print_r(json_encode($player_instance->getMMRVar(), true));
 
   //print_r(json_encode($data, true));
   //$latest_played = $player_instance->getLatestPlayed(5);

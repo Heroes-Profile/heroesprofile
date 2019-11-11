@@ -4,6 +4,8 @@ namespace App\Data;
 use Illuminate\Support\Facades\DB;
 use Session;
 use App\Battletag;
+use App\LeagueBreakdown;
+use App\LeagueTier;
 use DateTime;
 
 class ProfileData
@@ -13,6 +15,8 @@ class ProfileData
 
   private $player_data;
   private $player_data_mmr_sorted;
+
+  private $mmr_data;
 
   public static function instance($blizz_id, $region)
   {
@@ -100,6 +104,7 @@ class ProfileData
       "(region, blizz_id, battletag, data, updated_at) VALUES ($this->region, $this->blizz_id, 'Zemill#1940','" . $data . "', '" . date('Y-m-d H:i:s') . "')" .
       " ON DUPLICATE KEY UPDATE data = VALUES(data), updated_at = VALUES(updated_at)");
     }
+    $this->getPlayerMMRData();
     return $this->player_data;
   }
 
@@ -391,7 +396,7 @@ class ProfileData
       if($game_date >= $start_date && $game_date <= $end_date){
         if(in_array($replay_data["game_type"], $game_types_array)){
 
-          if(!in_array($replay_data["hero"], $hero_data)){
+          if(!array_key_exists($replay_data["hero"], $hero_data)){
             $hero_data[$replay_data["hero"]] = array(
               "wins" => 0,
               "losses" => 0,
@@ -410,11 +415,73 @@ class ProfileData
         }
       }
     }
-    foreach ($sections as $name => $value){
-    }
-    $games_played_sorted = array_slice(\GlobalFunctions::instance()->sortKeyValueArray($hero_data, "games_played_desc"), 0, 3), true);
-    $latest_played_sorted = array_slice($hero_data, 0, 3), true);
 
+    foreach ($hero_data as $hero => $data){
+      if($data["games_played"] > 0){
+        $hero_data[$hero]["win_rate"] = ($data["wins"] / $data["games_played"]) * 100;
+      }else{
+        $hero_data[$hero]["win_rate"] = 0;
+      }
+    }
+
+    $games_played_sorted = array_slice(\GlobalFunctions::instance()->sortKeyValueArray($hero_data, "games_played_desc"), 0, 3, true);
+    $latest_played_sorted = array_slice($hero_data, 0, 3, true);
+
+
+    $highest_win_rate_sorted = \GlobalFunctions::instance()->sortKeyValueArray($hero_data, "win_rate_desc");
+
+
+    $return_highest_win_rate = array();
+    foreach ($hero_data as $hero => $data){
+      if($highest_win_rate_sorted[$hero]["games_played"] >= 20){
+        $return_highest_win_rate[$hero] = $data;
+      }
+    }
+
+    if(count($return_highest_win_rate) < 3){
+      $return_highest_win_rate = array();
+      foreach ($hero_data as $hero => $data){
+        if($highest_win_rate_sorted[$hero]["games_played"] >= 15){
+          $return_highest_win_rate[$hero] = $data;
+        }
+      }
+    }
+
+    if(count($return_highest_win_rate) < 3){
+      $return_highest_win_rate = array();
+      foreach ($hero_data as $hero => $data){
+        if($highest_win_rate_sorted[$hero]["games_played"] >= 10){
+          $return_highest_win_rate[$hero] = $data;
+        }
+      }
+    }
+
+    if(count($return_highest_win_rate) < 3){
+      $return_highest_win_rate = array();
+      foreach ($hero_data as $hero => $data){
+        if($highest_win_rate_sorted[$hero]["games_played"] >= 5){
+          $return_highest_win_rate[$hero] = $data;
+        }
+      }
+    }
+
+    if(count($return_highest_win_rate) < 3){
+      $return_highest_win_rate = array();
+      foreach ($hero_data as $hero => $data){
+        if($highest_win_rate_sorted[$hero]["games_played"] >= 1){
+          $return_highest_win_rate[$hero] = $data;
+        }
+      }
+    }
+    $return_highest_win_rate = \GlobalFunctions::instance()->sortKeyValueArray($return_highest_win_rate, "win_rate_desc");
+    $return_highest_win_rate = array_slice($return_highest_win_rate, 0, 3, true);
+
+    $return_data = array(
+      "games_played" => $games_played_sorted,
+      "latest_played" => $latest_played_sorted,
+      "win_rate" => $return_highest_win_rate,
+    );
+    return collect($return_data);
   }
 
   private function getPlayerAccountLevel(){
@@ -434,6 +501,90 @@ class ProfileData
     return $account_level;
   }
 
+  private function getPlayerMMRData(){
+    $query = DB::table('heroesprofile.master_mmr_data');
+    $query->where('type_value', '10000');
+    $query->where(function($q) {
+            $q->where('game_type', 1)
+            ->orWhere('game_type', 2)
+            ->orWhere('game_type', 3)
+            ->orWhere('game_type', 4)
+            ->orWhere('game_type', 5);
+        });
+    $query->where('blizz_id', $this->blizz_id);
+    $query->where('region', $this->region);
+    $this->mmr_data = $query->get();
+    $this->mmr_data = json_decode(json_encode($this->mmr_data),true);
+
+    $this->getPlayerLeagueTier();
+    collect($this->mmr_data);
+  }
+
+  private function getPlayerLeagueTier(){
+    $leagues = Session::get('leagues_breakdowns');
+    //print_r(json_encode($leagues, true));
+    if($mmr >= $leagues["master"]["min_mmr"]){
+      return "Master";
+    }else if($mmr < $leagues["master"]["min_mmr"] && $mmr >= $leagues["diamond"]["min_mmr"]){
+      for($i = 0; $i < 5; $i++){
+        if($mmr >= ($leagues["diamond"]["min_mmr"] + ($i * $leagues["diamond"]["split"])) && $mmr < ($leagues["diamond"]["min_mmr"]  + (($i + 1) * $leagues["diamond"]["split"]))){
+          return "Diamond " . (5 - $i);
+        }
+      }
+      return "Diamond";
+    }else if($mmr < $leagues["diamond"]["min_mmr"] && $mmr >= $leagues["platinum"]["min_mmr"]){
+      for($i = 0; $i < 5; $i++){
+        if($mmr >= ($leagues["platinum"]["min_mmr"] + ($i * $leagues["platinum"]["split"])) && $mmr < ($leagues["platinum"]["min_mmr"]  + (($i + 1) * $leagues["platinum"]["split"]))){
+          return "Platinum " . (5 - $i);
+        }
+      }
+      return "Platinum";
+    }else if($mmr < $leagues["platinum"]["min_mmr"] && $mmr >= $leagues["gold"]["min_mmr"]){
+      for($i = 0; $i < 5; $i++){
+        if($mmr >= ($leagues["gold"]["min_mmr"] + ($i * $leagues["gold"]["split"])) && $mmr < ($leagues["gold"]["min_mmr"]  + (($i + 1) * $leagues["gold"]["split"]))){
+          return "Gold " . (5 - $i);
+        }
+      }
+      return "Gold";
+    }else if($mmr < $leagues["gold"]["min_mmr"] && $mmr >= $leagues["silver"]["min_mmr"]){
+      for($i = 0; $i < 5; $i++){
+        if($mmr >= ($leagues["silver"]["min_mmr"] + ($i * $leagues["silver"]["split"])) && $mmr < ($leagues["silver"]["min_mmr"]  + (($i + 1) * $leagues["silver"]["split"]))){
+          return "Silver " . (5 - $i);
+        }
+      }
+      return "Silver";
+    }else{
+      for($i = 0; $i < 5; $i++){
+        if($mmr >= ($leagues["bronze"]["min_mmr"] + ($i * $leagues["bronze"]["split"])) && $mmr < ($leagues["bronze"]["min_mmr"]  + (($i + 1) * $leagues["bronze"]["split"]))){
+          return "Bronze " . (5 - $i);
+        }
+      }
+      return "Bronze";
+    }
+    /*
+    for($i = 0; $i < count($this->mmr_data); $i++){
+      $query = DB::table('heroesprofile.league_breakdowns');
+      $query->where('type_role_hero', '10000');
+      $query->where('game_type', $this->mmr_data[$i]["game_type"]);
+      $query->where('min_mmr', '<=', (1800 + 40 * $this->mmr_data[$i]["conservative_rating"]));
+      $query->orderBy('min_mmr', 'DESC');
+      $query->limit(1);
+      $data = $query->get();
+      //print_r($query->toSql());
+      //print_r($query->getBindings());
+
+      $data = json_decode(json_encode($data),true);
+      $this->mmr_data[$i]["league_tier"] = getPlayerLeagueTierSplit($this->mmr_data[$i]["game_type"] , (1800 + 40 * $this->mmr_data[$i]["conservative_rating"]), $data[0]['league_tier']);
+    }
+    */
+  }
+
+  private function getPlayerLeagueTierSplit($game_type, $player_mmr, $league_tier){
+  }
+
+  public function getMMRVar(){
+    return $this->mmr_data;
+  }
   private function secondsToTime($inputSeconds) {
     $secondsInAMinute = 60;
     $secondsInAnHour = 60 * $secondsInAMinute;
