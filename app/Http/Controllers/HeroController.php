@@ -35,7 +35,7 @@ class HeroController extends Controller
 
   public function show()
   {
-$global = \GlobalFunctions::instance();
+    $global = \GlobalFunctions::instance();
 
 
 // Add code here to get markdown file for the site content.
@@ -43,63 +43,63 @@ $global = \GlobalFunctions::instance();
     ? base_path('privacy-policy.'.app()->getLocale().'.md')
     : base_path('privacy-policy.md');
 */
-  return view('table', [
-    'dataurl' => '/get_heroes_stats_table_data', // URL used for calling the table data
-    'title' => 'Global Win Rates', // Page title
-    'paragraph' => 'Hero win rates based on differing increments, stat types, game type, or league tier. Click on a Hero to see detailed talent information.', // Summary paragraph
-    'tableheading' => 'Win Rates', // Table heading
-    'rawfields' => [
-      /*"timeframe" => session('all_major_patch'),
-    /*  "timeframe2" => $this->convertSessionToArray(session('all_minor_patch')),
-      "hero_level" => $this->convertSessionToArray(session('hero_levels')),
-      "game_map" => $this->convertSessionToArray(session('maps_by_id')),
-    */
+    return view('table', [
+      'dataurl' => '/get_heroes_stats_table_data', // URL used for calling the table data
+      'title' => 'Global Win Rates', // Page title
+      'paragraph' => 'Hero win rates based on differing increments, stat types, game type, or league tier. Click on a Hero to see detailed talent information.', // Summary paragraph
+      'tableheading' => 'Win Rates', // Table heading
+      'rawfields' => [
+        /*"timeframe" => session('all_major_patch'),
+      /*  "timeframe2" => $this->convertSessionToArray(session('all_minor_patch')),
+        "hero_level" => $this->convertSessionToArray(session('hero_levels')),
+        "game_map" => $this->convertSessionToArray(session('maps_by_id')),
+      */
 
-    "timeframe_type" => array(
-        [
-          "key" => "major",
-          "value" => "major"
-        ],
-        [
-          "key" => "minor",
-          "value" => "minor",
-        ]
-      ),
-
-
-    "major_patch" =>  $global->convertToFilter(Session::get('all_major_patch')),  //conditional on whether timeframe type is equal to major
-    "minor_patch" =>  $global->convertToFilter(Session::get('all_minor_patch')),  //conditional on whether timeframe type is equal to minor
-    "game_type" => array(
-        [
-          "key" => "Quick Match",
-          "value" => 1
-        ],
-        [
-          "key" => "Unranked Draft",
-          "value" => 2,
-        ],
-        [
-          "key" => "Storm League",
-          "value" => 5,
-        ],
-        [
-          "key" => "Brawl",
-          "value" => -1,
-        ]
-      ),
-    "game_map" => session('maps_by_name_filter_format'),
-    "league_tier" => $global->convertToFilter($global->getLeagueTiersByName()),
-
-    "type" => $global->convertToFilter(array_flip(Session::get('stat_columns'))),
-    "hero_level" => $global->convertToFilter($global->getHerolevels()),
-    "role" => $global->convertToFilter(Session::get('role_names')),
-    "hero" => $global->convertToFilter(Session::get('heroes_by_name')),
+      "timeframe_type" => array(
+          [
+            "key" => "major",
+            "value" => "major"
+          ],
+          [
+            "key" => "minor",
+            "value" => "minor",
+          ]
+        ),
 
 
-    //"timeframe_type" =>  '[{"key": "Major", "value": "major"}, { "key": "Minor", "value": "minor"}]'   /// this is not a multi select
+      "major_patch" =>  $global->convertToFilter(Session::get('all_major_patch')),  //conditional on whether timeframe type is equal to major
+      "minor_patch" =>  $global->convertToFilter(Session::get('all_minor_patch')),  //conditional on whether timeframe type is equal to minor
+      "game_type" => array(
+          [
+            "key" => "Quick Match",
+            "value" => 1
+          ],
+          [
+            "key" => "Unranked Draft",
+            "value" => 2,
+          ],
+          [
+            "key" => "Storm League",
+            "value" => 5,
+          ],
+          [
+            "key" => "Brawl",
+            "value" => -1,
+          ]
+        ),
+      "game_map" => session('maps_by_name_filter_format'),
+      "league_tier" => $global->convertToFilter($global->getLeagueTiersByName()),
 
-    ],
-  ]);
+      "type" => $global->convertToFilter(array_flip(Session::get('stat_columns'))),
+      "hero_level" => $global->convertToFilter($global->getHerolevels()),
+      "role" => $global->convertToFilter(Session::get('role_names')),
+      "hero" => $global->convertToFilter(Session::get('heroes_by_name')),
+
+
+      //"timeframe_type" =>  '[{"key": "Major", "value": "major"}, { "key": "Minor", "value": "minor"}]'   /// this is not a multi select
+
+      ],
+    ]);
   }
 
 
