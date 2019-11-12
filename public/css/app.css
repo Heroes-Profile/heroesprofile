@@ -13527,14 +13527,6 @@ body .popover {
   flex-wrap: wrap;
 }
 
-.multiselect {
-  min-width: 1500px;
-}
-
-.search-filters {
-  width: 100%;
-}
-
 body.darkMode {
   background-color: #0F121D;
   color: white;
@@ -13579,6 +13571,33 @@ th {
 }
 
 .hero-talent {
+  width: 100%;
+}
+
+.search-filter-wrapper {
+  position: relative;
+  box-sizing: border-box;
+}
+
+.filter-menu {
+  position: absolute;
+  /* width: 100%; */
+  box-sizing: border-box;
+  /* margin-left: 1em; */
+  /* margin-right: 1em; */
+  width: 100%;
+  /* top: 1em; */
+  /* bottom: 0;*/
+  color: black;
+}
+
+.filter-menu .single-form-wrapper {
+  margin: 0 0.5rem;
+}
+
+.filter-menu form {
+  padding: 1em;
+  background-color: white;
   width: 100%;
 }
 

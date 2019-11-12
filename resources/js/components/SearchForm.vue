@@ -1,36 +1,30 @@
 <template>
-  <div class="search-filter-wrapper">
+  <div>
 
-  <!--  <b-button id="popover-target-1">
-    Filter
-  </b-button>
-  <b-popover target="popover-target-1" triggers="click" placement="bottomleft"  boundary-padding="5">-->
-
-  <form class="search-form" method="get" @submit.prevent="submitForm" >
-    
-   <div v-for="(field, fieldname, index) in rawfields">
-     <label class="control-label">
-       {{ fieldname | caps }}
-    </label>
-   <!--<select class="form-control" v-model="form[fieldname]" @change="onChange($event)">
-     <option value="">All</option>
-     <option v-for="(name, id, index) in field" v-bind:value="name">{{ name.key }}</option>
-   </select>-->
-     <div>
-
-    <multiselect v-model="form[fieldname]"  track-by="value" label="key" placeholder="All" :multiple="true" :options="field" :searchable="true" :allow-empty="true" @input="onChange($event)" @remove="onChange($event)" ><!--@input="onChange($event)"-->
-    </multiselect>
-
-
+  <b-button v-b-toggle.filterMenu variant="primary">Filter</b-button>
+  <div >
+    <b-collapse class="filter-menu" id="filterMenu" >
+      <form class="search-form" method="get" @submit.prevent="submitForm" >
+        <div v-for="(field, fieldname, index) in rawfields" class="single-form-wrapper">
+          <label class="control-label">
+          {{ fieldname | caps }}
+          </label>
+          <!--<select class="form-control" v-model="form[fieldname]" @change="onChange($event)">
+          <option value="">All</option>
+          <option v-for="(name, id, index) in field" v-bind:value="name">{{ name.key }}</option>
+          </select>-->
+          <div>
+            <multiselect v-model="form[fieldname]"  track-by="value" label="key" placeholder="All" :multiple="true" :options="field" :searchable="true" :allow-empty="true" @input="onChange($event)" @remove="onChange($event)" ><!--@input="onChange($event)"-->
+            </multiselect>
+          </div>
+        </div>
+      </form>
+    <div>
 
   </div>
- </div>
-
-  </form>
-<!--  </b-popover>-->
-
+</b-collapse>
 </div>
-
+</div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -109,6 +103,7 @@ created (){
       }
 
     },
+
 
     sanitizeParams(param){
     //  param = decodeURI(param)

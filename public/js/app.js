@@ -2122,12 +2122,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['rawfields'],
   data: function data() {
@@ -51888,62 +51882,99 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "search-filter-wrapper" }, [
-    _c(
-      "form",
-      {
-        staticClass: "search-form",
-        attrs: { method: "get" },
-        on: {
-          submit: function($event) {
-            $event.preventDefault()
-            return _vm.submitForm($event)
-          }
-        }
-      },
-      _vm._l(_vm.rawfields, function(field, fieldname, index) {
-        return _c("div", [
-          _c("label", { staticClass: "control-label" }, [
-            _vm._v("\n       " + _vm._s(_vm._f("caps")(fieldname)) + "\n    ")
-          ]),
-          _vm._v(" "),
+  return _c(
+    "div",
+    [
+      _c(
+        "b-button",
+        {
+          directives: [
+            {
+              name: "b-toggle",
+              rawName: "v-b-toggle.filterMenu",
+              modifiers: { filterMenu: true }
+            }
+          ],
+          attrs: { variant: "primary" }
+        },
+        [_vm._v("Filter")]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        [
           _c(
-            "div",
+            "b-collapse",
+            { staticClass: "filter-menu", attrs: { id: "filterMenu" } },
             [
-              _c("multiselect", {
-                attrs: {
-                  "track-by": "value",
-                  label: "key",
-                  placeholder: "All",
-                  multiple: true,
-                  options: field,
-                  searchable: true,
-                  "allow-empty": true
-                },
-                on: {
-                  input: function($event) {
-                    return _vm.onChange($event)
-                  },
-                  remove: function($event) {
-                    return _vm.onChange($event)
+              _c(
+                "form",
+                {
+                  staticClass: "search-form",
+                  attrs: { method: "get" },
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      return _vm.submitForm($event)
+                    }
                   }
                 },
-                model: {
-                  value: _vm.form[fieldname],
-                  callback: function($$v) {
-                    _vm.$set(_vm.form, fieldname, $$v)
-                  },
-                  expression: "form[fieldname]"
-                }
-              })
-            ],
-            1
+                _vm._l(_vm.rawfields, function(field, fieldname, index) {
+                  return _c("div", { staticClass: "single-form-wrapper" }, [
+                    _c("label", { staticClass: "control-label" }, [
+                      _vm._v(
+                        "\n          " +
+                          _vm._s(_vm._f("caps")(fieldname)) +
+                          "\n          "
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      [
+                        _c("multiselect", {
+                          attrs: {
+                            "track-by": "value",
+                            label: "key",
+                            placeholder: "All",
+                            multiple: true,
+                            options: field,
+                            searchable: true,
+                            "allow-empty": true
+                          },
+                          on: {
+                            input: function($event) {
+                              return _vm.onChange($event)
+                            },
+                            remove: function($event) {
+                              return _vm.onChange($event)
+                            }
+                          },
+                          model: {
+                            value: _vm.form[fieldname],
+                            callback: function($$v) {
+                              _vm.$set(_vm.form, fieldname, $$v)
+                            },
+                            expression: "form[fieldname]"
+                          }
+                        })
+                      ],
+                      1
+                    )
+                  ])
+                }),
+                0
+              ),
+              _vm._v(" "),
+              _c("div")
+            ]
           )
-        ])
-      }),
-      0
-    )
-  ])
+        ],
+        1
+      )
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true

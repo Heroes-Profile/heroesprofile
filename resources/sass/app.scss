@@ -127,8 +127,8 @@ body .popover{ width:100%;}
   flex-wrap:wrap;
 }
 
-.multiselect{min-width:1500px;}
-.search-filters{width:100%;}
+
+
 
 body.darkMode{
 
@@ -166,3 +166,32 @@ thead{background-color: $green;}
 
 .loading{display:flex; justify-content: center; text-align:center;}
 .hero-talent{width: 100%;}
+
+
+
+.search-filter-wrapper{
+  position:relative;
+  box-sizing:border-box;
+
+}
+
+
+.filter-menu{
+
+      position: absolute;
+      /* width: 100%; */
+      box-sizing: border-box;
+      /* margin-left: 1em; */
+      /* margin-right: 1em; */
+      //padding: 1em;
+      width: 100%;
+    //  margin: .5em;
+      /* top: 1em; */
+      /* bottom: 0;*/
+      color:black;
+      .single-form-wrapper{margin:0 .5rem;}
+
+form{padding:1em;   background-color: white; width:100%;
+
+}
+}

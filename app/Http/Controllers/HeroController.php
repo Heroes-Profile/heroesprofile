@@ -163,13 +163,13 @@ class HeroController extends Controller
     }
 
     if(isset($request["timeframe"])){
-      $this->timeframe = array($request["timeframe"]);
+      $this->timeframe = explode(',', $request["timeframe"]);
     }else{
       $this->timeframe = array($this->session_data["major_patch"]);
     }
 
     if(isset($request["game_type"]) && $request["game_type"] != ""){
-      $this->game_type = array($request["game_type"]);
+      $this->game_type = explode(',', $request["game_type"]);
     }else{
       $this->game_type = array($this->session_data["default_game_mode_id"]);
     }
@@ -188,7 +188,7 @@ class HeroController extends Controller
     }
 
     if(isset($request["hero_level"]) && $request["hero_level"] != ""){
-      $this->hero_level = array($request["hero_level"]);
+      $this->hero_level = explode(',', $request["hero_level"]);
     }
 
     if(isset($request["hero"]) && $request["hero"] != ""){
@@ -460,30 +460,30 @@ class HeroController extends Controller
     }
 
     if(isset($request["timeframe"])){
-      $this->timeframe = array($request["timeframe"]);
+      $this->timeframe = explode(',', $request["timeframe"]);
     }else{
       $this->timeframe = array($this->session_data["major_patch"]);
     }
 
     if(isset($request["game_type"]) && $request["game_type"] != ""){
-      $this->game_type = array($request["game_type"]);
+      $this->game_type = explode(',', $request["game_type"]);
     }else{
       $this->game_type = array($this->session_data["default_game_mode_id"]);
     }
 
     if(isset($request["league_tier"]) && $request["league_tier"] != ""){
-      $this->league_tier = array($request["league_tier"]);
+      $this->league_tier = explode(',', $request["league_tier"]);
     }
 
     if(isset($request["game_map"]) && $request["game_map"] != ""){
-      $this->game_map =  array($request["game_map"]);
+      $this->game_map =  explode(',', $request["game_map"]);
       for($i = 0; $i < count($this->game_map); $i++){
         $this->game_map[$i] = $maps[$this->game_map[$i]];
       }
     }
 
     if(isset($request["hero_level"]) && $request["hero_level"] != ""){
-      $this->hero_level = array($request["hero_level"]);
+      $this->hero_level = explode(',', $request["hero_level"]);
     }
 
     if(isset($request["hero"]) && $request["hero"] != ""){
@@ -636,30 +636,30 @@ class HeroController extends Controller
     }
 
     if(isset($request["timeframe"])){
-      $this->timeframe = array($request["timeframe"]);
+      $this->timeframe = explode(',', $request["timeframe"]);
     }else{
       $this->timeframe = array($this->session_data["major_patch"]);
     }
 
     if(isset($request["game_type"]) && $request["game_type"] != ""){
-      $this->game_type = array($request["game_type"]);
+      $this->game_type = explode(',', $request["game_type"]);
     }else{
       $this->game_type = array($this->session_data["default_game_mode_id"]);
     }
 
     if(isset($request["league_tier"]) && $request["league_tier"] != ""){
-      $this->league_tier = array($request["league_tier"]);
+      $this->league_tier =explode(',', $request["league_tier"]);
     }
 
     if(isset($request["game_map"]) && $request["game_map"] != ""){
-      $this->game_map =  array($request["game_map"]);
+      $this->game_map =  explode(',', $request["game_map"]);
       for($i = 0; $i < count($this->game_map); $i++){
         $this->game_map[$i] = $maps[$this->game_map[$i]];
       }
     }
 
     if(isset($request["hero_level"]) && $request["hero_level"] != ""){
-      $this->hero_level = array($request["hero_level"]);
+      $this->hero_level = explode(',', $request["hero_level"]);
     }
 
     if(isset($request["hero"]) && $request["hero"] != ""){
