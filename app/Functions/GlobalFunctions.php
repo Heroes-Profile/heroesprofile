@@ -3,6 +3,7 @@ namespace App\Functions;
 use Illuminate\Support\Facades\DB;
 use App\LeagueTier;
 use App\SeasonDate;
+use App\GameType;
 
 use DateTime;
 use Session;
@@ -48,7 +49,7 @@ class GlobalFunctions
     }
 
 
-    $maps = DB::table('heroesprofile.maps')->select('map_id', 'name')->get();
+    $maps = DB::table('heroesprofile.maps')->select('map_id', 'name')->orderBy('name', 'ASC')->get();
     $maps = json_decode(json_encode($maps),true);
 
     $return_data = array();
@@ -344,7 +345,7 @@ class GlobalFunctions
   */
 
   public function getLeagueTiersByName(){
-    $tiers = DB::table('heroesprofile.league_tiers')->select('name', 'tier_id')->where('name', '<>', 'all')->get();
+    $tiers = DB::table('heroesprofile.league_tiers')->select('name', 'tier_id')->where('name', '<>', 'all')->orderBy('tier_id', 'DESC')->get();
     $tiers = json_decode(json_encode($tiers), true);
     $returnData = array();
 
@@ -419,6 +420,36 @@ public function getLeagueTiers(){
     return LeagueTier::where('name', '<>', 'all')->get();
   }
 
+
+  /*
+  |--------------------------------------------------------------------------
+  | getGameTypesBy
+  |--------------------------------------------------------------------------
+  |
+  | This function returns the game types by name or type_id
+  |
+  */
+
+  public function getGameTypesBy($key_value){
+    switch ($key_value) {
+        case "name":
+            $value = "type_id";
+            break;
+        case "type_id":
+            $value = "name";
+            break;
+    }
+
+    $game_types = GameType::all();
+    $game_types = json_decode(json_encode($game_types),true);
+    $return_data = array();
+    for($i = 0; $i < count($game_types); $i++){
+      $return_data[$game_types[$i][$key_value]] = $game_types[$i][$value];
+    }
+
+    return $return_data;
+  }
+
   /*
   |--------------------------------------------------------------------------
   | getSeasonDates
@@ -443,6 +474,9 @@ public function getLeagueTiers(){
     }
     return $return_data;
   }
+
+
+
 
   /*
   |--------------------------------------------------------------------------

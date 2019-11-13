@@ -170,12 +170,23 @@ class HeroController extends Controller
 
     if(isset($request["game_type"]) && $request["game_type"] != ""){
       $this->game_type = explode(',', $request["game_type"]);
+
+      for($i = 0; $i < count($this->game_type); $i++){
+        $this->game_type[$i] = $this->session_data["game_types_by_name"][$this->game_type[$i]];
+
+      }
+
+
     }else{
       $this->game_type = array($this->session_data["default_game_mode_id"]);
     }
 
     if(isset($request["league_tier"]) && $request["league_tier"] != ""){
       $this->league_tier =  explode(',', $request["league_tier"]);
+      for($i = 0; $i < count($this->league_tier); $i++){
+        $this->league_tier[$i] = $this->session_data["league_tiers_by_name"][$this->league_tier[$i]];
+
+      }
     }
 
     if(isset($request["game_map"]) && $request["game_map"] != ""){
@@ -192,7 +203,7 @@ class HeroController extends Controller
     }
 
     if(isset($request["hero"]) && $request["hero"] != ""){
-      $this->hero = $this->session_data['heroes_by_name'][$request["hero"]];
+      $this->hero = $request["hero"];
     }
 
     if(isset($request["stat"]) && $request["stat"] != ""){
@@ -237,10 +248,6 @@ class HeroController extends Controller
       $query->whereIn('hero_level', $this->hero_level);
     }
 
-    if($this->hero != ""){
-      $query->whereIn('hero', $this->hero);
-    }
-
     $query->join('heroes', 'heroes.id', '=', 'global_hero_stats.hero');
     if($this->stat != ""){
       $query->select('heroes.name', 'global_hero_stats.win_loss', DB::raw('SUM(games_played) as games_played'), DB::raw('SUM(' . $this->stat . ') as total_' . $this->stat ));
@@ -260,11 +267,6 @@ class HeroController extends Controller
 
     $total_games = 0;
     for($i = 0; $i < count($data); $i++){
-      if($this->role != ""){
-        if($roles[$data[$i]["name"]] != $this->role){
-          continue;
-        }
-      }
       if($prev_name != "" && $prev_name != $data[$i]["name"]){
         $counter++;
       }
@@ -290,6 +292,8 @@ class HeroController extends Controller
       $prev_name = $data[$i]["name"];
       $total_games += $data[$i]["games_played"];
     }
+
+
 
 
     $query = DB::table('heroesprofile.global_hero_stats_bans');
@@ -323,11 +327,6 @@ class HeroController extends Controller
 
     if(count($this->hero_level) != 0){
       $query->whereIn('hero_level', $this->hero_level);
-    }
-
-
-    if($this->hero != ""){
-      $query->whereIn('hero', $this->hero);
     }
 
     $query->join('heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')
@@ -372,6 +371,30 @@ class HeroController extends Controller
         $return_data[$i]["popularity"] = round((($return_data[$i]["bans"] + $return_data[$i]["games_played"]) / ($total_games / 10)) * 100, 2);
 
       }
+    }
+    if($this->role != ""){
+      $new_return_data = array();
+      $new_data_counter = 0;
+      for($i = 0; $i < count($return_data); $i++){
+        if($this->session_data["roles_by_name"][$data[$i]["name"]] == $this->role){
+          $new_return_data[$new_data_counter] = $return_data[$i];
+          $new_data_counter++;
+        }
+      }
+      $return_data = $new_return_data;
+    }
+
+
+    if($this->hero != ""){
+      $new_return_data = array();
+      $new_data_counter = 0;
+      for($i = 0; $i < count($return_data); $i++){
+        if($data[$i]["name"] == $this->hero){
+          $new_return_data[$new_data_counter] = $return_data[$i];
+          $new_data_counter++;
+        }
+      }
+      $return_data = $new_return_data;
     }
 
     return $return_data;

@@ -92,12 +92,20 @@ class SessionMiddleware
         session(['league_tiers' => $this->setLeagueTierSession()]);
       }
 
+      if (!$request->session()->has('league_tiers_by_name')) {
+        session(['league_tiers_by_name' => $this->setLeagueTierBySession()]);
+      }
+
       if (!$request->session()->has('season_dates')) {
         session(['season_dates' => $this->setSeasonDatesSession()]);
       }
 
       if (!$request->session()->has('leagues_breakdowns')) {
         session(['leagues_breakdowns' => $this->setLeagueBreakdownsSession()]);
+      }
+
+      if (!$request->session()->has('game_types_by_name')) {
+        session(['game_types_by_name' => $this->setGameTypesBySession("name")]);
       }
 
       return $next($request);
@@ -173,4 +181,15 @@ class SessionMiddleware
     private function setLeagueBreakdownsSession(){
       return \GlobalFunctions::instance()->getLeagueTierBreakdowns();
     }
+
+    private function setGameTypesBySession($by){
+      return \GlobalFunctions::instance()->getGameTypesBy($by);
+    }
+    private function setLeagueTierBySession(){
+      return \GlobalFunctions::instance()->getLeagueTiersByName();
+    }
+
+
+
+
 }
