@@ -41,7 +41,11 @@ print_r(json_encode($data));
   print_r(json_encode($player_map_stats, true));
   */
 
+/*
   $latest_played = $player_instance->getLatestPlayed(5);
   print_r(json_encode($latest_played, true));
+*/
+$player_instance->getAllReplaysFull();
+
 
  ?>

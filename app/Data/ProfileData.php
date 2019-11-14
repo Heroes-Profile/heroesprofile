@@ -14,6 +14,7 @@ class ProfileData
   private $region;
 
   private $player_data;
+  private $full_data;
   private $player_data_mmr_sorted;
 
   private $mmr_data;
@@ -36,6 +37,7 @@ class ProfileData
     $query = DB::table('heroesprofile_cache.player_data');
     $query->where('region', $this->region);
     $query->where('blizz_id', $this->blizz_id);
+    $query->select('data');
     $cache_data = $query->get();
     $cache_data = json_decode(json_encode($cache_data),true);
 
@@ -99,14 +101,18 @@ class ProfileData
 
     }
 
-
     $data = json_encode($this->player_data, true);
 
+
     if($found == "true"){
+
       DB::statement("INSERT INTO heroesprofile_cache.player_data " .
       "(region, blizz_id, battletag, data, updated_at) VALUES ($this->region, $this->blizz_id, 'Zemill#1940','" . $data . "', '" . date('Y-m-d H:i:s') . "')" .
       " ON DUPLICATE KEY UPDATE data = VALUES(data), updated_at = VALUES(updated_at)");
+
     }
+
+
 
     $this->getPlayerMMRData();
     return $this->player_data;
@@ -697,5 +703,22 @@ class ProfileData
   }
   public function getLatestPlayed($count_return){
      return array_slice($this->player_data, 0, $count_return, true);
+  }
+
+  public function getAllReplaysFull(){
+    $replayIDs = array_keys($this->player_data);
+
+    $query = DB::table('heroesprofile.replay');
+    $query->join('heroesprofile.player', 'heroesprofile.player.replayID', '=', 'heroesprofile.replay.replayID');
+    $query->whereIn('replay.replayID', $replayIDs);
+    $query->select('replay.region', 'replay.game_type', 'replay.game_date', 'replay.game_map', 'player.blizz_id', 'player.hero', 'player.team', 'player.winner');
+    $data = $query->get();
+    $this->full_data = $data;
+
+    $data_full = json_encode($this->full_data, true);
+
+    DB::statement("INSERT INTO heroesprofile_cache.player_data " .
+    "(region, blizz_id, battletag, full_data, updated_at) VALUES ($this->region, $this->blizz_id, 'Zemill#1940','" . $data_full . "', '" . date('Y-m-d H:i:s') . "')" .
+    " ON DUPLICATE KEY UPDATE full_data = VALUES(full_data), updated_at = VALUES(updated_at)");
   }
 }
