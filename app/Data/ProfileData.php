@@ -31,8 +31,6 @@ class ProfileData
 
   }
 
-
-
   public function getPlayerData(){
     $query = DB::table('heroesprofile_cache.player_data');
     $query->where('region', $this->region);
@@ -45,13 +43,16 @@ class ProfileData
     if(count($cache_data) > 0){
       if($cache_data[0]["data"] == "null"){
         $this->grabAllReplays();
+        $this->full_data = $this->getAllReplaysFull(array_keys($this->player_data));
         $found = "true";
       }else{
         $this->player_data = json_decode($cache_data[0]["data"], true);
+
         $found = $this->checkForNewReplays();
       }
     }else{
       $this->grabAllReplays();
+      $this->full_data = $this->getAllReplaysFull(array_keys($this->player_data));
       $found = "true";
     }
 
@@ -102,6 +103,7 @@ class ProfileData
     }
 
     $data = json_encode($this->player_data, true);
+    $data_full = json_encode($this->full_data, true);
 
 
     if($found == "true"){
@@ -109,6 +111,12 @@ class ProfileData
       DB::statement("INSERT INTO heroesprofile_cache.player_data " .
       "(region, blizz_id, battletag, data, updated_at) VALUES ($this->region, $this->blizz_id, 'Zemill#1940','" . $data . "', '" . date('Y-m-d H:i:s') . "')" .
       " ON DUPLICATE KEY UPDATE data = VALUES(data), updated_at = VALUES(updated_at)");
+
+
+
+      DB::statement("INSERT INTO heroesprofile_cache.player_data " .
+      "(region, blizz_id, battletag, full_data, updated_at) VALUES ($this->region, $this->blizz_id, 'Zemill#1940','" . $data_full . "', '" . date('Y-m-d H:i:s') . "')" .
+      " ON DUPLICATE KEY UPDATE full_data = VALUES(full_data), updated_at = VALUES(updated_at)");
 
     }
 
@@ -151,6 +159,7 @@ class ProfileData
     $returnData = array();
     for($i = 0; $i < count($this->player_data); $i++){
       $this->player_data[$i]["role"] = $roles_by_name[$heroes_by_id[$this->player_data[$i]["hero"]]];
+      $this->player_data[$i]["season"] = \GlobalFunctions::instance()->getSeason($this->player_data[$i]["game_date"]);
       $returnData[$this->player_data[$i]["replayID"]] = $this->player_data[$i];
     }
     $this->player_data = $returnData;
@@ -192,17 +201,24 @@ class ProfileData
 
     $new_data = json_decode(json_encode($new_data),true);
 
-    $returnData = array();
-    for($i = 0; $i < count($new_data); $i++){
-      $this->player_data[$i]["role"] = $roles_by_name[$heroes_by_id[$this->player_data[$i]["hero"]]];
-      $returnData[$new_data[$i]["replayID"]] = $new_data[$i];
-    }
+
     $found = "false";
+    print_r($new_data);
+    /*
     if(count($new_data) != 0){
+      $returnData = array();
+      for($i = 0; $i < count($new_data); $i++){
+        $this->player_data[$i]["role"] = $roles_by_name[$heroes_by_id[$this->player_data[$i]["hero"]]];
+        $this->player_data[$i]["season"] = \GlobalFunctions::instance()->getSeason($new_data[$i]["game_date"]);
+        $returnData[$new_data[$i]["replayID"]] = $new_data[$i];
+      }
+
       $this->player_data = $returnData + $this->player_data;
+      $this->full_data = $this->getAllReplaysFull(array_keys($returnData)) + $this->full_data;
       $found = "true";
     }
     return $found;
+    */
   }
 
   public function getPlayerSummaryStats($game_type, $season){
@@ -701,24 +717,247 @@ class ProfileData
       5 => $sl_data,
     );
   }
+
   public function getLatestPlayed($count_return){
      return array_slice($this->player_data, 0, $count_return, true);
   }
 
-  public function getAllReplaysFull(){
-    $replayIDs = array_keys($this->player_data);
-
+  public function getAllReplaysFull($replayIDs){
     $query = DB::table('heroesprofile.replay');
     $query->join('heroesprofile.player', 'heroesprofile.player.replayID', '=', 'heroesprofile.replay.replayID');
+    $query->join('heroesprofile.battletags', 'heroesprofile.battletags.player_id', '=', 'heroesprofile.player.battletag');
     $query->whereIn('replay.replayID', $replayIDs);
-    $query->select('replay.region', 'replay.game_type', 'replay.game_date', 'replay.game_map', 'player.blizz_id', 'player.hero', 'player.team', 'player.winner');
+    $query->select('replay.replayID', 'replay.region', 'replay.game_type', 'replay.game_date', 'replay.game_map', 'player.blizz_id', 'battletags.battletag', 'battletags.latest_game', 'player.hero', 'player.team', 'player.winner');
     $data = $query->get();
-    $this->full_data = $data;
+    $data = json_decode(json_encode($data),true);
 
-    $data_full = json_encode($this->full_data, true);
+    $returnData = array();
 
-    DB::statement("INSERT INTO heroesprofile_cache.player_data " .
-    "(region, blizz_id, battletag, full_data, updated_at) VALUES ($this->region, $this->blizz_id, 'Zemill#1940','" . $data_full . "', '" . date('Y-m-d H:i:s') . "')" .
-    " ON DUPLICATE KEY UPDATE full_data = VALUES(full_data), updated_at = VALUES(updated_at)");
+    $counter = 0;
+    $prevReplayID = 0;
+    for($i = 0; $i < count($data); $i++){
+      if($prevReplayID != $data[$i]["replayID"]){
+        $counter = 0;
+      }
+      $returnData[$data[$i]["replayID"]][$counter] = $data[$i];
+      $counter++;
+      $prevReplayID = $data[$i]["replayID"];
+    }
+
+    return $returnData;
+  }
+
+  public function getFriendAndFoeData($game_type, $season, $game_map, $hero){
+
+    $query = DB::table('heroesprofile_cache.player_data');
+    $query->where('region', $this->region);
+    $query->where('blizz_id', $this->blizz_id);
+    $query->select('full_data');
+    $cache_data = $query->get();
+    $cache_data = json_decode(json_encode($cache_data),true);
+
+    $this->full_data = json_decode($cache_data[0]["full_data"], true);
+    $replayIDs = array();
+    $counter = 0;
+    foreach ($this->player_data as $replayID => $data){
+      $keep = TRUE;
+      if($game_type != ""){
+        if($data["game_type"] != $game_type){
+          $keep = FALSE;
+        }
+      }
+
+      if($season != ""){
+        if($data["season"] != $season){
+          $keep = FALSE;
+        }
+      }
+
+      if($game_map != ""){
+        if($data["game_map"] != $game_map){
+          $keep = FALSE;
+        }
+      }
+
+      if($hero != ""){
+        if($data["hero"] != $hero){
+          $keep = FALSE;
+        }
+      }
+
+      if($keep){
+        $replayIDs[$counter] = $replayID;
+        $counter++;
+      }
+    }
+
+    $allies = array();
+    $enemies = array();
+
+    $battletags = array();
+    $battletags_latest = array();
+    $finalData = array();
+
+    for($i = 0; $i < count($replayIDs); $i++){
+      $data = array();
+      for($j = 0; $j < count($this->full_data[$replayIDs[$i]]); $j++){
+
+        $data[$this->full_data[$replayIDs[$i]][$j]["blizz_id"]]["battletag"] = $this->full_data[$replayIDs[$i]][$j]["battletag"];
+        $data[$this->full_data[$replayIDs[$i]][$j]["blizz_id"]]["blizz_id"] = $this->full_data[$replayIDs[$i]][$j]["blizz_id"];
+        $data[$this->full_data[$replayIDs[$i]][$j]["blizz_id"]]["hero"] = $this->full_data[$replayIDs[$i]][$j]["hero"];
+        $data[$this->full_data[$replayIDs[$i]][$j]["blizz_id"]]["team"] = $this->full_data[$replayIDs[$i]][$j]["team"];
+        $data[$this->full_data[$replayIDs[$i]][$j]["blizz_id"]]["winner"] = $this->full_data[$replayIDs[$i]][$j]["winner"];
+
+        if(array_key_exists($this->full_data[$replayIDs[$i]][$j]["blizz_id"], $battletags_latest)){
+          if($battletags_latest[$this->full_data[$replayIDs[$i]][$j]["blizz_id"]] < $this->full_data[$replayIDs[$i]][$j]["latest_game"]){
+            $battletags[$this->full_data[$replayIDs[$i]][$j]["blizz_id"]] = $this->full_data[$replayIDs[$i]][$j]["battletag"];
+          }
+        }else{
+          $battletags_latest[$this->full_data[$replayIDs[$i]][$j]["blizz_id"]] = $this->full_data[$replayIDs[$i]][$j]["latest_game"];
+          $battletags[$this->full_data[$replayIDs[$i]][$j]["blizz_id"]] = $this->full_data[$replayIDs[$i]][$j]["battletag"];
+        }
+      }
+      $finalData[$replayIDs[$i]] = $data;
+
+    }
+
+
+    $allies = array();
+    $enemies = array();
+
+    foreach ($finalData as $replayID => $value){
+      foreach ($value as $blizz_id => $data){
+        //echo $value[$blizz_id]["battletag"];
+        //echo "<br />\n";
+
+        if($blizz_id != $this->blizz_id){
+          if($value[$blizz_id]["team"] == $finalData[$replayID][$this->blizz_id]["team"]){
+            if(array_key_exists($value[$blizz_id]["blizz_id"], $allies)){
+              $allies[$value[$blizz_id]["blizz_id"]]["games_played"]++;
+
+
+
+
+              if(!array_key_exists($value[$blizz_id]["hero"], $allies[$value[$blizz_id]["blizz_id"]]["hero"])){
+                $allies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]] = 0;
+              }
+              $allies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]]++;
+
+
+              if($value[$blizz_id]["winner"] == "1"){
+                $allies[$value[$blizz_id]["blizz_id"]]["wins"]++;
+
+              }else{
+                $allies[$value[$blizz_id]["blizz_id"]]["losses"]++;
+
+              }
+            }else{
+              $allies[$value[$blizz_id]["blizz_id"]]["games_played"] = 1;
+
+
+              if($value[$blizz_id]["winner"] == "1"){
+                $allies[$value[$blizz_id]["blizz_id"]]["wins"] = 1;
+                $allies[$value[$blizz_id]["blizz_id"]]["losses"] = 0;
+
+              }else{
+                $allies[$value[$blizz_id]["blizz_id"]]["losses"] = 1;
+                $allies[$value[$blizz_id]["blizz_id"]]["wins"] = 0;
+              }
+
+
+              $allies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]] = 1;
+
+
+            }
+
+          }else{
+            if(array_key_exists($value[$blizz_id]["blizz_id"], $enemies)){
+              $enemies[$value[$blizz_id]["blizz_id"]]["games_played"]++;
+
+
+
+
+              if(!array_key_exists($value[$blizz_id]["hero"], $enemies[$value[$blizz_id]["blizz_id"]]["hero"])){
+                $enemies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]] = 0;
+              }
+              $enemies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]]++;
+
+
+              if($value[$blizz_id]["winner"] == "1"){
+                $enemies[$value[$blizz_id]["blizz_id"]]["wins"]++;
+
+              }else{
+                $enemies[$value[$blizz_id]["blizz_id"]]["losses"]++;
+
+              }
+            }else{
+              $enemies[$value[$blizz_id]["blizz_id"]]["games_played"] = 1;
+
+
+              if($value[$blizz_id]["winner"] == "1"){
+                $enemies[$value[$blizz_id]["blizz_id"]]["wins"] = 1;
+                $enemies[$value[$blizz_id]["blizz_id"]]["losses"] = 0;
+
+              }else{
+                $enemies[$value[$blizz_id]["blizz_id"]]["losses"] = 1;
+                $enemies[$value[$blizz_id]["blizz_id"]]["wins"] = 0;
+              }
+
+
+              $enemies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]] = 1;
+
+
+            }
+          }
+        }
+
+
+      }
+
+    }
+    arsort($allies);
+    arsort($enemies);
+    $return_allies = array();
+    $return_enemies = array();
+
+    $a_i = 0;
+    $e_i = 0;
+
+    foreach ($allies as $key => $value){
+      if($a_i == 50){break;}
+      $return_allies[$key] = $value;
+      $a_i++;
+    }
+
+    foreach ($enemies as $key => $value){
+      if($e_i == 50){break;}
+      $return_enemies[$key] = $value;
+      $e_i++;
+    }
+
+    return (array($return_allies, $return_enemies, $battletags));
+  }
+
+  public function getHeroAllData($role, $game_map, $hero, $game_type, $minimum_games){
+
+    $return_data = array();
+    foreach ($this->player_data as $replayID => $data){
+      if(array_key_exists($data["hero"], $return_data)){
+        if($data["winner"] == 1){
+          $return_data[$data["hero"]]["wins"]++;
+        }else{
+          $return_data[$data["hero"]]["losses"]++;
+        }
+
+        $return_data[$data["hero"]]["games_played"]++;
+
+      }else{
+        $return_data[$data["hero"]]["wins"] = 0;
+        $return_data[$data["hero"]]["losses"] = 0;
+
+      }
+
+      $return_data[$data["hero"]]["games_played"]++;
+    }
   }
 }

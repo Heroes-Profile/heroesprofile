@@ -25,8 +25,8 @@ print_r(json_encode($data));
 //$league_tiers = \GlobalFunctions::instance()->getLeagueTiers();
 //print_r(json_encode($league_tiers, true));
 
-  $player_instance = \ProfileData::instance(67280, 1);
-  $data = $player_instance->getPlayerData();
+  //$player_instance = \ProfileData::instance(67280, 1);
+  //$data = $player_instance->getPlayerData();
     /*
   $player_stats = $player_instance->getPlayerSummaryStats("", 13);
   $player_hero_stats = $player_instance->getPlayerHeroMapSummary("", "", "hero");
@@ -45,7 +45,15 @@ print_r(json_encode($data));
   $latest_played = $player_instance->getLatestPlayed(5);
   print_r(json_encode($latest_played, true));
 */
-$player_instance->getAllReplaysFull();
+//$player_instance->getAllReplaysFull();
+
+$player_instance = \ProfileData::instance(67280, 1);
+$data = $player_instance->getPlayerData();
+
+//$friend_foe = $player_instance->getFriendAndFoeData("", "", "", "");
+
+//$hero_all = $player_instance->getHeroAllData("", "", "", "", "");
 
 
+//print_r(json_encode($hero_all, true));
  ?>

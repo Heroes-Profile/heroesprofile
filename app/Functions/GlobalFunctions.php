@@ -610,6 +610,27 @@ public function getLeagueTiers(){
 
   /*
   |--------------------------------------------------------------------------
+  | getSeason
+  |--------------------------------------------------------------------------
+  |
+  | This function returns the season for a given date
+  |
+  */
+
+  public function getSeason($game_date){
+    $season_dates = Session::get('season_dates');
+    $season = 0;
+    foreach ($season_dates as $s => $data){
+      if($game_date >= $data["start_date"] && $game_date <= $data["end_date"]){
+        $season = $s;
+        break;
+      }
+    }
+    return $season;
+  }
+
+  /*
+  |--------------------------------------------------------------------------
   | sortKeyValueArray
   |--------------------------------------------------------------------------
   |
