@@ -53,7 +53,7 @@ $data = $player_instance->getPlayerData();
 //$friend_foe = $player_instance->getFriendAndFoeData("", "", "", "");
 
 //$hero_all = $player_instance->getHeroAllData("", "", "", "", "");
-$hero_mmr_all = $player_instance->getHeroAllMMRData("", "", "", "", "");
+//$hero_mmr_all = $player_instance->getHeroAllMMRData("", "", "", "", "");
 
 
 print_r(json_encode($hero_mmr_all, true));
