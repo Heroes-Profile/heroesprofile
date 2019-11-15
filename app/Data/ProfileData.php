@@ -123,8 +123,8 @@ class ProfileData
 
 
     $this->getPlayerMMRData();
-    return $this->player_data;
 
+    return $this->player_data;
   }
 
   private function grabAllReplays(){
@@ -157,10 +157,10 @@ class ProfileData
     $this->player_data = json_decode(json_encode($this->player_data),true);
 
     $returnData = array();
-    for($i = 0; $i < count($this->player_data); $i++){
-      $this->player_data[$i]["role"] = $roles_by_name[$heroes_by_id[$this->player_data[$i]["hero"]]];
-      $this->player_data[$i]["season"] = \GlobalFunctions::instance()->getSeason($this->player_data[$i]["game_date"]);
-      $returnData[$this->player_data[$i]["replayID"]] = $this->player_data[$i];
+    foreach ($this->player_data as $replayID => $data){
+      $this->player_data[$replayID]["role"] = $roles_by_name[$heroes_by_id[$this->player_data[$replayID]["hero"]]];
+      $this->player_data[$replayID]["season"] = \GlobalFunctions::instance()->getSeason($this->player_data[$replayID]["game_date"]);
+      $returnData[$replayID] = $this->player_data[$replayID];
     }
     $this->player_data = $returnData;
   }
@@ -203,22 +203,32 @@ class ProfileData
 
 
     $found = "false";
-    print_r($new_data);
-    /*
+
     if(count($new_data) != 0){
       $returnData = array();
       for($i = 0; $i < count($new_data); $i++){
-        $this->player_data[$i]["role"] = $roles_by_name[$heroes_by_id[$this->player_data[$i]["hero"]]];
-        $this->player_data[$i]["season"] = \GlobalFunctions::instance()->getSeason($new_data[$i]["game_date"]);
+        $new_data[$i]["role"] = $roles_by_name[$heroes_by_id[$new_data[$i]["hero"]]];
+        $new_data[$i]["season"] = \GlobalFunctions::instance()->getSeason($new_data[$i]["game_date"]);
         $returnData[$new_data[$i]["replayID"]] = $new_data[$i];
       }
 
       $this->player_data = $returnData + $this->player_data;
+
+      $query = DB::table('heroesprofile_cache.player_data');
+      $query->where('region', $this->region);
+      $query->where('blizz_id', $this->blizz_id);
+      $query->select('full_data');
+      $cache_data = $query->get();
+      $cache_data = json_decode(json_encode($cache_data),true);
+
+      $this->full_data = json_decode($cache_data[0]["full_data"], true);
       $this->full_data = $this->getAllReplaysFull(array_keys($returnData)) + $this->full_data;
+
       $found = "true";
     }
+
     return $found;
-    */
+
   }
 
   public function getPlayerSummaryStats($game_type, $season){
@@ -748,15 +758,6 @@ class ProfileData
   }
 
   public function getFriendAndFoeData($game_type, $season, $game_map, $hero){
-
-    $query = DB::table('heroesprofile_cache.player_data');
-    $query->where('region', $this->region);
-    $query->where('blizz_id', $this->blizz_id);
-    $query->select('full_data');
-    $cache_data = $query->get();
-    $cache_data = json_decode(json_encode($cache_data),true);
-
-    $this->full_data = json_decode($cache_data[0]["full_data"], true);
     $replayIDs = array();
     $counter = 0;
     foreach ($this->player_data as $replayID => $data){
@@ -939,7 +940,6 @@ class ProfileData
   }
 
   public function getHeroAllData($role, $game_map, $hero, $game_type, $minimum_games){
-
     $return_data = array();
     foreach ($this->player_data as $replayID => $data){
       if(array_key_exists($data["hero"], $return_data)){
@@ -954,10 +954,41 @@ class ProfileData
       }else{
         $return_data[$data["hero"]]["wins"] = 0;
         $return_data[$data["hero"]]["losses"] = 0;
+        $return_data[$data["hero"]]["games_played"] = 0;
 
       }
 
       $return_data[$data["hero"]]["games_played"]++;
     }
+    return $return_data;
+
+  }
+
+  public function getHeroAllMMRData($role, $game_map, $hero, $game_type, $minimum_games){
+    $hero_ids = array_keys(Session::get('heroes_by_id'));
+    $query = DB::table('heroesprofile.master_mmr_data');
+    $query->whereIn('type_value', $hero_ids);
+    $query->where(function($q) {
+            $q->where('game_type', 1)
+            ->orWhere('game_type', 2)
+            ->orWhere('game_type', 3)
+            ->orWhere('game_type', 4)
+            ->orWhere('game_type', 5);
+        });
+    $query->where('blizz_id', $this->blizz_id);
+    $query->where('region', $this->region);
+    $mmr_data = $query->get();
+    $mmr_data = json_decode(json_encode($mmr_data),true);
+
+    $return_data = array();
+    for($i = 0; $i < count($mmr_data); $i++){
+      $return_data[$mmr_data[$i]["type_value"]][$mmr_data[$i]["game_type"]]["conservative_rating"] = $mmr_data[$i]["conservative_rating"];
+      $return_data[$mmr_data[$i]["type_value"]][$mmr_data[$i]["game_type"]]["mean"] = $mmr_data[$i]["mean"];
+      $return_data[$mmr_data[$i]["type_value"]][$mmr_data[$i]["game_type"]]["standard_deviation"] = $mmr_data[$i]["standard_deviation"];
+      $return_data[$mmr_data[$i]["type_value"]][$mmr_data[$i]["game_type"]]["win"] = $mmr_data[$i]["win"];
+      $return_data[$mmr_data[$i]["type_value"]][$mmr_data[$i]["game_type"]]["loss"] = $mmr_data[$i]["loss"];
+
+    }
+    return collect($return_data);
   }
 }
