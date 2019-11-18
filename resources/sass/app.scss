@@ -163,7 +163,7 @@ thead{background-color: $green;}
 }
 
 .table td,th{ vertical-align:middle; text-align: center;}
-
+.table .card{background-color:transparent;}
 .loading{display:flex; justify-content: center; text-align:center;}
 .hero-talent{width: 100%;}
 
@@ -189,9 +189,19 @@ thead{background-color: $green;}
       /* top: 1em; */
       /* bottom: 0;*/
       color:black;
+      z-index:2;
       .single-form-wrapper{margin:0 .5rem;}
 
-form{padding:1em;   background-color: white; width:100%;
+.search-form{padding:1em;   background-color: white; width:100%;
 
 }
+}
+
+
+.checkbox-image{
+ height:40px;
+ width:40px;
+  overflow:hidden;
+  img{height:40px;}
+
 }

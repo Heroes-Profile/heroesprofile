@@ -31,6 +31,7 @@ class GlobalFunctions
       $data = array();
       $data["key"] = $key;
       $data["value"] = $value;
+      $data["text"] = $key;
       $return_data[$counter] = $data;
       $counter++;
     }

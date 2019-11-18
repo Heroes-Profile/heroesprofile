@@ -1,24 +1,57 @@
 <template>
   <div>
 
-  <b-button v-b-toggle.filterMenu variant="primary">Filter</b-button>
-  <div >
+
+<!-- Loop through the primary fields
+components for each field type
+
+
+checkbox:
+* icon
+* alt-title
+{{ primaryfields }}
+{{ secondaryfields }}
+-->
+
+
+<div class="primary-filters">
+  <div class="filter-group" v-for="field in primaryfields" :key="field.key" >
+    <b-form-group :label="field.name" v-if="field.type == 'radio'">
+        <b-form-radio v-model="form[field.key]" v-for="radio in field.options" :key="radio.key" name="some-radios" :value="radio.value" @input="onChange(field.key, $event), updateConditional(field.key, $event)">{{ radio.key }}</b-form-radio>
+    </b-form-group>
+
+    <b-form-group :label="field.name" v-if="field.type == 'multiselect' && conditionals[field.conditional_field] && conditionals[field.conditional_field] == field.conditional_value">
+       <multiselect v-model="form[field.key]"  track-by="value" label="key" placeholder="All" :multiple="true" :options="field.options" :searchable="true" :allow-empty="true" @input="onChange(field.key, $event)" @remove="onChange($event)" ><!--@input="onChange($event)"-->
+       </multiselect>
+    </b-form-group>
+    <b-form-group :label="field.name" v-if="field.type == 'checkbox'">
+      <b-form-checkbox-group v-model="form[field.key]"  :name="field.key" @input="onChange(field.key, $event)" buttons >
+        <b-form-checkbox v-for="option in field.options" :value="option.value" :key="option.key">{{ option.text }} <div class="checkbox-image" v-if="option.icon.length >0"><img :src="option.icon"/></div> </b-form-checkbox>
+      </b-form-checkbox-group>
+        <!--<b-form-checkbox v-for="checkbox in field.options" :key="checkbox.key" v-model="form[field.key]" :label="checkbox.name"  :name="field.key" :value="checkbox.value"  unchecked-value="" @input="onChange($event)">{{ checkbox.key }} </b-form-checkbox>-->
+    </b-form-group>
+  </div>
+</div>
+<b-button v-b-toggle.filterMenu variant="primary">Filter</b-button>
+  <div>
     <b-collapse class="filter-menu" id="filterMenu" >
-      <form class="search-form" method="get" @submit.prevent="submitForm" >
-        <div v-for="(field, fieldname, index) in rawfields" class="single-form-wrapper">
-          <label class="control-label">
-          {{ fieldname | caps }}
-          </label>
-          <!--<select class="form-control" v-model="form[fieldname]" @change="onChange($event)">
-          <option value="">All</option>
-          <option v-for="(name, id, index) in field" v-bind:value="name">{{ name.key }}</option>
-          </select>-->
-          <div>
-            <multiselect v-model="form[fieldname]"  track-by="value" label="key" placeholder="All" :multiple="true" :options="field" :searchable="true" :allow-empty="true" @input="onChange($event)" @remove="onChange($event)" ><!--@input="onChange($event)"-->
-            </multiselect>
-          </div>
+      <div class="search-form" >
+        <div class="filter-group" v-for="field in secondaryfields" :key="field.key" >
+          <b-form-group :label="field.name" v-if="field.type == 'radio'">
+              <b-form-radio v-model="form[field.key]" v-for="radio in field.options" :key="radio.key" name="some-radios" :value="radio.value" @input="onChange(field.key, $event), updateConditional(field.key, $event)">{{ radio.key }}</b-form-radio>
+          </b-form-group>
+          <b-form-group :label="field.name" v-if="field.type == 'multiselect' && conditionals[field.conditional_field] && conditionals[field.conditional_field] == field.conditional_value">
+             <multiselect v-model="form[field.name]"  track-by="value" label="key" placeholder="All" :multiple="true" :options="field.options" :searchable="true" :allow-empty="true" @input="onChange(field.key, $event)" @remove="onChange($event)" ><!--@input="onChange($event)"-->
+             </multiselect>
+          </b-form-group>
+          <b-form-group :label="field.name" v-if="field.type == 'checkbox'">
+            <b-form-checkbox-group v-model="form[field.key]"  :name="field.key" @input="onChange(field.key, $event)" buttons >
+              <b-form-checkbox v-for="option in field.options" :value="option.value" :key="option.key"> <div class="checkbox-image" v-if="option.icon"><img :alt="option.name" :src="option.icon"/></div><span v-else>{{ option.text }}</span> </b-form-checkbox>
+            </b-form-checkbox-group>
+              <!--<b-form-checkbox v-for="checkbox in field.options" :key="checkbox.key" v-model="form[field.key]" :label="checkbox.name"  :name="field.key" :value="checkbox.value"  unchecked-value="" @input="onChange($event)">{{ checkbox.key }} </b-form-checkbox>-->
+          </b-form-group>
         </div>
-      </form>
+      </div>
     <div>
 
   </div>
@@ -30,7 +63,7 @@
 <script type="text/ecmascript-6">
 
 export default {
-  props: ['rawfields'],
+  props: ['rawfields', 'primaryfields', 'secondaryfields'],
     data() {
       return{
         fields: [],
@@ -39,12 +72,14 @@ export default {
         gametype: '',
         key: '',
         form: {},
-        multiselects: {}
+        multiselects: {},
+        conditionals: {},
 
 
       }
     },
 created (){
+
 
 },
   mounted () {
@@ -70,11 +105,44 @@ created (){
     submitForm() {
               //this.fetchData();
           },
-          onChange(event){
+          updateConditional(field, value){
+            if(field != null & value != null){
+              if(this.conditionals[field] != null){
+            this.conditionals[field] = value;
+            console.log('conditionals', this.conditionals);
+          }
+            }
 
+          },
+          onChange(field, event){
+
+            var currentfields= this.form[field];
+
+
+            if(currentfields == ""){
+              this.$router.replace({ query: Object.assign({},this.$route.query, { [field]: undefined }) }).catch(err => {})
+            }
+            else{
+            if(typeof(currentfields) == "object"){
+              var multi = [];
+              for (var object in currentfields){
+                  multi.push(currentfields[object]);
+
+
+              }
+
+              multi = multi.join(',');
+              this.$router.replace({ query: Object.assign({},this.$route.query, { [field]: multi }) }).catch(err => {})
+            }
+            else if(typeof(currentfields) == "string"){
+              this.$router.replace({ query: Object.assign({},this.$route.query, { [field]: currentfields }) }).catch(err => {})
+            }
+          }
+
+/*
            this.multiselects = Object.assign(this.form);
 
-           this.$router.replace({ query: Object.assign({},this.$route.query, {  }) })
+           if (this.$route.query != ""){this.$router.replace({ query: Object.assign({},this.$route.query, {  }) }).catch(err => {})}
             for (var item in this.fields){
 
               var multi = [];
@@ -83,17 +151,33 @@ created (){
               }
               multi = multi.join(',');
               if(multi.length>0){
-                this.$router.replace({ query: Object.assign({},this.$route.query, { [item]: multi }) })
+
+
+                  this.$router.replace({ query: Object.assign({},this.$route.query, { [item]: multi }) }).catch(err => {})
+
               }
               else{
-                this.$router.replace({ query: Object.assign({},this.$route.query, { [item]: undefined }) })
+
+                this.$router.replace({ query: Object.assign({},this.$route.query, { [item]: undefined }) }).catch(err => {})
+
               }
 
             }
-            console.log(this.$route.query);
+*/
 
           },
     fetchData () {
+
+      for (var field in this.primaryfields){
+
+
+          this.conditionals[this.primaryfields[field]['key']] = "";
+          //this.$router.replace({ query: Object.assign({},this.$route.query, { [this.primaryfields[field]['key']]: undefined }) }).catch(err => {})
+      }
+      for (var field in this.secondaryfields){
+        this.conditionals[this.secondaryfields[field]['key']] = "";
+
+      }
 
       this.fields = this.rawfields;
 

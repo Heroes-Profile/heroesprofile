@@ -13564,6 +13564,10 @@ th {
   text-align: center;
 }
 
+.table .card {
+  background-color: transparent;
+}
+
 .loading {
   display: flex;
   justify-content: center;
@@ -13589,15 +13593,28 @@ th {
   /* top: 1em; */
   /* bottom: 0;*/
   color: black;
+  z-index: 2;
 }
 
 .filter-menu .single-form-wrapper {
   margin: 0 0.5rem;
 }
 
-.filter-menu form {
+.filter-menu .search-form {
   padding: 1em;
   background-color: white;
   width: 100%;
 }
 
+.checkbox-image {
+  height: 40px;
+  width: 40px;
+  overflow: hidden;
+}
+
+.checkbox-image img {
+  height: 40px;
+}
+
+
+/*# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiIvY3NzL2FwcC5jc3MiLCJzb3VyY2VSb290IjoiIn0=*/

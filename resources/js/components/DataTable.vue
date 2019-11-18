@@ -68,6 +68,7 @@ export default {
     fetchData () {
       this.loading = true
       if(this.dataurl.length > 0){
+        var self = this;
       axios.get(this.dataurl, {
         params: {
           ...this.$route.query
@@ -88,7 +89,10 @@ export default {
             tf.push({key: "talent_builds"});
             this.tablefields = tf;
             this.loading = false;
-        })
+        }).catch(function(error){
+          self.$router.replace({ query: Object.assign({},self.$route.query, {  }) }).catch(err => {})
+
+        });
        }
        else{
          this.loading = false
