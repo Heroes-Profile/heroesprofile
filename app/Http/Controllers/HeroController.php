@@ -273,8 +273,6 @@ class HeroController extends Controller
         $this->game_type[$i] = $this->session_data["game_types_by_name"][$this->game_type[$i]];
 
       }
-
-
     }else{
       $this->game_type = array($this->session_data["default_game_mode_id"]);
     }
