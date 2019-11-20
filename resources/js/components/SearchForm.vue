@@ -19,7 +19,9 @@ checkbox:
     <b-form-group :label="field.name" v-if="field.type == 'radio'">
         <b-form-radio v-model="form[field.key]" v-for="radio in field.options" :key="radio.key" name="some-radios" :value="radio.value" @input="onChange(field.key, $event), updateConditional(field.key, $event)">{{ radio.key }}</b-form-radio>
     </b-form-group>
-
+{{ field.conditional_field }}
+{{ field.conditional_value }}
+{{ conditionals[field.conditional_field] }}
     <b-form-group :label="field.name" v-if="field.type == 'multiselect' && conditionals[field.conditional_field] && conditionals[field.conditional_field] == field.conditional_value">
        <multiselect v-model="form[field.key]"  track-by="value" label="key" placeholder="All" :multiple="true" :options="field.options" :searchable="true" :allow-empty="true" @input="onChange(field.key, $event)" @remove="onChange($event)" ><!--@input="onChange($event)"-->
        </multiselect>
@@ -37,9 +39,9 @@ checkbox:
     <b-collapse class="filter-menu" id="filterMenu" >
       <div class="search-form" >
         <div class="filter-group" v-for="field in secondaryfields" :key="field.key" >
-          <b-form-group :label="field.name" v-if="field.type == 'radio'">
+        <!--  <b-form-group :label="field.name" v-if="field.type == 'radio'">
               <b-form-radio v-model="form[field.key]" v-for="radio in field.options" :key="radio.key" name="some-radios" :value="radio.value" @input="onChange(field.key, $event), updateConditional(field.key, $event)">{{ radio.key }}</b-form-radio>
-          </b-form-group>
+          </b-form-group>-->
           <b-form-group :label="field.name" v-if="field.type == 'multiselect' && conditionals[field.conditional_field] && conditionals[field.conditional_field] == field.conditional_value">
              <multiselect v-model="form[field.name]"  track-by="value" label="key" placeholder="All" :multiple="true" :options="field.options" :searchable="true" :allow-empty="true" @input="onChange(field.key, $event)" @remove="onChange($event)" ><!--@input="onChange($event)"-->
              </multiselect>
@@ -75,6 +77,29 @@ export default {
         multiselects: {},
         conditionals: {},
 
+        /* Change conditionals to a computed property - */
+        /*conditionals: function() {
+
+          let options = ''
+
+               switch(this.category) {
+
+                   case 'fruits':
+                   options = this.optionsData.fruits
+                   break;
+
+                   case 'vegetables':
+                   options = this.optionsData.vegetables
+                   break;
+
+                   default:
+                   options = this.optionsData.fruits
+               }
+
+               return options
+
+          }*/
+
 
       }
     },
@@ -108,9 +133,8 @@ created (){
           updateConditional(field, value){
             if(field != null & value != null){
               if(this.conditionals[field] != null){
-            this.conditionals[field] = value;
-            console.log('conditionals', this.conditionals);
-          }
+                this.conditionals[field] = value;
+              }
             }
 
           },
