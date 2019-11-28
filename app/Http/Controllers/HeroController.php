@@ -20,7 +20,7 @@ class HeroController extends Controller
   private $game_map =  array();
   private $hero_level = array();
   private $hero = "";
-  private $stat = "";
+  private $stat_type = "";
   private $role = "";
   private $build_type = "Popular";
   private $talent_levels = ["level_one", "level_four", "level_seven", "level_ten", "level_thirteen", "level_sixteen", "level_twenty"];
@@ -260,6 +260,10 @@ class HeroController extends Controller
       $this->timeframe_type = "major";
     }
 
+    if(isset($request["stat_type"])){
+      $this->stat_type = $request["stat_type"];
+    }
+
     if(isset($request["timeframe"])){
       $this->timeframe = explode(',', $request["timeframe"]);
     }else{
@@ -345,8 +349,8 @@ class HeroController extends Controller
     }
 
     $query->join('heroes', 'heroes.id', '=', 'global_hero_stats.hero');
-    if($this->stat != ""){
-      $query->select('heroes.name', 'global_hero_stats.win_loss', DB::raw('SUM(games_played) as games_played'), DB::raw('SUM(' . $this->stat . ') as total_' . $this->stat ));
+    if($this->stat_type != ""){
+      $query->select('heroes.name', 'global_hero_stats.win_loss', DB::raw('SUM(games_played) as games_played'), DB::raw('SUM(' . $this->stat_type . ') as ' . $this->stat_type));
     }else{
       $query->select('heroes.name', 'global_hero_stats.win_loss', DB::raw('SUM(games_played) as games_played'));
     }
@@ -373,6 +377,7 @@ class HeroController extends Controller
       $return_data[$counter]["name"]["short_name"] = $this->session_data["heroes_name_to_short"][$data[$i]["name"]];
 
 
+
       if(!array_key_exists("games_played",$return_data[$counter])){
         $return_data[$counter]["games_played"] = $data[$i]["games_played"];
       }else{
@@ -383,6 +388,16 @@ class HeroController extends Controller
         $return_data[$counter]["wins"] = floatval($data[$i]["games_played"]);
       }else{
         $return_data[$counter]["losses"] = floatval($data[$i]["games_played"]);
+      }
+
+
+
+      if($this->stat_type != ""){
+        if(!array_key_exists($this->stat_type,$return_data[$counter])){
+          $return_data[$counter][$this->stat_type] = $data[$i][$this->stat_type];
+        }else{
+          $return_data[$counter][$this->stat_type] += $data[$i][$this->stat_type];
+        }
       }
 
       $prev_name = $data[$i]["name"];
@@ -437,6 +452,15 @@ class HeroController extends Controller
       $ban_data[$data[$i]["name"]] = $data[$i]["bans"];
     }
 
+    if(count($this->timeframe) == 1 && count($this->game_map) == 0 && count($this->league_tier) == 0 && count($this->hero_level) == 0){
+      if(count($this->game_type) == 1){
+        if($this->game_type[0] != "br"){
+          $change_data = $this->getChangeData();
+        }
+      }else if(count($this->game_type) == 0){
+        $change_data = $this->getChangeData();
+      }
+    }
 
     for($i = 0; $i < count($return_data); $i++){
       if(!array_key_exists("wins", $return_data[$i])){
@@ -465,8 +489,23 @@ class HeroController extends Controller
         $return_data[$i]["bans"] = floatval($ban_data[$return_data[$i]["name"]["hero_name"]]);
         $return_data[$i]["ban_rate"] = round(($return_data[$i]["bans"] / ($total_games / 10)) * 100, 2);
         $return_data[$i]["popularity"] = round((($return_data[$i]["bans"] + $return_data[$i]["games_played"]) / ($total_games / 10)) * 100, 2);
-
       }
+
+
+      if($this->stat_type != ""){
+        if(array_key_exists($this->stat_type, $return_data[$i])){
+          $return_data[$i][$this->stat_type] /= $return_data[$i]["games_played"];
+        }else{
+          $return_data[$i][$this->stat_type] = 0;
+        }
+      }
+
+      if(array_key_exists($return_data[$i]["name"]["hero_name"], $change_data)){
+        $return_data[$i]["change"] = $return_data[$i]["win_rate"] - $change_data[$return_data[$i]["name"]["hero_name"]];
+      }else{
+        $return_data[$i]["change"] = 0;
+      }
+
     }
     if($this->role != ""){
       $new_return_data = array();
@@ -494,6 +533,39 @@ class HeroController extends Controller
     }
 
     return $return_data;
+  }
+  private function getChangeData(){
+    $timeframe = "";
+    if($this->timeframe_type == "major"){
+      $sql = "SELECT DISTINCT(SUBSTRING_INDEX(game_version, '.', 2)) as game_version FROM heroesprofile.season_game_versions where game_version >= 2.43 order by game_version DESC";
+    }else{
+      $sql = "SELECT game_version FROM heroesprofile.season_game_versions where game_version >= 2.43 order by game_version DESC";
+    }
+
+    $patch_data = DB::connection('mysql')->select($sql);
+    $patch_data = json_decode(json_encode($patch_data),true);
+
+
+    $bool = "found";
+    for($i = 0; $i < count($patch_data); $i++){
+      if($bool == "true"){
+        $timeframe = $patch_data[$i]["game_version"];
+        break;
+      }
+      if($patch_data[$i]["game_version"] == $this->timeframe[0]){
+        $bool = "true";
+      }
+    }
+
+    $sql = "SELECT name, win_rate FROM heroesprofile_cache.global_hero_change inner join heroes on heroes.id = heroesprofile_cache.global_hero_change.hero WHERE game_version = " . "\"" . $timeframe . "\"" . " AND game_type = " . $this->game_type[0];
+    $data = DB::connection('mysql')->select($sql);
+    $data = json_decode(json_encode($data),true);
+
+    $return_array = array();
+    for($i = 0; $i < count($data); $i++){
+      $return_array[$data[$i]["name"]] = $data[$i]["win_rate"];
+    }
+    return $return_array;
   }
 
   public function getHeroTalentsTableData(Request $request){
