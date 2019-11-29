@@ -2,6 +2,10 @@
 
 
 
-@section('datatable')
+@section('content')
  <profile-tab-switcher></profile-tab-switcher>
+@endsection
+
+@section('datatable')
+ <summary></summary>
 @endsection

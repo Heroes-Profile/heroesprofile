@@ -9,7 +9,11 @@ import ImagePopup from './components/ImagePopup.vue';
 import Login from './components/Login.vue';
 import Multiselect from 'vue-multiselect';
 import HeroTalentData from './components/HeroTalentData.vue';
-import ProfileTabSwitcher from './components/ProfileTabSwitcher.vue';
+
+//Profile Vue Components
+import TabSwitcher from './components/Profile/TabSwitcher.vue';
+import Summary from './components/Profile/Summary.vue';
+
 import { routes } from './routes';
 require('./bootstrap');
 
@@ -26,7 +30,10 @@ Vue.component('image-popup', require('./components/ImagePopup.vue').default);
 Vue.component('login', require('./components/Login.vue').default);
 Vue.component('multiselect', Multiselect);
 Vue.component('hero-talent-data', HeroTalentData);
-Vue.component('profile-tab-switcher', ProfileTabSwitcher);
+
+//Profile Vue Components
+Vue.component('profile-tab-switcher', TabSwitcher);
+Vue.component('summary', Summary);
 
 const router = new VueRouter({
     mode: 'history',

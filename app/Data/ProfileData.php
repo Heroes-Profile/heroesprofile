@@ -10,6 +10,7 @@ use DateTime;
 
 class ProfileData
 {
+  private $full_battletag;
   private $blizz_id;
   private $region;
 
@@ -19,13 +20,14 @@ class ProfileData
 
   private $mmr_data;
 
-  public static function instance($blizz_id, $region)
+  public static function instance($full_battletag, $blizz_id, $region)
   {
-      return new ProfileData($blizz_id, $region);
+      return new ProfileData($full_battletag, $blizz_id, $region);
   }
 
 
-  public function __construct($blizz_id, $region) {
+  public function __construct($full_battletag, $blizz_id, $region) {
+    $this->full_battletag = $full_battletag;
     $this->blizz_id = $blizz_id;
     $this->region = $region;
 
@@ -38,6 +40,8 @@ class ProfileData
     $query->select('data');
     $cache_data = $query->get();
     $cache_data = json_decode(json_encode($cache_data),true);
+
+    //print_r(json_encode($cache_data, true));
 
     $found = false;
     if(count($cache_data) > 0){
@@ -109,18 +113,15 @@ class ProfileData
     if($found == "true"){
 
       DB::statement("INSERT INTO heroesprofile_cache.player_data " .
-      "(region, blizz_id, battletag, data, updated_at) VALUES ($this->region, $this->blizz_id, 'Zemill#1940','" . $data . "', '" . date('Y-m-d H:i:s') . "')" .
+      "(region, blizz_id, battletag, data, updated_at) VALUES (" . $this->region . "," . $this->blizz_id . ",'" . $this->full_battletag . "','" . $data . "', '" . date('Y-m-d H:i:s') . "')" .
       " ON DUPLICATE KEY UPDATE data = VALUES(data), updated_at = VALUES(updated_at)");
 
 
-
       DB::statement("INSERT INTO heroesprofile_cache.player_data " .
-      "(region, blizz_id, battletag, full_data, updated_at) VALUES ($this->region, $this->blizz_id, 'Zemill#1940','" . $data_full . "', '" . date('Y-m-d H:i:s') . "')" .
+      "(region, blizz_id, battletag, full_data, updated_at) VALUES (" . $this->region . "," . $this->blizz_id . ",'" . $this->full_battletag . "','" . $data_full . "', '" . date('Y-m-d H:i:s') . "')" .
       " ON DUPLICATE KEY UPDATE full_data = VALUES(full_data), updated_at = VALUES(updated_at)");
 
     }
-
-
 
     $this->getPlayerMMRData();
 
