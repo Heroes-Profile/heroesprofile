@@ -34,15 +34,21 @@ class ProfileData
   }
 
   public function getPlayerData(){
-    $query = DB::table('heroesprofile_cache.player_data');
-    $query->where('region', $this->region);
-    $query->where('blizz_id', $this->blizz_id);
-    $query->select('data');
-    $cache_data = $query->get();
-    $cache_data = json_decode(json_encode($cache_data),true);
+    if(!Session::has('player_data')) {
+      $query = DB::table('heroesprofile_cache.player_data');
+      $query->where('region', $this->region);
+      $query->where('blizz_id', $this->blizz_id);
+      $query->select('data');
+      $cache_data = $query->get();
+      $cache_data = json_decode(json_encode($cache_data),true);
+
+      session(['player_data' => $cache_data]);
+    }
+
+    $cache_data = session(['player_data']);
 
     //print_r(json_encode($cache_data, true));
-
+    /*
     $found = false;
     if(count($cache_data) > 0){
       if($cache_data[0]["data"] == "null"){
@@ -126,6 +132,7 @@ class ProfileData
     $this->getPlayerMMRData();
 
     return $this->player_data;
+    */
   }
 
   private function grabAllReplays(){

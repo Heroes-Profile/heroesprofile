@@ -8,10 +8,11 @@ class ProfileController extends Controller
 {
   public function show(Request $request)
   {
+
     $player_instance = \ProfileData::instance('Zemill#1940', $request['blizz_id'], $request['region']);
     $data = $player_instance->getPlayerData();
-    $data = $player_instance->getPlayerSummaryStats("", "");
 
+    //print_r(json_encode(session(['player_data']), true));
     return view('profile',
     [
       'title'  => $request['battletag'] . "'s Profile",
