@@ -37,7 +37,8 @@ class HeroController extends Controller
   {
     $global = \GlobalFunctions::instance();
 
-    return view('table', [
+    return view('table',
+    [
       'dataurl' => '/get_heroes_stats_table_data', // URL used for calling the table data
       'title' => 'Global Win Rates', // Page title
       'paragraph' => 'Hero win rates based on differing increments, stat types, game type, or league tier. Click on a Hero to see detailed talent information.', // Summary paragraph

@@ -14,6 +14,11 @@
 Route::group([
     'middleware' => 'setSessions'
 ], function () {
+  Route::get('/Profile', 'ProfileController@show');
+
+
+
+
   Route::view('/Global/Leaderboard', 'Global/Leaderboard');
 
 /*
@@ -35,6 +40,7 @@ Route::get('login/success', 'LoginController@handleProviderCallback');
   Route::get('/', 'HeroController@show');
 
 
+
 });
 
 Route::get('/get_heroes_stats_table_data', 'HeroController@getHeroStatsTableData')->name('get_heroes_stats_table_data');
@@ -43,4 +49,4 @@ Route::get('/get_heroes_fields', 'HeroController@getFields')->name('get_heroes_f
 //Auth::routes();
 //Auth::routes(['register' => false]);
 
-Route::get('/home', 'HomeController@index')->name('home');
+//Route::get('/home', 'HomeController@index')->name('home');
