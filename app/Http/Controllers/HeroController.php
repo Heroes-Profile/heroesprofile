@@ -42,6 +42,40 @@ class HeroController extends Controller
       'title' => 'Global Win Rates', // Page title
       'paragraph' => 'Hero win rates based on differing increments, stat types, game type, or league tier. Click on a Hero to see detailed talent information.', // Summary paragraph
       'tableheading' => 'Win Rates', // Table heading
+      'timeframe_type' => [
+          "key" => "timeframe_type",
+          "name" => "Timeframe Type",
+          "type" => "radio",
+          "description" => "Choose a timeframe",
+          "options" =>  array(
+              [
+                "key" => "major",
+                "value" => "major"
+              ],
+              [
+                "key" => "minor",
+                "value" => "minor",
+              ]
+            ),
+      ],
+      'major_patch' => [
+          "key" => "major_patch",
+          "name" => "Timeframe",
+          "type" => "multiselect",
+          "description" => "Major patches",
+          "conditional_field" => "timeframe_type",
+          "conditional_value" => "major",
+          "options" => $global->convertToFilter(Session::get('all_major_patch')),
+      ],
+      'minor_patch' => [
+          "key" => "minor_patch",
+          "name" => "Timeframe",
+          "type" => "multiselect",
+          "description" => "Minor patches",
+          "conditional_field" => "timeframe_type",
+          "conditional_value" => "minor",
+          "options" => $global->convertToFilter(Session::get('all_minor_patch'))
+      ],
       'primaryfields' => array(
         [
             "key" => "timeframe_type",

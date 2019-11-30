@@ -13469,33 +13469,33 @@ fieldset[disabled] .multiselect {
   padding-right: 0;
 }
 
-.search-form .multiselect .multiselect__tag {
+.multiselect .multiselect__tag {
   background: #213d7a;
   color: #fff;
 }
 
-.search-form .multiselect .multiselect__option--selected.multiselect__option--highlight {
+.multiselect .multiselect__option--selected.multiselect__option--highlight {
   background: inherit;
   color: inherit;
 }
 
-.search-form .multiselect .multiselect__option--highlight {
+.multiselect .multiselect__option--highlight {
   background: #213d7a;
   color: #fff;
 }
 
-.search-form .multiselect .multiselect__tag-icon:after {
+.multiselect .multiselect__tag-icon:after {
   content: "\D7";
   color: #266d4d;
   font-size: 14px;
 }
 
-.search-form .multiselect .multiselect__option--group {
+.multiselect .multiselect__option--group {
   background: #ededed;
   color: #35495e;
 }
 
-.search-form .multiselect .multiselect__option--group.multiselect__option--highlight {
+.multiselect .multiselect__option--group.multiselect__option--highlight {
   background: #35495e;
   color: #fff;
 }
@@ -13614,6 +13614,10 @@ th {
 
 .checkbox-image img {
   height: 40px;
+}
+
+.menu-close {
+  margin-left: auto;
 }
 
 
