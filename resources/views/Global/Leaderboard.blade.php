@@ -47,7 +47,7 @@ print_r(json_encode($data));
 */
 //$player_instance->getAllReplaysFull();
 
-$player_instance = \ProfileData::instance(67280, 1);
+$player_instance = \ProfileData::instance("Zemill#1940", 67280, 1);
 $data = $player_instance->getPlayerData();
 
 //$friend_foe = $player_instance->getFriendAndFoeData("", "", "", "");
@@ -56,5 +56,5 @@ $data = $player_instance->getPlayerData();
 //$hero_mmr_all = $player_instance->getHeroAllMMRData("", "", "", "", "");
 
 
-print_r(json_encode($hero_mmr_all, true));
+//print_r(json_encode($hero_mmr_all, true));
  ?>

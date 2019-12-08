@@ -34,6 +34,7 @@ class ProfileData
   }
 
   public function getPlayerData(){
+    $found = "false";
     if(!Session::has('player_data')) {
       $query = DB::table('heroesprofile_cache.player_data');
       $query->where('region', $this->region);
@@ -42,28 +43,17 @@ class ProfileData
       $cache_data = $query->get();
       $cache_data = json_decode(json_encode($cache_data),true);
 
-      session(['player_data' => $cache_data]);
-    }
-
-    $cache_data = session(['player_data']);
-
-    //print_r(json_encode($cache_data, true));
-    /*
-    $found = false;
-    if(count($cache_data) > 0){
-      if($cache_data[0]["data"] == "null"){
-        $this->grabAllReplays();
-        $this->full_data = $this->getAllReplaysFull(array_keys($this->player_data));
-        $found = "true";
-      }else{
-        $this->player_data = json_decode($cache_data[0]["data"], true);
-
+      if(count($cache_data) > 0){
+        $this->player_data = $cache_data;
         $found = $this->checkForNewReplays();
+        session(['player_data' => $this->player_data]);
+      }else{
+        $this->player_data = $this->grabAllReplays();
+        $found = true;
       }
     }else{
-      $this->grabAllReplays();
-      $this->full_data = $this->getAllReplaysFull(array_keys($this->player_data));
-      $found = "true";
+      $this->player_data = Session::get('player_data');
+      $found = $this->checkForNewReplays();
     }
 
 
@@ -113,7 +103,6 @@ class ProfileData
     }
 
     $data = json_encode($this->player_data, true);
-    $data_full = json_encode($this->full_data, true);
 
 
     if($found == "true"){
@@ -121,18 +110,12 @@ class ProfileData
       DB::statement("INSERT INTO heroesprofile_cache.player_data " .
       "(region, blizz_id, battletag, data, updated_at) VALUES (" . $this->region . "," . $this->blizz_id . ",'" . $this->full_battletag . "','" . $data . "', '" . date('Y-m-d H:i:s') . "')" .
       " ON DUPLICATE KEY UPDATE data = VALUES(data), updated_at = VALUES(updated_at)");
-
-
-      DB::statement("INSERT INTO heroesprofile_cache.player_data " .
-      "(region, blizz_id, battletag, full_data, updated_at) VALUES (" . $this->region . "," . $this->blizz_id . ",'" . $this->full_battletag . "','" . $data_full . "', '" . date('Y-m-d H:i:s') . "')" .
-      " ON DUPLICATE KEY UPDATE full_data = VALUES(full_data), updated_at = VALUES(updated_at)");
-
     }
 
     $this->getPlayerMMRData();
 
     return $this->player_data;
-    */
+
   }
 
   private function grabAllReplays(){
@@ -161,16 +144,25 @@ class ProfileData
     $query->orderBy('game_date', 'ASC');
     //$query->limit('10');
 
-    $this->player_data = $query->get();
-    $this->player_data = json_decode(json_encode($this->player_data),true);
+    $data = $query->get();
+    $data = json_decode(json_encode($data),true);
 
     $returnData = array();
-    foreach ($this->player_data as $replayID => $data){
+    foreach ($data as $replayID => $replay_data){
+      $data[$replayID]["role"] = $roles_by_name[$heroes_by_id[$data[$replayID]["hero"]]];
+      $data[$replayID]["season"] = \GlobalFunctions::instance()->getSeason($data[$replayID]["game_date"]);
+      $returnData[$replayID] = $data[$replayID];
+    }
+
+    /*
+    foreach ($this->player_data as $replayID => $replay_data){
       $this->player_data[$replayID]["role"] = $roles_by_name[$heroes_by_id[$this->player_data[$replayID]["hero"]]];
       $this->player_data[$replayID]["season"] = \GlobalFunctions::instance()->getSeason($this->player_data[$replayID]["game_date"]);
       $returnData[$replayID] = $this->player_data[$replayID];
     }
-    $this->player_data = $returnData;
+    */
+
+    return $returnData;
   }
 
   private function checkForNewReplays(){
@@ -208,10 +200,7 @@ class ProfileData
 
 
     $new_data = json_decode(json_encode($new_data),true);
-
-
     $found = "false";
-
     if(count($new_data) != 0){
       $returnData = array();
       for($i = 0; $i < count($new_data); $i++){
@@ -221,22 +210,9 @@ class ProfileData
       }
 
       $this->player_data = $returnData + $this->player_data;
-
-      $query = DB::table('heroesprofile_cache.player_data');
-      $query->where('region', $this->region);
-      $query->where('blizz_id', $this->blizz_id);
-      $query->select('full_data');
-      $cache_data = $query->get();
-      $cache_data = json_decode(json_encode($cache_data),true);
-
-      $this->full_data = json_decode($cache_data[0]["full_data"], true);
-      $this->full_data = $this->getAllReplaysFull(array_keys($returnData)) + $this->full_data;
-
       $found = "true";
     }
-
     return $found;
-
   }
 
   public function getPlayerSummaryStats($game_type, $season){
