@@ -24,13 +24,32 @@ class HeroController extends Controller
   private $role = "";
   private $build_type = "Popular";
   private $talent_levels = ["level_one", "level_four", "level_seven", "level_ten", "level_thirteen", "level_sixteen", "level_twenty"];
-/*private function convertSessionToArray($sessionData){
-  $returnSession = [];
-  foreach($sessionData as $key => $value){
-    array_push($returnSession, ["name" : $key, "value" : $value]);
 
+// Function to get values from post, check for values, and set default values
+private function setValues($fieldName, $default, $post, $key = 'key'){
+  if(isset($post[$fieldName]) && $post[$fieldName] != ""){
+    if(is_string($post[$fieldName])){
+      $this->{$fieldName} = explode(',', $post[$fieldName]);
+    }
+    else{
+      $this->{$fieldName} = $post[$fieldName];
+      for($i = 0; $i < count($this->{$fieldName}); $i++){
+        $this->{$fieldName}[$i] = $this->{$fieldName}[$i][$key];
+      }
+
+    }
+    return true;
   }
-}*/
+  else{
+    if($default){
+      $this->{$fieldName} = $default;
+    }
+    return false;
+  }
+}
+
+
+
 
 
   public function show()
@@ -283,70 +302,37 @@ class HeroController extends Controller
   }
 
   public function getHeroStatsTableData(Request $request){
+$post = $request->post();
+$post = $post["params"]["data"];
+
     $this->session_data = $request->session()->all();
     $this->session_data = json_decode(json_encode($this->session_data),true);
 
     $maps = $this->session_data["maps_by_name"];
 
-    if(isset($request["timeframe_type"])){
-      $this->timeframe_type = $request["timeframe_type"];
-    }else{
-      $this->timeframe_type = "major";
-    }
-
-    if(isset($request["stat_type"])){
-      $this->stat_type = $request["stat_type"];
-    }
-
-    if(isset($request["timeframe"])){
-      $this->timeframe = explode(',', $request["timeframe"]);
-    }else{
-      $this->timeframe = array($this->session_data["major_patch"]);
-    }
-
-    if(isset($request["game_type"]) && $request["game_type"] != ""){
-      $this->game_type = explode(',', $request["game_type"]);
-
+    $this->setValues('timeframe', array($this->session_data["major_patch"]), $post, 'name');
+    $this->setValues('timeframe_type', "major", $post, 'key');
+    $this->setValues('hero_level', null, $post, 'key');
+    $this->setValues('hero', null, $post, 'key');
+    $this->setValues('stat', null, $post, 'key');
+    $this->setValues('role', null, $post, 'key');
+    $this->setValues('stat_type', array(), $post, 'key');
+    if($this->setValues('game_type', array($this->session_data["default_game_mode_id"]), $post, 'key')){
       for($i = 0; $i < count($this->game_type); $i++){
         $this->game_type[$i] = $this->session_data["game_types_by_name"][$this->game_type[$i]];
-
       }
-    }else{
-      $this->game_type = array($this->session_data["default_game_mode_id"]);
     }
-
-    if(isset($request["league_tier"]) && $request["league_tier"] != ""){
-      $this->league_tier =  explode(',', $request["league_tier"]);
+    if($this->setValues('league_tier', array(), $post, 'key')){
       for($i = 0; $i < count($this->league_tier); $i++){
         $this->league_tier[$i] = $this->session_data["league_tiers_by_name"][$this->league_tier[$i]];
 
       }
     }
-
-    if(isset($request["game_map"]) && $request["game_map"] != ""){
-      $this->game_map =  explode(',', $request["game_map"]);
-
+    if($this->setValues('game_map', array(), $post, 'key')){
       for($i = 0; $i < count($this->game_map); $i++){
         $this->game_map[$i] = $maps[$this->game_map[$i]];
       }
-
-    }
-
-    if(isset($request["hero_level"]) && $request["hero_level"] != ""){
-      $this->hero_level = explode(',', $request["hero_level"]);
-    }
-
-    if(isset($request["hero"]) && $request["hero"] != ""){
-      $this->hero = $request["hero"];
-    }
-
-    if(isset($request["stat"]) && $request["stat"] != ""){
-      $this->stat = $request["stat"];
-    }
-
-    if(isset($request["role"]) && $request["role"] != ""){
-      $this->role = $request["role"];
-    }
+    };
 
     $query = DB::table('heroesprofile.global_hero_stats');
 
@@ -486,15 +472,15 @@ class HeroController extends Controller
       $ban_data[$data[$i]["name"]] = $data[$i]["bans"];
     }
 
-    if(count($this->timeframe) == 1 && count($this->game_map) == 0 && count($this->league_tier) == 0 && count($this->hero_level) == 0){
+  /*  if(count($this->timeframe) == 1 && count($this->game_map) == 0 && count($this->league_tier) == 0 && count($this->hero_level) == 0){
       if(count($this->game_type) == 1){
         if($this->game_type[0] != "br"){
           $change_data = $this->getChangeData();
         }
       }else if(count($this->game_type) == 0){
-        $change_data = $this->getChangeData();
+
       }
-    }
+    }*/
 
     for($i = 0; $i < count($return_data); $i++){
       if(!array_key_exists("wins", $return_data[$i])){
@@ -534,11 +520,12 @@ class HeroController extends Controller
         }
       }
 
-      if(array_key_exists($return_data[$i]["name"]["hero_name"], $change_data)){
+    /*  if(array_key_exists($return_data[$i]["name"]["hero_name"], $change_data)){
         $return_data[$i]["change"] = $return_data[$i]["win_rate"] - $change_data[$return_data[$i]["name"]["hero_name"]];
       }else{
         $return_data[$i]["change"] = 0;
-      }
+      }*/
+      $return_data[$i]["change"] = 0;
 
     }
     if($this->role != ""){

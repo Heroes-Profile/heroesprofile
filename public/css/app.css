@@ -13299,6 +13299,10 @@ fieldset[disabled] .multiselect {
   display: none;
 }
 
+.multiselect {
+  width: 100%;
+}
+
 .multiselect__content-wrapper {
   position: absolute;
   display: block;

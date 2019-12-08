@@ -28,10 +28,12 @@
         "bootstrap": "^4.3.1",
         "bootstrap-vue": "^2.0.4",
         "fontawesome": "^5.6.3",
+        "v-click-outside": "^3.0.0",
         "vue": "^2.6.10",
         "vue-cookie": "^1.1.4",
         "vue-fontawesome": "0.0.2",
         "vue-multiselect": "^2.1.6",
-        "vue-router": "^3.1.3"
+        "vue-router": "^3.1.3",
+        "vuex": "^3.1.2"
     }
 }
