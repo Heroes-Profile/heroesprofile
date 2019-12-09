@@ -25,7 +25,7 @@ class CreateTalentCombinationsTable extends Migration
           $table->integer('level_sixteen');
           $table->integer('level_twenty');
 
-          $table->primary('talent_combination_id');
+          $table->primary(['talent_combination_id'], "Primary");
           $table->unique(['hero', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'], "Unique 1");
           $table->index(['hero', 'level_twenty'], "Index 1");
         });
