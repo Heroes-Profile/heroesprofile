@@ -44,18 +44,25 @@ class ProfileData
       $cache_data = json_decode(json_encode($cache_data),true);
 
       if(count($cache_data) > 0){
+        echo "No session but there is a cache.  grabbing new replays";
+        echo "<br>";
+
         $this->player_data = $cache_data;
         $found = $this->checkForNewReplays();
         session(['player_data' => $this->player_data]);
       }else{
+        echo "No session or cache.  grabbing replays";
+        echo "<br>";
         $this->player_data = $this->grabAllReplays();
         $found = true;
       }
     }else{
+      echo "Session exists.  grabbing new replays";
+      echo "<br>";
+
       $this->player_data = Session::get('player_data');
       $found = $this->checkForNewReplays();
     }
-
 
     $this->player_data = \GlobalFunctions::instance()->sortKeyValueArray($this->player_data, "game_date_desc");
     $this->player_data_mmr_sorted = \GlobalFunctions::instance()->sortKeyValueArray($this->player_data, "mmr_parsed_sorted_asc");
@@ -101,19 +108,15 @@ class ProfileData
 
 
     }
-
-    $data = json_encode($this->player_data, true);
-
-
     if($found == "true"){
-
       DB::statement("INSERT INTO heroesprofile_cache.player_data " .
-      "(region, blizz_id, battletag, data, updated_at) VALUES (" . $this->region . "," . $this->blizz_id . ",'" . $this->full_battletag . "','" . $data . "', '" . date('Y-m-d H:i:s') . "')" .
+      "(region, blizz_id, battletag, data, updated_at) VALUES (" . $this->region . "," . $this->blizz_id . ",'" . $this->full_battletag . "','" . json_encode($this->player_data, true) . "', '" . date('Y-m-d H:i:s') . "')" .
       " ON DUPLICATE KEY UPDATE data = VALUES(data), updated_at = VALUES(updated_at)");
     }
 
     $this->getPlayerMMRData();
 
+    Session::get('player_data') = $this->player_data;
     return $this->player_data;
 
   }
@@ -142,26 +145,17 @@ class ProfileData
     $query->where('region', $this->region);
     $query->where('blizz_id', $this->blizz_id);
     $query->orderBy('game_date', 'ASC');
-    //$query->limit('10');
+    $query->limit('10');
 
     $data = $query->get();
     $data = json_decode(json_encode($data),true);
-
     $returnData = array();
-    foreach ($data as $replayID => $replay_data){
-      $data[$replayID]["role"] = $roles_by_name[$heroes_by_id[$data[$replayID]["hero"]]];
-      $data[$replayID]["season"] = \GlobalFunctions::instance()->getSeason($data[$replayID]["game_date"]);
-      $returnData[$replayID] = $data[$replayID];
-    }
 
-    /*
-    foreach ($this->player_data as $replayID => $replay_data){
-      $this->player_data[$replayID]["role"] = $roles_by_name[$heroes_by_id[$this->player_data[$replayID]["hero"]]];
-      $this->player_data[$replayID]["season"] = \GlobalFunctions::instance()->getSeason($this->player_data[$replayID]["game_date"]);
-      $returnData[$replayID] = $this->player_data[$replayID];
+    for($i = 0; $i < count($data); $i++){
+      $data[$i]["role"] = $roles_by_name[$heroes_by_id[$data[$i]["hero"]]];
+      $data[$i]["season"] = \GlobalFunctions::instance()->getSeason($data[$i]["game_date"]);
+      $returnData[$data[$i]["replayID"]] = $data[$i];
     }
-    */
-
     return $returnData;
   }
 
@@ -193,8 +187,8 @@ class ProfileData
     $query->orderBy('replay.game_date', 'ASC');
 
     $new_data = $query->get();
-    //print_r($query->toSql());
-    //print_r($query->getBindings());
+    print_r($query->toSql());
+    print_r($query->getBindings());
     //echo "<br>";
     //echo "<br>";
 
