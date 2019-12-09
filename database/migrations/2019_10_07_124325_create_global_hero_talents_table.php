@@ -64,9 +64,9 @@ class CreateGlobalHeroTalentsTable extends Migration
           $table->integer('spell_damage');
           $table->integer('regen_globes');
           $table->integer('games_played');
-          
-          $table->primary(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'mirror', 'win_loss', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'], 'Primary_Index');
-          $table->index(['game_version', 'game_type', 'hero', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'mirror', 'win_loss', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty', 'games_played'], 'Base_Index');
+
+          $table->primary(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'mirror', 'win_loss', 'talent_combination_id'], 'Primary_Index');
+          $table->index(['game_version', 'game_type', 'hero', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'mirror', 'win_loss', 'talent_combination_id', 'games_played'], 'Base_Index');
 
         });
     }
