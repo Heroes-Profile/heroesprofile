@@ -278,7 +278,7 @@ fieldset[disabled] .multiselect {
 .multiselect--active .multiselect__placeholder {
     display: none
 }
-
+.multiselect{width:100%;}
 .multiselect__content-wrapper {
     position: absolute;
     display: block;

@@ -82,7 +82,7 @@ $font-family-sans-serif: 'Roboto', sans-serif;
 @import 'multiselect.scss';
 
 .container-fluid{padding-left:0; padding-right:0;}
-.search-form .multiselect {
+ .multiselect {
 
 .multiselect__tag{
   background: #213d7a;
@@ -205,3 +205,5 @@ thead{background-color: $green;}
   img{height:40px;}
 
 }
+
+.menu-close{margin-left:auto;}

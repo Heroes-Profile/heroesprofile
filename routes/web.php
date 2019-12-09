@@ -43,7 +43,7 @@ Route::get('login/success', 'LoginController@handleProviderCallback');
 
 });
 
-Route::get('/get_heroes_stats_table_data', 'HeroController@getHeroStatsTableData')->name('get_heroes_stats_table_data');
+Route::post('/get_heroes_stats_table_data', 'HeroController@getHeroStatsTableData')->name('get_heroes_stats_table_data');
 Route::get('/get_heroes_fields', 'HeroController@getFields')->name('get_heroes_fields');
 
 //Auth::routes();
