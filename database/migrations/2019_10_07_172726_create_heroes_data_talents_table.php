@@ -29,6 +29,7 @@ class CreateHeroesDataTalentsTable extends Migration
           $table->string('sort', 10);
           $table->string('icon', 100);
           $table->integer('level');
+
           $table->primary(['talent_id', 'hero_name', 'title', 'talent_name', 'level'], 'Primary_Index');
           $table->unique(['hero_name', 'title', 'talent_name', 'level'], 'Unique_Index');
           $table->index('hero_name');
@@ -47,6 +48,6 @@ class CreateHeroesDataTalentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroes_data_talents');
+        Schema::dropIfExists('heroesprofile.heroes_data_talents');
     }
 }

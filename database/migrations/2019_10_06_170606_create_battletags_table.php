@@ -23,13 +23,13 @@ class CreateBattletagsTable extends Migration
             $table->tinyInteger('patreon')->nullable();
             $table->tinyInteger('opt_out')->nullable();
             $table->dateTime('latest_game')->default('2014-06-26 13:13:34');
+            
             $table->unique(['blizz_id', 'battletag', 'region']);
             $table->index('battletag');
             $table->index('patreon');
             $table->index('opt_out');
             $table->index(['battletag', 'region']);
             $table->index('account_level');
-
         });
     }
 
@@ -40,6 +40,6 @@ class CreateBattletagsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('battletags');
+        Schema::dropIfExists('heroesprofile.battletags');
     }
 }

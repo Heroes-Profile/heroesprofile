@@ -57,6 +57,7 @@ class CreateScoresTable extends Migration
           $table->integer('spell_damage');
           $table->integer('regen_globes');
           $table->integer('first_to_ten');
+          
           $table->primary(['replayID', 'battletag'], 'Primary_Index');
 
         });

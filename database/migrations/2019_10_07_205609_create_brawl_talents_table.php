@@ -24,9 +24,8 @@ class CreateBrawlTalentsTable extends Migration
           $table->integer('level_thirteen');
           $table->integer('level_sixteen');
           $table->integer('level_twenty');
+
           $table->primary(['replayID', 'battletag']);
-
-
         });
     }
 

@@ -24,13 +24,11 @@ class CreateBrawlPlayerTable extends Migration
           $table->tinyInteger('team');
           $table->tinyInteger('winner');
           $table->string('party', 45);
+          
           $table->primary(['replayID', 'battletag', 'hero']);
           $table->index(['replayID', 'blizz_id', 'hero']);
           $table->index(['blizz_id', 'hero']);
         });
-
-
-
     }
 
     /**

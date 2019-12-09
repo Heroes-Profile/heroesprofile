@@ -34,6 +34,7 @@ class CreatePlayerTable extends Migration
           $table->double('role_mean');
           $table->double('role_standard_deviation');
           $table->dateTime('mmr_date_parsed');
+          
           $table->primary(['replayID', 'battletag', 'hero'], 'Primary_Index');
           $table->index(['replayID', 'blizz_id', 'hero'], 'Index_1');
           $table->index(['blizz_id', 'hero'], 'Index_2');

@@ -20,7 +20,6 @@ class CreateReplayDraftOrderTable extends Migration
           $table->integer('pick_id');
           $table->integer('hero');
 
-
           $table->primary(['replayID', 'type' , 'pick_id']);
         });
 

@@ -18,6 +18,7 @@ class CreateTableCacheValueTable extends Migration
           $table->string('table_to_cache', 45);
           $table->integer('cache_number');
           $table->dateTime('date_cached');
+          
           $table->primary(['cache_number', 'table_to_cache'], "Primary_Index");
         });
     }

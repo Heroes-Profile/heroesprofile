@@ -23,11 +23,11 @@ class CreateMasterGamesPlayedDataTable extends Migration
           $table->integer('win');
           $table->integer('loss');
           $table->integer('games_played');
+
           $table->primary(['type_value', 'season', 'game_type', 'blizz_id', 'region'], 'Primary_Index');
           $table->index('games_played');
           $table->index(['season', 'game_type', 'games_played'], 'Index_1');
           $table->index(['type_value', 'season', 'game_type', 'region'], 'Index_2');
-
         });
     }
 

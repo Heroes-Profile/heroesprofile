@@ -22,6 +22,7 @@ class CreateBrawlReplayTable extends Migration
           $table->string('game_version', 32);
           $table->tinyInteger('region');
           $table->dateTime('date_added');
+          
           $table->primary('replayID');
           $table->index(['replayID', 'region', 'game_date']);
           $table->index('region');

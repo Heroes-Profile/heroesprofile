@@ -19,6 +19,7 @@ class CreateLeagueBreakdownsTable extends Migration
           $table->tinyInteger('game_type');
           $table->tinyInteger('league_tier');
           $table->double('min_mmr');
+          
           $table->primary(['type_role_hero', 'game_type', 'league_tier'], 'Primary_Index');
           $table->index('min_mmr');
         });
@@ -31,6 +32,6 @@ class CreateLeagueBreakdownsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('league_breakdowns');
+        Schema::dropIfExists('heroesprofile.league_breakdowns');
     }
 }

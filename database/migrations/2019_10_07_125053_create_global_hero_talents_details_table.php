@@ -18,6 +18,8 @@ class CreateGlobalHeroTalentsDetailsTable extends Migration
           $table->string('game_version', 45);
           $table->tinyInteger('game_type');
           $table->tinyInteger('league_tier');
+          $table->tinyInteger('hero_league_tier');
+          $table->tinyInteger('role_league_tier');
           $table->tinyInteger('game_map');
           $table->integer('hero_level')->unsigned();
           $table->tinyInteger('hero');
@@ -61,9 +63,11 @@ class CreateGlobalHeroTalentsDetailsTable extends Migration
           $table->integer('multikill');
           $table->integer('physical_damage');
           $table->integer('spell_damage');
+          $table->integer('regen_globes');
           $table->integer('games_played');
-          $table->primary(['game_version', 'game_type', 'league_tier', 'game_map', 'hero_level', 'hero', 'mirror', 'win_loss', 'level', 'talent'], 'Primary_Index');
-          $table->index(['game_version', 'game_type', 'hero', 'league_tier', 'game_map', 'hero_level', 'mirror', 'win_loss', 'level', 'talent', 'games_played'], 'Base_Index');
+          
+          $table->primary(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'mirror', 'win_loss', 'level', 'talent'], 'Primary_Index');
+          $table->index(['game_version', 'game_type', 'hero', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'mirror', 'win_loss', 'level', 'talent', 'games_played'], 'Base_Index');
         });
     }
 
@@ -74,6 +78,6 @@ class CreateGlobalHeroTalentsDetailsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('global_hero_talents_details');
+        Schema::dropIfExists('heroesprofile.global_hero_talents_details');
     }
 }

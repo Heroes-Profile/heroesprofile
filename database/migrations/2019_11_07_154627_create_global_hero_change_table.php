@@ -17,11 +17,7 @@ class CreateGlobalHeroChangeTable extends Migration
         $table->engine = 'InnoDB';
         $table->string('game_version', 45);
         $table->tinyInteger('game_type');
-        //$table->tinyInteger('league_tier');
-        //$table->tinyInteger('game_map');
-        //$table->integer('hero_level')->unsigned();
         $table->tinyInteger('hero');
-        //$table->tinyInteger('mirror');
         $table->double('win_rate');
         $table->double('popularity');
         $table->double('ban_rate');
@@ -29,7 +25,6 @@ class CreateGlobalHeroChangeTable extends Migration
         $table->integer('wins');
         $table->integer('losses');
         $table->integer('bans');
-
 
         $table->primary(['game_version', 'game_type', 'hero'], 'Primary_Index');
       });

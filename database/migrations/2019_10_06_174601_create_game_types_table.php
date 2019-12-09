@@ -28,6 +28,6 @@ class CreateGameTypesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('game_types');
+        Schema::dropIfExists('heroesprofile.game_types');
     }
 }

@@ -19,6 +19,7 @@ class CreateMapsTable extends Migration
           $table->string('name', 255);
           $table->string('short_name', 255);
           $table->string('type', 255);
+          
           $table->primary(['map_id', 'name']);
         });
         DB::statement("ALTER TABLE heroesprofile.maps CHANGE COLUMN map_id map_id INT(11) NOT NULL AUTO_INCREMENT");

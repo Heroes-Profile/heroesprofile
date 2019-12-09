@@ -19,8 +19,8 @@ class CreateHeroesTranslationsTable extends Migration
           $table->string('short_name', 45);
           $table->string('translation', 45);
           $table->string('attribute_id', 45);
-          $table->primary(['name', 'short_name', 'translation', 'attribute_id'], 'Primary_Index');
 
+          $table->primary(['name', 'short_name', 'translation', 'attribute_id'], 'Primary_Index');
         });
     }
 
@@ -31,6 +31,6 @@ class CreateHeroesTranslationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroes_translations');
+        Schema::dropIfExists('heroesprofile.heroes_translations');
     }
 }

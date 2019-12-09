@@ -37,6 +37,6 @@ class CreateReplayExperienceBreakdownTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('replay_experience_breakdown');
+        Schema::dropIfExists('heroesprofile.replay_experience_breakdown');
     }
 }

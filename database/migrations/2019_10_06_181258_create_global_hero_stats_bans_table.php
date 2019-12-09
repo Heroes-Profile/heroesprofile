@@ -18,11 +18,14 @@ class CreateGlobalHeroStatsBansTable extends Migration
           $table->string('game_version', 45);
           $table->tinyInteger('game_type');
           $table->tinyInteger('league_tier');
+          $table->tinyInteger('hero_league_tier');
+          $table->tinyInteger('role_league_tier');
           $table->tinyInteger('game_map');
           $table->integer('hero_level')->unsigned();
           $table->tinyInteger('hero');
           $table->integer('bans')->unsigned()->default(0);
-          $table->primary(['game_version', 'game_type', 'league_tier', 'game_map', 'hero_level', 'hero'], 'Primary_Index');
+          
+          $table->primary(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero'], 'Primary_Index');
         });
     }
 
@@ -33,6 +36,6 @@ class CreateGlobalHeroStatsBansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('global_hero_stats_bans');
+        Schema::dropIfExists('heroesprofile.global_hero_stats_bans');
     }
 }

@@ -17,6 +17,7 @@ class CreateLeagueTiersTable extends Migration
           $table->engine = 'InnoDB';
           $table->integer('tier_id');
           $table->string('name', 45);
+          
           $table->primary('tier_id');
         });
     }

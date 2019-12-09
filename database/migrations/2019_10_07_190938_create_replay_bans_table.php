@@ -19,6 +19,7 @@ class CreateReplayBansTable extends Migration
           $table->integer('replayID');
           $table->tinyInteger('team');
           $table->integer('hero');
+          
           $table->primary('ban_id');
           $table->index(['replayID', 'team', 'hero']);
 

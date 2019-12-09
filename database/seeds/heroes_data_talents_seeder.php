@@ -13,6 +13,5 @@ class heroes_data_talents_seeder extends Seeder
     {
       $sql = base_path('database/seeds/SQL_Dumps/heroes_data_talents.sql');
       DB::unprepared(file_get_contents($sql));
-
     }
 }

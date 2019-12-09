@@ -20,8 +20,8 @@ class CreateSeasonDatesTable extends Migration
           $table->double('season');
           $table->dateTime('start_date');
           $table->dateTime('end_date');
+          
           $table->primary('id');
-
         });
         DB::statement("ALTER TABLE heroesprofile.season_dates CHANGE COLUMN id id INT(11) NOT NULL AUTO_INCREMENT");
 

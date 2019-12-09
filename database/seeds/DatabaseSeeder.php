@@ -38,6 +38,7 @@ class DatabaseSeeder extends Seeder
       $this->call(season_dates_seeder::class);
       $this->call(season_game_versions_seeder::class);
       $this->call(talents_seeder::class);
+      $this->call(talent_combinations_seeder::class);
 
       //Brawls
       $this->call(player_brawl_seeder::class);

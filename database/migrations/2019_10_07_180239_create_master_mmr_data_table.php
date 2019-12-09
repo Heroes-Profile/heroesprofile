@@ -24,6 +24,7 @@ class CreateMasterMmrDataTable extends Migration
           $table->double('standard_deviation');
           $table->integer('win');
           $table->integer('loss');
+          
           $table->primary(['type_value', 'game_type', 'blizz_id', 'region'], 'Primary_Index');
         });
     }

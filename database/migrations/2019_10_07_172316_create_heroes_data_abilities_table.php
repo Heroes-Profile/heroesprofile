@@ -15,7 +15,6 @@ class CreateHeroesDataAbilitiesTable extends Migration
     {
         Schema::create('heroesprofile.heroes_data_abilities', function (Blueprint $table) {
           $table->engine = 'InnoDB';
-
           $table->string('hero_name', 100);
           $table->string('short_name', 100);
           $table->string('attribute_id', 100);
@@ -27,9 +26,9 @@ class CreateHeroesDataAbilitiesTable extends Migration
           $table->string('name', 10);
           $table->string('hotkey', 10);
           $table->string('icon', 500);
+
           $table->unique(['hero_name', 'title']);
           $table->index('attribute_id');
-
         });
     }
 
@@ -40,6 +39,6 @@ class CreateHeroesDataAbilitiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroes_data_abilities');
+        Schema::dropIfExists('heroesprofile.heroes_data_abilities');
     }
 }
