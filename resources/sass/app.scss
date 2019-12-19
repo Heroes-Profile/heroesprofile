@@ -1,0 +1,220 @@
+//
+$font-family-sans-serif: 'Roboto Condensed', sans-serif;
+$green: #007272;
+$blue: #213d7a;
+$red: #b33616;
+$cyan: #007272;
+
+$primary: $green;
+$secondary: $blue;
+$font-family-header: 'Roboto Condensed', sans-serif;
+$font-family-sans-serif: 'Roboto', sans-serif;
+.navbar-brand{font-family: 'Ruslan Display', sans-serif;}
+
+
+
+.image-popup-img{
+  .table &{
+    width: 40px; height: 40px;
+    img{width: 40px; height: 40px;}
+  }
+  .image-with-name &{
+    float:left; margin-right: 10px; margin-top: -.25rem; margin-bottom: -.25rem;
+  }
+
+
+ }
+
+ .image-with-name {
+   .table &{
+     display: flex;
+     align-content: center;
+     align-items: center;
+   }
+  }
+
+
+
+.intro{
+
+  display:flex;
+  display: flex;
+  align-content: stretch;
+  border-bottom: 4px solid $blue;
+
+  h2{
+    text-transform: uppercase;
+
+   padding: .5rem 1rem;
+   border-radius: 0px 0px .5rem 0px;
+   border-radius: .5rem,0rem,0rem,0rem;
+   margin: 0;
+
+  }
+  div{
+    background-color: $green;
+    text-align: middle;
+    display: block;
+    padding: .5rem 1rem;
+    color:white;
+    margin: 0;
+    align-self: stretch;
+    flex:1;
+    display:flex;
+    align-content:center;
+
+    p{
+      margin:0;
+    padding:0;
+    margin-bottom:0;
+    margin-top:auto;
+    margin-bottom:auto;
+  }
+  }
+}
+
+
+
+
+@import 'node_modules/bootstrap/scss/bootstrap';
+@import 'node_modules/bootstrap-vue/src/index.scss';
+@import 'general.scss';
+@import 'multiselect.scss';
+
+.container-fluid{padding-left:0; padding-right:0;}
+ .multiselect {
+
+.multiselect__tag{
+  background: #213d7a;
+  color: #fff;
+}
+.multiselect__option--selected.multiselect__option--highlight{
+  background: inherit;
+  color: inherit;
+}
+.multiselect__option--highlight{
+  background: #213d7a;
+  color: #fff;
+}
+.multiselect__option--selected.multiselect__option--highlight{
+  //background: $red;
+}
+.multiselect__tag-icon:after{content:"\D7";color:#266d4d;font-size:14px}
+.multiselect__option--group{background:#ededed;color:#35495e}
+.multiselect__option--group.multiselect__option--highlight{background:#35495e;color:#fff}
+}
+
+body{
+  background-color: white;   color: #343a40;
+  table{
+    color: #343a40;
+    background-color: white;
+  }
+  .table-striped tbody tr:nth-of-type(odd) {
+      background-color: rgba(0, 0, 0, 0.02);
+  }
+
+}
+
+.search-filter-wrapper{
+
+  .popover{width:100%;}
+}
+body .popover{ width:100%;}
+
+.search-form{
+  display:flex;
+  flex-wrap:wrap;
+}
+
+
+
+
+body.darkMode{
+
+//  background-color: #2e344f;
+  //color:white;
+//  background-color: #dce0f2;
+background-color: #0F121D;
+color:white;
+
+
+.table{
+    color: white;
+    background-color: $gray-800;
+
+}
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+
+
+.table-bordered td{border: 1px solid #666;}
+.table{
+
+thead{background-color: $green;}
+.emphasis{ color: lighten($green, 15%); font-weight: 500;}
+
+}
+
+.popover{color: #343a40}
+
+}
+
+.table td,th{ vertical-align:middle; text-align: center;}
+.table .card{background-color:transparent;}
+.loading{display:flex; justify-content: center; text-align:center;}
+.hero-talent{width: 100%;}
+
+
+
+.search-filter-wrapper{
+  position:relative;
+  box-sizing:border-box;
+
+}
+
+
+.filter-menu{
+
+      position: absolute;
+      /* width: 100%; */
+      box-sizing: border-box;
+      /* margin-left: 1em; */
+      /* margin-right: 1em; */
+      //padding: 1em;
+      width: 100%;
+    //  margin: .5em;
+      /* top: 1em; */
+      /* bottom: 0;*/
+      color:black;
+      z-index:2;
+      .single-form-wrapper{margin:0 .5rem;}
+
+.search-form{padding:1em;   background-color: white; width:100%;
+
+}
+}
+
+
+.checkbox-image{
+ height:40px;
+ width:40px;
+  overflow:hidden;
+  img{height:40px;}
+
+}
+
+.menu-close{margin-left:auto;}
+
+.btn-group{flex-wrap:wrap;}
+
+
+@media only screen and (max-width: 800px) {
+  .mobileHide{display:none!important; visibility:none!important;}
+  .intro{flex-direction:column;}
+.table.b-table > thead > tr{font-size:.8em;}
+.table.b-table{font-size:.9em;}
+.filter-form .navbar{padding:0;}
+}
