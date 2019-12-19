@@ -13,6 +13,7 @@
  Vue.js - https://vuejs.org/
 
  PHP - PHP can be installed in different ways.  If you do not currently have PHP installed, use google to find the best method for you.
+ * Increase your local PHP memory_limit var.  We use 1g.  memory_limit = 1G
 
  MySQL - MySQL can be installed in different ways.  If you do not currently have MySQL installed, use google to find the best method for you.
 
@@ -26,6 +27,7 @@
 # Once all the dependencies are installed
  #Database setup
  * Create the following schemas in your MySql database.   `heroesprofile`, `heroesprofile_brawl`, `heroesprofile_cache`
+ * Increase your local mysql max_allowed_packet var.  We use 64M.
 
  #Project Setup
  * From the command line, navigate to the heroesprofile repository.
@@ -33,8 +35,6 @@
  * Run `php artisan key:generate` make sure the APP_KEY has this value in the .env file
  * Run `composer install`
  * Run `npm install`
- * Increase your local PHP memory_limit var.  We use 1g.  memory_limit = 1G
- * Increase your local mysql max_allowed_packet var.  We use 64M.
  * Run `php artisan migrate`
  * Run `composer dump-autoload`
  * Run `php artisan db:seed`
