@@ -11,7 +11,7 @@ class heroes_translations_seeder extends Seeder
      */
     public function run()
     {
-      $sql = base_path('database/seeds/SQL_Dumps/heroes_translations.sql');
+      $sql = base_path('database/seeds/heroesprofile-seeds/heroes_translations.sql');
       DB::unprepared(file_get_contents($sql));
     }
 }

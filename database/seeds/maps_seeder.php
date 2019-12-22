@@ -11,7 +11,7 @@ class maps_seeder extends Seeder
      */
     public function run()
     {
-      $sql = base_path('database/seeds/SQL_Dumps/maps.sql');
+      $sql = base_path('database/seeds/heroesprofile-seeds/maps.sql');
       DB::unprepared(file_get_contents($sql));
 
     }

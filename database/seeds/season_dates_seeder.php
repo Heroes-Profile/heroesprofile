@@ -11,7 +11,7 @@ class season_dates_seeder extends Seeder
      */
     public function run()
     {
-      $sql = base_path('database/seeds/SQL_Dumps/season_dates.sql');
+      $sql = base_path('database/seeds/heroesprofile-seeds/season_dates.sql');
       DB::unprepared(file_get_contents($sql));
     }
 }

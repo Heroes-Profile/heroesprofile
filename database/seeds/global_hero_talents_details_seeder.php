@@ -11,7 +11,7 @@ class global_hero_talents_details_seeder extends Seeder
      */
     public function run()
     {
-      $sql = base_path('database/seeds/SQL_Dumps/global_hero_talents_details.sql');
+      $sql = base_path('database/seeds/heroesprofile-seeds/global_hero_talents_details.sql');
       DB::unprepared(file_get_contents($sql));
     }
 }
