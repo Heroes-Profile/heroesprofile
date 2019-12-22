@@ -24,10 +24,11 @@
 
  For windows users, Wampserver64 is a useful tool as it installs the MySql server and php at the same time. https://sourceforge.net/projects/wampserver/
 
-#Cloning the Heroes Profile repository
- *git clone --recursive https://github.com/Zemill/heroesprofile.git
- *git submodule update --remote
- 
+
+# Cloning the Heroes Profile repository
+ * `git clone --recursive https://github.com/Zemill/heroesprofile.git`
+ * `git submodule update --remote`
+
 # Once all the dependencies are installed
  #Database setup
  * Create the following schemas in your MySql database.   `heroesprofile`, `heroesprofile_brawl`, `heroesprofile_cache`
