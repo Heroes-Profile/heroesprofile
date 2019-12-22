@@ -28,6 +28,7 @@
 # Cloning the Heroes Profile repository
  * `git clone --recursive https://github.com/Zemill/heroesprofile.git`
  * `git submodule update --remote`
+ * If you have issues getting the seed files to populate in `database/seeds/heroesprofile-seeds/seed-files`, you can pull them directly from https://github.com/Zemill/heroesprofile-seeds.git
 
 # Once all the dependencies are installed
  #Database setup
