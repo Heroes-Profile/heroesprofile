@@ -11,7 +11,7 @@ class mmr_type_ids_seeder extends Seeder
      */
     public function run()
     {
-      $sql = base_path('database/seeds/heroesprofile-seeds/mmr_type_ids.sql');
+      $sql = base_path('database/seeds/heroesprofile-seeds/seed-filesmmr_type_ids.sql');
       DB::unprepared(file_get_contents($sql));
     }
 }
