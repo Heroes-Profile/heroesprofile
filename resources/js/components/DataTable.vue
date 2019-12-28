@@ -7,9 +7,9 @@
     <div class="error" v-else-if="error.length > 0">
       Error retreiving data.
     </div>-->
-    <b-table striped bordered responsive small :items="formData" :fields="fields" :busy="loading"  >
+    <b-table striped bordered responsive small :items="formData" :fields="fields" :busy="loading" :sort-by="sortby" :sort-desc="true" >
       <template v-slot:cell(name)="data" >
-        <div class="image-with-name">
+        <div class="image-with-name">{{data.value}}
           <image-popup  :alttext="data.value.hero_name" :imgSrc="'/images/heroes/'+data.value.short_name+'.png'" :popupdata="'Hero info for '+data.value.hero_name"></image-popup>  <span class="emphasis">{{ data.value.hero_name }}</span>
         </div>
       </template>
@@ -49,15 +49,19 @@ export default {
         tabledata: [],
         tableitems: [{hero_name:"Abathur" }],
         tablefields: [],
+        sortby: 'win_rate',
         fields: [
           { key: 'name.hero_name', label: 'Hero', sortable: true },
+          { key: 'win_rate', label: 'Win Rate', sortable: true, class: "col-win_rate" },
+          { key: 'popularity', label: 'Popularity', sortable: true },
+          { key: 'ban_rate', label: 'Ban Rate', sortable: true, class: "mobileHide"},
           { key: 'games_played', label: 'Games Played', sortable: true },
           { key: 'wins', label: 'Wins', sortable: true, class: "mobileHide"},
           { key: 'losses', label: 'Losses', sortable: true, class: "mobileHide"},
-          { key: 'win_rate', label: 'Win Rate', sortable: true, class: "col-win_rate" },
+
           { key: 'bans', label: 'Bans', sortable: true, class: "mobileHide"},
-          { key: 'ban_rate', label: 'Ban Rate', sortable: true, class: "mobileHide"},
-          { key: 'popularity', label: 'Popularity', sortable: true },
+
+
           { key: 'change', label: 'Change', sortable: true, class: "mobileHide" },
           { key: 'talent_builds', label: 'Talent Builds', sortable: false}
         ],

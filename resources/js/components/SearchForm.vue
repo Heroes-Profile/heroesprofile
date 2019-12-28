@@ -37,21 +37,21 @@
     <b-dropdown-form>
       <div class="filter-group">
         Player Rank
-        <b-form-checkbox-group v-model="form.player_league_tier"  :name="rawfields.player_league_tier.name"  >
-          <b-form-checkbox v-for="option in rawfields.player_league_tier" :value="option.key" :key="option.key"> <div class="checkbox-image" v-if="option.icon"><img :alt="option.name" :src="option.icon"/></div><span v-else>{{ option.text }}</span> </b-form-checkbox>
-        </b-form-checkbox-group>
+        <multiselect v-model="form.player_league_tier" track-by="value" label="key" placeholder="All" :multiple="true" :options="rawfields.player_league_tier" :searchable="true" :allow-empty="true">
+        </multiselect>
+
       </div>
       <div class="filter-group">
         Role Rank
-        <b-form-checkbox-group v-model="form.role_league_tier"  :name="rawfields.role_league_tier.name"  >
-          <b-form-checkbox v-for="option in rawfields.role_league_tier" :value="option.key" :key="option.key"> <div class="checkbox-image" v-if="option.icon"><img :alt="option.name" :src="option.icon"/></div><span v-else>{{ option.text }}</span> </b-form-checkbox>
-        </b-form-checkbox-group>
+        <multiselect v-model="form.role_league_tier" track-by="value" label="key" placeholder="All" :multiple="true" :options="rawfields.role_league_tier" :searchable="true" :allow-empty="true">
+        </multiselect>
+
       </div>
       <div class="filter-group">
         Hero Rank
-        <b-form-checkbox-group v-model="form.hero_league_tier"  :name="rawfields.hero_league_tier.name"  >
-          <b-form-checkbox v-for="option in rawfields.hero_league_tier" :value="option.key" :key="option.key"> <div class="checkbox-image" v-if="option.icon"><img :alt="option.name" :src="option.icon"/></div><span v-else>{{ option.text }}</span> </b-form-checkbox>
-        </b-form-checkbox-group>
+        <multiselect v-model="form.hero_league_tier" track-by="value" label="key" placeholder="All" :multiple="true" :options="rawfields.hero_league_tier" :searchable="true" :allow-empty="true">
+        </multiselect>
+        
       </div>
       <b-button @click="hideDropdowns()" variant="primary" class="menu-close">Apply</b-button>
     </b-dropdown-form>
@@ -66,7 +66,7 @@
         <multiselect v-model="form.game_map" track-by="value" label="key" placeholder="All" :multiple="true" :options="rawfields.game_map" :searchable="true" :allow-empty="true">
         </multiselect>
       </b-form-group>
-    
+
       <b-form-group label="Hero Level">
         <b-form-checkbox-group  v-model="form.hero_level"  :name="rawfields.hero_level.name"  >
           <b-form-checkbox v-for="option in rawfields.hero_level" :value="option.key" :key="option.key"> <div class="checkbox-image" v-if="option.icon"><img :alt="option.name" :src="option.icon"/></div><span v-else>{{ option.text }}</span> </b-form-checkbox>

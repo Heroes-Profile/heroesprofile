@@ -49,11 +49,25 @@ class GlobalsMiddleware
       }
 
 
-      if (!$request->session()->has('roles_by_name')) {
-        session(['roles_by_name' => Cache::remember('roles_by_name', $seconds, function () {
+      if (!$request->session()->has('roles_by_hero_name')) {
+        session(['roles_by_hero_name' => Cache::remember('roles_by_hero_name', $seconds, function () {
             return $this->setRolesByCache("name");
         })]);
       }
+
+
+      if (!$request->session()->has('roles_by_role_name')) {
+        session(['roles_by_role_name' => Cache::remember('roles_by_role_name', $seconds, function () {
+            return $this->setRolesByCache("new_role");
+        })]);
+      }
+
+      if (!$request->session()->has('roles_by_id')) {
+        session(['roles_by_id' => Cache::remember('roles_by_id', $seconds, function () {
+            return $this->setRolesByCache("id");
+        })]);
+      }
+
       if (!$request->session()->has('default_game_mode_id')) {
         session(['default_game_mode_id' => Cache::remember('default_game_mode_id', $seconds, function () {
             return 5;

@@ -134,10 +134,13 @@ class GlobalFunctions
         case "new_role":
             $value = "name";
             break;
+        case "id":
+            $value = "id";
+            break;
     }
 
 
-    $roles = DB::table('heroesprofile.heroes')->select('name', 'new_role')->get();
+    $roles = DB::table('heroesprofile.heroes')->select('id', 'name', 'new_role')->get();
     $roles = json_decode(json_encode($roles),true);
 
     $return_data = array();

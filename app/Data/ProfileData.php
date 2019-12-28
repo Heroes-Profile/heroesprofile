@@ -277,7 +277,7 @@ class ProfileData
   }
 
   private function grabProfileReplayData(){
-    $roles_by_name = Session::get('roles_by_name');
+    $roles_by_hero_name = Session::get('roles_by_hero_name');
     $heroes_by_id = Session::get('heroes_by_id');
 
     $query = DB::table('heroesprofile.replay')
@@ -350,7 +350,7 @@ class ProfileData
     $returnData = array();
 
     for($i = 0; $i < count($data); $i++){
-      $data[$i]["role"] = $roles_by_name[$heroes_by_id[$data[$i]["hero"]]];
+      $data[$i]["role"] = $roles_by_hero_name[$heroes_by_id[$data[$i]["hero"]]];
       //$data[$i]["season"] = \GlobalFunctions::instance()->getSeason($data[$i]["game_date"]);
       $returnData[$data[$i]["replayID"]] = $data[$i];
     }
@@ -371,7 +371,7 @@ class ProfileData
   }
 
   private function checkForNewReplays($return_data){
-    $roles_by_name = Session::get('roles_by_name');
+    $roles_by_hero_name = Session::get('roles_by_hero_name');
     $heroes_by_id = Session::get('heroes_by_id');
 
     $latest_replay = $return_data['latest_replayID'];
@@ -446,7 +446,7 @@ class ProfileData
 
     $replay_data = array();
     for($i = 0; $i < count($data); $i++){
-      $data[$i]["role"] = $roles_by_name[$heroes_by_id[$data[$i]["hero"]]];
+      $data[$i]["role"] = $roles_by_hero_name[$heroes_by_id[$data[$i]["hero"]]];
       //$data[$i]["season"] = \GlobalFunctions::instance()->getSeason($data[$i]["game_date"]);
       $replay_data[$data[$i]["replayID"]] = $data[$i];
     }
@@ -455,7 +455,7 @@ class ProfileData
     $matches_counter = 0;
     foreach ($replay_data as $replayID => $value){
       $return_data["account_level"] = $replay_data[$replayID]["account_level"];
-      $replay_data[$replayID]["role"] = $roles_by_name[$heroes_by_id[$replay_data[$replayID]["hero"]]];
+      $replay_data[$replayID]["role"] = $roles_by_hero_name[$heroes_by_id[$replay_data[$replayID]["hero"]]];
       if($replay_data[$replayID]["winner"] == 1){
         $return_data["wins"]++;
         $return_data["hero_data"][$replay_data[$replayID]["hero"]]["wins"]++;

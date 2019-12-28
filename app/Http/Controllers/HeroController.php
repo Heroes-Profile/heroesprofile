@@ -547,31 +547,6 @@ private $maps = array();
         $return_data[$i]["change"] = 0;
 
       }
-      if(count($this->role) != 0){
-        $new_return_data = array();
-        $new_data_counter = 0;
-        for($i = 0; $i < count($return_data); $i++){
-          if(Session::get("roles_by_name")[$data[$i]["name"]] == $this->role[0]){
-            $new_return_data[$new_data_counter] = $return_data[$i];
-            $new_data_counter++;
-          }
-        }
-        $return_data = $new_return_data;
-      }
-
-
-      if(count($this->hero) != 0){
-        $new_return_data = array();
-        $new_data_counter = 0;
-        for($i = 0; $i < count($return_data); $i++){
-          if($data[$i]["name"] == $this->hero[0]){
-            $new_return_data[$new_data_counter] = $return_data[$i];
-            $new_data_counter++;
-          }
-        }
-        $return_data = $new_return_data;
-      }
-
       for($i = 0; $i < count($return_data); $i++){
         $return_data[$i]["sortable"] = "true";
       }
@@ -580,6 +555,32 @@ private $maps = array();
 
       return $return_data;
     });
+
+    if(count($this->role) != 0){
+      $new_return_data = array();
+      $new_data_counter = 0;
+      for($i = 0; $i < count($return_data); $i++){
+        if(Session::get("roles_by_hero_name")[$return_data[$i]["name"]["hero_name"]] == $this->role[0]){
+          $new_return_data[$new_data_counter] = $return_data[$i];
+          $new_data_counter++;
+        }
+      }
+      $return_data = $new_return_data;
+    }
+
+
+    if(count($this->hero) != 0){
+      $new_return_data = array();
+      $new_data_counter = 0;
+      for($i = 0; $i < count($return_data); $i++){
+        if($return_data[$i]["name"]["hero_name"] == $this->hero[0]){
+          $new_return_data[$new_data_counter] = $return_data[$i];
+          $new_data_counter++;
+        }
+      }
+      $return_data = $new_return_data;
+    }
+
     return $return_data;
   }
   private function getChangeData(){
