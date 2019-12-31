@@ -9,7 +9,7 @@
     </div>-->
     <b-table striped bordered responsive small :items="formData" :fields="fields" :busy="loading" :sort-by="sortby" :sort-desc="true" >
       <template v-slot:cell(name)="data" >
-        <div class="image-with-name">{{data.value}}
+        <div class="image-with-name">
           <image-popup  :alttext="data.value.hero_name" :imgSrc="'/images/heroes/'+data.value.short_name+'.png'" :popupdata="'Hero info for '+data.value.hero_name"></image-popup>  <span class="emphasis">{{ data.value.hero_name }}</span>
         </div>
       </template>
@@ -30,6 +30,7 @@
       <template v-slot:row-details="row" :loaded="false">
         <b-card>
           <b-row class="mb-2">
+
             <hero-talent-data :hero="row.item.name" @loading-status="talentsLoaded=true"></hero-talent-data>
           </b-row>
 
@@ -51,17 +52,14 @@ export default {
         tablefields: [],
         sortby: 'win_rate',
         fields: [
-          { key: 'name.hero_name', label: 'Hero', sortable: true },
+          { key: 'name', label: 'Hero', sortable: true },
           { key: 'win_rate', label: 'Win Rate', sortable: true, class: "col-win_rate" },
           { key: 'popularity', label: 'Popularity', sortable: true },
           { key: 'ban_rate', label: 'Ban Rate', sortable: true, class: "mobileHide"},
           { key: 'games_played', label: 'Games Played', sortable: true },
           { key: 'wins', label: 'Wins', sortable: true, class: "mobileHide"},
           { key: 'losses', label: 'Losses', sortable: true, class: "mobileHide"},
-
           { key: 'bans', label: 'Bans', sortable: true, class: "mobileHide"},
-
-
           { key: 'change', label: 'Change', sortable: true, class: "mobileHide" },
           { key: 'talent_builds', label: 'Talent Builds', sortable: false}
         ],

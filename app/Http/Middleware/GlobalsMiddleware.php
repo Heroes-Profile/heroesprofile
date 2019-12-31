@@ -55,6 +55,12 @@ class GlobalsMiddleware
         })]);
       }
 
+      if (!$request->session()->has('types_by_hero_name')) {
+        session(['types_by_hero_name' => Cache::remember('types_by_hero_name', $seconds, function () {
+            return $this->setTypesByCache("name");
+        })]);
+      }
+
 
       if (!$request->session()->has('roles_by_role_name')) {
         session(['roles_by_role_name' => Cache::remember('roles_by_role_name', $seconds, function () {
@@ -175,6 +181,10 @@ class GlobalsMiddleware
       return \GlobalFunctions::instance()->getRoles($by);;
     }
 
+    private function setTypesByCache($by){
+      return \GlobalFunctions::instance()->getTypes($by);;
+
+    }
     private function setMajorPatchCache(){
       return \GlobalFunctions::instance()->getLatestMajorPatch();
     }

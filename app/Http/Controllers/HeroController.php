@@ -256,7 +256,10 @@ private $maps = array();
         [ "key"=> "Melee Assassin", "value"=> "Melee Assassin", "text"=> "Melee Assassin" , "icon" => "/images/roles/melee assassin.PNG"],
         [ "key"=> "Ranged Assassin", "value"=> "Ranged Assassin", "text"=> "Ranged Assassin", "icon" => "/images/roles/ranged assassin.PNG" ],
         ["key"=> "Support", "value"=> "Support", "text"=> "Support", "icon" => "/images/roles/support.PNG" ],
-        [ "key"=> "Tank", "value"=> "Tank", "text"=> "Tank", "icon" => "/images/roles/tank.PNG" ])
+        [ "key"=> "Tank", "value"=> "Tank", "text"=> "Tank", "icon" => "/images/roles/tank.PNG" ]),
+        "hero" => $global->convertToFilter(Session::get('heroes_name_to_short')) // I need to get the hero's short name in this array, too
+        //  "key" = hero_name
+        //  "value" = short_name
       /*  "hero" => $global->convertToFilter(Session::get('heroes_by_name')),*/
       ],
     ]);
@@ -427,6 +430,8 @@ private $maps = array();
 
         $return_data[$counter]["name"]["hero_name"] = $data[$i]["name"];
         $return_data[$counter]["name"]["short_name"] = Session::get("heroes_name_to_short")[$data[$i]["name"]];
+        $return_data[$counter]["name"]["role"] = Session::get("roles_by_hero_name")[$data[$i]["name"]];
+        $return_data[$counter]["name"]["type"] = Session::get("types_by_hero_name")[$data[$i]["name"]];
 
 
 
@@ -573,10 +578,14 @@ private $maps = array();
       $new_return_data = array();
       $new_data_counter = 0;
       for($i = 0; $i < count($return_data); $i++){
-        if($return_data[$i]["name"]["hero_name"] == $this->hero[0]){
-          $new_return_data[$new_data_counter] = $return_data[$i];
-          $new_data_counter++;
+
+        for($j = 0; $j < count($this->hero); $j++){
+          if($return_data[$i]["name"]["hero_name"] == $this->hero[$j]){
+            $new_return_data[$new_data_counter] = $return_data[$i];
+            $new_data_counter++;
+          }
         }
+
       }
       $return_data = $new_return_data;
     }

@@ -13874,6 +13874,38 @@ th {
   flex-wrap: wrap;
 }
 
+.hero-images-checkbox .rounded-circle {
+  width: 3em;
+  height: 3em;
+}
+
+.hero-images-checkbox label.btn.btn-secondary {
+  padding: 0.2em;
+}
+
+.hero-images-checkbox .btn-secondary:not(:disabled):not(.disabled):active .rounded-circle,
+.hero-images-checkbox .btn-secondary:not(:disabled):not(.disabled).active .rounded-circle,
+.hero-images-checkbox .show > .btn-secondary.dropdown-toggle .rounded-circle {
+  box-shadow: #fff 1px 1px 11px;
+}
+
+.primary-filter-bar {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: flex-start;
+  background-color: #213d7a;
+}
+
+.primary-filter-bar > .dropdown {
+  /*  margin-left:1rem;
+    margin-right:1rem;*/
+}
+
+.primary-filter-bar > .dropdown > button {
+  border-radius: 0;
+}
+
 @media only screen and (max-width: 800px) {
   .mobileHide {
     display: none !important;

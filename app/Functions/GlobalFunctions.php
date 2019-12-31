@@ -39,6 +39,7 @@ class GlobalFunctions
     return $return_data;
   }
 
+
   public function getMaps($key_value){
 
     switch ($key_value) {
@@ -141,6 +142,36 @@ class GlobalFunctions
 
 
     $roles = DB::table('heroesprofile.heroes')->select('id', 'name', 'new_role')->get();
+    $roles = json_decode(json_encode($roles),true);
+
+    $return_data = array();
+
+    for($i = 0; $i < count($roles); $i++){
+      $return_data[$roles[$i][$key_value]] = $roles[$i][$value];
+    }
+    return $return_data;
+  }
+
+
+  /*
+  |--------------------------------------------------------------------------
+  | getTypes
+  |--------------------------------------------------------------------------
+  |
+  | This function gets all of the heroes types
+  |
+  */
+
+  public function getTypes($key_value){
+
+    switch ($key_value) {
+        case "name":
+            $value = "type";
+            break;
+    }
+
+
+    $roles = DB::table('heroesprofile.heroes')->select('name', 'type')->get();
     $roles = json_decode(json_encode($roles),true);
 
     $return_data = array();

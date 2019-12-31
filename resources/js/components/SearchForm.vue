@@ -1,9 +1,8 @@
 <template>
   <div class="filter-form">
 
-    <nav class="navbar">
-      <b-button-group role="toolbar" btn-group-toggle class="primary-filter-bar">
-        <b-dropdown id="dropdown-form"  ref="dropdown1" class="m-2" boundary="window" @hidden="updateFields()">
+    <nav class="navbar primary-filter-bar">
+        <b-dropdown id="dropdown-form"  ref="dropdown1"  boundary="window" @hidden="updateFields()">
         <template v-slot:button-content>
               Timeframe: {{ timeframetype | caps }} {{ form.timeframe | labels }}
             </template>
@@ -19,9 +18,24 @@
           <b-button @click="hideDropdowns()" variant="primary" class="menu-close">Apply</b-button>
         </b-dropdown-form>
       </b-dropdown>
-      <b-dropdown id="dropdown-form2"  ref="dropdown2" class="m-2" boundary="window" @hidden="updateFields()">
+      <b-dropdown id="dropdown-formheroes"  ref="dropdownheroes"  boundary="window" @hidden="updateFields()">
       <template v-slot:button-content>
-            Game Type: {{ form.gametype | labels }}
+            Heroes {{ form.hero | labels }}
+          </template>
+      <b-dropdown-form>
+        <b-form-group label="Heroes">
+          <b-form-checkbox-group buttons v-model="form.hero"  :name="rawfields.hero.value" class="hero-images-checkbox" >
+            <b-form-checkbox v-for="option in rawfields.hero" :value="option.key" :key="option.key">   <image-popup  :alttext="option.key" :imgSrc="'/images/heroes/'+option.value+'.png'" ></image-popup>
+            </b-form-checkbox>
+          </b-form-checkbox-group>
+        </b-form-group>
+
+        <b-button @click="hideDropdowns()" variant="primary" class="menu-close">Apply</b-button>
+      </b-dropdown-form>
+    </b-dropdown>
+      <b-dropdown id="dropdown-form2"  ref="dropdown2"  boundary="window" @hidden="updateFields()">
+      <template v-slot:button-content>
+            Game Type {{ form.gametype | labels }}
           </template>
       <b-dropdown-form>
         <b-form-checkbox-group v-model="form.game_type"  :name="rawfields.game_type.name"  >
@@ -30,7 +44,7 @@
         <b-button @click="hideDropdowns()" variant="primary" class="menu-close">Apply</b-button>
       </b-dropdown-form>
     </b-dropdown>
-    <b-dropdown id="dropdown-form3"  ref="dropdown3" class="m-2" boundary="window" @hidden="updateFields()">
+    <b-dropdown id="dropdown-form3"  ref="dropdown3"  boundary="window" @hidden="updateFields()">
     <template v-slot:button-content>
           Rank
         </template>
@@ -51,12 +65,12 @@
         Hero Rank
         <multiselect v-model="form.hero_league_tier" track-by="value" label="key" placeholder="All" :multiple="true" :options="rawfields.hero_league_tier" :searchable="true" :allow-empty="true">
         </multiselect>
-        
+
       </div>
       <b-button @click="hideDropdowns()" variant="primary" class="menu-close">Apply</b-button>
     </b-dropdown-form>
   </b-dropdown>
-  <b-dropdown id="dropdown-form4"  ref="dropdown4" class="m-2" boundary="window" @hidden="updateFields()">
+  <b-dropdown id="dropdown-form4"  ref="dropdown4"  boundary="window" @hidden="updateFields()">
   <template v-slot:button-content>
         More
       </template>
@@ -83,7 +97,7 @@
     <b-button @click="hideDropdowns()" variant="primary" class="menu-close">Apply</b-button>
   </b-dropdown-form>
 </b-dropdown>
-      </b-button-group>
+
 
     </nav>
 
@@ -106,13 +120,19 @@ export default {
         showFilterMenu: false,
         finalFields : {},
         currentlySelectedPopup : '',
-        selectedPopover : ''
+        selectedPopover : '',
+        filtersChanged : true
       }
     },
   mounted () {
     this.$store.commit('updateAjaxURL', '/get_heroes_stats_table_data');
 
     this.updateFields()
+  },
+  watch: {
+    form: function(){
+      this.filtersChanged = true
+    }
   },
   methods: {
     timeframeChange: function ()
@@ -126,10 +146,14 @@ export default {
         this.$refs.dropdown2.hide(true)
         this.$refs.dropdown3.hide(true)
         this.$refs.dropdown4.hide(true)
+        this.$refs.dropdownheroes.hide(true)
     },
     updateFields(){
-      this.finalFields = this.form;
-      this.$store.dispatch('updateFormData',  this.form);
+      if(this.filtersChanged){
+        this.finalFields = this.form;
+        this.$store.dispatch('updateFormData',  this.form);
+        this.filtersChanged = false;
+      }
     }
   },
   filters: {
@@ -155,8 +179,25 @@ export default {
               }
 
             }
+            else if(val.name){
+              values.push(val.name);
+              counter++;
+              if(counter > 1){
+                values.push ("...");
+                break;
+              }
+
+            }
+            else{
+              values.push(val);
+              counter++;
+              if(counter > 1){
+                values.push ("...");
+                break;
+              }
+            }
           }
-          return values.join(', ')
+          return "("+values.join(', ')+")";
         }
     },
     computed: {
@@ -191,4 +232,5 @@ export default {
 
 .test3{position:relative;}
 .custom-popover{position:absolute;}
+
 </style>
