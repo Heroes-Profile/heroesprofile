@@ -4,7 +4,7 @@
       <b-spinner></b-spinner>
     </div>
     <table class="table b-table table-striped table-bordered table-sm">
-      <thead><th>Talents</th><th>Win Rate</th><th>Wins</th><th>Losses</th></thead>
+      <thead><th>Talents</th><th>Win Chance</th><th>Wins</th><th>Losses</th></thead>
       <tbody>
     <tr class="build" v-for="(build, index) in talentData">
 

@@ -18,6 +18,17 @@
           <b-button @click="hideDropdowns()" variant="primary" class="menu-close">Apply</b-button>
         </b-dropdown-form>
       </b-dropdown>
+      <b-dropdown id="dropdown-form2"  ref="dropdown2"  boundary="window" @hidden="updateFields()">
+      <template v-slot:button-content>
+            Game Type {{ form.gametype | labels }}
+          </template>
+      <b-dropdown-form>
+        <b-form-checkbox-group v-model="form.game_type"  :name="rawfields.game_type.name"  >
+          <b-form-checkbox v-for="option in rawfields.game_type" :value="option.key" :key="option.key"> <div class="checkbox-image" v-if="option.icon"><img :alt="option.name" :src="option.icon"/></div><span v-else>{{ option.text }}</span> </b-form-checkbox>
+        </b-form-checkbox-group>
+        <b-button @click="hideDropdowns()" variant="primary" class="menu-close">Apply</b-button>
+      </b-dropdown-form>
+    </b-dropdown>
       <b-dropdown id="dropdown-formheroes"  ref="dropdownheroes"  boundary="window" @hidden="updateFields()">
       <template v-slot:button-content>
             Heroes {{ form.hero | labels }}
@@ -33,17 +44,7 @@
         <b-button @click="hideDropdowns()" variant="primary" class="menu-close">Apply</b-button>
       </b-dropdown-form>
     </b-dropdown>
-      <b-dropdown id="dropdown-form2"  ref="dropdown2"  boundary="window" @hidden="updateFields()">
-      <template v-slot:button-content>
-            Game Type {{ form.gametype | labels }}
-          </template>
-      <b-dropdown-form>
-        <b-form-checkbox-group v-model="form.game_type"  :name="rawfields.game_type.name"  >
-          <b-form-checkbox v-for="option in rawfields.game_type" :value="option.key" :key="option.key"> <div class="checkbox-image" v-if="option.icon"><img :alt="option.name" :src="option.icon"/></div><span v-else>{{ option.text }}</span> </b-form-checkbox>
-        </b-form-checkbox-group>
-        <b-button @click="hideDropdowns()" variant="primary" class="menu-close">Apply</b-button>
-      </b-dropdown-form>
-    </b-dropdown>
+
     <b-dropdown id="dropdown-form3"  ref="dropdown3"  boundary="window" @hidden="updateFields()">
     <template v-slot:button-content>
           Rank

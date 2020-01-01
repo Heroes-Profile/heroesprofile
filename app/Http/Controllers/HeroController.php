@@ -61,7 +61,7 @@ private $maps = array();
     [
       'dataurl' => '/get_heroes_stats_table_data', // URL used for calling the table data
       'title' => 'Global Win Rates', // Page title
-      'paragraph' => 'Hero win rates based on differing increments, stat types, game type, or league tier. Click on a Hero to see detailed talent information.', // Summary paragraph
+      'paragraph' => 'Hero win rates based on differing increments, stat types, game type, or league tier.', // Summary paragraph
       'tableheading' => 'Win Rates', // Table heading
       'timeframe_type' => [
           "key" => "timeframe_type",
@@ -353,8 +353,8 @@ private $maps = array();
               "|" . implode(",", $this->timeframe) .
               "|" . implode(",", $this->stat_type) .
               "|" . implode(",", $this->hero_level) .
-              "|" . implode(",",$this->role) .
-              "|" . implode(",",$this->hero) .
+              //"|" . implode(",",$this->role) .
+              //"|" . implode(",",$this->hero) .
               "|" . implode(",", $this->game_type) .
               "|" . implode(",", $this->game_map) .
               "|"  . implode(",", $this->player_league_tier) .
