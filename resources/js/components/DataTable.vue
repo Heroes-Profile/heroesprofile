@@ -10,7 +10,8 @@
     <b-table striped bordered responsive small :items="formData" :fields="fields" :busy="loading" :sort-by="sortby" :sort-desc="true" >
       <template v-slot:cell(name)="data" >
         <div class="image-with-name">
-          <image-popup  :alttext="data.value.hero_name" :imgSrc="'/images/heroes/'+data.value.short_name+'.png'" :popupdata="'Hero info for '+data.value.hero_name"></image-popup>  <span class="emphasis">{{ data.value.hero_name }}</span>
+          <image-popup  :alttext="data.value.hero_name" :imgSrc="'/images/heroes/'+data.value.short_name+'.png'" :popupdata="'Role: '+ data.value.role+ ' <br>Type: '+data.value.type"></image-popup>  <span class="emphasis">{{ data.value.hero_name }}</span>
+
         </div>
       </template>
       <template v-slot:cell(win_rate)="data">

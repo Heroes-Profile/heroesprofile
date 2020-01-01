@@ -1,5 +1,5 @@
 <template>
- <div v-b-popover.hover.top="popupdata" :title="alttext" class="image-popup-img" >
+ <div v-b-popover.hover.top.html="popupdata" :title="alttext"  class="image-popup-img" >
    <!--<b-img  v-bind="imgProps" :src="'@/images/heroes/abathur.png'" rounded="circle" :alt="alttext" ></b-img>-->
    <img :src="imgSrc" :alt="alttext" class="rounded-circle circle-image">
  </div>

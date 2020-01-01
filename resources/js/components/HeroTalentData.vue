@@ -3,18 +3,28 @@
     <div class="loading"  v-if="loading"  >
       <b-spinner></b-spinner>
     </div>
-    <div class="build flex-wrap" v-for="(build, index) in talentData">
+    <table class="table b-table table-striped table-bordered table-sm">
+      <thead><th>Talents</th><th>Win Rate</th><th>Wins</th><th>Losses</th></thead>
+      <tbody>
+    <tr class="build" v-for="(build, index) in talentData">
+
       <!--<span class="sub-title">Build 1</span>-->
-      <span class="sub-title">Build {{ index+1 }}</span>
-      <div class="flex-wrap">
+      <!--<span class="sub-title">Build {{ index+1 }}</span>-->
+    <td>  <div class="flex-wrap">
         <div class="talent" v-for="talent in build.talents" :data-talent="talent.level">
+
           <image-popup :alttext="talent.name" :imgSrc="'/images/talents/'+hero.short_name+'/'+talent.icon" :popupdata="talent.description"></image-popup>
         </div>
       </div>
-      <div>
-        Win Rate: {{Number((build.win_rate).toFixed(2))}}%
-      </div>
-    </div>
+    </td>
+
+        <td>{{Number((build.win_rate).toFixed(2))}}%</td>
+        <td>{{build.wins}}</td>
+        <td>{{build.losses}}</td>
+
+    </tr>
+  </tbody>
+  </table>
   </div>
 </template>
 
