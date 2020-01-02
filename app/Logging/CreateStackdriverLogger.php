@@ -1,3 +1,4 @@
+<?
 namespace App\Logging;
 
 use Google\Cloud\Logging\LoggingClient;
@@ -21,3 +22,4 @@ class CreateStackdriverLogger
         return $logger;
     }
 }
+?>
