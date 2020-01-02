@@ -1,6 +1,6 @@
 # Heroes Profile
 
- [Heroes Profile](https://www.alpha.heroesprofile.com/) is an open Heroes of the Storm stat site.  Providing players with Global Hero Statistics, Personal Profile, MMR, Comparisons, Amateur series, and much more.
+ [Heroes Profile](https://alpha.heroesprofile.com/) is an open Heroes of the Storm stat site.  Providing players with Global Hero Statistics, Personal Profile, MMR, Comparisons, Amateur series, and much more.
 
  This public repository is the site re-write for [Heroes Profile](https://www.heroesprofile.com/) and is not currently in production.
 
