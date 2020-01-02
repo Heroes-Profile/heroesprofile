@@ -53,7 +53,6 @@
  * Run `npm run watch` - watches for any changes to vue and automatically recompiles
 
  # Contributing
-
  All contributions are welcome.  The owners of Heroes Profile reserve the right to include or deny any merge requests from the community.  Also, please try and only create pull requests that contain updates to the specific update you want to make.  Including environment or auto-generated updates to framework code that are not required for your change only complicates making updates.
 
  If a contribution requires changes to the database, or how the data is grabbed from replays, please log an issue report detailing your need.
