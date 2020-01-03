@@ -11,7 +11,7 @@ class global_hero_stats_old_seeder extends Seeder
      */
     public function run()
     {
-        $sql = base_path('database/seeds/heroesprofile-seeds/seed-filesglobal_hero_stats_old.sql');
+        $sql = base_path('database/seeds/heroesprofile-seeds/seed-files/global_hero_stats_old.sql');
         DB::unprepared(file_get_contents($sql));
     }
 }

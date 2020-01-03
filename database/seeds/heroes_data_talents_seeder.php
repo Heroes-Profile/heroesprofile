@@ -11,7 +11,7 @@ class heroes_data_talents_seeder extends Seeder
      */
     public function run()
     {
-      $sql = base_path('database/seeds/heroesprofile-seeds/seed-filesheroes_data_talents.sql');
+      $sql = base_path('database/seeds/heroesprofile-seeds/seed-files/heroes_data_talents.sql');
       DB::unprepared(file_get_contents($sql));
     }
 }
