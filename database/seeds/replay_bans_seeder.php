@@ -11,7 +11,7 @@ class replay_bans_seeder extends Seeder
      */
     public function run()
     {
-      $sql = base_path('database/seeds/heroesprofile-seeds/seed-filesreplay_bans.sql');
+      $sql = base_path('database/seeds/heroesprofile-seeds/seed-files/replay_bans.sql');
       DB::unprepared(file_get_contents($sql));
     }
 }

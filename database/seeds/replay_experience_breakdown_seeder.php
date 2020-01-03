@@ -11,7 +11,7 @@ class replay_experience_breakdown_seeder extends Seeder
      */
     public function run()
     {
-      $sql = base_path('database/seeds/heroesprofile-seeds/seed-filesreplay_experience_breakdown.sql');
+      $sql = base_path('database/seeds/heroesprofile-seeds/seed-files/replay_experience_breakdown.sql');
       DB::unprepared(file_get_contents($sql));
     }
 }
