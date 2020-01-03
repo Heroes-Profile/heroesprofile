@@ -4,7 +4,30 @@
 
  This public repository is the site re-write for [Heroes Profile](https://www.heroesprofile.com/) and is not currently in production.
 
- # Installation
+# Cloning the Heroes Profile repository
+ * `git clone --recursive https://github.com/Zemill/heroesprofile.git`
+ * `git submodule update --remote`
+ * If you have issues getting the seed files to populate in `database/seeds/heroesprofile-seeds/seed-files`, you can pull them directly from https://github.com/Zemill/heroesprofile-seeds.git
+
+# Docker Setup
+
+Make sure you have docker and docker compose installed. This method will setup separate containers for the `database` and the `app`
+
+ * `docker-compose up -d`
+ * wait for
+   * database initialisation
+   * data migration and seeding
+   * dependencies (composer + npm) installation
+ * `docker-compose logs -f` to check if there are any issues in setup
+ * goto http://localhost
+
+If you need to get into a command promt for the app
+ * `docker-compose run app bash` -- will start a command prompt in a new container
+ * `docker-compose exec app bash` -- will attach to an existing container if already running
+
+# Manual Setup
+
+ ## Installation
 
  Heroes Profile is a PHP/Laravel and vue.js app. Making use of a MySql database.  Every system has different methods for getting the required dependencies installed so please reference the main tools sites for installation instructions.
 
@@ -24,18 +47,11 @@
 
  For windows users, Wampserver64 is a useful tool as it installs the MySql server and php at the same time. https://sourceforge.net/projects/wampserver/
 
-
-# Cloning the Heroes Profile repository
- * `git clone --recursive https://github.com/Zemill/heroesprofile.git`
- * `git submodule update --remote`
- * If you have issues getting the seed files to populate in `database/seeds/heroesprofile-seeds/seed-files`, you can pull them directly from https://github.com/Zemill/heroesprofile-seeds.git
-
-# Once all the dependencies are installed
- #Database setup
+ ## Database setup
  * Create the following schemas in your MySql database.   `heroesprofile`, `heroesprofile_brawl`, `heroesprofile_cache`
  * Increase your local mysql max_allowed_packet var.  We use 64M.
 
- #Project Setup
+ ## Project Setup
  * From the command line, navigate to the heroesprofile repository.
  * Configure `.env` file using `.env.example`
  * Run `php artisan key:generate` make sure the APP_KEY has this value in the .env file
@@ -45,7 +61,7 @@
  * Run `composer dump-autoload`
  * Run `php artisan db:seed`
 
- #Running the project
+ ## Running the project
  * From the command line, navigate to the heroesprofile repository.
  * Run `php artisan serve` - spins up the webserver
  * The path to paste into the browser will show up in the command line.

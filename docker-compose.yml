@@ -10,11 +10,13 @@ services:
     restart: always
     networks:
       - heroesprofile
-    command: "/var/www/html/entrypoint.sh"
+    working_dir: "/var/www/html/"
+    command: "./entrypoint.sh"
   database:
-    image: mariadb:10.4.7
+    image: mysql:5
     environment:
      MYSQL_ROOT_PASSWORD: docker
+     MYSQL_DATABASE: heroesprofile
     ports:
       - 3306:3306
     expose:
