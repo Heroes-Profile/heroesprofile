@@ -1,0 +1,31 @@
+version: '3'
+services:
+  app:
+    image: misterio92/ci-php-node
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./:/var/www/html
+    restart: always
+    networks:
+      - heroesprofile
+    command: "/var/www/html/entrypoint.sh"
+  database:
+    image: mariadb:10.4.7
+    environment:
+     MYSQL_ROOT_PASSWORD: docker
+    ports:
+      - 3306:3306
+    expose:
+      - "3306"
+    volumes:
+      - vol_db_hp:/var/lib/mysql
+    restart: always
+    networks:
+      - heroesprofile
+volumes:
+  vol_db_hp:
+
+networks:
+  heroesprofile:
