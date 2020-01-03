@@ -11,7 +11,7 @@ class scores_seeder extends Seeder
      */
     public function run()
     {
-      $sql = base_path('database/seeds/heroesprofile-seeds/seed-filesscores.sql');
+      $sql = base_path('database/seeds/heroesprofile-seeds/seed-files/scores.sql');
       DB::unprepared(file_get_contents($sql));
     }
 }
