@@ -11,7 +11,7 @@ class replay_seeder extends Seeder
      */
     public function run()
     {
-      $sql = base_path('database/seeds/heroesprofile-seeds/seed-filesreplay.sql');
+      $sql = base_path('database/seeds/heroesprofile-seeds/seed-files/replay.sql');
       DB::unprepared(file_get_contents($sql));
     }
 }

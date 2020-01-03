@@ -11,7 +11,7 @@ class master_games_played_data_seeder extends Seeder
      */
     public function run()
     {
-      $sql = base_path('database/seeds/heroesprofile-seeds/seed-filesmaster_games_played_data.sql');
+      $sql = base_path('database/seeds/heroesprofile-seeds/seed-files/master_games_played_data.sql');
       DB::unprepared(file_get_contents($sql));
     }
 }
