@@ -410,7 +410,7 @@ private $maps = array();
       }else{
         $query->select('heroes.name', 'global_hero_stats.win_loss', DB::raw('SUM(games_played) as games_played'));
       }
-      $query->groupBy('hero', 'win_loss');
+      $query->groupBy('name', 'win_loss');
       $data = $query->get();
 
       //print_r($query->toSql());
@@ -502,7 +502,7 @@ private $maps = array();
 
       $query->join('heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')
       ->select('heroes.name', DB::raw('SUM(bans) as bans'))
-      ->groupBy('hero');
+      ->groupBy('name');
       $data = $query->get();
       $data = json_decode(json_encode($data),true);
 
