@@ -11,6 +11,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+      $this->call(awards_seeder::class);
       $this->call(battletags_seeder::class);
       $this->call(game_types_seeder::class);
       $this->call(global_hero_change_seeder::class);
