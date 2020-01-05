@@ -27,7 +27,7 @@ class awards_seeder extends Seeder
         ['award_id' => 14, 'title' => 'Protector', 'icon' => 'storm_ui_mvp_protector'],
         ['award_id' => 15, 'title' => 'Sole Survivor', 'icon' => 'storm_ui_mvp_solesurvivor'],
         ['award_id' => 16, 'title' => 'Trapper', 'icon' => 'storm_ui_mvp_trapper'],
-        ['award_id' => 17, 'title' => 'Team Player', 'icon' => 'storm_ui_mvp_teamplayer_blue'],
+        ['award_id' => 17, 'title' => 'Team Player', 'icon' => 'storm_ui_mvp_teamplayer'],
         ['award_id' => 18, 'title' => 'Daredevil', 'icon' => 'storm_ui_mvp_daredevil'],
         ['award_id' => 19, 'title' => 'Escape Artist', 'icon' => 'storm_ui_mvp_escapeartist'],
         ['award_id' => 20, 'title' => 'Silencer', 'icon' => 'storm_ui_mvp_silencer'],
