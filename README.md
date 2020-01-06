@@ -6,7 +6,7 @@
 
 # Cloning the Heroes Profile repository
  * `git clone --recursive https://github.com/Zemill/heroesprofile.git`
- * `cd heroesprofile` 
+ * `cd heroesprofile`
  * `git submodule update --remote`
  * If you have issues getting the seed files to populate in `database/seeds/heroesprofile-seeds/seed-files`, you can pull them directly from https://github.com/Zemill/heroesprofile-seeds.git
 
@@ -20,7 +20,7 @@ Make sure you have docker and docker compose installed. This method will setup s
    * data migration and seeding
    * dependencies (composer + npm) installation
  * `docker-compose logs -f` to check if there are any issues in setup
- * goto http://localhost
+ * go to http://localhost
 
 If you need to get into a command promt for the app
  * `docker-compose run app bash` -- will start a command prompt in a new container
