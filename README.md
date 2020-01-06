@@ -6,6 +6,7 @@
 
 # Cloning the Heroes Profile repository
  * `git clone --recursive https://github.com/Zemill/heroesprofile.git`
+ * `cd heroesprofile` 
  * `git submodule update --remote`
  * If you have issues getting the seed files to populate in `database/seeds/heroesprofile-seeds/seed-files`, you can pull them directly from https://github.com/Zemill/heroesprofile-seeds.git
 
@@ -54,8 +55,8 @@ If you need to get into a command promt for the app
  ## Project Setup
  * From the command line, navigate to the heroesprofile repository.
  * Configure `.env` file using `.env.example`
- * Run `php artisan key:generate` make sure the APP_KEY has this value in the .env file
  * Run `composer install`
+ * Run `php artisan key:generate` make sure the APP_KEY has this value in the .env file
  * Run `npm install`
  * Run `php artisan migrate`
  * Run `composer dump-autoload`
