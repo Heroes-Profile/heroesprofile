@@ -16,6 +16,7 @@ Route::group([
 ], function () {
   //Route::get('/Profile', 'ProfileController@show');
   Route::view('/Profile', 'Profile/home');
+  Route::view('/Profile/FriendsFoes', 'Profile/FriendsFoes/home');
 
 
 

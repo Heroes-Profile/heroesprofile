@@ -594,4 +594,182 @@ class ProfileData
       return array(0, $return_data);
     }
   }
+
+  public function getPlayerFriendsAndFoes(){
+    $return_data = Cache::rememberForever("FriendsAndFoes" . "|" . $this->blizz_id . "|" . $this->region . "|" . $this->season . "|" . $this->game_type, function (){
+      $return_data = $this->grabFriendsAndFoesData();
+      return $return_data;
+    });
+
+    return $return_data;
+  }
+
+  private function grabFriendsAndFoesData(){
+    $sql = "SELECT " .
+    "replay.replayID, " .
+    "player.blizz_id, " .
+    "replay.region, " .
+    "replay.game_type, " .
+    "replay.game_map, " .
+    "player.hero, " .
+    "player.winner, " .
+    "player.team, " .
+    "battletags.battletag, " .
+    "battletags.latest_game " .
+    "FROM replay " .
+    "inner join player on player.replayID = replay.replayID " .
+    "INNER JOIN battletags ON (battletags.blizz_id = player.blizz_id and battletags.region = " . $this->region  . ") " .
+    "where replay.replayID in (select replay.replayID from replay inner join player on player.replayID = replay.replayID where blizz_id = " . $this->blizz_id . " and region = ". $this->region . ")";
+    $db_data = DB::connection('mysql')->select($sql);
+    $db_data = json_decode(json_encode($db_data),true);
+
+    $return_data = array();
+    $finalData = array();
+    $prevReplay = "";
+    $battletags_latest = array();
+
+    for($i = 0; $i < count($db_data); $i++){
+      if($prevReplay != "" && $prevReplay != $db_data[$i]["replayID"]){
+        $finalData[$prevReplay] = $return_data;
+        $return_data = array();
+
+      }
+      $return_data[$db_data[$i]["blizz_id"]]["battletag"] = $db_data[$i]["battletag"];
+      $return_data[$db_data[$i]["blizz_id"]]["blizz_id"] = $db_data[$i]["blizz_id"];
+      $return_data[$db_data[$i]["blizz_id"]]["hero"] = Session::get("heroes_by_id")[$db_data[$i]["hero"]];
+      $return_data[$db_data[$i]["blizz_id"]]["team"] = $db_data[$i]["team"];
+      $return_data[$db_data[$i]["blizz_id"]]["winner"] = $db_data[$i]["winner"];
+
+
+
+      if(array_key_exists($db_data[$i]["blizz_id"], $battletags_latest)){
+        if($battletags_latest[$db_data[$i]["blizz_id"]] < $db_data[$i]["latest_game"]){
+          $battletags[$db_data[$i]["blizz_id"]] = $db_data[$i]["battletag"];
+        }
+      }else{
+        $battletags_latest[$db_data[$i]["blizz_id"]] = $db_data[$i]["latest_game"];
+        $battletags[$db_data[$i]["blizz_id"]] = $db_data[$i]["battletag"];
+      }
+      $prevReplay = $db_data[$i]["replayID"];
+
+    }
+    $finalData[$prevReplay] = $return_data;
+
+    $allies = array();
+    $enemies = array();
+
+    foreach ($finalData as $replayID => $value){
+      foreach ($value as $blizz_id => $data){
+        //echo $value[$blizz_id]["battletag"];
+        //echo "<br />\n";
+
+        if($blizz_id != $this->blizz_id){
+          if($value[$blizz_id]["team"] == $finalData[$replayID][$this->blizz_id]["team"]){
+            if(array_key_exists($value[$blizz_id]["blizz_id"], $allies)){
+              $allies[$value[$blizz_id]["blizz_id"]]["games_played"]++;
+
+
+
+
+              if(!array_key_exists($value[$blizz_id]["hero"], $allies[$value[$blizz_id]["blizz_id"]]["hero"])){
+                $allies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]] = 0;
+              }
+              $allies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]]++;
+
+
+              if($value[$blizz_id]["winner"] == "1"){
+                $allies[$value[$blizz_id]["blizz_id"]]["wins"]++;
+
+              }else{
+                $allies[$value[$blizz_id]["blizz_id"]]["losses"]++;
+
+              }
+            }else{
+              $allies[$value[$blizz_id]["blizz_id"]]["games_played"] = 1;
+
+
+              if($value[$blizz_id]["winner"] == "1"){
+                $allies[$value[$blizz_id]["blizz_id"]]["wins"] = 1;
+                $allies[$value[$blizz_id]["blizz_id"]]["losses"] = 0;
+
+              }else{
+                $allies[$value[$blizz_id]["blizz_id"]]["losses"] = 1;
+                $allies[$value[$blizz_id]["blizz_id"]]["wins"] = 0;
+              }
+
+
+              $allies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]] = 1;
+
+
+            }
+
+          }else{
+            if(array_key_exists($value[$blizz_id]["blizz_id"], $enemies)){
+              $enemies[$value[$blizz_id]["blizz_id"]]["games_played"]++;
+
+
+
+
+              if(!array_key_exists($value[$blizz_id]["hero"], $enemies[$value[$blizz_id]["blizz_id"]]["hero"])){
+                $enemies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]] = 0;
+              }
+              $enemies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]]++;
+
+
+              if($value[$blizz_id]["winner"] == "1"){
+                $enemies[$value[$blizz_id]["blizz_id"]]["wins"]++;
+
+              }else{
+                $enemies[$value[$blizz_id]["blizz_id"]]["losses"]++;
+
+              }
+            }else{
+              $enemies[$value[$blizz_id]["blizz_id"]]["games_played"] = 1;
+
+
+              if($value[$blizz_id]["winner"] == "1"){
+                $enemies[$value[$blizz_id]["blizz_id"]]["wins"] = 1;
+                $enemies[$value[$blizz_id]["blizz_id"]]["losses"] = 0;
+
+              }else{
+                $enemies[$value[$blizz_id]["blizz_id"]]["losses"] = 1;
+                $enemies[$value[$blizz_id]["blizz_id"]]["wins"] = 0;
+              }
+
+
+              $enemies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]] = 1;
+
+
+            }
+          }
+        }
+
+
+      }
+
+    }
+    arsort($allies);
+    arsort($enemies);
+    //print_r($allies["67280"]);
+    $return_allies = array();
+    $return_enemies = array();
+
+    $a_i = 0;
+    $e_i = 0;
+
+    //Change to be dynamic as a view more without having to run this code over again.
+    foreach ($allies as $key => $value){
+      if($a_i == 50){break;}
+      $return_allies[$key] = $value;
+      $a_i++;
+    }
+
+    foreach ($enemies as $key => $value){
+      if($e_i == 50){break;}
+      $return_enemies[$key] = $value;
+      $e_i++;
+    }
+
+    return (array($return_allies, $return_enemies, $battletags));
+  }
 }
