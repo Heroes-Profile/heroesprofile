@@ -597,14 +597,14 @@ class ProfileData
 
   public function getPlayerFriendsAndFoes(){
     $return_data = Cache::rememberForever("FriendsAndFoes" . "|" . $this->blizz_id . "|" . $this->region . "|" . $this->season . "|" . $this->game_type, function (){
-      $return_data = $this->grabFriendsAndFoesData();
+      $return_data = $this->grabFriendsAndFoesReplayData();
       return $return_data;
     });
 
     return $return_data;
   }
 
-  private function grabFriendsAndFoesData(){
+  private function grabFriendsAndFoesReplayData(){
     $sql = "SELECT " .
     "replay.replayID, " .
     "player.blizz_id, " .
@@ -789,5 +789,75 @@ class ProfileData
     }
 
     return (array($return_allies, $return_enemies, $battletags));
+  }
+
+  public function grabAllHeroData(){
+    $return_data = Cache::rememberForever("HeroesAll" . "|" . $this->blizz_id . "|" . $this->region . "|" . $this->season . "|" . $this->game_type, function (){
+      $return_data = $this->getAllHeroReplayData();
+      $return_data = $this->getAllHeroMMRData($return_data);
+      return $return_data;
+    });
+
+    return $return_data;
+  }
+
+  private function getAllHeroReplayData(){
+    $query = DB::table('heroesprofile.replay');
+    $query->join('heroesprofile.player', 'heroesprofile.player.replayID', '=', 'heroesprofile.replay.replayID');
+    $query->where('heroesprofile.replay.region', $this->region);
+    $query->where('heroesprofile.player.blizz_id', $this->blizz_id);
+    $query->select(
+        'heroesprofile.replay.game_type',
+        'heroesprofile.replay.game_map',
+        'heroesprofile.player.hero',
+        'heroesprofile.player.winner',
+        DB::raw('COUNT(*) as total_games')
+      );
+    $query->groupBy('game_type', 'game_map', 'hero', 'winner');
+    $data = $query->get();
+    $data = json_decode(json_encode($data),true);
+    //print_r($query->toSql());
+    //echo "<br>";
+    //print_r($query->getBindings());
+
+    $return_data = array();
+    for($i = 0; $i < count($data); $i++){
+      $hero_name = Session::get("heroes_by_id")[$data[$i]["hero"]];
+      $game_type_name = Session::get("game_types_by_id")[$data[$i]["game_type"]];
+      $game_map_name = Session::get("maps_by_id")[$data[$i]["game_map"]];
+
+      if($data[$i]["winner"] == 1){
+        $return_data[$hero_name]["game_data"][$game_type_name][$game_map_name]["wins"] = $data[$i]["total_games"];
+      }else{
+        $return_data[$hero_name]["game_data"][$game_type_name][$game_map_name]["losses"] = $data[$i]["total_games"];
+      }
+    }
+    return $return_data;
+  }
+
+  private function getAllHeroMMRData($return_data){
+    $query = DB::table('heroesprofile.master_mmr_data');
+    $query->whereIn('heroesprofile.master_mmr_data.type_value', json_decode(json_encode(DB::table('heroesprofile.heroes')->select('id')->get()),true));
+    $query->whereIn('heroesprofile.master_mmr_data.game_type', json_decode(json_encode(DB::table('heroesprofile.game_types')->select('type_id')->get()),true));
+    $query->where('heroesprofile.master_mmr_data.blizz_id', $this->blizz_id);
+    $query->where('heroesprofile.master_mmr_data.region', $this->region);
+    $data = $query->get();
+    $data = json_decode(json_encode($data),true);
+
+
+
+    for($i = 0; $i < count($data); $i++){
+      $hero_name = Session::get("heroes_by_id")[$data[$i]["type_value"]];
+      $game_type_name = Session::get("game_types_by_id")[$data[$i]["game_type"]];
+
+      $return_data[$hero_name]["mmr_data"][$game_type_name] = 1800 + 40 * $data[$i]["conservative_rating"];
+    }
+    /*
+    print_r($query->toSql());
+    echo "<br>";
+    print_r($query->getBindings());
+    */
+
+    return $return_data;
   }
 }
