@@ -613,20 +613,49 @@ class ProfileData
     "replay.game_map, " .
     "player.hero, " .
     "player.winner, " .
-    "player.team, " .
-    "battletags.battletag, " .
-    "battletags.latest_game " .
+    "player.team " .
     "FROM replay " .
     "inner join player on player.replayID = replay.replayID " .
-    "INNER JOIN battletags ON (battletags.blizz_id = player.blizz_id and battletags.region = " . $this->region  . ") " .
     "where replay.replayID in (select replay.replayID from replay inner join player on player.replayID = replay.replayID where blizz_id = " . $this->blizz_id . " and region = ". $this->region . ")";
     $db_data = DB::connection('mysql')->select($sql);
     $db_data = json_decode(json_encode($db_data),true);
 
+    $sql = "SELECT " .
+    "blizz_id, " .
+    "battletag, " .
+    "latest_game " .
+    "FROM heroesprofile.battletags " .
+    "where blizz_id in (SELECT " .
+    "DISTINCT(player.blizz_id) "  .
+    "FROM replay INNER JOIN player ON player.replayID = replay.replayID " .
+    "WHERE " .
+    "replay.replayID IN (SELECT " .
+    "replay.replayID " .
+    "FROM replay INNER JOIN player ON player.replayID = replay.replayID " .
+    "WHERE " .
+    "blizz_id = " . $this->blizz_id . " AND region = " . $this->region . ")) and region = " . $this->region;
+    $b_data = DB::connection('mysql')->select($sql);
+    $b_data = json_decode(json_encode($b_data),true);
+
+    $battletag_data = array();
+    $battletags_latest = array();
+
+    for($i = 0; $i < count($b_data); $i++){
+
+
+      if(array_key_exists($b_data[$i]["blizz_id"], $battletags_latest)){
+        if($battletags_latest[$b_data[$i]["blizz_id"]] < $b_data[$i]["latest_game"]){
+          $battletag_data[$b_data[$i]["blizz_id"]] = $b_data[$i]["battletag"];
+        }
+      }else{
+        $battletags_latest[$b_data[$i]["blizz_id"]] = $b_data[$i]["latest_game"];
+        $battletag_data[$b_data[$i]["blizz_id"]] = $b_data[$i]["battletag"];
+      }
+    }
+
     $return_data = array();
     $finalData = array();
     $prevReplay = "";
-    $battletags_latest = array();
 
     for($i = 0; $i < count($db_data); $i++){
       if($prevReplay != "" && $prevReplay != $db_data[$i]["replayID"]){
@@ -634,22 +663,11 @@ class ProfileData
         $return_data = array();
 
       }
-      $return_data[$db_data[$i]["blizz_id"]]["battletag"] = $db_data[$i]["battletag"];
+      $return_data[$db_data[$i]["blizz_id"]]["battletag"] = $battletag_data[$db_data[$i]["blizz_id"]];
       $return_data[$db_data[$i]["blizz_id"]]["blizz_id"] = $db_data[$i]["blizz_id"];
       $return_data[$db_data[$i]["blizz_id"]]["hero"] = Session::get("heroes_by_id")[$db_data[$i]["hero"]];
       $return_data[$db_data[$i]["blizz_id"]]["team"] = $db_data[$i]["team"];
       $return_data[$db_data[$i]["blizz_id"]]["winner"] = $db_data[$i]["winner"];
-
-
-
-      if(array_key_exists($db_data[$i]["blizz_id"], $battletags_latest)){
-        if($battletags_latest[$db_data[$i]["blizz_id"]] < $db_data[$i]["latest_game"]){
-          $battletags[$db_data[$i]["blizz_id"]] = $db_data[$i]["battletag"];
-        }
-      }else{
-        $battletags_latest[$db_data[$i]["blizz_id"]] = $db_data[$i]["latest_game"];
-        $battletags[$db_data[$i]["blizz_id"]] = $db_data[$i]["battletag"];
-      }
       $prevReplay = $db_data[$i]["replayID"];
 
     }
@@ -754,20 +772,20 @@ class ProfileData
     $return_allies = array();
     $return_enemies = array();
 
-    $a_i = 0;
-    $e_i = 0;
+    //$a_i = 0;
+    //$e_i = 0;
 
     //Change to be dynamic as a view more without having to run this code over again.
     foreach ($allies as $key => $value){
-      if($a_i == 50){break;}
+      //if($a_i == 50){break;}
       $return_allies[$key] = $value;
-      $a_i++;
+      //$a_i++;
     }
 
     foreach ($enemies as $key => $value){
-      if($e_i == 50){break;}
+      //if($e_i == 50){break;}
       $return_enemies[$key] = $value;
-      $e_i++;
+      //$e_i++;
     }
 
     return (array($return_allies, $return_enemies, $battletags));
