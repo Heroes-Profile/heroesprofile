@@ -49,7 +49,12 @@ $region = 1;
       </thead>
     <tbody>
       <?php
+      $count = 50;
       foreach($friendsFoes[0] as $f_blizz_id => $friend_for_data){
+        if($count == 0){
+          break;
+        }
+        $count--;
         arsort($friend_for_data["hero"]);
         echo "<tr>" .
         "<td><a href=" . "\"" . "/Profile/?blizz_id=" . $f_blizz_id . "&battletag=" . explode('#', $friendsFoes[2][$f_blizz_id])[0] .
@@ -95,7 +100,13 @@ $region = 1;
       </thead>
     <tbody>
       <?php
+      $count = 50;
       foreach($friendsFoes[1] as $f_blizz_id => $friend_for_data){
+        if($count == 0){
+          break;
+        }
+        $count--;
+
         arsort($friend_for_data["hero"]);
         echo "<tr>" .
         //"<td><a href=" . "\"" . "/Profile/?blizz_id=" . $blizz_id . "&battletag=" . explode('#', $friendsFoes[2][$blizz_id])[0] . "&region=" . $region . ">" . explode('#', $friendsFoes[2][$blizz_id])[0] . "</a></td>" .
