@@ -157,6 +157,11 @@ class GlobalsMiddleware
             return $this->setGameTypesByCache("name");
         })]);
       }
+      if (!$request->session()->has('game_types_by_id')) {
+        session(['game_types_by_id' => Cache::remember('game_types_by_id', $seconds, function () {
+            return $this->setGameTypesByCache("type_id");
+        })]);
+      }
       /*
 
       Cache::add('league_tiers_by_name', $this->setLeagueTierByCache(), $seconds);
