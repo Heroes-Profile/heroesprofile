@@ -860,4 +860,112 @@ class ProfileData
 
     return $return_data;
   }
+
+  public function grabSingleHeroData($hero){
+    $return_data = Cache::rememberForever("HeroesSingle" . "|" . $hero . "|" . $this->blizz_id . "|" . $this->region . "|" . $this->season . "|" . $this->game_type, function (){
+      $return_data = $this->getSingleHeroReplayData();
+      return $return_data;
+    });
+
+    return $return_data;
+
+  }
+
+  private function getSingleHeroReplayData($hero){
+    $query = DB::table('heroesprofile.replay');
+    $query->join('heroesprofile.player', 'heroesprofile.player.replayID', '=', 'heroesprofile.replay.replayID');
+    $query->join('heroesprofile.scores', function($join)
+      {
+        $join->on('heroesprofile.scores.replayID', '=', 'heroesprofile.replay.replayID');
+        $join->on('heroesprofile.scores.battletag', '=', 'heroesprofile.player.battletag');
+      }
+    );
+    $query->join('heroesprofile.talents', function($join)
+      {
+        $join->on('heroesprofile.talents.replayID', '=', 'heroesprofile.replay.replayID');
+        $join->on('heroesprofile.talents.battletag', '=', 'heroesprofile.player.battletag');
+      }
+    );
+    $query->where('heroesprofile.replay.region', $this->region);
+    $query->where('heroesprofile.player.blizz_id', $this->blizz_id);
+    $query->where('heroesprofile.player.hero', $hero);
+    $query->select(
+        'heroesprofile.replay.game_type',
+        'heroesprofile.replay.game_date',
+        'heroesprofile.replay.game_length',
+        'heroesprofile.replay.game_map',
+        'heroesprofile.player.hero_level',
+        'heroesprofile.player.mastery_taunt',
+        'heroesprofile.player.winner',
+        'heroesprofile.player.player_conservative_rating',
+        'heroesprofile.player.hero_conservative_rating',
+        'heroesprofile.player.role_conservative_rating',
+        'heroesprofile.scores.kills',
+        'heroesprofile.scores.assists',
+        'heroesprofile.scores.takedowns',
+        'heroesprofile.scores.deaths',
+        'heroesprofile.scores.highest_kill_streak',
+        'heroesprofile.scores.hero_damage',
+        'heroesprofile.scores.siege_damage',
+        'heroesprofile.scores.structure_damage',
+        'heroesprofile.scores.minion_damage',
+        'heroesprofile.scores.creep_damage',
+        'heroesprofile.scores.summon_damage',
+        //'heroesprofile.scores.time_cc_enemy_heroes',
+        'heroesprofile.scores.healing',
+        'heroesprofile.scores.self_healing',
+        'heroesprofile.scores.damage_taken',
+        'heroesprofile.scores.experience_contribution',
+        'heroesprofile.scores.town_kills',
+        'heroesprofile.scores.time_spent_dead',
+        'heroesprofile.scores.merc_camp_captures',
+        'heroesprofile.scores.watch_tower_captures',
+        //'heroesprofile.scores.meta_experience',
+        //'heroesprofile.scores.match_award',
+        'heroesprofile.scores.protection_allies',
+        'heroesprofile.scores.silencing_enemies',
+        'heroesprofile.scores.rooting_enemies',
+        'heroesprofile.scores.clutch_heals',
+        'heroesprofile.scoresscores.escapes',
+        'heroesprofile.scores.vengeance',
+        'heroesprofile.scores.outnumbered_deaths',
+        'heroesprofile.scores.teamfight_escapes',
+        'heroesprofile.scores.teamfight_healing',
+        'heroesprofile.scores.teamfight_damage_taken',
+        'heroesprofile.scores.teamfight_hero_damage',
+        'heroesprofile.scores.multikill',
+        'heroesprofile.scores.physical_damage',
+        'heroesprofile.scores.spell_damage',
+        'heroesprofile.scores.regen_globes',
+        'heroesprofile.scores.first_to_ten',
+        'heroesprofile.talents.level_one',
+        'heroesprofile.talents.level_four',
+        'heroesprofile.talents.level_seven',
+        'heroesprofile.talents.level_ten',
+        'heroesprofile.talents.level_thirteen',
+        'heroesprofile.talents.level_sixteen',
+        'heroesprofile.talents.level_twenty'
+      );
+    $data = $query->get();
+    $data = json_decode(json_encode($data),true);
+    /*
+    print_r($query->toSql());
+    echo "<br>";
+    print_r($query->getBindings());
+    */
+    
+    $return_data = array();
+    $return_data["wins"] = 0;
+    $return_data["losses"] = 0;
+
+    for($i = 0; $i < count($data); $i++){
+      if($data[$i]["winner"] == 1){
+        $return_data["wins"]++;
+      }else{
+        $return_data["losses"]++;
+      }
+    }
+
+  }
+
 }
