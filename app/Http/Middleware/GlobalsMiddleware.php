@@ -20,66 +20,67 @@ class GlobalsMiddleware
 
       if (!$request->session()->has('heroes_by_id')) {
         session(['heroes_by_id' => Cache::remember('heroes_by_id', $seconds, function () {
-            return $this->setHeroesByCache("id");
+          return \GlobalFunctions::instance()->getHeroesIDMap("id");
         })]);
       }
 
       if (!$request->session()->has('heroes_by_name')) {
         session(['heroes_by_name' => Cache::remember('heroes_by_name', $seconds, function () {
-            return $this->setHeroesByCache("name");
+          return \GlobalFunctions::instance()->getHeroesIDMap("name");
         })]);
       }
 
       if (!$request->session()->has('heroes_name_to_short')) {
         session(['heroes_name_to_short' => Cache::remember('heroes_name_to_short', $seconds, function () {
-            return $this->setHeroesNameToShortCache();
+          return \GlobalFunctions::instance()->getHeroesNameToShort();
         })]);
       }
 
       if (!$request->session()->has('maps_by_id')) {
         session(['maps_by_id' => Cache::remember('maps_by_id', $seconds, function () {
-            return $this->setMapsByCache("map_id");
+          return \GlobalFunctions::instance()->getMaps("map_id");
         })]);
       }
 
       if (!$request->session()->has('maps_by_name')) {
         session(['maps_by_name' => Cache::remember('maps_by_name', $seconds, function () {
-            return $this->setMapsByCache("name");
+          return \GlobalFunctions::instance()->getMaps("name");
         })]);
       }
 
 
       if (!$request->session()->has('roles_by_hero_name')) {
         session(['roles_by_hero_name' => Cache::remember('roles_by_hero_name', $seconds, function () {
-            return $this->setRolesByCache("name");
+          return \GlobalFunctions::instance()->getRoles("name");;
         })]);
       }
-
-      if (!$request->session()->has('types_by_hero_name')) {
-        session(['types_by_hero_name' => Cache::remember('types_by_hero_name', $seconds, function () {
-            return $this->setTypesByCache("name");
-        })]);
-      }
-
 
       if (!$request->session()->has('roles_by_role_name')) {
         session(['roles_by_role_name' => Cache::remember('roles_by_role_name', $seconds, function () {
-            return $this->setRolesByCache("new_role");
+          return \GlobalFunctions::instance()->getRoles("new_role");;
         })]);
       }
 
       if (!$request->session()->has('roles_by_id')) {
         session(['roles_by_id' => Cache::remember('roles_by_id', $seconds, function () {
-            return $this->setRolesByCache("id");
+          return \GlobalFunctions::instance()->getRoles("id");;
         })]);
       }
 
+      if (!$request->session()->has('types_by_hero_name')) {
+        session(['types_by_hero_name' => Cache::remember('types_by_hero_name', $seconds, function () {
+          return \GlobalFunctions::instance()->getTypes("name");;
+        })]);
+      }
+
+      //This is going to be a customization set by users who are logged in with their battlnet account.  Currently it is hard coded to Storm league
       if (!$request->session()->has('default_game_mode_id')) {
         session(['default_game_mode_id' => Cache::remember('default_game_mode_id', $seconds, function () {
             return 5;
         })]);
       }
 
+      //This is going to be a customization set by users who are logged in with their battlnet account.  Currently it is hard coded to Storm league
       if (!$request->session()->has('default_game_mode_name')) {
         session(['default_game_mode_name' => Cache::remember('default_game_mode_name', $seconds, function () {
             return "Storm League";
@@ -88,170 +89,80 @@ class GlobalsMiddleware
 
       if (!$request->session()->has('major_patch')) {
         session(['major_patch' => Cache::remember('major_patch', $seconds, function () {
-            return $this->setMajorPatchCache();
+          return \GlobalFunctions::instance()->getLatestMajorPatch();
         })]);
       }
 
-      if (!$request->session()->has('minor_patch_two_latest')) {
-        session(['minor_patch_two_latest' => Cache::remember('minor_patch_two_latest', $seconds, function () {
-            return $this->setMinorPatchTwoLatest();
+      if (!$request->session()->has('minor_patch_latest')) {
+        session(['minor_patch_latest' => Cache::remember('minor_patch_latest', $seconds, function () {
+          return \GlobalFunctions::instance()->getMinorPatchLatest();
         })]);
       }
 
       if (!$request->session()->has('all_major_patch')) {
         session(['all_major_patch' => Cache::remember('all_major_patch', $seconds, function () {
-            return $this->setAllMajorPatchCache();
+          return \GlobalFunctions::instance()->getAllMajorPatches();
         })]);
       }
 
       if (!$request->session()->has('all_minor_patch')) {
         session(['all_minor_patch' => Cache::remember('all_minor_patch', $seconds, function () {
-            return $this->setAllMinorPatchCache();
+          return \GlobalFunctions::instance()->getAllMinorPatches();
         })]);
       }
 
       if (!$request->session()->has('major_to_minor_patch_mapping')) {
         session(['major_to_minor_patch_mapping' => Cache::remember('major_to_minor_patch_mapping', $seconds, function () {
-            return $this->setMajorMinorPatchMappingCache();
+          return \GlobalFunctions::instance()->getMajorMinorPatchMapping();
         })]);
       }
 
       if (!$request->session()->has('stat_columns')) {
         session(['stat_columns' => Cache::remember('stat_columns', $seconds, function () {
-            return $this->setStatColumnsCache();
+          return \GlobalFunctions::instance()->getAllStatColumns();
         })]);
       }
 
       if (!$request->session()->has('hero_levels')) {
         session(['hero_levels' => Cache::remember('hero_levels', $seconds, function () {
-            return $this->setHerolevelCache();
+          return \GlobalFunctions::instance()->getHerolevels();
         })]);
       }
 
       if (!$request->session()->has('role_names')) {
         session(['role_names' => Cache::remember('role_names', $seconds, function () {
-            return $this->setRoleNamesCache();
+          return \GlobalFunctions::instance()->getRoleNames();
         })]);
       }
 
       if (!$request->session()->has('talent_data')) {
         session(['talent_data' => Cache::remember('talent_data', $seconds, function () {
-            return $this->setTalentDataCache();
+          return \GlobalFunctions::instance()->getTalentData();
         })]);
       }
 
       if (!$request->session()->has('season_dates')) {
         session(['season_dates' => Cache::remember('season_dates', $seconds, function () {
-            return $this->setSeasonDatesCache();
+          return \GlobalFunctions::instance()->getSeasonDates();
         })]);
       }
 
       if (!$request->session()->has('leagues_breakdowns')) {
         session(['leagues_breakdowns' => Cache::remember('leagues_breakdowns', $seconds, function () {
-            return $this->setLeagueBreakdownsCache();
+          return \GlobalFunctions::instance()->getLeagueTierBreakdowns();
         })]);
       }
 
       if (!$request->session()->has('game_types_by_name')) {
         session(['game_types_by_name' => Cache::remember('game_types_by_name', $seconds, function () {
-            return $this->setGameTypesByCache("name");
+          return \GlobalFunctions::instance()->getGameTypesBy("name");
         })]);
       }
       if (!$request->session()->has('game_types_by_id')) {
         session(['game_types_by_id' => Cache::remember('game_types_by_id', $seconds, function () {
-            return $this->setGameTypesByCache("type_id");
+          return \GlobalFunctions::instance()->getGameTypesBy("type_id");
         })]);
       }
-      /*
-
-      Cache::add('league_tiers_by_name', $this->setLeagueTierByCache(), $seconds);
-
-      */
       return $next($request);
     }
-
-    private function setHeroesNameToShortCache(){
-      return \GlobalFunctions::instance()->getHeroesNameToShort();
-    }
-
-    private function setHeroesByCache($by){
-      return \GlobalFunctions::instance()->getHeroesIDMap($by);
-    }
-
-    private function setMapsByCache($by){
-      return \GlobalFunctions::instance()->getMaps($by);
-    }
-
-    private function setRolesByCache($by){
-      return \GlobalFunctions::instance()->getRoles($by);;
-    }
-
-    private function setTypesByCache($by){
-      return \GlobalFunctions::instance()->getTypes($by);;
-
-    }
-    private function setMajorPatchCache(){
-      return \GlobalFunctions::instance()->getLatestMajorPatch();
-    }
-    private function setAllMajorPatchCache(){
-      return \GlobalFunctions::instance()->getAllMajorPatches();
-    }
-
-    private function setAllMinorPatchCache(){
-      return \GlobalFunctions::instance()->getAllMinorPatches();
-    }
-
-    private function setStatColumnsCache(){
-      return \GlobalFunctions::instance()->getAllStatColumns();
-    }
-
-    private function setHerolevelCache(){
-      return \GlobalFunctions::instance()->getHerolevels();
-    }
-
-    private function setRoleNamesCache(){
-      return \GlobalFunctions::instance()->getRoleNames();
-    }
-
-    private function setTalentDataCache(){
-      return \GlobalFunctions::instance()->getTalentData();
-    }
-
-    private function setMajorMinorPatchMappingCache(){
-      return \GlobalFunctions::instance()->getMajorMinorPatchMapping();
-    }
-
-    private function setLeagueTierCache(){
-      return \GlobalFunctions::instance()->getLeagueTiers();
-    }
-
-    private function setSeasonDatesCache(){
-      return \GlobalFunctions::instance()->getSeasonDates();
-    }
-
-    private function setLeagueBreakdownsCache(){
-      return \GlobalFunctions::instance()->getLeagueTierBreakdowns();
-    }
-
-    private function setGameTypesByCache($by){
-      return \GlobalFunctions::instance()->getGameTypesBy($by);
-    }
-    private function setLeagueTierByCache(){
-      return \GlobalFunctions::instance()->getLeagueTiersByName();
-    }
-
-    private function setRegionToIntCache(){
-      return \GlobalFunctions::instance()->getRegionToInt();
-    }
-
-    private function setIntToRegionCache(){
-      return \GlobalFunctions::instance()->getIntToRegion();
-    }
-
-    private function setMinorPatchTwoLatest(){
-      return \GlobalFunctions::instance()->getMinorPatchTwoLatest();
-    }
-
-
-
 }

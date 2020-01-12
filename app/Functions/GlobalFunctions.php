@@ -692,10 +692,10 @@ public function getLeagueTiers(){
     return $intToRegion;
   }
 
-  public function getMinorPatchTwoLatest(){
+  public function getMinorPatchLatest(){
     $season_game_version_data = SeasonGameVersions::select('game_version')
                ->orderBy('game_version', 'desc')
-               ->limit(2)
+               ->limit(1)
                ->get();
     $season_game_version_data = json_decode(json_encode($season_game_version_data),true);
 
