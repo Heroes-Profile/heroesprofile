@@ -309,7 +309,7 @@ private $maps = array();
     $post = $post["params"]["data"];
 
     $this->setValues('timeframe_type', "minor", $post, 'key');
-    $this->setValues('timeframe', Session::get("minor_patch_two_latest"), $post, 'key');
+    $this->setValues('timeframe', Session::get("minor_patch_latest"), $post, 'key');
     if($this->setValues('game_type', array(Session::get("default_game_mode_id")), $post, 'key')){
       for($i = 0; $i < count($this->game_type); $i++){
         $this->game_type[$i] = Session::get("game_types_by_name")[$this->game_type[$i]];
@@ -640,7 +640,7 @@ private $maps = array();
     if(isset($request["timeframe"])){
       $this->timeframe = explode(',', $request["timeframe"]);
     }else{
-      $this->timeframe = Session::get("minor_patch_two_latest");
+      $this->timeframe = Session::get("minor_patch_latest");
     }
 
 
