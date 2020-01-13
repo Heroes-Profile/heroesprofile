@@ -348,7 +348,7 @@ private $maps = array();
     }
 
     $page = "GlobalHeroStats";
-    $cache =  "|" . $page .
+    $cache =  $page .
               "|" . implode(",", $this->timeframe_type) .
               "|" . implode(",", $this->timeframe) .
               "|" . implode(",", $this->stat_type) .
@@ -676,7 +676,7 @@ private $maps = array();
 
 
     $page = "GlobalTalentBuilds";
-    $cache =  "|" . $page .
+    $cache =  $page .
               "|" . implode(",", $this->timeframe_type) .
               "|" . implode(",", $this->timeframe) .
               "|" . implode(",", $this->stat_type) .

@@ -862,8 +862,8 @@ class ProfileData
   }
 
   public function grabSingleHeroData($hero){
-    $return_data = Cache::rememberForever("HeroesSingle" . "|" . $hero . "|" . $this->blizz_id . "|" . $this->region . "|" . $this->season . "|" . $this->game_type, function (){
-      $return_data = $this->getSingleHeroReplayData();
+    $return_data = Cache::rememberForever("HeroesSingle" . "|" . $hero . "|" . $this->blizz_id . "|" . $this->region . "|" . $this->season . "|" . $this->game_type, function () use ($hero){
+      $return_data = $this->getSingleHeroReplayData($hero);
       return $return_data;
     });
 
@@ -888,7 +888,8 @@ class ProfileData
     );
     $query->where('heroesprofile.replay.region', $this->region);
     $query->where('heroesprofile.player.blizz_id', $this->blizz_id);
-    $query->where('heroesprofile.player.hero', $hero);
+    $query->where('heroesprofile.player.hero', $hero)->get()), true);
+
     $query->select(
         'heroesprofile.replay.game_type',
         'heroesprofile.replay.game_date',
@@ -926,7 +927,7 @@ class ProfileData
         'heroesprofile.scores.silencing_enemies',
         'heroesprofile.scores.rooting_enemies',
         'heroesprofile.scores.clutch_heals',
-        'heroesprofile.scoresscores.escapes',
+        'heroesprofile.scores.escapes',
         'heroesprofile.scores.vengeance',
         'heroesprofile.scores.outnumbered_deaths',
         'heroesprofile.scores.teamfight_escapes',
@@ -948,24 +949,78 @@ class ProfileData
       );
     $data = $query->get();
     $data = json_decode(json_encode($data),true);
+
+    $non_player_data = $this->getWinLossAllReplayDataSingleHero($hero);
+
     /*
     print_r($query->toSql());
     echo "<br>";
     print_r($query->getBindings());
     */
-    
-    $return_data = array();
-    $return_data["wins"] = 0;
-    $return_data["losses"] = 0;
 
-    for($i = 0; $i < count($data); $i++){
-      if($data[$i]["winner"] == 1){
-        $return_data["wins"]++;
-      }else{
-        $return_data["losses"]++;
+
+    $return_data = array();
+    foreach (Session::get("season_dates") as $season => $season_data){
+      foreach (Session::get("game_types_by_name") as $game_type => $game_type_data){
+        $return_data[$season][$game_type]["wins"] = 0;
+        $return_data[$season][$game_type]["losses"] = 0;
+        $return_data[$season][$game_type]["takedowns"] = 0;
+        $return_data[$season][$game_type]["kills"] = 0;
+        $return_data[$season][$game_type]["assists"] = 0;
+        $return_data[$season][$game_type]["deaths"] = 0;
       }
     }
 
+    for($i = 0; $i < count($data); $i++){
+      if($data[$i]["winner"] == 1){
+        $return_data[$data[$i]["game_type"]]["wins"]++;
+      }else{
+        $return_data[$data[$i]["game_type"]]["losses"]++;
+      }
+      $return_data[$data[$i]["game_type"]]["takdowns"] += $data[$i]["takedowns"];
+      $return_data[$data[$i]["game_type"]]["kills"] += $data[$i]["kills"];
+      $return_data[$data[$i]["game_type"]]["assists"] += $data[$i]["assists"];
+      $return_data[$data[$i]["game_type"]]["deaths"] += $data[$i]["deaths"];
+    }
+
+
+
   }
 
+  private function getWinLossAllReplayDataSingleHero($hero){
+    $query = DB::table('heroesprofile.replay');
+    $query->join('heroesprofile.player', 'heroesprofile.player.replayID', '=', 'heroesprofile.replay.replayID');
+    $query->join('heroesprofile.scores', function($join)
+      {
+        $join->on('heroesprofile.scores.replayID', '=', 'heroesprofile.replay.replayID');
+        $join->on('heroesprofile.scores.battletag', '=', 'heroesprofile.player.battletag');
+      }
+    );
+    $query->join('heroesprofile.talents', function($join)
+      {
+        $join->on('heroesprofile.talents.replayID', '=', 'heroesprofile.replay.replayID');
+        $join->on('heroesprofile.talents.battletag', '=', 'heroesprofile.player.battletag');
+      }
+    );
+
+    $query->whereIn('replayID',
+      json_decode(json_encode(DB::table('heroesprofile.replay')
+        ->select('heroesprofile.replay.replayID')
+        ->join('heroesprofile.player', 'heroesprofile.player.replayID', '=', 'heroesprofile.replay.replayID')
+        ->where('heroesprofile.replay.region', $this->region)
+        ->where('heroesprofile.player.blizz_id', $this->blizz_id)
+        ->where('heroesprofile.player.hero', $hero)->get()), true)
+    );
+    $query->select(
+        'heroesprofile.replay.game_type',
+        'heroesprofile.replay.game_date',
+        'heroesprofile.replay.game_map',
+        'heroesprofile.replay.region',
+        'heroesprofile.player.winner',
+        'heroesprofile.player.hero',
+        'heroesprofile.player.blizz_id'
+      );
+    $data = $query->get();
+    return json_decode(json_encode($data),true);
+  }
 }
