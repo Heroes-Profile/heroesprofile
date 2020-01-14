@@ -678,73 +678,46 @@ class ProfileData
 
     foreach ($finalData as $replayID => $value){
       foreach ($value as $blizz_id => $data){
-        //echo $value[$blizz_id]["battletag"];
-        //echo "<br />\n";
-
         if($blizz_id != $this->blizz_id){
           if($value[$blizz_id]["team"] == $finalData[$replayID][$this->blizz_id]["team"]){
             if(array_key_exists($value[$blizz_id]["blizz_id"], $allies)){
               $allies[$value[$blizz_id]["blizz_id"]]["games_played"]++;
-
-
-
-
               if(!array_key_exists($value[$blizz_id]["hero"], $allies[$value[$blizz_id]["blizz_id"]]["hero"])){
                 $allies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]] = 0;
               }
               $allies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]]++;
-
-
               if($value[$blizz_id]["winner"] == "1"){
                 $allies[$value[$blizz_id]["blizz_id"]]["wins"]++;
 
               }else{
                 $allies[$value[$blizz_id]["blizz_id"]]["losses"]++;
-
               }
             }else{
               $allies[$value[$blizz_id]["blizz_id"]]["games_played"] = 1;
-
-
               if($value[$blizz_id]["winner"] == "1"){
                 $allies[$value[$blizz_id]["blizz_id"]]["wins"] = 1;
                 $allies[$value[$blizz_id]["blizz_id"]]["losses"] = 0;
-
               }else{
                 $allies[$value[$blizz_id]["blizz_id"]]["losses"] = 1;
                 $allies[$value[$blizz_id]["blizz_id"]]["wins"] = 0;
               }
-
-
               $allies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]] = 1;
-
-
             }
-
+            $allies[$value[$blizz_id]["blizz_id"]]["battletag"] = $data["battletag"];
           }else{
             if(array_key_exists($value[$blizz_id]["blizz_id"], $enemies)){
               $enemies[$value[$blizz_id]["blizz_id"]]["games_played"]++;
-
-
-
-
               if(!array_key_exists($value[$blizz_id]["hero"], $enemies[$value[$blizz_id]["blizz_id"]]["hero"])){
                 $enemies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]] = 0;
               }
               $enemies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]]++;
-
-
               if($value[$blizz_id]["winner"] == "1"){
                 $enemies[$value[$blizz_id]["blizz_id"]]["wins"]++;
-
               }else{
                 $enemies[$value[$blizz_id]["blizz_id"]]["losses"]++;
-
               }
             }else{
               $enemies[$value[$blizz_id]["blizz_id"]]["games_played"] = 1;
-
-
               if($value[$blizz_id]["winner"] == "1"){
                 $enemies[$value[$blizz_id]["blizz_id"]]["wins"] = 1;
                 $enemies[$value[$blizz_id]["blizz_id"]]["losses"] = 0;
@@ -753,18 +726,12 @@ class ProfileData
                 $enemies[$value[$blizz_id]["blizz_id"]]["losses"] = 1;
                 $enemies[$value[$blizz_id]["blizz_id"]]["wins"] = 0;
               }
-
-
               $enemies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]] = 1;
-
-
             }
+            $enemies[$value[$blizz_id]["blizz_id"]]["battletag"] = $data["battletag"];
           }
         }
-
-
       }
-
     }
     arsort($allies);
     arsort($enemies);
@@ -787,8 +754,7 @@ class ProfileData
       $return_enemies[$key] = $value;
       //$e_i++;
     }
-
-    return (array($return_allies, $return_enemies, $battletags));
+    return (array($return_allies, $return_enemies));
   }
 
   public function grabAllHeroData(){

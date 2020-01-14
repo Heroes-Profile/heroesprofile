@@ -14,11 +14,9 @@ if (Auth::check()) {
 
 $player_instance = \ProfileData::instance("Zemill#1940", 67280, 1, "", "");
 $friendsFoes = $player_instance->getPlayerFriendsAndFoes();
-
 $game_type = "";
 $region = 1;
 ?>
-
 <section>
 
   <h2>Friends And Foes Top 50</h2>
@@ -57,10 +55,10 @@ $region = 1;
         $count--;
         arsort($friend_for_data["hero"]);
         echo "<tr>" .
-        "<td><a href=" . "\"" . "/Profile/?blizz_id=" . $f_blizz_id . "&battletag=" . explode('#', $friendsFoes[2][$f_blizz_id])[0] .
-        "&region=" . $region . "\"" . ">" . explode('#', $friendsFoes[2][$f_blizz_id])[0] . "</a></td>" .
+        "<td><a href=" . "\"" . "/Profile/?blizz_id=" . $f_blizz_id . "&battletag=" . explode('#', $friend_for_data["battletag"])[0] .
+        "&region=" . $region . "\"" . ">" . explode('#', $friend_for_data["battletag"])[0] . "</a></td>" .
 
-        "<td><a href=" . "\"" . "/Hero/Single/?blizz_id=" . $f_blizz_id . "&battletag=" . explode('#', $friendsFoes[2][$f_blizz_id])[0] .
+        "<td><a href=" . "\"" . "/Hero/Single/?blizz_id=" . $f_blizz_id . "&battletag=" . explode('#', $friend_for_data["battletag"])[0] .
         "&region=" . $region . "&hero=" . key($friend_for_data["hero"]) . "\"" . ">" . key($friend_for_data["hero"]) . "</a></td>" .
 
         "<td>" . $friend_for_data["games_played"] . "</td>";
@@ -110,9 +108,9 @@ $region = 1;
         arsort($friend_for_data["hero"]);
         echo "<tr>" .
         //"<td><a href=" . "\"" . "/Profile/?blizz_id=" . $blizz_id . "&battletag=" . explode('#', $friendsFoes[2][$blizz_id])[0] . "&region=" . $region . ">" . explode('#', $friendsFoes[2][$blizz_id])[0] . "</a></td>" .
-        "<td><a href=" . "\"" . "/Profile/?blizz_id=" . $f_blizz_id . "&battletag=" . explode('#', $friendsFoes[2][$f_blizz_id])[0] .
-        "&region=" . $region . "\"" . ">" . explode('#', $friendsFoes[2][$f_blizz_id])[0] . "</a></td>" .
-        "<td><a href=" . "\"" . "/Hero/Single/?blizz_id=" . $f_blizz_id . "&battletag=" . explode('#', $friendsFoes[2][$f_blizz_id])[0] .
+        "<td><a href=" . "\"" . "/Profile/?blizz_id=" . $f_blizz_id . "&battletag=" . explode('#', $friend_for_data["battletag"])[0] .
+        "&region=" . $region . "\"" . ">" . explode('#', $friend_for_data["battletag"])[0] . "</a></td>" .
+        "<td><a href=" . "\"" . "/Hero/Single/?blizz_id=" . $f_blizz_id . "&battletag=" . explode('#', $friend_for_data["battletag"])[0] .
         "&region=" . $region . "&hero=" . key($friend_for_data["hero"]) . "\"" . ">" . key($friend_for_data["hero"]) . "</a></td>" .
         "<td>" . $friend_for_data["games_played"] . "</td>";
         if($game_type != ""){
