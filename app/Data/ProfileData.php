@@ -957,7 +957,7 @@ class ProfileData
     echo "<br>";
     print_r($query->getBindings());
     */
-    /*
+
 
     $return_data = array();
     foreach (Session::get("season_dates") as $season => $season_data){
@@ -970,6 +970,15 @@ class ProfileData
           $return_data[$season][$game_type]["assists"] = 0;
           $return_data[$season][$game_type]["deaths"] = 0;
           $return_data[$season][$game_type]["talent_builds"] = array();
+
+          foreach(Session::get("heroes_by_name") as $hero_name => $id){
+            $return_data[$season][$game_type]["ally"][$hero_name]["wins"] = 0;
+            $return_data[$season][$game_type]["ally"][$hero_name]["losses"] = 0;
+
+            $return_data[$season][$game_type]["enemy"][$hero_name]["wins"] = 0;
+            $return_data[$season][$game_type]["enemy"][$hero_name]["losses"] = 0;
+          }
+
         }
       }
     }
@@ -1002,17 +1011,62 @@ class ProfileData
         $return_data[$season][$game_type_name]["talent_builds"][$talent_string] += 1;
       }
     }
-    for($i = 0; $i < count($non_player_data); $i++){
-      $season = \GlobalFunctions::instance()->getSeasonFromDate(strtotime($non_player_data[$i]["game_date"]));
-      $game_type_name = Session::get("game_types_by_id")[$non_player_data[$i]["game_type"]];
+    //print_r(json_encode($non_player_data, true));
 
-      if($non_player_data[$i]["blizz_id"] != $this->blizz_id){
+    foreach ($non_player_data as $replayID => $replay_data)
+    {
+      $season = \GlobalFunctions::instance()->getSeasonFromDate(strtotime($replay_data["game_date"]));
+      $game_type_name = Session::get("game_types_by_id")[$replay_data["game_type"]];
 
+      $player_team = -1;
+      $team_winner = -1;
+      if(in_array($this->blizz_id, $replay_data[0]["players"])){
+        $player_team = 0;
+      }else{
+        $player_team = 1;
       }
+
+
+      if($replay_data[0]["winner"] == 1){
+        $team_winner = 0;
+      }else{
+        $team_winner = 1;
+      }
+
+
+      for($i = 0; $i < 2; $i++){
+        if($i == $player_team){
+          for($j = 0 ; $j < count($replay_data[$i]["heroes"]); $j++){
+            $hero_name = Session::get("heroes_by_id")[$replay_data[$i]["heroes"][$j]];
+
+            if($hero_name != $hero){
+              if($i == $team_winner){
+                $return_data[$season][$game_type]["ally"][$hero_name]["wins"]++;
+              }else{
+                $return_data[$season][$game_type]["ally"][$hero_name]["losses"]++;
+              }
+            }
+          }
+        }else{
+          for($j = 0 ; $j < count($replay_data[$i]["heroes"]); $j++){
+            $hero_name = Session::get("heroes_by_id")[$replay_data[$i]["heroes"][$j]];
+
+            if($i == $team_winner){
+              $return_data[$season][$game_type]["enemy"][$hero_name]["wins"]++;
+            }else{
+              $return_data[$season][$game_type]["enemy"][$hero_name]["losses"]++;
+            }
+          }
+
+        }
+      }
+
+
+
     }
 
-    print_r(json_encode($non_player_data, true));
-    */
+    print_r(json_encode($return_data, true));
+
   }
 
   private function getWinLossAllReplayDataSingleHero($hero){
@@ -1062,24 +1116,21 @@ class ProfileData
     for($i = 0; $i < count($data); $i++){
 
       if($i != 0){
-          if($data[$i]["replayID"] != $data[$i - 1]["replayID"]){
+          if(($data[$i]["replayID"] != $data[$i - 1]["replayID"]) || ($data[$i]["team"] != $data[$i - 1]["team"])){
             $player_counter = 0;
           }
       }
-      
+
       $return_data[$data[$i]["replayID"]]["game_type"] = $data[$i]["game_type"];
       $return_data[$data[$i]["replayID"]]["game_date"] = $data[$i]["game_date"];
       $return_data[$data[$i]["replayID"]]["region"] = $data[$i]["region"];
       $return_data[$data[$i]["replayID"]][$data[$i]["team"]]["winner"] = $data[$i]["winner"];
-      $return_data[$data[$i]["replayID"]][$data[$i]["team"]]["players"][$player_counter]["blizz_id"] = $data[$i]["blizz_id"];
-      $return_data[$data[$i]["replayID"]][$data[$i]["team"]]["players"][$player_counter]["hero"] = $data[$i]["hero"];
+      $return_data[$data[$i]["replayID"]][$data[$i]["team"]]["players"][$player_counter] = $data[$i]["blizz_id"];
+      $return_data[$data[$i]["replayID"]][$data[$i]["team"]]["heroes"][$player_counter] = $data[$i]["hero"];
 
 
       $player_counter++;
     }
-    print_r(json_encode($return_data, true));
-
     return $return_data;
-
   }
 }
