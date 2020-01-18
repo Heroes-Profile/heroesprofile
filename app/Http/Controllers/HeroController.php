@@ -527,6 +527,7 @@ private $maps = array();
           $return_data[$i]["win_rate"] = 100;
         }else{
           $return_data[$i]["win_rate"] = round(($return_data[$i]["wins"] / ($return_data[$i]["wins"] + $return_data[$i]["losses"])) * 100, 2);
+          $return_data[$i]["win_rate_influence"] = $return_data[$i]["wins"] / ($return_data[$i]["wins"] + $return_data[$i]["losses"]);
         }
 
 
@@ -534,12 +535,18 @@ private $maps = array();
           $return_data[$i]["bans"] = 0;
           $return_data[$i]["ban_rate"] = 0;
           $return_data[$i]["popularity"] = round(($return_data[$i]["games_played"] / ($total_games / 10)) * 100, 2);
-
         }else{
           $return_data[$i]["bans"] = floatval($ban_data[$return_data[$i]["name"]["hero_name"]]);
           $return_data[$i]["ban_rate"] = round(($return_data[$i]["bans"] / ($total_games / 10)) * 100, 2);
+          $return_data[$i]["ban_rate_influence"] = $return_data[$i]["bans"] / ($total_games / 10);
           $return_data[$i]["popularity"] = round((($return_data[$i]["bans"] + $return_data[$i]["games_played"]) / ($total_games / 10)) * 100, 2);
         }
+
+        $return_data[$i]["pick_rate"] = round(($return_data[$i]["games_played"] / ($total_games / 10)) * 100, 2);
+        $return_data[$i]["pick_rate_influence"] = $return_data[$i]["games_played"] / ($total_games / 10);
+
+        $return_data[$i]["adjusted_pick_rate"] = (100 * $return_data[$i]["pick_rate_influence"]) / (100 - (100 * $return_data[$i]["ban_rate_influence"]));
+        $return_data[$i]["influence"] = round(($return_data[$i]["win_rate_influence"] - .5) * ($return_data[$i]["adjusted_pick_rate"] * 10000));
 
 
         if(count($this->stat_type) != 0){

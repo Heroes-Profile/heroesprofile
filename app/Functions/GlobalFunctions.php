@@ -8,6 +8,7 @@ use App\SeasonGameVersions;
 
 use DateTime;
 use Cache;
+use Session;
 
 class GlobalFunctions
 {
@@ -508,8 +509,8 @@ public function getLeagueTiers(){
       $data = array();
       $data["season"] = $season_data[$i]["season"];
       $data["year"] = $season_data[$i]["year"];
-      $data["start_date"] = $season_data[$i]["start_date"];
-      $data["end_date"] = $season_data[$i]["end_date"];
+      $data["start_date"] = strtotime($season_data[$i]["start_date"]);
+      $data["end_date"] = strtotime($season_data[$i]["end_date"]);
 
       $return_data[$season_data[$i]["id"]] = $data;
     }
@@ -979,6 +980,15 @@ public function getLeagueTiers(){
     $t1 = strtotime($a['game_date']);
     $t2 = strtotime($b['game_date']);
     return $t1 - $t2;
+  }
+
+  public function getSeasonFromDate($date){
+    foreach (Session::get("season_dates") as $season => $season_data){
+      if($date >= $season_data["start_date"] && $date < $season_data["end_date"]){
+        return $season;
+        break;
+      }
+    }
   }
 }
 
