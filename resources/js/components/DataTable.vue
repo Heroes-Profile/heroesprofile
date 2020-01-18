@@ -57,6 +57,7 @@ export default {
           { key: 'win_rate', label: 'Win Rate', sortable: true, class: "col-win_rate" },
           { key: 'popularity', label: 'Popularity', sortable: true },
           { key: 'ban_rate', label: 'Ban Rate', sortable: true, class: "mobileHide"},
+          { key: 'influence', label: 'Influence', sortable: true, class: "mobileHide"},
           { key: 'games_played', label: 'Games Played', sortable: true },
           { key: 'wins', label: 'Wins', sortable: true, class: "mobileHide"},
           { key: 'losses', label: 'Losses', sortable: true, class: "mobileHide"},
