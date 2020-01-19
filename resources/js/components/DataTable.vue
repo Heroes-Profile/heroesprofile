@@ -23,6 +23,9 @@
       <template v-slot:cell(popularity)="data">
         {{data.value}}%
       </template>
+      <template v-slot:cell(change)="data">
+        {{data.value}}%
+      </template>
       <template v-slot:cell(talent_builds)="row">
         <b-button size="sm" @click="row.toggleDetails" class="mr-2">
           {{ row.detailsShowing ? 'Hide' : 'Show'}} <span class="mobileHide">Talent Builds</span>
@@ -62,7 +65,7 @@ export default {
           { key: 'wins', label: 'Wins', sortable: true, class: "mobileHide"},
           { key: 'losses', label: 'Losses', sortable: true, class: "mobileHide"},
           { key: 'bans', label: 'Bans', sortable: true, class: "mobileHide"},
-          { key: 'change', label: 'Change', sortable: true, class: "mobileHide" },
+          { key: 'change', label: 'Win Rate Change', sortable: true, class: "mobileHide" },
           { key: 'talent_builds', label: 'Talent Builds', sortable: false}
         ],
         error: "",

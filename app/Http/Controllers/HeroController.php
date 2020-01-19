@@ -361,7 +361,9 @@ private $maps = array();
               "|"  . implode(",", $this->hero_league_tier) .
               "|"  . implode(",", $this->role_league_tier);
 
-    $return_data = Cache::remember($cache, 900, function () use ($request){
+    $return_data = Cache::remember($cache, 1, function () use ($request){
+    //$return_data = Cache::remember($cache, 900, function () use ($request){
+
       $maps = Session::get("maps_by_name");
       $query = DB::table('heroesprofile.global_hero_stats');
 
@@ -511,7 +513,10 @@ private $maps = array();
       for($i = 0; $i < count($data); $i++){
         $ban_data[$data[$i]["name"]] = $data[$i]["bans"];
       }
-
+      $change_data = array();
+      if(count($this->timeframe) == 1 && count($this->game_type) == 1 && $this->game_type[0] != "br" && count($this->game_map) == 0 && count($this->player_league_tier) == 0 && count($this->hero_level) == 0){
+        $change_data = $this->getChangeData();
+      }
       for($i = 0; $i < count($return_data); $i++){
         if(!array_key_exists("wins", $return_data[$i])){
           $return_data[$i]["wins"] = 0;
@@ -526,8 +531,8 @@ private $maps = array();
         }else if($return_data[$i]["losses"] == 0){
           $return_data[$i]["win_rate"] = 100;
         }else{
-          $return_data[$i]["win_rate"] = round(($return_data[$i]["wins"] / ($return_data[$i]["wins"] + $return_data[$i]["losses"])) * 100, 2);
-          $return_data[$i]["win_rate_influence"] = $return_data[$i]["wins"] / ($return_data[$i]["wins"] + $return_data[$i]["losses"]);
+          $return_data[$i]["win_rate"] = floatval(round(($return_data[$i]["wins"] / ($return_data[$i]["wins"] + $return_data[$i]["losses"])) * 100, 2));
+          $return_data[$i]["win_rate_influence"] = floatval($return_data[$i]["wins"] / ($return_data[$i]["wins"] + $return_data[$i]["losses"]));
         }
 
 
@@ -536,16 +541,16 @@ private $maps = array();
           $return_data[$i]["ban_rate"] = 0;
           $return_data[$i]["popularity"] = round(($return_data[$i]["games_played"] / ($total_games / 10)) * 100, 2);
         }else{
-          $return_data[$i]["bans"] = floatval($ban_data[$return_data[$i]["name"]["hero_name"]]);
-          $return_data[$i]["ban_rate"] = round(($return_data[$i]["bans"] / ($total_games / 10)) * 100, 2);
-          $return_data[$i]["ban_rate_influence"] = $return_data[$i]["bans"] / ($total_games / 10);
+          $return_data[$i]["bans"] = $ban_data[$return_data[$i]["name"]["hero_name"]];
+          $return_data[$i]["ban_rate"] = floatval(round(($return_data[$i]["bans"] / ($total_games / 10)) * 100, 2));
+          $return_data[$i]["ban_rate_influence"] = floatval($return_data[$i]["bans"] / ($total_games / 10));
           $return_data[$i]["popularity"] = round((($return_data[$i]["bans"] + $return_data[$i]["games_played"]) / ($total_games / 10)) * 100, 2);
         }
 
         $return_data[$i]["pick_rate"] = round(($return_data[$i]["games_played"] / ($total_games / 10)) * 100, 2);
-        $return_data[$i]["pick_rate_influence"] = $return_data[$i]["games_played"] / ($total_games / 10);
+        $return_data[$i]["pick_rate_influence"] = floatval($return_data[$i]["games_played"] / ($total_games / 10));
 
-        $return_data[$i]["adjusted_pick_rate"] = (100 * $return_data[$i]["pick_rate_influence"]) / (100 - (100 * $return_data[$i]["ban_rate_influence"]));
+        $return_data[$i]["adjusted_pick_rate"] = floatval((100 * $return_data[$i]["pick_rate_influence"]) / (100 - (100 * $return_data[$i]["ban_rate_influence"])));
         $return_data[$i]["influence"] = round(($return_data[$i]["win_rate_influence"] - .5) * ($return_data[$i]["adjusted_pick_rate"] * 10000));
 
 
@@ -556,7 +561,8 @@ private $maps = array();
             $return_data[$i][$this->stat_type[0]] = 0;
           }
         }
-        $return_data[$i]["change"] = 0;
+        $return_data[$i]["change"] = floatval(number_format($return_data[$i]["win_rate"] - $change_data[$return_data[$i]["name"]["hero_name"]], 2));
+
 
       }
       for($i = 0; $i < count($return_data); $i++){
