@@ -45,10 +45,12 @@ private $maps = array();
           $this->{$fieldName}[$i] = $this->{$fieldName}[$i][$key];
         }
       }
+      asort($this->{$fieldName});
       return true;
     }else{
       if($default){
         $this->{$fieldName} = (array)$default;
+        asort($this->{$fieldName});
       }
       return false;
     }
@@ -323,28 +325,36 @@ private $maps = array();
       for($i = 0; $i < count($this->game_map); $i++){
         $this->game_map[$i] = Session::get("maps_by_name")[$this->game_map[$i]];
       }
+      asort($this->game_map);
     }
 
 
     if($this->setValues('player_league_tier', array(), $post, 'key')){
       for($i = 0; $i < count($this->player_league_tier); $i++){
         $this->player_league_tier[$i] = Session::get("league_tiers_by_name")[$this->player_league_tier[$i]];
-
       }
+      asort($this->player_league_tier);
     }
 
     if($this->setValues('hero_league_tier', array(), $post, 'key')){
       for($i = 0; $i < count($this->hero_league_tier); $i++){
         $this->hero_league_tier[$i] = Session::get("league_tiers_by_name")[$this->hero_league_tier[$i]];
-
       }
+      asort($this->hero_league_tier);
     }
 
     if($this->setValues('role_league_tier', array(), $post, 'key')){
       for($i = 0; $i < count($this->role_league_tier); $i++){
         $this->role_league_tier[$i] = Session::get("league_tiers_by_name")[$this->role_league_tier[$i]];
-
       }
+      asort($this->role_league_tier);
+    }
+
+
+    //remove later
+    if(count($this->timeframe) == 0 || !isset($this->timeframe)){
+      $this->timeframe = array();
+      $this->timeframe[0] = '2.49.1.77692';
     }
 
     $page = "GlobalHeroStats";
@@ -353,16 +363,14 @@ private $maps = array();
               "|" . implode(",", $this->timeframe) .
               "|" . implode(",", $this->stat_type) .
               "|" . implode(",", $this->hero_level) .
-              //"|" . implode(",",$this->role) .
-              //"|" . implode(",",$this->hero) .
               "|" . implode(",", $this->game_type) .
               "|" . implode(",", $this->game_map) .
               "|"  . implode(",", $this->player_league_tier) .
               "|"  . implode(",", $this->hero_league_tier) .
               "|"  . implode(",", $this->role_league_tier);
 
-    $return_data = Cache::remember($cache, 1, function () use ($request){
-    //$return_data = Cache::remember($cache, 900, function () use ($request){
+    //$return_data = Cache::remember($cache, 1, function () use ($request){
+    $return_data = Cache::remember($cache, 900, function () use ($request){
 
       $maps = Session::get("maps_by_name");
       $query = DB::table('heroesprofile.global_hero_stats');
@@ -561,7 +569,12 @@ private $maps = array();
             $return_data[$i][$this->stat_type[0]] = 0;
           }
         }
-        $return_data[$i]["change"] = floatval(number_format($return_data[$i]["win_rate"] - $change_data[$return_data[$i]["name"]["hero_name"]], 2));
+
+        if(count($this->timeframe) == 1 && count($this->game_type) == 1 && $this->game_type[0] != "br" && count($this->game_map) == 0 && count($this->player_league_tier) == 0 && count($this->hero_level) == 0){
+          $return_data[$i]["change"] = floatval(number_format($return_data[$i]["win_rate"] - $change_data[$return_data[$i]["name"]["hero_name"]], 2));
+        }else{
+          $return_data[$i]["change"] = 0;
+        }
 
 
       }
