@@ -20,3 +20,7 @@ Homestead.json
 app.yaml
 .gcloudignore
 robots.txt
+
+
+/public/css/*
+/public/js/*
