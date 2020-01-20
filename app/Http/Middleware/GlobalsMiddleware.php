@@ -147,6 +147,12 @@ class GlobalsMiddleware
         })]);
       }
 
+      if (!$request->session()->has('latest_season')) {
+        session(['latest_season' => Cache::remember('latest_season', $seconds, function () {
+          return \GlobalFunctions::instance()->getLatestSeason();
+        })]);
+      }
+
       if (!$request->session()->has('leagues_breakdowns')) {
         session(['leagues_breakdowns' => Cache::remember('leagues_breakdowns', $seconds, function () {
           return \GlobalFunctions::instance()->getLeagueTierBreakdowns();
@@ -161,6 +167,18 @@ class GlobalsMiddleware
       if (!$request->session()->has('game_types_by_id')) {
         session(['game_types_by_id' => Cache::remember('game_types_by_id', $seconds, function () {
           return \GlobalFunctions::instance()->getGameTypesBy("type_id");
+        })]);
+      }
+
+      if (!$request->session()->has('regions_by_id')) {
+        session(['regions_by_id' => Cache::remember('regions_by_id', $seconds, function () {
+          return \GlobalFunctions::instance()->getIntToRegion();
+        })]);
+      }
+
+      if (!$request->session()->has('regions_by_name')) {
+        session(['regions_by_name' => Cache::remember('regions_by_name', $seconds, function () {
+          return \GlobalFunctions::instance()->getRegionToInt();
         })]);
       }
       return $next($request);
