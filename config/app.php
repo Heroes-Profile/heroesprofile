@@ -228,6 +228,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'GlobalFunctions' => App\Functions\GlobalFunctions::class,
         'ProfileData' => App\Data\ProfileData::class,
+        'LeaderboardData' => App\Data\LeaderboardData::class,
 
     ],
 
