@@ -14,8 +14,9 @@ if (Auth::check()) {
 
 $player_instance = \ProfileData::instance("Zemill#1940", 67280, 1, "", "");
 $data = $player_instance->getPlayerProfileData();
+?>
 
-
+<?php
 foreach ($data["role_data"] as $role => $role_data){
   if($role_data["wins"] + $role_data["losses"]){
     $data["role_data"][$role]["win_rate"] = ($role_data["wins"] / ($role_data["wins"] + $role_data["wins"])) * 100;
@@ -73,7 +74,7 @@ foreach ($data["hero_data"] as $hero => $hero_data){
 }
 
 $most_played = \GlobalFunctions::instance()->sortKeyValueArray($data["hero_data"], "games_played_desc");
-$most_played = array_slice($most_played, 0, 3);
+//$most_played = array_slice($most_played, 0, 3);
 echo "Most Played: ";
 print_r(json_encode($most_played, true));
 echo "<br>";
