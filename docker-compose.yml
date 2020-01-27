@@ -15,7 +15,7 @@ services:
   database:
     image: mysql:5
     environment:
-     MYSQL_ROOT_PASSWORD: docker
+     MYSQL_ROOT_PASSWORD: local_heroesprofile
      MYSQL_DATABASE: heroesprofile
     ports:
       - 3306:3306
