@@ -14,6 +14,7 @@ class CreateCacheTable extends Migration
     public function up()
     {
         Schema::create('heroesprofile_cache.cache', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->string('key', 50)->unique();
             $table->longText('value');
             $table->integer('expiration');

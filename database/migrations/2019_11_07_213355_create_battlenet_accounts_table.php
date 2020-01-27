@@ -14,6 +14,7 @@ class CreateBattlenetAccountsTable extends Migration
     public function up()
     {
         Schema::create('heroesprofile.battlenet_accounts', function (Blueprint $table) {
+            $table->engine = 'InnoDB';
             $table->bigIncrements('id');
             $table->integer('battlenet_id');
             $table->string('battletag', 255);
