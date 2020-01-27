@@ -14,8 +14,14 @@ class CreateGlobalHeroStatsOldTable extends Migration
     public function up()
     {
         Schema::create('heroesprofile.global_hero_stats_old', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->timestamps();
+          $table->engine = 'InnoDB';
+          $table->string('game_version', 45);
+          $table->tinyInteger('game_type');
+          $table->tinyInteger('hero');
+          $table->tinyInteger('win_loss');
+          $table->integer('games_played');
+
+          $table->primary(['game_version', 'game_type', 'hero', 'win_loss'], 'Primary_Index');
         });
     }
 
