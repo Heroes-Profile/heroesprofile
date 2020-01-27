@@ -24,7 +24,7 @@ class CreateGlobalHeroTalentsTable extends Migration
           $table->integer('hero_level')->unsigned();
           $table->tinyInteger('hero');
           $table->tinyInteger('mirror');
-          $table->region('region');
+          $table->integer('region');
           $table->tinyInteger('win_loss');
           $table->integer('talent_combination_id');
           $table->integer('game_time');

@@ -13,7 +13,7 @@ class CreateGlobalHeroStatsOldTable extends Migration
      */
     public function up()
     {
-        Schema::create('global_hero_stats_old', function (Blueprint $table) {
+        Schema::create('heroesprofile.global_hero_stats_old', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamps();
         });
@@ -26,6 +26,6 @@ class CreateGlobalHeroStatsOldTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('global_hero_stats_old');
+        Schema::dropIfExists('heroesprofile.global_hero_stats_old');
     }
 }
