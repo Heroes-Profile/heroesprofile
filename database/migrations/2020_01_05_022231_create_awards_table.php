@@ -31,6 +31,6 @@ class CreateAwardsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('awards');
+        Schema::dropIfExists('heroesprofile.awards');
     }
 }

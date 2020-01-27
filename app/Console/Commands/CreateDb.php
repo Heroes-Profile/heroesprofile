@@ -49,6 +49,10 @@ class CreateDb extends Command
         if(!$this->get('heroesprofile_cache')) {
             DB::statement('CREATE DATABASE heroesprofile_cache');
         }
+
+        if(!$this->get('heroesprofile_optout')) {
+            DB::statement('CREATE DATABASE heroesprofile_optout');
+        }
     }
 
     /**

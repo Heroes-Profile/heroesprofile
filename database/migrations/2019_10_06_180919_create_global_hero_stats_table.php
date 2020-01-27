@@ -24,6 +24,7 @@ class CreateGlobalHeroStatsTable extends Migration
           $table->integer('hero_level')->unsigned();
           $table->tinyInteger('hero');
           $table->tinyInteger('mirror');
+          $table->integer('region');
           $table->tinyInteger('win_loss');
           $table->integer('game_time');
           $table->integer('kills');
@@ -64,8 +65,8 @@ class CreateGlobalHeroStatsTable extends Migration
           $table->integer('regen_globes');
           $table->integer('games_played');
 
-          $table->primary(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'mirror', 'win_loss'], 'Primary_Index');
-          $table->index(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'mirror', 'win_loss', 'games_played'], 'Base_Index');
+          $table->primary(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'mirror', 'region', 'win_loss'], 'Primary_Index');
+          $table->index(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'mirror', 'region', 'win_loss', 'games_played'], 'Base_Index');
         });
 
     }

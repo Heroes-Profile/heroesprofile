@@ -49,7 +49,7 @@ If you need to get into a command promt for the app
  For windows users, Wampserver64 is a useful tool as it installs the MySql server and php at the same time. https://sourceforge.net/projects/wampserver/
 
  ## Database setup
- * Create the following schemas in your MySql database.   `heroesprofile`, `heroesprofile_brawl`, `heroesprofile_cache`
+ * Create the following schemas in your MySql database.   `heroesprofile`, `heroesprofile_brawl`, `heroesprofile_cache`, `heroesprofile_optout`
  * Increase your local mysql max_allowed_packet var.  We use 64M.
 
  ## Project Setup
