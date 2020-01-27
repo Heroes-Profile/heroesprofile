@@ -22,7 +22,7 @@ class CreateMountsTable extends Migration
           $table->string('rarity', 45);
           $table->string('type', 45);
           $table->string('category', 45);
-          $table->dateTime('release_date', 45);
+          $table->dateTime('release_date');
 
 
           $table->unique(['title']);
