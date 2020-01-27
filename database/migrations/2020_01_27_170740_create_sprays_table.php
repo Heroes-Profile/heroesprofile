@@ -21,7 +21,7 @@ class CreateSpraysTable extends Migration
           $table->string('attribute_id', 45);
           $table->string('rarity', 45);
           $table->string('category', 45);
-          $table->dateTime('release_date', 45);
+          $table->dateTime('release_date');
           $table->string('icon', 255);
           $table->string('animation_texture', 255);
           $table->integer('animation_frames');

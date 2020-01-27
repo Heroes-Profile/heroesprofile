@@ -23,7 +23,7 @@ class CreateAnnouncersTable extends Migration
           $table->string('category', 45);
           $table->string('gender', 45);
           $table->string('hero', 45);
-          $table->dateTime('release_date', 45);
+          $table->dateTime('release_date');
           $table->string('icon', 255);
 
           $table->unique(['title']);

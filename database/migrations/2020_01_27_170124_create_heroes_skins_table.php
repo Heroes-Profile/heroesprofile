@@ -20,8 +20,8 @@ class CreateHeroesSkinsTable extends Migration
           $table->string('hyperlink_id', 255);
           $table->string('attribute_id', 45);
           $table->string('rarity', 45);
-          $table->dateTime('release_date', 45);
-          
+          $table->dateTime('release_date');
+
           $table->unique(['title']);
           $table->index('attribute_id');
         });
