@@ -16,9 +16,9 @@ class CreateTableCacheValueTable extends Migration
         Schema::create('heroesprofile_cache.table_cache_value', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->string('table_to_cache', 45);
-          $table->integer('cache_number');
+          $table->integer('cache_number')->autoIncrement();
           $table->dateTime('date_cached');
-          
+
           $table->primary(['cache_number', 'table_to_cache'], "Primary_Index");
         });
     }
