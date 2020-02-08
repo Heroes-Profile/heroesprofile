@@ -8,6 +8,7 @@ use App\SeasonGameVersions;
 
 use DateTime;
 use Cache;
+use Session;
 
 class GlobalFunctions
 {
@@ -508,15 +509,25 @@ public function getLeagueTiers(){
       $data = array();
       $data["season"] = $season_data[$i]["season"];
       $data["year"] = $season_data[$i]["year"];
-      $data["start_date"] = $season_data[$i]["start_date"];
-      $data["end_date"] = $season_data[$i]["end_date"];
+      $data["start_date"] = date('Y-m-d H:i:s', strtotime($season_data[$i]["start_date"]));
+      $data["end_date"] = date('Y-m-d H:i:s', strtotime($season_data[$i]["end_date"]));
 
       $return_data[$season_data[$i]["id"]] = $data;
     }
     return $return_data;
   }
 
-
+  /*
+  |--------------------------------------------------------------------------
+  | getLatestSeason
+  |--------------------------------------------------------------------------
+  |
+  | This function gets the latest season
+  |
+  */
+  public function getLatestSeason(){
+    return max(array_keys(Session::get("season_dates")));
+  }
 
 
   /*
@@ -692,10 +703,10 @@ public function getLeagueTiers(){
     return $intToRegion;
   }
 
-  public function getMinorPatchTwoLatest(){
+  public function getMinorPatchLatest(){
     $season_game_version_data = SeasonGameVersions::select('game_version')
                ->orderBy('game_version', 'desc')
-               ->limit(2)
+               ->limit(1)
                ->get();
     $season_game_version_data = json_decode(json_encode($season_game_version_data),true);
 
@@ -979,6 +990,15 @@ public function getLeagueTiers(){
     $t1 = strtotime($a['game_date']);
     $t2 = strtotime($b['game_date']);
     return $t1 - $t2;
+  }
+
+  public function getSeasonFromDate($date){
+    foreach (Session::get("season_dates") as $season => $season_data){
+      if($date >= $season_data["start_date"] && $date < $season_data["end_date"]){
+        return $season;
+        break;
+      }
+    }
   }
 }
 

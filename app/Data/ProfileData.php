@@ -678,73 +678,46 @@ class ProfileData
 
     foreach ($finalData as $replayID => $value){
       foreach ($value as $blizz_id => $data){
-        //echo $value[$blizz_id]["battletag"];
-        //echo "<br />\n";
-
         if($blizz_id != $this->blizz_id){
           if($value[$blizz_id]["team"] == $finalData[$replayID][$this->blizz_id]["team"]){
             if(array_key_exists($value[$blizz_id]["blizz_id"], $allies)){
               $allies[$value[$blizz_id]["blizz_id"]]["games_played"]++;
-
-
-
-
               if(!array_key_exists($value[$blizz_id]["hero"], $allies[$value[$blizz_id]["blizz_id"]]["hero"])){
                 $allies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]] = 0;
               }
               $allies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]]++;
-
-
               if($value[$blizz_id]["winner"] == "1"){
                 $allies[$value[$blizz_id]["blizz_id"]]["wins"]++;
 
               }else{
                 $allies[$value[$blizz_id]["blizz_id"]]["losses"]++;
-
               }
             }else{
               $allies[$value[$blizz_id]["blizz_id"]]["games_played"] = 1;
-
-
               if($value[$blizz_id]["winner"] == "1"){
                 $allies[$value[$blizz_id]["blizz_id"]]["wins"] = 1;
                 $allies[$value[$blizz_id]["blizz_id"]]["losses"] = 0;
-
               }else{
                 $allies[$value[$blizz_id]["blizz_id"]]["losses"] = 1;
                 $allies[$value[$blizz_id]["blizz_id"]]["wins"] = 0;
               }
-
-
               $allies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]] = 1;
-
-
             }
-
+            $allies[$value[$blizz_id]["blizz_id"]]["battletag"] = $data["battletag"];
           }else{
             if(array_key_exists($value[$blizz_id]["blizz_id"], $enemies)){
               $enemies[$value[$blizz_id]["blizz_id"]]["games_played"]++;
-
-
-
-
               if(!array_key_exists($value[$blizz_id]["hero"], $enemies[$value[$blizz_id]["blizz_id"]]["hero"])){
                 $enemies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]] = 0;
               }
               $enemies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]]++;
-
-
               if($value[$blizz_id]["winner"] == "1"){
                 $enemies[$value[$blizz_id]["blizz_id"]]["wins"]++;
-
               }else{
                 $enemies[$value[$blizz_id]["blizz_id"]]["losses"]++;
-
               }
             }else{
               $enemies[$value[$blizz_id]["blizz_id"]]["games_played"] = 1;
-
-
               if($value[$blizz_id]["winner"] == "1"){
                 $enemies[$value[$blizz_id]["blizz_id"]]["wins"] = 1;
                 $enemies[$value[$blizz_id]["blizz_id"]]["losses"] = 0;
@@ -753,18 +726,12 @@ class ProfileData
                 $enemies[$value[$blizz_id]["blizz_id"]]["losses"] = 1;
                 $enemies[$value[$blizz_id]["blizz_id"]]["wins"] = 0;
               }
-
-
               $enemies[$value[$blizz_id]["blizz_id"]]["hero"][$value[$blizz_id]["hero"]] = 1;
-
-
             }
+            $enemies[$value[$blizz_id]["blizz_id"]]["battletag"] = $data["battletag"];
           }
         }
-
-
       }
-
     }
     arsort($allies);
     arsort($enemies);
@@ -787,8 +754,7 @@ class ProfileData
       $return_enemies[$key] = $value;
       //$e_i++;
     }
-
-    return (array($return_allies, $return_enemies, $battletags));
+    return (array($return_allies, $return_enemies));
   }
 
   public function grabAllHeroData(){
@@ -858,6 +824,279 @@ class ProfileData
     print_r($query->getBindings());
     */
 
+    return $return_data;
+  }
+
+  public function grabSingleHeroData($hero){
+    $return_data = Cache::rememberForever("HeroesSingle" . "|" . $hero . "|" . $this->blizz_id . "|" . $this->region . "|" . $this->season . "|" . $this->game_type, function () use ($hero){
+      $return_data = $this->getSingleHeroReplayData($hero);
+      return $return_data;
+    });
+
+    return $return_data;
+
+  }
+
+  private function getSingleHeroReplayData($hero){
+    $query = DB::table('heroesprofile.replay');
+    $query->join('heroesprofile.player', 'heroesprofile.player.replayID', '=', 'heroesprofile.replay.replayID');
+    $query->join('heroesprofile.scores', function($join)
+      {
+        $join->on('heroesprofile.scores.replayID', '=', 'heroesprofile.replay.replayID');
+        $join->on('heroesprofile.scores.battletag', '=', 'heroesprofile.player.battletag');
+      }
+    );
+    $query->join('heroesprofile.talents', function($join)
+      {
+        $join->on('heroesprofile.talents.replayID', '=', 'heroesprofile.replay.replayID');
+        $join->on('heroesprofile.talents.battletag', '=', 'heroesprofile.player.battletag');
+      }
+    );
+    $query->where('heroesprofile.replay.region', $this->region);
+    $query->where('heroesprofile.player.blizz_id', $this->blizz_id);
+    $query->where('heroesprofile.player.hero', $hero);
+
+    $query->select(
+        'heroesprofile.replay.game_type',
+        'heroesprofile.replay.game_date',
+        'heroesprofile.replay.game_length',
+        'heroesprofile.replay.game_map',
+        'heroesprofile.player.hero_level',
+        'heroesprofile.player.mastery_taunt',
+        'heroesprofile.player.winner',
+        'heroesprofile.player.player_conservative_rating',
+        'heroesprofile.player.hero_conservative_rating',
+        'heroesprofile.player.role_conservative_rating',
+        'heroesprofile.scores.kills',
+        'heroesprofile.scores.assists',
+        'heroesprofile.scores.takedowns',
+        'heroesprofile.scores.deaths',
+        'heroesprofile.scores.highest_kill_streak',
+        'heroesprofile.scores.hero_damage',
+        'heroesprofile.scores.siege_damage',
+        'heroesprofile.scores.structure_damage',
+        'heroesprofile.scores.minion_damage',
+        'heroesprofile.scores.creep_damage',
+        'heroesprofile.scores.summon_damage',
+        //'heroesprofile.scores.time_cc_enemy_heroes',
+        'heroesprofile.scores.healing',
+        'heroesprofile.scores.self_healing',
+        'heroesprofile.scores.damage_taken',
+        'heroesprofile.scores.experience_contribution',
+        'heroesprofile.scores.town_kills',
+        'heroesprofile.scores.time_spent_dead',
+        'heroesprofile.scores.merc_camp_captures',
+        'heroesprofile.scores.watch_tower_captures',
+        //'heroesprofile.scores.meta_experience',
+        //'heroesprofile.scores.match_award',
+        'heroesprofile.scores.protection_allies',
+        'heroesprofile.scores.silencing_enemies',
+        'heroesprofile.scores.rooting_enemies',
+        'heroesprofile.scores.clutch_heals',
+        'heroesprofile.scores.escapes',
+        'heroesprofile.scores.vengeance',
+        'heroesprofile.scores.outnumbered_deaths',
+        'heroesprofile.scores.teamfight_escapes',
+        'heroesprofile.scores.teamfight_healing',
+        'heroesprofile.scores.teamfight_damage_taken',
+        'heroesprofile.scores.teamfight_hero_damage',
+        'heroesprofile.scores.multikill',
+        'heroesprofile.scores.physical_damage',
+        'heroesprofile.scores.spell_damage',
+        'heroesprofile.scores.regen_globes',
+        'heroesprofile.scores.first_to_ten',
+        'heroesprofile.talents.level_one',
+        'heroesprofile.talents.level_four',
+        'heroesprofile.talents.level_seven',
+        'heroesprofile.talents.level_ten',
+        'heroesprofile.talents.level_thirteen',
+        'heroesprofile.talents.level_sixteen',
+        'heroesprofile.talents.level_twenty'
+      );
+    $data = $query->get();
+    $data = json_decode(json_encode($data),true);
+
+    $non_player_data = $this->getWinLossAllReplayDataSingleHero($hero);
+
+    /*
+    print_r($query->toSql());
+    echo "<br>";
+    print_r($query->getBindings());
+    */
+
+
+    $return_data = array();
+    foreach (Session::get("season_dates") as $season => $season_data){
+      foreach (Session::get("game_types_by_name") as $game_type => $game_type_data){
+        if($game_type != "Brawl" && $game_type != "Custom"){
+          $return_data[$season][$game_type]["wins"] = 0;
+          $return_data[$season][$game_type]["losses"] = 0;
+          $return_data[$season][$game_type]["takedowns"] = 0;
+          $return_data[$season][$game_type]["kills"] = 0;
+          $return_data[$season][$game_type]["assists"] = 0;
+          $return_data[$season][$game_type]["deaths"] = 0;
+          $return_data[$season][$game_type]["talent_builds"] = array();
+
+          foreach(Session::get("heroes_by_name") as $hero_name => $id){
+            $return_data[$season][$game_type]["ally"][$hero_name]["wins"] = 0;
+            $return_data[$season][$game_type]["ally"][$hero_name]["losses"] = 0;
+
+            $return_data[$season][$game_type]["enemy"][$hero_name]["wins"] = 0;
+            $return_data[$season][$game_type]["enemy"][$hero_name]["losses"] = 0;
+          }
+
+        }
+      }
+    }
+
+    for($i = 0; $i < count($data); $i++){
+      $season = \GlobalFunctions::instance()->getSeasonFromDate(strtotime($data[$i]["game_date"]));
+      $game_type_name = Session::get("game_types_by_id")[$data[$i]["game_type"]];
+
+      if($data[$i]["winner"] == 1){
+        $return_data[$season][$game_type_name]["wins"]++;
+      }else{
+        $return_data[$season][$game_type_name]["losses"]++;
+      }
+      $return_data[$season][$game_type_name]["takedowns"] += $data[$i]["takedowns"];
+      $return_data[$season][$game_type_name]["kills"] += $data[$i]["kills"];
+      $return_data[$season][$game_type_name]["assists"] += $data[$i]["assists"];
+      $return_data[$season][$game_type_name]["deaths"] += $data[$i]["deaths"];
+
+      $talent_string = $data[$i]["level_one"] . "|" .
+        $data[$i]["level_four"] . "|" .
+        $data[$i]["level_seven"] . "|" .
+        $data[$i]["level_ten"] . "|" .
+        $data[$i]["level_thirteen"] . "|" .
+        $data[$i]["level_sixteen"] . "|" .
+        $data[$i]["level_twenty"];
+
+      if(!array_key_exists($talent_string, $return_data[$season][$game_type_name]["talent_builds"])){
+        $return_data[$season][$game_type_name]["talent_builds"][$talent_string] = 1;
+      }else{
+        $return_data[$season][$game_type_name]["talent_builds"][$talent_string] += 1;
+      }
+    }
+    //print_r(json_encode($non_player_data, true));
+
+    foreach ($non_player_data as $replayID => $replay_data)
+    {
+      $season = \GlobalFunctions::instance()->getSeasonFromDate(strtotime($replay_data["game_date"]));
+      $game_type_name = Session::get("game_types_by_id")[$replay_data["game_type"]];
+
+      $player_team = -1;
+      $team_winner = -1;
+      if(in_array($this->blizz_id, $replay_data[0]["players"])){
+        $player_team = 0;
+      }else{
+        $player_team = 1;
+      }
+
+
+      if($replay_data[0]["winner"] == 1){
+        $team_winner = 0;
+      }else{
+        $team_winner = 1;
+      }
+
+
+      for($i = 0; $i < 2; $i++){
+        if($i == $player_team){
+          for($j = 0 ; $j < count($replay_data[$i]["heroes"]); $j++){
+            $hero_name = Session::get("heroes_by_id")[$replay_data[$i]["heroes"][$j]];
+
+            if($hero_name != $hero){
+              if($i == $team_winner){
+                $return_data[$season][$game_type]["ally"][$hero_name]["wins"]++;
+              }else{
+                $return_data[$season][$game_type]["ally"][$hero_name]["losses"]++;
+              }
+            }
+          }
+        }else{
+          for($j = 0 ; $j < count($replay_data[$i]["heroes"]); $j++){
+            $hero_name = Session::get("heroes_by_id")[$replay_data[$i]["heroes"][$j]];
+
+            if($i == $team_winner){
+              $return_data[$season][$game_type]["enemy"][$hero_name]["wins"]++;
+            }else{
+              $return_data[$season][$game_type]["enemy"][$hero_name]["losses"]++;
+            }
+          }
+
+        }
+      }
+
+
+
+    }
+
+    print_r(json_encode($return_data, true));
+
+  }
+
+  private function getWinLossAllReplayDataSingleHero($hero){
+    $query = DB::table('heroesprofile.replay');
+    $query->join('heroesprofile.player', 'heroesprofile.player.replayID', '=', 'heroesprofile.replay.replayID');
+    $query->join('heroesprofile.scores', function($join)
+      {
+        $join->on('heroesprofile.scores.replayID', '=', 'heroesprofile.replay.replayID');
+        $join->on('heroesprofile.scores.battletag', '=', 'heroesprofile.player.battletag');
+      }
+    );
+    $query->join('heroesprofile.talents', function($join)
+      {
+        $join->on('heroesprofile.talents.replayID', '=', 'heroesprofile.replay.replayID');
+        $join->on('heroesprofile.talents.battletag', '=', 'heroesprofile.player.battletag');
+      }
+    );
+
+    $query->whereIn('heroesprofile.replay.replayID',
+      json_decode(json_encode(DB::table('heroesprofile.replay')
+        ->select('heroesprofile.replay.replayID')
+        ->join('heroesprofile.player', 'heroesprofile.player.replayID', '=', 'heroesprofile.replay.replayID')
+        ->where('heroesprofile.replay.region', $this->region)
+        ->where('heroesprofile.player.blizz_id', $this->blizz_id)
+        ->where('heroesprofile.player.hero', $hero)->get()), true)
+    );
+    $query->select(
+        'heroesprofile.replay.replayID',
+        'heroesprofile.replay.game_type',
+        'heroesprofile.replay.game_date',
+        'heroesprofile.replay.game_map',
+        'heroesprofile.replay.region',
+        'heroesprofile.player.winner',
+        'heroesprofile.player.hero',
+        'heroesprofile.player.team',
+        'heroesprofile.player.blizz_id'
+      );
+      $query->orderBy('heroesprofile.replay.replayID');
+      $query->orderBy('heroesprofile.player.team');
+    $data = $query->get();
+    $data = json_decode(json_encode($data),true);
+
+    $return_data = array();
+
+    $player_counter = 0;
+
+    for($i = 0; $i < count($data); $i++){
+
+      if($i != 0){
+          if(($data[$i]["replayID"] != $data[$i - 1]["replayID"]) || ($data[$i]["team"] != $data[$i - 1]["team"])){
+            $player_counter = 0;
+          }
+      }
+
+      $return_data[$data[$i]["replayID"]]["game_type"] = $data[$i]["game_type"];
+      $return_data[$data[$i]["replayID"]]["game_date"] = $data[$i]["game_date"];
+      $return_data[$data[$i]["replayID"]]["region"] = $data[$i]["region"];
+      $return_data[$data[$i]["replayID"]][$data[$i]["team"]]["winner"] = $data[$i]["winner"];
+      $return_data[$data[$i]["replayID"]][$data[$i]["team"]]["players"][$player_counter] = $data[$i]["blizz_id"];
+      $return_data[$data[$i]["replayID"]][$data[$i]["team"]]["heroes"][$player_counter] = $data[$i]["hero"];
+
+
+      $player_counter++;
+    }
     return $return_data;
   }
 }

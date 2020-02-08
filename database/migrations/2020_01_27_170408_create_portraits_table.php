@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAwardsTable extends Migration
+class CreatePortraitsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class CreateAwardsTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile.awards', function (Blueprint $table) {
+        Schema::create('heroesprofile.portraits', function (Blueprint $table) {
           $table->engine = 'InnoDB';
-          $table->integer('award_id');
-          $table->string('title', 45);
-          $table->string('icon', 45);
+          $table->integer('portrait_id');
+          $table->string('title', 255);
+          $table->string('hyperlink_id', 255);
 
-
-          $table->primary(['award_id', 'title', 'icon'], 'Primary_Index');
+          $table->unique(['title']);
         });
     }
 
@@ -31,6 +30,6 @@ class CreateAwardsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile.awards');
+        Schema::dropIfExists('heroesprofile.portraits');
     }
 }

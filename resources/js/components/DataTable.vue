@@ -23,6 +23,9 @@
       <template v-slot:cell(popularity)="data">
         {{data.value}}%
       </template>
+      <template v-slot:cell(change)="data">
+        {{data.value}}%
+      </template>
       <template v-slot:cell(talent_builds)="row">
         <b-button size="sm" @click="row.toggleDetails" class="mr-2">
           {{ row.detailsShowing ? 'Hide' : 'Show'}} <span class="mobileHide">Talent Builds</span>
@@ -56,12 +59,14 @@ export default {
           { key: 'name', label: 'Hero', sortable: true },
           { key: 'win_rate', label: 'Win Rate', sortable: true, class: "col-win_rate" },
           { key: 'popularity', label: 'Popularity', sortable: true },
+          { key: 'pick_rate', label: 'Pick Rate', sortable: true },
           { key: 'ban_rate', label: 'Ban Rate', sortable: true, class: "mobileHide"},
+          { key: 'influence', label: 'Influence', sortable: true, class: "mobileHide"},
           { key: 'games_played', label: 'Games Played', sortable: true },
           { key: 'wins', label: 'Wins', sortable: true, class: "mobileHide"},
           { key: 'losses', label: 'Losses', sortable: true, class: "mobileHide"},
           { key: 'bans', label: 'Bans', sortable: true, class: "mobileHide"},
-          { key: 'change', label: 'Change', sortable: true, class: "mobileHide" },
+          { key: 'change', label: 'Win Rate Change', sortable: true, class: "mobileHide" },
           { key: 'talent_builds', label: 'Talent Builds', sortable: false}
         ],
         error: "",

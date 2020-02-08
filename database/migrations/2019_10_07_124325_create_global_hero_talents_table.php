@@ -24,6 +24,7 @@ class CreateGlobalHeroTalentsTable extends Migration
           $table->integer('hero_level')->unsigned();
           $table->tinyInteger('hero');
           $table->tinyInteger('mirror');
+          $table->integer('region');
           $table->tinyInteger('win_loss');
           $table->integer('talent_combination_id');
           $table->integer('game_time');
@@ -65,8 +66,8 @@ class CreateGlobalHeroTalentsTable extends Migration
           $table->integer('regen_globes');
           $table->integer('games_played');
 
-          $table->primary(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'mirror', 'win_loss', 'talent_combination_id'], 'Primary_Index');
-          $table->index(['game_version', 'game_type', 'hero', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'mirror', 'win_loss', 'talent_combination_id', 'games_played'], 'Base_Index');
+          $table->primary(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'mirror', 'region', 'win_loss', 'talent_combination_id'], 'Primary_Index');
+          $table->index(['game_version', 'game_type', 'hero', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'mirror', 'region', 'win_loss', 'talent_combination_id', 'games_played'], 'Base_Index');
 
         });
     }

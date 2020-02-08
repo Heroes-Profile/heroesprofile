@@ -13,7 +13,7 @@ class CreateReplayExperienceBreakdownTable extends Migration
      */
     public function up()
     {
-        Schema::create('replay_experience_breakdown', function (Blueprint $table) {
+        Schema::create('heroesprofile.replay_experience_breakdown', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->integer('replayID');
           $table->tinyInteger('team');

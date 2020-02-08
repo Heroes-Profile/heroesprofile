@@ -5,10 +5,10 @@
  This public repository is the site re-write for [Heroes Profile](https://www.heroesprofile.com/) and is not currently in production.
 
 # Cloning the Heroes Profile repository
- * `git clone --recursive https://github.com/Zemill/heroesprofile.git`
+ * `git clone --recursive https://github.com/Heroes-Profile/heroesprofile.git`
  * `cd heroesprofile`
- * `git submodule update --remote` 
- * If you have issues getting the seed files to populate in `database/seeds/heroesprofile-seeds/seed-files`, you can pull them directly from https://github.com/Zemill/heroesprofile-seeds.git
+ * `git submodule update --remote`
+ * If you have issues getting the seed files to populate in `database/seeds/heroesprofile-seeds/seed-files`, you can pull them directly from https://github.com/Heroes-Profile/heroesprofile-seeds.git
 
 # Docker Setup
 
@@ -49,7 +49,7 @@ If you need to get into a command promt for the app
  For windows users, Wampserver64 is a useful tool as it installs the MySql server and php at the same time. https://sourceforge.net/projects/wampserver/
 
  ## Database setup
- * Create the following schemas in your MySql database.   `heroesprofile`, `heroesprofile_brawl`, `heroesprofile_cache`
+ * Create the following schemas in your MySql database.   `heroesprofile`, `heroesprofile_brawl`, `heroesprofile_cache`, `heroesprofile_optout`
  * Increase your local mysql max_allowed_packet var.  We use 64M.
 
  ## Project Setup

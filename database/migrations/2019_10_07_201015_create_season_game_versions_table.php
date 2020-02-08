@@ -17,7 +17,8 @@ class CreateSeasonGameVersionsTable extends Migration
           $table->engine = 'InnoDB';
           $table->integer('season');
           $table->string('game_version', 45);
-          
+          $table->dateTime('date_added');
+
           $table->primary(['season', 'game_version']);
         });
     }
