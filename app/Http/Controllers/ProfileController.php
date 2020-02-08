@@ -56,7 +56,38 @@ $region = "1";
         "title" => "Tank",
         "value" => 49.53
       ),
-      
+
+      array(
+        "title" => "Healer",
+        "value" => 52.34
+      ),
+      array(
+        "title" => "Melee Assassin",
+        "value" => 51.69
+      )
+    );
+    $mmr = array(
+      array(
+        "title" => "Overall",
+        "value" => 52.59
+      ),
+      array(
+        "title" => "Ranged Assassin",
+        "value" => 52.82
+      ),
+      array(
+        "title" => "Bruiser",
+        "value" => 56.2
+      ),
+      array(
+        "title" => "Support",
+        "value" => 56.2
+      ),
+      array(
+        "title" => "Tank",
+        "value" => 49.53
+      ),
+
       array(
         "title" => "Healer",
         "value" => 52.34
