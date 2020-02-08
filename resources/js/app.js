@@ -10,6 +10,7 @@ import ImagePopup from './components/ImagePopup.vue';
 import Login from './components/Login.vue';
 import Multiselect from 'vue-multiselect';
 import HeroTalentData from './components/HeroTalentData.vue';
+import StatBox from './components/StatBox.vue';
 
 //Profile Vue Components
 import TabSwitcher from './components/Profile/TabSwitcher.vue';
@@ -58,7 +59,7 @@ const store = new Vuex.Store({
     }
   },
   actions:{
-    updateFormData ({ commit, state }, fields){    
+    updateFormData ({ commit, state }, fields){
       commit('updateFormFields',  fields);
       /*
       var timeframe = [];
@@ -88,6 +89,7 @@ const store = new Vuex.Store({
 //Profile Vue Components
 Vue.component('profile-tab-switcher', TabSwitcher);
 Vue.component('hero-summary', HeroSummary);
+Vue.component('stat-box', StatBox);
 
 const router = new VueRouter({
     mode: 'history',

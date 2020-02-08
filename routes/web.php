@@ -15,8 +15,9 @@ Route::group([
     'middleware' => 'setGlobals'
 ], function () {
   //Route::get('/Profile', 'ProfileController@show');
-  Route::view('/Profile', 'Profile/home');
-  Route::view('/Leaderboard', 'Leaderboard/home');
+
+  Route::view('/Profiledata', 'Profile.home');
+  Route::get('/Profile', 'ProfileController@show');
   Route::view('/Profile/FriendsFoes', 'Profile/FriendsFoes/home');
   Route::view('/Profile/Heroes/All', 'Profile/Heroes/All/home');
   Route::view('/Profile/Heroes/Single', 'Profile/Heroes/Single/home');
