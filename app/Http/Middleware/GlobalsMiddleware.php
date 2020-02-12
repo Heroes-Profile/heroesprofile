@@ -181,6 +181,12 @@ class GlobalsMiddleware
           return \GlobalFunctions::instance()->getRegionToInt();
         })]);
       }
+
+      if (!$request->session()->has('mmr_type_ids')) {
+        session(['mmr_type_ids' => Cache::remember('mmr_type_ids', $seconds, function () {
+          return \GlobalFunctions::instance()->getMMRTypeIDs();
+        })]);
+      }
       return $next($request);
     }
 }

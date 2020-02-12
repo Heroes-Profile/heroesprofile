@@ -5,6 +5,7 @@ use App\LeagueTier;
 use App\SeasonDate;
 use App\GameType;
 use App\SeasonGameVersions;
+use App\MMRTypeID;
 
 use DateTime;
 use Cache;
@@ -701,6 +702,20 @@ public function getLeagueTiers(){
       "5" => "CN"
     );
     return $intToRegion;
+  }
+
+
+  public function getMMRTypeIDs(){
+    $mmr_type_id_data = MMRTypeID::all();
+    $mmr_type_id_data = json_decode(json_encode($mmr_type_id_data),true);
+
+    $return_data = array();
+    for($i = 0; $i < count($mmr_type_id_data); $i++){
+      $return_data[$mmr_type_id_data[$i]["name"]] = $mmr_type_id_data[$i]["mmr_type_id"];
+    }
+
+
+    return $return_data;
   }
 
   public function getMinorPatchLatest(){

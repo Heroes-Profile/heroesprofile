@@ -36,7 +36,8 @@ Route::get('login/success', 'LoginController@handleProviderCallback');
 
 
   */
-  Route::view('/Test', 'Test');
+  Route::view('/Global/Leaderboard', 'Global/leaderboard');
+
   Route::get('/', 'HeroController@show');
 
 
