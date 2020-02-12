@@ -15,6 +15,7 @@ class CreateGlobalHeroChangeTable extends Migration
     {
       Schema::create('heroesprofile_cache.global_hero_change', function (Blueprint $table) {
         $table->engine = 'InnoDB';
+        $table->integer('global_hero_change_id')->autoIncrement();
         $table->string('game_version', 45);
         $table->tinyInteger('game_type');
         $table->tinyInteger('hero');
@@ -26,7 +27,8 @@ class CreateGlobalHeroChangeTable extends Migration
         $table->integer('losses');
         $table->integer('bans');
 
-        $table->primary(['game_version', 'game_type', 'hero'], 'Primary_Index');
+        $table->primary('global_hero_change_id');
+        $table->unique(['game_version', 'game_type', 'hero'], 'Base_Unique');
       });
     }
 

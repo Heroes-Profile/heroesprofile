@@ -15,6 +15,7 @@ class CreateLeaderboardTable extends Migration
     {
         Schema::create('heroesprofile_cache.leaderboard', function (Blueprint $table) {
           $table->engine = 'InnoDB';
+          $table->integer('leaderboard_id')->autoIncrement();
           $table->integer('game_type');
           $table->integer('season');
           $table->integer('type');
@@ -30,8 +31,9 @@ class CreateLeaderboardTable extends Migration
           $table->double('conservative_rating');
           $table->double('rating');
           $table->integer('cache_number');
-          
-          $table->primary(['game_type', 'season', 'type', 'rank', 'cache_number'], "Primary_Index");
+
+          $table->primary('leaderboard_id');
+          $table->unique(['game_type', 'season', 'type', 'rank', 'cache_number'], "Base_Unique");
           $table->index(['game_type', 'season', 'type', 'cache_number'], "Index 1");
           $table->index(['game_type', 'season', 'type', 'cache_number', 'region'], "Index 2");
         });

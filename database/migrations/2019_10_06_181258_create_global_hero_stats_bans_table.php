@@ -15,6 +15,7 @@ class CreateGlobalHeroStatsBansTable extends Migration
     {
         Schema::create('heroesprofile.global_hero_stats_bans', function (Blueprint $table) {
           $table->engine = 'InnoDB';
+          $table->integer('global_stats_bans_id')->autoIncrement();
           $table->string('game_version', 45);
           $table->tinyInteger('game_type');
           $table->tinyInteger('league_tier');
@@ -26,7 +27,8 @@ class CreateGlobalHeroStatsBansTable extends Migration
           $table->tinyInteger('hero');
           $table->integer('bans')->unsigned()->default(0);
 
-          $table->primary(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'region', 'hero'], 'Primary_Index');
+          $table->primary('global_stats_bans_id');
+          $table->unique(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'region', 'hero'], 'Base_Unique');
         });
     }
 
