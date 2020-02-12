@@ -15,7 +15,7 @@ Route::group([
     'middleware' => 'setGlobals'
 ], function () {
   //Route::get('/Profile', 'ProfileController@show');
-
+/*
   Route::view('/Profiledata', 'Profile.home');
   Route::get('/Profile', 'ProfileController@show');
   Route::view('/Profile/FriendsFoes', 'Profile/FriendsFoes/home');
@@ -26,15 +26,6 @@ Route::group([
 
 
 
-/*
-  Route::get('login', function () {
-      return view('login',
-        ['title' => 'Login'],
-        ['paragraph' => 'This is the login page'],
-      );
-  });
-*/
-
 Route::get('login', 'LoginController@redirectToProvider');
 Route::get('login/success', 'LoginController@handleProviderCallback');
 
@@ -42,8 +33,22 @@ Route::get('login/success', 'LoginController@handleProviderCallback');
   Route::get('/Global/Talents/Builds', 'HeroController@getHeroBuildsTableData');
   //Route::view('/', 'index');
   Route::get('/Global/Hero/', 'HeroController@show');
+
+
+  */
+  Route::view('/Global/Leaderboard', 'Global/leaderboard');
+
   Route::get('/', 'HeroController@show');
 
+
+  /*
+    Route::get('login', function () {
+        return view('login',
+          ['title' => 'Login'],
+          ['paragraph' => 'This is the login page'],
+        );
+    });
+  */
 
 
 });

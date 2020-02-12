@@ -535,7 +535,7 @@ private $maps = array();
         }
         //In this section where I have the same var as _influence, it is due to multiplying a value by 100 and rounding
         //We can remove this extra var if we move the modification of the final value to vue right before it gets displayed?
-        
+
         if($return_data[$i]["wins"] == 0){
             $return_data[$i]["win_rate"] = 0;
         }else if($return_data[$i]["losses"] == 0){
