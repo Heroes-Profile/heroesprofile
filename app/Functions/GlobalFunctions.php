@@ -704,6 +704,24 @@ public function getLeagueTiers(){
     return $intToRegion;
   }
 
+  public function getGameVersionsFromFilter($timeframe){
+    $game_version_counter = 0;
+    $game_versions = array();
+    for($i = 0; $i < count($timeframe); $i++){
+      if(in_array($timeframe[$i], Session::get("all_major_patch"))){
+        for($j = 0; $j < count(Session::get("major_to_minor_patch_mapping")[$timeframe[$i]]); $j++){
+          $game_versions[$game_version_counter] = Session::get("major_to_minor_patch_mapping")[$timeframe[$i]][$j];
+          $game_version_counter++;
+        }
+
+      }else{
+        $game_versions[$game_version_counter] = $timeframe[$i];
+        $game_version_counter++;
+      }
+    }
+    return $game_versions;
+  }
+
 
   public function getMMRTypeIDs(){
     $mmr_type_id_data = MMRTypeID::all();
