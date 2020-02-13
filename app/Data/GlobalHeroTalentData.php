@@ -51,8 +51,14 @@ class GlobalHeroTalentData
     $this->region = $region;
   }
 
-  private function getTopFiveBuilds(){
+  private function getTopFiveBuilds($type){
     $this->game_versions = \GlobalFunctions::instance()->getGameVersionsFromFilter($this->timeframe);
+
+    $limit = 5;
+
+    if($type != "Popular"){
+      $limit = 100;
+    }
 
     $builds = \App\GlobalHeroTalents::Filters($this->hero, $this->game_versions, $this->game_type, $this->player_league_tier,
                                           $this->hero_league_tier, $this->role_league_tier, $this->game_map, $this->hero_level, $this->mirror, $this->region)
@@ -60,9 +66,81 @@ class GlobalHeroTalentData
                    ->where('level_twenty', '<>', '0')
                    ->groupBy('level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
                    ->orderBy('games_played', 'DESC')
-                   ->limit(5)
+                   ->limit($limit)
                    ->get();
-    return $builds;
+
+    $return_data = array();
+    if($type != "Popular"){
+      $dupe = array();
+      $counter = 0;
+      foreach($builds as $key => $value){
+        if($type == "HP"){
+          if(!in_array($value->level_one . "|" . $value->level_four . "|" . $value->level_seven, $dupe)){
+            $dupe[$counter] = $value->level_one . "|" . $value->level_four . "|" . $value->level_seven;
+            $return_data[$counter] = $value;
+            $counter++;
+          }
+        }else if($type == "1"){
+          if(!in_array($value->level_one, $dupe)){
+            $dupe[$counter] = $value->level_one;
+            $return_data[$counter] = $value;
+            $counter++;
+          }
+        }else if($type == "4"){
+          if(!in_array($value->level_four, $dupe)){
+            $dupe[$counter] = $value->level_four;
+            $return_data[$counter] = $value;
+            $counter++;
+          }
+        }else if($type == "7"){
+          if(!in_array($value->level_seven, $dupe)){
+            $dupe[$counter] = $value->level_seven;
+            $return_data[$counter] = $value;
+            $counter++;
+          }
+        }else if($type == "10"){
+          if(!in_array($value->level_ten, $dupe)){
+            $dupe[$counter] = $value->level_ten;
+            $return_data[$counter] = $value;
+            $counter++;
+          }
+        }else if($type == "13"){
+          if(!in_array($value->level_thirteen, $dupe)){
+            $dupe[$counter] = $value->level_thirteen;
+            $return_data[$counter] = $value;
+            $counter++;
+          }
+        }else if($type == "16"){
+          if(!in_array($value->level_sixteen, $dupe)){
+            $dupe[$counter] = $value->level_sixteen;
+            $return_data[$counter] = $value;
+            $counter++;
+          }
+        }else if($type == "20"){
+          if(!in_array($value->level_twenty, $dupe)){
+            $dupe[$counter] = $value->level_twenty;
+            $return_data[$counter] = $value;
+            $counter++;
+          }
+        }
+
+
+        if($counter == 5){
+          break;
+        }
+      }
+    }else{
+      $counter = 0;
+
+      foreach($builds as $key => $value){
+        $return_data[$counter] = $value;
+        $counter++;
+      }
+    }
+    //print_r($return_data);
+    //echo "<br>";
+
+    return $return_data;
   }
 
   private function getBuildsWinChance($builds){
@@ -98,12 +176,9 @@ class GlobalHeroTalentData
     return $builds;
   }
 
-  public function getGlobalHeroTalentData(){
-    $builds = $this->getTopFiveBuilds();
+  public function getGlobalHeroTalentData($type){
+    $builds = $this->getTopFiveBuilds($type);
     $builds = $this->getBuildsWinChance($builds);
-
-    print_r($builds->toJson());
-
-    //return $this->getTalentWinLosses();
+    return $builds;
   }
 }
