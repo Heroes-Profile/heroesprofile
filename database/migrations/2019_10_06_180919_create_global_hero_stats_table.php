@@ -15,7 +15,7 @@ class CreateGlobalHeroStatsTable extends Migration
     {
         Schema::create('heroesprofile.global_hero_stats', function (Blueprint $table) {
           $table->engine = 'InnoDB';
-          $table->integer('global_hero_id')->autoIncrement();
+          $table->integer('global_hero_stats_id')->autoIncrement();
           $table->string('game_version', 45);
           $table->tinyInteger('game_type');
           $table->tinyInteger('league_tier');

@@ -123,8 +123,6 @@ class GlobalHeroTalentData
             $counter++;
           }
         }
-
-
         if($counter == 5){
           break;
         }
