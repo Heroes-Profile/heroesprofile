@@ -136,19 +136,7 @@ class GlobalHeroStatData
   }
 
   private function combineData(){
-    $game_version_counter = 0;
-    for($i = 0; $i < count($this->timeframe); $i++){
-      if(in_array($this->timeframe[$i], Session::get("all_major_patch"))){
-        for($j = 0; $j < count(Session::get("major_to_minor_patch_mapping")[$this->timeframe[$i]]); $j++){
-          $this->game_versions[$game_version_counter] = Session::get("major_to_minor_patch_mapping")[$this->timeframe[$i]][$j];
-          $game_version_counter++;
-        }
-
-      }else{
-        $this->game_versions[$game_version_counter] = $this->timeframe[$i];
-        $game_version_counter++;
-      }
-    }
+    $this->game_versions = \GlobalFunctions::instance()->getGameVersionsFromFilter($this->timeframe);
 
     $global_hero_data = $this->getHeroWinLosses();
     $global_ban_data = $this->getHeroBans();

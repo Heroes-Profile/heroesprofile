@@ -15,6 +15,7 @@ class CreateGlobalHeroTalentsDetailsTable extends Migration
     {
         Schema::create('heroesprofile.global_hero_talents_details', function (Blueprint $table) {
           $table->engine = 'InnoDB';
+          $table->integer('global_hero_talent_details_id')->autoIncrement();
           $table->string('game_version', 45);
           $table->tinyInteger('game_type');
           $table->tinyInteger('league_tier');
@@ -67,7 +68,8 @@ class CreateGlobalHeroTalentsDetailsTable extends Migration
           $table->integer('regen_globes');
           $table->integer('games_played');
 
-          $table->primary(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'mirror', 'region', 'win_loss', 'level', 'talent'], 'Primary_Index');
+          $table->primary('global_hero_talent_details_id');
+          $table->unique(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'mirror', 'region', 'win_loss', 'level', 'talent'], 'Base_Unique');
           $table->index(['game_version', 'game_type', 'hero', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'mirror', 'region', 'win_loss', 'level', 'talent', 'games_played'], 'Base_Index');
         });
     }
