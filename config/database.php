@@ -65,12 +65,7 @@ return [
         'mysql_cache' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'read' => [
-                'host' => env('READ_DB_HOST', '127.0.0.1'),
-            ],
-            'write' => [
-                'host' => env('WRITE_DB_HOST', '127.0.0.1'),
-            ],
+            'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE_CACHE', 'forge'),
             'username' => env('DB_USERNAME', 'forge'),

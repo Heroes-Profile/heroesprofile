@@ -16,6 +16,8 @@ import StatBox from './components/StatBox.vue';
 import TabSwitcher from './components/Profile/TabSwitcher.vue';
 import HeroSummary from './components/Profile/HeroSummary.vue';
 
+import Leaderboard from './components/Global/Leaderboard.vue';
+
 import { routes } from './routes';
 import vClickOutside from 'v-click-outside';
 require('./bootstrap');
@@ -35,6 +37,7 @@ Vue.component('image-popup', require('./components/ImagePopup.vue').default);
 Vue.component('login', require('./components/Login.vue').default);
 Vue.component('multiselect', Multiselect);
 Vue.component('hero-talent-data', HeroTalentData);
+Vue.component('leaderboard', require('./components/Global/Leaderboard.vue').default);
 let handleOutsideClick
 
 const store = new Vuex.Store({
