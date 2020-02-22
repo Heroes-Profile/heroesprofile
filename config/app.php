@@ -230,6 +230,7 @@ return [
         'ProfileData' => App\Data\ProfileData::class,
         'LeaderboardData' => App\Data\LeaderboardData::class,
         'GlobalHeroStatsData' => App\Data\GlobalHeroStatData::class,
+        'GlobalHeroTalentData' => App\Data\GlobalHeroTalentData::class,
 
     ],
 
