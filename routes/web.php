@@ -59,6 +59,16 @@ Route::post('/get_heroes_stats_table_data', 'HeroController@getHeroStatsTableDat
 
 Route::get('/get_heroes_fields', 'HeroController@getFields')->name('get_heroes_fields');
 
+
+
+Route::view('/OptOut', 'optout');
+Route::view('/OptOut/failure', 'optout_failure');
+Route::view('/OptOut/Success', 'optout_success');
+
+Route::get('loginOptOut', 'OptOutController@redirectToProvider');
+Route::get('login/success', 'OptOutController@handleProviderCallback');
+
+
 //Auth::routes();
 //Auth::routes(['register' => false]);
 
