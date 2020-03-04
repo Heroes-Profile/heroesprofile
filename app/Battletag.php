@@ -10,6 +10,6 @@ class Battletag extends Model
 
     protected $primaryKey = 'player_id';
 
-    protected $connection= 'mysql_dev';
-
+    //protected $connection= 'mysql_dev';
+    public $timestamps = false;
 }

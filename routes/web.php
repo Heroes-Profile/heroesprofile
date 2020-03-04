@@ -54,19 +54,19 @@ Route::get('login/success', 'LoginController@handleProviderCallback');
 
 });
 
+Route::view('optout', 'optout/optout');
+Route::get('optout/login', 'BattlenetAuthController@redirectToProvider');
+Route::view('optout/failure', 'optout/failure');
+Route::view('optout/success', 'optout/success');
+
+//Need to create alternate route/blizz API later.  Using this one for opt out for now.
+Route::get('login/success', 'BattlenetAuthController@handleOptOutProviderCallback');
+
+
+
+
 Route::post('/get_heroes_stats_table_data', 'HeroController@getHeroStatsTableData')->name('get_heroes_stats_table_data');
-
-
 Route::get('/get_heroes_fields', 'HeroController@getFields')->name('get_heroes_fields');
-
-
-
-Route::view('/OptOut', 'optout');
-Route::view('/OptOut/failure', 'optout_failure');
-Route::view('/OptOut/Success', 'optout_success');
-
-Route::get('loginOptOut', 'OptOutController@redirectToProvider');
-Route::get('login/success', 'OptOutController@handleProviderCallback');
 
 
 //Auth::routes();

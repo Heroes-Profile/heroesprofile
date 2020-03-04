@@ -24,7 +24,7 @@
 <p>Once you have opted-out, data uploaded from replays in which you played a game will still be used to calculate data across the site, but your Battletag and Profile page will be removed.</p>
 
 
-<form action="loginOptOut" id="optout">
+<form action="optout/login" id="optout">
   <select name="region" required><option value="">Please Choose a Region</option>
     <option value="US">US</option>
     <option value="EU">EU</option>
@@ -34,19 +34,8 @@
       </select>
       <input type="submit" value="Opt Out"/>
 </form>
-
-
-
-
-
-
-
-
 </section>
 </div>
 </div>
-
-
-
 </body>
 </html>
