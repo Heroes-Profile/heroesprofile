@@ -68,44 +68,44 @@ class BattlenetAuthController extends Controller
       $regionsToInt = array(
         "us" => "1",
         "eu" => "2",
-        /*
         "KR" => "3",
         "UNK" => "4",
         "CN" => "5"
-        */
       );
-    //try {
+    try {
       $battlenet_user = Socialite::driver('battlenet')->user();
       $battlenet_user->user['region'] = $regionsToInt[Session::get('battlenet_region')];
 
-    //} catch (\Exception $e) {
-    //  return redirect('/optout/failure');
-    //}
-
-    $battlenet_user = json_decode(json_encode($battlenet_user),true);
-    $battletags = \App\Battletag::where('battletag', $battlenet_user["user"]["battletag"])
-                  ->get();
-    if(count($battletags) > 0){
-      foreach($battletags as $battletag_key => $battletag_value){
-        $blizzID_region = \App\Battletag::where('blizz_id', $battletag_value["blizz_id"])
-                      ->where('region', $battletag_value["region"])
-                      ->get();
-        foreach($blizzID_region as $blizzIDRegion_key => $blizzIDRegion_value){
-          $blizzIDRegion_value->opt_out = 1;
-          $blizzIDRegion_value->save();
+      $battlenet_user = json_decode(json_encode($battlenet_user),true);
+      $battletags = \App\Battletag::where('battletag', $battlenet_user["user"]["battletag"])
+                    ->get();
+      if(count($battletags) > 0){
+        foreach($battletags as $battletag_key => $battletag_value){
+          $blizzID_region = \App\Battletag::where('blizz_id', $battletag_value["blizz_id"])
+                        ->where('region', $battletag_value["region"])
+                        ->get();
+          foreach($blizzID_region as $blizzIDRegion_key => $blizzIDRegion_value){
+            $blizzIDRegion_value->opt_out = 1;
+            $blizzIDRegion_value->save();
+          }
         }
+      }else{
+        $battletag = new \App\Battletag;
+        $battletag->battletag = $battlenet_user["user"]["battletag"];
+        $battletag->region = $regionsToInt[Session::get('battlenet_region')];
+        $battletag->opt_out = 1;
+        $battletag->blizz_id = $battlenet_user["user"]["id"];
+        $battletag->save();
       }
-    }else{
-      $battletag = new \App\Battletag;
-      $battletag->battletag = $battlenet_user["user"]["battletag"];
-      $battletag->region = $regionsToInt[Session::get('battlenet_region')];
-      $battletag->opt_out = 1;
-      $battletag->blizz_id = $battlenet_user["user"]["id"];
-      $battletag->save();
+
+    } catch (\Exception $e) {
+      return redirect('/optout/failure');
     }
 
 
-    //return redirect()->to('/optout/success');
+
+
+    return redirect()->to('/optout/success');
   }
 
 
