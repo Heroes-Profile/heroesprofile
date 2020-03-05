@@ -38,6 +38,7 @@ Route::get('login/success', 'LoginController@handleProviderCallback');
   */
   Route::view('/Global/Leaderboard', 'Global/leaderboard');
   Route::view('/Global/Hero/Talents', 'Global/Hero/talents');
+  Route::view('/Global/Hero', 'Global/Hero/test');
 
   Route::get('/', 'HeroController@show');
 

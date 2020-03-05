@@ -10,10 +10,10 @@ class GlobalHeroStats extends Model
   protected $primaryKey = 'global_hero_id';
   public $timestamps = false;
 
-  public function scopeFilters($query, $game_version, $game_type, $player_league_tier,
-                               $hero_league_tier, $role_league_tier, $game_map, $hero_level,
-                               $mirror, $region){
-    $query->whereIn('game_version', $game_version);
+  public function scopeFilters($query, $game_versions_minor, $game_type, $region, $game_map,
+                                        $hero_level, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror){
+                                          
+    $query->whereIn('game_version', $game_versions_minor);
     $query->whereIn('game_type', $game_type);
 
     if(count($player_league_tier) > 0){

@@ -117,6 +117,12 @@ class GlobalsMiddleware
         })]);
       }
 
+      if (!$request->session()->has('major_patch_earliest_date')) {
+        session(['major_patch_earliest_date' => Cache::remember('major_patch_earliest_date', $seconds, function () {
+          return \GlobalFunctions::instance()->getMajorPatchEarliestPatchDate();
+        })]);
+      }
+
       if (!$request->session()->has('stat_columns')) {
         session(['stat_columns' => Cache::remember('stat_columns', $seconds, function () {
           return \GlobalFunctions::instance()->getAllStatColumns();

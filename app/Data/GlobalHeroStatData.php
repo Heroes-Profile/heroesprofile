@@ -2,6 +2,7 @@
 namespace App\Data;
 use Illuminate\Support\Facades\DB;
 use Session;
+use Cache;
 
 /*
 use Illuminate\Support\Facades\DB;
@@ -14,45 +15,42 @@ use DateTime;
 
 class GlobalHeroStatData
 {
-  private $timeframe;
-  private $game_versions;
-
+  private $game_versions_minor;
   private $game_type;
+  private $region;
+  private $game_map;
+  private $hero_level;
+  private $stat_type;
   private $player_league_tier;
   private $hero_league_tier;
   private $role_league_tier;
-  private $game_map;
-  private $hero_level;
   private $mirror;
-  private $region;
 
-  public static function instance($timeframe, $game_type, $player_league_tier,
-                               $hero_league_tier, $role_league_tier, $game_map, $hero_level,
-                               $mirror, $region)
+  public static function instance($game_versions_minor, $game_type, $region, $game_map,
+                                        $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror)
   {
-    return new GlobalHeroStatData($timeframe, $game_type, $player_league_tier,
-                                 $hero_league_tier, $role_league_tier, $game_map, $hero_level,
-                                 $mirror, $region);
+    return new GlobalHeroStatData($game_versions_minor, $game_type, $region, $game_map,
+                                          $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror);
   }
 
 
-  public function __construct($timeframe, $game_type, $player_league_tier,
-                               $hero_league_tier, $role_league_tier, $game_map, $hero_level,
-                               $mirror, $region) {
-    $this->timeframe = $timeframe;
+  public function __construct($game_versions_minor, $game_type, $region, $game_map,
+                                        $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror) {
+    $this->game_versions_minor = $game_versions_minor;
     $this->game_type = $game_type;
+    $this->region = $region;
+    $this->game_map = $game_map;
+    $this->hero_level = $hero_level;
+    $this->stat_type = $stat_type;
     $this->player_league_tier = $player_league_tier;
     $this->hero_league_tier = $hero_league_tier;
     $this->role_league_tier = $role_league_tier;
-    $this->game_map = $game_map;
-    $this->hero_level = $hero_level;
     $this->mirror = $mirror;
-    $this->region = $region;
   }
 
   private function getHeroWinLosses(){
-    $sub_query = \App\GlobalHeroStats::Filters($this->game_versions, $this->game_type, $this->player_league_tier,
-                                          $this->hero_league_tier, $this->role_league_tier, $this->game_map, $this->hero_level, $this->mirror, $this->region)
+    $sub_query = \App\GlobalHeroStats::Filters($this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
+                                          $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror)
                    ->select('hero', 'win_loss', DB::raw('SUM(games_played) as games_played'))
                    ->groupBy('hero', 'win_loss');
 
@@ -77,8 +75,8 @@ class GlobalHeroStatData
   }
 
   private function getHeroBans(){
-    $global_ban_data = \App\GlobalHeroBans::Filters($this->game_versions, $this->game_type, $this->player_league_tier,
-                                          $this->hero_league_tier, $this->role_league_tier, $this->game_map, $this->hero_level, $this->region)
+    $global_ban_data = \App\GlobalHeroBans::Filters($this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
+                                          $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror)
                       ->select('hero', DB::raw('SUM(bans) as games_banned'))
                       ->groupBy('hero')
                       ->get();
@@ -86,7 +84,7 @@ class GlobalHeroStatData
   }
 
   private function getHeroChange(){
-    if(count($this->timeframe) == 1
+    if(count($this->game_versions_minor) == 1
       && count($this->game_type) == 1
       && $this->game_type[0] != "br"
       && count($this->game_map) == 0
@@ -108,7 +106,7 @@ class GlobalHeroStatData
             $timeframe = $major_season_game_version[$i]["game_version"];
             break;
           }
-          if($major_season_game_version[$i]["game_version"] == $this->timeframe[0]){
+          if($major_season_game_version[$i]["game_version"] == $this->game_versions_minor[0]){
             $found = 1;
           }
         }
@@ -120,7 +118,7 @@ class GlobalHeroStatData
             $timeframe = $value;
             break;
           }
-          if($value == $this->timeframe[0]){
+          if($value == $this->game_versions_minor[0]){
             $found = 1;
           }
         }
@@ -136,8 +134,6 @@ class GlobalHeroStatData
   }
 
   private function combineData(){
-    $this->game_versions = \GlobalFunctions::instance()->getGameVersionsFromFilter($this->timeframe);
-
     $global_hero_data = $this->getHeroWinLosses();
     $global_ban_data = $this->getHeroBans();
     $global_change_data = $this->getHeroChange();
