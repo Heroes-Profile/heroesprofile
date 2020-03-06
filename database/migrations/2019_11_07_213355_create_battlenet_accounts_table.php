@@ -32,6 +32,6 @@ class CreateBattlenetAccountsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroeprofile.battlenet_accounts');
+        Schema::dropIfExists('heroesprofile.battlenet_accounts');
     }
 }
