@@ -32,7 +32,7 @@ class CreateOptoutBattletagsTable extends Migration
      */
     public function down()
     {
-      Schema::dropIfExists('heroesprofile_optout.');
+      Schema::dropIfExists('heroesprofile_optout.battletags');
 
     }
 }
