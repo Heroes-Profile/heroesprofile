@@ -10,6 +10,22 @@
  * `git submodule update --remote`
  * If you have issues getting the seed files to populate in `database/seeds/heroesprofile-seeds/seed-files`, you can pull them directly from https://github.com/Heroes-Profile/heroesprofile-seeds.git
 
+# Docker Setup
+
+Make sure you have docker and docker compose installed. This method will setup separate containers for the `database` and the `app`
+
+ * `docker-compose up -d`
+ * wait for
+   * database initialisation
+   * data migration and seeding
+   * dependencies (composer + npm) installation
+ * `docker-compose logs -f` to check if there are any issues in setup
+ * go to http://localhost
+
+If you need to get into a command promt for the app
+ * `docker-compose run app bash` -- will start a command prompt in a new container
+ * `docker-compose exec app bash` -- will attach to an existing container if already running
+
 # Manual Setup
 
  ## Installation
