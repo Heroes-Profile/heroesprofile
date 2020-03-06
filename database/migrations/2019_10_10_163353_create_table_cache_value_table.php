@@ -17,11 +17,11 @@ class CreateTableCacheValueTable extends Migration
           $table->engine = 'InnoDB';
           $table->integer('table_cache_value_id')->autoIncrement();
           $table->string('table_to_cache', 45);
-          $table->integer('cache_number')->autoIncrement();
+          $table->integer('season');
+          $table->integer('cache_number');
           $table->dateTime('date_cached');
 
-          $table->primary('table_cache_value_id');
-          $table->unique(['cache_number', 'table_to_cache'], "Base_Unique");
+          $table->unique(['table_to_cache', 'season', 'cache_number', ], "Base_Unique");
         });
     }
 

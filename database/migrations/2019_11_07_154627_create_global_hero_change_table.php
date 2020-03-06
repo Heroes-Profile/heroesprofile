@@ -27,7 +27,6 @@ class CreateGlobalHeroChangeTable extends Migration
         $table->integer('losses');
         $table->integer('bans');
 
-        $table->primary('global_hero_change_id');
         $table->unique(['game_version', 'game_type', 'hero'], 'Base_Unique');
       });
     }

@@ -32,7 +32,6 @@ class CreateLeaderboardTable extends Migration
           $table->double('rating');
           $table->integer('cache_number');
 
-          $table->primary('leaderboard_id');
           $table->unique(['game_type', 'season', 'type', 'rank', 'cache_number'], "Base_Unique");
           $table->index(['game_type', 'season', 'type', 'cache_number'], "Index 1");
           $table->index(['game_type', 'season', 'type', 'cache_number', 'region'], "Index 2");
