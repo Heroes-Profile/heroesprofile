@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Services;
 
 use Laravel\Socialite\Contracts\User as BattlenetUser;
 
@@ -11,13 +11,13 @@ class BattlenetAccountServicer
       $battlenetUser = json_decode(json_encode($battlenetUser),true);
       //print_r(json_encode($battlenetUser, true));
 
-        $user = User::where('battlenet_id', $battlenetUser["user"]["id"])
+        $user = \App\User::where('battlenet_id', $battlenetUser["user"]["id"])
                    ->first();
 
         if ($user) {
             return $user;
         } else {
-          $user = User::create([
+          $user = \App\User::create([
               'battlenet_id' => $battlenetUser["user"]["id"],
               'battletag'  => $battlenetUser["user"]["battletag"],
               'region'  => $battlenetUser["user"]["region"],
