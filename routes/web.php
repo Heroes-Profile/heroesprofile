@@ -74,3 +74,9 @@ Route::get('/get_heroes_fields', 'HeroController@getFields')->name('get_heroes_f
 //Auth::routes(['register' => false]);
 
 //Route::get('/home', 'HomeController@index')->name('home');
+
+// Route::get('/heroes', 'HeroController@show');
+
+
+Route::view('/', 'layouts.app');
+
