@@ -1,24 +1,13 @@
 <!doctype html>
 <html lang="en">
-    <head>
+
+  <head>
       @include('scripts.header')
-    </head>
-    <body class="darkMode">
-      <div id="app">
-        @include('nav.primary')
+  </head>
 
-            <div class="intro">
-              <h2>{{$title}}</h2>
-              <div><p>{{$paragraph}}</p></div>
-            </div>
-
-          <div class="container-fluid">
-            @yield('content')
-            @yield('datatable')
-          </div>
-        </div>
-      </div>
+  <body class="darkMode">
+      <div id="app"></div>
       @include('scripts.footer')
+  </body>
 
-    </body>
 </html>
