@@ -12,6 +12,9 @@
 <p>Please choose a region below and click "opt-out". You will be redirected to Blizzard's secure authentication and asked to allow access for your Blizz ID and Battletag. This is the only information we use, and we do not store this information anywhere. We do not collect or store any personal information. After you have opted out, you may remove your authorization for this website by going to your Battle.net account under "Security &amp; Privacy" and managing your authorized applications.</p>
 <p>Once you have opted-out, data uploaded from replays in which you played a game will still be used to calculate data across the site, but your Battletag and Profile page will be removed.</p>
 
+<!--Need to add a confirm check here before allowing them to opt out-->
+<p>Please be aware that opting out also removes your data for use by others using our API tool.  So if your MMR is required for Amateur series, this will cause your data not to show up for them, and may make you ineligable for league play.<p>
+
 
 <form action="Auth" id="optout">
 <select name="region" required=""><option value="">Please Choose a Region</option>
