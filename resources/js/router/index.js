@@ -7,15 +7,17 @@ import GlobalLeaderboard from '@/components/GlobalLeaderboard.vue';
 import HeroSummary from '@/components/Profile/HeroSummary.vue';
 import OptOut from '@/components/OptOut/OptOut.vue';
 
-let routes = [      
-    {
-        path: '/', component: GlobalLeaderboard 
+let routes = [{
+        path: '/',
+        component: GlobalLeaderboard
     },
     {
-        path: '/profile', component: HeroSummary 
+        path: '/profile',
+        component: HeroSummary
     },
     {
-        path: '/optout', component: OptOut 
+        path: '/optout',
+        component: OptOut
     },
 
 ]
