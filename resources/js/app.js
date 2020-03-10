@@ -13,6 +13,10 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import BoostrapVue from 'bootstrap-vue'
 Vue.use(BoostrapVue);
 
+import Multiselect from 'vue-multiselect';
+Vue.component('multiselect', Multiselect);
+
+
 // TODO: What is this?
 // import vClickOutside from 'v-click-outside';
 // Vue.use(vClickOutside);
