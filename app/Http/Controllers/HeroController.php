@@ -59,7 +59,7 @@ private $maps = array();
   public function show(){
     $global = \GlobalFunctions::instance();
 
-    return view('table',
+    return 
     [
       'dataurl' => '/get_heroes_stats_table_data', // URL used for calling the table data
       'title' => 'Global Win Rates', // Page title
@@ -88,7 +88,7 @@ private $maps = array();
           "description" => "Major patches",
           "conditional_field" => "timeframe_type",
           "conditional_value" => "major",
-          "options" => $global->convertToFilter(Session::get('all_major_patch')),
+          // "options" => $global->convertToFilter(Session::get('all_major_patch')),
       ],
       'minor_patch' => [
           "key" => "minor_patch",
@@ -97,7 +97,7 @@ private $maps = array();
           "description" => "Minor patches",
           "conditional_field" => "timeframe_type",
           "conditional_value" => "minor",
-          "options" => $global->convertToFilter(Session::get('all_minor_patch'))
+          // "options" => $global->convertToFilter(Session::get('all_minor_patch'))
       ],
       'primaryfields' => array(
         [
@@ -264,7 +264,7 @@ private $maps = array();
         //  "value" = short_name
       /*  "hero" => $global->convertToFilter(Session::get('heroes_by_name')),*/
       ],
-    ]);
+    ];
   }
 
   public function profile(){
