@@ -14,45 +14,11 @@
 Route::group([
     'middleware' => 'setGlobals'
 ], function () {
-  //Route::get('/Profile', 'ProfileController@show');
-/*
-  Route::view('/Profiledata', 'Profile.home');
-  Route::get('/Profile', 'ProfileController@show');
-  Route::view('/Profile/FriendsFoes', 'Profile/FriendsFoes/home');
-  Route::view('/Profile/Heroes/All', 'Profile/Heroes/All/home');
-  Route::view('/Profile/Heroes/Single', 'Profile/Heroes/Single/home');
+  Route::view('/', 'layouts.app');
 
-
-
-
-
-Route::get('login', 'LoginController@redirectToProvider');
-Route::get('login/success', 'LoginController@handleProviderCallback');
-
-
-  Route::get('/Global/Talents/Builds', 'HeroController@getHeroBuildsTableData');
-  //Route::view('/', 'index');
-  Route::get('/Global/Hero/', 'HeroController@show');
-
-
-  */
-  Route::view('/Global/Leaderboard', 'Global/leaderboard');
-  Route::view('/Global/Hero/Talents', 'Global/Hero/talents');
+  //This route gives the correct object/data to use for the replacement code for getHeroStatsTableData.
+  //But the return is likely not what is expected so not changing it yet
   Route::view('/Global/Hero', 'Global/Hero/test');
-
-  Route::get('/', 'HeroController@show');
-
-
-  /*
-    Route::get('login', function () {
-        return view('login',
-          ['title' => 'Login'],
-          ['paragraph' => 'This is the login page'],
-        );
-    });
-  */
-
-Route::view('/', 'layouts.app');
 });
 
 Route::view('optout', 'optout/optout');
@@ -65,14 +31,8 @@ Route::get('login/success', 'BattlenetAuthController@handleOptOutProviderCallbac
 
 
 
-
+//Likely need to remove these and throw them as the API call.
+//Right now the API call just calls the HeroController @show method, but makes more sense to just use the API call to ask for discrete data 
+//similiar to how I am getting/returning data from view Global/Hero/test.blade.php
 Route::post('/get_heroes_stats_table_data', 'HeroController@getHeroStatsTableData')->name('get_heroes_stats_table_data');
 Route::get('/get_heroes_fields', 'HeroController@getFields')->name('get_heroes_fields');
-
-
-//Auth::routes();
-//Auth::routes(['register' => false]);
-
-//Route::get('/home', 'HomeController@index')->name('home');
-
-// Route::get('/heroes', 'HeroController@show');
