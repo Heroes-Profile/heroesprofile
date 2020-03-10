@@ -1,7 +1,6 @@
 <template>
 	<div class="container-fluid" >
 		<nav-bar></nav-bar>		 
-		<h1>Heroes Profile</h1>
 		<transition :name="$root.transition" mode="out-in">
 			<router-view ref="main"></router-view>
 		</transition>
