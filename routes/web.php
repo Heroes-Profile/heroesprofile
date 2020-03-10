@@ -52,7 +52,7 @@ Route::get('login/success', 'LoginController@handleProviderCallback');
     });
   */
 
-
+Route::view('/', 'layouts.app');
 });
 
 Route::view('optout', 'optout/optout');
@@ -76,7 +76,3 @@ Route::get('/get_heroes_fields', 'HeroController@getFields')->name('get_heroes_f
 //Route::get('/home', 'HomeController@index')->name('home');
 
 // Route::get('/heroes', 'HeroController@show');
-
-
-Route::view('/', 'layouts.app');
-

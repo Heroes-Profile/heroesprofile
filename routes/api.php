@@ -14,8 +14,12 @@ use Illuminate\Http\Request;
 */
 
 Route::group([
-    //'middleware' => 'auth:api'
+    // 'middleware' => 'auth:api'
 ], function () {
+	
+	Route::get('/heroes', 'HeroController@show');
+
+	
 //  Route::get('/HeroData', 'APIController@getHeroData');
   /*
   Route::get('/Heroes', 'APIController@getHeroes')->middleware('throttle:60,1');
