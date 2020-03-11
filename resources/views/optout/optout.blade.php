@@ -4,7 +4,7 @@
 
         <title>Heroes Profile | Opt Out </title>
         <meta name="robots" content="noindex">
-<link rel="stylesheet" href="http://127.0.0.1:8000/css/app.css">
+        <link rel="stylesheet" href="/css/app.css">
 
     </head>
     <body>
