@@ -173,19 +173,17 @@
 </template>
 
 <script type="text/ecmascript-6">
-import ImagePopup from '@/components/ImagePopup.vue'
+import ImagePopup from "@/components/ImagePopup.vue";
+import { mapGetters } from "vuex";
+import { mapState } from "vuex";
 
 export default {
-  components : {
+  components: {
     ImagePopup
   },
   data() {
     return {
       loaded: false,
-      rawfields: {},
-      primaryFields: [],
-      secondaryfields: [],
-      timeframe_type: {},
       form: {},
       timeframetype: "major",
       gametype: "Storm League",
@@ -204,20 +202,6 @@ export default {
     this.$store.commit("updateAjaxURL", "/get_heroes_stats_table_data");
 
     this.updateFields();
-
-    axios
-      .get("/api/heroes")
-      .then(response => {
-        console.log(response)
-        this.rawfields = response.data.rawfields
-        this.primaryFields = response.data.primaryFields
-        this.secondaryfields = response.data.secondaryfields
-        this.timeframe_type = response.data.timeframe_type
-        this.$nextTick( () => {
-          this.loaded = true
-        })
-      })
-      .catch(e => {});
   },
   watch: {
     form: function() {
@@ -290,6 +274,13 @@ export default {
     }
   },
   computed: {
+    ...mapGetters({
+      gameMaps: "gameMaps",
+      rawfields: 'rawfields',
+      primaryFields: 'primaryFields',
+      secondaryfields: "secondaryfields",
+      timeframe_type: "timeframe_type"
+    }),
     currentTimeFrameOptions: function() {
       let timeframe = "";
       switch (this.timeframetype) {
