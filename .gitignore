@@ -24,3 +24,7 @@ robots.txt
 
 /public/css/*
 /public/js/*
+
+/vol_db_hp
+/database/seeds/.NO-SEED
+
