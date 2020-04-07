@@ -198,8 +198,6 @@ export default {
     };
   },
   mounted() {
-    this.$store.commit("updateAjaxURL", "/get_heroes_stats_table_data");
-
     this.updateFields();
   },
   watch: {
@@ -223,7 +221,7 @@ export default {
     updateFields() {
       if (this.filtersChanged) {
         this.finalFields = this.form;
-        this.$store.dispatch("updateFormData", this.form);
+        this.$store.dispatch("fieldStore/updateFormData", this.form);
         this.filtersChanged = false;
       }
     }
@@ -274,11 +272,11 @@ export default {
   },
   computed: {
     ...mapGetters({
-      gameMaps: "gameMaps",
-      rawfields: 'rawfields',
-      primaryfields: 'primaryfields',
-      secondaryfields: "secondaryfields",
-      timeframe_type: "timeframe_type"
+      gameMaps: 'fieldStore/gameMaps',
+      rawfields: 'fieldStore/rawfields',
+      primaryfields: 'fieldStore/primaryfields',
+      secondaryfields: "fieldStore/secondaryfields",
+      timeframe_type: "fieldStore/timeframe_type"
     }),
     dataLoaded() {
       return this.rawfields || false

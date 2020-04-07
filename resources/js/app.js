@@ -30,6 +30,6 @@ const app = new Vue({
 	components: {HeroesProfileApp},
 	mounted () {
 		console.log('app.js mounted')
-		this.$store.dispatch('INIT_ALL_RESOURCES')
+		this.$store.dispatch('fieldStore/INIT_ALL_RESOURCES')
 	}
 })
