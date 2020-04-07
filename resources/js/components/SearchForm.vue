@@ -1,5 +1,5 @@
 <template>
-  <div class="filter-form" v-if="loaded">
+  <div class="filter-form" v-if="dataLoaded">
     <nav class="navbar primary-filter-bar">
       <b-dropdown id="dropdown-form" ref="dropdown1" boundary="window" @hidden="updateFields()">
         <template
@@ -183,7 +183,6 @@ export default {
   },
   data() {
     return {
-      loaded: false,
       form: {},
       timeframetype: "major",
       gametype: "Storm League",
@@ -277,10 +276,13 @@ export default {
     ...mapGetters({
       gameMaps: "gameMaps",
       rawfields: 'rawfields',
-      primaryFields: 'primaryFields',
+      primaryfields: 'primaryfields',
       secondaryfields: "secondaryfields",
       timeframe_type: "timeframe_type"
     }),
+    dataLoaded() {
+      return this.rawfields || false
+    },
     currentTimeFrameOptions: function() {
       let timeframe = "";
       switch (this.timeframetype) {

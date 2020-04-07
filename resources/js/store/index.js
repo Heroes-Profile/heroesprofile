@@ -11,23 +11,23 @@ export default new Vuex.Store({
 		timeframe: [],
 		currentAjaxURL: '',
 		loading: true,
-		rawfields: {}
+		raw: {}
 	},
 	getters: {
 		rawfields: (state, getters) => {
-			return state.rawfields.rawfields
+			return state.raw.rawfields
 		},
 		gameMaps: (state, getters) => {
-			return state.rawfields.rawfields.game_map
+			return state.raw.rawfields.game_map
 		},
-		primaryFields: (state, getters) => {
-			return state.rawfields.rawfields.primaryFields
+		primaryfields: (state, getters) => {
+			return state.raw.primaryfields
 		},
 		secondaryfields: (state, getters) => {
-			return state.rawfields.rawfields.secondaryfields
+			return state.raw.secondaryfields
 		},
 		timeframe_type: (state, getters) => {
-			return state.rawfields.timeframe_type
+			return state.raw.timeframe_type
 		}
 
 	},
@@ -44,7 +44,7 @@ export default new Vuex.Store({
 			state.currentAjaxURL = fields
 		},
 		updateInitialResources (state, payload) {
-			state.rawfields = payload
+			state.raw = payload
 		}
 	},
 	actions:{
