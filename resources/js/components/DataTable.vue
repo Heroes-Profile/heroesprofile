@@ -50,7 +50,6 @@ import ImagePopup from '@/components/ImagePopup.vue'
 import HeroTalentData from '@/components/HeroTalentData.vue'
 
 export default {
-	props: ['dataurl'],
 	components :{
 		ImagePopup,
 		HeroTalentData
