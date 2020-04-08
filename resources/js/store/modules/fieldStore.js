@@ -14,6 +14,9 @@ export default {
         rawfields: (state, getters) => {
 			return state.raw.rawfields
 		},
+		gameTypes: (state, getters) => {
+			return state.raw.rawfields.game_type
+		},
 		gameMaps: (state, getters) => {
 			return state.raw.rawfields.game_map
 		},
@@ -26,7 +29,6 @@ export default {
 		timeframe_type: (state, getters) => {
 			return state.raw.timeframe_type
 		}
-
 	},
 	mutations: {
 		updateFormFields (state, fields){

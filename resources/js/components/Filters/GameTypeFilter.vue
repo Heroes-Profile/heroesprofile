@@ -1,0 +1,73 @@
+<template>
+    <div>
+        <b-form-checkbox-group v-model="selectedTypes" class="filter-list">
+            <b-form-checkbox
+              v-for="option in availableGameTypes"
+              :value="option.key"
+              :key="option.key"
+              class= "item"
+            >
+              <div class="checkbox-image" v-if="option.icon">
+                <img :alt="option.name" :src="option.icon" />
+              </div>
+              <span v-else>{{ option.text }}</span>
+            </b-form-checkbox>
+          </b-form-checkbox-group>
+    </div>
+</template>
+
+<style lang="scss" scoped>
+
+.filter-list 
+{
+    display: grid;
+    padding: 1rem;
+    padding-left: 2rem;
+    .item {
+        padding: 5px 0;
+    }
+}
+
+</style>
+
+<script>
+import { mapState } from "vuex";
+import { mapGetters } from "vuex";
+
+export default {
+    data: function () {
+        return {
+            selected: []
+        }
+    },
+    watch: {
+        selected: (to, from) => {
+            this.$store.dispatch('searchStore/PUSH_GAME_TYPE', values)
+        }
+    },
+    computed: {
+        ...mapGetters({
+            availableGameTypes: 'fieldStore/gameTypes',
+            selectedGameTypes: 'searchStore/selectedGameTypes'
+
+        }),
+        selectedTypes: {
+			get: function ()  {
+                // if (this.$store.getters['searchStore/selectedGameTypes'] === undefined) {
+                //     return []
+                // }
+                // return this.$store.getters['searchStore/selectedGameTypes']
+                // 	if (!this.$store || !this.$store.searchStore || !this.selectedGameTypes ) {
+				// 	return []
+				// }
+                return this.selectedGameTypes || []
+			},
+			set: function (values)  {
+                this.$store.dispatch('searchStore/PUSH_GAME_TYPE', values)
+			}
+		},
+
+    }
+
+}
+</script>
