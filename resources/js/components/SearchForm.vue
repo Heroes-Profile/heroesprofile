@@ -1,7 +1,16 @@
 <template>
   <div class="filter-form" v-if="dataLoaded">
     <nav class="navbar primary-filter-bar">
-      <b-dropdown id="dropdown-form" ref="dropdown1" boundary="window" @hidden="updateFields()">
+
+      <filter-button v-for="(filter, index) in filters" :key="index" :filter="filter">
+      </filter-button>
+
+      <!-- <filter-button></filter-button> -->
+
+      
+      <!-- 
+        TIME FILTER
+        <b-dropdown id="dropdown-form" ref="dropdown1" boundary="window" @hidden="updateFields()">
         <template
           v-slot:button-content
         >Timeframe: {{ timeframetype | caps }} {{ form.timeframe | labels }}</template>
@@ -25,8 +34,11 @@
           </b-form-group>
           <b-button @click="hideDropdowns()" variant="primary" class="menu-close">Apply</b-button>
         </b-dropdown-form>
-      </b-dropdown>
-      <b-dropdown id="dropdown-form2" ref="dropdown2" boundary="window" @hidden="updateFields()">
+      </b-dropdown> -->
+
+      <!-- 
+        GAME TYPE
+        <b-dropdown id="dropdown-form2" ref="dropdown2" boundary="window" @hidden="updateFields()">
         <template v-slot:button-content>Game Type {{ form.gametype | labels }}</template>
         <b-dropdown-form>
           <b-form-checkbox-group v-model="form.game_type" name="rawfields.game_type.text">
@@ -43,8 +55,11 @@
           </b-form-checkbox-group>
           <b-button @click="hideDropdowns()" variant="primary" class="menu-close">Apply</b-button>
         </b-dropdown-form>
-      </b-dropdown>
-      <b-dropdown
+      </b-dropdown> -->
+
+      <!-- 
+        HEROES
+        <b-dropdown
         id="dropdown-formheroes"
         ref="dropdownheroes"
         boundary="window"
@@ -71,7 +86,7 @@
 
           <b-button @click="hideDropdowns()" variant="primary" class="menu-close">Apply</b-button>
         </b-dropdown-form>
-      </b-dropdown>
+      </b-dropdown> -->
 
       <b-dropdown id="dropdown-form3" ref="dropdown3" boundary="window" @hidden="updateFields()">
         <template v-slot:button-content>Rank</template>
@@ -177,9 +192,12 @@ import ImagePopup from "@/components/ImagePopup.vue";
 import { mapGetters } from "vuex";
 import { mapState } from "vuex";
 
+import FilterButton from '@/components/Filters/FilterButton.vue'
+
 export default {
   components: {
-    ImagePopup
+    ImagePopup,
+    FilterButton
   },
   data() {
     return {
@@ -194,7 +212,11 @@ export default {
       finalFields: {},
       currentlySelectedPopup: "",
       selectedPopover: "",
-      filtersChanged: true
+      filtersChanged: true,
+      filters: [
+          'game-type-filter',
+          'hero-filter'
+      ]
     };
   },
   mounted() {
