@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-form-checkbox-group v-model="selectedTypes" class="filter-list">
+        <b-form-checkbox-group v-model="gameTypes" class="filter-list">
             <b-form-checkbox
               v-for="option in availableGameTypes"
               :value="option.key"
@@ -51,15 +51,8 @@ export default {
             selectedGameTypes: 'searchStore/selectedGameTypes'
 
         }),
-        selectedTypes: {
+        gameTypes: {
 			get: function ()  {
-                // if (this.$store.getters['searchStore/selectedGameTypes'] === undefined) {
-                //     return []
-                // }
-                // return this.$store.getters['searchStore/selectedGameTypes']
-                // 	if (!this.$store || !this.$store.searchStore || !this.selectedGameTypes ) {
-				// 	return []
-				// }
                 return this.selectedGameTypes || []
 			},
 			set: function (values)  {
