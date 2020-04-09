@@ -18,6 +18,7 @@
 
 <style lang="scss" scoped>
 
+
 .filter-list 
 {
     display: grid;
@@ -26,6 +27,10 @@
     .item {
         padding: 5px 0;
     }
+}
+
+.item:hover {
+    background: rgba(168, 168, 168, 0.384)
 }
 
 </style>
