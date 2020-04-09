@@ -18,7 +18,10 @@ export default {
 			return state.raw.rawfields
 		},
 		heroes: (state, getters) => {
-
+			return state.raw.rawfields.hero
+		},
+		heroRoles: (state, getters) => {
+			return state.raw.rawfields.role
 		},
 		gameTypes: (state, getters) => {
 			return state.raw.rawfields.game_type

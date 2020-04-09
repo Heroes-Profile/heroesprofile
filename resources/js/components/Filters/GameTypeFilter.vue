@@ -35,16 +35,6 @@ import { mapState } from "vuex";
 import { mapGetters } from "vuex";
 
 export default {
-    data: function () {
-        return {
-            selected: []
-        }
-    },
-    watch: {
-        selected: (to, from) => {
-            this.$store.dispatch('searchStore/PUSH_GAME_TYPE', values)
-        }
-    },
     computed: {
         ...mapGetters({
             availableGameTypes: 'fieldStore/gameTypes',
