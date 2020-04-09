@@ -1,4 +1,7 @@
+const _ = require('lodash')
+const api = require('./api.js').default
 export default {
+
     namespaced: true,
 	state: {
 		formFields: {},
@@ -13,6 +16,9 @@ export default {
         },		
         rawfields: (state, getters) => {
 			return state.raw.rawfields
+		},
+		heroes: (state, getters) => {
+
 		},
 		gameTypes: (state, getters) => {
 			return state.raw.rawfields.game_type
@@ -61,6 +67,9 @@ export default {
 			.catch(err => {
 				console.error(err)
 			})
+		}, 
+		UPDATE_HERO_DATA (context, payload) {
+			api.postHeroUpdate(context)
 		},
 		updateFormData ({ commit, state }, fields){
 			commit('updateFormFields',  fields);
@@ -76,3 +85,12 @@ export default {
 		}
 	}
 }
+
+// {
+//     "params": {
+//         "data": {
+//             "game_type": ["Quick Match"],
+//             "hero": ["Brightwing", "Cassia"]
+//         }
+//     }
+// }
