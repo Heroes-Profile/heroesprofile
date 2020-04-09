@@ -1,5 +1,5 @@
 export default {
-    postHeroUpdate: function (context) {
+    postHeroUpdate: _.debounce(function (context) {
         axios.post('/get_heroes_stats_table_data', {
             params: {
                 'data': context.rootGetters['searchStore/heroFormData']
@@ -7,8 +7,5 @@ export default {
         }).then(response => {
             context.commit('formData', response.data);
         });
-    },
-    postHeroUpdateDB: _.wrap(_.memoize(function () {
-        return _.debounce(postHeroUpdate, 200);
-    }))
+    }, 300)
 }
