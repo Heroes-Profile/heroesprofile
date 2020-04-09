@@ -3,7 +3,7 @@
         <b-button :id="id">
             {{titleForFilterType(filter)}}
         </b-button>
-        <b-popover :target="id" triggers="click" placement="bottomright">
+        <b-popover :target="id" triggers="hover" placement="bottom">
             <!-- <template v-slot:title>
 </template>-->
             <component :is="filter"></component>
