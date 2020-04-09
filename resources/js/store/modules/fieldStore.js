@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const api = require('./api.js').default
+const maps = require('./maps.js').default.maps
 export default {
 
     namespaced: true,
@@ -8,7 +9,8 @@ export default {
 		formData: [],
 		timeframe: [],
 		loading: true,
-		raw: {}
+		raw: {},
+		maps: maps
 	},
 	getters: {
         formData: (state, getters) => {
@@ -27,7 +29,7 @@ export default {
 			return state.raw.rawfields.game_type
 		},
 		gameMaps: (state, getters) => {
-			return state.raw.rawfields.game_map
+			return state.maps
 		},
 		primaryfields: (state, getters) => {
 			return state.raw.primaryfields
@@ -59,13 +61,6 @@ export default {
 			.then(response => {
 				console.assert(response.data != null, '/api/heroes returned null response data, unable to initialize')
 				context.commit('updateInitialResources', response.data)
-// \			  this.rawfields = response.data.rawfields
-// 			  this.primaryFields = response.data.primaryFields
-// 			  this.secondaryfields = response.data.secondaryfields
-// 			  this.timeframe_type = response.data.timeframe_type
-			//   this.$nextTick( () => {
-			// 	this.loaded = true
-			//   })
 			})
 			.catch(err => {
 				console.error(err)
@@ -81,19 +76,9 @@ export default {
 					'data' : fields
 				}
 			}).then(response => {
-				// console.log(response.data);
 				commit('formData', response.data);
 				
 			});
 		}
 	}
 }
-
-// {
-//     "params": {
-//         "data": {
-//             "game_type": ["Quick Match"],
-//             "hero": ["Brightwing", "Cassia"]
-//         }
-//     }
-// }

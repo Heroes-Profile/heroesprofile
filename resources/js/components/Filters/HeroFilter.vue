@@ -1,6 +1,6 @@
 <template>
     <div class="heroes">
-    
+
         <div class="">
 
             <b-input-group size="sm" prepend="Search">

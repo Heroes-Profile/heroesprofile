@@ -14,6 +14,8 @@
 <script>
 import GameTypeFilter from './GameTypeFilter.vue'
 import HeroFilter from './HeroFilter.vue'
+import MapFilter from './MapFilter.vue'
+
 import idMixin from '@/mixins/idMixin'
 
 import { mapState } from "vuex";
@@ -24,7 +26,8 @@ export default {
     mixins: [idMixin],	
     components: {
         GameTypeFilter,
-        HeroFilter
+        HeroFilter,
+        MapFilter
     },
     computed: {
         ...mapGetters({

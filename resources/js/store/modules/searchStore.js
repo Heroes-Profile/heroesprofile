@@ -3,7 +3,8 @@ export default {
     state: {
         defaultGameType: "Storm League",
         game_type_selection: [],
-        selectedHeroes: []
+        selectedHeroes: [],
+        selectedMaps: []
     },
     getters: {
         titleForFilterType : (state, getters) => (filter) => {
@@ -18,6 +19,12 @@ export default {
                 title = state.selectedHeroes && state.selectedHeroes.length > 0 ? state.selectedHeroes.join(", ") : 'All Heroes'
                 count = state.selectedHeroes.length
             }
+
+            if (filter === 'map-filter') {
+                title = state.selectedMaps && state.selectedMaps.length > 0 ? _.map(state.selectedMaps, 'key').join(", ") : 'All Maps'
+                count = state.selectedMaps.length
+            }
+
             if (title.length > 20) {
                 title = title.slice(0,20)+'…'+`(${count})`
             }
@@ -29,8 +36,14 @@ export default {
         heroFormData: (state, getters) => {
             return {
                 game_type: getters.selectedGameTypes,
+                game_map: state.selectedMaps.length === 0 ? getters.defaultSelectedMaps : state.selectedMaps,
                 hero: state.selectedHeroes
             }
+        },
+        defaultSelectedMaps: (state, getters) => {
+            return _.filter(state.maps, (m) => {
+                return m.type === 'ranked'
+            })
         }
     },
     mutations: {
@@ -39,6 +52,9 @@ export default {
         },
         SET_HEROES(state, payload) {
             state.selectedHeroes = payload
+        },
+        SET_MAP(state, payload) {
+            state.selectedMaps = payload
         }
     },
     actions: {
@@ -49,6 +65,10 @@ export default {
         },
         PUSH_HEROES(context, payload) {
             context.commit('SET_HEROES', payload)
+            context.dispatch("fieldStore/UPDATE_HERO_DATA", null, {root: true});
+        },
+        PUSH_MAP(context, payload) {
+            context.commit('SET_MAP', payload)
             context.dispatch("fieldStore/UPDATE_HERO_DATA", null, {root: true});
 
         }

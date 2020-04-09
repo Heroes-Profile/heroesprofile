@@ -215,7 +215,8 @@ export default {
       filtersChanged: true,
       filters: [
           'game-type-filter',
-          'hero-filter'
+          'hero-filter',
+          'map-filter'
       ]
     };
   },
@@ -234,11 +235,11 @@ export default {
     },
     hideDropdowns() {
       // Close the menu and (by passing true) return focus to the toggle button
-      this.$refs.dropdown1.hide(true);
-      this.$refs.dropdown2.hide(true);
-      this.$refs.dropdown3.hide(true);
+      // this.$refs.dropdown1.hide(true);
+      // this.$refs.dropdown2.hide(true);
+      // this.$refs.dropdown3.hide(true);
       this.$refs.dropdown4.hide(true);
-      this.$refs.dropdownheroes.hide(true);
+      // this.$refs.dropdownheroes.hide(true);
     },
     updateFields() {
       if (this.filtersChanged) {
