@@ -28,11 +28,19 @@ export default {
     mutations: {
         SET_GAME_TYPE(state, payload) {
             state.game_type_selection = payload
+        },
+        SET_HEROES(state, payload) {
+            state.selectedHeroes = payload
         }
     },
     actions: {
         PUSH_GAME_TYPE(context, payload) {
             context.commit('SET_GAME_TYPE', payload)
+            context.dispatch("fieldStore/UPDATE_HERO_DATA", null, {root: true});
+
+        },
+        PUSH_HEROES(context, payload) {
+            context.commit('SET_HEROES', payload)
             context.dispatch("fieldStore/UPDATE_HERO_DATA", null, {root: true});
 
         }

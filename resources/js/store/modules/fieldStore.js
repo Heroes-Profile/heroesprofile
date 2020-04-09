@@ -18,7 +18,7 @@ export default {
 			return state.raw.rawfields
 		},
 		heroes: (state, getters) => {
-			return state.raw.rawfields.hero
+			return state.raw.rawfields.heroes
 		},
 		heroRoles: (state, getters) => {
 			return state.raw.rawfields.role
