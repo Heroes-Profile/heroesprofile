@@ -5,7 +5,10 @@ export default {
         game_type_selection: [],
         selectedHeroes: [],
         selectedMaps: [],
-        selectedLevels: []
+        selectedLevels: [],
+        player_league_tier_selected: [],
+        role_league_tier_selected: [],
+        hero_league_tier_selected: []
     },
     getters: {
         titleForFilterType : (state, getters) => (filter) => {
@@ -31,6 +34,23 @@ export default {
                 count = state.selectedLevels.length
             }
 
+            if (filter === 'rank-filter') {
+                count = state.hero_league_tier_selected.length + state.role_league_tier_selected.length + state.player_league_tier_selected.length
+                
+                if (state.hero_league_tier_selected.length > 0) {
+                    title = 'Hero'
+                }
+                if (state.role_league_tier_selected.length > 0) {
+                    title = title+'Role'
+                }
+                if (state.player_league_tier_selected.length > 0) {
+                    title = title+'Player'
+                }
+                if (count == 0) {
+                    title = "All Ranks"
+                }
+            }
+
             if (title.length > 20) {
                 title = title.slice(0,20)+'…'+`(${count})`
             }
@@ -44,7 +64,10 @@ export default {
                 game_type: getters.selectedGameTypes,
                 game_map: state.selectedMaps.length === 0 ? getters.defaultSelectedMaps : state.selectedMaps,
                 hero: state.selectedHeroes,
-                hero_level: state.selectedLevels
+                hero_level: state.selectedLevels,
+                player_league_tier: state.player_league_tier_selected,
+                role_league_tier: state.role_league_tier_selected,
+                hero_league_tier: state.hero_league_tier_selected
             }
         },
         defaultSelectedMaps: (state, getters) => {
@@ -65,6 +88,16 @@ export default {
         },
         SET_LEVEL(state, payload) {
             state.selectedLevels = payload
+        },
+
+        SET_PLAYER_RANK(state, payload) {
+            state.player_league_tier_selected = payload
+        },
+        SET_ROLE_RANK(state, payload) {
+            state.role_league_tier_selected = payload
+        },
+        SET_HERO_RANK(state, payload) {
+            state.hero_league_tier_selected = payload
         }
     },
     actions: {
@@ -83,6 +116,18 @@ export default {
         },
         PUSH_LEVEL(context, payload) {
             context.commit('SET_LEVEL', payload)
+            context.dispatch("fieldStore/UPDATE_HERO_DATA", null, {root: true});
+        },
+        PUSH_PLAYER_RANK(context, payload) {
+            context.commit('SET_PLAYER_RANK', payload)
+            context.dispatch("fieldStore/UPDATE_HERO_DATA", null, {root: true});
+        },
+        PUSH_ROLE_RANK(context, payload) {
+            context.commit('SET_ROLE_RANK', payload)
+            context.dispatch("fieldStore/UPDATE_HERO_DATA", null, {root: true});
+        },
+        PUSH_HERO_RANK(context, payload) {
+            context.commit('SET_HERO_RANK', payload)
             context.dispatch("fieldStore/UPDATE_HERO_DATA", null, {root: true});
         }
 

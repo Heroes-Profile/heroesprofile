@@ -42,6 +42,15 @@ export default {
 		},
 		timeframe_type: (state, getters) => {
 			return state.raw.timeframe_type
+		},
+		player_tiers: (state, getters) => {
+			return state.raw.rawfields.player_league_tier
+		},
+		hero_tiers: (state, getters) => {
+			return state.raw.rawfields.hero_league_tier
+		},
+		role_tiers: (state, getters) => {
+			return state.raw.rawfields.role_league_tier
 		}
 	},
 	mutations: {

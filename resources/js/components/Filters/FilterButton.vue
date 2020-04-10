@@ -3,7 +3,7 @@
         <b-button :id="id">
             {{titleForFilterType(filter)}}
         </b-button>
-        <b-popover :target="id" triggers="hover" placement="bottom">
+        <b-popover :target="id" triggers="click" placement="bottom">
             <!-- <template v-slot:title>
 </template>-->
             <component :is="filter"></component>
@@ -16,6 +16,7 @@ import GameTypeFilter from './GameTypeFilter.vue'
 import HeroFilter from './HeroFilter.vue'
 import MapFilter from './MapFilter.vue'
 import HeroLevelFilter from './HeroLevelFilter.vue'
+import RankFilter from './RankFilter.vue'
 
 import idMixin from '@/mixins/idMixin'
 
@@ -29,7 +30,8 @@ export default {
         GameTypeFilter,
         HeroFilter,
         MapFilter,
-        HeroLevelFilter
+        HeroLevelFilter,
+        RankFilter
     },
     computed: {
         ...mapGetters({

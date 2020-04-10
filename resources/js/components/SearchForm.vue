@@ -217,7 +217,8 @@ export default {
           'game-type-filter',
           'hero-filter',
           'map-filter',
-          'hero-level-filter'
+          'hero-level-filter',
+          'rank-filter'
       ]
     };
   },
