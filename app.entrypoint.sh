@@ -40,10 +40,16 @@ php artisan migrate
 
 composer dump-autoload
 
-# Run php artisan db:seed - TODO - make conditional
+FILE=./database/seeds/.NO-SEED
+if [ -d "$FILE" ]; then
+    echo "Database has already been seeded"
+    echo "If you need to re-seed the database, delete ${FILE}"
+else 
+    php artisan db:seed
+    touch ${FILE}
+fi
 
-php artisan db:seed
 
 # Serve app
-
-php /var/www/html/artisan serve --host=0.0.0.0 --port=80
+#  TODO port should be read in from .env
+php /var/www/html/artisan serve --host=0.0.0.0 --port=3000
