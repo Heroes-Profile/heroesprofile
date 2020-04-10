@@ -4,8 +4,6 @@
             {{titleForFilterType(filter)}}
         </b-button>
         <b-popover :target="id" triggers="hover" placement="bottom">
-            <!-- <template v-slot:title>
-</template>-->
             <component :is="filter"></component>
         </b-popover>
     </div>
