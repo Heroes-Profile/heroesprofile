@@ -11,7 +11,7 @@ services:
     networks:
       - heroesprofile
     working_dir: "/var/www/html/"
-    command: "./app.entrypoint.sh"
+    entrypoint: ["/bin/bash", "./app.entrypoint.sh"]
     depends_on:
       - database
     expose:
