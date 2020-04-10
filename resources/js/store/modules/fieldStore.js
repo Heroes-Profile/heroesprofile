@@ -19,6 +19,9 @@ export default {
         rawfields: (state, getters) => {
 			return state.raw.rawfields
 		},
+		hero_levels: (state, getters) => {
+			return state.raw.rawfields.hero_level
+		},
 		heroes: (state, getters) => {
 			return state.raw.rawfields.heroes
 		},

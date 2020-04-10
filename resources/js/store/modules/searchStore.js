@@ -4,7 +4,8 @@ export default {
         defaultGameType: "Storm League",
         game_type_selection: [],
         selectedHeroes: [],
-        selectedMaps: []
+        selectedMaps: [],
+        selectedLevels: []
     },
     getters: {
         titleForFilterType : (state, getters) => (filter) => {
@@ -25,6 +26,11 @@ export default {
                 count = state.selectedMaps.length
             }
 
+            if (filter === 'hero-level-filter') {
+                title = state.selectedLevels && state.selectedLevels.length > 0 ? state.selectedLevels.join(", ") : 'All Levels'
+                count = state.selectedLevels.length
+            }
+
             if (title.length > 20) {
                 title = title.slice(0,20)+'…'+`(${count})`
             }
@@ -37,7 +43,8 @@ export default {
             return {
                 game_type: getters.selectedGameTypes,
                 game_map: state.selectedMaps.length === 0 ? getters.defaultSelectedMaps : state.selectedMaps,
-                hero: state.selectedHeroes
+                hero: state.selectedHeroes,
+                hero_level: state.selectedLevels
             }
         },
         defaultSelectedMaps: (state, getters) => {
@@ -55,6 +62,9 @@ export default {
         },
         SET_MAP(state, payload) {
             state.selectedMaps = payload
+        },
+        SET_LEVEL(state, payload) {
+            state.selectedLevels = payload
         }
     },
     actions: {
@@ -70,7 +80,11 @@ export default {
         PUSH_MAP(context, payload) {
             context.commit('SET_MAP', payload)
             context.dispatch("fieldStore/UPDATE_HERO_DATA", null, {root: true});
-
+        },
+        PUSH_LEVEL(context, payload) {
+            context.commit('SET_LEVEL', payload)
+            context.dispatch("fieldStore/UPDATE_HERO_DATA", null, {root: true});
         }
+
     }
 }

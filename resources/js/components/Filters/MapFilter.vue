@@ -1,6 +1,6 @@
 <template>
     <div>
-        <b-button class="mx-1" size="sm" @click="selection = []">Clear</b-button>
+        <b-button class="mx-1 mb-2" size="sm" @click="selection = []">Clear</b-button>
 
         <div class='flex-wrap'>
             <b-button class="mx-1" size="sm" @click="selectLanes(2)">2 Lanes</b-button>

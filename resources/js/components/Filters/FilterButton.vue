@@ -15,6 +15,7 @@
 import GameTypeFilter from './GameTypeFilter.vue'
 import HeroFilter from './HeroFilter.vue'
 import MapFilter from './MapFilter.vue'
+import HeroLevelFilter from './HeroLevelFilter.vue'
 
 import idMixin from '@/mixins/idMixin'
 
@@ -27,7 +28,8 @@ export default {
     components: {
         GameTypeFilter,
         HeroFilter,
-        MapFilter
+        MapFilter,
+        HeroLevelFilter
     },
     computed: {
         ...mapGetters({
