@@ -51,6 +51,12 @@ export default {
 		},
 		role_tiers: (state, getters) => {
 			return state.raw.rawfields.role_league_tier
+		},
+		major_patch: (state, getters) => {
+			return state.raw.rawfields.major_patch
+		},
+		minor_patch: (state, getters) => {
+			return state.raw.rawfields.minor_patch
 		}
 	},
 	mutations: {
@@ -73,6 +79,8 @@ export default {
 			.then(response => {
 				console.assert(response.data != null, '/api/heroes returned null response data, unable to initialize')
 				context.commit('updateInitialResources', response.data)
+				api.postHeroUpdate(context)
+
 			})
 			.catch(err => {
 				console.error(err)
