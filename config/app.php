@@ -231,6 +231,7 @@ return [
         'LeaderboardData' => App\Data\LeaderboardData::class,
         'GlobalHeroStatsData' => App\Data\GlobalHeroStatData::class,
         'GlobalHeroTalentData' => App\Data\GlobalHeroTalentData::class,
+        'GlobalHeroTalentDataDetails' => App\Data\GlobalHeroTalentDataDetails::class,
 
     ],
 
