@@ -26,6 +26,7 @@
     },
     "dependencies": {
         "bootstrap-vue": "^2.11.0",
+        "caniuse-lite": "^1.0.30001040",
         "fontawesome": "^5.6.3",
         "kind-of": "^6.0.3",
         "serialize-javascript": "^2.1.2",
