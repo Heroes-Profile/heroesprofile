@@ -54,7 +54,11 @@ export default {
             }
 
             if (filter === 'time-filter') {
-                title = 'Time'
+                let time = _.union(state.major_patch_selection, state.minor_patch_selection)
+                if (time.length === 0) {
+                    return 'Most Recent Patch'
+                }
+                return time.join(", ")
             }
 
             if (title.length > 20) {
