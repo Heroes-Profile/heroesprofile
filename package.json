@@ -27,6 +27,7 @@
     "dependencies": {
         "bootstrap-vue": "^2.11.0",
         "fontawesome": "^5.6.3",
+        "kind-of": "^6.0.3",
         "serialize-javascript": "^2.1.2",
         "v-click-outside": "^3.0.1",
         "vue-cookie": "^1.1.4",
