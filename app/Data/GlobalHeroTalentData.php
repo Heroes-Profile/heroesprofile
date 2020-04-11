@@ -3,15 +3,6 @@ namespace App\Data;
 use Illuminate\Support\Facades\DB;
 use Session;
 
-/*
-use Illuminate\Support\Facades\DB;
-use Cache;
-use App\Battletag;
-use App\LeagueBreakdown;
-use App\LeagueTier;
-use DateTime;
-*/
-
 class GlobalHeroTalentData
 {
   private $hero;

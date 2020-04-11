@@ -9,5 +9,6 @@ class LeagueTier extends Model
   protected $fillable = ['tier_id', 'name'];
 
   protected $primaryKey = 'tier_id';
+  public $timestamps = false;
 
 }

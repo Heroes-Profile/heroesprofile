@@ -1,33 +1,41 @@
-version: '3'
+version: "3"
 services:
   app:
     image: misterio92/ci-php-node
+    user: "1000:1000"
+    tty: true
     ports:
-      - 80:80
-      - 443:443
+      - 3000:3000
     volumes:
       - ./:/var/www/html
-    restart: always
     networks:
       - heroesprofile
     working_dir: "/var/www/html/"
-    command: "./entrypoint.sh"
+    entrypoint: ["/bin/bash", "./app.entrypoint.sh"]
+    depends_on:
+      - database
+    expose:
+      - 3000
+
   database:
-    image: mysql:5
+    build:
+      context: .
+      dockerfile: database.Dockerfile
+    user: "mysql:mysql"
+    tty: true
     environment:
-     MYSQL_ROOT_PASSWORD: docker
-     MYSQL_DATABASE: heroesprofile
+      MYSQL_ROOT_PASSWORD: docker
+      MYSQL_DATABASE: heroesprofile
     ports:
       - 3306:3306
     expose:
       - "3306"
     volumes:
-      - vol_db_hp:/var/lib/mysql
+      - ./vol_db_hp:/var/lib/mysql
     restart: always
     networks:
       - heroesprofile
 volumes:
   vol_db_hp:
-
 networks:
   heroesprofile:

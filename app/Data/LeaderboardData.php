@@ -4,11 +4,10 @@ namespace App\Data;
 use Illuminate\Support\Facades\DB;
 use Cache;
 use Session;
-/*
-use App\Battletag;
-use App\LeagueBreakdown;
-use App\LeagueTier;
-use DateTime;
+
+/*TO DO
+* Need to pass through offset data so that you can get more players.
+* Right now it returns 250, but I store more than 250 in the DB
 */
 
 class LeaderboardData

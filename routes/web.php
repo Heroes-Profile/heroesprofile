@@ -52,7 +52,10 @@ Route::get('login/success', 'LoginController@handleProviderCallback');
     });
   */
 
-
+  Route::view('/Global/Hero', 'Global/Hero/test');
+  Route::view('/Global/Leaderboard', '/Global/Leaderboard');
+  Route::view('/Global/Hero/Talents/Builds', '/Global/Hero/Talents/Builds');
+  Route::view('/Global/Hero/Talents/Details', '/Global/Hero/Talents/Details');
 });
 
 Route::view('optout', 'optout/optout');

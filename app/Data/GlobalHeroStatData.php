@@ -4,15 +4,6 @@ use Illuminate\Support\Facades\DB;
 use Session;
 use Cache;
 
-/*
-use Illuminate\Support\Facades\DB;
-use Cache;
-use App\Battletag;
-use App\LeagueBreakdown;
-use App\LeagueTier;
-use DateTime;
-*/
-
 class GlobalHeroStatData
 {
   private $game_versions_minor;
