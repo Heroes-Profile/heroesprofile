@@ -227,6 +227,13 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
 
+        //Data functions
+          //Globals
+        'GlobalHeroStatsData' => App\Data\GlobalHeroStatData::class,
+        'GlobalHeroTalentBuildsData' => App\Data\GlobalHeroTalentBuildsData::class,
+        'GlobalHeroTalentDetailsData' => App\Data\GlobalHeroTalentDetailsData::class,
+        'LeaderboardData' => App\Data\LeaderboardData::class,
+
     ],
 
 ];

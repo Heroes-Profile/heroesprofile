@@ -16,3 +16,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::group([
+    'middleware' => 'setGlobals'
+], function () {
+  Route::view('/Global/Leaderboard', 'Global/leaderboard');
+  Route::view('/Global/Stats', 'Global/stats');
+  Route::view('/Global/Hero/Talent/Details', 'Global/Hero/Talent/details');
+  Route::view('/Global/Hero/Talent/Builds', 'Global/Hero/Talent/builds');
+});

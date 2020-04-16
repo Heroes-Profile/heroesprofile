@@ -44,7 +44,7 @@ return [
 
         'database' => [
             'driver' => 'database',
-            'table' => 'cache',
+            'table' => env('CACHE_TABLE', 'cache'),
             'connection' => null,
         ],
 
