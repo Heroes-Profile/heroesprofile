@@ -9,7 +9,6 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     use Notifiable;
-    protected $table = 'battlenet_accounts';
 
     /**
      * The attributes that are mass assignable.
@@ -17,10 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'battlenet_id',
-        'battletag',
-        'region',
-        'battlenet_access_token'
+        'name', 'email', 'password',
     ];
 
     /**
@@ -29,7 +25,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'remember_token',
+        'password', 'remember_token',
     ];
 
     /**
@@ -37,9 +33,7 @@ class User extends Authenticatable
      *
      * @var array
      */
-    /*
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
-    */
 }

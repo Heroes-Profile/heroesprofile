@@ -39,11 +39,12 @@ return [
 
         'array' => [
             'driver' => 'array',
+            'serialize' => false,
         ],
 
         'database' => [
             'driver' => 'database',
-            'table' => env('CACHE_TABLE', 'cache'),
+            'table' => 'cache',
             'connection' => null,
         ],
 
