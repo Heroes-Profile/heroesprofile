@@ -106,3 +106,24 @@ if (!function_exists('getSeasonDates')) {
        return $return_data;
      }
 }
+
+
+if (!function_exists('getIntToRegion')) {
+    /**
+     * Maps the different regions to their integer equivalence.
+     *
+     *
+     * @return array array of regions
+     *
+     * */
+     function getIntToRegion(){
+       $intToRegion = array(
+         "1" => "NA",
+         "2" => "EU",
+         "3" => "KR",
+         /*  "4" => "UNK",*/
+         "5" => "CN"
+       );
+       return $intToRegion;
+     }
+}

@@ -229,10 +229,15 @@ return [
 
         //Data functions
           //Globals
+        'LeaderboardData' => App\Data\LeaderboardData::class,
         'GlobalHeroStatsData' => App\Data\GlobalHeroStatData::class,
+        'GlobalHeroStatMapData' => App\Data\GlobalHeroStatMapData::class,
         'GlobalHeroTalentBuildsData' => App\Data\GlobalHeroTalentBuildsData::class,
         'GlobalHeroTalentDetailsData' => App\Data\GlobalHeroTalentDetailsData::class,
-        'LeaderboardData' => App\Data\LeaderboardData::class,
+        'GlobalHeroStatMatchupData' => App\Data\GlobalHeroStatMatchupData::class,
+
+
+
 
     ],
 

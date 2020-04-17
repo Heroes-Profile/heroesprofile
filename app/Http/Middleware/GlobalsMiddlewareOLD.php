@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Cache;
 use Session;
-class GlobalsMiddleware
+class GlobalsMiddlewareOLD
 {
     /**
      * Handle an incoming request.

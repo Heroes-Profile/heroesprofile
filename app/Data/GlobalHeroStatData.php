@@ -55,13 +55,6 @@ class GlobalHeroStatData
       ->mergeBindings($sub_query->getQuery())
       ->groupBy('hero')
       ->get();
-
-      /*
-      print_r($sub_query->toSql());
-      echo "<br>";
-      print_r($sub_query->getBindings());
-      echo "<br>";
-      */
       return $global_hero_data;
   }
 
@@ -115,9 +108,7 @@ class GlobalHeroStatData
         }
       }
 
-
-      $change_data = \App\Models\GlobalHeroChange::where('game_version', $timeframe)
-                        ->where('game_type', $this->game_type[0])
+      $change_data = \App\Models\GlobalHeroChange::Filters($timeframe, $this->game_type[0])
                         ->select('hero', 'win_rate')
                         ->get();
       return $change_data;

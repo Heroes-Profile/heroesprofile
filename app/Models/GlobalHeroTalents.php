@@ -19,7 +19,6 @@ class GlobalHeroTalents extends Model
     $query->whereIn('game_type', $game_type);
     $query->where('global_hero_talents.hero', $hero);
 
-
     if(count($player_league_tier) > 0){
       $query->whereIn('league_tier', $player_league_tier);
     }

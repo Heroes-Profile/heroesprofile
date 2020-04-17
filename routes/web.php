@@ -25,4 +25,5 @@ Route::group([
   Route::view('/Global/Stats', 'Global/stats');
   Route::view('/Global/Hero/Talent/Details', 'Global/Hero/Talent/details');
   Route::view('/Global/Hero/Talent/Builds', 'Global/Hero/Talent/builds');
+  Route::view('/Global/Hero/Stats/Maps', 'Global/Hero/Stats/maps');
 });

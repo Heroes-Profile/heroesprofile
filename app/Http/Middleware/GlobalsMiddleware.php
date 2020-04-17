@@ -43,6 +43,12 @@ class GlobalsMiddleware
         })]);
       }
 
+      if (!$request->session()->has('regions_by_id')) {
+        session(['regions_by_id' => Cache::remember('regions_by_id', $seconds, function () {
+          return getIntToRegion();
+        })]);
+      }
+
 
       return $next($request);
     }
