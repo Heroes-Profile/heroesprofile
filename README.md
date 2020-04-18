@@ -36,11 +36,9 @@ If you have issues with the migration/seeding ensure the database service is ful
 
 ## Installation
 
-Heroes Profile is a PHP/Laravel and vue.js app. Making use of a MySql database. Every system has different methods for getting the required dependencies installed so please reference the main tools sites for installation instructions.
+Heroes Profile is a PHP/Laravel bootstrap app. Making use of a MySql database. Every system has different methods for getting the required dependencies installed so please reference the main tools sites for installation instructions.
 
 Laravel - https://laravel.com/
-
-Vue.js - https://vuejs.org/
 
 PHP - PHP can be installed in different ways. If you do not currently have PHP installed, use google to find the best method for you.
 
@@ -66,6 +64,7 @@ For windows users, Wampserver64 is a useful tool as it installs the MySql server
 -   Run `composer install`
 -   Run `php artisan key:generate` make sure the APP_KEY has this value in the .env file
 -   Run `npm install`
+-   Run `npm run dev`
 -   Run `php artisan migrate`
 -   Run `composer dump-autoload`
 -   Run `php artisan db:seed`
