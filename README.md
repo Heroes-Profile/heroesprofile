@@ -75,7 +75,7 @@ For windows users, Wampserver64 is a useful tool as it installs the MySql server
 -   Run `php artisan serve` - spins up the webserver
 -   The path to paste into the browser will show up in the command line.
 -   From a second command line, navigate to the heroesprofile repository.
--   Run `npm run watch` - watches for any changes to vue and automatically recompiles
+-   Run `npm run watch` - watches for any changes and automatically recompiles
 
 # Contributing
 
