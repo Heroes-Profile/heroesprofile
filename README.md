@@ -36,9 +36,11 @@ If you have issues with the migration/seeding ensure the database service is ful
 
 ## Installation
 
-Heroes Profile is a PHP/Laravel and bootstrap project.  Making use of a MySql database. Every system has different methods for getting the required dependencies installed so please reference the main tools sites for installation instructions.
+Heroes Profile is a PHP/Laravel and vue.js app. Making use of a MySql database. Every system has different methods for getting the required dependencies installed so please reference the main tools sites for installation instructions.
 
 Laravel - https://laravel.com/
+
+Vue.js - https://vuejs.org/
 
 PHP - PHP can be installed in different ways. If you do not currently have PHP installed, use google to find the best method for you.
 
