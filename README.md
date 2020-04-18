@@ -30,7 +30,7 @@ If you need to get into a command promt for the app
 
 ## Troubleshooting
 
-If you have issues with the migration/seeding ensure the database service is fully started and that the volumes have been created. You can fix this by running `docker-compose up database` and waiting for it to be ready before running `docker-compose up app` in a separate terminal. This should only happen if it's your first time running `docker-compose up`.  In some situations docker will fail to iniatiate.  We have found that sometimes `dos2unix` needs to be ran on the `app,entrypoint.sh` file.
+If you have issues with the migration/seeding ensure the database service is fully started and that the volumes have been created. You can fix this by running `docker-compose up database` and waiting for it to be ready before running `docker-compose up app` in a separate terminal. This should only happen if it's your first time running `docker-compose up`.  In some situations docker will fail to iniatiate.  We have found that sometimes `dos2unix` needs to be ran on the `app.entrypoint.sh` file.
 
 # Manual Setup
 
