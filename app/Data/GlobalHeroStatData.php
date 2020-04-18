@@ -1,8 +1,6 @@
 <?php
 namespace App\Data;
 use Illuminate\Support\Facades\DB;
-use Session;
-use Cache;
 
 class GlobalHeroStatData
 {
@@ -97,7 +95,7 @@ class GlobalHeroStatData
       }
 
       if(!$found){
-        foreach (Session::get("all_minor_patch") as $key => $value){
+        foreach (getAllMinorPatches() as $key => $value){
           if($found){
             $timeframe = $value;
             break;

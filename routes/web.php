@@ -19,6 +19,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 */
+Route::post('getGlobalHeroStatsData', 'GlobalHeroStatsController@getData');
 
 
 Route::group([
