@@ -40,12 +40,12 @@ class GlobalHeroStatData
   }
 
   private function getHeroWinLosses(){
-    $sub_query = \App\GlobalHeroStats::Filters($this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
+    $sub_query = \App\Models\GlobalHeroStats::Filters($this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
                                           $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror)
                    ->select('hero', 'win_loss', DB::raw('SUM(games_played) as games_played'))
                    ->groupBy('hero', 'win_loss');
 
-    $global_hero_data = \App\GlobalHeroStats::select(
+    $global_hero_data = \App\Models\GlobalHeroStats::select(
         'hero',
         DB::raw('SUM(IF(win_loss = 1, games_played, 0)) AS wins'),
         DB::raw('SUM(IF(win_loss = 0, games_played, 0)) AS losses'),
@@ -55,18 +55,11 @@ class GlobalHeroStatData
       ->mergeBindings($sub_query->getQuery())
       ->groupBy('hero')
       ->get();
-
-      /*
-      print_r($sub_query->toSql());
-      echo "<br>";
-      print_r($sub_query->getBindings());
-      echo "<br>";
-      */
       return $global_hero_data;
   }
 
   private function getHeroBans(){
-    $global_ban_data = \App\GlobalHeroBans::Filters($this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
+    $global_ban_data = \App\Models\GlobalHeroBans::Filters($this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
                                           $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror)
                       ->select('hero', DB::raw('SUM(bans) as games_banned'))
                       ->groupBy('hero')
@@ -84,7 +77,7 @@ class GlobalHeroStatData
       && count($this->role_league_tier) == 0
       && count($this->hero_level) == 0
       && count($this->region) == 0){
-      $major_season_game_version = \App\SeasonGameVersions::where('game_version', '>=', '2.43')
+      $major_season_game_version = \App\Models\SeasonGameVersions::where('game_version', '>=', '2.43')
                                   ->select(DB::raw("DISTINCT(SUBSTRING_INDEX(game_version, '.', 2)) as game_version"))
                                   ->orderBy('game_version', 'DESC')
                                   ->get();
@@ -115,9 +108,7 @@ class GlobalHeroStatData
         }
       }
 
-
-      $change_data = \App\GlobalHeroChange::where('game_version', $timeframe)
-                        ->where('game_type', $this->game_type[0])
+      $change_data = \App\Models\GlobalHeroChange::Filters($timeframe, $this->game_type[0])
                         ->select('hero', 'win_rate')
                         ->get();
       return $change_data;

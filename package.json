@@ -10,31 +10,16 @@
         "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
     },
     "devDependencies": {
-        "axios": "^0.19.2",
-        "bootstrap": "^4.4.1",
-        "cross-env": "^5.1",
-        "jquery": "^3.5.0",
-        "laravel-mix": "^4.0.7",
+        "axios": "^0.19",
+        "bootstrap": "^4.0.0",
+        "cross-env": "^7.0",
+        "jquery": "^3.2",
+        "laravel-mix": "^5.0.1",
         "lodash": "^4.17.13",
-        "popper.js": "^1.16.1",
-        "resolve-url-loader": "^2.3.1",
-        "sass": "^1.26.3",
-        "sass-loader": "7.*",
-        "vue": "^2.6.11",
-        "vue-loader": "^15.9.1",
+        "popper.js": "^1.12",
+        "resolve-url-loader": "^3.1.0",
+        "sass": "^1.15.2",
+        "sass-loader": "^8.0.0",
         "vue-template-compiler": "^2.6.11"
-    },
-    "dependencies": {
-        "bootstrap-vue": "^2.11.0",
-        "caniuse-lite": "^1.0.30001040",
-        "fontawesome": "^5.6.3",
-        "kind-of": "^6.0.3",
-        "serialize-javascript": "^2.1.2",
-        "v-click-outside": "^3.0.1",
-        "vue-cookie": "^1.1.4",
-        "vue-fontawesome": "0.0.2",
-        "vue-multiselect": "^2.1.6",
-        "vue-router": "^3.1.6",
-        "vuex": "^3.1.3"
     }
 }

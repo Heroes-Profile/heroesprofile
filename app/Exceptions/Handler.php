@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Exceptions;
-use Throwable;
+
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Google\Cloud\ErrorReporting\Bootstrap;
+use Throwable;
 
 class Handler extends ExceptionHandler
 {
@@ -29,25 +29,24 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Exception  $exception
+     * @param  \Throwable  $exception
      * @return void
+     *
+     * @throws \Exception
      */
     public function report(Throwable $exception)
     {
-      if (isset($_SERVER['GAE_SERVICE'])) {
-        Bootstrap::init();
-        Bootstrap::exceptionHandler($exception);
-      } else {
         parent::report($exception);
-      }
     }
 
     /**
      * Render an exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
-     * @return \Illuminate\Http\Response
+     * @param  \Throwable  $exception
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @throws \Throwable
      */
     public function render($request, Throwable $exception)
     {

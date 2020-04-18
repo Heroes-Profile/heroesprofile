@@ -29,10 +29,5 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
-    'battlenet' => [
-        'client_id' => env('BATTLE.NET_KEY'),
-        'client_secret' => env('BATTLE.NET_SECRET'),
-        'redirect' => env('BATTLE.NET_REDIRECT_URI')
-    ],
 
 ];

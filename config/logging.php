@@ -35,14 +35,9 @@ return [
     */
 
     'channels' => [
-      'stackdriver' => [
-            'driver' => 'custom',
-            'via' => App\Logging\CreateStackdriverLogger::class,
-            'level' => 'debug',
-        ],
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['daily'],
+            'channels' => ['single'],
             'ignore_exceptions' => false,
         ],
 
@@ -99,6 +94,10 @@ return [
         'null' => [
             'driver' => 'monolog',
             'handler' => NullHandler::class,
+        ],
+
+        'emergency' => [
+            'path' => storage_path('logs/laravel.log'),
         ],
     ],
 
