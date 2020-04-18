@@ -91,8 +91,22 @@ $return_data = Cache::remember($cache, calcluateCacheTime($timeframe, $game_vers
 </html>
 
 <script>
+https://stackoverflow.com/questions/32738763/laravel-csrf-token-mismatch-for-ajax-post-request
 var $table = $('#table');
-var mydata = <?php print_r($return_data->toJson());?>;
+//var mydata = <?php print_r($return_data->toJson());?>;
+var mydata = $.ajax({
+    type: "POST",
+    url: '/api/getGlobalHeroStatsData', // This is what I have updated
+    data: {
+      "_token": "{{ csrf_token() }}",
+      id: 7
+    }
+}).done(function( msg ) {
+    alert( msg );
+});
+
+
+
 $(function () {
    $('#table').bootstrapTable({
        data: mydata
