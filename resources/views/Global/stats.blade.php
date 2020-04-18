@@ -4,7 +4,7 @@
 //$timeframe = array("major");
 $timeframe = array("minor");
 //$game_versions = array("2.49", "2.48");
-$game_versions = array("2.49.3.78256");
+$game_versions = array("2.49.2.77981");
 
 /*
 //Needs to be calculated/pulled from session
@@ -22,7 +22,7 @@ $game_versions_minor = array('2.48.0.76437',
 '2.49.2.77981',
 '2.49.3.78256');
 */
-$game_versions_minor = array('2.49.3.78256');
+$game_versions_minor = array('2.49.2.77981');
 $game_type = array("5");
 $region = array();
 $game_map = array();
@@ -55,5 +55,48 @@ $return_data = Cache::remember($cache, calcluateCacheTime($timeframe, $game_vers
   return $return_data;
 });
 
-print_r($return_data->toJson());
+//print_r($return_data->toJson());
 ?>
+
+<html>
+<head>
+    <title>Global Hero Stats</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.10.1/bootstrap-table.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <table id="table" data-height="460">
+        <thead>
+            <tr>
+                <th data-field="hero">Hero</th>
+                <th data-field="wins">Wins</th>
+                <th data-field="losses">Losses</th>
+                <th data-field="games_banned">Games Banned</th>
+                <th data-field="games_played">Games Played</th>
+                <th data-field="win_rate">Win Rate</th>
+                <th data-field="pick_rate">Pick Rate</th>
+                <th data-field="change">Change</th>
+                <th data-field="popularity">Popularity</th>
+                <th data-field="influence">Influence</th>
+            </tr>
+        </thead>
+    </table>
+    </div>
+</body>
+</html>
+
+<script>
+var $table = $('#table');
+var mydata = <?php print_r($return_data->toJson());?>;
+$(function () {
+   $('#table').bootstrapTable({
+       data: mydata
+   });
+});
+
+</script>

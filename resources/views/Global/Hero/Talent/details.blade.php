@@ -2,7 +2,7 @@
 //$timeframe = array("major");
 $timeframe = array("minor");
 //$game_versions = array("2.49", "2.48");
-$game_versions = array("2.49.3.78256");
+$game_versions = array("2.49.2.77981");
 
 /*
 //Needs to be calculated/pulled from session
@@ -22,7 +22,7 @@ $game_versions_minor = array('2.48.0.76437',
 */
 
 $hero = 1;
-$game_versions_minor = array('2.49.3.78256');
+$game_versions_minor = array('2.49.2.77981');
 $game_type = array("5");
 $region = array();
 $game_map = array();
