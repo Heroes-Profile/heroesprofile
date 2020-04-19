@@ -3,10 +3,8 @@
 
 
 @section('content')
-
-
     <div class="container">
-        <table id="table" class="table table-sm" data-height="460">
+        <table id="table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
         <thead>
             <tr>
                 <th data-field="hero">Hero</th>
@@ -25,10 +23,41 @@
     <div id="echodata">
     </div>
     </div>
+
 @endsection
 
 @section('scripts')
+
+
 <script>
+$(document).ready(function() {
+  $('#table').DataTable( {
+          paging: false,
+          "searching": false,
+          colReorder: true,
+          fixedHeader: true,
+          "bInfo": false,
+          ajax: {
+             url: '/getGlobalHeroStatsData',
+             method: "POST"
+          },
+          columns: [
+              { data: "hero" },
+              { data: "wins" },
+              { data: "losses" },
+              { data: "games_banned" },
+              { data: "games_played" },
+              { data: "win_rate" },
+              { data: "pick_rate" },
+              { data: "change" },
+              { data: "popularity" },
+              { data: "influence" }
+          ]
+      } );
+    $('.dataTables_length').addClass('bs-select');
+
+});
+/*
 var mydata = "";
 $(function () {
   var $table = $('#table');
@@ -37,26 +66,21 @@ $(function () {
       type: "POST",
       url: '/getGlobalHeroStatsData'
   }).done(function( response ) {
-
     mydata = response;
     $('#echodata').html(response);
     console.log(response);
-    /*$('#table').bootstrapTable({
-        data: mydata
-    });*/
     $.each(response, function(i, item) {
       var $tr = $('<tr>');
       $.each(item, function(j, itemdata){
         $tr.append($('<td>').text(itemdata));
       })
       $tr.appendTo('#table');
-
-
     });
-    $('#table').dataTables();
+
   });
 
 
 });
+*/
 </script>
 @endsection
