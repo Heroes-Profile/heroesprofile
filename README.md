@@ -12,7 +12,7 @@ This public repository is the site re-write for [Heroes Profile](https://www.her
 -   If you have issues getting the seed files to populate in `database/seeds/heroesprofile-seeds/seed-files` try.
 -   `git submodule init`
 -   `git submodule update --remote`
-Otherwise, you can pull them directly from https://github.com/Heroes-Profile/heroesprofile-seeds.git
+-   Otherwise, you can pull them directly from https://github.com/Heroes-Profile/heroesprofile-seeds.git
 
 # Docker Setup
 
