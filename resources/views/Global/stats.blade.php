@@ -4,9 +4,9 @@
 
 @section('table')
 
-<body>
+
     <div class="container">
-        <table id="table" data-height="460">
+        <table id="table" class="table table-sm" data-height="460">
         <thead>
             <tr>
                 <th data-field="hero">Hero</th>
@@ -22,6 +22,8 @@
             </tr>
         </thead>
     </table>
+    <div id="echodata">
+    </div>
     </div>
 
 
@@ -43,12 +45,24 @@ $(function () {
    $.ajax({
       type: "POST",
       url: '/getGlobalHeroStatsData'
-  }).done(function( msg ) {
-    console.log(msg);
-    mydata = msg;
-    $('#table').bootstrapTable({
+  }).done(function( response ) {
+
+    mydata = response;
+    $('#echodata').html(response);
+    console.log(response);
+    /*$('#table').bootstrapTable({
         data: mydata
+    });*/
+    $.each(response, function(i, item) {
+      var $tr = $('<tr>');
+      $.each(item, function(j, itemdata){
+        $tr.append($('<td>').text(itemdata));
+      })
+      $tr.appendTo('#table');
+
+
     });
+    $('#table').dataTables();
   });
 
 
