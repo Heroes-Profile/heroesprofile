@@ -11,7 +11,8 @@ class TableCacheValue extends Model
   public $timestamps = false;
   protected $connection= 'mysql_cache';
 
-  public function scopeFilters($query, $season){
+  public function scopeFilters($query, $type, $season){
+    $query->where('table_to_cache', $type);
     $query->where('season', $season);
     return $query;
   }

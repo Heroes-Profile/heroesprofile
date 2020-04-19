@@ -16,25 +16,18 @@ class LeaderboardData
   private $season;
   private $region;
   private $type;
-  private $hero;
-  private $role;
-  private $page;
 
-  public static function instance($game_type, $season, $region, $type, $hero, $role, $page)
+  public static function instance($game_type, $season, $region, $type)
   {
-      return new LeaderboardData($game_type, $season, $region, $type, $hero, $role, $page);
+      return new LeaderboardData($game_type, $season, $region, $type);
   }
 
 
-  public function __construct($game_type, $season, $region, $type, $hero, $role, $page) {
+  public function __construct($game_type, $season, $region, $type) {
     $this->game_type = $game_type;
     $this->season = $season;
     $this->region = $region;
     $this->type = $type;
-    $this->hero = $hero;
-    $this->role = $role;
-    $this->page = $page;
-
   }
 
   public function getLeaderboardData(){
@@ -49,17 +42,17 @@ class LeaderboardData
       $mmr_id = Session::get("mmr_type_ids")[$this->role];
     }
 
-    $leaderboard_data = \App\Models\Leaderboard::Filters($this->game_type, $this->season, $this->region, $mmr_id, 1)
+    $leaderboard_data = \App\Models\Leaderboard::Filters($this->game_type, $this->season, $this->region, $mmr_id, $this->getMaxCacheNumber())
                           ->select('rank', 'split_battletag', 'battletag', 'blizz_id', 'region', 'win_rate', 'win', 'loss', 'games_played', 'conservative_rating', 'rating')
-                          ->limit(250)
+                          //->limit(250)
                           ->get();
     return $leaderboard_data;
   }
 
   private function getMaxCacheNumber(){
-    $max_cache_number = \App\Models\TableCacheValue::Filters($this->season)
+    $max_cache_number = \App\Models\TableCacheValue::Filters('leaderboard', $this->season)
                           ->select(DB::raw('MAX(cache_number) as max_cache_number'))
                           ->get();
-    return $max_cache_number;
+    return $max_cache_number[0]["max_cache_number"];
   }
 }

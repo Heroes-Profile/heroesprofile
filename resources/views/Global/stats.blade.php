@@ -8,15 +8,16 @@
         <thead>
             <tr>
                 <th data-field="hero">Hero</th>
+                <th data-field="win_rate">Win Rate</th>
+                <th data-field="change">Change</th>
+                <th data-field="popularity">Popularity</th>
+                <th data-field="pick_rate">Pick Rate</th>
+                <th data-field="ban_rate">Ban Rate</th>
+                <th data-field="influence">Influence</th>
+                <th data-field="games_played">Games Played</th>
                 <th data-field="wins">Wins</th>
                 <th data-field="losses">Losses</th>
                 <th data-field="games_banned">Games Banned</th>
-                <th data-field="games_played">Games Played</th>
-                <th data-field="win_rate">Win Rate</th>
-                <th data-field="pick_rate">Pick Rate</th>
-                <th data-field="change">Change</th>
-                <th data-field="popularity">Popularity</th>
-                <th data-field="influence">Influence</th>
             </tr>
         </thead>
     </table>
@@ -31,56 +32,28 @@
 
 <script>
 $(document).ready(function() {
-  $('#table').DataTable( {
-          paging: false,
-          "searching": false,
-          colReorder: true,
-          fixedHeader: true,
-          "bInfo": false,
-          ajax: {
-             url: '/getGlobalHeroStatsData',
-             method: "POST"
-          },
-          columns: [
-              { data: "hero" },
-              { data: "wins" },
-              { data: "losses" },
-              { data: "games_banned" },
-              { data: "games_played" },
-              { data: "win_rate" },
-              { data: "pick_rate" },
-              { data: "change" },
-              { data: "popularity" },
-              { data: "influence" }
-          ]
-      } );
+  inputUrl = '/getGlobalHeroStatsData';
+  inputColumns = [
+      { data: "hero" },
+      { data: "win_rate" },
+      { data: "change" },
+      { data: "popularity" },
+      { data: "pick_rate" },
+      { data: "ban_rate" },
+      { data: "influence" },
+      { data: "games_played" },
+      { data: "wins" },
+      { data: "losses" },
+      { data: "games_banned" },
+  ];
+  inputPaging = false;
+  inputSearching = false;
+  inputColReorder = true;
+  inputFixedHeader = true;
+  inputBInfo = false;
+  inputSortOrder = [[ 1, "desc" ]];
+  createTable(inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder);
     $('.dataTables_length').addClass('bs-select');
-
 });
-/*
-var mydata = "";
-$(function () {
-  var $table = $('#table');
-
-   $.ajax({
-      type: "POST",
-      url: '/getGlobalHeroStatsData'
-  }).done(function( response ) {
-    mydata = response;
-    $('#echodata').html(response);
-    console.log(response);
-    $.each(response, function(i, item) {
-      var $tr = $('<tr>');
-      $.each(item, function(j, itemdata){
-        $tr.append($('<td>').text(itemdata));
-      })
-      $tr.appendTo('#table');
-    });
-
-  });
-
-
-});
-*/
 </script>
 @endsection

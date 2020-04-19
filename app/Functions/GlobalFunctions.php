@@ -127,3 +127,31 @@ if (!function_exists('getIntToRegion')) {
        return $intToRegion;
      }
 }
+
+
+if (!function_exists('getHeroesIDMap')) {
+    /**
+     * Maps the different regions to their integer equivalence.
+     *
+     *
+     * @return array array of regions
+     *
+     * */
+     function getHeroesIDMap($key_value){
+       switch ($key_value) {
+         case "id":
+             $value = "name";
+             break;
+         case "name":
+             $value = "id";
+             break;
+       }
+       $heroes = DB::table('heroesprofile.heroes')->select('id', 'name')->get();
+       $heroes = json_decode(json_encode($heroes),true);
+       $return_data = array();
+       for($i = 0; $i < count($heroes); $i++){
+         $return_data[$heroes[$i][$key_value]] = $heroes[$i][$value];
+       }
+       return $return_data;
+     }
+}

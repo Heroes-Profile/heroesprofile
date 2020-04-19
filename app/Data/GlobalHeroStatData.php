@@ -40,7 +40,7 @@ class GlobalHeroStatData
   private function getHeroWinLosses(){
     $sub_query = \App\Models\GlobalHeroStats::Filters($this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
                                           $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror)
-                   ->select('hero', 'win_loss', DB::raw('SUM(games_played) as games_played'))
+                   ->select(DB::raw('name as hero'), 'win_loss', DB::raw('SUM(games_played) as games_played'))
                    ->groupBy('hero', 'win_loss');
 
     $global_hero_data = \App\Models\GlobalHeroStats::select(
@@ -59,10 +59,14 @@ class GlobalHeroStatData
   private function getHeroBans(){
     $global_ban_data = \App\Models\GlobalHeroBans::Filters($this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
                                           $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror)
-                      ->select('hero', DB::raw('SUM(bans) as games_banned'))
+                      ->select('name as hero', DB::raw('SUM(bans) as games_banned'))
                       ->groupBy('hero')
                       ->get();
-    return $global_ban_data;
+    $return_data = array();
+    for($i = 0; $i < count($global_ban_data); $i++){
+      $return_data[$global_ban_data[$i]->hero] = $global_ban_data[$i]->games_banned;
+    }
+    return $return_data;
   }
 
   private function getHeroChange(){
@@ -109,7 +113,14 @@ class GlobalHeroStatData
       $change_data = \App\Models\GlobalHeroChange::Filters($timeframe, $this->game_type[0])
                         ->select('hero', 'win_rate')
                         ->get();
-      return $change_data;
+      $return_data = array();
+      $heroes = getHeroesIDMap("id");
+      for($i = 0; $i < count($change_data); $i++){
+          if(array_key_exists($change_data[$i]->hero,$heroes)){
+            $return_data[$heroes[$change_data[$i]->hero]] = $change_data[$i]->win_rate;
+          }
+      }
+      return $return_data;
     }
   }
 
@@ -119,9 +130,9 @@ class GlobalHeroStatData
     $global_change_data = $this->getHeroChange();
 
     $total_games = ($global_hero_data->sum('wins') + $global_hero_data->sum('losses')) / 10;
-    $total_bans = $global_ban_data->sum('games_banned');
 
     for($i = 0; $i < count($global_hero_data); $i++){
+
       $global_hero_data[$i]->games_played = $global_hero_data[$i]->wins + $global_hero_data[$i]->losses;
       if($global_hero_data[$i]->games_played){
         $global_hero_data[$i]->win_rate = $global_hero_data[$i]->wins / ($global_hero_data[$i]->wins + $global_hero_data[$i]->losses);
@@ -131,29 +142,30 @@ class GlobalHeroStatData
         $global_hero_data[$i]->pick_rate = 0;
       }
 
-      foreach ($global_ban_data as $ban_data) {
-        if($ban_data->hero == $global_hero_data[$i]->hero){
-          $global_hero_data[$i]->games_banned = $ban_data->games_banned;
-          break;
-        }
+      if(array_key_exists($global_hero_data[$i]->hero, $global_ban_data)){
+        $global_hero_data[$i]->games_banned = $global_ban_data[$global_hero_data[$i]->hero];
+        $global_hero_data[$i]->ban_rate = $global_ban_data[$global_hero_data[$i]->hero] / $total_games;
       }
 
-      if(count($global_change_data) > 0){
-        foreach ($global_change_data as $change_data) {
-          if($change_data->hero == $global_hero_data[$i]->hero){
-            $global_hero_data[$i]->change = ($global_hero_data[$i]->win_rate * 100)  - $change_data->win_rate;
-            break;
-          }
 
-        }
+      if(array_key_exists($global_hero_data[$i]->hero, $global_change_data)){
+        $global_hero_data[$i]->change = ($global_hero_data[$i]->win_rate * 100)  - $global_change_data[$global_hero_data[$i]->hero];
       }
 
       if($global_hero_data[$i]->games_banned > 0){
-        $global_hero_data[$i]->popularity = ($global_hero_data[$i]->games_played / $total_games) * 100;
-      }else{
         $global_hero_data[$i]->popularity = (($global_hero_data[$i]->games_banned + $global_hero_data[$i]->games_played) / $total_games) * 100;
+      }else{
+        $global_hero_data[$i]->popularity = ($global_hero_data[$i]->games_played / $total_games) * 100;
       }
       $global_hero_data[$i]->influence = round(($global_hero_data[$i]->win_rate - .5) * ($global_hero_data[$i]->pick_rate * 10000));
+
+
+      //Maybe add to function later
+      $global_hero_data[$i]->win_rate = number_format($global_hero_data[$i]->win_rate * 100, 2);
+      $global_hero_data[$i]->change = number_format($global_hero_data[$i]->change, 2);
+      $global_hero_data[$i]->popularity = number_format($global_hero_data[$i]->popularity, 2);
+      $global_hero_data[$i]->pick_rate = number_format($global_hero_data[$i]->pick_rate * 100, 2);
+      $global_hero_data[$i]->ban_rate = number_format($global_hero_data[$i]->ban_rate * 100, 2);
     }
 
     return $global_hero_data;
