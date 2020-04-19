@@ -9,7 +9,10 @@ This public repository is the site re-write for [Heroes Profile](https://www.her
 -   `git clone --recursive https://github.com/Heroes-Profile/heroesprofile.git`
 -   `cd heroesprofile`
 -   `git submodule update --remote`
--   If you have issues getting the seed files to populate in `database/seeds/heroesprofile-seeds/seed-files`, you can pull them directly from https://github.com/Heroes-Profile/heroesprofile-seeds.git
+-   If you have issues getting the seed files to populate in `database/seeds/heroesprofile-seeds/seed-files` try.
+-   `git submodule init`
+-   `git submodule update --remote`
+Otherwise, you can pull them directly from https://github.com/Heroes-Profile/heroesprofile-seeds.git
 
 # Docker Setup
 
