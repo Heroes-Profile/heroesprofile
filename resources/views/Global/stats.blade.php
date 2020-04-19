@@ -2,7 +2,7 @@
 @section('title', 'Global Hero Stats')
 
 
-@section('table')
+@section('content')
 
 
     <div class="container">
@@ -25,19 +25,10 @@
     <div id="echodata">
     </div>
     </div>
+@endsection
 
-
-<script type="text/javascript">
-$.ajaxSetup({
-    headers: {
-        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    }
-});
-</script>
-
+@section('scripts')
 <script>
-
-
 var mydata = "";
 $(function () {
   var $table = $('#table');
@@ -67,6 +58,5 @@ $(function () {
 
 
 });
-
 </script>
 @endsection

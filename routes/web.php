@@ -34,3 +34,7 @@ Route::group([
   Route::view('/Global/Hero/Talent/Builds', 'Global/Hero/Talent/builds');
   Route::view('/Global/Hero/Stats/Maps', 'Global/Hero/Stats/maps');
 });
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
