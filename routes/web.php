@@ -45,7 +45,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 
 //Opt Out Process
-Route::view('optout', 'optout/optout');
+Route::view('optout', 'Optout/optout');
 Route::view('optout/failure', 'optout/failure');
 Route::view('optout/success', 'optout/success');
 
