@@ -76,11 +76,11 @@ class BattlenetAuthController extends Controller
       $battlenet_user->user['region'] = $regionsToInt[Session::get('battlenet_region')];
 
       $battlenet_user = json_decode(json_encode($battlenet_user),true);
-      $battletags = \App\Battletag::where('battletag', $battlenet_user["user"]["battletag"])
+      $battletags = \App\Models\Battletag::where('battletag', $battlenet_user["user"]["battletag"])
                     ->get();
       if(count($battletags) > 0){
         foreach($battletags as $battletag_key => $battletag_value){
-          $blizzID_region = \App\Battletag::where('blizz_id', $battletag_value["blizz_id"])
+          $blizzID_region = \App\Models\Battletag::where('blizz_id', $battletag_value["blizz_id"])
                         ->where('region', $battletag_value["region"])
                         ->get();
           foreach($blizzID_region as $blizzIDRegion_key => $blizzIDRegion_value){
@@ -89,7 +89,7 @@ class BattlenetAuthController extends Controller
           }
         }
       }else{
-        $battletag = new \App\Battletag;
+        $battletag = new \App\Models\Battletag;
         $battletag->battletag = $battlenet_user["user"]["battletag"];
         $battletag->region = $regionsToInt[Session::get('battlenet_region')];
         $battletag->opt_out = 1;
@@ -98,13 +98,13 @@ class BattlenetAuthController extends Controller
       }
 
     } catch (\Exception $e) {
-      return redirect('/optout/failure');
+      return redirect('/optout/update/failure');
     }
 
 
 
 
-    return redirect()->to('/optout/success');
+    return redirect()->to('/optout/update/success');
   }
 
 

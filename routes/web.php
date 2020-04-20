@@ -46,7 +46,9 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 //Opt Out Process
 Route::view('optout', 'Optout/optout');
-Route::view('optout/failure', 'optout/failure');
-Route::view('optout/success', 'optout/success');
+Route::view('optout/update/failure', 'optout/failure');
+Route::view('optout/update/success', 'optout/success');
 
 Route::get('optout/login', 'BattlenetAuthController@redirectToProvider');
+
+Route::get('optout/success', 'BattlenetAuthController@handleOptOutProviderCallback');  //Need to switch this from login/success to optout/success in blizzard API service
