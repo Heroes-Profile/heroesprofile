@@ -43,8 +43,8 @@ class LeaderboardData
     }
 
     $leaderboard_data = \App\Models\Leaderboard::Filters($this->game_type, $this->season, $this->region, $mmr_id, $this->getMaxCacheNumber())
-                          ->select('rank', 'split_battletag', 'battletag', 'blizz_id', 'region', 'win_rate', 'win', 'loss', 'games_played', 'conservative_rating', 'rating')
-                          //->limit(250)
+                          ->select('rank', 'split_battletag', 'battletag', 'blizz_id', 'region', 'win_rate', 'win', 'loss', 'games_played', 'conservative_rating', 'rating', DB::raw('name as most_played_hero') , 'hero_build_games_played')
+                          ->join('heroesprofile.heroes', 'heroesprofile.heroes.id', '=', 'heroesprofile_cache.leaderboard.most_played_hero')
                           ->get();
     return $leaderboard_data;
   }

@@ -10,46 +10,46 @@ class Leaderboard extends Model
   protected $primaryKey = 'leaderboard_id';
   public $timestamps = false;
   protected $connection= 'mysql_cache';
-  protected $fillable = ['rank', 'split_battletag', 'battletag', 'blizz_id', 'region', 'win_rate', 'win', 'loss', 'games_played', 'conservative_rating', 'rating'];
+  protected $fillable = ['rank', 'split_battletag', 'battletag', 'blizz_id', 'region', 'win_rate', 'win', 'loss', 'games_played', 'conservative_rating', 'rating', 'most_played_hero', 'hero_build_games_played'];
 
   public function scopeFilters($query, $game_type, $season, $region, $type, $cache_number){
     $query->where('game_type', $game_type);
     $query->where('season', $season);
-    $query->where('type', $type);
+    $query->where('heroesprofile_cache.leaderboard.type', $type);
 
     if($region != ""){
       $query->where('region', $region);
     }
 
     $query->where('cache_number', $cache_number);
-    //Need to add some paging for this page later.  Currently it is limited to 250, but can expand it
+    //Need to add some paging for this page later.
     $page = 1;
 
     return $query;
   }
 
 
-    /**
-   * Get the player's Rating value
-   *
-   * @param  string  $value
-   * @return string
-   */
+  /**
+  * Get the player's Rating value
+  *
+  * @param  string  $value
+  * @return string
+  */
   public function getRatingAttribute($value)
   {
-      return number_format($value, 2);
+    return number_format($value, 2);
   }
 
   /**
- * Get the player's Win Rate value
- *
- * @param  string  $value
- * @return string
- */
-public function getWinRateAttribute($value)
-{
+  * Get the player's Win Rate value
+  *
+  * @param  string  $value
+  * @return string
+  */
+  public function getWinRateAttribute($value)
+  {
     return number_format($value, 2);
-}
+  }
 
   /**
  * Get the player's MMR value

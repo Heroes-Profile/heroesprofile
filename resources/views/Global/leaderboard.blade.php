@@ -13,7 +13,10 @@
               <th data-field="win_rate">Win Rate</th>
               <th data-field="rating">Heroes Profile Rating</th>
               <th data-field="conservative_rating">MMR</th>
+              <!--<th data-field="rank">Rank</th>-->
               <th data-field="games_played">Games Played</th>
+              <th data-field="most_played_hero">Most Played Hero</th>
+              <th data-field="hero_build_games_played">Games Played With Hero</th>
             </tr>
         </thead>
     </table>
@@ -31,12 +34,18 @@ $(document).ready(function() {
   inputUrl = '/getGlobalLeaderboardData';
   inputColumns = [
       { data: "rank" },
-      { data: "split_battletag" },
+      { data: "split_battletag",
+        "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+             $(nTd).html("<a href='/Profile/?blizz_id=" + oData.blizz_id + "&battletag=" + oData.split_battletag + "&region=" + oData.region+"'>" + oData.split_battletag + "</a>");
+         }
+      },
       { data: "region" },
       { data: "win_rate" },
       { data: "rating" },
       { data: "conservative_rating" },
       { data: "games_played" },
+      { data: "most_played_hero" },
+      { data: "hero_build_games_played" },
   ];
   inputPaging = true;
   inputSearching = true;
