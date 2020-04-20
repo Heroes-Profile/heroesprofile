@@ -20,10 +20,10 @@ Route::get('/', function () {
 });
 */
 Route::post('getGlobalHeroStatsData', 'GlobalHeroStatsController@getData');
-Route::get('getGlobalHeroStatsData', 'GlobalHeroStatsController@getData');
+Route::get('getGlobalHeroStatsData', 'GlobalHeroStatsController@getData'); //For Testing Purposes.  Remove later
 
 Route::post('getGlobalLeaderboardData', 'GlobalLeaderboardController@getData');
-Route::get('getGlobalLeaderboardData', 'GlobalLeaderboardController@getData');
+Route::get('getGlobalLeaderboardData', 'GlobalLeaderboardController@getData'); //For Testing Purposes.  Remove later
 
 Route::group([
     'middleware' => 'setGlobals'
