@@ -41,3 +41,12 @@ Route::group([
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+
+
+//Opt Out Process
+Route::view('optout', 'optout/optout');
+Route::view('optout/failure', 'optout/failure');
+Route::view('optout/success', 'optout/success');
+
+Route::get('optout/login', 'BattlenetAuthController@redirectToProvider');
