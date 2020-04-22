@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Google\Cloud\ErrorReporting\Bootstrap;
 
 class Handler extends ExceptionHandler
 {
@@ -34,10 +35,15 @@ class Handler extends ExceptionHandler
      *
      * @throws \Exception
      */
-    public function report(Throwable $exception)
-    {
-        parent::report($exception);
-    }
+     public function report(Throwable $exception)
+     {
+         if (isset($_SERVER['GAE_SERVICE'])) {
+             Bootstrap::init();
+             Bootstrap::exceptionHandler($exception);
+         } else {
+             parent::report($exception);
+         }
+     }
 
     /**
      * Render an exception into an HTTP response.
