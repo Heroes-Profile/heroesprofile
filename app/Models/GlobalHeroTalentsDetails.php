@@ -48,6 +48,7 @@ class GlobalHeroTalentsDetails extends Model
     }
 
     $query->where('talent', '<>', 0);
+    $query->where('talent_name', '<>', "");
     return $query;
   }
 }

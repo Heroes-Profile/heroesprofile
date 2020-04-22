@@ -59,6 +59,7 @@ class GlobalHeroStatData
   private function getHeroBans(){
     $global_ban_data = \App\Models\GlobalHeroBans::Filters($this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
                                           $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror)
+                      ->join('heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')                   
                       ->select('name as hero', DB::raw('SUM(bans) as games_banned'))
                       ->groupBy('hero')
                       ->get();

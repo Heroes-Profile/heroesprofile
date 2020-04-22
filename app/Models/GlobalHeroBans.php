@@ -12,7 +12,6 @@ class GlobalHeroBans extends Model
 
   public function scopeFilters($query, $game_versions_minor, $game_type, $region, $game_map,
                                       $hero_level, $player_league_tier, $hero_league_tier, $role_league_tier){
-    $query->join('heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero');     
     $query->whereIn('game_version', $game_versions_minor);
     $query->whereIn('game_type', $game_type);
 

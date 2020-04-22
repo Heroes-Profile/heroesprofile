@@ -155,3 +155,23 @@ if (!function_exists('getHeroesIDMap')) {
        return $return_data;
      }
 }
+
+
+if (!function_exists('getHeroesIDMap')) {
+    /**
+     * This function gets all of the heroes and their internal IDs
+     *
+     *
+     * @return array array of regions
+     *
+     * */
+     function getHeroesIDMap($key_value, $value){
+       $heroes = DB::table('heroesprofile.heroes')->select('id', 'name', 'short_name')->get();
+       $heroes = json_decode(json_encode($heroes),true);
+       $return_data = array();
+       for($i = 0; $i < count($heroes); $i++){
+         $return_data[$heroes[$i][$key_value]] = $heroes[$i][$value];
+       }
+       return $return_data;
+     }
+}

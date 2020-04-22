@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Global Hero Stats')
+@section('title', 'Global Stats')
 
 
 @section('content')
@@ -30,11 +30,12 @@
 @section('scripts')
 
 
+
 <script>
 $(document).ready(function() {
-  inputUrl = '/getGlobalHeroStatsData';
+  inputUrl = '/getGlobalStatData';
   inputColumns = [
-      { data: "hero" },
+      { data: "hero"},
       { data: "win_rate" },
       { data: "change" },
       { data: "popularity" },
@@ -52,7 +53,8 @@ $(document).ready(function() {
   inputFixedHeader = true;
   inputBInfo = false;
   inputSortOrder = [[ 1, "desc" ]];
-  createTable(inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder);
+  stat_page = 'stat';
+  createTable('#table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, stat_page);
     $('.dataTables_length').addClass('bs-select');
 });
 </script>

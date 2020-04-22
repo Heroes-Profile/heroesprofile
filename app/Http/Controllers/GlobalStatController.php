@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Cache;
 
-class GlobalHeroStatsController extends Controller
+class GlobalStatController extends Controller
 {
     public function getData(){
 
@@ -43,7 +43,7 @@ class GlobalHeroStatsController extends Controller
       $mirror = array(0);
 
 
-      $page = "GlobalHeroStats";
+      $page = "develop|GlobalHeroStats";
       $cache =  $page .
                 "|" . implode(",", $timeframe) .
                 "|" . implode(",", $game_versions) .

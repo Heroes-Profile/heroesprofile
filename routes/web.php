@@ -19,23 +19,27 @@ Route::get('/', function () {
     return view('welcome');
 });
 */
-Route::post('getGlobalHeroStatsData', 'GlobalHeroStatsController@getData');
-Route::get('getGlobalHeroStatsData', 'GlobalHeroStatsController@getData'); //For Testing Purposes.  Remove later
+Route::post('getGlobalStatData', 'GlobalStatController@getData');
+Route::get('getGlobalStatData', 'GlobalStatController@getData'); //For Testing Purposes.  Remove later
 
 Route::post('getGlobalLeaderboardData', 'GlobalLeaderboardController@getData');
 Route::get('getGlobalLeaderboardData', 'GlobalLeaderboardController@getData'); //For Testing Purposes.  Remove later
+
+
+Route::post('getGlobalHeroStatData', 'GlobalHeroStatController@getData');
+Route::get('getGlobalHeroStatData', 'GlobalHeroStatController@getData'); //For Testing Purposes.  Remove later
+
 
 Route::group([
     'middleware' => 'setGlobals'
 ], function () {
   Route::view('/', 'Global/stats');
-
-
   Route::view('/Global/Leaderboard', 'Global/leaderboard');
   Route::view('/Global/Stats', 'Global/stats');
   Route::view('/Global/Hero/Talent/Details', 'Global/Hero/Talent/details');
   Route::view('/Global/Hero/Talent/Builds', 'Global/Hero/Talent/builds');
   Route::view('/Global/Hero/Stats/Maps', 'Global/Hero/Stats/maps');
+  Route::view('/Global/Hero/Stats', 'Global/Hero/stats');
 });
 
 Auth::routes();

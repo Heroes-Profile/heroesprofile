@@ -49,6 +49,12 @@ class GlobalsMiddleware
         })]);
       }
 
+      if (!$request->session()->has('heroes_by_name_to_short')) {
+        session(['heroes_by_name' => Cache::remember('heroes_by_name', $seconds, function () {
+          return getHeroesIDMap("name", "short_name");
+        })]);
+      }
+
 
       return $next($request);
     }
