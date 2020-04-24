@@ -140,7 +140,56 @@ class GlobalHeroStatController extends Controller
       return $return_data;
     });
 
-    //$return_array["data"] = $return_data;
+    list($level_one, $unfeatured) = $return_data->partition(function($item) {
+        return $item->level == 1;
+    });
+
+    list($level_four, $unfeatured) = $return_data->partition(function($item) {
+        return $item->level == 4;
+    });
+
+    list($level_seven, $unfeatured) = $return_data->partition(function($item) {
+        return $item->level == 7;
+    });
+
+    list($level_ten, $unfeatured) = $return_data->partition(function($item) {
+        return $item->level == 10;
+    });
+
+    list($level_thirteen, $unfeatured) = $return_data->partition(function($item) {
+        return $item->level == 13;
+    });
+
+    list($level_sixteen, $unfeatured) = $return_data->partition(function($item) {
+        return $item->level == 16;
+    });
+
+    list($level_twenty, $unfeatured) = $return_data->partition(function($item) {
+        return $item->level == 20;
+    });
+
+
+    $split_data[1] = $this->splitTalentBuildsOnLevel(1, $return_data);
+    $split_data[4] = $this->splitTalentBuildsOnLevel(4, $return_data);
+    $split_data[7] = $this->splitTalentBuildsOnLevel(7, $return_data);
+    $split_data[10] = $this->splitTalentBuildsOnLevel(10, $return_data);
+    $split_data[13] = $this->splitTalentBuildsOnLevel(13, $return_data);
+    $split_data[16] = $this->splitTalentBuildsOnLevel(16, $return_data);
+    $split_data[20] = $this->splitTalentBuildsOnLevel(20, $return_data);
+
+
+    return $split_data;
+  }
+
+  private function splitTalentBuildsOnLevel($level, $data){
+    list($level_data, $unfeatured) = $data->partition(function($item) use ($level) {
+        return $item->level == $level;
+    });
+    $counter = 0;
+    foreach ($level_data as $key => $value){
+      $return_data[$counter] = $value;
+      $counter++;
+    }
     return $return_data;
   }
 }

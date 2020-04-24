@@ -45,20 +45,117 @@
 
       <h1>Talent Details</h1>
         <div class="container">
-            <table id="talent-details-table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+          <table id="talent-details-table-level-one" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+            <caption style='caption-side: top'>Level 1</caption>
+
             <thead>
-                <tr>
-                  <th data-field="level">Level</th>
-                  <th data-field="sort">Sort</th>
-                  <th data-field="title">Talent</th>
-                  <th data-field="win_rate">Win Rate</th>
-                  <th data-field="popularity">Popularity</th>
-                  <th data-field="games_played">Games Played</th>
-                  <th data-field="wins">Wins</th>
-                  <th data-field="losses">Losses</th>
-                </tr>
+              <tr>
+                <th data-field="sort">Sort</th>
+                <th data-field="title">Talent</th>
+                <th data-field="win_rate">Win Rate</th>
+                <th data-field="popularity">Popularity</th>
+                <th data-field="games_played">Games Played</th>
+                <th data-field="wins">Wins</th>
+                <th data-field="losses">Losses</th>
+              </tr>
             </thead>
-        </table>
+          </table>
+
+          <table id="talent-details-table-level-four" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+            <caption style='caption-side: top'>Level 4</caption>
+
+            <thead>
+              <tr>
+                <th data-field="sort">Sort</th>
+                <th data-field="title">Talent</th>
+                <th data-field="win_rate">Win Rate</th>
+                <th data-field="popularity">Popularity</th>
+                <th data-field="games_played">Games Played</th>
+                <th data-field="wins">Wins</th>
+                <th data-field="losses">Losses</th>
+              </tr>
+            </thead>
+          </table>
+
+          <table id="talent-details-table-level-seven" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+            <caption style='caption-side: top'>Level 7</caption>
+
+            <thead>
+              <tr>
+                <th data-field="sort">Sort</th>
+                <th data-field="title">Talent</th>
+                <th data-field="win_rate">Win Rate</th>
+                <th data-field="popularity">Popularity</th>
+                <th data-field="games_played">Games Played</th>
+                <th data-field="wins">Wins</th>
+                <th data-field="losses">Losses</th>
+              </tr>
+            </thead>
+          </table>
+
+          <table id="talent-details-table-level-ten" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+            <caption style='caption-side: top'>Level 10</caption>
+
+            <thead>
+              <tr>
+                <th data-field="sort">Sort</th>
+                <th data-field="title">Talent</th>
+                <th data-field="win_rate">Win Rate</th>
+                <th data-field="popularity">Popularity</th>
+                <th data-field="games_played">Games Played</th>
+                <th data-field="wins">Wins</th>
+                <th data-field="losses">Losses</th>
+              </tr>
+            </thead>
+          </table>
+
+          <table id="talent-details-table-level-thirteen" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+            <caption style='caption-side: top'>Level 13</caption>
+
+            <thead>
+              <tr>
+                <th data-field="sort">Sort</th>
+                <th data-field="title">Talent</th>
+                <th data-field="win_rate">Win Rate</th>
+                <th data-field="popularity">Popularity</th>
+                <th data-field="games_played">Games Played</th>
+                <th data-field="wins">Wins</th>
+                <th data-field="losses">Losses</th>
+              </tr>
+            </thead>
+          </table>
+
+          <table id="talent-details-table-level-sixteen" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+            <caption style='caption-side: top'>Level 16</caption>
+
+            <thead>
+              <tr>
+                <th data-field="sort">Sort</th>
+                <th data-field="title">Talent</th>
+                <th data-field="win_rate">Win Rate</th>
+                <th data-field="popularity">Popularity</th>
+                <th data-field="games_played">Games Played</th>
+                <th data-field="wins">Wins</th>
+                <th data-field="losses">Losses</th>
+              </tr>
+            </thead>
+          </table>
+
+          <table id="talent-details-table-level-twenty" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+            <caption style='caption-side: top'>Level 20</caption>
+
+            <thead>
+              <tr>
+                <th data-field="sort">Sort</th>
+                <th data-field="title">Talent</th>
+                <th data-field="win_rate">Win Rate</th>
+                <th data-field="popularity">Popularity</th>
+                <th data-field="games_played">Games Played</th>
+                <th data-field="wins">Wins</th>
+                <th data-field="losses">Losses</th>
+              </tr>
+            </thead>
+          </table>
         <div id="echodata">
         </div>
         </div>
@@ -86,7 +183,7 @@ $(document).ready(function() {
   inputPaging = false;
   inputSearching = false;
   inputColReorder = true;
-  inputFixedHeader = true;
+  inputFixedHeader = false;
   inputBInfo = false;
   inputSortOrder = [[ 1, "desc" ]];
   param = 'map';
@@ -101,7 +198,6 @@ $(document).ready(function() {
     },
     success: function(results){
       inputColumns = [
-          { data: "level"},
           { data: "sort"},
           { data: "title" },
           { data: "win_rate" },
@@ -111,8 +207,17 @@ $(document).ready(function() {
           { data: "losses" },
       ];
       inputSortOrder = [[ 0, "asc" ], [1, "asc"]];
-      
-      createTableJS('#talent-details-table', results, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+
+      hiddenColumn = [{ "visible": false, "targets": 0 }];
+
+
+      createTableJS('#talent-details-table-level-one', results[1], inputColumns, hiddenColumn, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+      createTableJS('#talent-details-table-level-four', results[4], inputColumns, hiddenColumn, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+      createTableJS('#talent-details-table-level-seven', results[7], inputColumns, hiddenColumn, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+      createTableJS('#talent-details-table-level-ten', results[10], inputColumns, hiddenColumn, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+      createTableJS('#talent-details-table-level-thirteen', results[13], inputColumns, hiddenColumn, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+      createTableJS('#talent-details-table-level-sixteen', results[16], inputColumns, hiddenColumn, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+      createTableJS('#talent-details-table-level-twenty', results[20], inputColumns, hiddenColumn, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
     }
   });
 
