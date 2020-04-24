@@ -1,4 +1,4 @@
-function createTable(tableID, inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, stat_page) {
+function createTableAjax(tableID, inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, stat_page) {
   $(tableID).DataTable( {
           paging: inputPaging,
           "searching": inputSearching,
@@ -7,7 +7,7 @@ function createTable(tableID, inputUrl, inputColumns, inputPaging, inputSearchin
           "bInfo": inputBInfo,
           "order": inputSortOrder,
           "pageLength": 250,
-          "lengthMenu": [ 10, 25, 50, 75, 100, 250], 
+          "lengthMenu": [ 10, 25, 50, 75, 100, 250],
           ajax: {
              url: inputUrl,
              method: "POST",

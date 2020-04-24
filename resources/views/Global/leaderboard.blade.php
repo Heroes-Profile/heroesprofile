@@ -53,7 +53,7 @@ $(document).ready(function() {
   inputFixedHeader = true;
   inputBInfo = true;
   inputSortOrder = [[ 4, "desc" ]];
-  createTable(inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder);
+  createTableAjax(inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder);
     $('.dataTables_length').addClass('bs-select');
 });
 </script>

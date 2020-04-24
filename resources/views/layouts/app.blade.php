@@ -26,7 +26,8 @@
 
     <!--Data Tables-->
     <script src="{{ asset('js/datatables.min.js') }}"></script>
-    <script src="{{ asset('js/createTable.js') }}"></script>
+    <script src="{{ asset('js/createTableAjax.js') }}"></script>
+    <script src="{{ asset('js/createTableJS.js') }}"></script>
 
 
     <!-- Fonts -->

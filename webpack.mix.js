@@ -14,7 +14,8 @@ const mix = require('laravel-mix');
 mix.js('resources/js/app.js', 'public/js')
     .sass('resources/sass/app.scss', 'public/css');
 
-mix.copy('resources/js/createTable.js', 'public/js');
+mix.copy('resources/js/createTableAjax.js', 'public/js');
+mix.copy('resources/js/createTableJS.js', 'public/js');
 
 mix.copy('resources/js/datatables.min.js', 'public/js');
 mix.copy('resources/css/datatables.min.css', 'public/css');

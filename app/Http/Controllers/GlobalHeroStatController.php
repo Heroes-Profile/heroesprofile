@@ -140,7 +140,7 @@ class GlobalHeroStatController extends Controller
       return $return_data;
     });
 
-    $return_array["data"] = $return_data;
-    return $return_array;
+    //$return_array["data"] = $return_data;
+    return $return_data;
   }
 }

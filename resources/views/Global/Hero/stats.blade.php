@@ -90,24 +90,35 @@ $(document).ready(function() {
   inputBInfo = false;
   inputSortOrder = [[ 1, "desc" ]];
   param = 'map';
-  createTable('#map-table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
-    $('.dataTables_length').addClass('bs-select');
+  createTableAjax('#map-table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
 
 
-    inputColumns = [
-        { data: "level"},
-        { data: "sort"},
-        { data: "title" },
-        { data: "win_rate" },
-        { data: "popularity" },
-        { data: "games_played" },
-        { data: "wins" },
-        { data: "losses" },
-    ];
-  param = 'talent-details';
-  inputSortOrder = [[ 0, "asc" ], [1, "asc"]];
+  stat_page = 'talent-details';
+  $.ajax({
+    url: inputUrl,
+    data: {
+      'page' : stat_page
+    },
+    success: function(results){
+      inputColumns = [
+          { data: "level"},
+          { data: "sort"},
+          { data: "title" },
+          { data: "win_rate" },
+          { data: "popularity" },
+          { data: "games_played" },
+          { data: "wins" },
+          { data: "losses" },
+      ];
+      inputSortOrder = [[ 0, "asc" ], [1, "asc"]];
+      
+      createTableJS('#talent-details-table', results, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+    }
+  });
 
-  createTable('#talent-details-table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+
+
+  //$('.dataTables_length').addClass('bs-select');
 
 });
 </script>

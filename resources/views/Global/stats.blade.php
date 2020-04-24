@@ -54,7 +54,7 @@ $(document).ready(function() {
   inputBInfo = false;
   inputSortOrder = [[ 1, "desc" ]];
   stat_page = 'stat';
-  createTable('#table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, stat_page);
+  createTableAjax('#table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, stat_page);
     $('.dataTables_length').addClass('bs-select');
 });
 </script>
