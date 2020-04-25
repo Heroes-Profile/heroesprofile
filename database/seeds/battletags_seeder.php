@@ -5,13 +5,30 @@ use Illuminate\Database\Seeder;
 class battletags_seeder extends Seeder
 {
     /**
+     * The database schema.
+     *
+     * @var DB
+     */
+    protected $connection;
+
+    /**
+     * Create a new seed instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->connection = DB::connection(config('database.default'));
+    }
+
+    /**
      * Run the database seeds.
      *
      * @return void
      */
     public function run()
     {
-      DB::table('heroesprofile.battletags')->insert([
+      $this->connection->table('battletags')->insert([
 
         ['player_id' => 273884,'blizz_id' => 200573, 'battletag' => 'Nirien#2508','region' => 2,'account_level' => 801, 'patreon' => NULL, 'opt_out' => NULL, 'latest_game' => '2018-03-21 11:12:44'],
         ['player_id' => 684252,'blizz_id' => 584579, 'battletag' => 'Rustedheart#2153','region' => 2,'account_level' => 960, 'patreon' => NULL, 'opt_out' => NULL, 'latest_game' => '2019-08-01 12:17:52'],

@@ -4,6 +4,24 @@ use Illuminate\Database\Seeder;
 
 class game_types_seeder extends Seeder
 {
+
+    /**
+     * The database schema.
+     *
+     * @var DB
+     */
+    protected $connection;
+
+    /**
+     * Create a new seed instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->connection = DB::connection(config('database.default'));
+    }
+
     /**
      * Run the database seeds.
      *
@@ -11,7 +29,7 @@ class game_types_seeder extends Seeder
      */
     public function run()
     {
-      DB::table('heroesprofile.game_types')->insert([
+      $this->connection->table('game_types')->insert([
         ['type_id' => -1, 'name' => 'Brawl', 'short_name' => 'br'],
         ['type_id' => 0, 'name' => 'Custom', 'short_name' => 'cu'],
         ['type_id' => 1, 'name' => 'Quick Match', 'short_name' => 'qm'],

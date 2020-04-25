@@ -4,6 +4,24 @@ use Illuminate\Database\Seeder;
 
 class leaderboard_cache_seeder extends Seeder
 {
+
+    /**
+     * The database schema.
+     *
+     * @var DB
+     */
+    protected $connection;
+
+    /**
+     * Create a new seed instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->connection = DB::connection(config('database.cache'));
+    }
+
     /**
      * Run the database seeds.
      *
@@ -11,7 +29,7 @@ class leaderboard_cache_seeder extends Seeder
      */
     public function run()
     {
-      DB::table('heroesprofile_cache.leaderboard')->insert([
+      $this->connection->table('leaderboard')->insert([
         ['game_type' => '1','season' => '14','type' => '1','rank' => '1','split_battletag' => 'Gwen','battletag' => 'Gwen#11372','blizz_id' => '7190660','region' => '1','win_rate' => '100','win' => '4','loss' => '0','games_played' => '4','conservative_rating' => '20.3844479621482','rating' => '80.6098733462148','cache_number' => '520'],
         ['game_type' => '1','season' => '14','type' => '1','rank' => '2','split_battletag' => 'Spiply','battletag' => 'Spiply#1488','blizz_id' => '3745963','region' => '1','win_rate' => '100','win' => '2','loss' => '0','games_played' => '2','conservative_rating' => '24.6826601757744','rating' => '66.7539802675774','cache_number' => '520'],
         ['game_type' => '1','season' => '14','type' => '1','rank' => '3','split_battletag' => 'conroe','battletag' => 'conroe#11163','blizz_id' => '7075370','region' => '1','win_rate' => '100','win' => '2','loss' => '0','games_played' => '2','conservative_rating' => '22.4469768734316','rating' => '66.5304119373432','cache_number' => '520'],

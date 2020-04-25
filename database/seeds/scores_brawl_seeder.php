@@ -5,13 +5,30 @@ use Illuminate\Database\Seeder;
 class scores_brawl_seeder extends Seeder
 {
     /**
+     * The database schema.
+     *
+     * @var DB
+     */
+    protected $connection;
+
+    /**
+     * Create a new seed instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->connection = DB::connection(config('database.brawl'));
+    }
+
+    /**
      * Run the database seeds.
      *
      * @return void
      */
     public function run()
     {
-      DB::table('heroesprofile_brawl.scores')->insert([
+      $this->connection->table('scores')->insert([
         ['replayID' => '17465764','battletag' => '2248943','level' => '0','kills' => '5','assists' => '22','takedowns' => '27','deaths' => '5','highest_kill_streak' => '22','hero_damage' => '54058','siege_damage' => '41192','structure_damage' => '11748','minion_damage' => '26728','creep_damage' => '4536','summon_damage' => '2716','time_cc_enemy_heroes' => '14510','healing' => '15346','self_healing' => '26420','damage_taken' => '85432','experience_contribution' => '9118','town_kills' => '0','time_spent_dead' => '44','merc_camp_captures' => '0','watch_tower_captures' => '0','meta_experience' => '86612','match_award' => '0','protection_allies' => '0','silencing_enemies' => '0','rooting_enemies' => '0','stunning_enemies' => '29','clutch_heals' => '0','escapes' => '3','vengeance' => '1','outnumbered_deaths' => '4','teamfight_escapes' => '1','teamfight_healing' => '0','teamfight_damage_taken' => '71713','teamfight_hero_damage' => '44543','multikill' => '0','physical_damage' => '0','spell_damage' => '0','regen_globes' => '28','first_to_ten' => '0'],
         ['replayID' => '17465764','battletag' => '2312160','level' => '0','kills' => '7','assists' => '20','takedowns' => '27','deaths' => '2','highest_kill_streak' => '13','hero_damage' => '56168','siege_damage' => '106409','structure_damage' => '47743','minion_damage' => '51629','creep_damage' => '3876','summon_damage' => '7037','time_cc_enemy_heroes' => '14410','healing' => '5265','self_healing' => '5216','damage_taken' => '28026','experience_contribution' => '10708','town_kills' => '0','time_spent_dead' => '37','merc_camp_captures' => '0','watch_tower_captures' => '0','meta_experience' => '86612','match_award' => '1','protection_allies' => '0','silencing_enemies' => '0','rooting_enemies' => '0','stunning_enemies' => '0','clutch_heals' => '0','escapes' => '1','vengeance' => '2','outnumbered_deaths' => '1','teamfight_escapes' => '0','teamfight_healing' => '0','teamfight_damage_taken' => '17093','teamfight_hero_damage' => '22456','multikill' => '0','physical_damage' => '0','spell_damage' => '0','regen_globes' => '18','first_to_ten' => '0'],
         ['replayID' => '17465764','battletag' => '2534086','level' => '0','kills' => '2','assists' => '5','takedowns' => '7','deaths' => '5','highest_kill_streak' => '3','hero_damage' => '33336','siege_damage' => '32957','structure_damage' => '902','minion_damage' => '23988','creep_damage' => '1267','summon_damage' => '8067','time_cc_enemy_heroes' => '14466','healing' => '54340','self_healing' => '34900','damage_taken' => '89980','experience_contribution' => '4278','town_kills' => '0','time_spent_dead' => '102','merc_camp_captures' => '0','watch_tower_captures' => '0','meta_experience' => '57741','match_award' => '21','protection_allies' => '0','silencing_enemies' => '0','rooting_enemies' => '0','stunning_enemies' => '37','clutch_heals' => '0','escapes' => '3','vengeance' => '0','outnumbered_deaths' => '3','teamfight_escapes' => '1','teamfight_healing' => '11327','teamfight_damage_taken' => '82053','teamfight_hero_damage' => '30658','multikill' => '0','physical_damage' => '0','spell_damage' => '0','regen_globes' => '29','first_to_ten' => '1'],

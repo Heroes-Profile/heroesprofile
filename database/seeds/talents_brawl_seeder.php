@@ -4,6 +4,24 @@ use Illuminate\Database\Seeder;
 
 class talents_brawl_seeder extends Seeder
 {
+
+    /**
+     * The database schema.
+     *
+     * @var DB
+     */
+    protected $connection;
+
+    /**
+     * Create a new seed instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->connection = DB::connection(config('database.brawl'));
+    }
+
     /**
      * Run the database seeds.
      *
@@ -11,7 +29,7 @@ class talents_brawl_seeder extends Seeder
      */
     public function run()
     {
-      DB::table('heroesprofile_brawl.talents')->insert([
+      $this->connection->table('talents')->insert([
         ['replayID' => '17465764','battletag' => '27212','level_one' => '1261','level_four' => '1245','level_seven' => '1259','level_ten' => '1249','level_thirteen' => '1250','level_sixteen' => '1258','level_twenty' => '0'],
         ['replayID' => '17465764','battletag' => '57282','level_one' => '691','level_four' => '675','level_seven' => '688','level_ten' => '673','level_thirteen' => '680','level_sixteen' => '684','level_twenty' => '685'],
         ['replayID' => '17465764','battletag' => '496564','level_one' => '925','level_four' => '928','level_seven' => '933','level_ten' => '930','level_thirteen' => '936','level_sixteen' => '951','level_twenty' => '938'],

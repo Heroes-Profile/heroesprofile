@@ -4,6 +4,25 @@ use Illuminate\Database\Seeder;
 
 class replay_brawl_seeder extends Seeder
 {
+
+    /**
+     * The database schema.
+     *
+     * @var DB
+     */
+    protected $connection;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->connection = DB::connection(config('database.brawl'));
+    }
+
+
     /**
      * Run the database seeds.
      *
@@ -11,7 +30,7 @@ class replay_brawl_seeder extends Seeder
      */
     public function run()
     {
-      DB::table('heroesprofile_brawl.replay')->insert([
+      $this->connection->table('replay')->insert([
         ['replayID' => '17465764','game_date' => '2019-08-22 09:51:40','game_length' => '993','game_map' => '20','game_version' => '2.47.0.75589','region' => '1','date_added' => '2019-08-22 09:51:40', 'globals_ran' => '1'],
         ['replayID' => '17465774','game_date' => '2019-08-22 09:51:40','game_length' => '931','game_map' => '20','game_version' => '2.47.0.75589','region' => '5','date_added' => '2019-08-22 09:51:40', 'globals_ran' => '1'],
         ['replayID' => '17465776','game_date' => '2019-08-22 09:51:40','game_length' => '1122','game_map' => '20','game_version' => '2.47.0.75589','region' => '1','date_added' => '2019-08-22 09:51:40', 'globals_ran' => '1'],

@@ -4,6 +4,24 @@ use Illuminate\Database\Seeder;
 
 class player_brawl_seeder extends Seeder
 {
+
+    /**
+     * The database schema.
+     *
+     * @var DB
+     */
+    protected $connection;
+
+    /**
+     * Create a new seed instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->connection = DB::connection(config('database.brawl'));
+    }
+
     /**
      * Run the database seeds.
      *
@@ -11,7 +29,7 @@ class player_brawl_seeder extends Seeder
      */
     public function run()
     {
-      DB::table('heroesprofile_brawl.player')->insert([
+      $this->connection->table('player')->insert([
         ['replayID' => '17465764','blizz_id' => '3803384','battletag' => '2248943','hero' => '86','hero_level' => '1','mastery_taunt' => '0','team' => '1','winner' => '1','party' => '0'],
         ['replayID' => '17465764','blizz_id' => '4042984','battletag' => '2312160','hero' => '41','hero_level' => '1','mastery_taunt' => '2','team' => '1','winner' => '1','party' => '0'],
         ['replayID' => '17465764','blizz_id' => '612765','battletag' => '2534086','hero' => '81','hero_level' => '1','mastery_taunt' => '1','team' => '0','winner' => '0','party' => '1725018347'],

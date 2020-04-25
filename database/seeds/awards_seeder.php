@@ -4,6 +4,25 @@ use Illuminate\Database\Seeder;
 
 class awards_seeder extends Seeder
 {
+
+    /**
+     * The database schema.
+     *
+     * @var DB
+     */
+    protected $connection;
+
+    /**
+     * Create a new seed instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->connection = DB::connection(config('database.default'));
+    }
+
+
     /**
      * Run the database seeds.
      *
@@ -11,7 +30,7 @@ class awards_seeder extends Seeder
      */
     public function run()
     {
-      DB::table('heroesprofile.awards')->insert([
+      $this->connection->table('awards')->insert([
         ['award_id' => 1, 'title' => 'MVP', 'icon' => 'storm_ui_mvp_mvp'],
         ['award_id' => 2, 'title' => 'Dominator', 'icon' => 'storm_ui_mvp_dominator'],
         ['award_id' => 3, 'title' => 'Most XP Contribution', 'icon' => 'storm_ui_mvp_experienced'],

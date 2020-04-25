@@ -5,13 +5,30 @@ use Illuminate\Database\Seeder;
 class global_hero_change_seeder extends Seeder
 {
     /**
+     * The database schema.
+     *
+     * @var DB
+     */
+    protected $connection;
+
+    /**
+     * Create a new seed instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->connection = DB::connection(config('database.cache'));
+    }
+
+    /**
      * Run the database seeds.
      *
      * @return void
      */
     public function run()
     {
-      DB::table('heroesprofile_cache.global_hero_change')->insert([
+      $this->connection->table('global_hero_change')->insert([
         ['game_version' => '2.47','game_type' => '5','hero' => '1','win_rate' => '47.4812196199735','popularity' => '19.5396497754389','ban_rate' => '11.8399265072812','games_played' => '13578','wins' => '6447','losses' => '7131','bans' => '20879'],
         ['game_version' => '2.47','game_type' => '5','hero' => '2','win_rate' => '53.1892959924402','popularity' => '40.2684525699769','ban_rate' => '27.066415642154','games_played' => '23281','wins' => '12383','losses' => '10898','bans' => '47730'],
         ['game_version' => '2.47','game_type' => '5','hero' => '3','win_rate' => '46.4111415307701','popularity' => '35.6519076350769','ban_rate' => '21.3599555414417','games_played' => '25203','wins' => '11697','losses' => '13506','bans' => '37667'],
