@@ -6,6 +6,24 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateBattletagsTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.default'));
+    }
+
     /**
      * Run the migrations.
      *
@@ -13,7 +31,7 @@ class CreateBattletagsTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile.battletags', function (Blueprint $table) {
+        $this->schema->create('battletags', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->integer('player_id')->autoIncrement()->unsigned();
             $table->integer('blizz_id');
@@ -23,7 +41,7 @@ class CreateBattletagsTable extends Migration
             $table->tinyInteger('patreon')->nullable();
             $table->tinyInteger('opt_out')->nullable();
             $table->dateTime('latest_game')->default('2014-06-26 13:13:34');
-            
+
             $table->unique(['blizz_id', 'battletag', 'region']);
             $table->index('battletag');
             $table->index('patreon');
@@ -40,6 +58,6 @@ class CreateBattletagsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile.battletags');
+        $this->schema->dropIfExists('battletags');
     }
 }

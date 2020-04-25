@@ -7,13 +7,30 @@ use Illuminate\Database\Migrations\Migration;
 class CreateGlobalHeroStatsBansTable extends Migration
 {
     /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.default'));
+    }
+
+    /**
      * Run the migrations.
      *
      * @return void
      */
     public function up()
     {
-        Schema::create('heroesprofile.global_hero_stats_bans', function (Blueprint $table) {
+        $this->schema->create('global_hero_stats_bans', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->integer('global_hero_stats_bans_id')->autoIncrement();
           $table->string('game_version', 45);
@@ -26,7 +43,7 @@ class CreateGlobalHeroStatsBansTable extends Migration
           $table->integer('region');
           $table->tinyInteger('hero');
           $table->integer('bans')->unsigned()->default(0);
-          
+
           $table->unique(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'region', 'hero'], 'Base_Unique');
         });
     }
@@ -38,6 +55,6 @@ class CreateGlobalHeroStatsBansTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile.global_hero_stats_bans');
+        $this->schema->dropIfExists('global_hero_stats_bans');
     }
 }

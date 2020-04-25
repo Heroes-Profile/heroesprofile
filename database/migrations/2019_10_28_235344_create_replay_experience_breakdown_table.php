@@ -6,6 +6,24 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateReplayExperienceBreakdownTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.default'));
+    }
+
     /**
      * Run the migrations.
      *
@@ -13,7 +31,7 @@ class CreateReplayExperienceBreakdownTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile.replay_experience_breakdown', function (Blueprint $table) {
+        $this->schema->create('replay_experience_breakdown', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->integer('replayID');
           $table->tinyInteger('team');
@@ -37,6 +55,6 @@ class CreateReplayExperienceBreakdownTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile.replay_experience_breakdown');
+        $this->schema->dropIfExists('replay_experience_breakdown');
     }
 }

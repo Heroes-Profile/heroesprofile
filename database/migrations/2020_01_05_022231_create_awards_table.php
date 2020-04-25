@@ -6,6 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateAwardsTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.default'));
+    }
+
     /**
      * Run the migrations.
      *
@@ -13,7 +31,7 @@ class CreateAwardsTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile.awards', function (Blueprint $table) {
+        $this->schema->create('awards', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->integer('award_id');
           $table->string('title', 45);
@@ -31,6 +49,6 @@ class CreateAwardsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile.awards');
+        $this->schema->dropIfExists('awards');
     }
 }

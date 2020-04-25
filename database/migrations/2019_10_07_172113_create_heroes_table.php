@@ -6,6 +6,24 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateHeroesTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.default'));
+    }
+
     /**
      * Run the migrations.
      *
@@ -13,7 +31,7 @@ class CreateHeroesTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile.heroes', function (Blueprint $table) {
+        $this->schema->create('heroes', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->integer('id')->autoIncrement()->unsigned();
           $table->string('name', 255);
@@ -38,6 +56,6 @@ class CreateHeroesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile.heroes');
+        $this->schema->dropIfExists('heroes');
     }
 }

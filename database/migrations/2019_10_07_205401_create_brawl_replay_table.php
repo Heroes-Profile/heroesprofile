@@ -6,6 +6,25 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateBrawlReplayTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.brawl'));
+    }
+
+
     /**
      * Run the migrations.
      *
@@ -13,7 +32,7 @@ class CreateBrawlReplayTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile_brawl.replay', function (Blueprint $table) {
+        $this->schema->create('replay', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->integer('replayID');
           $table->dateTime('game_date');
@@ -40,6 +59,6 @@ class CreateBrawlReplayTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile_brawl.replay');
+        $this->schema->dropIfExists('replay');
     }
 }

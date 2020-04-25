@@ -6,6 +6,24 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateLeaderboardTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.cache'));
+    }
+
     /**
      * Run the migrations.
      *
@@ -13,7 +31,7 @@ class CreateLeaderboardTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile_cache.leaderboard', function (Blueprint $table) {
+        $this->schema->create('leaderboard', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->integer('leaderboard_id')->autoIncrement();
           $table->integer('game_type');
@@ -45,6 +63,6 @@ class CreateLeaderboardTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile_cache.leaderboard');
+        $this->schema->dropIfExists('leaderboard');
     }
 }

@@ -6,6 +6,24 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateMasterMmrDataTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.default'));
+    }
+
     /**
      * Run the migrations.
      *
@@ -13,7 +31,7 @@ class CreateMasterMmrDataTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile.master_mmr_data', function (Blueprint $table) {
+        $this->schema->create('master_mmr_data', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->integer('type_value');
           $table->tinyInteger('game_type');
@@ -24,7 +42,7 @@ class CreateMasterMmrDataTable extends Migration
           $table->double('standard_deviation');
           $table->integer('win');
           $table->integer('loss');
-          
+
           $table->primary(['type_value', 'game_type', 'blizz_id', 'region'], 'Primary_Index');
         });
     }
@@ -36,6 +54,6 @@ class CreateMasterMmrDataTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile.master_mmr_data');
+        $this->schema->dropIfExists('master_mmr_data');
     }
 }

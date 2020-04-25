@@ -6,6 +6,24 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateBattlenetAccountsTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.default'));
+    }
+
     /**
      * Run the migrations.
      *
@@ -13,7 +31,7 @@ class CreateBattlenetAccountsTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile.battlenet_accounts', function (Blueprint $table) {
+        $this->schema->create('battlenet_accounts', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->bigIncrements('id');
             $table->integer('battlenet_id');
@@ -32,6 +50,6 @@ class CreateBattlenetAccountsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile.battlenet_accounts');
+        $this->schema->dropIfExists('battlenet_accounts');
     }
 }

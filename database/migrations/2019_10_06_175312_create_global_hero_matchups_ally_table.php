@@ -6,6 +6,24 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateGlobalHeroMatchupsAllyTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.default'));
+    }
+    
     /**
      * Run the migrations.
      *
@@ -13,7 +31,7 @@ class CreateGlobalHeroMatchupsAllyTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile.global_hero_matchups_ally', function (Blueprint $table) {
+        $this->schema->create('global_hero_matchups_ally', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->string('game_version', 45);
           $table->tinyInteger('game_type');
@@ -41,6 +59,6 @@ class CreateGlobalHeroMatchupsAllyTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile.global_hero_matchups_ally');
+        $this->schema->dropIfExists('global_hero_matchups_ally');
     }
 }

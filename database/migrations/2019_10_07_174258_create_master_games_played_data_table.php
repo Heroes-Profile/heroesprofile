@@ -6,6 +6,24 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateMasterGamesPlayedDataTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.default'));
+    }
+
     /**
      * Run the migrations.
      *
@@ -13,7 +31,7 @@ class CreateMasterGamesPlayedDataTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile.master_games_played_data', function (Blueprint $table) {
+        $this->schema->create('master_games_played_data', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->integer('type_value');
           $table->double('season');
@@ -38,6 +56,6 @@ class CreateMasterGamesPlayedDataTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile.master_games_played_data');
+        $this->schema->dropIfExists('master_games_played_data');
     }
 }

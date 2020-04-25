@@ -6,6 +6,24 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateTalentsTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.default'));
+    }
+
     /**
      * Run the migrations.
      *
@@ -13,7 +31,7 @@ class CreateTalentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile.talents', function (Blueprint $table) {
+        $this->schema->create('talents', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->integer('replayID');
           $table->string('battletag', 50);
@@ -24,7 +42,7 @@ class CreateTalentsTable extends Migration
           $table->integer('level_thirteen');
           $table->integer('level_sixteen');
           $table->integer('level_twenty');
-          
+
           $table->primary(['replayID', 'battletag']);
         });
     }
@@ -36,6 +54,6 @@ class CreateTalentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile.talents');
+        $this->schema->dropIfExists('talents');
     }
 }

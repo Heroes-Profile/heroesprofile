@@ -6,6 +6,24 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateGlobalHeroTalentsDetailsTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.default'));
+    }
+
     /**
      * Run the migrations.
      *
@@ -13,7 +31,7 @@ class CreateGlobalHeroTalentsDetailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile.global_hero_talents_details', function (Blueprint $table) {
+        $this->schema->create('global_hero_talents_details', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->integer('global_hero_talent_details_id')->autoIncrement();
           $table->string('game_version', 45);
@@ -80,6 +98,6 @@ class CreateGlobalHeroTalentsDetailsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile.global_hero_talents_details');
+        $this->schema->dropIfExists('global_hero_talents_details');
     }
 }

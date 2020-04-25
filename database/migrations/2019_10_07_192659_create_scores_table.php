@@ -6,6 +6,24 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateScoresTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.default'));
+    }
+
     /**
      * Run the migrations.
      *
@@ -13,7 +31,7 @@ class CreateScoresTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile.scores', function (Blueprint $table) {
+        $this->schema->create('scores', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->integer('replayID');
           $table->string('battletag', 50);
@@ -57,7 +75,7 @@ class CreateScoresTable extends Migration
           $table->integer('spell_damage');
           $table->integer('regen_globes');
           $table->integer('first_to_ten');
-          
+
           $table->primary(['replayID', 'battletag'], 'Primary_Index');
 
         });
@@ -70,6 +88,6 @@ class CreateScoresTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile.scores');
+        $this->schema->dropIfExists('scores');
     }
 }

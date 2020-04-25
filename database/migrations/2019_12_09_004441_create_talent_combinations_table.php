@@ -6,6 +6,24 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateTalentCombinationsTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.default'));
+    }
+
     /**
      * Run the migrations.
      *
@@ -13,7 +31,7 @@ class CreateTalentCombinationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile.talent_combinations', function (Blueprint $table) {
+        $this->schema->create('talent_combinations', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->integer('talent_combination_id')->autoIncrement()->unsigned();
           $table->integer('hero');
@@ -37,6 +55,6 @@ class CreateTalentCombinationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile.talent_combinations');
+        $this->schema->dropIfExists('talent_combinations');
     }
 }

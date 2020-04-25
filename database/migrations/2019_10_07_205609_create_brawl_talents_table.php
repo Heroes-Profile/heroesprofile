@@ -6,6 +6,24 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateBrawlTalentsTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.brawl'));
+    }
+
     /**
      * Run the migrations.
      *
@@ -13,7 +31,7 @@ class CreateBrawlTalentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile_brawl.talents', function (Blueprint $table) {
+        $this->schema->create('talents', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->integer('replayID');
           $table->string('battletag', 50);
@@ -36,6 +54,6 @@ class CreateBrawlTalentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile_brawl.talents');
+        $this->schema->dropIfExists('talents');
     }
 }

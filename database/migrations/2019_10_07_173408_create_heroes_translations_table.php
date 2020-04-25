@@ -7,13 +7,30 @@ use Illuminate\Database\Migrations\Migration;
 class CreateHeroesTranslationsTable extends Migration
 {
     /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.default'));
+    }
+
+    /**
      * Run the migrations.
      *
      * @return void
      */
     public function up()
     {
-        Schema::create('heroesprofile.heroes_translations', function (Blueprint $table) {
+        $this->schema->create('heroes_translations', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->string('name', 45);
           $table->string('short_name', 45);
@@ -31,6 +48,6 @@ class CreateHeroesTranslationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile.heroes_translations');
+        $this->schema->dropIfExists('heroes_translations');
     }
 }

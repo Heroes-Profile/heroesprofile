@@ -57,7 +57,7 @@ For windows users, Wampserver64 is a useful tool as it installs the MySql server
 
 ## Database setup
 
--   Create the following schemas in your MySql database. `heroesprofile`, `heroesprofile_brawl`, `heroesprofile_cache`, `heroesprofile_optout`
+-   Create the following schemas in your MySql database. `heroesprofile`, `heroesprofile_brawl`, `heroesprofile_cache`
 -   Increase your local mysql max_allowed_packet var. We use 64M.
 
 ## Project Setup

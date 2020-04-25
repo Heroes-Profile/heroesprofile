@@ -6,6 +6,24 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateGlobalHeroChangeTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.cache'));
+    }
+
     /**
      * Run the migrations.
      *
@@ -13,7 +31,7 @@ class CreateGlobalHeroChangeTable extends Migration
      */
     public function up()
     {
-      Schema::create('heroesprofile_cache.global_hero_change', function (Blueprint $table) {
+      $this->schema->create('global_hero_change', function (Blueprint $table) {
         $table->engine = 'InnoDB';
         $table->integer('global_hero_change_id')->autoIncrement();
         $table->string('game_version', 45);
@@ -38,6 +56,6 @@ class CreateGlobalHeroChangeTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile_cache.global_hero_change');
+        $this->schema->dropIfExists('global_hero_change');
     }
 }

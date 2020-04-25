@@ -6,6 +6,24 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreatePlayerTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.default'));
+    }
+
     /**
      * Run the migrations.
      *
@@ -13,7 +31,7 @@ class CreatePlayerTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile.player', function (Blueprint $table) {
+        $this->schema->create('player', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->integer('replayID');
           $table->integer('blizz_id');
@@ -34,7 +52,7 @@ class CreatePlayerTable extends Migration
           $table->double('role_mean');
           $table->double('role_standard_deviation');
           $table->dateTime('mmr_date_parsed');
-          
+
           $table->primary(['replayID', 'battletag', 'hero'], 'Primary_Index');
           $table->index(['replayID', 'blizz_id', 'hero'], 'Index_1');
           $table->index(['blizz_id', 'hero'], 'Index_2');
@@ -52,6 +70,6 @@ class CreatePlayerTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile.player');
+        $this->schema->dropIfExists('player');
     }
 }

@@ -6,6 +6,24 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateHeroesDataTalentsTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.default'));
+    }
+
     /**
      * Run the migrations.
      *
@@ -13,7 +31,7 @@ class CreateHeroesDataTalentsTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile.heroes_data_talents', function (Blueprint $table) {
+        $this->schema->create('heroes_data_talents', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->integer('talent_id');
           $table->string('hero_name', 50);
@@ -37,7 +55,7 @@ class CreateHeroesDataTalentsTable extends Migration
           $table->index(['hero_name', 'title', 'talent_name'], 'Index');
 
         });
-        DB::statement("ALTER TABLE heroesprofile.heroes_data_talents CHANGE COLUMN talent_id talent_id INT(11) NOT NULL AUTO_INCREMENT");
+        DB::statement("ALTER TABLE heroes_data_talents CHANGE COLUMN talent_id talent_id INT(11) NOT NULL AUTO_INCREMENT");
 
     }
 
@@ -48,6 +66,6 @@ class CreateHeroesDataTalentsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile.heroes_data_talents');
+        $this->schema->dropIfExists('heroes_data_talents');
     }
 }

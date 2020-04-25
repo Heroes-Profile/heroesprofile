@@ -6,6 +6,24 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateTableCacheValueTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.cache'));
+    }
+
     /**
      * Run the migrations.
      *
@@ -13,7 +31,7 @@ class CreateTableCacheValueTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile_cache.table_cache_value', function (Blueprint $table) {
+        $this->schema->create('table_cache_value', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->integer('table_cache_value_id')->autoIncrement();
           $table->string('table_to_cache', 45);
@@ -32,6 +50,6 @@ class CreateTableCacheValueTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile_cache.table_cache_value');
+        $this->schema->dropIfExists('table_cache_value');
     }
 }

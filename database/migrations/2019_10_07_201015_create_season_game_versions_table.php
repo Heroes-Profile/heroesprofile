@@ -6,6 +6,24 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateSeasonGameVersionsTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.default'));
+    }
+
     /**
      * Run the migrations.
      *
@@ -13,7 +31,7 @@ class CreateSeasonGameVersionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile.season_game_versions', function (Blueprint $table) {
+        $this->schema->create('season_game_versions', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->integer('season');
           $table->string('game_version', 45);
@@ -30,6 +48,6 @@ class CreateSeasonGameVersionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile.season_game_versions');
+        $this->schema->dropIfExists('season_game_versions');
     }
 }

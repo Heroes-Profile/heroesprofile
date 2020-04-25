@@ -29,7 +29,11 @@
 
 @section('scripts')
 
+<!--
+Child Row example for show talent builds
+https://datatables.net/examples/api/row_details.html
 
+-->
 
 <script>
 $(document).ready(function() {

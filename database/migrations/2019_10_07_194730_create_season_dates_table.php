@@ -6,6 +6,24 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateSeasonDatesTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.default'));
+    }
+
     /**
      * Run the migrations.
      *
@@ -13,17 +31,17 @@ class CreateSeasonDatesTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile.season_dates', function (Blueprint $table) {
+        $this->schema->create('season_dates', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->integer('id')->unsigned();
           $table->integer('year');
           $table->double('season');
           $table->dateTime('start_date');
           $table->dateTime('end_date');
-          
+
           $table->primary('id');
         });
-        DB::statement("ALTER TABLE heroesprofile.season_dates CHANGE COLUMN id id INT(11) NOT NULL AUTO_INCREMENT");
+        DB::statement("ALTER TABLE season_dates CHANGE COLUMN id id INT(11) NOT NULL AUTO_INCREMENT");
 
     }
 
@@ -34,6 +52,6 @@ class CreateSeasonDatesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile.season_dates');
+        $this->schema->dropIfExists('season_dates');
     }
 }

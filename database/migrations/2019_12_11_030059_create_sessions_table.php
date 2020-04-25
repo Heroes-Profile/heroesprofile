@@ -6,6 +6,24 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateSessionsTable extends Migration
 {
+
+    /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.cache'));
+    }
+
     /**
      * Run the migrations.
      *
@@ -13,7 +31,7 @@ class CreateSessionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('heroesprofile_cache.sessions', function (Blueprint $table) {
+        $this->schema->create('sessions', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->string('id', 50)->unique();
             $table->unsignedBigInteger('user_id')->nullable();
@@ -31,6 +49,6 @@ class CreateSessionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile_cache.sessions');
+        $this->schema->dropIfExists('sessions');
     }
 }

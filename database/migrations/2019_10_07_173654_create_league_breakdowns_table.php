@@ -7,19 +7,36 @@ use Illuminate\Database\Migrations\Migration;
 class CreateLeagueBreakdownsTable extends Migration
 {
     /**
+     * The database schema.
+     *
+     * @var Schema
+     */
+    protected $schema;
+
+    /**
+     * Create a new migration instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->schema = Schema::connection(config('database.default'));
+    }
+
+    /**
      * Run the migrations.
      *
      * @return void
      */
     public function up()
     {
-        Schema::create('heroesprofile.league_breakdowns', function (Blueprint $table) {
+        $this->schema->create('league_breakdowns', function (Blueprint $table) {
           $table->engine = 'InnoDB';
           $table->integer('type_role_hero');
           $table->tinyInteger('game_type');
           $table->tinyInteger('league_tier');
           $table->double('min_mmr');
-          
+
           $table->primary(['type_role_hero', 'game_type', 'league_tier'], 'Primary_Index');
           $table->index('min_mmr');
         });
@@ -32,6 +49,6 @@ class CreateLeagueBreakdownsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('heroesprofile.league_breakdowns');
+        $this->schema->dropIfExists('league_breakdowns');
     }
 }
