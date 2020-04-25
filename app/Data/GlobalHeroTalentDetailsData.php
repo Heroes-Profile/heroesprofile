@@ -65,7 +65,16 @@ class GlobalHeroTalentDetailsData
      ->mergeBindings($sub_query->getQuery())
      ->get();
 
+
+     /*
+     print_r($sub_query->toSql());
+     echo "<br>";
+     print_r($sub_query->getBindings());
+     echo "<br>";
+     */
+
     $level_games_played = array();
+
     for($i = 0; $i < count($talent_details); $i++){
       $talent_details[$i]->games_played = $talent_details[$i]->wins + $talent_details[$i]->losses;
       $talent_details[$i]->win_rate = 0;
@@ -81,6 +90,7 @@ class GlobalHeroTalentDetailsData
     for($i = 0; $i < count($talent_details); $i++){
       $talent_details[$i]->popularity = number_format(($talent_details[$i]->games_played / $level_games_played[$talent_details[$i]->level]) * 100,2);
     }
+
     return $talent_details;
   }
 }

@@ -45,8 +45,9 @@ class CreateHeroesDataTalentsTable extends Migration
           $table->string('cooldown', 10);
           $table->string('mana_cost', 10);
           $table->string('sort', 10);
-          $table->string('icon', 100);
           $table->integer('level');
+          $table->string('icon', 100);
+          $table->integer('required_talent_id');
 
           $table->primary(['talent_id', 'hero_name', 'title', 'talent_name', 'level'], 'Primary_Index');
           $table->unique(['hero_name', 'title', 'talent_name', 'level'], 'Unique_Index');

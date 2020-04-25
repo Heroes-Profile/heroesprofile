@@ -104,7 +104,7 @@ class GlobalHeroStatController extends Controller
     '2.49.3.78256');
     */
 
-    $hero = 1;
+    $hero = 4;
     $game_versions_minor = array('2.49.2.77981');
     $game_type = array("5");
     $region = array();
@@ -139,7 +139,7 @@ class GlobalHeroStatController extends Controller
       $return_data = $global_data_details->getGlobalTalentDetailData();
       return $return_data;
     });
-    
+
     $split_data[1] = $this->splitTalentBuildsOnLevel(1, $return_data);
     $split_data[4] = $this->splitTalentBuildsOnLevel(4, $return_data);
     $split_data[7] = $this->splitTalentBuildsOnLevel(7, $return_data);
@@ -157,6 +157,7 @@ class GlobalHeroStatController extends Controller
         return $item->level == $level;
     });
     $counter = 0;
+    $return_data = array();
     foreach ($level_data as $key => $value){
       $return_data[$counter] = $value;
       $counter++;
