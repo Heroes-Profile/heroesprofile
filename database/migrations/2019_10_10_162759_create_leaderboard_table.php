@@ -48,7 +48,17 @@ class CreateLeaderboardTable extends Migration
           $table->integer('games_played');
           $table->double('conservative_rating');
           $table->double('rating');
+          $table->double('normalized_rating');
           $table->integer('cache_number');
+          $table->integer('most_played_hero');
+          $table->integer('level_one');
+          $table->integer('level_four');
+          $table->integer('level_seven');
+          $table->integer('level_ten');
+          $table->integer('level_thirteen');
+          $table->integer('level_sixteen');
+          $table->integer('level_twenty');
+          $table->integer('hero_build_games_played');
 
           $table->unique(['game_type', 'season', 'type', 'rank', 'cache_number'], "Base_Unique");
           $table->index(['game_type', 'season', 'type', 'cache_number'], "Index 1");

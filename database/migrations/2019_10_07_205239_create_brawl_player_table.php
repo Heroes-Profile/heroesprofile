@@ -6,25 +6,6 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateBrawlPlayerTable extends Migration
 {
-
-    /**
-     * The database schema.
-     *
-     * @var DB
-     */
-    protected $connection;
-
-    /**
-     * Create a new migration instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->connection = DB::connection(config('database.brawl'));
-    }
-
-
     /**
      * The database schema.
      *

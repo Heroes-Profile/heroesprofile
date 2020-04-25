@@ -7,12 +7,13 @@ use Illuminate\Http\Request;
 class GlobalLeaderboardController extends Controller
 {
   public function getData(){
-    $type = "player";
+    $type = "hero";
+    $hero = 1;
     $region = "";
-    $season = getLatestSeason();
+    $season = 14;//getLatestSeason();
     $game_type = 1;
 
-    $leaderboardData = \LeaderboardData::instance($game_type, $season, $region, $type);
+    $leaderboardData = \LeaderboardData::instance($game_type, $season, $region, $type, $hero);
     $return_data = $leaderboardData->getLeaderboardData();
 
     $return_array["data"] = $return_data;
