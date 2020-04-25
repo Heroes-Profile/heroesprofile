@@ -139,36 +139,7 @@ class GlobalHeroStatController extends Controller
       $return_data = $global_data_details->getGlobalTalentDetailData();
       return $return_data;
     });
-
-    list($level_one, $unfeatured) = $return_data->partition(function($item) {
-        return $item->level == 1;
-    });
-
-    list($level_four, $unfeatured) = $return_data->partition(function($item) {
-        return $item->level == 4;
-    });
-
-    list($level_seven, $unfeatured) = $return_data->partition(function($item) {
-        return $item->level == 7;
-    });
-
-    list($level_ten, $unfeatured) = $return_data->partition(function($item) {
-        return $item->level == 10;
-    });
-
-    list($level_thirteen, $unfeatured) = $return_data->partition(function($item) {
-        return $item->level == 13;
-    });
-
-    list($level_sixteen, $unfeatured) = $return_data->partition(function($item) {
-        return $item->level == 16;
-    });
-
-    list($level_twenty, $unfeatured) = $return_data->partition(function($item) {
-        return $item->level == 20;
-    });
-
-
+    
     $split_data[1] = $this->splitTalentBuildsOnLevel(1, $return_data);
     $split_data[4] = $this->splitTalentBuildsOnLevel(4, $return_data);
     $split_data[7] = $this->splitTalentBuildsOnLevel(7, $return_data);
