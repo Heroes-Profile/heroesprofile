@@ -53,7 +53,12 @@ class GlobalHeroStatMatchupData
      ->mergeBindings($sub_query->getQuery())
      ->groupBy('ally')
      ->get();
-     return $global_hero_matchup_data;
+     $return_data = array();
+     for($i = 0; $i < count($global_hero_matchup_data); $i++){
+       $return_data[$global_hero_matchup_data[$i]->ally]["wins"] = $global_hero_matchup_data[$i]->wins;
+       $return_data[$global_hero_matchup_data[$i]->ally]["losses"] = $global_hero_matchup_data[$i]->losses;
+     }
+     return $return_data;
   }
 
   private function getGlobalHeroStatEnemyData(){
@@ -72,19 +77,61 @@ class GlobalHeroStatMatchupData
      ->mergeBindings($sub_query->getQuery())
      ->groupBy('enemy')
      ->get();
-     return $global_hero_matchup_data;
+     $return_data = array();
+     for($i = 0; $i < count($global_hero_matchup_data); $i++){
+       $return_data[$global_hero_matchup_data[$i]->enemy]["wins"] = $global_hero_matchup_data[$i]->wins;
+       $return_data[$global_hero_matchup_data[$i]->enemy]["losses"] = $global_hero_matchup_data[$i]->losses;
+     }
+     return $return_data;
   }
 
   public function getGlobalHeroStatMatchupData(){
     $return_data_ally = $this->getGlobalHeroStatAllyData();
-
-    for($i = 0; $i < count($return_data_ally); $i++){
-      $return_data_ally[$i]->games_played = $return_data_ally[$i]->wins + $return_data_ally[$i]->losses;
-      $return_data_ally[$i]->win_rate = number_format(($return_data_ally[$i]->wins / $return_data_ally[$i]->games_played) * 100, 2);
-    }
-
     $return_data_enemy = $this->getGlobalHeroStatEnemyData();
 
-    print_r(json_encode($return_data_enemy, true));
+    $heroes = \App\Models\Hero::select('name')->get();
+
+    $return_data = array();
+    $return_data_counter = 0;
+
+    for($i = 0; $i < count($heroes); $i++){
+      if($heroes[$i]->name != $this->hero){
+
+      }
+      $return_data[$return_data_counter]["hero"] = $heroes[$i]->name;
+      if(array_key_exists($heroes[$i]->name, $return_data_ally)){
+        if(!array_key_exists("wins", $return_data_ally[$heroes[$i]->name])){
+          $return_data_ally[$heroes[$i]->name]["wins"] = 0;
+        }
+
+        if(!array_key_exists("losses", $return_data_ally[$heroes[$i]->name])){
+          $return_data_ally[$heroes[$i]->name]["losses"] = 0;
+        }
+
+        $return_data[$return_data_counter]["games_played_as_ally"] = $return_data_ally[$heroes[$i]->name]["wins"] + $return_data_ally[$heroes[$i]->name]["losses"];
+        $return_data[$return_data_counter]["win_rate_as_ally"] = number_format(($return_data_ally[$heroes[$i]->name]["wins"] /   $return_data[$return_data_counter]["games_played_as_ally"]) *100, 2);
+      }
+
+
+      if(array_key_exists($heroes[$i]->name, $return_data_enemy)){
+        if(!array_key_exists("wins", $return_data_enemy[$heroes[$i]->name])){
+          $return_data_enemy[$heroes[$i]->name]["wins"] = 0;
+        }
+
+        if(!array_key_exists("losses", $return_data_enemy[$heroes[$i]->name])){
+          $return_data_enemy[$heroes[$i]->name]["losses"] = 0;
+        }
+
+        $return_data[$return_data_counter]["games_played_as_enemy"] = $return_data_enemy[$heroes[$i]->name]["wins"] + $return_data_enemy[$heroes[$i]->name]["losses"];
+        $return_data[$return_data_counter]["win_rate_as_enemy"] = number_format(100 - ($return_data_enemy[$heroes[$i]->name]["wins"] /   $return_data[$return_data_counter]["games_played_as_enemy"]) *100, 2);
+      }else{
+        $return_data[$return_data_counter]["games_played_as_enemy"] = 0;
+        $return_data[$return_data_counter]["win_rate_as_enemy"] = 0;
+      }
+
+
+      $return_data_counter++;
+    }
+    return $return_data;
   }
 }

@@ -32,9 +32,9 @@
               <tr>
                 <th data-field="hero">Hero</th>
                 <th data-field="win_rate_as_ally">Win Rate As Ally</th>
-                <th data-field="win_rate_against">Win Rate Against "INSERT HERO NAME"</th>
+                <th data-field="win_rate_as_enemy">Win Rate Against "INSERT HERO NAME"</th>
                 <th data-field="games_played_as_ally">Games Played As Ally</th>
-                <th data-field="games_played_against">Games Played Against "INSERT HERO NAME"</th>
+                <th data-field="games_played_as_enemy">Games Played Against "INSERT HERO NAME"</th>
               </tr>
           </thead>
       </table>
@@ -211,12 +211,12 @@ $(document).ready(function() {
   inputColumns = [
       { data: "hero"},
       { data: "win_rate_as_ally" },
-      { data: "win_rate_against" },
+      { data: "win_rate_as_enemy" },
       { data: "games_played_as_ally" },
-      { data: "games_played_against" },
+      { data: "games_played_as_enemy" },
   ];
   inputSearching = true;
-  inputSortOrder = [[ 0, "desc" ]];
+  inputSortOrder = [[ 0, "asc" ]];
   param = 'matchups';
   createTableAjax('#matchups-table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
 

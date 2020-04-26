@@ -21,6 +21,9 @@ class GlobalHeroStatController extends Controller
     case 'talent-builds':
         return $this->talentBuildData($request);
         break;
+    default:
+        return "Invalid";
+        break;
       }
   }
 
