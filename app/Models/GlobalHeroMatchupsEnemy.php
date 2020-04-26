@@ -4,10 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GlobalHeroMatchupsAlly extends Model
+class GlobalHeroMatchupsEnemy extends Model
 {
-  protected $table = 'global_hero_matchups_ally';
-  protected $primaryKey = 'global_hero_matchups_ally_id';
+  protected $table = 'global_hero_matchups_enemy';
+  protected $primaryKey = 'global_hero_matchups_enemy_id';
   public $timestamps = false;
 
   public function scopeFilters($query, $hero, $game_versions_minor, $game_type, $region, $game_map,

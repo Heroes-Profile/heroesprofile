@@ -10,21 +10,21 @@ class GlobalHeroStatController extends Controller
   public function getData(Request $request){
     switch ($request["page"]) {
     case "map":
-        return $this->mapData();
+        return $this->mapData($request);
         break;
     case 'matchups':
-        return $this->matchupData();
+        return $this->matchupData($request);
         break;
     case 'talent-details':
-        return $this->talentDetailData();
+        return $this->talentDetailData($request);
         break;
     case 'talent-builds':
-        return $this->talentBuildData();
+        return $this->talentBuildData($request);
         break;
       }
   }
 
-  private function mapData(){
+  private function mapData($request){
     //$timeframe = array("major");
     $timeframe = array("minor");
     //$game_versions = array("2.49", "2.48");
@@ -47,7 +47,7 @@ class GlobalHeroStatController extends Controller
     '2.49.3.78256');
     */
 
-    $hero = 1;
+    $hero = 4;
     $game_versions_minor = array('2.49.2.77981');
     $game_type = array("5");
     $region = array();
@@ -59,7 +59,7 @@ class GlobalHeroStatController extends Controller
     $role_league_tier = array();
     $mirror = array(0);
 
-    $page = "develop-GlobalHeroStatsMaps";
+    $page = "GlobalHeroMaps";
     $cache =  $page .
               "-" . $hero .
               "-" . implode(",", $timeframe) .
@@ -84,10 +84,67 @@ class GlobalHeroStatController extends Controller
     return $return_array;
   }
 
-  private function matchupData(){
+  private function matchupData($request){
+    //$timeframe = array("major");
+    $timeframe = array("minor");
+    //$game_versions = array("2.49", "2.48");
+    $game_versions = array("2.49.2.77981");
+
+    /*
+    //Needs to be calculated/pulled from session
+    $game_versions_minor = array('2.48.0.76437',
+    '2.48.1.76517',
+    '2.48.2.76753',
+    '2.48.2.76781',
+    '2.48.2.76893',
+    '2.48.3.77205',
+    '2.48.4.77406',
+    '2.49.0.77525',
+    '2.49.0.77548',
+    '2.49.1.77662',
+    '2.49.1.77692',
+    '2.49.2.77981',
+    '2.49.3.78256');
+    */
+
+    $hero = 4;
+    $game_versions_minor = array('2.49.2.77981');
+    $game_type = array("5");
+    $region = array();
+    $game_map = array();
+    $hero_level = array();
+    $stat_type = array();
+    $player_league_tier = array();
+    $hero_league_tier = array();
+    $role_league_tier = array();
+    $mirror = array(0);
+
+    $page = "GlobalHeroMatchups";
+    $cache =  $page .
+              "-" . $hero .
+              "-" . implode(",", $timeframe) .
+              "-" . implode(",", $game_versions) .
+              "-" . implode(",", $game_type) .
+              "-" . implode(",", $region) .
+              "-" . implode(",", $game_map) .
+              "-" . implode(",", $hero_level) .
+              "-" . implode(",", $stat_type) .
+              "-"  . implode(",", $player_league_tier) .
+              "-"  . implode(",", $hero_league_tier) .
+              "-"  . implode(",", $role_league_tier);
+
+    $return_data = Cache::remember($cache, calcluateCacheTime($timeframe, $game_versions), function () use ($hero, $game_versions_minor, $game_type, $region, $game_map,
+                                          $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror){
+      $global_data = \GlobalHeroStatMatchupData::instance($hero, $game_versions_minor, $game_type, $region, $game_map,
+                                            $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror);
+      $return_data = $global_data->getGlobalHeroStatMatchupData();
+      return $return_data;
+    });
+    $return_array["data"] = $return_data;
+    return $return_array;
   }
 
-  private function talentDetailData(){
+  private function talentDetailData($request){
     //$timeframe = array("major");
     $timeframe = array("minor");
     //$game_versions = array("2.49", "2.48");
@@ -171,7 +228,7 @@ class GlobalHeroStatController extends Controller
     return $return_data;
   }
 
-  private function talentBuildData(){
+  private function talentBuildData($request){
     //$timeframe = array("major");
     $timeframe = array("minor");
     //$game_versions = array("2.49", "2.48");

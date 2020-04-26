@@ -218,7 +218,7 @@ $(document).ready(function() {
   inputSearching = true;
   inputSortOrder = [[ 0, "desc" ]];
   param = 'matchups';
-  //createTableAjax('#matchups-table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+  createTableAjax('#matchups-table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
 
 
   stat_page = 'talent-details';
@@ -259,7 +259,7 @@ $(document).ready(function() {
          $(nTd).html(oData.level_one.title +
            "|" + oData.level_four.title +
            "|" + oData.level_seven.title +
-           "|" + oData.level_ten.title + 
+           "|" + oData.level_ten.title +
            "|" + oData.level_thirteen.title +
            "|" + oData.level_sixteen.title +
            "|" + oData.level_twenty.title
