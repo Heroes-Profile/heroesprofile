@@ -1,6 +1,7 @@
 <?php
 namespace App\Data;
 use Illuminate\Support\Facades\DB;
+use Cache;
 
 class GlobalHeroStatData
 {
@@ -59,7 +60,7 @@ class GlobalHeroStatData
   private function getHeroBans(){
     $global_ban_data = \App\Models\GlobalHeroBans::Filters($this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
                                           $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror)
-                      ->join('heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')                   
+                      ->join('heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')
                       ->select('name as hero', DB::raw('SUM(bans) as games_banned'))
                       ->groupBy('hero')
                       ->get();
@@ -115,7 +116,10 @@ class GlobalHeroStatData
                         ->select('hero', 'win_rate')
                         ->get();
       $return_data = array();
-      $heroes = getHeroesIDMap("id");
+      $heroes = Cache::remember('heroes_by_id_to_name', getCacheTimeGlobals(), function () {
+          return getHeroesIDMap("id", "name");
+      });
+
       for($i = 0; $i < count($change_data); $i++){
           if(array_key_exists($change_data[$i]->hero,$heroes)){
             $return_data[$heroes[$change_data[$i]->hero]] = $change_data[$i]->win_rate;

@@ -30,13 +30,13 @@ if (!function_exists('calcluateCacheTime')) {
           if((Session::get("major_patch_earliest_date")[$timeframe[0]] < strtotime('-30 days'))){
             return 86400; //24 hours
           }else{
-            return 30; //30 miniutes
+            return 60 * 60 * .5; //6 hours
           }
         }
       }
     }else{//Minor TimeFrames
       //Still need to do logic for this one
-      return 30; //30 miniutes
+      return 60 * 60 * .5; //6 hours
     }
   }
 }
@@ -107,7 +107,6 @@ if (!function_exists('getSeasonDates')) {
      }
 }
 
-
 if (!function_exists('getIntToRegion')) {
     /**
      * Maps the different regions to their integer equivalence.
@@ -147,7 +146,6 @@ if (!function_exists('getHeroesIDMap')) {
      }
 }
 
-
 if (!function_exists('getCacheTimeGlobals')) {
     /**
      * This function returns the cache time value
@@ -157,7 +155,7 @@ if (!function_exists('getCacheTimeGlobals')) {
      *
      * */
      function getCacheTimeGlobals(){
-       return 86400;
+       return 86400; //24 hours
      }
 }
 

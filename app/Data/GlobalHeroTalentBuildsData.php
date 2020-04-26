@@ -172,7 +172,7 @@ class GlobalHeroTalentBuildsData
         return getHeroesIDMap("id", "name");
     });
 
-    $sort_talentID_to_sortID = Cache::remember($hero_ids_to_name[$this->hero] . "|" . 'talent_id_to_sort_id', getCacheTimeGlobals(), function () {
+    $sort_talentID_to_sortID = Cache::remember($hero_ids_to_name[$this->hero] . "-" . 'talent_id_to_sort_id', getCacheTimeGlobals(), function () use ($hero_ids_to_name){
         return getTalentIDMap($hero_ids_to_name[$this->hero], "talent_id", "sort");
     });
 

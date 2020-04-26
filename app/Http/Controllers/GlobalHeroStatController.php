@@ -59,19 +59,19 @@ class GlobalHeroStatController extends Controller
     $role_league_tier = array();
     $mirror = array(0);
 
-    $page = "develop|GlobalHeroStatsMaps";
+    $page = "develop-GlobalHeroStatsMaps";
     $cache =  $page .
-              "|" . $hero .
-              "|" . implode(",", $timeframe) .
-              "|" . implode(",", $game_versions) .
-              "|" . implode(",", $game_type) .
-              "|" . implode(",", $region) .
-              "|" . implode(",", $game_map) .
-              "|" . implode(",", $hero_level) .
-              "|" . implode(",", $stat_type) .
-              "|"  . implode(",", $player_league_tier) .
-              "|"  . implode(",", $hero_league_tier) .
-              "|"  . implode(",", $role_league_tier);
+              "-" . $hero .
+              "-" . implode(",", $timeframe) .
+              "-" . implode(",", $game_versions) .
+              "-" . implode(",", $game_type) .
+              "-" . implode(",", $region) .
+              "-" . implode(",", $game_map) .
+              "-" . implode(",", $hero_level) .
+              "-" . implode(",", $stat_type) .
+              "-"  . implode(",", $player_league_tier) .
+              "-"  . implode(",", $hero_league_tier) .
+              "-"  . implode(",", $role_league_tier);
 
     $return_data = Cache::remember($cache, calcluateCacheTime($timeframe, $game_versions), function () use ($hero, $game_versions_minor, $game_type, $region, $game_map,
                                           $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror){
@@ -86,6 +86,7 @@ class GlobalHeroStatController extends Controller
 
   private function matchupData(){
   }
+
   private function talentDetailData(){
     //$timeframe = array("major");
     $timeframe = array("minor");
@@ -124,17 +125,17 @@ class GlobalHeroStatController extends Controller
 
     $page = "GlobalHeroTalentDetails";
     $cache =  $page .
-              "|" . $hero .
-              "|" . implode(",", $timeframe) .
-              "|" . implode(",", $game_versions) .
-              "|" . implode(",", $game_type) .
-              "|" . implode(",", $region) .
-              "|" . implode(",", $game_map) .
-              "|" . implode(",", $hero_level) .
-              "|" . implode(",", $stat_type) .
-              "|"  . implode(",", $player_league_tier) .
-              "|"  . implode(",", $hero_league_tier) .
-              "|"  . implode(",", $role_league_tier);
+              "-" . $hero .
+              "-" . implode(",", $timeframe) .
+              "-" . implode(",", $game_versions) .
+              "-" . implode(",", $game_type) .
+              "-" . implode(",", $region) .
+              "-" . implode(",", $game_map) .
+              "-" . implode(",", $hero_level) .
+              "-" . implode(",", $stat_type) .
+              "-"  . implode(",", $player_league_tier) .
+              "-"  . implode(",", $hero_league_tier) .
+              "-"  . implode(",", $role_league_tier);
 
 
     $return_data = Cache::remember($cache, calcluateCacheTime($timeframe, $game_versions), function () use ($hero, $game_versions_minor, $game_type, $region, $game_map,
@@ -208,18 +209,18 @@ class GlobalHeroStatController extends Controller
 
     $page = "GlobalHeroTalentBuilds";
     $cache =  $page .
-              "|" . $hero .
-              "|" . implode(",", $timeframe) .
-              "|" . implode(",", $game_versions) .
-              "|" . implode(",", $game_type) .
-              "|" . implode(",", $region) .
-              "|" . implode(",", $game_map) .
-              "|" . implode(",", $hero_level) .
-              "|" . implode(",", $stat_type) .
-              "|"  . implode(",", $player_league_tier) .
-              "|"  . implode(",", $hero_league_tier) .
-              "|"  . implode(",", $role_league_tier) .
-              "|"  . $type;
+              "-" . $hero .
+              "-" . implode(",", $timeframe) .
+              "-" . implode(",", $game_versions) .
+              "-" . implode(",", $game_type) .
+              "-" . implode(",", $region) .
+              "-" . implode(",", $game_map) .
+              "-" . implode(",", $hero_level) .
+              "-" . implode(",", $stat_type) .
+              "-"  . implode(",", $player_league_tier) .
+              "-"  . implode(",", $hero_league_tier) .
+              "-"  . implode(",", $role_league_tier) .
+              "-"  . $type;
 
 
     $return_data = Cache::remember($cache, calcluateCacheTime($timeframe, $game_versions), function () use ($hero, $game_versions_minor, $game_type, $region, $game_map,
