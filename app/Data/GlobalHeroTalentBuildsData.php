@@ -172,15 +172,28 @@ class GlobalHeroTalentBuildsData
         return getHeroesIDMap("id", "name");
     });
 
-    $sort_talentID_to_sortID = Cache::remember($hero_ids_to_name[$this->hero] . "-" . 'talent_id_to_sort_id', getCacheTimeGlobals(), function () use ($hero_ids_to_name){
-        return getTalentIDMap($hero_ids_to_name[$this->hero], "talent_id", "sort");
-    });
-
     $hero_ids_to_hyperlinkID = Cache::remember('heroes_by_id_to_hyperlinkID', getCacheTimeGlobals(), function () {
         return getHeroesIDMap("id", "build_copy_name");
     });
 
+
+    $sort_talentID_to_sortID = Cache::remember($hero_ids_to_name[$this->hero] . "-" . 'talent_id_to_sort_id', getCacheTimeGlobals(), function () use ($hero_ids_to_name){
+        return getTalentIDMap($hero_ids_to_name[$this->hero], "talent_id", "sort");
+    });
+
+    $talent_data = Cache::remember($hero_ids_to_name[$this->hero] . "-" . 'talent_data', getCacheTimeGlobals(), function () use ($hero_ids_to_name){
+        return getTalentData($hero_ids_to_name[$this->hero]);
+    });
+
     foreach($builds as $key => $value){
+      $builds[$key]->level_one = $talent_data[$builds[$key]->level_one];
+      $builds[$key]->level_four = $talent_data[$builds[$key]->level_four];
+      $builds[$key]->level_seven = $talent_data[$builds[$key]->level_seven];
+      $builds[$key]->level_ten = $talent_data[$builds[$key]->level_ten];
+      $builds[$key]->level_thirteen = $talent_data[$builds[$key]->level_thirteen];
+      $builds[$key]->level_sixteen = $talent_data[$builds[$key]->level_sixteen];
+      $builds[$key]->level_twenty = $talent_data[$builds[$key]->level_twenty];
+
       $builds[$key]->talents = array(
         $builds[$key]->level_one,
         $builds[$key]->level_four,
@@ -193,13 +206,13 @@ class GlobalHeroTalentBuildsData
       $builds[$key]->win_rate = number_format($builds[$key]->win_rate * 100, 2);
       $builds[$key]->copy_build_to_game = "[" .
         "T" .
-        $sort_talentID_to_sortID[$builds[$key]->level_one] .
-        $sort_talentID_to_sortID[$builds[$key]->level_four] .
-        $sort_talentID_to_sortID[$builds[$key]->level_seven] .
-        $sort_talentID_to_sortID[$builds[$key]->level_ten] .
-        $sort_talentID_to_sortID[$builds[$key]->level_thirteen] .
-        $sort_talentID_to_sortID[$builds[$key]->level_sixteen] .
-        $sort_talentID_to_sortID[$builds[$key]->level_twenty] .
+        $sort_talentID_to_sortID[$builds[$key]->level_one["talent_id"]] .
+        $sort_talentID_to_sortID[$builds[$key]->level_four["talent_id"]] .
+        $sort_talentID_to_sortID[$builds[$key]->level_seven["talent_id"]] .
+        $sort_talentID_to_sortID[$builds[$key]->level_ten["talent_id"]] .
+        $sort_talentID_to_sortID[$builds[$key]->level_thirteen["talent_id"]] .
+        $sort_talentID_to_sortID[$builds[$key]->level_sixteen["talent_id"]] .
+        $sort_talentID_to_sortID[$builds[$key]->level_twenty["talent_id"]] .
         "," .
         $hero_ids_to_hyperlinkID[$this->hero] .
         "]";

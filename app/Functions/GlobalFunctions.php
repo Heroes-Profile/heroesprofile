@@ -36,7 +36,8 @@ if (!function_exists('calcluateCacheTime')) {
       }
     }else{//Minor TimeFrames
       //Still need to do logic for this one
-      return 60 * 60 * .5; //6 hours
+      //return 60 * 60 * .5; //6 hours
+      return 0; //Testing
     }
   }
 }
@@ -177,6 +178,38 @@ if (!function_exists('getTalentIDMap')) {
        $return_data = array();
        for($i = 0; $i < count($talent_data); $i++){
          $return_data[$talent_data[$i][$key_value]] = $talent_data[$i][$value];
+       }
+       return $return_data;
+     }
+}
+
+
+
+if (!function_exists('getTalentData')) {
+    /**
+     * This function gets all of the heroes and their internal IDs
+     *
+     *
+     * @return array array of regions
+     *
+     * */
+     function getTalentData($hero){
+       $talent_data = DB::table('heroesprofile.heroes_data_talents')->select('talent_id', 'title', 'description', 'hotkey', 'icon', 'short_name')
+       ->where('hero_name', $hero)
+       ->where('title', '<>', '')
+       ->get();
+       $talent_data = json_decode(json_encode($talent_data),true);
+
+       $return_data = array();
+
+       for($i = 0; $i < count($talent_data); $i++){
+         $data = array();
+         $data["talent_id"] = $talent_data[$i]["talent_id"];
+         $data["short_name"] = $talent_data[$i]["short_name"];
+         $data["title"] = $talent_data[$i]["title"];
+         $data["description"] = $talent_data[$i]["description"];
+         $data["icon"] = $talent_data[$i]["icon"];
+         $return_data[$talent_data[$i]["talent_id"]] = $data;
        }
        return $return_data;
      }

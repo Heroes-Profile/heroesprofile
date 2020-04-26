@@ -254,7 +254,18 @@ $(document).ready(function() {
   });
 
   inputColumns = [
-    { data: "talents"},
+    { data: "talents",
+    "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+         $(nTd).html(oData.level_one.title +
+           "|" + oData.level_four.title +
+           "|" + oData.level_seven.title +
+           "|" + oData.level_ten.title + 
+           "|" + oData.level_thirteen.title +
+           "|" + oData.level_sixteen.title +
+           "|" + oData.level_twenty.title
+         );
+     }
+    },
     { data: "copy_build_to_game" },
     { data: "games_played" },
     { data: "wins" },
