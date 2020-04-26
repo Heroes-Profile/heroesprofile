@@ -89,17 +89,19 @@ class GlobalHeroStatMatchupData
     $return_data_ally = $this->getGlobalHeroStatAllyData();
     $return_data_enemy = $this->getGlobalHeroStatEnemyData();
 
-    $heroes = \App\Models\Hero::select('name')->get();
+    $heroes = \App\Models\Hero::select('name', 'id')->get();
 
     $return_data = array();
     $return_data_counter = 0;
 
     for($i = 0; $i < count($heroes); $i++){
-      if($heroes[$i]->name != $this->hero){
+      if($heroes[$i]->id != $this->hero){
+        $return_data[$return_data_counter]["hero"] = $heroes[$i]->name;
+        if(!array_key_exists($heroes[$i]->name, $return_data_ally)){
+          $return_data_ally[$heroes[$i]->name]["wins"] = 0;
+          $return_data_ally[$heroes[$i]->name]["losses"] = 0;
+        }
 
-      }
-      $return_data[$return_data_counter]["hero"] = $heroes[$i]->name;
-      if(array_key_exists($heroes[$i]->name, $return_data_ally)){
         if(!array_key_exists("wins", $return_data_ally[$heroes[$i]->name])){
           $return_data_ally[$heroes[$i]->name]["wins"] = 0;
         }
@@ -110,10 +112,13 @@ class GlobalHeroStatMatchupData
 
         $return_data[$return_data_counter]["games_played_as_ally"] = $return_data_ally[$heroes[$i]->name]["wins"] + $return_data_ally[$heroes[$i]->name]["losses"];
         $return_data[$return_data_counter]["win_rate_as_ally"] = number_format(($return_data_ally[$heroes[$i]->name]["wins"] /   $return_data[$return_data_counter]["games_played_as_ally"]) *100, 2);
-      }
 
 
-      if(array_key_exists($heroes[$i]->name, $return_data_enemy)){
+        if(!array_key_exists($heroes[$i]->name, $return_data_enemy)){
+          $return_data_enemy[$heroes[$i]->name]["wins"] = 0;
+          $return_data_enemy[$heroes[$i]->name]["losses"] = 0;
+        }
+
         if(!array_key_exists("wins", $return_data_enemy[$heroes[$i]->name])){
           $return_data_enemy[$heroes[$i]->name]["wins"] = 0;
         }
@@ -124,13 +129,12 @@ class GlobalHeroStatMatchupData
 
         $return_data[$return_data_counter]["games_played_as_enemy"] = $return_data_enemy[$heroes[$i]->name]["wins"] + $return_data_enemy[$heroes[$i]->name]["losses"];
         $return_data[$return_data_counter]["win_rate_as_enemy"] = number_format(100 - ($return_data_enemy[$heroes[$i]->name]["wins"] /   $return_data[$return_data_counter]["games_played_as_enemy"]) *100, 2);
-      }else{
-        $return_data[$return_data_counter]["games_played_as_enemy"] = 0;
-        $return_data[$return_data_counter]["win_rate_as_enemy"] = 0;
+
+
+
+        $return_data_counter++;
       }
 
-
-      $return_data_counter++;
     }
     return $return_data;
   }
