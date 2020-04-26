@@ -1,5 +1,6 @@
 function createTableAjax(tableID, inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, stat_page) {
   $(tableID).DataTable( {
+          async: true,
           paging: inputPaging,
           "searching": inputSearching,
           colReorder: inputColReorder,

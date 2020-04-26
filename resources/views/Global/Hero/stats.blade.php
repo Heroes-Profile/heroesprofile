@@ -160,6 +160,25 @@
         </div>
         </div>
 
+
+        <h1>Talent Builds</h1>
+          <div class="container">
+              <table id="talent-builds-table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+              <thead>
+                  <tr>
+                    <th data-field="talents">Talents</th>
+                    <th data-field="copy_build_to_game">Copy Build to Game</th>
+                    <th data-field="games_played">Total</th>
+                    <th data-field="wins">Wins</th>
+                    <th data-field="losses">Losses</th>
+                    <th data-field="win_rate">Win Chance</th>
+                  </tr>
+              </thead>
+          </table>
+          <div id="echodata">
+          </div>
+          </div>
+
 @endsection
 
 @section('scripts')
@@ -189,8 +208,21 @@ $(document).ready(function() {
   param = 'map';
   createTableAjax('#map-table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
 
+  inputColumns = [
+      { data: "hero"},
+      { data: "win_rate_as_ally" },
+      { data: "win_rate_against" },
+      { data: "games_played_as_ally" },
+      { data: "games_played_against" },
+  ];
+  inputSearching = true;
+  inputSortOrder = [[ 0, "desc" ]];
+  param = 'matchups';
+  //createTableAjax('#matchups-table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+
 
   stat_page = 'talent-details';
+  inputSearching = false;
   $.ajax({
     url: inputUrl,
     data: {
@@ -221,6 +253,17 @@ $(document).ready(function() {
     }
   });
 
+  inputColumns = [
+    { data: "talents"},
+    { data: "copy_build_to_game" },
+    { data: "games_played" },
+    { data: "wins" },
+    { data: "losses" },
+    { data: "win_rate" },
+  ];
+  inputSortOrder = [[ 5, "desc" ]];
+  param = 'talent-builds';
+  createTableAjax('#talent-builds-table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
 
 
   //$('.dataTables_length').addClass('bs-select');

@@ -128,25 +128,16 @@ if (!function_exists('getIntToRegion')) {
      }
 }
 
-
 if (!function_exists('getHeroesIDMap')) {
     /**
-     * Maps the different regions to their integer equivalence.
+     * This function gets all of the heroes and their internal IDs
      *
      *
      * @return array array of regions
      *
      * */
-     function getHeroesIDMap($key_value){
-       switch ($key_value) {
-         case "id":
-             $value = "name";
-             break;
-         case "name":
-             $value = "id";
-             break;
-       }
-       $heroes = DB::table('heroesprofile.heroes')->select('id', 'name')->get();
+     function getHeroesIDMap($key_value, $value){
+       $heroes = DB::table('heroesprofile.heroes')->select($key_value, $value)->get();
        $heroes = json_decode(json_encode($heroes),true);
        $return_data = array();
        for($i = 0; $i < count($heroes); $i++){
@@ -157,7 +148,21 @@ if (!function_exists('getHeroesIDMap')) {
 }
 
 
-if (!function_exists('getHeroesIDMap')) {
+if (!function_exists('getCacheTimeGlobals')) {
+    /**
+     * This function returns the cache time value
+     *
+     *
+     * @return array array of regions
+     *
+     * */
+     function getCacheTimeGlobals(){
+       return 86400;
+     }
+}
+
+
+if (!function_exists('getTalentIDMap')) {
     /**
      * This function gets all of the heroes and their internal IDs
      *
@@ -165,12 +170,15 @@ if (!function_exists('getHeroesIDMap')) {
      * @return array array of regions
      *
      * */
-     function getHeroesIDMap($key_value, $value){
-       $heroes = DB::table('heroesprofile.heroes')->select('id', 'name', 'short_name')->get();
-       $heroes = json_decode(json_encode($heroes),true);
+     function getTalentIDMap($hero, $key_value, $value){
+       $talent_data = DB::table('heroes_data_talents')
+                        ->select($key_value, $value)
+                        ->where("hero_name", $hero)
+                        ->get();
+       $talent_data = json_decode(json_encode($talent_data),true);
        $return_data = array();
-       for($i = 0; $i < count($heroes); $i++){
-         $return_data[$heroes[$i][$key_value]] = $heroes[$i][$value];
+       for($i = 0; $i < count($talent_data); $i++){
+         $return_data[$talent_data[$i][$key_value]] = $talent_data[$i][$value];
        }
        return $return_data;
      }

@@ -2,8 +2,6 @@
 namespace App\Data;
 
 use Illuminate\Support\Facades\DB;
-use Cache;
-use Session;
 
 /*TO DO
 * Need to pass through offset data so that you can get more players.
@@ -17,7 +15,7 @@ class LeaderboardData
   private $region;
   private $type;
   private $hero;
-  
+
   public static function instance($game_type, $season, $region, $type, $hero)
   {
       return new LeaderboardData($game_type, $season, $region, $type, $hero);

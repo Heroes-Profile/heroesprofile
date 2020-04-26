@@ -1,8 +1,6 @@
 <?php
 namespace App\Data;
 use Illuminate\Support\Facades\DB;
-use Session;
-use Cache;
 
 class GlobalHeroStatMapData
 {
