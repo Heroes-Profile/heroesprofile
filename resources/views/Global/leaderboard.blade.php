@@ -3,6 +3,8 @@
 
 
 @section('content')
+@include('filters.filters')
+
     <div class="container">
         <table id="table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
         <thead>

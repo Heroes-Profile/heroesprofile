@@ -3,6 +3,8 @@
 
 
 @section('content')
+@include('filters.filters')
+
   <h1>Maps</h1>
     <div class="container">
         <table id="map-table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">

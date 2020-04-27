@@ -2,7 +2,14 @@
 @section('title', 'Global Stats')
 
 
+
+
+
+
 @section('content')
+@include('filters.filters')
+
+
     <div class="container">
         <table id="table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
         <thead>
@@ -32,8 +39,22 @@
 <!--
 Child Row example for show talent builds
 https://datatables.net/examples/api/row_details.html
-
 -->
+
+<?php
+$timesframes = array("2.49.2.77981");
+$game_type = array("5");
+$region = array();
+$game_map = array();
+$hero_level = array();
+$hero = "";
+$role = "";
+$stat_type = array();
+$player_league_tier = array();
+$hero_league_tier = array();
+$role_league_tier = array();
+$mirror = array(0);
+ ?>
 
 <script>
 $(document).ready(function() {
@@ -57,7 +78,17 @@ $(document).ready(function() {
   inputFixedHeader = true;
   inputBInfo = false;
   inputSortOrder = [[ 1, "desc" ]];
+
+  //Filters/Parameters
   stat_page = 'stat';
+  timeframe_type = "minor";
+  timeframe = {!! json_encode($timesframes) !!};
+  region = {!! json_encode($region) !!};
+  stat_type = {!! json_encode($stat_type) !!};
+  hero_level = {!! json_encode($hero_level) !!};
+  role = {!! json_encode($role) !!};
+  hero = {!! json_encode($hero) !!};
+
   createTableAjax('#table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, stat_page);
     $('.dataTables_length').addClass('bs-select');
 });

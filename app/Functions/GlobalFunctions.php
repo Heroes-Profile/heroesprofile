@@ -42,32 +42,6 @@ if (!function_exists('calcluateCacheTime')) {
   }
 }
 
-
-if (!function_exists('getAllMinorPatches')) {
-    /**
-     * Returns an array that contains a list of minor patches
-     * mapped to major patches
-     *
-     *
-     * @return array major/minor patches
-     *
-     * */
-    function getAllMinorPatches(){
-      $minor_patches = DB::table('heroesprofile.season_game_versions')->select(DB::raw("game_version"))
-      ->where('game_version', '>=', '2.44')
-      ->orderBy('game_version', 'desc')
-      ->get();
-      $minor_patches = json_decode(json_encode($minor_patches),true);
-
-      $return_data = array();
-      for($i = 0; $i < count($minor_patches); $i++){
-        $return_data[$minor_patches[$i]["game_version"]] = $minor_patches[$i]["game_version"];
-      }
-      return $return_data;
-    }
-}
-
-
 if (!function_exists('getLatestSeason')) {
     /**
      * Returns the latest season ID
@@ -137,7 +111,7 @@ if (!function_exists('getHeroesIDMap')) {
      *
      * */
      function getHeroesIDMap($key_value, $value){
-       $heroes = DB::table('heroesprofile.heroes')->select($key_value, $value)->get();
+       $heroes = DB::table('heroes')->select($key_value, $value)->get();
        $heroes = json_decode(json_encode($heroes),true);
        $return_data = array();
        for($i = 0; $i < count($heroes); $i++){
@@ -194,7 +168,7 @@ if (!function_exists('getTalentData')) {
      *
      * */
      function getTalentData($hero){
-       $talent_data = DB::table('heroesprofile.heroes_data_talents')->select('talent_id', 'title', 'description', 'hotkey', 'icon', 'short_name')
+       $talent_data = DB::table('heroes_data_talents')->select('talent_id', 'title', 'description', 'hotkey', 'icon', 'short_name')
        ->where('hero_name', $hero)
        ->where('title', '<>', '')
        ->get();
@@ -211,6 +185,99 @@ if (!function_exists('getTalentData')) {
          $data["icon"] = $talent_data[$i]["icon"];
          $return_data[$talent_data[$i]["talent_id"]] = $data;
        }
+       return $return_data;
+     }
+}
+
+if (!function_exists('getAllMinorPatches')) {
+    /**
+     * Returns an array that contains a list of minor patches
+     * mapped to major patches
+     *
+     *
+     * @return array major/minor patches
+     *
+     * */
+    function getAllMinorPatches(){
+      $minor_patches = DB::table('heroesprofile.season_game_versions')->select(DB::raw("game_version"))
+      ->where('game_version', '>=', '2.44')
+      ->orderBy('game_version', 'desc')
+      ->get();
+      $minor_patches = json_decode(json_encode($minor_patches),true);
+
+      $return_data = array();
+      for($i = 0; $i < count($minor_patches); $i++){
+        $return_data[$minor_patches[$i]["game_version"]] = $minor_patches[$i]["game_version"];
+      }
+      return $return_data;
+    }
+}
+
+
+if (!function_exists('getFilterVersions')) {
+    /**
+     * This function gets all of the heroes and their internal IDs
+     *
+     *
+     * @return array array of regions
+     *
+     * */
+     function getFilterVersions(){
+       $version_data = DB::table('season_game_versions')->select(DB::raw('DISTINCT(SUBSTRING_INDEX(game_version, ".", 2)) as major_game_version'), DB::raw('game_version as minor_game_version'))
+       ->where('game_version', '>=', '2.44')
+       ->orderBy('game_version', 'DESC')
+       ->get();
+       $version_data = json_decode(json_encode($version_data),true);
+
+       $return_data = array();
+       $counter = 0;
+       $prev_major = "";
+       for($i = 0; $i < count($version_data); $i++){
+         if($prev_major != "" && $prev_major != $version_data[$i]["major_game_version"]){
+           $counter = 0;
+         }
+         $return_data[$version_data[$i]["major_game_version"]][$counter] = $version_data[$i]["minor_game_version"];
+         $counter++;
+         $prev_major = $version_data[$i]["major_game_version"];
+       }
+       return $return_data;
+     }
+}
+
+if (!function_exists('getFilterMaps')) {
+    /**
+     * This function gets all of the heroes and their internal IDs
+     *
+     *
+     * @return array array of regions
+     *
+     * */
+     function getFilterMaps(){
+       $map_data = \App\Models\Map::where('playable', '1')->orderBy('map_id', 'ASC')->get();
+       //$map_data = json_decode(json_encode($map_data),true);
+       $return_data = array();
+       $ranked_counter = 0;
+       $extra_maps_counter = 0;
+       $brawl_counter = 0;
+       for($i = 0; $i < count($map_data); $i++){
+         if($map_data[$i]->ranked_rotation == 1){
+           $return_data["Ranked-Rotation"][$ranked_counter] = $map_data[$i]->name;
+           $ranked_counter++;
+         }else{
+           if($map_data[$i]->type != "brawl"){
+             $return_data["Extra-Maps"][$extra_maps_counter] = $map_data[$i]->name;
+             $extra_maps_counter++;
+           }
+         }
+
+         if($map_data[$i]->type == "brawl"){
+           $return_data["Brawl"][$brawl_counter] = $map_data[$i]->name;
+           $brawl_counter++;
+         }
+
+       }
+
+       print_r($return_data);
        return $return_data;
      }
 }
