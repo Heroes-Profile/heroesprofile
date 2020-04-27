@@ -1,17 +1,10 @@
 @extends('layouts.app')
 @section('title', 'Global Stats')
 
-
-
-
-
-
 @section('content')
 @include('filters.filters')
-
-
     <div class="container">
-        <table id="table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+        <table id="stats-table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
         <thead>
             <tr>
                 <th data-field="hero">Hero</th>
@@ -80,17 +73,51 @@ $(document).ready(function() {
   inputSortOrder = [[ 1, "desc" ]];
 
   //Filters/Parameters
-  stat_page = 'stat';
-  timeframe_type = "minor";
-  timeframe = {!! json_encode($timesframes) !!};
-  region = {!! json_encode($region) !!};
-  stat_type = {!! json_encode($stat_type) !!};
-  hero_level = {!! json_encode($hero_level) !!};
-  role = {!! json_encode($role) !!};
-  hero = {!! json_encode($hero) !!};
+  parameters =
+  {
+    'page' : 'stat'
+  }
 
-  createTableAjax('#table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, stat_page);
+  $.ajax({
+    url: inputUrl,
+    data: parameters,
+    success: function(results){
+      console.log(results);
+      createTableJS('#stats-table', results, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, parameters);
+    }
+  });
+
+
+
+  //createTableAjax('#stats-table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, parameters);
     $('.dataTables_length').addClass('bs-select');
+
+
+    $("#basic_search select").on('change', function(e){
+      var formData = $('#basic_search').serializeArray();
+      console.log(formData);
+      parameters =
+      {
+        'page' : 'stat',
+        'data' : formData
+      }
+
+      $.ajax({
+        url: inputUrl,
+        data: parameters,
+        success: function(results){
+          console.log(results);
+          var table = $('#stats-table').DataTable();
+          table
+              .clear()
+              .row.add(results)
+              .draw();
+        }
+      });
+  });
+
 });
+
+
 </script>
 @endsection

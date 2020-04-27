@@ -1,4 +1,4 @@
-function createTableAjax(tableID, inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, stat_page) {
+function createTableAjax(tableID, inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, parameters) {
   $(tableID).DataTable( {
           async: true,
           paging: inputPaging,
@@ -12,9 +12,7 @@ function createTableAjax(tableID, inputUrl, inputColumns, inputPaging, inputSear
           ajax: {
              url: inputUrl,
              method: "POST",
-             data: {
-               'page' : stat_page
-             }
+             data: parameters
           },
           columns: inputColumns
       });

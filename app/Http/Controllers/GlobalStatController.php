@@ -65,7 +65,7 @@ class GlobalStatController extends Controller
       });
 
       //return $return_data->toJson();
-      $return_array["data"] = $return_data;
-      return $return_array;
+      //$return_array["data"] = $return_data;
+      return $return_data;
     }
 }
