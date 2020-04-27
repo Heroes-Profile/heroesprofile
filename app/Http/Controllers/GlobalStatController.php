@@ -56,7 +56,7 @@ class GlobalStatController extends Controller
                 "|"  . implode(",", $hero_league_tier) .
                 "|"  . implode(",", $role_league_tier);
 
-      $return_data = Cache::remember($cache, calcluateCacheTime($timeframe, $game_versions), function () use ($game_versions_minor, $game_type, $region, $game_map,
+      $return_data = Cache::remember($cache, calculateCacheTime($timeframe, $game_versions), function () use ($game_versions_minor, $game_type, $region, $game_map,
                                             $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror){
         $global_data = \GlobalHeroStatsData::instance($game_versions_minor, $game_type, $region, $game_map,
                                               $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror);

@@ -1,6 +1,6 @@
 <?php
 
-if (!function_exists('calcluateCacheTime')) {
+if (!function_exists('calculateCacheTime')) {
     /**
      * Returns the cache time in seconds
      *
@@ -13,7 +13,7 @@ if (!function_exists('calcluateCacheTime')) {
      * @return integer seconds to cache
      *
      * */
-    function calcluateCacheTime($timeframe_type, $timeframe){
+    function calculateCacheTime($timeframe_type, $timeframe){
     //Need to work on logic for this
 
     if($timeframe_type == "major"){

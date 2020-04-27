@@ -21,7 +21,7 @@ class GlobalFunctions
 
   /*
   |--------------------------------------------------------------------------
-  | calcluateCacheTime
+  | calculateCacheTime
   |--------------------------------------------------------------------------
   |
   | This function is used to calculate dynamic cache times.  The purpose of
@@ -29,7 +29,7 @@ class GlobalFunctions
   | use a greater time
   |
   */
-  public function calcluateCacheTime($timeframe_type, $timeframe){
+  public function calculateCacheTime($timeframe_type, $timeframe){
     //Need to work on logic for this
 
     if($timeframe_type == "major"){

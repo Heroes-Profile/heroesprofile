@@ -76,7 +76,7 @@ class GlobalHeroStatController extends Controller
               "-"  . implode(",", $hero_league_tier) .
               "-"  . implode(",", $role_league_tier);
 
-    $return_data = Cache::remember($cache, calcluateCacheTime($timeframe, $game_versions), function () use ($hero, $game_versions_minor, $game_type, $region, $game_map,
+    $return_data = Cache::remember($cache, calculateCacheTime($timeframe, $game_versions), function () use ($hero, $game_versions_minor, $game_type, $region, $game_map,
                                           $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror){
       $global_data = \GlobalHeroStatMapData::instance($hero, $game_versions_minor, $game_type, $region, $game_map,
                                             $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror);
@@ -136,7 +136,7 @@ class GlobalHeroStatController extends Controller
               "-"  . implode(",", $hero_league_tier) .
               "-"  . implode(",", $role_league_tier);
 
-    $return_data = Cache::remember($cache, calcluateCacheTime($timeframe, $game_versions), function () use ($hero, $game_versions_minor, $game_type, $region, $game_map,
+    $return_data = Cache::remember($cache, calculateCacheTime($timeframe, $game_versions), function () use ($hero, $game_versions_minor, $game_type, $region, $game_map,
                                           $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror){
       $global_data = \GlobalHeroStatMatchupData::instance($hero, $game_versions_minor, $game_type, $region, $game_map,
                                             $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror);
@@ -198,7 +198,7 @@ class GlobalHeroStatController extends Controller
               "-"  . implode(",", $role_league_tier);
 
 
-    $return_data = Cache::remember($cache, calcluateCacheTime($timeframe, $game_versions), function () use ($hero, $game_versions_minor, $game_type, $region, $game_map,
+    $return_data = Cache::remember($cache, calculateCacheTime($timeframe, $game_versions), function () use ($hero, $game_versions_minor, $game_type, $region, $game_map,
                                           $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror){
       $global_data_details = \GlobalHeroTalentDetailsData::instance($hero, $game_versions_minor, $game_type, $player_league_tier,
                                           $hero_league_tier, $role_league_tier, $game_map, $hero_level, $mirror, $region);
@@ -283,7 +283,7 @@ class GlobalHeroStatController extends Controller
               "-"  . $type;
 
 
-    $return_data = Cache::remember($cache, calcluateCacheTime($timeframe, $game_versions), function () use ($hero, $game_versions_minor, $game_type, $region, $game_map,
+    $return_data = Cache::remember($cache, calculateCacheTime($timeframe, $game_versions), function () use ($hero, $game_versions_minor, $game_type, $region, $game_map,
                                           $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror, $type){
       $global_data_builds = \GlobalHeroTalentBuildsData::instance($hero, $game_versions_minor, $game_type, $player_league_tier,
                                           $hero_league_tier, $role_league_tier, $game_map, $hero_level, $mirror, $region);
