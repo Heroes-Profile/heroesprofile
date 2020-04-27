@@ -137,10 +137,10 @@ if (!function_exists('getCacheTimeGlobals')) {
 
 if (!function_exists('getTalentIDMap')) {
     /**
-     * This function gets all of the heroes and their internal IDs
+     * This function maps talent_id and talent names
      *
      *
-     * @return array array of regions
+     * @return array array of talent data
      *
      * */
      function getTalentIDMap($hero, $key_value, $value){
@@ -161,10 +161,10 @@ if (!function_exists('getTalentIDMap')) {
 
 if (!function_exists('getTalentData')) {
     /**
-     * This function gets all of the heroes and their internal IDs
+     * This function gets the talent data for a specific hero
      *
      *
-     * @return array array of regions
+     * @return array array of talent_id mapped to its data
      *
      * */
      function getTalentData($hero){
@@ -192,10 +192,9 @@ if (!function_exists('getTalentData')) {
 if (!function_exists('getAllMinorPatches')) {
     /**
      * Returns an array that contains a list of minor patches
-     * mapped to major patches
      *
      *
-     * @return array major/minor patches
+     * @return array minor patches
      *
      * */
     function getAllMinorPatches(){
@@ -216,10 +215,10 @@ if (!function_exists('getAllMinorPatches')) {
 
 if (!function_exists('getFilterVersions')) {
     /**
-     * This function gets all of the heroes and their internal IDs
+     * This function gets all of the game versions and maps them to major versions
      *
      *
-     * @return array array of regions
+     * @return array array of minor/major versions
      *
      * */
      function getFilterVersions(){
@@ -246,15 +245,14 @@ if (!function_exists('getFilterVersions')) {
 
 if (!function_exists('getFilterMaps')) {
     /**
-     * This function gets all of the heroes and their internal IDs
+     * This function gets all of the maps and groups them
      *
      *
-     * @return array array of regions
+     * @return array array of maps
      *
      * */
      function getFilterMaps(){
        $map_data = \App\Models\Map::where('playable', '1')->orderBy('map_id', 'ASC')->get();
-       //$map_data = json_decode(json_encode($map_data),true);
        $return_data = array();
        $ranked_counter = 0;
        $extra_maps_counter = 0;
@@ -278,6 +276,63 @@ if (!function_exists('getFilterMaps')) {
        }
 
        print_r($return_data);
+       return $return_data;
+     }
+}
+
+
+if (!function_exists('getScoreStatsByGrouping')) {
+    /**
+     * This function gets all of the stats and groups them
+     *
+     *
+     * @return array array of grouping and stats
+     *
+     * */
+     function getScoreStatsByGrouping(){
+       $return_data["Combat"][0] = "Kills";
+       $return_data["Combat"][1] = "Assists";
+       $return_data["Combat"][2] = "Takedowns";
+       $return_data["Combat"][3] = "Deaths";
+
+       $return_data["Player"][0] = "Regeneration Globes";
+       $return_data["Player"][1] = "Hero Damage";
+       $return_data["Player"][2] = "Physical Damage Done";
+       $return_data["Player"][3] = "Spell Damage Done";
+       $return_data["Player"][4] = "Damage Taken";
+       $return_data["Player"][5] = "Time Spent Dead";
+       $return_data["Player"][6] = "Enemy Silence Duration";
+       $return_data["Player"][7] = "Enemy Rooted Duration";
+       $return_data["Player"][8] = "Enemy Stunned Duration";
+       $return_data["Player"][9] = "Escapes";
+       $return_data["Player"][10] = "Vengeances";
+       $return_data["Player"][11] = "Outnumbered Deaths";
+
+
+       $return_data["Siege"][0] = "Siege Damage";
+       $return_data["Siege"][1] = "Structure Damage";
+       $return_data["Siege"][2] = "Minion Damage";
+       $return_data["Siege"][3] = "Lane Mercenary Damage";
+       $return_data["Siege"][4] = "Summon Damage";
+
+
+       $return_data["Macro"][0] = "Experience Contribution";
+       $return_data["Macro"][1] = "Mercenary Camp Captures";
+       $return_data["Macro"][2] = "Watch Tower Captures";
+       $return_data["Macro"][3] = "Team Experience";
+
+       $return_data["Teamfight"][0] = "Teamfight Damage Taken";
+       $return_data["Teamfight"][1] = "Teamfight Hero Damage";
+       $return_data["Teamfight"][2] = "Teamfight Escapes";
+       $return_data["Teamfight"][3] = "Teamfight Healing";
+
+
+       $return_data["Defense/Healing"][0] = "Healing";
+       $return_data["Defense/Healing"][1] = "Self Healing";
+       $return_data["Defense/Healing"][2] = "Clutch Heals";
+       $return_data["Defense/Healing"][3] = "Ally Protection";
+       $return_data["Defense/Healing"][4] = "Crowd Control Enemies";
+
        return $return_data;
      }
 }

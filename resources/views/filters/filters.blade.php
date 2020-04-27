@@ -5,20 +5,20 @@
 
 
 {{-- Major Minor Picker --}}
-<select class="selectpicker" multiple title="Minor">
+<select class="selectpicker" multiple title="Minor" data-header="Timeframe Type">
   <option>Major</option>
   <option>Minor</option>
 </select>
 
 {{-- Major Game Version Picker --}}
-<select class="selectpicker" multiple multiple data-max-options="10" multiple title={{ max(array_keys(getFilterVersions())) }}>
+<select class="selectpicker" multiple data-max-options="3" title={{ max(array_keys(getFilterVersions())) }} data-header="Major Timeframes">
   @foreach (getFilterVersions() as $major => $minor)
       <option>{{ $major }}</option>
   @endforeach
 </select>
 
 {{-- Minor Game Version Picker --}}
-<select class="selectpicker" multiple multiple data-max-options="10" multiple title={{ max(getAllMinorPatches()) }}>
+<select class="selectpicker" multiple data-max-options="20" title={{ max(getAllMinorPatches()) }} data-header="Minor Timeframes">
   @foreach (getFilterVersions() as $major => $minor)
     <optgroup label={{ $major }}>
     @for ($i = 0; $i < count($minor); $i++)
@@ -29,7 +29,7 @@
 </select>
 
 {{-- Region Picker --}}
-<select class="selectpicker" multiple multiple data-max-options="10">
+<select class="selectpicker" multiple title="All Regions" data-header="Regions">
   <option>NA</option>
   <option>EU</option>
   <option>KR</option>
@@ -37,49 +37,19 @@
 </select>
 
 
-{{-- Stat Type Picker.  Likely need to make this an object --}}
-<select class="selectpicker" data-live-search="true" multiple title="Win Rate">
-  <option value="win_rate">Win Rate</option>
-  <option value='game_time'>Game Time</option>
-  <option value='kills'>Kills</option>
-  <option value='takedowns'>Takedowns</option>
-  <option value='deaths'>Deaths</option>
-  <option value='siege_damage'>Siege Damage</option>
-  <option value='hero_damage'>Hero Damage</option>
-  <option value='healing'>Healing</option>
-  <option value='damage_taken'>Damage Taken</option>
-  <option value='experience_contribution'>Experience Contribution</option>
-  <option value='assists'>Assists</option>
-  <option value='highest_kill_streak'>Highest Kill Streak</option>
-  <option value='structure_damage'>Structure Damage</option>
-  <option value='minion_damage'>Minion Damage</option>
-  <option value='creep_damage'>Lane Merc. Damage</option>
-  <option value='summon_damage'>Summon Damage</option>
-  <option value='self_healing'>Self Healing</option>
-  <option value='town_kills'>Town Kills</option>
-  <option value='time_spent_dead'>Time Spent Dead</option>
-  <option value='merc_camp_captures'>Merc Camp Captures</option>
-  <option value='watch_tower_captures'>Watch Tower Captures</option>
-  <option value='protection_Allies'>Protection Allies</option>
-  <option value='silencing_enemies'>Silencing Enemies</option>
-  <option value='rooting_enemies'>Rooting Enemies</option>
-  <option value='stunning_enemies'>Stunning Enemies</option>
-  <option value='clutch_heals'>Clutch Heals</option>
-  <option value='escapes'>Escapes</option>
-  <option value='vengeance'>Vengeance</option>
-  <option value='outnumbered_deaths'>Outnumbered Deaths</option>
-  <option value='teamfight_escapes'>Teamfight Escapes</option>
-  <option value='teamfight_healing'>Teamfight Healing</option>
-  <option value='teamfight_damage_taken'>Teamfight Damage Taken</option>
-  <option value='teamfight_hero_damage'>Teamfight Hero Damage</option>
-  <option value='multikill'>Multikill</option>
-  <option value='physical_damage'>Physical Damage</option>
-  <option value='spell_damage'>Spell Damage</option>
-  <option value='regen_globes'>Regen Globes</option>
+{{-- Stat Type Picker --}}
+<select class="selectpicker" multiple title="Win Rate" data-header="Stats">
+  @foreach (getScoreStatsByGrouping() as $grouping => $grouping_data)
+    <optgroup label={{ $grouping }}>
+    @for ($i = 0; $i < count($grouping_data); $i++)
+      <option>{{ $grouping_data[$i] }}</option>
+    @endfor
+  </optgroup>
+  @endforeach
 </select>
 
 {{-- Hero Level Picker --}}
-<select class="selectpicker" multiple multiple data-max-options="10">
+<select class="selectpicker" multiple data-max-options="10" title="All Hero Levels" data-header="Hero Levels">
   <option>1-5</option>
   <option>5-10</option>
   <option>10-15</option>
@@ -94,14 +64,14 @@
 
 
 {{-- Roles Picker --}}
-<select class="selectpicker" multiple data-live-search="true">
+<select class="selectpicker" multiple data-live-search="true" title="All Roles" data-header="Roles">
   @foreach (\App\Models\Hero::select(DB::raw("DISTINCT(new_role) as role"))->orderBy('role', 'ASC')->get() as $major => $minor)
       <option>{{ $minor->role }}</option>
   @endforeach
 </select>
 
 {{-- Heroes Picker --}}
-<select class="selectpicker" multiple data-live-search="true">
+<select class="selectpicker" multiple data-live-search="true" title="All Heroes" data-header="Heroes">
   @foreach (\App\Models\Hero::select('name')->orderBy('name', 'ASC')->get() as $major => $minor)
       <option>{{ $minor->name }}</option>
   @endforeach
@@ -109,7 +79,7 @@
 
 
 {{-- Game Type Picker --}}
-<select class="selectpicker" multiple multiple data-max-options="10" multiple title="Storm League">
+<select class="selectpicker" multiple data-max-options="10" title="Storm League" data-header="Game Types">
   <option>Quick Match</option>
   <option>Unranked Draft</option>
   <option>Storm League</option>
@@ -118,7 +88,7 @@
 
 
 {{-- Maps Picker --}}
-<select class="selectpicker" data-live-search="true" multiple>
+<select class="selectpicker" multiple data-live-search="true" title="All Maps" data-header="Maps">
   @foreach (getFilterMaps() as $section => $map_data)
     <optgroup label={{ $section }}>
     @for ($i = 0; $i < count($map_data); $i++)
@@ -130,7 +100,7 @@
 
 
 {{-- Player Rank Picker --}}
-<select class="selectpicker" multiple multiple data-max-options="10">
+<select class="selectpicker" multiple data-max-options="10" title="All Player Ranks" data-header="Player Ranks">
   <option>Master</option>
   <option>Diamond</option>
   <option>Platinum</option>
@@ -140,7 +110,7 @@
 </select>
 
 {{-- Hero Rank Picker --}}
-<select class="selectpicker" multiple multiple data-max-options="10">
+<select class="selectpicker" multiple data-max-options="10" title="All Hero Ranks" data-header="Hero Ranks">
   <option>Master</option>
   <option>Diamond</option>
   <option>Platinum</option>
@@ -150,7 +120,7 @@
 </select>
 
 {{-- Role Rank Picker --}}
-<select class="selectpicker" multiple multiple data-max-options="10">
+<select class="selectpicker" multiple data-max-options="10" title="All Role Ranks" data-header="Role Ranks">
   <option>Master</option>
   <option>Diamond</option>
   <option>Platinum</option>
