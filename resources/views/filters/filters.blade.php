@@ -118,7 +118,7 @@
 
 
 {{-- Maps Picker --}}
-<select class="selectpicker" multiple>
+<select class="selectpicker" data-live-search="true" multiple>
   @foreach (getFilterMaps() as $section => $map_data)
     <optgroup label={{ $section }}>
     @for ($i = 0; $i < count($map_data); $i++)
