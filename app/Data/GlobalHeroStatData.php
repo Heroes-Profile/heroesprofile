@@ -147,15 +147,24 @@ class GlobalHeroStatData
         $global_hero_data[$i]->pick_rate = 0;
       }
 
-      if(array_key_exists($global_hero_data[$i]->hero, $global_ban_data)){
-        $global_hero_data[$i]->games_banned = $global_ban_data[$global_hero_data[$i]->hero];
-        $global_hero_data[$i]->ban_rate = $global_ban_data[$global_hero_data[$i]->hero] / $total_games;
+      if(!is_null($global_ban_data)){
+        if(array_key_exists($global_hero_data[$i]->hero, $global_ban_data)){
+          $global_hero_data[$i]->games_banned = $global_ban_data[$global_hero_data[$i]->hero];
+          $global_hero_data[$i]->ban_rate = $global_ban_data[$global_hero_data[$i]->hero] / $total_games;
+        }
+      }else{
+        $global_hero_data[$i]->games_banned = 0;
+        $global_hero_data[$i]->ban_rate = 0;
       }
 
-
-      if(array_key_exists($global_hero_data[$i]->hero, $global_change_data)){
-        $global_hero_data[$i]->change = ($global_hero_data[$i]->win_rate * 100)  - $global_change_data[$global_hero_data[$i]->hero];
+      if(!is_null($global_change_data)){
+        if(array_key_exists($global_hero_data[$i]->hero, $global_change_data)){
+          $global_hero_data[$i]->change = ($global_hero_data[$i]->win_rate * 100)  - $global_change_data[$global_hero_data[$i]->hero];
+        }
+      }else{
+        $global_hero_data[$i]->change = 0;
       }
+
 
       if($global_hero_data[$i]->games_banned > 0){
         $global_hero_data[$i]->popularity = (($global_hero_data[$i]->games_banned + $global_hero_data[$i]->games_played) / $total_games) * 100;

@@ -51,6 +51,8 @@ $mirror = array(0);
 
 <script>
 $(document).ready(function() {
+
+
   inputUrl = '/getGlobalStatData';
   inputColumns = [
       { data: "hero"},
@@ -71,51 +73,48 @@ $(document).ready(function() {
   inputFixedHeader = true;
   inputBInfo = false;
   inputSortOrder = [[ 1, "desc" ]];
+  hiddenColumn = [];
 
   //Filters/Parameters
+  var formData = $('#basic_search').serializeArray();
+
   parameters =
   {
-    'page' : 'stat'
+    'page' : 'stat',
+    'data' : formData
   }
-
   $.ajax({
     url: inputUrl,
     data: parameters,
     success: function(results){
-      console.log(results);
-      createTableJS('#stats-table', results, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, parameters);
+      createTableJS('#stats-table', results, inputColumns, hiddenColumn, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder);
     }
   });
 
+  $('#basic_search').on('hide.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+    var formData = $('#basic_search').serializeArray();
+    parameters =
+    {
+      'page' : 'stat',
+      'data' : formData
+    }
 
-
-  //createTableAjax('#stats-table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, parameters);
-    $('.dataTables_length').addClass('bs-select');
-
-
-    $("#basic_search select").on('change', function(e){
-      var formData = $('#basic_search').serializeArray();
-      console.log(formData);
-      parameters =
-      {
-        'page' : 'stat',
-        'data' : formData
+    $.ajax({
+      url: inputUrl,
+      data: parameters,
+      success: function(results){
+        var table = $('#stats-table').DataTable();
+        table
+            .clear()
+            .rows.add(results)
+            .draw();
       }
+    });
 
-      $.ajax({
-        url: inputUrl,
-        data: parameters,
-        success: function(results){
-          console.log(results);
-          var table = $('#stats-table').DataTable();
-          table
-              .clear()
-              .row.add(results)
-              .draw();
-        }
-      });
   });
 
+
+  $('.dataTables_length').addClass('bs-select');
 });
 
 

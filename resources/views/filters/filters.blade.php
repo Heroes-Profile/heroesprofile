@@ -4,24 +4,28 @@
 
 <form id="basic_search">
   {{-- Major Minor Picker --}}
-  <select name="timeframe_type" class="selectpicker" multiple title="Minor" data-header="Timeframe Type">
+  <select name="timeframe" class="selectpicker" multiple title="Minor" data-header="Timeframe Type">
     <option>Major</option>
-    <option>Minor</option>
+    <option selected>Minor</option>
   </select>
 
   {{-- Major Game Version Picker --}}
-  <select name="timeframe" class="selectpicker" multiple data-max-options="3" title={{ max(array_keys(getFilterVersions())) }} data-header="Major Timeframes">
+  <select name="major_timeframe" class="selectpicker" multiple data-max-options="3" title={{ max(array_keys(getFilterVersions())) }} data-header="Major Timeframes">
     @foreach (getFilterVersions() as $major => $minor)
         <option>{{ $major }}</option>
     @endforeach
   </select>
 
   {{-- Minor Game Version Picker --}}
-  <select name="timeframe" class="selectpicker" multiple data-max-options="20" title={{ max(getAllMinorPatches()) }} data-header="Minor Timeframes">
+  <select name="minor_timeframe" class="selectpicker" multiple data-max-options="20" data-header="Minor Timeframes">
     @foreach (getFilterVersions() as $major => $minor)
       <optgroup label={{ $major }}>
       @for ($i = 0; $i < count($minor); $i++)
-        <option>{{ $minor[$i] }}</option>
+        @if ($minor[$i] == max(getAllMinorPatches()))
+          <option selected>{{ $minor[$i] }}</option>
+        @else
+          <option>{{ $minor[$i] }}</option>
+        @endif
       @endfor
     </optgroup>
     @endforeach
@@ -29,10 +33,10 @@
 
   {{-- Region Picker --}}
   <select name="region" class="selectpicker" multiple title="All Regions" data-header="Regions">
-    <option>NA</option>
-    <option>EU</option>
-    <option>KR</option>
-    <option>CN</option>
+    <option value='1'>NA</option>
+    <option value='2'>EU</option>
+    <option value='3'>KR</option>
+    <option value='5'>CN</option>
   </select>
 
 
@@ -49,16 +53,16 @@
 
   {{-- Hero Level Picker --}}
   <select name="hero_level" class="selectpicker" multiple data-max-options="10" title="All Hero Levels" data-header="Hero Levels">
-    <option>1-5</option>
-    <option>5-10</option>
-    <option>10-15</option>
-    <option>15-20</option>
-    <option>20-25</option>
-    <option>25-40</option>
-    <option>40-60</option>
-    <option>60-80</option>
-    <option>80-100</option>
-    <option>100+</option>
+    <option value='1'>1-5</option>
+    <option value='5'>5-10</option>
+    <option value='10'>10-15</option>
+    <option value='15'>15-20</option>
+    <option value='20'>20-25</option>
+    <option value='25'>25-40</option>
+    <option value='40'>40-60</option>
+    <option value='60'>60-80</option>
+    <option value='80'>80-100</option>
+    <option value='100'>100+</option>
   </select>
 
 
@@ -71,18 +75,18 @@
 
   {{-- Heroes Picker --}}
   <select name="hero" class="selectpicker" multiple data-live-search="true" title="All Heroes" data-header="Heroes">
-    @foreach (\App\Models\Hero::select('name')->orderBy('name', 'ASC')->get() as $major => $minor)
-        <option>{{ $minor->name }}</option>
+    @foreach (\App\Models\Hero::select('id', 'name')->orderBy('name', 'ASC')->get() as $major => $hero_data)
+        <option value='{{ $hero_data->id }}'>{{ $hero_data->name }}</option>
     @endforeach
   </select>
 
 
   {{-- Game Type Picker --}}
-  <select name="game_type" class="selectpicker" multiple data-max-options="10" title="Storm League" data-header="Game Types">
-    <option>Quick Match</option>
-    <option>Unranked Draft</option>
-    <option>Storm League</option>
-    <option>Brawl</option>
+  <select name="game_type" class="selectpicker" multiple data-max-options="10" data-header="Game Types">
+    <option value='1'>Quick Match</option>
+    <option value='3'>Unranked Draft</option>
+    <option value='5' selected>Storm League</option>
+    <option value='-1'>Brawl</option>
   </select>
 
 
@@ -91,7 +95,7 @@
     @foreach (getFilterMaps() as $section => $map_data)
       <optgroup label={{ $section }}>
       @for ($i = 0; $i < count($map_data); $i++)
-        <option>{{ $map_data[$i] }}</option>
+        <option value='{{ $map_data[$i]["map_id"] }}'>{{ $map_data[$i]["name"] }}</option>
       @endfor
     </optgroup>
     @endforeach
@@ -100,31 +104,38 @@
 
   {{-- Player Rank Picker --}}
   <select name="player_rank" class="selectpicker" multiple data-max-options="10" title="All Player Ranks" data-header="Player Ranks">
-    <option>Master</option>
-    <option>Diamond</option>
-    <option>Platinum</option>
-    <option>Gold</option>
-    <option>Silver</option>
-    <option>Bronze</option>
+    <option value='6'>Master</option>
+    <option value='5'>Diamond</option>
+    <option value='4'>Platinum</option>
+    <option value='3'>Gold</option>
+    <option value='2'>Silver</option>
+    <option value='1'>Bronze</option>
   </select>
 
   {{-- Hero Rank Picker --}}
   <select name="hero_rank" class="selectpicker" multiple data-max-options="10" title="All Hero Ranks" data-header="Hero Ranks">
-    <option>Master</option>
-    <option>Diamond</option>
-    <option>Platinum</option>
-    <option>Gold</option>
-    <option>Silver</option>
-    <option>Bronze</option>
+    <option value='6'>Master</option>
+    <option value='5'>Diamond</option>
+    <option value='4'>Platinum</option>
+    <option value='3'>Gold</option>
+    <option value='2'>Silver</option>
+    <option value='1'>Bronze</option>
   </select>
 
   {{-- Role Rank Picker --}}
   <select name="role_rank" class="selectpicker" multiple data-max-options="10" title="All Role Ranks" data-header="Role Ranks">
-    <option>Master</option>
-    <option>Diamond</option>
-    <option>Platinum</option>
-    <option>Gold</option>
-    <option>Silver</option>
-    <option>Bronze</option>
+    <option value='6'>Master</option>
+    <option value='5'>Diamond</option>
+    <option value='4'>Platinum</option>
+    <option value='3'>Gold</option>
+    <option value='2'>Silver</option>
+    <option value='1'>Bronze</option>
   </select>
 </form>
+
+<script>
+// To style only selects with the my-select class
+//$('.timeframe_type-select-picker').selectpicker();
+// To style all selects
+//$('select').selectpicker();
+</script>

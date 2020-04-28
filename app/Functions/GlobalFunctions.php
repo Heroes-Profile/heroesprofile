@@ -36,8 +36,8 @@ if (!function_exists('calculateCacheTime')) {
       }
     }else{//Minor TimeFrames
       //Still need to do logic for this one
-      return 60 * 60 * .5; //6 hours
-      //return 0; //Testing
+      //return 60 * 60 * .5; //6 hours
+      return 1; //Testing
     }
   }
 }
@@ -54,7 +54,6 @@ if (!function_exists('getLatestSeason')) {
       return max(array_keys(Session::get("season_dates")));
     }
 }
-
 
 if (!function_exists('getSeasonDates')) {
     /**
@@ -134,7 +133,6 @@ if (!function_exists('getCacheTimeGlobals')) {
      }
 }
 
-
 if (!function_exists('getTalentIDMap')) {
     /**
      * This function maps talent_id and talent names
@@ -156,8 +154,6 @@ if (!function_exists('getTalentIDMap')) {
        return $return_data;
      }
 }
-
-
 
 if (!function_exists('getTalentData')) {
     /**
@@ -212,7 +208,6 @@ if (!function_exists('getAllMinorPatches')) {
     }
 }
 
-
 if (!function_exists('getFilterVersions')) {
     /**
      * This function gets all of the game versions and maps them to major versions
@@ -252,34 +247,34 @@ if (!function_exists('getFilterMaps')) {
      *
      * */
      function getFilterMaps(){
-       $map_data = \App\Models\Map::where('playable', '1')->orderBy('map_id', 'ASC')->get();
+       $map_data = \App\Models\Map::where('playable', '1')->orderBy('type', 'DESC')->orderBy('name', 'ASC')->get();
        $return_data = array();
        $ranked_counter = 0;
        $extra_maps_counter = 0;
        $brawl_counter = 0;
        for($i = 0; $i < count($map_data); $i++){
          if($map_data[$i]->ranked_rotation == 1){
-           $return_data["Ranked-Rotation"][$ranked_counter] = $map_data[$i]->name;
+           $return_data["Ranked-Rotation"][$ranked_counter]["name"] = $map_data[$i]->name;
+           $return_data["Ranked-Rotation"][$ranked_counter]["map_id"] = $map_data[$i]->map_id;
            $ranked_counter++;
          }else{
            if($map_data[$i]->type != "brawl"){
-             $return_data["Extra-Maps"][$extra_maps_counter] = $map_data[$i]->name;
+             $return_data["Extra-Maps"][$extra_maps_counter]["name"]  = $map_data[$i]->name;
+             $return_data["Extra-Maps"][$extra_maps_counter]["map_id"]  = $map_data[$i]->map_id;
              $extra_maps_counter++;
            }
          }
 
          if($map_data[$i]->type == "brawl"){
-           $return_data["Brawl"][$brawl_counter] = $map_data[$i]->name;
+           $return_data["Brawl"][$brawl_counter]["name"] = $map_data[$i]->name;
+           $return_data["Brawl"][$brawl_counter]["map_id"] = $map_data[$i]->map_id;
            $brawl_counter++;
          }
 
        }
-
-       print_r($return_data);
        return $return_data;
      }
 }
-
 
 if (!function_exists('getScoreStatsByGrouping')) {
     /**

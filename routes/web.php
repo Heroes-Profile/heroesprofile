@@ -46,6 +46,7 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::get('/test', 'TestController@testData'); //For Testing Purposes.  Remove later
 
 
 //Opt Out Process

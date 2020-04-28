@@ -7,56 +7,105 @@ use Cache;
 
 class GlobalStatController extends Controller
 {
-    public function getData(){
+    private $timeframe_type;
+    private $game_versions_minor = array();
+    private $game_type = array();
+    private $region = array();
+    private $game_map = array();
+    private $hero_level = array();
+    private $role = array();
+    private $hero = array();
+    private $stat_type;
+    private $player_league_tier = array();
+    private $hero_league_tier = array();
+    private $role_league_tier = array();
+    private $mirror;
 
 
-      //$timeframe = array("major");
-      $timeframe = array("minor");
-      //$game_versions = array("2.49", "2.48");
-      $game_versions = array("2.49.2.77981");
+    private function formatResponse($request){
+      $this->timeframe_type = "minor";
+      if(!is_null($request)){
+        for($i = 0; $i < count($request); $i++){
+          switch ($request[$i]["name"]) {
+          case "timeframe":
+              $this->timeframe_type = $request[$i]["value"];
+              break;
+          case "major_timeframe":
+              $versions = getFilterVersions();
+              $this->game_versions_minor = array_merge($this->game_versions_minor, $versions[$request[$i]["value"]]);
 
-      /*
-      //Needs to be calculated/pulled from session
-      $game_versions_minor = array('2.48.0.76437',
-      '2.48.1.76517',
-      '2.48.2.76753',
-      '2.48.2.76781',
-      '2.48.2.76893',
-      '2.48.3.77205',
-      '2.48.4.77406',
-      '2.49.0.77525',
-      '2.49.0.77548',
-      '2.49.1.77662',
-      '2.49.1.77692',
-      '2.49.2.77981',
-      '2.49.3.78256');
-      */
-      $game_versions_minor = array('2.49.2.77981');
-      $game_type = array("5");
-      $region = array();
-      $game_map = array();
-      $hero_level = array();
-      $stat_type = array();
-      $player_league_tier = array();
-      $hero_league_tier = array();
-      $role_league_tier = array();
-      $mirror = array(0);
+              break;
+          case "minor_timeframe":
+              array_push($this->game_versions_minor, $request[$i]["value"]);
+              break;
+          case "region":
+              array_push($this->region, $request[$i]["value"]);
+              break;
+          case "stat_type":
+              $this->stat_type = $request[$i]["value"];
+              break;
+          case "hero_level":
+              array_push($this->hero_level, $request[$i]["value"]);
+              break;
+          case "role":
+              array_push($this->role, $request[$i]["value"]);
+              break;
+          case "hero":
+              array_push($this->hero, $request[$i]["value"]);
+              break;
+          case "game_type":
+              array_push($this->game_type, $request[$i]["value"]);
+              break;
+          case "game_map":
+              array_push($this->game_map, $request[$i]["value"]);
+              break;
+          case "player_rank":
+              array_push($this->player_league_tier, $request[$i]["value"]);
+              break;
+          case "hero_rank":
+              array_push($this->hero_league_tier, $request[$i]["value"]);
+              break;
+          case "role_rank":
+              array_push($this->role_league_tier, $request[$i]["value"]);
+              break;
+          default:
+              return "Invalid";
+              break;
+            }
+        }
+      }
+    }
 
 
-      $page = "develop|GlobalHeroStats";
+    public function getData(Request $request){
+      $this->formatResponse($request["data"]);
+      $game_versions_minor = $this->game_versions_minor;
+      $game_type = $this->game_type;
+      $region = $this->region;
+      $game_map = $this->game_map;
+      $hero_level = $this->hero_level;
+      $stat_type = $this->stat_type;
+      $player_league_tier = $this->player_league_tier;
+      $hero_league_tier = $this->hero_league_tier;
+      $role_league_tier = $this->role_league_tier;
+      $mirror = $this->mirror;
+
+
+      $page = "GlobalStats";
       $cache =  $page .
-                "|" . implode(",", $timeframe) .
-                "|" . implode(",", $game_versions) .
+                "|" . implode(",", $game_versions_minor) .
                 "|" . implode(",", $game_type) .
                 "|" . implode(",", $region) .
                 "|" . implode(",", $game_map) .
                 "|" . implode(",", $hero_level) .
-                "|" . implode(",", $stat_type) .
+                "|" . $stat_type .
                 "|"  . implode(",", $player_league_tier) .
                 "|"  . implode(",", $hero_league_tier) .
-                "|"  . implode(",", $role_league_tier);
+                "|"  . implode(",", $role_league_tier) .
+                "|"  . $mirror;
 
-      $return_data = Cache::remember($cache, calculateCacheTime($timeframe, $game_versions), function () use ($game_versions_minor, $game_type, $region, $game_map,
+                
+      $return_data = Cache::remember($cache, calculateCacheTime($this->timeframe_type, $this->game_versions_minor), function () use ($game_versions_minor, $game_type, $region, $game_map,
                                             $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror){
         $global_data = \GlobalHeroStatsData::instance($game_versions_minor, $game_type, $region, $game_map,
                                               $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror);
@@ -64,8 +113,6 @@ class GlobalStatController extends Controller
         return $return_data;
       });
 
-      //return $return_data->toJson();
-      //$return_array["data"] = $return_data;
       return $return_data;
     }
 }

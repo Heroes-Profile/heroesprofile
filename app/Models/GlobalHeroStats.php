@@ -12,7 +12,7 @@ class GlobalHeroStats extends Model
 
   public function scopeFilters($query, $game_versions_minor, $game_type, $region, $game_map,
                                         $hero_level, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror, $hero = ""){
-    $query->join('heroes', 'heroes.id', '=', 'global_hero_stats.hero');                                      
+    $query->join('heroes', 'heroes.id', '=', 'global_hero_stats.hero');
     $query->whereIn('game_version', $game_versions_minor);
     $query->whereIn('game_type', $game_type);
 
@@ -40,7 +40,7 @@ class GlobalHeroStats extends Model
       $query->where('hero', $hero);
     }
 
-    if(count($mirror) > 0){
+    if($mirror != ""){
       $query->whereIn('mirror', $mirror);
     }
 

@@ -1,4 +1,4 @@
-function createTableJS(tableID, data, inputColumns, hiddenColumn, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, stat_page) {
+function createTableJS(tableID, data, inputColumns, hiddenColumn, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder) {
   $(tableID).DataTable( {
           async: true,
           paging: inputPaging,
