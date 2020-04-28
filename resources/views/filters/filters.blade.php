@@ -12,7 +12,7 @@
   {{-- Major Game Version Picker --}}
   <select name="major_timeframe" class="selectpicker" multiple data-max-options="3" title={{ max(array_keys(getFilterVersions())) }} data-header="Major Timeframes">
     @foreach (getFilterVersions() as $major => $minor)
-        <option>{{ $major }}</option>
+        <option value='{{ $major }}'>{{ $major }}</option>
     @endforeach
   </select>
 
@@ -22,9 +22,9 @@
       <optgroup label={{ $major }}>
       @for ($i = 0; $i < count($minor); $i++)
         @if ($minor[$i] == max(getAllMinorPatches()))
-          <option selected>{{ $minor[$i] }}</option>
+          <option value='{{ $minor[$i] }}' selected>{{ $minor[$i] }}</option>
         @else
-          <option>{{ $minor[$i] }}</option>
+          <option value='{{ $minor[$i] }}'>{{ $minor[$i] }}</option>
         @endif
       @endfor
     </optgroup>
@@ -45,7 +45,7 @@
     @foreach (getScoreStatsByGrouping() as $grouping => $grouping_data)
       <optgroup label={{ $grouping }}>
       @for ($i = 0; $i < count($grouping_data); $i++)
-        <option>{{ $grouping_data[$i] }}</option>
+        <option value='need to fix'>{{ $grouping_data[$i] }}</option>
       @endfor
     </optgroup>
     @endforeach
