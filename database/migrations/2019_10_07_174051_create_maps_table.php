@@ -37,6 +37,8 @@ class CreateMapsTable extends Migration
           $table->string('name', 255);
           $table->string('short_name', 255);
           $table->string('type', 255);
+          $table->tinyInteger('ranked_rotation');
+          $table->tinyInteger('playable');
 
           $table->primary(['map_id', 'name']);
         });
