@@ -24,30 +24,16 @@
     <div id="echodata">
     </div>
     </div>
-
 @endsection
 
 @section('scripts')
+
 
 <!--
 Child Row example for show talent builds
 https://datatables.net/examples/api/row_details.html
 -->
 
-<?php
-$timesframes = array("2.49.2.77981");
-$game_type = array("5");
-$region = array();
-$game_map = array();
-$hero_level = array();
-$hero = "";
-$role = "";
-$stat_type = array();
-$player_league_tier = array();
-$hero_league_tier = array();
-$role_league_tier = array();
-$mirror = array(0);
- ?>
 
 <script>
 $(document).ready(function() {
@@ -119,4 +105,7 @@ $(document).ready(function() {
 
 
 </script>
+
+
+
 @endsection

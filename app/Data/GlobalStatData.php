@@ -3,7 +3,7 @@ namespace App\Data;
 use Illuminate\Support\Facades\DB;
 use Cache;
 
-class GlobalHeroStatData
+class GlobalStatData
 {
   private $game_versions_minor;
   private $game_type;
@@ -19,7 +19,7 @@ class GlobalHeroStatData
   public static function instance($game_versions_minor, $game_type, $region, $game_map,
                                         $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror)
   {
-    return new GlobalHeroStatData($game_versions_minor, $game_type, $region, $game_map,
+    return new GlobalStatData($game_versions_minor, $game_type, $region, $game_map,
                                           $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror);
   }
 

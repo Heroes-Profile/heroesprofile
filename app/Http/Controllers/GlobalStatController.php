@@ -7,88 +7,21 @@ use Cache;
 
 class GlobalStatController extends Controller
 {
-    private $timeframe_type;
-    private $game_versions_minor = array();
-    private $game_type = array();
-    private $region = array();
-    private $game_map = array();
-    private $hero_level = array();
-    private $role = array();
-    private $hero = array();
-    private $stat_type;
-    private $player_league_tier = array();
-    private $hero_league_tier = array();
-    private $role_league_tier = array();
-    private $mirror;
-
-
-    private function formatResponse($request){
-      $this->timeframe_type = "minor";
-      if(!is_null($request)){
-        for($i = 0; $i < count($request); $i++){
-          switch ($request[$i]["name"]) {
-          case "timeframe":
-              $this->timeframe_type = $request[$i]["value"];
-              break;
-          case "major_timeframe":
-              $versions = getFilterVersions();
-              $this->game_versions_minor = array_merge($this->game_versions_minor, $versions[$request[$i]["value"]]);
-
-              break;
-          case "minor_timeframe":
-              array_push($this->game_versions_minor, $request[$i]["value"]);
-              break;
-          case "region":
-              array_push($this->region, $request[$i]["value"]);
-              break;
-          case "stat_type":
-              $this->stat_type = $request[$i]["value"];
-              break;
-          case "hero_level":
-              array_push($this->hero_level, $request[$i]["value"]);
-              break;
-          case "role":
-              array_push($this->role, $request[$i]["value"]);
-              break;
-          case "hero":
-              array_push($this->hero, $request[$i]["value"]);
-              break;
-          case "game_type":
-              array_push($this->game_type, $request[$i]["value"]);
-              break;
-          case "game_map":
-              array_push($this->game_map, $request[$i]["value"]);
-              break;
-          case "player_rank":
-              array_push($this->player_league_tier, $request[$i]["value"]);
-              break;
-          case "hero_rank":
-              array_push($this->hero_league_tier, $request[$i]["value"]);
-              break;
-          case "role_rank":
-              array_push($this->role_league_tier, $request[$i]["value"]);
-              break;
-          default:
-              return "Invalid";
-              break;
-            }
-        }
-      }
-    }
-
-
     public function getData(Request $request){
-      $this->formatResponse($request["data"]);
-      $game_versions_minor = $this->game_versions_minor;
-      $game_type = $this->game_type;
-      $region = $this->region;
-      $game_map = $this->game_map;
-      $hero_level = $this->hero_level;
-      $stat_type = $this->stat_type;
-      $player_league_tier = $this->player_league_tier;
-      $hero_league_tier = $this->hero_league_tier;
-      $role_league_tier = $this->role_league_tier;
-      $mirror = $this->mirror;
+      //$this->formatResponse($request["data"]);
+      $filters_instance = \Filters::instance();
+      $filters = $filters_instance->formatFilterData($request["data"]);
+
+      $game_versions_minor = $filters_instance->game_versions_minor;
+      $game_type = $filters_instance->game_type;
+      $region = $filters_instance->region;
+      $game_map = $filters_instance->game_map;
+      $hero_level = $filters_instance->hero_level;
+      $stat_type = $filters_instance->stat_type;
+      $player_league_tier = $filters_instance->player_league_tier;
+      $hero_league_tier = $filters_instance->hero_league_tier;
+      $role_league_tier = $filters_instance->role_league_tier;
+      $mirror = $filters_instance->mirror;
 
 
       $page = "GlobalStats";
@@ -104,10 +37,10 @@ class GlobalStatController extends Controller
                 "|"  . implode(",", $role_league_tier) .
                 "|"  . $mirror;
 
-                
-      $return_data = Cache::remember($cache, calculateCacheTime($this->timeframe_type, $this->game_versions_minor), function () use ($game_versions_minor, $game_type, $region, $game_map,
+
+      $return_data = Cache::remember($cache, calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor), function () use ($game_versions_minor, $game_type, $region, $game_map,
                                             $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror){
-        $global_data = \GlobalHeroStatsData::instance($game_versions_minor, $game_type, $region, $game_map,
+        $global_data = \GlobalStatData::instance($game_versions_minor, $game_type, $region, $game_map,
                                               $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror);
         $return_data = $global_data->getGlobalHeroStatData();
         return $return_data;

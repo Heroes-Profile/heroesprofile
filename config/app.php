@@ -228,9 +228,10 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         //Data functions
+        'Filters' => App\Data\Filters::class,
           //Globals
         'LeaderboardData' => App\Data\LeaderboardData::class,
-        'GlobalHeroStatsData' => App\Data\GlobalHeroStatData::class,
+        'GlobalStatData' => App\Data\GlobalStatData::class,
         'GlobalHeroStatMapData' => App\Data\GlobalHeroStatMapData::class,
         'GlobalHeroTalentBuildsData' => App\Data\GlobalHeroTalentBuildsData::class,
         'GlobalHeroTalentDetailsData' => App\Data\GlobalHeroTalentDetailsData::class,
