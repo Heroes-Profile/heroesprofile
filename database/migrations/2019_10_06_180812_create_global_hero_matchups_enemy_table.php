@@ -23,7 +23,7 @@ class CreateGlobalHeroMatchupsEnemyTable extends Migration
     {
         $this->schema = Schema::connection(config('database.default'));
     }
-    
+
     /**
      * Run the migrations.
      *
@@ -33,6 +33,7 @@ class CreateGlobalHeroMatchupsEnemyTable extends Migration
     {
         $this->schema->create('global_hero_matchups_enemy', function (Blueprint $table) {
           $table->engine = 'InnoDB';
+          $table->increments('global_hero_matchups_enemy_id');
           $table->string('game_version', 45);
           $table->tinyInteger('game_type');
           $table->tinyInteger('league_tier');
@@ -47,8 +48,8 @@ class CreateGlobalHeroMatchupsEnemyTable extends Migration
           $table->tinyInteger('win_loss');
           $table->integer('games_played');
 
-          $table->primary(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'enemy', 'mirror', 'region', 'win_loss'], 'Primary_Index');
-          $table->index(['game_version', 'game_type', 'hero', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'enemy', 'mirror', 'region', 'win_loss', 'games_played'], 'Base_Index');
+          $table->unique(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'enemy', 'mirror', 'region', 'win_loss'], 'global_hero_matchups_enemy_Unique');
+          $table->index(['game_version', 'game_type', 'hero', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'enemy', 'mirror', 'region', 'win_loss', 'games_played'], 'global_hero_matchups_enemy_Base_Index');
         });
     }
 

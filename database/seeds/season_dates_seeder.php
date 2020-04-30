@@ -5,6 +5,23 @@ use Illuminate\Database\Seeder;
 class season_dates_seeder extends Seeder
 {
     /**
+     * The database schema.
+     *
+     * @var DB
+     */
+    protected $connection;
+
+    /**
+     * Create a new seed instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->connection = DB::connection(config('database.default'));
+    }
+
+    /**
      * Run the database seeds.
      *
      * @return void
