@@ -42,6 +42,7 @@ class CreateReplayTable extends Migration
           $table->tinyInteger('region');
           $table->dateTime('date_added');
           $table->tinyInteger('mmr_ran');
+          $table->tinyInteger('globals_ran');
           $table->double('player_match_quality');
           $table->double('hero_match_quality');
           $table->double('role_match_quality');
@@ -51,6 +52,7 @@ class CreateReplayTable extends Migration
           $table->index('region');
           $table->index('game_date');
           $table->index('mmr_ran');
+          $table->index('globals_ran');
           $table->index(['region', 'game_type']);
           $table->index(['replayID', 'game_type', 'game_date']);
           $table->index(['replayID', 'region', 'game_type', 'game_date']);

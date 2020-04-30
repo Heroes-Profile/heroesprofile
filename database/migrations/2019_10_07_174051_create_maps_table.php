@@ -33,17 +33,13 @@ class CreateMapsTable extends Migration
     {
         $this->schema->create('maps', function (Blueprint $table) {
           $table->engine = 'InnoDB';
-          $table->integer('map_id')->unsigned();
-          $table->string('name', 255);
+          $table->integer('map_id')->autoIncrement();
+          $table->string('name', 255)->unqiue();
           $table->string('short_name', 255);
           $table->string('type', 255);
           $table->tinyInteger('ranked_rotation');
           $table->tinyInteger('playable');
-
-          $table->primary(['map_id', 'name']);
         });
-        DB::statement("ALTER TABLE maps CHANGE COLUMN map_id map_id INT(11) NOT NULL AUTO_INCREMENT");
-
     }
 
     /**

@@ -38,27 +38,30 @@ class CreatePlayerTable extends Migration
           $table->string('battletag', 50);
           $table->tinyInteger('hero');
           $table->smallInteger('hero_level');
-          $table->smallInteger('mastery_taunt');
+          $table->smallInteger('mastery_taunt')->nullable();
           $table->tinyInteger('team');
           $table->tinyInteger('winner');
           $table->string('party', 45);
           $table->double('player_conservative_rating');
           $table->double('player_mean');
           $table->double('player_standard_deviation');
+          $table->double('player_change');
           $table->double('hero_conservative_rating');
           $table->double('hero_mean');
           $table->double('hero_standard_deviation');
+          $table->double('hero_change');
           $table->double('role_conservative_rating');
           $table->double('role_mean');
           $table->double('role_standard_deviation');
+          $table->double('role_change');
           $table->dateTime('mmr_date_parsed');
 
-          $table->primary(['replayID', 'battletag', 'hero'], 'Primary_Index');
-          $table->index(['replayID', 'blizz_id', 'hero'], 'Index_1');
-          $table->index(['blizz_id', 'hero'], 'Index_2');
-          $table->index(['replayID', 'hero', 'player_conservative_rating'], 'Index_3');
-          $table->index(['hero', 'player_conservative_rating'], 'Index_4');
-          $table->index(['replayID', 'blizz_id', 'mmr_date_parsed'], 'Index_5');
+          $table->primary(['replayID', 'battletag', 'hero'], 'player_Primary_Index');
+          $table->index(['replayID', 'blizz_id', 'hero'], 'player_Index_1');
+          $table->index(['blizz_id', 'hero'], 'player_Index_2');
+          $table->index(['replayID', 'hero', 'player_conservative_rating'], 'player_Index_3');
+          $table->index(['hero', 'player_conservative_rating'], 'player_Index_4');
+          $table->index(['replayID', 'blizz_id', 'mmr_date_parsed'], 'player_Index_5');
 
         });
     }

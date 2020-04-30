@@ -37,7 +37,7 @@ class CreateLeagueBreakdownsTable extends Migration
           $table->tinyInteger('league_tier');
           $table->double('min_mmr');
 
-          $table->primary(['type_role_hero', 'game_type', 'league_tier'], 'Primary_Index');
+          $table->primary(['type_role_hero', 'game_type', 'league_tier'], 'league_breakdowns_Primary_Index');
           $table->index('min_mmr');
         });
     }

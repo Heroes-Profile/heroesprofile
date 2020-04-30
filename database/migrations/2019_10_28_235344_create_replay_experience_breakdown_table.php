@@ -37,14 +37,14 @@ class CreateReplayExperienceBreakdownTable extends Migration
           $table->tinyInteger('team');
           $table->integer('team_level');
           $table->string('timestamp', 500);
-          $table->double('strutureXP');
+          $table->double('structureXP');
           $table->double('creepXP');
           $table->double('heroXP');
           $table->double('minionXP');
-          $table->double('trickleXP');
+          $table->double('trickXP');
           $table->double('totalXP');
 
-          $table->primary(['replayID', 'team', 'team_level', 'timestamp'], 'Primary_Index');
+          $table->primary(['replayID', 'team', 'team_level', 'timestamp'], 'replay_experience_breakdown_Primary_Index');
         });
     }
 

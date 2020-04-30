@@ -44,7 +44,8 @@ class CreateGlobalHeroStatsBansTable extends Migration
           $table->tinyInteger('hero');
           $table->integer('bans')->unsigned()->default(0);
 
-          $table->unique(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'region', 'hero'], 'Base_Unique');
+          $table->unique(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'region', 'hero'], 'global_hero_stats_bans_Base_Unique');
+          $table->index(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'region', 'hero', 'bans'], 'global_hero_stats_bans_Base_Index');
         });
     }
 

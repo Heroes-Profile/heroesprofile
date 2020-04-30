@@ -33,16 +33,12 @@ class CreateSeasonDatesTable extends Migration
     {
         $this->schema->create('season_dates', function (Blueprint $table) {
           $table->engine = 'InnoDB';
-          $table->integer('id')->unsigned();
+          $table->integer('id')->autoIncrement();
           $table->integer('year');
           $table->double('season');
           $table->dateTime('start_date');
           $table->dateTime('end_date');
-
-          $table->primary('id');
         });
-        DB::statement("ALTER TABLE season_dates CHANGE COLUMN id id INT(11) NOT NULL AUTO_INCREMENT");
-
     }
 
     /**

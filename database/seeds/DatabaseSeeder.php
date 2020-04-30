@@ -25,14 +25,10 @@ class DatabaseSeeder extends Seeder
       $this->call(heroes_data_abilities_seeder::class);
       $this->call(heroes_data_talents_seeder::class);
       $this->call(heroes_seeder::class);
-      $this->call(heroes_translations_seeder::class);
       $this->call(league_breakdowns_seeder::class);
       $this->call(league_tiers_seeder::class);
       $this->call(maps_seeder::class);
-      $this->call(maps_translations_seeder::class);
-      $this->call(master_games_played_data_seeder::class);
       $this->call(master_mmr_data_seeder::class);
-      $this->call(mmr_type_ids_seeder::class);
       $this->call(mmr_type_ids_seeder::class);
       $this->call(player_seeder::class);
       $this->call(replay_bans_seeder::class);

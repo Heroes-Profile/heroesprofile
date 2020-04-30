@@ -76,7 +76,7 @@ class CreateBrawlScoresTable extends Migration
           $table->integer('regen_globes');
           $table->integer('first_to_ten');
 
-          $table->primary(['replayID', 'battletag'], 'Primary_Index');
+          $table->primary(['replayID', 'battletag'], 'scores_Primary_Index');
         });
     }
 

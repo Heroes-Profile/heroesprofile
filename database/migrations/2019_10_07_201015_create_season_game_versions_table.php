@@ -33,11 +33,12 @@ class CreateSeasonGameVersionsTable extends Migration
     {
         $this->schema->create('season_game_versions', function (Blueprint $table) {
           $table->engine = 'InnoDB';
+          $table->integer('id')->autoIncrement();
           $table->integer('season');
           $table->string('game_version', 45);
-          $table->dateTime('date_added');
+          $table->dateTime('date_added')->nullable();
 
-          $table->primary(['season', 'game_version']);
+          $table->unique(['season', 'game_version']);
         });
     }
 

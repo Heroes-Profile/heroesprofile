@@ -33,17 +33,13 @@ class CreateReplayBansTable extends Migration
     {
         $this->schema->create('replay_bans', function (Blueprint $table) {
           $table->engine = 'InnoDB';
-          $table->integer('ban_id');
+          $table->integer('ban_id')->autoIncrement();
           $table->integer('replayID');
           $table->tinyInteger('team');
           $table->integer('hero');
-
-          $table->primary('ban_id');
           $table->index(['replayID', 'team', 'hero']);
 
         });
-        DB::statement("ALTER TABLE replay_bans CHANGE COLUMN ban_id ban_id INT(11) NOT NULL AUTO_INCREMENT");
-
     }
 
     /**

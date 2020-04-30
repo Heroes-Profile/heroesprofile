@@ -36,13 +36,14 @@ class CreateHeroesTable extends Migration
           $table->integer('id')->autoIncrement()->unsigned();
           $table->string('name', 255);
           $table->string('short_name', 32);
-          $table->string('alt_name', 45);
-          $table->string('role', 32);
-          $table->string('new_role', 45);
-          $table->string('type', 32);
-          $table->dateTime('release_date');
-          $table->dateTime('rework_date');
-          $table->char('attribute_id');
+          $table->string('alt_name', 45)->nullable();
+          $table->string('role', 32)->nullable();
+          $table->string('new_role', 45)->nullable();
+          $table->string('type', 32)->nullable();
+          $table->dateTime('release_date')->nullable();
+          $table->dateTime('rework_date')->nullable();
+          $table->char('attribute_id')->nullable();
+          $table->string('build_copy_name', 45)->nullable();
 
           $table->unique('name');
           $table->index('attribute_id');

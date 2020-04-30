@@ -29,7 +29,9 @@ class league_tiers_seeder extends Seeder
      */
     public function run()
     {
-      $sql = base_path('database/seeds/heroesprofile-seeds/seed-files/league_tiers.sql');
-      DB::unprepared(file_get_contents($sql));
+      $this->connection->table('league_tiers')->insert([
+        ['tier_id' => '1','name' => 'bronze'],['tier_id' => '2','name' => 'silver'],['tier_id' => '3','name' => 'gold'],['tier_id' => '4','name' => 'platinum'],['tier_id' => '5','name' => 'diamond'],['tier_id' => '6','name' => 'master'],['tier_id' => '7','name' => 'all']
+      ]);
+
     }
 }

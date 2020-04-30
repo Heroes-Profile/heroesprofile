@@ -38,7 +38,7 @@ class CreateAwardsTable extends Migration
           $table->string('icon', 45);
 
 
-          $table->primary(['award_id', 'title', 'icon'], 'Primary_Index');
+          $table->primary(['award_id', 'title', 'icon'], 'awards_Primary_Index');
         });
     }
 
