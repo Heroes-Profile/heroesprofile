@@ -6,17 +6,20 @@ use Illuminate\Http\Request;
 
 class GlobalLeaderboardController extends Controller
 {
-  public function getData(){
-    $type = "player";
-    $hero = 0;
-    $region = "";
-    $season = 15;//getLatestSeason();
-    $game_type = 1;
+  public function getData(Request $request){
+    $filters_instance = \Filters::instance();
+    $filters = $filters_instance->formatFilterData($request["data"], 0);
 
-    $leaderboardData = \LeaderboardData::instance($game_type, $season, $region, $type, $hero);
+    $leaderboard_type = $filters_instance->leaderboard_type;
+    $hero = $filters_instance->single_hero;
+    $role = $filters_instance->single_role;
+    $region = $filters_instance->single_region;
+    $season = $filters_instance->season;
+    $game_type = $filters_instance->single_game_type;
+
+    $leaderboardData = \LeaderboardData::instance($leaderboard_type, $hero, $role, $game_type, $season, $region);
     $return_data = $leaderboardData->getLeaderboardData();
 
-    $return_array["data"] = $return_data;
-    return $return_array;
+    return $return_data;
   }
 }

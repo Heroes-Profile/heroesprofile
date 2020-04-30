@@ -3,10 +3,10 @@
 
 
 @section('content')
-@include('filters.filters')
+@include('filters.leaderboard')
 
     <div class="container">
-        <table id="table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+        <table id="leaderboard-table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
         <thead>
             <tr>
               <th data-field="rank">Rank</th>
@@ -33,6 +33,9 @@
 
 <script>
 $(document).ready(function() {
+  $("#hero-picker").prop("disabled", true);
+  $("#role-picker").prop("disabled", true);
+
   inputUrl = '/getGlobalLeaderboardData';
   inputColumns = [
       { data: "rank" },
@@ -55,11 +58,69 @@ $(document).ready(function() {
   inputFixedHeader = true;
   inputBInfo = true;
   inputSortOrder = [[ 4, "desc" ]];
+  hiddenColumn = [];
 
-  //function createTableAjax(tableID, inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, stat_page) {
+  //Filters/Parameters
+  var formData = $('#basic_search').serializeArray();
 
-  createTableAjax('#table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, 'leaderboard');
-    $('.dataTables_length').addClass('bs-select');
+  parameters =
+  {
+    'page' : 'leaderboard',
+    'data' : formData
+  }
+
+  $.ajax({
+    url: inputUrl,
+    data: parameters,
+    success: function(results){
+      createTableJS('#leaderboard-table', results, inputColumns, hiddenColumn, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder);
+    }
+  });
+
+
+  $('#basic_search').on('hide.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+    var formData = $('#basic_search').serializeArray();
+    parameters =
+    {
+      'page' : 'leaderboard',
+      'data' : formData
+    }
+
+    $.ajax({
+      url: inputUrl,
+      data: parameters,
+      success: function(results){
+        var table = $('#leaderboard-table').DataTable();
+        table
+            .clear()
+            .rows.add(results)
+            .draw();
+      }
+    });
+
+  });
+  $('.dataTables_length').addClass('bs-select');
+
+
+  $('#type-picker').change(function(){
+    switch($('#type-picker').find(":selected").val()){
+      case "hero":
+        $("#hero-picker").removeAttr("disabled");
+        $("#role-picker").prop("disabled", true);
+        break;
+      case "role":
+        $("#hero-picker").prop("disabled", true);
+        $("#role-picker").removeAttr("disabled");
+        break;
+      default:
+        $("#hero-picker").prop("disabled", true);
+        $("#role-picker").prop("disabled", true);
+        break;
+    }
+    $('.selectpicker').selectpicker('refresh');
+  });
 });
+
+
 </script>
 @endsection

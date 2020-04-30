@@ -84,7 +84,7 @@
   {{-- Game Type Picker --}}
   <select name="game_type" class="selectpicker" multiple data-max-options="10" data-header="Game Types">
     <option value='1'>Quick Match</option>
-    <option value='3'>Unranked Draft</option>
+    <option value='2'>Unranked Draft</option>
     <option value='5' selected>Storm League</option>
     <option value='-1'>Brawl</option>
   </select>

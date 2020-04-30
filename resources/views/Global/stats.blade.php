@@ -2,7 +2,7 @@
 @section('title', 'Global Stats')
 
 @section('content')
-@include('filters.filters')
+@include('filters.globals')
     <div class="container">
         <table id="stats-table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
         <thead>

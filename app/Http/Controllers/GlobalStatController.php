@@ -8,13 +8,12 @@ use Cache;
 class GlobalStatController extends Controller
 {
     public function getData(Request $request){
-      //$this->formatResponse($request["data"]);
       $filters_instance = \Filters::instance();
-      $filters = $filters_instance->formatFilterData($request["data"]);
+      $filters = $filters_instance->formatFilterData($request["data"], 1);
 
       $game_versions_minor = $filters_instance->game_versions_minor;
-      $game_type = $filters_instance->game_type;
-      $region = $filters_instance->region;
+      $game_type = $filters_instance->multi_game_type;
+      $region = $filters_instance->multi_region;
       $game_map = $filters_instance->game_map;
       $hero_level = $filters_instance->hero_level;
       $stat_type = $filters_instance->stat_type;
@@ -46,6 +45,7 @@ class GlobalStatController extends Controller
         return $return_data;
       });
 
+      //Need to add filtering for heroes and roles here
       return $return_data;
     }
 }

@@ -3,7 +3,7 @@
 
 
 @section('content')
-@include('filters.filters')
+@include('filters.globals')
 
   <h1>Maps</h1>
     <div class="container">

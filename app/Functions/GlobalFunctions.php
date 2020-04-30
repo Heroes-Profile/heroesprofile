@@ -331,3 +331,27 @@ if (!function_exists('getScoreStatsByGrouping')) {
        return $return_data;
      }
 }
+
+
+if (!function_exists('getMMRTypeIDs')) {
+  /*
+  |--------------------------------------------------------------------------
+  | getMMRTypeIDs
+  |--------------------------------------------------------------------------
+  |
+  | Returns a mapping of MMR Type to MMR Type ID
+  |
+  */
+  function getMMRTypeIDs(){
+    $mmr_type_id_data = \App\Models\MMRTypeID::all();
+    $mmr_type_id_data = json_decode(json_encode($mmr_type_id_data),true);
+
+    $return_data = array();
+    for($i = 0; $i < count($mmr_type_id_data); $i++){
+      $return_data[$mmr_type_id_data[$i]["name"]] = $mmr_type_id_data[$i]["mmr_type_id"];
+    }
+
+
+    return $return_data;
+  }
+}
