@@ -53,6 +53,7 @@ Route::get('/test', 'TestController@testData'); //For Testing Purposes.  Remove 
 Route::view('optout', 'Optout/optout');
 Route::view('optout/update/failure', 'optout/failure');
 Route::view('optout/update/success', 'optout/success');
+Route::get('/Tasha', 'LeaderboardController@show');
 
 Route::get('optout/login', 'BattlenetAuthController@redirectToProvider');
 

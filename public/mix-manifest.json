@@ -1,6 +1,7 @@
 {
     "/js/app.js": "/js/app.js",
     "/css/app.css": "/css/app.css",
+    "/js/custom-datatables.js": "/js/custom-datatables.js",
     "/js/createTableAjax.js": "/js/createTableAjax.js",
     "/js/createTableJS.js": "/js/createTableJS.js",
     "/js/datatables.min.js": "/js/datatables.min.js",

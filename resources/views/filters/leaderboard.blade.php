@@ -1,4 +1,4 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
 
 {{-- Some Pages do not use all of these filters.  So will need to make it dependant on some input --}}
 
@@ -12,6 +12,7 @@
     <option value='hero'>Hero</option>
     <option value='role'>Role</option>
   </select>
+  
 
   {{-- Heroes Picker --}}
   <select name="hero" id="hero-picker" class="heroes-selectpicker" data-live-search="true" title="Hero" data-header="Heroes">
@@ -53,13 +54,3 @@
     <option value='5'>CN</option>
   </select>
 </form>
-
-<script>
-$('.roles-selectpicker').selectpicker();
-$('.heroes-selectpicker').selectpicker();
-
-// To style only selects with the my-select class
-//$('.timeframe_type-selectpicker').selectpicker();
-// To style all selects
-//$('select').selectpicker();
-</script>

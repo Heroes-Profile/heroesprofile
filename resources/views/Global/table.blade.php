@@ -5,27 +5,19 @@
 @section('content')
 @include('filters.leaderboard')
 
-    <div class="container">
-        <table id="leaderboard-table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
-        <thead>
-            <tr>
-              <th data-field="rank">Rank</th>
-              <th data-field="split_battletag">Battletag</th>
-              <th data-field="region">Region</th>
-              <th data-field="win_rate">Win Rate</th>
-              <th data-field="rating">Heroes Profile Rating</th>
-              <th data-field="mmr">MMR</th>
-              <th data-field="tier">Tier</th>
-              <th data-field="games_played">Games Played</th>
-              <th data-field="most_played_hero">Most Played Hero</th>
-              <th data-field="most_played_build">Most Played Build</th>
-              <th data-field="hero_build_games_played">Games Played With Hero</th>
-            </tr>
-        </thead>
-    </table>
-    <div id="echodata">
-    </div>
-    </div>
+<div class="container-fluid">
+  <table id="{{ $tableid }}" class="table table-striped table-bordered table-sm " cellspacing="0" width="100%">
+    <thead class="thead-dark">
+      <tr>
+        @foreach ($columns as $column)
+          <th data-field="{{$column['key'] }}">{{ $column['text'] }}</th>
+        @endforeach
+      </tr>
+    </thead>
+  </table>
+  <div id="echodata">
+  </div>
+</div>
 
 @endsection
 
@@ -35,33 +27,32 @@
   <script src="{{ asset('js/createTableJS.js') }}"></script>
 
 <script>
+var tableID = "#"+@json($tableid);
 $(document).ready(function() {
   $("#hero-picker").prop("disabled", true);
   $("#role-picker").prop("disabled", true);
   $('.roles-selectpicker').selectpicker('refresh');
   $('.heroes-selectpicker').selectpicker('refresh');
 
-  inputUrl = '/getGlobalLeaderboardData';
+  inputUrl = @json($inputUrl);
+
+  inputColumns =
   inputColumns = [
-      { data: "rank" },
-      { data: "split_battletag",
-        "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-             $(nTd).html("<a href='/Profile/?blizz_id=" + oData.blizz_id + "&battletag=" + oData.split_battletag + "&region=" + oData.region+"'>" + oData.split_battletag + "</a>");
-         }
-      },
-      { data: "region" },
-      { data: "win_rate" },
-      { data: "rating" },
-      { data: "mmr" },
-      { data: "tier" },
-      { data: "games_played" },
-      { data: "most_played_hero" },
-      { data: "most_played_build",
-        "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-             $(nTd).html(oData.level_one + "|" + oData.level_four+ "|" + oData.level_seven + "|" + oData.level_ten + "|" + oData.level_thirteen + "|" + oData.level_sixteen + "|" + oData.level_twenty);
-         }
-      },
-      { data: "hero_build_games_played" },
+    @foreach($columndata as $column)
+    { data : @json($column)
+      @if ($column == "split_battletag")
+      ,
+      "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+           $(nTd).html("<a href='/Profile/?blizz_id=" + oData.blizz_id + "&battletag=" + oData.split_battletag + "&region=" + oData.region+"'>" + oData.split_battletag + "</a>");
+       }
+       @elseif ($column == "most_played_build")
+         ,
+           "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+                $(nTd).html(oData.level_one + "|" + oData.level_four+ "|" + oData.level_seven + "|" + oData.level_ten + "|" + oData.level_thirteen + "|" + oData.level_sixteen + "|" + oData.level_twenty);
+            }
+      @endif
+    },
+    @endforeach
   ];
   inputPaging = true;
   inputSearching = true;
@@ -97,7 +88,7 @@ $(document).ready(function() {
     url: inputUrl,
     data: parameters,
     success: function(results){
-      createTableJS('#leaderboard-table', results, inputColumns, columnDefinition, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder);
+      createTableJS(tableID, results, inputColumns, columnDefinition, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder);
     }
   });
 
@@ -114,7 +105,7 @@ $(document).ready(function() {
       url: inputUrl,
       data: parameters,
       success: function(results){
-        var table = $('#leaderboard-table').DataTable();
+        var table = $(tableID).DataTable();
         table
             .clear()
             .rows.add(results)
@@ -137,8 +128,8 @@ $(document).ready(function() {
 
 
             // Get the column API object
-            var most_played_hero_column = $('#leaderboard-table').DataTable().column('most_played_hero:name');
-            var most_played_build_column = $('#leaderboard-table').DataTable().column('most_played_build:name');
+            var most_played_hero_column = $(tableID).DataTable().column('most_played_hero:name');
+            var most_played_build_column = $(tableID).DataTable().column('most_played_build:name');
             //column.visible( ! column.visible() );
             most_played_hero_column.visible(false);
             most_played_build_column.visible(true);
@@ -152,8 +143,8 @@ $(document).ready(function() {
         $('.heroes-selectpicker').selectpicker('val', '');
         $("#role-picker").removeAttr("disabled");
 
-        var most_played_hero_column = $('#leaderboard-table').DataTable().column('most_played_hero:name');
-        var most_played_build_column = $('#leaderboard-table').DataTable().column('most_played_build:name');
+        var most_played_hero_column = $(tableID).DataTable().column('most_played_hero:name');
+        var most_played_build_column = $(tableID).DataTable().column('most_played_build:name');
 
         most_played_hero_column.visible(true);
         most_played_build_column.visible(false);
@@ -166,8 +157,8 @@ $(document).ready(function() {
         $('.roles-selectpicker').selectpicker('val', '');
         $("#role-picker").prop("disabled", true);
 
-        var most_played_hero_column = $('#leaderboard-table').DataTable().column('most_played_hero:name');
-        var most_played_build_column = $('#leaderboard-table').DataTable().column('most_played_build:name');
+        var most_played_hero_column = $(tableID).DataTable().column('most_played_hero:name');
+        var most_played_build_column = $(tableID).DataTable().column('most_played_build:name');
 
         most_played_hero_column.visible(true);
         most_played_build_column.visible(false);
