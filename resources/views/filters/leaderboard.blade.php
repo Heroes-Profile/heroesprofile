@@ -46,7 +46,7 @@
 
   {{-- Region Picker --}}
   <select name="region" class="selectpicker" title="All Regions" data-header="Regions">
-    <option value='' selected>All</option>
+    <option value='' selected>All Regions</option>
     <option value='1'>NA</option>
     <option value='2'>EU</option>
     <option value='3'>KR</option>
