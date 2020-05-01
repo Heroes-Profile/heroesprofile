@@ -15,10 +15,8 @@ if (!function_exists('calculateCacheTime')) {
      * */
     function calculateCacheTime($timeframe_type, $timeframe){
     //Need to work on logic for this
-    return 60 * 60 * .5; //6 hours
 
-    /*
-    if($timeframe_type == "major"){
+    if(strtolower($timeframe_type) == "major"){
 
       //If the user chooses more than 1 major timeframe  e.g. (2.47, 2.48)
       if(count($timeframe) > 1){
@@ -29,10 +27,15 @@ if (!function_exists('calculateCacheTime')) {
           return 86400; //24 hours
         }else{
           //If the major patches first minor patches release date was greater than 4 weeks ago
-          if((Session::get("major_patch_earliest_date")[$timeframe[0]] < strtotime('-30 days'))){
+          $date = App\Models\SeasonGameVersions::max('date_added')->where('game_version', 'like', $timeframe[0] . '%');
+          if(strtotime($date) < strtotime('-30 days')){
             return 86400; //24 hours
+          }else if(strtotime($date) < strtotime('-15 days'))
+            return 43200; //12 hours
+          }else if(strtotime($date) < strtotime('-7 days'))
+            return 43200; //6 hours
           }else{
-            return 60 * 60 * .5; //6 hours
+            return 1800; //30 minutes
           }
         }
       }
@@ -41,8 +44,6 @@ if (!function_exists('calculateCacheTime')) {
       return 60 * 60 * .5; //6 hours
       //return 1; //Testing
     }
-
-    */
   }
 }
 
@@ -198,7 +199,7 @@ if (!function_exists('getAllMinorPatches')) {
      *
      * */
     function getAllMinorPatches(){
-      $minor_patches = DB::table('heroesprofile.season_game_versions')->select(DB::raw("game_version"))
+      $minor_patches = DB::table('heroesprofile.season_game_versions')->select("game_version")
       ->where('game_version', '>=', '2.44')
       ->orderBy('game_version', 'desc')
       ->get();
@@ -221,7 +222,7 @@ if (!function_exists('getFilterVersions')) {
      *
      * */
      function getFilterVersions(){
-       $version_data = DB::table('season_game_versions')->select(DB::raw('DISTINCT(SUBSTRING_INDEX(game_version, ".", 2)) as major_game_version'), DB::raw('game_version as minor_game_version'))
+       $version_data = DB::table('season_game_versions')->select(DB::raw('DISTINCT(SUBSTRING_INDEX(game_version, ".", 2)) as major_game_version'), 'game_version as minor_game_version')
        ->where('game_version', '>=', '2.44')
        ->orderBy('game_version', 'DESC')
        ->get();
@@ -369,7 +370,7 @@ if (!function_exists('getLeagueTierBreakdown')) {
   |
   */
  function getLeagueTierBreakdown($game_type, $mmr_id){
-    $query = DB::table('heroesprofile.league_breakdowns');
+    $query = DB::table('league_breakdowns');
     $query->where('type_role_hero', $mmr_id);
     $query->where('game_type', $game_type);
     $league_data = $query->get();
