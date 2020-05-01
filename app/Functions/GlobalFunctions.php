@@ -55,7 +55,8 @@ if (!function_exists('getLatestSeason')) {
      *
      * */
     function getLatestSeason(){
-      return App\Models\SeasonDate::select('id')->orderBy('id', 'DESC')->limit(1)->get()[0]->id;
+      //return App\Models\SeasonDate::select('id')->orderBy('id', 'DESC')->limit(1)->get()[0]->id;
+      return App\Models\SeasonDate::max('id');
     }
 }
 
