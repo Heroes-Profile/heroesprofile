@@ -16,6 +16,9 @@ class GlobalsMiddleware
      */
     public function handle($request, Closure $next)
     {
+      //UNUSED FOR NOW
+      
+      /*
       if (!$request->session()->has('all_minor_patch')) {
         session(['all_minor_patch' => Cache::remember('all_minor_patch', getCacheTimeGlobals(), function () {
           return getAllMinorPatches();
@@ -52,6 +55,7 @@ class GlobalsMiddleware
           return getHeroesIDMap("name", "short_name");
         })]);
       }
+      */
 
 
       return $next($request);
