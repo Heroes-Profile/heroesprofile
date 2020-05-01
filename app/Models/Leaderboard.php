@@ -57,7 +57,7 @@ class Leaderboard extends Model
  * @param  string  $value
  * @return string
  */
-  public function getConservativeRatingAttribute($value)
+  public function getMmrAttribute($value)
   {
       return round(1800 + 40 * $value);
   }

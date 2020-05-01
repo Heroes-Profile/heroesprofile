@@ -242,16 +242,16 @@ $(document).ready(function() {
       ];
       inputSortOrder = [[ 0, "asc" ], [1, "asc"]];
 
-      hiddenColumn = [{ "visible": false, "targets": 0 }];
+      columnDefinition = [{ "visible": false, "targets": 0 }];
 
 
-      createTableJS('#talent-details-table-level-one', results[1], inputColumns, hiddenColumn, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
-      createTableJS('#talent-details-table-level-four', results[4], inputColumns, hiddenColumn, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
-      createTableJS('#talent-details-table-level-seven', results[7], inputColumns, hiddenColumn, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
-      createTableJS('#talent-details-table-level-ten', results[10], inputColumns, hiddenColumn, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
-      createTableJS('#talent-details-table-level-thirteen', results[13], inputColumns, hiddenColumn, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
-      createTableJS('#talent-details-table-level-sixteen', results[16], inputColumns, hiddenColumn, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
-      createTableJS('#talent-details-table-level-twenty', results[20], inputColumns, hiddenColumn, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+      createTableJS('#talent-details-table-level-one', results[1], inputColumns, columnDefinition, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+      createTableJS('#talent-details-table-level-four', results[4], inputColumns, columnDefinition, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+      createTableJS('#talent-details-table-level-seven', results[7], inputColumns, columnDefinition, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+      createTableJS('#talent-details-table-level-ten', results[10], inputColumns, columnDefinition, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+      createTableJS('#talent-details-table-level-thirteen', results[13], inputColumns, columnDefinition, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+      createTableJS('#talent-details-table-level-sixteen', results[16], inputColumns, columnDefinition, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+      createTableJS('#talent-details-table-level-twenty', results[20], inputColumns, columnDefinition, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
     }
   });
 

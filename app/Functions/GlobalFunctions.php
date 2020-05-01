@@ -355,3 +355,125 @@ if (!function_exists('getMMRTypeIDs')) {
     return $return_data;
   }
 }
+
+
+
+if (!function_exists('getLeagueTierBreakdown')) {
+  /*
+  |--------------------------------------------------------------------------
+  | getLeagueTierBreakdowns
+  |--------------------------------------------------------------------------
+  |
+  | This function returns the league breakdowns for each league
+  |
+  */
+ function getLeagueTierBreakdown($game_type, $mmr_id){
+    $query = DB::table('heroesprofile.league_breakdowns');
+    $query->where('type_role_hero', $mmr_id);
+    $query->where('game_type', $game_type);
+    $league_data = $query->get();
+    $league_data = json_decode(json_encode($league_data),true);
+    $prevMin = 0;
+    $returnData = array();
+    for($i = 0; $i < count($league_data); $i++){
+     $data = array();
+     $data["min_mmr"] = $prevMin;
+     $data["max_mmr"] = round($league_data[$i]["min_mmr"]);
+     $prevMin = round($league_data[$i]["min_mmr"]);
+
+     if($data["min_mmr"] == 0){
+       $data["split"] = ($data["max_mmr"] - 1800) / 5;
+
+     }else{
+       $data["split"] = ($data["max_mmr"] - $data["min_mmr"]) / 5;
+     }
+
+     if($league_data[$i]["league_tier"] == "2"){
+       $returnData["bronze"] = $data;
+     }else if($league_data[$i]["league_tier"] == "3"){
+       $returnData["silver"] = $data;
+     }else if($league_data[$i]["league_tier"] == "4"){
+       $returnData["gold"] = $data;
+     }else if($league_data[$i]["league_tier"] == "5"){
+       $returnData["platinum"] = $data;
+     }else if($league_data[$i]["league_tier"] == "6"){
+       $returnData["diamond"] = $data;
+     }
+    }
+
+    $data["min_mmr"] = $prevMin;
+    $data["max_mmr"] = "";
+    $returnData["master"] = $data;
+
+
+    return $returnData;
+  }
+}
+
+
+if (!function_exists('getRankSplit')) {
+  /*
+  |--------------------------------------------------------------------------
+  | getLeagueTierBreakdowns
+  |--------------------------------------------------------------------------
+  |
+  | This function returns the league breakdowns for each league
+  |
+  */
+ function getRankSplit($mmr, $leagues){
+   $rank_name = "";
+   if($mmr >= $leagues["master"]["min_mmr"]){
+    $rank_name = "Master";
+   }else if($mmr < $leagues["master"]["min_mmr"] && $mmr >= $leagues["diamond"]["min_mmr"]){
+    for($i = 0; $i < 5; $i++){
+      if($mmr >= ($leagues["diamond"]["min_mmr"] + ($i * $leagues["diamond"]["split"])) && $mmr < ($leagues["diamond"]["min_mmr"]  + (($i + 1) * $leagues["diamond"]["split"]))){
+        $rank_name = "Diamond " . (5 - $i);
+        break;
+      }else{
+        $rank_name = "Diamond";
+      }
+    }
+   }else if($mmr < $leagues["diamond"]["min_mmr"] && $mmr >= $leagues["platinum"]["min_mmr"]){
+    for($i = 0; $i < 5; $i++){
+      if($mmr >= ($leagues["platinum"]["min_mmr"] + ($i * $leagues["platinum"]["split"])) && $mmr < ($leagues["platinum"]["min_mmr"]  + (($i + 1) * $leagues["platinum"]["split"]))){
+        $rank_name = "Platinum " . (5 - $i);
+        break;
+      }else{
+        $rank_name = "Platinum";
+      }
+    }
+   }else if($mmr < $leagues["platinum"]["min_mmr"] && $mmr >= $leagues["gold"]["min_mmr"]){
+    for($i = 0; $i < 5; $i++){
+      if($mmr >= ($leagues["gold"]["min_mmr"] + ($i * $leagues["gold"]["split"])) && $mmr < ($leagues["gold"]["min_mmr"]  + (($i + 1) * $leagues["gold"]["split"]))){
+        $rank_name = "Gold " . (5 - $i);
+        break;
+      }else{
+        $rank_name = "Gold";
+      }
+    }
+   }else if($mmr < $leagues["gold"]["min_mmr"] && $mmr >= $leagues["silver"]["min_mmr"]){
+    for($i = 0; $i < 5; $i++){
+      if($mmr >= ($leagues["silver"]["min_mmr"] + ($i * $leagues["silver"]["split"])) && $mmr < ($leagues["silver"]["min_mmr"]  + (($i + 1) * $leagues["silver"]["split"]))){
+        $rank_name = "Silver " . (5 - $i);
+        break;
+      }else{
+        $rank_name = "Silver";
+      }
+    }
+   }else{
+    for($i = 0; $i < 5; $i++){
+      if($mmr >= ($leagues["bronze"]["min_mmr"] + ($i * $leagues["bronze"]["split"])) && $mmr < ($leagues["bronze"]["min_mmr"]  + (($i + 1) * $leagues["bronze"]["split"]))){
+        $rank_name = "Bronze " . (5 - $i);
+        break;
+      }else{
+        $rank_name = "Bronze";
+      }
+    }
+   }
+
+
+
+
+    return $rank_name;
+  }
+}

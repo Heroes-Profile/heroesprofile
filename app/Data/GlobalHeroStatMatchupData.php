@@ -41,7 +41,7 @@ class GlobalHeroStatMatchupData
     $sub_query = \App\Models\GlobalHeroMatchupsAlly::Filters($this->hero, $this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
                                           $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror)
                    ->join('heroes', 'heroes.id', '=', 'global_hero_matchups_ally.ally')
-                   ->select(DB::raw('name as ally'), 'win_loss', DB::raw('SUM(games_played) as games_played'))
+                   ->select('name as ally', 'win_loss', DB::raw('SUM(games_played) as games_played'))
                    ->groupBy('name', 'win_loss');
 
     $global_hero_matchup_data = \App\Models\GlobalHeroMatchupsEnemy::select(
@@ -65,7 +65,7 @@ class GlobalHeroStatMatchupData
     $sub_query = \App\Models\GlobalHeroMatchupsEnemy::Filters($this->hero, $this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
                                           $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror)
                    ->join('heroes', 'heroes.id', '=', 'global_hero_matchups_enemy.enemy')
-                   ->select(DB::raw('name as enemy'), 'win_loss', DB::raw('SUM(games_played) as games_played'))
+                   ->select('name as enemy', 'win_loss', DB::raw('SUM(games_played) as games_played'))
                    ->groupBy('name', 'win_loss');
 
     $global_hero_matchup_data = \App\Models\GlobalHeroMatchupsEnemy::select(

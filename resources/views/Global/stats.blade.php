@@ -59,7 +59,7 @@ $(document).ready(function() {
   inputFixedHeader = true;
   inputBInfo = false;
   inputSortOrder = [[ 1, "desc" ]];
-  hiddenColumn = [];
+  columnDefinition = [];
 
   //Filters/Parameters
   var formData = $('#basic_search').serializeArray();
@@ -73,7 +73,7 @@ $(document).ready(function() {
     url: inputUrl,
     data: parameters,
     success: function(results){
-      createTableJS('#stats-table', results, inputColumns, hiddenColumn, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder);
+      createTableJS('#stats-table', results, inputColumns, columnDefinition, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder);
     }
   });
 

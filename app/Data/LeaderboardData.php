@@ -34,7 +34,6 @@ class LeaderboardData
 
   public function getLeaderboardData(){
     $max_cache_number = $this->getMaxCacheNumber();
-
     $mmr_type_ids = getMMRTypeIDs();
     if($this->type == "player"){
       $mmr_id = 10000;
@@ -45,8 +44,28 @@ class LeaderboardData
     }
 
     $leaderboard_data = \App\Models\Leaderboard::Filters($this->game_type, $this->season, $this->region, $mmr_id, $this->getMaxCacheNumber())
-                          ->select('rank', 'split_battletag', 'battletag', 'blizz_id', 'region', 'win_rate', 'win', 'loss', 'games_played', 'conservative_rating', 'rating', 'most_played_hero', 'hero_build_games_played')
-                          //->join('heroesprofile.heroes', 'heroesprofile.heroes.id', '=', 'heroesprofile_cache.leaderboard.most_played_hero');
+                          ->select(
+                            'rank',
+                            'split_battletag',
+                            'battletag',
+                            'blizz_id',
+                            'region',
+                            'win_rate',
+                            'win',
+                            'loss',
+                            'games_played',
+                            'conservative_rating as mmr',
+                            'rating',
+                            'most_played_hero',
+                            'level_one',
+                            'level_four',
+                            'level_seven',
+                            'level_ten',
+                            'level_thirteen',
+                            'level_sixteen',
+                            'level_twenty',
+                            'hero_build_games_played'
+                            )
                           ->get();
 
                           /*
@@ -55,6 +74,20 @@ class LeaderboardData
                           print_r($leaderboard_data->getBindings());
                           echo "<br>";
                           */
+    $league_tiers = getLeagueTierBreakdown($this->game_type, $mmr_id);
+    $heroes = getHeroesIDMap("id", "name");
+
+    for($i = 0; $i < count($leaderboard_data); $i++){
+      $leaderboard_data[$i]->tier = getRankSplit($leaderboard_data[$i]->mmr, $league_tiers);
+
+      if($leaderboard_data[$i]->most_played_hero == 0){
+        $leaderboard_data[$i]->most_played_hero = "";
+      }else{
+        $leaderboard_data[$i]->most_played_hero = $heroes[$leaderboard_data[$i]->most_played_hero];
+      }
+
+      $leaderboard_data[$i]->most_played_build = "";
+    }
     return $leaderboard_data;
   }
 

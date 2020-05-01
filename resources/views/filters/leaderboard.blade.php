@@ -14,14 +14,14 @@
   </select>
 
   {{-- Heroes Picker --}}
-  <select name="hero" id="hero-picker" class="selectpicker" data-live-search="true" title="Hero" data-header="Heroes">
+  <select name="hero" id="hero-picker" class="heroes-selectpicker" data-live-search="true" title="Hero" data-header="Heroes">
     @foreach (\App\Models\Hero::select('id', 'name')->orderBy('name', 'ASC')->get() as $major => $hero_data)
         <option value='{{ $hero_data->id }}'>{{ $hero_data->name }}</option>
     @endforeach
   </select>
 
   {{-- Roles Picker --}}
-  <select name="role" id="role-picker" class="selectpicker" data-live-search="true" title="Role" data-header="Roles">
+  <select name="role" id="role-picker" class="roles-selectpicker" data-live-search="true" title="Role" data-header="Roles">
     @foreach (\App\Models\Hero::select(DB::raw("DISTINCT(new_role) as role"))->orderBy('role', 'ASC')->get() as $major => $minor)
         <option>{{ $minor->role }}</option>
     @endforeach
@@ -46,6 +46,7 @@
 
   {{-- Region Picker --}}
   <select name="region" class="selectpicker" title="All Regions" data-header="Regions">
+    <option value='' selected>All</option>
     <option value='1'>NA</option>
     <option value='2'>EU</option>
     <option value='3'>KR</option>
@@ -54,8 +55,8 @@
 </form>
 
 <script>
-//$('.roles-selectpicker').selectpicker();
-//$('.heroes-selectpicker').selectpicker();
+$('.roles-selectpicker').selectpicker();
+$('.heroes-selectpicker').selectpicker();
 
 // To style only selects with the my-select class
 //$('.timeframe_type-selectpicker').selectpicker();

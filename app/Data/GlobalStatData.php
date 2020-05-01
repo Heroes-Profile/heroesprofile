@@ -41,7 +41,7 @@ class GlobalStatData
   private function getHeroWinLosses(){
     $sub_query = \App\Models\GlobalHeroStats::Filters($this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
                                           $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror)
-                   ->select(DB::raw('name as hero'), 'win_loss', DB::raw('SUM(games_played) as games_played'))
+                   ->select('name as hero', 'win_loss', DB::raw('SUM(games_played) as games_played'))
                    ->groupBy('hero', 'win_loss');
 
     $global_hero_data = \App\Models\GlobalHeroStats::select(

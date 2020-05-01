@@ -14,10 +14,11 @@
               <th data-field="region">Region</th>
               <th data-field="win_rate">Win Rate</th>
               <th data-field="rating">Heroes Profile Rating</th>
-              <th data-field="conservative_rating">MMR</th>
-              <!--<th data-field="rank">Rank</th>-->
+              <th data-field="mmr">MMR</th>
+              <th data-field="tier">Tier</th>
               <th data-field="games_played">Games Played</th>
               <th data-field="most_played_hero">Most Played Hero</th>
+              <th data-field="most_played_build">Most Played Build</th>
               <th data-field="hero_build_games_played">Games Played With Hero</th>
             </tr>
         </thead>
@@ -35,6 +36,8 @@
 $(document).ready(function() {
   $("#hero-picker").prop("disabled", true);
   $("#role-picker").prop("disabled", true);
+  $('.roles-selectpicker').selectpicker('refresh');
+  $('.heroes-selectpicker').selectpicker('refresh');
 
   inputUrl = '/getGlobalLeaderboardData';
   inputColumns = [
@@ -47,9 +50,15 @@ $(document).ready(function() {
       { data: "region" },
       { data: "win_rate" },
       { data: "rating" },
-      { data: "conservative_rating" },
+      { data: "mmr" },
+      { data: "tier" },
       { data: "games_played" },
       { data: "most_played_hero" },
+      { data: "most_played_build",
+        "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+             $(nTd).html(oData.level_one + "|" + oData.level_four+ "|" + oData.level_seven + "|" + oData.level_ten + "|" + oData.level_thirteen + "|" + oData.level_sixteen + "|" + oData.level_twenty);
+         }
+      },
       { data: "hero_build_games_played" },
   ];
   inputPaging = true;
@@ -58,7 +67,20 @@ $(document).ready(function() {
   inputFixedHeader = true;
   inputBInfo = true;
   inputSortOrder = [[ 4, "desc" ]];
-  hiddenColumn = [];
+  columnDefinition = [
+    { "name": "rank",   "targets": 0 },
+    { "name": "split_battletag",  "targets": 1 },
+    { "name": "region", "targets": 2 },
+    { "name": "win_rate",  "targets": 3 },
+    { "name": "rating",    "targets": 4 },
+    { "name": "mmr",    "targets": 5 },
+    { "name": "tier",    "targets": 6 },
+    { "name": "games_played",    "targets": 7 },
+    { "name": "most_played_hero",    "targets": 8 },
+    { "name": "most_played_build",    "targets": 9 },
+    { "name": "hero_build_games_played",    "targets": 10 },
+    { "visible": false, "targets": 9 }
+  ]
 
   //Filters/Parameters
   var formData = $('#basic_search').serializeArray();
@@ -73,7 +95,7 @@ $(document).ready(function() {
     url: inputUrl,
     data: parameters,
     success: function(results){
-      createTableJS('#leaderboard-table', results, inputColumns, hiddenColumn, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder);
+      createTableJS('#leaderboard-table', results, inputColumns, columnDefinition, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder);
     }
   });
 
@@ -106,18 +128,52 @@ $(document).ready(function() {
     switch($('#type-picker').find(":selected").val()){
       case "hero":
         $("#hero-picker").removeAttr("disabled");
+        $('.roles-selectpicker').selectpicker('val', '');
         $("#role-picker").prop("disabled", true);
+
+
+
+
+            // Get the column API object
+            var most_played_hero_column = $('#leaderboard-table').DataTable().column('most_played_hero:name');
+            var most_played_build_column = $('#leaderboard-table').DataTable().column('most_played_build:name');
+            //column.visible( ! column.visible() );
+            most_played_hero_column.visible(false);
+            most_played_build_column.visible(true);
+
+
+
+
         break;
       case "role":
         $("#hero-picker").prop("disabled", true);
+        $('.heroes-selectpicker').selectpicker('val', '');
         $("#role-picker").removeAttr("disabled");
+
+        var most_played_hero_column = $('#leaderboard-table').DataTable().column('most_played_hero:name');
+        var most_played_build_column = $('#leaderboard-table').DataTable().column('most_played_build:name');
+
+        most_played_hero_column.visible(true);
+        most_played_build_column.visible(false);
+
         break;
       default:
+        $('.heroes-selectpicker').selectpicker('val', '');
         $("#hero-picker").prop("disabled", true);
+
+        $('.roles-selectpicker').selectpicker('val', '');
         $("#role-picker").prop("disabled", true);
+
+        var most_played_hero_column = $('#leaderboard-table').DataTable().column('most_played_hero:name');
+        var most_played_build_column = $('#leaderboard-table').DataTable().column('most_played_build:name');
+
+        most_played_hero_column.visible(true);
+        most_played_build_column.visible(false);
+
         break;
     }
-    $('.selectpicker').selectpicker('refresh');
+    $('.roles-selectpicker').selectpicker('refresh');
+    $('.heroes-selectpicker').selectpicker('refresh');
   });
 });
 

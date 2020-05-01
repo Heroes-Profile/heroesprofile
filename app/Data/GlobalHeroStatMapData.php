@@ -43,7 +43,7 @@ class GlobalHeroStatMapData
     $global_map_data = \App\Models\GlobalHeroStats::Filters($this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
                                           $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror)
                    ->join('maps', 'maps.map_id', '=', 'global_hero_stats.game_map')
-                   ->select(DB::raw('maps.name as game_map'), DB::raw('SUM(games_played) as games_played'))
+                   ->select('maps.name as game_map', DB::raw('SUM(games_played) as games_played'))
                    ->groupBy('maps.name')
                    ->get();
       $total_map_games_played = array();
@@ -54,7 +54,7 @@ class GlobalHeroStatMapData
     $sub_query = \App\Models\GlobalHeroStats::Filters($this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
                                           $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror, $this->hero)
                    ->join('maps', 'maps.map_id', '=', 'global_hero_stats.game_map')
-                   ->select(DB::raw('maps.name as game_map'), 'win_loss', DB::raw('SUM(games_played) as games_played'))
+                   ->select('maps.name as game_map', 'win_loss', DB::raw('SUM(games_played) as games_played'))
                    ->groupBy('maps.name', 'win_loss');
 
     $global_map_data = \App\Models\GlobalHeroStats::select(
