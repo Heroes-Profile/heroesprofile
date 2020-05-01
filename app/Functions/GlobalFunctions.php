@@ -15,7 +15,9 @@ if (!function_exists('calculateCacheTime')) {
      * */
     function calculateCacheTime($timeframe_type, $timeframe){
     //Need to work on logic for this
+    return 60 * 60 * .5; //6 hours
 
+    /*
     if($timeframe_type == "major"){
 
       //If the user chooses more than 1 major timeframe  e.g. (2.47, 2.48)
@@ -23,7 +25,7 @@ if (!function_exists('calculateCacheTime')) {
         return 86400; //24 hours
       }else{
         //If the user chooses 1 timeframe, but it is not the latest major patch
-        if($timeframe[0] != Session::get("major_patch")){
+        if($timeframe[0] != max(array_keys(getFilterVersions())){
           return 86400; //24 hours
         }else{
           //If the major patches first minor patches release date was greater than 4 weeks ago
@@ -39,6 +41,8 @@ if (!function_exists('calculateCacheTime')) {
       return 60 * 60 * .5; //6 hours
       //return 1; //Testing
     }
+
+    */
   }
 }
 
@@ -332,7 +336,6 @@ if (!function_exists('getScoreStatsByGrouping')) {
      }
 }
 
-
 if (!function_exists('getMMRTypeIDs')) {
   /*
   |--------------------------------------------------------------------------
@@ -355,8 +358,6 @@ if (!function_exists('getMMRTypeIDs')) {
     return $return_data;
   }
 }
-
-
 
 if (!function_exists('getLeagueTierBreakdown')) {
   /*
@@ -409,7 +410,6 @@ if (!function_exists('getLeagueTierBreakdown')) {
     return $returnData;
   }
 }
-
 
 if (!function_exists('getRankSplit')) {
   /*
