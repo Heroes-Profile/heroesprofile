@@ -19,6 +19,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 */
+
+//Profile Data
+
+Route::get('/Profile', 'ProfileController@show');
+Route::post('getProfileData', 'ProfileController@getData');
+
+
+
+
+
+
+
+
+
 Route::post('getGlobalStatData', 'GlobalStatController@getData');
 Route::get('getGlobalStatData', 'GlobalStatController@getData'); //For Testing Purposes.  Remove later
 
