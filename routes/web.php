@@ -14,46 +14,43 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-/*
-Route::get('/', function () {
-    return view('welcome');
-});
-*/
-Route::post('getGlobalStatData', 'GlobalStatController@getData');
+///For Testing
 Route::get('getGlobalStatData', 'GlobalStatController@getData'); //For Testing Purposes.  Remove later
-
-Route::post('getGlobalLeaderboardData', 'GlobalLeaderboardController@getData');
 Route::get('getGlobalLeaderboardData', 'GlobalLeaderboardController@getData'); //For Testing Purposes.  Remove later
-
-
-Route::post('getGlobalHeroStatData', 'GlobalHeroStatController@getData');
 Route::get('getGlobalHeroStatData', 'GlobalHeroStatController@getData'); //For Testing Purposes.  Remove later
+Route::get('/test', 'TestController@testData'); //For Testing Purposes.  Remove later
+Route::view('/', '/Global/Leaderboard');  //Defaulting to page currently being worked for ease of use.
 
 
+
+
+//Post Calls to get Data for pages
+Route::post('getGlobalStatData', 'GlobalStatController@getData');
+Route::post('getGlobalLeaderboardData', 'GlobalLeaderboardController@getData');
+Route::post('getGlobalHeroStatData', 'GlobalHeroStatController@getData');
+
+
+
+//Main Routing
+Route::get('/Global/Leaderboard', 'GlobalLeaderboardController@show');
+Route::view('/Global/Stats', 'Global/stats');
+Route::view('/Global/Hero/Stats', 'Global/Hero/stats');
+
+
+/*
 Route::group([
     'middleware' => 'setGlobals'
 ], function () {
-  Route::view('/', 'Global/stats');
-  Route::get('/Global/Leaderboard', 'GlobalLeaderboardController@show');
-  Route::view('/Global/Stats', 'Global/stats');
-  Route::view('/Global/Hero/Talent/Details', 'Global/Hero/Talent/details');
-  Route::view('/Global/Hero/Talent/Builds', 'Global/Hero/Talent/builds');
-  Route::view('/Global/Hero/Stats/Maps', 'Global/Hero/Stats/maps');
-  Route::view('/Global/Hero/Stats', 'Global/Hero/stats');
+
 });
+*/
 
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-Route::get('/test', 'TestController@testData'); //For Testing Purposes.  Remove later
+Auth::routes();  //?? Not sure what this is exactly.  Was added by auth scaffolding.  So must do something.
 
 
 //Opt Out Process
 Route::view('optout', 'Optout/optout');
 Route::view('optout/update/failure', 'optout/failure');
 Route::view('optout/update/success', 'optout/success');
-
 Route::get('optout/login', 'BattlenetAuthController@redirectToProvider');
-
 Route::get('optout/success', 'BattlenetAuthController@handleOptOutProviderCallback');  //Need to switch this from login/success to optout/success in blizzard API service
