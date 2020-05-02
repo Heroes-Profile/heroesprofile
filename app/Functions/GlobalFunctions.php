@@ -23,16 +23,16 @@ if (!function_exists('calculateCacheTime')) {
         return 86400; //24 hours
       }else{
         //If the user chooses 1 timeframe, but it is not the latest major patch
-        if($timeframe[0] != max(array_keys(getFilterVersions())){
+        if($timeframe[0] != max(array_keys(getFilterVersions()))){
           return 86400; //24 hours
         }else{
           //If the major patches first minor patches release date was greater than 4 weeks ago
           $date = App\Models\SeasonGameVersions::max('date_added')->where('game_version', 'like', $timeframe[0] . '%');
           if(strtotime($date) < strtotime('-30 days')){
             return 86400; //24 hours
-          }else if(strtotime($date) < strtotime('-15 days'))
+          }else if(strtotime($date) < strtotime('-15 days')){
             return 43200; //12 hours
-          }else if(strtotime($date) < strtotime('-7 days'))
+          }else if(strtotime($date) < strtotime('-7 days')){
             return 43200; //6 hours
           }else{
             return 1800; //30 minutes
@@ -222,23 +222,26 @@ if (!function_exists('getFilterVersions')) {
      *
      * */
      function getFilterVersions(){
-       $version_data = DB::table('season_game_versions')->select(DB::raw('DISTINCT(SUBSTRING_INDEX(game_version, ".", 2)) as major_game_version'), 'game_version as minor_game_version')
+       $version_data = DB::table('season_game_versions')->select('game_version')
        ->where('game_version', '>=', '2.44')
        ->orderBy('game_version', 'DESC')
        ->get();
-       $version_data = json_decode(json_encode($version_data),true);
 
        $return_data = array();
+
        $counter = 0;
        $prev_major = "";
        for($i = 0; $i < count($version_data); $i++){
-         if($prev_major != "" && $prev_major != $version_data[$i]["major_game_version"]){
+         $major = implode(".", array_slice(explode(".", $version_data[$i]->game_version), 0, 2));
+
+         if($prev_major != "" && $prev_major != $major){
            $counter = 0;
          }
-         $return_data[$version_data[$i]["major_game_version"]][$counter] = $version_data[$i]["minor_game_version"];
+         $return_data[$major][$counter] = $version_data[$i]->game_version;
          $counter++;
-         $prev_major = $version_data[$i]["major_game_version"];
+         $prev_major = $major;
        }
+
        return $return_data;
      }
 }
