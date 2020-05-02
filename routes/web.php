@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('getGlobalStatData', 'GlobalStatController@getData'); //For Testing Purposes.  Remove later
 Route::get('getGlobalLeaderboardData', 'GlobalLeaderboardController@getData'); //For Testing Purposes.  Remove later
 Route::get('getGlobalHeroStatData', 'GlobalHeroStatController@getData'); //For Testing Purposes.  Remove later
+
 Route::get('/test', 'TestController@testData'); //For Testing Purposes.  Remove later
 Route::view('/', '/Global/Leaderboard');  //Defaulting to page currently being worked for ease of use.
 

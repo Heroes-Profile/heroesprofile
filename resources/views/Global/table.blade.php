@@ -87,6 +87,7 @@ $(document).ready(function() {
   $.ajax({
     url: inputUrl,
     data: parameters,
+    type: "POST",
     success: function(results){
       createTableJS(tableID, results, inputColumns, columnDefinition, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder);
     }
@@ -104,6 +105,8 @@ $(document).ready(function() {
     $.ajax({
       url: inputUrl,
       data: parameters,
+      type: "POST",
+
       success: function(results){
         var table = $(tableID).DataTable();
         table
