@@ -41,8 +41,8 @@ if (!function_exists('calculateCacheTime')) {
       }
     }else{//Minor TimeFrames
       //Still need to do logic for this one
-      return 60 * 60 * .5; //6 hours
-      //return 1; //Testing
+      //return 60 * 60 * .5; //6 hours
+      return 1; //Testing
     }
   }
 }
