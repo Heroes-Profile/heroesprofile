@@ -34,7 +34,7 @@ Route::group([
     'middleware' => 'setGlobals'
 ], function () {
   Route::view('/', 'Global/stats');
-  Route::view('/Global/Leaderboard', 'Global/leaderboard');
+  Route::get('/Global/Leaderboard', 'GlobalLeaderboardController@show');
   Route::view('/Global/Stats', 'Global/stats');
   Route::view('/Global/Hero/Talent/Details', 'Global/Hero/Talent/details');
   Route::view('/Global/Hero/Talent/Builds', 'Global/Hero/Talent/builds');
@@ -53,7 +53,6 @@ Route::get('/test', 'TestController@testData'); //For Testing Purposes.  Remove 
 Route::view('optout', 'Optout/optout');
 Route::view('optout/update/failure', 'optout/failure');
 Route::view('optout/update/success', 'optout/success');
-Route::get('/Tasha', 'LeaderboardController@show');
 
 Route::get('optout/login', 'BattlenetAuthController@redirectToProvider');
 
