@@ -16,7 +16,7 @@ Profile
     </li>
 
     <li class="nav-item">
-      <a class="nav-link" href="/Global/stats">Global Stats</a>
+      <a class="nav-link" href="/Global/Stats">Global Stats</a>
     </li>
 
 
@@ -24,21 +24,13 @@ Profile
       <a class="nav-link" href="/Global/Hero/Stats">Global Hero Stats</a>
     </li>
 
-<!--
-    <li class="nav-item">
-      <a class="nav-link" href="/Hero/Talents">Hero Talents</a>
-    </li>
-
-    <li class="nav-item">
-      <a class="nav-link" href="/Hero/TalentBuilder">Talent Builder</a>
-    </li>
 
     <li class="nav-item">
       <a class="nav-link" href="/Compare">Compare</a>
     </li>
--->
+    
     <li class="nav-item">
-      <a class="nav-link" target="_blank" href="https://api.heroesprofile.com/">Replay Uploader</a>
+      <a class="nav-link" target="_blank" href="https://api.heroesprofile.com/upload">Replay Uploader</a>
     </li>
   </ul>
   <form class="form-inline my-2 my-lg-0">
