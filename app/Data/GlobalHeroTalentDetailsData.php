@@ -32,7 +32,7 @@ class GlobalHeroTalentDetailsData
                                $mirror, $region) {
     $this->game_versions_minor = $game_versions_minor;
     $this->game_type = $game_type;
-    $this->hero = 1;//Temporary $hero;
+    $this->hero = $hero;
     $this->player_league_tier = $player_league_tier;
     $this->hero_league_tier = $hero_league_tier;
     $this->role_league_tier = $role_league_tier;
@@ -45,7 +45,7 @@ class GlobalHeroTalentDetailsData
   public function getGlobalTalentDetailData(){
     $talent_details = \App\Models\GlobalHeroTalentsDetails::Filters($this->hero, $this->game_versions_minor, $this->game_type, $this->player_league_tier,
                                           $this->hero_league_tier, $this->role_league_tier, $this->game_map, $this->hero_level, $this->mirror, $this->region)
-                   ->select('hero', 'win_loss', 'title', 'sort', 'global_hero_talents_details.level', DB::raw('SUM(games_played) as games_played'))
+                   ->selectRaw('hero, win_loss, title, sort, global_hero_talents_details.level, SUM(games_played) as games_played')
                    ->groupBy('hero', 'sort', 'global_hero_talents_details.level', 'win_loss', 'title')
                    ->orderBy('level', 'ASC')
                    ->orderBy('sort', 'ASC')

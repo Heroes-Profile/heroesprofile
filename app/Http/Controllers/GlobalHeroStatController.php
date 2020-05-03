@@ -15,6 +15,8 @@ class GlobalHeroStatController extends Controller
     $filters = $this->filters_instance->formatFilterData($request["data"], 1);
     $this->hero = $request["hero"];
 
+    $this->hero = 1; //temporary
+
     switch ($request["page"]) {
     case "map":
         return $this->mapData($request);
@@ -70,8 +72,7 @@ class GlobalHeroStatController extends Controller
       $return_data = $global_data->getGlobalHeroStatMapData();
       return $return_data;
     });
-    $return_array["data"] = $return_data;
-    return $return_array;
+    return $return_data;
   }
 
   private function matchupData($request){
@@ -110,8 +111,7 @@ class GlobalHeroStatController extends Controller
       $return_data = $global_data->getGlobalHeroStatMatchupData();
       return $return_data;
     });
-    $return_array["data"] = $return_data;
-    return $return_array;
+    return $return_data;
   }
 
   private function talentDetailData($request){
@@ -151,16 +151,6 @@ class GlobalHeroStatController extends Controller
       $return_data = $global_data_details->getGlobalTalentDetailData();
       return $return_data;
     });
-    /*
-    $split_data[1] = $this->splitTalentBuildsOnLevel(1, $return_data);
-    $split_data[4] = $this->splitTalentBuildsOnLevel(4, $return_data);
-    $split_data[7] = $this->splitTalentBuildsOnLevel(7, $return_data);
-    $split_data[10] = $this->splitTalentBuildsOnLevel(10, $return_data);
-    $split_data[13] = $this->splitTalentBuildsOnLevel(13, $return_data);
-    $split_data[16] = $this->splitTalentBuildsOnLevel(16, $return_data);
-    $split_data[20] = $this->splitTalentBuildsOnLevel(20, $return_data);
-    */
-
     return $return_data;
   }
 
@@ -190,6 +180,7 @@ class GlobalHeroStatController extends Controller
     $mirror = $this->filters_instance->mirror;
     $hero = $this->hero;
 
+    $type = "Popular"; //Need to get this out of filter later
     $page = "GlobalHeroTalentBuilds";
     $cache =  $page .
               "-" . $hero .

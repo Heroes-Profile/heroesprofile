@@ -43,52 +43,58 @@ class GlobalHeroStatMapData
     $global_map_data = \App\Models\GlobalHeroStats::Filters($this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
                                           $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror)
                    ->join('maps', 'maps.map_id', '=', 'global_hero_stats.game_map')
-                   ->select('maps.name as game_map', DB::raw('SUM(games_played) as games_played'))
+                   ->selectRaw('maps.name as game_map, SUM(games_played) as games_played')
                    ->groupBy('maps.name')
                    ->get();
-      $total_map_games_played = array();
+     $total_map_games_played = array();
      for($i = 0; $i < count($global_map_data); $i++){
-       $total_map_games_played[$global_map_data[$i]->game_map] = $global_map_data[$i]->games_played;
+       $total_map_games_played[$global_map_data[$i]->game_map] = $global_map_data[$i]->games_played / 10;
      }
 
-    $sub_query = \App\Models\GlobalHeroStats::Filters($this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
+    $global_map_data = \App\Models\GlobalHeroStats::Filters($this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
                                           $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror, $this->hero)
                    ->join('maps', 'maps.map_id', '=', 'global_hero_stats.game_map')
-                   ->select('maps.name as game_map', 'win_loss', DB::raw('SUM(games_played) as games_played'))
-                   ->groupBy('maps.name', 'win_loss');
-
-    $global_map_data = \App\Models\GlobalHeroStats::select(
-       'game_map',
-       DB::raw('SUM(IF(win_loss = 1, games_played, 0)) AS wins'),
-       DB::raw('SUM(IF(win_loss = 0, games_played, 0)) AS losses')
-     )
-     ->from(DB::raw('(' . $sub_query->toSql() . ') AS data'))
-     ->mergeBindings($sub_query->getQuery())
-     ->groupBy('game_map')
-     ->get();
+                   ->selectRaw('maps.name as game_map, win_loss, SUM(games_played) as games_played')
+                   ->groupBy('maps.name', 'win_loss')
+                   ->get();
 
      $global_ban_data = $this->getHeroMapBans();
-
-
+     $return_data = array();
+     $counter = 0;
+     $prev_map = "";
      for($i = 0; $i < count($global_map_data); $i++){
-       $total_games = $total_map_games_played[$global_map_data[$i]->game_map] / 10;
-       $global_map_data[$i]->bans = 0;
-       $global_map_data[$i]->win_rate = 0;
-
-       $global_map_data[$i]->games_played = $global_map_data[$i]->wins + $global_map_data[$i]->losses;
-       if($global_map_data[$i]->games_played > 0){
-         $global_map_data[$i]->win_rate =number_format(($global_map_data[$i]->wins / $global_map_data[$i]->games_played) * 100, 2);
+       if($prev_map != "" & $prev_map != $global_map_data[$i]->game_map){
+         $counter++;
        }
-
-       $global_map_data[$i]->pick_rate = number_format(($global_map_data[$i]->games_played / $total_games) * 100, 2);
-
-       if(array_key_exists($global_map_data[$i]->game_map, $global_ban_data)){
-         $global_map_data[$i]->bans = $global_ban_data[$global_map_data[$i]->game_map];
+       $return_data[$counter]["game_map"] = $global_map_data[$i]->game_map;
+       if($global_map_data[$i]->win_loss == 1){
+         $return_data[$counter]["wins"] = $global_map_data[$i]->games_played;
+       }else{
+         $return_data[$counter]["losses"] = $global_map_data[$i]->games_played;
        }
-       $global_map_data[$i]->ban_rate = number_format(($global_map_data[$i]->bans / $total_games) * 100, 2);
-       $global_map_data[$i]->popularity = number_format((($global_map_data[$i]->games_played + $global_map_data[$i]->bans) / $total_games)*100, 2);
+       $prev_map = $global_map_data[$i]->game_map;
      }
-     return $global_map_data;
+
+     for($i = 0; $i < count($return_data); $i++){
+       $return_data[$i]["games_played"] = $return_data[$i]["wins"] + $return_data[$i]["losses"];
+       $return_data[$i]["bans"] = 0;
+       $return_data[$i]["win_rate"] = 0;
+       $return_data[$i]["pick_rate"] = 0;
+       $return_data[$i]["ban_rate"] = 0;
+       $return_data[$i]["popularity"] = 0;
+
+       if($return_data[$i]["games_played"]){
+         $return_data[$i]["win_rate"] = number_format(($return_data[$i]["wins"] / $return_data[$i]["games_played"]) * 100, 2);
+         $return_data[$i]["pick_rate"] = number_format(($return_data[$i]["games_played"] / $total_map_games_played[$return_data[$i]["game_map"]]) * 100, 2);
+       }
+
+       if(array_key_exists($return_data[$i]["game_map"], $global_ban_data)){
+         $return_data[$i]["bans"] = $global_ban_data[$return_data[$i]["game_map"]];
+         $return_data[$i]["ban_rate"] = number_format(($return_data[$i]["bans"] / $total_map_games_played[$return_data[$i]["game_map"]]) * 100, 2);
+       }
+       $return_data[$i]["popularity"] = number_format((($return_data[$i]["games_played"] + $return_data[$i]["bans"]) / $total_map_games_played[$return_data[$i]["game_map"]]) * 100, 2);
+     }
+     return $return_data;
   }
 
   private function getHeroMapBans(){
