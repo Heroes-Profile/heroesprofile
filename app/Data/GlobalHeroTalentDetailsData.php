@@ -32,7 +32,7 @@ class GlobalHeroTalentDetailsData
                                $mirror, $region) {
     $this->game_versions_minor = $game_versions_minor;
     $this->game_type = $game_type;
-    $this->hero = $hero;
+    $this->hero = 1;//Temporary $hero;
     $this->player_league_tier = $player_league_tier;
     $this->hero_league_tier = $hero_league_tier;
     $this->role_league_tier = $role_league_tier;
@@ -43,28 +43,45 @@ class GlobalHeroTalentDetailsData
   }
 
   public function getGlobalTalentDetailData(){
-    $sub_query = \App\Models\GlobalHeroTalentsDetails::Filters($this->hero, $this->game_versions_minor, $this->game_type, $this->player_league_tier,
+    $talent_details = \App\Models\GlobalHeroTalentsDetails::Filters($this->hero, $this->game_versions_minor, $this->game_type, $this->player_league_tier,
                                           $this->hero_league_tier, $this->role_league_tier, $this->game_map, $this->hero_level, $this->mirror, $this->region)
                    ->select('hero', 'win_loss', 'title', 'sort', 'global_hero_talents_details.level', DB::raw('SUM(games_played) as games_played'))
                    ->groupBy('hero', 'sort', 'global_hero_talents_details.level', 'win_loss', 'title')
-                   ->orderBy('level', 'DESC')
-                   ->orderBy('sort', 'DESC')
-                   ->orderBy('title', 'DESC')
-                   ->orderBy('win_loss', 'DESC');
-
-   $talent_details = \App\Models\GlobalHeroTalents::select(
-       'level',
-       'title',
-       'sort',
-       DB::raw('SUM(IF(win_loss = 1, games_played, 0)) AS wins'),
-       DB::raw('SUM(IF(win_loss = 0, games_played, 0)) AS losses')
-     )
-     ->from(DB::raw('(' . $sub_query->toSql() . ') AS data'))
-     ->groupBy('level', 'title', 'sort')
-     ->mergeBindings($sub_query->getQuery())
-     ->get();
+                   ->orderBy('level', 'ASC')
+                   ->orderBy('sort', 'ASC')
+                   ->get();
 
 
+     $return_data = array();
+     $counter = 0;
+     $prev_level = 0;
+     $prev_talent = "";
+     for($i = 0; $i < count($talent_details); $i++){
+       if($prev_level != 0 && $prev_level != $talent_details[$i]->level){
+         $counter = 0;
+       }else{
+         if($prev_talent != "" && $prev_talent != $talent_details[$i]->title){
+           $counter++;
+         }
+       }
+
+
+
+       $return_data[$talent_details[$i]->level][$counter]["sort"] = $talent_details[$i]->sort;
+       $return_data[$talent_details[$i]->level][$counter]["title"] = $talent_details[$i]->title;
+
+
+
+
+       if($talent_details[$i]->win_loss == 1){
+         $return_data[$talent_details[$i]->level][$counter]["wins"] = $talent_details[$i]->games_played;
+       }else{
+         $return_data[$talent_details[$i]->level][$counter]["losses"] = $talent_details[$i]->games_played;
+       }
+       $prev_level = $talent_details[$i]->level;
+       $prev_talent = $talent_details[$i]->title;
+
+     }
      /*
      print_r($sub_query->toSql());
      echo "<br>";
@@ -72,24 +89,29 @@ class GlobalHeroTalentDetailsData
      echo "<br>";
      */
 
-    $level_games_played = array();
 
-    for($i = 0; $i < count($talent_details); $i++){
-      $talent_details[$i]->games_played = $talent_details[$i]->wins + $talent_details[$i]->losses;
-      $talent_details[$i]->win_rate = 0;
+    foreach ($return_data as $level => $level_data){
+      $level_games_played = array();
+      $level_games_played[$level] = 0;
+      for($i = 0; $i < count($level_data); $i++){
 
-      if($talent_details[$i]->games_played > 0){
-        $talent_details[$i]->win_rate = number_format(($talent_details[$i]->wins / $talent_details[$i]->games_played) * 100,2);
+        $return_data[$level][$i]["games_played"] = $return_data[$level][$i]["wins"] + $return_data[$level][$i]["losses"];
+
+        $return_data[$level][$i]["win_rate"] = 0;
+
+        if($return_data[$level][$i]["games_played"]){
+          $return_data[$level][$i]["win_rate"] = number_format(($return_data[$level][$i]["wins"] / $return_data[$level][$i]["games_played"]) * 100, 2);
+        }
+
+        $level_games_played[$level] += $return_data[$level][$i]["games_played"];
+
+
       }
-      if(!array_key_exists($talent_details[$i]->level, $level_games_played)){
-        $level_games_played[$talent_details[$i]->level] = 0;
+      for($i = 0; $i < count($level_data); $i++){
+        $return_data[$level][$i]["popularity"] = number_format(($return_data[$level][$i]["games_played"] / $level_games_played[$level]) * 100, 2);
       }
-      $level_games_played[$talent_details[$i]->level] += $talent_details[$i]->games_played;
-    }
-    for($i = 0; $i < count($talent_details); $i++){
-      $talent_details[$i]->popularity = number_format(($talent_details[$i]->games_played / $level_games_played[$talent_details[$i]->level]) * 100,2);
-    }
 
-    return $talent_details;
+    }
+    return $return_data;
   }
 }

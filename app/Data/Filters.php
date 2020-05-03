@@ -40,72 +40,72 @@ class Filters
     if(!is_null($request)){
       for($i = 0; $i < count($request); $i++){
         switch ($request[$i]["name"]) {
-        case "timeframe":
-            $this->timeframe_type = $request[$i]["value"];
-            break;
-        case "major_timeframe":
-            $versions = getFilterVersions();
-            $this->game_versions_minor = array_merge($this->game_versions_minor, $versions[$request[$i]["value"]]);
+          case "timeframe":
+              $this->timeframe_type = $request[$i]["value"];
+              break;
+          case "major_timeframe":
+              $versions = getFilterVersions();
+              $this->game_versions_minor = array_merge($this->game_versions_minor, $versions[$request[$i]["value"]]);
 
-            break;
-        case "minor_timeframe":
-            array_push($this->game_versions_minor, $request[$i]["value"]);
-            break;
-        case "region":
-            if($singleOrMulti){
-              array_push($this->multi_region, $request[$i]["value"]);
-            }else{
-              $this->single_region =  $request[$i]["value"];
-            }
-            break;
-        case "stat_type":
-            $this->stat_type = $request[$i]["value"];
-            break;
-        case "hero_level":
-            array_push($this->hero_level, $request[$i]["value"]);
-            break;
-        case "role":
-            if($singleOrMulti){
-              array_push($this->multi_role, $request[$i]["value"]);
-            }else{
-              $this->single_role = $request[$i]["value"];
-            }
-            break;
-        case "hero":
-            if($singleOrMulti){
-              array_push($this->multi_hero, $request[$i]["value"]);
-            }else{
-              $this->single_hero = $request[$i]["value"];
-            }
-            break;
-        case "game_type":
-            if($singleOrMulti){
-              array_push($this->multi_game_type, $request[$i]["value"]);
-            }else{
-              $this->single_game_type = $request[$i]["value"];
-            }
-            break;
-        case "game_map":
-            array_push($this->game_map, $request[$i]["value"]);
-            break;
-        case "player_rank":
-            array_push($this->player_league_tier, $request[$i]["value"]);
-            break;
-        case "hero_rank":
-            array_push($this->hero_league_tier, $request[$i]["value"]);
-            break;
-        case "role_rank":
-            array_push($this->role_league_tier, $request[$i]["value"]);
-            break;
-        case "leaderboard_type":
-            $this->leaderboard_type = $request[$i]["value"];
-            break;
-        case "season":
-            $this->season = $request[$i]["value"];
-            break;
-        default:
-            return "Invalid";
-            break;
+              break;
+          case "minor_timeframe":
+              array_push($this->game_versions_minor, $request[$i]["value"]);
+              break;
+          case "region":
+              if($singleOrMulti){
+                array_push($this->multi_region, $request[$i]["value"]);
+              }else{
+                $this->single_region =  $request[$i]["value"];
+              }
+              break;
+          case "stat_type":
+              $this->stat_type = $request[$i]["value"];
+              break;
+          case "hero_level":
+              array_push($this->hero_level, $request[$i]["value"]);
+              break;
+          case "role":
+              if($singleOrMulti){
+                array_push($this->multi_role, $request[$i]["value"]);
+              }else{
+                $this->single_role = $request[$i]["value"];
+              }
+              break;
+          case "hero":
+              if($singleOrMulti){
+                array_push($this->multi_hero, $request[$i]["value"]);
+              }else{
+                $this->single_hero = $request[$i]["value"];
+              }
+              break;
+          case "game_type":
+              if($singleOrMulti){
+                array_push($this->multi_game_type, $request[$i]["value"]);
+              }else{
+                $this->single_game_type = $request[$i]["value"];
+              }
+              break;
+          case "game_map":
+              array_push($this->game_map, $request[$i]["value"]);
+              break;
+          case "player_rank":
+              array_push($this->player_league_tier, $request[$i]["value"]);
+              break;
+          case "hero_rank":
+              array_push($this->hero_league_tier, $request[$i]["value"]);
+              break;
+          case "role_rank":
+              array_push($this->role_league_tier, $request[$i]["value"]);
+              break;
+          case "leaderboard_type":
+              $this->leaderboard_type = $request[$i]["value"];
+              break;
+          case "season":
+              $this->season = $request[$i]["value"];
+              break;
+          default:
+              return "Invalid";
+              break;
           }
       }
     }

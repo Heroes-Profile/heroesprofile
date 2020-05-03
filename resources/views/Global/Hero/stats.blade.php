@@ -208,7 +208,7 @@ $(document).ready(function() {
   inputBInfo = false;
   inputSortOrder = [[ 1, "desc" ]];
   param = 'map';
-  createTableAjax('#map-table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+  //createTableAjax('#map-table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
 
   inputColumns = [
       { data: "hero"},
@@ -220,16 +220,19 @@ $(document).ready(function() {
   inputSearching = true;
   inputSortOrder = [[ 0, "asc" ]];
   param = 'matchups';
-  createTableAjax('#matchups-table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+  //createTableAjax('#matchups-table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
 
+  var formData = $('#basic_search').serializeArray();
+  parameters =
+  {
+    'page' : 'talent-details',
+    'data' : formData
+  }
 
-  stat_page = 'talent-details';
   inputSearching = false;
   $.ajax({
     url: inputUrl,
-    data: {
-      'page' : stat_page
-    },
+    data: parameters,
     success: function(results){
       inputColumns = [
           { data: "sort"},
@@ -276,7 +279,7 @@ $(document).ready(function() {
   ];
   inputSortOrder = [[ 5, "desc" ]];
   param = 'talent-builds';
-  createTableAjax('#talent-builds-table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
+  //createTableAjax('#talent-builds-table', inputUrl, inputColumns, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder, param);
 
 
   //$('.dataTables_length').addClass('bs-select');
