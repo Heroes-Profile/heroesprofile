@@ -40,32 +40,29 @@ $(document).ready(function() {
   $('.roles-selectpicker').selectpicker('refresh');
   $('.heroes-selectpicker').selectpicker('refresh');
 
-  inputUrl = @json($inputUrl);
-
-  inputColumns =
   inputColumns = [
     @foreach($columndata as $column)
     { data : @json($column)
       @if ($column == "split_battletag")
-      ,
-      "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-           $(nTd).html("<a href='/Profile/?blizz_id=" + oData.blizz_id + "&battletag=" + oData.split_battletag + "&region=" + oData.region+"'>" + oData.split_battletag + "</a>");
-       }
+        ,
+        "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+             $(nTd).html("<a href='/Profile/?blizz_id=" + oData.blizz_id + "&battletag=" + oData.split_battletag + "&region=" + oData.region+"'>" + oData.split_battletag + "</a>");
+         }
        @elseif ($column == "most_played_build")
          ,
-           "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
-                $(nTd).html(oData.level_one + "|" + oData.level_four+ "|" + oData.level_seven + "|" + oData.level_ten + "|" + oData.level_thirteen + "|" + oData.level_sixteen + "|" + oData.level_twenty);
-            }
+         "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+              $(nTd).html(oData.level_one + "|" + oData.level_four+ "|" + oData.level_seven + "|" + oData.level_ten + "|" + oData.level_thirteen + "|" + oData.level_sixteen + "|" + oData.level_twenty);
+          }
       @endif
     },
     @endforeach
   ];
-  inputPaging = true;
-  inputSearching = true;
-  inputColReorder = true;
-  inputFixedHeader = true;
-  inputBInfo = true;
-  inputSortOrder = [[ 4, "desc" ]];
+
+  inputSortOrder = [
+    @foreach($inputSortOrder as $column_pos => $order)
+      [@json($column_pos), @json($order)],
+    @endforeach
+  ];
   columnDefinition = [
     <?php $counter = 0; ?>
     @foreach ($columndata as $column)
@@ -83,16 +80,27 @@ $(document).ready(function() {
 
   parameters =
   {
-    'page' : '',
+    'page' : @json($page),
     'data' : formData
   }
 
   $.ajax({
-    url: inputUrl,
+    url: @json($inputUrl),
     data: parameters,
     type: "POST",
     success: function(results){
-      createTableJS(tableID, results, inputColumns, columnDefinition, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder);
+      createTableJS(
+        tableID,
+        results,
+        inputColumns,
+        columnDefinition,
+        @json($inputPaging),
+        @json($inputSearching),
+        @json($inputColReorder),
+        @json($inputFixedHeader),
+        @json($inputBInfo),
+        inputSortOrder
+      );
     }
   });
 
@@ -101,12 +109,12 @@ $(document).ready(function() {
     var formData = $('#basic_search').serializeArray();
     parameters =
     {
-      'page' : '',
+      'page' : @json($page),
       'data' : formData
     }
 
     $.ajax({
-      url: inputUrl,
+      url: @json($inputUrl),
       data: parameters,
       type: "POST",
 

@@ -20,7 +20,7 @@ Route::get('getGlobalLeaderboardData', 'GlobalLeaderboardController@getData'); /
 Route::get('getGlobalHeroStatData', 'GlobalHeroStatController@getData'); //For Testing Purposes.  Remove later
 
 Route::get('/test', 'TestController@testData'); //For Testing Purposes.  Remove later
-Route::view('/', '/Global/Leaderboard');  //Defaulting to page currently being worked for ease of use.
+Route::get('/', 'GlobalStatController@show');  //Defaulting to page currently being worked for ease of use.
 
 
 

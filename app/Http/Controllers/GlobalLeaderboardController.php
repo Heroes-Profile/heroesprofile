@@ -63,14 +63,22 @@ class GlobalLeaderboardController extends Controller
     return view('Global.table',
     [
       'tableid' => 'leaderboard-table',
-      'dataurl' => '/get_heroes_stats_table_data', // URL used for calling the table data
       'title' => 'Global Leaderboard', // Page title
-      'paragraph' => 'Hero win rates based on differing increments, stat types, game type, or league tier.', // Summary paragraph
-      'tableheading' => 'Win Rates', // Table heading
+      'paragraph' => 'Heroes Profile Leaderboard - View profiles of each player.', // Summary paragraph
+      'tableheading' => 'Leaderboard', // Table heading
       'filtertype' => 'leaderboard',
       'columns' => $this->columns,
       'inputUrl' => "/getGlobalLeaderboardData",
-      'columndata' => $this->splitColumn($this->columns)
+      'columndata' => $this->splitColumn($this->columns),
+      'page' => 'leaderboard',
+
+      //Table Customizations
+      'inputSortOrder' => array(4 => "desc"),
+      'inputPaging' => true,
+      'inputSearching' => true,
+      'inputColReorder' => true,
+      'inputFixedHeader' => true,
+      'inputBInfo' => true,
 
     ]);
   }
