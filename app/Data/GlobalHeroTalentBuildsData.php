@@ -51,7 +51,7 @@ class GlobalHeroTalentBuildsData
 
     $builds = \App\Models\GlobalHeroTalents::Filters($this->hero, $this->game_versions_minor, $this->game_type, $this->player_league_tier,
                                           $this->hero_league_tier, $this->role_league_tier, $this->game_map, $this->hero_level, $this->mirror, $this->region)
-                   ->select('level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty', DB::raw('SUM(games_played) as games_played'))
+                   ->selectRaw('level_one, level_four, level_seven, level_ten, level_thirteen, level_sixteen, level_twenty, SUM(games_played) as games_played')
                    ->where('level_twenty', '<>', '0')
                    ->groupBy('level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
                    ->orderBy('games_played', 'DESC')
