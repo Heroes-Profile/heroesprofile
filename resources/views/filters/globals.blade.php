@@ -1,5 +1,3 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
-
 {{-- Some Pages do not use all of these filters.  So will need to make it dependant on some input --}}
 
 <form id="basic_search">
@@ -132,10 +130,3 @@
     <option value='1'>Bronze</option>
   </select>
 </form>
-
-<script>
-// To style only selects with the my-select class
-//$('.timeframe_type-select-picker').selectpicker();
-// To style all selects
-//$('select').selectpicker();
-</script>

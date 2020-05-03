@@ -67,6 +67,7 @@ class GlobalLeaderboardController extends Controller
       'title' => 'Global Leaderboard', // Page title
       'paragraph' => 'Hero win rates based on differing increments, stat types, game type, or league tier.', // Summary paragraph
       'tableheading' => 'Win Rates', // Table heading
+      'filtertype' => 'leaderboard',
       'columns' => $this->columns,
       'inputUrl' => "/getGlobalLeaderboardData",
       'columndata' => $this->splitColumn($this->columns)

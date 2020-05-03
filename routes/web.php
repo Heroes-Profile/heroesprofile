@@ -34,7 +34,7 @@ Route::post('getGlobalHeroStatData', 'GlobalHeroStatController@getData');
 
 //Main Routing
 Route::get('/Global/Leaderboard', 'GlobalLeaderboardController@show');
-Route::view('/Global/Stats', 'Global/stats');
+Route::get('/Global/Stats', 'GlobalStatController@show');
 Route::view('/Global/Hero/Stats', 'Global/Hero/stats');
 
 

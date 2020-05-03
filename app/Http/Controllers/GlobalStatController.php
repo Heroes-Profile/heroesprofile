@@ -3,10 +3,78 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Cache;
 
 class GlobalStatController extends Controller
 {
+
+
+  private $columns = array(
+    [
+      "key" => "hero",
+      "text" => "Hero"
+    ],
+    [
+      "key" => "win_rate",
+      "text" => "Win Rate"
+    ],
+    [
+      "key" => "change",
+      "text" => "Change"
+    ],
+    [
+      "key" => "popularity",
+      "text" => "Popularity"
+    ],
+    [
+      "key" => "pick_rate",
+      "text" => "Pick Rate"
+    ],
+    [
+      "key" => "ban_rate",
+      "text" => "Ban Rate"
+    ],
+    [
+      "key" => "influence",
+      "text" => "Influence"
+    ],
+    [
+      "key" => "games_played",
+      "text" => "Games Played"
+    ],
+    [
+      "key" => "wins",
+      "text" => "Wins"
+    ],
+    [
+      "key" => "losses",
+      "text" => "Losses"
+    ],
+    [
+      "key" => "games_banned",
+      "text" => "Games Banned"
+    ]
+  );
+  private function splitColumn($column){
+    $keys = Arr::pluck($column, 'key');
+    return $keys;
+  }
+  public function show(){
+    return view('Global.table',
+    [
+      'tableid' => 'stats-table',
+      'dataurl' => '/get_heroes_stats_table_data', // URL used for calling the table data
+      'title' => 'Global Stats', // Page title
+      'paragraph' => 'Hero win rates based on differing increments, stat types, game type, or league tier.', // Summary paragraph
+      'tableheading' => 'Win Rates', // Table heading
+      'filtertype' => 'global_stats',
+      'columns' => $this->columns,
+      'inputUrl' => "/getGlobalStatData",
+      'columndata' => $this->splitColumn($this->columns)
+
+    ]);
+  }
     public function getData(Request $request){
       $filters_instance = \Filters::instance();
       $filters = $filters_instance->formatFilterData($request["data"], 1);
@@ -48,4 +116,5 @@ class GlobalStatController extends Controller
       //Need to add filtering for heroes and roles here
       return $return_data;
     }
+
 }

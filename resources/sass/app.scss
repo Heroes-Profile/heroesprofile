@@ -30,7 +30,7 @@ a {
     border-bottom: 2px solid $blue;
   }
 }
-.navbar a{
+.navbar a, .dropdown a{
   border:none;
   font-weight: normal;
   &:hover{border-bottom: 0;}

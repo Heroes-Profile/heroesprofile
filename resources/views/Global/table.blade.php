@@ -3,7 +3,13 @@
 
 
 @section('content')
-@include('filters.leaderboard')
+
+  @if ($filtertype == "leaderboard")
+    @include('filters.leaderboard')
+  @else
+    @include('filters.globals')
+  @endif
+
 
 <div class="container-fluid">
   <table id="{{ $tableid }}" class="table table-striped table-bordered table-sm " cellspacing="0" width="100%">
@@ -61,18 +67,15 @@ $(document).ready(function() {
   inputBInfo = true;
   inputSortOrder = [[ 4, "desc" ]];
   columnDefinition = [
-    { "name": "rank",   "targets": 0 },
-    { "name": "split_battletag",  "targets": 1 },
-    { "name": "region", "targets": 2 },
-    { "name": "win_rate",  "targets": 3 },
-    { "name": "rating",    "targets": 4 },
-    { "name": "mmr",    "targets": 5 },
-    { "name": "tier",    "targets": 6 },
-    { "name": "games_played",    "targets": 7 },
-    { "name": "most_played_hero",    "targets": 8 },
-    { "name": "most_played_build",    "targets": 9 },
-    { "name": "hero_build_games_played",    "targets": 10 },
-    { "visible": false, "targets": 9 }
+    <?php $counter = 0; ?>
+    @foreach ($columndata as $column)
+    { "name" : @json($column), "targets": {{ $counter }}},
+
+      @if ($column == "most_played_build")
+      { "visible": false, "targets": {{ $counter }} },
+      @endif
+    <?php $counter++;?>
+    @endforeach
   ]
 
   //Filters/Parameters
@@ -80,7 +83,7 @@ $(document).ready(function() {
 
   parameters =
   {
-    'page' : 'leaderboard',
+    'page' : '',
     'data' : formData
   }
 
@@ -94,11 +97,11 @@ $(document).ready(function() {
   });
 
 
-  $('#basic_search').on('hide.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+  $('#basic_search').on('hide.bs.select', function (e, clickedIndex, isSelected, previousValue) { // Change this so that it also triggers on on radio buttons, etc.
     var formData = $('#basic_search').serializeArray();
     parameters =
     {
-      'page' : 'leaderboard',
+      'page' : '',
       'data' : formData
     }
 
@@ -119,7 +122,7 @@ $(document).ready(function() {
   });
   $('.dataTables_length').addClass('bs-select');
 
-
+@if ($filtertype == "leaderboard")
   $('#type-picker').change(function(){
     switch($('#type-picker').find(":selected").val()){
       case "hero":
@@ -171,6 +174,7 @@ $(document).ready(function() {
     $('.roles-selectpicker').selectpicker('refresh');
     $('.heroes-selectpicker').selectpicker('refresh');
   });
+  @endif
 });
 
 
