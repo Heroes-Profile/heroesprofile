@@ -38,49 +38,39 @@ class GlobalHeroStatMatchupData
     $this->mirror = $mirror;
   }
   private function getGlobalHeroStatAllyData(){
-    $sub_query = \App\Models\GlobalHeroMatchupsAlly::Filters($this->hero, $this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
+    $global_hero_matchup_data = \App\Models\GlobalHeroMatchupsAlly::Filters($this->hero, $this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
                                           $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror)
                    ->join('heroes', 'heroes.id', '=', 'global_hero_matchups_ally.ally')
-                   ->select('name as ally', 'win_loss', DB::raw('SUM(games_played) as games_played'))
-                   ->groupBy('name', 'win_loss');
+                   ->selectRaw('name as ally, win_loss, SUM(games_played) as games_played')
+                   ->groupBy('name', 'win_loss')
+                   ->get();
 
-    $global_hero_matchup_data = \App\Models\GlobalHeroMatchupsEnemy::select(
-       'ally',
-       DB::raw('SUM(IF(win_loss = 1, games_played, 0)) AS wins'),
-       DB::raw('SUM(IF(win_loss = 0, games_played, 0)) AS losses')
-     )
-     ->from(DB::raw('(' . $sub_query->toSql() . ') AS data'))
-     ->mergeBindings($sub_query->getQuery())
-     ->groupBy('ally')
-     ->get();
      $return_data = array();
      for($i = 0; $i < count($global_hero_matchup_data); $i++){
-       $return_data[$global_hero_matchup_data[$i]->ally]["wins"] = $global_hero_matchup_data[$i]->wins;
-       $return_data[$global_hero_matchup_data[$i]->ally]["losses"] = $global_hero_matchup_data[$i]->losses;
+       if($global_hero_matchup_data[$i]->win_loss == 1){
+         $return_data[$global_hero_matchup_data[$i]->ally]["wins"] = $global_hero_matchup_data[$i]->games_played;
+       }else{
+         $return_data[$global_hero_matchup_data[$i]->ally]["losses"] = $global_hero_matchup_data[$i]->games_played;
+       }
      }
      return $return_data;
   }
 
   private function getGlobalHeroStatEnemyData(){
-    $sub_query = \App\Models\GlobalHeroMatchupsEnemy::Filters($this->hero, $this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
+    $global_hero_matchup_data = \App\Models\GlobalHeroMatchupsEnemy::Filters($this->hero, $this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
                                           $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror)
                    ->join('heroes', 'heroes.id', '=', 'global_hero_matchups_enemy.enemy')
-                   ->select('name as enemy', 'win_loss', DB::raw('SUM(games_played) as games_played'))
-                   ->groupBy('name', 'win_loss');
-
-    $global_hero_matchup_data = \App\Models\GlobalHeroMatchupsEnemy::select(
-       'enemy',
-       DB::raw('SUM(IF(win_loss = 1, games_played, 0)) AS wins'),
-       DB::raw('SUM(IF(win_loss = 0, games_played, 0)) AS losses')
-     )
-     ->from(DB::raw('(' . $sub_query->toSql() . ') AS data'))
-     ->mergeBindings($sub_query->getQuery())
-     ->groupBy('enemy')
-     ->get();
+                   ->selectRaw('name as enemy, win_loss, SUM(games_played) as games_played')
+                   ->groupBy('name', 'win_loss')
+                   ->get();
      $return_data = array();
+
      for($i = 0; $i < count($global_hero_matchup_data); $i++){
-       $return_data[$global_hero_matchup_data[$i]->enemy]["wins"] = $global_hero_matchup_data[$i]->wins;
-       $return_data[$global_hero_matchup_data[$i]->enemy]["losses"] = $global_hero_matchup_data[$i]->losses;
+       if($global_hero_matchup_data[$i]->win_loss == 1){
+         $return_data[$global_hero_matchup_data[$i]->enemy]["wins"] = $global_hero_matchup_data[$i]->games_played;
+       }else{
+         $return_data[$global_hero_matchup_data[$i]->enemy]["losses"] = $global_hero_matchup_data[$i]->games_played;
+       }
      }
      return $return_data;
   }

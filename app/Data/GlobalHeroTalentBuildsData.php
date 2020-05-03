@@ -51,7 +51,7 @@ class GlobalHeroTalentBuildsData
 
     $builds = \App\Models\GlobalHeroTalents::Filters($this->hero, $this->game_versions_minor, $this->game_type, $this->player_league_tier,
                                           $this->hero_league_tier, $this->role_league_tier, $this->game_map, $this->hero_level, $this->mirror, $this->region)
-                   ->select('level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty', DB::raw('SUM(games_played) as games_played'))
+                   ->selectRaw('level_one, level_four, level_seven, level_ten, level_thirteen, level_sixteen, level_twenty, SUM(games_played) as games_played')
                    ->where('level_twenty', '<>', '0')
                    ->groupBy('level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
                    ->orderBy('games_played', 'DESC')
@@ -132,31 +132,29 @@ class GlobalHeroTalentBuildsData
 
   private function getBuildsWinChance($builds){
     foreach($builds as $key => $value){
-      $sub_query = \App\Models\GlobalHeroTalents::Filters($this->hero, $this->game_versions_minor, $this->game_type, $this->player_league_tier,
+      $build_data = \App\Models\GlobalHeroTalents::Filters($this->hero, $this->game_versions_minor, $this->game_type, $this->player_league_tier,
                                             $this->hero_league_tier, $this->role_league_tier, $this->game_map, $this->hero_level, $this->mirror, $this->region)
-                     ->select('win_loss', DB::raw('SUM(games_played) as games_played'))
+                     ->selectRaw('win_loss, SUM(games_played) as games_played')
                      ->where('level_one', $value->level_one)
                      ->where('level_four', $value->level_four)
                      ->where('level_seven', $value->level_seven)
                      ->where('level_ten', $value->level_ten)
-                     ->groupBy('win_loss');
+                     ->groupBy('win_loss')
+                     ->get();
+       $builds[$key]->wins = 0;
+       $builds[$key]->losses = 0;
+       for($i = 0; $i < count($build_data); $i++){
+         if($build_data[$i]->win_loss == 1){
+           $builds[$key]->wins = $build_data[$i]->games_played;
+         }else{
+           $builds[$key]->losses = $build_data[$i]->games_played;
+         }
+       }
 
-     $build_data = \App\Models\GlobalHeroTalents::select(
-         DB::raw('SUM(IF(win_loss = 1, games_played, 0)) AS wins'),
-         DB::raw('SUM(IF(win_loss = 0, games_played, 0)) AS losses')
-       )
-       ->from(DB::raw('(' . $sub_query->toSql() . ') AS data'))
-       ->mergeBindings($sub_query->getQuery())
-       ->get();
-
-
-
-       $builds[$key]->wins = $build_data[0]->wins;
-       $builds[$key]->losses = $build_data[0]->losses;
-       $builds[$key]->games_played = $build_data[0]->wins + $build_data[0]->losses;
+       $builds[$key]->games_played = $builds[$key]->wins + $builds[$key]->losses;
 
        if($builds[$key]->games_played > 0){
-         $builds[$key]->win_rate = $build_data[0]->wins / ($build_data[0]->wins + $build_data[0]->losses);
+         $builds[$key]->win_rate = $builds[$key]->wins / ($builds[$key]->wins + $builds[$key]->losses);
        }
     }
 
@@ -168,22 +166,11 @@ class GlobalHeroTalentBuildsData
     $builds = $this->getBuildsWinChance($builds);
 
 
-    $hero_ids_to_name = Cache::remember('heroes_by_id_to_name', getCacheTimeGlobals(), function () {
-        return getHeroesIDMap("id", "name");
-    });
+    $hero_ids_to_name = getHeroesIDMap("id", "name");
+    $hero_ids_to_hyperlinkID = getHeroesIDMap("id", "build_copy_name");
+    $sort_talentID_to_sortID = getTalentIDMap($hero_ids_to_name[$this->hero], "talent_id", "sort");
 
-    $hero_ids_to_hyperlinkID = Cache::remember('heroes_by_id_to_hyperlinkID', getCacheTimeGlobals(), function () {
-        return getHeroesIDMap("id", "build_copy_name");
-    });
-
-
-    $sort_talentID_to_sortID = Cache::remember($hero_ids_to_name[$this->hero] . "-" . 'talent_id_to_sort_id', getCacheTimeGlobals(), function () use ($hero_ids_to_name){
-        return getTalentIDMap($hero_ids_to_name[$this->hero], "talent_id", "sort");
-    });
-
-    $talent_data = Cache::remember($hero_ids_to_name[$this->hero] . "-" . 'talent_data', getCacheTimeGlobals(), function () use ($hero_ids_to_name){
-        return getTalentData($hero_ids_to_name[$this->hero]);
-    });
+    $talent_data = getTalentData($hero_ids_to_name[$this->hero]);
 
     foreach($builds as $key => $value){
       $builds[$key]->level_one = $talent_data[$builds[$key]->level_one];
@@ -217,8 +204,6 @@ class GlobalHeroTalentBuildsData
         $hero_ids_to_hyperlinkID[$this->hero] .
         "]";
     }
-
-    $return_array["data"] = $builds;
-    return $return_array;
+    return $builds;
   }
 }

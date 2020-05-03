@@ -93,7 +93,7 @@ class LeaderboardData
 
   private function getMaxCacheNumber(){
     $max_cache_number = \App\Models\TableCacheValue::Filters('leaderboard', $this->season)
-                          ->select(DB::raw('MAX(cache_number) as max_cache_number'))
+                          ->selectRaw('MAX(cache_number) as max_cache_number')
                           ->get();
     return $max_cache_number[0]["max_cache_number"];
   }

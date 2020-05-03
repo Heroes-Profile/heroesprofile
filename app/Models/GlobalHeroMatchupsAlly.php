@@ -35,7 +35,7 @@ class GlobalHeroMatchupsAlly extends Model
       $query->whereIn('hero_level', $hero_level);
     }
 
-    if(count($mirror) > 0){
+    if($mirror != ""){
       $query->whereIn('mirror', $mirror);
     }
 

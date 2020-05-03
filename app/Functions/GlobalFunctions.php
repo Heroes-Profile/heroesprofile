@@ -16,28 +16,33 @@ if (!function_exists('calculateCacheTime')) {
     function calculateCacheTime($timeframe_type, $timeframe){
     //Need to work on logic for this
 
-    if($timeframe_type == "major"){
+    if(strtolower($timeframe_type) == "major"){
 
       //If the user chooses more than 1 major timeframe  e.g. (2.47, 2.48)
       if(count($timeframe) > 1){
         return 86400; //24 hours
       }else{
         //If the user chooses 1 timeframe, but it is not the latest major patch
-        if($timeframe[0] != Session::get("major_patch")){
+        if($timeframe[0] != max(array_keys(getFilterVersions()))){
           return 86400; //24 hours
         }else{
           //If the major patches first minor patches release date was greater than 4 weeks ago
-          if((Session::get("major_patch_earliest_date")[$timeframe[0]] < strtotime('-30 days'))){
+          $date = App\Models\SeasonGameVersions::max('date_added')->where('game_version', 'like', $timeframe[0] . '%');
+          if(strtotime($date) < strtotime('-30 days')){
             return 86400; //24 hours
+          }else if(strtotime($date) < strtotime('-15 days')){
+            return 43200; //12 hours
+          }else if(strtotime($date) < strtotime('-7 days')){
+            return 43200; //6 hours
           }else{
-            return 60 * 60 * .5; //6 hours
+            return 1800; //30 minutes
           }
         }
       }
     }else{//Minor TimeFrames
       //Still need to do logic for this one
-      return 60 * 60 * .5; //6 hours
-      //return 1; //Testing
+      //return 60 * 60 * .5; //6 hours
+      return 1; //Testing
     }
   }
 }
@@ -51,7 +56,7 @@ if (!function_exists('getLatestSeason')) {
      *
      * */
     function getLatestSeason(){
-      return max(array_keys(Session::get("season_dates")));
+      return App\Models\SeasonDate::max('id');
     }
 }
 
@@ -194,7 +199,7 @@ if (!function_exists('getAllMinorPatches')) {
      *
      * */
     function getAllMinorPatches(){
-      $minor_patches = DB::table('heroesprofile.season_game_versions')->select(DB::raw("game_version"))
+      $minor_patches = DB::table('heroesprofile.season_game_versions')->select("game_version")
       ->where('game_version', '>=', '2.44')
       ->orderBy('game_version', 'desc')
       ->get();
@@ -217,23 +222,26 @@ if (!function_exists('getFilterVersions')) {
      *
      * */
      function getFilterVersions(){
-       $version_data = DB::table('season_game_versions')->select(DB::raw('DISTINCT(SUBSTRING_INDEX(game_version, ".", 2)) as major_game_version'), DB::raw('game_version as minor_game_version'))
+       $version_data = DB::table('season_game_versions')->select('game_version')
        ->where('game_version', '>=', '2.44')
        ->orderBy('game_version', 'DESC')
        ->get();
-       $version_data = json_decode(json_encode($version_data),true);
 
        $return_data = array();
+
        $counter = 0;
        $prev_major = "";
        for($i = 0; $i < count($version_data); $i++){
-         if($prev_major != "" && $prev_major != $version_data[$i]["major_game_version"]){
+         $major = implode(".", array_slice(explode(".", $version_data[$i]->game_version), 0, 2));
+
+         if($prev_major != "" && $prev_major != $major){
            $counter = 0;
          }
-         $return_data[$version_data[$i]["major_game_version"]][$counter] = $version_data[$i]["minor_game_version"];
+         $return_data[$major][$counter] = $version_data[$i]->game_version;
          $counter++;
-         $prev_major = $version_data[$i]["major_game_version"];
+         $prev_major = $major;
        }
+
        return $return_data;
      }
 }
@@ -332,7 +340,6 @@ if (!function_exists('getScoreStatsByGrouping')) {
      }
 }
 
-
 if (!function_exists('getMMRTypeIDs')) {
   /*
   |--------------------------------------------------------------------------
@@ -356,8 +363,6 @@ if (!function_exists('getMMRTypeIDs')) {
   }
 }
 
-
-
 if (!function_exists('getLeagueTierBreakdown')) {
   /*
   |--------------------------------------------------------------------------
@@ -368,7 +373,7 @@ if (!function_exists('getLeagueTierBreakdown')) {
   |
   */
  function getLeagueTierBreakdown($game_type, $mmr_id){
-    $query = DB::table('heroesprofile.league_breakdowns');
+    $query = DB::table('league_breakdowns');
     $query->where('type_role_hero', $mmr_id);
     $query->where('game_type', $game_type);
     $league_data = $query->get();
@@ -409,7 +414,6 @@ if (!function_exists('getLeagueTierBreakdown')) {
     return $returnData;
   }
 }
-
 
 if (!function_exists('getRankSplit')) {
   /*
