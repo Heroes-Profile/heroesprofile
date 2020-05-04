@@ -17,7 +17,8 @@ class HomeTest extends DatabaseTestCase
     {
         $response = $this->get('/');
 
-        $response->assertStatus(200);
-        $response->assertContains('Brightwing');
+        $response
+            ->assertStatus(200)
+            ->assertSeeText('Brightwing');
     }
 }
