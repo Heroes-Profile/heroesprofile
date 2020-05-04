@@ -131,6 +131,14 @@ class GlobalStatData
 
     $total_games = 0;
     foreach ($global_hero_data as $hero => $data){
+      if(!array_key_exists("wins",$data )){
+        $data["wins"] = 0;
+      }
+
+      if(!array_key_exists("losses",$data )){
+        $data["losses"] = 0;
+      }
+
       $total_games += $data["wins"] + $data["losses"];
     }
 
