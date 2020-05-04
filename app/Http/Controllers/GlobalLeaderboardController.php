@@ -94,7 +94,7 @@ class GlobalLeaderboardController extends Controller
     $season = $filters_instance->season;
     $game_type = $filters_instance->single_game_type;
 
-    $leaderboardData = \LeaderboardData::instance($leaderboard_type, $hero, $role, $game_type, $season, $region);
+    $leaderboardData = new \LeaderboardData($leaderboard_type, $hero, $role, $game_type, $season, $region);
     $return_data = $leaderboardData->getLeaderboardData();
 
     return $return_data;

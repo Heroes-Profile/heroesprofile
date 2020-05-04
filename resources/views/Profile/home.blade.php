@@ -16,7 +16,9 @@ Hello - This is the Profile Page
     parameters =
     {
       'page' : @json($page),
-      'data' : formData
+      'data' : formData,
+      'blizz_id' : 67280,
+      'region' : 1,
     }
 
     $.ajax({
@@ -24,7 +26,7 @@ Hello - This is the Profile Page
       data: parameters,
       //type: "POST",
       success: function(results){
-        
+        console.log(results);
       }
     });
 

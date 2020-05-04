@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Cache;
 
 class ProfileController extends Controller
 {
@@ -30,6 +31,20 @@ class ProfileController extends Controller
   }
 
   private function getProfileData($request){
-    return "Hello";
+    $blizz_id = $request["blizz_id"];
+    $region = $request["region"];
+
+    $cache = "Profile" . "-" . $blizz_id . "-" . $region;
+
+
+
+    //$return_data = Cache::rememberForever($cache, function () use ($blizz_id, $region){
+    $return_data = Cache::remember($cache, 1, function () use ($blizz_id, $region){
+      $profile_data = new \ProfileData($blizz_id, $region);
+      $return_data = $profile_data->getPlayerProfileData();
+      return $return_data;
+    });
+
+    return $return_data;
   }
 }

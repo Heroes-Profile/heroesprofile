@@ -16,16 +16,6 @@ class GlobalHeroTalentBuildsData
   private $mirror;
   private $region;
 
-  public static function instance($hero, $game_versions_minor, $game_type, $player_league_tier,
-                               $hero_league_tier, $role_league_tier, $game_map, $hero_level,
-                               $mirror, $region)
-  {
-    return new GlobalHeroTalentBuildsData($hero, $game_versions_minor, $game_type, $player_league_tier,
-                                 $hero_league_tier, $role_league_tier, $game_map, $hero_level,
-                                 $mirror, $region);
-  }
-
-
   public function __construct($hero, $game_versions_minor, $game_type, $player_league_tier,
                                $hero_league_tier, $role_league_tier, $game_map, $hero_level,
                                $mirror, $region) {

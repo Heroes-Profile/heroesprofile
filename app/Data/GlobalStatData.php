@@ -15,15 +15,7 @@ class GlobalStatData
   private $hero_league_tier;
   private $role_league_tier;
   private $mirror;
-
-  public static function instance($game_versions_minor, $game_type, $region, $game_map,
-                                        $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror)
-  {
-    return new GlobalStatData($game_versions_minor, $game_type, $region, $game_map,
-                                          $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror);
-  }
-
-
+  
   public function __construct($game_versions_minor, $game_type, $region, $game_map,
                                         $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror) {
     $this->game_versions_minor = $game_versions_minor;

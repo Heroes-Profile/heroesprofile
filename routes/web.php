@@ -21,7 +21,7 @@ Route::get('getGlobalHeroStatData', 'GlobalHeroStatController@getData'); //For T
 Route::get('getProfileData', 'ProfileController@getData'); //For Testing Purposes.  Remove later
 
 Route::get('/test', 'TestController@testData'); //For Testing Purposes.  Remove later
-Route::get('/', 'GlobalStatController@show');  //Defaulting to page currently being worked for ease of use.
+Route::get('/', 'ProfileController@show');  //Defaulting to page currently being worked for ease of use.
 
 
 

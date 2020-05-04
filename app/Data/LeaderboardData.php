@@ -16,13 +16,7 @@ class LeaderboardData
   private $game_type;
   private $season;
   private $region;
-
-  public static function instance($type, $hero, $role, $game_type, $season, $region)
-  {
-      return new LeaderboardData($type, $hero, $role, $game_type, $season, $region);
-  }
-
-
+  
   public function __construct($type, $hero, $role, $game_type, $season, $region) {
     $this->type = $type;
     $this->hero = $hero;

@@ -54,7 +54,7 @@ class GlobalStatController extends Controller
       "text" => "Games Banned"
     ]
   );
-  
+
   public function show(){
     return view('Global.table',
     [
@@ -119,7 +119,7 @@ class GlobalStatController extends Controller
 
     $return_data = Cache::remember($cache, calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor), function () use ($game_versions_minor, $game_type, $region, $game_map,
                                           $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror){
-      $global_data = \GlobalStatData::instance($game_versions_minor, $game_type, $region, $game_map,
+      $global_data = new \GlobalStatData($game_versions_minor, $game_type, $region, $game_map,
                                             $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror);
       $return_data = $global_data->getGlobalHeroStatData();
       return $return_data;
