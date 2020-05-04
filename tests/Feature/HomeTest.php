@@ -3,10 +3,11 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
+use Tests\DatabaseTestCase;
 
-class ExampleTest extends TestCase
-{
+class HomeTest extends DatabaseTestCase
+{     
+
     /**
      * A basic test example.
      *
@@ -16,6 +17,8 @@ class ExampleTest extends TestCase
     {
         $response = $this->get('/');
 
-        $response->assertStatus(200);
+        $response
+            ->assertStatus(200)
+            ->assertSeeText('Brightwing');
     }
 }
