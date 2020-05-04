@@ -8,8 +8,6 @@ use Cache;
 
 class GlobalStatController extends Controller
 {
-
-
   private $columns = array(
     [
       "key" => "hero",
@@ -56,12 +54,7 @@ class GlobalStatController extends Controller
       "text" => "Games Banned"
     ]
   );
-
-  private function splitColumn($column){
-    $keys = Arr::pluck($column, 'key');
-    return $keys;
-  }
-
+  
   public function show(){
     return view('Global.table',
     [
@@ -86,6 +79,14 @@ class GlobalStatController extends Controller
 
     ]);
   }
+
+
+
+  private function splitColumn($column){
+    $keys = Arr::pluck($column, 'key');
+    return $keys;
+  }
+
   public function getData(Request $request){
     $filters_instance = \Filters::instance();
     $filters = $filters_instance->formatFilterData($request["data"], 1);

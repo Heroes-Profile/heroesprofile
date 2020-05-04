@@ -12,7 +12,7 @@
     <option value='hero'>Hero</option>
     <option value='role'>Role</option>
   </select>
-  
+
 
   {{-- Heroes Picker --}}
   <select name="hero" id="hero-picker" class="heroes-selectpicker" data-live-search="true" title="Hero" data-header="Heroes">
@@ -23,7 +23,7 @@
 
   {{-- Roles Picker --}}
   <select name="role" id="role-picker" class="roles-selectpicker" data-live-search="true" title="Role" data-header="Roles">
-    @foreach (\App\Models\Hero::select(DB::raw("DISTINCT(new_role) as role"))->orderBy('role', 'ASC')->get() as $major => $minor)
+    @foreach (\App\Models\Hero::select("new_role as role")->distinct("role")->orderBy('role', 'ASC')->get() as $major => $minor)
         <option>{{ $minor->role }}</option>
     @endforeach
   </select>

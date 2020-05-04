@@ -66,7 +66,7 @@
 
   {{-- Roles Picker --}}
   <select name="role" class="selectpicker" multiple data-live-search="true" title="All Roles" data-header="Roles">
-    @foreach (\App\Models\Hero::select(DB::raw("DISTINCT(new_role) as role"))->orderBy('role', 'ASC')->get() as $major => $minor)
+    @foreach (\App\Models\Hero::select("new_role as role")->distinct("role")->orderBy('role', 'ASC')->get() as $major => $minor)
         <option>{{ $minor->role }}</option>
     @endforeach
   </select>

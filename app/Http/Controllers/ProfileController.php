@@ -8,10 +8,12 @@ class ProfileController extends Controller
 {
   public function show(){
 
-    return view('profile',
+    return view('Profile.home',
     [
       'title' => 'Profile', // Page title
       'paragraph' => 'Profile Page', // Summary paragraph
+      'page' => 'profile',
+      'inputUrl' => 'getProfileData'
     ]);
   }
 
@@ -19,7 +21,7 @@ class ProfileController extends Controller
   public function getData(Request $request){
     switch ($request["page"]) {
     case "profile":
-        return $this->profileData($request);
+        return $this->getProfileData($request);
         break;
     default:
         return "Invalid";
@@ -27,7 +29,7 @@ class ProfileController extends Controller
       }
   }
 
-  private function profileData($request){
+  private function getProfileData($request){
     return "Hello";
   }
 }
