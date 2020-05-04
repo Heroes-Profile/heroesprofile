@@ -22,7 +22,11 @@
         <server name="BCRYPT_ROUNDS" value="4"/>
         <server name="CACHE_DRIVER" value="array"/>
         <server name="DB_CONNECTION" value="sqlite"/>
+        <server name="DB_CONNECTION_BRAWL" value="sqlite_brawl"/>
+        <server name="DB_CONNECTION_CACHE" value="sqlite_cache"/>
         <server name="DB_DATABASE" value=":memory:"/>
+        <server name="DB_DATABASE_BRAWL" value=":memory:"/>
+        <server name="DB_DATABASE_CACHE" value=":memory:"/>
         <server name="MAIL_MAILER" value="array"/>
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
