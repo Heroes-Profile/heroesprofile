@@ -45,5 +45,11 @@ jobs:
         env:
           COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
 
+      - name: Create .env
+        run: cp .env.example .env
+
+      - name: Generate the app key
+        run: php artisan key:generate
+
       - name: Test with phpunit
         run: vendor/bin/phpunit --coverage-text
