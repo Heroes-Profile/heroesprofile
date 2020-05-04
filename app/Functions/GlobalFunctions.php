@@ -199,7 +199,7 @@ if (!function_exists('getAllMinorPatches')) {
      *
      * */
     function getAllMinorPatches(){
-      $minor_patches = DB::table('heroesprofile.season_game_versions')->select("game_version")
+      $minor_patches = DB::table('season_game_versions')->select("game_version")
       ->where('game_version', '>=', '2.44')
       ->orderBy('game_version', 'desc')
       ->get();
