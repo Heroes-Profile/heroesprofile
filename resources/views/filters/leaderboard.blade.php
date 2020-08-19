@@ -44,6 +44,17 @@
     @endforeach
   </select>
 
+  {{-- Tier Picker --}}
+  <select name="tier" class="selectpicker" title="All Tiers" data-header="Tier">
+    <option value='' selected>All Tiers</option>
+    <option value='Master'>Master</option>
+    <option value='Diamond'>Diamond</option>
+    <option value='Platinum'>Platinum</option>
+    <option value='Gold'>Gold</option>
+    <option value='Silver'>Silver</option>
+    <option value='Brone'>Brone</option>
+  </select>
+
 
   {{-- Region Picker --}}
   <select name="region" class="selectpicker" title="All Regions" data-header="Regions">

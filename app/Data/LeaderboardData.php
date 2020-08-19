@@ -16,7 +16,7 @@ class LeaderboardData
   private $game_type;
   private $season;
   private $region;
-  
+
   public function __construct($type, $hero, $role, $game_type, $season, $region) {
     $this->type = $type;
     $this->hero = $hero;
@@ -82,6 +82,12 @@ class LeaderboardData
 
       $leaderboard_data[$i]->most_played_build = "";
     }
+    /*
+    $leaderboard_data = $leaderboard_data->filter(function ($value, $key) {
+      return $value->tier == "Master";
+    });
+    */
+
     return $leaderboard_data;
   }
 
