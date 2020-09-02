@@ -14,6 +14,13 @@
 <div class="container-fluid">
   <table id="{{ $tableid }}" class="table table-striped table-bordered table-sm " cellspacing="0" width="100%">
     <thead class="thead-dark">
+      @if(isset($column_headers))
+        <tr>
+          @foreach ($column_headers as $column)
+            <th data-field="{{$column['key'] }}" id="{{$column['key'] }}">{{ $column['text'] }}</th>
+          @endforeach
+        </tr>
+      @endif
       <tr>
         @foreach ($columns as $column)
           <th data-field="{{$column['key'] }}">{{ $column['text'] }}</th>
@@ -72,10 +79,10 @@ $(document).ready(function() {
   columnDefinition = [
     <?php $counter = 0; ?>
     @foreach ($columndata as $column)
-    { "name" : @json($column), "targets": {{ $counter }}},
+      { "name" : @json($column), "targets": {{ $counter }}},
 
       @if ($column == "most_played_build")
-      { "visible": false, "targets": {{ $counter }} },
+        { "visible": false, "targets": {{ $counter }} },
       @endif
     <?php $counter++;?>
     @endforeach
@@ -89,7 +96,6 @@ $(document).ready(function() {
     'page' : @json($page),
     'data' : formData
   }
-  console.log(parameters);
   $.ajax({
     url: @json($inputUrl),
     data: parameters,
@@ -107,6 +113,134 @@ $(document).ready(function() {
         @json($inputBInfo),
         inputSortOrder
       );
+
+      @if(isset($column_headers))
+
+        {{--Average Win Rate Header --}}
+        var count = 0;
+        var average_win_rate = results.reduce(function (s, a) {
+            count++;
+            return s + parseFloat(a.win_rate);
+        }, 0);
+        $('#avg_win_rate').text(function() {
+            return (average_win_rate / count).toFixed(2);
+        });
+
+        {{--Average Win Rate Confidence Header --}}
+        var average_win_rate_confidence = results.reduce(function (s, a) {
+            return s + parseFloat(a.win_rate_confidence);
+        }, 0);
+        $('#avg_win_rate_confidence').text(function() {
+            return (average_win_rate_confidence / count).toFixed(2);
+        });
+
+        {{--Average Win Rate Change Header --}}
+        var count_positive = 0;
+        var count_negative = 0;
+        var average_change_positive = results.reduce(function (s, a) {
+          if(parseFloat(a.change) >= 0){
+            count_positive++;
+            return s + parseFloat(a.change);
+          }else{
+            return s;
+          }
+        }, 0);
+        var average_change_negative = results.reduce(function (s, a) {
+          if(parseFloat(a.change) < 0){
+            count_negative++;
+            return s + parseFloat(a.change);
+          }else{
+            return s;
+          }
+        }, 0);
+        $('#avg_change').text(function() {
+            return (average_change_positive / count_positive).toFixed(2) + " | " + (average_change_negative / count_negative).toFixed(2);
+        });
+
+        {{--Average Popularity Header --}}
+        var average_popularity = results.reduce(function (s, a) {
+            return s + parseFloat(a.popularity);
+        }, 0);
+        $('#avg_popularity').text(function() {
+            return (average_popularity / count).toFixed(2);
+        });
+
+
+        {{--Average Pick Rate Header --}}
+        var average_pick_rate = results.reduce(function (s, a) {
+            return s + parseFloat(a.pick_rate);
+        }, 0);
+        $('#avg_pick_rate').text(function() {
+            return (average_pick_rate / count).toFixed(2);
+        });
+
+        {{--Average Ban Rate Header --}}
+        var average_ban_rate = results.reduce(function (s, a) {
+            return s + parseFloat(a.ban_rate);
+        }, 0);
+        $('#avg_ban_rate').text(function() {
+            return (average_ban_rate / count).toFixed(2);
+        });
+
+        {{--Average Influence Header --}}
+        var count_positive = 0;
+        var count_negative = 0;
+        var average_influence_positive = results.reduce(function (s, a) {
+          if(parseFloat(a.influence) >= 0){
+            count_positive++;
+            return s + parseFloat(a.influence);
+          }else{
+            return s;
+          }
+        }, 0);
+        var average_influence_negative = results.reduce(function (s, a) {
+          if(parseFloat(a.influence) < 0){
+            count_negative++;
+            return s + parseFloat(a.influence);
+          }else{
+            return s;
+          }
+        }, 0);
+        $('#avg_influence').text(function() {
+            return (average_influence_positive / count_positive).toFixed(0) + " | " + (average_influence_negative / count_negative).toFixed(0);
+        });
+
+        {{--Average Games Played Header --}}
+        var average_games_played = results.reduce(function (s, a) {
+            return s + parseFloat(a.games_played);
+        }, 0);
+        $('#avg_games_played').text(function() {
+            return (average_games_played / count).toFixed(0);
+        });
+
+        {{--Average Wins Header --}}
+        var average_wins = results.reduce(function (s, a) {
+            return s + parseFloat(a.wins);
+        }, 0);
+        $('#avg_wins').text(function() {
+            return (average_wins / count).toFixed(0);
+        });
+
+        {{--Average Losses Header --}}
+        var average_losses = results.reduce(function (s, a) {
+            return s + parseFloat(a.losses);
+        }, 0);
+        $('#avg_losses').text(function() {
+            return (average_losses / count).toFixed(0);
+        });
+
+        {{--Average Games Banned Header --}}
+        var average_games_banned = results.reduce(function (s, a) {
+            return s + parseFloat(a.games_banned);
+        }, 0);
+        $('#avg_games_banned').text(function() {
+            return (average_games_banned / count).toFixed(0);
+        });
+        console.log(results);
+      @endif
+
+
+
     }
   });
 

@@ -58,6 +58,56 @@ class GlobalStatController extends Controller
       "text" => "Games Banned"
     ]
   );
+  private $columns_header = array(
+    [
+      "key" => "avg",
+      "text" => "AVG"
+    ],
+    [
+      "key" => "avg_win_rate",
+      "text" => ""
+    ],
+    [
+      "key" => "avg_win_rate_confidence",
+      "text" => ""
+    ],
+    [
+      "key" => "avg_change",
+      "text" => ""
+    ],
+    [
+      "key" => "avg_popularity",
+      "text" => ""
+    ],
+    [
+      "key" => "avg_pick_rate",
+      "text" => ""
+    ],
+    [
+      "key" => "avg_ban_rate",
+      "text" => ""
+    ],
+    [
+      "key" => "avg_influence",
+      "text" => ""
+    ],
+    [
+      "key" => "avg_games_played",
+      "text" => ""
+    ],
+    [
+      "key" => "avg_wins",
+      "text" => ""
+    ],
+    [
+      "key" => "avg_losses",
+      "text" => ""
+    ],
+    [
+      "key" => "avg_games_banned",
+      "text" => ""
+    ]
+  );
 
   public function show(){
     return view('Global.table',
@@ -68,6 +118,7 @@ class GlobalStatController extends Controller
       'tableheading' => 'Win Rates', // Table heading
       'filtertype' => 'global_stats',
       'columns' => $this->columns,
+      'column_headers' => $this->columns_header,
       'inputUrl' => "/getGlobalStatData",
       'columndata' => $this->splitColumn($this->columns),
       'page' => 'stat',
