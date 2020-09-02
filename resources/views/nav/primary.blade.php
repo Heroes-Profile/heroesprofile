@@ -16,19 +16,34 @@ Profile
     </li>
 
     <li class="nav-item">
-      <a class="nav-link" href="/Global/Stats">Global Stats</a>
+      <a class="nav-link" href="/Global/Stats">Hero Stats</a>
     </li>
 
 
     <li class="nav-item">
-      <a class="nav-link" href="/Global/Hero/Stats">Global Hero Stats</a>
+      <a class="nav-link" href="/Global/Stats/Maps">Hero Map Stats</a>
     </li>
 
+    <li class="nav-item">
+      <a class="nav-link" href="/Global/Stats/Matchups">Matchups</a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="/Global/Stats/Talents">Hero Talents</a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="/Global/Stats/Talents/Builder">Talent Builder</a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="/Global/Stats/Compositions">Compositions</a>
+    </li>
 
     <li class="nav-item">
       <a class="nav-link" href="/Compare">Compare</a>
     </li>
-    
+
     <li class="nav-item">
       <a class="nav-link" target="_blank" href="https://api.heroesprofile.com/upload">Replay Uploader</a>
     </li>

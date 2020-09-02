@@ -74,7 +74,11 @@
   {{-- Heroes Picker --}}
   <select name="hero" class="selectpicker" multiple data-live-search="true" title="All Heroes" data-header="Heroes">
     @foreach (\App\Models\Hero::select('id', 'name')->orderBy('name', 'ASC')->get() as $major => $hero_data)
+      @if($hero_data->name == $hero)
+        <option value='{{ $hero_data->id }}' selected>{{ $hero_data->name }}</option>
+      @else
         <option value='{{ $hero_data->id }}'>{{ $hero_data->name }}</option>
+      @endif
     @endforeach
   </select>
 

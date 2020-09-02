@@ -5,7 +5,6 @@ class Filters
 {
   //Generic
 
-
   public $timeframe_type;
   public $game_versions_minor = array();
   public $multi_game_type = array();

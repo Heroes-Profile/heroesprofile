@@ -6,36 +6,24 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Cache;
 
-class GlobalStatController extends Controller
+class GlobalStatMapController extends Controller
 {
   private $columns = array(
     [
-      "key" => "hero",
-      "text" => "Hero"
+      "key" => "game_map",
+      "text" => "Map"
     ],
     [
       "key" => "win_rate",
-      "text" => "Win Rate"
-    ],
-    [
-      "key" => "change",
-      "text" => "Change"
+      "text" => "Win Rate %"
     ],
     [
       "key" => "popularity",
-      "text" => "Popularity"
-    ],
-    [
-      "key" => "pick_rate",
-      "text" => "Pick Rate"
+      "text" => "Popularity %"
     ],
     [
       "key" => "ban_rate",
-      "text" => "Ban Rate"
-    ],
-    [
-      "key" => "influence",
-      "text" => "Influence"
+      "text" => "Ban Rate %"
     ],
     [
       "key" => "games_played",
@@ -48,12 +36,14 @@ class GlobalStatController extends Controller
     [
       "key" => "losses",
       "text" => "Losses"
-    ],
-    [
-      "key" => "games_banned",
-      "text" => "Games Banned"
     ]
   );
+
+  private function splitColumn($column){
+    $keys = Arr::pluck($column, 'key');
+    return $keys;
+  }
+
 
   public function show(){
     return view('Global.table',
@@ -64,10 +54,10 @@ class GlobalStatController extends Controller
       'tableheading' => 'Win Rates', // Table heading
       'filtertype' => 'global_stats',
       'columns' => $this->columns,
-      'inputUrl' => "/getGlobalStatData",
+      'inputUrl' => "/getGlobalHeroStatMapData",
       'columndata' => $this->splitColumn($this->columns),
       'page' => 'stat',
-      'hero' => '',
+      'hero' => 'Abathur',
 
       //Table Customizations
       'inputSortOrder' => array(1 => "desc"),
@@ -76,20 +66,14 @@ class GlobalStatController extends Controller
       'inputColReorder' => true,
       'inputFixedHeader' => true,
       'inputBInfo' => false,
-
     ]);
-  }
-
-
-
-  private function splitColumn($column){
-    $keys = Arr::pluck($column, 'key');
-    return $keys;
   }
 
   public function getData(Request $request){
     $filters_instance = \Filters::instance();
-    $filters = $filters_instance->formatFilterData($request["data"], 1);
+    $filters = $filters_instance->formatFilterData($request["data"], 0);
+    $hero = $filters_instance->single_hero;
+
 
     $game_versions_minor = $filters_instance->game_versions_minor;
     $game_type = $filters_instance->multi_game_type;
@@ -103,8 +87,10 @@ class GlobalStatController extends Controller
     $mirror = $filters_instance->mirror;
 
 
-    $page = "GlobalStats";
+
+    $page = "GlobalStatMaps";
     $cache =  $page .
+              "|" . $hero .
               "|" . implode(",", $game_versions_minor) .
               "|" . implode(",", $game_type) .
               "|" . implode(",", $region) .
@@ -116,16 +102,23 @@ class GlobalStatController extends Controller
               "|"  . implode(",", $role_league_tier) .
               "|"  . $mirror;
 
+              
+    $cache_time = calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor);
+    $cache_time = 0;
 
-    $return_data = Cache::remember($cache, calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor), function () use ($game_versions_minor, $game_type, $region, $game_map,
+    $return_data = Cache::remember($cache, $cache_time, function () use ($hero, $game_versions_minor, $game_type, $region, $game_map,
                                           $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror){
-      $global_data = new \GlobalStatData($game_versions_minor, $game_type, $region, $game_map,
+      $global_data = new \GlobalHeroStatMapData($hero, $game_versions_minor, $game_type, $region, $game_map,
                                             $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror);
-      $return_data = $global_data->getGlobalHeroStatData();
+      $return_data = $global_data->getGlobalHeroStatMapData();
       return $return_data;
     });
 
     //Need to add filtering for heroes and roles here
+
     return $return_data;
+
+
+
   }
 }

@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Route;
 ///For Testing
 Route::get('getGlobalStatData', 'GlobalStatController@getData'); //For Testing Purposes.  Remove later
 Route::get('getGlobalLeaderboardData', 'GlobalLeaderboardController@getData'); //For Testing Purposes.  Remove later
+Route::get('getGlobalHeroStatMapData', 'GlobalStatMapController@getData'); //For Testing Purposes.  Remove later
+
 Route::get('getGlobalHeroStatData', 'GlobalHeroStatController@getData'); //For Testing Purposes.  Remove later
 Route::get('getProfileData', 'ProfileController@getData'); //For Testing Purposes.  Remove later
 
@@ -28,6 +30,7 @@ Route::get('/', 'ProfileController@show');  //Defaulting to page currently being
 
 //Post Calls to get Data for pages
 Route::post('getGlobalStatData', 'GlobalStatController@getData');
+Route::post('getGlobalHeroStatMapData', 'GlobalStatMapController@getData');
 Route::post('getGlobalLeaderboardData', 'GlobalLeaderboardController@getData');
 Route::post('getGlobalHeroStatData', 'GlobalHeroStatController@getData');
 Route::post('getProfileData', 'ProfileController@getData');
@@ -38,7 +41,7 @@ Route::post('getProfileData', 'ProfileController@getData');
 //Globals
 Route::get('/Global/Leaderboard', 'GlobalLeaderboardController@show');
 Route::get('/Global/Stats', 'GlobalStatController@show');
-Route::view('/Global/Hero/Stats', 'GlobalHeroStatController@show');
+Route::get('/Global/Stats/Maps', 'GlobalStatMapController@show');
 
 //Profile
 Route::get('/Profile', 'ProfileController@show');
