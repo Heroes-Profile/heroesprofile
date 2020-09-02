@@ -15,7 +15,7 @@ class GlobalStatData
   private $hero_league_tier;
   private $role_league_tier;
   private $mirror;
-  
+
   public function __construct($game_versions_minor, $game_type, $region, $game_map,
                                         $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror) {
     $this->game_versions_minor = $game_versions_minor;
@@ -59,7 +59,7 @@ class GlobalStatData
                       ->get();
     $return_data = array();
     for($i = 0; $i < count($global_ban_data); $i++){
-      $return_data[$global_ban_data[$i]->hero] = $global_ban_data[$i]->games_banned;
+      $return_data[$global_ban_data[$i]->hero] = round($global_ban_data[$i]->games_banned);
     }
     return $return_data;
   }
@@ -125,7 +125,7 @@ class GlobalStatData
     foreach ($global_hero_data as $hero => $data){
       $total_games += $data["wins"] + $data["losses"];
     }
-
+    $total_games /= 10;
     $return_data = array();
     $counter = 0;
     foreach ($global_hero_data as $hero => $data)
@@ -172,6 +172,11 @@ class GlobalStatData
 
 
       //Maybe add to function later
+      $return_data[$counter]["win_rate_confidence"] = number_format((1.96 * sqrt((($return_data[$counter]["win_rate"]*(1-$return_data[$counter]["win_rate"]))/$return_data[$counter]["games_played"]))) * 100, 2);
+
+
+
+
       $return_data[$counter]["win_rate"] = number_format($return_data[$counter]["win_rate"] * 100, 2);
       $return_data[$counter]["change"] = number_format($return_data[$counter]["change"], 2);
       $return_data[$counter]["popularity"] = number_format($return_data[$counter]["popularity"], 2);

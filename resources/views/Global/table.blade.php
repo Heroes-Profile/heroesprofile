@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Global Leaderboard')
+@section('title', $title)
 
 
 @section('content')
@@ -53,6 +53,12 @@ $(document).ready(function() {
          "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
               $(nTd).html(oData.level_one + "|" + oData.level_four+ "|" + oData.level_seven + "|" + oData.level_ten + "|" + oData.level_thirteen + "|" + oData.level_sixteen + "|" + oData.level_twenty);
           }
+
+        @elseif ($column == "win_rate_confidence")
+          ,
+          "fnCreatedCell": function (nTd, sData, oData, iRow, iCol) {
+               $(nTd).html("&#177; " + oData.win_rate_confidence);
+           }
       @endif
     },
     @endforeach

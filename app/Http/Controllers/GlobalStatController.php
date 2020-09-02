@@ -18,8 +18,12 @@ class GlobalStatController extends Controller
       "text" => "Win Rate"
     ],
     [
+      "key" => "win_rate_confidence",
+      "text" => "Win Rate Confidence"
+    ],
+    [
       "key" => "change",
-      "text" => "Change"
+      "text" => "Win Rate Change"
     ],
     [
       "key" => "popularity",
@@ -116,8 +120,10 @@ class GlobalStatController extends Controller
               "|"  . implode(",", $role_league_tier) .
               "|"  . $mirror;
 
+    $cache_time = calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor);
+    $cache_time = 0;
 
-    $return_data = Cache::remember($cache, calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor), function () use ($game_versions_minor, $game_type, $region, $game_map,
+    $return_data = Cache::remember($cache, $cache_time, function () use ($game_versions_minor, $game_type, $region, $game_map,
                                           $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror){
       $global_data = new \GlobalStatData($game_versions_minor, $game_type, $region, $game_map,
                                             $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror);

@@ -39,6 +39,8 @@ class GlobalStatMapController extends Controller
     ]
   );
 
+  private $hero = "Abathur";
+
   private function splitColumn($column){
     $keys = Arr::pluck($column, 'key');
     return $keys;
@@ -49,15 +51,15 @@ class GlobalStatMapController extends Controller
     return view('Global.table',
     [
       'tableid' => 'stats-table',
-      'title' => 'Global Stats', // Page title
-      'paragraph' => 'Hero win rates based on differing increments, stat types, game type, or league tier.', // Summary paragraph
+      'title' => 'Global Map Stats', // Page title
+      'paragraph' => $this->hero . ' Map win rates based on differing increments, stat types, game type, or league tier.', // Summary paragraph
       'tableheading' => 'Win Rates', // Table heading
       'filtertype' => 'global_stats',
       'columns' => $this->columns,
       'inputUrl' => "/getGlobalHeroStatMapData",
       'columndata' => $this->splitColumn($this->columns),
       'page' => 'stat',
-      'hero' => 'Abathur',
+      'hero' => $this->hero,
 
       //Table Customizations
       'inputSortOrder' => array(1 => "desc"),

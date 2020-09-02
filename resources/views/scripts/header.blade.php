@@ -5,7 +5,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <!-- Meta Data -->
-<title>Heroes Profile @yield('title')</title>
+<title>Heroes Profile | @yield('title')</title>
 
 <!-- Fonts -->
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
