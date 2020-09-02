@@ -28,6 +28,7 @@ class Filters
   public $single_region;
   public $single_game_type;
   public $season;
+  public $tier;
 
   public static function instance()
   {
@@ -45,7 +46,6 @@ class Filters
           case "major_timeframe":
               $versions = getFilterVersions();
               $this->game_versions_minor = array_merge($this->game_versions_minor, $versions[$request[$i]["value"]]);
-
               break;
           case "minor_timeframe":
               array_push($this->game_versions_minor, $request[$i]["value"]);
@@ -86,6 +86,9 @@ class Filters
               break;
           case "game_map":
               array_push($this->game_map, $request[$i]["value"]);
+              break;
+          case "tier":
+              $this->tier = $request[$i]["value"];
               break;
           case "player_rank":
               array_push($this->player_league_tier, $request[$i]["value"]);

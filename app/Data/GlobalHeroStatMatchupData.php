@@ -75,7 +75,6 @@ class GlobalHeroStatMatchupData
 
     $return_data = array();
     $return_data_counter = 0;
-
     for($i = 0; $i < count($heroes); $i++){
       if($heroes[$i]->id != $this->hero){
         $return_data[$return_data_counter]["hero"] = $heroes[$i]->name;
