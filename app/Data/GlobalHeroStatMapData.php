@@ -33,18 +33,12 @@ class GlobalHeroStatMapData
 
   public function getGlobalHeroStatMapData(){
     $global_map_data = \App\Models\GlobalHeroStats::Filters($this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
-                                          $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror, $this->hero)
+                                          $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror)
                    ->join('maps', 'maps.map_id', '=', 'global_hero_stats.game_map')
                    ->selectRaw('maps.name as game_map, SUM(games_played) as games_played')
-                   ->groupBy('maps.name');
-                   print_r($global_map_data->toSql());
-                   echo "<br>";
-                   print_r($global_map_data->getBindings());
-                   echo "<br>";
+                   ->groupBy('maps.name')
+                   ->get();
 
-                   //->get();
-return $this->game_type;
-                   /*
      $total_map_games_played = array();
      for($i = 0; $i < count($global_map_data); $i++){
        $total_map_games_played[$global_map_data[$i]->game_map] = $global_map_data[$i]->games_played / 10;
@@ -95,7 +89,6 @@ return $this->game_type;
      }
 
      return $return_data;
-          */
   }
 
   private function getHeroMapBans(){

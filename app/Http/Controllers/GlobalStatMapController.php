@@ -71,7 +71,7 @@ class GlobalStatMapController extends Controller
 
   public function getData(Request $request){
     $filters_instance = \Filters::instance();
-    $filters = $filters_instance->formatFilterData($request["data"], 0);
+    $filters = $filters_instance->formatFilterData($request["data"], 1, 0);
     $hero = $filters_instance->single_hero;
 
 
@@ -102,7 +102,7 @@ class GlobalStatMapController extends Controller
               "|"  . implode(",", $role_league_tier) .
               "|"  . $mirror;
 
-              
+
     $cache_time = calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor);
     $cache_time = 0;
 

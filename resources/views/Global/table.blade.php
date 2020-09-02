@@ -87,7 +87,7 @@ $(document).ready(function() {
   $.ajax({
     url: @json($inputUrl),
     data: parameters,
-    //type: "POST",
+    //type: "POST", //Turn Back on after testing
     success: function(results){
       createTableJS(
         tableID,
@@ -116,7 +116,7 @@ $(document).ready(function() {
     $.ajax({
       url: @json($inputUrl),
       data: parameters,
-      //type: "POST",
+      //type: "POST",  //turn back on after testing
 
       success: function(results){
         var table = $(tableID).DataTable();

@@ -34,7 +34,7 @@ class Filters
     return new Filters();
   }
 
-  public function formatFilterData($request, $singleOrMulti){
+  public function formatFilterData($request, $singleOrMulti, $singleMultiHero){
     $this->timeframe_type = "minor";
     if(!is_null($request)){
       for($i = 0; $i < count($request); $i++){
@@ -71,7 +71,7 @@ class Filters
               }
               break;
           case "hero":
-              if($singleOrMulti){
+              if($singleOrMulti && $singleMultiHero){
                 array_push($this->multi_hero, $request[$i]["value"]);
               }else{
                 $this->single_hero = $request[$i]["value"];

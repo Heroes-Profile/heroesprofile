@@ -89,7 +89,7 @@ class GlobalStatController extends Controller
 
   public function getData(Request $request){
     $filters_instance = \Filters::instance();
-    $filters = $filters_instance->formatFilterData($request["data"], 1);
+    $filters = $filters_instance->formatFilterData($request["data"], 1, 1);
 
     $game_versions_minor = $filters_instance->game_versions_minor;
     $game_type = $filters_instance->multi_game_type;
