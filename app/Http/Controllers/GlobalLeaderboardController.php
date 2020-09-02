@@ -85,7 +85,7 @@ class GlobalLeaderboardController extends Controller
 
   public function getData(Request $request){
     $filters_instance = \Filters::instance();
-    $filters = $filters_instance->formatFilterData($request["data"], 0);
+    $filters = $filters_instance->formatFilterData($request["data"], 0, 0);
 
     $leaderboard_type = $filters_instance->leaderboard_type;
     $hero = $filters_instance->single_hero;
