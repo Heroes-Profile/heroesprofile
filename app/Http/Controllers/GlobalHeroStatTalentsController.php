@@ -69,11 +69,11 @@ class GlobalHeroStatTalentsController extends Controller
               "-"  . implode(",", $role_league_tier) .
               "-"  . $mirror;
 
+    $cache_time = calculateCacheTime($this->filters_instance->timeframe_type, $this->filters_instance->game_versions_minor);
+    //$cache_time = 0; //for testing
 
-    $return_data = Cache::remember($cache, calculateCacheTime($this->filters_instance->timeframe_type, $this->filters_instance->game_versions_minor),
-      function () use ($hero, $game_versions_minor, $game_type, $region, $game_map, $hero_level, $stat_type, $player_league_tier, $hero_league_tier,
-      $role_league_tier, $mirror){
-
+    $return_data = Cache::remember($cache, $cache_time, function () use ($hero, $game_versions_minor, $game_type, $region, $game_map,
+                                          $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror){
       $global_data_details = new \GlobalHeroTalentDetailsData($hero, $game_versions_minor, $game_type, $player_league_tier,
                                           $hero_league_tier, $role_league_tier, $game_map, $hero_level, $mirror, $region);
       $return_data = $global_data_details->getGlobalTalentDetailData();
@@ -118,11 +118,12 @@ class GlobalHeroStatTalentsController extends Controller
               "-"  . $mirror .
               "-"  . $type;
 
+    $cache_time = calculateCacheTime($this->filters_instance->timeframe_type, $this->filters_instance->game_versions_minor);
+    //$cache_time = 0; //for testing
 
-    $return_data = Cache::remember($cache, calculateCacheTime($this->filters_instance->timeframe_type, $this->filters_instance->game_versions_minor),
-    function () use ($hero, $game_versions_minor, $game_type, $region, $game_map, $hero_level, $stat_type, $player_league_tier, $hero_league_tier,
-    $role_league_tier, $mirror, $type){
 
+    $return_data = Cache::remember($cache, $cache_time, function () use ($hero, $game_versions_minor, $game_type, $region,
+                                          $game_map, $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror, $type){
       $global_data_builds = new \GlobalHeroTalentBuildsData($hero, $game_versions_minor, $game_type, $player_league_tier,
                                           $hero_league_tier, $role_league_tier, $game_map, $hero_level, $mirror, $region);
       $return_data = $global_data_builds->getGlobalHeroTalentData($type);

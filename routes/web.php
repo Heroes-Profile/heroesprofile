@@ -29,8 +29,8 @@ Route::get('getGlobalHeroStatTalentBuildsData', 'GlobalHeroStatTalentsController
 
 Route::get('getProfileData', 'ProfileController@getData'); //For Testing Purposes.  Remove later
 
-Route::get('/test', 'TestController@testData'); //For Testing Purposes.  Remove later
-Route::get('/', 'ProfileController@show');  //Defaulting to page currently being worked for ease of use.
+//Route::get('/test', 'TestController@testData'); //For Testing Purposes.  Remove later
+//Route::get('/', 'ProfileController@show');  //Defaulting to page currently being worked for ease of use.
 
 
 
@@ -57,12 +57,13 @@ Route::post('getProfileData', 'ProfileController@getData');
 //Globals
 Route::get('/Global/Leaderboard', 'GlobalLeaderboardController@show');
 Route::get('/Global/Stats', 'GlobalStatController@show');
+Route::get('/', 'GlobalStatController@show');
 Route::get('/Global/Stats/Maps', 'GlobalHeroStatMapController@show');
 Route::get('/Global/Stats/Matchups', 'GlobalHeroStatMatchupController@show');
 Route::get('/Global/Stats/Talents', 'GlobalHeroStatTalentsController@show');
 
 //Profile
-Route::get('/Profile', 'ProfileController@show');
+//Route::get('/Profile', 'ProfileController@show');
 
 
 /*

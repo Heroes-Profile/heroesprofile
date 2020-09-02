@@ -31,7 +31,7 @@ Profile
     <li class="nav-item">
       <a class="nav-link" href="/Global/Stats/Talents">Hero Talents</a>
     </li>
-
+    {{--
     <li class="nav-item">
       <a class="nav-link" href="/Global/Stats/Talents/Builder">Talent Builder</a>
     </li>
@@ -52,7 +52,7 @@ Profile
     <input class="form-control mr-sm-2" type="search" placeholder="Battletag" aria-label="Battletag">
     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Find a Player</button>
   </form>
--->
+  --}}
   <?php
 
 

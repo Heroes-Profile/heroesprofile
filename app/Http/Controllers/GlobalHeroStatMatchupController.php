@@ -97,7 +97,7 @@ class GlobalHeroStatMatchupController extends Controller
               "|"  . $mirror;
 
     $cache_time = calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor);
-    $cache_time = 0;
+    //$cache_time = 0; //for testing
 
     $return_data = Cache::remember($cache, $cache_time, function () use ($hero, $game_versions_minor, $game_type, $region, $game_map,
                                           $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror){

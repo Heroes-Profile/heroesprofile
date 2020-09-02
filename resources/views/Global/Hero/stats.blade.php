@@ -158,7 +158,7 @@ $(document).ready(function() {
   inputBInfo = false;
   inputSortOrder = [[ 1, "desc" ]];
   columnDefinition = [];
-  
+
   talent_details_parameters =
   {
     'page' : 'talent-details',
@@ -172,6 +172,8 @@ $(document).ready(function() {
   $.ajax({
     url: @json($talentsInputUrl),
     data: talent_details_parameters,
+    type: "POST",  //turn back on after testing
+
     success: function(talent_details_results){
       inputColumns = [
           { data: "sort"},
@@ -225,6 +227,8 @@ $(document).ready(function() {
   $.ajax({
     url: @json($talentBuildsInputUrl),
     data: talent_builds_param,
+    type: "POST",  //turn back on after testing
+
     success: function(talent_builds_results){
       createTableJS('#talent-builds-table', talent_builds_results, talent_builds_inputColumns, columnDefinition, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, talent_builds_inputSortOrder);
     }
