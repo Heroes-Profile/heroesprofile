@@ -5,44 +5,6 @@
 @section('content')
 @include('filters.globals')
 
-  <h1>Maps</h1>
-    <div class="container">
-        <table id="map-table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
-        <thead>
-            <tr>
-              <th data-field="game_map">Map</th>
-              <th data-field="win_rate">Win Rate</th>
-              <th data-field="pick_rate">Pick Rate</th>
-              <th data-field="popularity">Popularity</th>
-              <th data-field="ban_rate">Ban Rate</th>
-              <th data-field="games_played">Games Played</th>
-              <th data-field="wins">Wins</th>
-              <th data-field="losses">Losses</th>
-              <th data-field="bans">Bans</th>
-            </tr>
-        </thead>
-    </table>
-    <div id="echodata">
-    </div>
-    </div>
-
-  <h1>Matchups</h1>
-    <div class="container">
-        <table id="matchups-table" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
-        <thead>
-            <tr>
-              <th data-field="hero">Hero</th>
-              <th data-field="win_rate_as_ally">Win Rate As Ally</th>
-              <th data-field="win_rate_as_enemy">Win Rate Against "INSERT HERO NAME"</th>
-              <th data-field="games_played_as_ally">Games Played As Ally</th>
-              <th data-field="games_played_as_enemy">Games Played Against "INSERT HERO NAME"</th>
-            </tr>
-        </thead>
-    </table>
-    <div id="echodata">
-    </div>
-    </div>
-
   <h1>Talent Details</h1>
     <div class="container">
       <table id="talent-details-table-level-one" class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
@@ -181,6 +143,7 @@
 @endsection
 
 @section('scripts')
+  <script src="{{ asset('js/createTableJS.js') }}"></script>
 
 
 
@@ -188,19 +151,6 @@
 $(document).ready(function() {
   var formData = $('#basic_search').serializeArray();
 
-
-  inputUrl = '/getGlobalHeroStatData';
-  inputColumns = [
-      { data: "game_map"},
-      { data: "win_rate" },
-      { data: "pick_rate" },
-      { data: "popularity" },
-      { data: "ban_rate" },
-      { data: "games_played" },
-      { data: "wins" },
-      { data: "losses" },
-      { data: "bans" },
-  ];
   inputPaging = false;
   inputSearching = false;
   inputColReorder = true;
@@ -208,45 +158,7 @@ $(document).ready(function() {
   inputBInfo = false;
   inputSortOrder = [[ 1, "desc" ]];
   columnDefinition = [];
-  maps_parameters =
-  {
-    'page' : 'map',
-    'data' : formData
-  }
-
-  $.ajax({
-    url: inputUrl,
-    data: maps_parameters,
-    success: function(map_results){
-      createTableJS('#map-table', map_results, inputColumns, columnDefinition, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, inputSortOrder);
-    }
-  });
-
-
-
-  matchup_inputColumns = [
-      { data: "hero"},
-      { data: "win_rate_as_ally" },
-      { data: "win_rate_as_enemy" },
-      { data: "games_played_as_ally" },
-      { data: "games_played_as_enemy" },
-  ];
-  matchup_inputSearching = true;
-  matchup_inputSortOrder = [[ 0, "asc" ]];
-  matchup_parameters =
-  {
-    'page' : 'matchups',
-    'data' : formData
-  }
-
-  $.ajax({
-    url: inputUrl,
-    data: matchup_parameters,
-    success: function(matchup_results){
-      createTableJS('#matchups-table', matchup_results, matchup_inputColumns, columnDefinition, inputPaging, matchup_inputSearching, inputColReorder, inputFixedHeader, inputBInfo, matchup_inputSortOrder);
-    }
-  });
-
+  
   talent_details_parameters =
   {
     'page' : 'talent-details',
@@ -258,7 +170,7 @@ $(document).ready(function() {
   talent_details_columnDefinition = [{ "visible": false, "targets": 0 }];
 
   $.ajax({
-    url: inputUrl,
+    url: @json($talentsInputUrl),
     data: talent_details_parameters,
     success: function(talent_details_results){
       inputColumns = [
@@ -311,7 +223,7 @@ $(document).ready(function() {
 
 
   $.ajax({
-    url: inputUrl,
+    url: @json($talentBuildsInputUrl),
     data: talent_builds_param,
     success: function(talent_builds_results){
       createTableJS('#talent-builds-table', talent_builds_results, talent_builds_inputColumns, columnDefinition, inputPaging, inputSearching, inputColReorder, inputFixedHeader, inputBInfo, talent_builds_inputSortOrder);

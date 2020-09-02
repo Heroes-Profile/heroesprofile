@@ -16,20 +16,16 @@ class LeaderboardData
   private $game_type;
   private $season;
   private $region;
+  private $tier;
 
-  public static function instance($type, $hero, $role, $game_type, $season, $region)
-  {
-      return new LeaderboardData($type, $hero, $role, $game_type, $season, $region);
-  }
-
-
-  public function __construct($type, $hero, $role, $game_type, $season, $region) {
+  public function __construct($type, $hero, $role, $game_type, $season, $region, $tier) {
     $this->type = $type;
     $this->hero = $hero;
     $this->role = $role;
     $this->game_type = $game_type;
     $this->season = $season;
     $this->region = $region;
+    $this->tier = $tier;
   }
 
   public function getLeaderboardData(){
@@ -88,7 +84,20 @@ class LeaderboardData
 
       $leaderboard_data[$i]->most_played_build = "";
     }
-    return $leaderboard_data;
+    $return_leaderboard_data = new \App\Models\Leaderboard;
+    $counter = 0;
+
+    if($this->tier != ""){
+      for($i = 0; $i < count($leaderboard_data); $i++){
+        if (strpos($leaderboard_data[$i]->tier, $this->tier) !== false) {
+          $return_leaderboard_data[$counter++] = $leaderboard_data[$i];
+        }
+      }
+    }else{
+      $return_leaderboard_data = $leaderboard_data;
+    }
+
+    return $return_leaderboard_data;
   }
 
   private function getMaxCacheNumber(){

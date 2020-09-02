@@ -1,0 +1,11 @@
+table.blade.php
+
+Update on closing of search; This function needs to be updated to also trigger when a radio button is selected etc.
+$('#basic_search').on('hide.bs.select', function
+/* This needs to be changed to also include the
+
+
+filters
+
+Update filters with menu structure
+"Leaderboard type" should be a radio with button styling

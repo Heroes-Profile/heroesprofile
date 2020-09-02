@@ -1,4 +1,4 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
 
 {{-- Some Pages do not use all of these filters.  So will need to make it dependant on some input --}}
 
@@ -13,6 +13,7 @@
     <option value='role'>Role</option>
   </select>
 
+
   {{-- Heroes Picker --}}
   <select name="hero" id="hero-picker" class="heroes-selectpicker" data-live-search="true" title="Hero" data-header="Heroes">
     @foreach (\App\Models\Hero::select('id', 'name')->orderBy('name', 'ASC')->get() as $major => $hero_data)
@@ -22,7 +23,7 @@
 
   {{-- Roles Picker --}}
   <select name="role" id="role-picker" class="roles-selectpicker" data-live-search="true" title="Role" data-header="Roles">
-    @foreach (\App\Models\Hero::select(DB::raw("DISTINCT(new_role) as role"))->orderBy('role', 'ASC')->get() as $major => $minor)
+    @foreach (\App\Models\Hero::select("new_role as role")->distinct("role")->orderBy('role', 'ASC')->get() as $major => $minor)
         <option>{{ $minor->role }}</option>
     @endforeach
   </select>
@@ -43,6 +44,17 @@
     @endforeach
   </select>
 
+  {{-- Tier Picker --}}
+  <select name="tier" class="selectpicker" title="All Tiers" data-header="Tier">
+    <option value='' selected>All Tiers</option>
+    <option value='Master'>Master</option>
+    <option value='Diamond'>Diamond</option>
+    <option value='Platinum'>Platinum</option>
+    <option value='Gold'>Gold</option>
+    <option value='Silver'>Silver</option>
+    <option value='Brone'>Brone</option>
+  </select>
+
 
   {{-- Region Picker --}}
   <select name="region" class="selectpicker" title="All Regions" data-header="Regions">
@@ -53,13 +65,3 @@
     <option value='5'>CN</option>
   </select>
 </form>
-
-<script>
-$('.roles-selectpicker').selectpicker();
-$('.heroes-selectpicker').selectpicker();
-
-// To style only selects with the my-select class
-//$('.timeframe_type-selectpicker').selectpicker();
-// To style all selects
-//$('select').selectpicker();
-</script>

@@ -15,14 +15,6 @@ class GlobalHeroStatMatchupData
   private $role_league_tier;
   private $mirror;
 
-  public static function instance($hero, $game_versions_minor, $game_type, $region, $game_map,
-                                        $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror)
-  {
-    return new GlobalHeroStatMatchupData($hero, $game_versions_minor, $game_type, $region, $game_map,
-                                          $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror);
-  }
-
-
   public function __construct($hero, $game_versions_minor, $game_type, $region, $game_map,
                                         $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror) {
     $this->hero = $hero;
@@ -83,7 +75,6 @@ class GlobalHeroStatMatchupData
 
     $return_data = array();
     $return_data_counter = 0;
-
     for($i = 0; $i < count($heroes); $i++){
       if($heroes[$i]->id != $this->hero){
         $return_data[$return_data_counter]["hero"] = $heroes[$i]->name;

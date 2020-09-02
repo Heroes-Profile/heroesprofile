@@ -1,5 +1,3 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
-
 {{-- Some Pages do not use all of these filters.  So will need to make it dependant on some input --}}
 
 <form id="basic_search">
@@ -68,7 +66,7 @@
 
   {{-- Roles Picker --}}
   <select name="role" class="selectpicker" multiple data-live-search="true" title="All Roles" data-header="Roles">
-    @foreach (\App\Models\Hero::select(DB::raw("DISTINCT(new_role) as role"))->orderBy('role', 'ASC')->get() as $major => $minor)
+    @foreach (\App\Models\Hero::select("new_role as role")->distinct("role")->orderBy('role', 'ASC')->get() as $major => $minor)
         <option>{{ $minor->role }}</option>
     @endforeach
   </select>
@@ -76,7 +74,11 @@
   {{-- Heroes Picker --}}
   <select name="hero" class="selectpicker" multiple data-live-search="true" title="All Heroes" data-header="Heroes">
     @foreach (\App\Models\Hero::select('id', 'name')->orderBy('name', 'ASC')->get() as $major => $hero_data)
+      @if($hero_data->name == $hero)
+        <option value='{{ $hero_data->id }}' selected>{{ $hero_data->name }}</option>
+      @else
         <option value='{{ $hero_data->id }}'>{{ $hero_data->name }}</option>
+      @endif
     @endforeach
   </select>
 
@@ -132,10 +134,3 @@
     <option value='1'>Bronze</option>
   </select>
 </form>
-
-<script>
-// To style only selects with the my-select class
-//$('.timeframe_type-select-picker').selectpicker();
-// To style all selects
-//$('select').selectpicker();
-</script>

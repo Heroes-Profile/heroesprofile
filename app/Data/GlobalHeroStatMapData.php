@@ -16,14 +16,6 @@ class GlobalHeroStatMapData
   private $role_league_tier;
   private $mirror;
 
-  public static function instance($hero, $game_versions_minor, $game_type, $region, $game_map,
-                                        $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror)
-  {
-    return new GlobalHeroStatMapData($hero, $game_versions_minor, $game_type, $region, $game_map,
-                                          $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror);
-  }
-
-
   public function __construct($hero, $game_versions_minor, $game_type, $region, $game_map,
                                         $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror) {
     $this->hero = $hero;
@@ -46,6 +38,7 @@ class GlobalHeroStatMapData
                    ->selectRaw('maps.name as game_map, SUM(games_played) as games_played')
                    ->groupBy('maps.name')
                    ->get();
+
      $total_map_games_played = array();
      for($i = 0; $i < count($global_map_data); $i++){
        $total_map_games_played[$global_map_data[$i]->game_map] = $global_map_data[$i]->games_played / 10;
@@ -94,6 +87,7 @@ class GlobalHeroStatMapData
        }
        $return_data[$i]["popularity"] = number_format((($return_data[$i]["games_played"] + $return_data[$i]["bans"]) / $total_map_games_played[$return_data[$i]["game_map"]]) * 100, 2);
      }
+
      return $return_data;
   }
 

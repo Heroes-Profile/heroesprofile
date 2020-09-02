@@ -1,8 +1,6 @@
 # Heroes Profile
 
-[![](https://github.com/Heroes-Profile/heroesprofile/workflows/PHP%20Unit%20Tests/badge.svg)](https://github.com/Heroes-Profile/heroesprofile/actions?query=workflow%3A%22PHP+Unit+Tests%22)
-
-[Heroes Profile](https://alpha.heroesprofile.com/) is an open Heroes of the Storm stat site. Providing players with Global Hero Statistics, Personal Profile, MMR, Comparisons, Amateur series, and much more.
+[Master Heroes Profile](https://alpha.heroesprofile.com/)(master branch) or [Develop Heroes Profile](https://heroesprofile-dev.ue.r.appspot.com//)(develop branch) is an open Heroes of the Storm stat site. Providing players with Global Hero Statistics, Personal Profile, MMR, Comparisons, Amateur series, and much more.
 
 This public repository is the site re-write for [Heroes Profile](https://www.heroesprofile.com/) and is not currently in production.
 

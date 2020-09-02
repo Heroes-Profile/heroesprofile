@@ -6,106 +6,30 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Cache;
 
-class GlobalStatController extends Controller
+class GlobalHeroStatMatchupController extends Controller
 {
+  private $hero = "Abathur";
+
   private $columns = array(
     [
       "key" => "hero",
       "text" => "Hero"
     ],
     [
-      "key" => "win_rate",
-      "text" => "Win Rate"
+      "key" => "win_rate_as_ally",
+      "text" => "Win Rate As Ally %"
     ],
     [
-      "key" => "win_rate_confidence",
-      "text" => "Win Rate Confidence"
+      "key" => "win_rate_as_enemy",
+      "text" => "Win Rate Against"
     ],
     [
-      "key" => "change",
-      "text" => "Win Rate Change"
+      "key" => "games_played_as_ally",
+      "text" => "Games Played As Ally"
     ],
     [
-      "key" => "popularity",
-      "text" => "Popularity"
-    ],
-    [
-      "key" => "pick_rate",
-      "text" => "Pick Rate"
-    ],
-    [
-      "key" => "ban_rate",
-      "text" => "Ban Rate"
-    ],
-    [
-      "key" => "influence",
-      "text" => "Influence"
-    ],
-    [
-      "key" => "games_played",
-      "text" => "Games Played"
-    ],
-    [
-      "key" => "wins",
-      "text" => "Wins"
-    ],
-    [
-      "key" => "losses",
-      "text" => "Losses"
-    ],
-    [
-      "key" => "games_banned",
-      "text" => "Games Banned"
-    ]
-  );
-  private $columns_header = array(
-    [
-      "key" => "avg",
-      "text" => "AVG"
-    ],
-    [
-      "key" => "avg_win_rate",
-      "text" => ""
-    ],
-    [
-      "key" => "avg_win_rate_confidence",
-      "text" => ""
-    ],
-    [
-      "key" => "avg_change",
-      "text" => ""
-    ],
-    [
-      "key" => "avg_popularity",
-      "text" => ""
-    ],
-    [
-      "key" => "avg_pick_rate",
-      "text" => ""
-    ],
-    [
-      "key" => "avg_ban_rate",
-      "text" => ""
-    ],
-    [
-      "key" => "avg_influence",
-      "text" => ""
-    ],
-    [
-      "key" => "avg_games_played",
-      "text" => ""
-    ],
-    [
-      "key" => "avg_wins",
-      "text" => ""
-    ],
-    [
-      "key" => "avg_losses",
-      "text" => ""
-    ],
-    [
-      "key" => "avg_games_banned",
-      "text" => ""
+      "key" => "games_played_as_enemy",
+      "text" => "Games Played Against"
     ]
   );
 
@@ -113,16 +37,15 @@ class GlobalStatController extends Controller
     return view('Global.table',
     [
       'tableid' => 'stats-table',
-      'title' => 'Global Stats', // Page title
-      'paragraph' => 'Hero win rates based on differing increments, stat types, game type, or league tier.', // Summary paragraph
+      'title' => 'Global Matchup Stats', // Page title
+      'paragraph' => 'Hero Matchups based on differing increments, stat types, game type, or league tier.', // Summary paragraph
       'tableheading' => 'Win Rates', // Table heading
       'filtertype' => 'global_stats',
       'columns' => $this->columns,
-      'column_headers' => $this->columns_header,
-      'inputUrl' => "/getGlobalStatData",
+      'inputUrl' => "/getGlobalHeroStatMatchupData",
       'columndata' => $this->splitColumn($this->columns),
       'page' => 'stat',
-      'hero' => '',
+      'hero' => $this->hero,
 
       //Table Customizations
       'inputSortOrder' => array(1 => "desc"),
@@ -144,8 +67,9 @@ class GlobalStatController extends Controller
 
   public function getData(Request $request){
     $filters_instance = \Filters::instance();
-    $filters = $filters_instance->formatFilterData($request["data"], 1, 1);
+    $filters = $filters_instance->formatFilterData($request["data"], 1, 0);
 
+    $hero = $filters_instance->single_hero;
     $game_versions_minor = $filters_instance->game_versions_minor;
     $game_type = $filters_instance->multi_game_type;
     $region = $filters_instance->multi_region;
@@ -158,8 +82,9 @@ class GlobalStatController extends Controller
     $mirror = $filters_instance->mirror;
 
 
-    $page = "GlobalStats";
+    $page = "GlobalHeroStatsMatchup";
     $cache =  $page .
+              "|" . $hero .
               "|" . implode(",", $game_versions_minor) .
               "|" . implode(",", $game_type) .
               "|" . implode(",", $region) .
@@ -174,11 +99,11 @@ class GlobalStatController extends Controller
     $cache_time = calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor);
     $cache_time = 0;
 
-    $return_data = Cache::remember($cache, $cache_time, function () use ($game_versions_minor, $game_type, $region, $game_map,
+    $return_data = Cache::remember($cache, $cache_time, function () use ($hero, $game_versions_minor, $game_type, $region, $game_map,
                                           $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror){
-      $global_data = new \GlobalStatData($game_versions_minor, $game_type, $region, $game_map,
+      $global_data = new \GlobalHeroStatMatchupData($hero, $game_versions_minor, $game_type, $region, $game_map,
                                             $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror);
-      $return_data = $global_data->getGlobalHeroStatData();
+      $return_data = $global_data->getGlobalHeroStatMatchupData();
       return $return_data;
     });
 

@@ -10,25 +10,34 @@ Profile
 
 <div class="collapse navbar-collapse" id="navbarSupportedContent">
   <ul class="navbar-nav ml-auto">
-    <!--
+
     <li class="nav-item">
-      <a class="nav-link active" href="/Leaderboard">Leaderboard</a>
-    </li>
-  -->
-    <li class="nav-item">
-      <a class="nav-link" href="Hero">Hero Stats</a>
-    </li>
-    <!--
-    <li class="nav-item">
-      <a class="nav-link" href="/Hero/Matchups">Matchups</a>
+      <a class="nav-link active" href="/Global/Leaderboard">Leaderboard</a>
     </li>
 
     <li class="nav-item">
-      <a class="nav-link" href="/Hero/Talents">Hero Talents</a>
+      <a class="nav-link" href="/Global/Stats">Hero Stats</a>
+    </li>
+
+
+    <li class="nav-item">
+      <a class="nav-link" href="/Global/Stats/Maps">Hero Map Stats</a>
     </li>
 
     <li class="nav-item">
-      <a class="nav-link" href="/Hero/TalentBuilder">Talent Builder</a>
+      <a class="nav-link" href="/Global/Stats/Matchups">Matchups</a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="/Global/Stats/Talents">Hero Talents</a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="/Global/Stats/Talents/Builder">Talent Builder</a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="/Global/Stats/Compositions">Compositions</a>
     </li>
 
     <li class="nav-item">
@@ -36,7 +45,7 @@ Profile
     </li>
 
     <li class="nav-item">
-      <a class="nav-link" target="_blank" href="http://hotsapi.net/upload">Replay Uploader</a>
+      <a class="nav-link" target="_blank" href="https://api.heroesprofile.com/upload">Replay Uploader</a>
     </li>
   </ul>
   <form class="form-inline my-2 my-lg-0">

@@ -5,7 +5,6 @@ class Filters
 {
   //Generic
 
-
   public $timeframe_type;
   public $game_versions_minor = array();
   public $multi_game_type = array();
@@ -29,13 +28,14 @@ class Filters
   public $single_region;
   public $single_game_type;
   public $season;
+  public $tier;
 
   public static function instance()
   {
     return new Filters();
   }
 
-  public function formatFilterData($request, $singleOrMulti){
+  public function formatFilterData($request, $singleOrMulti, $singleMultiHero){
     $this->timeframe_type = "minor";
     if(!is_null($request)){
       for($i = 0; $i < count($request); $i++){
@@ -46,7 +46,6 @@ class Filters
           case "major_timeframe":
               $versions = getFilterVersions();
               $this->game_versions_minor = array_merge($this->game_versions_minor, $versions[$request[$i]["value"]]);
-
               break;
           case "minor_timeframe":
               array_push($this->game_versions_minor, $request[$i]["value"]);
@@ -72,7 +71,7 @@ class Filters
               }
               break;
           case "hero":
-              if($singleOrMulti){
+              if($singleOrMulti && $singleMultiHero){
                 array_push($this->multi_hero, $request[$i]["value"]);
               }else{
                 $this->single_hero = $request[$i]["value"];
@@ -87,6 +86,9 @@ class Filters
               break;
           case "game_map":
               array_push($this->game_map, $request[$i]["value"]);
+              break;
+          case "tier":
+              $this->tier = $request[$i]["value"];
               break;
           case "player_rank":
               array_push($this->player_league_tier, $request[$i]["value"]);
