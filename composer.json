@@ -66,6 +66,13 @@
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
+        ],
+        "post-install-cmd": [
+            "php artisan cache:clear",
+            "php artisan route:clear",
+            "php artisan view:clear",
+            "php artisan view:cache",
+            "php artisan queue:restart"
         ]
     }
 }
