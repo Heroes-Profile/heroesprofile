@@ -1,3 +1,0 @@
-[submodule "database/seeds/heroesprofile-seeds"]
-	path = database/seeds/heroesprofile-seeds
-	url = https://github.com/Zemill/heroesprofile-seeds.git
