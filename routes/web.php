@@ -54,10 +54,11 @@ Route::post('getProfileData', 'ProfileController@getData');
 
 
 //Main Routing
+Route::get('/', 'LandingPageController@show');
+
 //Globals
 Route::get('/Global/Leaderboard', 'GlobalLeaderboardController@show');
 Route::get('/Global/Stats', 'GlobalStatController@show');
-Route::get('/', 'GlobalStatController@show');
 Route::get('/Global/Stats/Maps', 'GlobalHeroStatMapController@show');
 Route::get('/Global/Stats/Matchups', 'GlobalHeroStatMatchupController@show');
 Route::get('/Global/Stats/Talents', 'GlobalHeroStatTalentsController@show');
@@ -74,8 +75,10 @@ Route::group([
 });
 */
 
-Auth::routes();  //?? Not sure what this is exactly.  Was added by auth scaffolding.  So must do something.
-
+//Auth::routes();
+//Battlenet Login Process
+Route::get('login/battlenet', 'Auth\battlenet\LoginController@show');
+Route::post('authenticate/battlenet', 'BattlenetAuthController@redirectToProvider');
 
 //Opt Out Process
 Route::view('optout', 'Optout/optout');

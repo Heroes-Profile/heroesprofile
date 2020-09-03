@@ -7,5 +7,6 @@
     "/js/datatables.min.js": "/js/datatables.min.js",
     "/css/datatables.min.css": "/css/datatables.min.css",
     "/js/popup.js": "/js/popup.js",
-    "/js/bootbox.min.js": "/js/bootbox.min.js"
+    "/js/bootbox.min.js": "/js/bootbox.min.js",
+    "/js/extraHeader.js": "/js/extraHeader.js"
 }

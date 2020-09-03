@@ -23,3 +23,5 @@ mix.copy('resources/css/datatables.min.css', 'public/css');
 
 mix.copy('resources/js/popup.js', 'public/js');
 mix.copy('resources/js/bootbox.min.js', 'public/js');
+
+mix.copy('resources/js/extraHeader.js', 'public/js');

@@ -31,6 +31,39 @@ Profile
     <li class="nav-item">
       <a class="nav-link" href="/Global/Stats/Talents">Hero Talents</a>
     </li>
+  </ul>
+
+  <!-- Right Side Of Navbar -->
+<ul class="navbar-nav ml-auto">
+    <!-- Authentication Links -->
+    @guest
+        <li class="nav-item">
+            <a class="nav-link" href="/login/battlenet">{{ __('Battlenet Login') }}</a>
+        </li>
+    @else
+        <li class="nav-item dropdown">
+            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                {{ Auth::user()->first_name }} {{ Auth::user()->last_name }}<span class="caret"></span>
+            </a>
+
+            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="/home">
+                    {{ __('Profile') }}
+                </a>
+
+                <a class="dropdown-item" href=""
+                   onclick="event.preventDefault();
+                                 document.getElementById('logout-form').submit();">
+                    {{ __('Logout') }}
+                </a>
+
+                <form id="logout-form" action="" method="POST" style="display: none;">
+                    @csrf
+                </form>
+            </div>
+        </li>
+    @endguest
+</ul>
     {{--
     <li class="nav-item">
       <a class="nav-link" href="/Global/Stats/Talents/Builder">Talent Builder</a>
@@ -53,17 +86,6 @@ Profile
     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Find a Player</button>
   </form>
   --}}
-  <?php
-
-
-  if (Auth::check()) {
-      $user = Auth::user();
-      //print_r(json_encode($user, true));
-      print_r(json_decode(json_encode($user),true)["battletag"]);
-  }
-
-
-   ?>
 </div>
 
 </nav>

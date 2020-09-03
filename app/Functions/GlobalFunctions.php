@@ -1,4 +1,5 @@
 <?php
+use Carbon\Carbon;
 
 if (!function_exists('calculateCacheTime')) {
     /**
@@ -480,4 +481,43 @@ if (!function_exists('getRankSplit')) {
 
     return $rank_name;
   }
+}
+
+if (!function_exists('getMaxReplayID')) {
+    /**
+     * Returns the max replayID in the DB
+     *
+     *
+     * @return integer max replayID
+     *
+     * */
+    function getMaxReplayID(){
+      return App\Models\Replay::max('replayID');
+    }
+}
+
+if (!function_exists('getMaxGameVersion')) {
+    /**
+     * Returns the max game version in the DB
+     *
+     *
+     * @return integer max game version
+     *
+     * */
+    function getMaxGameVersion(){
+      return App\Models\SeasonGameVersions::max('game_version');
+    }
+}
+
+if (!function_exists('getMaxGameDate')) {
+    /**
+     * Returns the max game date in the DB
+     *
+     *
+     * @return integer max game date
+     *
+     * */
+    function getMaxGameDate(){
+      return App\Models\Replay::where('game_date', '<=', Carbon::now())->max('game_date');
+    }
 }
