@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\BattlenetAccountServicer;
 use Socialite;
 use Session;
 
@@ -27,85 +26,28 @@ class BattlenetAuthController extends Controller
   *
   * @return \Illuminate\Http\Response
   */
-  public function handleProviderCallback(BattlenetAccountServicer $battlenetServicer)
+  public function handleProviderCallback(Request $request)
   {
-    $regionsToInt = array(
-      "us" => "1",
-      "eu" => "2",
-      /*
-      "KR" => "3",
-      "UNK" => "4",
-      "CN" => "5"
-      */
+    $user = Socialite::driver('battlenet')->user();
+    $accessTokenResponseBody = $user->accessTokenResponseBody;
+    print_r(json_encode($request, true));
+
+    /*
+    $battlenet_user = json_decode(json_encode($battlenet_user),true);
+    */
+    echo "success";
+    //print_r($battlenet_user);
+    /*
+    $battlenet_accounts = \App\Models\battlenet_accounts::firstOrCreate(
+      ['battlenet_id' => 'Flight 10'],
+      ['battletag' => 'Flight 10'],
+      ['region' => 'Flight 10'],
+      ['battlenet_access_token' => 'Flight 10'],
+      ['remember_token' => 'Flight 10'],
     );
 
-
-    try {
-      $battlenet_user = Socialite::driver('battlenet')->user();
-      $battlenet_user->user['region'] = $regionsToInt[Session::get('battlenet_region')];
-
-    } catch (\Exception $e) {
-      //return redirect('/login');
-      return redirect('/login/failure');
-    }
-
-    $authUser = $battlenetServicer->findOrCreate(
-        $battlenet_user
-    );
-    auth()->login($authUser, true);
-    return redirect()->to('/');
-
+    auth()->login($battlenet_accounts, true);
+    return redirect()->to('/home');
+    */
   }
-
-  /**
-  * Obtain the user information from Battlenet.
-  *
-  * @return \Illuminate\Http\Response
-  */
-  public function handleOptOutProviderCallback()
-  {
-      $regionsToInt = array(
-        "us" => "1",
-        "eu" => "2",
-        "KR" => "3",
-        "UNK" => "4",
-        "CN" => "5"
-      );
-    try {
-      $battlenet_user = Socialite::driver('battlenet')->user();
-      $battlenet_user->user['region'] = $regionsToInt[Session::get('battlenet_region')];
-
-      $battlenet_user = json_decode(json_encode($battlenet_user),true);
-      $battletags = \App\Models\Battletag::where('battletag', $battlenet_user["user"]["battletag"])
-                    ->get();
-      if(count($battletags) > 0){
-        foreach($battletags as $battletag_key => $battletag_value){
-          $blizzID_region = \App\Models\Battletag::where('blizz_id', $battletag_value["blizz_id"])
-                        ->where('region', $battletag_value["region"])
-                        ->get();
-          foreach($blizzID_region as $blizzIDRegion_key => $blizzIDRegion_value){
-            $blizzIDRegion_value->opt_out = 1;
-            $blizzIDRegion_value->save();
-          }
-        }
-      }else{
-        $battletag = new \App\Models\Battletag;
-        $battletag->battletag = $battlenet_user["user"]["battletag"];
-        $battletag->region = $regionsToInt[Session::get('battlenet_region')];
-        $battletag->opt_out = 1;
-        $battletag->blizz_id = $battlenet_user["user"]["id"];
-        $battletag->save();
-      }
-
-    } catch (\Exception $e) {
-      return redirect('/optout/update/failure');
-    }
-
-
-
-
-    return redirect()->to('/optout/update/success');
-  }
-
-
 }

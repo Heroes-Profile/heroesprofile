@@ -79,6 +79,7 @@ Route::group([
 //Battlenet Login Process
 Route::get('login/battlenet', 'Auth\battlenet\LoginController@show');
 Route::post('authenticate/battlenet', 'BattlenetAuthController@redirectToProvider');
+Route::get('authenticate/battlenet/success', 'BattlenetAuthController@handleProviderCallback');
 
 //Opt Out Process
 Route::view('optout', 'Optout/optout');
