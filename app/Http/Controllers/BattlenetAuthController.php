@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Socialite;
 use Session;
 
@@ -28,14 +29,23 @@ class BattlenetAuthController extends Controller
   */
   public function handleProviderCallback(Request $request)
   {
-    $user = Socialite::driver('battlenet')->userFromToken($request["code"]);
-    print_r(json_encode($user, true));
+    $clientId = env('BATTLE.NET_KEY', false);
+    $clientSecret = env('BATTLE.NET_SECRET', false);
+    $redirectUrl = env('BATTLE.NET_REDIRECT_URI', false);
+    $additionalProviderConfig = ['region' => Session::get('battlenet_region')];
+    $config = new \SocialiteProviders\Manager\Config($clientId, $clientSecret, $redirectUrl, $additionalProviderConfig);
 
-    /*
-    $response = Http::post('http://test.com/users', [
-        'name' => 'Steve',
-        'role' => 'Network Administrator',
-    ]);
-    */
+    $user = Socialite::driver('battlenet')->setConfig($config)->user();
+
+    $battlenet_user = \App\Models\BattlenetAccount::firstOrCreate(
+      ['battlenet_id' => $user->id],
+      ['battletag' => $user->nickname],
+      ['region' => '1'],
+      ['battlenet_access_token' => $user->accessTokenResponseBody["access_token"]],
+      ['remember_token' => $user->token]
+    );
+    auth()->login($battlenet_user, true);
+
+    
   }
 }
