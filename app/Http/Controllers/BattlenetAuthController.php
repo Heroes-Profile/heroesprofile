@@ -28,26 +28,14 @@ class BattlenetAuthController extends Controller
   */
   public function handleProviderCallback(Request $request)
   {
-    $user = Socialite::driver('battlenet')->user();
-    $accessTokenResponseBody = $user->accessTokenResponseBody;
-    print_r(json_encode($request, true));
+    $user = Socialite::driver('battlenet')->userFromToken($request["code"]);
+    print_r(json_encode($user, true));
 
     /*
-    $battlenet_user = json_decode(json_encode($battlenet_user),true);
-    */
-    echo "success";
-    //print_r($battlenet_user);
-    /*
-    $battlenet_accounts = \App\Models\battlenet_accounts::firstOrCreate(
-      ['battlenet_id' => 'Flight 10'],
-      ['battletag' => 'Flight 10'],
-      ['region' => 'Flight 10'],
-      ['battlenet_access_token' => 'Flight 10'],
-      ['remember_token' => 'Flight 10'],
-    );
-
-    auth()->login($battlenet_accounts, true);
-    return redirect()->to('/home');
+    $response = Http::post('http://test.com/users', [
+        'name' => 'Steve',
+        'role' => 'Network Administrator',
+    ]);
     */
   }
 }
