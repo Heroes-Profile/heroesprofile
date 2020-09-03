@@ -171,7 +171,7 @@ class GlobalStatData
       }
 
 
-      if($return_data[$counter]["games_banned"]){
+      if(isset($return_data[$counter]["games_banned"])){
         $return_data[$counter]["popularity"] = (($return_data[$counter]["games_banned"] + $return_data[$counter]["games_played"]) / $total_games) * 100;
       }else{
         $return_data[$counter]["popularity"] = ($return_data[$counter]["games_played"] / $total_games) * 100;

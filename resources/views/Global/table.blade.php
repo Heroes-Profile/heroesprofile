@@ -35,9 +35,10 @@
 @endsection
 
 @section('scripts')
-
   <script src="{{ asset('js/createTableAjax.js') }}"></script>
   <script src="{{ asset('js/createTableJS.js') }}"></script>
+  <script src="{{ asset('js/popup.js') }}"></script>
+  <script src="{{ asset('js/bootbox.min.js') }}"></script><!--http://bootboxjs.com/-->
 
 <script>
 var tableID = "#"+@json($tableid);
@@ -99,7 +100,7 @@ $(document).ready(function() {
   $.ajax({
     url: @json($inputUrl),
     data: parameters,
-    type: "POST", //Turn Back on after testing
+    //type: "POST", //Turn Back on after testing
     success: function(results){
       createTableJS(
         tableID,
@@ -236,17 +237,15 @@ $(document).ready(function() {
         $('#avg_games_banned').text(function() {
             return (average_games_banned / count).toFixed(0);
         });
-        console.log(results);
       @endif
-
-
-
     }
   });
 
 
   $('#basic_search').on('hide.bs.select', function (e, clickedIndex, isSelected, previousValue) { // Change this so that it also triggers on on radio buttons, etc.
+    var dialog = showPop();
     var formData = $('#basic_search').serializeArray();
+
     parameters =
     {
       'page' : @json($page),
@@ -256,9 +255,10 @@ $(document).ready(function() {
     $.ajax({
       url: @json($inputUrl),
       data: parameters,
-      type: "POST",  //turn back on after testing
+      //type: "POST",  //turn back on after testing
 
       success: function(results){
+        dialog.modal('hide');
         var table = $(tableID).DataTable();
         table
             .clear()
@@ -272,6 +272,8 @@ $(document).ready(function() {
 
 @if ($filtertype == "leaderboard")
   $('#type-picker').change(function(){
+    showPop();
+
     switch($('#type-picker').find(":selected").val()){
       case "hero":
         $("#hero-picker").removeAttr("disabled");
