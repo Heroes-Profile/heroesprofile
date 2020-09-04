@@ -63,9 +63,11 @@ Route::get('/Global/Stats', 'GlobalStatController@show');
 Route::get('/Global/Stats/Maps', 'GlobalHeroStatMapController@show');
 Route::get('/Global/Stats/Matchups', 'GlobalHeroStatMatchupController@show');
 Route::get('/Global/Stats/Talents', 'GlobalHeroStatTalentsController@show');
+Route::get('/getProfileData', 'ProfileController@getData');
 
 //Profile
-//Route::get('/Profile', 'ProfileController@show');
+Route::get('/Profile', 'ProfileController@show');
+Route::post('/getProfileData', 'ProfileController@getData');
 
 
 /*
