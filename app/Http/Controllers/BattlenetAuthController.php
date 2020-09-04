@@ -36,16 +36,12 @@ class BattlenetAuthController extends Controller
     $config = new \SocialiteProviders\Manager\Config($clientId, $clientSecret, $redirectUrl, $additionalProviderConfig);
 
     $user = Socialite::driver('battlenet')->setConfig($config)->user();
-
-    $battlenet_user = \App\Models\BattlenetAccount::firstOrCreate(
-      ['battlenet_id' => $user->id],
-      ['battletag' => $user->nickname],
-      ['region' => '1'],
-      ['battlenet_access_token' => $user->accessTokenResponseBody["access_token"]],
-      ['remember_token' => $user->token]
+    $region = 1;
+    $battlenet_user = \App\Models\BattlenetAccount::updateOrCreate(
+      ['battlenet_id' => $user->id, 'battletag' => $user->nickname, 'region' => $region],
+      ['battlenet_access_token' => $user->accessTokenResponseBody["access_token"], 'remember_token' => $user->token]
     );
     auth()->login($battlenet_user, true);
-
-    
+    return redirect('/home');
   }
 }

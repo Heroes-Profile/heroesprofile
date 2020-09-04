@@ -55,6 +55,7 @@ Route::post('getProfileData', 'ProfileController@getData');
 
 //Main Routing
 Route::get('/', 'LandingPageController@show');
+Route::get('/home', 'HomeController@show');
 
 //Globals
 Route::get('/Global/Leaderboard', 'GlobalLeaderboardController@show');

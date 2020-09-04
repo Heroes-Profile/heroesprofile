@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class BattlenetAccount  extends Authenticatable
+class BattlenetAccount extends Authenticatable
 {
   protected $table = 'battlenet_accounts';
   protected $primaryKey = 'battlenet_accounts_id';

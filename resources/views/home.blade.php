@@ -13,7 +13,7 @@
                             {{ session('status') }}
                         </div>
                     @endif
-
+                    {{ Auth::user()->battletag }}
                     You are logged in!
                 </div>
             </div>
