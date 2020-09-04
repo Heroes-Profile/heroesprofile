@@ -39,7 +39,14 @@
 
   @include('filters.profile')
 
-Hello - This is the Profile Page
+  <div class="container">
+    <div class="card">
+      <label id='wins'>Wins </label>
+      <label id='losses'>Losses </label>
+    </div>
+  </div>
+
+
 @endsection
 
 @section('scripts')
@@ -63,6 +70,8 @@ Hello - This is the Profile Page
       data: parameters,
       //type: "POST",
       success: function(results){
+        $("#wins").append(results[0].wins);
+        $("#losses").append(results[0].losses);
         console.log(results);
       }
     });
