@@ -27,39 +27,13 @@ class ProfileData
     if(count($profile_cache) > 0){
       if($profile_cache[0]["latest_replayID"] < $max_replayID){
         echo "Update Cache";
-        return $this->updateCache();
-      }else{
-        echo "Return Cache";
-        return $profile_cache;
+        $profile_cache = $this->updateCache();
       }
     }else{
       echo "Calculate Cache";
-      return $this->calculateCache();
+      $profile_cache = $this->calculateCache();
     }
-
-    /*
-    $max_replayID = \App\Models\Replay::select(
-      'replay.replayID'
-      )
-      ->join('player', 'player.replayID', '=', 'replay.replayID')
-      ->join('scores', function($join)
-        {
-          $join->on('scores.replayID', '=', 'replay.replayID');
-          $join->on('scores.battletag', '=', 'player.battletag');
-        }
-      )
-      ->join('talents', function($join)
-        {
-          $join->on('talents.replayID', '=', 'replay.replayID');
-          $join->on('talents.battletag', '=', 'player.battletag');
-        }
-      )
-      ->where('replay.region', $this->region)
-      ->where('player.blizz_id', $this->blizz_id)
-      ->orderBy('replay.game_date', 'ASC')
-      ->get();
-      */
-    //return $max_replayID;
+    return $this->updateExtraPlayerData($profile_cache[0]->toArray());
   }
 
   private function calculateCache(){
@@ -94,14 +68,16 @@ class ProfileData
     $profile_cache->account_level = $this->getAccountLevel();
     $profile_cache->kills = $data_formatted['kills'];
     $profile_cache->deaths = $data_formatted['deaths'];
-    $profile_cache->deaths = $data_formatted['takedowns'];
+    $profile_cache->takedowns = $data_formatted['takedowns'];
     $profile_cache->hero_data = serialize($data_formatted['hero_data']);
     $profile_cache->map_data = serialize($data_formatted['map_data']);
     $profile_cache->matches = serialize($data_formatted['matches']);
     $profile_cache->latest_replayID = $player_data[0];
     $profile_cache->save();
 
-    $this->updateExtraPlayerData($profile_cache);
+    $profile_cache = \App\Models\ProfilePageCache::Filters($this->blizz_id, $this->region, $this->game_type, $this->season)->get();
+
+    return $profile_cache;
   }
 
   private function updateCache(){
@@ -168,7 +144,7 @@ class ProfileData
     $playerStats = array();
     $max_replayID = 0;
 
-
+  //  print_r(json_encode($replay_data, true));
     for($i = 0; $i < count($replay_data); $i++){
       $data = array();
       $data["game_type"] = $replay_data[$i]["game_type"];
@@ -196,11 +172,13 @@ class ProfileData
 
       $data["kills"] = $replay_data[$i]["kills"];
       $data["takedowns"] = $replay_data[$i]["takedowns"];
-      if($replay_data[$i]["first_to_ten"] == ""){
+
+      if(!isset($replay_data[$i]["first_to_ten"])){
         $data["first_to_ten"] = -1;
       }else{
         $data["first_to_ten"] = $replay_data[$i]["first_to_ten"];
       }
+
 
       $data["deaths"] = $replay_data[$i]["deaths"];
       $data["level_one"] = $replay_data[$i]["level_one"];
@@ -455,8 +433,7 @@ class ProfileData
   }
 
   private function updateExtraPlayerData($player_data){
-    print_r($player_data);
-    /*
+    //print_r($player_data);
     if($player_data["deaths"] > 0){
       $player_data["kdr"] = $player_data["kills"] / $player_data["deaths"];
       $player_data["kda"] = $player_data["takedowns"] / $player_data["deaths"];
@@ -649,7 +626,93 @@ class ProfileData
     }
 
     return $player_data;
-    */
+  }
+
+  private function getLeagueData(){
+    if($this->game_type == ""){
+      $qm = \App\Models\MasterMMRDataQM::select("game_type", "conservative_rating", "win", "loss")
+        ->where('type_value', '10000')
+        ->where('game_type', '1')
+        ->where('blizz_id', $this->blizz_id)
+        ->where('region', $this->region);
+        //->get();
+
+      $ud = \App\Models\MasterMMRDataUD::select("game_type", "conservative_rating", "win", "loss")
+        ->where('type_value', '10000')
+        ->where('game_type', '2')
+        ->where('blizz_id', $this->blizz_id)
+        ->where('region', $this->region);
+        //->get();
+
+      $hl = \App\Models\MasterMMRDataHL::select("game_type", "conservative_rating", "win", "loss")
+        ->where('type_value', '10000')
+        ->where('game_type', '3')
+        ->where('blizz_id', $this->blizz_id)
+        ->where('region', $this->region);
+        //->get();
+
+      $tl = \App\Models\MasterMMRDataTL::select("game_type", "conservative_rating", "win", "loss")
+        ->where('type_value', '10000')
+        ->where('game_type', '4')
+        ->where('blizz_id', $this->blizz_id)
+        ->where('region', $this->region);
+        //->get();
+
+      $mmr_data = \App\Models\MasterMMRDataSL::select("game_type", "conservative_rating", "win", "loss")
+        ->where('type_value', '10000')
+        ->where('game_type', '5')
+        ->where('blizz_id', $this->blizz_id)
+        ->where('region', $this->region)
+        ->union($qm)
+        ->union($ud)
+        ->union($hl)
+        ->union($tl)
+        ->get();
+
+        return $mmr_data;
+    }else if($this->game_type == "1"){
+      $mmr_data = \App\Models\MasterMMRDataQM::select("game_type", "conservative_rating", "win", "loss")
+        ->where('type_value', '10000')
+        ->where('game_type', '1')
+        ->where('blizz_id', $this->blizz_id)
+        ->where('region', $this->region)
+        ->get();
+      return $mmr_data;
+    }else if($this->game_type == "2"){
+      $mmr_data = \App\Models\MasterMMRDataUD::select("game_type", "conservative_rating", "win", "loss")
+        ->where('type_value', '10000')
+        ->where('game_type', '2')
+        ->where('blizz_id', $this->blizz_id)
+        ->where('region', $this->region)
+        ->get();
+      return $mmr_data;
+    }else if($this->game_type == "3"){
+      $mmr_data = \App\Models\MasterMMRDataHL::select("game_type", "conservative_rating", "win", "loss")
+        ->where('type_value', '10000')
+        ->where('game_type', '3')
+        ->where('blizz_id', $this->blizz_id)
+        ->where('region', $this->region)
+        ->get();
+      return $mmr_data;
+    }else if($this->game_type == "4"){
+      $mmr_data = \App\Models\MasterMMRDataTL::select("game_type", "conservative_rating", "win", "loss")
+        ->where('type_value', '10000')
+        ->where('game_type', '4')
+        ->where('blizz_id', $this->blizz_id)
+        ->where('region', $this->region)
+        ->get();
+      return $mmr_data;
+
+
+    }else if($this->game_type == "5"){
+      $mmr_data = \App\Models\MasterMMRDataSL::select("game_type", "conservative_rating", "win", "loss")
+        ->where('type_value', '10000')
+        ->where('game_type', '5')
+        ->where('blizz_id', $this->blizz_id)
+        ->where('region', $this->region)
+        ->get();
+      return $mmr_data;
+    }
   }
 
   private function cmp_latest_played( $a, $b ) {
@@ -720,5 +783,19 @@ class ProfileData
       }
     }
     return $player_data;
+  }
+
+  private function cmp_games_played( $a, $b ) {
+    if($a["games_played"] ==  $b["games_played"] ){
+      return 0 ;
+    }
+    return ($a["games_played"] > $b["games_played"]) ? -1 : 1;
+  }
+
+  private function cmp_win_rate( $a, $b) {
+    if($a["win_rate"] ==  $b["win_rate"]){
+      return 0 ;
+    }
+    return ($a["win_rate"] > $b["win_rate"]) ? -1 : 1;
   }
 }
