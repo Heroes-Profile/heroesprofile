@@ -51,15 +51,9 @@ Profile
                     {{ __('Profile') }}
                 </a>
 
-                <a class="dropdown-item" href=""
-                   onclick="event.preventDefault();
-                                 document.getElementById('logout-form').submit();">
-                    {{ __('Logout') }}
+                <a class="dropdown-item" href="/logout/battlenet">
+                    {{ __('Log Out') }}
                 </a>
-
-                <form id="logout-form" action="" method="POST" style="display: none;">
-                    @csrf
-                </form>
             </div>
         </li>
     @endguest

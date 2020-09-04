@@ -76,9 +76,9 @@ Route::group([
 });
 */
 
-//Auth::routes();
-//Battlenet Login Process
+//Battlenet Login/Logout Process
 Route::get('login/battlenet', 'Auth\battlenet\LoginController@show');
+Route::get('logout/battlenet', 'Auth\battlenet\LogoutController@show');
 Route::post('authenticate/battlenet', 'BattlenetAuthController@redirectToProvider');
 Route::get('authenticate/battlenet/success', 'BattlenetAuthController@handleProviderCallback');
 

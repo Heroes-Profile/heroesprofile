@@ -193,6 +193,7 @@ class GlobalStatData
       }else{
         $return_data[$counter]["ban_rate"] = 0;
       }
+      $return_data[$counter]["talent_builds"] = $hero;
 
 
       $counter++;
