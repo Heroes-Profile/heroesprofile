@@ -18,21 +18,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('getGlobalStatData', 'GlobalStatController@getData'); //For Testing Purposes.  Remove later
 Route::get('getGlobalLeaderboardData', 'GlobalLeaderboardController@getData'); //For Testing Purposes.  Remove later
 Route::get('getGlobalHeroStatMapData', 'GlobalHeroStatMapController@getData'); //For Testing Purposes.  Remove later
-Route::get('getGlobalHeroStatMatchupData', 'GlobalHeroStatMatchupController@getData');
-
-Route::get('getGlobalHeroStatTalentData', 'GlobalHeroStatTalentsController@talentDetailData');
-Route::get('getGlobalHeroStatTalentBuildsData', 'GlobalHeroStatTalentsController@talentBuildData');
-
-
-
-
-
+Route::get('getGlobalHeroStatMatchupData', 'GlobalHeroStatMatchupController@getData'); //For Testing Purposes.  Remove later
+Route::get('getGlobalHeroStatTalentData', 'GlobalHeroStatTalentsController@talentDetailData'); //For Testing Purposes.  Remove later
+Route::get('getGlobalHeroStatTalentBuildsData', 'GlobalHeroStatTalentsController@talentBuildData'); //For Testing Purposes.  Remove later
 Route::get('getProfileData', 'ProfileController@getData'); //For Testing Purposes.  Remove later
-
-//Route::get('/test', 'TestController@testData'); //For Testing Purposes.  Remove later
-//Route::get('/', 'ProfileController@show');  //Defaulting to page currently being worked for ease of use.
-
-
+Route::get('Profile/getFriendAndFoeData', 'FriendsAndFoesController@getData'); //For Testing Purposes.  Remove later
 
 
 //Post Calls to get Data for pages
@@ -42,15 +32,8 @@ Route::post('getGlobalHeroStatMapData', 'GlobalHeroStatMapController@getData');
 Route::post('getGlobalHeroStatMatchupData', 'GlobalHeroStatMatchupController@getData');
 Route::post('getGlobalHeroStatTalentData', 'GlobalHeroStatTalentsController@talentDetailData');
 Route::post('getGlobalHeroStatTalentBuildsData', 'GlobalHeroStatTalentsController@talentBuildData');
-
-
-
-
-
-
-
 Route::post('getProfileData', 'ProfileController@getData');
-
+Route::post('Profile/getFriendAndFoeData', 'FriendsAndFoesController@getData');
 
 
 //Main Routing
@@ -67,7 +50,9 @@ Route::get('/getProfileData', 'ProfileController@getData');
 
 //Profile
 Route::get('/Profile', 'ProfileController@show');
-Route::post('/getProfileData', 'ProfileController@getData');
+Route::get('/Profile/FriendsAndFoes', 'FriendsAndFoesController@show');
+
+
 
 
 /*

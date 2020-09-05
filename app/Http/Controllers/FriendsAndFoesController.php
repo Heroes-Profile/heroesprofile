@@ -3,20 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Cache;
 
-class ProfileController extends Controller
+class FriendsAndFoesController extends Controller
 {
   public function show(){
-    return view('Profile.home',
+    return view('Profile.FriendsAndFoes.home',
     [
-      'title' => 'Profile', // Page title
+      'title' => 'Friends and Foes', // Page title
       'paragraph' => 'Profile Page', // Summary paragraph
       'page' => 'profile',
-      'inputUrl' => 'getProfileData'
+      'inputUrl' => 'getFriendAndFoeData'
     ]);
   }
-
 
   public function getData(Request $request){
     $blizz_id = $request["blizz_id"];
@@ -24,8 +22,8 @@ class ProfileController extends Controller
     $game_type = $request["game_type"];
     $season = $request["season"];
 
-    $profile_data = new \ProfileData($blizz_id, $region, $game_type, $season);
-    $return_data = $profile_data->getPlayerProfileData();
+    $friendsAndFoesData = new \FriendsAndFoes($blizz_id, $region, $game_type, $season);
+    $return_data = $friendsAndFoesData->getFriendsAndFoesData();
     return $return_data;
   }
 }

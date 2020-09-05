@@ -239,6 +239,7 @@ return [
 
         //Profile
         'ProfileData' => App\Data\ProfileData::class,
+        'FriendsAndFoes' => App\Data\FriendsAndFoes::class,
 
 
 
