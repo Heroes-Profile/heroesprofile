@@ -8,13 +8,13 @@
   <div class="container center">
       <ul class="nav nav-tabs">
           <li class="nav-item">
-              <a href="/Profile" class="nav-link active">Profile</a>
+              <a href="/Profile" class="nav-link">Profile</a>
           </li>
           <li class="nav-item">
               <a href="/Profile/FriendsAndFoes" class="nav-link">Friends and Foes</a>
           </li>
           <li class="nav-item">
-              <a href="Profile/Heroes/All" class="nav-link">Heroes</a>
+              <a href="#" class="nav-link active">Heroes</a>
           </li>
           <li class="nav-item">
               <a href="#" class="nav-link">Matchups</a>
@@ -39,14 +39,6 @@
 
   @include('filters.profile')
 
-  <div class="container">
-    <div class="card">
-      <label id='wins'>Wins </label>
-      <label id='losses'>Losses </label>
-    </div>
-  </div>
-
-
 @endsection
 
 @section('scripts')
@@ -70,8 +62,6 @@
       data: parameters,
       //type: "POST",
       success: function(results){
-        $("#wins").append(results[0].wins);
-        $("#losses").append(results[0].losses);
         console.log(results);
       }
     });
