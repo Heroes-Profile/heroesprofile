@@ -12,13 +12,26 @@ $font-family-header: 'Open Sans', sans-serif;
 $font-family-sans-serif: 'Open Sans', sans-serif;
 
 
-body{font-family: $font-family-sans-serif;}
-.navbar-brand{font-family: 'Ruslan Display', sans-serif;}
-.container-fluid{padding-left:0; padding-right:0;}
-.table .thead-dark th{
-  background-color: $teal-background;
+body{
+  font-family: $font-family-sans-serif;
+letter-spacing: .09em;
+}
+h1,h2,h3,.btn,th{}
+
+.btn{
+  font-weight:bold;
 
 }
+
+
+// Overall
+.container-fluid{
+  padding-left:0; padding-right:0;
+}
+.table .thead-dark th{
+  background-color: $teal-background;
+}
+
 a {
   color: $teal;
   //text-decoration: underline;
@@ -30,8 +43,43 @@ a {
     border-bottom: 2px solid $blue;
   }
 }
+
+
+// Header
+.navbar{
+
+  padding: .2rem .5rem;
+}
+.navbar-brand{
+  font-family: 'Ruslan Display', sans-serif;
+}
+
+.header-buttons{
+  .header-button{
+    text-transform:uppercase;
+  /*  &:first-child{
+      background-color: $teal;
+    }
+    &:nth-child(2){
+      background-color: $blue;
+    }
+    &:nth-child(3){
+      background-color: $red;
+    }*/
+  }
+}
+
+.secondary-nav{
+background-color:$darkgray;
+font-size: 80%;
+}
+
 .navbar a, .dropdown a{
   border:none;
   font-weight: normal;
   &:hover{border-bottom: 0;}
+}
+
+.header-search-form input{
+  font-size: 80%;
 }

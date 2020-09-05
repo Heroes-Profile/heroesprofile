@@ -130,7 +130,7 @@
 
 
     $('#basic_search').on('hide.bs.select', function (e, clickedIndex, isSelected, previousValue) { // Change this so that it also triggers on on radio buttons, etc.
-      var dialog = showPop();
+    //  var dialog = showPop();
       var formData = $('#basic_search').serializeArray();
 
       parameters =
@@ -148,7 +148,7 @@
           @if(isset($column_headers))
           extraHeader(results);
           @endif
-          dialog.modal('hide');
+        //  dialog.modal('hide');
           var table = $(tableID).DataTable();
           table
           .clear()
@@ -171,7 +171,7 @@
 
     @if ($filtertype == "leaderboard")
     $('#type-picker').change(function(){
-      showPop();
+      //showPop();
 
       switch($('#type-picker').find(":selected").val()){
         case "hero":

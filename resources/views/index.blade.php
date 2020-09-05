@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('title', "Landing Page")
 @section('content')
-
+<div><img src="/images/deathwing_full.png" /></div>
     <div class="byline"><h3>Heroes of the Storm statistics and comparison</h3></div>
         <div class="main-content home-page">
 
