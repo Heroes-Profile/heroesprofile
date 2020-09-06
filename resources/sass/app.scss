@@ -6,8 +6,8 @@ $teal-background: #008b8b;
 $teal: #006666;
 $yellow: #f1ad00;
 $darkgray: #0F121D;
-$primary: $green;
-$secondary: $blue;
+$primary: $blue;
+$secondary: $teal;
 $font-family-header: 'Open Sans', sans-serif;
 $font-family-sans-serif: 'Open Sans', sans-serif;
 
@@ -43,6 +43,8 @@ a {
     border-bottom: 2px solid $blue;
   }
 }
+
+h3{font-size: 1.3rem;}
 
 
 // Header
@@ -82,4 +84,43 @@ font-size: 80%;
 
 .header-search-form input{
   font-size: 80%;
+}
+
+
+
+/* Dark Theme*/
+body.darkTheme{
+  background-color: #333338;
+  .container{
+    color:white;
+  }
+
+  .card-header{
+    background-color: $teal;
+    color:white;
+  }
+}
+
+
+//homepage
+.deathwing_logo{
+  max-width:1000px;
+  margin: 1em auto;
+  img{width:100%;}
+}
+
+
+
+.card-group {
+  .card{
+    margin:1em;
+    border:none;
+    border-radius: 0;
+    .card-header{
+      border-radius:0;
+    }
+    .btn{
+      width:100%;
+    }
+  }
 }

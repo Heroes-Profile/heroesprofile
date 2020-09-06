@@ -4,13 +4,14 @@
     @include('scripts.header')
     @include('scripts.footer')
   </head>
-  <body>
+  <body class="darkTheme">
       <div id="app">
         @include('nav.primary')
-          <main class="container-fluid darkTheme">
+          <main class="container-fluid ">
               @yield('content')
           </main>
       </div>
+      @include('layouts.footer')
   </body>
   @yield('scripts')
 </html>
