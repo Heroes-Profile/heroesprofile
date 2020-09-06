@@ -1,4 +1,5 @@
 <?php
+use Carbon\Carbon;
 
 if (!function_exists('calculateCacheTime')) {
     /**
@@ -480,4 +481,85 @@ if (!function_exists('getRankSplit')) {
 
     return $rank_name;
   }
+}
+
+if (!function_exists('getMaxReplayID')) {
+    /**
+     * Returns the max replayID in the DB
+     *
+     *
+     * @return integer max replayID
+     *
+     * */
+    function getMaxReplayID(){
+      return App\Models\Replay::max('replayID');
+    }
+}
+
+if (!function_exists('getMaxGameVersion')) {
+    /**
+     * Returns the max game version in the DB
+     *
+     *
+     * @return integer max game version
+     *
+     * */
+    function getMaxGameVersion(){
+      return App\Models\SeasonGameVersions::max('game_version');
+    }
+}
+
+if (!function_exists('getMaxGameDate')) {
+    /**
+     * Returns the max game date in the DB
+     *
+     *
+     * @return integer max game date
+     *
+     * */
+    function getMaxGameDate(){
+      return App\Models\Replay::where('game_date', '<=', Carbon::now())->max('game_date');
+    }
+}
+
+if (!function_exists('getTalentMetaData')) {
+    /**
+     * Returns the max game date in the DB
+     *
+     *
+     * @return integer get all talent information
+     *
+     * */
+     function getTalentMetaData(){
+       $talent_data = \App\Models\HeroesDatatalent::select('talent_id', 'talent_name', 'title', 'description', 'hotkey', 'icon')->get();
+       $returnData = array();
+       for($i = 0; $i < count($talent_data); $i++){
+         $data = array();
+         $data["talent_name"] = $talent_data[$i]["talent_name"];
+         $data["title"] = $talent_data[$i]["title"];
+         $data["description"] = $talent_data[$i]["description"];
+         $data["hotkey"] = $talent_data[$i]["hotkey"];
+         $data["icon"] = $talent_data[$i]["icon"];
+         $returnData[$talent_data[$i]["talent_id"]] = $data;
+       }
+       return $returnData;
+     }
+}
+
+if (!function_exists('getHeroRoles')) {
+    /**
+     * Returns the roles for each hero
+     *
+     *
+     * @return integer roles for each hero
+     *
+     * */
+     function getHeroRoles(){
+       $heroes = \App\Models\Hero::select('id', 'name', 'new_role')->get();
+       $returnData = array();
+       for($i = 0; $i < count($heroes); $i++){
+         $returnData[$heroes[$i]["id"]] = $heroes[$i]["new_role"];
+       }
+       return $returnData;
+     }
 }

@@ -33,18 +33,11 @@ class ProfileController extends Controller
   private function getProfileData($request){
     $blizz_id = $request["blizz_id"];
     $region = $request["region"];
+    $game_type = $request["game_type"];
+    $season = $request["season"];
 
-    $cache = "Profile" . "-" . $blizz_id . "-" . $region;
-
-
-
-    //$return_data = Cache::rememberForever($cache, function () use ($blizz_id, $region){
-    $return_data = Cache::remember($cache, 1, function () use ($blizz_id, $region){
-      $profile_data = new \ProfileData($blizz_id, $region);
-      $return_data = $profile_data->getPlayerProfileData();
-      return $return_data;
-    });
-
+    $profile_data = new \ProfileData($blizz_id, $region, $game_type, $season);
+    $return_data = $profile_data->getPlayerProfileData();
     return $return_data;
   }
 }

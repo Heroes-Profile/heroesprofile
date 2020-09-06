@@ -56,6 +56,10 @@ class GlobalStatController extends Controller
     [
       "key" => "games_banned",
       "text" => "Games Banned"
+    ],
+    [
+      "key" => "talent_builds",
+      "text" => ""
     ]
   );
   private $columns_header = array(
@@ -105,6 +109,10 @@ class GlobalStatController extends Controller
     ],
     [
       "key" => "avg_games_banned",
+      "text" => ""
+    ],
+    [
+      "key" => "",
       "text" => ""
     ]
   );

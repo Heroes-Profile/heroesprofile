@@ -152,11 +152,9 @@ class GlobalStatData
         $return_data[$counter]["pick_rate"] = 0;
       }
 
-      if(!is_null($global_ban_data)){
-        if(array_key_exists($hero, $global_ban_data)){
-          $return_data[$counter]["games_banned"] = $global_ban_data[$hero];
-          $return_data[$counter]["ban_rate"] = $global_ban_data[$hero] / $total_games;
-        }
+      if(isset($global_ban_data[$hero])){
+        $return_data[$counter]["games_banned"] = $global_ban_data[$hero];
+        $return_data[$counter]["ban_rate"] = $global_ban_data[$hero] / $total_games;
       }else{
         $return_data[$counter]["games_banned"] = 0;
         $return_data[$counter]["ban_rate"] = 0;
@@ -171,7 +169,7 @@ class GlobalStatData
       }
 
 
-      if($return_data[$counter]["games_banned"]){
+      if(isset($return_data[$counter]["games_banned"])){
         $return_data[$counter]["popularity"] = (($return_data[$counter]["games_banned"] + $return_data[$counter]["games_played"]) / $total_games) * 100;
       }else{
         $return_data[$counter]["popularity"] = ($return_data[$counter]["games_played"] / $total_games) * 100;
@@ -189,7 +187,13 @@ class GlobalStatData
       $return_data[$counter]["change"] = number_format($return_data[$counter]["change"], 2);
       $return_data[$counter]["popularity"] = number_format($return_data[$counter]["popularity"], 2);
       $return_data[$counter]["pick_rate"] = number_format($return_data[$counter]["pick_rate"] * 100, 2);
-      $return_data[$counter]["ban_rate"] = number_format($return_data[$counter]["ban_rate"] * 100, 2);
+
+      if(isset($return_data[$counter]["ban_rate"])){
+        $return_data[$counter]["ban_rate"] = number_format($return_data[$counter]["ban_rate"] * 100, 2);
+      }else{
+        $return_data[$counter]["ban_rate"] = 0;
+      }
+      $return_data[$counter]["talent_builds"] = $hero;
 
 
       $counter++;

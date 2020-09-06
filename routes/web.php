@@ -54,16 +54,20 @@ Route::post('getProfileData', 'ProfileController@getData');
 
 
 //Main Routing
+Route::get('/', 'LandingPageController@show');
+Route::get('/home', 'HomeController@show');
+
 //Globals
 Route::get('/Global/Leaderboard', 'GlobalLeaderboardController@show');
 Route::get('/Global/Stats', 'GlobalStatController@show');
-Route::get('/', 'GlobalStatController@show');
 Route::get('/Global/Stats/Maps', 'GlobalHeroStatMapController@show');
 Route::get('/Global/Stats/Matchups', 'GlobalHeroStatMatchupController@show');
 Route::get('/Global/Stats/Talents', 'GlobalHeroStatTalentsController@show');
+Route::get('/getProfileData', 'ProfileController@getData');
 
 //Profile
-//Route::get('/Profile', 'ProfileController@show');
+Route::get('/Profile', 'ProfileController@show');
+Route::post('/getProfileData', 'ProfileController@getData');
 
 
 /*
@@ -74,8 +78,11 @@ Route::group([
 });
 */
 
-Auth::routes();  //?? Not sure what this is exactly.  Was added by auth scaffolding.  So must do something.
-
+//Battlenet Login/Logout Process
+Route::get('login/battlenet', 'Auth\battlenet\LoginController@show');
+Route::get('logout/battlenet', 'Auth\battlenet\LogoutController@show');
+Route::post('authenticate/battlenet', 'BattlenetAuthController@redirectToProvider');
+Route::get('authenticate/battlenet/success', 'BattlenetAuthController@handleProviderCallback');
 
 //Opt Out Process
 Route::view('optout', 'Optout/optout');

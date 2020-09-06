@@ -13,11 +13,11 @@
         "fruitcake/laravel-cors": "^1.0",
         "google/cloud-error-reporting": "^0.16.2",
         "google/cloud-logging": "^1.20",
-        "guzzlehttp/guzzle": "^6.3",
+        "guzzlehttp/guzzle": "^7.0",
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
-        "socialiteproviders/battlenet": "^2.1"
+        "socialiteproviders/battlenet": "^3.1"
     },
     "require-dev": {
         "facade/ignition": "^2.0",
@@ -73,6 +73,7 @@
             "php artisan view:clear",
             "php artisan view:cache",
             "php artisan queue:restart"
+
         ]
     }
 }
