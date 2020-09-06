@@ -26,18 +26,12 @@ class ProfileData
       ->max('replay.replayID');
     if(count($profile_cache) > 0){
       if($profile_cache[0]["latest_replayID"] < $max_replayID){
-        echo "Update Cache";
-        echo "<br>";
         $profile_cache = $this->updateCache($profile_cache[0]);
         return $this->updateExtraPlayerData($profile_cache->toArray());;
       }else{
-        echo "Cache up to date";
-        echo "<br>";
         return $this->updateExtraPlayerData($profile_cache[0]->toArray());
       }
     }else{
-      echo "Calculate Cache";
-      echo "<br>";
       $profile_cache = $this->calculateCache();
       return $this->updateExtraPlayerData($profile_cache[0]->toArray());;
     }

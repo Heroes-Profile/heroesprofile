@@ -33,7 +33,7 @@
       data: parameters,
       //type: "POST",
       success: function(results){
-        console.log(results);
+        //console.log(results);
       }
     });
 
