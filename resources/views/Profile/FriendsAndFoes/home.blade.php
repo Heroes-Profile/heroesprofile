@@ -23,7 +23,14 @@
   <script>
   $(document).ready(function() {
     $('#profile-nav-link').removeClass('active');
-    $('#friendsAndFoes-nav-link').addClass('active');
+    $('#profile-friendsAndFoes-nav-link').addClass('active');
+    $('#profile-heroes-nav-link').removeClass('active');
+    $('#profile-maps-nav-link').removeClass('active');
+    $('#profile-match-history-nav-link').removeClass('active');
+    $('#profile-matchups-nav-link').removeClass('active');
+    $('#profile-mmr-nav-link').removeClass('active');
+    $('#profile-roles-nav-link').removeClass('active');
+    $('#profile-talents-nav-link').removeClass('active');
 
     var formData = $('#basic_search').serializeArray();
     var dialog = showPop();

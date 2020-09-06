@@ -21,8 +21,15 @@ Route::get('getGlobalHeroStatMapData', 'GlobalHeroStatMapController@getData'); /
 Route::get('getGlobalHeroStatMatchupData', 'GlobalHeroStatMatchupController@getData'); //For Testing Purposes.  Remove later
 Route::get('getGlobalHeroStatTalentData', 'GlobalHeroStatTalentsController@talentDetailData'); //For Testing Purposes.  Remove later
 Route::get('getGlobalHeroStatTalentBuildsData', 'GlobalHeroStatTalentsController@talentBuildData'); //For Testing Purposes.  Remove later
-Route::get('getProfileData', 'ProfileController@getData'); //For Testing Purposes.  Remove later
-Route::get('Profile/getFriendAndFoeData', 'FriendsAndFoesController@getData'); //For Testing Purposes.  Remove later
+Route::get('getProfileData', 'ProfileController@getProfileData'); //For Testing Purposes.  Remove later
+Route::get('profile/getFriendAndFoeData', 'ProfileController@getFriendsAndFoesData');//For Testing Purposes.  Remove later
+Route::get('profile/getHeroAllData', 'ProfileController@getHeroAllData');//For Testing Purposes.  Remove later
+Route::get('profile/getMapAllData', 'ProfileController@getMapAllData');//For Testing Purposes.  Remove later
+Route::get('profile/getMatchHistoryData', 'ProfileController@getMatchHistoryData');//For Testing Purposes.  Remove later
+Route::get('profile/getMatchupsData', 'ProfileController@getMatchupsData');//For Testing Purposes.  Remove later
+Route::get('profile/getMMRData', 'ProfileController@getMMRData');//For Testing Purposes.  Remove later
+Route::get('profile/getRoleAllData', 'ProfileController@getRoleAllData');
+Route::get('profile/getTalentsData', 'ProfileController@getTalentsData');
 
 
 //Post Calls to get Data for pages
@@ -32,25 +39,38 @@ Route::post('getGlobalHeroStatMapData', 'GlobalHeroStatMapController@getData');
 Route::post('getGlobalHeroStatMatchupData', 'GlobalHeroStatMatchupController@getData');
 Route::post('getGlobalHeroStatTalentData', 'GlobalHeroStatTalentsController@talentDetailData');
 Route::post('getGlobalHeroStatTalentBuildsData', 'GlobalHeroStatTalentsController@talentBuildData');
-Route::post('getProfileData', 'ProfileController@getData');
-Route::post('Profile/getFriendAndFoeData', 'FriendsAndFoesController@getData');
+Route::post('getProfileData', 'ProfileController@getProfileData');
+Route::post('profile/getFriendAndFoeData', 'ProfileController@getFriendsAndFoesData');
+Route::post('profile/getHeroAllData', 'ProfileController@getHeroAllData');
+Route::post('profile/getMapAllData', 'ProfileController@getMapAllData');
+Route::post('profile/getMatchHistory', 'ProfileController@getMatchHistory');
+Route::post('profile/getMatchups', 'ProfileController@getMatchups');
+Route::post('profile/getMMR', 'ProfileController@getMMR');
+Route::post('profile/getRoleAllData', 'ProfileController@getRoleAllData');
+Route::post('profile/getTalentsData', 'ProfileController@getTalentsData');
 
 
 //Main Routing
 Route::get('/', 'LandingPageController@show');
 Route::get('/home', 'HomeController@show');
 
-//Globals
+//Global Stats
 Route::get('/Global/Leaderboard', 'GlobalLeaderboardController@show');
 Route::get('/Global/Stats', 'GlobalStatController@show');
 Route::get('/Global/Stats/Maps', 'GlobalHeroStatMapController@show');
 Route::get('/Global/Stats/Matchups', 'GlobalHeroStatMatchupController@show');
 Route::get('/Global/Stats/Talents', 'GlobalHeroStatTalentsController@show');
-Route::get('/getProfileData', 'ProfileController@getData');
 
 //Profile
-Route::get('/Profile', 'ProfileController@show');
-Route::get('/Profile/FriendsAndFoes', 'FriendsAndFoesController@show');
+Route::get('/Profile', 'ProfileController@profile');
+Route::get('/Profile/FriendsAndFoes', 'ProfileController@friendsAndFoes');
+Route::get('/Profile/Hero/All', 'ProfileController@heroAll');
+Route::get('/Profile/Map/All', 'ProfileController@mapAll');
+Route::get('/Profile/Match/History', 'ProfileController@matchHistory');
+Route::get('/Profile/Matchups', 'ProfileController@matchups');
+Route::get('/Profile/MMR', 'ProfileController@mmr');
+Route::get('/Profile/Role/All', 'ProfileController@roleAll');
+Route::get('/Profile/Talents', 'ProfileController@talents');
 
 
 
