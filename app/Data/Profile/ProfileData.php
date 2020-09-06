@@ -1,5 +1,5 @@
 <?php
-namespace App\Data;
+namespace App\Data\Profile;
 
 //use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;

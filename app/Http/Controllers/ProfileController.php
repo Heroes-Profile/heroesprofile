@@ -68,7 +68,8 @@ class ProfileController extends Controller
     $game_type = $request["game_type"];
     $season = $request["season"];
 
-    $return_data = array();
+    $hero_data = new \ProfileHero($blizz_id, $region, $game_type, $season);
+    $return_data = $hero_data->getHeroAllData();
     return $return_data;
   }
 
@@ -89,7 +90,9 @@ class ProfileController extends Controller
     $game_type = $request["game_type"];
     $season = $request["season"];
 
-    $return_data = array();
+    $map_data = new \ProfileMap($blizz_id, $region, $game_type, $season);
+    $return_data = $map_data->getMapAllData();
+
     return $return_data;
   }
 
@@ -110,7 +113,8 @@ class ProfileController extends Controller
     $game_type = $request["game_type"];
     $season = $request["season"];
 
-    $return_data = array();
+    $match_data = new \ProfileMatchHistory($blizz_id, $region, $game_type, $season);
+    $return_data = $match_data->getMatchData();
     return $return_data;
   }
 
@@ -131,7 +135,8 @@ class ProfileController extends Controller
     $game_type = $request["game_type"];
     $season = $request["season"];
 
-    $return_data = array();
+    $matchup_data = new \ProfileMatchups($blizz_id, $region, $game_type, $season);
+    $return_data = $matchup_data->getMatchupData();
     return $return_data;
   }
 
