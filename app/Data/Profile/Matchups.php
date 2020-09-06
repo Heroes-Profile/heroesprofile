@@ -18,50 +18,78 @@ class Matchups
     $this->season = $season;
   }
 
-  public function getMatchData(){
+  public function getMatchupData(){
+    $returnData = array();
+    $heroes = \App\Models\Hero::select("id")->get();
+    for($i = 0; $i < count($heroes); $i++){
+      $returnData[$heroes[$i]["id"]]["ally"]["wins"] = 0;
+      $returnData[$heroes[$i]["id"]]["ally"]["losses"] = 0;
+      $returnData[$heroes[$i]["id"]]["enemy"]["wins"] = 0;
+      $returnData[$heroes[$i]["id"]]["enemy"]["losses"] = 0;
+
+    }
+
+    $returnData = $this->getAllyEnemyData(0, $returnData);
+    $returnData = $this->getAllyEnemyData(1, $returnData);
+
+    return $returnData;
+  }
+
+  private function getAllyEnemyData($team, $returnData){
     $game_type = $this->game_type;
     $season = $this->season;
-    $replay_data = \App\Models\Replay::select(
-      "replay.replayID",
-      "replay.game_type",
-      "replay.game_date",
-      "replay.game_map",
-      "player.hero",
-      "player.winner",
-      "player.player_conservative_rating",
-      "talents.level_one",
-      "talents.level_four",
-      "talents.level_seven",
-      "talents.level_ten",
-      "talents.level_thirteen",
-      "talents.level_sixteen",
-      "talents.level_twenty"
-      )
-    ->join('player', 'player.replayID', '=', 'replay.replayID')
-    ->join('scores', function($join)
-      {
-        $join->on('scores.replayID', '=', 'replay.replayID');
-        $join->on('scores.battletag', '=', 'player.battletag');
+
+    $replay_data = \App\Models\Replay::select('replay.replayID')
+      ->join('player', 'player.replayID', '=', 'replay.replayID')
+      ->where('replay.region', $this->region)
+      ->where('player.blizz_id', $this->blizz_id)
+      ->when($game_type != "", function($query) use ($game_type) {
+          return $query->where('replay.game_type', $game_type);
+        })
+      ->when($season != "", function($query) use ($season) {
+          return $query->where('replay.game_type', $season);
+        })
+      ->where('team', $team)
+      ->get();
+
+    $replayIDs = array();
+    for($i = 0; $i< count($replay_data); $i++){
+      $replayIDs[$i] = $replay_data[$i]["replayID"];
+    }
+
+    $matchup_data = \App\Models\Replay::select('hero', 'team', 'winner')->selectRaw('COUNT(*) as total')
+      ->join('player', 'player.replayID', '=', 'replay.replayID')
+      ->where('replay.region', $this->region)
+      ->where('player.blizz_id', '!=', $this->blizz_id)
+      ->when($game_type != "", function($query) use ($game_type) {
+          return $query->where('replay.game_type', $game_type);
+        })
+      ->when($season != "", function($query) use ($season) {
+          return $query->where('replay.game_type', $season);
+        })
+      ->whereIn('replay.replayID', $replayIDs)
+      ->groupBy(['hero', 'team', 'winner'])
+      ->get();
+
+
+    for($i = 0; $i< count($matchup_data); $i++){
+      if($matchup_data[$i]["team"] == $team){
+        if($matchup_data[$i]["winner"] == 0){
+          $returnData[$matchup_data[$i]["hero"]]["ally"]["losses"] += $matchup_data[$i]["total"];
+        }else{
+          $returnData[$matchup_data[$i]["hero"]]["ally"]["wins"] += $matchup_data[$i]["total"];
+        }
+      }else{
+        if($matchup_data[$i]["winner"] == 0){
+          $returnData[$matchup_data[$i]["hero"]]["enemy"]["losses"] += $matchup_data[$i]["total"];
+        }else{
+          $returnData[$matchup_data[$i]["hero"]]["enemy"]["wins"] += $matchup_data[$i]["total"];
+        }
       }
-    )
-    ->join('talents', function($join)
-      {
-        $join->on('talents.replayID', '=', 'replay.replayID');
-        $join->on('talents.battletag', '=', 'player.battletag');
-      }
-    )
-    ->where('replay.region', $this->region)
-    ->where('player.blizz_id', $this->blizz_id)
-    ->when($game_type != "", function($query) use ($game_type) {
-        return $query->where('replay.game_type', $game_type);
-      })
-    ->when($season != "", function($query) use ($season) {
-        return $query->where('replay.game_type', $season);
-      })
-    ->orderBy('game_date', 'DESC')
-    ->limit(100)
-    ->get();
-    //Add in pagination
-    return $replay_data;
+    }
+
+    return $returnData;
+
   }
+
 }
