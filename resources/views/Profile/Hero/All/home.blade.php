@@ -3,30 +3,28 @@
 
 @section('content')
   <div class="container center">
-      <h1 class="display-1">Zemill</h1>
+    <h1 class="display-1">Zemill</h1>
   </div>
-
   @include('nav.profile')
 
-  @include('filters.profile')
 
-    <div class="container">
-      <div class="card">
-        <p id='data'>Data</p>
-      </div>
+  @include('filters.profile')
+  <div class="container">
+    <div class="card">
+      <p id='data'>Data</p>
     </div>
+  </div>
 @endsection
 
 @section('scripts')
   <script src="{{ asset('js/bootbox.min.js') }}"></script><!--http://bootboxjs.com/-->
   <script src="{{ asset('js/popup.js') }}"></script>
+
   <script>
   $(document).ready(function() {
-
-    //Update Later to better code/process
-    $('#profile-nav-link').addClass('active');
+    $('#profile-nav-link').removeClass('active');
     $('#profile-friendsAndFoes-nav-link').removeClass('active');
-    $('#profile-heroes-nav-link').removeClass('active');
+    $('#profile-heroes-nav-link').addClass('active');
     $('#profile-maps-nav-link').removeClass('active');
     $('#profile-match-history-nav-link').removeClass('active');
     $('#profile-matchups-nav-link').removeClass('active');

@@ -238,7 +238,12 @@ return [
         'GlobalHeroStatMatchupData' => App\Data\GlobalHeroStatMatchupData::class,
 
         //Profile
-        'ProfileData' => App\Data\ProfileData::class,
+        'ProfileData' => App\Data\Profile\ProfileData::class,
+        'FriendsAndFoes' => App\Data\Profile\FriendsAndFoes::class,
+        'ProfileHero' => App\Data\Profile\Hero::class,
+        'ProfileMap' => App\Data\Profile\Map::class,
+        'ProfileMatchHistory' => App\Data\Profile\Match::class,
+        'ProfileMatchups' => App\Data\Profile\Matchups::class,
 
 
 

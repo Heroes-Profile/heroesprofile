@@ -8,30 +8,18 @@
                 <div class="card-header">{{ __('Battlenet Login') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="/authenticate/battlenet">
+                    <form method="GET" action="/authenticate/battlenet">
                         @csrf
-                        <div class="form-group row">
-                            <div class="col-md-6 offset-md-4">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
-
-                                    <label class="form-check-label" for="remember">
-                                        {{ __('Remember Me') }}
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-
                         <div class="input-group mb-3">
                           <div class="input-group-prepend">
                             <label class="input-group-text" for="input-region-select">Region</label>
                           </div>
-                          <select class="custom-select" id="input-region-select">
+                          <select class="custom-select" id="input-region-select" name="region">
                             <option selected>Choose...</option>
-                            <option value="1">NA</option>
-                            <option value="2">EU</option>
-                            <option value="3">KR</option>
-                            <option value="5">CN</option>
+                            <option value="us">NA</option>
+                            <option value="eu">EU</option>
+                            <option value="kr">KR</option>
+                            <option value="cn">CN</option>
                           </select>
                         </div>
 
@@ -48,4 +36,6 @@
         </div>
     </div>
 </div>
+@endsection
+@section('scripts')
 @endsection

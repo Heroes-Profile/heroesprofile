@@ -1,5 +1,5 @@
 <?php
-namespace App\Data;
+namespace App\Data\Profile;
 
 //use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -26,14 +26,15 @@ class ProfileData
       ->max('replay.replayID');
     if(count($profile_cache) > 0){
       if($profile_cache[0]["latest_replayID"] < $max_replayID){
-        echo "Update Cache";
-        $profile_cache = $this->updateCache();
+        $profile_cache = $this->updateCache($profile_cache[0]);
+        return $this->updateExtraPlayerData($profile_cache->toArray());;
+      }else{
+        return $this->updateExtraPlayerData($profile_cache[0]->toArray());
       }
     }else{
-      echo "Calculate Cache";
       $profile_cache = $this->calculateCache();
+      return $this->updateExtraPlayerData($profile_cache[0]->toArray());;
     }
-    return $this->updateExtraPlayerData($profile_cache[0]->toArray());
   }
 
   private function calculateCache(){
@@ -80,7 +81,383 @@ class ProfileData
     return $profile_cache;
   }
 
-  private function updateCache(){
+  private function updateCache($return_result){
+    $game_type = $this->game_type;
+    $season = $this->season;
+
+    $talent_data = getTalentMetaData();
+    $replay_data = \App\Models\Replay::select(
+      "replay.replayID",
+      "replay.game_type",
+      "replay.game_date",
+      "replay.game_length",
+      "replay.game_map",
+      "replay.region",
+      "player.hero",
+      "player.team",
+      "player.winner",
+      "player.player_conservative_rating",
+      "player.player_change",
+      "player.hero_conservative_rating",
+      "player.hero_change",
+      "player.role_conservative_rating",
+      "player.role_change",
+      "player.mmr_date_parsed",
+      "scores.kills",
+      "scores.takedowns",
+      "scores.deaths",
+      "scores.first_to_ten",
+      "talents.level_one",
+      "talents.level_four",
+      "talents.level_seven",
+      "talents.level_ten",
+      "talents.level_thirteen",
+      "talents.level_sixteen",
+      "talents.level_twenty"
+      )
+    ->join('player', 'player.replayID', '=', 'replay.replayID')
+    ->join('scores', function($join)
+      {
+        $join->on('scores.replayID', '=', 'replay.replayID');
+        $join->on('scores.battletag', '=', 'player.battletag');
+      }
+    )
+    ->join('talents', function($join)
+      {
+        $join->on('talents.replayID', '=', 'replay.replayID');
+        $join->on('talents.battletag', '=', 'player.battletag');
+      }
+    )
+    ->where('replay.replayID', '>', $return_result["latest_replayID"])
+    ->where('replay.region', $this->region)
+    ->where('player.blizz_id', $this->blizz_id)
+    ->when($game_type != "", function($query) use ($game_type) {
+        return $query->where('replay.game_type', $game_type);
+      })
+    ->when($season != "", function($query) use ($season) {
+        return $query->where('replay.game_type', $season);
+      })
+    ->get();
+
+    $playerStats = array();
+    $max_replayID = 0;
+
+    $wins= 0;
+    $losses= 0;
+    $first_to_ten_wins= 0;
+    $first_to_ten_losses= 0;
+    $second_to_ten_wins= 0;
+    $second_to_ten_losses= 0;
+    $bruiser_wins= 0;
+    $bruiser_losses= 0;
+    $support_wins= 0;
+    $support_losses= 0;
+    $ranged_assassin_wins= 0;
+    $ranged_assassin_losses= 0;
+    $melee_assassin_wins= 0;
+    $melee_assassin_losses= 0;
+    $healer_wins= 0;
+    $healer_losses= 0;
+    $tank_wins= 0;
+    $tank_losses= 0;
+    $total_time_played= 0;
+    $kills= 0;
+    $deaths= 0;
+    $takedowns= 0;
+    $hero_data = unserialize($return_result["hero_data"]);
+    $map_data = unserialize($return_result["map_data"]);
+    $matches = unserialize($return_result["matches"]);
+    $latest_replayID = $return_result["latest_replayID"];
+
+
+    for($i = 0; $i < count($replay_data); $i++){
+      $kills += $replay_data[$i]["kills"];
+      $deaths += $replay_data[$i]["deaths"];
+      $takedowns += $replay_data[$i]["takedowns"];
+      $total_time_played += $replay_data[$i]["game_length"];
+      if(!array_key_exists($replay_data[$i]["hero"], $hero_data)){
+        $hero_data[$replay_data[$i]["hero"]]["wins"] = 0;
+        $hero_data[$replay_data[$i]["hero"]]["losses"] = 0;
+        $hero_data[$replay_data[$i]["hero"]]["game_date"] = '2000-11-22 13:48:59';
+      }
+
+      if(Carbon::parse($replay_data[$i]["game_date"]) > Carbon::parse($hero_data[$replay_data[$i]["hero"]]["game_date"])){
+        $hero_data[$replay_data[$i]["hero"]]["game_date"] = $replay_data[$i]["game_date"];
+      }
+
+      if(!array_key_exists($replay_data[$i]["game_map"], $map_data)){
+        $map_data[$replay_data[$i]["game_map"]]["wins"] = 0;
+        $map_data[$replay_data[$i]["game_map"]]["losses"] = 0;
+        $map_data[$replay_data[$i]["game_map"]]["game_date"] = '2000-11-22 13:48:59';
+      }
+
+      if(Carbon::parse($replay_data[$i]["game_date"]) > Carbon::parse($map_data[$replay_data[$i]["game_map"]]["game_date"])){
+        $map_data[$replay_data[$i]["game_map"]]["game_date"] = $replay_data[$i]["game_date"];
+      }
+
+
+      if($replay_data[$i]["winner"] == 1){
+        $wins++;
+        $hero_data[$replay_data[$i]["hero"]]["wins"]++;
+        $map_data[$replay_data[$i]["game_map"]]["wins"]++;
+
+        if($replay_data[$i]["first_to_ten"] == 1){
+          $first_to_ten_wins++;
+        }else{
+          $second_to_ten_wins++;
+        }
+
+        if($replay_data[$i]["new_role"] == "Bruiser"){
+          $bruiser_wins++;
+        }else if($replay_data[$i]["new_role"] == "Support"){
+          $support_wins++;
+        }else if($replay_data[$i]["new_role"] == "Ranged Assassin"){
+          $ranged_assassin_wins++;
+        }else if($replay_data[$i]["new_role"] == "Melee Assassin"){
+          $melee_assassin_wins++;
+        }else if($replay_data[$i]["new_role"] == "Healer"){
+          $healer_wins++;
+        }else if($replay_data[$i]["new_role"] == "Tank"){
+          $tank_wins++;
+        }
+
+
+
+      }else{
+        $losses++;
+        $hero_data[$replay_data[$i]["hero"]]["losses"]++;
+        $map_data[$replay_data[$i]["game_map"]]["losses"]++;
+
+        if($replay_data[$i]["first_to_ten"] == 1){
+          $first_to_ten_losses++;
+        }else{
+          $second_to_ten_losses++;
+        }
+
+        if($replay_data[$i]["new_role"] == "Bruiser"){
+          $bruiser_losses++;
+        }else if($replay_data[$i]["new_role"] == "Support"){
+          $support_losses++;
+        }else if($replay_data[$i]["new_role"] == "Ranged Assassin"){
+          $ranged_assassin_losses++;
+        }else if($replay_data[$i]["new_role"] == "Melee Assassin"){
+          $melee_assassin_losses++;
+        }else if($replay_data[$i]["new_role"] == "Healer"){
+          $healer_losses++;
+        }else if($replay_data[$i]["new_role"] == "Tank"){
+          $tank_losses++;
+        }
+
+
+      }
+
+
+      $data = array();
+      $data["game_type"] = $replay_data[$i]["game_type"];
+      $data["game_date"] = $replay_data[$i]["game_date"];
+      $data["mmr_date_parsed"] = Carbon::parse($replay_data[$i]["mmr_date_parsed"]);
+      $data["game_length"] = $replay_data[$i]["game_length"];
+      $data["game_map"] = $replay_data[$i]["game_map"];
+      $data["region"] = $replay_data[$i]["region"];
+      $data["replayID"] = $replay_data[$i]["replayID"];
+      $data["hero"] = $replay_data[$i]["hero"];
+      $data["role"] = $replay_data[$i]["new_role"];
+      $data["winner"] = $replay_data[$i]["winner"];
+
+      $data["player_conservative_rating"] = $replay_data[$i]["player_conservative_rating"];
+      $data["mmr"] = round(1800 + 40 * $replay_data[$i]["player_conservative_rating"]);
+      $data["player_change"] = $replay_data[$i]["player_change"];
+
+      $data["hero_conservative_rating"] = $replay_data[$i]["hero_conservative_rating"];
+      $data["hero_mmr"] = round(1800 + 40 * $replay_data[$i]["hero_conservative_rating"]);
+      $data["hero_change"] = $replay_data[$i]["hero_change"];
+
+      $data["role_conservative_rating"] = $replay_data[$i]["role_conservative_rating"];
+      $data["role_mmr"] = round(1800 + 40 * $replay_data[$i]["role_conservative_rating"]);
+      $data["role_change"] = $replay_data[$i]["role_change"];
+
+      $data["kills"] = $replay_data[$i]["kills"];
+      $data["takedowns"] = $replay_data[$i]["takedowns"];
+      if($replay_data[$i]["first_to_ten"] == ""){
+        $data["first_to_ten"] = -1;
+      }else{
+        $data["first_to_ten"] = $replay_data[$i]["first_to_ten"];
+      }
+
+      $data["deaths"] = $replay_data[$i]["deaths"];
+      $data["level_one"] = $replay_data[$i]["level_one"];
+      $data["level_one_title"] = "";
+      $data["level_one_description"] = "";
+      $data["level_one_hotkey"] = "";
+      $data["level_one_icon"] = "talent_removed";
+
+
+      $data["level_four"] = $replay_data[$i]["level_four"];
+      $data["level_four_title"] = "";
+      $data["level_four_description"] = "";
+      $data["level_four_hotkey"] = "";
+      $data["level_four_icon"] = "talent_removed";
+
+      $data["level_seven"] = $replay_data[$i]["level_seven"];
+      $data["level_seven_title"] = "";
+      $data["level_seven_description"] = "";
+      $data["level_seven_hotkey"] = "";
+      $data["level_seven_icon"] = "talent_removed";
+
+      $data["level_ten"] = $replay_data[$i]["level_ten"];
+      $data["level_ten_title"] = "";
+      $data["level_ten_description"] = "";
+      $data["level_ten_hotkey"] = "";
+      $data["level_ten_icon"] = "talent_removed";
+
+      $data["level_thirteen"] = $replay_data[$i]["level_thirteen"];
+      $data["level_thirteen_title"] = "";
+      $data["level_thirteen_description"] = "";
+      $data["level_thirteen_hotkey"] = "";
+      $data["level_thirteen_icon"] = "talent_removed";
+
+      $data["level_sixteen"] = $replay_data[$i]["level_sixteen"];
+      $data["level_sixteen_title"] = "";
+      $data["level_sixteen_description"] = "";
+      $data["level_sixteen_hotkey"] = "";
+      $data["level_sixteen_icon"] = "talent_removed";
+
+      $data["level_twenty"] = $replay_data[$i]["level_twenty"];
+      $data["level_twenty_title"] = "";
+      $data["level_twenty_description"] = "";
+      $data["level_twenty_hotkey"] = "";
+      $data["level_twenty_icon"] = "talent_removed";
+
+
+      if($data["level_one"] == ""){
+        $data["level_one"] = 0;
+        $data["level_one_icon"] = "";
+      }
+
+      if(array_key_exists($data["level_one"], $talent_data)){
+        $data["level_one_title"] = $talent_data[$data["level_one"]]["title"];
+        $data["level_one_description"] = $talent_data[$data["level_one"]]["description"];
+        $data["level_one_hotkey"] = $talent_data[$data["level_one"]]["hotkey"];
+        $data["level_one_icon"] = $talent_data[$data["level_one"]]["icon"];
+      }
+
+
+      if($data["level_four"] == ""){
+        $data["level_four"] = 0;
+        $data["level_four_icon"] = "";
+      }
+
+      if(array_key_exists($data["level_four"], $talent_data)){
+        $data["level_four_title"] = $talent_data[$data["level_four"]]["title"];
+        $data["level_four_description"] = $talent_data[$data["level_four"]]["description"];
+        $data["level_four_hotkey"] = $talent_data[$data["level_four"]]["hotkey"];
+        $data["level_four_icon"] = $talent_data[$data["level_four"]]["icon"];
+      }
+
+      if($data["level_seven"] == ""){
+        $data["level_seven"] = 0;
+        $data["level_seven_icon"] = "";
+      }
+
+      if(array_key_exists($data["level_seven"], $talent_data)){
+        $data["level_seven_title"] = $talent_data[$data["level_seven"]]["title"];
+        $data["level_seven_description"] = $talent_data[$data["level_seven"]]["description"];
+        $data["level_seven_hotkey"] = $talent_data[$data["level_seven"]]["hotkey"];
+        $data["level_seven_icon"] = $talent_data[$data["level_seven"]]["icon"];
+      }
+
+      if($data["level_ten"] == ""){
+        $data["level_ten"] = 0;
+        $data["level_ten_icon"] = "";
+      }
+
+      if(array_key_exists($data["level_ten"], $talent_data)){
+        $data["level_ten_title"] = $talent_data[$data["level_ten"]]["title"];
+        $data["level_ten_description"] = $talent_data[$data["level_ten"]]["description"];
+        $data["level_ten_hotkey"] = $talent_data[$data["level_ten"]]["hotkey"];
+        $data["level_ten_icon"] = $talent_data[$data["level_ten"]]["icon"];
+      }
+
+
+      if($data["level_thirteen"] == ""){
+        $data["level_thirteen"] = 0;
+        $data["level_thirteen_icon"] = "";
+      }
+
+      if(array_key_exists($data["level_thirteen"], $talent_data)){
+        $data["level_thirteen_title"] = $talent_data[$data["level_thirteen"]]["title"];
+        $data["level_thirteen_description"] = $talent_data[$data["level_thirteen"]]["description"];
+        $data["level_thirteen_hotkey"] = $talent_data[$data["level_thirteen"]]["hotkey"];
+        $data["level_thirteen_icon"] = $talent_data[$data["level_thirteen"]]["icon"];
+      }
+
+
+      if($data["level_sixteen"] == ""){
+        $data["level_sixteen"] = 0;
+        $data["level_sixteen_icon"] = "";
+      }
+
+      if(array_key_exists($data["level_sixteen"], $talent_data)){
+        $data["level_sixteen_title"] = $talent_data[$data["level_sixteen"]]["title"];
+        $data["level_sixteen_description"] = $talent_data[$data["level_sixteen"]]["description"];
+        $data["level_sixteen_hotkey"] = $talent_data[$data["level_sixteen"]]["hotkey"];
+        $data["level_sixteen_icon"] = $talent_data[$data["level_sixteen"]]["icon"];
+      }
+
+
+      if($data["level_twenty"] == ""){
+        $data["level_twenty"] = 0;
+        $data["level_twenty_icon"] = "";
+      }
+
+      if(array_key_exists($data["level_twenty"], $talent_data)){
+        $data["level_twenty_title"] = $talent_data[$data["level_twenty"]]["title"];
+        $data["level_twenty_description"] = $talent_data[$data["level_twenty"]]["description"];
+        $data["level_twenty_hotkey"] = $talent_data[$data["level_twenty"]]["hotkey"];
+        $data["level_twenty_icon"] = $talent_data[$data["level_twenty"]]["icon"];
+      }
+      $matches[$replay_data[$i]["replayID"]] = $data;
+
+      if($latest_replayID < $replay_data[$i]["replayID"]){
+        $latest_replayID = $replay_data[$i]["replayID"];
+      }
+    }
+
+    $account_level = $this->getAccountLevel();
+
+    uasort($matches, [$this, 'cmp_latest_played']);
+    $matches = array_slice($matches, 0, 5, true);
+
+    $return_result->wins += $wins;
+    $return_result->losses += $losses;
+    $return_result->first_to_ten_wins += $first_to_ten_wins;
+    $return_result->first_to_ten_losses += $first_to_ten_losses;
+    $return_result->second_to_ten_wins += $second_to_ten_wins;
+    $return_result->second_to_ten_losses += $second_to_ten_losses;
+    $return_result->bruiser_wins += $bruiser_wins;
+    $return_result->bruiser_losses += $bruiser_losses;
+    $return_result->support_wins += $support_wins;
+    $return_result->support_losses += $support_losses;
+    $return_result->ranged_assassin_wins += $ranged_assassin_wins;
+    $return_result->ranged_assassin_losses += $ranged_assassin_losses;
+    $return_result->melee_assassin_wins += $melee_assassin_wins;
+    $return_result->melee_assassin_losses += $melee_assassin_losses;
+    $return_result->healer_wins += $healer_wins;
+    $return_result->healer_losses += $healer_losses;
+    $return_result->tank_wins += $tank_wins;
+    $return_result->tank_losses += $tank_losses;
+    $return_result->total_time_played += $total_time_played;
+    $return_result->account_level = $account_level;
+    $return_result->kills += $kills;
+    $return_result->deaths += $deaths;
+    $return_result->takedowns += $takedowns;
+    $return_result->hero_data = serialize($hero_data);
+    $return_result->map_data = serialize($map_data);
+    $return_result->matches = serialize($matches);
+    $return_result->latest_replayID = $latest_replayID;
+    $return_result->save();
+
+    return $return_result;
   }
 
 
@@ -144,7 +521,6 @@ class ProfileData
     $playerStats = array();
     $max_replayID = 0;
 
-  //  print_r(json_encode($replay_data, true));
     for($i = 0; $i < count($replay_data); $i++){
       $data = array();
       $data["game_type"] = $replay_data[$i]["game_type"];
@@ -612,11 +988,17 @@ class ProfileData
     $league_type_data = $this->getLeagueData();
     $player_data["league_data"] = array();
 
+
+
+
+
+
+
     for($i = 0; $i < count($league_type_data); $i++){
       $player_data["league_data"][$league_type_data[$i]["game_type"]]["wins"] = $league_type_data[$i]["win"];
       $player_data["league_data"][$league_type_data[$i]["game_type"]]["losses"] = $league_type_data[$i]["loss"];
       $player_data["league_data"][$league_type_data[$i]["game_type"]]["mmr"] = round(1800 + 40 * $league_type_data[$i]["conservative_rating"]);
-      $player_data["league_data"][$league_type_data[$i]["game_type"]]["rank"] = $this->getRankName($player_data["league_data"][$league_type_data[$i]["game_type"]]["mmr"], $league_type_data[$i]["game_type"]);
+      $player_data["league_data"][$league_type_data[$i]["game_type"]]["rank"] = getRankSplit($player_data["league_data"][$league_type_data[$i]["game_type"]]["mmr"], getLeagueTierBreakdown($league_type_data[$i]["game_type"], 10000));
 
       if($league_type_data[$i]["win"] + $league_type_data[$i]["loss"] > 0){
         $player_data["league_data"][$league_type_data[$i]["game_type"]]["win_rate"] = $league_type_data[$i]["win"] / ($league_type_data[$i]["win"] + $league_type_data[$i]["loss"]) * 100;
