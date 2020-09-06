@@ -28,8 +28,9 @@ Route::get('profile/getMapAllData', 'ProfileController@getMapAllData');//For Tes
 Route::get('profile/getMatchHistoryData', 'ProfileController@getMatchHistoryData');//For Testing Purposes.  Remove later
 Route::get('profile/getMatchupsData', 'ProfileController@getMatchupsData');//For Testing Purposes.  Remove later
 Route::get('profile/getMMRData', 'ProfileController@getMMRData');//For Testing Purposes.  Remove later
-Route::get('profile/getRoleAllData', 'ProfileController@getRoleAllData');
-Route::get('profile/getTalentsData', 'ProfileController@getTalentsData');
+Route::get('profile/getRoleAllData', 'ProfileController@getRoleAllData');//For Testing Purposes.  Remove later
+Route::get('profile/getTalentsData', 'ProfileController@getTalentsData');//For Testing Purposes.  Remove later
+Route::get('authenticate/battlenet', 'BattlenetAuthController@redirectToProvider');//For Testing Purposes.  Remove later
 
 
 //Post Calls to get Data for pages

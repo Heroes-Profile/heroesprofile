@@ -9,10 +9,9 @@ use Session;
 
 class BattlenetAuthController extends Controller
 {
-  public function redirectToProvider()
+  public function redirectToProvider(Request $request)
   {
-    //Move this set of code to button press login (maybe, we'll see)
-    Session::put('battlenet_region', 'us', 60);
+    Session::put('battlenet_region', $request->region, 60);
 
     $clientId = env('BATTLE.NET_KEY', false);
     $clientSecret = env('BATTLE.NET_SECRET', false);
@@ -29,6 +28,17 @@ class BattlenetAuthController extends Controller
   */
   public function handleProviderCallback(Request $request)
   {
+    $region = 0;
+    if(Session::get('battlenet_region') == 'us'){
+      $region = 1;
+    }else if(Session::get('battlenet_region') == 'eu'){
+      $region = 2;
+    }else if(Session::get('battlenet_region') == 'kr'){
+      $region = 3;
+    }else if(Session::get('battlenet_region') == 'cn'){
+      $region = 5;
+    }
+
     $clientId = env('BATTLE.NET_KEY', false);
     $clientSecret = env('BATTLE.NET_SECRET', false);
     $redirectUrl = env('BATTLE.NET_REDIRECT_URI', false);
@@ -36,7 +46,6 @@ class BattlenetAuthController extends Controller
     $config = new \SocialiteProviders\Manager\Config($clientId, $clientSecret, $redirectUrl, $additionalProviderConfig);
 
     $user = Socialite::driver('battlenet')->setConfig($config)->user();
-    $region = 1;
     $battlenet_user = \App\Models\BattlenetAccount::updateOrCreate(
       ['battlenet_id' => $user->id, 'battletag' => $user->nickname, 'region' => $region],
       ['battlenet_access_token' => $user->accessTokenResponseBody["access_token"], 'remember_token' => $user->token]
