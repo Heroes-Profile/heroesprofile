@@ -2,10 +2,10 @@
 <div class="container center">
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a href="/Profile" class="nav-link active">Profile</a>
+            <a href="/Profile" class="nav-link active" id='profile-nav-link'>Profile</a>
         </li>
         <li class="nav-item">
-            <a href="/Profile/FriendsAndFoes" class="nav-link">Friends and Foes</a>
+            <a href="/Profile/FriendsAndFoes" class="nav-link" id='friendsAndFoes-nav-link'>Friends and Foes</a>
         </li>
         <li class="nav-item">
             <a href="Profile/Heroes/All" class="nav-link">Heroes</a>

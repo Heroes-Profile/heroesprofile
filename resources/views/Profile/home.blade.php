@@ -20,6 +20,8 @@
 @section('scripts')
   <script>
   $(document).ready(function() {
+    $('#profile-nav-link').addClass('active');
+    $('#friendsAndFoes-nav-link').removeClass('active');
 
     var formData = $('#basic_search').serializeArray();
 

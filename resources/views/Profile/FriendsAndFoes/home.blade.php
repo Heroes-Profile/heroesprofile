@@ -15,6 +15,9 @@
 @section('scripts')
   <script>
   $(document).ready(function() {
+    $('#profile-nav-link').removeClass('active');
+    $('#friendsAndFoes-nav-link').addClass('active');
+
     var formData = $('#basic_search').serializeArray();
 
 
