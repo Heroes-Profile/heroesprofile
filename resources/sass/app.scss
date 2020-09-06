@@ -6,8 +6,9 @@ $teal-background: #008b8b;
 $teal: #006666;
 $yellow: #f1ad00;
 $darkgray: #0F121D;
-$primary: $blue;
-$secondary: $teal;
+$lightgray: #343a40;
+$primary: $teal;
+$secondary: $blue;
 $font-family-header: 'Open Sans', sans-serif;
 $font-family-sans-serif: 'Open Sans', sans-serif;
 
@@ -23,7 +24,43 @@ h1,h2,h3,.btn,th{}
 
 }
 
+.container{
+  max-width: 1500px;
+}
 
+
+
+/* Dark Theme*/
+body.darkTheme{
+  background-color: #0F121D;
+  p a{
+    color:white;
+    text-decoration:underline;
+  }
+  .container{
+    color:white;
+  }
+
+  .card-header{
+    /*background-color: $teal;*/
+    background-color: transparent;
+
+    color:white;
+  }
+  .card{
+    background-color:transparent;
+    color:white;
+  }
+}
+.grey-background{
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.primary-background{
+  background-color: $primary;
+}
+.primary-content{
+  padding: 1rem;
+}
 // Overall
 .container-fluid{
   padding-left:0; padding-right:0;
@@ -31,23 +68,88 @@ h1,h2,h3,.btn,th{}
 .table .thead-dark th{
   background-color: $teal-background;
 }
+.table{
+  background-color: white;
+  color: black;
 
-a {
-  color: $teal;
-  //text-decoration: underline;
-  border-bottom: 1px solid $teal;
-  font-weight:bold;
-  &:hover{
-    color: $blue;
-    text-decoration:none;
-    border-bottom: 2px solid $blue;
+  a {
+    color: $teal;
+    //text-decoration: underline;
+    border-bottom: 1px solid $teal;
+    font-weight:bold;
+    &:hover{
+      color: $blue;
+      text-decoration:none;
+      border-bottom: 2px solid $blue;
+    }
   }
 }
 
 h3{font-size: 1.3rem;}
 
+.primary-content{
+  padding: 2rem;
+}
+
+.btn{
+  padding: 1rem 1.75rem;
+  border:none;
+  border-radius: .60rem;
+  text-decoration:none;
+  white-space: auto;
+  &:hover{
+    border-bottom: none;
+  }
+}
+
+.btn-sm{
+  padding: .25rem .75rem
+}
+.btn-primary{
+  background-color: $teal;
+  &:hover{
+    background-color: lighten($teal, 5%);
+  }
+}
+.btn-secondary{
+  background-color: $blue;
+  &:hover{
+    background-color: lighten($blue, 5%);
+  }
+}
+.btn-danger{
+  background-color: $red;
+  &:hover{
+    background-color: lighten($red, 5%);
+  }
+}
+
+.btn.dropdown-toggle{
+  padding:.5rem;
+}
+
+.alert{
+  border-radius: 0;
+  border: none;
+  margin: 0;
+  padding:.5rem;
+    text-align: center;
+}
+.alert-danger{
+  background-color: $red;
+  color: white;
+
+
+}
 
 // Header
+.heading-alert{
+  font-size: .65rem;
+      padding: .25rem;
+}
+.primary-nav{
+  background-color: $lightgray;
+}
 .navbar{
 
   padding: .2rem .5rem;
@@ -73,7 +175,7 @@ h3{font-size: 1.3rem;}
 
 .secondary-nav{
 background-color:$darkgray;
-font-size: 80%;
+font-size: .8rem;
 }
 
 .navbar a, .dropdown a{
@@ -83,42 +185,101 @@ font-size: 80%;
 }
 
 .header-search-form input{
-  font-size: 80%;
+  font-size: .8rem;
 }
 
 
+//footer
+.footer-bottom{
+  display:flex;
 
-/* Dark Theme*/
-body.darkTheme{
-  background-color: #333338;
-  .container{
-    color:white;
+
+
+  align-content: center;
+
+  .footer-info{
+    padding-top:1rem;
+    padding-bottom: 1rem;
   }
 
-  .card-header{
-    background-color: $teal;
-    color:white;
+}
+.footer-logo{
+//  width: 310px;
+width: 100%;
+  img{
+    width: 100%!important;
+  }
+}
+footer .container{
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+footer{
+  .primary-content{
+    padding: 1rem 2rem;
+  }
+}
+.footer-menu{
+  li{
+    list-style-type: none;
+    a{
+      color: white;
+      text-decoration: underline;
+    }
   }
 }
 
+.replay-stats-header{
+text-align:center;
+font-size: .75rem;
+}
+.disclaimer{
+  text-align:center;
+  font-size: .75rem;
+}
 
 //homepage
 .deathwing_logo{
-  max-width:1000px;
+  max-width:600px;
   margin: 1em auto;
   img{width:100%;}
 }
 
+.byline{
+text-align:center;
+  h3{
+    font-size: 1rem;
+  }
+  padding-bottom: 1rem;
 
+}
 
 .card-group {
+  padding: 4rem .5rem;
   .card{
     margin:1em;
     border:none;
     border-radius: 0;
+    text-align:center;
+    .card-body{
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 1.25rem .25rem;
+    }
+    .btn{
+
+  }
     .card-header{
       border-radius:0;
+      border-bottom:none;
+      padding-bottom:0;
+      font-weight:bold;
     }
+    .card-image{
+        font-size: 4rem;
+      }
+
     .btn{
       width:100%;
     }

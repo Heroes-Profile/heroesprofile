@@ -1,7 +1,7 @@
 
 
 
-
+<div class="heading-alert alert alert-danger">Hey here's an alert for the site</div>
 <nav class="primary-nav navbar navbar-dark bg-dark">
 <a class="navbar-brand" href="/">
 Heroes
@@ -15,31 +15,7 @@ Profile
     <a class="header-button btn btn-sm btn-danger" href="https://www.patreon.com/heroesprofile" target="_blank">Become a Patreon</a>
 </div>
 
-  <!-- Right Side Of Navbar -->
-<ul class="navbar-nav">
-    <!-- Authentication Links -->
-    @guest
-        <li class="nav-item">
-            <a class="nav-link" href="/login/battlenet">{{ __('Battlenet Login') }}</a>
-        </li>
-    @else
-        <li class="nav-item dropdown">
-            <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-              {{ Auth::user()->battletag }}<span class="caret"></span>
-            </a>
 
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="/home">
-                    {{ __('Profile') }}
-                </a>
-
-                <a class="dropdown-item" href="/logout/battlenet">
-                    {{ __('Log Out') }}
-                </a>
-            </div>
-        </li>
-    @endguest
-</ul>
 </nav>
 <nav class="secondary-nav navbar navbar-expand-lg navbar-dark">
 
@@ -99,5 +75,30 @@ Profile
   </form>
   --}}
 </div>
+<!-- Right Side Of Navbar -->
+<ul class="navbar-nav">
+  <!-- Authentication Links -->
+  @guest
+      <li class="nav-item">
+          <a class="nav-link" href="/login/battlenet">{{ __('Battlenet Login') }}</a>
+      </li>
+  @else
+      <li class="nav-item dropdown">
+          <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+            {{ Auth::user()->battletag }}<span class="caret"></span>
+          </a>
+
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="/home">
+                  {{ __('Profile') }}
+              </a>
+
+              <a class="dropdown-item" href="/logout/battlenet">
+                  {{ __('Log Out') }}
+              </a>
+          </div>
+      </li>
+  @endguest
+</ul>
 
 </nav>
