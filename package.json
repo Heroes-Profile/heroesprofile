@@ -24,6 +24,7 @@
     },
     "dependencies": {
         "chart.js": "^2.9.3",
-        "mdbootstrap": "^4.19.1"
+        "mdbootstrap": "^4.19.1",
+        "moment-timezone": "^0.5.31"
     }
 }

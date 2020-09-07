@@ -14,8 +14,8 @@
                           <div class="input-group-prepend">
                             <label class="input-group-text" for="input-region-select">Region</label>
                           </div>
-                          <select class="custom-select" id="input-region-select" name="region">
-                            <option selected>Choose...</option>
+                          <select class="custom-select" id="input-region-select" name="region" required="true" oninvalid="this.setCustomValidity('Please select a region from the list')" oninput="setCustomValidity('')">
+                            <option disabled selected value>Choose...</option>
                             <option value="us">NA</option>
                             <option value="eu">EU</option>
                             <option value="kr">KR</option>

@@ -9,8 +9,7 @@ class ProfilePageCache extends Model
   protected $table = 'profile_page';
   protected $primaryKey = 'profile_page_id';
   public $timestamps = false;
-  //protected $connection= 'mysql_cache';
-  protected $connection= 'mysql_dev';
+  protected $connection= 'mysql_cache';
 
   public function scopeFilters($query, $blizz_id, $region, $game_type, $season){
     $query->where('blizz_id', $blizz_id);

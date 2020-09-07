@@ -56,7 +56,7 @@
   <div class="container-fluid primary-background">
       <div class="container primary-content">
       <p>Heroes Profile uses data from Heroes Profile and HotsApi.  HotsApi is an open Heroes of the Storm replay database with user uploaded replay data.
-        Currently, Heroes Profile has pulled {{ $maxReplayID }} replays up to and including data from patch {{ $maxGameVersion }} and date/time {{ $getMaxGameDate }}
+        Currently, Heroes Profile has pulled {{ number_format($maxReplayID) }} replays up to and including data from patch {{ $maxGameVersion }} and date/time <span class="date-format-2">{{ $getMaxGameDate }}</span>
         and incorporated them into our dataset.</p>
         <p >
           For more information on HotsAPI navigate to <a href="https://hotsapi.net/">https://hotsapi.net/</a>
