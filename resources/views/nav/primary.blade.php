@@ -50,29 +50,6 @@
         <button class="btn btn-sm btn-primary my-2 my-sm-0" type="submit">Search</button>
       </form>
     </ul>
-
-    {{--
-    <li class="nav-item">
-    <a class="nav-link" href="/Global/Stats/Talents/Builder">Talent Builder</a>
-  </li>
-
-  <li class="nav-item">
-  <a class="nav-link" href="/Global/Stats/Compositions">Compositions</a>
-</li>
-
-<li class="nav-item">
-<a class="nav-link" href="/Compare">Compare</a>
-</li>
-
-<li class="nav-item">
-<a class="nav-link" target="_blank" href="https://api.heroesprofile.com/upload">Replay Uploader</a>
-</li>
-</ul>
-<form class="form-inline my-2 my-lg-0">
-<input class="form-control mr-sm-2" type="search" placeholder="Battletag" aria-label="Battletag">
-<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Find a Player</button>
-</form>
---}}
 </div>
 <!-- Right Side Of Navbar -->
 <ul class="navbar-nav">
@@ -88,8 +65,13 @@
       </a>
 
       <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-        <a class="dropdown-item" href="/home">
+
+        <a class="dropdown-item" href="/Profile?blizz_id={{ getBlizzID(Auth::user()->battletag, Auth::user()->region) }}&battletag={{ substr(Auth::user()->battletag, 0, strpos(Auth::user()->battletag, "#")) }}&region={{ Auth::user()->region }}">
           {{ __('Profile') }}
+        </a>
+
+        <a class="dropdown-item" href="/home">
+          {{ __('Settings') }}
         </a>
 
         <a class="dropdown-item" href="/logout/battlenet">

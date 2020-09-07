@@ -53,7 +53,7 @@ Route::post('profile/getTalentsData', 'ProfileController@getTalentsData');
 
 //Main Routing
 Route::get('/', 'LandingPageController@show');
-Route::get('/home', 'HomeController@show');
+Route::get('/Account', 'AccountController@show');
 
 //Global Stats
 Route::get('/Global/Leaderboard', 'GlobalLeaderboardController@show');
@@ -91,7 +91,7 @@ Route::post('authenticate/battlenet', 'BattlenetAuthController@redirectToProvide
 Route::get('authenticate/battlenet/success', 'BattlenetAuthController@handleProviderCallback');
 
 //Opt Out Process
-Route::view('optout', 'Optout/optout');
+Route::view('/Account/Optout/', 'Account/optout/optout');
 Route::view('optout/update/failure', 'optout/failure');
 Route::view('optout/update/success', 'optout/success');
 Route::get('optout/login', 'BattlenetAuthController@redirectToProvider');

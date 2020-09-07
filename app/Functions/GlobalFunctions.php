@@ -586,3 +586,13 @@ if (!function_exists('getHeroRoles')) {
     return $returnData;
   }
 }
+
+if (!function_exists('getBlizzID')) {
+  /**
+  * Returns blizzID with given battletag and region
+  *
+  * */
+  function getBlizzID($battletag, $region){
+    return \App\Models\Battletag::select('blizz_id')->where('battletag', $battletag)->where('region', $region)->max('blizz_id');
+  }
+}

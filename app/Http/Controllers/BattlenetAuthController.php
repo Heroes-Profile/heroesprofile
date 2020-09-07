@@ -51,6 +51,6 @@ class BattlenetAuthController extends Controller
       ['battlenet_access_token' => $user->accessTokenResponseBody["access_token"], 'remember_token' => $user->token]
     );
     auth()->login($battlenet_user, true);
-    return redirect('/home');
+    return redirect('/Account');
   }
 }

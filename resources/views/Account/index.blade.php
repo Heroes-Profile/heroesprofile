@@ -22,6 +22,14 @@
                   Page Settings
                 </a>
               </li>
+
+              <li class="nav-item">
+                <a class="nav-link active" href="/Account/Optout/">
+                  <span data-feather="page-settings"></span>
+                  Opt Out
+                </a>
+              </li>
+
             </ul>
           </div>
         </nav>
