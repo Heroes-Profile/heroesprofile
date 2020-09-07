@@ -11,13 +11,13 @@
           <div class="sidebar-sticky pt-3">
             <ul class="nav flex-column">
               <li class="nav-item">
-                <a class="nav-link active" href="#">
+                <a class="nav-link active" href="/Account">
                   <span data-feather="user-settings"></span>
                   User Settings
                 </a>
               </li>
               <li class="nav-item">
-                <a class="nav-link active" href="#">
+                <a class="nav-link active" href="/Account">
                   <span data-feather="page-settings"></span>
                   Page Settings
                 </a>
