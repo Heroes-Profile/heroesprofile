@@ -35,6 +35,7 @@
 @endsection
 
 @section('scripts')
+
   <script src="{{ asset('js/createTableAjax.js') }}"></script>
   <script src="{{ asset('js/createTableJS.js') }}"></script>
   <script src="{{ asset('js/popup.js') }}"></script>

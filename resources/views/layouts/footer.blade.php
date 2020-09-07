@@ -23,7 +23,7 @@
         </div>
       </div>
 
-      <div class="replay-stats-header"><p>{{ number_format($maxReplayID) }} replays | Patch {{ $maxGameVersion }} | Up to date as of:  <span class="date-format-2">{{ $getMaxGameDate }}</span></p>
+      <div class="replay-stats-header"><p>{{ number_format(getMaxReplayID()) }} replays | Patch {{ getMaxGameVersion() }} | Up to date as of:  <span class="date-format-2">{{ getMaxGameDate() }}</span></p>
         <p><a href="https://skilltreedevelopment.com">Skill Tree Development, LLC</a></p>
 
       </div>
