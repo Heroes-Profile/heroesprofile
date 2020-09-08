@@ -8,7 +8,7 @@
                 <div class="card-header">{{ __('Battlenet Login') }}</div>
 
                 <div class="card-body">
-                    <form method="GET" action="/authenticate/battlenet">
+                    <form method="POST" action="/authenticate/battlenet">
                         @csrf
                         <div class="input-group mb-3">
                           <div class="input-group-prepend">

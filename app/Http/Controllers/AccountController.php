@@ -26,4 +26,13 @@ class AccountController extends Controller
   {
     return view('Account.index');
   }
+
+  public function optout(){
+    $battletag_data = \App\Models\Battletag::where('Battletag', Auth::user()->battletag)->get();
+
+    foreach($battletag_data as $result){
+      $result->opt_out = 1;
+      $result->save();
+    }
+  }
 }

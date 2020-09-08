@@ -53,6 +53,7 @@ Route::post('profile/getTalentsData', 'ProfileController@getTalentsData');
 
 //Main Routing
 Route::get('/', 'LandingPageController@show');
+Route::get('/search', 'SearchController@show');
 Route::get('/Account', 'AccountController@show');
 
 //Global Stats
@@ -90,9 +91,7 @@ Route::get('logout/battlenet', 'Auth\battlenet\LogoutController@show');
 Route::post('authenticate/battlenet', 'BattlenetAuthController@redirectToProvider');
 Route::get('authenticate/battlenet/success', 'BattlenetAuthController@handleProviderCallback');
 
+
 //Opt Out Process
 Route::view('/Account/Optout/', 'Account/optout/optout');
-Route::view('optout/update/failure', 'optout/failure');
-Route::view('optout/update/success', 'optout/success');
-Route::get('optout/login', 'BattlenetAuthController@redirectToProvider');
-Route::get('optout/success', 'BattlenetAuthController@handleOptOutProviderCallback');  //Need to switch this from login/success to optout/success in blizzard API service
+Route::post('/account/optout/save', 'AccountController@optout');

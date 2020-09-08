@@ -9,6 +9,18 @@
       <h3>Heroes of the Storm statistics and comparison</h3>
     </div>
   </div>
+
+  <div class="search-bar-wrapper">
+  <div class="search-bar">
+    <form class="form-inline my-2 my-lg-0 header-search-form">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-sm btn-primary my-2 my-sm-0" type="submit">Search</button>
+    </form>
+  </div>
+</div>
+</div>
+
+
   <div class="container-fluid grey-background mb-3">
     <div class="container">
       <div class="card-group">
