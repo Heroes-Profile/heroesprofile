@@ -1040,15 +1040,22 @@ class ProfileData
         ->where('region', $this->region);
         //->get();
 
-      $mmr_data = \App\Models\MasterMMRDataSL::select("game_type", "conservative_rating", "win", "loss")
+      $sl = \App\Models\MasterMMRDataSL::select("game_type", "conservative_rating", "win", "loss")
         ->where('type_value', '10000')
         ->where('game_type', '5')
+        ->where('blizz_id', $this->blizz_id)
+        ->where('region', $this->region);
+
+      $mmr_data = \App\Models\MasterMMRDataAR::select("game_type", "conservative_rating", "win", "loss")
+        ->where('type_value', '10000')
+        ->where('game_type', '6')
         ->where('blizz_id', $this->blizz_id)
         ->where('region', $this->region)
         ->union($qm)
         ->union($ud)
         ->union($hl)
         ->union($tl)
+        ->union($sl)
         ->get();
 
         return $mmr_data;
@@ -1084,12 +1091,18 @@ class ProfileData
         ->where('region', $this->region)
         ->get();
       return $mmr_data;
-
-
     }else if($this->game_type == "5"){
       $mmr_data = \App\Models\MasterMMRDataSL::select("game_type", "conservative_rating", "win", "loss")
         ->where('type_value', '10000')
         ->where('game_type', '5')
+        ->where('blizz_id', $this->blizz_id)
+        ->where('region', $this->region)
+        ->get();
+      return $mmr_data;
+    }else if($this->game_type == "6"){
+      $mmr_data = \App\Models\MasterMMRDataSL::select("game_type", "conservative_rating", "win", "loss")
+        ->where('type_value', '10000')
+        ->where('game_type', '6')
         ->where('blizz_id', $this->blizz_id)
         ->where('region', $this->region)
         ->get();

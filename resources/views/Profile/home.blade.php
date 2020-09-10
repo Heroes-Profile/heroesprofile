@@ -82,7 +82,35 @@
       </div>
     </div>
 
+    <div class="container">
+      MMR SECTION
+      <div class="card">
+        <p id='1_mmr'>QM MMR</p>
+        <p id='1_mmr_rank'>QM Rank</p>
+        <p id='1_mmr_win_rate'>QM Win Rate</p>
 
+        <p id='2_mmr'>UD MMR</p>
+        <p id='2_mmr_rank'>UD Rank</p>
+        <p id='2_mmr_win_rate'>UD Win Rate</p>
+
+        <p id='3_mmr'>HL MMR</p>
+        <p id='3_mmr_rank'>HL Rank</p>
+        <p id='3_mmr_win_rate'>HL Win Rate</p>
+
+        <p id='4_mmr'>TL MMR</p>
+        <p id='4_mmr_rank'>TL Rank</p>
+        <p id='4_mmr_win_rate'>TL Win Rate</p>
+
+        <p id='5_mmr'>SL MMR</p>
+        <p id='5_mmr_rank'>SL Rank</p>
+        <p id='5_mmr_win_rate'>SL Win Rate</p>
+
+        <p id='6_mmr'>AR MMR</p>
+        <p id='6_mmr_rank'>AR Rank</p>
+        <p id='6_mmr_win_rate'>AR Win Rate</p>
+
+      </div>
+    </div>
     <p id='data'>Data</p>
 
 
@@ -161,8 +189,14 @@
         for (var key in results.three_latest_heroes) {
             $('#three_latest_heroes_' + counter).text(key);
             $('#three_latest_heroes_' + counter + '_win_rate').text((results.three_latest_heroes[key].wins / (results.three_latest_heroes[key].wins + results.three_latest_heroes[key].losses)) * 100);
-            $('#three_latest_heroes_' + counter +'_games_played').text(results.three_latest_heroes[key].games_played);
+            $('#three_latest_heroes_' + counter +'_games_played').text(results.three_latest_heroes[key].wins + results.three_latest_heroes[key].losses);
             counter++;
+        }
+
+        for(var i = 1; i <= 6; i++){
+          $('#' + i + '_mmr').text(results.league_data[i].mmr);
+          $('#' + i + '_mmr_rank').text(results.league_data[i].rank);
+          $('#' + i + '_mmr_win_rate').text(results.league_data[i].win_rate);
         }
 
         $('#data').text(JSON.stringify(results))
