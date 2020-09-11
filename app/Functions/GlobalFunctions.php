@@ -28,11 +28,9 @@ if (!function_exists('calculateCacheTime')) {
   /**
   * Returns the cache time in seconds
   *
-  * @param array $timeframe_type
-  * Major or Minor
+  * @param string $timeframe_type  "Major" or "Minor"
   *
-  * @param array $timeframe
-  * The patches to filter on
+  * @param array $timeframe  The patches to filter on
   *
   * @return integer seconds to cache
   *
@@ -40,7 +38,7 @@ if (!function_exists('calculateCacheTime')) {
   function calculateCacheTime($timeframe_type, $timeframe){
     //Need to work on logic for this
 
-    if(strtolower($timeframe_type) == "major"){
+    if(strtolower($timeframe_type) === "major"){
 
       //If the user chooses more than 1 major timeframe  e.g. (2.47, 2.48)
       if(count($timeframe) > 1){
