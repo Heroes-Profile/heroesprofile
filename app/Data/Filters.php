@@ -107,7 +107,6 @@ class Filters
               break;
           default:
               return "Invalid";
-              break;
           }
       }
     }

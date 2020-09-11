@@ -31,12 +31,18 @@ class LeaderboardData
   public function getLeaderboardData(){
     $max_cache_number = $this->getMaxCacheNumber();
     $mmr_type_ids = getMMRTypeIDs();
-    if($this->type == "player"){
-      $mmr_id = 10000;
-    }else if($this->type == "hero"){
-      $mmr_id = $this->hero;
-    }else if($this->type == "role"){
-      $mmr_id = $mmr_type_ids[$this->role];
+    
+    switch ($this->type)
+    {
+        case "hero":
+            $mmr_id = $this->hero;
+            break;
+        case "role":
+    	    $mmr_id = $mmr_type_ids[$this->role];
+    	    break;
+    	case "player":
+    	default:
+    	    $mmr_id = 10000;
     }
 
     $leaderboard_data = \App\Models\Leaderboard::Filters($this->game_type, $this->season, $this->region, $mmr_id, $this->getMaxCacheNumber())
@@ -84,7 +90,7 @@ class LeaderboardData
 
       $leaderboard_data[$i]->most_played_build = "";
     }
-    $return_leaderboard_data = new \App\Models\Leaderboard;
+    $return_leaderboard_data = array();
     $counter = 0;
 
     if($this->tier != ""){
