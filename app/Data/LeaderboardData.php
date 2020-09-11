@@ -84,7 +84,7 @@ class LeaderboardData
 
       $leaderboard_data[$i]->most_played_build = "";
     }
-    $return_leaderboard_data = new \App\Models\Leaderboard;
+    //$return_leaderboard_data = new \App\Models\Leaderboard;
     $counter = 0;
 
     if($this->tier != ""){
