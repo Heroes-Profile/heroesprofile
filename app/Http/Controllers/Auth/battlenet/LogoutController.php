@@ -9,6 +9,7 @@ use Auth;
 class LogoutController extends Controller
 {
   public function show(){
-    return redirect('/')->with(Auth::logout());
+    Auth::logout();
+    return redirect('/');
   }
 }

@@ -554,7 +554,7 @@ if (!function_exists('getTalentMetaData')) {
   *
   * */
   function getTalentMetaData(){
-    $talent_data = \App\Models\HeroesDatatalent::select('talent_id', 'talent_name', 'title', 'description', 'hotkey', 'icon')->get();
+    $talent_data = \App\Models\HeroesDataTalent::select('talent_id', 'talent_name', 'title', 'description', 'hotkey', 'icon')->get();
     $returnData = array();
     for($i = 0; $i < count($talent_data); $i++){
       $data = array();
