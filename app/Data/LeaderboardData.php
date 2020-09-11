@@ -90,7 +90,9 @@ class LeaderboardData
 
       $leaderboard_data[$i]->most_played_build = "";
     }
+
     $return_leaderboard_data = array();
+
     $counter = 0;
 
     if($this->tier != ""){

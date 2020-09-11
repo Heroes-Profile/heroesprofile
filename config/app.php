@@ -245,7 +245,8 @@ return [
         'ProfileMatchHistory' => App\Data\Profile\Match::class,
         'ProfileMatchups' => App\Data\Profile\Matchups::class,
 
-
+        //Match
+        'MatchReplay' => App\Data\MatchReplay::class,
 
     ],
 
