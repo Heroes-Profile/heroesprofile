@@ -24,7 +24,7 @@ class BattlenetAuthController extends Controller
   /**
   * Obtain the user information from Battlenet.
   *
-  * @return \Illuminate\Http\Response
+  * @return \Illuminate\Http\RedirectResponse
   */
   public function handleProviderCallback(Request $request)
   {

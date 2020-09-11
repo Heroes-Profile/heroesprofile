@@ -55,7 +55,7 @@ class Leaderboard extends Model
  * Get the player's MMR value
  *
  * @param  string  $value
- * @return string
+ * @return float
  */
   public function getMmrAttribute($value)
   {

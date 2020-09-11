@@ -154,7 +154,7 @@ if (!function_exists('getCacheTimeGlobals')) {
   * This function returns the cache time value
   *
   *
-  * @return array array of regions
+  * @return int
   *
   * */
   function getCacheTimeGlobals(){
@@ -547,10 +547,10 @@ if (!function_exists('getMaxGameDate')) {
 
 if (!function_exists('getTalentMetaData')) {
   /**
-  * Returns the max game date in the DB
+  * Returns metadata for talents
   *
   *
-  * @return integer get all talent information
+  * @return array
   *
   * */
   function getTalentMetaData(){
@@ -574,7 +574,7 @@ if (!function_exists('getHeroRoles')) {
   * Returns the roles for each hero
   *
   *
-  * @return integer roles for each hero
+  * @return array  roles for each hero
   *
   * */
   function getHeroRoles(){
