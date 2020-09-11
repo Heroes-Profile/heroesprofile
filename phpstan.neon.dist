@@ -1,0 +1,14 @@
+includes:
+	- ./vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+	tmpDir: build/phpstan
+	paths:
+		- app
+		- tests
+	level: 5
+	ignoreErrors:
+		- '#Access to an undefined property App\\Models\\[A-Za-z]+::\$[a-z_]+#'
+		- '#Comparison operation ">" between array\|float\|int and [0-9]+ results in an error#'
+	excludes_analyse:
+	checkMissingIterableValueType: false

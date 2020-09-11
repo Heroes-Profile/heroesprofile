@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\DB;
 
 class GlobalHeroStatMatchupData
 {
+  private $hero;
   private $game_versions_minor;
   private $game_type;
   private $region;
