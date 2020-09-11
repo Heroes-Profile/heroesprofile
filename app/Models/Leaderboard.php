@@ -37,7 +37,7 @@ class Leaderboard extends Model
   */
   public function getRatingAttribute($value)
   {
-    return number_format($value, 2);
+    return number_format((float) $value, 2);
   }
 
   /**
@@ -48,17 +48,17 @@ class Leaderboard extends Model
   */
   public function getWinRateAttribute($value)
   {
-    return number_format($value, 2);
+    return number_format((float) $value, 2);
   }
 
   /**
  * Get the player's MMR value
  *
  * @param  string  $value
- * @return string
+ * @return float
  */
   public function getMmrAttribute($value)
   {
-      return round(1800 + 40 * (int)$value);
+      return round(1800 + 40 * (float) $value);
   }
 }
