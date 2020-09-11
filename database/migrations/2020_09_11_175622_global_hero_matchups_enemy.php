@@ -47,7 +47,6 @@ class GlobalHeroMatchupsEnemy extends Migration
         $table->tinyInteger('win_loss');
         $table->integer('games_played');
 
-        $table->primary('global_hero_matchups_enemy_id');
         $table->unique(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'enemy', 'mirror', 'region', 'win_loss'], 'global_hero_matchups_enemy_Unique');
         $table->index(['game_version', 'game_type', 'hero', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'enemy', 'mirror', 'region', 'win_loss', 'games_played'], 'global_hero_matchups_enemy_Base_Index');
       });

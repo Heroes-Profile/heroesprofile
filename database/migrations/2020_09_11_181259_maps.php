@@ -39,7 +39,6 @@ class Maps extends Migration
       $table->tinyInteger('ranked_rotation');
       $table->tinyInteger('playable');
 
-      $table->primary('map_id');
     });
   }
 

@@ -48,7 +48,6 @@ class HeroesDataTalents extends Migration
       $table->string('icon', 100);
       $table->integer('required_talent_id')->nullable();
 
-      $table->primary('talent_id');
       $table->unique(['hero_name', 'title', 'talent_name'], 'heroes_data_talents_Unique_Index');
       $table->index('hero_name');
       $table->index('attribute_id');

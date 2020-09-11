@@ -35,8 +35,6 @@ class GameTypes extends Migration
       $table->integer('type_id')->autoIncrement();
       $table->string('name', 45);
       $table->string('short_name', 45);
-
-      $table->primary('type_id');
     });
   }
 

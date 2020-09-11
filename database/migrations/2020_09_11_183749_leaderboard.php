@@ -60,7 +60,6 @@ class Leaderboard extends Migration
       $table->integer('level_twenty');
       $table->integer('hero_build_games_played');
 
-      $table->primary('leaderboard_id');
       $table->unique(['game_type', 'season', 'type', 'rank', 'cache_number'], "leaderboard_Base_Unique");
       $table->index(['game_type', 'season', 'type', 'cache_number'], "leaderboard_Index 1");
       $table->index(['game_type', 'season', 'type', 'cache_number', 'region'], "leaderboard_Index 2");

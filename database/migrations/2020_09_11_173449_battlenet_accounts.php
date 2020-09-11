@@ -40,7 +40,6 @@ class BattlenetAccounts extends Migration
       $table->string('remember_token', 255);
       $table->timestamps();
 
-      $table->primary('battlenet_accounts_id');
       $table->unique('battletag', 'battlenet_accounts_unique');
       $table->index('battlenet_id', 'battlenet_accounts_index');
 

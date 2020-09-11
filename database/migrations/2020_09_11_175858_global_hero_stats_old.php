@@ -40,7 +40,6 @@ class GlobalHeroStatsOld extends Migration
       $table->tinyInteger('win_loss');
       $table->integer('games_played');
 
-      $table->primary('global_hero_stats_old_id');
       $table->unique(['game_version', 'game_type', 'hero', 'win_loss'], 'global_hero_stats_old_index');
 
     });

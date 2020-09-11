@@ -38,7 +38,6 @@ class TableCacheValue extends Migration
       $table->integer('cache_number');
       $table->dateTime('date_cached');
 
-      $table->primary('table_cache_value_id');
       $table->unique(['table_to_cache', 'season', 'cache_number'], "table_cache_value_Base_Unique");
     });
   }

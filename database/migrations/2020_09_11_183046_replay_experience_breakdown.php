@@ -45,7 +45,6 @@ class ReplayExperienceBreakdown extends Migration
       $table->double('trickXP');
       $table->double('totalXP');
 
-      $table->primary('replay_experience_breakdown_id');
     });
   }
 

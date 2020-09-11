@@ -44,7 +44,6 @@ class Heroes extends Migration
       $table->char('attribute_id')->nullable();
       $table->string('build_copy_name', 45)->nullable();
 
-      $table->primary('id');
       $table->unique('name');
       $table->index('attribute_id');
     });

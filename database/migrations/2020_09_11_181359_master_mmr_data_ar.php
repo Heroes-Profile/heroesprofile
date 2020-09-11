@@ -44,7 +44,6 @@ class MasterMmrDataAr extends Migration
       $table->integer('win');
       $table->integer('loss');
 
-      $table->primary('master_mmr_data_ar_id');
       $table->unique(['type_value', 'game_type', 'blizz_id', 'region'], 'master_mmr_data_ar_unique');
     });
   }

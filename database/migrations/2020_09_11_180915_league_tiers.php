@@ -35,7 +35,6 @@ class LeagueTiers extends Migration
       $table->integer('tier_id')->autoIncrement();
       $table->string('name', 45);
 
-      $table->primary('tier_id');
     });
   }
 

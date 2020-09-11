@@ -56,7 +56,6 @@ class Player extends Migration
       $table->double('role_change');
       $table->dateTime('mmr_date_parsed');
 
-      $table->primary('player_table_id');
       $table->unique(['replayID', 'battletag', 'hero'], 'player_Primary_Index');
       $table->index(['replayID', 'blizz_id', 'hero'], 'player_Index_1');
       $table->index(['blizz_id', 'hero'], 'player_Index_2');

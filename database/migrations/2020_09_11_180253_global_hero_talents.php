@@ -85,7 +85,6 @@ class GlobalHeroTalents extends Migration
       $table->integer('regen_globes');
       $table->integer('games_played');
 
-      $table->primary('global_hero_talents_id');
       $table->unique(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'mirror', 'region', 'win_loss', 'talent_combination_id'], 'global_hero_talents_Base_Unique');
       $table->index(['game_version', 'game_type', 'hero', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'mirror', 'region', 'win_loss', 'talent_combination_id', 'games_played'], 'global_hero_talents_Base_Index');
 

@@ -39,7 +39,6 @@ class Compositions extends Migration
       $table->integer('role_four')->nullable();
       $table->integer('role_five')->nullable();
 
-      $table->primary('composition_id');
       $table->unique(['role_one', 'role_two', 'role_three', 'role_four', 'role_five'], 'compositions_unique');
     });
   }

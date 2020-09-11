@@ -37,7 +37,6 @@ class HeaderAlert extends Migration
       $table->string('text', 255);
       $table->tinyInteger('valid');
 
-      $table->primary('header_alert_id');
     });
   }
 

@@ -36,7 +36,6 @@ class MmrTypeIds extends Migration
       $table->integer('mmr_type_table_id')->autoIncrement();
       $table->integer('mmr_type_id')->unqiue();
       $table->string('name', 45);
-      $table->primary('mmr_type_table_id');
     });
   }
 

@@ -41,7 +41,6 @@ class Battletags extends Migration
       $table->tinyInteger('opt_out')->nullable();
       $table->dateTime('latest_game')->default('2014-06-26 13:13:34');
 
-      $table->primary('player_id');
       $table->unique(['blizz_id', 'battletag', 'region'], 'battletags_unique');
       $table->index('patreon', 'patreon_index');
       $table->index('opt_out', 'optout_index');

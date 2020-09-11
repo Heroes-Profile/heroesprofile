@@ -39,7 +39,6 @@ class ReplayBans extends Migration
       $table->integer('hero');
       $table->index(['replayID', 'team', 'hero'], 'replay_bans_index');
 
-      $table->primary('ban_id');
     });
   }
 

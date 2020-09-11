@@ -37,8 +37,6 @@ class Awards extends Migration
       $table->string('title', 45);
       $table->string('icon', 45);
 
-
-      $table->primary('award_table_id');
       $table->unique(['award_id', 'title', 'icon'], 'award_base_unique');
     });
   }

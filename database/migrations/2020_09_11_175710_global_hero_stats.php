@@ -83,7 +83,6 @@ class GlobalHeroStats extends Migration
       $table->integer('regen_globes');
       $table->integer('games_played');
 
-      $table->primary('global_hero_stats_id');
       $table->unique(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'mirror', 'region', 'win_loss'], 'global_hero_stats_Base_Unique');
       $table->index(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'mirror', 'region', 'win_loss', 'games_played'], 'global_hero_stats_Base_Index');
     });

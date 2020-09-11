@@ -65,7 +65,6 @@ class ProfilePage extends Migration
       $table->longText('matches');
       $table->integer('latest_replayID');
 
-      $table->primary('profile_page_id');
       $table->unique(['blizz_id', 'region', 'game_type', 'season'], "profile_page_unique");
     });
   }
