@@ -59,6 +59,6 @@ class Leaderboard extends Model
  */
   public function getMmrAttribute($value)
   {
-      return round(1800 + 40 * $value);
+      return round(1800 + 40 * (int)$value);
   }
 }
