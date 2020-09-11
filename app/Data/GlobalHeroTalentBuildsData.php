@@ -141,7 +141,7 @@ class GlobalHeroTalentBuildsData
          }
        }
 
-       $builds[$key]->games_played = $builds[$key]->wins + $builds[$key]->losses;
+       $builds[$key]->games_played = (int) ($builds[$key]->wins + $builds[$key]->losses);
 
        if($builds[$key]->games_played > 0){
          $builds[$key]->win_rate = $builds[$key]->wins / ($builds[$key]->wins + $builds[$key]->losses);

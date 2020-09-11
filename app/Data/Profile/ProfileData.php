@@ -1046,6 +1046,7 @@ class ProfileData
         ->where('blizz_id', $this->blizz_id)
         ->where('region', $this->region);
 
+      // @phpstan-ignore-next-line
       $mmr_data = \App\Models\MasterMMRDataAR::select("game_type", "conservative_rating", "win", "loss")
         ->where('type_value', '10000')
         ->where('game_type', '6')
