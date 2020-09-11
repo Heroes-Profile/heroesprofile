@@ -11,7 +11,7 @@ class BattlenetAuthController extends Controller
 {
   public function redirectToProvider(Request $request)
   {
-    Session::put('battlenet_region', $request->region, 60);
+    Session::put('battlenet_region', $request->region);
 
     $clientId = env('BATTLE.NET_KEY', false);
     $clientSecret = env('BATTLE.NET_SECRET', false);

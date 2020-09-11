@@ -73,7 +73,7 @@ class GlobalHeroStatTalentsController extends Controller
     //$cache_time = 0; //for testing
 
     $return_data = Cache::remember($cache, $cache_time, function () use ($hero, $game_versions_minor, $game_type, $region, $game_map,
-                                          $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror){
+                                          $hero_level, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror){
       $global_data_details = new \GlobalHeroTalentDetailsData($hero, $game_versions_minor, $game_type, $player_league_tier,
                                           $hero_league_tier, $role_league_tier, $game_map, $hero_level, $mirror, $region);
       $return_data = $global_data_details->getGlobalTalentDetailData();
@@ -123,7 +123,7 @@ class GlobalHeroStatTalentsController extends Controller
 
 
     $return_data = Cache::remember($cache, $cache_time, function () use ($hero, $game_versions_minor, $game_type, $region,
-                                          $game_map, $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror, $type){
+                                          $game_map, $hero_level, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror, $type){
       $global_data_builds = new \GlobalHeroTalentBuildsData($hero, $game_versions_minor, $game_type, $player_league_tier,
                                           $hero_league_tier, $role_league_tier, $game_map, $hero_level, $mirror, $region);
       $return_data = $global_data_builds->getGlobalHeroTalentData($type);
