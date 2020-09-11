@@ -75,6 +75,13 @@ Route::get('/Profile/Role/All', 'ProfileController@roleAll');
 Route::get('/Profile/Talents', 'ProfileController@talents');
 
 
+//Match Page
+Route::get('/Match/Single', 'MatchController@show');
+Route::get('getSingeMatchData', 'MatchController@getMatchData');
+Route::post('getSingeMatchData', 'MatchController@getMatchData');
+
+
+
 
 
 /*

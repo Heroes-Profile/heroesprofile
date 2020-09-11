@@ -70,7 +70,7 @@
           {{ __('Profile') }}
         </a>
 
-        <a class="dropdown-item" href="/home">
+        <a class="dropdown-item" href="/Account">
           {{ __('Settings') }}
         </a>
 
