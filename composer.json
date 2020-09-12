@@ -14,7 +14,7 @@
         "google/cloud-error-reporting": "^0.16.2",
         "google/cloud-logging": "^1.20",
         "guzzlehttp/guzzle": "^7.0",
-        "laravel/framework": "^7.0",
+        "laravel/framework": "^8.1",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "socialiteproviders/battlenet": "^3.1"
@@ -23,9 +23,9 @@
         "facade/ignition": "^2.0",
         "fzaninotto/faker": "^1.9.1",
         "mockery/mockery": "^1.3.1",
-        "nunomaduro/collision": "^4.1",
+        "nunomaduro/collision": "^5.0",
         "nunomaduro/larastan": "^0.6.4",
-        "phpunit/phpunit": "^8.5"
+        "phpunit/phpunit": "^9.3"
     },
     "config": {
         "optimize-autoloader": true,
