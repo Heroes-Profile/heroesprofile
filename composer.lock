@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1e9187f9eff9690c319b76eaa920a92c",
+    "content-hash": "d4df28133aea676ab9e02e899fd16ad2",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -674,16 +674,16 @@
         },
         {
             "name": "google/cloud-error-reporting",
-            "version": "v0.16.5",
+            "version": "v0.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-errorreporting.git",
-                "reference": "1179cc6a23e770ec3d29818f753529ae5abe0a0a"
+                "reference": "6f1e067b4b8bba3e468c6cc90c87f9e564b3bee6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-errorreporting/zipball/1179cc6a23e770ec3d29818f753529ae5abe0a0a",
-                "reference": "1179cc6a23e770ec3d29818f753529ae5abe0a0a",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-errorreporting/zipball/6f1e067b4b8bba3e468c6cc90c87f9e564b3bee6",
+                "reference": "6f1e067b4b8bba3e468c6cc90c87f9e564b3bee6",
                 "shasum": ""
             },
             "require": {
@@ -691,7 +691,7 @@
                 "google/gax": "^1.1"
             },
             "require-dev": {
-                "google/cloud-core": "^1.35",
+                "google/cloud-core": "^1.39",
                 "phpdocumentor/reflection": "^3.0",
                 "phpunit/phpunit": "^4.8|^5.0"
             },
@@ -719,7 +719,7 @@
                 "Apache-2.0"
             ],
             "description": "Stackdriver Error Reporting Client for PHP",
-            "time": "2020-06-19T17:49:03+00:00"
+            "time": "2020-09-08T20:52:20+00:00"
         },
         {
             "name": "google/cloud-logging",
