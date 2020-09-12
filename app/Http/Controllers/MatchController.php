@@ -8,6 +8,6 @@ class MatchController extends Controller
 {
   public function show(Request $request){
     $match_replay = new \MatchReplay($request["replayID"]);
-    return view('match')->with(["replay" => $match_replay]);
+    return view('match')->with(["replay" => $match_replay->getTeams()]);
   }
 }
