@@ -14,6 +14,8 @@ class MatchPlayer
   public $hero_mmr;
   public $role_mmr;
 
+  public $scores;
+
   public function __construct($blizz_id, $region) {
     $this->blizz_id = $blizz_id;
     $this->region = $region;
@@ -22,6 +24,7 @@ class MatchPlayer
   public function setBattletag($battletag){
     $this->battletag = \App\Models\Battletag::where('player_id', $battletag)->value('battletag');
   }
+
   public function getPatreon(){
     $this->patreon = \App\Models\Battletag::where('blizz_id', $this->blizz_id)->where('region', $this->region)->max('patreon');
   }
@@ -32,6 +35,7 @@ class MatchPlayer
 
   public function setAccountLevel(){
     $this->account_level = \App\Models\Battletag::where('blizz_id', $this->blizz_id)->where('region', $this->region)->max('account_level');
+    return $this->account_level;
   }
 
   public function setHero($hero_id){
@@ -64,8 +68,6 @@ class MatchPlayer
     }
   }
 
-
-
   public function setPlayerMMR($mmr){
     $this->player_mmr = $mmr;
   }
@@ -76,5 +78,10 @@ class MatchPlayer
 
   public function setRoleMMR($mmr){
     $this->role_mmr = $mmr;
+  }
+
+  public function setScores($player_data){
+    $score = new MatchScores($player_data);
+    $this->scores = $score;
   }
 }

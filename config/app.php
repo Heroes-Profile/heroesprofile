@@ -249,6 +249,7 @@ return [
         'MatchReplay' => App\Data\Match\MatchReplay::class,
         'MatchPlayer' => App\Data\Match\MatchPlayer::class,
         'MatchTeam' => App\Data\Match\MatchTeam::class,
+        'MatchTeam' => App\Data\Match\MatchTeam::class,
     ],
 
 ];
