@@ -1,9 +1,10 @@
 <?php
-namespace App\Data;
+namespace App\Data\Match;
 
 class MatchReplay
 {
   private $replayID;
+  private $teams = array();
 
   public function __construct($replayID) {
     $this->replayID = $replayID;
@@ -19,8 +20,11 @@ class MatchReplay
       "replay.game_length",
       "replay.game_map",
       "replay.region",
+      "player.blizz_id",
+      "player.battletag",
       "player.hero",
       "player.hero_level",
+      "player.mastery_taunt",
       "player.team",
       "player.winner",
       "player.player_conservative_rating",
@@ -57,9 +61,18 @@ class MatchReplay
       )
       ->where('replay.replayID', '=', $this->replayID)
       ->get();
+      $team_0 = new MatchTeam;
+      $team_1 = new MatchTeam;
       for($i = 0; $i < count($replay_data); $i++){
+        if($replay_data[$i]["team"] == 0){
+          $team_0->addPlayer($replay_data[$i]);
+        }else{
+          $team_1->addPlayer($replay_data[$i]);
+        }
       }
-      return $replay_data;
+
+      $this->teams[0] = $team_0;
+      $this->teams[1] = $team_1;
     }
     /*
     private function getReplayBans($replayID){
@@ -73,4 +86,7 @@ class MatchReplay
     }
 
     */
+    public function getTeams(){
+      return $this->teams;
+    }
   }

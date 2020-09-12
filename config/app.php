@@ -246,8 +246,9 @@ return [
         'ProfileMatchups' => App\Data\Profile\Matchups::class,
 
         //Match
-        'MatchReplay' => App\Data\MatchReplay::class,
-
+        'MatchReplay' => App\Data\Match\MatchReplay::class,
+        'MatchPlayer' => App\Data\Match\MatchPlayer::class,
+        'MatchTeam' => App\Data\Match\MatchTeam::class,
     ],
 
 ];
