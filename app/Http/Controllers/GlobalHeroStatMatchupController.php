@@ -45,6 +45,8 @@ class GlobalHeroStatMatchupController extends Controller
       'inputUrl' => "/getGlobalHeroStatMatchupData",
       'columndata' => $this->splitColumn($this->columns),
       'page' => 'stat',
+      'heroFilter' => true,
+      'roleFilter' => true,
       'hero' => $this->hero,
 
       //Table Customizations

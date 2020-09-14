@@ -1,7 +1,5 @@
 <?php
 namespace App\Data;
-use Illuminate\Support\Facades\DB;
-use Cache;
 
 class GlobalStatData
 {
@@ -50,7 +48,7 @@ class GlobalStatData
     return $return_data;
   }
 
-  private function getHeroBans(){
+  public function getHeroBans(){
     $global_ban_data = \App\Models\GlobalHeroBans::Filters($this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
                                           $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier)
                       ->join('heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')

@@ -285,3 +285,135 @@ text-align:center;
     }
   }
 }
+
+
+//draft
+#draft-hero-wrapper{
+  display:flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  font-size:.8em;
+  h4{font-size: .5rem;}
+  .popup-trigger{
+
+    border: 1px solid white;
+  }
+}
+
+
+
+
+.draft-league-info input[type="submit"] {
+  border-radius: 13px;
+  font-size: 1.2em;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 20px; }
+.draft-league-info label:last-child select {
+  border-radius: 0px 13px 13px 0; }
+
+.draft-wrapper {
+  display: flex;
+  justify-content: space-between; }
+
+.draft-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: .8em; }
+
+
+.draft-section .compare-box {
+  width: 80px;
+  height: 80px;
+  background-size: cover; }
+  .draft-section .compare-box .draft-close {
+    width: 108px;
+    height: 108px;
+    display: none;
+    background: rgba(255, 255, 255, 0.2);
+    justify-content: flex-end;
+    font-size: 1.5em;
+    padding: 0 .25em;
+    box-sizing: border-box;
+    cursor: pointer; }
+  .draft-section .compare-box:hover .draft-close {
+    display: flex; }
+  .draft-section .compare-box.disabled {
+    opacity: .2; }
+
+.draft-left .compare-box {
+  background-color: rgba(33, 61, 122, 0.2); }
+
+.draft-right .compare-box {
+  background-color: rgba(179, 54, 22, 0.2); }
+
+.draft-wrapper .all-heroes .hero-picture {
+  height: 4em;
+  width: 4em; }
+
+.draft-wrapper .all-heroes .hero-wrapper .popup-trigger .popup {
+  left: -5em;
+  bottom: 6.3em; }
+.draft-wrapper .all-heroes .hero-wrapper {
+  justify-content: center; }
+.draft-wrapper .first-pick {
+  background-color: rgba(179, 54, 22, 0.5);
+  border-radius: .5em;
+  padding: .2em;
+  text-align: center; }
+  .draft-wrapper .first-pick.disabled {
+    opacity: .2; }
+.draft-wrapper .draft-left .first-pick {
+  background-color: #213d7a; }
+
+.draft-bans {
+  display: flex;
+  justify-content: space-between; }
+
+.draft-single-ban.compare-box {
+  width: 5em;
+  height: 5em;
+  background-size: cover; }
+
+.draft-league-info form {
+  /*
+    flex-direction:column;
+
+  select{
+    font-size: 1em;
+    width: 100%;
+    display: block;
+    border: 1px solid lightgray;
+    padding: 1em 1.4em;
+    -webkit-appearance: none;
+    font-weight: 600;
+    margin-top: .5em;
+    cursor: pointer;
+    background-color: #213d7a;
+    color: white;
+    border-radius: 10px;
+    width: 0;
+      position: relative;
+      width: auto;
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 16px;
+      width: auto;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 10px;
+      padding: .2em .2em 0;
+      box-shadow: 0.1em 0.1em 0.4em black;
+      font-family: 'Ruslan Display';
+      font-size:2em;
+  }
+  */ }
+
+.draft-info-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; }
+
+  .draft-hero-picker{
+    display:flex;
+  }

@@ -236,6 +236,7 @@ return [
         'GlobalHeroTalentBuildsData' => App\Data\GlobalHeroTalentBuildsData::class,
         'GlobalHeroTalentDetailsData' => App\Data\GlobalHeroTalentDetailsData::class,
         'GlobalHeroStatMatchupData' => App\Data\GlobalHeroStatMatchupData::class,
+        'GlobalCompositionData' => App\Data\GlobalCompositionData::class,
 
         //Profile
         'ProfileData' => App\Data\Profile\ProfileData::class,
@@ -250,6 +251,10 @@ return [
         'MatchPlayer' => App\Data\Match\MatchPlayer::class,
         'MatchTeam' => App\Data\Match\MatchTeam::class,
         'MatchTeam' => App\Data\Match\MatchTeam::class,
+
+
+        //Drafter
+        'DrafterData' => App\Data\DrafterData::class,
     ],
 
 ];

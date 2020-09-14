@@ -1,8 +1,6 @@
 <?php
 namespace App\Data;
 
-use Illuminate\Support\Facades\DB;
-
 /*TO DO
 * Need to pass through offset data so that you can get more players.
 * Right now it returns 250, but I store more than 250 in the DB
@@ -31,7 +29,7 @@ class LeaderboardData
   public function getLeaderboardData(){
     $max_cache_number = $this->getMaxCacheNumber();
     $mmr_type_ids = getMMRTypeIDs();
-    
+
     switch ($this->type)
     {
         case "hero":

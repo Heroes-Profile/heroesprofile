@@ -81,6 +81,20 @@ Route::get('/Match/Single', 'MatchController@show');
 //Route::post('getSingeMatchData', 'MatchController@getMatchData');
 
 
+//Drafter
+Route::get('/Drafter', 'DraftController@show');
+
+//Bans
+Route::get('/getDraftBanData', 'DraftController@getDraftBanData');
+Route::post('/getDraftBanData', 'DraftController@getDraftBanData');
+
+//Initial Picks
+Route::get('/getInitialDraftData', 'DraftController@getInitialData');
+Route::post('/getInitialDraftData', 'DraftController@getInitialData');
+
+//Composition Picks
+Route::get('/getCompositionData', 'DraftController@getPickData');
+Route::post('/getCompositionData', 'DraftController@getPickData');
 
 
 
