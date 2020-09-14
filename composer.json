@@ -16,7 +16,7 @@
         "guzzlehttp/guzzle": "^7.0",
         "laravel/framework": "^8.1",
         "laravel/tinker": "^2.0",
-        "laravel/ui": "^2.0",
+        "laravel/ui": "^3.0",
         "socialiteproviders/battlenet": "^3.1"
     },
     "require-dev": {
