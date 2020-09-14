@@ -31,19 +31,60 @@ class GlobalCompositionData
   }
 
   public function getDataForDrafter($teamPicked){
+    $role_array = array();
+
+//composition_id, role_one, role_two, role_three, role_four, role_five
+    for($i = 0; $i < count($teamPicked); $i++){
+      $role = \App\Models\Hero::select('new_role')->where('id', $teamPicked[0])->first();
+
+      $role_array[$i] = \App\Models\MMRTypeID::where('name', $role['new_role'])->value('mmr_type_id');
+
+
+    }
+    asort($role_array);
+    $roleString = "";
+    for($i = 0; $i < count($role_array); $i++){
+      $roleString .= $role_array[$i];
+    }
+
+    $valid_compositions = \App\Models\Composition::selectRaw('composition_id, CONCAT(role_one, role_two, role_three, role_four, role_five) as concat')->get();
+
+
+    $filtered = $valid_compositions->filter(function ($item) use ($roleString) {
+                return strpos($item->concat, $roleString) !== false;
+            });
+
+    $key_values = array_keys($filtered->toArray());
+
+    /*
+    print_r(json_encode($key_values, true));
+    echo "<br>";
+    echo "<br>";
+    echo "<br>";
+    echo "<br>";
+
+
+    print_r($role_array);
+    echo "<br>";
+    echo "<br>";
+    echo "<br>";
+    echo "<br>";
+    */
     //print_r($teamPicked);
     $composition_id = \App\Models\GlobalCompositions::Filters($this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
     $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror, $this->hero)
-    ->selectRaw('composition_id, SUM(games_played) as games_played')
-    ->groupBy('composition_id')
+    ->join('compositions', 'compositions.composition_id', 'global_compositions.composition_id')
+    ->selectRaw('compositions.composition_id, SUM(games_played) as games_played')
+    ->whereIn('compositions.composition_id', $key_values)
+    ->groupBy('compositions.composition_id')
     ->orderBy('games_played', 'DESC')
 
-    /*
+/*
     print_r($composition_id->toSql());
     echo "<br>";
     print_r($composition_id->getBindings());
     echo "<br>";
-    */
+*/
     ->limit(1)
     ->value('composition_id');
     $composition = \App\Models\Composition::Filters($composition_id)->get()->toArray();
