@@ -1,5 +1,6 @@
 <?php
 namespace App\Data;
+use Illuminate\Support\Facades\DB;
 
 class GlobalCompositionData
 {
@@ -31,30 +32,53 @@ class GlobalCompositionData
   }
 
   public function getDataForDrafter($teamPicked){
+    /*
+    echo "teamPicked = ";
+    print_r($teamPicked);
+    echo "<br>";
+    echo "<br>";
+    echo "<br>";
+    */
+
     $role_array = array();
-
-//composition_id, role_one, role_two, role_three, role_four, role_five
     for($i = 0; $i < count($teamPicked); $i++){
-      $role = \App\Models\Hero::select('new_role')->where('id', $teamPicked[0])->first();
-
+      $role = \App\Models\Hero::select('new_role')->where('id', $teamPicked[$i])->first();
       $role_array[$i] = \App\Models\MMRTypeID::where('name', $role['new_role'])->value('mmr_type_id');
-
-
     }
-    asort($role_array);
+
+    sort($role_array);
+
+    /*8
+    echo "role_array = ";
+    print_r($role_array);
+    echo "<br>";
+    echo "<br>";
+    echo "<br>";
+    */
+
     $roleString = "";
     for($i = 0; $i < count($role_array); $i++){
-      $roleString .= $role_array[$i];
+      $roleString .= ("%" . $role_array[$i]);
     }
+    $roleString .= "%";
+    /*
+    echo "roleString = ";
+    print_r($roleString);
+    echo "<br>";
+    echo "<br>";
+    echo "<br>";
+    */
 
-    $valid_compositions = \App\Models\Composition::selectRaw('composition_id, CONCAT(role_one, role_two, role_three, role_four, role_five) as concat')->get();
+    $valid_compositions = DB::connection('mysql')->select('SELECT composition_id FROM heroesprofile.compositions where CONCAT(role_one, role_two, role_three, role_four, role_five) like ' . "\"" . $roleString . "\"");
+    $valid_compositions = json_decode(json_encode($valid_compositions),true);
 
-
-    $filtered = $valid_compositions->filter(function ($item) use ($roleString) {
-                return strpos($item->concat, $roleString) !== false;
-            });
-
-    $key_values = array_keys($filtered->toArray());
+    $key_values = array();
+    $counter = 0;
+    foreach ($valid_compositions as $key => $value)
+    {
+      $key_values[$counter] = $value['composition_id'];
+      $counter++;
+    }
 
     /*
     print_r(json_encode($key_values, true));
@@ -62,14 +86,8 @@ class GlobalCompositionData
     echo "<br>";
     echo "<br>";
     echo "<br>";
-
-
-    print_r($role_array);
-    echo "<br>";
-    echo "<br>";
-    echo "<br>";
-    echo "<br>";
     */
+
     //print_r($teamPicked);
     $composition_id = \App\Models\GlobalCompositions::Filters($this->game_versions_minor, $this->game_type, $this->region, $this->game_map,
     $this->hero_level, $this->player_league_tier, $this->hero_league_tier, $this->role_league_tier, $this->mirror, $this->hero)
@@ -78,15 +96,27 @@ class GlobalCompositionData
     ->whereIn('compositions.composition_id', $key_values)
     ->groupBy('compositions.composition_id')
     ->orderBy('games_played', 'DESC')
-
-/*
+    /*
     print_r($composition_id->toSql());
     echo "<br>";
     print_r($composition_id->getBindings());
     echo "<br>";
-*/
+    */
     ->limit(1)
     ->value('composition_id');
+
+
+
+
+    /*
+    echo "composition_id = ";
+    print_r($composition_id);
+    echo "<br>";
+    echo "<br>";
+    echo "<br>";
+    */
+
+
     $composition = \App\Models\Composition::Filters($composition_id)->get()->toArray();
 
     $bruiser_count = 0;
@@ -96,8 +126,14 @@ class GlobalCompositionData
     $healer_count = 0;
     $tank_count = 0;
 
+    /*
+    echo "composition = ";
+    print_r($composition);
+    echo "<br>";
+    echo "<br>";
+    echo "<br>";
+    */
     for($i = 0; $i < count($composition); $i++){
-
       foreach($composition[0] as $role => $value){
         if($value == 100000){
           $support_count++;
@@ -119,13 +155,56 @@ class GlobalCompositionData
 
     $valid_roles = array();
     $valid_counter = 0;
+
+    /*
+    echo "Team Pick = ";
+    print_r($teamPicked);
+    echo "<br>";
+    echo "<br>";
+    echo "<br>";
+    */
+
+    /*
+    echo "bruiser_count = ";
+    print_r($bruiser_count);
+    echo "<br>";
+
+
+
+    echo "support_count = ";
+    print_r($support_count);
+    echo "<br>";
+
+
+    echo "ranged_assassin_count = ";
+    print_r($ranged_assassin_count);
+    echo "<br>";
+
+
+    echo "melee_assassin_count = ";
+    print_r($melee_assassin_count);
+    echo "<br>";
+
+    echo "healer_count = ";
+    print_r($healer_count);
+    echo "<br>";
+
+    echo "tank_count = ";
+    print_r($tank_count);
+    echo "<br>";
+    */
+
     for($i = 0; $i < count($teamPicked); $i++){
       $hero_data = \App\Models\Hero::select('id', "mmr_type_id")
       ->join('mmr_type_ids', 'mmr_type_ids.name', '=', 'heroes.new_role')
       ->where('id', $teamPicked[$i])->first();
 
 
+
       $hero_role = $hero_data->mmr_type_id;
+
+
+
 
       if($hero_role == 100000){
         $support_count--;
@@ -186,6 +265,7 @@ class GlobalCompositionData
     print_r($heroes->getBindings());
     echo "<br>";
     */
+
 
     return $heroes;
   }

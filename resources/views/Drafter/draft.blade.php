@@ -183,31 +183,20 @@
         'currentPickNumber' : currentPickNumber
       }
 
-
       var url;
       if(currentPickNumber <= 3 || currentPickNumber == 9 || currentPickNumber == 10){
-        console.log("bans");
-
         url = '/getDraftBanData';
       }else if(currentPickNumber == 4 || currentPickNumber == 5){
-        console.log("Initial Draft Data");
-
         url = '/getInitialDraftData';
       }else{
-        console.log("Composition Data");
-
         url = '/getCompositionData';
       }
-
-      console.log(parameters);
       $.ajax({
         url: url,
         data: parameters,
         //type: "POST",
         success: function(results){
           $('#draft-hero-wrapper').html(results);
-
-          //console.log(results);
         }
       });
     }
