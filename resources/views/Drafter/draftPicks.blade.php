@@ -7,7 +7,6 @@
       </div>
       <div class="popup"><h4>{{ $controller_hero_data[$i]["name"] }}</h4>
         <h4>Value: {{ $controller_hero_data[$i]["value"] }}</h4>
-        <a class="mobile-button" href="">Details</a>
       </div>
     </div>
   @endfor

@@ -237,7 +237,8 @@ return [
         'GlobalHeroTalentDetailsData' => App\Data\GlobalHeroTalentDetailsData::class,
         'GlobalHeroStatMatchupData' => App\Data\GlobalHeroStatMatchupData::class,
         'GlobalCompositionData' => App\Data\GlobalCompositionData::class,
-
+        'GlobalHeroDraftOrder' => App\Data\GlobalHeroDraftOrder::class,
+        
         //Profile
         'ProfileData' => App\Data\Profile\ProfileData::class,
         'FriendsAndFoes' => App\Data\Profile\FriendsAndFoes::class,
@@ -255,6 +256,7 @@ return [
 
         //Drafter
         'DrafterData' => App\Data\DrafterData::class,
+
     ],
 
 ];

@@ -46,7 +46,7 @@ class DraftController extends Controller
 
     $page = "DraftBans";
     $cache =  $page .
-    "|" . implode(",", $heroesPicked) .
+    //"|" . implode(",", $heroesPicked) .
     "|" . implode(",", $game_versions_minor) .
     "|" . implode(",", $game_type) .
     "|" . implode(",", $region) .
@@ -58,7 +58,7 @@ class DraftController extends Controller
     "|"  . $mirror;
 
     $cache_time = calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor);
-    $cache_time = 20000;
+    $cache_time = 0;
 
     $data = Cache::remember($cache, $cache_time, function () use ($game_versions_minor, $game_type, $region, $game_map,
     $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror){
@@ -68,6 +68,38 @@ class DraftController extends Controller
       return $return_data;
     });
     arsort($data);
+
+
+
+    $page = "DraftBanOrder";
+    $cache =  $page .
+    "|" . implode(",", $heroesPicked) .
+    "|" . implode(",", $game_versions_minor) .
+    "|" . implode(",", $game_type) .
+    "|" . implode(",", $region) .
+    "|" . implode(",", $game_map) .
+    "|" . implode(",", $hero_level) .
+    "|"  . implode(",", $player_league_tier) .
+    "|"  . implode(",", $hero_league_tier) .
+    "|"  . implode(",", $role_league_tier);
+
+    $ban_draft_order_data = Cache::remember($cache, $cache_time, function () use ($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region){
+      $ban_data = new \GlobalHeroDraftOrder($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region);
+      $return_data = $ban_data->getData(array(1,2,3,4, 10, 11));
+      return $return_data;
+    });
+
+    $current_pick_data = $ban_draft_order_data[$request["currentPickNumber"] + 1];
+
+    /*
+    print_r(json_encode($current_pick_data, true));
+    echo "<br>";
+    echo "<br>";
+    echo "<br>";
+    echo "<br>";
+    echo "<br>";
+    */
+
     $max_value = 0;
     $return_data = array();
     $counter = 0;
@@ -80,19 +112,29 @@ class DraftController extends Controller
       $hero_data[$heroes[$i]["name"]] =  $heroes[$i];
     }
 
-
     foreach($data as $hero => $bans){
       if(!in_array($hero_data[$hero]->id, $heroesPicked)){
         $return_data[$counter]["hero"] = $hero;
-        $return_data[$counter]["bans"] = $bans;
 
-        if($max_value < $bans){
-          $max_value = $bans;
+
+        if(!isset($current_pick_data[$hero])){
+          $return_data[$counter]["bans"] = 0;
+        }else{
+          $return_data[$counter]["bans"] = $bans * $current_pick_data[$hero];
+        }
+
+        //$return_data[$counter]["bans"] = $bans;
+
+
+        if($max_value < $return_data[$counter]["bans"]){
+          $max_value = $return_data[$counter]["bans"];
         }
         $counter++;
       }
 
     }
+
+    usort($return_data, [$this, 'cmp_value']);
 
 
     for($i = 0; $i < count($return_data); $i++){
@@ -126,6 +168,34 @@ class DraftController extends Controller
       $heroesPicked = $request["heroesPicked"];
     }
 
+
+
+
+    $page = "DraftPickOrder";
+    $cache =  $page .
+    //"|" . implode(",", $heroesPicked) .
+    "|" . implode(",", $game_versions_minor) .
+    "|" . implode(",", $game_type) .
+    "|" . implode(",", $region) .
+    "|" . implode(",", $game_map) .
+    "|" . implode(",", $hero_level) .
+    "|"  . implode(",", $player_league_tier) .
+    "|"  . implode(",", $hero_league_tier) .
+    "|"  . implode(",", $role_league_tier);
+
+    $cache_time = calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor);
+    $cache_time = 0;
+
+    $ban_draft_order_data = Cache::remember($cache, $cache_time, function () use ($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region){
+      $ban_data = new \GlobalHeroDraftOrder($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region);
+      $return_data = $ban_data->getData(array(5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15));
+      return $return_data;
+    });
+
+    $current_pick_data = $ban_draft_order_data[$request["currentPickNumber"] + 1];
+
+
+
     $page = "DraftInitialData";
     $cache =  $page .
     "|" . implode(",", $heroesPicked) .
@@ -140,14 +210,14 @@ class DraftController extends Controller
     "|"  . implode(",", $role_league_tier) .
     "|"  . $mirror;
 
-    $cache_time = calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor);
-    $cache_time = 20000;
+
 
     $data = Cache::remember($cache, $cache_time, function () use ($game_versions_minor, $game_type, $region, $game_map,
-    $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror){
+    $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror, $current_pick_data){
       $global_data = new \GlobalStatData($game_versions_minor, $game_type, $region, $game_map,
       $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror);
-      $return_data = $global_data->getGlobalHeroStatData();
+      $return_data = $global_data->getGlobalDraftHeroStatData($current_pick_data);
+      //$return_data = $global_data->getGlobalHeroStatData($current_pick_data);
       return $return_data;
     });
     usort($data, [$this, 'cmp_influence']);
@@ -225,7 +295,7 @@ class DraftController extends Controller
 
 
     $cache_time = calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor);
-    $cache_time = 20000;
+    $cache_time = 0;
 
     $data = Cache::remember($cache, $cache_time, function () use ($game_versions_minor, $game_type, $region, $game_map,
                             $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror, $teamPicked){
@@ -269,4 +339,10 @@ class DraftController extends Controller
     }
     return ($a["influence"] > $b["influence"]) ? -1 : 1;
   }
+
+  private function cmp_value( $a, $b ) {
+    if($a["bans"] ==  $b["bans"] ){ return 0 ; }
+    return ($a["bans"] > $b["bans"]) ? -1 : 1;
+  }
+
 }

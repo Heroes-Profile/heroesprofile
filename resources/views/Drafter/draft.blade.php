@@ -179,7 +179,8 @@
       {
         'data' : formData,
         'heroesPicked' : heroesPicked,
-        'teamPicks' :teamPick
+        'teamPicks' :teamPick,
+        'currentPickNumber' : currentPickNumber
       }
 
 
@@ -198,6 +199,7 @@
         url = '/getCompositionData';
       }
 
+      console.log(parameters);
       $.ajax({
         url: url,
         data: parameters,
