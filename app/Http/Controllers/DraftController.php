@@ -173,7 +173,7 @@ class DraftController extends Controller
 
     $page = "DraftPickOrder";
     $cache =  $page .
-    //"|" . implode(",", $heroesPicked) .
+    "|" . implode(",", array(5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)) .
     "|" . implode(",", $game_versions_minor) .
     "|" . implode(",", $game_type) .
     "|" . implode(",", $region) .
@@ -187,8 +187,8 @@ class DraftController extends Controller
     $cache_time = 0;
 
     $ban_draft_order_data = Cache::remember($cache, $cache_time, function () use ($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region){
-      $ban_data = new \GlobalHeroDraftOrder($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region);
-      $return_data = $ban_data->getData(array(5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15));
+      $initial_data = new \GlobalHeroDraftOrder($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region);
+      $return_data = $initial_data->getData(array(5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15));
       return $return_data;
     });
 
@@ -279,6 +279,32 @@ class DraftController extends Controller
       $teamPicked = $request["teamPicks"];
     }
 
+
+
+    $page = "DraftPickOrder";
+    $cache =  $page .
+    "|" . implode(",", array(5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)) .
+    "|" . implode(",", $game_versions_minor) .
+    "|" . implode(",", $game_type) .
+    "|" . implode(",", $region) .
+    "|" . implode(",", $game_map) .
+    "|" . implode(",", $hero_level) .
+    "|"  . implode(",", $player_league_tier) .
+    "|"  . implode(",", $hero_league_tier) .
+    "|"  . implode(",", $role_league_tier);
+
+    $cache_time = calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor);
+    $cache_time = 0;
+
+    $ban_draft_order_data = Cache::remember($cache, $cache_time, function () use ($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region){
+      $pick_data = new \GlobalHeroDraftOrder($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region);
+      $return_data = $pick_data->getData(array(5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15));
+      return $return_data;
+    });
+
+    $current_pick_data = $ban_draft_order_data[$request["currentPickNumber"] + 1];
+
+
     $page = "PickData";
     $cache =  $page .
     "|" . implode(",", $heroesPicked) .
@@ -292,10 +318,6 @@ class DraftController extends Controller
     "|"  . implode(",", $hero_league_tier) .
     "|"  . implode(",", $role_league_tier) .
     "|"  . $mirror;
-
-
-    $cache_time = calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor);
-    $cache_time = 0;
 
     $data = Cache::remember($cache, $cache_time, function () use ($game_versions_minor, $game_type, $region, $game_map,
                             $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror, $teamPicked){
@@ -314,8 +336,16 @@ class DraftController extends Controller
 
     $max_value = 0;
     for($i = 0; $i < count($data); $i++){
-      if($max_value < $data[$i]["games_played"]){
-        $max_value = $data[$i]["games_played"];
+
+      $hero_name = $hero_data[$data[$i]["hero"]]["name"];
+      if(!isset($current_pick_data[$hero_name])){
+        $games_played = 0;
+      }else{
+        $games_played = $data[$i]["games_played"] * $current_pick_data[$hero_name];
+      }
+
+      if($max_value < $games_played){
+        $max_value = $games_played;
       }
     }
 
@@ -323,12 +353,23 @@ class DraftController extends Controller
     $counter = 0;
     for($i = 0; $i < count($data); $i++){
       if(!in_array($data[$i]["hero"], $heroesPicked)){
+
+        $hero_name = $hero_data[$data[$i]["hero"]]["name"];
+        if(!isset($current_pick_data[$hero_name])){
+          $games_played = 0;
+        }else{
+          $games_played = $data[$i]["games_played"] * $current_pick_data[$hero_name];
+        }
+
+
+
         $return_data[$counter] = $hero_data[$data[$i]["hero"]];
-        $return_data[$counter]["value"] = number_format(($data[$i]["games_played"] / $max_value) * 100, 2);
+        $return_data[$counter]["value"] = number_format(($games_played / $max_value) * 100, 2);
         $counter++;
       }
     }
 
+    usort($return_data, [$this, 'cmp_value']);
 
     return view('Drafter.draftPicks', ['controller_hero_data' => $return_data]);
   }
