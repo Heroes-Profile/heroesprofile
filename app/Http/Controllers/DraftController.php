@@ -369,7 +369,6 @@ class DraftController extends Controller
       }
     }
 
-    usort($return_data, [$this, 'cmp_value']);
 
     return view('Drafter.draftPicks', ['controller_hero_data' => $return_data]);
   }
