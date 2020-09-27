@@ -37,7 +37,7 @@
 
 
   <div class="hero-category-wrapper all-heroes">
-    <div class="container hero-wrapper" id="draft-hero-wrapper">
+    <div class="container rounded-item-wrapper" id="draft-hero-wrapper">
       @include('Drafter.draftPicks')
     </div>
   </div>
@@ -127,10 +127,12 @@
 
 
     //On click of an image
-    $('.all-heroes').on('click', '.hero-wrapper .popup-trigger', function(){
+    $('.all-heroes').on('click', '.hero-picture', function(){
+      $('.rounded-picture').popover('hide');
       $('#draft-hero-wrapper').html('');
       var heroname = $(this).data('heroname');
       var id = $(this).data('heroid');
+      var heropicture = $(this).data('heroimg');
 
 
       if(currentPickNumber == 4 || currentPickNumber == 7 || currentPickNumber == 8 || currentPickNumber == 13 || currentPickNumber == 14){
@@ -142,8 +144,10 @@
       }
 
       heroesPicked.push(id);
-      var heropicture = $(this).data('heroimg');
+
+
       var teampick = $('.highlight-player').data('team')+'-'+$('.highlight-player').data('pick');
+      console.log(teampick);
       $('.compare-box.highlight-player').css('background-image', 'url(' + heropicture + ')');
 
       if(currentPickNumber < pickOrderTeam1.length){
@@ -197,6 +201,7 @@
         //type: "POST",
         success: function(results){
           $('#draft-hero-wrapper').html(results);
+            $('.rounded-picture').popover();
         }
       });
     }
@@ -304,6 +309,8 @@ $('#pick-4').text(results.name + " Team1 #2");
 });
 
 */
+
+
 </script>
 
 @endsection
