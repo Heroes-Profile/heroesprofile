@@ -1,6 +1,5 @@
 <?php
 namespace App\Data;
-use Illuminate\Support\Facades\DB;
 
 class GlobalHeroStatMapData
 {

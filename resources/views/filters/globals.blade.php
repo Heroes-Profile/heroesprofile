@@ -63,25 +63,28 @@
     <option value='100'>100+</option>
   </select>
 
+  @if($roleFilter)
+    {{-- Roles Picker --}}
+    <select name="role" class="selectpicker" multiple data-live-search="true" title="All Roles" data-header="Roles">
+      @foreach (\App\Models\Hero::select("new_role as role")->distinct("role")->orderBy('role', 'ASC')->get() as $major => $minor)
+          <option>{{ $minor->role }}</option>
+      @endforeach
+    </select>
+  @endif
 
-  {{-- Roles Picker --}}
-  <select name="role" class="selectpicker" multiple data-live-search="true" title="All Roles" data-header="Roles">
-    @foreach (\App\Models\Hero::select("new_role as role")->distinct("role")->orderBy('role', 'ASC')->get() as $major => $minor)
-        <option>{{ $minor->role }}</option>
-    @endforeach
-  </select>
 
-  {{-- Heroes Picker --}}
-  <select name="hero" class="selectpicker" multiple data-live-search="true" title="All Heroes" data-header="Heroes">
-    @foreach (\App\Models\Hero::select('id', 'name')->orderBy('name', 'ASC')->get() as $major => $hero_data)
-      @if($hero_data->name == $hero)
-        <option value='{{ $hero_data->id }}' selected>{{ $hero_data->name }}</option>
-      @else
-        <option value='{{ $hero_data->id }}'>{{ $hero_data->name }}</option>
-      @endif
-    @endforeach
-  </select>
-
+  @if($heroFilter)
+    {{-- Heroes Picker --}}
+    <select name="hero" class="selectpicker" multiple data-live-search="true" title="All Heroes" data-header="Heroes">
+      @foreach (\App\Models\Hero::select('id', 'name')->orderBy('name', 'ASC')->get() as $major => $hero_data)
+        @if($hero_data->name == $hero)
+          <option value='{{ $hero_data->id }}' selected>{{ $hero_data->name }}</option>
+        @else
+          <option value='{{ $hero_data->id }}'>{{ $hero_data->name }}</option>
+        @endif
+      @endforeach
+    </select>
+  @endif
 
   {{-- Game Type Picker --}}
   <select name="game_type" class="selectpicker" multiple data-max-options="10" data-header="Game Types">

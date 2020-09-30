@@ -61,6 +61,8 @@ class GlobalHeroStatMapController extends Controller
       'inputUrl' => "/getGlobalHeroStatMapData",
       'columndata' => $this->splitColumn($this->columns),
       'page' => 'stat',
+      'heroFilter' => true,
+      'roleFilter' => true,
       'hero' => $this->hero,
 
       //Table Customizations

@@ -1,7 +1,5 @@
 <?php
 namespace App\Data;
-use Illuminate\Support\Facades\DB;
-use Cache;
 
 class GlobalHeroTalentBuildsData
 {

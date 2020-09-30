@@ -130,6 +130,8 @@ class GlobalStatController extends Controller
       'inputUrl' => "/getGlobalStatData",
       'columndata' => $this->splitColumn($this->columns),
       'page' => 'stat',
+      'heroFilter' => true,
+      'roleFilter' => true,
       'hero' => '',
 
       //Table Customizations
