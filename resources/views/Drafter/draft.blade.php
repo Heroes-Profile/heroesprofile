@@ -225,12 +225,13 @@
 
     //On click of an image
     $('.all-heroes').on('click', '.hero-picture', function(){
+
+
       $('.rounded-picture').popover('hide');
       $('#draft-hero-wrapper').html('');
       var heroname = $(this).data('heroname');
       var id = $(this).data('heroid');
       var heropicture = $(this).data('heroimg');
-
 
       if(currentPickNumber == 4 || currentPickNumber == 7 || currentPickNumber == 8 || currentPickNumber == 13 || currentPickNumber == 14){
         console.log("Team 1 Picks");
@@ -252,9 +253,75 @@
         currentPickNumber++;
       }
 
+      if(currentPickNumber > 4 && currentPickNumber != 10 && currentPickNumber != 11){
+        console.log("here");
+        if(id == 11){
+          console.log("Cho was picked");
+          $('.highlight-player').removeClass('highlight-player');
+          $('#'+pickOrder[currentPickNumber]).removeClass('disabled');
+          $('#'+pickOrder[currentPickNumber]).addClass('highlight-player');
 
-      updatePick(pickOrder[currentPickNumber], heroesPicked, currentPickNumber);
+          var heroname = 'Gall';
+          var id = 18;
+          var heropicture = '{{ asset('/images/heroes/gall.png') }}';
 
+          if(currentPickNumber == 4 || currentPickNumber == 7 || currentPickNumber == 8 || currentPickNumber == 13 || currentPickNumber == 14){
+            console.log("Team 1 Picks");
+            teamOneHeroes.push(id);
+          }else if(currentPickNumber == 5 || currentPickNumber == 6 || currentPickNumber == 11 || currentPickNumber == 12 || currentPickNumber == 15){
+            console.log("Team 2 Picks");
+            teamTwoheroes.push(id);
+          }
+
+          heroesPicked.push(id);
+
+
+          var teampick = $('.highlight-player').data('team')+'-'+$('.highlight-player').data('pick');
+          console.log(teampick);
+          $('.compare-box.highlight-player').css('background-image', 'url(' + heropicture + ')');
+
+          if(currentPickNumber < pickOrderTeam1.length){
+
+            currentPickNumber++;
+          }
+
+        }else if(id == 18){
+          console.log("Gall was picked");
+          $('.highlight-player').removeClass('highlight-player');
+          $('#'+pickOrder[currentPickNumber]).removeClass('disabled');
+          $('#'+pickOrder[currentPickNumber]).addClass('highlight-player');
+
+          var heroname = 'Cho';
+          var id = 11;
+          var heropicture = '{{ asset('/images/heroes/cho.png') }}';
+
+          if(currentPickNumber == 4 || currentPickNumber == 7 || currentPickNumber == 8 || currentPickNumber == 13 || currentPickNumber == 14){
+            console.log("Team 1 Picks");
+            teamOneHeroes.push(id);
+          }else if(currentPickNumber == 5 || currentPickNumber == 6 || currentPickNumber == 11 || currentPickNumber == 12 || currentPickNumber == 15){
+            console.log("Team 2 Picks");
+            teamTwoheroes.push(id);
+          }
+
+          heroesPicked.push(id);
+
+
+          var teampick = $('.highlight-player').data('team')+'-'+$('.highlight-player').data('pick');
+          console.log(teampick);
+          $('.compare-box.highlight-player').css('background-image', 'url(' + heropicture + ')');
+
+          if(currentPickNumber < pickOrderTeam1.length){
+
+            currentPickNumber++;
+          }
+
+        }
+
+      }
+
+      if(currentPickNumber <= 15){
+        updatePick(pickOrder[currentPickNumber], heroesPicked, currentPickNumber);
+      }
     });
 
     function updatePick(pickOrder, heroesPicked, currentPickNumber){
@@ -311,7 +378,9 @@
       }
     });
 
+    function addHeroFromClick(heroname, id, heropicture){
 
+    }
 
     //DOC Ready Function Ending Bracket
   });

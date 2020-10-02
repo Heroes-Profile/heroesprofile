@@ -37,17 +37,19 @@
     <option value='5'>CN</option>
   </select>
 
+  @if($filtertype != "drafter")
+    {{-- Stat Type Picker --}}
+    <select name="stat_type" class="selectpicker" multiple title="Win Rate" data-header="Stats">
+      @foreach (getScoreStatsByGrouping() as $grouping => $grouping_data)
+        <optgroup label={{ $grouping }}>
+        @for ($i = 0; $i < count($grouping_data); $i++)
+          <option value='need to fix'>{{ $grouping_data[$i] }}</option>
+        @endfor
+      </optgroup>
+      @endforeach
+    </select>
+  @endif
 
-  {{-- Stat Type Picker --}}
-  <select name="stat_type" class="selectpicker" multiple title="Win Rate" data-header="Stats">
-    @foreach (getScoreStatsByGrouping() as $grouping => $grouping_data)
-      <optgroup label={{ $grouping }}>
-      @for ($i = 0; $i < count($grouping_data); $i++)
-        <option value='need to fix'>{{ $grouping_data[$i] }}</option>
-      @endfor
-    </optgroup>
-    @endforeach
-  </select>
 
   {{-- Hero Level Picker --}}
   <select name="hero_level" class="selectpicker" multiple data-max-options="10" title="All Hero Levels" data-header="Hero Levels">

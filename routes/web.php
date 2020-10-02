@@ -93,8 +93,8 @@ Route::get('/getInitialDraftData', 'DraftController@getInitialData');
 Route::post('/getInitialDraftData', 'DraftController@getInitialData');
 
 //Composition Picks
-Route::get('/getCompositionData', 'DraftController@getPickData');
-Route::post('/getCompositionData', 'DraftController@getPickData');
+Route::get('/getCompositionData', 'DraftController@getCompositionData');
+Route::post('/getCompositionData', 'DraftController@getCompositionData');
 
 
 
