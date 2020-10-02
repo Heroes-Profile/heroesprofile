@@ -1,6 +1,6 @@
 {{-- Some Pages do not use all of these filters.  So will need to make it dependant on some input --}}
 
-<form id="basic_search">
+<form id="basic_search" class="search-menu">
   {{-- Major Minor Picker --}}
   <select name="timeframe" class="selectpicker" multiple title="Minor" data-header="Timeframe Type">
     <option>Major</option>
@@ -136,4 +136,5 @@
     <option value='2'>Silver</option>
     <option value='1'>Bronze</option>
   </select>
+  <input type="submit" value="update" class="btn btn-secondary"/>
 </form>

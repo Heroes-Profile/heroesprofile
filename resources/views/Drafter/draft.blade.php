@@ -5,12 +5,14 @@
   @include('filters.globals')
 
 
-
+<section>
   <div class="draft-hero-picker">
 
   <div class="draft-section draft-left">
-    <span>Bans</span>
+
     <div class="draft-bans draft-bans-left">
+        <span>Bans</span>
+        <div class="flex-space-around">
       <div class="draft-single-ban compare-box disabled" id="team1-ban1" data-team="team1" data-pick="ban1" >
       </div>
       <div class="draft-single-ban compare-box disabled" id="team1-ban2" data-team="team1" data-pick="ban2">
@@ -18,6 +20,7 @@
       <div class="draft-single-ban compare-box disabled" id="team1-ban3" data-team="team1" data-pick="ban3">
       </div>
     </div>
+  </div>
     <div class="compare-box disabled" id="team1-pick1" data-team="team1" data-pick="pick1" >
     </div>
     <div class="compare-box disabled" id="team1-pick2" data-team="team1" data-pick="pick2">
@@ -37,6 +40,95 @@
 
 
   <div class="hero-category-wrapper all-heroes">
+    <form class="" id="hero-search">
+          <div class="all-heroes-search">
+            <input class="form-control" type="text" id="filter-hero" placeholder="Search Heroes">
+          </div>
+
+
+
+
+
+        <div class="role-wrapper">
+
+          <div class="rounded-item"><a class=" hero-picture"
+
+             role="button"
+             data-html="true"
+             data-toggle="popover"
+             data-trigger="hover"
+             data-placement="top"
+             data-herorolename="tank"
+             title="Tank"  >
+              <img src="/images/roles/tank.PNG">
+           </a>
+          </div>
+          <div class="rounded-item"><a class="hero-picture"
+
+             role="button"
+             data-html="true"
+             data-toggle="popover"
+             data-trigger="hover"
+             data-placement="top"
+             data-herorolename="bruiser"
+             title="Bruiser"  >
+              <img src="/images/roles/bruiser.PNG">
+           </a>
+          </div>
+          <div class="rounded-item"><a class=" hero-picture"
+
+             role="button"
+             data-html="true"
+             data-toggle="popover"
+             data-trigger="hover"
+             data-placement="top"
+             data-herorolename="healer"
+             title="Healer"  >
+              <img src="/images/roles/healer.PNG">
+           </a>
+          </div>
+          <div class="rounded-item"><a class=" hero-picture"
+
+             role="button"
+             data-html="true"
+             data-toggle="popover"
+             data-trigger="hover"
+             data-placement="top"
+             data-herorolename="support"
+             title="Support"  >
+              <img src="/images/roles/support.PNG">
+           </a>
+          </div>
+          <div class="rounded-item"><a class="hero-picture"
+
+             role="button"
+             data-html="true"
+             data-toggle="popover"
+             data-trigger="hover"
+             data-placement="top"
+             data-herorolename="melee_assassin"
+             title="Melee Assassin"  >
+              <img src="/images/roles/melee assassin.PNG">
+           </a>
+          </div>
+          <div class="rounded-item"><a class=" hero-picture"
+
+             role="button"
+             data-html="true"
+             data-toggle="popover"
+             data-trigger="hover"
+             data-placement="top"
+             data-herorolename="ranged_assassin"
+             title="Ranged Assassin"  >
+              <img src="/images/roles/ranged assassin.PNG">
+           </a>
+          </div>
+
+
+
+      </div>
+      </form>
+
     <div class="container rounded-item-wrapper" id="draft-hero-wrapper">
       @include('Drafter.draftPicks')
     </div>
@@ -45,13 +137,16 @@
 
 
   <div class="draft-section draft-right">
-    <span>Bans</span>
+
     <div class="draft-bans draft-bans-right">
+      <span>Bans</span>
+      <div class="flex-space-around">
       <div class="draft-single-ban compare-box disabled" id="team2-ban1" data-team="team2" data-pick="ban1">
       </div>
       <div class="draft-single-ban compare-box disabled" id="team2-ban2" data-team="team2" data-pick="ban2">
       </div>
       <div class="draft-single-ban compare-box disabled" id="team2-ban3" data-team="team2" data-pick="ban3">
+      </div>
       </div>
     </div>
     <div class="hero-ban-wrapper">
@@ -66,8 +161,10 @@
       <div class="compare-box disabled" id="team2-pick5" data-team="team2" data-pick="pick5">
       </div>
     </div>
+
   </div>
 </div>
+</section>
 
 @endsection
 
