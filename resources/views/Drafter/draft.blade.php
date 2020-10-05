@@ -13,11 +13,12 @@
 
   Clicking on roles puts them into the draft as if they were heroes.
 
-
-  @include('filters.globals')
-
-
-  <section>
+  @if(!isset($landing))
+    <section id="draft-setup">
+      @include('Drafter.draftLanding')
+    </section>
+  @endif
+  <section id="main-draft">
     <div class="draft-hero-picker">
 
       <div class="draft-section draft-left">
@@ -45,26 +46,14 @@
         </div>
       </div>
 
-
-
-
-
-
-
       <div class="hero-category-wrapper all-heroes">
         <form class="" id="hero-search">
           <div class="all-heroes-search">
             <input class="form-control" type="text" id="filter-hero" placeholder="Search Heroes">
           </div>
 
-
-
-
-
           <div class="role-wrapper">
-
             <div class="rounded-item"><a class=" hero-picture"
-
               role="button"
               data-html="true"
               data-toggle="popover"
@@ -76,7 +65,6 @@
             </a>
           </div>
           <div class="rounded-item"><a class="hero-picture"
-
             role="button"
             data-html="true"
             data-toggle="popover"
@@ -88,7 +76,6 @@
           </a>
         </div>
         <div class="rounded-item"><a class=" hero-picture"
-
           role="button"
           data-html="true"
           data-toggle="popover"
@@ -100,7 +87,6 @@
         </a>
       </div>
       <div class="rounded-item"><a class=" hero-picture"
-
         role="button"
         data-html="true"
         data-toggle="popover"
@@ -112,7 +98,6 @@
       </a>
     </div>
     <div class="rounded-item"><a class="hero-picture"
-
       role="button"
       data-html="true"
       data-toggle="popover"
@@ -124,7 +109,6 @@
     </a>
   </div>
   <div class="rounded-item"><a class=" hero-picture"
-
     role="button"
     data-html="true"
     data-toggle="popover"
@@ -184,6 +168,11 @@
   <script>
   $(document).ready(function() {
 
+    var currentPickNumber=0;
+    var heroesPicked = [];
+    var teamOneHeroes = [];
+    var teamTwoheroes = [];
+
     var pickOrderTeam1 = [
       "team1-ban1",
       "team2-ban1",
@@ -222,17 +211,42 @@
       "team1-pick5"
     ];
 
-    var pickOrder = pickOrderTeam1;
-    var currentPickNumber=0;
-    var heroesPicked = [];
-    var teamOneHeroes = [];
-    var teamTwoheroes = [];
+    var pickOrder;
+    
+    $('#main-draft').hide();
 
-    //$('.draft-hero-picker').fadeIn();
+    $('#submit-draft').click(function(e){
+      $('#draft-setup').hide();
+
+      var team_pick = $('#first-pick-team-1').is(':checked');
 
 
 
-    updatePick(pickOrder[currentPickNumber], heroesPicked, currentPickNumber);
+
+
+
+
+      pickOrder = pickOrderTeam1;
+
+      if(!team_pick){
+        pickOrder = pickOrderTeam2;
+      }
+
+
+
+
+      //$('.draft-hero-picker').fadeIn();
+
+
+
+      updatePick(pickOrder[currentPickNumber], heroesPicked, currentPickNumber);
+
+
+      $('#main-draft').fadeIn();
+
+
+    });
+
 
 
     //On click of an image
@@ -393,60 +407,60 @@
 
     /*
     $('#hero-search').submit(function(e){
-      e.preventDefault();
+    e.preventDefault();
 
-      $('html, body').animate({
-        scrollTop: $(".hero-wrapper").offset().top
-      }, 2000);
+    $('html, body').animate({
+    scrollTop: $(".hero-wrapper").offset().top
+  }, 2000);
 
-    });
-    */
+});
+*/
 
-    $('#filter-hero').on('input', function() {
-      if($('#filter-hero').val() != ''){
+$('#filter-hero').on('input', function() {
+  if($('#filter-hero').val() != ''){
 
-        $('.rounded-item-wrapper .rounded-item').each(function(){
+    $('.rounded-item-wrapper .rounded-item').each(function(){
 
-          var filterhero = removeDiacritics($('#filter-hero').val().toLowerCase()).replace(/[^\w\s]/gi, '');
-          var heroname = removeDiacritics($(this)[0].firstChild.attributes[2].nodeValue.toLowerCase()).replace(/[^\w\s]/gi, '');
+      var filterhero = removeDiacritics($('#filter-hero').val().toLowerCase()).replace(/[^\w\s]/gi, '');
+      var heroname = removeDiacritics($(this)[0].firstChild.attributes[2].nodeValue.toLowerCase()).replace(/[^\w\s]/gi, '');
 
-          if(heroname.indexOf(filterhero) != -1){
-            $(this).show();
-          }
-          else{
-            $(this).hide();
-          }
-
-
-        });
-      }else{
-        $('.popup-trigger').show();
+      if(heroname.indexOf(filterhero) != -1){
+        $(this).show();
       }
+      else{
+        $(this).hide();
+      }
+
+
     });
+  }else{
+    $('.popup-trigger').show();
+  }
+});
 
 
-    function removeDiacritics(input)
-    {
-        var output = "";
+function removeDiacritics(input)
+{
+  var output = "";
 
-        var normalized = input.normalize("NFD");
-        var i=0;
-        var j=0;
+  var normalized = input.normalize("NFD");
+  var i=0;
+  var j=0;
 
-        while (i<input.length)
-        {
-            output += normalized[j];
+  while (i<input.length)
+  {
+    output += normalized[j];
 
-            j += (input[i] == normalized[j]) ? 1 : 2;
-            i++;
-        }
+    j += (input[i] == normalized[j]) ? 1 : 2;
+    i++;
+  }
 
-        return output;
-    }
+  return output;
+}
 
 
-    //DOC Ready Function Ending Bracket
-  });
+//DOC Ready Function Ending Bracket
+});
 </script>
 
 @endsection

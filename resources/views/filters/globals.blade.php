@@ -99,17 +99,16 @@
     </select>
   @endif
 
-  {{-- Game Type Picker --}}
-  <select name="game_type" class="selectpicker" multiple data-max-options="10" data-header="Game Types">
-    @if($filtertype != "drafter")
+  @if($filtertype != "drafter")
+    {{-- Game Type Picker --}}
+    <select name="game_type" class="selectpicker" multiple data-max-options="10" data-header="Game Types">
       <option value='1'>Quick Match</option>
-    @endif
-    <option value='2'>Unranked Draft</option>
-    <option value='5' selected>Storm League</option>
-    @if($filtertype != "drafter")
+      <option value='2'>Unranked Draft</option>
+      <option value='5' selected>Storm League</option>
       <option value='6'>ARAM</option>
-    @endif
-  </select>
+    </select>
+  @endif
+
 
 
   {{-- Maps Picker --}}
@@ -153,5 +152,7 @@
     <option value='2'>Silver</option>
     <option value='1'>Bronze</option>
   </select>
-  <input type="submit" value="update" class="btn btn-secondary"/>
+
+
+
 </form>

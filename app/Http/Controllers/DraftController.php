@@ -11,6 +11,7 @@ class DraftController extends Controller
 
   public function show(){
     $return_data = array();
+    $page = "Drafter.draft";
     return view('Drafter.draft',
     [
       'title' => 'Drafter', // Page title
@@ -29,7 +30,7 @@ class DraftController extends Controller
     $filters = $filters_instance->formatFilterData($request["data"], 1, 1);
 
     $game_versions_minor = $filters_instance->game_versions_minor;
-    $game_type = $filters_instance->multi_game_type;
+    $game_type = array(5);
     $region = $filters_instance->multi_region;
     $game_map = $filters_instance->game_map;
     $hero_level = $filters_instance->hero_level;
@@ -156,7 +157,7 @@ class DraftController extends Controller
     $filters = $filters_instance->formatFilterData($request["data"], 1, 1);
 
     $game_versions_minor = $filters_instance->game_versions_minor;
-    $game_type = $filters_instance->multi_game_type;
+    $game_type = array(5);
     $region = $filters_instance->multi_region;
     $game_map = $filters_instance->game_map;
     $hero_level = $filters_instance->hero_level;
@@ -294,7 +295,7 @@ class DraftController extends Controller
     $filters = $filters_instance->formatFilterData($request["data"], 1, 1);
 
     $game_versions_minor = $filters_instance->game_versions_minor;
-    $game_type = $filters_instance->multi_game_type;
+    $game_type = array(5);
     $region = $filters_instance->multi_region;
     $game_map = $filters_instance->game_map;
     $hero_level = $filters_instance->hero_level;
