@@ -306,6 +306,38 @@ if (!function_exists('getFilterMaps')) {
   }
 }
 
+if (!function_exists('getFilterMapsRanked')) {
+  /**
+  * This function gets all of the ranked maps and groups them
+  *
+  *
+  * @return array array of maps
+  *
+  * */
+  function getFilterMapsRanked(){
+    $map_data = \App\Models\Map::where('playable', '1')->where('type', 'standard')->orderBy('type', 'DESC')->orderBy('name', 'ASC')->get();
+    $return_data = array();
+    $ranked_counter = 0;
+    $extra_maps_counter = 0;
+    $brawl_counter = 0;
+    for($i = 0; $i < count($map_data); $i++){
+      if($map_data[$i]->ranked_rotation == 1){
+        $return_data["Ranked-Rotation"][$ranked_counter]["name"] = $map_data[$i]->name;
+        $return_data["Ranked-Rotation"][$ranked_counter]["map_id"] = $map_data[$i]->map_id;
+        $ranked_counter++;
+      }else{
+        if($map_data[$i]->type != "brawl"){
+          $return_data["Extra-Maps"][$extra_maps_counter]["name"]  = $map_data[$i]->name;
+          $return_data["Extra-Maps"][$extra_maps_counter]["map_id"]  = $map_data[$i]->map_id;
+          $extra_maps_counter++;
+        }
+      }
+    }
+    return $return_data;
+  }
+}
+
+
 if (!function_exists('getScoreStatsByGrouping')) {
   /**
   * This function gets all of the stats and groups them
