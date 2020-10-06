@@ -452,3 +452,34 @@ height: 4rem;
   .draft-hero-picker{
     margin-top: 2em;
   }
+
+
+  .pick-label-wrapper{
+    display:flex;
+    justify-content:center;
+    color:white;
+    .pick-label{
+      color:white;
+      display:block;
+      margin:1em;
+      input{
+        margin-right:.5em;
+      }
+    }
+  }
+  .draft-setup-form{
+    text-align: center;
+  }
+
+  #draft-setup-form{
+    display: flex;
+    flex-direction: column;
+    margin-top: 1em;
+    margin-bottom: 5em;
+   #submit-draft{
+      margin-left:auto;
+      margin-right:auto;
+    }
+  }
+
+  .hero-category-wrapper{width:100%;}

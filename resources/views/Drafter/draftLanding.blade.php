@@ -9,5 +9,5 @@
     </label>
   </div>
 
-  <a href="javascript:void(0)" id="submit-draft" class="draft-button">Start Draft</a>
+  <a href="javascript:void(0)" id="submit-draft" class="draft-button btn btn-secondary">Start Draft</a>
 </form>

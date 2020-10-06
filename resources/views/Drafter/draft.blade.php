@@ -212,7 +212,7 @@
     ];
 
     var pickOrder;
-    
+
     $('#main-draft').hide();
 
     $('#submit-draft').click(function(e){
@@ -250,10 +250,10 @@
 
 
     //On click of an image
-    $('.all-heroes').on('click', '.hero-picture', function(){
+    $('.all-heroes').on('click', '#draft-hero-wrapper .hero-picture', function(){
 
 
-      $('.rounded-picture').popover('hide');
+      $('#draft-hero-wrapper .rounded-picture').popover('hide');
       $('#draft-hero-wrapper').html('');
       var heroname = $(this).data('heroname');
       var id = $(this).data('heroid');
