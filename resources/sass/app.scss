@@ -13,6 +13,11 @@ $font-family-header: 'Open Sans', sans-serif;
 $font-family-sans-serif: 'Open Sans', sans-serif;
 
 
+@media(screen and min-width: 2500px){
+html{  font-size: 20px;
+}
+}
+
 body{
   font-family: $font-family-sans-serif;
 letter-spacing: .09em;
@@ -229,6 +234,29 @@ footer{
   }
 }
 
+
+
+
+section{
+  max-width: 1500px;
+  margin-left:auto;
+  margin-right: auto;
+}
+
+
+
+
+.search-menu{
+  display:flex;
+  justify-content:center;
+  flex-wrap: wrap;
+  .dropdown{
+    margin: .5rem;
+  }
+}
+
+
+
 .replay-stats-header{
 text-align:center;
 font-size: .75rem;
@@ -322,6 +350,10 @@ text-align:center;
   color:gold;
 }
 
+.highlight-player {
+    box-shadow: 0em 0em 0.5em #ffd051;
+}
+
 
 #draft-hero-wrapper{
   .rounded-picture{
@@ -336,11 +368,20 @@ display:flex;
 }
 
 
+
 .draft-section .compare-box {
-  width: 3rem;
-  height: 3rem;
-  border-radius: 2rem;
-  background-size: cover; }
+  width: 5rem;
+  height: 5rem;
+  border-radius: 1rem;
+  background-size: cover;
+  margin: .5rem;
+  border: 1px solid gray
+}
+
+.draft-section .draft-bans .compare-box{
+width: 4rem;
+height: 4rem;
+}
   .draft-section .compare-box .draft-close {
     width: 108px;
     height: 108px;
@@ -361,3 +402,84 @@ display:flex;
 
 .draft-right .compare-box {
   background-color: rgba(179, 54, 22, 0.2); }
+
+
+
+  .draft-bans{
+
+    border: 1px solid gray;
+    border-radius: 1rem;
+    padding: .5rem;
+    color: white;
+    font-size: .8em;
+    text-transform: uppercase;
+  }
+
+
+  .flex-space-around{
+    display:flex;
+    justify-content: space-around;
+  }
+
+
+  .draft-right{ margin-left: auto;
+
+    .hero-ban-wrapper{
+      .compare-box{margin-left: auto;}
+    }
+
+  }
+
+
+
+  .role-wrapper{
+    display:flex;
+    margin-left:auto;
+    margin-right:auto;
+    justify-content: center;
+    .rounded-item{
+      width: 3rem;
+      img{width: 100%;}
+    }
+  }
+
+  .all-heroes-search{
+    margin-left:auto;
+    margin-right:auto;
+    width: 15rem;
+  }
+
+  .draft-hero-picker{
+    margin-top: 2em;
+  }
+
+
+  .pick-label-wrapper{
+    display:flex;
+    justify-content:center;
+    color:white;
+    .pick-label{
+      color:white;
+      display:block;
+      margin:1em;
+      input{
+        margin-right:.5em;
+      }
+    }
+  }
+  .draft-setup-form{
+    text-align: center;
+  }
+
+  #draft-setup-form{
+    display: flex;
+    flex-direction: column;
+    margin-top: 1em;
+    margin-bottom: 5em;
+   #submit-draft{
+      margin-left:auto;
+      margin-right:auto;
+    }
+  }
+
+  .hero-category-wrapper{width:100%;}

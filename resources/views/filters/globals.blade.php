@@ -1,6 +1,6 @@
 {{-- Some Pages do not use all of these filters.  So will need to make it dependant on some input --}}
 
-<form id="basic_search">
+<form id="basic_search" class="search-menu">
   {{-- Major Minor Picker --}}
   <select name="timeframe" class="selectpicker" multiple title="Minor" data-header="Timeframe Type">
     <option>Major</option>
@@ -10,22 +10,33 @@
   {{-- Major Game Version Picker --}}
   <select name="major_timeframe" class="selectpicker" multiple data-max-options="3" title={{ max(array_keys(getFilterVersions())) }} data-header="Major Timeframes">
     @foreach (getFilterVersions() as $major => $minor)
-        <option value='{{ $major }}'>{{ $major }}</option>
+      @if($filtertype == "drafter")
+        @if($major < 2.52)
+          @continue;
+        @endif
+      @endif
+
+      <option value='{{ $major }}'>{{ $major }}</option>
     @endforeach
   </select>
 
   {{-- Minor Game Version Picker --}}
   <select name="minor_timeframe" class="selectpicker" multiple data-max-options="20" data-header="Minor Timeframes">
     @foreach (getFilterVersions() as $major => $minor)
-      <optgroup label={{ $major }}>
-      @for ($i = 0; $i < count($minor); $i++)
-        @if ($minor[$i] == max(getAllMinorPatches()))
-          <option value='{{ $minor[$i] }}' selected>{{ $minor[$i] }}</option>
-        @else
-          <option value='{{ $minor[$i] }}'>{{ $minor[$i] }}</option>
+      @if($filtertype == "drafter")
+        @if($major < 2.52)
+          @continue;
         @endif
-      @endfor
-    </optgroup>
+      @endif
+      <optgroup label={{ $major }}>
+        @for ($i = 0; $i < count($minor); $i++)
+          @if ($minor[$i] == max(getAllMinorPatches()))
+            <option value='{{ $minor[$i] }}' selected>{{ $minor[$i] }}</option>
+          @else
+            <option value='{{ $minor[$i] }}'>{{ $minor[$i] }}</option>
+          @endif
+        @endfor
+      </optgroup>
     @endforeach
   </select>
 
@@ -37,17 +48,19 @@
     <option value='5'>CN</option>
   </select>
 
+  @if($filtertype != "drafter")
+    {{-- Stat Type Picker --}}
+    <select name="stat_type" class="selectpicker" multiple title="Win Rate" data-header="Stats">
+      @foreach (getScoreStatsByGrouping() as $grouping => $grouping_data)
+        <optgroup label={{ $grouping }}>
+          @for ($i = 0; $i < count($grouping_data); $i++)
+            <option value='need to fix'>{{ $grouping_data[$i] }}</option>
+          @endfor
+        </optgroup>
+      @endforeach
+    </select>
+  @endif
 
-  {{-- Stat Type Picker --}}
-  <select name="stat_type" class="selectpicker" multiple title="Win Rate" data-header="Stats">
-    @foreach (getScoreStatsByGrouping() as $grouping => $grouping_data)
-      <optgroup label={{ $grouping }}>
-      @for ($i = 0; $i < count($grouping_data); $i++)
-        <option value='need to fix'>{{ $grouping_data[$i] }}</option>
-      @endfor
-    </optgroup>
-    @endforeach
-  </select>
 
   {{-- Hero Level Picker --}}
   <select name="hero_level" class="selectpicker" multiple data-max-options="10" title="All Hero Levels" data-header="Hero Levels">
@@ -67,7 +80,7 @@
     {{-- Roles Picker --}}
     <select name="role" class="selectpicker" multiple data-live-search="true" title="All Roles" data-header="Roles">
       @foreach (\App\Models\Hero::select("new_role as role")->distinct("role")->orderBy('role', 'ASC')->get() as $major => $minor)
-          <option>{{ $minor->role }}</option>
+        <option>{{ $minor->role }}</option>
       @endforeach
     </select>
   @endif
@@ -86,23 +99,26 @@
     </select>
   @endif
 
-  {{-- Game Type Picker --}}
-  <select name="game_type" class="selectpicker" multiple data-max-options="10" data-header="Game Types">
-    <option value='1'>Quick Match</option>
-    <option value='2'>Unranked Draft</option>
-    <option value='5' selected>Storm League</option>
-    <option value='-1'>Brawl</option>
-  </select>
+  @if($filtertype != "drafter")
+    {{-- Game Type Picker --}}
+    <select name="game_type" class="selectpicker" multiple data-max-options="10" data-header="Game Types">
+      <option value='1'>Quick Match</option>
+      <option value='2'>Unranked Draft</option>
+      <option value='5' selected>Storm League</option>
+      <option value='6'>ARAM</option>
+    </select>
+  @endif
+
 
 
   {{-- Maps Picker --}}
   <select name="game_map" class="selectpicker" multiple data-live-search="true" title="All Maps" data-header="Maps">
-    @foreach (getFilterMaps() as $section => $map_data)
+    @foreach (getFilterMapsRanked() as $section => $map_data)
       <optgroup label={{ $section }}>
-      @for ($i = 0; $i < count($map_data); $i++)
-        <option value='{{ $map_data[$i]["map_id"] }}'>{{ $map_data[$i]["name"] }}</option>
-      @endfor
-    </optgroup>
+        @for ($i = 0; $i < count($map_data); $i++)
+          <option value='{{ $map_data[$i]["map_id"] }}'>{{ $map_data[$i]["name"] }}</option>
+        @endfor
+      </optgroup>
     @endforeach
   </select>
 
@@ -136,4 +152,7 @@
     <option value='2'>Silver</option>
     <option value='1'>Bronze</option>
   </select>
+
+
+
 </form>
