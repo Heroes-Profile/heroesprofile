@@ -54,7 +54,15 @@ class GlobalStatData
     ->join('heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')
     ->selectRaw('name as hero, SUM(bans) as games_banned')
     ->groupBy('hero')
+    /*
+    print_r($global_ban_data->toSql());
+    echo "<br>";
+    print_r($global_ban_data->getBindings());
+    echo "<br>";
+    */
     ->get();
+
+
     $return_data = array();
     for($i = 0; $i < count($global_ban_data); $i++){
       $return_data[$global_ban_data[$i]->hero] = round($global_ban_data[$i]->games_banned);
@@ -241,7 +249,7 @@ class GlobalStatData
         $return_data[$counter]["win_rate"] = $data["wins"] / ($data["wins"] + $data["losses"]);
         $return_data[$counter]["pick_rate"] = $return_data[$counter]["games_played"] / $total_games;
 
-        
+
         if(!isset($current_pick_data[$hero])){
           $return_data[$counter]["pick_rate"] = 0;
         }else{

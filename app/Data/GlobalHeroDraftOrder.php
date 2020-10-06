@@ -52,6 +52,7 @@ class GlobalHeroDraftOrder
     for($i = 0; $i < count($global_draft_order); $i++){
       $return_data[$global_draft_order[$i]["pick_number"]][$global_draft_order[$i]["hero"]] = $global_draft_order[$i]["total"] / $total_values[$global_draft_order[$i]["hero"]];
     }
+    
     return $return_data;
   }
 }
