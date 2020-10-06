@@ -2,17 +2,6 @@
 @section('title', 'Drafter')
 
 @section('content')
-  I would like a landing page that is also the new draft page that requires them to make their filter choices there.
-  That way there is no load time for the page and make sure users don't change settings in the middle of draft.  Simplified
-
-  During this initial set up, they should choose which team first picks.  I think our JS is set up to handle that.
-
-  Add loading icon when it is pulling data.
-
-  Fix centering of Search Heroes and Role Filter.  Spread role icons out a little bit
-
-  Clicking on roles puts them into the draft as if they were heroes.
-
   @if(!isset($landing))
     <section id="draft-setup">
       @include('Drafter.draftLanding')
@@ -52,77 +41,82 @@
             <input class="form-control" type="text" id="filter-hero" placeholder="Search Heroes">
           </div>
 
+          {{--
           <div class="role-wrapper">
-            <div class="rounded-item"><a class=" hero-picture"
-              role="button"
-              data-html="true"
-              data-toggle="popover"
-              data-trigger="hover"
-              data-placement="top"
-              data-herorolename="tank"
-              title="Tank"  >
-              <img src="/images/roles/tank.PNG">
-            </a>
+            <div class="rounded-item">
+              <a class=" hero-picture"
+                role="button"
+                data-html="true"
+                data-toggle="popover"
+                data-trigger="hover"
+                data-placement="top"
+                data-herorolename="tank"
+                title="Tank"  >
+                <img src="/images/roles/tank.PNG">
+              </a>
+            </div>
+            <div class="rounded-item">
+              <a class="hero-picture"
+                role="button"
+                data-html="true"
+                data-toggle="popover"
+                data-trigger="hover"
+                data-placement="top"
+                data-herorolename="bruiser"
+                title="Bruiser"  >
+                <img src="/images/roles/bruiser.PNG">
+              </a>
+            </div>
+            <div class="rounded-item">
+              <a class=" hero-picture"
+                role="button"
+                data-html="true"
+                data-toggle="popover"
+                data-trigger="hover"
+                data-placement="top"
+                data-herorolename="healer"
+                title="Healer"  >
+                <img src="/images/roles/healer.PNG">
+              </a>
+            </div>
+            <div class="rounded-item">
+              <a class=" hero-picture"
+                role="button"
+                data-html="true"
+                data-toggle="popover"
+                data-trigger="hover"
+                data-placement="top"
+                data-herorolename="support"
+                title="Support"  >
+                <img src="/images/roles/support.PNG">
+              </a>
+            </div>
+            <div class="rounded-item">
+              <a class="hero-picture"
+                role="button"
+                data-html="true"
+                data-toggle="popover"
+                data-trigger="hover"
+                data-placement="top"
+                data-herorolename="melee_assassin"
+                title="Melee Assassin"  >
+                <img src="/images/roles/melee assassin.PNG">
+              </a>
+            </div>
+            <div class="rounded-item">
+              <a class=" hero-picture"
+                role="button"
+                data-html="true"
+                data-toggle="popover"
+                data-trigger="hover"
+                data-placement="top"
+                data-herorolename="ranged_assassin"
+                title="Ranged Assassin"  >
+                <img src="/images/roles/ranged assassin.PNG">
+              </a>
+            </div>
           </div>
-          <div class="rounded-item"><a class="hero-picture"
-            role="button"
-            data-html="true"
-            data-toggle="popover"
-            data-trigger="hover"
-            data-placement="top"
-            data-herorolename="bruiser"
-            title="Bruiser"  >
-            <img src="/images/roles/bruiser.PNG">
-          </a>
-        </div>
-        <div class="rounded-item"><a class=" hero-picture"
-          role="button"
-          data-html="true"
-          data-toggle="popover"
-          data-trigger="hover"
-          data-placement="top"
-          data-herorolename="healer"
-          title="Healer"  >
-          <img src="/images/roles/healer.PNG">
-        </a>
-      </div>
-      <div class="rounded-item"><a class=" hero-picture"
-        role="button"
-        data-html="true"
-        data-toggle="popover"
-        data-trigger="hover"
-        data-placement="top"
-        data-herorolename="support"
-        title="Support"  >
-        <img src="/images/roles/support.PNG">
-      </a>
-    </div>
-    <div class="rounded-item"><a class="hero-picture"
-      role="button"
-      data-html="true"
-      data-toggle="popover"
-      data-trigger="hover"
-      data-placement="top"
-      data-herorolename="melee_assassin"
-      title="Melee Assassin"  >
-      <img src="/images/roles/melee assassin.PNG">
-    </a>
-  </div>
-  <div class="rounded-item"><a class=" hero-picture"
-    role="button"
-    data-html="true"
-    data-toggle="popover"
-    data-trigger="hover"
-    data-placement="top"
-    data-herorolename="ranged_assassin"
-    title="Ranged Assassin"  >
-    <img src="/images/roles/ranged assassin.PNG">
-  </a>
-</div>
-
-
-
-</div>
+          --}}
 </form>
 
 <div class="container rounded-item-wrapper" id="draft-hero-wrapper">

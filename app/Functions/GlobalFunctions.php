@@ -61,13 +61,44 @@ if (!function_exists('calculateCacheTime')) {
           }
         }
       }
-    }else{//Minor TimeFrames
-      //Still need to do logic for this one
-      //return 60 * 60 * .5; //6 hours
-      return 1; //Testing
+    }else if(strtolower($timeframe_type) === "minor"){
+      if(count($timeframe) > 1){
+        return 86400; //24 hours
+      }else{
+        if($timeframe[0] != getMaxGameVersion()){
+          return 86400; //24 hours
+        }else{
+          $date = getMaxGameVersionForGlobalReleaseDate();
+          if(strtotime($date) < strtotime('-30 days')){
+            return 43200; //12 hours
+          }else if(strtotime($date) < strtotime('-15 days')){
+            return 21600; //6 hours
+          }else if(strtotime($date) < strtotime('-7 days')){
+            return 10800; //3 hours
+          }else if(strtotime($date) < strtotime('-1 days')){
+            return 300; //5 minutes
+          }else{
+            return 900; //15 minutes
+          }
+        }
+      }
     }
   }
 }
+
+if (!function_exists('getMaxGameVersionForGlobalReleaseDate')) {
+  /**
+  * Returns the latest season ID
+  *
+  *
+  * @return integer latest season
+  *
+  * */
+  function getMaxGameVersionForGlobalReleaseDate(){
+    return App\Models\SeasonGameVersions::max('date_added');
+  }
+}
+
 
 if (!function_exists('getLatestSeason')) {
   /**
@@ -144,19 +175,6 @@ if (!function_exists('getHeroesIDMap')) {
       $return_data[$heroes[$i][$key_value]] = $heroes[$i][$value];
     }
     return $return_data;
-  }
-}
-
-if (!function_exists('getCacheTimeGlobals')) {
-  /**
-  * This function returns the cache time value
-  *
-  *
-  * @return int
-  *
-  * */
-  function getCacheTimeGlobals(){
-    return 86400; //24 hours
   }
 }
 
@@ -336,7 +354,6 @@ if (!function_exists('getFilterMapsRanked')) {
     return $return_data;
   }
 }
-
 
 if (!function_exists('getScoreStatsByGrouping')) {
   /**
