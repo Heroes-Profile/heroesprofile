@@ -61,13 +61,44 @@ if (!function_exists('calculateCacheTime')) {
           }
         }
       }
-    }else{//Minor TimeFrames
-      //Still need to do logic for this one
-      //return 60 * 60 * .5; //6 hours
-      return 1; //Testing
+    }else if(strtolower($timeframe_type) === "minor"){
+      if(count($timeframe) > 1){
+        return 86400; //24 hours
+      }else{
+        if($timeframe[0] != getMaxGameVersion()){
+          return 86400; //24 hours
+        }else{
+          $date = getMaxGameVersionForGlobalReleaseDate();
+          if(strtotime($date) < strtotime('-30 days')){
+            return 43200; //12 hours
+          }else if(strtotime($date) < strtotime('-15 days')){
+            return 21600; //6 hours
+          }else if(strtotime($date) < strtotime('-7 days')){
+            return 10800; //3 hours
+          }else if(strtotime($date) < strtotime('-1 days')){
+            return 300; //5 minutes
+          }else{
+            return 900; //15 minutes
+          }
+        }
+      }
     }
   }
 }
+
+if (!function_exists('getMaxGameVersionForGlobalReleaseDate')) {
+  /**
+  * Returns the latest season ID
+  *
+  *
+  * @return integer latest season
+  *
+  * */
+  function getMaxGameVersionForGlobalReleaseDate(){
+    return App\Models\SeasonGameVersions::max('date_added');
+  }
+}
+
 
 if (!function_exists('getLatestSeason')) {
   /**
@@ -144,19 +175,6 @@ if (!function_exists('getHeroesIDMap')) {
       $return_data[$heroes[$i][$key_value]] = $heroes[$i][$value];
     }
     return $return_data;
-  }
-}
-
-if (!function_exists('getCacheTimeGlobals')) {
-  /**
-  * This function returns the cache time value
-  *
-  *
-  * @return int
-  *
-  * */
-  function getCacheTimeGlobals(){
-    return 86400; //24 hours
   }
 }
 
@@ -301,6 +319,37 @@ if (!function_exists('getFilterMaps')) {
         $brawl_counter++;
       }
 
+    }
+    return $return_data;
+  }
+}
+
+if (!function_exists('getFilterMapsRanked')) {
+  /**
+  * This function gets all of the ranked maps and groups them
+  *
+  *
+  * @return array array of maps
+  *
+  * */
+  function getFilterMapsRanked(){
+    $map_data = \App\Models\Map::where('playable', '1')->where('type', 'standard')->orderBy('type', 'DESC')->orderBy('name', 'ASC')->get();
+    $return_data = array();
+    $ranked_counter = 0;
+    $extra_maps_counter = 0;
+    $brawl_counter = 0;
+    for($i = 0; $i < count($map_data); $i++){
+      if($map_data[$i]->ranked_rotation == 1){
+        $return_data["Ranked-Rotation"][$ranked_counter]["name"] = $map_data[$i]->name;
+        $return_data["Ranked-Rotation"][$ranked_counter]["map_id"] = $map_data[$i]->map_id;
+        $ranked_counter++;
+      }else{
+        if($map_data[$i]->type != "brawl"){
+          $return_data["Extra-Maps"][$extra_maps_counter]["name"]  = $map_data[$i]->name;
+          $return_data["Extra-Maps"][$extra_maps_counter]["map_id"]  = $map_data[$i]->map_id;
+          $extra_maps_counter++;
+        }
+      }
     }
     return $return_data;
   }
