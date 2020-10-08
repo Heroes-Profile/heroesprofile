@@ -57,8 +57,8 @@ class DraftController extends Controller
     "|"  . implode(",", $role_league_tier) .
     "|"  . $mirror;
 
-    //$cache_time = calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor);
-    $cache_time = 0;
+    $cache_time = calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor);
+    //$cache_time = 1;
 
     $data = Cache::remember($cache, $cache_time, function () use ($game_versions_minor, $game_type, $region, $game_map,
     $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror){
@@ -83,7 +83,7 @@ class DraftController extends Controller
 
     $ban_draft_order_data = Cache::remember($cache, $cache_time, function () use ($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region){
       $ban_data = new \GlobalHeroDraftOrder($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region);
-      $return_data = $ban_data->getData(array(0, 1, 2, 3, 9, 10));
+      $return_data = $ban_data->getData(array(0, 1, 2, 3));
       return $return_data;
     });
 
@@ -99,6 +99,7 @@ class DraftController extends Controller
     */
 
     $max_value = 0;
+
     $return_data = array();
     $counter = 0;
 
@@ -121,12 +122,12 @@ class DraftController extends Controller
           $return_data[$counter]["bans"] = $bans * $current_pick_data[$hero];
         }
 
-        //$return_data[$counter]["bans"] = $bans;
-
-
         if($max_value < $return_data[$counter]["bans"]){
           $max_value = $return_data[$counter]["bans"];
         }
+
+
+
         $counter++;
       }
 
@@ -187,8 +188,8 @@ class DraftController extends Controller
     "|"  . implode(",", $hero_league_tier) .
     "|"  . implode(",", $role_league_tier);
 
-    //$cache_time = calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor);
-    $cache_time = 0;
+    $cache_time = calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor);
+    //$cache_time = 1;
 
     $ban_draft_order_data = Cache::remember($cache, $cache_time, function () use ($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region){
       $initial_data = new \GlobalHeroDraftOrder($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region);
@@ -319,7 +320,7 @@ class DraftController extends Controller
 
     $page = "DraftPickOrder";
     $cache =  $page .
-    "|" . implode(",", array(4, 5, 6, 7, 8, 11, 12, 13, 14, 15)) .
+    "|" . implode(",", array(4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15)) .
     "|" . implode(",", $game_versions_minor) .
     "|" . implode(",", $game_type) .
     "|" . implode(",", $region) .
@@ -329,15 +330,14 @@ class DraftController extends Controller
     "|"  . implode(",", $hero_league_tier) .
     "|"  . implode(",", $role_league_tier);
 
-    //$cache_time = calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor);
-    $cache_time = 0;
+    $cache_time = calculateCacheTime($filters_instance->timeframe_type, $filters_instance->game_versions_minor);
+    //$cache_time = 1;
 
     $ban_draft_order_data = Cache::remember($cache, $cache_time, function () use ($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region){
       $pick_data = new \GlobalHeroDraftOrder($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region);
-      $return_data = $pick_data->getData(array(4, 5, 6, 7, 8, 11, 12, 13, 14, 15));
+      $return_data = $pick_data->getData(array(4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15));
       return $return_data;
     });
-
     $current_pick_data = $ban_draft_order_data[$request["currentPickNumber"]];
 
 

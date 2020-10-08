@@ -12,7 +12,8 @@
        data-trigger="hover"
        data-placement="top"
        title="{{ $controller_hero_data[$i]["name"] }}"
-       data-content="Value: {{ $controller_hero_data[$i]["value"] }}">
+       data-content="Value: {{ $controller_hero_data[$i]["value"] }}"
+       >
         <img src="{{ asset('/images/heroes/' . $controller_hero_data[$i]["short_name"] . '.png') }}" data-heroimg="{{ asset('/images/heroes/' . $controller_hero_data[$i]["short_name"] . '.png') }}">
      </a>
    </div>

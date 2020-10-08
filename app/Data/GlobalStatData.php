@@ -145,13 +145,22 @@ class GlobalStatData
     foreach ($global_hero_data as $hero => $data)
     {
       $return_data[$counter]["hero"] = $hero;
-      $return_data[$counter]["wins"] = $data["wins"];
-      $return_data[$counter]["losses"] = $data["losses"];
+
+      if(isset($data["wins"])){
+        $return_data[$counter]["wins"] = $data["wins"];
+      }else{
+        $return_data[$counter]["wins"] = 0;
+      }
+      if(isset($data["losses"])){
+        $return_data[$counter]["losses"] = $data["losses"];
+      }else{
+        $return_data[$counter]["losses"] = 0;
+      }
 
       $return_data[$counter]["games_played"] = $data["wins"] + $data["losses"];
 
       if($return_data[$counter]["games_played"]){
-        $return_data[$counter]["win_rate"] = $data["wins"] / ($data["wins"] + $data["losses"]);
+        $return_data[$counter]["win_rate"] = $return_data[$counter]["wins"] / ($return_data[$counter]["wins"] + $return_data[$counter]["losses"]);
         $return_data[$counter]["pick_rate"] = $return_data[$counter]["games_played"] / $total_games;
       }else{
         $return_data[$counter]["win_rate"] = 0;
