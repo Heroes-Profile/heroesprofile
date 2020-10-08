@@ -355,7 +355,7 @@
       $.ajax({
         url: url,
         data: parameters,
-        //type: "POST",
+        type: "POST",
         success: function(results){
           $("#draft-hero-wrapper").removeAttr('disabled');
           $('#draft-hero-wrapper .rounded-picture').popover('hide');
