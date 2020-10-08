@@ -9,9 +9,7 @@
   @endif
   <section id="main-draft">
     <div class="draft-hero-picker">
-
       <div class="draft-section draft-left">
-
         <div class="draft-bans draft-bans-left">
           <span>Bans</span>
           <div class="flex-space-around">
@@ -34,127 +32,117 @@
         <div class="compare-box disabled" id="team1-pick5" data-team="team1" data-pick="pick5">
         </div>
       </div>
-      
 
       <div class="hero-category-wrapper all-heroes">
         <form class="" id="hero-search">
           <div class="all-heroes-search">
             <input class="form-control" type="text" id="filter-hero" placeholder="Search Heroes">
           </div>
-
-          {{--
           <div class="role-wrapper">
             <div class="rounded-item">
               <a class=" hero-picture"
-                role="button"
-                data-html="true"
-                data-toggle="popover"
-                data-trigger="hover"
-                data-placement="top"
-                data-herorolename="tank"
-                title="Tank"  >
-                <img src="/images/roles/tank.PNG">
-              </a>
-            </div>
-            <div class="rounded-item">
-              <a class="hero-picture"
-                role="button"
-                data-html="true"
-                data-toggle="popover"
-                data-trigger="hover"
-                data-placement="top"
-                data-herorolename="bruiser"
-                title="Bruiser"  >
-                <img src="/images/roles/bruiser.PNG">
-              </a>
-            </div>
-            <div class="rounded-item">
-              <a class=" hero-picture"
-                role="button"
-                data-html="true"
-                data-toggle="popover"
-                data-trigger="hover"
-                data-placement="top"
-                data-herorolename="healer"
-                title="Healer"  >
-                <img src="/images/roles/healer.PNG">
-              </a>
-            </div>
-            <div class="rounded-item">
-              <a class=" hero-picture"
-                role="button"
-                data-html="true"
-                data-toggle="popover"
-                data-trigger="hover"
-                data-placement="top"
-                data-herorolename="support"
-                title="Support"  >
-                <img src="/images/roles/support.PNG">
-              </a>
-            </div>
-            <div class="rounded-item">
-              <a class="hero-picture"
-                role="button"
-                data-html="true"
-                data-toggle="popover"
-                data-trigger="hover"
-                data-placement="top"
-                data-herorolename="melee_assassin"
-                title="Melee Assassin"  >
-                <img src="/images/roles/melee assassin.PNG">
-              </a>
-            </div>
-            <div class="rounded-item">
-              <a class=" hero-picture"
-                role="button"
-                data-html="true"
-                data-toggle="popover"
-                data-trigger="hover"
-                data-placement="top"
-                data-herorolename="ranged_assassin"
-                title="Ranged Assassin"  >
-                <img src="/images/roles/ranged assassin.PNG">
-              </a>
-            </div>
+              role="button"
+              data-html="true"
+              data-toggle="popover"
+              data-trigger="hover"
+              data-placement="top"
+              data-herorolename="tank"
+              title="Tank"  >
+              <img src="/images/roles/tank.PNG">
+            </a>
           </div>
-          --}}
-</form>
-
-<div class="container rounded-item-wrapper" id="draft-hero-wrapper">
-  @include('Drafter.draftPicks')
-</div>
-</div>
-
-
-
-<div class="draft-section draft-right">
-
-  <div class="draft-bans draft-bans-right">
-    <span>Bans</span>
-    <div class="flex-space-around">
-      <div class="draft-single-ban compare-box disabled" id="team2-ban1" data-team="team2" data-pick="ban1">
+          <div class="rounded-item">
+            <a class="hero-picture"
+              role="button"
+              data-html="true"
+              data-toggle="popover"
+              data-trigger="hover"
+              data-placement="top"
+              data-herorolename="bruiser"
+              title="Bruiser"  >
+              <img src="/images/roles/bruiser.PNG">
+            </a>
+          </div>
+          <div class="rounded-item">
+            <a class=" hero-picture"
+              role="button"
+              data-html="true"
+              data-toggle="popover"
+              data-trigger="hover"
+              data-placement="top"
+              data-herorolename="healer"
+              title="Healer"  >
+              <img src="/images/roles/healer.PNG">
+            </a>
+          </div>
+          <div class="rounded-item">
+            <a class=" hero-picture"
+              role="button"
+              data-html="true"
+              data-toggle="popover"
+              data-trigger="hover"
+              data-placement="top"
+              data-herorolename="support"
+              title="Support"  >
+              <img src="/images/roles/support.PNG">
+            </a>
+          </div>
+          <div class="rounded-item">
+            <a class="hero-picture"
+              role="button"
+              data-html="true"
+              data-toggle="popover"
+              data-trigger="hover"
+              data-placement="top"
+              data-herorolename="melee_assassin"
+              title="Melee Assassin"  >
+              <img src="/images/roles/melee assassin.PNG">
+            </a>
+          </div>
+          <div class="rounded-item">
+            <a class=" hero-picture"
+              role="button"
+              data-html="true"
+              data-toggle="popover"
+              data-trigger="hover"
+              data-placement="top"
+              data-herorolename="ranged_assassin"
+              title="Ranged Assassin"  >
+              <img src="/images/roles/ranged assassin.PNG">
+            </a>
+          </div>
+        </div>
+      </form>
+      <div class="container rounded-item-wrapper" id="draft-hero-wrapper">
+        @include('Drafter.draftPicks')
       </div>
-      <div class="draft-single-ban compare-box disabled" id="team2-ban2" data-team="team2" data-pick="ban2">
+    </div>
+    <div class="draft-section draft-right">
+      <div class="draft-bans draft-bans-right">
+        <span>Bans</span>
+        <div class="flex-space-around">
+          <div class="draft-single-ban compare-box disabled" id="team2-ban1" data-team="team2" data-pick="ban1">
+          </div>
+          <div class="draft-single-ban compare-box disabled" id="team2-ban2" data-team="team2" data-pick="ban2">
+          </div>
+          <div class="draft-single-ban compare-box disabled" id="team2-ban3" data-team="team2" data-pick="ban3">
+          </div>
+        </div>
       </div>
-      <div class="draft-single-ban compare-box disabled" id="team2-ban3" data-team="team2" data-pick="ban3">
+      <div class="hero-ban-wrapper">
+        <div class="compare-box disabled" id="team2-pick1" data-team="team2" data-pick="pick1">
+        </div>
+        <div class="compare-box disabled" id="team2-pick2" data-team="team2" data-pick="pick2">
+        </div>
+        <div class="compare-box disabled" id="team2-pick3" data-team="team2" data-pick="pick3">
+        </div>
+        <div class="compare-box disabled" id="team2-pick4" data-team="team2" data-pick="pick4">
+        </div>
+        <div class="compare-box disabled" id="team2-pick5" data-team="team2" data-pick="pick5">
+        </div>
       </div>
     </div>
   </div>
-  <div class="hero-ban-wrapper">
-    <div class="compare-box disabled" id="team2-pick1" data-team="team2" data-pick="pick1">
-    </div>
-    <div class="compare-box disabled" id="team2-pick2" data-team="team2" data-pick="pick2">
-    </div>
-    <div class="compare-box disabled" id="team2-pick3" data-team="team2" data-pick="pick3">
-    </div>
-    <div class="compare-box disabled" id="team2-pick4" data-team="team2" data-pick="pick4">
-    </div>
-    <div class="compare-box disabled" id="team2-pick5" data-team="team2" data-pick="pick5">
-    </div>
-  </div>
-
-</div>
-</div>
 </section>
 
 @endsection
@@ -228,7 +216,6 @@
     $('.all-heroes').on('click', '#draft-hero-wrapper .hero-picture', function(){
       if($('#draft-hero-wrapper').attr('disabled') != "disabled" ) {
         $('#draft-hero-wrapper .rounded-picture').popover('hide');
-        //$('#draft-hero-wrapper').html('');
         $("#draft-hero-wrapper").attr('disabled', 'disabled');
 
         var heroname = $(this).data('heroname');
@@ -371,6 +358,7 @@
         //type: "POST",
         success: function(results){
           $("#draft-hero-wrapper").removeAttr('disabled');
+          $('#draft-hero-wrapper .rounded-picture').popover('hide');
           $('#draft-hero-wrapper').html(results);
           $('.rounded-picture').popover();
 
@@ -378,71 +366,51 @@
       });
     }
 
+    $('#filter-hero').on('input', function() {
+      if($('#filter-hero').val() != ''){
 
-    $('.pick-label input').click(function(){
-      $('.pick-label').addClass('disabled');
-      if($(this).is(':checked')){
-        $(this).parent('.pick-label').removeClass('disabled');
+        $('.rounded-item-wrapper .rounded-item').each(function(){
+
+          var filterhero = removeDiacritics($('#filter-hero').val().toLowerCase()).replace(/[^\w\s]/gi, '');
+          var heroname = removeDiacritics($(this)[0].firstChild.attributes[2].nodeValue.toLowerCase()).replace(/[^\w\s]/gi, '');
+
+          if(heroname.indexOf(filterhero) != -1){
+            $(this).show();
+          }
+          else{
+            $(this).hide();
+          }
+
+
+        });
+      }else{
+        $('.popup-trigger').show();
       }
     });
 
 
-    /*
-    $('#hero-search').submit(function(e){
-    e.preventDefault();
+    function removeDiacritics(input)
+    {
+      var output = "";
 
-    $('html, body').animate({
-    scrollTop: $(".hero-wrapper").offset().top
-  }, 2000);
+      var normalized = input.normalize("NFD");
+      var i=0;
+      var j=0;
 
-});
-*/
+      while (i<input.length)
+      {
+        output += normalized[j];
 
-$('#filter-hero').on('input', function() {
-  if($('#filter-hero').val() != ''){
-
-    $('.rounded-item-wrapper .rounded-item').each(function(){
-
-      var filterhero = removeDiacritics($('#filter-hero').val().toLowerCase()).replace(/[^\w\s]/gi, '');
-      var heroname = removeDiacritics($(this)[0].firstChild.attributes[2].nodeValue.toLowerCase()).replace(/[^\w\s]/gi, '');
-
-      if(heroname.indexOf(filterhero) != -1){
-        $(this).show();
-      }
-      else{
-        $(this).hide();
+        j += (input[i] == normalized[j]) ? 1 : 2;
+        i++;
       }
 
-
-    });
-  }else{
-    $('.popup-trigger').show();
-  }
-});
+      return output;
+    }
 
 
-function removeDiacritics(input)
-{
-  var output = "";
-
-  var normalized = input.normalize("NFD");
-  var i=0;
-  var j=0;
-
-  while (i<input.length)
-  {
-    output += normalized[j];
-
-    j += (input[i] == normalized[j]) ? 1 : 2;
-    i++;
-  }
-
-  return output;
-}
-
-
-//DOC Ready Function Ending Bracket
-});
+    //DOC Ready Function Ending Bracket
+  });
 </script>
 
 @endsection

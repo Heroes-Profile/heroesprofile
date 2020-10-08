@@ -122,12 +122,14 @@ class GlobalStatData
     }
   }
 
-  private function combineData(){
+  private function combineData($current_pick_data){
     $global_hero_data = $this->getHeroWinLosses();
     $global_ban_data = $this->getHeroBans();
     $global_change_data = $this->getHeroChange();
 
     $total_games = 0;
+    $total_games_pick_position = 0;
+
     foreach ($global_hero_data as $hero => $data){
       if(!array_key_exists("wins",$data )){
         $data["wins"] = 0;
@@ -138,6 +140,12 @@ class GlobalStatData
       }
 
       $total_games += $data["wins"] + $data["losses"];
+
+      if(!isset($current_pick_data[$hero])){
+        $total_games_pick_position += 0;
+      }else{
+        $total_games_pick_position += ($data["wins"] + $data["losses"]) * $current_pick_data[$hero];
+      }
     }
     $total_games /= 10;
     $return_data = array();
@@ -162,6 +170,18 @@ class GlobalStatData
       if($return_data[$counter]["games_played"]){
         $return_data[$counter]["win_rate"] = $return_data[$counter]["wins"] / ($return_data[$counter]["wins"] + $return_data[$counter]["losses"]);
         $return_data[$counter]["pick_rate"] = $return_data[$counter]["games_played"] / $total_games;
+
+
+        if(count($current_pick_data) > 0){
+          if(!isset($current_pick_data[$hero])){
+            $return_data[$counter]["pick_rate"] = 0;
+          }else{
+            $return_data[$counter]["pick_rate"] = ($return_data[$counter]["games_played"] * $current_pick_data[$hero]) / $total_games_pick_position;
+          }
+        }
+
+
+
       }else{
         $return_data[$counter]["win_rate"] = 0;
         $return_data[$counter]["pick_rate"] = 0;
@@ -186,11 +206,26 @@ class GlobalStatData
 
       if(isset($return_data[$counter]["games_banned"])){
         $return_data[$counter]["popularity"] = (($return_data[$counter]["games_banned"] + $return_data[$counter]["games_played"]) / $total_games) * 100;
+        $return_data[$counter]["adjusted_pick_rate"] = (($return_data[$counter]["games_played"] / $total_games) * 100) / (100 - $return_data[$counter]["ban_rate"]);
       }else{
         $return_data[$counter]["popularity"] = ($return_data[$counter]["games_played"] / $total_games) * 100;
+        $return_data[$counter]["adjusted_pick_rate"] = $return_data[$counter]["games_played"] / $total_games;
       }
-      $return_data[$counter]["influence"] = round(($return_data[$counter]["win_rate"] - .5) * ($return_data[$counter]["pick_rate"] * 10000));
+      $return_data[$counter]["influence"] = round((($return_data[$counter]["wins"] / $return_data[$counter]["games_played"]) - .5) * ($return_data[$counter]["adjusted_pick_rate"] * 10000));
 
+      /*
+      echo "wins = ";
+      print_r($return_data[$counter]["wins"]);
+      echo "<br>";
+
+      echo "games_played = ";
+      print_r($return_data[$counter]["games_played"]);
+      echo "<br>";
+
+      echo "adjusted_pick_rate = ";
+      print_r($return_data[$counter]["adjusted_pick_rate"]);
+      echo "<br>";
+      */
 
       //Maybe add to function later
       $return_data[$counter]["win_rate_confidence"] = number_format((1.96 * sqrt((($return_data[$counter]["win_rate"]*(1-$return_data[$counter]["win_rate"]))/$return_data[$counter]["games_played"]))) * 100, 2);
@@ -217,107 +252,7 @@ class GlobalStatData
     return $return_data;
   }
 
-  private function combineDataDraft($current_pick_data){
-    $global_hero_data = $this->getHeroWinLosses();
-    $global_ban_data = $this->getHeroBans();
-
-    $total_games = 0;
-    $total_games_pick_position = 0;
-
-    foreach ($global_hero_data as $hero => $data){
-      if(!array_key_exists("wins",$data )){
-        $data["wins"] = 0;
-      }
-
-      if(!array_key_exists("losses",$data )){
-        $data["losses"] = 0;
-      }
-
-      $total_games += $data["wins"] + $data["losses"];
-
-      if(!isset($current_pick_data[$hero])){
-        $total_games_pick_position += 0;
-      }else{
-        $total_games_pick_position += ($data["wins"] + $data["losses"]) * $current_pick_data[$hero];
-      }
-    }
-
-
-    $total_games /= 10;
-    $return_data = array();
-    $counter = 0;
-    foreach ($global_hero_data as $hero => $data)
-    {
-      $return_data[$counter]["hero"] = $hero;
-      $return_data[$counter]["wins"] = $data["wins"];
-      $return_data[$counter]["losses"] = $data["losses"];
-
-      $return_data[$counter]["games_played"] = $data["wins"] + $data["losses"];
-
-      if($return_data[$counter]["games_played"]){
-        $return_data[$counter]["win_rate"] = $data["wins"] / ($data["wins"] + $data["losses"]);
-        $return_data[$counter]["pick_rate"] = $return_data[$counter]["games_played"] / $total_games;
-
-
-        if(!isset($current_pick_data[$hero])){
-          $return_data[$counter]["pick_rate"] = 0;
-        }else{
-          $return_data[$counter]["pick_rate"] = ($return_data[$counter]["games_played"] * $current_pick_data[$hero]) / $total_games_pick_position;
-        }
-
-
-      }else{
-        $return_data[$counter]["win_rate"] = 0;
-        $return_data[$counter]["pick_rate"] = 0;
-      }
-
-      if(isset($global_ban_data[$hero])){
-        $return_data[$counter]["games_banned"] = $global_ban_data[$hero];
-        $return_data[$counter]["ban_rate"] = $global_ban_data[$hero] / $total_games;
-      }else{
-        $return_data[$counter]["games_banned"] = 0;
-        $return_data[$counter]["ban_rate"] = 0;
-      }
-
-      if(isset($return_data[$counter]["games_banned"])){
-        $return_data[$counter]["popularity"] = (($return_data[$counter]["games_banned"] + $return_data[$counter]["games_played"]) / $total_games) * 100;
-      }else{
-        $return_data[$counter]["popularity"] = ($return_data[$counter]["games_played"] / $total_games) * 100;
-      }
-      $return_data[$counter]["influence"] = round(($return_data[$counter]["win_rate"] - .5) * ($return_data[$counter]["pick_rate"] * 10000));
-
-
-      //Maybe add to function later
-      $return_data[$counter]["win_rate_confidence"] = number_format((1.96 * sqrt((($return_data[$counter]["win_rate"]*(1-$return_data[$counter]["win_rate"]))/$return_data[$counter]["games_played"]))) * 100, 2);
-
-
-
-
-      $return_data[$counter]["win_rate"] = number_format($return_data[$counter]["win_rate"] * 100, 2);
-      $return_data[$counter]["popularity"] = number_format($return_data[$counter]["popularity"], 2);
-      $return_data[$counter]["pick_rate"] = number_format($return_data[$counter]["pick_rate"] * 100, 2);
-
-      if(isset($return_data[$counter]["ban_rate"])){
-        $return_data[$counter]["ban_rate"] = number_format($return_data[$counter]["ban_rate"] * 100, 2);
-      }else{
-        $return_data[$counter]["ban_rate"] = 0;
-      }
-      $return_data[$counter]["talent_builds"] = $hero;
-
-
-      $counter++;
-    }
-
-    return $return_data;
-  }
-
-
-
-  public function getGlobalHeroStatData(){
-    return $this->combineData();
-  }
-
-  public function getGlobalDraftHeroStatData($current_pick_data){
-    return $this->combineDataDraft($current_pick_data);
+  public function getGlobalHeroStatData($current_pick_data = array()){
+    return $this->combineData($current_pick_data);
   }
 }

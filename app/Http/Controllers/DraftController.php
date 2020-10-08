@@ -69,6 +69,12 @@ class DraftController extends Controller
     });
 
 
+
+
+
+
+
+
     $page = "DraftBanOrder";
     $cache =  $page .
     "|" . implode(",", $heroesPicked) .
@@ -89,14 +95,42 @@ class DraftController extends Controller
 
     $current_pick_data = $ban_draft_order_data[$request["currentPickNumber"]];
 
-    /*
-    print_r(json_encode($current_pick_data, true));
-    echo "<br>";
-    echo "<br>";
-    echo "<br>";
-    echo "<br>";
-    echo "<br>";
-    */
+
+
+    $page = "DraftInitialData";
+    $cache =  $page .
+    //"|" . implode(",", $heroesPicked) .
+    "|" . implode(",", $game_versions_minor) .
+    "|" . implode(",", $game_type) .
+    "|" . implode(",", $region) .
+    "|" . implode(",", $game_map) .
+    "|" . implode(",", $hero_level) .
+    "|" . $stat_type .
+    "|"  . implode(",", $player_league_tier) .
+    "|"  . implode(",", $hero_league_tier) .
+    "|"  . implode(",", $role_league_tier) .
+    "|"  . $mirror;
+
+
+
+    $hero_win_rate_data = Cache::remember($cache, $cache_time, function () use ($game_versions_minor, $game_type, $region, $game_map,
+    $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror, $current_pick_data){
+      $global_data = new \GlobalStatData($game_versions_minor, $game_type, $region, $game_map,
+      $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror);
+      $return_data = $global_data->getGlobalHeroStatData($current_pick_data);
+      //$return_data = $global_data->getGlobalHeroStatData($current_pick_data);
+      return $return_data;
+    });
+
+
+    $hero_win_rate_data_array = array();
+    $total_games = 0;
+    for($i = 0; $i < count($hero_win_rate_data); $i++){
+      $hero_win_rate_data_array[$hero_win_rate_data[$i]["hero"]] = $hero_win_rate_data[$i];
+      $total_games += $hero_win_rate_data[$i]["games_played"];
+    }
+
+    $total_games /= 10;
 
     $max_value = 0;
 
@@ -115,16 +149,24 @@ class DraftController extends Controller
       if(!in_array($hero_data[$hero]->id, $heroesPicked)){
         $return_data[$counter]["hero"] = $hero;
 
-
+        $return_data[$counter]["games_played"] = $bans;
         if(!isset($current_pick_data[$hero])){
           $return_data[$counter]["bans"] = 0;
+          $return_data[$counter]["pick_order_percent"] = 0;
         }else{
           $return_data[$counter]["bans"] = $bans * $current_pick_data[$hero];
+          $return_data[$counter]["pick_order_percent"] = number_format(($current_pick_data[$hero] * 100), 2);
         }
 
         if($max_value < $return_data[$counter]["bans"]){
           $max_value = $return_data[$counter]["bans"];
         }
+
+
+        $return_data[$counter]["win_rate"] = $hero_win_rate_data_array[$hero]["win_rate"];
+        $return_data[$counter]["win_rate_confidence"] = $hero_win_rate_data_array[$hero]["win_rate_confidence"];
+        $return_data[$counter]["influence"] = $hero_win_rate_data_array[$hero]["influence"];
+        $return_data[$counter]["ban_rate"] = $hero_win_rate_data_array[$hero]["ban_rate"];
 
 
 
@@ -150,7 +192,7 @@ class DraftController extends Controller
     }
     usort($return_data, [$this, 'cmp_value']);
 
-    return view('Drafter.draftPicks', ['controller_hero_data' => $return_data]);
+    return view('Drafter.draftPicks', ['controller_hero_data' => $return_data, 'bans' => true]);
   }
 
   public function getInitialData(Request $request){
@@ -203,7 +245,7 @@ class DraftController extends Controller
 
     $page = "DraftInitialData";
     $cache =  $page .
-    "|" . implode(",", $heroesPicked) .
+    //"|" . implode(",", $heroesPicked) .
     "|" . implode(",", $game_versions_minor) .
     "|" . implode(",", $game_type) .
     "|" . implode(",", $region) .
@@ -221,7 +263,7 @@ class DraftController extends Controller
     $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror, $current_pick_data){
       $global_data = new \GlobalStatData($game_versions_minor, $game_type, $region, $game_map,
       $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror);
-      $return_data = $global_data->getGlobalDraftHeroStatData($current_pick_data);
+      $return_data = $global_data->getGlobalHeroStatData($current_pick_data);
       //$return_data = $global_data->getGlobalHeroStatData($current_pick_data);
       return $return_data;
     });
@@ -235,31 +277,54 @@ class DraftController extends Controller
 
     $max_value = 0;
     for($i = 0; $i < count($data); $i++){
-      if($max_value < $data[$i]["influence"]){
-        $max_value = $data[$i]["influence"];
+      $hero_name = $hero_data[$data[$i]["hero"]]["name"];
+
+      if(isset($current_pick_data[$hero_name])){
+        $influence_adjusted = $data[$i]["influence"] * $current_pick_data[$hero_name];
+      }else{
+        $influence_adjusted = 0;
       }
-    }
-    $max_influence = 0;
 
-    for($i = 0; $i < count($data); $i++){
-      $data[$i]["id"] = $hero_data[$data[$i]["hero"]]->id;
-      $data[$i]["name"] = $hero_data[$data[$i]["hero"]]->name;
-      $data[$i]["short_name"] = $hero_data[$data[$i]["hero"]]->short_name;
-      $data[$i]["new_role"] = $hero_data[$data[$i]["hero"]]->new_role;
-      $data[$i]["influence_adjusted"] = ($data[$i]["influence"] / $max_value) * 100;
-
-
-      if(!in_array($data[$i]["id"], $heroesPicked)){
-        if($max_influence < $data[$i]["influence_adjusted"]){
-          $max_influence = $data[$i]["influence_adjusted"];
+      if(!in_array($hero_data[$data[$i]["hero"]]["id"], $heroesPicked)){
+        if($max_value < $influence_adjusted){
+          $max_value = $influence_adjusted;
         }
       }
 
     }
-    for($i = 0; $i < count($data); $i++){
-      $data[$i]["value"] = number_format(($data[$i]["influence_adjusted"] / $max_influence) * 100, 0);
 
-      if($data[$i]["value"] > 75){
+    for($i = 0; $i < count($data); $i++){
+      $hero_name = $hero_data[$data[$i]["hero"]]["name"];
+      if(isset($current_pick_data[$hero_name])){
+        $influence_adjusted = $data[$i]["influence"] * $current_pick_data[$hero_name];
+      }else{
+        $influence_adjusted = 0;
+      }
+
+
+      $data[$i]["id"] = $hero_data[$data[$i]["hero"]]->id;
+      $data[$i]["name"] = $hero_data[$data[$i]["hero"]]->name;
+      $data[$i]["short_name"] = $hero_data[$data[$i]["hero"]]->short_name;
+      $data[$i]["new_role"] = $hero_data[$data[$i]["hero"]]->new_role;
+
+      $data[$i]["influence_adjusted"] = ($influence_adjusted / $max_value) * 100;
+
+      if(isset($current_pick_data[$hero_name])){
+        $data[$i]["pick_order_percent"] = number_format($current_pick_data[$hero_name] * 100, 2);
+      }else{
+        $data[$i]["pick_order_percent"] = 0;
+      }
+    }
+
+    for($i = 0; $i < count($data); $i++){
+      $data[$i]["value"] = number_format($data[$i]["influence_adjusted"], 2);
+      $data[$i]["games_played"] = $data[$i]["games_played"];
+      $data[$i]["influence"] = $data[$i]["influence"];
+      $data[$i]["win_rate"] = $data[$i]["win_rate"];
+      $data[$i]["win_rate_confidence"] = $data[$i]["win_rate_confidence"];
+      $data[$i]["win_rate_confidence"] = $data[$i]["win_rate_confidence"];
+
+      if($data[$i]["value"] > 50){
         $data[$i]["starred"] = "starred";
       }else{
         $data[$i]["starred"] = "";
@@ -288,7 +353,7 @@ class DraftController extends Controller
       }
     }
     usort($return_data, [$this, 'cmp_value']);
-    return view('Drafter.draftPicks', ['controller_hero_data' => $return_data]);
+    return view('Drafter.draftPicks', ['controller_hero_data' => $return_data, 'bans' => false]);
   }
 
   public function getCompositionData(Request $request){
@@ -363,6 +428,40 @@ class DraftController extends Controller
       return $return_data;
     });
 
+
+    $page = "DraftInitialData";
+    $cache =  $page .
+    //"|" . implode(",", $heroesPicked) .
+    "|" . implode(",", $game_versions_minor) .
+    "|" . implode(",", $game_type) .
+    "|" . implode(",", $region) .
+    "|" . implode(",", $game_map) .
+    "|" . implode(",", $hero_level) .
+    "|" . $stat_type .
+    "|"  . implode(",", $player_league_tier) .
+    "|"  . implode(",", $hero_league_tier) .
+    "|"  . implode(",", $role_league_tier) .
+    "|"  . $mirror;
+
+
+
+    $hero_win_rate_data = Cache::remember($cache, $cache_time, function () use ($game_versions_minor, $game_type, $region, $game_map,
+    $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror, $current_pick_data){
+      $global_data = new \GlobalStatData($game_versions_minor, $game_type, $region, $game_map,
+      $hero_level, $stat_type, $player_league_tier, $hero_league_tier, $role_league_tier, $mirror);
+      $return_data = $global_data->getGlobalHeroStatData($current_pick_data);
+      //$return_data = $global_data->getGlobalHeroStatData($current_pick_data);
+      return $return_data;
+    });
+
+
+    $hero_win_rate_data_array = array();
+    $total_games = 0;
+    for($i = 0; $i < count($hero_win_rate_data); $i++){
+      $hero_win_rate_data_array[$hero_win_rate_data[$i]["hero"]] = $hero_win_rate_data[$i];
+      $total_games += $hero_win_rate_data[$i]["games_played"];
+    }
+
     $heroes = \App\Models\Hero::select('id', 'name', 'short_name', "new_role")->get();
     $hero_data = array();
 
@@ -424,6 +523,19 @@ class DraftController extends Controller
           $return_data[$counter] = $hero_data[$data[$i]["hero"]];
           $return_data[$counter]["value"] = number_format(($games_played / $max_value) * 100, 2);
 
+
+          $return_data[$counter]["win_rate"] = $hero_win_rate_data_array[$hero_name]["win_rate"];
+          $return_data[$counter]["win_rate_confidence"] = $hero_win_rate_data_array[$hero_name]["win_rate_confidence"];
+          $return_data[$counter]["influence"] = $hero_win_rate_data_array[$hero_name]["influence"];
+          $return_data[$counter]["games_played"] = $hero_win_rate_data_array[$hero_name]["games_played"];
+          if(isset($current_pick_data[$hero_name])){
+            $return_data[$counter]["pick_order_percent"] = number_format($current_pick_data[$hero_name] * 100, 2);
+          }else{
+            $return_data[$counter]["pick_order_percent"] = 0;
+          }
+
+          $return_data[$counter]["ban_rate"] = $hero_win_rate_data_array[$hero_name]["ban_rate"];
+
           if($return_data[$counter]["value"] > 75){
             $return_data[$counter]["starred"] = "starred";
           }else{
@@ -464,7 +576,20 @@ class DraftController extends Controller
               $return_data[$counter]["id"] = $heroes[$i]["id"];
               $return_data[$counter]["short_name"] = $heroes[$i]["short_name"];
               $return_data[$counter]["value"] = 0;
+
+
+              $return_data[$counter]["win_rate"] = 0;
+              $return_data[$counter]["win_rate_confidence"] = 0;
+              $return_data[$counter]["influence"] = 0;
+              $return_data[$counter]["games_played"] = 0;
+              $return_data[$counter]["pick_order_percent"] = 0;
+              $return_data[$counter]["ban_rate"] = 0;
+
+
+
               $counter++;
+
+
 
             }
           }else{
@@ -474,14 +599,24 @@ class DraftController extends Controller
             $return_data[$counter]["id"] = $heroes[$i]["id"];
             $return_data[$counter]["short_name"] = $heroes[$i]["short_name"];
             $return_data[$counter]["value"] = 0;
+
+            $return_data[$counter]["win_rate"] = 0;
+            $return_data[$counter]["win_rate_confidence"] = 0;
+            $return_data[$counter]["influence"] = 0;
+            $return_data[$counter]["games_played"] = 0;
+            $return_data[$counter]["pick_order_percent"] = 0;
+            $return_data[$counter]["ban_rate"] = 0;
             $counter++;
           }
         }
       }
     }
     usort($return_data, [$this, 'cmp_value']);
-
-    return view('Drafter.draftPicks', ['controller_hero_data' => $return_data]);
+    $bans = false;
+    if($request["currentPickNumber"] == 9 || $request["currentPickNumber"] == 10){
+      $bans = true;
+    }
+    return view('Drafter.draftPicks', ['controller_hero_data' => $return_data, 'bans' => $bans]);
   }
 
   private function cmp_value( $a, $b ) {
