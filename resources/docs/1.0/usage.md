@@ -15,7 +15,7 @@
 
 <a name="step-1"></a>
 ## Step 1
-Navigate to The **[Heroes Profile Drafter](https://drafter.heroesprofile.com/)**  and choose your filter options.  Currently only data for patches 2.52 and greater are available for use due to data caching.  Be aware that some filter options may reduce the overall fidelity of the data used as there may be a small amount of games played with those filter options.  Please be cognisant of information such as Total Games Banned, Games Played, and win rate confidence in the popups.
+Navigate to The **[Heroes Profile Drafter](https://drafter.heroesprofile.com/)**  and choose your filter options.  Currently only data for patches 2.52 and greater are available for use due to data caching.  Be aware that some filter options may reduce the overall fidelity of the data used as there may be a small amount of games played with those filter options.  Please be cognizant of information such as Total Games Banned, Games Played, and win rate confidence in the pop-ups.
 
 <a name="step-2"></a>
 ## Step 2
@@ -23,7 +23,7 @@ Make sure to select which team has first pick.  Team 1 is the team on the left, 
 
 <a name="step-3"></a>
 ## Step 3
-Immediately after hitting start draft the tool will go out and fetch the best ban options given the filters you chose.  Once it has calculated the best bans, it will order them from best to worse by left-to-right, and top-down.  Furthermore, Heroes the drafter considers to be extra popular/strong at that position will have a star next to their hero image.
+Immediately after hitting start draft the tool will go out and fetch the best ban options given the filters you chose.  Once it has calculated the best bans, it will order them from best to worse by left-to-right, and top-to-bottom.  Furthermore, Heroes the drafter considers to be extra popular/strong at that position will have a star next to their hero image.  Highlighting hero images will give you more information about the hero.
 
 ![image](/images/drafter/heroes.JPG)
 

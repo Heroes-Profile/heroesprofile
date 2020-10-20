@@ -14,7 +14,11 @@
        title="{{ $controller_hero_data[$i]["name"] }}"
        data-content="
          HP Draft Value: {{ $controller_hero_data[$i]["value"] }} <br>
+       @if($bans)
+         Games Banned: {{ number_format($controller_hero_data[$i]["games_played"]) }} <br>
+       @else
          Games Played: {{ number_format($controller_hero_data[$i]["games_played"]) }} <br>
+       @endif
          Influence: {{ $controller_hero_data[$i]["influence"] }} <br>
        @if($bans)
          Ban Rate: {{ $controller_hero_data[$i]["ban_rate"] }}% <br>

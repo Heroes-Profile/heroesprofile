@@ -11,7 +11,7 @@
 ## Overview
 
 The **[Heroes Profile Drafter](https://drafter.heroesprofile.com/)** is a tool that was built using all of the available data on Heroes Profile, and even some not available on the main site.  The tool allows a user to select the below filter options to mock-up a draft.
-- Time Frame Type (minor/major)
+- Timeframe Type (minor/major)
 - Timeframe (patches)
 - Region
 - Hero Level
@@ -20,6 +20,16 @@ The **[Heroes Profile Drafter](https://drafter.heroesprofile.com/)** is a tool t
 - Hero Rank
 - Role Rank
 
-![image](/images/drafter/filters.JPG)
+![image](/images/drafter/filters.PNG)
+
+Beyond ordering heroes during the draft from best-to-worst, the following attributes can be found in the pop-ups if you hover a hero image.
+- HP Draft Value (This is the value used for ordering the heroes and is calculated differently depending on where in the draft you are)
+- Games Played/ Games Banned
+- Influence
+- Ban Rate
+- Win Rate
+- Win Rate Confidence
+- Draft Order Pick Rate
+
 
 > {info} The **[Heroes Profile Drafter](https://drafter.heroesprofile.com/)** is best viewed and used on the computer.  While we have made efforts to make it mobile accessible, there is a lot of information to display, and it is not entirely mobile friendly.
