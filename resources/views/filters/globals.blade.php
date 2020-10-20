@@ -2,13 +2,13 @@
 
 <form id="basic_search" class="search-menu">
   {{-- Major Minor Picker --}}
-  <select name="timeframe" class="selectpicker" multiple title="Minor" data-header="Timeframe Type">
+  <select name="timeframe" id="timeframe" class="selectpicker" title="Minor" data-header="Timeframe Type">
     <option>Major</option>
     <option selected>Minor</option>
   </select>
 
   {{-- Major Game Version Picker --}}
-  <select name="major_timeframe" class="selectpicker" multiple data-max-options="3" title={{ max(array_keys(getFilterVersions())) }} data-header="Major Timeframes">
+  <select name="major_timeframe" id='major_timeframe' class="selectpicker" multiple data-max-options="3" title={{ max(array_keys(getFilterVersions())) }} data-header="Major Timeframes">
     @foreach (getFilterVersions() as $major => $minor)
       @if($filtertype == "drafter")
         @if($major < 2.52)
@@ -21,7 +21,7 @@
   </select>
 
   {{-- Minor Game Version Picker --}}
-  <select name="minor_timeframe" class="selectpicker" multiple data-max-options="20" data-header="Minor Timeframes">
+  <select name="minor_timeframe" id="minor_timeframe" class="selectpicker" multiple data-max-options="20" data-header="Minor Timeframes">
     @foreach (getFilterVersions() as $major => $minor)
       @if($filtertype == "drafter")
         @if($major < 2.52)

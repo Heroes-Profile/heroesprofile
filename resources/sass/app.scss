@@ -360,6 +360,7 @@ text-align:center;
     width: 4rem;
     height: 4rem;
     border-radius: 4rem;
+    cursor: pointer;
   }
 }
 
@@ -483,3 +484,55 @@ height: 4rem;
   }
 
   .hero-category-wrapper{width:100%;}
+
+  .loader{
+    font-size: 15vh;
+    color:white;
+    margin-left:auto;
+    margin-right:auto;
+    text-align: center;
+  }
+
+  .relative-container{position:relative;}
+  .loader{position:absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(15, 18, 29, .5);
+    z-index:100;
+  }
+
+
+@media only screen and (max-width: 900px) {.draft-bans .flex-space-around{
+  flex-direction:column;
+}
+
+#draft-hero-wrapper{
+  height: 500px;
+    overflow-y: scroll;
+  }
+  #mainHeroInfo{
+
+    flex-direction: column;
+    justify-content: flex-end;
+    display: flex;
+  }
+}
+
+.all-heroes{width:100%;}
+
+  #team1bans{order:0;}
+  #mainHeroInfo{order:1;}
+  #team2bans{order:3;}
+  #team1picks{order:4;}
+  #mainHeroContent{order:5;}
+  #team2picks{order:6;}
+
+
+  .show-filters-button{margin-left:auto;}
+  .top-buttons{
+    display:flex;
+    margin-top:1rem;
+  }
+
+
+  .heading-alert a{color:white;}
