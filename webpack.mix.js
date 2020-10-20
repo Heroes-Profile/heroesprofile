@@ -25,3 +25,5 @@ mix.copy('resources/js/popup.js', 'public/js');
 mix.copy('resources/js/bootbox.min.js', 'public/js');
 
 mix.copy('resources/js/extraHeader.js', 'public/js');
+
+mix.copy('resources/css/documentation.css', 'public/css');

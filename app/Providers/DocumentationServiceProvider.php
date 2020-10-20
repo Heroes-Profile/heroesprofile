@@ -5,7 +5,7 @@ namespace App\Providers;
 use BinaryTorch\LaRecipe\LaRecipe;
 use Illuminate\Support\ServiceProvider;
 
-class ThemeServiceProvider extends ServiceProvider
+class DocumentationServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any application services.
@@ -14,7 +14,7 @@ class ThemeServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        LaRecipe::style('laracolor', __DIR__.'/../resources/css/theme.css');
+        //LaRecipe::style('heroesprofile', asset('/css/documentation.css'));
     }
 
     /**

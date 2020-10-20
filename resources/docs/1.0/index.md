@@ -1,2 +1,5 @@
 - ## Get Started
     - [Overview](/{{route}}/{{version}}/overview)
+    - [Usage](/{{route}}/{{version}}/usage)
+    - [Bans](/{{route}}/{{version}}/bans)
+    - [Picks](/{{route}}/{{version}}/picks)

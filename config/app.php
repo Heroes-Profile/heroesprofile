@@ -174,7 +174,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
+        App\Providers\DocumentationServiceProvider::class,
     ],
 
     /*
@@ -238,7 +238,7 @@ return [
         'GlobalHeroStatMatchupData' => App\Data\GlobalHeroStatMatchupData::class,
         'GlobalCompositionData' => App\Data\GlobalCompositionData::class,
         'GlobalHeroDraftOrder' => App\Data\GlobalHeroDraftOrder::class,
-        
+
         //Profile
         'ProfileData' => App\Data\Profile\ProfileData::class,
         'FriendsAndFoes' => App\Data\Profile\FriendsAndFoes::class,
