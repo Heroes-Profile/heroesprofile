@@ -1,6 +1,3 @@
-@include('filters.globals')
-
-
 <form id="draft-setup-form">
   <div class="pick-label-wrapper">
     <label class="pick-label "><input id="first-pick-team-1" type="radio" name="first-pick-team" value="team1" checked/><span>Team 1 First Pick</span>
