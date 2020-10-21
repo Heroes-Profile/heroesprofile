@@ -3,6 +3,7 @@
 # Heroes Profile Drafter Terms
 
 ---
+- [Adjusted Pick Rate](#adjusted_pick_rate)
 - [Ban Rate](#ban_rate)
 - [Draft Order Pick Rate](#draft_order_pick_rate)
 - [Games Banned](#games_banned)
@@ -14,12 +15,21 @@
 - [HP Draft Value](#hp_draft_value)
 - [Influence](#influence)
 - [Player Rank](#player_rank)
+- [Pick Rate](#pick_rate)
 - [Region](#region)
 - [Role Rank](#role_rank)
 - [Timeframe](#timeframe)
 - [Timeframe Type](#timeframe_type)
 - [Win Rate](#win_rate)
 - [Win Rate Confidence](#win_rate_confidence)
+
+
+<a name="adjusted_pick_rate"></a>
+## `Adjusted Pick Rate`
+This is similiar to [Pick Rate](#pick_rate) except it takes into account ban rate.
+```json
+(Games Played / Total Games * 100) / (100 - Ban Rate)
+```
 
 <a name="ban_rate"></a>
 ## `Ban Rate`
@@ -59,7 +69,7 @@ Total number of games a hero is banned.
 
 <a name="game_map"></a>
 ## `Game Map`
-The filterable Game Map option.  All of the maps are available to choose from, but only the ranked maps will return results.
+All of the game maps in the current rank rotation.
 
 <a name="games_played"></a>
 ## `Games Played`
@@ -80,9 +90,18 @@ A filterable option to only show games where players were a given hero level.  I
 
 <a name="influence"></a>
 ## `Influence`
-
+```json
+(Wins / Games Played - .5) * Adjusted Pick Rate * 10000
+```
 <a name="player_rank"></a>
 ## `Player Rank`
+
+<a name="pick_rate"></a>
+## `Pick Rate`
+Of the total games played, how often is a hero picked.
+```json
+Games Played / Total Games * 100
+```
 
 <a name="region"></a>
 ## `Region`

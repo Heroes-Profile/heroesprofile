@@ -333,7 +333,7 @@ if (!function_exists('getFilterMapsRanked')) {
   *
   * */
   function getFilterMapsRanked(){
-    $map_data = \App\Models\Map::where('playable', '1')->where('type', 'standard')->orderBy('type', 'DESC')->orderBy('name', 'ASC')->get();
+    $map_data = \App\Models\Map::where('playable', '1')->where('type', 'standard')->where('ranked_rotation', 1)->orderBy('type', 'DESC')->orderBy('name', 'ASC')->get();
     $return_data = array();
     $ranked_counter = 0;
     $extra_maps_counter = 0;
