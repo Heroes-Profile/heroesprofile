@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+/*
 
 ///For Testing
 Route::get('getGlobalStatData', 'GlobalStatController@getData'); //For Testing Purposes.  Remove later
@@ -79,9 +79,10 @@ Route::get('/Profile/Talents', 'ProfileController@talents');
 Route::get('/Match/Single', 'MatchController@show');
 //Route::get('getSingeMatchData', 'MatchController@getMatchData');
 //Route::post('getSingeMatchData', 'MatchController@getMatchData');
-
+*/
 
 //Drafter
+Route::get('/', 'DraftController@show');
 Route::get('/Drafter', 'DraftController@show');
 
 //Bans
@@ -105,7 +106,7 @@ Route::group([
 
 });
 */
-
+/*
 //Battlenet Login/Logout Process
 Route::get('login/battlenet', 'Auth\battlenet\LoginController@show');
 Route::get('logout/battlenet', 'Auth\battlenet\LogoutController@show');
@@ -116,3 +117,4 @@ Route::get('authenticate/battlenet/success', 'BattlenetAuthController@handleProv
 //Opt Out Process
 Route::view('/Account/Optout/', 'Account/optout/optout');
 Route::post('/account/optout/save', 'AccountController@optout');
+*/
