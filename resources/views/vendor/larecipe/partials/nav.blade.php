@@ -11,10 +11,6 @@
                 </p>
             </a>
 
-            <div class="switch">
-                <input type="checkbox" name="1" id="1" v-model="sidebar" class="switch-checkbox" />
-                <label class="switch-label" for="1"></label>
-            </div>
         </div>
 
         <div class="block mx-4 flex items-center">
@@ -27,6 +23,10 @@
                 </larecipe-button>
             @endif
 
+            <larecipe-button tag="a" href="/" target="__blank" type="black" class="mx-2 px-4">
+                <i class="fas fa-home"></i>
+            </larecipe-button>
+            
             <larecipe-button tag="a" href="https://github.com/Heroes-Profile/heroesprofile/tree/drafter" target="__blank" type="black" class="mx-2 px-4">
                 <i class="fab fa-github"></i>
             </larecipe-button>

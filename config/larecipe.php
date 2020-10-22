@@ -94,7 +94,7 @@ return [
     */
 
     'search'            => [
-        'enabled'       => true,
+        'enabled'       => false,
         'default'       => 'internal',
         'engines'       => [
             'internal'  => [

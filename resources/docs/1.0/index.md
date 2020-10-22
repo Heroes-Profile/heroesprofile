@@ -1,6 +1,7 @@
-- ## Get Started
+- ## Heroes Profile Drafter
     - [Overview](/{{route}}/{{version}}/overview)
     - [Terms](/{{route}}/{{version}}/terms)
+    - [Draft Order Pick Rate](/{{route}}/{{version}}/draft-order)
     - [Usage](/{{route}}/{{version}}/usage)
-    - [Bans](/{{route}}/{{version}}/bans)
     - [Picks](/{{route}}/{{version}}/picks)
+    - [Bans](/{{route}}/{{version}}/bans)
