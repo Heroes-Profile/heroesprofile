@@ -7,6 +7,7 @@
         </div>
         <div class="footer-info col">
           <nav class="navbar">  <div class="header-buttons">
+            <a class="header-button btn btn-sm btn-secondary" href="https://www.heroesprofile.com/" target="_blank">Heroes Profile</a>
             <a class="header-button btn btn-sm btn-primary" href="https://api.heroesprofile.com"  target="_blank">Heroes Profile API</a>
           {{--  <a class="header-button btn btn-sm btn-secondary" href="/Series" target="_blank">Amateur Series</a>--}}
             <a class="header-button btn btn-sm btn-danger" href="https://www.patreon.com/heroesprofile" target="_blank">Become a Patreon</a>
