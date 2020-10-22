@@ -11,7 +11,7 @@
 <a name="game_map"></a>
 
 ### Game Map
-All of the game maps in the current rank rotation.  
+All of the game maps in the current rank rotation. Choosing a game map will only return results for the map selected.
 
 <a name="hero_level"></a>
 
@@ -21,22 +21,22 @@ Option to only show games where players were a given hero level/s.  If you were 
 <a name="hero_rank"></a>
 
 ### Hero Rank
-Option to filter on different Hero Ranks.  These ranks are calculated using the Heroes Profile Hero MMR and distributions.  This filter uses Heroes Profile's unique Hero MMR value for its rank.
+Option to filter on different Hero Ranks.  These ranks are calculated using the Heroes Profile Hero MMR and distributions.  Rank is an attempt to filter by the player's overall skill on the specific hero(s) selected; while the categories mimic those found in-game, the ranks are using Heroes Profile's unique Hero MMR value which is calculated using our formula and doesn't match in-game ranks)
 
 <a name="player_rank"></a>
 
 ### Player Rank
-Option to filter on different Player Ranks.  These ranks are calculated using the Heroes Profile MMR and distributions.
+Option to filter on different Player Ranks.  These ranks are calculated using the Heroes Profile MMR and distributions. Rank is an attempt to filter by the player's overall skill; while the categories mimic those found in-game, the ranks are using Heroes Profile's unique Hero MMR value which is calculated using our formula and doesn't match in-game ranks)
 
 <a name="region"></a>
 
 ### Region
-Option to only show games from a specific region/s.
+Option to only show data from games from a specific region/s.
 
 <a name="role_rank"></a>
 
 ### Role Rank
-Option to filter on different Role Ranks.  These ranks are calculated using the Heroes Profile Role MMR and distributions.  This filter uses Heroes Profile's unique Role MMR value for its rank.
+Option to filter on different Role Ranks.  These ranks are calculated using the Heroes Profile Hero MMR and distributions.  Rank is an attempt to filter by the player's overall skill on the specific role(s) selected; while the categories mimic those found in-game, the ranks are using Heroes Profile's unique Hero MMR value which is calculated using our formula and doesn't match in-game ranks)
 
 <a name="timeframe"></a>
 
