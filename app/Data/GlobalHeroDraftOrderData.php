@@ -1,7 +1,7 @@
 <?php
 namespace App\Data;
 
-class GlobalHeroDraftOrder
+class GlobalHeroDraftOrderData
 {
   private $game_versions_minor;
   private $game_type;

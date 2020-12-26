@@ -237,7 +237,7 @@ return [
         'GlobalHeroTalentDetailsData' => App\Data\GlobalHeroTalentDetailsData::class,
         'GlobalHeroStatMatchupData' => App\Data\GlobalHeroStatMatchupData::class,
         'GlobalCompositionData' => App\Data\GlobalCompositionData::class,
-        'GlobalHeroDraftOrder' => App\Data\GlobalHeroDraftOrder::class,
+        'GlobalHeroDraftOrderData' => App\Data\GlobalHeroDraftOrderData::class,
 
         //Profile
         'ProfileData' => App\Data\Profile\ProfileData::class,
