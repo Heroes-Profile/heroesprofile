@@ -4,7 +4,7 @@ namespace Tests;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\TestCase;
-use TestingSeeder;
+use Database\Seeders\TestingSeeder;
 
 abstract class DatabaseTestCase extends TestCase
 {

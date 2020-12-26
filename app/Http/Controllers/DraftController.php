@@ -88,7 +88,7 @@ class DraftController extends Controller
     "|"  . implode(",", $role_league_tier);
 
     $ban_draft_order_data = Cache::remember($cache, $cache_time, function () use ($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region){
-      $ban_data = new \GlobalHeroDraftOrder($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region);
+      $ban_data = new \App\Data\GlobalHeroDraftOrder($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region);
       $return_data = $ban_data->getData(array(0, 1, 2, 3));
       return $return_data;
     });
@@ -234,7 +234,7 @@ class DraftController extends Controller
     //$cache_time = 1;
 
     $ban_draft_order_data = Cache::remember($cache, $cache_time, function () use ($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region){
-      $initial_data = new \GlobalHeroDraftOrder($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region);
+      $initial_data = new \App\Data\GlobalHeroDraftOrder($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region);
       $return_data = $initial_data->getData(array(4, 5, 6, 7, 8, 11, 12, 13, 14, 15));
       return $return_data;
     });
@@ -399,7 +399,7 @@ class DraftController extends Controller
     //$cache_time = 1;
 
     $ban_draft_order_data = Cache::remember($cache, $cache_time, function () use ($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region){
-      $pick_data = new \GlobalHeroDraftOrder($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region);
+      $pick_data = new \App\Data\GlobalHeroDraftOrder($game_versions_minor, $game_type, $player_league_tier, $hero_league_tier, $role_league_tier, $game_map, $hero_level, $region);
       $return_data = $pick_data->getData(array(4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15));
       return $return_data;
     });
