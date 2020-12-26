@@ -60,7 +60,7 @@ jobs:
           restore-keys: ${{ runner.os }}-phpstan-
 
       - name: Install dependencies
-        run: composer install --no-suggest --no-interaction --prefer-dist --optimize-autoloader
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
         env:
           COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
 
