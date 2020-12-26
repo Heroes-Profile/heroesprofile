@@ -36,7 +36,7 @@ class Battletags extends Migration
       $table->integer('blizz_id');
       $table->string('battletag', 45);
       $table->tinyInteger('region');
-      $table->integer('account_level')->default(0);
+      $table->integer('account_level')->default(0)->nullable();
       $table->tinyInteger('patreon')->nullable();
       $table->tinyInteger('opt_out')->nullable();
       $table->dateTime('latest_game')->default('2014-06-26 13:13:34');

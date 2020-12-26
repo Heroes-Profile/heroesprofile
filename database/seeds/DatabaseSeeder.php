@@ -22,13 +22,17 @@ class DatabaseSeeder extends Seeder
       $this->call(global_hero_stats_seeder::class);
       $this->call(global_hero_talents_details_seeder::class);
       $this->call(global_hero_talents_seeder::class);
-      $this->call(heroes_data_abilities_seeder::class);
       $this->call(heroes_data_talents_seeder::class);
       $this->call(heroes_seeder::class);
       $this->call(league_breakdowns_seeder::class);
       $this->call(league_tiers_seeder::class);
       $this->call(maps_seeder::class);
-      $this->call(master_mmr_data_seeder::class);
+      $this->call(master_mmr_data_ar_seeder::class);
+      $this->call(master_mmr_data_hl_seeder::class);
+      $this->call(master_mmr_data_qm_seeder::class);
+      $this->call(master_mmr_data_sl_seeder::class);
+      $this->call(master_mmr_data_tl_seeder::class);
+      $this->call(master_mmr_data_ud_seeder::class);
       $this->call(mmr_type_ids_seeder::class);
       $this->call(player_seeder::class);
       $this->call(replay_bans_seeder::class);
@@ -43,11 +47,5 @@ class DatabaseSeeder extends Seeder
       //Cache
       $this->call(leaderboard_cache_seeder::class);
       $this->call(table_cache_value_seeder::class);
-
-      //Brawls
-      $this->call(player_brawl_seeder::class);
-      $this->call(replay_brawl_seeder::class);
-      $this->call(scores_brawl_seeder::class);
-      $this->call(talents_brawl_seeder::class);
     }
 }

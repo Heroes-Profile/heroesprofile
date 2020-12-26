@@ -59,6 +59,6 @@ class GlobalHeroDraftOrder extends Migration
   */
   public function down()
   {
-    $this->schema->dropIfExists('global_compositions');
+    $this->schema->dropIfExists('global_hero_draft_order');
   }
 }

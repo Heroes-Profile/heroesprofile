@@ -32,7 +32,7 @@ class GameTypes extends Migration
   {
     $this->schema->create('game_types', function (Blueprint $table) {
       $table->engine = 'InnoDB';
-      $table->integer('type_id')->autoIncrement();
+      $table->integer('type_id');
       $table->string('name', 45);
       $table->string('short_name', 45);
     });

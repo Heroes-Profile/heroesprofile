@@ -33,18 +33,18 @@ class Replay extends Migration
     $this->schema->create('replay', function (Blueprint $table) {
       $table->engine = 'InnoDB';
       $table->integer('replayID');
-      $table->tinyInteger('game_type');
-      $table->dateTime('game_date');
-      $table->smallInteger('game_length');
-      $table->tinyInteger('game_map');
-      $table->string('game_version', 32);
-      $table->tinyInteger('region');
-      $table->dateTime('date_added');
-      $table->tinyInteger('mmr_ran');
-      $table->tinyInteger('globals_ran');
-      $table->double('player_match_quality');
-      $table->double('hero_match_quality');
-      $table->double('role_match_quality');
+      $table->tinyInteger('game_type')->nullable();
+      $table->dateTime('game_date')->nullable();
+      $table->smallInteger('game_length')->nullable();
+      $table->tinyInteger('game_map')->nullable();
+      $table->string('game_version', 32)->nullable();
+      $table->tinyInteger('region')->nullable();
+      $table->dateTime('date_added')->nullable();
+      $table->tinyInteger('mmr_ran')->default(0)->nullable();
+      $table->tinyInteger('globals_ran')->default(0)->nullable();
+      $table->double('player_match_quality')->nullable();
+      $table->double('hero_match_quality')->nullable();
+      $table->double('role_match_quality')->nullable();
 
       $table->primary('replayID');
       $table->index(['replayID', 'region', 'game_date']);
