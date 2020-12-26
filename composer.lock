@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7a70ad219e690d64ec64c1ee4976b4e3",
+    "content-hash": "fac19c01ce512d386372a5b9febfab44",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -173,6 +173,12 @@
                 "brick",
                 "math"
             ],
+            "funding": [
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/brick/math",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-08-18T23:57:15+00:00"
         },
         {
@@ -283,6 +289,20 @@
                 "uppercase",
                 "words"
             ],
+            "funding": [
+                {
+                    "url": "https://www.doctrine-project.org/sponsorship.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/phpdoctrine",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/doctrine%2Finflector",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-05-29T15:13:26+00:00"
         },
         {
@@ -344,6 +364,20 @@
                 "lexer",
                 "parser",
                 "php"
+            ],
+            "funding": [
+                {
+                    "url": "https://www.doctrine-project.org/sponsorship.html",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://www.patreon.com/phpdoctrine",
+                    "type": "patreon"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/doctrine%2Flexer",
+                    "type": "tidelift"
+                }
             ],
             "time": "2020-05-25T17:44:05+00:00"
         },
@@ -1174,6 +1208,16 @@
                 "Result-Type",
                 "result"
             ],
+            "funding": [
+                {
+                    "url": "https://github.com/GrahamCampbell",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/graham-campbell/result-type",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-04-13T13:17:36+00:00"
         },
         {
@@ -1961,6 +2005,12 @@
                 "sftp",
                 "storage"
             ],
+            "funding": [
+                {
+                    "url": "https://offset.earth/frankdejonge",
+                    "type": "other"
+                }
+            ],
             "time": "2020-08-23T07:39:11+00:00"
         },
         {
@@ -2431,6 +2481,16 @@
                 "option",
                 "php",
                 "type"
+            ],
+            "funding": [
+                {
+                    "url": "https://github.com/GrahamCampbell",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/phpoption/phpoption",
+                    "type": "tidelift"
+                }
             ],
             "time": "2020-07-20T17:29:33+00:00"
         },
@@ -2942,6 +3002,12 @@
                 "queue",
                 "set"
             ],
+            "funding": [
+                {
+                    "url": "https://github.com/ramsey",
+                    "type": "github"
+                }
+            ],
             "time": "2020-09-10T20:58:17+00:00"
         },
         {
@@ -3023,6 +3089,12 @@
                 "identifier",
                 "uuid"
             ],
+            "funding": [
+                {
+                    "url": "https://github.com/ramsey",
+                    "type": "github"
+                }
+            ],
             "time": "2020-08-18T17:17:46+00:00"
         },
         {
@@ -3071,22 +3143,22 @@
         },
         {
             "name": "socialiteproviders/battlenet",
-            "version": "v3.1.0",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SocialiteProviders/Battle.net.git",
-                "reference": "50dd3966a1302d5d287a5c5f1dcf65b75fd78986"
+                "reference": "7f2183a6e23c864d841bd6479ee13919baa73fdc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SocialiteProviders/Battle.net/zipball/50dd3966a1302d5d287a5c5f1dcf65b75fd78986",
-                "reference": "50dd3966a1302d5d287a5c5f1dcf65b75fd78986",
+                "url": "https://api.github.com/repos/SocialiteProviders/Battle.net/zipball/7f2183a6e23c864d841bd6479ee13919baa73fdc",
+                "reference": "7f2183a6e23c864d841bd6479ee13919baa73fdc",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": "^5.6 || ^7.0",
-                "socialiteproviders/manager": "~2.0 || ~3.0"
+                "php": "^7.2 || ^8.0",
+                "socialiteproviders/manager": "~4.0"
             },
             "type": "library",
             "autoload": {
@@ -3105,30 +3177,30 @@
                 }
             ],
             "description": "Battlenet OAuth2 Provider for Laravel Socialite",
-            "time": "2020-04-30T23:01:40+00:00"
+            "time": "2020-12-01T23:10:59+00:00"
         },
         {
             "name": "socialiteproviders/manager",
-            "version": "v3.6",
+            "version": "4.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SocialiteProviders/Manager.git",
-                "reference": "fc8dbcf0061f12bfe0cc347e9655af932860ad36"
+                "reference": "0f5e82af0404df0080bdc5c105cef936c1711524"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SocialiteProviders/Manager/zipball/fc8dbcf0061f12bfe0cc347e9655af932860ad36",
-                "reference": "fc8dbcf0061f12bfe0cc347e9655af932860ad36",
+                "url": "https://api.github.com/repos/SocialiteProviders/Manager/zipball/0f5e82af0404df0080bdc5c105cef936c1711524",
+                "reference": "0f5e82af0404df0080bdc5c105cef936c1711524",
                 "shasum": ""
             },
             "require": {
                 "illuminate/support": "^6.0|^7.0|^8.0",
                 "laravel/socialite": "~4.0|~5.0",
-                "php": "^7.2"
+                "php": "^7.2 || ^8.0"
             },
             "require-dev": {
                 "mockery/mockery": "^1.2",
-                "phpunit/phpunit": "^8.0"
+                "phpunit/phpunit": "^9.0"
             },
             "type": "library",
             "extra": {
@@ -3168,7 +3240,7 @@
             ],
             "description": "Easily add new or override built-in providers in Laravel Socialite.",
             "homepage": "https://socialiteproviders.com/",
-            "time": "2020-09-08T10:41:06+00:00"
+            "time": "2020-12-01T23:09:06+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -3445,6 +3517,20 @@
             ],
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-09-07T11:33:47+00:00"
         },
         {
@@ -3725,6 +3811,20 @@
                 "interfaces",
                 "interoperability",
                 "standards"
+            ],
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
             ],
             "time": "2020-09-07T11:33:47+00:00"
         },
@@ -5026,6 +5126,20 @@
                 "interoperability",
                 "standards"
             ],
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-09-07T11:33:47+00:00"
         },
         {
@@ -5257,6 +5371,20 @@
                 "interoperability",
                 "standards"
             ],
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
             "time": "2020-09-28T13:05:58+00:00"
         },
         {
@@ -5456,6 +5584,16 @@
                 "dotenv",
                 "env",
                 "environment"
+            ],
+            "funding": [
+                {
+                    "url": "https://github.com/GrahamCampbell",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/vlucas/phpdotenv",
+                    "type": "tidelift"
+                }
             ],
             "time": "2020-09-14T15:57:31+00:00"
         },
