@@ -68,7 +68,7 @@ if (!function_exists('calculateCacheTime')) {
         if($timeframe[0] != getMaxGameVersion()){
           return 86400; //24 hours
         }else{
-          $date = getMaxGameVersionForGlobalReleaseDate();
+          $date = (string) getMaxGameVersionForGlobalReleaseDate();
           if(strtotime($date) < strtotime('-30 days')){
             return 43200; //12 hours
           }else if(strtotime($date) < strtotime('-15 days')){
@@ -83,6 +83,7 @@ if (!function_exists('calculateCacheTime')) {
         }
       }
     }
+    throw new \RuntimeException('Unknown timeframe type: ' . $timeframe_type);
   }
 }
 

@@ -19,6 +19,6 @@ class HomeTest extends DatabaseTestCase
 
         $response
             ->assertStatus(200)
-            ->assertSeeText('Brightwing');
+            ->assertSeeText('Global Stats');
     }
 }

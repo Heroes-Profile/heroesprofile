@@ -1047,17 +1047,7 @@ class ProfileData
         ->where('region', $this->region);
 
       // @phpstan-ignore-next-line
-      $mmr_data = \App\Models\MasterMMRDataAR::select("game_type", "conservative_rating", "win", "loss")
-        ->where('type_value', '10000')
-        ->where('game_type', '6')
-        ->where('blizz_id', $this->blizz_id)
-        ->where('region', $this->region)
-        ->union($qm)
-        ->union($ud)
-        ->union($hl)
-        ->union($tl)
-        ->union($sl)
-        ->get();
+      $mmr_data = \App\Models\MasterMMRDataAR::select("game_type", "conservative_rating", "win", "loss")->where('type_value', '10000')->where('game_type', '6')->where('blizz_id', $this->blizz_id)->where('region', $this->region)->union($qm)->union($ud)->union($hl)->union($tl)->union($sl)->get();
 
         return $mmr_data;
     }else if($this->game_type == "1"){
