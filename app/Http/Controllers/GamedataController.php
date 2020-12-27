@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Heroes\Locator;
+use Heroes\Factories\HeroFactory;
 use Heroes\Providers\StringProvider;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -19,45 +20,53 @@ use ReflectionClass;
 class GamedataController extends Controller
 {
 	/**
-	 * Displays the form for selecting patch,
-	 * locale, and Entity type.
+	 * Displays the table of Hero data.
 	 *
-	 * @return View
+	 * @param Request $request
+	 *
+	 * @return View|RedirectResponse
 	 */
-	public function index(): View
+	protected function hero(Request $request)
+	{
+		$data = $this->getFormData($request);
+
+		try
+		{
+			$data['heroes'] = new HeroFactory($data['locale'], $data['patch']);
+		}
+		catch (Throwable $e)
+		{
+			return back()->withInput()->with('status', $e->getMessage());
+		}
+
+		$data['title'] = 'Hero Data';
+		return view('Gamedata.hero', $data);
+	}
+
+	/**
+	 * Retrieves data needed for the form.
+	 *
+	 * @param Request $request
+	 *
+	 * @return array
+	 */
+	private function getFormData(Request $request): array
 	{
         $class = new ReflectionClass(StringProvider::class);
-
-		return view('Gamedata.index', [
-			'title'   => 'Game Data',
-			'patches' => Locator::getPatches(),
+		$data  = [
 			'locales' => $class->getConstants(),
-		]);
-	}
+			'patches' => Locator::getPatches(),
+		];
 
-	/**
-	 * Processes index form data and sends to
-	 * the appropriate entity type handler.
-	 *
-	 * @param Request $request
-	 *
-	 * @return RedirectResponse
-	 */
-	public function submit(Request $request): RedirectResponse
-	{
-		$type = $request->input('entity');
+		// Set the current locale and patch
+		$data['locale'] = ($locale = $request->input('locale')) && in_array($locale, $data['locales'])
+		    ? $locale
+		    : StringProvider::USA;
 
-        return redirect()->route('/Gamedata/' . $type);
-	}
+		$data['patch'] = ($patch = $request->input('patch')) && in_array($patch, $data['patches'])
+		    ? $patch
+		    : Locator::getLatest();
 
-	/**
-	 * Displays the Hero select form.
-	 *
-	 * @param Request $request
-	 *
-	 * @return View
-	 */
-	public function hero(): View
-	{
+		return $data;
 	}
 }

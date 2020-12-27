@@ -120,5 +120,5 @@ Route::post('/account/optout/save', 'AccountController@optout');
 /**
  * Gamedata Routes
  */
-Route::get('/Gamedata', 'GamedataController@index');
-Route::post('/Gamedata', 'GamedataController@submit');
+Route::get('/Gamedata', 'GamedataController@hero');
+Route::get('/Gamedata/Hero', 'GamedataController@hero');
