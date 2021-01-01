@@ -26,7 +26,7 @@ class GamedataController extends Controller
 	 *
 	 * @return View|RedirectResponse
 	 */
-	protected function hero(Request $request)
+	protected function heroes(Request $request)
 	{
 		$data = $this->getFormData($request);
 
@@ -40,6 +40,53 @@ class GamedataController extends Controller
 		}
 
 		$data['title'] = 'Hero Data';
+		return view('Gamedata.heroes', $data);
+	}
+
+	/**
+	 * Displays the table of Hero data.
+	 *
+	 * @param Request $request
+	 * @param string $id ID of the requested Hero
+	 *
+	 * @return View|RedirectResponse
+	 */
+	protected function hero(Request $request, string $id)
+	{
+		$data = $this->getFormData($request);
+
+		try
+		{
+			$heroes = new HeroFactory($data['locale'], $data['patch']);
+		}
+		catch (Throwable $e)
+		{
+			return back()->withInput()->with('status', $e->getMessage());
+		}
+
+		if (! $data['hero'] = $heroes->get($id))
+		{
+			return back()->withInput()->with('status', 'Unable to locate hero "' . $id . '" in patch ' . $data['patch']);
+		}
+
+		$data['strings'] = [
+			'title'        => 'Title',
+			'type'         => 'Type',
+			'expandedrole' => 'Role',
+			'difficulty'   => 'Difficulty',
+			'lifetype'     => 'Life',
+			'shieldtype'   => 'Shield',
+			'energytype'   => 'Energy',
+		];
+
+		$data['stats'] = [
+			'radius'      => 'Size',
+			'speed'       => 'Speed',
+			'sight'       => 'Vision',
+		];
+
+		$data['title'] = $data['hero']->string('name') . ' Data';
+
 		return view('Gamedata.hero', $data);
 	}
 
@@ -52,16 +99,15 @@ class GamedataController extends Controller
 	 */
 	private function getFormData(Request $request): array
 	{
-        $class = new ReflectionClass(StringProvider::class);
 		$data  = [
-			'locales' => $class->getConstants(),
+			'locales' => StringProvider::LOCALE,
 			'patches' => Locator::getPatches(),
 		];
 
 		// Set the current locale and patch
 		$data['locale'] = ($locale = $request->input('locale')) && in_array($locale, $data['locales'])
 		    ? $locale
-		    : StringProvider::USA;
+		    : StringProvider::LOCALE['USA'];
 
 		$data['patch'] = ($patch = $request->input('patch')) && in_array($patch, $data['patches'])
 		    ? $patch

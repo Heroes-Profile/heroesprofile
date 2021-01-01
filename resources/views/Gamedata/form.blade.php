@@ -15,7 +15,7 @@
 				<label for="locale" class="text-light">Locale:</label>
 				<select id="locale" name="locale" class="custom-select">
 					@foreach ($locales as $country => $l)
-					<option value="{{ $l }}" {{ $l === $locale ? 'selected' : '' }}>{{ ucfirst(strtolower($country)) }}</option>
+					<option value="{{ $l }}" {{ $l === $locale ? 'selected' : '' }}>{{ $country }}</option>
 					@endforeach
 				</select>
 			</div>
