@@ -102,6 +102,7 @@ class GamedataController extends Controller
 		$data  = [
 			'locales' => StringProvider::LOCALE,
 			'patches' => Locator::getPatches(),
+			'status'  => $request->session()->get('status'),
 		];
 
 		// Set the current locale and patch

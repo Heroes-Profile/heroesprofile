@@ -25,5 +25,12 @@
 				<br />
 				<button class="btn btn-primary btn-sm mt-1" type="submit">Submit</button>
 			</div>
+
+			<div class="col">
+				@if ($status)
+				<p class="rounded bg-warning mt-3 p-2">{{ $status }}</p>
+				@endif
+			</div>	
+
 		</div>
 	</form>
