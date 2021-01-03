@@ -2,18 +2,19 @@
 @section('title', $title)
 
 @section('content')
-	<a class="btn btn-primary btn-sm ml-3" href="/Gamedata/Heroes">Back to Heroes</a>
+	<a class="btn btn-primary btn-sm ml-3" href="/Gamedata/Heroes?patch={{ $patch}}&locale={{ $locale }}">Back to Heroes</a>
 
 	@include('Gamedata.form')
 
 	<div class="bg-wrapper bg-light m-3 p-3">
-		<div class="float-right">{{ $hero->portraits->draftScreen }}</div>
+		<img class="float-left mr-3 mb-3" src="/images/heroes/{{ strtolower($hero->hyperlinkId) }}.png" alt="Hero Icon">
+
 		<h2>{{ $hero->string('name') }} <span class="badge badge-secondary">{{ $hero->id() }}</span></h2>
-		<p class="small">{{ $hero->string('description') }}</p>
+		<p class="small">{!! $hero->string('description')->withoutColor()->withoutNewline()->asHtml() !!}</p>
 
 		<div class="row">
 			<div class="col-md">
-				<h3>Identity</h3>
+				<h3 class="my-3">Identity</h3>
 				<dl class="row">
 
 					@foreach ($strings as $key => $display)
@@ -33,11 +34,10 @@
 					<dd class="col-3 col-lg-9">{!! $hero->rarity ?? '<em>n/a</em>' !!}</dd>
 				</dl>
 			</div>
-			<div class="col-md">
-				<blockquote class="blockquote bg-white p-3">{{ $hero->string('infotext') }}</blockquote>
 
+			<div class="col-md">
 				@if (isset($hero->descriptors))
-				<h3>Tags</h3>
+				<h3 class="my-3">Tags</h3>
 				<div class="row">
 					<div class="col">
 
@@ -47,10 +47,13 @@
 
 					</div>
 				</div>
-				@endif	
+				@endif
+
+				<blockquote class="blockquote bg-white p-3 my-3">{{ $hero->string('infotext') }}</blockquote>
 			</div>
+
 			<div class="col-md">
-				<h3>Stats</h3>
+				<h3 class="my-3">Stats</h3>
 				<dl class="row">
 					<dt class="col-lg-3">Released</dt>
 					<dd class="col-lg-9">{{ date('F j, Y', strtotime($hero->releaseDate)) }}</dd>
@@ -80,16 +83,17 @@
 			</div>
 		</div>
 
-		<h3>Abilities</h3>
-		<div id="abilities-wrapper" class="row flex-row flex-nowrap border-top border-bottom overflow-auto my-3 p-3">
+		<h3 class="my-3">Abilities</h3>
+		<div id="abilities-wrapper" class="row flex-row flex-nowrap border-top border-bottom overflow-auto p-3">
 
 			@foreach ($hero->abilities() as $ability)
 			<div class="card text-dark bg-white mx-3" style="min-width: 300px;">
 				<div class="card-header bg-info">
 					<h5>{{ $ability->string('name') }}</h5>
 				</div>
-				<div class="card-body bg-secondary text-white">
-					<p>{!! $ability->string('full') ? $ability->string('full')->withScaling()->asHtml() : '<em>n/a</em>' !!}</p>
+				<div class="card-body">
+					<img class="float-left mr-3" src="/images/talents/{{ strtolower($hero->hyperlinkId) }}/{{ $ability->icon }}" alt="Ability Icon">
+					<p class="card-text small">{!! $ability->string('short') ? $ability->string('short')->asHtml() : '<em>n/a</em>' !!}</p>
 				</div>
 				<ul class="list-group list-group-flush">
 					<li class="list-group-item">
@@ -107,15 +111,15 @@
 					@endif
 				</ul>
 
-				<div class="card-footer">
-					<p class="card-text small">{!! $ability->string('short') ? $ability->string('short')->asHtml() : '<em>n/a</em>' !!}</p>
+				<div class="card-body bg-secondary text-white">
+					<p>{!! $ability->string('full') ? $ability->string('full')->withScaling()->asHtml() : '<em>n/a</em>' !!}</p>
 				</div>
 			</div>
 			@endforeach
 
 		</div>
 
-		<h3>Talents</h3>
+		<h3 class="my-3">Talents</h3>
 		<ul class="nav nav-pills nav-justified mb-3" id="talents" role="tablist">
 
 			@foreach ([1, 4, 7, 10, 13, 16, 20] as $level)
@@ -130,20 +134,24 @@
 			<div class="tab-pane fade {{ $level === 1 ? 'show active' : '' }}" id="level{{ $level }}" role="tabpanel" aria-labelledby="level{{ $level }}-tab">
 				@foreach ($hero->talents($level) as $talent)
 				<div class="row py-2 border-top bg-secondary text-white">
-					<div class="col-2">
-						{{ $talent->icon }}
-					</div>
-					<div class="col-2">
-						{{ $talent->string('name') }}
+					<div class="col-sm col-lg-4 col-xl-2">
+						<img class="float-left mr-3" src="/images/talents/{{ strtolower($hero->hyperlinkId) }}/{{ $talent->icon }}" alt="Talent Icon">
+						<strong>{{ $talent->string('name') }}</strong>
 						<p class="small">{!! $talent->string('cooldown') ? $talent->string('cooldown')->asHtml() : '' !!}</p>
 					</div>
-					<div class="col">
+					<div class="col-lg">
 						{!! $talent->string('full')->withScaling()->asHtml() !!}
 					</div>
 				</div>
 				@endforeach
 			</div>
 			@endforeach
+		</div>
+
+		<div class="row my-5">
+			<div class="col text-center">
+				<img class="img-fluid" src="/images/heroes_rectangle_large/{{ strtolower($hero->hyperlinkId) }}.jpg" alt="Hero Portrait">
+			</div>
 		</div>
 	</div>
 

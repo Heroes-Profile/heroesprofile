@@ -24,7 +24,7 @@
 				<td>{!! $hero->string('title')->asHtml() !!}</td>
 				<td>{!! $hero->string('expandedrole')->asHtml() !!}</td>
 				<td>{!! $hero->string('difficulty')->asHtml() !!}</td>
-				<td>{!! $hero->string('description')->asHtml() !!}</td>
+				<td>{!! $hero->string('description')->withoutColor()->withoutNewline()->asHtml() !!}</td>
 			</tr>
 			@endforeach
 
