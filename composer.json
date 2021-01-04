@@ -15,6 +15,7 @@
         "google/cloud-error-reporting": "^0.18.0",
         "google/cloud-logging": "^1.20",
         "guzzlehttp/guzzle": "^7.0",
+        "heroespatchnotes/sdk": "^0.9.0@beta",
         "laravel/framework": "^8.1",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^3.0",
@@ -55,6 +56,12 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/heroespatchnotes/heroes-data"
+        }
+    ],
     "scripts": {
         "analyze": "phpstan analyze",
         "test": "phpunit",

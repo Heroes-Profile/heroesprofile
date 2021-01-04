@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ad38e8efef3e6ed605b61bfe977bc63b",
+    "content-hash": "284332634cc99cadff8b1fba41e1ed29",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -1581,6 +1581,101 @@
                 "source": "https://github.com/guzzle/psr7/tree/1.7.0"
             },
             "time": "2020-09-30T07:37:11+00:00"
+        },
+        {
+            "name": "heroespatchnotes/sdk",
+            "version": "v0.9-beta.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/heroespatchnotes/sdk-php.git",
+                "reference": "f280684b8160caf7542638240593ef8c82fa7fa6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/heroespatchnotes/sdk-php/zipball/f280684b8160caf7542638240593ef8c82fa7fa6",
+                "reference": "f280684b8160caf7542638240593ef8c82fa7fa6",
+                "shasum": ""
+            },
+            "require": {
+                "heroestoolchest/heroes-data": "dev-master",
+                "php": "^7.3 || ^8.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^0.12",
+                "phpunit/phpunit": "^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Heroes\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthew Gatner",
+                    "email": "mgatner@tattersoftware.com",
+                    "homepage": "https://tattersoftware.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PHP SDK for Heroes of the Storm",
+            "homepage": "https://github.com/heroespatchnotes/sdk-php",
+            "keywords": [
+                "blizzard",
+                "gamedata",
+                "heroes",
+                "hots",
+                "php",
+                "sdk",
+                "storm"
+            ],
+            "support": {
+                "issues": "https://github.com/heroespatchnotes/sdk-php/issues",
+                "source": "https://github.com/heroespatchnotes/sdk-php/tree/v0.9-beta.6"
+            },
+            "time": "2021-01-01T20:49:58+00:00"
+        },
+        {
+            "name": "heroestoolchest/heroes-data",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/heroespatchnotes/heroes-data.git",
+                "reference": "771a3de55f7bcb777e309afc71f750d3a2df2189"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/heroespatchnotes/heroes-data/zipball/771a3de55f7bcb777e309afc71f750d3a2df2189",
+                "reference": "771a3de55f7bcb777e309afc71f750d3a2df2189",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "library",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kevin Oliva",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Heroes of the Storm data in json format",
+            "homepage": "https://github.com/HeroesToolChest/heroes-data",
+            "keywords": [
+                "blizzard",
+                "data",
+                "heroes",
+                "hots"
+            ],
+            "support": {
+                "source": "https://github.com/heroespatchnotes/heroes-data/tree/master"
+            },
+            "time": "2020-12-26T19:52:43+00:00"
         },
         {
             "name": "laravel/framework",
@@ -9297,11 +9392,13 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "heroespatchnotes/sdk": 10
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.3|^8.0"
+        "php": "^7.3"
     },
     "platform-dev": [],
     "plugin-api-version": "2.0.0"

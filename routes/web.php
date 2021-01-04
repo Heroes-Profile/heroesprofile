@@ -116,3 +116,11 @@ Route::get('authenticate/battlenet/success', 'BattlenetAuthController@handleProv
 //Opt Out Process
 Route::view('/Account/Optout/', 'Account/optout/optout');
 Route::post('/account/optout/save', 'AccountController@optout');
+
+/**
+ * Gamedata Routes
+ */
+Route::get('/Gamedata', 'GamedataController@heroes');
+Route::get('/Gamedata/Heroes', 'GamedataController@heroes');
+Route::get('/Gamedata/Heroes/{id}', 'GamedataController@hero');
+
