@@ -48,6 +48,9 @@ jobs:
         env:
           COMPOSER_AUTH: ${{ secrets.COMPOSER_AUTH }}
 
+      - name: Inject game data images
+        run: sh images.sh
+
       - name: Create .env
         run: cp .env.example .env
 
