@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\GamedataController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -121,7 +120,7 @@ Route::post('/account/optout/save', 'AccountController@optout');
 /**
  * Gamedata Routes
  */
-Route::get('/Gamedata', [GamedataController::class, 'heroes']);
-Route::get('/Gamedata/Heroes', [GamedataController::class, 'heroes']);
-Route::get('/Gamedata/Heroes/{id}', [GamedataController::class, 'hero']);
+Route::get('/Gamedata', 'GamedataController@heroes');
+Route::get('/Gamedata/Heroes', 'GamedataController@heroes');
+Route::get('/Gamedata/Heroes/{id}', 'GamedataController@hero');
 
