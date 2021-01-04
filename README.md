@@ -39,12 +39,16 @@ For windows users, Wampserver64 is a useful tool as it installs the MySql server
 -   From the command line, navigate to the heroesprofile repository.
 -   Configure `.env` file using `.env.example`
 -   Run `composer install`
+-   Run `sh images.sh` to add the latest image files from game data<sup>1</sup>
 -   Run `php artisan key:generate` make sure the APP_KEY has this value in the .env file
 -   Run `npm install`
 -   Run `npm run dev`
 -   Run `php artisan migrate`
 -   Run `composer dump-autoload`
 -   Run `php artisan db:seed`
+
+> <sup>1</sup> The image injection script is written for *nix systems. On Windows you will need to clone/download the latest version of
+> https://github.com/HeroesToolChest/heroes-images and copy the **heroesimages** folder into **public/images**.
 
 ## Running the project
 
