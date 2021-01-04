@@ -26,6 +26,7 @@ robots.txt
 
 /public/css/*
 /public/js/*
+/public/images/heroesimages
 
 /vol_db_hp
 /database/seeds/.NO-SEED

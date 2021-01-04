@@ -20,6 +20,10 @@ fi
 
 composer install
 
+# Fetch heroes-images
+
+. images.sh
+
 # Create databases if they don't already exist
 
 php artisan db:create
