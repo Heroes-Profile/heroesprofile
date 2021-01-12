@@ -7,7 +7,7 @@
 	@include('Gamedata.form')
 
 	<div class="bg-wrapper bg-light m-3 p-3">
-		<img class="float-left mr-3 mb-3" src="/images/heroes/{{ strtolower($hero->hyperlinkId) }}.png" alt="Hero Icon">
+		<img class="float-left mr-3 mb-3" src="/images/heroesimages/heroportraits/{{ $hero->portraits->target }}" alt="Hero Icon">
 
 		<h2>{{ $hero->string('name') }} <span class="badge badge-secondary">{{ $hero->id() }}</span></h2>
 		<p class="small">{!! $hero->string('description')->withoutColor()->withoutNewline()->asHtml() !!}</p>
@@ -92,7 +92,7 @@
 					<h5>{{ $ability->string('name') }}</h5>
 				</div>
 				<div class="card-body">
-					<img class="float-left mr-3" src="/images/talents/{{ strtolower($hero->hyperlinkId) }}/{{ $ability->icon }}" alt="Ability Icon">
+					<img class="float-left mr-3" src="/images/heroesimages/abilitytalents/{{ $ability->icon }}" alt="Ability Icon" style="max-height: 60px;">
 					<p class="card-text small">{!! $ability->string('short') ? $ability->string('short')->asHtml() : '<em>n/a</em>' !!}</p>
 				</div>
 				<ul class="list-group list-group-flush">
@@ -135,7 +135,7 @@
 				@foreach ($hero->talents($level) as $talent)
 				<div class="row py-2 border-top bg-secondary text-white">
 					<div class="col-sm col-lg-4 col-xl-2">
-						<img class="float-left mr-3" src="/images/talents/{{ strtolower($hero->hyperlinkId) }}/{{ $talent->icon }}" alt="Talent Icon">
+						<img class="float-left mr-3" src="/images/heroesimages/abilitytalents/{{ $talent->icon }}" alt="Talent Icon" style="max-height: 80px;">
 						<strong>{{ $talent->string('name') }}</strong>
 						<p class="small">{!! $talent->string('cooldown') ? $talent->string('cooldown')->asHtml() : '' !!}</p>
 					</div>
@@ -150,7 +150,7 @@
 
 		<div class="row my-5">
 			<div class="col text-center">
-				<img class="img-fluid" src="/images/heroes_rectangle_large/{{ strtolower($hero->hyperlinkId) }}.jpg" alt="Hero Portrait">
+				<img class="img-fluid" src="/images/heroesimages/heroportraits/{{ $hero->portraits->draftScreen }}" alt="Hero Portrait">
 			</div>
 		</div>
 	</div>

@@ -19,7 +19,10 @@
 
 			@foreach ($heroes as $hero)
 			<tr>
-				<td><a href="/Gamedata/Heroes/{{ $hero->id() }}?patch={{ $patch}}&locale={{ $locale }}">{{ $hero->id() }}</a></td>
+				<td>
+					<img src="/images/heroesimages/heroportraits/{{ $hero->portraits->minimap }}" alt="Hero Icon">
+					<a href="/Gamedata/Heroes/{{ $hero->id() }}?patch={{ $patch}}&locale={{ $locale }}">{{ $hero->id() }}</a>
+				</td>
 				<td>{!! $hero->string('name')->asHtml() !!}</td>
 				<td>{!! $hero->string('title')->asHtml() !!}</td>
 				<td>{!! $hero->string('expandedrole')->asHtml() !!}</td>
