@@ -78,7 +78,8 @@
         "post-install-cmd": [
             "php artisan route:clear",
             "php artisan view:clear",
-            "php artisan view:cache"
+            "php artisan view:cache",
+            "sh images.sh"
         ]
     }
 }
