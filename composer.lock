@@ -695,16 +695,16 @@
         },
         {
             "name": "firebase/php-jwt",
-            "version": "v5.2.0",
+            "version": "v5.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/firebase/php-jwt.git",
-                "reference": "feb0e820b8436873675fd3aca04f3728eb2185cb"
+                "reference": "f42c9110abe98dd6cfe9053c49bc86acc70b2d23"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/feb0e820b8436873675fd3aca04f3728eb2185cb",
-                "reference": "feb0e820b8436873675fd3aca04f3728eb2185cb",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/f42c9110abe98dd6cfe9053c49bc86acc70b2d23",
+                "reference": "f42c9110abe98dd6cfe9053c49bc86acc70b2d23",
                 "shasum": ""
             },
             "require": {
@@ -743,9 +743,9 @@
             ],
             "support": {
                 "issues": "https://github.com/firebase/php-jwt/issues",
-                "source": "https://github.com/firebase/php-jwt/tree/master"
+                "source": "https://github.com/firebase/php-jwt/tree/v5.2.1"
             },
-            "time": "2020-03-25T18:49:23+00:00"
+            "time": "2021-02-12T00:02:00+00:00"
         },
         {
             "name": "fruitcake/laravel-cors",
@@ -947,16 +947,16 @@
         },
         {
             "name": "google/cloud-error-reporting",
-            "version": "v0.18.2",
+            "version": "v0.18.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-errorreporting.git",
-                "reference": "b3c4b2bf968d5b5210b750a37dd87d699dd1dd09"
+                "reference": "54d4615fce1fde0f4b37ba81e174f6d7f6da3d10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-errorreporting/zipball/b3c4b2bf968d5b5210b750a37dd87d699dd1dd09",
-                "reference": "b3c4b2bf968d5b5210b750a37dd87d699dd1dd09",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-errorreporting/zipball/54d4615fce1fde0f4b37ba81e174f6d7f6da3d10",
+                "reference": "54d4615fce1fde0f4b37ba81e174f6d7f6da3d10",
                 "shasum": ""
             },
             "require": {
@@ -993,9 +993,9 @@
             ],
             "description": "Stackdriver Error Reporting Client for PHP",
             "support": {
-                "source": "https://github.com/googleapis/google-cloud-php-errorreporting/tree/v0.18.2"
+                "source": "https://github.com/googleapis/google-cloud-php-errorreporting/tree/v0.18.3"
             },
-            "time": "2020-12-04T23:27:56+00:00"
+            "time": "2021-02-11T16:53:33+00:00"
         },
         {
             "name": "google/cloud-logging",
