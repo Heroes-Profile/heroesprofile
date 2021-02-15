@@ -9,7 +9,9 @@ handlers:
       secure: always
       redirect_http_response_code: 301
       script: auto
-
+skip_files:
+  - .env
+  
 env_variables:
   ## Put production environment variables here.
   LOG_CHANNEL: stackdriver
@@ -45,9 +47,8 @@ env_variables:
   BATTLENET_REDIRECT_URI: $BATTLENET_REDIRECT_URI
 
   BROADCAST_DRIVER: log
-  CACHE_DRIVER: database
-  CACHE_TABLE: heroesprofile_cache.cache
-  CACHE_PREFIX: heroesprofile_draft-dev-
+  CACHE_TABLE: "heroesprofile_cache.cache"
+  CACHE_PREFIX: "heroesprofile_draft-dev-"
   QUEUE_CONNECTION: sync
   SESSION_DRIVER: database
   SESSION_TABLE: $DEV_SESSION_TABLE

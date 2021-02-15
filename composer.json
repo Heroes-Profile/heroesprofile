@@ -70,6 +70,8 @@
             "@php artisan package:discover --ansi"
         ],
         "post-install-cmd": [
+            "chmod -R 755 bootstrap\/cache",
+            "php artisan cache:clear"
             "php artisan route:clear",
             "php artisan view:clear",
             "php artisan view:cache",
