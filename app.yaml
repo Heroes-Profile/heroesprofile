@@ -9,9 +9,7 @@ handlers:
       secure: always
       redirect_http_response_code: 301
       script: auto
-skip_files:
-  - .env
-  
+
 env_variables:
   ## Put production environment variables here.
   LOG_CHANNEL: stackdriver

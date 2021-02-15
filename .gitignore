@@ -19,7 +19,6 @@ Homestead.yaml
 Homestead.json
 /.vagrant
 .phpunit.result.cache
-.gcloudignore
 robots.txt
 
 
