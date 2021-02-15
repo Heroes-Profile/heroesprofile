@@ -13,9 +13,9 @@ class BattlenetAuthController extends Controller
   {
     Session::put('battlenet_region', $request->region);
 
-    $clientId = env('BATTLE.NET_KEY', false);
-    $clientSecret = env('BATTLE.NET_SECRET', false);
-    $redirectUrl = env('BATTLE.NET_REDIRECT_URI', false);
+    $clientId = env('BATTLENET_KEY', false);
+    $clientSecret = env('BATTLENET_SECRET', false);
+    $redirectUrl = env('BATTLENET_REDIRECT_URI', false);
     $additionalProviderConfig = ['region' => Session::get('battlenet_region')];
     $config = new \SocialiteProviders\Manager\Config($clientId, $clientSecret, $redirectUrl, $additionalProviderConfig);
     return Socialite::with('battlenet')->setConfig($config)->redirect();
@@ -39,9 +39,9 @@ class BattlenetAuthController extends Controller
       $region = 5;
     }
 
-    $clientId = env('BATTLE.NET_KEY', false);
-    $clientSecret = env('BATTLE.NET_SECRET', false);
-    $redirectUrl = env('BATTLE.NET_REDIRECT_URI', false);
+    $clientId = env('BATTLENET_KEY', false);
+    $clientSecret = env('BATTLENET_SECRET', false);
+    $redirectUrl = env('BATTLENET_REDIRECT_URI', false);
     $additionalProviderConfig = ['region' => Session::get('battlenet_region')];
     $config = new \SocialiteProviders\Manager\Config($clientId, $clientSecret, $redirectUrl, $additionalProviderConfig);
 
