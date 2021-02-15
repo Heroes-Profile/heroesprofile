@@ -54,7 +54,6 @@ jobs:
           CACHE_TABLE: ${{ secrets.DEV_CACHE_TABLE }}
           CACHE_PREFIX: ${{ secrets.DEV_CACHE_PREFIX }}
           QUEUE_CONNECTION: ${{ secrets.DEV_QUEUE_CONNECTION }}
-          SESSION_DRIVER: ${{ secrets.DEV_SESSION_DRIVER }}
           SESSION_LIFETIMEL: ${{ secrets.DEV_SESSION_LIFETIME }}
 
       - uses: actions-hub/gcloud@master
