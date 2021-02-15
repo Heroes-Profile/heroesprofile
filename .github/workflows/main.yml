@@ -27,9 +27,17 @@ jobs:
       - uses: ikuanyshbekov/app-yaml-env-compiler@v1.1
         env:
           DB_DATABASE: ${{ secrets.DEV_DB_DATABASE }}
-          DB_USERNAME: ${{ secrets.DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_SOCKET: ${{ secrets.DB_SOCKET }}
+          DB_USERNAME: ${{ secrets.DEV_DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DEV_DB_PASSWORD }}
+          DB_SOCKET: ${{ secrets.DEV_DB_SOCKET }}
+          DB_HOST: ${{ secrets.DEV_DB_HOST }}
+          DB_DATABASE_CACHE: ${{ secrets.DEV_DB_DATABASE_CACHE }}
+          DB_DATABASE_DEV: ${{ secrets.DEV_DB_DATABASE_DEV }}
+          BATTLE.NET_KEY: ${{ secrets.DEV_BATTLENET_KEY }}
+          BATTLE.NET_SECRET: ${{ secrets.BATTLENET_SECRET }}
+          BATTLE.NET_REDIRECT_URI: ${{ secrets.BATTLENET_REDIRECT_URI }}
+
+
       - uses: actions-hub/gcloud@master
         env:
           PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID }}

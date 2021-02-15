@@ -24,3 +24,31 @@ env_variables:
   DB_USERNAME: $DEV_DB_USERNAME
   DB_PASSWORD: $DEV_DB_PASSWORD
   DB_SOCKET: $DEV_DB_SOCKET
+
+  ##Laravel Specific
+  APP_NAME: HeroesProfileDev
+  APP_ENV: development
+  APP_DEBUG: true
+  APP_URL: https://dev.heroesprofile.com/
+
+  DB_CONNECTION: mysql
+  DB_CONNECTION_CACHE: mysql_cache
+  DB_CONNECTION_DEV: mysql_dev
+  DB_CONNECTION_BRAWL: mysql_brawl
+  DB_HOST: $DEV_DB_HOST
+  DB_DATABASE: $DEV_DB_DATABASE
+  DB_DATABASE_CACHE: $DEV_DB_DATABASE_CACHE
+  DB_DATABASE_DEV: $DEV_DB_DATABASE_DEV
+
+  BATTLE.NET_KEY: $DEV_BATTLENET_KEY
+  BATTLE.NET_SECRET: $BATTLENET_SECRET
+  BATTLE.NET_REDIRECT_URI: $BATTLENET_REDIRECT_URI
+
+  BROADCAST_DRIVER: log
+  CACHE_DRIVER: database
+  CACHE_TABLE: heroesprofile_cache.cache
+  CACHE_PREFIX: heroesprofile_draft-dev-
+  QUEUE_CONNECTION: sync
+  SESSION_DRIVER: database
+  SESSION_TABLE: heroesprofile_cache.sessions
+  SESSION_LIFETIME: 120
