@@ -31,25 +31,18 @@ jobs:
           VIEW_COMPILED_PATH: ${{ secrets.DEV_VIEW_COMPILED_PATH }}
           VIEW_COMPILED_PATH: ${{ secrets.DEV_CACHE_DRIVER }}
           VIEW_COMPILED_PATH: ${{ secrets.DEV_SESSION_DRIVER }}
-
-
           DB_DATABASE: ${{ secrets.DEV_DB_DATABASE }}
           DB_USERNAME: ${{ secrets.DEV_DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DEV_DB_PASSWORD }}
           DB_SOCKET: ${{ secrets.DEV_DB_SOCKET }}
-
-
           APP_NAME: ${{ secrets.DEV_APP_NAME }}
           APP_ENV: ${{ secrets.DEV_APP_ENV }}
           APP_DEBUG: ${{ secrets.DEV_APP_DEBUG }}
           APP_URL: ${{ secrets.DEV_APP_URL }}
-
-
           DB_CONNECTION: ${{ secrets.DEV_DB_CONNECTION }}
           DB_CONNECTION_CACHE: ${{ secrets.DEV_DB_CONNECTION_CACHE }}
           DB_CONNECTION_DEV: ${{ secrets.DEV_DB_CONNECTION_DEV }}
           DB_CONNECTION_BRAWL: ${{ secrets.DEV_DB_CONNECTION_BRAWL }}
-
           DB_HOST: ${{ secrets.DEV_DB_HOST }}
           DB_DATABASE_CACHE: ${{ secrets.DEV_DB_DATABASE_CACHE }}
           DB_DATABASE_DEV: ${{ secrets.DEV_DB_DATABASE_DEV }}
@@ -57,15 +50,12 @@ jobs:
           BATTLENET_SECRET: ${{ secrets.DEV_BATTLENET_SECRET }}
           BATTLENET_REDIRECT_URI: ${{ secrets.DEV_BATTLENET_REDIRECT_URI }}
           SESSION_TABLE: ${{ secrets.DEV_SESSION_TABLE }}
-
-
           BROADCAST_DRIVER: ${{ secrets.DEV_BROADCAST_DRIVER }}
           CACHE_TABLE: ${{ secrets.DEV_CACHE_TABLE }}
           CACHE_PREFIX: ${{ secrets.DEV_CACHE_PREFIX }}
           QUEUE_CONNECTION: ${{ secrets.DEV_QUEUE_CONNECTION }}
           SESSION_DRIVER: ${{ secrets.DEV_SESSION_DRIVER }}
           SESSION_LIFETIMEL: ${{ secrets.DEV_SESSION_LIFETIME }}
-
 
       - uses: actions-hub/gcloud@master
         env:
