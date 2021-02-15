@@ -24,7 +24,9 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - uses: ikuanyshbekov/app-yaml-env-compiler@v1.1
+      - uses: microsoft/variable-substitution@v1
+        with:
+          files: /*.yaml'
         env:
           LOG_CHANNEL: ${{ secrets.DEV_LOG_CHANNEL }}
           APP_STORAGE: ${{ secrets.DEV_APP_STORAGE }}
