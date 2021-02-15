@@ -1,4 +1,4 @@
-runtime: php73
+runtime: php74
 
 handlers:
     - url: /(.*\.(gif|png|PNG|jpg|css|js|yaml|svg|tiff|woff|woff2|ico))$
