@@ -28,7 +28,7 @@ env_variables:
   ##Laravel Specific
   APP_NAME: HeroesProfileDev
   APP_ENV: development
-  APP_DEBUG: true
+  APP_DEBUG: "true"
   APP_URL: https://dev.heroesprofile.com/
 
   DB_CONNECTION: mysql
