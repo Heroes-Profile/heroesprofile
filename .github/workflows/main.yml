@@ -2,7 +2,7 @@
 
 name: CI
 
-# Controls when the action will run. 
+# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the develop branch
   push:
@@ -24,13 +24,16 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
-
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
-        run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+      - uses: ikuanyshbekov/app-yaml-env-compiler@v1.1
+        env:
+          DB_DATABASE: ${{ secrets.DEV_DB_DATABASE }}
+          DB_USERNAME: ${{ secrets.DB_USERNAME }}
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          DB_SOCKET: ${{ secrets.DB_SOCKET }}
+      - uses: actions-hub/gcloud@master
+        env:
+          PROJECT_ID: ${{ secrets.GCLOUD_PROJECT_ID }}
+          APPLICATION_CREDENTIALS: ${{ secrets.GCLOUD_AUTH }}
+          CLOUDSDK_CORE_DISABLE_PROMPTS: 1
+        with:
+          args: app deploy app.yaml
