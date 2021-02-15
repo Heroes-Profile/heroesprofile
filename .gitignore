@@ -19,7 +19,6 @@ Homestead.yaml
 Homestead.json
 /.vagrant
 .phpunit.result.cache
-app.yaml
 .gcloudignore
 robots.txt
 
@@ -30,3 +29,4 @@ robots.txt
 
 /vol_db_hp
 /database/seeds/.NO-SEED
+prod-app.yaml
