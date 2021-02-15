@@ -34,8 +34,9 @@ jobs:
           DB_DATABASE_CACHE: ${{ secrets.DEV_DB_DATABASE_CACHE }}
           DB_DATABASE_DEV: ${{ secrets.DEV_DB_DATABASE_DEV }}
           BATTLE.NET_KEY: ${{ secrets.DEV_BATTLENET_KEY }}
-          BATTLE.NET_SECRET: ${{ secrets.BATTLENET_SECRET }}
-          BATTLE.NET_REDIRECT_URI: ${{ secrets.BATTLENET_REDIRECT_URI }}
+          BATTLE.NET_SECRET: ${{ secrets.DEV_BATTLENET_SECRET }}
+          BATTLE.NET_REDIRECT_URI: ${{ secrets.DEV_BATTLENET_REDIRECT_URI }}
+          SESSION_TABLE: ${{ secrets.DEV_SESSION_TABLE }}
 
 
       - uses: actions-hub/gcloud@master

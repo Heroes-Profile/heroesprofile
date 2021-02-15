@@ -50,5 +50,5 @@ env_variables:
   CACHE_PREFIX: heroesprofile_draft-dev-
   QUEUE_CONNECTION: sync
   SESSION_DRIVER: database
-  SESSION_TABLE: heroesprofile_cache.sessions
+  SESSION_TABLE: $DEV_SESSION_TABLE
   SESSION_LIFETIME: 120
