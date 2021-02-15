@@ -26,7 +26,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: microsoft/variable-substitution@v1
         with:
-          files: /*.yaml'
+          files: 'app.yaml'
         env:
           LOG_CHANNEL: ${{ secrets.DEV_LOG_CHANNEL }}
           APP_STORAGE: ${{ secrets.DEV_APP_STORAGE }}
@@ -35,7 +35,7 @@ jobs:
           SESSION_DRIVER: ${{ secrets.DEV_SESSION_DRIVER }}
           DB_DATABASE: ${{ secrets.DEV_DB_DATABASE }}
           DB_USERNAME: ${{ secrets.DEV_DB_USERNAME }}
-          DB_PASSWORD: ${{ secrets.DEV_DB_PASSWORD }}
+          DB_PASSWORD: ${{ secrets.DEV_DB_PASSWORD }}``
           DB_SOCKET: ${{ secrets.DEV_DB_SOCKET }}
           APP_NAME: ${{ secrets.DEV_APP_NAME }}
           APP_ENV: ${{ secrets.DEV_APP_ENV }}
