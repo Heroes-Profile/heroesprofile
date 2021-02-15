@@ -1,0 +1,26 @@
+runtime: php73
+
+handlers:
+    - url: /(.*\.(gif|png|PNG|jpg|css|js|yaml|svg|tiff|woff|woff2|ico))$
+      static_files: public/\1
+      upload: public/.*\.(gif|png|PNG|jpg|css|js|yaml|svg|tiff|woff|woff2|ico)$
+
+    - url: /.*
+      secure: always
+      redirect_http_response_code: 301
+      script: auto
+
+env_variables:
+  ## Put production environment variables here.
+  LOG_CHANNEL: stackdriver
+  APP_KEY: $DEV_APP_KEY
+  APP_STORAGE: /tmp
+  VIEW_COMPILED_PATH: /tmp
+  CACHE_DRIVER: database
+  SESSION_DRIVER: database
+  ## Set these environment variables according to your CloudSQL configuration.
+
+  DB_DATABASE: $DEV_DB_DATABASE
+  DB_USERNAME: $DEV_DB_USERNAME
+  DB_PASSWORD: $DEV_DB_PASSWORD
+  DB_SOCKET: $DEV_DB_SOCKET
