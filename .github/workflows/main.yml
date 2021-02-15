@@ -29,8 +29,8 @@ jobs:
           LOG_CHANNEL: ${{ secrets.DEV_LOG_CHANNEL }}
           APP_STORAGE: ${{ secrets.DEV_APP_STORAGE }}
           VIEW_COMPILED_PATH: ${{ secrets.DEV_VIEW_COMPILED_PATH }}
-          VIEW_COMPILED_PATH: ${{ secrets.DEV_CACHE_DRIVER }}
-          VIEW_COMPILED_PATH: ${{ secrets.DEV_SESSION_DRIVER }}
+          CACHE_DRIVER: ${{ secrets.DEV_CACHE_DRIVER }}
+          SESSION_DRIVER: ${{ secrets.DEV_SESSION_DRIVER }}
           DB_DATABASE: ${{ secrets.DEV_DB_DATABASE }}
           DB_USERNAME: ${{ secrets.DEV_DB_USERNAME }}
           DB_PASSWORD: ${{ secrets.DEV_DB_PASSWORD }}
