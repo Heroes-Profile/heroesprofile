@@ -12,6 +12,16 @@ if [ ! "`which git`" ]; then
     exit 1
 fi
 
+# Output debug info
+hostname
+whoami
+pwd
+git --version
+composer --version
+php --version
+
+echo ""
+
 # Locate the necessary directories
 cd `dirname "$0"`
 ROOTDIR=`pwd`
@@ -35,16 +45,6 @@ echo "* Source:     $SOURCE"
 echo "* Destiation: $DESTINATION"
 echo "*"
 echo "**"
-echo ""
-
-# Output debug info
-hostname
-whoami
-pwd
-git --version
-composer --version
-php --version
-
 echo ""
 
 # Attempt to clone the repo
