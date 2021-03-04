@@ -165,7 +165,7 @@ class GlobalStatData
         $return_data[$counter]["losses"] = 0;
       }
 
-      $return_data[$counter]["games_played"] = $data["wins"] + $data["losses"];
+      $return_data[$counter]["games_played"] = $return_data[$counter]["wins"] + $return_data[$counter]["losses"];
 
       if($return_data[$counter]["games_played"]){
         $return_data[$counter]["win_rate"] = $return_data[$counter]["wins"] / ($return_data[$counter]["wins"] + $return_data[$counter]["losses"]);
