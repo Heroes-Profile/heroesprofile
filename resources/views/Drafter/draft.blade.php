@@ -478,7 +478,6 @@
       $('.loader').show();
       $('#draft-hero-wrapper .rounded-picture').popover('hide');
       //$('#draft-hero-wrapper').html('');
-
       $.ajax({
         url: url,
         data: parameters,

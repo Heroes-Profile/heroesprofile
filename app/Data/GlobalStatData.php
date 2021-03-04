@@ -234,7 +234,12 @@ class GlobalStatData
 
 
       $return_data[$counter]["win_rate"] = number_format($return_data[$counter]["win_rate"] * 100, 2);
-      $return_data[$counter]["change"] = number_format($return_data[$counter]["change"], 2);
+
+      if(isset($return_data[$counter]["change"])){
+        $return_data[$counter]["change"] = number_format($return_data[$counter]["change"], 2);
+      }else{
+        $return_data[$counter]["change"] = 0;
+      }
       $return_data[$counter]["popularity"] = number_format($return_data[$counter]["popularity"], 2);
       $return_data[$counter]["pick_rate"] = number_format($return_data[$counter]["pick_rate"] * 100, 2);
 
