@@ -93,7 +93,11 @@ class DraftController extends Controller
       return $return_data;
     });
 
-    $current_pick_data = $ban_draft_order_data[$request["currentPickNumber"]];
+    if(isset($ban_draft_order_data[$request["currentPickNumber"]])){
+      $current_pick_data = $ban_draft_order_data[$request["currentPickNumber"]];
+    }else{
+      $current_pick_data = array();
+    }
 
 
 
@@ -162,11 +166,18 @@ class DraftController extends Controller
           $max_value = $return_data[$counter]["bans"];
         }
 
+        if(isset($hero_win_rate_data_array[$hero])){
+          $return_data[$counter]["win_rate"] = $hero_win_rate_data_array[$hero]["win_rate"];
+          $return_data[$counter]["win_rate_confidence"] = $hero_win_rate_data_array[$hero]["win_rate_confidence"];
+          $return_data[$counter]["influence"] = $hero_win_rate_data_array[$hero]["influence"];
+          $return_data[$counter]["ban_rate"] = $hero_win_rate_data_array[$hero]["ban_rate"];
+        }else{
+          $return_data[$counter]["win_rate"] = 0;
+          $return_data[$counter]["win_rate_confidence"] = 0;
+          $return_data[$counter]["influence"] = 0;
+          $return_data[$counter]["ban_rate"] = 0;
+        }
 
-        $return_data[$counter]["win_rate"] = $hero_win_rate_data_array[$hero]["win_rate"];
-        $return_data[$counter]["win_rate_confidence"] = $hero_win_rate_data_array[$hero]["win_rate_confidence"];
-        $return_data[$counter]["influence"] = $hero_win_rate_data_array[$hero]["influence"];
-        $return_data[$counter]["ban_rate"] = $hero_win_rate_data_array[$hero]["ban_rate"];
 
 
 
