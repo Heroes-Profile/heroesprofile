@@ -28,7 +28,7 @@ class AccountController extends Controller
   }
 
   public function optout(){
-    $battletag_data = \App\Models\Battletag::where('Battletag', Auth::user()->battletag)->get(); // @phpstan-ignore-line
+    $battletag_data = \App\Models\Battletag::where('battletag', Auth::user()->battletag)->get();
 
     foreach($battletag_data as $result){
       $result->opt_out = 1;

@@ -5,7 +5,7 @@
   <a class="navbar-brand" href="/">
     Heroes
     <img src="/images/logo/heroesprofilelogo.png" width="34" height="30" class="d-inline-block align-top" alt="">
-    Profile Drafter
+    Profile
   </a>
 
   <div class="header-buttons">
@@ -27,11 +27,19 @@
     <ul class="navbar-nav ml-auto">
 
       <li class="nav-item">
+        <a class="nav-link active" href="/" id="drafter-link">Game Data</a>
+      </li>
+
+      <li class="nav-item">
         <a class="nav-link active" href="/Drafter" id="drafter-link">Drafter</a>
       </li>
 
       <li class="nav-item">
         <a class="nav-link active" href="/docs" id="drafter-link">Documentation</a>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link active" href="/Account/Optout/" id="drafter-link">Opt Out</a>
       </li>
 </div>
 

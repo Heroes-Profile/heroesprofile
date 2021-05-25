@@ -70,7 +70,7 @@
             "@php artisan package:discover --ansi"
         ],
         "post-install-cmd": [
-            "sh images.sh"
+            "php artisan view:clear"
         ]
     }
 }

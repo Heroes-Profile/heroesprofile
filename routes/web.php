@@ -82,7 +82,7 @@ Route::get('/Match/Single', 'MatchController@show');
 */
 
 //Drafter
-Route::get('/', 'DraftController@show');
+//Route::get('/', 'DraftController@show');
 Route::get('/Drafter', 'DraftController@show');
 
 //Bans
@@ -112,16 +112,23 @@ Route::get('login/battlenet', 'Auth\battlenet\LoginController@show');
 Route::get('logout/battlenet', 'Auth\battlenet\LogoutController@show');
 Route::post('authenticate/battlenet', 'BattlenetAuthController@redirectToProvider');
 Route::get('authenticate/battlenet/success', 'BattlenetAuthController@handleProviderCallback');
-
+*/
 
 //Opt Out Process
 Route::view('/Account/Optout/', 'Account/optout/optout');
 Route::post('/account/optout/save', 'AccountController@optout');
+Route::view('Account/optout/success', 'Account/optout/success');
+
+
+Route::post('/optout/authenticate/battlenet', 'BattleNetAuthController@redirectToProviderOptOut');
+Route::get('/optout/authenticate/battlenet/success', 'BattleNetAuthController@handleProviderCallbackOptOut');
+
+
 
 /**
  * Gamedata Routes
  */
+Route::get('/', 'GamedataController@heroes');
 Route::get('/Gamedata', 'GamedataController@heroes');
 Route::get('/Gamedata/Heroes', 'GamedataController@heroes');
 Route::get('/Gamedata/Heroes/{id}', 'GamedataController@hero');
-
