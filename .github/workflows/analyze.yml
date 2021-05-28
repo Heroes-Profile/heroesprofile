@@ -43,7 +43,7 @@ jobs:
         run: echo "::set-output name=dir::$(composer config cache-files-dir)"
 
       - name: Cache composer dependencies
-        uses: actions/cache@v2.1.4
+        uses: actions/cache@v2.1.6
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
@@ -53,7 +53,7 @@ jobs:
         run: mkdir -p build/phpstan
 
       - name: Cache PHPStan result
-        uses: actions/cache@v2.1.4
+        uses: actions/cache@v2.1.6
         with:
           path: build/phpstan
           key: ${{ runner.os }}-phpstan-${{ github.sha }}
