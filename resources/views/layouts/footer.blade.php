@@ -10,7 +10,7 @@
             <a class="header-button btn btn-sm btn-secondary" href="https://www.heroesprofile.com/" target="_blank">Heroes Profile</a>
             <a class="header-button btn btn-sm btn-primary" href="https://api.heroesprofile.com"  target="_blank">Heroes Profile API</a>
           {{--  <a class="header-button btn btn-sm btn-secondary" href="/Series" target="_blank">Amateur Series</a>--}}
-            <a class="header-button btn btn-sm btn-danger" href="https://www.patreon.com/heroesprofile" target="_blank">Become a Patreon</a>
+            <a class="header-button btn btn-sm btn-danger" href="https://www.patreon.com/heroesprofile" target="_blank">Remove Ads/Patreon</a>
           </div>
           <ul class="footer-menu">
             <li>
@@ -29,7 +29,7 @@
 
       </div>
 
-      <div class="disclaimer"><p>Heroes Profile is entirely funded by its developers. No ads are used on the site. If you like the site, consider donating to our <a href="https://www.patreon.com/heroesprofile" target="_blank">Patreon</a>.  Even $1 helps. Heroes Profile has no affiliation with Blizzard or Heroes of the Storm. Data for the site provided by <a href="https://hotsapi.net" target="_blank">HotsAPI</a>. Upload your replays to HotsAPI for most accurate data.</p></div>
+      <div class="disclaimer"><p>Heroes Profile is funded by its developers. If you like the site, consider donating to our <a href="https://www.patreon.com/heroesprofile" target="_blank">Patreon</a>.  Even $1 helps. Heroes Profile has no affiliation with Blizzard or Heroes of the Storm. Data for the site provided by <a href="https://api.heroesprofile.com/upload" target="_blank">Heroes Profle API</a>. Upload your replays to Heroes Profile API for most accurate data.</p></div>
     </div>
   </div>
 </footer>

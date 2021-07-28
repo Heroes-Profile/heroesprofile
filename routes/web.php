@@ -128,7 +128,11 @@ Route::get('/optout/authenticate/battlenet/success', 'BattleNetAuthController@ha
 /**
  * Gamedata Routes
  */
-Route::get('/', 'GamedataController@heroes');
+ Route::get('/', function () {
+     return redirect('/Development');
+ });
+
+Route::get('/Development', 'GamedataController@heroes');
 Route::get('/Gamedata', 'GamedataController@heroes');
 Route::get('/Gamedata/Heroes', 'GamedataController@heroes');
 Route::get('/Gamedata/Heroes/{id}', 'GamedataController@hero');
