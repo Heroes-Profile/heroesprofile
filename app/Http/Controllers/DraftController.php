@@ -9,11 +9,19 @@ class DraftController extends Controller
 {
   //$bans = array();
 
-  public function show(){
+  public function show(Request $request){
+    if(!$request->adFree){
+      print_r("Not Ad Free");
+    }else{
+      print_r("Ad Free");
+    }
+
+
     $return_data = array();
     $page = "Drafter.draft";
     return view('Drafter.draft',
     [
+      'adFree' => $request->adFree,
       'title' => 'Drafter', // Page title
       'paragraph' => 'Drafter Paragraph', // Summary paragraph
       'filtertype' => 'drafter',

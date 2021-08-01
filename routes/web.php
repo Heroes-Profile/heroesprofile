@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::get('/ads.txt',function(){
+   return view('ads');
+});
+
 /*
 
 ///For Testing
@@ -81,8 +86,32 @@ Route::get('/Match/Single', 'MatchController@show');
 //Route::post('getSingeMatchData', 'MatchController@getMatchData');
 */
 
-//Drafter
-//Route::get('/', 'DraftController@show');
+
+
+
+Route::get('/', function () {
+    return redirect('/Drafter');
+});
+
+
+Route::group([
+    'middleware' => 'checkAdFree'
+], function () {
+  Route::get('/Drafter', 'DraftController@show');
+  Route::get('/Development', 'GamedataController@heroes');
+  Route::view('/Account/Optout/', 'Account/optout/optout');
+
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| Drafter Routes
+|--------------------------------------------------------------------------
+|
+| Here is where we put some info about the drafter Routes
+|
+*/
 Route::get('/Drafter', 'DraftController@show');
 
 //Bans
@@ -98,14 +127,41 @@ Route::get('/getCompositionData', 'DraftController@getCompositionData');
 Route::post('/getCompositionData', 'DraftController@getCompositionData');
 
 
+/*
+|--------------------------------------------------------------------------
+| Game Data Routes
+|--------------------------------------------------------------------------
+|
+| Here is where we put some info about the game data Routes
+|
+*/
+Route::get('/Gamedata', 'GamedataController@heroes');
+Route::get('/Gamedata/Heroes', 'GamedataController@heroes');
+Route::get('/Gamedata/Heroes/{id}', 'GamedataController@hero');
+
 
 /*
-Route::group([
-    'middleware' => 'setGlobals'
-], function () {
-
-});
+|--------------------------------------------------------------------------
+| Loogin Routes
+|--------------------------------------------------------------------------
+|
+| Here is where we put some info about the game data Routes
+|
 */
+
+Route::post('/login', 'AccountController@login');
+Route::post('/optout/authenticate/battlenet', 'BattleNetAuthController@redirectToProviderOptOut');
+
+
+
+
+
+//Opt Out Process
+Route::post('/account/optout/save', 'AccountController@optout');
+Route::view('Account/optout/success', 'Account/optout/success');
+
+Route::get('/optout/authenticate/battlenet/success', 'BattleNetAuthController@handleProviderCallbackOptOut');
+
 /*
 //Battlenet Login/Logout Process
 Route::get('login/battlenet', 'Auth\battlenet\LoginController@show');
@@ -113,26 +169,3 @@ Route::get('logout/battlenet', 'Auth\battlenet\LogoutController@show');
 Route::post('authenticate/battlenet', 'BattlenetAuthController@redirectToProvider');
 Route::get('authenticate/battlenet/success', 'BattlenetAuthController@handleProviderCallback');
 */
-
-//Opt Out Process
-Route::view('/Account/Optout/', 'Account/optout/optout');
-Route::post('/account/optout/save', 'AccountController@optout');
-Route::view('Account/optout/success', 'Account/optout/success');
-
-
-Route::post('/optout/authenticate/battlenet', 'BattleNetAuthController@redirectToProviderOptOut');
-Route::get('/optout/authenticate/battlenet/success', 'BattleNetAuthController@handleProviderCallbackOptOut');
-
-
-
-/**
- * Gamedata Routes
- */
- Route::get('/', function () {
-     return redirect('/Development');
- });
-
-Route::get('/Development', 'GamedataController@heroes');
-Route::get('/Gamedata', 'GamedataController@heroes');
-Route::get('/Gamedata/Heroes', 'GamedataController@heroes');
-Route::get('/Gamedata/Heroes/{id}', 'GamedataController@hero');
