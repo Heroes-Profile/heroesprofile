@@ -6,5 +6,10 @@
     </label>
   </div>
 
-  <a href="javascript:void(0)" id="submit-draft" class="draft-button btn btn-secondary">Start Draft</a>
+  <div class="header-buttons draft-selection-buttons" style="display:flex; justify-content: center; font-size: .8em;">
+    <a href="javascript:void(0)" id="submit-draft" class="draft-button header-button btn btn-sm btn-secondary " style="margin:0; margin-left:10px; margin-right: 10px;">Start Draft</a>
+
+    <a href="javascript:void(0)" id="submit-mock-draft" class="draft-button header-button btn btn-sm btn-danger " style="margin-left:10px; margin-right: 10px;">Draft with no data</a>
+  </div>
+
 </form>

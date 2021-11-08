@@ -208,7 +208,7 @@
 
 
 
-
+    var mockdraft = false;
 
     var currentPickNumber=0;
     var heroesPicked = [];
@@ -259,6 +259,36 @@
     $('#main-draft').hide();
 
     $('#submit-draft').click(function(e){
+      $('#draft-setup').hide();
+      $('#show-filters-button').show();
+      $('#basic_search').hide();
+
+
+
+      var team_pick = $('#first-pick-team-1').is(':checked');
+      pickOrder = pickOrderTeam1;
+
+      if(!team_pick){
+        pickOrder = pickOrderTeam2;
+      }
+
+
+
+
+
+
+
+
+
+      updatePick(pickOrder[currentPickNumber], heroesPicked, currentPickNumber);
+      $('#main-draft').fadeIn();
+    });
+
+
+    $('#submit-mock-draft').click(function(e){
+
+      mockdraft = true;
+
       $('#draft-setup').hide();
       $('#show-filters-button').show();
       $('#basic_search').hide();
@@ -427,14 +457,15 @@
     });
 
     function updatePick(pickOrder, heroesPicked, currentPickNumber){
+      console.log(mockdraft);
       $('#draft-hero-wrapper').html();
       $('.highlight-player').removeClass('highlight-player');
       $('#'+pickOrder).removeClass('disabled');
       $('#'+pickOrder).addClass('highlight-player');
-      updateDraftHeroes(heroesPicked, currentPickNumber);
+      updateDraftHeroes(heroesPicked, currentPickNumber, mockdraft);
     }
 
-    function updateDraftHeroes(heroesPicked, currentPickNumber){
+    function updateDraftHeroes(heroesPicked, currentPickNumber, mockdraft){
       var formData = $('#basic_search').serializeArray();
 
 
@@ -472,7 +503,8 @@
         'data' : formData,
         'heroesPicked' : heroesPicked,
         'teamPicks' :teamPick,
-        'currentPickNumber' : currentPickNumber
+        'currentPickNumber' : currentPickNumber,
+        'mockdraft': mockdraft,
       }
       //$("#draft-hero-wrapper").html('');
       $('.loader').show();

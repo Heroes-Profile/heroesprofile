@@ -27,6 +27,54 @@ class DraftController extends Controller
 
 
   public function getDraftBanData(Request $request){
+    $mockdraft = $request["mockdraft"];
+    $heroesPicked = array();
+    if(isset($request["heroesPicked"])){
+      $heroesPicked = $request["heroesPicked"];
+    }
+
+    if($mockdraft == "true"){
+      $heroes = \App\Models\Hero::select('id', 'name', 'short_name', "new_role")->orderBy('name', 'ASC')->get();
+      $hero_data = array();
+      $counter = 0;
+
+      for($i = 0; $i < count($heroes); $i++){
+        if(!in_array($heroes[$i]["id"], $heroesPicked)){
+
+          $return_data[$counter]["id"] = $heroes[$i]["id"];
+          $return_data[$counter]["name"] = $heroes[$i]["name"];
+          $return_data[$counter]["short_name"] = $heroes[$i]["short_name"];
+          $return_data[$counter]["new_role"] = $heroes[$i]["new_role"];
+          $return_data[$counter]["value"] = 0;
+          $return_data[$counter]["games_played"] = 0;
+          $return_data[$counter]["bans"] = 0;
+          $return_data[$counter]["pick_order_percent"] = 0;
+          $return_data[$counter]["win_rate"] = 0;
+          $return_data[$counter]["win_rate_confidence"] = 0;
+          $return_data[$counter]["influence"] = 0;
+          $return_data[$counter]["ban_rate"] = 0;
+          $return_data[$counter]["starred"] = "";
+
+          $counter++;
+        }
+
+
+      }
+      return view('Drafter.draftPicks', ['controller_hero_data' => $return_data, 'bans' => true]);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
     $filters_instance = \Filters::instance();
     $filters = $filters_instance->formatFilterData($request["data"], 1, 1);
 
@@ -41,10 +89,7 @@ class DraftController extends Controller
     $role_league_tier = $filters_instance->role_league_tier;
     $mirror = $filters_instance->mirror;
 
-    $heroesPicked = array();
-    if(isset($request["heroesPicked"])){
-      $heroesPicked = $request["heroesPicked"];
-    }
+
 
     $page = "DraftBans";
     $cache =  $page .
@@ -68,8 +113,6 @@ class DraftController extends Controller
       $return_data = $ban_data->getHeroBans();
       return $return_data;
     });
-
-
 
 
 
@@ -208,6 +251,47 @@ class DraftController extends Controller
   }
 
   public function getInitialData(Request $request){
+    $mockdraft = $request["mockdraft"];
+    $heroesPicked = array();
+    if(isset($request["heroesPicked"])){
+      $heroesPicked = $request["heroesPicked"];
+    }
+
+    if($mockdraft == "true"){
+      $heroes = \App\Models\Hero::select('id', 'name', 'short_name', "new_role")->orderBy('name', 'ASC')->get();
+      $hero_data = array();
+      $counter = 0;
+
+      for($i = 0; $i < count($heroes); $i++){
+        if(!in_array($heroes[$i]["id"], $heroesPicked)){
+
+          $return_data[$counter]["id"] = $heroes[$i]["id"];
+          $return_data[$counter]["name"] = $heroes[$i]["name"];
+          $return_data[$counter]["short_name"] = $heroes[$i]["short_name"];
+          $return_data[$counter]["new_role"] = $heroes[$i]["new_role"];
+          $return_data[$counter]["value"] = 0;
+          $return_data[$counter]["games_played"] = 0;
+          $return_data[$counter]["bans"] = 0;
+          $return_data[$counter]["pick_order_percent"] =0;
+          $return_data[$counter]["win_rate"] = 0;
+          $return_data[$counter]["win_rate_confidence"] = 0;
+          $return_data[$counter]["influence"] = 0;
+          $return_data[$counter]["ban_rate"] = 0;
+          $return_data[$counter]["starred"] = "";
+
+          $counter++;
+        }
+
+
+      }
+      return view('Drafter.draftPicks', ['controller_hero_data' => $return_data, 'bans' => true]);
+    }
+
+
+
+
+
+
     $filters_instance = \Filters::instance();
     $filters = $filters_instance->formatFilterData($request["data"], 1, 1);
 
@@ -221,12 +305,6 @@ class DraftController extends Controller
     $hero_league_tier = $filters_instance->hero_league_tier;
     $role_league_tier = $filters_instance->role_league_tier;
     $mirror = $filters_instance->mirror;
-
-    $heroesPicked = array();
-    if(isset($request["heroesPicked"])){
-      $heroesPicked = $request["heroesPicked"];
-    }
-
 
 
 
@@ -369,6 +447,42 @@ class DraftController extends Controller
   }
 
   public function getCompositionData(Request $request){
+    $mockdraft = $request["mockdraft"];
+    $heroesPicked = array();
+    if(isset($request["heroesPicked"])){
+      $heroesPicked = $request["heroesPicked"];
+    }
+
+    if($mockdraft == "true"){
+      $heroes = \App\Models\Hero::select('id', 'name', 'short_name', "new_role")->orderBy('name', 'ASC')->get();
+      $hero_data = array();
+      $counter = 0;
+
+      for($i = 0; $i < count($heroes); $i++){
+        if(!in_array($heroes[$i]["id"], $heroesPicked)){
+
+          $return_data[$counter]["id"] = $heroes[$i]["id"];
+          $return_data[$counter]["name"] = $heroes[$i]["name"];
+          $return_data[$counter]["short_name"] = $heroes[$i]["short_name"];
+          $return_data[$counter]["new_role"] = $heroes[$i]["new_role"];
+          $return_data[$counter]["value"] = 0;
+          $return_data[$counter]["games_played"] = 0;
+          $return_data[$counter]["bans"] = 0;
+          $return_data[$counter]["pick_order_percent"] =0;
+          $return_data[$counter]["win_rate"] = 0;
+          $return_data[$counter]["win_rate_confidence"] = 0;
+          $return_data[$counter]["influence"] = 0;
+          $return_data[$counter]["ban_rate"] = 0;
+          $return_data[$counter]["starred"] = "";
+
+          $counter++;
+        }
+
+
+      }
+      return view('Drafter.draftPicks', ['controller_hero_data' => $return_data, 'bans' => true]);
+    }
+
     $filters_instance = \Filters::instance();
     $filters = $filters_instance->formatFilterData($request["data"], 1, 1);
 
@@ -383,16 +497,15 @@ class DraftController extends Controller
     $role_league_tier = $filters_instance->role_league_tier;
     $mirror = $filters_instance->mirror;
 
-    $heroesPicked = array();
-    if(isset($request["heroesPicked"])){
-      $heroesPicked = $request["heroesPicked"];
-    }
-
     $teamPicked = array();
     if(isset($request["teamPicks"])){
       $teamPicked = $request["teamPicks"];
     }
 
+
+    $mockdraft = $request["mockdraft"];
+
+    return $mockdraft;
 
 
     $page = "DraftPickOrder";
