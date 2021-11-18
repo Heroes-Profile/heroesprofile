@@ -42,43 +42,43 @@ if (!function_exists('calculateCacheTime')) {
 
       //If the user chooses more than 1 major timeframe  e.g. (2.47, 2.48)
       if(count($timeframe) > 1){
-        return 86400; //24 hours
+        return 86400 * 3; //24 * 3 hours
       }else{
         //If the user chooses 1 timeframe, but it is not the latest major patch
         if($timeframe[0] != max(array_keys(getFilterVersions()))){
-          return 86400; //24 hours
+          return 86400 * 3; //24 * 3 hours
         }else{
           //If the major patches first minor patches release date was greater than 4 weeks ago
           $date = App\Models\SeasonGameVersions::max('date_added')->where('game_version', 'like', $timeframe[0] . '%');
           if(strtotime($date) < strtotime('-30 days')){
-            return 86400; //24 hours
+            return 86400 * 3; //24 * 3 hours
           }else if(strtotime($date) < strtotime('-15 days')){
-            return 43200; //12 hours
+            return 43200 * 3; //12 * 3 hours
           }else if(strtotime($date) < strtotime('-7 days')){
-            return 43200; //6 hours
+            return 43200 * 3; //6 * 3 hours
           }else{
-            return 1800; //30 minutes
+            return 1800 * 3; //30 * 3 minutes
           }
         }
       }
     }else if(strtolower($timeframe_type) === "minor"){
       if(count($timeframe) > 1){
-        return 86400; //24 hours
+        return 86400 * 3; //24 hours
       }else{
         if($timeframe[0] != getMaxGameVersion()){
-          return 86400; //24 hours
+          return 86400 * 3; //24 hours
         }else{
           $date = (string) getMaxGameVersionForGlobalReleaseDate();
           if(strtotime($date) < strtotime('-30 days')){
-            return 43200; //12 hours
+            return 43200 * 3; //12 hours
           }else if(strtotime($date) < strtotime('-15 days')){
-            return 21600; //6 hours
+            return 21600 * 3; //6 hours
           }else if(strtotime($date) < strtotime('-7 days')){
-            return 10800; //3 hours
+            return 10800 * 3; //3 hours
           }else if(strtotime($date) < strtotime('-1 days')){
             return 300; //5 minutes
           }else{
-            return 900; //15 minutes
+            return 900 * 3; //15 minutes
           }
         }
       }
