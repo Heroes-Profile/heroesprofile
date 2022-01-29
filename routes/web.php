@@ -150,7 +150,7 @@ Route::get('/Gamedata/Heroes/{id}', 'GamedataController@hero');
 */
 
 Route::post('/login', 'AccountController@login');
-Route::post('/optout/authenticate/battlenet', 'BattleNetAuthController@redirectToProviderOptOut');
+Route::post('/optout/authenticate/battlenet', 'BattlenetAuthController@redirectToProviderOptOut');
 
 
 
@@ -160,7 +160,7 @@ Route::post('/optout/authenticate/battlenet', 'BattleNetAuthController@redirectT
 Route::post('/account/optout/save', 'AccountController@optout');
 Route::view('Account/optout/success', 'Account/optout/success');
 
-Route::get('/optout/authenticate/battlenet/success', 'BattleNetAuthController@handleProviderCallbackOptOut');
+Route::get('/optout/authenticate/battlenet/success', 'BattlenetAuthController@handleProviderCallbackOptOut');
 
 /*
 //Battlenet Login/Logout Process
