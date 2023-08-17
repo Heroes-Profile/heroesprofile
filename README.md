@@ -1,67 +1,64 @@
-# Heroes Profile
+<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-[![](https://github.com/Heroes-Profile/heroesprofile/workflows/PHPUnit/badge.svg)](https://github.com/Heroes-Profile/heroesprofile/actions?query=workflow%3A%22PHPUnit%22)
-[![](https://github.com/Heroes-Profile/heroesprofile/workflows/PHPStan/badge.svg)](https://github.com/Heroes-Profile/heroesprofile/actions?query=workflow%3A%PHPStan%22)
+<p align="center">
+<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
+<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+</p>
 
-[Master Heroes Profile](https://alpha.heroesprofile.com/)(master branch) or [Develop Heroes Profile](https://heroesprofile-dev.ue.r.appspot.com//)(develop branch) is an open Heroes of the Storm stat site. Providing players with Global Hero Statistics, Personal Profile, MMR, Comparisons, Amateur series, and much more.
+## About Laravel
 
-This public repository is the site re-write for [Heroes Profile](https://www.heroesprofile.com/) and is not currently in production.
+Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-# Cloning the Heroes Profile repository
+- [Simple, fast routing engine](https://laravel.com/docs/routing).
+- [Powerful dependency injection container](https://laravel.com/docs/container).
+- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
+- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
+- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
+- [Robust background job processing](https://laravel.com/docs/queues).
+- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
 
--   `git clone --recursive https://github.com/Heroes-Profile/heroesprofile.git`
+Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Installation
+## Learning Laravel
 
-Heroes Profile is a PHP/Laravel bootstrap app. Making use of a MySql database. Every system has different methods for getting the required dependencies installed so please reference the main tools sites for installation instructions.
+Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
 
-Laravel - https://laravel.com/
+If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-PHP - PHP can be installed in different ways. If you do not currently have PHP installed, use google to find the best method for you.
+## Laravel Sponsors
 
--   Increase your local PHP memory_limit var. We use 1g. memory_limit = 1G
+We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
 
-MySQL - MySQL can be installed in different ways. If you do not currently have MySQL installed, use google to find the best method for you.
+### Premium Partners
 
-Optional - A visual tool for looking at the database and data is suggested. MySql Workbench is our preference - https://www.mysql.com/products/workbench/
+- **[Vehikl](https://vehikl.com/)**
+- **[Tighten Co.](https://tighten.co)**
+- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
+- **[64 Robots](https://64robots.com)**
+- **[Cubet Techno Labs](https://cubettech.com)**
+- **[Cyber-Duck](https://cyber-duck.co.uk)**
+- **[Many](https://www.many.co.uk)**
+- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
+- **[DevSquad](https://devsquad.com)**
+- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
+- **[OP.GG](https://op.gg)**
+- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
+- **[Lendio](https://lendio.com)**
 
-In addition to creating the environment yourself, there are also a lot of different tools that can pull together all the dependencies for you. Homestead is an example.
+## Contributing
 
-For windows users, Wampserver64 is a useful tool as it installs the MySql server and php at the same time. https://sourceforge.net/projects/wampserver/
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
 
-## Database setup
+## Code of Conduct
 
--   Create the following schemas in your MySql database. `heroesprofile`, `heroesprofile_cache`
--   Increase your local mysql max_allowed_packet var. We use 64M.
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-## Project Setup
+## Security Vulnerabilities
 
--   From the command line, navigate to the heroesprofile repository.
--   Configure `.env` file using `.env.example`
--   Run `composer install`
--   Run `sh images.sh` to add the latest image files from game data<sup>1</sup>
--   Run `php artisan key:generate` make sure the APP_KEY has this value in the .env file
--   Run `npm install`
--   Run `npm run dev`
--   Run `php artisan migrate`
--   Run `composer dump-autoload`
--   Run `php artisan db:seed`
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
 
-> <sup>1</sup> The image injection script is written for *nix systems. On Windows you will need to clone/download the latest version of
-> https://github.com/HeroesToolChest/heroes-images and copy the **heroesimages** folder into **public/images**.
+## License
 
-## Running the project
-
--   From the command line, navigate to the heroesprofile repository.
--   Run `php artisan serve` - spins up the webserver
--   The path to paste into the browser will show up in the command line.
--   From a second command line, navigate to the heroesprofile repository.
--   Run `npm run watch` - watches for any changes and automatically recompiles
-
-# Contributing
-
-All contributions are welcome. The owners of Heroes Profile reserve the right to include or deny any merge requests from the community. Also, please try and only create pull requests that contain updates to the specific update you want to make. Including environment or auto-generated updates to framework code that are not required for your change only complicates making updates.
-
-If a contribution requires changes to the database, or how the data is grabbed from replays, please log an issue report detailing your need.
-
--   If backend code from the production site is needed, it can be found in the live_side_code folder of this repository. If there is code you need that is missing, please create a PR to have that added.
+The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
