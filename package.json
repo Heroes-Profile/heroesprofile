@@ -11,7 +11,7 @@
     },
     "devDependencies": {
         "@popperjs/core": "^2.11.8",
-        "axios": "^0.21",
+        "axios": "^0.21.4",
         "bootstrap": "^5.3.1",
         "laravel-mix": "^6.0.6",
         "lodash": "^4.17.19",
@@ -24,6 +24,8 @@
         "vue-template-compiler": "^2.6.12"
     },
     "dependencies": {
-        "bootstrap-vue": "^2.23.1"
+        "bootstrap-vue": "^2.23.1",
+        "vue-axios": "^3.5.2",
+        "vue-loading-overlay": "3.0"
     }
 }
