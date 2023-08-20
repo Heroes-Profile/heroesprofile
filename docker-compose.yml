@@ -1,9 +1,0 @@
-version: '.01'
-services:
-  website:
-    image: heroesprofile-website
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "8000:8000"
