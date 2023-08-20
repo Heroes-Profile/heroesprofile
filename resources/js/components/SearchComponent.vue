@@ -6,6 +6,9 @@
         <button class="btn btn-outline-secondary" type="button" @click="clickedButton">Show My Stats</button>
       </div>
     </div>
+
+
+    <h1>Response = {{ this.battletagresponse }}</h1>
   </div>
 </template>
 
@@ -21,6 +24,7 @@ export default {
       loading: false,
       error: false,
       userinput: "",
+      battletagresponse: "no data",
     }
   },
   created(){
@@ -47,6 +51,7 @@ export default {
       })
 
       .then(response => {
+        this.battletagresponse = response.data;
         loader.hide();
       })
       .catch(error => {
