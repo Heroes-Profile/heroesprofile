@@ -46,9 +46,11 @@ export default {
         this.battletagresponse = response.data;
         console.log(this.battletagresponse);
         console.log("hi");
+
       }catch(error){
         console.log(error);
-        this.error = error;
+        //this.error = error;
+        this.battletagresponse = "Invalid input: '%', '?' and ' ' are invalid inputs";
       }
     },
   }

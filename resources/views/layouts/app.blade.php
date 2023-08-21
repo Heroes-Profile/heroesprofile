@@ -43,6 +43,7 @@
             <b-nav-item href="Terms-of-Service">Terms of Service</b-nav-item>
             <b-nav-item href="mailto:zemill@heroesprofile.com">Contact Us</b-nav-item>
         </div>
+        <div>@yield('max_replay_id') replays | Patch @yield('latest_path') | Up to date as of: @yield('latest_game_in_timezone')</div>
         <div class="copyright">Skill Tree Development, LLC | <a href="https://heroesprofile.com">Heroes Profile</a></div>
         </div>
 

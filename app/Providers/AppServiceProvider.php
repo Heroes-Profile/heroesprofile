@@ -11,7 +11,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+         $this->app->bind(GlobalDataService::class, function ($app) {
+            return new GlobalDataService();
+        });
     }
 
     /**
