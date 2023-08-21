@@ -6,11 +6,17 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "axios": "^1.1.2",
+        "@popperjs/core": "^2.11.8",
+        "@vitejs/plugin-vue": "^4.3.2",
+        "axios": "^1.4.0",
         "laravel-vite-plugin": "^0.8.0",
-        "vite": "^4.0.0"
+        "sass": "^1.56.1",
+        "vite": "^4.0.0",
+        "vue": "^3.2.37"
     },
     "dependencies": {
+        "bootstrap": "^5.3.1",
+        "bootstrap-vue-next": "^0.10.8",
         "vue": "^3.2.36"
     }
 }
