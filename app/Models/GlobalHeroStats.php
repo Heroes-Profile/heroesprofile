@@ -63,6 +63,9 @@ class GlobalHeroStats extends Model
 
   public function scopeExcludeMirror($query, $mirror)
   {
-      return $query->where('mirror', $mirror);
+    if($mirror != 0){
+      $query->whereIn('mirror', [0,1]);
+    }
+    return $query;
   }
 }
