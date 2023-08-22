@@ -7,6 +7,7 @@ class Hero extends Model
 {
     protected $table = 'heroes';
     protected $primaryKey = 'id';
-    public $timestamps = false;
     protected $connection = 'heroesprofile';
+
+    public $timestamps = false;
 }

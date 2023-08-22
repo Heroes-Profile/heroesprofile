@@ -7,8 +7,9 @@ class Replay extends Model
 {
     protected $table = 'replay';
     protected $primaryKey = 'replayID';
-    public $timestamps = false;
     protected $connection = 'heroesprofile';
+
+    public $timestamps = false;
 
 
     public function players()

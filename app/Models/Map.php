@@ -5,8 +5,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Map extends Model
 {
-    protected $table = 'maps'; // Set the table name if it's different
+    protected $table = 'maps'; 
     protected $primaryKey = 'map_id';
-    public $timestamps = false;
     protected $connection = 'heroesprofile';
+
+    public $timestamps = false;
 }

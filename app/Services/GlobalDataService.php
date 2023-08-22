@@ -35,4 +35,9 @@ class GlobalDataService
 
         return session('latestGameDate');
     }
+
+    public function calculateCacheTimeInMinutes($timeframe){
+        //Cache time is set to 0.  Need to setup how cache time is done
+        return 0;
+    }
 }

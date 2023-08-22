@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('CACHE_DRIVER', 'file'),
+    'default' => env('CACHE_DRIVER', 'database'),
 
     /*
     |--------------------------------------------------------------------------
@@ -44,8 +44,8 @@ return [
 
         'database' => [
             'driver' => 'database',
-            'table' => 'cache',
-            'connection' => null,
+            'table' => env('HEROESPROFILE_DB_CACHE_TABLE', 'cache'),
+            'connection' => env('HEROESPROFILE_DB_CACHE_DATABASE', 'cache'),
             'lock_connection' => null,
         ],
 

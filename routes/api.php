@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\GeneralDataController;
+use App\Http\Controllers\Global\GlobalHeroStatsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,5 +17,14 @@ use App\Http\Controllers\GeneralDataController;
 |
 */
 
-Route::get('/battletag/search', [GeneralDataController::class, 'battletagSearch']);
-Route::post('/battletag/search', [GeneralDataController::class, 'battletagSearch']);
+
+
+
+Route::prefix('v1')->group(function () {
+    Route::get('battletag/search', [GeneralDataController::class, 'battletagSearch']); //testing
+    Route::post('battletag/search', [GeneralDataController::class, 'battletagSearch']);
+
+
+    Route::get('global/hero/', [GlobalHeroStatsController::class, 'getGlobalHeroData']); //testing
+    Route::post('global/hero/', [GlobalHeroStatsController::class, 'getGlobalHeroData']);
+});

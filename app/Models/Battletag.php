@@ -8,6 +8,7 @@ class Battletag extends Model
 {
     protected $table = 'battletags';
     protected $primaryKey = 'player_id';
-    public $timestamps = false;
     protected $connection = 'heroesprofile';
+
+    public $timestamps = false;
 }

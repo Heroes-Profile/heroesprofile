@@ -13,7 +13,8 @@ class MainPageController extends Controller
         $this->globalDataService = $globalDataService;
     }
 
-    public function show(Request $request){
+    public function show(Request $request)
+    {
 
         $maxReplayID = $this->globalDataService->calculateMaxReplayNumber();
         $latestPatch = $this->globalDataService->getLatestPatch();

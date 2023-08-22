@@ -14,6 +14,16 @@ app.use(BootstrapVueNext);
 import ExampleComponent from './components/ExampleComponent.vue';
 import MainPage from './components/MainPage.vue';
 
+
+//Random Pieces - rename later to what you want and place in folder
+import Infobox from './components/Infobox.vue';
+
+
+//Global Pages
+import GlobalHeroStats from './components/Global/GlobalHeroStats.vue';
+
+
+
 // Automatically register Vue components
 const components = import.meta.globEager('./components/**/*.vue');
 Object.entries(components).forEach(([path, definition]) => {

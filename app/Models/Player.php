@@ -7,8 +7,10 @@ class Player extends Model
 {
     protected $table = 'player';
     protected $player_table_id = 'replayID';
-    public $timestamps = false;
     protected $connection = 'heroesprofile';
+
+    public $timestamps = false;
+
 
     public function replay()
     {

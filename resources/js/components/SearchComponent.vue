@@ -39,7 +39,7 @@ export default {
     async clickedButton(){
 
       try{
-        const response = await this.$axios.post("/api/battletag/search", {
+        const response = await this.$axios.post("/api/v1/battletag/search", {
           userinput: this.userinput,
         });
 
