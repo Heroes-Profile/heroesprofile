@@ -62,7 +62,7 @@ class GlobalHeroStatsController extends Controller
             'gameMap' => implode(',', $gameMap),
             'heroLevel' => implode(',', $heroLevel),
             'mirror' => $mirror,
-            'region' => $region,
+            'region' => implode(',', $region),
         ]);
 
         //return $cacheKey;
@@ -148,7 +148,6 @@ class GlobalHeroStatsController extends Controller
                 $winRate = ($wins / $gamesPlayed) * 100;
             }
 
-            // Find the matching hero in $banData using the hero's name
             $matchingBan = $banData->where('name', $firstItem['name'])->first();
             $bans = $matchingBan ? round($matchingBan['bans']) : 0; // Round the bans value
 
@@ -157,10 +156,8 @@ class GlobalHeroStatsController extends Controller
                 $banRate = ($bans / $totalGamesPlayed) * 100;
             }
 
-            // Initialize $change_win_rate to 0
             $changeWinRate = 0;
 
-            // Check if $changeData is not null and find the matching hero in it
             if ($changeData) {
                 $matchingChange = $changeData->where('name', $firstItem['name'])->first();
                 if ($matchingChange) {
