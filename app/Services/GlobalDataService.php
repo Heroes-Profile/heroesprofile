@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Replay;
+use App\Models\Hero;
 use App\Models\SeasonGameVersion;
 
 class GlobalDataService
@@ -39,5 +40,9 @@ class GlobalDataService
     public function calculateCacheTimeInMinutes($timeframe){
         //Cache time is set to 0.  Need to setup how cache time is done
         return 0;
+    }
+
+    public function getHeroes(){
+        return Hero::all();
     }
 }

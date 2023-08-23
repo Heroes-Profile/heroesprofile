@@ -8,12 +8,6 @@ use App\Services\GlobalDataService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Models\Hero;
-use App\Models\GlobalHeroStats;
-use App\Models\GlobalHeroStatsBans;
-use App\Models\GlobalHeroChange;
-
-
 use App\Rules\TimeframeMinorInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\TierInputValidation;
@@ -22,6 +16,10 @@ use App\Rules\HeroLevelInputValidation;
 use App\Rules\MirrorInputValidation;
 use App\Rules\RegionInputValidation;
 
+use App\Models\Hero;
+use App\Models\GlobalHeroStats;
+use App\Models\GlobalHeroStatsBans;
+use App\Models\GlobalHeroChange;
 
 class GlobalHeroStatsController extends Controller
 {
@@ -201,29 +199,27 @@ class GlobalHeroStatsController extends Controller
         });
 
         $positiveWinRateChangeCollection = $combinedCollection->filter(function ($item) {
-            return $item['change_win_rate'] > 0;
+            return $item['win_rate_change'] > 0;
         });
 
         $negativeWinRateChangeCollection = $combinedCollection->filter(function ($item) {
-            return $item['change_win_rate'] < 0;
+            return $item['win_rate_change'] < 0;
         });
 
         $averageWinRate = $combinedCollection->avg('win_rate');
         $averageConfidenceInterval = $combinedCollection->avg('confidence_interval');
-        $averageWinRateChange = $combinedCollection->avg('change_win_rate');
         $averagePopularity = $combinedCollection->avg('popularity');
         $averagePickRate = $combinedCollection->avg('pick_rate');
         $averageBanRate = $combinedCollection->avg('ban_rate');
         $averagePositiveInfluence = $positiveInfluenceCollection->avg('influence');
         $averageNegativeInfluence = $negativeInfluenceCollection->avg('influence');
-        $averagePositiveWinRateChange = $positiveWinRateChangeCollection->avg('change_win_rate');
-        $averageNegativeWinRateChange = $negativeWinRateChangeCollection->avg('change_win_rate');
+        $averagePositiveWinRateChange = $positiveWinRateChangeCollection->avg('win_rate_change');
+        $averageNegativeWinRateChange = $negativeWinRateChangeCollection->avg('win_rate_change');
         $averageGamesPlayed = $combinedCollection->sum('games_played') / count($combinedCollection);
 
         return [
             'average_win_rate' => $averageWinRate, 
             'average_confidence_interval' => $averageConfidenceInterval, 
-            'average_win_rate_change' => $averageWinRateChange, 
             'average_popularity' => $averagePopularity, 
             'average_pick_rate' => $averagePickRate, 
             'average_ban_rate' => $averageBanRate, 

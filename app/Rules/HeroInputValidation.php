@@ -3,17 +3,29 @@
 namespace App\Rules;
 
 use Closure;
-use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Contracts\Validation\Rule;
 
-class HeroInputValidation implements ValidationRule
+use App\Models\Hero;
+
+class HeroInputValidation implements Rule
 {
-    /**
-     * Run the validation rule.
-     *
-     * @param  \Closure(string): \Illuminate\Translation\PotentiallyTranslatedString  $fail
-     */
-    public function validate(string $attribute, mixed $value, Closure $fail): void
+
+    public function passes($attribute, $value)
     {
-        //
+        $validHeroNames = Hero::pluck("name")->toArray();
+        
+        if (in_array($value, $validHeroNames)) {
+            $hero = Hero::where('name', $value)->first();
+            if ($hero) {
+                return $hero->id;
+            }
+        }
+
+        return false;
+    }
+
+    public function message()
+    {
+        return 'The selected hero name is invalid.';
     }
 }

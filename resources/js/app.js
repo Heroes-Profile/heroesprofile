@@ -17,10 +17,11 @@ import MainPage from './components/MainPage.vue';
 
 //Random Pieces - rename later to what you want and place in folder
 import Infobox from './components/Infobox.vue';
-
+import HeroBox from './components/HeroBox.vue';
 
 //Global Pages
-import GlobalHeroStats from './components/Global/GlobalHeroStats.vue';
+import GlobalHeroStats from './components/Global/Hero/GlobalHeroStats.vue';
+import GlobalTalentsStats from './components/Global/Talents/GlobalTalentsStats.vue';
 
 
 

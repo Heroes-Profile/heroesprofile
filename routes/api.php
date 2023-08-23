@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\GeneralDataController;
 use App\Http\Controllers\Global\GlobalHeroStatsController;
+use App\Http\Controllers\Global\GlobalTalentStatsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,4 +28,8 @@ Route::prefix('v1')->group(function () {
 
     Route::get('global/hero/', [GlobalHeroStatsController::class, 'getGlobalHeroData']); //testing
     Route::post('global/hero/', [GlobalHeroStatsController::class, 'getGlobalHeroData']);
+
+    Route::get('global/talents/', [GlobalTalentStatsController::class, 'getGlobalHeroTalentData']); //testing
+    Route::post('global/talents/', [GlobalTalentStatsController::class, 'getGlobalHeroTalentData']);
+
 });

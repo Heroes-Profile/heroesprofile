@@ -20,7 +20,7 @@
   <div id="app">
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <a class="navbar-brand" href="/Global/Hero">Hero Stats</a>
-      <a class="navbar-brand" href="#">Navbar</a>
+      <a class="navbar-brand" href="/Global/Talents/">Talent Stats</a>
       <a class="navbar-brand" href="#">Navbar</a>
     </nav>
 

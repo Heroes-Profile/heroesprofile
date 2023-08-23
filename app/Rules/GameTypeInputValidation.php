@@ -11,7 +11,6 @@ class GameTypeInputValidation implements Rule
     {
         $validGameTypes = GameType::pluck('short_name')->toArray();
         
-        // Exclude "br" and "cu" from the valid game types
         $validGameTypes = array_diff($validGameTypes, ['br', 'cu']);
         
         $filteredGameTypes = array_intersect($value, $validGameTypes);

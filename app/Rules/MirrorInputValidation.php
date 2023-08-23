@@ -16,11 +16,6 @@ class MirrorInputValidation implements Rule
         return 0;
     }
 
-    /**
-     * Get the validation error message.
-     *
-     * @return string
-     */
     public function message()
     {
         return 'The :attribute must be either "Include", "Exclude", or empty.';

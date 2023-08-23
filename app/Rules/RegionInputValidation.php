@@ -12,14 +12,15 @@ class RegionInputValidation implements Rule
 
     public function passes($attribute, $value)
     {
+        if (!is_array($value)) {
+            $value = explode(',', $value);
+        }
 
+        $filteredRegions = array_intersect($value, $this->validRegions);
+
+        return $filteredRegions ?: [];
     }
 
-    /**
-     * Get the validation error message.
-     *
-     * @return string
-     */
     public function message()
     {
         return 'The :attribute must be a valid region value.';

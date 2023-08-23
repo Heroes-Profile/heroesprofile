@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\Global\GlobalHeroStatsController;
+use App\Http\Controllers\Global\GlobalTalentStatsController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,3 +21,4 @@ Route::get('/', [MainPageController::class, 'show']);
 
 
 Route::get('/Global/Hero', [GlobalHeroStatsController::class, 'show']);
+Route::get('/Global/Talents', [GlobalTalentStatsController::class, 'show']);

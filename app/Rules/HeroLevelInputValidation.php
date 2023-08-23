@@ -10,13 +10,6 @@ class HeroLevelInputValidation implements Rule
         1, 5, 10, 15, 25, 40, 60, 80, 100
     ];
 
-    /**
-     * Determine if the validation rule passes.
-     *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @return bool
-     */
     public function passes($attribute, $value)
     {
         if (!is_array($value)) {
@@ -29,11 +22,6 @@ class HeroLevelInputValidation implements Rule
         return $filteredLevels ?: [];
     }
 
-    /**
-     * Get the validation error message.
-     *
-     * @return string
-     */
     public function message()
     {
         return 'The :attribute must be a valid hero level.';
