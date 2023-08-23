@@ -8,9 +8,10 @@ use App\Services\GlobalDataService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-
-use App\Models\GlobalHeroStats;
 use App\Models\Hero;
+use App\Models\GlobalHeroStats;
+use App\Models\GlobalHeroStatsBans;
+use App\Models\GlobalHeroChange;
 
 
 use App\Rules\TimeframeMinorInputValidation;
@@ -19,6 +20,8 @@ use App\Rules\TierInputValidation;
 use App\Rules\GameMapInputValidation;
 use App\Rules\HeroLevelInputValidation;
 use App\Rules\MirrorInputValidation;
+use App\Rules\RegionInputValidation;
+
 
 class GlobalHeroStatsController extends Controller
 {
@@ -48,6 +51,7 @@ class GlobalHeroStatsController extends Controller
         $gameMap = (new GameMapInputValidation())->passes('map', explode(',', $request["map"]));
         $heroLevel = (new HeroLevelInputValidation())->passes('hero_level', explode(',', $request["hero_level"]));
         $mirror = (new MirrorInputValidation())->passes('mirror', $request["mirror"]);
+        $region = (new RegionInputValidation())->passes('region', $request["region"]);
 
         $cacheKey = "GlobalHeroStats|" . implode('|', [
             'gameVersion' => implode(',', $gameVersion),
@@ -58,6 +62,7 @@ class GlobalHeroStatsController extends Controller
             'gameMap' => implode(',', $gameMap),
             'heroLevel' => implode(',', $heroLevel),
             'mirror' => $mirror,
+            'region' => $region,
         ]);
 
         //return $cacheKey;
@@ -69,7 +74,8 @@ class GlobalHeroStatsController extends Controller
                                                                                                                                  $roleLeagueTier,
                                                                                                                                  $gameMap,
                                                                                                                                  $heroLevel,
-                                                                                                                                 $mirror
+                                                                                                                                 $mirror,
+                                                                                                                                 $region
                                                                                                                                 ){
   
             $data = GlobalHeroStats::query()
@@ -81,17 +87,188 @@ class GlobalHeroStatsController extends Controller
                 ->filterByLeagueTier($leagueTier)
                 ->filterByHeroLeagueTier($heroLeagueTier)
                 ->filterByRoleLeagueTier($roleLeagueTier)
-                ->filterByHeroLevel($heroLevel)
                 ->filterByGameMap($gameMap)
+                ->filterByHeroLevel($heroLevel)
                 ->excludeMirror($mirror)
+                ->filterByRegion($region)
                 ->groupBy('global_hero_stats.hero', 'global_hero_stats.win_loss')
                 ->orderBy('heroes.name', 'asc')
                 ->orderBy('global_hero_stats.win_loss', 'asc')
                 //->toSql();
                 ->get();
-            return $data;
+
+            $banData = GlobalHeroStatsBans::query()
+                ->join('heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')
+                ->select('heroes.name', 'heroes.id as hero_id')
+                ->selectRaw('SUM(global_hero_stats_bans.bans) as bans')
+                ->filterByGameVersion($gameVersion)
+                ->filterByGameType($gameType)
+                ->filterByLeagueTier($leagueTier)
+                ->filterByHeroLeagueTier($heroLeagueTier)
+                ->filterByRoleLeagueTier($roleLeagueTier)
+                ->filterByGameMap($gameMap)
+                ->filterByHeroLevel($heroLevel)
+                ->filterByRegion($region)
+                ->groupBy('global_hero_stats_bans.hero')
+                ->orderBy('heroes.name', 'asc')
+                //->toSql();
+                ->get();
+
+            $changeData = null;
+
+            if($this->checkIfChange($gameVersion, $region, $gameType, $gameMap, $leagueTier, $heroLeagueTier, $roleLeagueTier, $heroLevel)){
+                $changeData = GlobalHeroChange::query()
+                    ->join('heroesprofile.heroes', 'heroesprofile.heroes.id', '=', 'global_hero_change.hero')
+                    ->select('heroes.name', 'heroes.id as hero_id', 'win_rate as change_win_rate')
+                    ->filterByGameVersion($gameVersion)
+                    ->filterByGameType($gameType)
+                    //->toSql();
+                    ->get();
+            }
+
+            return $this->combineData($data, $banData, $changeData);
         });
 
+
+
         return $data;
+    }
+    private function combineData($data, $banData, $changeData){
+        $totalGamesPlayed = collect($data)->sum('games_played') / 10;
+
+        $combinedData = collect($data)->groupBy('name')->map(function ($group) use ($banData, $changeData, $totalGamesPlayed) {
+            $firstItem = $group->first();
+
+            $wins = $group->where('win_loss', 1)->sum('games_played');
+            $losses = $group->where('win_loss', 0)->sum('games_played');
+            $gamesPlayed = $wins + $losses;
+
+            $winRate = 0;
+            if($gamesPlayed > 0){
+                $winRate = ($wins / $gamesPlayed) * 100;
+            }
+
+            // Find the matching hero in $banData using the hero's name
+            $matchingBan = $banData->where('name', $firstItem['name'])->first();
+            $bans = $matchingBan ? round($matchingBan['bans']) : 0; // Round the bans value
+
+            $banRate = 0;
+            if($bans > 0){
+                $banRate = ($bans / $totalGamesPlayed) * 100;
+            }
+
+            // Initialize $change_win_rate to 0
+            $changeWinRate = 0;
+
+            // Check if $changeData is not null and find the matching hero in it
+            if ($changeData) {
+                $matchingChange = $changeData->where('name', $firstItem['name'])->first();
+                if ($matchingChange) {
+                    $changeWinRate = $matchingChange['change_win_rate'];
+                }
+            }
+
+            $popularity = (($gamesPlayed + $bans) / $totalGamesPlayed) * 100;
+            $pickRate = ($gamesPlayed / $totalGamesPlayed) * 100;
+
+            $adjustedPickRate = (($gamesPlayed / $totalGamesPlayed) * 100) / (100 - $banRate);
+            $influence = round((($winRate / 100) - 0.5) * ($adjustedPickRate * 10000));
+
+            $confidenceInterval = $this->calculateWinRateConfidenceInterval($wins, $totalGamesPlayed);
+
+            return [
+                'name' => $firstItem['name'],
+                'hero_id' => $firstItem['hero_id'],
+                'role' => $firstItem['role'],
+                'wins' => $wins,
+                'losses' => $losses,
+                'games_played' => $gamesPlayed,
+                'win_rate' => $winRate,
+                'ban_rate' => $banRate,
+                'win_rate_change' => $winRate - $changeWinRate,
+                'popularity' => $popularity,
+                'pick_rate' => $pickRate,
+                'influence' => $influence,
+                'confidence_interval' => $confidenceInterval,
+            ];
+        })->sortByDesc('win_rate')->values()->toArray();
+
+        $combinedCollection = collect($combinedData);
+
+        $positiveInfluenceCollection = $combinedCollection->filter(function ($item) {
+            return $item['influence'] > 0;
+        });
+
+        $negativeInfluenceCollection = $combinedCollection->filter(function ($item) {
+            return $item['influence'] < 0;
+        });
+
+        $positiveWinRateChangeCollection = $combinedCollection->filter(function ($item) {
+            return $item['change_win_rate'] > 0;
+        });
+
+        $negativeWinRateChangeCollection = $combinedCollection->filter(function ($item) {
+            return $item['change_win_rate'] < 0;
+        });
+
+        $averageWinRate = $combinedCollection->avg('win_rate');
+        $averageConfidenceInterval = $combinedCollection->avg('confidence_interval');
+        $averageWinRateChange = $combinedCollection->avg('change_win_rate');
+        $averagePopularity = $combinedCollection->avg('popularity');
+        $averagePickRate = $combinedCollection->avg('pick_rate');
+        $averageBanRate = $combinedCollection->avg('ban_rate');
+        $averagePositiveInfluence = $positiveInfluenceCollection->avg('influence');
+        $averageNegativeInfluence = $negativeInfluenceCollection->avg('influence');
+        $averagePositiveWinRateChange = $positiveWinRateChangeCollection->avg('change_win_rate');
+        $averageNegativeWinRateChange = $negativeWinRateChangeCollection->avg('change_win_rate');
+        $averageGamesPlayed = $combinedCollection->sum('games_played') / count($combinedCollection);
+
+        return [
+            'average_win_rate' => $averageWinRate, 
+            'average_confidence_interval' => $averageConfidenceInterval, 
+            'average_win_rate_change' => $averageWinRateChange, 
+            'average_popularity' => $averagePopularity, 
+            'average_pick_rate' => $averagePickRate, 
+            'average_ban_rate' => $averageBanRate, 
+            'average_positive_influence' => $averagePositiveInfluence,
+            'average_negative_influence' => $averageNegativeInfluence,
+            'average_positive_win_rate_change' => $averagePositiveWinRateChange,
+            'average_negative_win_rate_change' => $averageNegativeWinRateChange,
+            'average_games_played' => $averageGamesPlayed, 
+            'data' => $combinedData
+        ];
+    }
+
+    //🤮
+    private function checkIfChange($timeframe, $region, $game_type, $map, $league_tier, $hero_league_tier, $role_league_tier, $hero_level){
+        if(
+            count($timeframe) == 1 &&
+            count($game_type) == 1 &&
+            empty($region) &&
+            empty($map) &&
+            empty($league_tier) &&
+            empty($hero_league_tier) &&
+            empty($role_league_tier) &&
+            empty($hero_level)
+        ){
+            return true;
+        }
+        return false;
+    }
+
+    private function calculateWinRateConfidenceInterval($wins, $totalGamesPlayed, $confidenceLevel = 0.95) {
+        $z = 1.96; // For a 95% confidence level
+        $p = $wins / $totalGamesPlayed;
+        $n = $totalGamesPlayed;
+
+        $a = 1 / (1 + (1 / $n) * $z * $z);
+        $b = $p + (1 / (2 * $n)) * $z * $z;
+        $c = $z * sqrt(($p * (1 - $p) / $n) + ($z * $z / (4 * $n * $n)));
+
+        $lowerBound = $a * ($b - $c);
+        $upperBound = $a * ($b + $c);
+
+        //Using average of the two for now but may decide to change it back later
+        return ($lowerBound + $upperBound) / 2;
     }
 }

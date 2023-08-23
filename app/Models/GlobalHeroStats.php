@@ -18,13 +18,13 @@ class GlobalHeroStats extends Model
 
   public function scopeFilterByGameType($query, $gameType)
   {
-      return $query->where('game_type', $gameType);
+      return $query->whereIn('game_type', $gameType);
   }
 
   public function scopeFilterByLeagueTier($query, $leagueTier)
   {
     if (!empty($leagueTier)) {
-      return $query->where('league_tier', $leagueTier);
+      return $query->whereIn('league_tier', $leagueTier);
     }
     return $query;
   }
@@ -32,7 +32,7 @@ class GlobalHeroStats extends Model
   public function scopeFilterByHeroLeagueTier($query, $heroLeagueTier)
   {
     if (!empty($heroLeagueTier)) {
-      return $query->where('hero_league_tier', $heroLeagueTier);
+      return $query->whereIn('hero_league_tier', $heroLeagueTier);
     }
     return $query;
   }
@@ -40,15 +40,7 @@ class GlobalHeroStats extends Model
   public function scopeFilterByRoleLeagueTier($query, $roleLeagueTier)
   {
     if (!empty($roleLeagueTier)) {
-      return $query->where('role_league_tier', $roleLeagueTier);
-    }
-    return $query;
-  }
-
-  public function scopeFilterByHeroLevel($query, $heroLevel)
-  {
-    if (!empty($heroLevel)) {
-      return $query->where('hero_level', $heroLevel);
+      return $query->whereIn('role_league_tier', $roleLeagueTier);
     }
     return $query;
   }
@@ -56,7 +48,15 @@ class GlobalHeroStats extends Model
   public function scopeFilterByGameMap($query, $gameMap)
   {
     if (!empty($gameMap)) {
-      return $query->where('game_map', $gameMap);
+      return $query->whereIn('game_map', $gameMap);
+    }
+    return $query;
+  }
+
+  public function scopeFilterByHeroLevel($query, $heroLevel)
+  {
+    if (!empty($heroLevel)) {
+      return $query->whereIn('hero_level', $heroLevel);
     }
     return $query;
   }
@@ -68,4 +68,13 @@ class GlobalHeroStats extends Model
     }
     return $query;
   }
+
+  public function scopeFilterByRegion($query, $region)
+  {
+    if (!empty($region)) {
+      return $query->whereIn('region', $region);
+    }
+    return $query;
+  }
+
 }

@@ -16,7 +16,7 @@ class TierInputValidation implements Rule
         
         if (empty($filteredTiers)) {
             // Return "" as the default game type
-            return [''];
+            return [];
         }
 
         $typeIds = LeagueTier::whereIn('name', $filteredTiers)
@@ -27,6 +27,6 @@ class TierInputValidation implements Rule
 
     public function message()
     {
-        return 'The selected game types are invalid.';
+        return 'The selected tiers are invalid.';
     }
 }
