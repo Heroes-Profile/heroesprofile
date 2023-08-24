@@ -32,4 +32,8 @@ Route::prefix('v1')->group(function () {
     Route::get('global/talents/', [GlobalTalentStatsController::class, 'getGlobalHeroTalentData']); //testing
     Route::post('global/talents/', [GlobalTalentStatsController::class, 'getGlobalHeroTalentData']);
 
+    Route::get('global/talents/build', [GlobalTalentStatsController::class, 'getGlobalHeroTalentBuildData']); //testing
+    Route::post('global/talents/build', [GlobalTalentStatsController::class, 'getGlobalHeroTalentBuildData']);
+
+
 });

@@ -39,7 +39,8 @@ export default {
   created(){
     if(this.inputHero){
       this.selectedHero = this.inputHero;
-      this.getData();
+      this.getTalentData();
+      this.getTalentBuildData();
     }
   },
   mounted() {
@@ -51,11 +52,25 @@ export default {
   methods: {
     clickedHero(hero) {
       this.selectedHero = hero;
-      this.getData();
+      this.getTalentData();
+      this.getTalentBuildData();
+
+      history.pushState(null, null, this.selectedHero.name);
     },
-  	async getData(){
+  	async getTalentData(){
       try{
         const response = await this.$axios.post("/api/v1/global/talents/", {
+          hero: this.selectedHero.name,
+        });
+
+        console.log(response.data);
+      }catch(error){
+        console.log(error);
+      }
+    },
+    async getTalentBuildData(){
+      try{
+        const response = await this.$axios.post("/api/v1/global/talents/build", {
           hero: this.selectedHero.name,
         });
 

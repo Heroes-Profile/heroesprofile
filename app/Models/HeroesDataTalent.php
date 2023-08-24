@@ -24,4 +24,5 @@ class HeroesDataTalent extends Model
     {
         return $this->hasOne(GlobalHeroTalentDetails::class, 'talent_id', 'level');
     }
+
 }
