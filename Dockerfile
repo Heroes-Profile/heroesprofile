@@ -45,12 +45,6 @@ RUN npm install
 # Build the Vue 3 project
 RUN npm run build
 
-COPY heroesprofile-244413-a9642e3d8df5.json /app/heroesprofile-244413-a9642e3d8df5.json
-
-RUN curl -o /usr/local/bin/cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.6.1/cloud-sql-proxy.linux.amd64
-RUN chmod +x /usr/local/bin/cloud-sql-proxy
-
-
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
 COPY ports.conf /etc/apache2/ports.conf
 RUN a2ensite 000-default
@@ -62,6 +56,6 @@ RUN a2enmod rewrite
 
 
 # Start Apache
-CMD ["sh", "-c", "GOOGLE_APPLICATION_CREDENTIALS=/app/heroesprofile-244413-a9642e3d8df5.json cloud-sql-proxy heroesprofile-244413:us-east1:heroesprofile & apache2-foreground"]
 
+CMD ["apache2-foreground"]
 

@@ -45,7 +45,7 @@ return [
         'database' => [
             'driver' => 'database',
             'table' => env('HEROESPROFILE_DB_CACHE_TABLE'),
-            'connection' => env('HEROESPROFILE_DB_CACHE_DATABASE'),
+            'connection' => 'heroesprofile_cache',
             'lock_connection' => null,
         ],
 

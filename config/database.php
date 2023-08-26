@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('HEROESPROFILE_DB_CONNECTION', 'mysql'),
+    'default' => env('HEROESPROFILE_DB_CONNECTION'),
 
     /*
     |--------------------------------------------------------------------------
@@ -36,13 +36,12 @@ return [
     'connections' => [
         'heroesprofile' => [
             'driver' => 'mysql',
-            'url' => env('DATABASE_URL'),
-            'host' => env('APP_ENV') == "production" ? env('HEROESPROFILE_DB_HOST_PRODUCTION') : env('HEROESPROFILE_DB_HOST_LOCAL'),
-            'port' => env('HEROESPROFILE_DB_PORT'),
+            'host' => env('APP_ENV') == "production" ? "" : env('HEROESPROFILE_DB_HOST_LOCAL'),
+            'port' => env('APP_ENV') == "production" ? "" : env('HEROESPROFILE_DB_PORT'), 
             'database' => env('HEROESPROFILE_DB_DATABASE'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
             'password' => env('HEROESPROFILE_DB_PASSWORD'),
-            'unix_socket' => env('HEROESPROFILE_DB_SOCKET', ''),
+            'unix_socket' => env('APP_ENV') == "production" ? env('HEROESPROFILE_DB_HOST') : "",         
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
@@ -55,13 +54,12 @@ return [
         ],
         'heroesprofile_cache' => [
             'driver' => 'mysql',
-            'url' => env('DATABASE_URL'),
-            'host' => env('APP_ENV') == "production" ? env('HEROESPROFILE_DB_HOST_PRODUCTION') : env('HEROESPROFILE_DB_HOST_LOCAL'),
-            'port' => env('HEROESPROFILE_DB_PORT'),
+            'host' => env('APP_ENV') == "production" ? "" : env('HEROESPROFILE_DB_HOST_LOCAL'),         
+            'port' => env('APP_ENV') == "production" ? "" : env('HEROESPROFILE_DB_PORT'), 
             'database' => env('HEROESPROFILE_DB_CACHE_DATABASE'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
             'password' => env('HEROESPROFILE_DB_PASSWORD'),
-            'unix_socket' => env('HEROESPROFILE_DB_SOCKET', ''),
+            'unix_socket' => env('APP_ENV') == "production" ? env('HEROESPROFILE_DB_HOST') : "",         
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',

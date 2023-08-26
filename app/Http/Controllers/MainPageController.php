@@ -19,7 +19,6 @@ class MainPageController extends Controller
 
     public function show(Request $request)
     {
-
         $maxReplayID = $this->globalDataService->calculateMaxReplayNumber();
         $latestPatch = $this->globalDataService->getLatestPatch();
         $latestGameDate = $this->globalDataService->getLatestGameDate();
