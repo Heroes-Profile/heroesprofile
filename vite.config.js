@@ -3,6 +3,7 @@ import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
+    //base: process.env.NODE_ENV === 'production' ? 'https://heroesprofile-website-rsfk4hfj3a-ue.a.run.app/' : '/',
     plugins: [
         laravel({
             input: [

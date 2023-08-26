@@ -37,7 +37,7 @@ RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - \
     && npm -v
 
 # Install Vite
-RUN npm install --global vite
+RUN npm install --global vite 
 
 # Install Vue 3 project dependencies
 RUN npm install

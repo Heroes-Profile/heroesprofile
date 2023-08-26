@@ -35,7 +35,7 @@ export default {
   methods: {
   	async getData(){
       try{
-        const response = await this.$axios.post("/api/v1/global/hero/", {
+        const response = await this.$axios.post("/api/v1/global/hero", {
         });
 
         console.log(response.data);

@@ -37,7 +37,7 @@ return [
         'heroesprofile' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'host' => env('HEROESPROFILE_DB_HOST'),
+            'host' => env('APP_ENV') == "production" ? env('HEROESPROFILE_DB_HOST_PRODUCTION') : env('HEROESPROFILE_DB_HOST_LOCAL'),
             'port' => env('HEROESPROFILE_DB_PORT'),
             'database' => env('HEROESPROFILE_DB_DATABASE'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
@@ -56,7 +56,7 @@ return [
         'heroesprofile_cache' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'host' => env('HEROESPROFILE_DB_HOST'),
+            'host' => env('APP_ENV') == "production" ? env('HEROESPROFILE_DB_HOST_PRODUCTION') : env('HEROESPROFILE_DB_HOST_LOCAL'),
             'port' => env('HEROESPROFILE_DB_PORT'),
             'database' => env('HEROESPROFILE_DB_CACHE_DATABASE'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
