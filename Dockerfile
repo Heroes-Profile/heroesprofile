@@ -45,6 +45,10 @@ RUN npm install
 # Build the Vue 3 project
 RUN npm run build
 
+RUN curl -o /usr/local/bin/cloud-sql-proxy https://storage.googleapis.com/cloud-sql-connectors/cloud-sql-proxy/v2.6.1/cloud-sql-proxy.linux.amd64
+RUN chmod +x /usr/local/bin/cloud-sql-proxy
+
+
 RUN echo "<VirtualHost *:8000>" > /etc/apache2/sites-available/000-default.conf && \
     echo "  DocumentRoot /var/www/html" >> /etc/apache2/sites-available/000-default.conf && \
     echo "</VirtualHost>" >> /etc/apache2/sites-available/000-default.conf && \
@@ -58,4 +62,6 @@ EXPOSE 8000
 RUN a2enmod rewrite
 
 # Start Apache
-CMD apachectl -D FOREGROUND
+#CMD apachectl -D FOREGROUND
+
+CMD ["sh", "-c", "cloud_sql_proxy -instances=heroesprofile-244413=tcp:3306 & apache2-foreground"]
