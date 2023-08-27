@@ -21,8 +21,10 @@ import HeroBox from './components/HeroBox.vue';
 
 //Global Pages
 import GlobalHeroStats from './components/Global/Hero/GlobalHeroStats.vue';
+import GlobalHeroMapStats from './components/Global/Hero/Map/GlobalHeroMapStats.vue';
 import GlobalTalentsStats from './components/Global/Talents/GlobalTalentsStats.vue';
 import GlobalLeaderboard from './components/Global/Leaderboard/GlobalLeaderboard.vue';
+import GlobalMatchupsStats from './components/Global/Matchups/GlobalMatchupsStats.vue';
 
 
 

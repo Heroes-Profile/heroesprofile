@@ -1,12 +1,13 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class GlobalHeroStats extends Model
+class GlobalHeromatchupsEnemy extends Model
 {
-  protected $table = 'global_hero_stats';
-  protected $primaryKey = 'global_hero_id';
+  protected $table = 'global_hero_matchups_enemy';
+  protected $primaryKey = 'global_hero_matchups_enemy_id';
   protected $connection = 'heroesprofile';
 
   public $timestamps = false;
@@ -19,6 +20,11 @@ class GlobalHeroStats extends Model
   public function scopeFilterByGameType($query, $gameType)
   {
       return $query->whereIn('game_type', $gameType);
+  }
+  
+  public function scopeFilterByHero($query, $hero)
+  {
+    return $query->where('hero', $hero);
   }
 
   public function scopeFilterByLeagueTier($query, $leagueTier)
@@ -61,12 +67,6 @@ class GlobalHeroStats extends Model
     return $query;
   }
 
-  public function scopeFilterByHero($query, $hero)
-  {
-    return $query->where('hero', $hero);
-  }
-
-
   public function scopeExcludeMirror($query, $mirror)
   {
     if($mirror != 0){
@@ -82,5 +82,4 @@ class GlobalHeroStats extends Model
     }
     return $query;
   }
-
 }

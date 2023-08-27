@@ -77,4 +77,9 @@ class GlobalHeroStatsBans extends Model
         }
         return $query;
     }
+
+    public function scopeFilterByHero($query, $hero)
+    {
+        return $query->where('hero', $hero);
+    }
 }

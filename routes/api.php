@@ -7,6 +7,8 @@ use App\Http\Controllers\GeneralDataController;
 use App\Http\Controllers\Global\GlobalHeroStatsController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
 use App\Http\Controllers\Global\GlobalLeaderboardController;
+use App\Http\Controllers\Global\GlobalHeroMapStatsController;
+use App\Http\Controllers\Global\GlobalHeroMatchupStatsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,4 +40,13 @@ Route::prefix('v1')->group(function () {
 
     Route::get('global/leaderboard', [GlobalLeaderboardController::class, 'getLeaderboardData']); //testing
     Route::post('global/leaderboard', [GlobalLeaderboardController::class, 'getLeaderboardData']);
+
+    Route::get('global/hero/map', [GlobalHeroMapStatsController::class, 'getHeroStatMapData']); //testing
+    Route::post('global/hero/map', [GlobalHeroMapStatsController::class, 'getHeroStatMapData']);
+
+
+    Route::get('global/matchups', [GlobalHeroMatchupStatsController::class, 'getHeroMatchupData']); //testing
+    Route::post('global/matchups', [GlobalHeroMatchupStatsController::class, 'getHeroMatchupData']);
+
+
 });

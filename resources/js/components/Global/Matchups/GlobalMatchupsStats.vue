@@ -1,7 +1,7 @@
 <template>
   <div>
     Lets rethink how filtering is done.
-    <h1>Global Talent Statistics</h1>
+    <h1>Hero Matchups Statistics</h1>
     <infobox :input="infoText"></infobox>
 
 
@@ -18,12 +18,11 @@
 
 
   </div>
-    
 </template>
 
 <script>
 export default {
-  name: 'GlobalTalentsStats',
+  name: 'GlobalMatchupsStats',
   components: {
   },
   props: {
@@ -32,15 +31,14 @@ export default {
   },
   data(){
     return {
-    	infoText: "Talents",
+      infoText: "Hero Matchups provide information on which heroes are good with and against for a particular hero",
       selectedHero: null,
     }
   },
-  created(){    
+  created(){
     if(this.inputhero){
       this.selectedHero = this.inputhero;
-      this.getTalentData();
-      this.getTalentBuildData();
+      this.getData();
     }
   },
   mounted() {
@@ -54,26 +52,18 @@ export default {
       this.selectedHero = hero;
       let currentPath = window.location.pathname;
       history.pushState(null, null, `${currentPath}/${this.selectedHero.name}`);
-      this.getTalentData();
-      this.getTalentBuildData();
+      this.getData();
     },
-  	async getTalentData(){
+    async getData(){
+      console.log("Hero = " + this.selectedHero.name);
+      console.log("timeframe = " + "2.55.3.90670");
+      console.log("game_type = " + 5);
       try{
-        const response = await this.$axios.post("/api/v1/global/talents", {
-          hero: this.selectedHero.name,
+        const response = await this.$axios.post("/api/v1/global/matchups", {
+          userinput: this.selectedHero.name,
+          timeframe: "2.55.3.90670",
+          game_type: 5,
         });
-
-        console.log(response.data);
-      }catch(error){
-        console.log(error);
-      }
-    },
-    async getTalentBuildData(){
-      try{
-        const response = await this.$axios.post("/api/v1/global/talents/build", {
-          hero: this.selectedHero.name,
-        });
-
         console.log(response.data);
       }catch(error){
         console.log(error);

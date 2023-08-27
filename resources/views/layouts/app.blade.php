@@ -23,6 +23,9 @@
       <a class="navbar-brand" href="/Global/Talents">Talent Stats</a>
       <a class="navbar-brand" href="/Global/Leaderboard">Leaderboards</a>
       <a class="navbar-brand" href="/Global/Hero/Maps">Map Stats</a>
+      <a class="navbar-brand" href="/Global/Matchups">Matchup Stats</a>
+      <a class="navbar-brand" href="/Global/Matchups">Matchup Stats</a>
+      <a class="navbar-brand" href="/Global/Matchups/Talents">Matchup Talent Stats</a>
     </nav>
 
   <main class="py-4">
