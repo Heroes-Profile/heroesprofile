@@ -1,14 +1,15 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use App\Services\GlobalDataService;
+use Illuminate\Support\Facades\Auth;
 
+use App\Models\PatreonAccount;
+use App\Models\BattlenetAccount;
 
-use Illuminate\Support\Facades\Cache;
-
-
-class MainPageController extends Controller
+class ProfileController extends Controller
 {
     protected $globalDataService;
 
@@ -19,6 +20,7 @@ class MainPageController extends Controller
 
     public function show(Request $request)
     {
-        return view('mainPage');
+        $user = Auth::user()->load('patreonAccount');
+        return view('profile', ['user' => $user]);
     }
 }

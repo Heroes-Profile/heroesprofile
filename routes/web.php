@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\MainPageController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\BattleNetController;
 use App\Http\Controllers\Global\GlobalHeroStatsController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\Global\GlobalLeaderboardController;
 use App\Http\Controllers\Global\GlobalHeroMapStatsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupStatsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupsTalentsController;
+use App\Http\Controllers\Auth\PatreonController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,14 +31,12 @@ Route::get('/Authenticate/Battlenet', [BattleNetController::class, 'show']);
 Route::get('/redirect/authenticate/battlenet', [BattleNetController::class, 'redirectToProvider']);
 Route::get('/authenticate/battlenet/success', [BattleNetController::class, 'handleProviderCallback']);
 
-// Route protection logic
-Route::get('/Profile', function () {
-    if (Auth::check()) {
-        return view('profile');
-    } else {
-        return redirect('/Authenticate/Battlenet');
-    }
-});
+Route::get('Profile', [ProfileController::class, 'show'])->middleware('ensureBattlenetAuth');
+
+
+Route::get('/authenticate/patreon', [PatreonController::class, 'redirectToProvider']);
+Route::get('/authenticate/patreon/success', [PatreonController::class, 'handleProviderCallback']);
+
 
 
 
