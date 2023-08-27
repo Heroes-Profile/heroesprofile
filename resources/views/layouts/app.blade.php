@@ -26,6 +26,7 @@
       <a class="navbar-brand" href="/Global/Matchups">Matchup Stats</a>
       <a class="navbar-brand" href="/Global/Matchups">Matchup Stats</a>
       <a class="navbar-brand" href="/Global/Matchups/Talents">Matchup Talent Stats</a>
+      <a class="navbar-brand" href="/Profile">Profile</a>
     </nav>
 
   <main class="py-4">

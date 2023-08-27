@@ -31,4 +31,15 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'battlenet' => [
+        'client_id' => env('BATTLENET_KEY'),
+        'client_secret' => env('BATTLENET_SECRET'),
+        'redirect' => env('BATTLENET_REDIRECT_URI'),
+    ],
+
+    'patreon' => [
+        'client_id' => env('PATREON_CLIENT_ID'),
+        'client_secret' => env('PATREON_CLIENT_SECRET'),
+        'redirect' => env('PATREON_REDIRECT_URI'),
+    ],
 ];

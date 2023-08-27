@@ -1,15 +1,15 @@
 <template>
   <div>
-    Im going to work on this later
   </div>
 </template>
 
 <script>
 export default {
-  name: 'GlobalMatchupsTalentStats',
+  name: 'Profile',
   components: {
   },
   props: {
+    user: Object
   },
   data(){
     return {
@@ -18,6 +18,7 @@ export default {
   created(){
   },
   mounted() {
+    console.log(this.user);
   },
   computed: {
   },

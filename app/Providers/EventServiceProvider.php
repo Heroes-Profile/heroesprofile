@@ -18,6 +18,12 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        \SocialiteProviders\Manager\SocialiteWasCalled::class => [
+            \SocialiteProviders\Battlenet\BattlenetExtendSocialite::class.'@handle',
+        ],
+       \SocialiteProviders\Manager\SocialiteWasCalled::class => [
+            'SocialiteProviders\\Patreon\\PatreonExtendSocialite@handle',
+        ],
     ];
 
     /**

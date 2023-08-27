@@ -25,6 +25,12 @@ import GlobalHeroMapStats from './components/Global/Hero/Map/GlobalHeroMapStats.
 import GlobalTalentsStats from './components/Global/Talents/GlobalTalentsStats.vue';
 import GlobalLeaderboard from './components/Global/Leaderboard/GlobalLeaderboard.vue';
 import GlobalMatchupsStats from './components/Global/Matchups/GlobalMatchupsStats.vue';
+import GlobalMatchupsTalentStats from './components/Global/Matchups/Talent/GlobalMatchupsTalentStats.vue';
+
+
+//Authentication
+import Profile from './components/Profile.vue';
+import BattlenetAuthenticate from './components/Battlenet/BattlenetAuthenticate.vue';
 
 
 
