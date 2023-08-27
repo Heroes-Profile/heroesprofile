@@ -4,11 +4,5 @@
 @section('meta_description', '')
 
 @section('content')
-  <global-talents-stats :heroes="{{ json_encode($heroes) }}"></global-talents-stats>
+  <global-talents-stats :heroes="{{ json_encode(session('heroes')) }}" :inputhero="{{ json_encode($userinput)}}"></global-talents-stats>
 @endsection
-
-
-@section('max_replay_id', $maxReplayID)
-@section('latest_path', $latestPatch)
-@section('latest_game_in_timezone', $latestGameDate)
-

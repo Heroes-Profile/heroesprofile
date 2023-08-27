@@ -1,12 +1,13 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SeasonGameVersion extends Model
+class MMRTypeID extends Model
 {
-    protected $table = 'season_game_versions';
-    protected $primaryKey = 'id';
+    protected $table = 'mmr_type_ids'; 
+    protected $primaryKey = 'mmr_type_table_id';
     protected $connection = 'heroesprofile';
 
     public $timestamps = false;

@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GeneralDataController;
 use App\Http\Controllers\Global\GlobalHeroStatsController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
+use App\Http\Controllers\Global\GlobalLeaderboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,5 +36,6 @@ Route::prefix('v1')->group(function () {
     Route::get('global/talents/build', [GlobalTalentStatsController::class, 'getGlobalHeroTalentBuildData']); //testing
     Route::post('global/talents/build', [GlobalTalentStatsController::class, 'getGlobalHeroTalentBuildData']);
 
-
+    Route::get('global/leaderboard', [GlobalLeaderboardController::class, 'getLeaderboardData']); //testing
+    Route::post('global/leaderboard', [GlobalLeaderboardController::class, 'getLeaderboardData']);
 });

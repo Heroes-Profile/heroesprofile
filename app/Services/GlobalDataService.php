@@ -43,6 +43,17 @@ class GlobalDataService
     }
 
     public function getHeroes(){
-        return Hero::all();
+        if (!session()->has('heroes')) {
+            session(['heroes' => Hero::all()]);
+        }
+        return session('heroes');
+    }
+
+    public function getHeroModel($heroName){
+        if (!session()->has('heroes')) {
+            session(['heroes' => Hero::all()]);
+        }
+        $heroModel = session('heroes')->firstWhere('name', $heroName);
+        return $heroModel;
     }
 }

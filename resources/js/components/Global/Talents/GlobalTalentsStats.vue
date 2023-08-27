@@ -1,4 +1,4 @@
-GlobalHeroStats<template>
+<template>
   <div>
     Lets rethink how filtering is done.
     <h1>Global Talent Statistics</h1>
@@ -27,7 +27,7 @@ export default {
   components: {
   },
   props: {
-    inputHero: String,
+    inputhero: Object,
     heroes: Array,
   },
   data(){
@@ -36,9 +36,9 @@ export default {
       selectedHero: null,
     }
   },
-  created(){
-    if(this.inputHero){
-      this.selectedHero = this.inputHero;
+  created(){    
+    if(this.inputhero){
+      this.selectedHero = this.inputhero;
       this.getTalentData();
       this.getTalentBuildData();
     }
@@ -59,7 +59,7 @@ export default {
     },
   	async getTalentData(){
       try{
-        const response = await this.$axios.post("/api/v1/global/talents/", {
+        const response = await this.$axios.post("/api/v1/global/talents", {
           hero: this.selectedHero.name,
         });
 

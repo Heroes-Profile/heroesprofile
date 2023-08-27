@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers\Global;
 use Illuminate\Support\Facades\Cache;
-
-use App\Services\GlobalDataService;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Services\GlobalDataService;
 
 use App\Rules\HeroInputValidation;
 use App\Rules\TimeframeMinorInputValidation;
@@ -24,7 +22,6 @@ use App\Models\TalentCombination;
 
 class GlobalTalentStatsController extends Controller
 {
-    protected $globalDataService;
     private $buildsToReturn;
 
     public function __construct(GlobalDataService $globalDataService)
@@ -34,15 +31,8 @@ class GlobalTalentStatsController extends Controller
     }
 
     public function show(Request $request){
-        $maxReplayID = $this->globalDataService->calculateMaxReplayNumber();
-        $latestPatch = $this->globalDataService->getLatestPatch();
-        $latestGameDate = $this->globalDataService->getLatestGameDate();
-        $heroes = $this->globalDataService->getHeroes();
-
-
-        $hero = $request["hero"];
-
-        return view('Global.Talents.globalTalentStats', compact('maxReplayID', 'latestPatch', 'latestGameDate', 'heroes', 'hero'));
+        $userinput = $this->globalDataService->getHeroModel($request["hero"]);
+        return view('Global.Talents.globalTalentStats', compact('userinput'));
     }
 
     public function getGlobalHeroTalentData(Request $request){

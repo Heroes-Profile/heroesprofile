@@ -31,11 +31,7 @@ class GlobalHeroStatsController extends Controller
     }
 
     public function show(Request $request){
-        $maxReplayID = $this->globalDataService->calculateMaxReplayNumber();
-        $latestPatch = $this->globalDataService->getLatestPatch();
-        $latestGameDate = $this->globalDataService->getLatestGameDate();
-
-        return view('Global.Hero.globalHeroStats', compact('maxReplayID', 'latestPatch', 'latestGameDate'));
+        return view('Global.Hero.globalHeroStats');
     }
 
     public function getGlobalHeroData(Request $request){

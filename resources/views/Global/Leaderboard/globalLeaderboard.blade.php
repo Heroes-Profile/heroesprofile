@@ -4,5 +4,5 @@
 @section('meta_description', '')
 
 @section('content')
-  <global-hero-stats></global-hero-stats>
+  <global-leaderboard></global-leaderboard>
 @endsection
