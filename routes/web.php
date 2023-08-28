@@ -24,6 +24,8 @@ use App\Http\Controllers\Auth\PatreonController;
 |
 */
 
+///The way we are defining url paths to be consistent with the current site, the order of these routes cannot change.
+
 Route::get('/', [MainPageController::class, 'show']);
 
 //Login
@@ -38,28 +40,33 @@ Route::get('/authenticate/patreon', [PatreonController::class, 'redirectToProvid
 Route::get('/authenticate/patreon/success', [PatreonController::class, 'handleProviderCallback']);
 
 
-
-
-Route::get('/Global/Hero', [GlobalHeroStatsController::class, 'show']);
-Route::get('/Global/Talents/', [GlobalTalentStatsController::class, 'show']);
-Route::get('/Global/Talents/{hero}', [GlobalTalentStatsController::class, 'show']);
-Route::get('/Global/Leaderboard', [GlobalLeaderboardController::class, 'show']);
-
-
-//Global Hero Map Stats routes
 Route::get('/Global/Hero/Maps/', [GlobalHeroMapStatsController::class, 'show']);
 Route::get('/Global/Hero/Maps/{hero}', [GlobalHeroMapStatsController::class, 'show']);
+Route::get('/Global/Hero', [GlobalHeroStatsController::class, 'show']);
 
 
-//Global Hero Matchup Stats routes
+
+Route::get('/Global/Matchups/Talents', [GlobalHeroMatchupsTalentsController::class, 'show']);
+Route::get('/Global/Matchups/Talents/{hero}', [GlobalHeroMatchupsTalentsController::class, 'show']);
 Route::get('/Global/Matchups', [GlobalHeroMatchupStatsController::class, 'show']);
 Route::get('/Global/Matchups/{hero}', [GlobalHeroMatchupStatsController::class, 'show']);
 
+
+
+
+
+Route::get('/Global/Talents/', [GlobalTalentStatsController::class, 'show']);
+Route::get('/Global/Talents/{hero}', [GlobalTalentStatsController::class, 'show']);
+
+
+
+Route::get('/Global/Leaderboard', [GlobalLeaderboardController::class, 'show']);
+
+
+
+
+
+//Global Hero Matchup Stats routes
+
+
 //Global Hero Matchup Talent Stats routes
-Route::get('/Global/Matchups/Talents', [GlobalHeroMatchupsTalentsController::class, 'show']);
-
-
-
-
-
-Route::get('/Global/Matchups/Talents', [GlobalHeroMatchupsTalentsController::class, 'show']);

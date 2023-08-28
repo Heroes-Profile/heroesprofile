@@ -25,7 +25,7 @@ import GlobalHeroMapStats from './components/Global/Hero/Map/GlobalHeroMapStats.
 import GlobalTalentsStats from './components/Global/Talents/GlobalTalentsStats.vue';
 import GlobalLeaderboard from './components/Global/Leaderboard/GlobalLeaderboard.vue';
 import GlobalMatchupsStats from './components/Global/Matchups/GlobalMatchupsStats.vue';
-import GlobalMatchupsTalentStats from './components/Global/Matchups/Talent/GlobalMatchupsTalentStats.vue';
+import GlobalMatchupsTalentsStats from './components/Global/Matchups/Talent/GlobalMatchupsTalentsStats.vue';
 
 
 //Authentication

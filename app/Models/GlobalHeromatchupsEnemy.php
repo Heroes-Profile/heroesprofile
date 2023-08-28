@@ -67,6 +67,11 @@ class GlobalHeromatchupsEnemy extends Model
     return $query;
   }
 
+  public function scopeFilterByAllyEnemy($query, $hero)
+  {
+    return $query->where('enemy', $hero);
+  }
+
   public function scopeExcludeMirror($query, $mirror)
   {
     if($mirror != 0){
