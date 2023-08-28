@@ -12,6 +12,7 @@ class PatreonAccount extends Model
 
     protected $fillable = [
         'battlenet_accounts_id',
+        'patreon_id',
         'name',
         'email',
         'access_token',
