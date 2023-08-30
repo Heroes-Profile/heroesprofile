@@ -4,7 +4,7 @@ import axios from 'axios';
 // Create a fresh Vue app instance
 const app = createApp({});
 
-
+import '../css/app.css';
 // Register components
 import ExampleComponent from './components/ExampleComponent.vue';
 import MainPage from './components/MainPage.vue';
