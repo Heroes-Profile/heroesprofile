@@ -51,7 +51,7 @@ class PatreonController extends Controller
             $battlenetAccount->save();
         }
 
-        return redirect('/Profile');
+        return redirect('/Profile/Settings');
     }
 
     private function getUserDataCheckIfSubscribed($accessToken)

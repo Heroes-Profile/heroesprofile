@@ -3,13 +3,15 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\GeneralDataController;
+use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\Global\GlobalHeroStatsController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
 use App\Http\Controllers\Global\GlobalLeaderboardController;
 use App\Http\Controllers\Global\GlobalHeroMapStatsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupStatsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupsTalentsController;
+use App\Http\Controllers\Global\GlobalCompositionsController;
+use App\Http\Controllers\ProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,8 +28,8 @@ use App\Http\Controllers\Global\GlobalHeroMatchupsTalentsController;
 
 
 Route::prefix('v1')->group(function () {
-    Route::get('battletag/search', [GeneralDataController::class, 'battletagSearch']); //testing
-    Route::post('battletag/search', [GeneralDataController::class, 'battletagSearch']);
+    Route::get('battletag/search', [BattletagSearchController::class, 'battletagSearch']); //testing
+    Route::post('battletag/search', [BattletagSearchController::class, 'battletagSearch']);
 
 
     Route::get('global/hero/', [GlobalHeroStatsController::class, 'getGlobalHeroData']); //testing
@@ -52,5 +54,14 @@ Route::prefix('v1')->group(function () {
 
     Route::get('global/matchups/talents', [GlobalHeroMatchupsTalentsController::class, 'getHeroMatchupsTalentsData']); //testing
     Route::post('global/matchups/talents', [GlobalHeroMatchupsTalentsController::class, 'getHeroMatchupsTalentsData']);
+
+
+    Route::get('global/compositions', [GlobalCompositionsController::class, 'getCompositionsData']); //testing
+    Route::post('global/compositions', [GlobalCompositionsController::class, 'getCompositionsData']);
+
+
+    Route::get('profile', [ProfileController::class, 'getProfileData']); //testing
+    Route::post('profile', [ProfileController::class, 'getProfileData']);
+
 
 });

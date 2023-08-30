@@ -4,5 +4,5 @@
 @section('meta_description', '')
 
 @section('content')
-  <profile :user="{{ json_encode(Auth::user()) }}"></profile>
+  <profile-settings :user="{{ json_encode(Auth::user()) }}"></profile-settings>
 @endsection

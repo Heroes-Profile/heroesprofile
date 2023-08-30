@@ -2,16 +2,19 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\MainPageController;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Auth\BattleNetController;
+use App\Http\Controllers\Auth\PatreonController;
+use App\Http\Controllers\ProfileController;
+
+use App\Http\Controllers\MainPageController;
+
 use App\Http\Controllers\Global\GlobalHeroStatsController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
 use App\Http\Controllers\Global\GlobalLeaderboardController;
 use App\Http\Controllers\Global\GlobalHeroMapStatsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupStatsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupsTalentsController;
-use App\Http\Controllers\Auth\PatreonController;
+use App\Http\Controllers\Global\GlobalCompositionsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,10 +33,15 @@ Route::get('/', [MainPageController::class, 'show']);
 
 //Login
 Route::get('/Authenticate/Battlenet', [BattleNetController::class, 'show']);
+Route::get('/Battlenet/Logout', [BattleNetController::class, 'logout']);
+
+
+
+
+
 Route::get('/redirect/authenticate/battlenet', [BattleNetController::class, 'redirectToProvider']);
 Route::get('/authenticate/battlenet/success', [BattleNetController::class, 'handleProviderCallback']);
 
-Route::get('Profile', [ProfileController::class, 'show'])->middleware('ensureBattlenetAuth');
 
 
 Route::get('/authenticate/patreon', [PatreonController::class, 'redirectToProvider']);
@@ -62,11 +70,9 @@ Route::get('/Global/Talents/{hero}', [GlobalTalentStatsController::class, 'show'
 
 Route::get('/Global/Leaderboard', [GlobalLeaderboardController::class, 'show']);
 
+Route::get('/Global/Compositions', [GlobalCompositionsController::class, 'show']);
 
 
 
-
-//Global Hero Matchup Stats routes
-
-
-//Global Hero Matchup Talent Stats routes
+Route::get('Profile/Settings', [ProfileController::class, 'showSettings'])->middleware('ensureBattlenetAuth');
+Route::get('Profile/{battletag}/{blizz_id}/{region}', [ProfileController::class, 'showProfile']);

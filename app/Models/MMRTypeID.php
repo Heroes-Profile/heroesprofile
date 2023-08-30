@@ -11,4 +11,10 @@ class MMRTypeID extends Model
     protected $connection = 'heroesprofile';
 
     public $timestamps = false;
+
+    public function scopeFilterByName($query, $name)
+    {
+      return $query->where('name', $name);
+    }
+
 }

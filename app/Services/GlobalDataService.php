@@ -6,6 +6,14 @@ use App\Models\Replay;
 use App\Models\Hero;
 use App\Models\SeasonGameVersion;
 
+use App\Models\MasterMMRDataQM;
+use App\Models\MasterMMRDataUD;
+use App\Models\MasterMMRDataHL;
+use App\Models\MasterMMRDataTL;
+use App\Models\MasterMMRDataSL;
+use App\Models\MasterMMRDataAR;
+
+
 class GlobalDataService
 {
     public function calculateMaxReplayNumber()
@@ -55,5 +63,30 @@ class GlobalDataService
         }
         $heroModel = session('heroes')->firstWhere('name', $heroName);
         return $heroModel;
+    }
+
+    public function getMasterMMRData($blizz_id, $region, $type, $game_type){
+        $model = "";
+        if($game_type == 1){
+            $model = MasterMMRDataQM::class;
+        }else if($game_type == 2){
+            $model = MasterMMRDataUD::class;
+        }else if($game_type == 3){
+            $model = MasterMMRDataHL::class;
+        }else if($game_type == 4){
+            $model = MasterMMRDataTL::class;
+        }else if($game_type == 5){
+            $model = MasterMMRDataSL::class;
+        }else if($game_type == 6){
+            $model = MasterMMRDataAR::class;
+        }
+
+        $data = $model::select('conservative_rating', 'win', 'loss')
+                    ->filterByType($type)
+                    ->filterByGametype($game_type)
+                    ->filterByBlizzID($blizz_id)
+                    ->filterByRegion($region)
+                    ->get();
+        return $data;
     }
 }

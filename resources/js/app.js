@@ -1,13 +1,8 @@
 import { createApp } from 'vue';
-import { BootstrapVueNext } from 'bootstrap-vue-next';
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap-vue-next/dist/bootstrap-vue-next.css';
 import axios from 'axios';
 
 // Create a fresh Vue app instance
 const app = createApp({});
-
-app.use(BootstrapVueNext);
 
 
 // Register components
@@ -26,10 +21,12 @@ import GlobalTalentsStats from './components/Global/Talents/GlobalTalentsStats.v
 import GlobalLeaderboard from './components/Global/Leaderboard/GlobalLeaderboard.vue';
 import GlobalMatchupsStats from './components/Global/Matchups/GlobalMatchupsStats.vue';
 import GlobalMatchupsTalentsStats from './components/Global/Matchups/Talent/GlobalMatchupsTalentsStats.vue';
+import CompositionsStats from './components/Global/Compositions/CompositionsStats.vue';
 
 
 //Authentication
-import Profile from './components/Profile.vue';
+import ProfileSettings from './components/Profile/ProfileSettings.vue';
+import Profile from './components/Profile/Profile.vue';
 import BattlenetAuthenticate from './components/Battlenet/BattlenetAuthenticate.vue';
 
 

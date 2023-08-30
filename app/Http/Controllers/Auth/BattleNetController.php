@@ -42,6 +42,11 @@ class BattleNetController extends Controller
 
         Auth::login($battlenetAccount, true);
 
-        return redirect('/Profile'); // Redirect to desired location
+        return redirect('/Profile/Settings'); // Redirect to desired location
+    }
+
+    public function logout(){
+        Auth::logout();
+        return redirect('/');
     }
 }

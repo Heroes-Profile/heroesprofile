@@ -24,8 +24,20 @@
       <a class="navbar-brand" href="/Global/Leaderboard">Leaderboards</a>
       <a class="navbar-brand" href="/Global/Hero/Maps">Map Stats</a>
       <a class="navbar-brand" href="/Global/Matchups">Matchup Stats</a>
-      <a class="navbar-brand" href="/Global/TalentMatchups">Matchup Talent Stats</a>
-      <a class="navbar-brand" href="/Profile">Profile</a>
+      <a class="navbar-brand" href="/Global/Matchups/Talents">Matchup Talent Stats</a>
+      <a class="navbar-brand" href="/Global/Compositions">Compositional Stats</a>
+      <a class="navbar-brand" href="/Profile/Zemill/67280/1">Zemill</a>
+        @auth
+          <!-- Navigation for authenticated users -->
+          <a class="navbar-brand" href="/Profile/Settings">Profile Settings</a>
+          <a class="navbar-brand" href="/Battlenet/Logout">Profile Logout</a>
+        @endauth
+        
+        @guest
+          <!-- Navigation for guests -->
+          <a class="navbar-brand" href="/Authenticate/Battlenet">Login</a>
+        @endguest
+
     </nav>
 
   <main class="py-4">

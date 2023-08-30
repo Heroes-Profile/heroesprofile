@@ -10,8 +10,7 @@ use App\Models\Battletag;
 use App\Models\Replay;
 use App\Models\Player;
 
-
-class GeneralDataController extends Controller
+class BattletagSearchController extends Controller
 {
     public function battletagSearch(Request $request){
         $request->validate(['userinput' => ['required', 'string', new BattletagInputProhibitCharacters],]);
@@ -28,21 +27,11 @@ class GeneralDataController extends Controller
         return $data;
     }
 
-
     private function searchForSpecificBattletag($input){
         $data = Battletag::select("blizz_id", "battletag", "region", "latest_game")->where("battletag", $input)->get();
         return $data;
     }
 
-    /*///////////////////////////////////////////////
-    
-        This method takes a partial battletag and returns all battletags that are like it.  It also takes care of removing any duplicates due to data issues in the replays picking up the value with the latest game played.
-
-
-        Returns:
-        Fill out later
-
-    *///////////////////////////////////////////////
     private function searchForPartialBattletag($input){
         $data = Battletag::select("blizz_id", "battletag", "region", "latest_game")->where("battletag", "LIKE", $input . "%")->get();
 
@@ -116,4 +105,6 @@ class GeneralDataController extends Controller
 
         return $latestHeroValue;
     }
+
+
 }
