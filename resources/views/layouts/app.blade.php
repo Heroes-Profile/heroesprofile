@@ -18,35 +18,67 @@
 </head>
 <body>
   <div id="app">
-    <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
+<nav class="bg-gray-100 p-4">
+  <div class="flex items-center space-x-4">
+
+    <div class="relative group inline-block">
+      <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Global Hero Stats</a>
+      <div class="absolute left-0 hidden mt-0 space-y-2 bg-white border border-gray-300 rounded-md group-hover:block">
+        <a href="/Global/Hero" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Hero Stats</a>
+        <a href="/Global/Talents" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Talent Stats</a>
+        <a href="/Global/Hero/Maps" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Map Stats</a>
+        <a href="/Global/Matchups" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Matchup Stats</a>
+        <a href="/Global/Matchups/Talents" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Matchup Talent Stats</a>
+        <a href="/Global/Compositions" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Compositional Stats</a>
+      </div>
+    </div>
+
+    <a class="text-blue-600 hover:text-blue-800" href="/Global/Leaderboard">Leaderboards</a>
+
+    <div class="relative group inline-block">
+      <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Zemill</a>
+      <div class="absolute left-0 hidden mt-0 space-y-2 bg-white border border-gray-300 rounded-md group-hover:block">
+        <a href="/Profile/Zemill/67280/1" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Profile</a>
+        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Friends And Foes</a>
+        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Heroes</a>
+        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Matchups</a>
+        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Roles</a>
+        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Maps</a>
+        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Talents</a>
+        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">MMR Breakdown</a>
+        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Match History</a>
+        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Compare</a>
+      </div>
+    </div>
+
+    <div class="relative group inline-block">
+      <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Tools</a>
+      <div class="absolute left-0 hidden mt-0 space-y-2 bg-white border border-gray-300 rounded-md group-hover:block">
+        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Talent Builder</a>
+        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Compare</a>
+        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Drafter</a>
+        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Game Data</a>
+        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Replay Uploader</a>
+        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Activity Graphs</a>
+        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Auto Battler</a>
+      </div>
+    </div>
 
 
+    @auth
+      <!-- Navigation for authenticated users -->
+      <a class="text-blue-600 hover:text-blue-800" href="/Profile/Settings">Profile Settings</a>
+      <a class="text-blue-600 hover:text-blue-800" href="/Battlenet/Logout">Profile Logout</a>
+    @endauth
+
+    @guest
+      <!-- Navigation for guests -->
+      <a class="text-blue-600 hover:text-blue-800" href="/Authenticate/Battlenet">Login</a>
+    @endguest
+  </div>
+</nav>
 
 
-
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="/Global/Hero">Hero Stats</a>
-      <a class="navbar-brand" href="/Global/Talents">Talent Stats</a>
-      <a class="navbar-brand" href="/Global/Leaderboard">Leaderboards</a>
-      <a class="navbar-brand" href="/Global/Hero/Maps">Map Stats</a>
-      <a class="navbar-brand" href="/Global/Matchups">Matchup Stats</a>
-      <a class="navbar-brand" href="/Global/Matchups/Talents">Matchup Talent Stats</a>
-      <a class="navbar-brand" href="/Global/Compositions">Compositional Stats</a>
-      <a class="navbar-brand" href="/Profile/Zemill/67280/1">Zemill</a>
-        @auth
-          <!-- Navigation for authenticated users -->
-          <a class="navbar-brand" href="/Profile/Settings">Profile Settings</a>
-          <a class="navbar-brand" href="/Battlenet/Logout">Profile Logout</a>
-        @endauth
-        
-        @guest
-          <!-- Navigation for guests -->
-          <a class="navbar-brand" href="/Authenticate/Battlenet">Login</a>
-        @endguest
-
-    </nav>
 
   <main class="py-4">
     @yield('content')
