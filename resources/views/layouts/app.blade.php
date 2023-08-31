@@ -18,6 +18,14 @@
 </head>
 <body>
   <div id="app">
+    <h1 className="text-3xl font-bold underline">
+      Hello world!
+    </h1>
+
+
+
+
+
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <a class="navbar-brand" href="/Global/Hero">Hero Stats</a>
       <a class="navbar-brand" href="/Global/Talents">Talent Stats</a>

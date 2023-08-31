@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
+import tailwindcss from 'tailwindcss'
+
 
 export default defineConfig({
     //base: process.env.NODE_ENV === 'production' ? 'https://heroesprofile-website-rsfk4hfj3a-ue.a.run.app/' : '/',
@@ -28,10 +30,8 @@ export default defineConfig({
         },
     },
     css: {
-        preprocessorOptions: {
-          scss: {
-            additionalData: `@import "@/styles/variables.scss";`
-          }
-        }
-    }
+        postcss: {
+            plugins: [tailwindcss],
+        },
+    },
 });
