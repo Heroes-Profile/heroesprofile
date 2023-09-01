@@ -1,18 +1,19 @@
 <template>
   <div>
     <div id="filter-label" class="relative">
-      <div @click="showOptions = !showOptions" class="block text-sm font-medium text-gray-700 cursor-pointer border p-2 rounded">
+      <div @click="showOptions = !showOptions" class="block text-sm font-medium text-gray-700 cursor-pointer border p-2 rounded ">
         <span>{{ this.text }}</span>
         <span v-if="selectedOptionsName !== ''">: {{ selectedOptionsName }}</span>      
-    </div>
-      <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg">
+      </div>
+      <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg expandable-dropdown">
         <div class="space-y-2 p-2">
           <div v-for="value in values" :key="value.code">
             <input 
               type="radio" 
               :id="value.code" 
               :value="value.code" 
-              v-model="selectedOptions"
+              :checked="value.code === selectedOptions"
+              @click="toggleSelectedOptions(value.code)"
               class="form-checkbox h-5 w-5 text-indigo-600"
             >
             <label :for="value.code" class="ml-2 text-sm text-gray-900">{{ value.name }}</label>
@@ -42,6 +43,10 @@ export default {
   created(){
   },
   mounted() {
+    document.addEventListener("click", this.handleClickOutside);
+  },
+  beforeDestroy() {
+    document.removeEventListener("click", this.handleClickOutside);
   },
   computed: {
     selectedOptionsName() {
@@ -50,8 +55,26 @@ export default {
     },
   },
   watch: {
+    selectedOptions: function (newVal) {
+      // Emitting the change back to the parent component
+      this.$emit('input-changed', { field: this.text, value: newVal, type: 'single' });
+    }
   },
   methods: {
+    handleClickOutside(event) {
+      const dropdown = this.$el;
+      if (dropdown && !dropdown.contains(event.target)) {
+        this.showOptions = false;
+      }
+    },
+    toggleSelectedOptions(value) {
+      if (this.text !== "Timeframe Type") {
+        this.selectedOptions = this.selectedOptions === value ? '' : value;
+      } else {
+        this.selectedOptions = value;
+      }
+    },
   }
 }
 </script>
+

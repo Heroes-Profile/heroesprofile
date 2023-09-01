@@ -3,3 +3,8 @@
 @import 'tailwindcss/utilities';
 
 html{background-color:lightgrey;}
+
+.expandable-dropdown {
+  min-width: 150px;  /* Adjust based on your needs */
+  width: auto;
+}

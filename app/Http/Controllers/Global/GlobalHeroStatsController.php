@@ -15,6 +15,9 @@ use App\Rules\GameMapInputValidation;
 use App\Rules\HeroLevelInputValidation;
 use App\Rules\MirrorInputValidation;
 use App\Rules\RegionInputValidation;
+use App\Rules\StatFilterInputValidation;
+use App\Rules\HeroInputByIDValidation;
+use App\Rules\RoleInputValidation;
 
 use App\Models\Hero;
 use App\Models\GlobalHeroStats;
@@ -34,35 +37,81 @@ class GlobalHeroStatsController extends Controller
     public function show(Request $request){
         
 
-        return view('Global.Hero.globalHeroStats')->with('filters', $this->globalDataService->getFilterData());
+        return view('Global.Hero.globalHeroStats')->with('filters', $this->globalDataService->getFilterData())->with('gametypedefault', array("sl"));
     }
 
-    public function getGlobalHeroData(Request $request){
+    public function getGlobalHeroData(Request $request){        
+        //return response()->json($request->all());
 
+        $gameVersion = null;
 
-        //http://127.0.0.1:8000/api/v1/global/hero/?timeframe=2.55.3.90670,2.54.2.85894&game_type=qm,sl&league_tier=wood,gold,blah&hero_league_tier=diamond&role_league_tier=master&map=Alterac%20Pass&hero_level=5&mirror=Include
+        if($request["timeframe_type"] == "major"){
+            $gameVersions = SeasonGameVersion::select('game_version')
+                                            ->where('game_version', 'like', $request["timeframe"][0] . "%")
+                                            ->pluck('game_version')
+                                            ->toArray();                                            
+            $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $gameVersions);
 
-        $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', explode(',', $request["timeframe"]));
-        $gameType = (new GameTypeInputValidation())->passes('game_type', explode(',', $request["game_type"]));
-        $leagueTier = (new TierInputValidation())->passes('league_tier', explode(',', $request["league_tier"]));
-        $heroLeagueTier = (new TierInputValidation())->passes('hero_league_tier', explode(',', $request["hero_league_tier"]));
-        $roleLeagueTier = (new TierInputValidation())->passes('role_league_tier', explode(',', $request["role_league_tier"]));
-        $gameMap = (new GameMapInputValidation())->passes('map', explode(',', $request["map"]));
-        $heroLevel = (new HeroLevelInputValidation())->passes('hero_level', explode(',', $request["hero_level"]));
+        }else{
+            $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $request["timeframe"]);
+        }
+        $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
+        $leagueTier = (new TierInputValidation())->passes('league_tier', $request["league_tier"]);
+        $heroLeagueTier = (new TierInputValidation())->passes('hero_league_tier', $request["hero_league_tier"]);
+        $roleLeagueTier = (new TierInputValidation())->passes('role_league_tier', $request["role_league_tier"]);
+        $gameMap = (new GameMapInputValidation())->passes('map', $request["map"]);
+        $heroLevel = (new HeroLevelInputValidation())->passes('hero_level', $request["hero_level"]);
         $mirror = (new MirrorInputValidation())->passes('mirror', $request["mirror"]);
         $region = (new RegionInputValidation())->passes('region', $request["region"]);
+        $statFilter = (new StatFilterInputValidation())->passes('statfilter', $request["statfilter"]);
+        $hero = (new HeroInputByIDValidation())->passes('statfilter', $request["hero"]);
+        $role = (new RoleInputValidation())->passes('role', $request["role"]);
+
+        return $role;
+
+        if(count($region) == 4){
+            $region = [];   
+        }
+
+        if(count($heroLevel) == 9){
+            $heroLevel = [];   
+        }
+
+        if(count($gameMap) == 18){
+            $gameMap = [];   
+        }
+
+        if(count($leagueTier) == 7){
+            $leagueTier = [];
+        }
+
+        if(count($heroLeagueTier) == 7){
+            $heroLeagueTier = [];
+        }
+
+        if(count($roleLeagueTier) == 7){
+            $roleLeagueTier = [];
+        }
+
 
         $cacheKey = "GlobalHeroStats|" . implode('|', [
-            'gameVersion' => implode(',', $gameVersion),
-            'gameType' => implode(',', $gameType),
-            'leagueTier' => implode(',', $leagueTier),
-            'heroLeagueTier' => implode(',', $heroLeagueTier),
-            'roleLeagueTier' => implode(',', $roleLeagueTier),
-            'gameMap' => implode(',', $gameMap),
-            'heroLevel' => implode(',', $heroLevel),
-            'mirror' => $mirror,
-            'region' => implode(',', $region),
+            'gameVersion=' . implode(',', $gameVersion),
+            'gameType=' . implode(',', $gameType),
+            'leagueTier=' . implode(',', $leagueTier),
+            'heroLeagueTier=' . implode(',', $heroLeagueTier),
+            'roleLeagueTier=' . implode(',', $roleLeagueTier),
+            'gameMap=' . implode(',', $gameMap),
+            'heroLevel=' . implode(',', $heroLevel),
+            'mirror=' . $mirror,
+            'region=' . implode(',', $region),
+            'statFilter=' . $statFilter,
+            'hero=' . $hero,
+            'role=' . $role,
         ]);
+
+
+        //return $cacheKey;
+
 
         $data = Cache::store("database")->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion, 
                                                                                                                                  $gameType, 
@@ -72,13 +121,19 @@ class GlobalHeroStatsController extends Controller
                                                                                                                                  $gameMap,
                                                                                                                                  $heroLevel,
                                                                                                                                  $mirror,
-                                                                                                                                 $region
+                                                                                                                                 $region,
+                                                                                                                                 $statFilter,
+                                                                                                                                 $hero,
+                                                                                                                                 $role
                                                                                                                                 ){
   
             $data = GlobalHeroStats::query()
                 ->join('heroes', 'heroes.id', '=', 'global_hero_stats.hero')
                 ->select('heroes.name', 'heroes.id as hero_id', 'global_hero_stats.win_loss', 'heroes.new_role as role')
                 ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
+                ->when($statFilter !== 'win_rate', function ($query) use ($statFilter) {
+                    return $query->selectRaw("SUM(global_hero_stats.$statFilter) as total_filter_type");
+                })
                 ->filterByGameVersion($gameVersion)
                 ->filterByGameType($gameType)
                 ->filterByLeagueTier($leagueTier)
@@ -122,12 +177,8 @@ class GlobalHeroStatsController extends Controller
                     //->toSql();
                     ->get();
             }
-
-            return $this->combineData($data, $banData, $changeData);
+            return $this->combineData($data, $statFilter, $banData, $changeData, $hero, $role);
         });
-
-
-
         return $data;
     }
 
@@ -136,10 +187,11 @@ class GlobalHeroStatsController extends Controller
         return [SeasonGameVersion::select("game_version")->where('id', (SeasonGameVersion::select("id")->where('game_version', '2.55.3.90670')->first()->id - 1))->first()->game_version];
     }
 
-    private function combineData($data, $banData, $changeData){
+    private function combineData($data, $statFilter, $banData, $changeData, $hero, $role){
         $totalGamesPlayed = collect($data)->sum('games_played') / 10;
 
-        $combinedData = collect($data)->groupBy('name')->map(function ($group) use ($banData, $changeData, $totalGamesPlayed) {
+        $sortBy = $statFilter == "win_rate" ? "win_rate" : "total_filter_type";
+        $combinedData = collect($data)->groupBy('name')->map(function ($group) use ($banData, $statFilter, $changeData, $totalGamesPlayed) {
             $firstItem = $group->first();
 
             $wins = $group->where('win_loss', 1)->sum('games_played');
@@ -176,6 +228,8 @@ class GlobalHeroStatsController extends Controller
 
             $confidenceInterval = $this->calculateWinRateConfidenceInterval($wins, $gamesPlayed);
 
+            $statFilterTotal = $group->sum('total_filter_type');
+
             return [
                 'name' => $firstItem['name'],
                 'hero_id' => $firstItem['hero_id'],
@@ -190,8 +244,22 @@ class GlobalHeroStatsController extends Controller
                 'pick_rate' => round($pickRate, 2),
                 'influence' => $influence,
                 'confidence_interval' => round($confidenceInterval,2),
+                'total_filter_type' => round($statFilterTotal / $gamesPlayed)
             ];
-        })->sortByDesc('win_rate')->values()->toArray();
+        })->sortByDesc($sortBy)->values()->toArray();
+
+
+        if($hero){
+            $combinedData = collect($combinedData)->filter(function ($item) use ($hero){
+                return $item['hero_id'] == $hero;
+            });
+        }
+
+        if($role){
+            $combinedData = collect($combinedData)->filter(function ($item) use ($role){
+                return $item['role'] == $role;
+            });
+        }
 
         $combinedCollection = collect($combinedData);
 
@@ -221,6 +289,7 @@ class GlobalHeroStatsController extends Controller
         $averagePositiveWinRateChange = $positiveWinRateChangeCollection->avg('win_rate_change');
         $averageNegativeWinRateChange = $negativeWinRateChangeCollection->avg('win_rate_change');
         $averageGamesPlayed = $combinedCollection->sum('games_played') / count($combinedCollection);
+        $averageTotalFilterType = $combinedCollection->avg('total_filter_type');
 
         return [
             'average_win_rate' => round($averageWinRate, 2), 
@@ -233,6 +302,7 @@ class GlobalHeroStatsController extends Controller
             'average_positive_win_rate_change' => round($averagePositiveWinRateChange, 2), 
             'average_negative_win_rate_change' => round($averageNegativeWinRateChange, 2), 
             'average_games_played' => round($averageGamesPlayed, 0), 
+            'averaege_total_filter_type' => round($averageTotalFilterType, 0),
             'data' => $combinedData
         ];
     }

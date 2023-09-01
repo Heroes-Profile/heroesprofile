@@ -57,7 +57,7 @@ class GlobalDataService
 
     public function calculateCacheTimeInMinutes($timeframe){
         //Cache time is set to 0.  Need to setup how cache time is done
-        return 30;
+        return 0;
     }
 
     public function getHeroes(){
@@ -139,45 +139,45 @@ class GlobalDataService
             ['code' => 'CN', 'name' => 'CN']
         ];
 
-       $filterData->stat_filter = [
+        $filterData->stat_filter = [
             ['code' => 'win_rate', 'name' => 'Win Rate'],
-            ['code' => 'game_time', 'name' => 'Game Time'],
-            ['code' => 'kills', 'name' => 'Kills'],
-            ['code' => 'takedowns', 'name' => 'Takedowns'],
-            ['code' => 'deaths', 'name' => 'Deaths'],
-            ['code' => 'siege_damage', 'name' => 'Siege Damage'],
-            ['code' => 'hero_damage', 'name' => 'Hero Damage'],
-            ['code' => 'healing', 'name' => 'Healing'],
-            ['code' => 'damage_taken', 'name' => 'Damage Taken'],
-            ['code' => 'experience_contribution', 'name' => 'Experience Contribution'],
             ['code' => 'assists', 'name' => 'Assists'],
-            ['code' => 'highest_kill_streak', 'name' => 'Highest Kill Streak'],
-            ['code' => 'structure_damage', 'name' => 'Structure Damage'],
-            ['code' => 'minion_damage', 'name' => 'Minion Damage'],
-            ['code' => 'creep_damage', 'name' => 'Lane Merc. Damage'],
-            ['code' => 'summon_damage', 'name' => 'Summon Damage'],
-            ['code' => 'self_healing', 'name' => 'Self Healing'],
-            ['code' => 'town_kills', 'name' => 'Town Kills'],
-            ['code' => 'time_spent_dead', 'name' => 'Time Spent Dead'],
-            ['code' => 'merc_camp_captures', 'name' => 'Merc Camp Captures'],
-            ['code' => 'watch_tower_captures', 'name' => 'Watch Tower Captures'],
-            ['code' => 'protection_Allies', 'name' => 'Protection Allies'],
-            ['code' => 'silencing_enemies', 'name' => 'Silencing Enemies'],
-            ['code' => 'rooting_enemies', 'name' => 'Rooting Enemies'],
-            ['code' => 'stunning_enemies', 'name' => 'Stunning Enemies'],
             ['code' => 'clutch_heals', 'name' => 'Clutch Heals'],
+            ['code' => 'creep_damage', 'name' => 'Lane Merc. Damage'],
+            ['code' => 'damage_taken', 'name' => 'Damage Taken'],
+            ['code' => 'deaths', 'name' => 'Deaths'],
             ['code' => 'escapes', 'name' => 'Escapes'],
-            ['code' => 'vengeance', 'name' => 'Vengeance'],
+            ['code' => 'experience_contribution', 'name' => 'Experience Contribution'],
+            ['code' => 'game_time', 'name' => 'Game Time'],
+            ['code' => 'healing', 'name' => 'Healing'],
+            ['code' => 'hero_damage', 'name' => 'Hero Damage'],
+            ['code' => 'highest_kill_streak', 'name' => 'Highest Kill Streak'],
+            ['code' => 'kills', 'name' => 'Kills'],
+            ['code' => 'merc_camp_captures', 'name' => 'Merc Camp Captures'],
+            ['code' => 'minion_damage', 'name' => 'Minion Damage'],
+            ['code' => 'multikill', 'name' => 'Multikill'],
             ['code' => 'outnumbered_deaths', 'name' => 'Outnumbered Deaths'],
+            ['code' => 'physical_damage', 'name' => 'Physical Damage'],
+            ['code' => 'protection_Allies', 'name' => 'Protection Allies'],
+            ['code' => 'regen_globes', 'name' => 'Regen Globes'],
+            ['code' => 'rooting_enemies', 'name' => 'Rooting Enemies'],
+            ['code' => 'self_healing', 'name' => 'Self Healing'],
+            ['code' => 'siege_damage', 'name' => 'Siege Damage'],
+            ['code' => 'silencing_enemies', 'name' => 'Silencing Enemies'],
+            ['code' => 'spell_damage', 'name' => 'Spell Damage'],
+            ['code' => 'stunning_enemies', 'name' => 'Stunning Enemies'],
+            ['code' => 'summon_damage', 'name' => 'Summon Damage'],
+            ['code' => 'takedowns', 'name' => 'Takedowns'],
+            ['code' => 'teamfight_damage_taken', 'name' => 'Teamfight Damage Taken'],
             ['code' => 'teamfight_escapes', 'name' => 'Teamfight Escapes'],
             ['code' => 'teamfight_healing', 'name' => 'Teamfight Healing'],
-            ['code' => 'teamfight_damage_taken', 'name' => 'Teamfight Damage Taken'],
             ['code' => 'teamfight_hero_damage', 'name' => 'Teamfight Hero Damage'],
-            ['code' => 'multikill', 'name' => 'Multikill'],
-            ['code' => 'physical_damage', 'name' => 'Physical Damage'],
-            ['code' => 'spell_damage', 'name' => 'Spell Damage'],
-            ['code' => 'regen_globes', 'name' => 'Regen Globes']
+            ['code' => 'time_spent_dead', 'name' => 'Time Spent Dead'],
+            ['code' => 'town_kills', 'name' => 'Town Kills'],
+            ['code' => 'vengeance', 'name' => 'Vengeance'],
+            ['code' => 'watch_tower_captures', 'name' => 'Watch Tower Captures'],
         ];
+
 
         $filterData->hero_level = [
             ['code' => '1', 'name' => '1-5'],
@@ -205,7 +205,7 @@ class GlobalDataService
         });
 
         $filterData->game_types = GameType::whereNotIn('type_id', [-1, 0, 3, 4])
-            ->orderBy("name", "ASC")
+            ->orderBy("type_id", "ASC")
             ->get()
             ->map(function ($gameType) {
                 return ['code' => $gameType->short_name, 'name' => $gameType->name];

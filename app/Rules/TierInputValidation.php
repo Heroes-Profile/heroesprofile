@@ -10,12 +10,15 @@ class TierInputValidation implements Rule
 {
     public function passes($attribute, $value)
     {
+        if(!$value){
+            return [];
+        }
+        
         $validTier = LeagueTier::pluck('name')->toArray();
                 
         $filteredTiers = array_intersect($value, $validTier);
         
         if (empty($filteredTiers)) {
-            // Return "" as the default game type
             return [];
         }
 

@@ -9,6 +9,9 @@ class GameMapInputValidation implements Rule
 {
     public function passes($attribute, $value)
     {        
+        if(!$value){
+            return [];
+        }
         $validMaps = Map::where('playable', '<>', 0)
             ->pluck('name')
             ->toArray();
@@ -18,7 +21,6 @@ class GameMapInputValidation implements Rule
         
 
         if (empty($filteredMaps)) {
-            // Return "" as the default map
             return [];
         }
 

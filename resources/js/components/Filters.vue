@@ -1,19 +1,22 @@
 <template>
   <div>
-    <single-select-filter :values="this.filters.timeframe_type" :text="'Timeframe Type'" :defaultValue="this.defaultTimeframeType"></single-select-filter>
-    <multi-select-filter :values="this.timeframes" :text="'Timeframes'" :defaultValue="this.defaultMinor"></multi-select-filter>
-    <multi-select-filter :values="this.filters.regions" :text="'Regions'"></multi-select-filter>
-    <single-select-filter :values="this.filters.stat_filter" :text="'Stat Filter'" :defaultValue="this.defaultStatType"></single-select-filter>
-    <multi-select-filter :values="this.filters.hero_level" :text="'Hero Level'"></multi-select-filter>
-    <single-select-filter :values="this.filters.role" :text="'Role'"></single-select-filter>
-    <single-select-filter :values="this.filters.heroes" :text="'Heroes'"></single-select-filter>
-    <multi-select-filter :values="this.filters.game_types" :text="'Game Type'"></multi-select-filter>
-    <multi-select-filter :values="this.filters.game_maps" :text="'Map'"></multi-select-filter>
-    <multi-select-filter :values="this.filters.rank_tiers" :text="'Player Rank'"></multi-select-filter>
-    <multi-select-filter :values="this.filters.rank_tiers" :text="'Hero Rank'"></multi-select-filter>
-    <multi-select-filter :values="this.filters.rank_tiers" :text="'Role Rank'"></multi-select-filter>
-    <single-select-filter :values="this.filters.mirror" :text="'Mirror Matches'"></single-select-filter>
-    <single-select-filter :values="this.filters.talent_build_types" :text="'Talent Build Type'"></single-select-filter>
+    <div class="flex flex-wrap gap-4">
+      <single-select-filter :values="this.filters.timeframe_type" :text="'Timeframe Type'" :defaultValue="this.defaultTimeframeType" @input-changed="handleInputChange"></single-select-filter>
+      <multi-select-filter :values="this.timeframes" :text="'Timeframes'" :defaultValue="this.defaultMinor" @input-changed="handleInputChange"></multi-select-filter>
+      <multi-select-filter :values="this.filters.regions" :text="'Regions'" @input-changed="handleInputChange"></multi-select-filter>
+      <single-select-filter :values="this.filters.stat_filter" :text="'Stat Filter'" :defaultValue="this.defaultStatType" @input-changed="handleInputChange"></single-select-filter>
+      <multi-select-filter :values="this.filters.hero_level" :text="'Hero Level'" @input-changed="handleInputChange"></multi-select-filter>
+      <single-select-filter :values="this.filters.role" :text="'Role'" @input-changed="handleInputChange"></single-select-filter>
+      <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange"></single-select-filter>
+      <multi-select-filter :values="this.filters.game_types" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="this.defaultGameType"></multi-select-filter>
+      <multi-select-filter :values="this.filters.game_maps" :text="'Map'" @input-changed="handleInputChange"></multi-select-filter>
+      <multi-select-filter :values="this.filters.rank_tiers" :text="'Player Rank'" @input-changed="handleInputChange"></multi-select-filter>
+      <multi-select-filter :values="this.filters.rank_tiers" :text="'Hero Rank'" @input-changed="handleInputChange"></multi-select-filter>
+      <multi-select-filter :values="this.filters.rank_tiers" :text="'Role Rank'" @input-changed="handleInputChange"></multi-select-filter>
+      <single-select-filter :values="this.filters.mirror" :text="'Mirror Matches'" @input-changed="handleInputChange"></single-select-filter>
+      <single-select-filter :values="this.filters.talent_build_types" :text="'Talent Build Type'" @input-changed="handleInputChange"></single-select-filter>
+    </div>
+
 
 
     <button @click="applyFilter" class="mt-4 bg-blue-500 text-white p-2 rounded">
@@ -37,25 +40,35 @@ export default {
       type: Function,
       required: true,
     },
+    gametypedefault: Array,
   },
   data(){
     return {
+      selectedSingleFilters: {},
+      selectedMultiFilters: {},
+      defaultTimeframeType: this.filters.timeframe_type[1].code,
+      defaultGameType: [],
     }
   },
   created(){
+    this.defaultGameType = this.gametypedefault;
+
+    this.selectedSingleFilters = {
+      'Timeframe Type': this.defaultTimeframeType,
+      'Stat Filter': this.defaultStatType,
+      // Add other single select defaults here
+    };
+
+    this.selectedMultiFilters = {
+      'Timeframes': this.defaultMinor,
+      // Add other multi-select defaults here
+    };
   },
   mounted() {
   },
   computed: {
-    defaultTimeframeType() {
-      return this.filters.timeframe_type[1].code;
-    },
-    defaultMinor(){
-      if(this.defaultTimeframeType == "minor"){
-        return [this.filters.timeframes[1].code];
-      }else if(this.defaultTimeframeType == "major"){
-        return [this.filters.timeframes_grouped[0].code];
-      }
+    defaultMinor() {
+      return this.getDefaultMinorBasedOnTimeframeType();
     },
     defaultStatType(){
       return this.filters.stat_filter[0].code;
@@ -69,11 +82,48 @@ export default {
     },
   },
   watch: {
+    defaultMinor(newVal) {
+      this.selectedMultiFilters['Timeframes'] = newVal;
+    },
+    defaultStatType(newVal) {
+      this.selectedSingleFilters['Stat Filter'] = newVal;
+    },
+    defaultTimeframeType(newVal) {
+      this.selectedSingleFilters['Timeframe Type'] = newVal;
+    },
   },
   methods: {
+    handleInputChange(eventPayload) {
+      //console.log("eventPayload.field = " + eventPayload.field);
+      //console.log("eventPayload.value = " + eventPayload.value);
+
+      if(eventPayload.field == "Timeframe Type" && eventPayload.value == "minor"){
+        this.defaultTimeframeType = eventPayload.value;
+      }else if(eventPayload.field == "Timeframe Type" && eventPayload.value == "major"){
+        this.defaultTimeframeType = eventPayload.value;
+      }
+
+      if(eventPayload.type === 'single') {
+        this.selectedSingleFilters[eventPayload.field] = eventPayload.value;
+
+      } else if(eventPayload.type === 'multi') {
+        this.selectedMultiFilters[eventPayload.field] = eventPayload.value;
+      }
+    },
+    getDefaultMinorBasedOnTimeframeType() {
+      if(this.defaultTimeframeType == "minor"){
+        return [this.filters.timeframes[0]?.code || ''];  // Use optional chaining to avoid errors
+      } else if(this.defaultTimeframeType == "major"){
+        return [this.filters.timeframes_grouped[0]?.code || '']; // Use optional chaining to avoid errors
+      }
+      return ''; // Default return value, adjust as needed
+    },
     applyFilter() {
-      // Call the parent's getData method and pass the selectedRegions
-      this.onFilter(this.selectedRegions);
+      const allSelectedFilters = {
+        single: this.selectedSingleFilters,
+        multi: this.selectedMultiFilters
+      };
+      this.onFilter(allSelectedFilters);
     },
   }
 };

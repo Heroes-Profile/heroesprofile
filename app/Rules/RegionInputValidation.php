@@ -7,7 +7,10 @@ use Illuminate\Contracts\Validation\Rule;
 class RegionInputValidation implements Rule
 {
     protected $validRegions = [
-        "NA", "EU", "KR", "CN"
+        "NA" => 1,
+        "EU" => 2,
+        "KR" => 3,
+        "CN" => 5
     ];
 
     public function passes($attribute, $value)
@@ -16,9 +19,14 @@ class RegionInputValidation implements Rule
             $value = explode(',', $value);
         }
 
-        $filteredRegions = array_intersect($value, $this->validRegions);
+        $filteredRegions = array_intersect($value, array_keys($this->validRegions));
 
-        return $filteredRegions ?: [];
+        $filteredRegionValues = [];
+        foreach ($filteredRegions as $region) {
+            $filteredRegionValues[] = $this->validRegions[$region];
+        }
+
+        return $filteredRegionValues ?: [];
     }
 
     public function message()

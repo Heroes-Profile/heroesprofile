@@ -3,7 +3,7 @@ GlobalHeroStats<template>
     <h1>Global Hero Statistics</h1>
     <infobox :input="infoText"></infobox>
 
-    <filters :onFilter="filterData" :filters="filters"></filters>
+    <filters :onFilter="filterData" :filters="filters" :gametypedefault="gametypedefault"></filters>
 
     <div v-if="this.data">
      <table class="min-w-full bg-white">
@@ -35,6 +35,11 @@ GlobalHeroStats<template>
           <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ this.data.average_games_played }}
           </th>
+
+          <th  v-if="this.showStatTypeColumn"  class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            {{ data.averaege_total_filter_type }}
+          </th>
+
         </thead>
         <thead>
           <tr>
@@ -64,7 +69,10 @@ GlobalHeroStats<template>
             </th>                  
             <th @click="sortTable('games_played')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games Played
-            </th>                                      
+            </th>       
+            <th v-if="this.showStatTypeColumn" @click="sortTable('games_played')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              {{ this.statfilter }}
+            </th>                                 
           </tr>
         </thead>
         <tbody>
@@ -78,6 +86,7 @@ GlobalHeroStats<template>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.ban_rate }}</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.influence }}</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.games_played }}</td>
+            <td v-if="this.showStatTypeColumn" class="py-2 px-3 border-b border-gray-200">{{ row.total_filter_type }}</td>
           </tr>
         </tbody>
       </table>
@@ -94,23 +103,48 @@ export default {
     filters: {
       type: Object,
       required: true
-    }
+    },
+    gametypedefault: Array,
   },
   data(){
     return {
+      loading: false,
     	infoText: "Hero win rates based on differing increments, stat types, game type, or Rank. Click on a Hero to see detailed information. On the chart, bubble size is a combination of Win Rate, Pick Rate, and Ban Rate",
       sortKey: '',
       sortDir: 'asc',
       data: [],
+
+      //Sending to filter
+      timeframetype: "minor",
+      timeframe: null,
+      region: null,
+      statfilter: null,
+      herolevel: null,
+      role: null,
+      hero: null,
+      gametype: null,
+      gamemap: null,
+      playerrank: null,
+      herorank: null,
+      rolerank: null,
+      mirrormatch: null,
+      talentbuildtype: null
     }
   },
   created(){
-    console.log(this.filters)
+    this.gametype = this.gametypedefault;
+    this.timeframe = this.defaultMinor;
   	this.getData();
   },
   mounted() {
   },
   computed: {
+    showStatTypeColumn(){
+      if(this.statfilter && this.statfilter != "win_rate" && !this.loading){
+        return true;      
+      }
+      return false;
+    },
     sortedData() {
       if (!this.sortKey) return this.data.data;
       return this.data.data.slice().sort((a, b) => {
@@ -122,26 +156,58 @@ export default {
           return valA > valB ? -1 : 1;
         }
       });
-    }
-    
+    },
+    defaultMinor() {
+      return [this.filters.timeframes[0]?.code || ''];
+    },
   },
   watch: {
   },
   methods: {
   	async getData(){
       try{
+        this.loading = true;
+        this.data = [];
+
         const response = await this.$axios.post("/api/v1/global/hero", {
-          timeframe: "2.55.3.90670",
-          gameType: 5,
+          timeframe_type: this.timeframetype,
+          timeframe: this.timeframe,
+          region: this.region,
+          statfilter: this.statfilter,
+          hero_level: this.herolevel,
+          role: this.role,
+          hero: this.hero,
+          game_type: this.gametype,
+          map: this.gamemap,
+          league_tier: this.playerrank,
+          hero_league_tier: this.herorank,
+          role_league_tier: this.rolerank,
+          mirrormatch: this.mirrormatch,
+          talentbuildtype: this.talentbuildtype
         });
 
         this.data = response.data;
+        this.loading = false;
       }catch(error){
+        console.log(error)
       }
     },
     filterData(filteredData){
-      //Might be able to remove this later
-      console.log("Filtered data = " + filteredData);
+      this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
+      this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaultMinor;
+      this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : [];
+      this.statfilter = filteredData.single["Stat Filter"] ? filteredData.single["Stat Filter"] : "win_rate";
+      this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : [];
+      this.role = filteredData.single["Role"] ? filteredData.single["Role"] : "";
+      this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : "";
+      this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : [];
+      this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : [];
+      this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : [];
+      this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : [];
+      this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : [];
+      this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "";
+      this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : "";
+      this.getData();
     },
     sortTable(key) {
       if (key === this.sortKey) {

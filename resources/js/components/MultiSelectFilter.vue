@@ -5,8 +5,18 @@
         <span>{{ this.text }}</span>
         <span v-if="selectedOptions.length > 0">: {{ selectedOptionsName.join(', ') }}</span>
       </div>
-      <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg">
+      <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg expandable-dropdown">
         <div class="space-y-2 p-2">
+          <div>
+            <input 
+              type="checkbox" 
+              id="select-all" 
+              :checked="selectedOptions.length === values.length"
+              @click="toggleAll"
+              class="form-checkbox h-5 w-5 text-indigo-600"
+            >
+            <label for="select-all" class="ml-2 text-sm text-gray-900">Select All</label>
+          </div>
           <div v-for="value in values" :key="value.code">
             <input 
               type="checkbox" 
@@ -40,9 +50,12 @@ export default {
     }
   },
   created(){
-    console.log("value = " + this.defaultValue);
   },
   mounted() {
+    document.addEventListener("click", this.handleClickOutside);
+  },
+  beforeDestroy() {
+    document.removeEventListener("click", this.handleClickOutside);
   },
   computed: {
     selectedOptionsName() {
@@ -53,8 +66,28 @@ export default {
     },
   },
   watch: {
+    defaultValue: function (newVal) {
+      this.selectedOptions = [...newVal];
+    },
+    selectedOptions: function (newVal) {
+      // Emitting the change back to the parent component
+      this.$emit('input-changed', { field: this.text, value: newVal, type: 'multi' });
+    }
   },
   methods: {
+    handleClickOutside(event) {
+      const dropdown = this.$el;
+      if (dropdown && !dropdown.contains(event.target)) {
+        this.showOptions = false;
+      }
+    },
+    toggleAll() {
+      if (this.selectedOptions.length === this.values.length) {
+        this.selectedOptions = [];
+      } else {
+        this.selectedOptions = this.values.map(value => value.code);
+      }
+    },
   }
 }
 </script>
