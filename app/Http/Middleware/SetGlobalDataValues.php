@@ -21,6 +21,7 @@ class SetGlobalDataValues
         $globalDataService->getLatestPatch();
         $globalDataService->getLatestGameDate();
         $globalDataService->getHeroes();
+        $globalDataService->getFilterData();
 
         return $next($request);
     }

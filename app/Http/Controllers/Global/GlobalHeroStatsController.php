@@ -20,6 +20,7 @@ use App\Models\Hero;
 use App\Models\GlobalHeroStats;
 use App\Models\GlobalHeroStatsBans;
 use App\Models\GlobalHeroChange;
+use App\Models\SeasonGameVersion;
 
 class GlobalHeroStatsController extends Controller
 {
@@ -31,10 +32,14 @@ class GlobalHeroStatsController extends Controller
     }
 
     public function show(Request $request){
-        return view('Global.Hero.globalHeroStats');
+        
+
+        return view('Global.Hero.globalHeroStats')->with('filters', $this->globalDataService->getFilterData());
     }
 
     public function getGlobalHeroData(Request $request){
+
+
         //http://127.0.0.1:8000/api/v1/global/hero/?timeframe=2.55.3.90670,2.54.2.85894&game_type=qm,sl&league_tier=wood,gold,blah&hero_league_tier=diamond&role_league_tier=master&map=Alterac%20Pass&hero_level=5&mirror=Include
 
         $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', explode(',', $request["timeframe"]));
@@ -58,8 +63,6 @@ class GlobalHeroStatsController extends Controller
             'mirror' => $mirror,
             'region' => implode(',', $region),
         ]);
-
-        //return $cacheKey;
 
         $data = Cache::store("database")->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion, 
                                                                                                                                  $gameType, 
@@ -114,7 +117,7 @@ class GlobalHeroStatsController extends Controller
                 $changeData = GlobalHeroChange::query()
                     ->join('heroesprofile.heroes', 'heroesprofile.heroes.id', '=', 'global_hero_change.hero')
                     ->select('heroes.name', 'heroes.id as hero_id', 'win_rate as change_win_rate')
-                    ->filterByGameVersion($gameVersion)
+                    ->filterByGameVersion($this->calculateGameVersionsForHeroChange($gameVersion))
                     ->filterByGameType($gameType)
                     //->toSql();
                     ->get();
@@ -127,6 +130,12 @@ class GlobalHeroStatsController extends Controller
 
         return $data;
     }
+
+    private function calculateGameVersionsForHeroChange($gameVersion){
+        //Fix later
+        return [SeasonGameVersion::select("game_version")->where('id', (SeasonGameVersion::select("id")->where('game_version', '2.55.3.90670')->first()->id - 1))->first()->game_version];
+    }
+
     private function combineData($data, $banData, $changeData){
         $totalGamesPlayed = collect($data)->sum('games_played') / 10;
 
@@ -165,7 +174,7 @@ class GlobalHeroStatsController extends Controller
             $adjustedPickRate = (($gamesPlayed / $totalGamesPlayed) * 100) / (100 - $banRate);
             $influence = round((($winRate / 100) - 0.5) * ($adjustedPickRate * 10000));
 
-            $confidenceInterval = $this->calculateWinRateConfidenceInterval($wins, $totalGamesPlayed);
+            $confidenceInterval = $this->calculateWinRateConfidenceInterval($wins, $gamesPlayed);
 
             return [
                 'name' => $firstItem['name'],
@@ -174,13 +183,13 @@ class GlobalHeroStatsController extends Controller
                 'wins' => $wins,
                 'losses' => $losses,
                 'games_played' => $gamesPlayed,
-                'win_rate' => $winRate,
-                'ban_rate' => $banRate,
-                'win_rate_change' => $winRate - $changeWinRate,
-                'popularity' => $popularity,
-                'pick_rate' => $pickRate,
+                'win_rate' => round($winRate, 2),
+                'ban_rate' => round($banRate, 2),
+                'win_rate_change' => round($winRate - $changeWinRate, 2),
+                'popularity' => round($popularity, 2),
+                'pick_rate' => round($pickRate, 2),
                 'influence' => $influence,
-                'confidence_interval' => $confidenceInterval,
+                'confidence_interval' => round($confidenceInterval,2),
             ];
         })->sortByDesc('win_rate')->values()->toArray();
 
@@ -214,16 +223,16 @@ class GlobalHeroStatsController extends Controller
         $averageGamesPlayed = $combinedCollection->sum('games_played') / count($combinedCollection);
 
         return [
-            'average_win_rate' => $averageWinRate, 
-            'average_confidence_interval' => $averageConfidenceInterval, 
-            'average_popularity' => $averagePopularity, 
-            'average_pick_rate' => $averagePickRate, 
-            'average_ban_rate' => $averageBanRate, 
-            'average_positive_influence' => $averagePositiveInfluence,
-            'average_negative_influence' => $averageNegativeInfluence,
-            'average_positive_win_rate_change' => $averagePositiveWinRateChange,
-            'average_negative_win_rate_change' => $averageNegativeWinRateChange,
-            'average_games_played' => $averageGamesPlayed, 
+            'average_win_rate' => round($averageWinRate, 2), 
+            'average_confidence_interval' => round($averageConfidenceInterval, 2), 
+            'average_popularity' => round($averagePopularity, 2),  
+            'average_pick_rate' => round($averagePickRate, 2),  
+            'average_ban_rate' => round($averageBanRate, 2),  
+            'average_positive_influence' => round($averagePositiveInfluence, 0),
+            'average_negative_influence' => round($averageNegativeInfluence, 0),
+            'average_positive_win_rate_change' => round($averagePositiveWinRateChange, 2), 
+            'average_negative_win_rate_change' => round($averageNegativeWinRateChange, 2), 
+            'average_games_played' => round($averageGamesPlayed, 0), 
             'data' => $combinedData
         ];
     }
@@ -246,18 +255,15 @@ class GlobalHeroStatsController extends Controller
     }
 
     private function calculateWinRateConfidenceInterval($wins, $totalGamesPlayed, $confidenceLevel = 0.95) {
-        $z = 1.96; // For a 95% confidence level
-        $p = $wins / $totalGamesPlayed;
-        $n = $totalGamesPlayed;
+        if ($totalGamesPlayed == 0) {
+            return 0; // Or whatever you'd like to return when no games are played
+        }
 
-        $a = 1 / (1 + (1 / $n) * $z * $z);
-        $b = $p + (1 / (2 * $n)) * $z * $z;
-        $c = $z * sqrt(($p * (1 - $p) / $n) + ($z * $z / (4 * $n * $n)));
+        $winRate = ($wins / $totalGamesPlayed) * 100;
+        $zScore = 1.96; // For a 95% confidence level, you might want to map other confidence levels to their respective z-scores
 
-        $lowerBound = $a * ($b - $c);
-        $upperBound = $a * ($b + $c);
-
-        //Using average of the two for now but may decide to change it back later
-        return ($lowerBound + $upperBound) / 2;
+        $confidence = ($zScore * sqrt(($winRate / 100 * (1 - $winRate / 100)) / $totalGamesPlayed)) * 100;
+        
+        return $confidence;
     }
 }

@@ -94,10 +94,7 @@
 
       <div class="content ">
         <div class="footer-nav">
-          <b-nav>
-            <b-nav-item href="Privacy-Policy">Privacy Policy</b-nav-item>
-            <b-nav-item href="Terms-of-Service">Terms of Service</b-nav-item>
-            <b-nav-item href="mailto:zemill@heroesprofile.com">Contact Us</b-nav-item>
+
         </div>
         <div>{{ session('maxReplayID') }} replays | Patch {{ session('latestPatch') }} | Up to date as of: {{ session('latestGameDate') }}</div>
         <div class="copyright">Skill Tree Development, LLC | <a href="https://heroesprofile.com">Heroes Profile</a></div>

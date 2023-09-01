@@ -4,5 +4,5 @@
 @section('meta_description', '')
 
 @section('content')
-  <global-hero-stats></global-hero-stats>
+  <global-hero-stats :filters="{{ json_encode($filters) }}"></global-hero-stats>
 @endsection

@@ -30,7 +30,7 @@ COPY public/.htaccess /var/www/html/.htaccess
 RUN composer install
 
 # Install Node.js and npm
-RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - \
+RUN curl -sL https://deb.nodesource.com/setup_19.x | bash - \
     && apt-get update -y \
     && apt-get install -y nodejs \
     && node -v \
