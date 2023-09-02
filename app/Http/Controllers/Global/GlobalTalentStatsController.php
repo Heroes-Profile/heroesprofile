@@ -32,7 +32,7 @@ class GlobalTalentStatsController extends Controller
 
     public function show(Request $request){
         $userinput = $this->globalDataService->getHeroModel($request["hero"]);
-        return view('Global.Talents.globalTalentStats', compact('userinput'));
+        return view('Global.Talents.globalTalentStats', compact('userinput'))->with('filters', $this->globalDataService->getFilterData())->with('gametypedefault', array("sl"));
     }
 
     public function getGlobalHeroTalentData(Request $request){

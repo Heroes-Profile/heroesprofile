@@ -3,9 +3,35 @@ GlobalHeroStats<template>
     <h1>Global Hero Statistics</h1>
     <infobox :input="infoText"></infobox>
 
-    <filters :onFilter="filterData" :filters="filters" :gametypedefault="gametypedefault"></filters>
+    <filters 
+      :onFilter="filterData" 
+      :filters="filters" 
+      :gametypedefault="gametypedefault"
+      :includetimeframetype="true"
+      :includetimeframe="true"
+      :includeregion="true"
+      :includestatfilter="true"
+      :includeherolevel="true"
+      :includerole="true"
+      :includehero="true"
+      :includegametype="true"
+      :includegamemap="true"
+      :includeplayerrank="true"
+      :includeherorank="true"
+      :includerolerank="true"
+      :includemirror="true"
+      :includetalentbuildtype="true"
+      >
+      </filters>
 
-    <div v-if="this.data">
+    
+    <button @click="toggleChartValue" class="mt-4 bg-blue-500 text-white p-2 rounded">Toggle Chart</button>
+    <div v-if="this.data.data">
+      <div v-if="togglechart">
+        {{ "I have this working except for the hero images.  The hero images are not scaling based on their radius value.  Research suggests this is not possible, but we got it to work on the other site.  I am not sure right now how we did that.  We might have to look into whether we wrote some custom css or something on that.  Otherwise, I can create images based on varrying radius values and then we just dynamically load a different image depending on a radius range" }} 
+        <bubble-chart :heroData="this.data.data"></bubble-chart>
+
+      </div>
      <table class="min-w-full bg-white">
         <thead>
           <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
@@ -40,6 +66,9 @@ GlobalHeroStats<template>
             {{ data.averaege_total_filter_type }}
           </th>
 
+          <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+          </th>
+
         </thead>
         <thead>
           <tr>
@@ -72,12 +101,14 @@ GlobalHeroStats<template>
             </th>       
             <th v-if="this.showStatTypeColumn" @click="sortTable('games_played')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               {{ this.statfilter }}
-            </th>                                 
+            </th>
+            <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            </th>                              
           </tr>
         </thead>
         <tbody>
           <tr v-for="row in sortedData" :key="row.hero_id">
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.name }}</td>
+            <td class="py-2 px-3 border-b border-gray-200"><hero-box :hero="row"></hero-box>{{ row.name }}</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ "&#177;" }}{{ row.confidence_interval }}</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate_change }}</td>
@@ -87,6 +118,7 @@ GlobalHeroStats<template>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.influence }}</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.games_played }}</td>
             <td v-if="this.showStatTypeColumn" class="py-2 px-3 border-b border-gray-200">{{ row.total_filter_type }}</td>
+            <td class="py-2 px-3 border-b border-gray-200">{{ "View Talent Builds" }}</td>
           </tr>
         </tbody>
       </table>
@@ -128,7 +160,8 @@ export default {
       herorank: null,
       rolerank: null,
       mirrormatch: null,
-      talentbuildtype: null
+      talentbuildtype: null,
+      togglechart: false,
     }
   },
   created(){
@@ -216,7 +249,10 @@ export default {
         this.sortDir = 'asc';
       }
       this.sortKey = key;
-    }
+    },
+    toggleChartValue() {
+      this.togglechart = !this.togglechart;
+    },
   }
 }
 </script>

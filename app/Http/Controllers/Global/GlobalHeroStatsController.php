@@ -67,8 +67,6 @@ class GlobalHeroStatsController extends Controller
         $hero = (new HeroInputByIDValidation())->passes('statfilter', $request["hero"]);
         $role = (new RoleInputValidation())->passes('role', $request["role"]);
 
-        return $role;
-
         if(count($region) == 4){
             $region = [];   
         }
@@ -106,12 +104,8 @@ class GlobalHeroStatsController extends Controller
             'region=' . implode(',', $region),
             'statFilter=' . $statFilter,
             'hero=' . $hero,
-            'role=' . $role,
+            'role=' . $role
         ]);
-
-
-        //return $cacheKey;
-
 
         $data = Cache::store("database")->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion, 
                                                                                                                                  $gameType, 
@@ -129,7 +123,7 @@ class GlobalHeroStatsController extends Controller
   
             $data = GlobalHeroStats::query()
                 ->join('heroes', 'heroes.id', '=', 'global_hero_stats.hero')
-                ->select('heroes.name', 'heroes.id as hero_id', 'global_hero_stats.win_loss', 'heroes.new_role as role')
+                ->select('heroes.name', 'heroes.short_name', 'heroes.id as hero_id', 'global_hero_stats.win_loss', 'heroes.new_role as role')
                 ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
                 ->when($statFilter !== 'win_rate', function ($query) use ($statFilter) {
                     return $query->selectRaw("SUM(global_hero_stats.$statFilter) as total_filter_type");
@@ -177,6 +171,7 @@ class GlobalHeroStatsController extends Controller
                     //->toSql();
                     ->get();
             }
+
             return $this->combineData($data, $statFilter, $banData, $changeData, $hero, $role);
         });
         return $data;
@@ -232,6 +227,7 @@ class GlobalHeroStatsController extends Controller
 
             return [
                 'name' => $firstItem['name'],
+                'short_name' => $firstItem['short_name'],
                 'hero_id' => $firstItem['hero_id'],
                 'role' => $firstItem['role'],
                 'wins' => $wins,

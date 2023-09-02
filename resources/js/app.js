@@ -16,6 +16,9 @@ import HeroBox from './components/HeroBox.vue';
 import Filters from './components/Filters.vue';
 import SingleSelectFilter from './components/SingleSelectFilter.vue';
 import MultiSelectFilter from './components/MultiSelectFilter.vue';
+import BubbleChart from './components/BubbleChart.vue';
+
+
 
 //Global Pages
 import GlobalHeroStats from './components/Global/Hero/GlobalHeroStats.vue';

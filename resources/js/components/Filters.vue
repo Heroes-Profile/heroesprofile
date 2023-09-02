@@ -1,20 +1,20 @@
 <template>
   <div>
     <div class="flex flex-wrap gap-4">
-      <single-select-filter :values="this.filters.timeframe_type" :text="'Timeframe Type'" :defaultValue="this.defaultTimeframeType" @input-changed="handleInputChange"></single-select-filter>
-      <multi-select-filter :values="this.timeframes" :text="'Timeframes'" :defaultValue="this.defaultMinor" @input-changed="handleInputChange"></multi-select-filter>
-      <multi-select-filter :values="this.filters.regions" :text="'Regions'" @input-changed="handleInputChange"></multi-select-filter>
-      <single-select-filter :values="this.filters.stat_filter" :text="'Stat Filter'" :defaultValue="this.defaultStatType" @input-changed="handleInputChange"></single-select-filter>
-      <multi-select-filter :values="this.filters.hero_level" :text="'Hero Level'" @input-changed="handleInputChange"></multi-select-filter>
-      <single-select-filter :values="this.filters.role" :text="'Role'" @input-changed="handleInputChange"></single-select-filter>
-      <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange"></single-select-filter>
-      <multi-select-filter :values="this.filters.game_types" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="this.defaultGameType"></multi-select-filter>
-      <multi-select-filter :values="this.filters.game_maps" :text="'Map'" @input-changed="handleInputChange"></multi-select-filter>
-      <multi-select-filter :values="this.filters.rank_tiers" :text="'Player Rank'" @input-changed="handleInputChange"></multi-select-filter>
-      <multi-select-filter :values="this.filters.rank_tiers" :text="'Hero Rank'" @input-changed="handleInputChange"></multi-select-filter>
-      <multi-select-filter :values="this.filters.rank_tiers" :text="'Role Rank'" @input-changed="handleInputChange"></multi-select-filter>
-      <single-select-filter :values="this.filters.mirror" :text="'Mirror Matches'" @input-changed="handleInputChange"></single-select-filter>
-      <single-select-filter :values="this.filters.talent_build_types" :text="'Talent Build Type'" @input-changed="handleInputChange"></single-select-filter>
+      <single-select-filter v-if="includetimeframetype" :values="this.filters.timeframe_type" :text="'Timeframe Type'" :defaultValue="this.defaultTimeframeType" @input-changed="handleInputChange"></single-select-filter>
+      <multi-select-filter v-if="includetimeframe" :values="this.timeframes" :text="'Timeframes'" :defaultValue="this.defaultMinor" @input-changed="handleInputChange"></multi-select-filter>
+      <multi-select-filter v-if="includeregion" :values="this.filters.regions" :text="'Regions'" @input-changed="handleInputChange"></multi-select-filter>
+      <single-select-filter v-if="includestatfilter" :values="this.filters.stat_filter" :text="'Stat Filter'" :defaultValue="this.defaultStatType" @input-changed="handleInputChange"></single-select-filter>
+      <multi-select-filter v-if="includeherolevel" :values="this.filters.hero_level" :text="'Hero Level'" @input-changed="handleInputChange"></multi-select-filter>
+      <single-select-filter v-if="includerole" :values="this.filters.role" :text="'Role'" @input-changed="handleInputChange"></single-select-filter>
+      <single-select-filter v-if="includehero" :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange"></single-select-filter>
+      <multi-select-filter v-if="includegametype" :values="this.filters.game_types" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="this.defaultGameType"></multi-select-filter>
+      <multi-select-filter v-if="includegamemap" :values="this.filters.game_maps" :text="'Map'" @input-changed="handleInputChange"></multi-select-filter>
+      <multi-select-filter v-if="includeplayerrank" :values="this.filters.rank_tiers" :text="'Player Rank'" @input-changed="handleInputChange"></multi-select-filter>
+      <multi-select-filter v-if="includeherorank" :values="this.filters.rank_tiers" :text="'Hero Rank'" @input-changed="handleInputChange"></multi-select-filter>
+      <multi-select-filter v-if="includerolerank" :values="this.filters.rank_tiers" :text="'Role Rank'" @input-changed="handleInputChange"></multi-select-filter>
+      <single-select-filter v-if="includemirror" :values="this.filters.mirror" :text="'Mirror Matches'" @input-changed="handleInputChange"></single-select-filter>
+      <single-select-filter v-if="includetalentbuildtype" :values="this.filters.talent_build_types" :text="'Talent Build Type'" @input-changed="handleInputChange"></single-select-filter>
     </div>
 
 
@@ -32,6 +32,21 @@ export default {
   components: {
   },
   props: {
+    includetimeframetype: Boolean,
+    includetimeframe: Boolean,
+    includeregion: Boolean,
+    includestatfilter: Boolean,
+    includeherolevel: Boolean,
+    includerole: Boolean,
+    includehero: Boolean,
+    includegametype: Boolean,
+    includegamemap: Boolean,
+    includeplayerrank: Boolean,
+    includeherorank: Boolean,
+    includerolerank: Boolean,
+    includemirror: Boolean,
+    includetalentbuildtype: Boolean,
+
     filters: {
       type: Object,
       required: true
