@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 use App\Rules\TimeframeMinorInputValidation;
 use App\Rules\GameTypeInputValidation;
-use App\Rules\TierInputValidation;
+use App\Rules\TierByIDInputValidation;
 use App\Rules\GameMapInputValidation;
 use App\Rules\HeroLevelInputValidation;
 use App\Rules\MirrorInputValidation;
@@ -56,9 +56,9 @@ class GlobalHeroStatsController extends Controller
             $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $request["timeframe"]);
         }
         $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
-        $leagueTier = (new TierInputValidation())->passes('league_tier', $request["league_tier"]);
-        $heroLeagueTier = (new TierInputValidation())->passes('hero_league_tier', $request["hero_league_tier"]);
-        $roleLeagueTier = (new TierInputValidation())->passes('role_league_tier', $request["role_league_tier"]);
+        $leagueTier = (new TierByIDInputValidation())->passes('league_tier', $request["league_tier"]);
+        $heroLeagueTier = (new TierByIDInputValidation())->passes('hero_league_tier', $request["hero_league_tier"]);
+        $roleLeagueTier = (new TierByIDInputValidation())->passes('role_league_tier', $request["role_league_tier"]);
         $gameMap = (new GameMapInputValidation())->passes('map', $request["map"]);
         $heroLevel = (new HeroLevelInputValidation())->passes('hero_level', $request["hero_level"]);
         $mirror = (new MirrorInputValidation())->passes('mirror', $request["mirror"]);
@@ -67,29 +67,9 @@ class GlobalHeroStatsController extends Controller
         $hero = (new HeroInputByIDValidation())->passes('statfilter', $request["hero"]);
         $role = (new RoleInputValidation())->passes('role', $request["role"]);
 
-        if(count($region) == 4){
-            $region = [];   
-        }
 
-        if(count($heroLevel) == 9){
-            $heroLevel = [];   
-        }
+  
 
-        if(count($gameMap) == 18){
-            $gameMap = [];   
-        }
-
-        if(count($leagueTier) == 7){
-            $leagueTier = [];
-        }
-
-        if(count($heroLeagueTier) == 7){
-            $heroLeagueTier = [];
-        }
-
-        if(count($roleLeagueTier) == 7){
-            $roleLeagueTier = [];
-        }
 
 
         $cacheKey = "GlobalHeroStats|" . implode('|', [
@@ -106,6 +86,8 @@ class GlobalHeroStatsController extends Controller
             'hero=' . $hero,
             'role=' . $role
         ]);
+
+        //return $cacheKey;
 
         $data = Cache::store("database")->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion, 
                                                                                                                                  $gameType, 
@@ -240,7 +222,7 @@ class GlobalHeroStatsController extends Controller
                 'pick_rate' => round($pickRate, 2),
                 'influence' => $influence,
                 'confidence_interval' => round($confidenceInterval,2),
-                'total_filter_type' => round($statFilterTotal / $gamesPlayed)
+                'total_filter_type' => $gamesPlayed > 0 ? round($statFilterTotal / $gamesPlayed, 2) : 0
             ];
         })->sortByDesc($sortBy)->values()->toArray();
 

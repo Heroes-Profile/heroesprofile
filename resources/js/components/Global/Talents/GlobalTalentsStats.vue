@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Ive been adding rxtra divs/classes to make it easier to interface with, feel free to take some out-->
-    
+
     <div class="grid gap-5 grid-cols-1">
       <div>
         <h1>Global Talent Statistics</h1>
@@ -35,17 +35,17 @@
           </filters>
 
           <div class="container mx-auto px-4">
-                <global-talent-details-section v-if="talentdetaildata" :talentdetaildata="talentdetaildata"></global-talent-details-section>
+                <global-talent-details-section v-if="talentdetaildata" :talentdetaildata="talentdetaildata" :statfilter="statfilter"></global-talent-details-section>
           </div>
 
 
 
           <div class="container mx-auto px-4">
 
-            <single-select-filter :values="buildtypes" :text="'Build Filter'" :defaultValue="'Popular'" @input-changed="handleInputChange"></single-select-filter>
+            <single-select-filter :values="buildtypes" :text="'Talent Build Type'" :defaultValue="'Popular'" @input-changed="handleInputChange"></single-select-filter>
 
             {{ this.inputhero.name }} {{ "Talent Builds"}}
-            <global-talent-builds-section v-if="talentbuilddata" :talentbuilddata="talentbuilddata" :buildtype="selectedbuildtype"></global-talent-builds-section>
+            <global-talent-builds-section v-if="talentbuilddata" :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter"></global-talent-builds-section>
           </div>
 
         </div>
@@ -70,6 +70,8 @@ export default {
     inputhero: Object,
     heroes: Array,
     gametypedefault: Array,
+    defaulttimeframe: Array,
+    defaultbuildtype: String,
   },
   data(){
     return {
@@ -88,8 +90,6 @@ export default {
             { code: 'Unique Lvl 16', name: 'Unique Lvl 16' },
             { code: 'Unique Lvl 20', name: 'Unique Lvl 20' }
           ],
-      selectedbuildtype: "Popular",
-
 
       //Sending to filter
       timeframetype: "minor",
@@ -109,6 +109,10 @@ export default {
     }
   },
   created(){    
+    this.timeframe = this.defaulttimeframe;
+    this.gametype = this.gametypedefault;
+    this.talentbuildtype = this.defaultbuildtype;
+
     if(this.inputhero){
       this.selectedHero = this.inputhero;
       this.getTalentData();
@@ -149,7 +153,7 @@ export default {
 
         this.talentdetaildata = response.data;
       }catch(error){
-        console.log(error);
+        //console.log(error);
       }
     },
     async getTalentBuildData(){
@@ -172,13 +176,12 @@ export default {
 
         this.talentbuilddata = response.data;
       }catch(error){
-        console.log(error);
+        //console.log(error);
       }
     },
-
     filterData(filteredData){
       this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
-      this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaultMinor;
+      this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaulttimeframe;
       this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : [];
       this.statfilter = filteredData.single["Stat Filter"] ? filteredData.single["Stat Filter"] : "win_rate";
       this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : [];
@@ -188,7 +191,7 @@ export default {
       this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : [];
       this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : [];
       this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "";
-      this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : "";
+      this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : this.defaultbuildtype;
 
       this.getTalentData();
       this.getTalentBuildData();

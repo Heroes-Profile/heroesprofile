@@ -21,6 +21,9 @@ class RegionInputValidation implements Rule
 
         $filteredRegions = array_intersect($value, array_keys($this->validRegions));
 
+        if(count($filteredRegions) == 4){
+            return [];
+        }
         $filteredRegionValues = [];
         foreach ($filteredRegions as $region) {
             $filteredRegionValues[] = $this->validRegions[$region];

@@ -17,7 +17,10 @@
           </th>                
           <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             Win Chance
-          </th>                                 
+          </th>        
+          <th v-if="statfilter" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            Avg {{ statfilter.charAt(0).toUpperCase() + statfilter.slice(1) }}
+          </th>                           
         </tr>
       </thead>
       <tbody>
@@ -36,6 +39,7 @@
           <td class="py-2 px-3 border-b border-gray-200">{{ this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, row.hero)}}</td>
           <td class="py-2 px-3 border-b border-gray-200">{{ row.games_played }}</td>
           <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
+          <td v-if="statfilter" class="py-2 px-3 border-b border-gray-200">{{ row.total_filter_type }}</td>
         </tr>
       </tbody>
     </table>
@@ -50,6 +54,7 @@ export default {
   props: {
     talentbuilddata: Array,
     buildtype: String,
+    statfilter: String,
   },
   data(){
     return {

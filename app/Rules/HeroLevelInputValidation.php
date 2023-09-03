@@ -19,6 +19,10 @@ class HeroLevelInputValidation implements Rule
         $filteredLevels = array_intersect($value, $this->validLevels);
         $filteredLevels = array_map('intval', $filteredLevels); // Cast to integers
 
+      if(count($filteredLevels) == 9){
+            return [];
+        }
+
         return $filteredLevels ?: [];
     }
 

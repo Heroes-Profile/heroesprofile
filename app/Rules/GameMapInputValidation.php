@@ -18,9 +18,9 @@ class GameMapInputValidation implements Rule
         
 
         $filteredMaps = array_intersect($value, $validMaps);
-        
+     
 
-        if (empty($filteredMaps)) {
+        if (empty($filteredMaps) || count($filteredMaps) == 18) {
             return [];
         }
 

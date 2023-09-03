@@ -37,6 +37,27 @@ class GlobalDataService
         return session('maxReplayID');
     }
 
+    public function getDefaultTimeframe(){
+        if (!session()->has('defaulttimeframe')) {
+            session(['defaulttimeframe' => SeasonGameVersion::select("game_version")->orderBy("game_version", "DESC")->first()->game_version]);
+        }
+
+        return session('defaulttimeframe');
+    }
+
+
+    public function getDefaultBuildType(){
+        if (Auth::check()) {
+            $user = Auth::user();
+        }
+        if (!session()->has('defaultbuildtype')) {
+            session(['defaultbuildtype' => "Popular"]);
+        }
+
+        return session('defaultbuildtype');
+    }
+
+
     public function getLatestPatch(){
         if (!session()->has('latestPatch')) {
             session(['latestPatch' => SeasonGameVersion::orderBy('id', 'desc')->limit(1)->value('game_version')]);

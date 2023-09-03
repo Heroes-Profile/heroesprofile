@@ -65,7 +65,7 @@ export default {
       defaultGameType: [],
     }
   },
-  created(){
+  created(){    
     this.defaultGameType = this.gametypedefault;
 
     this.selectedSingleFilters = {
