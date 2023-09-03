@@ -13,6 +13,7 @@ import MainPage from './components/MainPage.vue';
 //Random Pieces - rename later to what you want and place in folder
 import Infobox from './components/Infobox.vue';
 import HeroBox from './components/HeroBox.vue';
+import TalentBox from './components/TalentBox.vue';
 import Filters from './components/Filters.vue';
 import SingleSelectFilter from './components/SingleSelectFilter.vue';
 import MultiSelectFilter from './components/MultiSelectFilter.vue';
@@ -28,6 +29,8 @@ import GlobalLeaderboard from './components/Global/Leaderboard/GlobalLeaderboard
 import GlobalMatchupsStats from './components/Global/Matchups/GlobalMatchupsStats.vue';
 import GlobalMatchupsTalentsStats from './components/Global/Matchups/Talent/GlobalMatchupsTalentsStats.vue';
 import CompositionsStats from './components/Global/Compositions/CompositionsStats.vue';
+import GlobalTalentDetailsSection from './components/Global/Talents/GlobalTalentDetailsSection.vue';
+import GlobalTalentBuildsSection from './components/Global/Talents/GlobalTalentBuildsSection.vue';
 
 
 //Authentication

@@ -14,11 +14,15 @@ use App\Rules\GameMapInputValidation;
 use App\Rules\HeroLevelInputValidation;
 use App\Rules\MirrorInputValidation;
 use App\Rules\RegionInputValidation;
+use App\Rules\StatFilterInputValidation;
 
 use App\Models\Hero;
 use App\Models\GlobalHeroTalentDetails;
 use App\Models\GlobalHeroTalents;
 use App\Models\TalentCombination;
+use App\Models\HeroesDataTalent;
+use App\Models\SeasonGameVersion;
+
 
 class GlobalTalentStatsController extends Controller
 {
@@ -32,34 +36,56 @@ class GlobalTalentStatsController extends Controller
 
     public function show(Request $request){
         $userinput = $this->globalDataService->getHeroModel($request["hero"]);
-        return view('Global.Talents.globalTalentStats', compact('userinput'))->with('filters', $this->globalDataService->getFilterData())->with('gametypedefault', array("sl"));
+        $gametypedefault = $this->globalDataService->getGameTypeDefault();
+        return view('Global.Talents.globalTalentStats')
+            ->with([
+                'userinput' => $userinput,
+                'filters' => $this->globalDataService->getFilterData(),
+                'gametypedefault' => [$gametypedefault],
+            ]);
     }
 
     public function getGlobalHeroTalentData(Request $request){
         $hero = (new HeroInputValidation())->passes('hero', $request["hero"]);
-        $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', explode(',', $request["timeframe"]));
-        $gameType = (new GameTypeInputValidation())->passes('game_type', explode(',', $request["game_type"]));
-        $leagueTier = (new TierInputValidation())->passes('league_tier', explode(',', $request["league_tier"]));
-        $heroLeagueTier = (new TierInputValidation())->passes('hero_league_tier', explode(',', $request["hero_league_tier"]));
-        $roleLeagueTier = (new TierInputValidation())->passes('role_league_tier', explode(',', $request["role_league_tier"]));
-        $gameMap = (new GameMapInputValidation())->passes('map', explode(',', $request["map"]));
-        $heroLevel = (new HeroLevelInputValidation())->passes('hero_level', explode(',', $request["hero_level"]));
+        $gameVersion = null;
+        if($request["timeframe_type"] == "major"){
+            $gameVersions = SeasonGameVersion::select('game_version')
+                                            ->where('game_version', 'like', $request["timeframe"][0] . "%")
+                                            ->pluck('game_version')
+                                            ->toArray();                                            
+            $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $gameVersions);
+
+        }else{
+            $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $request["timeframe"]);
+        }
+        $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
+        $leagueTier = (new TierInputValidation())->passes('league_tier', $request["league_tier"]);
+        $heroLeagueTier = (new TierInputValidation())->passes('hero_league_tier', $request["hero_league_tier"]);
+        $roleLeagueTier = (new TierInputValidation())->passes('role_league_tier', $request["role_league_tier"]);
+        $gameMap = (new GameMapInputValidation())->passes('map', $request["map"]);
+        $heroLevel = (new HeroLevelInputValidation())->passes('hero_level', $request["hero_level"]);
         $mirror = (new MirrorInputValidation())->passes('mirror', $request["mirror"]);
         $region = (new RegionInputValidation())->passes('region', $request["region"]);
+        $statFilter = (new StatFilterInputValidation())->passes('statfilter', $request["statfilter"]);
 
         $cacheKey = "GlobalHeroTalentStats|" . implode('|', [
             'hero' => $hero,
-            'gameVersion' => implode(',', $gameVersion),
-            'gameType' => implode(',', $gameType),
-            'leagueTier' => implode(',', $leagueTier),
-            'heroLeagueTier' => implode(',', $heroLeagueTier),
-            'roleLeagueTier' => implode(',', $roleLeagueTier),
-            'gameMap' => implode(',', $gameMap),
-            'heroLevel' => implode(',', $heroLevel),
-            'mirror' => $mirror,
-            'region' => implode(',', $region),
+            'gameVersion=' . implode(',', $gameVersion),
+            'gameType=' . implode(',', $gameType),
+            'leagueTier=' . implode(',', $leagueTier),
+            'heroLeagueTier=' . implode(',', $heroLeagueTier),
+            'roleLeagueTier=' . implode(',', $roleLeagueTier),
+            'gameMap=' . implode(',', $gameMap),
+            'heroLevel=' . implode(',', $heroLevel),
+            'mirror=' . $mirror,
+            'region=' . implode(',', $region),
+            'statFilter=' . $statFilter,
         ]);
-        //return $cacheKey;
+
+
+
+        
+        return $cacheKey;
 
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
                                                                                                                          $hero,
@@ -98,14 +124,19 @@ class GlobalTalentStatsController extends Controller
                 ->get();
 
             $data = collect($data)->groupBy('level')->map(function ($levelGroup) {
-                return $levelGroup->groupBy('talent')->map(function ($talentGroup) {
+
+                $totalGamesPlayed = collect($levelGroup)->sum('games_played');
+
+                return $levelGroup->groupBy('talent')->map(function ($talentGroup) use ($totalGamesPlayed) {
                     $firstItem = $talentGroup->first();
 
                     $wins = $talentGroup->where('win_loss', 1)->sum('games_played');
                     $losses = $talentGroup->where('win_loss', 0)->sum('games_played');
                     $gamesPlayed = $wins + $losses;
-
                     $talentInfo = $firstItem->talentInfo;
+
+                    $winRate = $gamesPlayed > 0 ? round(($wins / $gamesPlayed) * 100, 2) : 0;
+                    $popularity = $totalGamesPlayed > 0 ? round(($gamesPlayed / $totalGamesPlayed) * 100, 2) : 0;
 
                     return [
                         'name' => $firstItem['name'],
@@ -113,6 +144,8 @@ class GlobalTalentStatsController extends Controller
                         'wins' => $wins,
                         'losses' => $losses,
                         'games_played' => $gamesPlayed,
+                        'popularity' => $popularity,
+                        'win_rate' => $winRate,
                         'level' => $firstItem['level'],
                         'talentInfo' => $talentInfo,
                     ];
@@ -127,29 +160,43 @@ class GlobalTalentStatsController extends Controller
 
     public function getGlobalHeroTalentBuildData(Request $request){
         $hero = (new HeroInputValidation())->passes('hero', $request["hero"]);
-        $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', explode(',', $request["timeframe"]));
-        $gameType = (new GameTypeInputValidation())->passes('game_type', explode(',', $request["game_type"]));
-        $leagueTier = (new TierInputValidation())->passes('league_tier', explode(',', $request["league_tier"]));
-        $heroLeagueTier = (new TierInputValidation())->passes('hero_league_tier', explode(',', $request["hero_league_tier"]));
-        $roleLeagueTier = (new TierInputValidation())->passes('role_league_tier', explode(',', $request["role_league_tier"]));
-        $gameMap = (new GameMapInputValidation())->passes('map', explode(',', $request["map"]));
-        $heroLevel = (new HeroLevelInputValidation())->passes('hero_level', explode(',', $request["hero_level"]));
+        $gameVersion = null;
+
+        if($request["timeframe_type"] == "major"){
+            $gameVersions = SeasonGameVersion::select('game_version')
+                                            ->where('game_version', 'like', $request["timeframe"][0] . "%")
+                                            ->pluck('game_version')
+                                            ->toArray();                                            
+            $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $gameVersions);
+
+        }else{
+            $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $request["timeframe"]);
+        }
+        $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
+        $leagueTier = (new TierInputValidation())->passes('league_tier', $request["league_tier"]);
+        $heroLeagueTier = (new TierInputValidation())->passes('hero_league_tier', $request["hero_league_tier"]);
+        $roleLeagueTier = (new TierInputValidation())->passes('role_league_tier', $request["role_league_tier"]);
+        $gameMap = (new GameMapInputValidation())->passes('map', $request["map"]);
+        $heroLevel = (new HeroLevelInputValidation())->passes('hero_level', $request["hero_level"]);
         $mirror = (new MirrorInputValidation())->passes('mirror', $request["mirror"]);
         $region = (new RegionInputValidation())->passes('region', $request["region"]);
+        $statFilter = (new StatFilterInputValidation())->passes('statfilter', $request["statfilter"]);
 
         $cacheKey = "GlobalHeroTalentBuildStats|" . implode('|', [
             'hero' => $hero,
-            'gameVersion' => implode(',', $gameVersion),
-            'gameType' => implode(',', $gameType),
-            'leagueTier' => implode(',', $leagueTier),
-            'heroLeagueTier' => implode(',', $heroLeagueTier),
-            'roleLeagueTier' => implode(',', $roleLeagueTier),
-            'gameMap' => implode(',', $gameMap),
-            'heroLevel' => implode(',', $heroLevel),
-            'mirror' => $mirror,
-            'region' => implode(',', $region),
+            'gameVersion=' . implode(',', $gameVersion),
+            'gameType=' . implode(',', $gameType),
+            'leagueTier=' . implode(',', $leagueTier),
+            'heroLeagueTier=' . implode(',', $heroLeagueTier),
+            'roleLeagueTier=' . implode(',', $roleLeagueTier),
+            'gameMap=' . implode(',', $gameMap),
+            'heroLevel=' . implode(',', $heroLevel),
+            'mirror=' . $mirror,
+            'region=' . implode(',', $region),
+            'statFilter=' . $statFilter,
         ]);
-        //return $cacheKey;
+
+        return $cacheKey;
 
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
                                                                                                                  $hero,
@@ -168,10 +215,20 @@ class GlobalTalentStatsController extends Controller
             foreach ($topBuilds as $build) {
                 $build->buildData = $this->getTopBuildsData($build, 1, $hero, $gameVersion, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region);
             }
+
+
+   
+
             return $topBuilds;
         });
 
-        $data->transform(function ($item) {
+        $talentData = HeroesDataTalent::all();
+        $talentData = $talentData->keyBy('talent_id');
+
+        $heroData = Hero::all();
+        $heroData = $heroData->keyBy('id');
+
+        $data->transform(function ($item) use ($talentData, $heroData) {
             $wins = $item['buildData']['wins'];
             $losses = $item['buildData']['losses'];
             
@@ -179,7 +236,15 @@ class GlobalTalentStatsController extends Controller
             $winRate = ($wins + $losses) > 0 ? $wins / ($wins + $losses) : 0;
 
             // Add win rate to the item
-            $item['winRate'] = $winRate * 100;
+            $item['win_rate'] = round($winRate * 100, 2);
+            $item['hero'] = $heroData[$item['hero']];
+            $item['level_one'] = $talentData[$item['level_one']];
+            $item['level_four'] = $talentData[$item['level_four']];
+            $item['level_seven'] = $talentData[$item['level_seven']];
+            $item['level_ten'] = $talentData[$item['level_ten']];
+            $item['level_thirteen'] = $talentData[$item['level_thirteen']];
+            $item['level_sixteen'] = $talentData[$item['level_sixteen']];
+            $item['level_twenty'] = $talentData[$item['level_twenty']];
 
             return $item;
         });
@@ -201,6 +266,7 @@ class GlobalTalentStatsController extends Controller
             ->filterByGameMap($gameMap)
             ->filterByHeroLevel($heroLevel)
             ->filterByRegion($region)
+            ->whereNot("level_twenty", 0)
             ->groupBy('heroesprofile.global_hero_talents.hero', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
             ->orderBy('games_played', 'DESC')
             ->limit($this->buildsToReturn)

@@ -68,7 +68,8 @@ export default {
       }
     },
     toggleSelectedOptions(value) {
-      if (this.text !== "Timeframe Type") {
+      //Change this to be dynamic later
+      if (this.text !== "Timeframe Type" && this.text !== "Build Filter" && this.text !== "Stat Filter") {                                          
         this.selectedOptions = this.selectedOptions === value ? '' : value;
       } else {
         this.selectedOptions = value;

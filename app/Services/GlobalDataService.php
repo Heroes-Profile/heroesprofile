@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+use Illuminate\Support\Facades\Auth;
 
 use App\Models\Replay;
 use App\Models\Hero;
@@ -98,6 +99,15 @@ class GlobalDataService
                     ->filterByRegion($region)
                     ->get();
         return $data;
+    }
+
+    public function getGameTypeDefault(){
+        if (Auth::check()) {
+            $user = Auth::user();
+        }
+
+
+        return "sl";
     }
 
     public function getFilterData(){

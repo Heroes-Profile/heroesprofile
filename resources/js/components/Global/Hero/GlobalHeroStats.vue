@@ -28,7 +28,6 @@ GlobalHeroStats<template>
     <button @click="toggleChartValue" class="mt-4 bg-blue-500 text-white p-2 rounded">Toggle Chart</button>
     <div v-if="this.data.data">
       <div v-if="togglechart">
-        {{ "I have this working except for the hero images.  The hero images are not scaling based on their radius value.  Research suggests this is not possible, but we got it to work on the other site.  I am not sure right now how we did that.  We might have to look into whether we wrote some custom css or something on that.  Otherwise, I can create images based on varrying radius values and then we just dynamically load a different image depending on a radius range" }} 
         <bubble-chart :heroData="this.data.data"></bubble-chart>
 
       </div>
@@ -107,19 +106,26 @@ GlobalHeroStats<template>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="row in sortedData" :key="row.hero_id">
-            <td class="py-2 px-3 border-b border-gray-200"><hero-box :hero="row"></hero-box>{{ row.name }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ "&#177;" }}{{ row.confidence_interval }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate_change }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.popularity }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.pick_rate }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.ban_rate }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.influence }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.games_played }}</td>
-            <td v-if="this.showStatTypeColumn" class="py-2 px-3 border-b border-gray-200">{{ row.total_filter_type }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ "View Talent Builds" }}</td>
-          </tr>
+          <template v-for="(row, index) in sortedData">
+            <tr>
+              <td class="py-2 px-3 border-b border-gray-200"><hero-box :hero="row"></hero-box>{{ row.name }}</td>
+              <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
+              <td class="py-2 px-3 border-b border-gray-200"><span v-html="'&#177;'"></span>{{ row.confidence_interval }}</td>
+              <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate_change }}</td>
+              <td class="py-2 px-3 border-b border-gray-200">{{ row.popularity }}</td>
+              <td class="py-2 px-3 border-b border-gray-200">{{ row.pick_rate }}</td>
+              <td class="py-2 px-3 border-b border-gray-200">{{ row.ban_rate }}</td>
+              <td class="py-2 px-3 border-b border-gray-200">{{ row.influence }}</td>
+              <td class="py-2 px-3 border-b border-gray-200">{{ row.games_played }}</td>
+              <td v-if="this.showStatTypeColumn" class="py-2 px-3 border-b border-gray-200">{{ row.total_filter_type }}</td>
+              <td class="py-2 px-3 border-b border-gray-200"><button @click="viewtalentbuilds(row.name, index)" class="mt-4 bg-blue-500 text-white p-2 rounded">View Talent Builds</button></td>
+            </tr>
+             <tr v-if="row.talentbuilddata">
+              <td colspan="11">
+                <global-talent-builds-section v-if="toggletalentbuilds && talentbuilddata" :talentbuilddata="talentbuilddata" :buildtype="selectedbuildtype"></global-talent-builds-section>
+              </td>
+            </tr> 
+          </template>
         </tbody>
       </table>
     </div>
@@ -127,6 +133,8 @@ GlobalHeroStats<template>
 </template>
 
 <script>
+import GlobalTalentBuildsSection from '../Talents/GlobalTalentBuildsSection.vue';
+
 export default {
   name: 'GlobalHeroStats',
   components: {
@@ -145,7 +153,13 @@ export default {
       sortKey: '',
       sortDir: 'asc',
       data: [],
+      togglechart: false,
+      toggletalentbuilds: false,
+      talentbuilddata: null,
+      selectedbuildtype: "Popular",
 
+
+      
       //Sending to filter
       timeframetype: "minor",
       timeframe: null,
@@ -161,7 +175,8 @@ export default {
       rolerank: null,
       mirrormatch: null,
       talentbuildtype: null,
-      togglechart: false,
+
+
     }
   },
   created(){
@@ -225,6 +240,21 @@ export default {
         console.log(error)
       }
     },
+    async getTalentBuildData(hero, index){
+      try{
+        console.log(hero);
+        const response = await this.$axios.post("/api/v1/global/talents/build", {
+          hero: hero,
+        });
+
+        this.talentbuilddata = response.data;
+
+        this.sortedData[index].talentbuilddata = this.talentbuilddata;
+
+      }catch(error){
+        console.log(error);
+      }
+    },
     filterData(filteredData){
       this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
       this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaultMinor;
@@ -240,6 +270,8 @@ export default {
       this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : [];
       this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "";
       this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : "";
+
+      this.talentbuilddata = null;
       this.getData();
     },
     sortTable(key) {
@@ -252,6 +284,13 @@ export default {
     },
     toggleChartValue() {
       this.togglechart = !this.togglechart;
+    },
+    viewtalentbuilds(hero, index){
+      this.toggletalentbuilds = !this.toggletalentbuilds;
+
+      if(this.toggletalentbuilds && !this.talentbuilddata){
+        this.getTalentBuildData(hero, index);
+      }
     },
   }
 }
