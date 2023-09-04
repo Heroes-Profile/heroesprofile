@@ -6,8 +6,12 @@
         <span v-if="selectedOptionsName !== ''">: {{ selectedOptionsName }}</span>      
       </div>
       <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg expandable-dropdown">
+        <div>
+          <!-- Search Input -->
+          <input v-model="searchQuery" type="text" placeholder="Search" class="w-full p-2"/>
+        </div>
         <div class="space-y-2 p-2">
-          <div v-for="value in values" :key="value.code">
+          <div v-for="value in filteredValues" :key="value.code">
             <input 
               type="radio" 
               :id="value.code" 
@@ -26,18 +30,20 @@
 
 <script>
 export default {
-  name: 'MultiSelectFilter',
+  name: 'SingleSelectFilter',
   components: {
   },
   props: {
     values: Array,
     text: String,
     defaultValue: String,
+    trackclosure: Boolean,
   },
   data(){
     return {
       showOptions: false,
       selectedOptions: this.defaultValue || '',
+      searchQuery: ''  // Added this for search
     }
   },
   created(){
@@ -53,11 +59,21 @@ export default {
       const selected = this.values.find(value => value.code === this.selectedOptions);
       return selected ? selected.name : '';
     },
+    filteredValues() {  // Added this for search
+      return this.values.filter(value => 
+        value.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+      );
+    }
   },
   watch: {
     selectedOptions: function (newVal) {
       // Emitting the change back to the parent component
       this.$emit('input-changed', { field: this.text, value: newVal, type: 'single' });
+    },
+    showOptions: function (newVal) {
+      if(this.trackclosure && !newVal){
+          this.$emit('dropdown-closed', newVal);
+        }
     }
   },
   methods: {

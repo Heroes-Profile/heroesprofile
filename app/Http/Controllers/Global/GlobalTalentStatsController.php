@@ -112,7 +112,6 @@ class GlobalTalentStatsController extends Controller
                                                                                                                         ){
   
             $data = GlobalHeroTalentDetails::query()
-                ->join('heroes_data_talents', 'heroes_data_talents.talent_id', '=', 'global_hero_talents_details.talent')
                 ->join('heroes', 'heroes.id', '=', 'global_hero_talents_details.hero')
                 ->select('name', 'hero as id', 'win_loss', 'talent', 'global_hero_talents_details.level')
                 ->selectRaw('SUM(global_hero_talents_details.games_played) as games_played')
@@ -131,7 +130,6 @@ class GlobalTalentStatsController extends Controller
                 ->filterByRegion($region)
                 ->groupBy('hero', 'win_loss', 'talent', 'global_hero_talents_details.level')
                 ->orderBy('global_hero_talents_details.level')
-                ->orderBy('sort')
                 ->orderBy('talent')
                 ->orderBy('win_loss')
                 ->with(['talentInfo'])
@@ -165,10 +163,11 @@ class GlobalTalentStatsController extends Controller
                         'popularity' => $popularity,
                         'win_rate' => $winRate,
                         'level' => $firstItem['level'],
+                        'sort' => $talentInfo["sort"],
                         'talentInfo' => $talentInfo,
                         'total_filter_type' => $gamesPlayed > 0 ? round($statFilterTotal / $gamesPlayed, 2) : 0
                     ];
-                })->values()->toArray();
+                })->sortBy("sort")->values()->toArray();
             });
 
 

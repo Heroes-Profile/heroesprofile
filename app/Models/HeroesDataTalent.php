@@ -22,7 +22,16 @@ class HeroesDataTalent extends Model
 
     public function globalHeroTalentDetail()
     {
-        return $this->hasOne(GlobalHeroTalentDetails::class, 'talent_id', 'level');
+        return $this->hasOne(GlobalHeroTalentDetails::class, 'talent_id', 'talent');
     }
 
+    public function GlobalHeroTalentsVersusHeroes()
+    {
+        return $this->hasOne(GlobalHeroTalentDetails::class, 'talent_id', 'talent');
+    }
+
+    public function GlobalHeroTalentsWithHeroes()
+    {
+        return $this->hasOne(GlobalHeroTalentDetails::class, 'talent_id', 'talent');
+    }
 }

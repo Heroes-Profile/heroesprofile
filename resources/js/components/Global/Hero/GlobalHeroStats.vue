@@ -108,7 +108,7 @@ GlobalHeroStats<template>
         <tbody>
           <template v-for="(row, index) in sortedData">
             <tr>
-              <td class="py-2 px-3 border-b border-gray-200"><hero-box :hero="row"></hero-box>{{ row.name }}</td>
+              <td class="py-2 px-3 border-b border-gray-200"><hero-box-small :hero="row"></hero-box-small>{{ row.name }}</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
               <td class="py-2 px-3 border-b border-gray-200"><span v-html="'&#177;'"></span>{{ row.confidence_interval }}</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate_change }}</td>

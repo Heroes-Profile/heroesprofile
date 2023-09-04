@@ -11,13 +11,14 @@ use App\Rules\HeroInputValidation;
 use App\Rules\TimeframeMinorInputValidation;
 use App\Rules\TimeframeMinorInputValidationOutputID;
 use App\Rules\GameTypeInputValidation;
-use App\Rules\TierInputValidation;
+use App\Rules\TierByIDInputValidation;
 use App\Rules\GameMapInputValidation;
 
 use App\Models\GlobalHeromatchupsAlly;
 use App\Models\GlobalHeromatchupsEnemy;
 use App\Models\GlobalHeroTalentsVersusHeroes;
 use App\Models\GlobalHeroTalentsWithHeroes;
+use App\Models\Hero;
 
 class GlobalHeroMatchupsTalentsController extends Controller
 {
@@ -29,30 +30,69 @@ class GlobalHeroMatchupsTalentsController extends Controller
     }
 
     public function show(Request $request){
-        return view('Global.Matchups.Talents.globalMatchupsTalentsStats');
+        $inputhero = (new HeroInputValidation())->passes('hero', $request["hero"]);
+        $inputenemyally = (new HeroInputValidation())->passes('allyenemy', $request["allyenemy"]);
+
+        if(!$inputhero){
+            $inputhero = new Hero;
+            $inputhero->name = "Auto Select";
+            $inputhero->short_name = "autoselect3";
+            $inputhero->icon = "autoselect3.jpg";
+        }
+
+        if(!$inputenemyally){
+            $inputenemyally = new Hero;
+            $inputenemyally->name = "Auto Select";
+            $inputenemyally->short_name = "autoselect3";
+            $inputenemyally->icon = "autoselect3.jpg";
+        }
+
+        return view('Global.Matchups.Talents.globalMatchupsTalentsStats')->with([
+                'filters' => $this->globalDataService->getFilterData(),
+                'gametypedefault' => [$this->globalDataService->getGameTypeDefault()],
+                'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
+                'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
+                'inputhero' => $inputhero,
+                'inputenemyally' => $inputenemyally,
+            ]);
     }
 
     public function getHeroMatchupsTalentsData(Request $request){
+        //return response()->json($request->all());
+
+        $gameVersion = null;
+
+        if($request["timeframe_type"] == "major"){
+            $gameVersions = SeasonGameVersion::select('game_version')
+                                            ->where('game_version', 'like', $request["timeframe"][0] . "%")
+                                            ->pluck('game_version')
+                                            ->toArray();                                            
+            $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $gameVersions);
+
+        }else{
+            $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $request["timeframe"]);
+        }
+        $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
+        $leagueTier = (new TierByIDInputValidation())->passes('league_tier', $request["league_tier"]);
+        $gameMap = (new GameMapInputValidation())->passes('map', $request["map"]);
         $hero = (new HeroInputValidation())->passes('hero', $request["hero"]);
         $allyEnemy = (new HeroInputValidation())->passes('ally_enemy', $request["ally_enemy"]);
         $type = in_array($request["type"], ["Enemy", "Ally"]) ? $request["type"] : "Enemy";
         $talentView = in_array($request["talent_view"], ["hero", "ally_enemy"]) ? $request["talent_view"] : "Enemy";
-        $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', explode(',', $request["timeframe"]));
-        $gameVersionID = (new TimeframeMinorInputValidationOutputID())->passes('timeframe', explode(',', $request["timeframe"]));
-        $gameType = (new GameTypeInputValidation())->passes('game_type', explode(',', $request["game_type"]));
-        $gameMap = (new GameMapInputValidation())->passes('map', explode(',', $request["map"]));
-        $leagueTier = (new TierInputValidation())->passes('league_tier', explode(',', $request["league_tier"]));
+        $gameVersionID = (new TimeframeMinorInputValidationOutputID())->passes('timeframe', $gameVersion);
 
         $cacheKey = "GlobalHeroMatchupsTalents|" . implode('|', [
-            'hero' => $hero,
-            'allyEnemy' => $allyEnemy,
-            'type' => $type,
-            'talentView' => $talentView,
-            'gameVersion' => implode(',', $gameVersion),
-            'gameType' => implode(',', $gameType),
-            'leagueTier' => implode(',', $leagueTier),
-            'gameMap' => implode(',', $gameMap)
+            'hero=' . $hero,
+            'allyEnemy=' . $allyEnemy,
+            'type=' . $type,
+            'talentView=' . $talentView,
+            'gameVersion=' . implode(',', $gameVersion),
+            'gameType=' . implode(',', $gameType),
+            'leagueTier=' . implode(',', $leagueTier),
+            'gameMap=' . implode(',', $gameMap),
         ]);
+
+
         //return $cacheKey;
 
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
@@ -68,58 +108,60 @@ class GlobalHeroMatchupsTalentsController extends Controller
                                                                                                                         ){
             
             $firstHeroWinRateData = $this->calculateWinRateData($hero, $allyEnemy, $type, $gameVersion, $gameType, $leagueTier, $gameMap);
-            $secondHeroWinRate = $firstHeroWinRateData > 50 ? $firstHeroWinRateData - 100 : 100 - $firstHeroWinRateData;
-
+            $secondHeroWinRate = $type == "Ally" ? round($firstHeroWinRateData , 2) : round(100 - $firstHeroWinRateData, 2);
+            $firstHeroWinRateData  = round($firstHeroWinRateData , 2);
 
             $model = $type === "Ally" ? GlobalHeroTalentsWithHeroes::class : GlobalHeroTalentsVersusHeroes::class;
             $table = $type === "Ally" ? "global_hero_talents_with_heroes" : "global_hero_talents_versus_heroes";
 
             $data = $model::query()
-                ->join('heroes_data_talents', 'heroes_data_talents.talent_id', '=', $table . '.talent')
-                ->select('win_loss', 'icon', 'description', 'heroes_data_talents.level', 'heroes_data_talents.title', 'heroes_data_talents.sort')
+                ->select('win_loss', 'level', 'talent')
                 ->selectRaw('SUM(games_played) as games_played')
                 ->filterByGameVersion($gameVersionID)
                 ->filterByGameType($gameType)
-                ->filterByHero($gameType)
+                ->filterByHero($hero)
                 ->filterByAllyEnemy($allyEnemy)
                 ->filterByLeagueTier($leagueTier)
-                ->groupBy('win_loss' , 'icon' , 'hotkey' , 'description' , 'heroes_data_talents.level' , 'heroes_data_talents.title' , 'heroes_data_talents.sort')
-                ->orderBy('heroes_data_talents.level')
-                ->orderBy('heroes_data_talents.sort')
-                ->orderBy('heroes_data_talents.title')
+                ->groupBy('win_loss' , 'level', 'talent')
+                ->orderBy('level')
                 ->orderBy('win_loss')
+                ->with(['talentInfo'])
+                //->toSql();
+                //return $data;
                 ->get();
 
-            $data = collect($data)->groupBy('title')->map(function ($group) {
-                $firstItem = $group->first();
+            $data = collect($data)->groupBy('level')->map(function ($levelGroup) {
 
-                $wins = $group->where('win_loss', 1)->sum('games_played');
-                $losses = $group->where('win_loss', 0)->sum('games_played');
-                $gamesPlayed = $wins + $losses;
+                $totalGamesPlayed = collect($levelGroup)->sum('games_played');
 
-                $winRate = 0;
-                if($gamesPlayed > 0){
-                    $winRate = ($wins / $gamesPlayed) * 100;
-                }
+                return $levelGroup->groupBy('talent')->map(function ($talentGroup) use ($totalGamesPlayed) {
+                    $firstItem = $talentGroup->first();
 
-                return [
-                    'title' => $firstItem['title'],
-                    'level' => $firstItem['level'],
-                    'sort' => $firstItem['sort'],
-                    'description' => $firstItem['description'],
-                    'icon' => $firstItem['icon'],
-                    'wins' => $wins,
-                    'losses' => $losses,
-                    'gamesPlayed' => $gamesPlayed,
-                ];
-            })->values()->toArray();
+                    $wins = $talentGroup->where('win_loss', 1)->sum('games_played');
+                    $losses = $talentGroup->where('win_loss', 0)->sum('games_played');
+                    $gamesPlayed = $wins + $losses;
+                    $talentInfo = $firstItem->talentInfo;
 
-            return $data;
+                    $winRate = $gamesPlayed > 0 ? round(($wins / $gamesPlayed) * 100, 2) : 0;
+                    $popularity = $totalGamesPlayed > 0 ? round(($gamesPlayed / $totalGamesPlayed) * 100, 2) : 0;
 
-            return ["win_rate" => $secondHeroWinRate, "data" => $data];
+                    return [
+                        'wins' => $wins,
+                        'losses' => $losses,
+                        'games_played' => $gamesPlayed,
+                        'popularity' => $popularity,
+                        'win_rate' => $winRate,
+                        'level' => $firstItem['level'],
+                        'talent' => $firstItem['talent'],
+                        'sort' => $talentInfo["sort"],
+                        'talentInfo' => $talentInfo,
+                    ];
+                })->sortBy("sort")->values()->toArray();
+            });
+
+            return ["first_win_rate" => $firstHeroWinRateData, "second_win_rate" => $secondHeroWinRate, "data" => $data];
         });
         return $data;
-
     }
 
     private function calculateWinRateData($hero, $allyEnemy, $type, $gameVersion, $gameType, $leagueTier, $gameMap){

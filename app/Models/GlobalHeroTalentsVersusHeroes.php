@@ -12,6 +12,11 @@ class GlobalHeroTalentsVersusHeroes extends Model
 
   public $timestamps = false;
 
+  public function talentInfo()
+  {
+      return $this->belongsTo(HeroesDataTalent::class, 'talent', 'talent_id');
+  }
+  
   public function scopeFilterByGameVersion($query, $gameVersion)
   {
       return $query->whereIn('game_version', $gameVersion);

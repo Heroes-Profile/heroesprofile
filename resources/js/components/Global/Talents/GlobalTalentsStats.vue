@@ -11,7 +11,7 @@
       <div>
         <div v-if="!selectedHero">
           <div v-for="hero in heroes" :key="hero.id">
-            <hero-box :hero="hero" @click="clickedHero(hero)"></hero-box>
+            <hero-box-small :hero="hero" @click="clickedHero(hero)"></hero-box-small>
           </div>
         </div>
 
@@ -44,7 +44,7 @@
 
             <single-select-filter :values="buildtypes" :text="'Talent Build Type'" :defaultValue="'Popular'" @input-changed="buildtypechange"></single-select-filter>
 
-            {{ this.inputhero.name }} {{ "Talent Builds"}}
+            {{ this.selectedHero.name }} {{ "Talent Builds"}}
             <global-talent-builds-section v-if="talentbuilddata" :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter"></global-talent-builds-section>
           </div>
 

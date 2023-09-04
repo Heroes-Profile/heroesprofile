@@ -12,13 +12,14 @@ import MainPage from './components/MainPage.vue';
 
 //Random Pieces - rename later to what you want and place in folder
 import Infobox from './components/Infobox.vue';
-import HeroBox from './components/HeroBox.vue';
 import TalentBox from './components/TalentBox.vue';
 import Filters from './components/Filters.vue';
 import SingleSelectFilter from './components/SingleSelectFilter.vue';
 import MultiSelectFilter from './components/MultiSelectFilter.vue';
 import BubbleChart from './components/BubbleChart.vue';
+import HeroBoxSmall from './components/HeroBoxSmall.vue';
 import HeroGroupBox from './components/HeroGroupBox.vue';
+import HeroBoxLarge from './components/HeroBoxLarge.vue';
 
 
 

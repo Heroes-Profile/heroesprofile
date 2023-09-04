@@ -6,7 +6,7 @@
 
     <div v-if="!selectedHero">
       <div v-for="hero in heroes" :key="hero.id">
-        <hero-box :hero="hero" @click="clickedHero(hero)"></hero-box>
+        <hero-box-small :hero="hero" @click="clickedHero(hero)"></hero-box-small>
       </div>
     </div>
 
