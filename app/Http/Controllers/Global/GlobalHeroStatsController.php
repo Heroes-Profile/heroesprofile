@@ -37,7 +37,14 @@ class GlobalHeroStatsController extends Controller
     public function show(Request $request){
         
 
-        return view('Global.Hero.globalHeroStats')->with('filters', $this->globalDataService->getFilterData())->with('gametypedefault', array("sl"));
+        return view('Global.Hero.globalHeroStats')
+        ->with([
+            'filters' => $this->globalDataService->getFilterData(),
+            'gametypedefault' => [$this->globalDataService->getGameTypeDefault()],
+            'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
+            'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
+            'defaultbuildtype' => $this->globalDataService->getDefaultBuildType()
+        ]);
     }
 
     public function getGlobalHeroData(Request $request){        

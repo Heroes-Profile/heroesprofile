@@ -22,6 +22,7 @@ class SetGlobalDataValues
         $globalDataService->getLatestGameDate();
         $globalDataService->getHeroes();
         //$globalDataService->getFilterData();
+        $globalDataService->getDefaultTimeframeType();
         $globalDataService->getDefaultTimeframe();
         $globalDataService->getDefaultBuildType();
 

@@ -18,6 +18,7 @@ import Filters from './components/Filters.vue';
 import SingleSelectFilter from './components/SingleSelectFilter.vue';
 import MultiSelectFilter from './components/MultiSelectFilter.vue';
 import BubbleChart from './components/BubbleChart.vue';
+import HeroGroupBox from './components/HeroGroupBox.vue';
 
 
 

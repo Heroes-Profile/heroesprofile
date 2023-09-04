@@ -10,13 +10,14 @@ use Illuminate\Http\Request;
 use App\Rules\HeroInputValidation;
 use App\Rules\TimeframeMinorInputValidation;
 use App\Rules\GameTypeInputValidation;
-use App\Rules\TierInputValidation;
+use App\Rules\TierByIDInputValidation;
 use App\Rules\HeroLevelInputValidation;
 use App\Rules\MirrorInputValidation;
 use App\Rules\RegionInputValidation;
 
 use App\Models\GlobalHeroStats;
 use App\Models\GlobalHeroStatsBans;
+use App\Models\Map;
 
 class GlobalHeroMapStatsController extends Controller
 {
@@ -29,31 +30,50 @@ class GlobalHeroMapStatsController extends Controller
 
     public function show(Request $request){
         $userinput = $this->globalDataService->getHeroModel($request["hero"]);
-        return view('Global.Hero.Map.globalHeroMapStats', compact('userinput'));
+        return view('Global.Hero.Map.globalHeroMapStats')
+                     ->with([
+                        'userinput' => $userinput,
+                        'filters' => $this->globalDataService->getFilterData(),
+                        'gametypedefault' => [$this->globalDataService->getGameTypeDefault()],
+                        'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
+                        'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
+                    ]);
     }
 
     public function getHeroStatMapData(Request $request){
+        //return response()->json($request->all());
         $hero = (new HeroInputValidation())->passes('userinput', $request["userinput"]);
-        $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', explode(',', $request["timeframe"]));
-        $gameType = (new GameTypeInputValidation())->passes('game_type', explode(',', $request["game_type"]));
-        $leagueTier = (new TierInputValidation())->passes('league_tier', explode(',', $request["league_tier"]));
-        $heroLeagueTier = (new TierInputValidation())->passes('hero_league_tier', explode(',', $request["hero_league_tier"]));
-        $roleLeagueTier = (new TierInputValidation())->passes('role_league_tier', explode(',', $request["role_league_tier"]));
-        $heroLevel = (new HeroLevelInputValidation())->passes('hero_level', explode(',', $request["hero_level"]));
+        $gameVersion = null;
+        if($request["timeframe_type"] == "major"){
+            $gameVersions = SeasonGameVersion::select('game_version')
+                                            ->where('game_version', 'like', $request["timeframe"][0] . "%")
+                                            ->pluck('game_version')
+                                            ->toArray();                                            
+            $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $gameVersions);
+
+        }else{
+            $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $request["timeframe"]);
+        }
+        $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
+        $leagueTier = (new TierByIDInputValidation())->passes('league_tier', $request["league_tier"]);
+        $heroLeagueTier = (new TierByIDInputValidation())->passes('hero_league_tier', $request["hero_league_tier"]);
+        $roleLeagueTier = (new TierByIDInputValidation())->passes('role_league_tier', $request["role_league_tier"]);
+        $heroLevel = (new HeroLevelInputValidation())->passes('hero_level', $request["hero_level"]);
         $mirror = (new MirrorInputValidation())->passes('mirror', $request["mirror"]);
         $region = (new RegionInputValidation())->passes('region', $request["region"]);
 
         $cacheKey = "GlobalHeroMapStats|" . implode('|', [
             'hero' => $hero,
-            'gameVersion' => implode(',', $gameVersion),
-            'gameType' => implode(',', $gameType),
-            'leagueTier' => implode(',', $leagueTier),
-            'heroLeagueTier' => implode(',', $heroLeagueTier),
-            'roleLeagueTier' => implode(',', $roleLeagueTier),
-            'heroLevel' => implode(',', $heroLevel),
-            'mirror' => $mirror,
-            'region' => implode(',', $region),
+            'gameVersion=' . implode(',', $gameVersion),
+            'gameType=' . implode(',', $gameType),
+            'leagueTier=' . implode(',', $leagueTier),
+            'heroLeagueTier=' . implode(',', $heroLeagueTier),
+            'roleLeagueTier=' . implode(',', $roleLeagueTier),
+            'heroLevel=' . implode(',', $heroLevel),
+            'mirror=' . $mirror,
+            'region=' . implode(',', $region),
         ]);
+
         //return $cacheKey;
 
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
@@ -121,9 +141,14 @@ class GlobalHeroMapStatsController extends Controller
             return $item->hero_id === $hero;
         });
 
+        $mapData = Map::all();
+        $mapData = $mapData->keyBy('map_id');
+
+        $totalGamesPlayed = ($filteredData)->sum('games_played');
+
         return collect($filteredData)->groupBy(function($date) {
             return $date['name'].$date['map_id'];
-        })->map(function ($group) use ($banData, $gamesPlayedPerMap) {
+        })->map(function ($group) use ($banData, $gamesPlayedPerMap, $mapData, $totalGamesPlayed) {
             $firstItem = $group->first();
 
             $wins = $group->where('win_loss', 1)->sum('games_played');
@@ -138,15 +163,11 @@ class GlobalHeroMapStatsController extends Controller
             $totalGamesForThisMap = $gamesPlayedPerMap[$firstItem['map_id']] ?? 0;
 
             return [
-                'name' => $firstItem['name'],
-                'hero_id' => $firstItem['hero_id'],
-                'map_id' => $firstItem['map_id'],
-                'wins' => $wins,
-                'losses' => $losses,
-                'win_rate' => $gamesPlayed != 0 ? ($wins / $gamesPlayed) * 100 : 0,
+                'map' => $mapData[$firstItem['map_id']],
+                'win_rate' => $gamesPlayed != 0 ? round(($wins / $gamesPlayed) * 100, 2) : 0,
                 'games_played' => $gamesPlayed,
-                'bans' => $bans,
-                'ban_rate' => $totalGamesForThisMap != 0 ? ($bans / $totalGamesForThisMap) * 100 : 0
+                'ban_rate' => $totalGamesForThisMap != 0 ? round(($bans / $totalGamesForThisMap) * 100, 2) : 0,
+                'total_games_played' => $totalGamesPlayed,
             ];
         })->sortByDesc('win_rate')->values()->toArray();
     }

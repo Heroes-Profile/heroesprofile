@@ -42,7 +42,7 @@
 
           <div class="container mx-auto px-4">
 
-            <single-select-filter :values="buildtypes" :text="'Talent Build Type'" :defaultValue="'Popular'" @input-changed="handleInputChange"></single-select-filter>
+            <single-select-filter :values="buildtypes" :text="'Talent Build Type'" :defaultValue="'Popular'" @input-changed="buildtypechange"></single-select-filter>
 
             {{ this.inputhero.name }} {{ "Talent Builds"}}
             <global-talent-builds-section v-if="talentbuilddata" :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter"></global-talent-builds-section>
@@ -70,6 +70,7 @@ export default {
     inputhero: Object,
     heroes: Array,
     gametypedefault: Array,
+    defaulttimeframetype: String,
     defaulttimeframe: Array,
     defaultbuildtype: String,
   },
@@ -92,7 +93,7 @@ export default {
           ],
 
       //Sending to filter
-      timeframetype: "minor",
+      timeframetype: null,
       timeframe: null,
       region: null,
       statfilter: null,
@@ -112,6 +113,7 @@ export default {
     this.timeframe = this.defaulttimeframe;
     this.gametype = this.gametypedefault;
     this.talentbuildtype = this.defaultbuildtype;
+    this.timeframetype = this.defaulttimeframetype;
 
     if(this.inputhero){
       this.selectedHero = this.inputhero;
@@ -196,9 +198,9 @@ export default {
       this.getTalentData();
       this.getTalentBuildData();
     },
-    handleInputChange(eventPayload){
-      console.log("eventPayload.field = " + eventPayload.field);
-      console.log("eventPayload.value = " + eventPayload.value);
+    buildtypechange(eventPayload){
+      this.talentbuildtype = eventPayload.value;
+      this.getTalentBuildData();
     },
   }
 }

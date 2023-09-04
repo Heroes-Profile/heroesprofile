@@ -21,6 +21,8 @@
 <nav class="bg-gray-100 p-4">
   <div class="flex items-center space-x-4">
 
+    <a class="text-blue-600 hover:text-blue-800" href="/">This is where the Heroes (logo) Profile would go</a>
+
     <div class="relative group inline-block">
       <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Global Hero Stats</a>
       <div class="absolute left-0 hidden mt-0 space-y-2 bg-white border border-gray-300 rounded-md group-hover:block">

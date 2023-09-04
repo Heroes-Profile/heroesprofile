@@ -37,6 +37,12 @@ class GlobalDataService
         return session('maxReplayID');
     }
 
+    public function getDefaultTimeframeType(){
+        if (Auth::check()) {
+            $user = Auth::user();
+        }
+        return "minor";
+    }
     public function getDefaultTimeframe(){
         if (!session()->has('defaulttimeframe')) {
             session(['defaulttimeframe' => SeasonGameVersion::select("game_version")->orderBy("game_version", "DESC")->first()->game_version]);

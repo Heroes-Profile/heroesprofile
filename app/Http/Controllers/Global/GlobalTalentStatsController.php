@@ -39,13 +39,13 @@ class GlobalTalentStatsController extends Controller
 
     public function show(Request $request){
         $userinput = $this->globalDataService->getHeroModel($request["hero"]);
-        $gametypedefault = $this->globalDataService->getGameTypeDefault();
 
         return view('Global.Talents.globalTalentStats')
             ->with([
                 'userinput' => $userinput,
                 'filters' => $this->globalDataService->getFilterData(),
-                'gametypedefault' => [$gametypedefault],
+                'gametypedefault' => [$this->globalDataService->getGameTypeDefault()],
+                'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
                 'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
             ]);
@@ -241,7 +241,12 @@ class GlobalTalentStatsController extends Controller
                 $topBuilds = $this->topBuildsOnPopularity($hero, $gameVersion, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region);
             }else if($talentbuildType == "HP Algorithm"){
                 $topBuilds = $this->topBuildsOnHPAlgorithm($hero, $gameVersion, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region);
+            } else if (strpos($talentbuildType, 'Unique') !== false) {
+                preg_match('/\d+/', $talentbuildType, $matches);
+                $uniqueLevel = $matches[0];
+                $topBuilds = $this->topBuildsOnUniqueLevel($hero, $gameVersion, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region, $uniqueLevel);
             }
+
             foreach ($topBuilds as $build) {
                 $build->buildData = $this->getTopBuildsData($build, 1, $hero, $gameVersion, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region, $statFilter);
             }
@@ -342,6 +347,45 @@ class GlobalTalentStatsController extends Controller
         $sortedAndLimitedRows = $uniqueRows->sortByDesc('games_played')->take($this->buildsToReturn);
         return $sortedAndLimitedRows;
     }
+
+    private function topBuildsOnUniqueLevel($hero, $gameVersion, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region, $uniqueLevel){
+        $levelMapping = [
+            1 => 'level_one',
+            4 => 'level_four',
+            7 => 'level_seven',
+            10 => 'level_ten',
+            13 => 'level_thirteen',
+            16 => 'level_sixteen',
+            20 => 'level_twenty',
+        ];
+
+        $columnName = $levelMapping[$uniqueLevel];
+
+        $data = GlobalHeroTalents::query()
+            ->join('talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
+            ->select('heroesprofile.global_hero_talents.hero', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
+            ->selectRaw('SUM(games_played) AS games_played')
+            ->filterByGameVersion($gameVersion)
+            ->filterByGameType($gameType)
+            ->filterByHero($hero)
+            ->filterByLeagueTier($leagueTier)
+            ->filterByHeroLeagueTier($heroLeagueTier)
+            ->filterByRoleLeagueTier($roleLeagueTier)
+            ->filterByGameMap($gameMap)
+            ->filterByHeroLevel($heroLevel)
+            ->filterByRegion($region)
+            ->whereNot("level_twenty", 0)
+            ->groupBy('heroesprofile.global_hero_talents.hero', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
+            ->orderBy('games_played', 'DESC')
+            ->limit(100)
+            //->toSql();
+            ->get();
+        $filteredData = $data->unique($columnName)
+                              ->sortByDesc('games_played')
+                              ->take($this->buildsToReturn);
+        return $filteredData;
+    }
+
     private function getTopBuildsData($build, $win_loss, $hero, $gameVersion, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region, $statFilter){
         $transformedData = [
             'wins' => 0,

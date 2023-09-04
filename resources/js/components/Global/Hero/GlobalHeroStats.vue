@@ -22,7 +22,7 @@ GlobalHeroStats<template>
       :includemirror="true"
       :includetalentbuildtype="true"
       >
-      </filters>
+    </filters>
 
     
     <button @click="toggleChartValue" class="mt-4 bg-blue-500 text-white p-2 rounded">Toggle Chart</button>
@@ -145,6 +145,8 @@ export default {
       required: true
     },
     gametypedefault: Array,
+    defaultbuildtype: String,
+    defaulttimeframetype: String,
   },
   data(){
     return {
@@ -159,9 +161,9 @@ export default {
       selectedbuildtype: "Popular",
 
 
-      
+
       //Sending to filter
-      timeframetype: "minor",
+      timeframetype: null,
       timeframe: null,
       region: null,
       statfilter: null,
@@ -175,13 +177,13 @@ export default {
       rolerank: null,
       mirrormatch: null,
       talentbuildtype: null,
-
-
     }
   },
   created(){
     this.gametype = this.gametypedefault;
     this.timeframe = this.defaultMinor;
+    this.talentbuildtype = this.defaultbuildtype;
+    this.timeframetype = this.defaulttimeframetype;
   	this.getData();
   },
   mounted() {
@@ -245,6 +247,18 @@ export default {
         console.log(hero);
         const response = await this.$axios.post("/api/v1/global/talents/build", {
           hero: hero,
+          timeframe_type: this.timeframetype,
+          timeframe: this.timeframe,
+          region: this.region,
+          statfilter: this.statfilter,
+          hero_level: this.herolevel,
+          game_type: this.gametype,
+          map: this.gamemap,
+          league_tier: this.playerrank,
+          hero_league_tier: this.herorank,
+          role_league_tier: this.rolerank,
+          mirrormatch: this.mirrormatch,
+          talentbuildtype: this.talentbuildtype
         });
 
         this.talentbuilddata = response.data;
