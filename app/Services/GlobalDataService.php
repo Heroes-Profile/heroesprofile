@@ -282,6 +282,21 @@ class GlobalDataService
             $filterData->minimum_games[] = ['code' => (string)$i, 'name' => (string)$i];
         }
 
+        $filterData->hero_party_size = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $filterData->hero_party_size[] = ['code' => (string)$i, 'name' => (string)$i];
+        }
+
+        $filterData->party_combinations = [
+            ['code' => '00005', 'name' => '5 Solos'],
+            ['code' => '00023', 'name' => '3 Solos and 1 Duo'],
+            ['code' => '00041', 'name' => '1 Solo and 2 Duo'],
+            ['code' => '00302', 'name' => '2 Solos and 1 Triple'],
+            ['code' => '00320', 'name' => '1 Duo and 1 Triple'],
+            ['code' => '04001', 'name' => '1 Solo and 1 Quad'],
+            ['code' => '50000', 'name' => '5 Stack'],
+        ];
+
 
         return $filterData;
     }

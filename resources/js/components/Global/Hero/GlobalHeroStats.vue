@@ -147,6 +147,7 @@ export default {
     gametypedefault: Array,
     defaultbuildtype: String,
     defaulttimeframetype: String,
+    defaulttimeframe: Array,
   },
   data(){
     return {
@@ -181,7 +182,7 @@ export default {
   },
   created(){
     this.gametype = this.gametypedefault;
-    this.timeframe = this.defaultMinor;
+    this.timeframe = this.defaulttimeframe;
     this.talentbuildtype = this.defaultbuildtype;
     this.timeframetype = this.defaulttimeframetype;
   	this.getData();
@@ -206,9 +207,6 @@ export default {
           return valA > valB ? -1 : 1;
         }
       });
-    },
-    defaultMinor() {
-      return [this.filters.timeframes[0]?.code || ''];
     },
   },
   watch: {

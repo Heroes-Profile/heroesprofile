@@ -12,6 +12,10 @@ use App\Http\Controllers\Global\GlobalHeroMatchupStatsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupsTalentsController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
+use App\Http\Controllers\Global\GlobalPartyStatsController;
+
+
+
 use App\Http\Controllers\ProfileController;
 
 /*
@@ -67,7 +71,8 @@ Route::prefix('v1')->group(function () {
     Route::get('global/draft', [GlobalDraftController::class, 'getDraftData']); //testing
     Route::post('global/draft', [GlobalDraftController::class, 'getDraftData']);
 
-
+    Route::get('global/party', [GlobalPartyStatsController::class, 'getPartyStats']); //testing
+    Route::post('global/party', [GlobalPartyStatsController::class, 'getPartyStats']);
 
 
     Route::get('profile', [ProfileController::class, 'getProfileData']); //testing

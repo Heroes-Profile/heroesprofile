@@ -35,8 +35,6 @@ class GlobalHeroStatsController extends Controller
     }
 
     public function show(Request $request){
-        
-
         return view('Global.Hero.globalHeroStats')
         ->with([
             'filters' => $this->globalDataService->getFilterData(),

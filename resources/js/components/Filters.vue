@@ -16,6 +16,10 @@
       <single-select-filter v-if="includemirror" :values="this.filters.mirror" :text="'Mirror Matches'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter v-if="includetalentbuildtype" :values="this.filters.talent_build_types" :text="'Talent Build Type'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter v-if="includeminimumgames" :values="this.filters.minimum_games" :text="'Minimum Games'" @input-changed="handleInputChange" :defaultValue="'100'"></single-select-filter>
+      <single-select-filter v-if="includeheropartysize" :values="this.filters.hero_party_size" :text="'Hero Party Size'" @input-changed="handleInputChange"></single-select-filter>
+      <single-select-filter v-if="teamoneparty" :values="this.filters.party_combinations" :text="'Team One Party'" @input-changed="handleInputChange"></single-select-filter>
+      <single-select-filter v-if="teamtwoparty" :values="this.filters.party_combinations" :text="'Team Two Party'" @input-changed="handleInputChange"></single-select-filter>
+
     </div>
 
 
@@ -48,6 +52,9 @@ export default {
     includemirror: Boolean,
     includetalentbuildtype: Boolean,
     includeminimumgames: Boolean,
+    includeheropartysize: Boolean,
+    teamoneparty: Boolean,
+    teamtwoparty: Boolean,
 
     filters: {
       type: Object,

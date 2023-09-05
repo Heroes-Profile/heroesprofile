@@ -16,6 +16,7 @@ use App\Http\Controllers\Global\GlobalHeroMatchupStatsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupsTalentsController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
+use App\Http\Controllers\Global\GlobalPartyStatsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,6 +74,11 @@ Route::get('/Global/Talents/{hero}', [GlobalTalentStatsController::class, 'show'
 Route::get('/Global/Leaderboard', [GlobalLeaderboardController::class, 'show']);
 
 Route::get('/Global/Compositions', [GlobalCompositionsController::class, 'show']);
+
+
+
+Route::get('/Global/Party', [GlobalPartyStatsController::class, 'show']);
+
 
 
 
