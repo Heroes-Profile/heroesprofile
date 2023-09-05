@@ -34,6 +34,7 @@ import GlobalMatchupsTalentsStats from './components/Global/Matchups/Talent/Glob
 import CompositionsStats from './components/Global/Compositions/CompositionsStats.vue';
 import GlobalTalentDetailsSection from './components/Global/Talents/GlobalTalentDetailsSection.vue';
 import GlobalTalentBuildsSection from './components/Global/Talents/GlobalTalentBuildsSection.vue';
+import GlolbalDraftStats from './components/Global/Draft/GlobalDraftStats.vue';
 
 
 //Authentication

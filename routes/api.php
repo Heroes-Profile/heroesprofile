@@ -11,6 +11,7 @@ use App\Http\Controllers\Global\GlobalHeroMapStatsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupStatsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupsTalentsController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
+use App\Http\Controllers\Global\GlobalDraftController;
 use App\Http\Controllers\ProfileController;
 
 /*
@@ -61,6 +62,11 @@ Route::prefix('v1')->group(function () {
 
     Route::get('global/compositions/heroes', [GlobalCompositionsController::class, 'getTopHeroData']); //testing
     Route::post('global/compositions/heroes', [GlobalCompositionsController::class, 'getTopHeroData']);
+
+
+    Route::get('global/draft', [GlobalDraftController::class, 'getDraftData']); //testing
+    Route::post('global/draft', [GlobalDraftController::class, 'getDraftData']);
+
 
 
 

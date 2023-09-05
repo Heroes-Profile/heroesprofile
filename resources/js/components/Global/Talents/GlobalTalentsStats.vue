@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- Ive been adding rxtra divs/classes to make it easier to interface with, feel free to take some out-->
+    <!-- Ive been adding extra divs/classes to make it easier to interface with, feel free to take some out-->
 
     <div class="grid gap-5 grid-cols-1">
       <div>

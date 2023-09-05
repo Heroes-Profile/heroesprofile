@@ -85,7 +85,7 @@ class GlobalDataService
 
     public function calculateCacheTimeInMinutes($timeframe){
         //Cache time is set to 0.  Need to setup how cache time is done
-        return 900;
+        return 0;
     }
 
     public function getHeroes(){
