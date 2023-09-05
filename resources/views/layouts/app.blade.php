@@ -25,7 +25,7 @@
 
     <div class="relative group inline-block">
       <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Global Hero Stats</a>
-      <div class="absolute left-0 hidden mt-0 space-y-2 bg-white border border-gray-300 rounded-md group-hover:block">
+      <div class="absolute left-0 hidden mt-0 space-y-2 bg-white border border-gray-300 rounded-md group-hover:block z-51">
         <a href="/Global/Hero" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Hero Stats</a>
         <a href="/Global/Talents" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Talent Stats</a>
         <a href="/Global/Hero/Maps" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Map Stats</a>
@@ -39,7 +39,7 @@
 
     <div class="relative group inline-block">
       <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Zemill</a>
-      <div class="absolute left-0 hidden mt-0 space-y-2 bg-white border border-gray-300 rounded-md group-hover:block">
+      <div class="absolute left-0 hidden mt-0 space-y-2 bg-white border border-gray-300 rounded-md group-hover:block z-51">
         <a href="/Profile/Zemill/67280/1" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Profile</a>
         <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Friends And Foes</a>
         <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Heroes</a>
@@ -55,7 +55,7 @@
 
     <div class="relative group inline-block">
       <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Tools</a>
-      <div class="absolute left-0 hidden mt-0 space-y-2 bg-white border border-gray-300 rounded-md group-hover:block">
+      <div class="absolute left-0 hidden mt-0 space-y-2 bg-white border border-gray-300 rounded-md group-hover:block z-51">
         <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Talent Builder</a>
         <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Compare</a>
         <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Drafter</a>

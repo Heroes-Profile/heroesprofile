@@ -85,7 +85,7 @@ class GlobalDataService
 
     public function calculateCacheTimeInMinutes($timeframe){
         //Cache time is set to 0.  Need to setup how cache time is done
-        return 0;
+        return 900;
     }
 
     public function getHeroes(){
@@ -276,6 +276,13 @@ class GlobalDataService
             ['code' => 'Unique Lvl 16', 'name' => 'Unique Lvl 16'],
             ['code' => 'Unique Lvl 20', 'name' => 'Unique Lvl 20']
         ];
+
+        $filterData->minimum_games = [];
+        for ($i = 25; $i <= 5000; $i += 25) {
+            $filterData->minimum_games[] = ['code' => (string)$i, 'name' => (string)$i];
+        }
+
+
         return $filterData;
     }
 }

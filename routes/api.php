@@ -59,6 +59,10 @@ Route::prefix('v1')->group(function () {
     Route::get('global/compositions', [GlobalCompositionsController::class, 'getCompositionsData']); //testing
     Route::post('global/compositions', [GlobalCompositionsController::class, 'getCompositionsData']);
 
+    Route::get('global/compositions/heroes', [GlobalCompositionsController::class, 'getTopHeroData']); //testing
+    Route::post('global/compositions/heroes', [GlobalCompositionsController::class, 'getTopHeroData']);
+
+
 
     Route::get('profile', [ProfileController::class, 'getProfileData']); //testing
     Route::post('profile', [ProfileController::class, 'getProfileData']);

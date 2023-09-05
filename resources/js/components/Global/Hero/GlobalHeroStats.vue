@@ -261,9 +261,9 @@ export default {
           talentbuildtype: this.talentbuildtype
         });
 
-        this.talentbuilddata = response.data;
+        //this.talentbuilddata = response.data;
 
-        this.sortedData[index].talentbuilddata = this.talentbuilddata;
+        this.sortedData[index].talentbuilddata = response.data;
 
       }catch(error){
         console.log(error);

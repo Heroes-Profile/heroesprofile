@@ -5,7 +5,8 @@
         <span>{{ this.text }}</span>
         <span v-if="selectedOptions.length > 0">: {{ selectedOptionsName.join(', ') }}</span>
       </div>
-      <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg expandable-dropdown">
+      <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->
+      <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg expandable-dropdown z-50">
         <div class="space-y-2 p-2">
           <div>
             <input 

@@ -20,6 +20,7 @@ import BubbleChart from './components/BubbleChart.vue';
 import HeroBoxSmall from './components/HeroBoxSmall.vue';
 import HeroGroupBox from './components/HeroGroupBox.vue';
 import HeroBoxLarge from './components/HeroBoxLarge.vue';
+import RoleBox from './components/RoleBox.vue';
 
 
 

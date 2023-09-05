@@ -15,6 +15,7 @@
       <multi-select-filter v-if="includerolerank" :values="this.filters.rank_tiers" :text="'Role Rank'" @input-changed="handleInputChange"></multi-select-filter>
       <single-select-filter v-if="includemirror" :values="this.filters.mirror" :text="'Mirror Matches'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter v-if="includetalentbuildtype" :values="this.filters.talent_build_types" :text="'Talent Build Type'" @input-changed="handleInputChange"></single-select-filter>
+      <single-select-filter v-if="includeminimumgames" :values="this.filters.minimum_games" :text="'Minimum Games'" @input-changed="handleInputChange" :defaultValue="'100'"></single-select-filter>
     </div>
 
 
@@ -46,6 +47,7 @@ export default {
     includerolerank: Boolean,
     includemirror: Boolean,
     includetalentbuildtype: Boolean,
+    includeminimumgames: Boolean,
 
     filters: {
       type: Object,

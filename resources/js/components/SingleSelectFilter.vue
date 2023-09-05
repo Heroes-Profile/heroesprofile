@@ -5,7 +5,8 @@
         <span>{{ this.text }}</span>
         <span v-if="selectedOptionsName !== ''">: {{ selectedOptionsName }}</span>      
       </div>
-      <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg expandable-dropdown">
+      <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->
+      <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg expandable-dropdown z-50">
         <div>
           <!-- Search Input -->
           <input v-model="searchQuery" type="text" placeholder="Search" class="w-full p-2"/>
@@ -85,7 +86,7 @@ export default {
     },
     toggleSelectedOptions(value) {
       //Change this to be dynamic later
-      if (this.text !== "Timeframe Type" && this.text !== "Build Filter" && this.text !== "Stat Filter") {                                          
+      if (this.text !== "Timeframe Type" && this.text !== "Build Filter" && this.text !== "Stat Filter" && this.text !== "Minimum Games") {                                          
         this.selectedOptions = this.selectedOptions === value ? '' : value;
       } else {
         this.selectedOptions = value;
