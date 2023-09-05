@@ -1,14 +1,15 @@
 <template>
   <div>
     <div class="flex flex-wrap gap-4">
+      <single-select-filter v-if="includecharttype" :values="this.filters.chart_type" :text="'Chart Type'" @input-changed="handleInputChange" :defaultValue="'Account Level'"></single-select-filter>
       <single-select-filter v-if="includetimeframetype" :values="this.filters.timeframe_type" :text="'Timeframe Type'" :defaultValue="this.defaultTimeframeType" @input-changed="handleInputChange"></single-select-filter>
       <multi-select-filter v-if="includetimeframe" :values="this.timeframes" :text="'Timeframes'" :defaultValue="this.defaultMinor" @input-changed="handleInputChange"></multi-select-filter>
       <multi-select-filter v-if="includeregion" :values="this.filters.regions" :text="'Regions'" @input-changed="handleInputChange"></multi-select-filter>
       <single-select-filter v-if="includestatfilter" :values="this.filters.stat_filter" :text="'Stat Filter'" :defaultValue="this.defaultStatType" @input-changed="handleInputChange"></single-select-filter>
       <multi-select-filter v-if="includeherolevel" :values="this.filters.hero_level" :text="'Hero Level'" @input-changed="handleInputChange"></multi-select-filter>
       <single-select-filter v-if="includerole" :values="this.filters.role" :text="'Role'" @input-changed="handleInputChange"></single-select-filter>
-      <single-select-filter v-if="includehero" :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange"></single-select-filter>
-      <multi-select-filter v-if="includegametype" :values="this.filters.game_types" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="this.defaultGameType"></multi-select-filter>
+      <single-select-filter v-if="modifiedincludeheroes" :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange"></single-select-filter>
+      <multi-select-filter v-if="modifiedincludegametype" :values="this.filters.game_types" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="this.defaultGameType"></multi-select-filter>
       <multi-select-filter v-if="includegamemap" :values="this.filters.game_maps" :text="'Map'" @input-changed="handleInputChange"></multi-select-filter>
       <multi-select-filter v-if="includeplayerrank" :values="this.filters.rank_tiers" :text="'Player Rank'" @input-changed="handleInputChange"></multi-select-filter>
       <multi-select-filter v-if="includeherorank" :values="this.filters.rank_tiers" :text="'Hero Rank'" @input-changed="handleInputChange"></multi-select-filter>
@@ -17,9 +18,10 @@
       <single-select-filter v-if="includetalentbuildtype" :values="this.filters.talent_build_types" :text="'Talent Build Type'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter v-if="includeminimumgames" :values="this.filters.minimum_games" :text="'Minimum Games'" @input-changed="handleInputChange" :defaultValue="'100'"></single-select-filter>
       <single-select-filter v-if="includeheropartysize" :values="this.filters.hero_party_size" :text="'Hero Party Size'" @input-changed="handleInputChange"></single-select-filter>
-      <single-select-filter v-if="teamoneparty" :values="this.filters.party_combinations" :text="'Team One Party'" @input-changed="handleInputChange"></single-select-filter>
-      <single-select-filter v-if="teamtwoparty" :values="this.filters.party_combinations" :text="'Team Two Party'" @input-changed="handleInputChange"></single-select-filter>
-
+      <single-select-filter v-if="includeteamoneparty" :values="this.filters.party_combinations" :text="'Team One Party'" @input-changed="handleInputChange"></single-select-filter>
+      <single-select-filter v-if="includeteamtwoparty" :values="this.filters.party_combinations" :text="'Team Two Party'" @input-changed="handleInputChange"></single-select-filter>
+      <single-select-filter v-if="modifiedincludeminimumaccountlevel" :values="this.filters.minimum_account_level" :text="'Min. Account Level'" @input-changed="handleInputChange" :defaultValue="'100'"></single-select-filter>
+      <single-select-filter v-if="modifiedincludexaxisincrements" :values="this.filters.x_axis_increments" :text="'X Axis Increments'" @input-changed="handleInputChange" :defaultValue="'25'"></single-select-filter>
     </div>
 
 
@@ -37,6 +39,7 @@ export default {
   components: {
   },
   props: {
+    includecharttype: Boolean,
     includetimeframetype: Boolean,
     includetimeframe: Boolean,
     includeregion: Boolean,
@@ -53,8 +56,10 @@ export default {
     includetalentbuildtype: Boolean,
     includeminimumgames: Boolean,
     includeheropartysize: Boolean,
-    teamoneparty: Boolean,
-    teamtwoparty: Boolean,
+    includeteamoneparty: Boolean,
+    includeteamtwoparty: Boolean,
+    includeminimumaccountlevel: Boolean,
+    includexaxisincrements: Boolean,
 
     filters: {
       type: Object,
@@ -72,6 +77,11 @@ export default {
       selectedMultiFilters: {},
       defaultTimeframeType: this.filters.timeframe_type[1].code,
       defaultGameType: [],
+
+      modifiedincluderegion: null,
+      modifiedincludeminimumaccountlevel: null,
+      modifiedincludexaxisincrements: null,
+      modifiedincludegametype: null,
     }
   },
   created(){    
@@ -87,6 +97,11 @@ export default {
       'Timeframes': this.defaultMinor,
       // Add other multi-select defaults here
     };
+
+    this.modifiedincludeminimumaccountlevel = this.includeminimumaccountlevel;
+    this.modifiedincludexaxisincrements = this.includexaxisincrements;
+    this.modifiedincludegametype = this.includegametype;
+    this.modifiedincludeheroes = this.hero;
   },
   mounted() {
   },
@@ -132,6 +147,20 @@ export default {
 
       } else if(eventPayload.type === 'multi') {
         this.selectedMultiFilters[eventPayload.field] = eventPayload.value;
+      }
+
+
+      if(eventPayload.field == "Chart Type" && eventPayload.value == "Hero Level"){
+        this.modifiedincludeminimumaccountlevel = false;
+        this.modifiedincludexaxisincrements = false;
+        this.modifiedincludegametype = true;
+        this.modifiedincludeheroes = true;
+
+      }else if(eventPayload.field == "Chart Type" && eventPayload.value == "Account Level"){
+        this.modifiedincludeminimumaccountlevel = true;
+        this.modifiedincludexaxisincrements = true;
+        this.modifiedincludegametype = false;
+        this.modifiedincludeheroes = false;
       }
     },
     getDefaultMinorBasedOnTimeframeType() {

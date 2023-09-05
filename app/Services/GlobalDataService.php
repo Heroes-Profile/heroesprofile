@@ -297,6 +297,30 @@ class GlobalDataService
             ['code' => '50000', 'name' => '5 Stack'],
         ];
 
+        $filterData->chart_type = [
+            ['code' => 'Account Level', 'name' => 'Account Level'],
+            ['code' => 'Hero Level', 'name' => 'Hero Level']
+        ];
+
+        $filterData->minimum_account_level = [
+            ['code' => '0', 'name' => '0'],
+            ['code' => '25', 'name' => '25'],
+            ['code' => '50', 'name' => '50'],
+            ['code' => '100', 'name' => '100'],
+            ['code' => '250', 'name' => '250'],
+            ['code' => '500', 'name' => '500'],
+            ['code' => '1000', 'name' => '1000'],
+            ['code' => '2000', 'name' => '2000'],
+            ['code' => '4000', 'name' => '4000'],
+        ];
+
+        $filterData->x_axis_increments = [
+            ['code' => '1', 'name' => '1'],
+            ['code' => '25', 'name' => '25'],
+            ['code' => '50', 'name' => '50'],
+            ['code' => '100', 'name' => '100'],
+            ['code' => '250', 'name' => '250'],
+        ];
 
         return $filterData;
     }

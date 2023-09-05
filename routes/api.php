@@ -13,6 +13,7 @@ use App\Http\Controllers\Global\GlobalHeroMatchupsTalentsController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
 use App\Http\Controllers\Global\GlobalPartyStatsController;
+use App\Http\Controllers\Global\GlobalExtraStats;
 
 
 
@@ -73,6 +74,13 @@ Route::prefix('v1')->group(function () {
 
     Route::get('global/party', [GlobalPartyStatsController::class, 'getPartyStats']); //testing
     Route::post('global/party', [GlobalPartyStatsController::class, 'getPartyStats']);
+
+    Route::get('global/extra/account/level', [GlobalExtraStats::class, 'getAccountLevelStats']); //testing
+    Route::post('global/extra/account/level', [GlobalExtraStats::class, 'getAccountLevelStats']);
+
+    Route::get('global/extra/hero/level', [GlobalExtraStats::class, 'getHeroLevelStats']); //testing
+    Route::post('global/extra/hero/level', [GlobalExtraStats::class, 'getHeroLevelStats']);
+
 
 
     Route::get('profile', [ProfileController::class, 'getProfileData']); //testing

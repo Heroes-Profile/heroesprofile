@@ -20,8 +20,8 @@
       :includerolerank="true"
       :includemirror="true"
       :includeheropartysize="true"
-      :teamoneparty="true"
-      :teamtwoparty="true"
+      :includeteamoneparty="true"
+      :includeteamtwoparty="true"
       >
     </filters>
     

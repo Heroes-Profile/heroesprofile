@@ -17,6 +17,7 @@ import Filters from './components/Filters.vue';
 import SingleSelectFilter from './components/SingleSelectFilter.vue';
 import MultiSelectFilter from './components/MultiSelectFilter.vue';
 import BubbleChart from './components/BubbleChart.vue';
+import BarChart from './components/BarChart.vue';
 import HeroBoxSmall from './components/HeroBoxSmall.vue';
 import HeroGroupBox from './components/HeroGroupBox.vue';
 import HeroBoxLarge from './components/HeroBoxLarge.vue';
@@ -36,6 +37,7 @@ import GlobalTalentDetailsSection from './components/Global/Talents/GlobalTalent
 import GlobalTalentBuildsSection from './components/Global/Talents/GlobalTalentBuildsSection.vue';
 import GlolbalDraftStats from './components/Global/Draft/GlobalDraftStats.vue';
 import GlobalPartyStats from './components/Global/Party/GlobalPartyStats.vue';
+import GlobalExtraStats from './components/Global/Extra/GlobalExtraStats.vue';
 
 
 //Authentication
