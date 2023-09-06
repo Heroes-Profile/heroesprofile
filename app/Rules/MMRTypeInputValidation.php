@@ -14,7 +14,7 @@ class MMRTypeInputValidation implements Rule
         
         if(in_array($value, $validTypes)){
             return $typeId = MMRTypeID::where('name', $value)
-                ->pluck('mmr_type_id');
+                ->pluck('mmr_type_id')->first();
         }
 
         return false;

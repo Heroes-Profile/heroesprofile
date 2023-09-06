@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\PatreonController;
 use App\Http\Controllers\ProfileController;
 
 use App\Http\Controllers\MainPageController;
+use App\Http\Controllers\GamedataController;
 
 use App\Http\Controllers\Global\GlobalHeroStatsController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
@@ -18,7 +19,7 @@ use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
 use App\Http\Controllers\Global\GlobalPartyStatsController;
 use App\Http\Controllers\Global\GlobalExtraStats;
-
+ 
 
 /*
 |--------------------------------------------------------------------------
@@ -89,3 +90,12 @@ Route::get('/Global/Extra', [GlobalExtraStats::class, 'show']);
 
 Route::get('Profile/Settings', [ProfileController::class, 'showSettings'])->middleware('ensureBattlenetAuth');
 Route::get('Profile/{battletag}/{blizz_id}/{region}', [ProfileController::class, 'showProfile']);
+
+
+
+
+
+//Rewrite game data later
+Route::get('/Gamedata', [GamedataController::class, 'heroes']);
+Route::get('/Gamedata/Heroes', [GamedataController::class, 'heroes']);
+Route::get('/Gamedata/Heroes/{id}', [GamedataController::class, 'hero']);

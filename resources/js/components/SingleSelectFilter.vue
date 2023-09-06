@@ -17,7 +17,7 @@
               type="radio" 
               :id="value.code" 
               :value="value.code" 
-              :checked="value.code === selectedOptions"
+              :checked="isChecked(value.code)"
               @click="toggleSelectedOptions(value.code)"
               class="form-checkbox h-5 w-5 text-indigo-600"
             >
@@ -44,7 +44,7 @@ export default {
     return {
       showOptions: false,
       selectedOptions: this.defaultValue || '',
-      searchQuery: ''  // Added this for search
+      searchQuery: ''
     }
   },
   created(){
@@ -78,6 +78,12 @@ export default {
     }
   },
   methods: {
+    isChecked(value){
+      if(value == this.selectedOptions){
+        return true;
+      }
+      return false
+    },
     handleClickOutside(event) {
       const dropdown = this.$el;
       if (dropdown && !dropdown.contains(event.target)) {

@@ -1,6 +1,8 @@
 <template>
   <div>
     <div class="flex flex-wrap gap-4">
+      <single-select-filter v-if="includeleaderboardtype" :values="this.filters.leaderboard_type" :text="'Leaderboard Type'" @input-changed="handleInputChange" :defaultValue="'Player'"></single-select-filter>
+      <single-select-filter v-if="includegroupsize" :values="this.filters.group_size" :text="'Group Size'" @input-changed="handleInputChange" :defaultValue="'Solo'"></single-select-filter>
       <single-select-filter v-if="includecharttype" :values="this.filters.chart_type" :text="'Chart Type'" @input-changed="handleInputChange" :defaultValue="'Account Level'"></single-select-filter>
       <single-select-filter v-if="includetimeframetype" :values="this.filters.timeframe_type" :text="'Timeframe Type'" :defaultValue="this.defaultTimeframeType" @input-changed="handleInputChange"></single-select-filter>
       <multi-select-filter v-if="includetimeframe" :values="this.timeframes" :text="'Timeframes'" :defaultValue="this.defaultMinor" @input-changed="handleInputChange"></multi-select-filter>
@@ -10,6 +12,8 @@
       <single-select-filter v-if="includerole" :values="this.filters.role" :text="'Role'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter v-if="modifiedincludeheroes" :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange"></single-select-filter>
       <multi-select-filter v-if="modifiedincludegametype" :values="this.filters.game_types" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="this.defaultGameType"></multi-select-filter>
+      <single-select-filter v-if="includesinglegametype" :values="this.filters.game_types" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="this.defaultGameType[0]"></single-select-filter>
+      <single-select-filter v-if="includeseason" :values="this.filters.seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="this.defaultSeason"></single-select-filter>
       <multi-select-filter v-if="includegamemap" :values="this.filters.game_maps" :text="'Map'" @input-changed="handleInputChange"></multi-select-filter>
       <multi-select-filter v-if="includeplayerrank" :values="this.filters.rank_tiers" :text="'Player Rank'" @input-changed="handleInputChange"></multi-select-filter>
       <multi-select-filter v-if="includeherorank" :values="this.filters.rank_tiers" :text="'Hero Rank'" @input-changed="handleInputChange"></multi-select-filter>
@@ -39,15 +43,19 @@ export default {
   components: {
   },
   props: {
+    includeleaderboardtype:Boolean,
+    includegroupsize: Boolean,
     includecharttype: Boolean,
     includetimeframetype: Boolean,
     includetimeframe: Boolean,
+    includeseason: Boolean,
     includeregion: Boolean,
     includestatfilter: Boolean,
     includeherolevel: Boolean,
     includerole: Boolean,
     includehero: Boolean,
     includegametype: Boolean,
+    includesinglegametype: Boolean,
     includegamemap: Boolean,
     includeplayerrank: Boolean,
     includeherorank: Boolean,
@@ -70,6 +78,7 @@ export default {
       required: true,
     },
     gametypedefault: Array,
+    defaultSeason: String,
   },
   data(){
     return {

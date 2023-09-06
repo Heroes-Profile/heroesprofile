@@ -2,6 +2,7 @@
 
 namespace App\Services;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\Replay;
 use App\Models\Hero;
@@ -9,6 +10,7 @@ use App\Models\SeasonGameVersion;
 use App\Models\GameType;
 use App\Models\Map;
 use App\Models\LeagueTier;
+use App\Models\SeasonDate;
 
 use App\Models\MasterMMRDataQM;
 use App\Models\MasterMMRDataUD;
@@ -43,6 +45,7 @@ class GlobalDataService
         }
         return "minor";
     }
+
     public function getDefaultTimeframe(){
         if (!session()->has('defaulttimeframe')) {
             session(['defaulttimeframe' => SeasonGameVersion::select("game_version")->orderBy("game_version", "DESC")->first()->game_version]);
@@ -50,7 +53,6 @@ class GlobalDataService
 
         return session('defaulttimeframe');
     }
-
 
     public function getDefaultBuildType(){
         if (Auth::check()) {
@@ -62,7 +64,6 @@ class GlobalDataService
 
         return session('defaultbuildtype');
     }
-
 
     public function getLatestPatch(){
         if (!session()->has('latestPatch')) {
@@ -135,6 +136,10 @@ class GlobalDataService
 
 
         return "sl";
+    }
+
+    public function getDefaultSeason(){
+        return SeasonDate::select("id")->orderBy("id", "DESC")->first()->id;
     }
 
     public function getFilterData(){
@@ -322,6 +327,105 @@ class GlobalDataService
             ['code' => '250', 'name' => '250'],
         ];
 
+        $filterData->leaderboard_type = [
+            ['code' => 'Player', 'name' => 'Player'],
+            ['code' => 'Hero', 'name' => 'Hero'],
+            ['code' => 'Role', 'name' => 'Role'],
+        ];
+
+        $filterData->group_size = [
+            ['code' => 'All', 'name' => 'All'],
+            ['code' => 'Solo', 'name' => 'Solo'],
+            ['code' => 'Duo', 'name' => 'Duo'],
+            ['code' => '3 Players', 'name' => '3 Players'],
+            ['code' => '4 Players', 'name' => '4 Players'],
+            ['code' => '5 Players', 'name' => '5 Players'],
+        ];
+
+
+        $filterData->seasons = SeasonDate::select('id', 'year', 'season')->where('id', '>=', 13)->orderBy("id", "DESC")->get()->map(function ($data) {
+                return ['code' => $data->id, 'name' => $data->year .  ' Season ' .   $data->season];
+            });
+
         return $filterData;
+    }
+
+    public function getRankTiers($game_type, $type)
+    {
+        $result = DB::table('league_breakdowns')
+                    ->select('game_type', 'league_tier', 'min_mmr')
+                    ->where('type_role_hero', $type)
+                    ->where('game_type', $game_type)
+                    ->get();
+
+        $returnData = [];
+        $prevMin = 0;
+
+        foreach ($result as $row) {
+            $data = [];
+            $data['min_mmr'] = $prevMin;
+            $data['max_mmr'] = round($row->min_mmr);
+            $prevMin = round($row->min_mmr);
+
+            if ($data['min_mmr'] == 0) {
+                $data['split'] = ($data['max_mmr'] - 1800) / 5;
+            } else {
+                $data['split'] = ($data['max_mmr'] - $data['min_mmr']) / 5;
+            }
+
+            switch ($row->league_tier) {
+                case '2':
+                    $returnData['bronze'] = $data;
+                    break;
+                case '3':
+                    $returnData['silver'] = $data;
+                    break;
+                case '4':
+                    $returnData['gold'] = $data;
+                    break;
+                case '5':
+                    $returnData['platinum'] = $data;
+                    break;
+                case '6':
+                    $returnData['diamond'] = $data;
+                    break;
+            }
+        }
+
+        $data['min_mmr'] = $prevMin;
+        $data['max_mmr'] = '';
+        $returnData['master'] = $data;
+
+        return $returnData;
+    }
+    function calculateSubTier($rankTiers, $mmr) {
+        $tierNames = [
+            'bronze' => 'Bronze',
+            'silver' => 'Silver',
+            'gold' => 'Gold',
+            'platinum' => 'Platinum',
+            'diamond' => 'Diamond',
+            'master' => 'Master'
+        ];
+
+        $result = '';
+
+        foreach ($rankTiers as $key => $tierInfo) {
+            $minMmr = $tierInfo['min_mmr'];
+            $maxMmr = $tierInfo['max_mmr'];
+            $split = $tierInfo['split'];
+
+            if (($mmr >= $minMmr) && ($maxMmr == "" || $mmr < $maxMmr)) {
+                $subTier = floor(($mmr - $minMmr) / $split) + 1;
+
+                if ($subTier > 5) {
+                    $subTier = 5;
+                }
+
+                $result = $tierNames[$key] . ($key === 'master' ? '' : ' ' . $subTier);
+                break;
+            }
+        }
+        return $result;
     }
 }

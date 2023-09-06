@@ -4,5 +4,5 @@
 @section('meta_description', '')
 
 @section('content')
-  <global-leaderboard></global-leaderboard>
+  <global-leaderboard :filters="{{ json_encode($filters) }}" :gametypedefault="{{ json_encode($gametypedefault) }}" :defaultseason="{{ json_encode($defaultseason) }}"></global-leaderboard>
 @endsection
