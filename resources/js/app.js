@@ -9,6 +9,11 @@ const app = createApp({});
 import ExampleComponent from './components/ExampleComponent.vue';
 import MainPage from './components/MainPage.vue';
 
+//Compare Page
+import Compare from './components/Compare/Compare.vue';
+import HeroOrLeagueChoiceBox from './components/Compare/HeroOrLeagueChoiceBox.vue';
+import SearchPlayer from './components/Compare/SearchPlayer.vue';
+
 
 //Random Pieces - rename later to what you want and place in folder
 import Infobox from './components/Infobox.vue';

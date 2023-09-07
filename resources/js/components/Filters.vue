@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="flex flex-wrap gap-4">
+      <single-select-filter v-if="includeherorole" :values="this.filters.hero_role" :text="'Hero or Role'" @input-changed="handleInputChange" :defaultValue="'Hero'"></single-select-filter>
       <single-select-filter v-if="includeleaderboardtype" :values="this.filters.leaderboard_type" :text="'Leaderboard Type'" @input-changed="handleInputChange" :defaultValue="'Player'"></single-select-filter>
       <single-select-filter v-if="includegroupsize" :values="this.filters.group_size" :text="'Group Size'" @input-changed="handleInputChange" :defaultValue="'Solo'"></single-select-filter>
       <single-select-filter v-if="includecharttype" :values="this.filters.chart_type" :text="'Chart Type'" @input-changed="handleInputChange" :defaultValue="'Account Level'"></single-select-filter>
@@ -13,8 +14,9 @@
       <single-select-filter v-if="modifiedincludeheroes" :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange"></single-select-filter>
       <multi-select-filter v-if="modifiedincludegametype" :values="this.filters.game_types" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="this.defaultGameType"></multi-select-filter>
       <single-select-filter v-if="includesinglegametype" :values="this.filters.game_types" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="this.defaultGameType[0]"></single-select-filter>
-      <single-select-filter v-if="includeseason" :values="this.filters.seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="this.defaultSeason"></single-select-filter>
+      <single-select-filter v-if="includeseason" :values="seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="this.defaultSeason"></single-select-filter>
       <multi-select-filter v-if="includegamemap" :values="this.filters.game_maps" :text="'Map'" @input-changed="handleInputChange"></multi-select-filter>
+      <single-select-filter v-if="includesinglegamemap" :values="this.filters.game_maps" :text="'Map'" @input-changed="handleInputChange"></single-select-filter>
       <multi-select-filter v-if="includeplayerrank" :values="this.filters.rank_tiers" :text="'Player Rank'" @input-changed="handleInputChange"></multi-select-filter>
       <multi-select-filter v-if="includeherorank" :values="this.filters.rank_tiers" :text="'Hero Rank'" @input-changed="handleInputChange"></multi-select-filter>
       <multi-select-filter v-if="includerolerank" :values="this.filters.rank_tiers" :text="'Role Rank'" @input-changed="handleInputChange"></multi-select-filter>
@@ -43,6 +45,7 @@ export default {
   components: {
   },
   props: {
+    includeherorole: Boolean,
     includeleaderboardtype:Boolean,
     includegroupsize: Boolean,
     includecharttype: Boolean,
@@ -57,6 +60,7 @@ export default {
     includegametype: Boolean,
     includesinglegametype: Boolean,
     includegamemap: Boolean,
+    includesinglegamemap: Boolean,
     includeplayerrank: Boolean,
     includeherorank: Boolean,
     includerolerank: Boolean,
@@ -68,6 +72,7 @@ export default {
     includeteamtwoparty: Boolean,
     includeminimumaccountlevel: Boolean,
     includexaxisincrements: Boolean,
+    minimumseason: Number,
 
     filters: {
       type: Object,
@@ -110,7 +115,7 @@ export default {
     this.modifiedincludeminimumaccountlevel = this.includeminimumaccountlevel;
     this.modifiedincludexaxisincrements = this.includexaxisincrements;
     this.modifiedincludegametype = this.includegametype;
-    this.modifiedincludeheroes = this.hero;
+    this.modifiedincludeheroes = this.includehero;
   },
   mounted() {
   },
@@ -128,6 +133,12 @@ export default {
         return this.filters.timeframes_grouped;
       }
     },
+    seasons(){
+      if(this.minimumseason){
+        return this.filters.seasons.filter(season => season.code >= this.minimumseason);
+      }
+      return this.filters.seasons;
+    }
   },
   watch: {
     defaultMinor(newVal) {

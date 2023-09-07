@@ -16,6 +16,7 @@
       :includeseason="true"
       :includesingleleaguetier="true"
       :includesingleregion="true"
+      :minimumseason="13"
       >
     </filters>
 

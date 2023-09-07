@@ -343,15 +343,20 @@ class GlobalDataService
         ];
 
 
-        $filterData->seasons = SeasonDate::select('id', 'year', 'season')->where('id', '>=', 13)->orderBy("id", "DESC")->get()->map(function ($data) {
+        $filterData->seasons = SeasonDate::select('id', 'year', 'season')->orderBy("id", "DESC")->get()->map(function ($data) {
                 return ['code' => $data->id, 'name' => $data->year .  ' Season ' .   $data->season];
             });
+
+        $filterData->hero_role = [
+            ['code' => 'Hero', 'name' => 'Hero'],
+            ['code' => 'Role', 'name' => 'Role'],
+        ];
+
 
         return $filterData;
     }
 
-    public function getRankTiers($game_type, $type)
-    {
+    public function getRankTiers($game_type, $type){
         $result = DB::table('league_breakdowns')
                     ->select('game_type', 'league_tier', 'min_mmr')
                     ->where('type_role_hero', $type)
@@ -398,6 +403,7 @@ class GlobalDataService
 
         return $returnData;
     }
+
     function calculateSubTier($rankTiers, $mmr) {
         $tierNames = [
             'bronze' => 'Bronze',

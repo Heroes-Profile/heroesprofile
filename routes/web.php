@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\GamedataController;
+use App\Http\Controllers\CompareController;
 
 use App\Http\Controllers\Global\GlobalHeroStatsController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
@@ -35,6 +36,8 @@ use App\Http\Controllers\Global\GlobalExtraStats;
 ///The way we are defining url paths to be consistent with the current site, the order of these routes cannot change.
 
 Route::get('/', [MainPageController::class, 'show']);
+Route::get('/Compare', [CompareController::class, 'show']);
+
 
 //Login
 Route::get('/Authenticate/Battlenet', [BattleNetController::class, 'show']);
@@ -95,7 +98,11 @@ Route::get('Profile/{battletag}/{blizz_id}/{region}', [ProfileController::class,
 
 
 
+
+
+
 //Rewrite game data later
 Route::get('/Gamedata', [GamedataController::class, 'heroes']);
 Route::get('/Gamedata/Heroes', [GamedataController::class, 'heroes']);
 Route::get('/Gamedata/Heroes/{id}', [GamedataController::class, 'hero']);
+

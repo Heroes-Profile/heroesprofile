@@ -60,12 +60,10 @@
       <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Tools</a>
       <div class="absolute left-0 hidden mt-0 space-y-2 bg-white border border-gray-300 rounded-md group-hover:block z-51">
         <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Talent Builder</a>
-        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Compare</a>
+        <a href="/Compare" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Compare</a>
         <a href="https://drafter.heroesprofile.com/Drafter" target="_blank" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Drafter</a>
-        <a href="/Gamedata" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Game Data</a>
-
-        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Game Data</a>
-        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Replay Uploader</a>
+        <a href="https://dev.heroesprofile.com/" target="_blank" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Game Data</a>
+        <a href="https://api.heroesprofile.com/upload" target="_blank" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Replay Uploader</a>
         <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Activity Graphs</a>
         <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Auto Battler</a>
       </div>
