@@ -69,7 +69,7 @@ export default {
     },
     handleDataReturn(payload){
       console.log(payload);
-    this.$emit('onDataReturn', { 'player', payload, index });
+      //this.$emit('onDataReturn', { 'player', payload, index });
 
     },
   }

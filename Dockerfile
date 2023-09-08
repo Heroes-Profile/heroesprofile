@@ -29,6 +29,7 @@ COPY public/.htaccess /var/www/html/.htaccess
 # Install Laravel dependencies
 RUN composer install
 
+#This is deprecated, need to update to the new/correct way to do this at some point
 # Install Node.js and npm
 RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get update -y \

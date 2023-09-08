@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Other content -->
-    <button @click="goToPatreon">Login with Patreon</button>
+    <button @click="goToPatreon" v-if="!this.user.patreon_account">Login with Patreon</button>
   </div>
 </template>
 

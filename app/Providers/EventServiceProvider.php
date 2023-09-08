@@ -20,8 +20,6 @@ class EventServiceProvider extends ServiceProvider
         ],
         \SocialiteProviders\Manager\SocialiteWasCalled::class => [
             \SocialiteProviders\Battlenet\BattlenetExtendSocialite::class.'@handle',
-        ],
-       \SocialiteProviders\Manager\SocialiteWasCalled::class => [
             'SocialiteProviders\\Patreon\\PatreonExtendSocialite@handle',
         ],
     ];
