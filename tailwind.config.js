@@ -6,6 +6,25 @@ module.exports = {
     "./resources/**/*.vue",
   ],
   theme: {
+    colors: {
+      'gray-dark': '#333',
+      'blue' : '#213d7a',
+      'lblue' : '#315bb6',
+      'teal' : '#008b8b',
+      'lteal' : '#00d5d5',
+      'yellow' : '#ffc93e',
+      'lyellow' : '#ffd465',
+      'red' : '#b33616',
+      'lred' : '#e44a23',
+      'black' : '#0F121D',
+      'white' : '#ffffff',
+      'lighten' : 'rgba(255, 255, 255, 0.1)',
+    },
+    fontFamily: {
+      'sans' : ['Open Sans'],
+      'logo' : ['Ruslan Display'],
+    },
+
     extend: {},
   },
   plugins: [],
