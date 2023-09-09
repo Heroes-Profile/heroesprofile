@@ -5,10 +5,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\BattleNetController;
 use App\Http\Controllers\Auth\PatreonController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Player\PlayerController;
+use App\Http\Controllers\Player\FriendFoeController;
 
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\GamedataController;
 use App\Http\Controllers\CompareController;
+
+
 
 use App\Http\Controllers\Global\GlobalHeroStatsController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
@@ -90,9 +94,12 @@ Route::get('/Global/Extra', [GlobalExtraStats::class, 'show']);
 
 
 
-
+//Logged in User Settings
 Route::get('Profile/Settings', [ProfileController::class, 'showSettings'])->middleware('ensureBattlenetAuth');
-Route::get('Profile/{battletag}/{blizz_id}/{region}', [ProfileController::class, 'showProfile']);
+
+//Player data
+Route::get('Player/FriendFoe/{battletag}/{blizz_id}/{region}', [FriendFoeController::class, 'show']);
+Route::get('Player/{battletag}/{blizz_id}/{region}', [PlayerController::class, 'show']);
 
 
 

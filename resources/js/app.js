@@ -48,9 +48,11 @@ import GlobalExtraStats from './components/Global/Extra/GlobalExtraStats.vue';
 
 //Authentication
 import ProfileSettings from './components/Profile/ProfileSettings.vue';
-import Profile from './components/Profile/Profile.vue';
 import BattlenetAuthenticate from './components/Battlenet/BattlenetAuthenticate.vue';
 
+//Player Stas
+import PlayerStats from './components/Player/PlayerStats.vue';
+import FriendFoe from './components/Player/FriendFoe.vue';
 
 
 // Automatically register Vue components

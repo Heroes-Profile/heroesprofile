@@ -55,7 +55,7 @@
       <tbody>
         <tr v-for="row in sortedData" :key="row.rank">
           <td class="py-2 px-3 border-b border-gray-200">{{ row.rank }}</td>
-          <td class="py-2 px-3 border-b border-gray-200"><a :href="`Profile/?blizz_id=${row.blizz_id}&battletag=${row.battletag}&region=${row.region}`" target="_blank">{{ row.battletag }}</a></td>
+          <td class="py-2 px-3 border-b border-gray-200"><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
           <td class="py-2 px-3 border-b border-gray-200">{{ row.region }}</td>
           <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
           <td class="py-2 px-3 border-b border-gray-200">{{ row.rating }}</td>
