@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" >
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,25 +16,27 @@
   @vite(['resources/css/app.css', 'resources/js/app.js'])
 
 </head>
-<body>
+<body class="bg-black text-white">
   <div id="app">
-<nav class="bg-gray-100 p-4">
-  <div class="flex items-center space-x-4">
+<nav class="bg-gray-dark text-white p-4 z-50 relative">
+  <div class="flex items-center space-x-4 items-center">
 
-    <a class="text-blue-600 hover:text-blue-800" href="/">This is where the Heroes (logo) Profile would go</a>
+    <a class="text-blue-600 hover:text-blue-800 flex items-center font-logo text-2xl mr-auto" href="/">Heroes<img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png"/>Profile</a>
 
-    <div class="relative group inline-block">
+    <div class="relative group inline-block z-50 ">
       <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Global Hero Stats</a>
-      <div class="absolute left-0 hidden mt-0 space-y-2 bg-white border border-gray-300 rounded-md group-hover:block z-51">
-        <a href="/Global/Hero" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Hero Stats</a>
-        <a href="/Global/Talents" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Talent Stats</a>
-        <a href="/Global/Hero/Maps" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Map Stats</a>
-        <a href="/Global/Matchups" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Matchup Stats</a>
-        <a href="/Global/Matchups/Talents" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Matchup Talent Stats</a>
-        <a href="/Global/Compositions" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Compositional Stats</a>
-        <a href="/Global/Draft/General" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Draft Stats</a>
-        <a href="/Global/Party" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Party Stats</a>
-        <a href="/Global/Extra" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Extra Stats</a>
+      <div class="absolute left-0  hidden   group group-hover:block hover:block z-50 pt-5">
+        <div class="bg-blue border border-gray-300 rounded-md">
+          <a href="/Global/Hero" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Hero Stats</a>
+          <a href="/Global/Talents" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Talent Stats</a>
+          <a href="/Global/Hero/Maps" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Map Stats</a>
+          <a href="/Global/Matchups" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Matchup Stats</a>
+          <a href="/Global/Matchups/Talents" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Matchup Talent Stats</a>
+          <a href="/Global/Compositions" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Compositional Stats</a>
+          <a href="/Global/Draft/General" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Draft Stats</a>
+          <a href="/Global/Party" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Party Stats</a>
+          <a href="/Global/Extra" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Extra Stats</a>
+        </div>
       </div>
     </div>
 
@@ -42,11 +44,20 @@
 
     <div class="relative group inline-block">
       <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Zemill</a>
+<<<<<<< HEAD
       <div class="absolute left-0 hidden mt-0 space-y-2 bg-white border border-gray-300 rounded-md group-hover:block z-51">
         <a href="/Player/Zemill/67280/1" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Profile</a>
         <a href="/Player/FriendFoe/Zemill/67280/1" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Friends and Foes</a>
         <a href="/Player/Hero/All/Zemill/67280/1" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Heroes</a>
 
+=======
+
+      <div class="absolute left-0  hidden   group group-hover:block hover:block z-50 pt-5">
+        <div class="bg-blue border border-gray-300 rounded-md">
+        <a href="/Profile/Zemill/67280/1" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Profile</a>
+        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Friends And Foes</a>
+        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Heroes</a>
+>>>>>>> a708f548025f89378eaba61d44c71deb3de428e8
         <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Matchups</a>
         <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Roles</a>
         <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Maps</a>
@@ -56,10 +67,12 @@
         <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Compare</a>
       </div>
     </div>
+    </div>
 
     <div class="relative group inline-block">
       <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Tools</a>
-      <div class="absolute left-0 hidden mt-0 space-y-2 bg-white border border-gray-300 rounded-md group-hover:block z-51">
+      <div class="absolute left-0  hidden   group group-hover:block hover:block z-50 pt-5">
+        <div class="bg-blue border border-gray-300 rounded-md">
         <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Talent Builder</a>
         <a href="/Compare" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Compare</a>
         <a href="https://drafter.heroesprofile.com/Drafter" target="_blank" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Drafter</a>
@@ -69,17 +82,25 @@
         <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Auto Battler</a>
       </div>
     </div>
+    </div>
+   
+    <custom-button :href="'#'" :text="'API'" :alt="'API'"  :size="'small'" :color="'teal'"></custom-button>
+    <custom-button :href="'#'" :text="'Replay Uploader'" :alt="'Replay Uploader'"  :size="'small'" :color="'blue'"></custom-button>
+     <custom-button :href="'#'" :text="'Patreon'" :alt="'Patreon'"  :size="'small'" :color="'red'"></custom-button>
 
+    
 
     @auth
       <!-- Navigation for authenticated users -->
+
       <a class="text-blue-600 hover:text-blue-800" href="/Profile/Settings">Profile Settings</a>
       <a class="text-blue-600 hover:text-blue-800" href="/Battlenet/Logout">Profile Logout</a>
     @endauth
 
     @guest
       <!-- Navigation for guests -->
-      <a class="text-blue-600 hover:text-blue-800" href="/Authenticate/Battlenet">Login</a>
+      <custom-button :href="'/Authenticate/Battlenet'" :text="'Login'" :alt="'Login'" :size="'small'" :color="'teal'" ></custom-button>
+      
     @endguest
   </div>
 </nav>

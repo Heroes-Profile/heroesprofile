@@ -2,9 +2,21 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
-html{background-color:lightgrey;}
+  @import url('https://fonts.googleapis.com/css2?family=Open+Sans&family=Ruslan+Display&display=swap');
+
+
+
+html{background-color:lightgrey; font-family: 'Open Sans', sans-serif;}
 
 .expandable-dropdown {
   min-width: 150px;  /* Adjust based on your needs */
   width: auto;
+}
+
+body{
+  font-size:18px;
+}
+
+.search-input{
+  @apply rounded p-2;
 }
