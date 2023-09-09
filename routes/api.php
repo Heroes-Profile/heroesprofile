@@ -14,6 +14,8 @@ use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
 use App\Http\Controllers\Global\GlobalPartyStatsController;
 use App\Http\Controllers\Global\GlobalExtraStats;
+use App\Http\Controllers\Player\PlayerController;
+use App\Http\Controllers\Player\FriendFoeController;
 
 
 
@@ -83,8 +85,10 @@ Route::prefix('v1')->group(function () {
 
 
 
-    Route::get('profile', [ProfileController::class, 'getProfileData']); //testing
-    Route::post('profile', [ProfileController::class, 'getProfileData']);
+    Route::get('player', [PlayerController::class, 'getPlayerData']); //testing
+    Route::post('player', [PlayerController::class, 'getPlayerData']);
 
+    Route::get('player/friendfoe', [FriendFoeController::class, 'getFriendFoeData']); //testing
+    Route::post('player/friendfoe', [FriendFoeController::class, 'getFriendFoeData']);
 
 });

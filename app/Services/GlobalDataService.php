@@ -18,6 +18,7 @@ use App\Models\MasterMMRDataHL;
 use App\Models\MasterMMRDataTL;
 use App\Models\MasterMMRDataSL;
 use App\Models\MasterMMRDataAR;
+use App\Models\Battletag;
 
 
 class GlobalDataService
@@ -404,7 +405,7 @@ class GlobalDataService
         return $returnData;
     }
 
-    function calculateSubTier($rankTiers, $mmr) {
+    public function calculateSubTier($rankTiers, $mmr) {
         $tierNames = [
             'bronze' => 'Bronze',
             'silver' => 'Silver',
@@ -433,5 +434,19 @@ class GlobalDataService
             }
         }
         return $result;
+    }
+
+    public function getBattletagShort($blizz_id, $region){
+        $battletag = Battletag::where('blizz_id', $blizz_id)
+            ->where('region', $region)
+            ->orderBy('latest_game', 'desc')
+            ->limit(1)
+            ->value('battletag');
+
+        if ($battletag) {
+            $battletag = explode('#', $battletag)[0];
+        }
+
+        return $battletag;
     }
 }

@@ -1,11 +1,12 @@
 <template>
-  <div>
+  <div class="">
+  
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Profile',
+  name: 'PlayerStats',
   components: {
   },
   props: {
@@ -30,7 +31,7 @@ export default {
   methods: {
     async getData(){
       try{
-        const response = await this.$axios.post("/api/v1/profile", {
+        const response = await this.$axios.post("/api/v1/player", {
           blizz_id: this.blizzid,
           region: this.region,
           game_type: "all",
