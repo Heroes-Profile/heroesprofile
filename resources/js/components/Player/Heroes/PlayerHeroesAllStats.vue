@@ -21,8 +21,9 @@
       >
     </filters>
 
-         <div class="flex flex-wrap gap-1">
-         </div>
+    <div>
+
+    </div>
 
 
   </div>
@@ -60,8 +61,6 @@ export default {
   methods: {
     async getData(type){
       try{
-            console.log("Game type = ");
-
         console.log(this.gametype);
         const response = await this.$axios.post("/api/v1/player/heroes/all", {
           blizz_id: this.blizzid,

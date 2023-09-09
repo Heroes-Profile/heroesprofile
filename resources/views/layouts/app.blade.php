@@ -44,20 +44,13 @@
 
     <div class="relative group inline-block">
       <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Zemill</a>
-<<<<<<< HEAD
-      <div class="absolute left-0 hidden mt-0 space-y-2 bg-white border border-gray-300 rounded-md group-hover:block z-51">
-        <a href="/Player/Zemill/67280/1" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Profile</a>
-        <a href="/Player/FriendFoe/Zemill/67280/1" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Friends and Foes</a>
-        <a href="/Player/Hero/All/Zemill/67280/1" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Heroes</a>
 
-=======
 
       <div class="absolute left-0  hidden   group group-hover:block hover:block z-50 pt-5">
         <div class="bg-blue border border-gray-300 rounded-md">
-        <a href="/Profile/Zemill/67280/1" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Profile</a>
-        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Friends And Foes</a>
-        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Heroes</a>
->>>>>>> a708f548025f89378eaba61d44c71deb3de428e8
+        <a href="/Player/Zemill/67280/1" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Profile</a>
+        <a href="/Player/FriendFoe/Zemill/67280/1" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Friends and Foes</a>
+        <a href="/Player/Hero/All/Zemill/67280/1" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Heroes</a>
         <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Matchups</a>
         <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Roles</a>
         <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Maps</a>
