@@ -16,6 +16,7 @@ use App\Http\Controllers\Global\GlobalPartyStatsController;
 use App\Http\Controllers\Global\GlobalExtraStats;
 use App\Http\Controllers\Player\PlayerController;
 use App\Http\Controllers\Player\FriendFoeController;
+use App\Http\Controllers\Player\PlayerHeroesController;
 
 
 
@@ -90,5 +91,10 @@ Route::prefix('v1')->group(function () {
 
     Route::get('player/friendfoe', [FriendFoeController::class, 'getFriendFoeData']); //testing
     Route::post('player/friendfoe', [FriendFoeController::class, 'getFriendFoeData']);
+
+    Route::get('player/heroes/all', [PlayerHeroesController::class, 'getHeroAllData']); //testing
+    Route::post('player/heroes/all', [PlayerHeroesController::class, 'getHeroAllData']);
+
+
 
 });

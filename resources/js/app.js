@@ -52,6 +52,7 @@ import BattlenetAuthenticate from './components/Battlenet/BattlenetAuthenticate.
 //Player Stas
 import PlayerStats from './components/Player/PlayerStats.vue';
 import FriendFoe from './components/Player/FriendFoe.vue';
+import PlayerHeroesAllStats from './components/Player/Heroes/PlayerHeroesAllStats.vue';
 
 
 // Automatically register Vue components

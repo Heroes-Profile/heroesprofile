@@ -45,8 +45,8 @@
       <div class="absolute left-0 hidden mt-0 space-y-2 bg-white border border-gray-300 rounded-md group-hover:block z-51">
         <a href="/Player/Zemill/67280/1" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Profile</a>
         <a href="/Player/FriendFoe/Zemill/67280/1" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Friends and Foes</a>
+        <a href="/Player/Hero/All/Zemill/67280/1" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Heroes</a>
 
-        <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Heroes</a>
         <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Matchups</a>
         <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Roles</a>
         <a href="/" class="block px-4 py-2 text-gray-400 hover:bg-gray-200 cursor-not-allowed pointer-events-none">Maps</a>
