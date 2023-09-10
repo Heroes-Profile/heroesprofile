@@ -1,9 +1,9 @@
 <template>
-  <div>
-    <div id="filter-label" class="relative">
-      <div @click="showOptions = !showOptions" class="block text-sm font-medium text-gray-700 cursor-pointer border p-2 rounded ">
-        <span>{{ this.text }}</span>
-        <span v-if="selectedOptionsName !== ''">: {{ selectedOptionsName }}</span>      
+  <div id="filter-label" class="relative">
+
+      <div @click="showOptions = !showOptions" class="block text-sm font-medium text-gray-700 cursor-pointer  p-2   hover:bg-teal transition-colors">
+        <span>{{ this.text }}</span> 
+        <span  v-if="selectedOptionsName !== ''">: <span class="uppercase font-bold  bg-teal rounded px-1">{{ selectedOptionsName }}</span></span>      
       </div>
       <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->
       <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg expandable-dropdown z-50">
@@ -21,11 +21,11 @@
               @click="toggleSelectedOptions(value.code)"
               class="form-checkbox h-5 w-5 text-indigo-600"
             >
-            <label :for="value.code" class="ml-2 text-sm text-gray-900">{{ value.name }}</label>
+            <label :for="value.code" class="ml-2 text-sm text-black">{{ value.name }}</label>
           </div>
         </div>
       </div>
-    </div>
+ 
   </div>
 </template>
 

@@ -1,9 +1,12 @@
 <template>
   <div>
-        Lets rethink how filtering is done.
+        <div class="page-heading">
     <h1>Leaderboard</h1>
+    <div>
     <infobox :input="infoText1"></infobox>
     <infobox :input="infoText2"></infobox>
+    </div>
+    </div>
 
     <filters 
       :onFilter="filterData" 
@@ -20,49 +23,49 @@
       >
     </filters>
     <div class="min-w-full px-20">
-      <table class="bg-white">
+      <table >
         <thead>
           <tr>
-            <th @click="sortTable('rank')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('rank')" class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Rank
             </th>
-            <th @click="sortTable('battletag')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('battletag')" class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Battletag
             </th>
-            <th @click="sortTable('win_rate')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('win_rate')" class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Region
             </th>
-            <th @click="sortTable('rating')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('rating')" class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Win Rate %
             </th>       
-            <th @click="sortTable('conservative_rating')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('conservative_rating')" class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Heroes Profile Rating
             </th>   
-            <th @click="sortTable('games_played')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('games_played')" class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Player MMR
             </th>   
-            <th @click="sortTable('games_played')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('games_played')" class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Tier
             </th>   
-            <th @click="sortTable('games_played')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('games_played')" class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games Played
             </th>   
-            <th @click="sortTable('games_played')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('games_played')" class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Most Played Hero (Games Played with Hero)
             </th>           
           </tr>
         </thead>
         <tbody>
-          <tr v-for="row in sortedData" :key="row.rank">
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.rank }}</td>
-            <td class="py-2 px-3 border-b border-gray-200"><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.region }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.rating }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.conservative_rating }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.tier }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.games_played }}</td>
-            <td class="py-2 px-3 border-b border-gray-200"><hero-box-small :hero="row.most_played_hero"></hero-box-small>{{ row.hero_build_games_played }}</td>
+          <tr v-for="row in sortedData" :key="row.rank" >
+            <td class="">{{ row.rank }}</td>
+            <td class=""><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
+            <td class="">{{ row.region }}</td>
+            <td class="">{{ row.win_rate }}</td>
+            <td class="">{{ row.rating }}</td>
+            <td class="">{{ row.conservative_rating }}</td>
+            <td class="">{{ row.tier }}</td>
+            <td class="">{{ row.games_played }}</td>
+            <td class=" flex gap-x-2 items-center"><hero-box-small :hero="row.most_played_hero"></hero-box-small>{{ row.hero_build_games_played }}</td>
           </tr>
         </tbody>
       </table>
