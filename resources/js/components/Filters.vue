@@ -83,7 +83,7 @@ export default {
       required: true,
     },
     gametypedefault: Array,
-    minimumgamesdefault: Number,
+    minimumgamesdefault: String,
     defaultSeason: String,
   },
   data(){

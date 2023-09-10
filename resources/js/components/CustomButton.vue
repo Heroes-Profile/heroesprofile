@@ -47,8 +47,6 @@ export default {
         yellow: 'bg-yellow hover:bg-lyellow'
       }
       const defaultClass = 'bg-blue hover:bg-lblue';
-      console.log(this.color);
-
      return colorToClassMap[this.color] || defaultClass;
     }
   },
