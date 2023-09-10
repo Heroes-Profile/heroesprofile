@@ -18,6 +18,7 @@
       :includerolerank="true"
       :includemirror="true"
       :includeminimumgames="true"
+      :minimumgamesdefault="100"
       >
     </filters>
 
