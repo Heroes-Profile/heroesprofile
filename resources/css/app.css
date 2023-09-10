@@ -26,8 +26,6 @@ body{
 }
 
 table{
-  
-
   width:100% ;
   @apply bg-gray-light text-black;
  
@@ -54,10 +52,9 @@ h1{
   text-transform:uppercase;
   @apply text-5xl;
 }
-
-
-
 .page-heading{
 
   @apply flex py-10 px-20 items-center gap-20 bg-teal;
+  color:black;
+  width:100% ;
 }

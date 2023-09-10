@@ -22,7 +22,7 @@
       <multi-select-filter v-if="includerolerank" :values="this.filters.rank_tiers" :text="'Role Rank'" @input-changed="handleInputChange"></multi-select-filter>
       <single-select-filter v-if="includemirror" :values="this.filters.mirror" :text="'Mirror Matches'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter v-if="includetalentbuildtype" :values="this.filters.talent_build_types" :text="'Talent Build Type'" @input-changed="handleInputChange"></single-select-filter>
-      <single-select-filter v-if="includeminimumgames" :values="this.filters.minimum_games" :text="'Minimum Games'" @input-changed="handleInputChange" :defaultValue="'100'"></single-select-filter>
+      <single-select-filter v-if="includeminimumgames" :values="this.filters.minimum_games" :text="'Minimum Games'" @input-changed="handleInputChange" :defaultValue="modifiedminimumgamedefault"></single-select-filter>
       <single-select-filter v-if="includeheropartysize" :values="this.filters.hero_party_size" :text="'Hero Party Size'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter v-if="includeteamoneparty" :values="this.filters.party_combinations" :text="'Team One Party'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter v-if="includeteamtwoparty" :values="this.filters.party_combinations" :text="'Team Two Party'" @input-changed="handleInputChange"></single-select-filter>
@@ -85,6 +85,7 @@ export default {
       required: true,
     },
     gametypedefault: Array,
+    minimumgamesdefault: Number,
     defaultSeason: String,
   },
   data(){
@@ -98,6 +99,7 @@ export default {
       modifiedincludeminimumaccountlevel: null,
       modifiedincludexaxisincrements: null,
       modifiedincludegametype: null,
+      modifiedminimumgamedefault: null,
     }
   },
   created(){    
@@ -118,6 +120,8 @@ export default {
     this.modifiedincludexaxisincrements = this.includexaxisincrements;
     this.modifiedincludegametype = this.includegametype;
     this.modifiedincludeheroes = this.includehero;
+
+    this.modifiedminimumgamedefault = this.minimumgamesdefault ? this.minimumgamesdefault : 0;
   },
   mounted() {
   },

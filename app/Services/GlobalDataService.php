@@ -284,7 +284,7 @@ class GlobalDataService
         ];
 
         $filterData->minimum_games = [];
-        for ($i = 25; $i <= 5000; $i += 25) {
+        for ($i = 0; $i <= 5000; $i += 25) {
             $filterData->minimum_games[] = ['code' => (string)$i, 'name' => (string)$i];
         }
 
