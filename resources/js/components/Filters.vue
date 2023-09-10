@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex flex-wrap gap-4">
+    <div class="flex flex-wrap items-center bg-gray-dark px-20">
       <single-select-filter v-if="includeherorole" :values="this.filters.hero_role" :text="'Hero or Role'" @input-changed="handleInputChange" :defaultValue="'Hero'"></single-select-filter>
       <single-select-filter v-if="includeleaderboardtype" :values="this.filters.leaderboard_type" :text="'Leaderboard Type'" @input-changed="handleInputChange" :defaultValue="'Player'"></single-select-filter>
       <single-select-filter v-if="includegroupsize" :values="this.filters.group_size" :text="'Group Size'" @input-changed="handleInputChange" :defaultValue="'Solo'"></single-select-filter>
@@ -28,13 +28,15 @@
       <single-select-filter v-if="includeteamtwoparty" :values="this.filters.party_combinations" :text="'Team Two Party'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter v-if="modifiedincludeminimumaccountlevel" :values="this.filters.minimum_account_level" :text="'Min. Account Level'" @input-changed="handleInputChange" :defaultValue="'100'"></single-select-filter>
       <single-select-filter v-if="modifiedincludexaxisincrements" :values="this.filters.x_axis_increments" :text="'X Axis Increments'" @input-changed="handleInputChange" :defaultValue="'25'"></single-select-filter>
+     <button @click="applyFilter" class="ml-10 bg-blue text-white p-2 ">
+      Filter
+    </button>
+
     </div>
 
 
 
-    <button @click="applyFilter" class="mt-4 bg-blue-500 text-white p-2 rounded">
-      Filter
-    </button>
+   
   </div>
 
 </template>

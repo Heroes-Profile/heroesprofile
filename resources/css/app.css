@@ -26,8 +26,38 @@ body{
 }
 
 table{
-  color:black;
-  width:100% ;
+  
 
+  width:100% ;
+  @apply bg-gray-light text-black;
  
+}
+
+tr{
+@apply even:bg-gray-md;
+}
+th{
+  @apply text-left text-sm leading-4  tracking-wider cursor-pointer py-1 px-3;
+}
+
+td{
+  @apply py-1 px-3  ;
+}
+thead{
+  @apply bg-teal text-white ;
+}
+thead tr{
+  @apply py-3;
+}
+
+h1{
+  text-transform:uppercase;
+  @apply text-5xl;
+}
+
+
+
+.page-heading{
+
+  @apply flex py-10 px-20 items-center gap-20 bg-teal;
 }
