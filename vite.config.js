@@ -5,7 +5,6 @@ import tailwindcss from 'tailwindcss'
 
 
 export default defineConfig({
-    //base: process.env.NODE_ENV === 'production' ? 'https://heroesprofile-website-rsfk4hfj3a-ue.a.run.app/' : '/',
     plugins: [
         laravel({
             input: [

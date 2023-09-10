@@ -2,9 +2,10 @@
   <div class="battlenet-login">
     <h1>Welcome to the App</h1>
     <p>If you want to access your profile, you need to log in through Battle.net.</p>
-    <button @click="loginWithBattlenet" class="battlenet-button">
-      Login with Battle.net
-    </button>
+    <custom-button :href="'/redirect/authenticate/battlenet'" :text="'Login with Battle.net'" :alt="'Login with Battle.net'"  :size="'medium'" :color="'blue'"></custom-button>
+
+
+    Put some info on this page about Blizzard OAuth login and how its safer than regular user account creation as no password information is stored/provided to Heroes Profile etc etc
   </div>
 </template>
 
@@ -28,29 +29,6 @@ export default {
   watch: {
   },
   methods: {
-    loginWithBattlenet() {
-      window.location.href = '/redirect/authenticate/battlenet';
-    },
   }
 }
 </script>
-
-<style scoped>
-.battlenet-login {
-  text-align: center;
-  margin: 20px;
-}
-
-.battlenet-button {
-  background-color: #000;
-  color: #fff;
-  padding: 10px 20px;
-  font-size: 16px;
-  border: none;
-  cursor: pointer;
-}
-
-.battlenet-button:hover {
-  background-color: #333;
-}
-</style>

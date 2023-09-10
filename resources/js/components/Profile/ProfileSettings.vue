@@ -1,7 +1,10 @@
 <template>
   <div>
     <!-- Other content -->
-    <button @click="goToPatreon" v-if="!this.user.patreon_account">Login with Patreon</button>
+
+         <custom-button  v-if="!this.user.patreon_account" :href="'/authenticate/patreon'" :text="'Login with Patreon'" :alt="'Login with Patreon'"  :size="'medium'" :color="'blue'"></custom-button>
+
+
   </div>
 </template>
 
@@ -20,17 +23,12 @@ export default {
   created(){
   },
   mounted() {
-    console.log(this.user);
   },
   computed: {
   },
   watch: {
   },
   methods: {
-    goToPatreon() {
-      // Redirect to the Patreon login route on your Laravel backend
-      window.location.href = "/authenticate/patreon";
-    }
   }
 }
 </script>

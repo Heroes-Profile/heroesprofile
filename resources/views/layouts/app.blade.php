@@ -79,7 +79,7 @@
    
     <custom-button :href="'#'" :text="'API'" :alt="'API'"  :size="'small'" :color="'teal'"></custom-button>
     <custom-button :href="'#'" :text="'Replay Uploader'" :alt="'Replay Uploader'"  :size="'small'" :color="'blue'"></custom-button>
-     <custom-button :href="'#'" :text="'Patreon'" :alt="'Patreon'"  :size="'small'" :color="'red'"></custom-button>
+    <custom-button :href="'#'" :text="'Patreon'" :alt="'Patreon'"  :size="'small'" :color="'red'"></custom-button>
 
     
 
