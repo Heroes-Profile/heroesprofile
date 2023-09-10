@@ -6,11 +6,15 @@
 
 
 
-html{background-color:lightgrey; font-family: 'Open Sans', sans-serif;}
+html{background-color:lightgrey; font-family: 'Open Sans', sans-serif; box-sizing:border-box;}
 
 .expandable-dropdown {
   min-width: 150px;  /* Adjust based on your needs */
   width: auto;
+}
+
+.filter-label{
+  color:black;
 }
 
 body{
@@ -23,4 +27,7 @@ body{
 
 table{
   color:black;
+  width:100% ;
+
+ 
 }

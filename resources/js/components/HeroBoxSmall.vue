@@ -1,10 +1,10 @@
 <template>
-  <div v-if="hero" class="card relative" style="width: 18rem;">
-    <img class="card-img-top relative hover:opacity-75" :src="getHeroImage()" :alt="hero.name" @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
-    <div v-if="showTooltip" class="absolute top-0 left-0 bg-gray-700 text-white text-xs p-1 opacity-90" :style="{ left: '50%', transform: 'translateX(-50%)' }">
+  <div v-if="hero" class="relative group flex items-center " @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
+    <img class="card-img-top relative hover:opacity-75 w-10 h-10 rounded-full" :src="getHeroImage()" :alt="hero.name" >
+    <div v-if="showTooltip" class="absolute hidden bottom-11 -left-24  bg-gray-dark  text-s p-1  group-hover:block  text-white z-50 drop-shadow-md w-60 rounded-md px-2 text-center">
       {{ popuptext }}
     </div>
-    {{ hero.name }}
+   
   </div>
 </template>
 
