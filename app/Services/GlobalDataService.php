@@ -254,6 +254,14 @@ class GlobalDataService
                 return ['code' => $gameType->short_name, 'name' => $gameType->name];
             });
 
+        $filterData->game_types_full = GameType::whereNotIn('type_id', [-1, 0])
+            ->orderBy("type_id", "ASC")
+            ->get()
+            ->map(function ($gameType) {
+                return ['code' => $gameType->short_name, 'name' => $gameType->name];
+            });
+
+
         $filterData->game_maps = Map::where('playable', 1)
             ->orderBy("name", "ASC")
             ->get()

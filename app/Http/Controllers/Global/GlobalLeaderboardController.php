@@ -48,7 +48,7 @@ class GlobalLeaderboardController extends Controller
             //->toSql();
             ->get();
 
-        $heroData = Hero::all();
+        $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
         $rankTiers = $this->globalDataService->getRankTiers($gameType, $type);

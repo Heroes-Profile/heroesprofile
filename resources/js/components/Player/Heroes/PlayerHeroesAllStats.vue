@@ -13,8 +13,7 @@
       :minimumgamesdefault="'0'"
       :includehero="true"
       :includerole="true"
-      :includegamemap="true"
-      :includegametype="true"
+      :includegametypefull="true"
       :includeseason="true"
       :includeminimumgames="true"
 
@@ -34,25 +33,37 @@
             <th @click="sortTable('games_played')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games Played
             </th>  
-            <th @click="sortTable('qm_mmr')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th v-if="showGameTypeColumn('qm')" @click="sortTable('qm_mmr')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               QM MMR
             </th>   
-            <th @click="sortTable('ud_mmr')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th v-if="showGameTypeColumn('ud')" @click="sortTable('ud_mmr')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               UD MMR
             </th>
-            <th @click="sortTable('hl_mmr')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th v-if="showGameTypeColumn('hl')" @click="sortTable('hl_mmr')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               HL MMR
-            </th>           
+            </th>      
+            <th v-if="showGameTypeColumn('tl')" @click="sortTable('tl_mmr')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              TL MMR
+            </th>       
+            <th v-if="showGameTypeColumn('sl')" @click="sortTable('sl_mmr')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              SL MMR
+            </th>    
+            <th v-if="showGameTypeColumn('ar')" @click="sortTable('ar_mmr')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              AR MMR
+            </th>  
           </tr>
         </thead>
         <tbody>
           <tr v-for="row in sortedData" :key="row.id">
-            <td class="py-2 px-3 border-b border-gray-200"><hero-box-small :hero="row"></hero-box-small>{{ row.name }}</td>
+            <td class="py-2 px-3 border-b border-gray-200"><a :href="getPlayerHeroPageUrl()"><hero-box-small :hero="row"></hero-box-small>{{ row.name }}</a></td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.games_played }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.qm_mmr }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.ud_mmr }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.hl_mmr }}</td>
+            <td v-if="showGameTypeColumn('qm')" class="py-2 px-3 border-b border-gray-200">{{ row.qm_mmr }}</td>
+            <td v-if="showGameTypeColumn('ud')" class="py-2 px-3 border-b border-gray-200">{{ row.ud_mmr }}</td>
+            <td v-if="showGameTypeColumn('hl')" class="py-2 px-3 border-b border-gray-200">{{ row.hl_mmr }}</td>
+            <td v-if="showGameTypeColumn('tl')" class="py-2 px-3 border-b border-gray-200">{{ row.tl_mmr }}</td>
+            <td v-if="showGameTypeColumn('sl')" class="py-2 px-3 border-b border-gray-200">{{ row.sl_mmr }}</td>
+            <td v-if="showGameTypeColumn('ar')" class="py-2 px-3 border-b border-gray-200">{{ row.ar_mmr }}</td>
           </tr>
         </tbody>
       </table>
@@ -83,12 +94,14 @@ export default {
       data: null,
       sortKey: '',
       sortDir: 'asc',
+      role: null,
+      hero: null,
+      minimumgames: 0,
     }
   },
   created(){
   },
   mounted() {
-
     this.getData();
   },
   computed: {
@@ -114,6 +127,9 @@ export default {
           blizz_id: this.blizzid,
           region: this.region,
           game_type: this.gametype,
+          hero: this.hero,
+          role: this.role,
+          minimumgames: this.minimumgames,
         });
         this.data = response.data;
 
@@ -122,8 +138,12 @@ export default {
       }
     },
     filterData(filteredData){
-      //this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
-
+      this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
+      this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
+      this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
+      this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
+      this.data = [];
+      
       this.getData();
     },
     sortTable(key) {
@@ -134,6 +154,13 @@ export default {
       }
       this.sortKey = key;
     },
+    showGameTypeColumn(game_type){
+      return this.gametype.includes(game_type);
+    },
+    getPlayerHeroPageUrl(){
+      return "/Player/Hero/Single/" + this.battletag + "/" + this.blizzid + "/" + this.region;
+    }
+
   }
 }
 </script>

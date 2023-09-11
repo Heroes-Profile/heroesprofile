@@ -60,11 +60,14 @@ export default {
       const selected = this.values.find(value => value.code === this.selectedOptions);
       return selected ? selected.name : '';
     },
-    filteredValues() {  // Added this for search
+    filteredValues() {  
       return this.values.filter(value => 
-        value.name.toLowerCase().includes(this.searchQuery.toLowerCase())
+        value.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+        .includes(
+          this.searchQuery.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+        )
       );
-    }
+    },
   },
   watch: {
     selectedOptions: function (newVal) {

@@ -265,7 +265,7 @@ class GlobalCompositionsController extends Controller
                 //->toSql();
                 ->get();    
 
-            $heroData = Hero::all();
+            $heroData = $this->globalDataService->getHeroes();
             $heroData = $heroData->keyBy('id');
 
             $data = $data->map(function ($item) use($heroData) {

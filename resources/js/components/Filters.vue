@@ -13,6 +13,7 @@
       <single-select-filter v-if="includerole" :values="this.filters.role" :text="'Role'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter v-if="modifiedincludeheroes" :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange"></single-select-filter>
       <multi-select-filter v-if="modifiedincludegametype" :values="this.filters.game_types" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="this.defaultGameType"></multi-select-filter>
+      <multi-select-filter v-if="includegametypefull" :values="this.filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="this.defaultGameType"></multi-select-filter>
       <single-select-filter v-if="includesinglegametype" :values="this.filters.game_types" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="this.defaultGameType[0]"></single-select-filter>
       <single-select-filter v-if="includeseason" :values="seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="this.defaultSeason"></single-select-filter>
       <multi-select-filter v-if="includegamemap" :values="this.filters.game_maps" :text="'Map'" @input-changed="handleInputChange"></multi-select-filter>
@@ -60,6 +61,7 @@ export default {
     includerole: Boolean,
     includehero: Boolean,
     includegametype: Boolean,
+    includegametypefull: Boolean,
     includesinglegametype: Boolean,
     includegamemap: Boolean,
     includesinglegamemap: Boolean,
@@ -106,14 +108,9 @@ export default {
     this.defaultGameType = this.gametypedefault;
 
     this.selectedSingleFilters = {
-      'Timeframe Type': this.defaultTimeframeType,
-      'Stat Filter': this.defaultStatType,
-      // Add other single select defaults here
     };
 
     this.selectedMultiFilters = {
-      'Timeframes': this.defaultMinor,
-      // Add other multi-select defaults here
     };
 
     this.modifiedincludeminimumaccountlevel = this.includeminimumaccountlevel;
@@ -147,21 +144,9 @@ export default {
     }
   },
   watch: {
-    defaultMinor(newVal) {
-      this.selectedMultiFilters['Timeframes'] = newVal;
-    },
-    defaultStatType(newVal) {
-      this.selectedSingleFilters['Stat Filter'] = newVal;
-    },
-    defaultTimeframeType(newVal) {
-      this.selectedSingleFilters['Timeframe Type'] = newVal;
-    },
   },
   methods: {
     handleInputChange(eventPayload) {
-      //console.log("eventPayload.field = " + eventPayload.field);
-      //console.log("eventPayload.value = " + eventPayload.value);
-
       if(eventPayload.field == "Timeframe Type" && eventPayload.value == "minor"){
         this.defaultTimeframeType = eventPayload.value;
       }else if(eventPayload.field == "Timeframe Type" && eventPayload.value == "major"){

@@ -259,7 +259,7 @@ class GlobalTalentStatsController extends Controller
         $talentData = HeroesDataTalent::all();
         $talentData = $talentData->keyBy('talent_id');
 
-        $heroData = Hero::all();
+        $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
         $sortBy = $statFilter == "win_rate" ? "win_rate" : "total_filter_type";

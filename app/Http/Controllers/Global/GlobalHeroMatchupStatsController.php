@@ -168,7 +168,7 @@ class GlobalHeroMatchupStatsController extends Controller
 
     private function combineData($data, $type){
 
-        $heroData = Hero::all();
+        $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
         $combinedData = collect($data)->groupBy($type)->map(function ($group) use ($type, $heroData){
