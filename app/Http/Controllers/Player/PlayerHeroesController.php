@@ -60,8 +60,8 @@ class PlayerHeroesController extends Controller
         $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
 
 
-/*
-        $resultQM = MasterMMRDataQM::select('type_value')
+
+        $resultQM = MasterMMRDataQM::select('type_value', 'win', 'loss')
             ->selectRaw('1800 + 40 * conservative_rating as mmr')
             ->whereIn('type_value', function($query) {
                 $query->select('id')
@@ -72,7 +72,7 @@ class PlayerHeroesController extends Controller
             ->where('region', $region)
             ->get();
 
-        $resultUD = MasterMMRDataUD::select('type_value')
+        $resultUD = MasterMMRDataUD::select('type_value', 'win', 'loss')
             ->selectRaw('1800 + 40 * conservative_rating as mmr')
             ->whereIn('type_value', function($query) {
                 $query->select('id')
@@ -83,7 +83,7 @@ class PlayerHeroesController extends Controller
             ->where('region', $region)
             ->get();
 
-        $resultHL = MasterMMRDataHL::select('type_value')
+        $resultHL = MasterMMRDataHL::select('type_value', 'win', 'loss')
             ->selectRaw('1800 + 40 * conservative_rating as mmr')
             ->whereIn('type_value', function($query) {
                 $query->select('id')
@@ -94,7 +94,7 @@ class PlayerHeroesController extends Controller
             ->where('region', $region)
             ->get();
 
-        $resultTL = MasterMMRDataTL::select('type_value')
+        $resultTL = MasterMMRDataTL::select('type_value', 'win', 'loss')
             ->selectRaw('1800 + 40 * conservative_rating as mmr')
             ->whereIn('type_value', function($query) {
                 $query->select('id')
@@ -105,7 +105,7 @@ class PlayerHeroesController extends Controller
             ->where('region', $region)
             ->get();  
 
-        $resultSL = MasterMMRDataSL::select('type_value')
+        $resultSL = MasterMMRDataSL::select('type_value', 'win', 'loss')
             ->selectRaw('1800 + 40 * conservative_rating as mmr')
             ->whereIn('type_value', function($query) {
                 $query->select('id')
@@ -116,7 +116,7 @@ class PlayerHeroesController extends Controller
             ->where('region', $region)
             ->get();
 
-        $resultAR = MasterMMRDataAR::select('type_value')
+        $resultAR = MasterMMRDataAR::select('type_value', 'win', 'loss')
             ->selectRaw('1800 + 40 * conservative_rating as mmr')
             ->whereIn('type_value', function($query) {
                 $query->select('id')
@@ -127,36 +127,41 @@ class PlayerHeroesController extends Controller
             ->where('region', $region)
             ->get();
 
-            */
+        $heroes = Hero::all();
 
-        $query = function($table, $gameType) use ($blizz_id, $region) {
-            return DB::table($table)
-                ->select('type_value', 'game_type')
-                ->selectRaw('1800 + 40 * conservative_rating as mmr')
-                ->addSelect(DB::raw("$gameType as game_type"))
-                ->whereIn('type_value', function($query) {
-                    $query->select('id')
-                          ->from(with(new Hero)->getTable());
-                })
-                ->where('game_type', $gameType)
-                ->where('blizz_id', $blizz_id)
-                ->where('region', $region)
-                ->get();
-        };
+        $heroes->each(function($hero) use ($resultQM, $resultUD, $resultHL, $resultTL, $resultSL, $resultAR) {
+            $hero->wins = 0;
+            $hero->losses = 0;
 
-        $resultQM = $query('master_mmr_data_qm', 1);
-        $resultUD = $query('master_mmr_data_ud', 2);
-        $resultHL = $query('master_mmr_data_hl', 3);
-        $resultTL = $query('master_mmr_data_tl', 4);
-        $resultSL = $query('master_mmr_data_sl', 5);
-        $resultAR = $query('master_mmr_data_ar', 6);
+            $hero->wins += $resultQM->where('type_value', $hero->id)->first() ? $resultQM->where('type_value', $hero->id)->first()->win : 0;
+            $hero->losses += $resultQM->where('type_value', $hero->id)->first() ? $resultQM->where('type_value', $hero->id)->first()->loss : 0;
 
-        $combinedResults = $resultQM->merge($resultUD)
-                                    ->merge($resultHL)
-                                    ->merge($resultTL)
-                                    ->merge($resultSL)
-                                    ->merge($resultAR);
+            $hero->wins += $resultUD->where('type_value', $hero->id)->first() ? $resultUD->where('type_value', $hero->id)->first()->win : 0;
+            $hero->losses += $resultUD->where('type_value', $hero->id)->first() ? $resultUD->where('type_value', $hero->id)->first()->loss : 0;
 
-        return $combinedResults;
+            $hero->wins += $resultHL->where('type_value', $hero->id)->first() ? $resultHL->where('type_value', $hero->id)->first()->win : 0;
+            $hero->losses += $resultHL->where('type_value', $hero->id)->first() ? $resultHL->where('type_value', $hero->id)->first()->loss : 0;
+
+            $hero->wins += $resultTL->where('type_value', $hero->id)->first() ? $resultTL->where('type_value', $hero->id)->first()->win : 0;
+            $hero->losses += $resultTL->where('type_value', $hero->id)->first() ? $resultTL->where('type_value', $hero->id)->first()->loss : 0;
+
+            $hero->wins += $resultSL->where('type_value', $hero->id)->first() ? $resultSL->where('type_value', $hero->id)->first()->win : 0;
+            $hero->losses += $resultSL->where('type_value', $hero->id)->first() ? $resultSL->where('type_value', $hero->id)->first()->loss : 0;
+
+            $hero->wins += $resultAR->where('type_value', $hero->id)->first() ? $resultAR->where('type_value', $hero->id)->first()->win : 0;
+            $hero->losses += $resultAR->where('type_value', $hero->id)->first() ? $resultAR->where('type_value', $hero->id)->first()->loss : 0;
+
+            $hero->games_played = $hero->wins + $hero->losses;
+            $hero->win_rate = $hero->games_played > 0 ? round(($hero->wins / $hero->games_played) * 100, 2): 0;
+
+            $hero->qm_mmr = $resultQM->where('type_value', $hero->id)->first() ? round($resultQM->where('type_value', $hero->id)->first()->mmr) : "";
+            $hero->ud_mmr = $resultUD->where('type_value', $hero->id)->first() ? round($resultUD->where('type_value', $hero->id)->first()->mmr) : "";
+            $hero->hl_mmr = $resultHL->where('type_value', $hero->id)->first() ? round($resultHL->where('type_value', $hero->id)->first()->mmr) : "";
+            $hero->tl_mmr = $resultTL->where('type_value', $hero->id)->first() ? round($resultTL->where('type_value', $hero->id)->first()->mmr) : "";
+            $hero->sl_mmr = $resultSL->where('type_value', $hero->id)->first() ? round($resultSL->where('type_value', $hero->id)->first()->mmr) : "";
+            $hero->ar_mmr = $resultAR->where('type_value', $hero->id)->first() ? round($resultAR->where('type_value', $hero->id)->first()->mmr) : "";
+        });
+
+        return $heroes;
     }
 }
