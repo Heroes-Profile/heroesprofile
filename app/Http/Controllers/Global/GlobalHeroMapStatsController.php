@@ -163,6 +163,7 @@ class GlobalHeroMapStatsController extends Controller
             $totalGamesForThisMap = $gamesPlayedPerMap[$firstItem['map_id']] ?? 0;
 
             return [
+                'name' => $mapData[$firstItem['map_id']]["name"],
                 'map' => $mapData[$firstItem['map_id']],
                 'win_rate' => $gamesPlayed != 0 ? round(($wins / $gamesPlayed) * 100, 2) : 0,
                 'games_played' => $gamesPlayed,

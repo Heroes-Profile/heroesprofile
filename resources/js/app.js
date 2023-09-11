@@ -28,6 +28,7 @@ import HeroGroupBox from './components/HeroGroupBox.vue';
 import HeroBoxLarge from './components/HeroBoxLarge.vue';
 import RoleBox from './components/RoleBox.vue';
 import CustomButton from './components/CustomButton.vue';
+import CustomTable from './components/CustomTable.vue';
 
 
 
@@ -54,6 +55,7 @@ import BattlenetAuthenticate from './components/Battlenet/BattlenetAuthenticate.
 import PlayerStats from './components/Player/PlayerStats.vue';
 import FriendFoe from './components/Player/FriendFoe.vue';
 import PlayerHeroesAllStats from './components/Player/Heroes/PlayerHeroesAllStats.vue';
+import PlayerHeroSingleStats from './components/Player/Heroes/PlayerHeroSingleStats.vue';
 
 
 // Automatically register Vue components

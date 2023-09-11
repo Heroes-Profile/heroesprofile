@@ -29,32 +29,8 @@
 
 
 
-      <table class="min-w-full bg-white">
-        <thead>
-          <tr>
-            <th @click="sortTable('talent_name')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Map
-            </th>
-            <th @click="sortTable('win_rate')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Win Rate %
-            </th>            
-            <th @click="sortTable('ban_rate')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Ban Rate %
-            </th>
-            <th @click="sortTable('games_played')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Games Played
-            </th>                  
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="row in sortedData" :key="row.map.map_id">
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.map.name }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.ban_rate }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.games_played }}</td>
-          </tr>
-        </tbody>
-      </table>
+
+      <custom-table :columns="columns" :data="data"></custom-table>
     </div>
 
 
@@ -80,11 +56,15 @@ export default {
   },
   data(){
     return {
+      columns: [
+        { text: 'Map', value: 'name', sortable: true },
+        { text: 'Win Rate %', value: 'win_rate', sortable: true },
+        { text: 'Ban Rate %', value: 'ban_rate', sortable: true },
+        { text: 'Games Played', value: 'games_played', sortable: true },
+      ],
       infoText: "Hero Maps provide information on which maps are good for each hero",
       selectedHero: null,
-      mapdata: null,
-      sortKey: '',
-      sortDir: 'asc',
+      data: null,
 
       //Sending to filter
       timeframetype: null,
@@ -111,18 +91,6 @@ export default {
   mounted() {
   },
   computed: {
-    sortedData() {
-      if (!this.sortKey) return this.mapdata;
-      return this.mapdata.slice().sort((a, b) => {
-        const valA = a[this.sortKey];
-        const valB = b[this.sortKey];
-        if (this.sortDir === 'asc') {
-          return valA < valB ? -1 : 1;
-        } else {
-          return valA > valB ? -1 : 1;
-        }
-      });
-    },
   },
   watch: {
   },
@@ -147,9 +115,7 @@ export default {
           role_league_tier: this.rolerank,
           mirrormatch: this.mirrormatch,
         });
-        this.mapdata = response.data;
-
-        console.log(response.data);
+        this.data = response.data;
       }catch(error){
         console.log(error);
       }
@@ -166,14 +132,6 @@ export default {
       this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "";
 
       this.getData();
-    },
-    sortTable(key) {
-      if (key === this.sortKey) {
-        this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
-      } else {
-        this.sortDir = 'asc';
-      }
-      this.sortKey = key;
     },
   }
 }

@@ -50,6 +50,25 @@ class PlayerHeroesController extends Controller
                 ]);
 
     }
+    public function showSingle(Request $request, $battletag, $blizz_id, $region){
+        $validator = \Validator::make(compact('battletag', 'blizz_id', 'region'), [
+            'battletag' => 'required|string',
+            'blizz_id' => 'required|integer',
+            'region' => 'required|integer'
+        ]);
+
+        if ($validator->fails()) {
+            return redirect('/');
+        }
+
+
+        return view('Player.Heroes.singleHeroData')->with([
+                'battletag' => $battletag,
+                'blizz_id' => $blizz_id,
+                'region' => $region,
+                'filters' => $this->globalDataService->getFilterData()
+                ]);
+    }
 
     public function getHeroAllData(Request $request){
         //return response()->json($request->all());

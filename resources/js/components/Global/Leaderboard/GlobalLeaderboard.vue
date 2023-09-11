@@ -22,54 +22,7 @@
       :minimumseason="13"
       >
     </filters>
-    <div class="min-w-full px-20">
-      <table >
-        <thead>
-          <tr>
-            <th @click="sortTable('rank')" class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Rank
-            </th>
-            <th @click="sortTable('battletag')" class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Battletag
-            </th>
-            <th @click="sortTable('win_rate')" class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Region
-            </th>
-            <th @click="sortTable('rating')" class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Win Rate %
-            </th>       
-            <th @click="sortTable('conservative_rating')" class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Heroes Profile Rating
-            </th>   
-            <th @click="sortTable('games_played')" class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Player MMR
-            </th>   
-            <th @click="sortTable('games_played')" class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Tier
-            </th>   
-            <th @click="sortTable('games_played')" class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Games Played
-            </th>   
-            <th @click="sortTable('games_played')" class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Most Played Hero (Games Played with Hero)
-            </th>           
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="row in sortedData" :key="row.rank" >
-            <td class="">{{ row.rank }}</td>
-            <td class=""><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
-            <td class="">{{ row.region }}</td>
-            <td class="">{{ row.win_rate }}</td>
-            <td class="">{{ row.rating }}</td>
-            <td class="">{{ row.conservative_rating }}</td>
-            <td class="">{{ row.tier }}</td>
-            <td class="">{{ row.games_played }}</td>
-            <td class=" flex gap-x-2 items-center"><hero-box-small :hero="row.most_played_hero"></hero-box-small>{{ row.hero_build_games_played }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <custom-table :columns="columns" :data="data"></custom-table>
   </div>
 </template>
 
@@ -90,13 +43,22 @@ export default {
     return {
       infoText1: "Leaderboards are a reflection of user uploaded data. Due to replay file corruption or other issues, the data is not always reflective of real player stats. Please keep that in mind when reviewing leaderboards.",
       infoText2: " Only users who upload replays through an approved automatic uploader will be able to rank on the leaderboards. The main uploader can be found at Heroes Profile Uploader while the secondary uploader that works on platforms other than windows can be found at Heroes Profile Electron Uploader. For any questions, please contact zemill@heroesprofile.com ",
+      columns: [
+        { text: 'Rank', value: 'rank', sortable: true },
+        { text: 'Battletag', value: 'battletag', sortable: true },
+        { text: 'Region', value: 'region', sortable: true },
+        { text: 'Win Rate %', value: 'win_rate', sortable: true },
+        { text: 'Heroes Profile Rating', value: 'rating', sortable: true },
+        { text: 'Player MMR', value: 'conservative_rating', sortable: true }, 
+        { text: 'Tier', value: 'tier', sortable: true }, 
+        { text: 'Games Played', value: 'games_played', sortable: true }, 
+        { text: 'Most Played Hero (Games Played with Hero)', value: 'most_played_hero', sortable: false }, 
+      ],
       leaderboardtype: "Player",
       groupsize: "Solo",
       gametype: null,
       season: null,
       data: null,
-      sortKey: '',
-      sortDir: 'asc',
     }
   },
   created(){
@@ -107,18 +69,7 @@ export default {
   mounted() {
   },
   computed: {
-    sortedData() {
-      if (!this.sortKey) return this.data;
-      return this.data.slice().sort((a, b) => {
-        const valA = a[this.sortKey];
-        const valB = b[this.sortKey];
-        if (this.sortDir === 'asc') {
-          return valA < valB ? -1 : 1;
-        } else {
-          return valA > valB ? -1 : 1;
-        }
-      });
-    },
+
   },
   watch: {
   },
@@ -147,10 +98,6 @@ export default {
 
 
       this.getData();
-    },
-
-    getTier(){
-      return "Bad";
     },
   }
 }
