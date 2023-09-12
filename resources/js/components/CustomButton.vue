@@ -1,6 +1,6 @@
 <template>
   <div>  
-  <a :class="[staticClasses, colorClass, { 
+  <button :class="[staticClasses, colorClass, { 
     block: size === 'big', 
     'py-4': size === 'big', 
     'text-lg': size === 'big', 
@@ -12,7 +12,7 @@
 
      }]" :href="href" :alt="alt">
    {{text}}
-  </a>
+  </button>
 </div>
 </template>
 

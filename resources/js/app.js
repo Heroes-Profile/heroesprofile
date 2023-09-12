@@ -16,6 +16,8 @@ import SearchPlayer from './components/Compare/SearchPlayer.vue';
 
 
 //Random Pieces - rename later to what you want and place in folder
+import MainNav from './components/MainNav.vue';
+import PageHeading from './components/PageHeading.vue';
 import Infobox from './components/Infobox.vue';
 import TalentBox from './components/TalentBox.vue';
 import Filters from './components/Filters.vue';

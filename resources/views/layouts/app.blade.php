@@ -18,8 +18,9 @@
 </head>
 <body class="bg-black text-white">
   <div id="app">
+    <!-- I want to put this nav into the MainNav vue component but it has the auth stuff and i'm not sure how to do that -->
 <nav class="bg-gray-dark text-white p-4 z-50 relative">
-  <div class="flex items-center space-x-4 items-center">
+  <div class="flex items-center space-x-4 items-center flex-wrap flex-column md:flex-row">
 
     <a class="text-blue-600 hover:text-blue-800 flex items-center font-logo text-2xl mr-auto" href="/">Heroes<img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png"/>Profile</a>
 
