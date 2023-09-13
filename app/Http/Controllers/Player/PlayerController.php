@@ -391,7 +391,7 @@ class PlayerController extends Controller
         $returnData->first_to_ten_win_rate = ($data->first_to_ten_wins + $data->first_to_ten_losses) > 0 ? ($data->first_to_ten_wins / ($data->first_to_ten_wins + $data->first_to_ten_losses)) * 100: 0;
         $returnData->second_to_ten_win_rate = ($data->second_to_ten_wins + $data->second_to_ten_losses) > 0 ? ($data->second_to_ten_wins / ($data->second_to_ten_wins + $data->second_to_ten_losses)) * 100: 0;
         $returnData->kdr = $data->deaths > 0 ? $data->kills / $data->deaths : $data->kills;
-        $returnData->kda = $data->deaths > 0 ? $data->takedowns / $data->deaths : $data->kills;
+        $returnData->kda = $data->deaths > 0 ? $data->takedowns / $data->deaths : $data->takedowns;
         $returnData->account_level = $data->account_level;
         $returnData->win_rate = ($data->wins + $data->losses) > 0 ? ($data->wins / ($data->wins + $data->losses)) * 100 : 0;
         $returnData->bruiser_win_rate = ($data->bruiser_wins + $data->bruiser_losses) > 0 ? ($data->bruiser_wins / ($data->bruiser_wins + $data->bruiser_losses)) * 100 : 0;
