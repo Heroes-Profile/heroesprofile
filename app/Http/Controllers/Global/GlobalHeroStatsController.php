@@ -92,8 +92,7 @@ class GlobalHeroStatsController extends Controller
             'role=' . $role
         ]);
 
-        //return $cacheKey;
-
+        //return $cacheKey;        
         $data = Cache::store("database")->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion, 
                                                                                                                                  $gameType, 
                                                                                                                                  $leagueTier, 

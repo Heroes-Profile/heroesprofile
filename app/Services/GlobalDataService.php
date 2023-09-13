@@ -3,6 +3,7 @@
 namespace App\Services;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 use App\Models\Replay;
 use App\Models\Hero;
@@ -86,7 +87,30 @@ class GlobalDataService
     }
 
     public function calculateCacheTimeInMinutes($timeframe){
-        //Cache time is set to 0.  Need to setup how cache time is done
+        if (app()->environment('production')) {
+            if(count($timeframe) == 1 && $timeframe[0] == session('latestPatch')){
+                $date = SeasonGameVersion::where("game_version", min($timeframe))->value("date_added");
+                $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
+
+
+                if($changeInMinutes < 1440){  //1 day
+                    return .25; //15 min
+                }else if($changeInMinutes < (1440 * 3.5)){ //half week
+                    return 6 * 60; //6 hours
+                }else if($changeInMinutes < (1440 * 7)){ //1 week
+                    return 24 * 60; //1 day
+                }else if($changeInMinutes < (1440 * 2)){ //2 week
+                    return 24 * 60 * 7; //7 day
+                }else{
+                    return 24 * 60 * 7 * 2; //2 weeks
+                }
+            }else{
+                $date = SeasonGameVersion::where("game_version", min($timeframe))->value("date_added");
+                $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
+                return $changeInMinutes;
+            }
+        }
+
         return 0;
     }
 
