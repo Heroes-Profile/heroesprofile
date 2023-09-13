@@ -26,7 +26,6 @@ module.exports = {
       'sans' : ['Open Sans'],
       'logo' : ['Ruslan Display'],
     },
-
     extend: {},
   },
   plugins: [],
