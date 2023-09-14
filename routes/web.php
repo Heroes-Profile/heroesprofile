@@ -101,7 +101,7 @@ Route::get('Profile/Settings', [ProfileController::class, 'showSettings'])->midd
 //Player data
 Route::get('Player/FriendFoe/{battletag}/{blizz_id}/{region}', [FriendFoeController::class, 'show']);
 Route::get('Player/Hero/All/{battletag}/{blizz_id}/{region}', [PlayerHeroesController::class, 'showAll']);
-Route::get('Player/Hero/Single/{battletag}/{blizz_id}/{region}', [PlayerHeroesController::class, 'showSingle']);
+Route::get('Player/Hero/Single/{battletag}/{blizz_id}/{region}/{hero}', [PlayerHeroesController::class, 'showSingle']);
 
 
 
