@@ -55,7 +55,7 @@
         </thead>
         <tbody>
           <tr v-for="row in sortedData" :key="row.id">
-            <td class="py-2 px-3 border-b border-gray-200"><a :href="getPlayerHeroPageUrl()"><hero-box-small :hero="row.hero"></hero-box-small>{{ row.name }}</a></td>
+            <td class="py-2 px-3 border-b border-gray-200"><a :href="getPlayerHeroPageUrl(row.name)"><hero-box-small :hero="row.hero"></hero-box-small>{{ row.name }}</a></td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.wins }}|{{ row.losses }} {{ row.win_rate }} %</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.kda }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}/{{ row.avg_assists }}</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.kdr }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}</td>
@@ -230,6 +230,7 @@ export default {
           hero: this.hero,
           role: this.role,
           minimumgames: this.minimumgames,
+          type: "all",
         });
 
         this.data = response.data;
@@ -259,8 +260,8 @@ export default {
     showGameTypeColumn(game_type){
       return this.gametype.includes(game_type);
     },
-    getPlayerHeroPageUrl(){
-      return "/Player/Hero/Single/" + this.battletag + "/" + this.blizzid + "/" + this.region;
+    getPlayerHeroPageUrl(hero){
+      return "/Player/Hero/Single/" + this.battletag + "/" + this.blizzid + "/" + this.region + "/" + hero;
     },
     isDisabled(stat) {
       return this.selectedStatsCount >= 15 && !stat.selected;

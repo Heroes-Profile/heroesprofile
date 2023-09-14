@@ -86,6 +86,31 @@ class GlobalDataService
         return session('latestGameDate');
     }
 
+    public function getRegionIDtoString(){
+        if (!session()->has('regions')) {
+            $regions = [
+                1 => "NA",
+                2 => "EU",
+                3 => "KR",
+                /*  4 => "UNK",*/
+                5 => "CN"
+            ];
+            session(['regions' => $regions]);
+        }
+
+        return session('regions');
+    }
+
+    public function getGameTypeIDtoString(){
+        if (!session()->has('game_types')) {
+            $game_types = GameType::all();
+            $game_types = $game_types->keyBy('type_id');
+            session(['game_types' => $game_types]);
+        }
+
+        return session('game_types');
+    }
+
     public function calculateCacheTimeInMinutes($timeframe){
         if (app()->environment('production')) {
             if(count($timeframe) == 1 && $timeframe[0] == session('latestPatch')){
@@ -127,6 +152,17 @@ class GlobalDataService
         }
         $heroModel = session('heroes')->firstWhere('name', $heroName);
         return $heroModel;
+    }
+
+    public function getSeasonsData(){
+       if (!session()->has('seasonData')) {
+            session(['seasonData' => SeasonDate::orderBy("id", "desc")->get()]);
+        }
+        return session('seasonData');
+    }
+
+    public function getSeasonFromDate($date){
+        return SeasonDate::select("id")->where("start_date", "<=", $date)->where("end_date", ">=", $date)->first()->id;
     }
 
     public function getMasterMMRData($blizz_id, $region, $type, $game_type){

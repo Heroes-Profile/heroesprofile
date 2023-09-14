@@ -37,7 +37,9 @@ export default {
   props: {
     values: Array,
     text: String,
-    defaultValue: String,
+    defaultValue: {
+      type: [String, Number]
+    },
     trackclosure: Boolean,
   },
   data(){
