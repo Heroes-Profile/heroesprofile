@@ -36,6 +36,7 @@ import MapBoxSmall from './components/MapBoxSmall.vue';
 import MapGroupBox from './components/MapGroupBox.vue';
 import GameSummaryBox from './components/GameSummaryBox.vue';
 import MmrBox from './components/MmrBox.vue';
+import StatBox from './components/StatBox.vue';
 
 //Global Pages
 import GlobalHeroStats from './components/Global/Hero/GlobalHeroStats.vue';

@@ -1,6 +1,106 @@
 <template>
   <div class="">
   
+      <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametype"></multi-select-filter>
+      <single-select-filter :values="filters.seasons" :text="'Season'" @input-changed="handleInputChange"></single-select-filter>
+     
+
+      <div v-if="data">
+
+        <div class="flex-1 flex">
+          <stat-box :title="'Wins'" :value="data.wins"></stat-box>
+          <stat-box :title="'Losses'" :value="data.losses"></stat-box>
+          <stat-box :title="'First to Ten Wins'" :value="data.first_to_ten_wins"></stat-box>
+          <stat-box :title="'First to Ten Losses'" :value="data.first_to_ten_losses"></stat-box>
+          <stat-box :title="'First to Ten Win Rate'" :value="data.first_to_ten_win_rate"></stat-box>
+
+          <stat-box :title="'Second to Ten Wins'" :value="data.second_to_ten_wins"></stat-box>
+          <stat-box :title="'Second to Ten Losses'" :value="data.second_to_ten_losses"></stat-box>
+          <stat-box :title="'Second to Ten Win Rate'" :value="data.second_to_ten_win_rate"></stat-box>         
+          
+          <stat-box :title="'KDR'" :value="data.kdr"></stat-box>          
+          <stat-box :title="'KDA'" :value="data.kda"></stat-box>          
+
+          <stat-box :title="'Account Level'" :value="data.account_level"></stat-box>          
+        </div>
+
+        <div class="flex-1 flex">
+          <stat-box :title="'MVP'" :value="data.mvp_rate"></stat-box>       
+          <stat-box :title="'Total Time Played'" :value="data.total_time_played"></stat-box>       
+          <stat-box :title="'AVG. Time on Fire'" :value="data.average_time_on_fire"></stat-box>       
+
+          <stat-box :title="'Win Rate'" :value="data.win_rate"></stat-box>       
+          <stat-box :title="'Bruiser Win Rate'" :value="data.bruiser_win_rate"></stat-box>       
+          <stat-box :title="'Support Win Rate'" :value="data.support_win_rate"></stat-box>       
+          <stat-box :title="'Ranged Assassin Win Rate'" :value="data.ranged_assassin_win_rate"></stat-box>       
+          <stat-box :title="'Melee Assassin Win Rate'" :value="data.melee_assassin_win_rate"></stat-box>       
+          <stat-box :title="'Healer Win Rate'" :value="data.healer_win_rate"></stat-box>       
+          <stat-box :title="'Tank Win Rate'" :value="data.tank_win_rate"></stat-box>       
+
+        </div>
+
+        <div>
+          <h1> Heroes </h1>
+
+          <hero-group-box :text="'Most Played'" :data="data.heroes_three_most_played"></hero-group-box>
+          <hero-group-box :text="'Highest Win Rate'" :data="data.heroes_three_highest_win_rate"></hero-group-box>
+          <hero-group-box :text="'Latest Played'" :data="data.heroes_three_latest_played"></hero-group-box>
+        </div>
+
+        <div>
+          <span>QM MMR = </span><span>{{ data.qm_mmr_data ? data.qm_mmr_data.mmr : 0 }}</span><br>
+          <span>QM MMR Tier = </span><span>{{ data.qm_mmr_data ? data.qm_mmr_data.rank_tier : "" }}</span><br>
+
+          <span>UD MMR = </span><span>{{ data.ud_mmr_data ? data.ud_mmr_data.mmr : 0 }}</span><br>
+          <span>UD MMR Tier = </span><span>{{ data.ud_mmr_data ? data.ud_mmr_data.rank_tier : "" }}</span><br>
+
+          <span>HL MMR = </span><span>{{ data.hl_mmr_data ? data.hl_mmr_data.mmr : 0 }}</span><br>
+          <span>HL MMR Tier = </span><span>{{ data.hl_mmr_data ? data.hl_mmr_data.rank_tier : "" }}</span><br>
+
+          <span>TL MMR = </span><span>{{ data.tl_mmr_data ? data.tl_mmr_data.mmr : 0 }}</span><br>
+          <span>TL MMR Tier = </span><span>{{ data.tl_mmr_data ? data.tl_mmr_data.rank_tier : "" }}</span><br>
+
+          <span>SL MMR = </span><span>{{ data.sl_mmr_data ? data.sl_mmr_data.mmr : 0 }}</span><br>
+          <span>SL MMR Tier = </span><span>{{ data.sl_mmr_data ? data.sl_mmr_data.rank_tier : "" }}</span><br>
+
+          <span>AR MMR = </span><span>{{ data.ar_mmr_data ? data.ar_mmr_data.mmr : 0 }}</span><br>
+          <span>AR MMR Tier = </span><span>{{ data.ar_mmr_data ? data.ar_mmr_data.rank_tier : "" }}</span><br>
+
+        </div>
+
+        <div>
+          <h1>Maps</h1>
+          <div class="flex">
+            <map-group-box :data="data.maps_three_most_played"></map-group-box>
+            <map-group-box :data="data.maps_three_highest_win_rate"></map-group-box>
+            <map-group-box :data="data.maps_three_latest_played"></map-group-box>
+          </div>
+        </div>
+
+
+        <div>
+          <h1>Party Size Win Rates</h1>
+          solo: total games: {{ data.stack_one_total }} wins: {{ data.stack_one_wins }} losses: {{ data.stack_one_losses }} win rate: {{ data.stack_one_win_rate }}% <br>
+
+          three-man: total games: {{ data.stack_three_total }} wins: {{ data.stack_three_wins }} losses: {{ data.stack_three_losses }} win rate: {{ data.stack_three_win_rate }}% <br>
+
+          four-man: total games: {{ data.stack_four_total }} wins: {{ data.stack_four_wins }} losses: {{ data.stack_four_losses }} win rate: {{ data.stack_four_win_rate }}% <br>
+
+          five-man: total games: {{ data.stack_five_total }} wins: {{ data.stack_five_wins }} losses: {{ data.stack_five_losses }} win rate: {{ data.stack_five_win_rate }}% <br>
+
+        </div>
+
+        <div v-if="data && data.matchData">
+          <h1>Most Recent matches</h1>
+
+          <template v-for="(item, index) in data.matchData">
+            <div>{{ item.game_map.name }} | {{ item.game_type.name }} | {{ item.game_date }}</div>
+            <game-summary-box :data="item"></game-summary-box>
+          </template>
+        </div>
+      </div>
+
+
   </div>
 </template>
 
@@ -10,12 +110,15 @@ export default {
   components: {
   },
   props: {
+    filters: Object,
     battletag: String,
     blizzid: String, 
     region: String,
   },
   data(){
     return {
+      data: null,
+      gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
 
     }
   },
@@ -37,11 +140,14 @@ export default {
           game_type: "all",
           season: "all",
         });
-        console.log(response.data);
+        this.data = response.data; 
       }catch(error){
         console.log(error);
       }
     },
-  }
+    handleInputChange(eventPayload) {
+    },
+  },
+
 }
 </script>
