@@ -180,6 +180,11 @@ class PlayerHeroesController extends Controller
                     ])
                 ->get();
 
+
+        $mapData = $result->groupBy('game_map');
+
+
+
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
@@ -200,8 +205,8 @@ class PlayerHeroesController extends Controller
 
         $seasonData = $this->globalDataService->getSeasonsData();
         $newSeasonData = null;
-        $mapData = null;
         $latestGames = null;
+        $winRateFiltered = null;
 
         if($type == "single"){
             $qm_mmr_data = MasterMMRDataQM::select("conservative_rating", "win", "loss")->filterByType($hero)->filterByGametype(1)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
@@ -286,14 +291,14 @@ class PlayerHeroesController extends Controller
 
                 $game->game_type = $gameTypes[$game->game_type];
                 $game->hero_object = $heroData[$game->hero];
-                $game->map_object = $maps[$game->game_map];
-                $game->level_one = $talentData[$game->level_one];
-                $game->level_four = $talentData[$game->level_four];
-                $game->level_seven = $talentData[$game->level_seven];
-                $game->level_ten = $talentData[$game->level_ten];
-                $game->level_thirteen = $talentData[$game->level_thirteen];
-                $game->level_sixteen = $talentData[$game->level_sixteen];
-                $game->level_twenty = $talentData[$game->level_twenty];
+                $game->game_map = $maps[$game->game_map];
+                $game->level_one = $game->level_one ? $talentData[$game->level_one] : null;
+                $game->level_four = $game->level_four ? $talentData[$game->level_four] : null;
+                $game->level_seven = $game->level_seven ? $talentData[$game->level_seven] : null;
+                $game->level_ten = $game->level_ten ? $talentData[$game->level_ten] : null;
+                $game->level_thirteen = $game->level_thirteen ? $talentData[$game->level_thirteen] : null;
+                $game->level_sixteen = $game->level_sixteen ? $talentData[$game->level_sixteen] : null;
+                $game->level_twenty = $game->level_twenty ? $talentData[$game->level_twenty] : null;
 
                 $game->player_conservative_rating = round(1800 + 40 * $game->player_conservative_rating);
                 $game->hero_conservative_rating = round(1800 + 40 * $game->hero_conservative_rating);
@@ -356,7 +361,7 @@ class PlayerHeroesController extends Controller
 
 
 
-            $mapData = $result->groupBy('game_map');
+
             $mapData = $mapData->map(function($games, $map) use ($maps){
                 $gamesPlayed = $games->count();
                 $wins = $games->where('winner', 1)->count();
@@ -364,34 +369,39 @@ class PlayerHeroesController extends Controller
                 $winRate = ($gamesPlayed > 0) ? ($wins / $gamesPlayed) * 100 : 0;
                 $latestGameDate = $games->max('game_date');
 
+
+            
                 return [
                     'name' => $maps[$map]["name"],
-                    'game_map' => $map,
-                    'map_object' => $maps[$map],
+                    'game_map' => $maps[$map],
                     'games_played' => $gamesPlayed,
                     'latest_game' => $latestGameDate,
                     'wins' => $wins,
                     'losses' => $losses,
                     'win_rate' => round($winRate, 2),
                 ];
+            
             });
-        }
 
-        $winRateFiltered = $mapData->filter(function ($data) {
-            return $data['games_played'] > 5;
-        });
-
-        if ($winRateFiltered->count() < 3) {
+      
             $winRateFiltered = $mapData->filter(function ($data) {
-                return $data['games_played'] > 2;
+                return $data['games_played'] > 5;
             });
+
+            if ($winRateFiltered->count() < 3) {
+                $winRateFiltered = $mapData->filter(function ($data) {
+                    return $data['games_played'] > 2;
+                });
+            }
+
+            if ($winRateFiltered->count() < 3) {
+                $winRateFiltered = $mapData->filter(function ($data) {
+                    return $data['games_played'] > 0;
+                });
+            }
         }
 
-        if ($winRateFiltered->count() < 3) {
-            $winRateFiltered = $mapData->filter(function ($data) {
-                return $data['games_played'] > 0;
-            });
-        }
+    
 
         $returnData = $result->groupBy('hero')->map(function($heroStats) use ($heroData, $qm_mmr_data, $ud_mmr_data, $hl_mmr_data, $tl_mmr_data, $sl_mmr_data, $ar_mmr_data, $newSeasonData, $mapData, $winRateFiltered, $latestGames){
             $deaths = $heroStats->sum('deaths');
@@ -586,10 +596,10 @@ class PlayerHeroesController extends Controller
                 'sum_first_to_ten' => $heroStats->sum('first_to_ten'),
                 'sum_time_on_fire' => $heroStats->sum('time_on_fire'),
                 'season_win_rate_data' => $newSeasonData,
-                'map_data' => $mapData->sortBy('name')->values(),
-                'map_data_top5_played' => $mapData->sortByDesc('games_played')->take(3)->values(),
-                'map_data_top5_win_rate' => $winRateFiltered->sortByDesc('win_rate')->take(3)->values(),
-                'map_data_top5_latest_played' => $mapData->sortByDesc('game_date')->take(3)->values(),
+                'map_data' => $mapData ? $mapData->sortBy('name')->values() : null,
+                'map_data_top5_played' => $mapData ? $mapData->sortByDesc('games_played')->take(3)->values() : null,
+                'map_data_top5_win_rate' => $winRateFiltered ? $winRateFiltered->sortByDesc('win_rate')->take(3)->values() : null,
+                'map_data_top5_latest_played' => $mapData ? $mapData->sortByDesc('game_date')->take(3)->values() : null,
                 'latestGames' => $latestGames,
             ];
         })->values()->sortBy('name')->values()->all();

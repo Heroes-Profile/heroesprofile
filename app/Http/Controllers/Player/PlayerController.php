@@ -13,6 +13,15 @@ use App\Models\Replay;
 use App\Models\LaravelProfilePage;
 use App\Models\Battletag;
 use App\Models\MMRTypeID;
+use App\Models\Map;
+use App\Models\HeroesDataTalent;
+
+use App\Models\MasterMMRDataQM;
+use App\Models\MasterMMRDataUD;
+use App\Models\MasterMMRDataHL;
+use App\Models\MasterMMRDataTL;
+use App\Models\MasterMMRDataSL;
+use App\Models\MasterMMRDataAR;
 
 class PlayerController extends Controller
 {
@@ -43,7 +52,12 @@ class PlayerController extends Controller
             return redirect('/');
         }
 
-        return view('Player.player', compact('battletag', 'blizz_id', 'region'));
+        return view('Player.player')->with([
+                'battletag' => $battletag,
+                'blizz_id' => $blizz_id,
+                'region' => $region,
+                'filters' => $this->globalDataService->getFilterData(),
+                ]);
     }
 
     public function getPlayerData(Request $request){
@@ -388,19 +402,23 @@ class PlayerController extends Controller
         $returnData = new \stdClass;
         $returnData->wins = $data->wins;
         $returnData->losses = $data->losses;
-        $returnData->first_to_ten_win_rate = ($data->first_to_ten_wins + $data->first_to_ten_losses) > 0 ? ($data->first_to_ten_wins / ($data->first_to_ten_wins + $data->first_to_ten_losses)) * 100: 0;
-        $returnData->second_to_ten_win_rate = ($data->second_to_ten_wins + $data->second_to_ten_losses) > 0 ? ($data->second_to_ten_wins / ($data->second_to_ten_wins + $data->second_to_ten_losses)) * 100: 0;
-        $returnData->kdr = $data->deaths > 0 ? $data->kills / $data->deaths : $data->kills;
-        $returnData->kda = $data->deaths > 0 ? $data->takedowns / $data->deaths : $data->takedowns;
+        $returnData->first_to_ten_wins = $data->first_to_ten_wins;
+        $returnData->first_to_ten_losses = $data->first_to_ten_losses;
+        $returnData->first_to_ten_win_rate = ($data->first_to_ten_wins + $data->first_to_ten_losses) > 0 ? round(($data->first_to_ten_wins / ($data->first_to_ten_wins + $data->first_to_ten_losses)) * 100, 2): 0;
+        $returnData->second_to_ten_wins = $data->second_to_ten_wins;
+        $returnData->second_to_ten_losses = $data->second_to_ten_losses;
+        $returnData->second_to_ten_win_rate = ($data->second_to_ten_wins + $data->second_to_ten_losses) > 0 ? round(($data->second_to_ten_wins / ($data->second_to_ten_wins + $data->second_to_ten_losses)) * 100, 2): 0;
+        $returnData->kdr = $data->deaths > 0 ? round($data->kills / $data->deaths, 2) : $data->kills;
+        $returnData->kda = $data->deaths > 0 ? round($data->takedowns / $data->deaths, 2) : $data->takedowns;
         $returnData->account_level = $data->account_level;
-        $returnData->win_rate = ($data->wins + $data->losses) > 0 ? ($data->wins / ($data->wins + $data->losses)) * 100 : 0;
-        $returnData->bruiser_win_rate = ($data->bruiser_wins + $data->bruiser_losses) > 0 ? ($data->bruiser_wins / ($data->bruiser_wins + $data->bruiser_losses)) * 100 : 0;
-        $returnData->support_win_rate = ($data->support_wins + $data->support_losses) > 0 ? ($data->support_wins / ($data->support_wins + $data->support_losses)) * 100 : 0;
-        $returnData->ranged_assassin_win_rate = ($data->ranged_assassin_wins + $data->ranged_assassin_losses) > 0 ? ($data->ranged_assassin_wins / ($data->ranged_assassin_wins + $data->ranged_assassin_losses)) * 100 : 0;
-        $returnData->melee_assassin_win_rate = ($data->melee_assassin_wins + $data->melee_assassin_losses) > 0 ? ($data->melee_assassin_wins / ($data->melee_assassin_wins + $data->melee_assassin_losses)) * 100 : 0;
-        $returnData->healer_win_rate = ($data->healer_wins + $data->healer_losses) > 0 ? ($data->healer_wins / ($data->healer_wins + $data->healer_losses)) * 100 : 0;
-        $returnData->tank_win_rate = ($data->tank_wins + $data->tank_losses) > 0 ? ($data->tank_wins / ($data->tank_wins + $data->tank_losses)) * 100 : 0;
-        $returnData->mvp_rate = $data->mvp_games > 0 ? ($data->games_mvp / $data->mvp_games) * 100 : 0;
+        $returnData->win_rate = ($data->wins + $data->losses) > 0 ? round(($data->wins / ($data->wins + $data->losses)) * 100, 2) : 0;
+        $returnData->bruiser_win_rate = ($data->bruiser_wins + $data->bruiser_losses) > 0 ? round(($data->bruiser_wins / ($data->bruiser_wins + $data->bruiser_losses)) * 100, 2) : 0;
+        $returnData->support_win_rate = ($data->support_wins + $data->support_losses) > 0 ? round(($data->support_wins / ($data->support_wins + $data->support_losses)) * 100, 2) : 0;
+        $returnData->ranged_assassin_win_rate = ($data->ranged_assassin_wins + $data->ranged_assassin_losses) > 0 ? round(($data->ranged_assassin_wins / ($data->ranged_assassin_wins + $data->ranged_assassin_losses)) * 100, 2) : 0;
+        $returnData->melee_assassin_win_rate = ($data->melee_assassin_wins + $data->melee_assassin_losses) > 0 ? round(($data->melee_assassin_wins / ($data->melee_assassin_wins + $data->melee_assassin_losses)) * 100, 2) : 0;
+        $returnData->healer_win_rate = ($data->healer_wins + $data->healer_losses) > 0 ? round(($data->healer_wins / ($data->healer_wins + $data->healer_losses)) * 100, 2) : 0;
+        $returnData->tank_win_rate = ($data->tank_wins + $data->tank_losses) > 0 ? round(($data->tank_wins / ($data->tank_wins + $data->tank_losses)) * 100, 2) : 0;
+        $returnData->mvp_rate = $data->mvp_games > 0 ? round(($data->games_mvp / $data->mvp_games) * 100, 2) : 0;
 
         $totalSeconds = $data->total_time_played;
         $days = floor($totalSeconds / (3600 * 24));
@@ -424,18 +442,30 @@ class PlayerController extends Controller
         $top_three_win_rate_heroes = null;
         $gamePlayedThresholds = [20, 15, 10, 5, 0];
 
+
+        $heroData = $this->globalDataService->getHeroes();
+        $heroData = $heroData->keyBy('id');
+
+        $maps = Map::all();
+        $maps = $maps->keyBy('map_id');
+
+        $talentData = HeroesDataTalent::all();
+        $talentData = $talentData->keyBy('talent_id');
+
+
         foreach ($gamePlayedThresholds as $threshold) {
             $filtered_hero_data = $hero_data->filter(function ($item) use ($threshold) {
                 return $item['games_played'] >= $threshold;
             });
 
-            $top_three_win_rate_heroes = $filtered_hero_data->map(function ($item, $key) {
+            $top_three_win_rate_heroes = $filtered_hero_data->map(function ($item, $key) use ($heroData) {
                 if ($item['games_played'] > 0) {
                     $item['win_rate'] = ($item['wins'] / $item['games_played']) * 100;
                 } else {
                     $item['win_rate'] = 0;
                 }
                 $item['hero_id'] = $key;
+                $item['hero'] = $heroData[$key];
                 return $item;
             })->sortByDesc('win_rate')->take(3)->values()->all();
 
@@ -447,7 +477,7 @@ class PlayerController extends Controller
         $returnData->heroes_three_highest_win_rate = $top_three_win_rate_heroes;
 
 
-        $top_three_most_played_heroes = $hero_data->map(function ($item, $key) {
+        $top_three_most_played_heroes = $hero_data->map(function ($item, $key) use ($heroData){
             if ($item['games_played'] > 0) {
                 $item['win_rate'] = ($item['wins'] / $item['games_played']) * 100;
             } else {
@@ -455,12 +485,13 @@ class PlayerController extends Controller
             }
 
             $item['hero_id'] = $key;
+            $item['hero'] = $heroData[$key];
             return $item;
         })->sortByDesc('games_played')->take(3)->values()->all();
 
         $returnData->heroes_three_most_played = $top_three_most_played_heroes;
 
-        $top_three_latest_played_heroes = $hero_data->map(function ($item, $key) {
+        $top_three_latest_played_heroes = $hero_data->map(function ($item, $key) use ($heroData) {
             if ($item['games_played'] > 0) {
                 $item['win_rate'] = ($item['wins'] / $item['games_played']) * 100;
             } else {
@@ -468,6 +499,8 @@ class PlayerController extends Controller
             }
 
             $item['hero_id'] = $key;
+            $item['hero'] = $heroData[$key];
+
             return $item;
         })->sortByDesc('game_date')->take(3)->values()->all();
 
@@ -475,12 +508,41 @@ class PlayerController extends Controller
 
         $type = MMRTypeID::select("mmr_type_id")->filterByName("player")->first()->mmr_type_id;
 
-        $returnData->qm_mmr_data = $this->globalDataService->getMasterMMRData($blizz_id, $region, $type, 1);
-        $returnData->ud_mmr_data = $this->globalDataService->getMasterMMRData($blizz_id, $region, $type, 2);
-        $returnData->hl_mmr_data = $this->globalDataService->getMasterMMRData($blizz_id, $region, $type, 3);
-        $returnData->tl_mmr_data = $this->globalDataService->getMasterMMRData($blizz_id, $region, $type, 4);
-        $returnData->sl_mmr_data = $this->globalDataService->getMasterMMRData($blizz_id, $region, $type, 5);
-        $returnData->ar_mmr_data = $this->globalDataService->getMasterMMRData($blizz_id, $region, $type, 6);
+        $qm_mmr_data = MasterMMRDataQM::select("conservative_rating", "win", "loss")->filterByType(10000)->filterByGametype(1)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
+        if($qm_mmr_data){
+            $qm_mmr_data->rank_tier = $this->globalDataService->calculateSubTier($this->globalDataService->getRankTiers(1, 10000), $qm_mmr_data->mmr);
+        }
+
+        $ud_mmr_data = MasterMMRDataUD::select("conservative_rating", "win", "loss")->filterByType(10000)->filterByGametype(2)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
+        if($ud_mmr_data){
+            $ud_mmr_data->rank_tier = $this->globalDataService->calculateSubTier($this->globalDataService->getRankTiers(2, 10000), $ud_mmr_data->mmr);
+        }
+
+        $hl_mmr_data = MasterMMRDataHL::select("conservative_rating", "win", "loss")->filterByType(10000)->filterByGametype(3)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
+        if($hl_mmr_data){
+            $hl_mmr_data->rank_tier = $this->globalDataService->calculateSubTier($this->globalDataService->getRankTiers(3, 10000), $hl_mmr_data->mmr);
+        }
+
+        $tl_mmr_data = MasterMMRDataTL::select("conservative_rating", "win", "loss")->filterByType(10000)->filterByGametype(4)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
+        if($tl_mmr_data){
+            $tl_mmr_data->rank_tier = $this->globalDataService->calculateSubTier($this->globalDataService->getRankTiers(4, 10000), $tl_mmr_data->mmr);
+        }
+
+        $sl_mmr_data = MasterMMRDataSL::select("conservative_rating", "win", "loss")->filterByType(10000)->filterByGametype(5)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
+        if($sl_mmr_data){
+            $sl_mmr_data->rank_tier = $this->globalDataService->calculateSubTier($this->globalDataService->getRankTiers(5, 10000), $sl_mmr_data->mmr);
+        }
+        $ar_mmr_data = MasterMMRDataAR::select("conservative_rating", "win", "loss")->filterByType(10000)->filterByGametype(6)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
+        if($ar_mmr_data){
+            $ar_mmr_data->rank_tier = $this->globalDataService->calculateSubTier($this->globalDataService->getRankTiers(6, 10000), $ar_mmr_data->mmr);
+        }
+
+        $returnData->qm_mmr_data = $qm_mmr_data;
+        $returnData->ud_mmr_data = $ud_mmr_data;
+        $returnData->hl_mmr_data = $hl_mmr_data;
+        $returnData->tl_mmr_data = $tl_mmr_data;
+        $returnData->sl_mmr_data = $sl_mmr_data;
+        $returnData->ar_mmr_data = $ar_mmr_data;
 
 
         $map_data = collect(json_decode($data->map_data, true));
@@ -491,13 +553,14 @@ class PlayerController extends Controller
                 return $item['games_played'] >= $threshold;
             });
 
-            $top_three_win_rate_maps = $filtered_map_data->map(function ($item, $key) {
+            $top_three_win_rate_maps = $filtered_map_data->map(function ($item, $key) use ($maps){
                 if ($item['games_played'] > 0) {
                     $item['win_rate'] = ($item['wins'] / $item['games_played']) * 100;
                 } else {
                     $item['win_rate'] = 0;
                 }
                 $item['map_id'] = $key;
+                $item['game_map'] = $maps[$key];
                 return $item;
             })->sortByDesc('win_rate')->take(3)->values()->all();
 
@@ -509,7 +572,7 @@ class PlayerController extends Controller
         $returnData->maps_three_highest_win_rate = $top_three_win_rate_maps;
 
 
-        $top_three_most_played_maps = $map_data->map(function ($item, $key) {
+        $top_three_most_played_maps = $map_data->map(function ($item, $key) use ($maps){
             if ($item['games_played'] > 0) {
                 $item['win_rate'] = ($item['wins'] / $item['games_played']) * 100;
             } else {
@@ -517,12 +580,13 @@ class PlayerController extends Controller
             }
 
             $item['map_id'] = $key;
+            $item['game_map'] = $maps[$key];
             return $item;
         })->sortByDesc('games_played')->take(3)->values()->all();
 
         $returnData->maps_three_most_played = $top_three_most_played_maps;
 
-        $top_three_latest_played_maps = $map_data->map(function ($item, $key) {
+        $top_three_latest_played_maps = $map_data->map(function ($item, $key) use ($maps){
             if ($item['games_played'] > 0) {
                 $item['win_rate'] = ($item['wins'] / $item['games_played']) * 100;
             } else {
@@ -530,6 +594,7 @@ class PlayerController extends Controller
             }
 
             $item['map_id'] = $key;
+            $item['game_map'] = $maps[$key];
             return $item;
         })->sortByDesc('game_date')->take(3)->values()->all();
 
@@ -538,24 +603,49 @@ class PlayerController extends Controller
 
         $returnData->stack_one_wins = $data->stack_one_wins;
         $returnData->stack_one_losses = $data->stack_one_losses;
-        $returnData->stack_one_win_rate = ($data->stack_one_wins + $data->stack_one_losses) > 0 ? ($data->stack_one_wins / ($data->stack_one_wins + $data->stack_one_losses)) * 100: 0;
+        $returnData->stack_one_win_rate = ($data->stack_one_wins + $data->stack_one_losses) > 0 ? round(($data->stack_one_wins / ($data->stack_one_wins + $data->stack_one_losses)) * 100, 2) : 0;
+        
         $returnData->stack_two_wins = $data->stack_two_wins;
         $returnData->stack_two_losses = $data->stack_two_losses;
-        $returnData->stack_two_win_rate = ($data->stack_two_wins + $data->stack_two_losses) > 0 ? ($data->stack_two_wins / ($data->stack_two_wins + $data->stack_two_losses)) * 100: 0;
+        $returnData->stack_two_win_rate = ($data->stack_two_wins + $data->stack_two_losses) > 0 ? round(($data->stack_two_wins / ($data->stack_two_wins + $data->stack_two_losses)) * 100, 2) : 0;
 
         $returnData->stack_three_wins = $data->stack_three_wins;
         $returnData->stack_three_losses = $data->stack_three_losses;
-        $returnData->stack_three_win_rate = ($data->stack_three_wins + $data->stack_three_losses) > 0 ? ($data->stack_three_wins / ($data->stack_three_wins + $data->stack_three_losses)) * 100: 0;
+        $returnData->stack_three_win_rate = ($data->stack_three_wins + $data->stack_three_losses) > 0 ? round(($data->stack_three_wins / ($data->stack_three_wins + $data->stack_three_losses)) * 100, 2) : 0;
 
         $returnData->stack_four_wins = $data->stack_four_wins;
         $returnData->stack_four_losses = $data->stack_four_losses;
-        $returnData->stack_four_win_rate = ($data->stack_four_wins + $data->stack_four_losses) > 0 ? ($data->stack_four_wins / ($data->stack_four_wins + $data->stack_four_losses)) * 100: 0;
+        $returnData->stack_four_win_rate = ($data->stack_four_wins + $data->stack_four_losses) > 0 ? round(($data->stack_four_wins / ($data->stack_four_wins + $data->stack_four_losses)) * 100, 2) : 0;
 
         $returnData->stack_five_wins = $data->stack_five_wins;
         $returnData->stack_five_losses = $data->stack_five_losses;
-        $returnData->stack_five_win_rate = ($data->stack_five_wins + $data->stack_five_losses) > 0 ? ($data->stack_five_wins / ($data->stack_five_wins + $data->stack_five_losses)) * 100: 0;
+        $returnData->stack_five_win_rate = ($data->stack_five_wins + $data->stack_five_losses) > 0 ? round(($data->stack_five_wins / ($data->stack_five_wins + $data->stack_five_losses)) * 100, 2) : 0;
 
         $returnData->matchData = collect(json_decode($data->matches, true));;
+
+
+
+        $returnData->matchData = $returnData->matchData->map(function($match) use ($maps, $heroData, $talentData){
+            $match['game_map'] = $maps[$match['game_map']];
+            $match['hero'] = $heroData[$match['hero']];
+            $match['level_one'] = $talentData[$match['level_one']];
+            $match['level_four'] = $talentData[$match['level_four']];
+            $match['level_seven'] = $talentData[$match['level_seven']];
+            $match['level_ten'] = $talentData[$match['level_ten']];
+            $match['level_thirteen'] = $talentData[$match['level_thirteen']];
+            $match['level_sixteen'] = $talentData[$match['level_sixteen']];
+            $match['level_twenty'] = $talentData[$match['level_twenty']];
+            
+            $match['player_conservative_rating'] = round($match['player_conservative_rating'], 2);
+            $match['player_change'] = round($match['player_change'], 2);
+            $match['hero_conservative_rating'] = round($match['hero_conservative_rating'], 2);
+            $match['hero_change'] = round($match['hero_change'], 2);
+            $match['role_conservative_rating'] = round($match['role_conservative_rating'], 2);
+            $match['role_change'] = round($match['role_change'], 2);
+
+            return $match;
+        });
+
         return $returnData;
     }
 }

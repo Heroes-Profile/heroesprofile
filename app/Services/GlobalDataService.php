@@ -165,31 +165,6 @@ class GlobalDataService
         return SeasonDate::select("id")->where("start_date", "<=", $date)->where("end_date", ">=", $date)->first()->id;
     }
 
-    public function getMasterMMRData($blizz_id, $region, $type, $game_type){
-        $model = "";
-        if($game_type == 1){
-            $model = MasterMMRDataQM::class;
-        }else if($game_type == 2){
-            $model = MasterMMRDataUD::class;
-        }else if($game_type == 3){
-            $model = MasterMMRDataHL::class;
-        }else if($game_type == 4){
-            $model = MasterMMRDataTL::class;
-        }else if($game_type == 5){
-            $model = MasterMMRDataSL::class;
-        }else if($game_type == 6){
-            $model = MasterMMRDataAR::class;
-        }
-
-        $data = $model::select('conservative_rating', 'win', 'loss')
-                    ->filterByType($type)
-                    ->filterByGametype($game_type)
-                    ->filterByBlizzID($blizz_id)
-                    ->filterByRegion($region)
-                    ->get();
-        return $data;
-    }
-
     public function getGameTypeDefault(){
         if (Auth::check()) {
             $user = Auth::user();

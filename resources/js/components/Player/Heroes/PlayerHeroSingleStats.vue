@@ -54,8 +54,8 @@
 
           <div class="flex">
             <map-group-box :data="data.map_data_top5_played"></map-group-box>
-            <map-group-box :data="Object.values(data.map_data_top5_win_rate)"></map-group-box>
-            <map-group-box :data="Object.values(data.map_data_top5_latest_played)"></map-group-box>
+            <map-group-box :data="data.map_data_top5_win_rate"></map-group-box>
+            <map-group-box :data="data.map_data_top5_latest_played"></map-group-box>
           </div>
 
           <div class="flex">
@@ -79,7 +79,7 @@
           <h1>Most Recent matches</h1>
 
           <template v-for="(item, index) in data.latestGames">
-            <div>{{ item.map_object.name }} | {{ item.game_type.name }} | {{ item.game_date }}</div>
+            <div>{{ item.game_map.name }} | {{ item.game_type.name }} | {{ item.game_date }}</div>
             <game-summary-box :data="item"></game-summary-box>
           </template>
         </div>
