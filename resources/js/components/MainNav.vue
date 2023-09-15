@@ -43,9 +43,9 @@
             <a class="text-blue-600 hover:text-blue-800 cursor-pointer">{{ mainSearchAccount.battletag }}</a>
             <div class="absolute left-0 hidden group group-hover:block hover:block z-50 pt-5">
               <div class="bg-blue border border-gray-300 rounded-md">
-                <a href="/Player/{{ mainSearchAccount.battletag }}/{{ mainSearchAccount.blizz_id }}/{{ mainSearchAccount.region }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Profile</a>
-                <a href="/Player/FriendFoe/{{ mainSearchAccount.battletag }}/{{ mainSearchAccount.blizz_id }}/{{ mainSearchAccount.region }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Friends and Foes</a>
-                <a href="/Player/Hero/All/{{ mainSearchAccount.battletag }}/{{ mainSearchAccount.blizz_id }}/{{ mainSearchAccount.region }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Heroes</a>
+                <a :href="'/Player/' + mainSearchAccount.battletag + '/' + mainSearchAccount.blizz_id + '/' + mainSearchAccount.region" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Profile</a>
+                <a :href="'/Player/FriendFoe/' + mainSearchAccount.battletag + '/' + mainSearchAccount.blizz_id + '/' + mainSearchAccount.region" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Friends and Foes</a>
+                <a :href="'/Player/Hero/All/' + mainSearchAccount.battletag + '/' + mainSearchAccount.blizz_id + '/' + mainSearchAccount.region" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Heroes</a>
               </div>
             </div>
           </div>
@@ -58,28 +58,40 @@
         </div>
 
         <div v-if="isAuthenticated">
-          <a class="text-blue-600 hover:text-blue-800" href="/Profile/Settings">Profile Settings</a>
-          <a class="text-blue-600 hover:text-blue-800" href="/Battlenet/Logout">Profile Logout</a>
+          <div class="relative group inline-block">
+            <div class="flex items-center cursor-pointer mr-5">
+              <img 
+              class="card-img-top relative hover:opacity-75 w-12 h-12 rounded-full" 
+              :src="'/images/heroes/auto_select.jpg'" 
+              :alt="'Settings'" 
+              >
+            </div>
+            <div class="absolute right-0 mt-2 hidden group-hover:block z-50 bg-blue border border-gray-300 rounded-md">
+              <a href="/Profile/Settings" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Settings</a>
+              <a href="/Battlenet/Logout" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Logout</a>
+            </div>
+          </div>
         </div>
+
         <div v-else>
           <custom-button :href="'/Authenticate/Battlenet'" :text="'Login'" :alt="'Login'" :size="'small'" :color="'teal'" ></custom-button>
         </div>
       </div>
     </nav>
-    <nav class="flex justify-end">
+    <nav class="flex justify-start">
       <template v-for="(account, index) in altSearchAccounts" :key="index" >
-        <div v-if="account" class="relative group inline-block ml-4">
+        <div v-if="account" class="relative group inline-block ml-4 pr-2">
           <a class="text-blue-600 hover:text-blue-800 cursor-pointer">{{ account.battletag }}</a>
-          <div class="absolute left-0 hidden group group-hover:block hover:block z-50 pt-5">
-            <div class="bg-blue border border-gray-300 rounded-md">
-              <a :href="'/Player/' + account.battletag + '/' + account.blizz_id + '/' + account.region" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Profile</a>
-              <a :href="'/Player/FriendFoe/' + account.battletag + '/' + account.blizz_id + '/' + account.region" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Friends and Foes</a>
-              <a :href="'/Player/Hero/All/' + account.battletag + '/' + account.blizz_id + '/' + account.region" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Heroes</a>
-            </div>
+          <div class="absolute right-0 mt-2 hidden group-hover:block z-50 bg-blue border border-gray-300 rounded-md">
+            <a :href="'/Player/' + account.battletag + '/' + account.blizz_id + '/' + account.region" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Profile</a>
+            <a :href="'/Player/FriendFoe/' + account.battletag + '/' + account.blizz_id + '/' + account.region" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Friends and Foes</a>
+            <a :href="'/Player/Hero/All/' + account.battletag + '/' + account.blizz_id + '/' + account.region" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Heroes</a>
           </div>
         </div>
       </template>
     </nav>
+
+
   </div>
 </template>
 

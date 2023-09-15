@@ -174,7 +174,7 @@ class FriendFoeController extends Controller
 
         $groupedResultsByBlizzId = $combinedResults->groupBy('blizz_id');
 
-        $heroDataByID = $this->$globalDataService->getHeroes();
+        $heroDataByID = $this->globalDataService->getHeroes();
         $heroDataByID = $heroDataByID->keyBy('id');
 
 

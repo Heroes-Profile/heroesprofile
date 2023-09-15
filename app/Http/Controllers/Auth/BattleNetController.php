@@ -10,6 +10,7 @@ use App\Models\BattlenetAccount;
 
 use Illuminate\Support\Facades\Cookie;
 
+
 class BattleNetController extends Controller
 {
     protected $globalDataService;
@@ -46,6 +47,7 @@ class BattleNetController extends Controller
             ['battlenet_id' => $user->id],
             [
                 'battletag' => $user->nickname,
+                'blizz_id' => $this->globalDataService->getBlizzIDGivenFullBattletag($user->nickname, $request->cookie('battlenet_region')),
                 'region' => $request->cookie('battlenet_region'),
                 'battlenet_access_token' => $user->accessTokenResponseBody["access_token"],
                 'remember_token' => $user->token,

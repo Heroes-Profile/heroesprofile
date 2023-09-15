@@ -126,6 +126,19 @@ class GlobalDataService
         return session('game_types');
     }
 
+    public function getBlizzIDGivenFullBattletag($battletag, $region){
+        $blizzID = Battletag::where("battletag", $battletag)
+                            ->where("region", $region)
+                            ->orderBy("latest_game", "DESC")
+                            ->first();
+
+        if(is_null($blizzID)){
+            return null;
+        }else{
+            return $blizzID->blizz_id;
+        }
+    }
+
     public function calculateCacheTimeInMinutes($timeframe){
         if (app()->environment('production')) {
             if(count($timeframe) == 1 && $timeframe[0] == session('latestPatch')){
