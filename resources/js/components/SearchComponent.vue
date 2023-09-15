@@ -1,14 +1,11 @@
 <template>
   <div>
     <div class="input-group mb-3">
-      <input type="text" class="form-control search-input" placeholder="Enter your battletag" aria-label="Enter your battletag" aria-describedby="basic-addon2" v-model="userinput">
+      <input type="text" class="form-control search-input" placeholder="Enter your battletag" aria-label="Enter your battletag" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="clickedButton">
       <div class="input-group-append">
         <button class="btn btn-outline-secondary" type="button" @click="clickedButton">Show My Stats</button>
       </div>
     </div>
-
-
-    <h1>Response = {{ this.battletagresponse }}</h1>
   </div>
 </template>
 
@@ -18,13 +15,11 @@ export default {
   components: {
   },
   props: {
+    type: String,
   },
   data(){
     return {
-      loading: false,
-      error: false,
       userinput: "",
-      battletagresponse: "no data",
     }
   },
   created(){
@@ -36,22 +31,9 @@ export default {
   watch: {
   },
   methods: {
-    async clickedButton(){
-      try{
-        const response = await this.$axios.post("/api/v1/battletag/search", {
-          userinput: this.userinput,
-        });
-
-        this.battletagresponse = response.data;
-        console.log(this.battletagresponse);
-        console.log("hi");
-
-      }catch(error){
-        console.log(error);
-        //this.error = error;
-        this.battletagresponse = "Invalid input: '%', '?' and ' ' are invalid inputs";
-      }
-    },
+    clickedButton(){
+      window.location.href = '/battletag/searched/' + this.userinput + "/" + this.type;
+    }
   }
 }
 </script>
