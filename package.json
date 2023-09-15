@@ -19,6 +19,7 @@
     },
     "dependencies": {
         "chart.js": "^4.4.0",
+        "js-cookie": "^3.0.5",
         "vue": "^3.2.36"
     }
 }

@@ -438,6 +438,7 @@ class PlayerController extends Controller
             $returnData->average_time_on_fire = "0 minutes, 0 seconds";
         }
 
+        //There is an issue with this
         $hero_data = collect(json_decode($data->hero_data, true));
         $top_three_win_rate_heroes = null;
         $gamePlayedThresholds = [20, 15, 10, 5, 0];
@@ -621,7 +622,7 @@ class PlayerController extends Controller
         $returnData->stack_five_losses = $data->stack_five_losses;
         $returnData->stack_five_win_rate = ($data->stack_five_wins + $data->stack_five_losses) > 0 ? round(($data->stack_five_wins / ($data->stack_five_wins + $data->stack_five_losses)) * 100, 2) : 0;
 
-        $returnData->matchData = collect(json_decode($data->matches, true));;
+        $returnData->matchData = collect(json_decode($data->matches, true));
 
 
 

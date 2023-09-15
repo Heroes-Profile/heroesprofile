@@ -8,6 +8,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Player\PlayerController;
 use App\Http\Controllers\Player\FriendFoeController;
 use App\Http\Controllers\Player\PlayerHeroesController;
+use App\Http\Controllers\BattletagSearchController;
 
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\GamedataController;
@@ -41,6 +42,8 @@ use App\Http\Controllers\Global\GlobalExtraStats;
 ///The way we are defining url paths to be consistent with the current site, the order of these routes cannot change.
 
 Route::get('/', [MainPageController::class, 'show']);
+Route::get('/battletag/searched/{userinput}/{type}', [BattletagSearchController::class, 'show']);
+
 Route::get('/Compare', [CompareController::class, 'show']);
 
 

@@ -2,9 +2,8 @@
   <div>
     <div class="text-center py-56">
       <img class="block m-4 w-full max-w-6xl mr-auto ml-auto pl-16" src="/images/logo/full_deathwing.png"/>
-    <search-component></search-component>
+    <search-component :type="'main'"></search-component>
   </div>
-
     <div class="flex space-x-20 p-20 bg-lighten">
       <div class="text-center">
         <h3 class="text-2xl mb-10 ">In-depth player comparison</h3>
@@ -32,14 +31,11 @@
   2.55.3.90670 and date/time 2023-09-06 18:20:21  and incorporated them into our dataset.</p>
   <p>For more information on Heroes Profile API navigate to <a href="https://api.heroesprofile.com/">https://api.heroesprofile.com/</a></p>
     </div>
-
-
-
-
   </div>
 </template>
 
 <script>
+
 export default {
   name: 'MainPage',
   components: {
@@ -51,6 +47,7 @@ export default {
     }
   },
   created(){
+
   },
   mounted() {
   },
@@ -60,7 +57,6 @@ export default {
   watch: {
   },
   methods: {
-
   }
 }
 </script>
