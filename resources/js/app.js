@@ -16,6 +16,8 @@ import SearchPlayer from './components/Compare/SearchPlayer.vue';
 
 
 //Random Pieces - rename later to what you want and place in folder
+import MainNav from './components/MainNav.vue';
+import PageHeading from './components/PageHeading.vue';
 import Infobox from './components/Infobox.vue';
 import TalentBox from './components/TalentBox.vue';
 import Filters from './components/Filters.vue';
@@ -29,8 +31,13 @@ import HeroBoxLarge from './components/HeroBoxLarge.vue';
 import RoleBox from './components/RoleBox.vue';
 import CustomButton from './components/CustomButton.vue';
 import CustomTable from './components/CustomTable.vue';
-
-
+import LineChart from './components/LineChart.vue';
+import MapBoxSmall from './components/MapBoxSmall.vue';
+import MapGroupBox from './components/MapGroupBox.vue';
+import GameSummaryBox from './components/GameSummaryBox.vue';
+import MmrBox from './components/MmrBox.vue';
+import StatBox from './components/StatBox.vue';
+import SearchedBattletagHolding from './components/SearchedBattletagHolding.vue';
 
 //Global Pages
 import GlobalHeroStats from './components/Global/Hero/GlobalHeroStats.vue';

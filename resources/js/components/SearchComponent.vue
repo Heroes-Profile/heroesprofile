@@ -1,57 +1,39 @@
 <template>
   <div>
-    <div class="input-group mb-3">
-      <input type="text" class="form-control search-input" placeholder="Enter your battletag" aria-label="Enter your battletag" aria-describedby="basic-addon2" v-model="userinput">
-      <div class="input-group-append">
-        <button class="btn btn-outline-secondary" type="button" @click="clickedButton">Show My Stats</button>
-      </div>
+    <div class="flex items-center mb-3">
+      <input type="text" class="form-control search-input mr-3" :placeholder="labelText" :aria-label="labelText" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="clickedButton">
+      <button class="btn btn-outline-secondary" type="button" @click="clickedButton">{{ buttonText }}</button>
     </div>
-
-
-    <h1>Response = {{ this.battletagresponse }}</h1>
   </div>
 </template>
 
 <script>
-export default {
-  name: 'SearchComponent',
-  components: {
-  },
-  props: {
-  },
-  data(){
-    return {
-      loading: false,
-      error: false,
-      userinput: "",
-      battletagresponse: "no data",
-    }
-  },
-  created(){
-  },
-  mounted() {
-  },
-  computed: {
-  },
-  watch: {
-  },
-  methods: {
-    async clickedButton(){
-      try{
-        const response = await this.$axios.post("/api/v1/battletag/search", {
-          userinput: this.userinput,
-        });
-
-        this.battletagresponse = response.data;
-        console.log(this.battletagresponse);
-        console.log("hi");
-
-      }catch(error){
-        console.log(error);
-        //this.error = error;
-        this.battletagresponse = "Invalid input: '%', '?' and ' ' are invalid inputs";
+  export default {
+    name: 'SearchComponent',
+    components: {
+    },
+    props: {
+      type: String,
+      buttonText: String,
+      labelText: String,
+    },
+    data(){
+      return {
+        userinput: "",
       }
     },
+    created(){
+    },
+    mounted() {
+    },
+    computed: {
+    },
+    watch: {
+    },
+    methods: {
+      clickedButton(){
+        window.location.href = '/battletag/searched/' + this.userinput + "/" + this.type;
+      }
+    }
   }
-}
 </script>

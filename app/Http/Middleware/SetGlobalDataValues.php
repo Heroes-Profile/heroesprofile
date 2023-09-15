@@ -25,6 +25,10 @@ class SetGlobalDataValues
         $globalDataService->getDefaultTimeframeType();
         $globalDataService->getDefaultTimeframe();
         $globalDataService->getDefaultBuildType();
+        $globalDataService->getRegionIDtoString();
+        $globalDataService->getSeasonsData();
+        $globalDataService->getGameTypeIDtoString();
+        $globalDataService->getRegionStringToID();
 
         return $next($request);
     }

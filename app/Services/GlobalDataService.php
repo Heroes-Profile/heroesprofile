@@ -3,6 +3,7 @@
 namespace App\Services;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 use App\Models\Replay;
 use App\Models\Hero;
@@ -85,8 +86,84 @@ class GlobalDataService
         return session('latestGameDate');
     }
 
+    public function getRegionIDtoString(){
+        if (!session()->has('regions')) {
+            $regions = [
+                1 => "NA",
+                2 => "EU",
+                3 => "KR",
+                /*  4 => "UNK",*/
+                5 => "CN"
+            ];
+            session(['regions' => $regions]);
+        }
+
+        return session('regions');
+    }
+
+    public function getRegionStringToID(){
+        if (!session()->has('regions_string')) {
+            $regions = [
+                "NA" => 1,
+                "EU" => 2,
+                "KR" => 3,
+                /*  4 => "UNK",*/
+                "CN" => 5
+            ];
+            session(['regions_string' => $regions]);
+        }
+
+        return session('regions_string');
+    }
+
+    public function getGameTypeIDtoString(){
+        if (!session()->has('game_types')) {
+            $game_types = GameType::all();
+            $game_types = $game_types->keyBy('type_id');
+            session(['game_types' => $game_types]);
+        }
+
+        return session('game_types');
+    }
+
+    public function getBlizzIDGivenFullBattletag($battletag, $region){
+        $blizzID = Battletag::where("battletag", $battletag)
+                            ->where("region", $region)
+                            ->orderBy("latest_game", "DESC")
+                            ->first();
+
+        if(is_null($blizzID)){
+            return null;
+        }else{
+            return $blizzID->blizz_id;
+        }
+    }
+
     public function calculateCacheTimeInMinutes($timeframe){
-        //Cache time is set to 0.  Need to setup how cache time is done
+        if (app()->environment('production')) {
+            if(count($timeframe) == 1 && $timeframe[0] == session('latestPatch')){
+                $date = SeasonGameVersion::where("game_version", min($timeframe))->value("date_added");
+                $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
+
+
+                if($changeInMinutes < 1440){  //1 day
+                    return .25; //15 min
+                }else if($changeInMinutes < (1440 * 3.5)){ //half week
+                    return 6 * 60; //6 hours
+                }else if($changeInMinutes < (1440 * 7)){ //1 week
+                    return 24 * 60; //1 day
+                }else if($changeInMinutes < (1440 * 2)){ //2 week
+                    return 24 * 60 * 7; //7 day
+                }else{
+                    return 24 * 60 * 7 * 2; //2 weeks
+                }
+            }else{
+                $date = SeasonGameVersion::where("game_version", min($timeframe))->value("date_added");
+                $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
+                return $changeInMinutes;
+            }
+        }
+
         return 0;
     }
 
@@ -105,29 +182,15 @@ class GlobalDataService
         return $heroModel;
     }
 
-    public function getMasterMMRData($blizz_id, $region, $type, $game_type){
-        $model = "";
-        if($game_type == 1){
-            $model = MasterMMRDataQM::class;
-        }else if($game_type == 2){
-            $model = MasterMMRDataUD::class;
-        }else if($game_type == 3){
-            $model = MasterMMRDataHL::class;
-        }else if($game_type == 4){
-            $model = MasterMMRDataTL::class;
-        }else if($game_type == 5){
-            $model = MasterMMRDataSL::class;
-        }else if($game_type == 6){
-            $model = MasterMMRDataAR::class;
+    public function getSeasonsData(){
+       if (!session()->has('seasonData')) {
+            session(['seasonData' => SeasonDate::orderBy("id", "desc")->get()]);
         }
+        return session('seasonData');
+    }
 
-        $data = $model::select('conservative_rating', 'win', 'loss')
-                    ->filterByType($type)
-                    ->filterByGametype($game_type)
-                    ->filterByBlizzID($blizz_id)
-                    ->filterByRegion($region)
-                    ->get();
-        return $data;
+    public function getSeasonFromDate($date){
+        return SeasonDate::select("id")->where("start_date", "<=", $date)->where("end_date", ">=", $date)->first()->id;
     }
 
     public function getGameTypeDefault(){

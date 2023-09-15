@@ -92,9 +92,10 @@ Route::prefix('v1')->group(function () {
     Route::get('player/friendfoe', [FriendFoeController::class, 'getFriendFoeData']); //testing
     Route::post('player/friendfoe', [FriendFoeController::class, 'getFriendFoeData']);
 
-    Route::get('player/heroes/all', [PlayerHeroesController::class, 'getHeroAllData']); //testing
-    Route::post('player/heroes/all', [PlayerHeroesController::class, 'getHeroAllData']);
+    Route::get('player/heroes/all', [PlayerHeroesController::class, 'getHeroData']); //testing
+    Route::post('player/heroes/all', [PlayerHeroesController::class, 'getHeroData']);
 
-
+    Route::get('player/heroes/single', [PlayerHeroesController::class, 'getHeroData']); //testing
+    Route::post('player/heroes/single', [PlayerHeroesController::class, 'getHeroData']);
 
 });

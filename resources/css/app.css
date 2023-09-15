@@ -58,9 +58,6 @@ h1{
 
 
 
-.page-heading{
-
-  @apply flex py-10 px-20 items-center gap-20 bg-teal;
-  
-
+.search-input {
+  color: black; /* Replace 'black' with any color you prefer */
 }

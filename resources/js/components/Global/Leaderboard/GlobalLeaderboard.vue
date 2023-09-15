@@ -1,13 +1,7 @@
 <template>
   <div>
-        <div class="page-heading">
-    <h1>Leaderboard</h1>
-    <div>
-    <infobox :input="infoText1"></infobox>
-    <infobox :input="infoText2"></infobox>
-    </div>
-    </div>
-
+    <page-heading :infoText1="infoText1" :infoText2="infoText2" :heading="'Leaderboard'"></page-heading>
+      
     <filters 
       :onFilter="filterData" 
       :filters="filters" 

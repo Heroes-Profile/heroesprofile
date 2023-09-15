@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex flex-wrap items-center bg-gray-dark px-20">
+    <div class="flex flex-wrap items-center bg-gray-dark md:px-20">
       <single-select-filter v-if="includeherorole" :values="this.filters.hero_role" :text="'Hero or Role'" @input-changed="handleInputChange" :defaultValue="'Hero'"></single-select-filter>
       <single-select-filter v-if="includeleaderboardtype" :values="this.filters.leaderboard_type" :text="'Leaderboard Type'" @input-changed="handleInputChange" :defaultValue="'Player'"></single-select-filter>
       <single-select-filter v-if="includegroupsize" :values="this.filters.group_size" :text="'Group Size'" @input-changed="handleInputChange" :defaultValue="'Solo'"></single-select-filter>

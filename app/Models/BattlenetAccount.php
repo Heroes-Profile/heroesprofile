@@ -17,6 +17,8 @@ class BattlenetAccount extends Authenticatable
         'battlenet_accounts_id',
         'battlenet_id',
         'battletag',
+        'blizz_id',
+        'region',
         'battlenet_access_token',
         'remember_token',
         'updated_at',

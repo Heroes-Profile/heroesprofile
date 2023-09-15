@@ -55,7 +55,6 @@ EXPOSE 8000
 
 RUN a2enmod rewrite
 
-
 # Start Apache
 
 CMD ["apache2-foreground"]

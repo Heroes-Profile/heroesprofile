@@ -3,14 +3,14 @@
         {{ this.text }}
 
     <div class="border border-gray-300 p-4 flex flex-wrap gap-0">
-      <hero-box-small v-for="(item, index) in data" :key="index" :hero="item.hero" :hovertext="item.hovertext"></hero-box-small>
+      <map-box-small v-for="(item, index) in data" :key="index" :map="item.game_map" :hovertext="'I am not sure if this is the right way to do it'"></map-box-small>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HeroGroupBox',
+  name: 'MapGroupBox',
   components: {
   },
   props: {
@@ -24,6 +24,7 @@ export default {
   created(){
   },
   mounted() {
+    //console.log(this.data);
   },
   computed: {
   },

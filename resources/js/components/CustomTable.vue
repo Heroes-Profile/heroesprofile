@@ -1,5 +1,5 @@
 <template>
-  <div class="min-w-full px-20">
+  <div class="max-w-full  md:px-20 overflow-scroll md:overflow-auto max-w-full h-[50vh] md:h-auto">
     <table >
       <thead>
         <tr>

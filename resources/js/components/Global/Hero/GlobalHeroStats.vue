@@ -1,7 +1,8 @@
-GlobalHeroStats<template>
+<template>
   <div>
-    <h1>Global Hero Statistics</h1>
-    <infobox :input="infoText"></infobox>
+    <page-heading :infoText1="infoText" heading="Global Hero Statistics"></page-heading>
+    
+    
 
     <filters 
       :onFilter="filterData" 
@@ -25,12 +26,13 @@ GlobalHeroStats<template>
     </filters>
 
     
-    <button @click="toggleChartValue" class="mt-4 bg-blue-500 text-white p-2 rounded">Toggle Chart</button>
+    <custom-button @click="toggleChartValue"  text="Toggle Chart" alt="Toggle Chart" size="small"></custom-button>
     <div v-if="this.data.data">
       <div v-if="togglechart">
         <bubble-chart :heroData="this.data.data"></bubble-chart>
 
       </div>
+      <div class="min-w-full px-20">
      <table class="min-w-full bg-white">
         <thead>
           <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
@@ -108,7 +110,7 @@ GlobalHeroStats<template>
         <tbody>
           <template v-for="(row, index) in sortedData">
             <tr>
-              <td class="py-2 px-3 border-b border-gray-200"><hero-box-small :hero="row"></hero-box-small>{{ row.name }}</td>
+              <td class="py-2 px-3 border-b border-gray-200 flex items-center gap-1"><hero-box-small :hero="row" :includehover="false"></hero-box-small>{{ row.name }}</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
               <td class="py-2 px-3 border-b border-gray-200"><span v-html="'&#177;'"></span>{{ row.confidence_interval }}</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate_change }}</td>
@@ -118,7 +120,7 @@ GlobalHeroStats<template>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.influence }}</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.games_played }}</td>
               <td v-if="this.showStatTypeColumn" class="py-2 px-3 border-b border-gray-200">{{ row.total_filter_type }}</td>
-              <td class="py-2 px-3 border-b border-gray-200"><button @click="viewtalentbuilds(row.name, index)" class="mt-4 bg-blue-500 text-white p-2 rounded">View Talent Builds</button></td>
+              <td class="py-2 px-3 border-b border-gray-200"><custom-button @click="viewtalentbuilds(row.name, index)" text="View Talent Builds" alt="View Talent Builds" size="small">View Talent Builds</custom-button></td>
             </tr>
              <tr v-if="row.talentbuilddata">
               <td colspan="11">
@@ -128,6 +130,7 @@ GlobalHeroStats<template>
           </template>
         </tbody>
       </table>
+    </div>
     </div>
   </div>
 </template>

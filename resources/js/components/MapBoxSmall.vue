@@ -1,6 +1,6 @@
 <template>
-  <div v-if="hero" class="relative group flex items-center " @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
-    <img class="card-img-top relative hover:opacity-75 w-10 h-10 rounded-full" :src="getHeroImage()" :alt="hero.name" >
+  <div v-if="map" class="relative group flex items-center " @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
+    <img class="card-img-top relative hover:opacity-75 w-10 h-10 rounded-full" :src="getMapImage()" :alt="map.name" >
     <div v-if="includehover && showTooltip" class="absolute hidden bottom-11 -left-24  bg-gray-dark  text-s p-1  group-hover:block  text-white z-50 drop-shadow-md w-60 rounded-md px-2 text-center">
       {{ popuptext }}
     </div>
@@ -10,11 +10,11 @@
 
 <script>
 export default {
-  name: 'HeroBoxSmall',
+  name: 'MapBoxSmall',
   components: {
   },
   props: {
-    hero: Object,
+    map: Object,
     hovertext: String,
     includehover: Boolean
   },
@@ -25,10 +25,10 @@ export default {
     }
   },
   created(){
-    if(this.hero){
+    if(this.map){
       this.popuptext = this.hovertext ? this.hovertext : this.hero.name;
     }else{
-      console.log("hero is null")
+      console.log("map is null")
     }
   },
   mounted() {
@@ -38,8 +38,8 @@ export default {
   watch: {
   },
   methods: {
-    getHeroImage(){
-      return `/images/heroes/${this.hero.short_name}.png`;
+    getMapImage(){
+      return `/images/maps/icon/bg_${this.map.sanitized_map_name}.jpg`;
     }
   }
 }

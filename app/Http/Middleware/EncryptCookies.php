@@ -12,6 +12,10 @@ class EncryptCookies extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        //
+        'main_search_account',
+        'alt_search_account1',
+        'alt_search_account2',
+        'alt_search_account3',
+        'battlenet_region',
     ];
 }

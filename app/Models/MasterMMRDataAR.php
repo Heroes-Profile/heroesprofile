@@ -12,7 +12,7 @@ class MasterMMRDataAR extends Model
 
   public $timestamps = false;
 
-  protected $appends = ['win_rate'];
+  protected $appends = ['win_rate', 'mmr'];
   
     public function scopeFilterByType($query, $type)
     {
@@ -44,5 +44,10 @@ class MasterMMRDataAR extends Model
         }
 
         return ($this->win / $totalGames) * 100;
+    }
+
+    public function getMMRAttribute()
+    {
+        return round(1800 + 40 * $this->conservative_rating);
     }
 }

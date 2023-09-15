@@ -4,5 +4,5 @@
 @section('meta_description', '')
 
 @section('content')
-  <main-page :user="{{ json_encode(Auth::user()) }}"></main-page>
+  <searched-battletag-holding :userinput="{{ json_encode($userinput) }}" :type="{{ json_encode($type) }}"></searched-battletag-holding>
 @endsection
