@@ -32,7 +32,7 @@ class BattletagSearchController extends Controller
 
         $data = $this->searchForSpecificBattletag($request["userinput"]);
 
-        if(!$data->isEmpty()){
+        if(!$data->isEmpty() && $data->count() == 1){
             return $data;
         }
 
@@ -42,12 +42,17 @@ class BattletagSearchController extends Controller
     }
 
     private function searchForSpecificBattletag($input){
-        $data = Battletag::select("blizz_id", "battletag", "region", "latest_game")->where("battletag", $input)->get();
-        return $data;
+        $data = Battletag::select("blizz_id", "battletag", "region", "latest_game")->where("battletag", "LIKE", $input . "#%")->get();
+
+        $uniqueData = $data->groupBy(['blizz_id', 'region'])
+                   ->map(function ($dateGroup) {
+                       return $dateGroup->sortByDesc('latest_game')->first();
+                   });
+        return $uniqueData;
     }
 
     private function searchForPartialBattletag($input){
-        $data = Battletag::select("blizz_id", "battletag", "region", "latest_game")->where("battletag", "LIKE", $input . "%")->get();
+        $data = Battletag::select("blizz_id", "battletag", "region", "latest_game")->where("battletag", "LIKE", $input . "#%")->get();
 
 
         $uniqueData = $data->groupBy(function ($item) {
