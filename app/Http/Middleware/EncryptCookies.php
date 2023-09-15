@@ -16,5 +16,6 @@ class EncryptCookies extends Middleware
         'alt_search_account1',
         'alt_search_account2',
         'alt_search_account3',
+        'battlenet_region',
     ];
 }

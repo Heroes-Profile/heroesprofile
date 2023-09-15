@@ -4,5 +4,5 @@
 @section('meta_description', '')
 
 @section('content')
-  <battlenet-authenticate></battlenet-authenticate>
+  <battlenet-authenticate :filters="{{ json_encode($filters) }}"></battlenet-authenticate>
 @endsection

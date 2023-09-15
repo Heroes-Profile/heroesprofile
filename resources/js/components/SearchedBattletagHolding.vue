@@ -60,7 +60,7 @@ export default {
 
 
         this.battletagresponse = response.data;
-
+        console.log(this.battletagresponse);
         if(this.isBattletagReponseValid) {
           if(this.battletagresponse.length == 1){
             this.redirectToProfile(this.battletagresponse[0].battletag, this.battletagresponse[0].blizz_id, this.battletagresponse[0].region);

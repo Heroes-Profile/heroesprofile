@@ -28,6 +28,7 @@ class SetGlobalDataValues
         $globalDataService->getRegionIDtoString();
         $globalDataService->getSeasonsData();
         $globalDataService->getGameTypeIDtoString();
+        $globalDataService->getRegionStringToID();
 
         return $next($request);
     }

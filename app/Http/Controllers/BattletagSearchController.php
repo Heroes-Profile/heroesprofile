@@ -32,6 +32,8 @@ class BattletagSearchController extends Controller
 
         $data = $this->searchForSpecificBattletag($request["userinput"]);
 
+
+        
         if(!$data->isEmpty() && $data->count() == 1){
             return $data;
         }
@@ -43,6 +45,7 @@ class BattletagSearchController extends Controller
 
     private function searchForSpecificBattletag($input){
         $data = Battletag::select("blizz_id", "battletag", "region", "latest_game")->where("battletag", "LIKE", $input . "#%")->get();
+        return $data;
 
         $uniqueData = $data->groupBy(['blizz_id', 'region'])
                    ->map(function ($dateGroup) {
