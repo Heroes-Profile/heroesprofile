@@ -18,7 +18,7 @@ class CheckIfPatreonSupporter
     {
         if (Auth::check()) {
             $user = Auth::user();
-            if(Auth::user()->patreon == 1){
+            if($user->patreon == 1){
                 session(['patreonSubscriber' => true]);
             }
         }

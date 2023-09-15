@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText" :infoText2="infoText2" heading="Global Hero Statistics"></page-heading>
+    <page-heading :infoText1="infoText" heading="Global Hero Statistics"></page-heading>
     
     
 

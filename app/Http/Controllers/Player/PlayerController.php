@@ -81,6 +81,8 @@ class PlayerController extends Controller
             ->where("season", $request["season"])
             ->first();
 
+
+
         if(!$cachedData){
             $cachedData = $this->calculateProfile($request["blizz_id"], $request["region"], $request["game_type"], $request["season"]);
         }else{
@@ -95,7 +97,6 @@ class PlayerController extends Controller
                 ->first()
                 ->replayID ?? null;
 
-
             if ($latestReplayID && $cachedData->latest_replayID < $latestReplayID) {
                 $cachedData = $this->calculateProfile($request["blizz_id"], $request["region"], $request["game_type"], $request["season"], $cachedData);
             }
@@ -105,6 +106,8 @@ class PlayerController extends Controller
     }
 
     private function calculateProfile($blizz_id, $region, $game_type, $season, $cachedData = null){
+        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+        
         $result = DB::table('replay')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
             ->join('scores', function($join) {
@@ -268,7 +271,7 @@ class PlayerController extends Controller
             unset($item->first_to_ten);
             unset($item->role);
             return $item;
-        })->values()->toArray();
+        });
 
         if($cachedData){
             $existingMatches = json_decode($cachedData->matches);
@@ -399,6 +402,7 @@ class PlayerController extends Controller
     }
 
     private function formatCache($data, $blizz_id, $region){
+        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
         $returnData = new \stdClass;
         $returnData->wins = $data->wins;
         $returnData->losses = $data->losses;
@@ -622,20 +626,19 @@ class PlayerController extends Controller
         $returnData->stack_five_losses = $data->stack_five_losses;
         $returnData->stack_five_win_rate = ($data->stack_five_wins + $data->stack_five_losses) > 0 ? round(($data->stack_five_wins / ($data->stack_five_wins + $data->stack_five_losses)) * 100, 2) : 0;
 
-        $returnData->matchData = collect(json_decode($data->matches, true));
+  
+        $matches = collect(json_decode($data->matches, true));
 
-
-
-        $returnData->matchData = $returnData->matchData->map(function($match) use ($maps, $heroData, $talentData){
-            $match['game_map'] = $maps[$match['game_map']];
+        $returnData->matchData = $matches->map(function($match) use ($maps, $heroData, $talentData){
+            $match["game_map"] = $maps[$match["game_map"]];
             $match['hero'] = $heroData[$match['hero']];
-            $match['level_one'] = $talentData[$match['level_one']];
-            $match['level_four'] = $talentData[$match['level_four']];
-            $match['level_seven'] = $talentData[$match['level_seven']];
-            $match['level_ten'] = $talentData[$match['level_ten']];
-            $match['level_thirteen'] = $talentData[$match['level_thirteen']];
-            $match['level_sixteen'] = $talentData[$match['level_sixteen']];
-            $match['level_twenty'] = $talentData[$match['level_twenty']];
+            $match['level_one'] = $match['level_twenty'] ? $talentData[$match['level_one']] : null;
+            $match['level_four'] = $match['level_twenty'] ? $talentData[$match['level_four']] : null;
+            $match['level_seven'] = $match['level_twenty'] ? $talentData[$match['level_seven']] : null;
+            $match['level_ten'] = $match['level_twenty'] ? $talentData[$match['level_ten']] : null;
+            $match['level_thirteen'] = $match['level_twenty'] ? $talentData[$match['level_thirteen']] : null;
+            $match['level_sixteen'] = $match['level_twenty'] ? $talentData[$match['level_sixteen']] : null;
+            $match['level_twenty'] = $match['level_twenty'] ? $talentData[$match['level_twenty']] : null;
             
             $match['player_conservative_rating'] = round($match['player_conservative_rating'], 2);
             $match['player_change'] = round($match['player_change'], 2);

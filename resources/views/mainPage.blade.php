@@ -4,5 +4,5 @@
 @section('meta_description', '')
 
 @section('content')
-  <main-page></main-page>
+  <main-page :user="{{ json_encode(Auth::user()) }}"></main-page>
 @endsection

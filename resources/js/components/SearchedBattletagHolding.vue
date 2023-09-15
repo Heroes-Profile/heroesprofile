@@ -60,7 +60,7 @@ export default {
 
 
         this.battletagresponse = response.data;
-
+        console.log(this.battletagresponse);
         if(this.isBattletagReponseValid) {
           if(this.battletagresponse.length == 1){
             this.redirectToProfile(this.battletagresponse[0].battletag, this.battletagresponse[0].blizz_id, this.battletagresponse[0].region);
@@ -83,9 +83,19 @@ export default {
         region: region,
       };
 
+      const existingAccounts = [
+        JSON.parse(Cookies.get('alt_search_account1') || 'null'),
+        JSON.parse(Cookies.get('alt_search_account2') || 'null'),
+        JSON.parse(Cookies.get('alt_search_account3') || 'null'),
+      ];
+
+      const accountExists = existingAccounts.some(account => {
+        return account && account.battletag === data.battletag && account.blizz_id === data.blizz_id && account.region === data.region;
+      });
+
       if (this.type == "main") {
         Cookies.set('main_search_account', JSON.stringify(data), { sameSite: 'Strict', path: '/', expires: 90 });
-      } else if (this.type == "alt") {
+      } else if (this.type == "alt" && !accountExists) {
         
         let altNumber = 0;
 

@@ -101,6 +101,21 @@ class GlobalDataService
         return session('regions');
     }
 
+    public function getRegionStringToID(){
+        if (!session()->has('regions_string')) {
+            $regions = [
+                "NA" => 1,
+                "EU" => 2,
+                "KR" => 3,
+                /*  4 => "UNK",*/
+                "CN" => 5
+            ];
+            session(['regions_string' => $regions]);
+        }
+
+        return session('regions_string');
+    }
+
     public function getGameTypeIDtoString(){
         if (!session()->has('game_types')) {
             $game_types = GameType::all();
@@ -109,6 +124,19 @@ class GlobalDataService
         }
 
         return session('game_types');
+    }
+
+    public function getBlizzIDGivenFullBattletag($battletag, $region){
+        $blizzID = Battletag::where("battletag", $battletag)
+                            ->where("region", $region)
+                            ->orderBy("latest_game", "DESC")
+                            ->first();
+
+        if(is_null($blizzID)){
+            return null;
+        }else{
+            return $blizzID->blizz_id;
+        }
     }
 
     public function calculateCacheTimeInMinutes($timeframe){

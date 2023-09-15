@@ -181,7 +181,6 @@ class PlayerHeroesController extends Controller
                 ->get();
 
 
-        $mapData = $result->groupBy('game_map');
 
 
 
@@ -207,8 +206,12 @@ class PlayerHeroesController extends Controller
         $newSeasonData = null;
         $latestGames = null;
         $winRateFiltered = null;
+        $mapData = null;
+
 
         if($type == "single"){
+            $mapData = $result->groupBy('game_map');
+
             $qm_mmr_data = MasterMMRDataQM::select("conservative_rating", "win", "loss")->filterByType($hero)->filterByGametype(1)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
             if($qm_mmr_data){
                 $qm_mmr_data->rank_tier = $this->globalDataService->calculateSubTier($this->globalDataService->getRankTiers(1, $hero), $qm_mmr_data->mmr);

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Auth;
 
 class ViewServiceProvider extends ServiceProvider
 {
@@ -42,6 +43,15 @@ class ViewServiceProvider extends ServiceProvider
                 $alt_search_account3 = json_decode($alt_search_account3, true);
             }
 
+            if (Auth::check()) {
+                $user = Auth::user();
+                $main_search_account["battletag"] = explode('#', $user["battletag"])[0];
+                $main_search_account["blizz_id"] = $user["blizz_id"];
+                $main_search_account["region"] = $user["region"];
+
+
+
+            }
             $view->with('main_search_account', $main_search_account);
             $view->with('alt_search_account1', $alt_search_account1);
             $view->with('alt_search_account2', $alt_search_account2);
