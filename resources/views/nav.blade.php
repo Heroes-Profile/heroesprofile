@@ -52,6 +52,7 @@
         <a href="/Player/FriendFoe/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Friends and Foes</a>
         <a href="/Player/Hero/All/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Heroes</a>
         <a href="/Player/Matchups/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Matchups</a>
+        <a href="/Player/Roles/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Roles</a>
     </div>
     @endif
 </div>
@@ -101,6 +102,7 @@
             <a href="/Player/FriendFoe/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Friends and Foes</a>
             <a href="/Player/Hero/All/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Heroes</a>
             <a href="/Player/Matchups/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Matchups</a>
+            <a href="/Player/Roles/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Roles</a>
         </div>
     </div>
     @endif

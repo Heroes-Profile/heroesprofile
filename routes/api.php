@@ -18,6 +18,7 @@ use App\Http\Controllers\Player\PlayerController;
 use App\Http\Controllers\Player\FriendFoeController;
 use App\Http\Controllers\Player\PlayerHeroesController;
 use App\Http\Controllers\Player\PlayerMatchupsController;
+use App\Http\Controllers\Player\PlayerHeroesMapsRolesController;
 
 
 
@@ -93,14 +94,23 @@ Route::prefix('v1')->group(function () {
     Route::get('player/friendfoe', [FriendFoeController::class, 'getFriendFoeData']); //testing
     Route::post('player/friendfoe', [FriendFoeController::class, 'getFriendFoeData']);
 
-    Route::get('player/heroes/all', [PlayerHeroesController::class, 'getHeroData']); //testing
-    Route::post('player/heroes/all', [PlayerHeroesController::class, 'getHeroData']);
 
-    Route::get('player/heroes/single', [PlayerHeroesController::class, 'getHeroData']); //testing
-    Route::post('player/heroes/single', [PlayerHeroesController::class, 'getHeroData']);
 
     Route::get('player/matchups', [PlayerMatchupsController::class, 'getMatchupData']); //testing
     Route::post('player/matchups', [PlayerMatchupsController::class, 'getMatchupData']);
+
+
+
+    Route::get('player/heroes/all', [PlayerHeroesMapsRolesController::class, 'getData']); //testing
+    Route::post('player/heroes/all', [PlayerHeroesMapsRolesController::class, 'getData']);
+
+    Route::get('player/heroes/single', [PlayerHeroesMapsRolesController::class, 'getData']); //testing
+    Route::post('player/heroes/single', [PlayerHeroesMapsRolesController::class, 'getData']);
+    
+    Route::get('player/roles/all/', [PlayerHeroesMapsRolesController::class, 'getData']); //testing
+    Route::post('player/roles/all/', [PlayerHeroesMapsRolesController::class, 'getData']);
+
+
 
 
 });

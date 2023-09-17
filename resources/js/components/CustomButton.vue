@@ -52,7 +52,6 @@
     created(){
     },
     mounted() {
-      console.log(this.targetblank)
     },
     computed: {
       colorClass() {

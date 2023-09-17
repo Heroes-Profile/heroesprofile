@@ -12,7 +12,8 @@
     :includeseason="true"
     >
   </filters>
-
+      <hero-group-box :text="'Top 5 Allies with more than 5 games'" :data="topfiveheroes"></hero-group-box>
+      <hero-group-box :text="'Top 5 Enemies with more than 5 games'" :data="topfiveenemies"></hero-group-box>
 
   <table class="min-w-full bg-white">
     <thead>
@@ -37,7 +38,7 @@
     <tbody>
       <tr v-for="(row, index) in sortedData" :key="index">
         <td class="py-2 px-3 border-b border-gray-200">
-          <a :href="'/Player/Hero/Single/' + battletag + '/' + blizzid + '/' + region + '/' + row.heroData.name"><hero-box-small :hero="row.heroData"></hero-box-small>{{ row.heroData.name }}</a>
+          <a :href="'/Player/Hero/Single/' + battletag + '/' + blizzid + '/' + region + '/' + row.hero.name"><hero-box-small :hero="row.hero"></hero-box-small>{{ row.hero.name }}</a>
         </td>
          <td class="py-2 px-3 border-b border-gray-200">
           {{ row.ally_win_rate }}
@@ -77,6 +78,8 @@
         data: [],
         sortKey: '',
         sortDir: 'asc',
+        topfiveheroes: [],
+        topfiveenemies: [],
       }
     },
     created(){
@@ -112,7 +115,11 @@
             season: this.season,
             hero: this.hero,
           });
-          this.data = response.data;
+          this.data = response.data.tabledata;
+          this.topfiveheroes = response.data.top_five_heroes;
+          this.topfiveenemies = response.data.top_five_enemies;
+
+          console.log(response.data);
         }catch(error){
           console.log(error);
         }

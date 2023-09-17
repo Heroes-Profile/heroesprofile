@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Player;
 use App\Services\GlobalDataService;
+
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Collection;
 
 use App\Rules\GameTypeInputValidation;
 use App\Rules\GameMapInputValidation;
@@ -17,16 +16,7 @@ use App\Models\Replay;
 use App\Models\Map;
 use App\Models\HeroesDataTalent;
 
-use App\Models\MasterMMRDataQM;
-use App\Models\MasterMMRDataUD;
-use App\Models\MasterMMRDataHL;
-use App\Models\MasterMMRDataTL;
-use App\Models\MasterMMRDataSL;
-use App\Models\MasterMMRDataAR;
-
-
-
-class PlayerHeroesController extends Controller
+class PlayerRolesController extends Controller
 {
     protected $globalDataService;
 
@@ -48,15 +38,15 @@ class PlayerHeroesController extends Controller
         }
 
 
-        return view('Player.Heroes.allHeroesData')->with([
+        return view('Player.Roles.allRoleData')->with([
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
                 'region' => $region,
                 'filters' => $this->globalDataService->getFilterData(),
                 ]);
-
     }
-    public function showSingle(Request $request, $battletag, $blizz_id, $region, $hero){
+
+    public function showSingle(Request $request, $battletag, $blizz_id, $region, $role){
         $validator = \Validator::make(compact('battletag', 'blizz_id', 'region'), [
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
@@ -66,14 +56,14 @@ class PlayerHeroesController extends Controller
         if ($validator->fails()) {
             return redirect('/');
         }
-        $hero = (new HeroInputValidation())->passes('hero', $hero);
+        $role = (new RoleInputValidation())->passes('role', $request["role"]);
 
 
-        return view('Player.Heroes.singleHeroData')->with([
+        return view('Player.Roles.singleRoleData')->with([
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
                 'region' => $region,
-                'hero' => $hero,
+                'role' => $role,
                 'filters' => $this->globalDataService->getFilterData(),
                 'regions' => $this->globalDataService->getRegionIDtoString(),
                 ]);

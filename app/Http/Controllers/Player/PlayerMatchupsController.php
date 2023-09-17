@@ -88,7 +88,7 @@ class PlayerMatchupsController extends Controller
 
             foreach($result as $hero => $value)
             {
-                $returnData[$value->hero]["heroData"] = $heroData[$value->hero];
+                $returnData[$value->hero]["hero"] = $heroData[$value->hero];
                 $returnData[$value->hero]["name"] = $heroData[$value->hero]["name"];
                 if($value->team == $i){
                     if($value->winner == 0){
@@ -109,13 +109,27 @@ class PlayerMatchupsController extends Controller
                 }
             }
         }
+        $topFiveAllyHeroes = collect($returnData)
+            ->filter(function($value, $key) {
+                return $value['ally_games_played'] >= 5;
+            })
+            ->sortByDesc('ally_win_rate')
+            ->take(5)->values();
+
+        $topFiveEnemyHeroes = collect($returnData)
+            ->filter(function($value, $key) {
+                return $value['enemy_games_played'] >= 5;
+            })
+            ->sortBy('enemy_win_rate')
+            ->take(5)->values();
+
         $returnData = array_values($returnData);
 
         usort($returnData, function ($a, $b) {
             return strcmp($a['name'], $b['name']);
         });
         
-        return $returnData;
+        return ["tabledata" => $returnData, "top_five_heroes" => $topFiveAllyHeroes , "top_five_enemies" => $topFiveEnemyHeroes];
     }
 
 }
