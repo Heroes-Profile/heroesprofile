@@ -261,7 +261,7 @@ export default {
       return this.gametype.includes(game_type);
     },
     getPlayerMapPageUrl(map){
-      return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region + "/Map/" + map + "/";
+      return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region + "/Map/" + map;
     },
     isDisabled(stat) {
       return this.selectedStatsCount >= 15 && !stat.selected;

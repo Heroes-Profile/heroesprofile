@@ -114,4 +114,7 @@ Route::prefix('v1')->group(function () {
     Route::get('player/maps/all/', [PlayerHeroesMapsRolesController::class, 'getData']); //testing
     Route::post('player/maps/all/', [PlayerHeroesMapsRolesController::class, 'getData']);
 
+    Route::get('player/maps/single', [PlayerHeroesMapsRolesController::class, 'getData']); //testing
+    Route::post('player/maps/single', [PlayerHeroesMapsRolesController::class, 'getData']);
+
 });

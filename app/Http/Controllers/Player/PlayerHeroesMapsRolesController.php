@@ -33,6 +33,7 @@ class PlayerHeroesMapsRolesController extends Controller
         $this->globalDataService = $globalDataService;
     }
     public function getData(Request $request){
+        
         //return response()->json($request->all());
 
         $validator = \Validator::make($request->only(['blizz_id', 'region', 'minimumgames', 'type']), [
@@ -51,6 +52,7 @@ class PlayerHeroesMapsRolesController extends Controller
         $type = $request["type"];
         $page = $request["page"];
         $role = (new RoleInputValidation())->passes('role', $request["role"]);
+        $map = $request["map"];
 
         if(count($gameType) == 6){
             $gameType = [];
@@ -77,6 +79,9 @@ class PlayerHeroesMapsRolesController extends Controller
                 })
                 ->when($type == "single" && $page == "role", function ($query) use ($role) {
                         return $query->where("new_role", $role);
+                })
+                ->when($type == "single" && $page == "map", function ($query) use ($map) {
+                        return $query->where("game_map", $map);
                 })
                 ->select([
                     'replay.replayID',
@@ -166,10 +171,10 @@ class PlayerHeroesMapsRolesController extends Controller
         $mapData = null;
         $heroDataStats = null;
 
+        
         if($type == "single"){
             $mapData = $result->groupBy('game_map');
             $heroDataStats = $result->groupBy('hero');
-
 
             $filterByType = $hero;
             if($page == "role"){
@@ -209,7 +214,9 @@ class PlayerHeroesMapsRolesController extends Controller
 
 
             $latestGames = $result->sortByDesc('game_date')->take(5)->values();
+
             $latestGames = $latestGames->map(function($game) use($heroData, $maps, $talentData, $gameTypes) {
+                $game = clone $game;
                 unset(
                     $game['hero_level'],
                     $game['stack_size'],
@@ -278,6 +285,7 @@ class PlayerHeroesMapsRolesController extends Controller
 
                 return $game;
             });
+
 
             $newSeasonData = $result->map(function ($item) use ($seasonData) {
                 $gameDate = $item->game_date;
@@ -406,8 +414,8 @@ class PlayerHeroesMapsRolesController extends Controller
             }
 
         }
-
         
+
         $groupBy = "";
         if($page == "hero"){
             $groupBy = 'hero';
@@ -417,7 +425,8 @@ class PlayerHeroesMapsRolesController extends Controller
             $groupBy = 'new_role';
         }
 
-        $returnData = $result->groupBy($groupBy)->map(function($heroStats) use ($heroData, $qm_mmr_data, $ud_mmr_data, $hl_mmr_data, $tl_mmr_data, $sl_mmr_data, $ar_mmr_data, $newSeasonData, $mapData, $mapWinRateFiltered, $latestGames, $page, $heroWinRateFiltered, $heroDataStats, $maps){
+
+        $returnData = $result->groupBy($groupBy)->map(function($heroStats, $index) use ($heroData, $qm_mmr_data, $ud_mmr_data, $hl_mmr_data, $tl_mmr_data, $sl_mmr_data, $ar_mmr_data, $newSeasonData, $mapData, $mapWinRateFiltered, $latestGames, $page, $heroWinRateFiltered, $heroDataStats, $maps){
             $deaths = $heroStats->sum('deaths');
             $avg_kills = $heroStats->avg('kills');
             $avg_takedowns = $heroStats->avg('takedowns');
@@ -449,18 +458,19 @@ class PlayerHeroesMapsRolesController extends Controller
             $stack_size_five_losses = $heroStats->where('stack_size', 5)->where('winner', 0)->count();
             $stack_size_five_total = $stack_size_five_wins + $stack_size_five_losses;
 
-
+          
             if($page == "hero"){
-                $name = $heroData[$heroStats->pluck('hero')->first()]["name"];
+                //$name = $heroData[$heroStats->pluck('hero')->first()]["name"];
             }else if($page == "map"){
-                $name = $maps[$heroStats->pluck('game_map')->first()]["name"];
+                //$name = $maps[$heroStats->pluck('game_map')->first()]["name"];
             }else if($page == "role"){
                 $name = $heroStats->pluck('new_role')->first();
             }
+
             return [
-                "name" => $name,
-                "hero" => $heroData[$heroStats->pluck('hero')->first()],
-                "game_map" => $maps[$heroStats->pluck('game_map')->first()],
+                "name" => $index,
+                //"hero" => $heroData[$heroStats->pluck('hero')->first()],
+                //"game_map" => $maps[$heroStats->pluck('game_map')->first()],
                 'wins' => $wins,
                 'losses' => $losses,
                 'games_played' => $games_played,

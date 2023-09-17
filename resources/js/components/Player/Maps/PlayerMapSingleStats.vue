@@ -99,6 +99,7 @@ export default {
     },
     region: Number,
     regions: Object,
+    map: String,
   },
   data(){
     return {
@@ -126,13 +127,14 @@ export default {
   methods: {
     async getData(type){
       try{
-        const response = await this.$axios.post("/api/v1/player/heroes/single", {
+        const response = await this.$axios.post("/api/v1/player/maps/single", {
           blizz_id: this.blizzid,
           region: this.region,
           game_type: this.gametype,
           hero: this.hero,
           type: "single",
-          page: "hero",
+          page: "map",
+          map: this.map,
         });
 
         this.data = response.data[0];
