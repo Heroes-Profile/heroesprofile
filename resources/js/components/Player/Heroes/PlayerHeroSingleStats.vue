@@ -53,9 +53,9 @@
           <infobox :input="'Click a map to see more information and stats, or select all maps to view maps regardless of hero.'"></infobox>
 
           <div class="flex">
-            <map-group-box :data="data.map_data_top5_played"></map-group-box>
-            <map-group-box :data="data.map_data_top5_win_rate"></map-group-box>
-            <map-group-box :data="data.map_data_top5_latest_played"></map-group-box>
+            <map-group-box :data="data.map_data_top_played.slice(0, 3)"></map-group-box>
+            <map-group-box :data="data.map_data_top_win_rate.slice(0, 3)"></map-group-box>
+            <map-group-box :data="data.map_data_top_latest_played.slice(0, 3)"></map-group-box>
           </div>
 
           <div class="flex">
@@ -137,6 +137,7 @@ export default {
           game_type: this.gametype,
           hero: this.hero,
           type: "single",
+          page: "hero",
         });
 
         this.data = response.data[0];

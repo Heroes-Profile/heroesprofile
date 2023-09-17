@@ -27,6 +27,10 @@ use App\Http\Controllers\Player\PlayerController;
 use App\Http\Controllers\Player\FriendFoeController;
 use App\Http\Controllers\Player\PlayerHeroesController;
 use App\Http\Controllers\Player\PlayerMatchupsController;
+use App\Http\Controllers\Player\PlayerRolesController;
+
+
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -105,6 +109,10 @@ Route::get('Player/FriendFoe/{battletag}/{blizz_id}/{region}', [FriendFoeControl
 Route::get('Player/Hero/All/{battletag}/{blizz_id}/{region}', [PlayerHeroesController::class, 'showAll']);
 Route::get('Player/Hero/Single/{battletag}/{blizz_id}/{region}/{hero}', [PlayerHeroesController::class, 'showSingle']);
 Route::get('Player/Matchups/{battletag}/{blizz_id}/{region}', [PlayerMatchupsController::class, 'show']);
+
+
+Route::get('Player/Roles/Single/{battletag}/{blizz_id}/{region}/{role}', [PlayerRolesController::class, 'showSingle']);
+Route::get('Player/Roles/{battletag}/{blizz_id}/{region}', [PlayerRolesController::class, 'showAll']);
 
 
 

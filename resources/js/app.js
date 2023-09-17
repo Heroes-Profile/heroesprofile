@@ -63,6 +63,8 @@ import FriendFoe from './components/Player/FriendFoe.vue';
 import PlayerHeroesAllStats from './components/Player/Heroes/PlayerHeroesAllStats.vue';
 import PlayerHeroSingleStats from './components/Player/Heroes/PlayerHeroSingleStats.vue';
 import PlayerMatchup from './components/Player/PlayerMatchup.vue';
+import PlayerRolesAllStats from './components/Player/Roles/PlayerRolesAllStats.vue';
+import PlayerRoleSingleStats from './components/Player/Roles/PlayerRoleSingleStats.vue';
 
 
 // Automatically register Vue components

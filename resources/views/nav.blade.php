@@ -52,6 +52,7 @@
         <a href="/Player/FriendFoe/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Friends and Foes</a>
         <a href="/Player/Hero/All/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Heroes</a>
         <a href="/Player/Matchups/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Matchups</a>
+        <a href="/Player/Roles/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Roles</a>
     </div>
     @endif
 </div>
@@ -68,9 +69,9 @@
 
 
 <div class="flex space-x-4">
-    <a href="https://api.heroesprofile.com/Api" target="_blank" class="bg-teal-500 px-4 py-2 rounded text-white hover:bg-teal-700">API</a>
-    <a href="https://api.heroesprofile.com/upload" target="_blank" class="bg-blue-500 px-4 py-2 rounded text-white hover:bg-blue-700">Replay Uploader</a>
-    <a href="https://www.patreon.com/heroesprofile" target="_blank" class="bg-red-500 px-4 py-2 rounded text-white hover:bg-red-700">Remove Ads / Patreon</a>
+    <custom-button :href="'https://api.heroesprofile.com/Api'" :targetblank="true" :text="'API'" :alt="'API'"  :size="'small'" :color="'teal'"></custom-button>
+    <custom-button :href="'https://api.heroesprofile.com/upload'" :targetblank="true" :text="'Replay Uploader'" :alt="'Replay Uploader'"  :size="'small'" :color="'blue'"></custom-button>
+    <custom-button :href="'https://www.patreon.com/heroesprofile'" :targetblank="true" :text="'Patreon'" :alt="'Patreon'"  :size="'small'" :color="'red'"></custom-button>
 </div>
 @if($isAuthenticated)
 <div class="relative group inline-block">
@@ -101,6 +102,7 @@
             <a href="/Player/FriendFoe/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Friends and Foes</a>
             <a href="/Player/Hero/All/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Heroes</a>
             <a href="/Player/Matchups/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Matchups</a>
+            <a href="/Player/Roles/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Roles</a>
         </div>
     </div>
     @endif

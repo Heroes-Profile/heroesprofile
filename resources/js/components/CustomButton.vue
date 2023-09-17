@@ -41,6 +41,7 @@
       default: 'blue'
       },
       disabled: Boolean,
+      targetblank: Boolean,
     },
     data(){
       return {
@@ -69,7 +70,11 @@
     methods: {
      handleClick() {
       if(!this.disabled) {
-        window.location.href = this.href;
+        if(this.targetblank){
+          window.open(this.href, '_blank');
+        }else{
+          window.location.href = this.href;
+        }
       }
     }
   }
