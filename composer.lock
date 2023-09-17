@@ -626,16 +626,16 @@
         },
         {
             "name": "google/cloud-core",
-            "version": "v1.52.3",
+            "version": "v1.52.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-core.git",
-                "reference": "2ae714abfbf979cb52de26227a87e42bfdfb6347"
+                "reference": "21c004745a32c71e03ab62effd7fbee0cf3ae7c6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/2ae714abfbf979cb52de26227a87e42bfdfb6347",
-                "reference": "2ae714abfbf979cb52de26227a87e42bfdfb6347",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/21c004745a32c71e03ab62effd7fbee0cf3ae7c6",
+                "reference": "21c004745a32c71e03ab62effd7fbee0cf3ae7c6",
                 "shasum": ""
             },
             "require": {
@@ -685,22 +685,22 @@
             ],
             "description": "Google Cloud PHP shared dependency, providing functionality useful to all components.",
             "support": {
-                "source": "https://github.com/googleapis/google-cloud-php-core/tree/v1.52.3"
+                "source": "https://github.com/googleapis/google-cloud-php-core/tree/v1.52.4"
             },
-            "time": "2023-08-25T20:04:15+00:00"
+            "time": "2023-09-15T20:50:36+00:00"
         },
         {
             "name": "google/cloud-logging",
-            "version": "v1.28.0",
+            "version": "v1.28.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-logging.git",
-                "reference": "2ebaa460e0d41659ad1deccd6f12b164afafc437"
+                "reference": "818c654fa5cb01db8f8e625d43602683448e26b1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-logging/zipball/2ebaa460e0d41659ad1deccd6f12b164afafc437",
-                "reference": "2ebaa460e0d41659ad1deccd6f12b164afafc437",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-logging/zipball/818c654fa5cb01db8f8e625d43602683448e26b1",
+                "reference": "818c654fa5cb01db8f8e625d43602683448e26b1",
                 "shasum": ""
             },
             "require": {
@@ -752,9 +752,9 @@
             ],
             "description": "Stackdriver Logging Client for PHP",
             "support": {
-                "source": "https://github.com/googleapis/google-cloud-php-logging/tree/v1.28.0"
+                "source": "https://github.com/googleapis/google-cloud-php-logging/tree/v1.28.1"
             },
-            "time": "2023-07-07T20:46:38+00:00"
+            "time": "2023-09-15T20:50:36+00:00"
         },
         {
             "name": "google/common-protos",
@@ -810,16 +810,16 @@
         },
         {
             "name": "google/gax",
-            "version": "v1.22.1",
+            "version": "v1.23.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/gax-php.git",
-                "reference": "2566bce7081f17e4f4c35a215864c6d4a62f010f"
+                "reference": "e5de66d5cec6e5d5a3ee6b629c7717e43a817b9a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/gax-php/zipball/2566bce7081f17e4f4c35a215864c6d4a62f010f",
-                "reference": "2566bce7081f17e4f4c35a215864c6d4a62f010f",
+                "url": "https://api.github.com/repos/googleapis/gax-php/zipball/e5de66d5cec6e5d5a3ee6b629c7717e43a817b9a",
+                "reference": "e5de66d5cec6e5d5a3ee6b629c7717e43a817b9a",
                 "shasum": ""
             },
             "require": {
@@ -859,9 +859,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/gax-php/issues",
-                "source": "https://github.com/googleapis/gax-php/tree/v1.22.1"
+                "source": "https://github.com/googleapis/gax-php/tree/v1.23.0"
             },
-            "time": "2023-08-04T14:32:15+00:00"
+            "time": "2023-09-14T18:30:51+00:00"
         },
         {
             "name": "google/grpc-gcp",
