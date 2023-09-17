@@ -61,11 +61,7 @@
 </div>
 
 <!-- I dont know why this isnt working, it used to -->
-    <search-component 
-        :type="'alt'" 
-        :buttonText="'Find Player'" 
-        :labelText="'Enter a battletag'"
-    ></search-component>
+    <search-component :type="'alt'"  :buttonText="'Find Player'"  :labelText="'Enter a battletag'"></search-component>
 
 
 

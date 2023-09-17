@@ -81,19 +81,19 @@
                 <tbody>
                   <div v-for="index in range">
                     <td>
-                      <hero-box-small :hero="getHeroData(1, row, row.compositionheroes[row.role_one.name], index)"></hero-box-small>
+                      <round-box-small :hero="getHeroData(1, row, row.compositionheroes[row.role_one.name], index)"></round-box-small>
                     </td>
                     <td>
-                      <hero-box-small :hero="getHeroData(2, row, row.compositionheroes[row.role_two.name], index)"></hero-box-small>
+                      <round-box-small :hero="getHeroData(2, row, row.compositionheroes[row.role_two.name], index)"></round-box-small>
                     </td>
                     <td>
-                      <hero-box-small :hero="getHeroData(3, row, row.compositionheroes[row.role_three.name], index)"></hero-box-small>
+                      <round-box-small :hero="getHeroData(3, row, row.compositionheroes[row.role_three.name], index)"></round-box-small>
                     </td>
                     <td>
-                      <hero-box-small :hero="getHeroData(4, row, row.compositionheroes[row.role_four.name], index)"></hero-box-small>
+                      <round-box-small :hero="getHeroData(4, row, row.compositionheroes[row.role_four.name], index)"></round-box-small>
                     </td>
                     <td>
-                      <hero-box-small :hero="getHeroData(5, row, row.compositionheroes[row.role_five.name], index)"></hero-box-small>
+                      <round-box-small :hero="getHeroData(5, row, row.compositionheroes[row.role_five.name], index)"></round-box-small>
                     </td>
                   </div>
                 </tbody>

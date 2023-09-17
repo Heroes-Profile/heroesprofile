@@ -21,7 +21,7 @@
             </div>
             <div v-else-if="column.value === 'most_played_hero'">
               <div class="flex gap-x-2 items-center">
-                <hero-box-small :hero="row.most_played_hero"></hero-box-small>
+                <round-box-small :hero="row.most_played_hero"></round-box-small>
                 {{ row.hero_build_games_played }}
               </div>
             </div>

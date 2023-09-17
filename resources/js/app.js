@@ -24,8 +24,9 @@ import SingleSelectFilter from './components/SingleSelectFilter.vue';
 import MultiSelectFilter from './components/MultiSelectFilter.vue';
 import BubbleChart from './components/BubbleChart.vue';
 import BarChart from './components/BarChart.vue';
-import HeroBoxSmall from './components/HeroBoxSmall.vue';
+import RoundBoxSmall from './components/RoundBoxSmall.vue';
 import HeroGroupBox from './components/HeroGroupBox.vue';
+import GroupBox from './components/GroupBox.vue';
 import HeroBoxLarge from './components/HeroBoxLarge.vue';
 import RoleBox from './components/RoleBox.vue';
 import CustomButton from './components/CustomButton.vue';
@@ -36,6 +37,7 @@ import MapGroupBox from './components/MapGroupBox.vue';
 import GameSummaryBox from './components/GameSummaryBox.vue';
 import MmrBox from './components/MmrBox.vue';
 import StatBox from './components/StatBox.vue';
+import StatBarBox from './components/StatBarBox.vue';
 import SearchedBattletagHolding from './components/SearchedBattletagHolding.vue';
 
 //Global Pages
