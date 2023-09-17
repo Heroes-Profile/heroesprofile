@@ -8,7 +8,7 @@
       :gametypedefault="gametypedefault"
       :includehero="true"
       :includegamemap="true"
-      :includegametype="true"
+      :includegametypefull="true"
       :includeseason="true"
       >
     </filters>

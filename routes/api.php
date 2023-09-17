@@ -17,6 +17,7 @@ use App\Http\Controllers\Global\GlobalExtraStats;
 use App\Http\Controllers\Player\PlayerController;
 use App\Http\Controllers\Player\FriendFoeController;
 use App\Http\Controllers\Player\PlayerHeroesController;
+use App\Http\Controllers\Player\PlayerMatchupsController;
 
 
 
@@ -97,5 +98,9 @@ Route::prefix('v1')->group(function () {
 
     Route::get('player/heroes/single', [PlayerHeroesController::class, 'getHeroData']); //testing
     Route::post('player/heroes/single', [PlayerHeroesController::class, 'getHeroData']);
+
+    Route::get('player/matchups', [PlayerMatchupsController::class, 'getMatchupData']); //testing
+    Route::post('player/matchups', [PlayerMatchupsController::class, 'getMatchupData']);
+
 
 });
