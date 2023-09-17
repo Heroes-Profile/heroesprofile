@@ -12,13 +12,12 @@ class SingleGameTypeInputValidation implements Rule
         $validGameTypes = GameType::pluck('short_name')->toArray();
         $validGameTypes = array_diff($validGameTypes, ['br', 'cu']);
 
-        if(!in_array($value, $validGameTypes)){  // corrected from $this->validGameTypes
+        if(!in_array($value, $validGameTypes)){
             return 5;
         }
 
-        // Assume $filteredGameTypes is defined elsewhere or pass it as an argument
         $typeId = GameType::whereIn('short_name', $filteredGameTypes)
-                    ->pluck('type_id')->first(); // corrected from ->type_id
+                    ->pluck('type_id')->first();
 
         return $typeId;
     }

@@ -33,7 +33,7 @@ class PlayerHeroesMapsRolesController extends Controller
         $this->globalDataService = $globalDataService;
     }
     public function getData(Request $request){
-       //return response()->json($request->all());
+        //return response()->json($request->all());
 
         $validator = \Validator::make($request->only(['blizz_id', 'region', 'minimumgames', 'type']), [
             'blizz_id' => 'required|integer',
@@ -160,8 +160,8 @@ class PlayerHeroesMapsRolesController extends Controller
         $seasonData = $this->globalDataService->getSeasonsData();
         $newSeasonData = null;
         $latestGames = null;
-        $winRateFiltered = null;
-
+        $mapWinRateFiltered= null;
+        $heroWinRateFiltered = null;
 
         $mapData = null;
         $heroDataStats = null;
@@ -412,12 +412,12 @@ class PlayerHeroesMapsRolesController extends Controller
         if($page == "hero"){
             $groupBy = 'hero';
         }else if($page == "map"){
-
+            $groupBy = 'game_map';
         }else if($page == "role"){
             $groupBy = 'new_role';
         }
 
-        $returnData = $result->groupBy($groupBy)->map(function($heroStats) use ($heroData, $qm_mmr_data, $ud_mmr_data, $hl_mmr_data, $tl_mmr_data, $sl_mmr_data, $ar_mmr_data, $newSeasonData, $mapData, $mapWinRateFiltered, $latestGames, $page, $heroWinRateFiltered, $heroDataStats){
+        $returnData = $result->groupBy($groupBy)->map(function($heroStats) use ($heroData, $qm_mmr_data, $ud_mmr_data, $hl_mmr_data, $tl_mmr_data, $sl_mmr_data, $ar_mmr_data, $newSeasonData, $mapData, $mapWinRateFiltered, $latestGames, $page, $heroWinRateFiltered, $heroDataStats, $maps){
             $deaths = $heroStats->sum('deaths');
             $avg_kills = $heroStats->avg('kills');
             $avg_takedowns = $heroStats->avg('takedowns');
@@ -453,13 +453,14 @@ class PlayerHeroesMapsRolesController extends Controller
             if($page == "hero"){
                 $name = $heroData[$heroStats->pluck('hero')->first()]["name"];
             }else if($page == "map"){
-
+                $name = $maps[$heroStats->pluck('game_map')->first()]["name"];
             }else if($page == "role"){
                 $name = $heroStats->pluck('new_role')->first();
             }
             return [
                 "name" => $name,
                 "hero" => $heroData[$heroStats->pluck('hero')->first()],
+                "game_map" => $maps[$heroStats->pluck('game_map')->first()],
                 'wins' => $wins,
                 'losses' => $losses,
                 'games_played' => $games_played,

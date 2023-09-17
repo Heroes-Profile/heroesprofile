@@ -6,10 +6,9 @@ use App\Services\GlobalDataService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Rules\RoleInputValidation;
+use App\Rules\SingleGameMapInputValidation;
 
-
-class PlayerRolesController extends Controller
+class PlayerMapsController extends Controller
 {
     protected $globalDataService;
 
@@ -31,7 +30,7 @@ class PlayerRolesController extends Controller
         }
 
 
-        return view('Player.Roles.allRoleData')->with([
+        return view('Player.Maps.allMapData')->with([
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
                 'region' => $region,
@@ -49,14 +48,14 @@ class PlayerRolesController extends Controller
         if ($validator->fails()) {
             return redirect('/');
         }
-        $role = (new RoleInputValidation())->passes('role', $request["role"]);
+        $map = (new SingleGameMapInputValidation())->passes('map', $request["map"]);
 
 
-        return view('Player.Roles.singleRoleData')->with([
+        return view('Player.Maps.singleMapData')->with([
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
                 'region' => $region,
-                'role' => $role,
+                'map' => $map,
                 'filters' => $this->globalDataService->getFilterData(),
                 'regions' => $this->globalDataService->getRegionIDtoString(),
                 ]);
