@@ -109,12 +109,12 @@ Route::get('Profile/Settings', [ProfileController::class, 'showSettings'])->midd
 Route::get('Player/{battletag}/{blizz_id}/{region}', [PlayerController::class, 'show']);
 Route::get('Player/{battletag}/{blizz_id}/{region}/FriendFoe', [FriendFoeController::class, 'show']);
 Route::get('Player/{battletag}/{blizz_id}/{region}/Hero', [PlayerHeroesController::class, 'showAll']);
-Route::get('Player/{battletag}/{blizz_id}/{region}/Hero/Single/{hero}', [PlayerHeroesController::class, 'showSingle']);
+Route::get('Player/{battletag}/{blizz_id}/{region}/Hero/{hero}', [PlayerHeroesController::class, 'showSingle']);
 Route::get('Player/{battletag}/{blizz_id}/{region}/Matchups', [PlayerMatchupsController::class, 'show']);
-Route::get('Player/{battletag}/{blizz_id}/{region}/Roles', [PlayerRolesController::class, 'showAll']);
-Route::get('Player/{battletag}/{blizz_id}/{region}/{role}/Roles/Single', [PlayerRolesController::class, 'showSingle']);
-Route::get('Player/{battletag}/{blizz_id}/{region}/Maps', [PlayerMapsController::class, 'showAll']);
-Route::get('Player/{battletag}/{blizz_id}/{region}/Maps/Single/{map}', [PlayerMapsController::class, 'showSingle']);
+Route::get('Player/{battletag}/{blizz_id}/{region}/Role', [PlayerRolesController::class, 'showAll']);
+Route::get('Player/{battletag}/{blizz_id}/{region}/Role/{role}', [PlayerRolesController::class, 'showSingle']);
+Route::get('Player/{battletag}/{blizz_id}/{region}/Map', [PlayerMapsController::class, 'showAll']);
+Route::get('Player/{battletag}/{blizz_id}/{region}/Map/{map}', [PlayerMapsController::class, 'showSingle']);
 
 //Rewrite game data later
 Route::get('/Gamedata', [GamedataController::class, 'heroes']);

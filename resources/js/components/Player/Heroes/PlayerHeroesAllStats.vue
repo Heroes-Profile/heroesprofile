@@ -262,7 +262,7 @@ export default {
       return this.gametype.includes(game_type);
     },
     getPlayerHeroPageUrl(hero){
-      return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region + "Hero/Single/" +  "/" + hero;
+      return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region + "/Hero/" + hero;
     },
     isDisabled(stat) {
       return this.selectedStatsCount >= 15 && !stat.selected;
