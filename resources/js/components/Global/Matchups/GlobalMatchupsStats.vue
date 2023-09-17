@@ -52,7 +52,7 @@
               Win Rate as Ally %
             </th>            
             <th @click="sortTable('win_rate_against')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Win Rate Against Abathur %
+              Win Rate Against  {{ this.selectedHero.name }} %
             </th>
             <th @click="sortTable('games_played_as_ally')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games Played As Ally

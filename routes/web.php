@@ -5,16 +5,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\BattleNetController;
 use App\Http\Controllers\Auth\PatreonController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Player\PlayerController;
-use App\Http\Controllers\Player\FriendFoeController;
-use App\Http\Controllers\Player\PlayerHeroesController;
-use App\Http\Controllers\BattletagSearchController;
 
+use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\GamedataController;
 use App\Http\Controllers\CompareController;
-
-
 
 use App\Http\Controllers\Global\GlobalHeroStatsController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
@@ -28,6 +23,10 @@ use App\Http\Controllers\Global\GlobalPartyStatsController;
 use App\Http\Controllers\Global\GlobalExtraStats;
  
 
+use App\Http\Controllers\Player\PlayerController;
+use App\Http\Controllers\Player\FriendFoeController;
+use App\Http\Controllers\Player\PlayerHeroesController;
+use App\Http\Controllers\Player\PlayerMatchupsController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -105,6 +104,7 @@ Route::get('Profile/Settings', [ProfileController::class, 'showSettings'])->midd
 Route::get('Player/FriendFoe/{battletag}/{blizz_id}/{region}', [FriendFoeController::class, 'show']);
 Route::get('Player/Hero/All/{battletag}/{blizz_id}/{region}', [PlayerHeroesController::class, 'showAll']);
 Route::get('Player/Hero/Single/{battletag}/{blizz_id}/{region}/{hero}', [PlayerHeroesController::class, 'showSingle']);
+Route::get('Player/Matchups/{battletag}/{blizz_id}/{region}', [PlayerMatchupsController::class, 'show']);
 
 
 
