@@ -68,9 +68,9 @@
 
 
 <div class="flex space-x-4">
-    <a href="https://api.heroesprofile.com/Api" target="_blank" class="bg-teal-500 px-4 py-2 rounded text-white hover:bg-teal-700">API</a>
-    <a href="https://api.heroesprofile.com/upload" target="_blank" class="bg-blue-500 px-4 py-2 rounded text-white hover:bg-blue-700">Replay Uploader</a>
-    <a href="https://www.patreon.com/heroesprofile" target="_blank" class="bg-red-500 px-4 py-2 rounded text-white hover:bg-red-700">Remove Ads / Patreon</a>
+    <custom-button :href="'https://api.heroesprofile.com/Api'" :targetblank="true" :text="'API'" :alt="'API'"  :size="'small'" :color="'teal'"></custom-button>
+    <custom-button :href="'https://api.heroesprofile.com/upload'" :targetblank="true" :text="'Replay Uploader'" :alt="'Replay Uploader'"  :size="'small'" :color="'blue'"></custom-button>
+    <custom-button :href="'https://www.patreon.com/heroesprofile'" :targetblank="true" :text="'Patreon'" :alt="'Patreon'"  :size="'small'" :color="'red'"></custom-button>
 </div>
 @if($isAuthenticated)
 <div class="relative group inline-block">

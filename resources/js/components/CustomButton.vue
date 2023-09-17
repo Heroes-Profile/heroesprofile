@@ -41,6 +41,7 @@
       default: 'blue'
       },
       disabled: Boolean,
+      targetblank: Boolean,
     },
     data(){
       return {
@@ -51,6 +52,7 @@
     created(){
     },
     mounted() {
+      console.log(this.targetblank)
     },
     computed: {
       colorClass() {
@@ -69,7 +71,11 @@
     methods: {
      handleClick() {
       if(!this.disabled) {
-        window.location.href = this.href;
+        if(this.targetblank){
+          window.open(this.href, '_blank');
+        }else{
+          window.location.href = this.href;
+        }
       }
     }
   }
