@@ -4,9 +4,13 @@
     :style="{ backgroundImage: `url('/images/maps/match/match-${data.game_map.sanitized_map_name}.jpg')` }"
   >    
     <div class="flex-1 bg-red-500 p-4"><round-box-small :hero="data.hero"></round-box-small></div>
-    <div class="flex-1 bg-green-500 p-4"><mmr-box :winner="data.winner" :title="'Player'" :mmr="data.player_conservative_rating" :change="data.player_change"></mmr-box></div>
-    <div class="flex-1 bg-blue-500 p-4"><mmr-box :winner="data.winner" :title="'Hero'" :mmr="data.hero_conservative_rating" :change="data.hero_change"></mmr-box></div>
-    <div class="flex-1 bg-yellow-500 p-4"><mmr-box :winner="data.winner" :title="'Role'" :mmr="data.role_conservative_rating" :change="data.role_change"></mmr-box></div>
+    <div class="flex-1 bg-green-500 p-4">
+
+       <stat-box :title="'Player MMR'" :value="data.player_conservative_rating" :mmrchange="data.player_change" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
+      </div>
+
+
+    
 
     <div class="flex-1 flex gap-x-1">
       <talent-box v-if="data.level_one" :talent="data.level_one"></talent-box>
