@@ -1,6 +1,6 @@
-<template>
+/PlayerMapsAllStats.vue<template>
   <div>
-    All Heroes
+    All Maps
     as played by
     <span><a :href="`/Player/${battletag}/${blizzid}/${region}`" target="_blank">{{ battletag }}</a></span>
 
@@ -34,7 +34,7 @@
         <thead>
           <tr>
             <th @click="sortTable('name')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Hero
+              Map
             </th>    
             <th @click="sortTable('win_rate')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games
@@ -55,7 +55,7 @@
         </thead>
         <tbody>
           <tr v-for="row in sortedData" :key="row.id">
-            <td class="py-2 px-3 border-b border-gray-200"><a :href="getPlayerHeroPageUrl(row.name)"><hero-box-small :hero="row.hero"></hero-box-small>{{ row.name }}</a></td>
+            <td class="py-2 px-3 border-b border-gray-200"><a :href="getPlayerMapPageUrl(row.name)">{{ row.name }}</a></td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.wins }}|{{ row.losses }} {{ row.win_rate }} %</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.kda }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}/{{ row.avg_assists }}</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.kdr }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}</td>
@@ -223,15 +223,15 @@ export default {
   methods: {
     async getData(type){
       try{
-        const response = await this.$axios.post("/api/v1/player/heroes/all", {
+        const response = await this.$axios.post("/api/v1/player/maps/all", {
           blizz_id: this.blizzid,
           region: this.region,
           game_type: this.gametype,
           hero: this.hero,
           role: this.role,
-          minimumgames: this.minimumgames,
           type: "all",
-          page: "hero",
+          page: "map",
+          map: this.map,
         });
 
         this.data = response.data;
@@ -244,7 +244,6 @@ export default {
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
-      this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
       this.data = [];
       this.sortKey = '';
       this.sortDir ='asc';
@@ -261,8 +260,8 @@ export default {
     showGameTypeColumn(game_type){
       return this.gametype.includes(game_type);
     },
-    getPlayerHeroPageUrl(hero){
-      return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region + "/Hero/" + hero;
+    getPlayerMapPageUrl(map){
+      return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region + "/Map/" + map;
     },
     isDisabled(stat) {
       return this.selectedStatsCount >= 15 && !stat.selected;

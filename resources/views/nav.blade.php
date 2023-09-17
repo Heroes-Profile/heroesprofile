@@ -49,10 +49,11 @@
     @if(isset($mainSearchAccount))
     <div class="absolute left-0 hidden group-hover:block hover:block z-50 pt-5 bg-blue border border-gray-300 rounded-md">
         <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Profile</a>
-        <a href="/Player/FriendFoe/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Friends and Foes</a>
-        <a href="/Player/Hero/All/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Heroes</a>
-        <a href="/Player/Matchups/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Matchups</a>
-        <a href="/Player/Roles/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Roles</a>
+        <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/FriendFoe" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Friends and Foes</a>
+        <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Hero/" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Heroes</a>
+        <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Roles</a>
+        <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Map" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Maps</a>
+        <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Matchups" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Matchups</a>
     </div>
     @endif
 </div>
@@ -99,10 +100,11 @@
         <a class="text-blue-600 hover:text-blue-800 cursor-pointer">{{ $account['battletag'] }}</a>
         <div class="absolute right-0 mt-2 hidden group-hover:block z-50 bg-blue border border-gray-300 rounded-md">
             <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Profile</a>
-            <a href="/Player/FriendFoe/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Friends and Foes</a>
-            <a href="/Player/Hero/All/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Heroes</a>
-            <a href="/Player/Matchups/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Matchups</a>
-            <a href="/Player/Roles/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Roles</a>
+            <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/FriendFoe" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Friends and Foes</a>
+            <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Hero/" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Heroes</a>
+            <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Roles</a>
+            <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Map" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Maps</a>
+            <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Matchups" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Matchups</a>
         </div>
     </div>
     @endif
