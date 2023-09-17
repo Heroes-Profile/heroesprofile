@@ -40,11 +40,6 @@
         <span>AR MMR = </span><span>{{ data.ar_mmr_data ? data.ar_mmr_data.mmr : 0 }}</span><br>
         <span>AR MMR Tier = </span><span>{{ data.ar_mmr_data ? data.ar_mmr_data.rank_tier : "" }}</span><br>
 
-        <div>
-          <span><a :href="this.getTalentPageUrl()">View Talent Data</a></span>
-        </div>
-
-
         <line-chart v-if="seasonWinRateDataArray" :data="seasonWinRateDataArray"></line-chart>
 
         <div>
@@ -155,9 +150,6 @@ export default {
         //Might have to url encode this...who knows
         history.pushState(null, null, this.heroname);
       }
-    },
-    getTalentPageUrl(){
-      return "/Player/Talents/" + this.battletag + "/" + this.blizzid + "/" + this.region + "/" + this.heroname;
     },
   }
 }

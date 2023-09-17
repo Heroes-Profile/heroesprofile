@@ -157,7 +157,7 @@ export default {
       }
     },
     getTalentPageUrl(){
-      return "/Player/Talents/" + this.battletag + "/" + this.blizzid + "/" + this.region + "/" + this.heroname;
+      return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region  + "/Talents/" + "/" + this.heroname;
     },
   }
 }

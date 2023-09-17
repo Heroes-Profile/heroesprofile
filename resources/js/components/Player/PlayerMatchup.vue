@@ -38,7 +38,7 @@
     <tbody>
       <tr v-for="(row, index) in sortedData" :key="index">
         <td class="py-2 px-3 border-b border-gray-200">
-          <a :href="'/Player/Hero/Single/' + battletag + '/' + blizzid + '/' + region + '/' + row.hero.name"><hero-box-small :hero="row.hero"></hero-box-small>{{ row.hero.name }}</a>
+          <a :href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Hero/Single/' + row.hero.name"><hero-box-small :hero="row.hero"></hero-box-small>{{ row.hero.name }}</a>
         </td>
          <td class="py-2 px-3 border-b border-gray-200">
           {{ row.ally_win_rate }}

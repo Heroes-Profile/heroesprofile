@@ -262,7 +262,7 @@ export default {
       return this.gametype.includes(game_type);
     },
     getPlayerRolePageUrl(role){
-      return "/Player/Roles/Single/" + this.battletag + "/" + this.blizzid + "/" + this.region + "/" + role;
+      return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region + "/" + "Roles/Single/" + role;
     },
     isDisabled(stat) {
       return this.selectedStatsCount >= 15 && !stat.selected;

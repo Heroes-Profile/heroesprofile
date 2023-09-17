@@ -1,4 +1,4 @@
-PlayerMapsAllStats.vue<template>
+/PlayerMapsAllStats.vue<template>
   <div>
     All Maps
     as played by
@@ -261,7 +261,7 @@ export default {
       return this.gametype.includes(game_type);
     },
     getPlayerMapPageUrl(map){
-      return "/Player/Map/Single/" + this.battletag + "/" + this.blizzid + "/" + this.region + "/" + map;
+      return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region + "Map/Single/" + "/" + map;
     },
     isDisabled(stat) {
       return this.selectedStatsCount >= 15 && !stat.selected;
