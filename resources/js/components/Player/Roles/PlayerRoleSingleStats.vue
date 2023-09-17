@@ -48,12 +48,12 @@
         <h1>Heroes played on {{ role }}</h1>
 
 
-        <hero-group-box :text="'Most Played'" :data="data.hero_data_top_played.slice(0, 3)"></hero-group-box>
-        <hero-group-box :text="'Highest Win Rate'" :data="data.hero_data_top_win_rate.slice(0, 3)"></hero-group-box>
+        <group-box :text="'Most Played'" :data="data.hero_data_top_played.slice(0, 3)"></group-box>
+        <group-box :text="'Highest Win Rate'" :data="data.hero_data_top_win_rate.slice(0, 3)"></group-box>
 
         <div class="flex flex-wrap gap-1">
           <template v-for="(item, index) in data.hero_data_all_heroes">
-            <hero-box-small :hero="item.hero"></hero-box-small>
+            <round-box-small :hero="item.hero"></round-box-small>
           </template>
         </div>
 

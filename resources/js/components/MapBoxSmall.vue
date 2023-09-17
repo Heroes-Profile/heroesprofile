@@ -1,5 +1,6 @@
 <template>
   <div v-if="map" class="relative group flex items-center " @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
+    CHANGE THIS TO round-box-small
     <img class="card-img-top relative hover:opacity-75 w-10 h-10 rounded-full" :src="getMapImage()" :alt="map.name" >
     <div v-if="includehover && showTooltip" class="absolute hidden bottom-11 -left-24  bg-gray-dark  text-s p-1  group-hover:block  text-white z-50 drop-shadow-md w-60 rounded-md px-2 text-center">
       {{ popuptext }}
@@ -25,6 +26,7 @@ export default {
     }
   },
   created(){
+
     if(this.map){
       this.popuptext = this.hovertext ? this.hovertext : this.hero.name;
     }else{

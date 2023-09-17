@@ -12,8 +12,8 @@
     :includeseason="true"
     >
   </filters>
-      <hero-group-box :text="'Top 5 Allies with more than 5 games'" :data="topfiveheroes"></hero-group-box>
-      <hero-group-box :text="'Top 5 Enemies with more than 5 games'" :data="topfiveenemies"></hero-group-box>
+      <group-box :text="'Top 5 Allies with more than 5 games'" :data="topfiveheroes"></group-box>
+      <group-box :text="'Top 5 Enemies with more than 5 games'" :data="topfiveenemies"></group-box>
 
   <table class="min-w-full bg-white">
     <thead>

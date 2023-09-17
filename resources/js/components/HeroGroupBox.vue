@@ -3,7 +3,8 @@
         {{ this.text }}
 
     <div class="border border-gray-300 p-4 flex flex-wrap gap-0">
-      <hero-box-small v-for="(item, index) in data" :key="index" :hero="item.hero" :hovertext="item.hovertext"></hero-box-small>
+      CHANGE THIS TO group-box
+      <round-box-small v-for="(item, index) in data" :key="index" :obj="item.hero" :hovertext="item.hovertext"></round-box-small>
     </div>
   </div>
 </template>
@@ -22,6 +23,8 @@ export default {
     }
   },
   created(){
+    console.log('data', this.data);
+
   },
   mounted() {
   },
