@@ -64,7 +64,6 @@ export default {
   },
   methods: {
     getHeroImage(){
-     console.log(this);
       if(this.type == "map")
       {
         return `/images/maps/icon/bg_${this.thisObj.sanitized_map_name}.jpg`;

@@ -23,7 +23,6 @@ export default {
     }
   },
   created(){
-    console.log('data', this.data);
 
   },
   mounted() {

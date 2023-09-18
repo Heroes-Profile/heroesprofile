@@ -236,6 +236,7 @@ class GlobalTalentStatsController extends Controller
                                                                                                                  $statFilter,
                                                                                                                  $talentbuildType
                                                                                                                 ){
+            $topBuilds = null;
             if($talentbuildType == "Popular"){
                 $topBuilds = $this->topBuildsOnPopularity($hero, $gameVersion, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region);
             }else if($talentbuildType == "HP Algorithm"){
