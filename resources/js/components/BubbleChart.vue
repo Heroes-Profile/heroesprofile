@@ -34,9 +34,6 @@
             img.width = radius;
             img.style.borderRadius = "50%";
 
-            console.log(img);
-
-
             img.onload = () => {
               images[hero.short_name] = img;
               resolve();
@@ -107,7 +104,7 @@
       methods: {
         calculateRadius(hero) {
           //This works for initial load of page, but if the page is resized without a reload, the images dont change.  This can be fixed through recreating the chart any time the page changes size, but there are performance issues with this.
-          
+
           const baseWidth = 1500;
           const baseHeight = 750;
           const currentWidth = this.chartRef.clientWidth;

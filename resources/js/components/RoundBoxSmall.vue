@@ -71,10 +71,8 @@ export default {
   },
   methods: {
     getImage(){
-     console.log(this);
       if(typeof this.thisObj.sanitized_map_name != 'undefined')
       {
-        console.log('map image');
         return `/images/maps/icon/bg_${this.thisObj.sanitized_map_name}.jpg`;
       }
       else{

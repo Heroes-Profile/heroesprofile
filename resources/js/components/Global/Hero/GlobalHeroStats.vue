@@ -120,11 +120,22 @@
               <td class="py-2 px-3 border-b border-gray-200">{{ row.influence }}</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.games_played }}</td>
               <td v-if="this.showStatTypeColumn" class="py-2 px-3 border-b border-gray-200">{{ row.total_filter_type }}</td>
-              <td class="py-2 px-3 border-b border-gray-200"><custom-button @click="viewtalentbuilds(row.name, index)" text="View Talent Builds" alt="View Talent Builds" size="small">View Talent Builds</custom-button></td>
+              <td class="py-2 px-3 border-b border-gray-200">
+                <custom-button
+                  @click="viewtalentbuilds(row.name, index)"
+                  text="View Talent Builds"
+                  alt="View Talent Builds"
+                  size="small"
+                  :ignoreclick="true"
+                  :loading="loadingStates[row.name]"
+                >
+                  View Talent Builds
+                </custom-button>
+              </td>
             </tr>
-             <tr v-if="row.talentbuilddata">
+            <tr v-if="toggletalentbuilds[row.name] && talentbuilddata[row.name]">
               <td colspan="11">
-                <global-talent-builds-section v-if="toggletalentbuilds && talentbuilddata" :talentbuilddata="talentbuilddata" :buildtype="selectedbuildtype"></global-talent-builds-section>
+                <global-talent-builds-section v-if="toggletalentbuilds[row.name] && talentbuilddata[row.name]" :talentbuilddata="talentbuilddata[row.name]" :buildtype="selectedbuildtype"></global-talent-builds-section>
               </td>
             </tr> 
           </template>
@@ -163,8 +174,8 @@ export default {
       sortDir: 'asc',
       data: [],
       togglechart: false,
-      toggletalentbuilds: false,
-      talentbuilddata: null,
+      toggletalentbuilds: {},
+      talentbuilddata: {},
       selectedbuildtype: "Popular",
 
 
@@ -184,6 +195,7 @@ export default {
       rolerank: null,
       mirrormatch: null,
       talentbuildtype: null,
+      loadingStates: {},
     }
   },
   created(){
@@ -242,12 +254,14 @@ export default {
 
         this.data = response.data;
         this.isLoading = false;
+        this.loadingStates = this.sortedData.map(() => false);
       }catch(error){
         console.log(error)
       }
     },
     async getTalentBuildData(hero, index){
       try{
+        this.loadingStates[hero] = true;
         const response = await this.$axios.post("/api/v1/global/talents/build", {
           hero: hero,
           timeframe_type: this.timeframetype,
@@ -264,9 +278,10 @@ export default {
           talentbuildtype: this.talentbuildtype
         });
 
-        //this.talentbuilddata = response.data;
-
         this.sortedData[index].talentbuilddata = response.data;
+
+        this.talentbuilddata[hero] = response.data;
+        this.loadingStates[hero] = false;
 
       }catch(error){
         console.log(error);
@@ -288,7 +303,8 @@ export default {
       this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "";
       this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : "";
 
-      this.talentbuilddata = null;
+      this.talentbuilddata = {};
+      this.loadingStates = {};
       this.getData();
     },
     sortTable(key) {
@@ -303,11 +319,11 @@ export default {
       this.togglechart = !this.togglechart;
     },
     viewtalentbuilds(hero, index){
-      this.toggletalentbuilds = !this.toggletalentbuilds;
-
-      if(this.toggletalentbuilds && !this.talentbuilddata){
+      if (!this.talentbuilddata[hero]) {
+        this.loadingStates[hero] = true;
         this.getTalentBuildData(hero, index);
       }
+      this.toggletalentbuilds[hero] = !this.toggletalentbuilds[hero];
     },
   }
 }
