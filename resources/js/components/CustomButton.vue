@@ -20,7 +20,10 @@
       role="button"
       @click.prevent="handleClick"
       >
-      {{text}}
+     <span v-if="!loading">{{ text }}</span>
+      <span v-else class="loading-text">
+        <span v-for="(letter, index) in loadingText" :key="index" :style="{ animationDelay: index * 0.5 + 's' }">{{ letter }}</span>
+      </span>
     </a>
   </div>
 </template>
@@ -42,6 +45,8 @@
       },
       disabled: Boolean,
       targetblank: Boolean,
+      ignoreclick: Boolean,
+      loading: false,
     },
     data(){
       return {
@@ -63,20 +68,40 @@
         }
         const defaultClass = 'bg-blue hover:bg-lblue';
         return colorToClassMap[this.color] || defaultClass;
-      }
+      },
+      loadingText() {
+        return this.loading ? 'Loading...............'.split('') : [];
+      },
     },
     watch: {
     },
     methods: {
-     handleClick() {
-      if(!this.disabled) {
-        if(this.targetblank){
+      handleClick() {
+        if (this.ignoreclick || this.disabled) return;
+
+        if (this.targetblank) {
           window.open(this.href, '_blank');
-        }else{
+        } else {
           window.location.href = this.href;
         }
       }
-    }
+
   }
 }
 </script>
+
+<style>
+.loading-text span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(-1em);
+  animation: appear 0.5s forwards;
+}
+
+@keyframes appear {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>

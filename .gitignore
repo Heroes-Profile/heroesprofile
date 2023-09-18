@@ -17,8 +17,4 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
-
-deployment.txt
-app.yaml
-heroesprofile-244413-a9642e3d8df5.json
 apache2.conf

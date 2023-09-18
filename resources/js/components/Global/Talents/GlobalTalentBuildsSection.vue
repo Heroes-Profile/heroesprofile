@@ -1,9 +1,13 @@
 <template>
   <div>
     <table class="min-w-full bg-white">
-      <thead>
-        <tr colspan="4"> {{ "Builds" }}</tr>
-      </thead>
+        <thead>
+          <tr>
+            <th :colspan="statfilter ? 5 : 4" class="text-center py-2 px-3 border-b border-gray-200">
+              Builds
+            </th>
+          </tr>
+        </thead>
       <thead>
         <tr>
           <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -27,18 +31,18 @@
         <tr v-for="row in talentbuilddata" :key="row">
           <td class="py-2 px-3 border-b border-gray-200">
             <div class="flex flex-wrap gap-4">
-              <talent-box :talent="row.level_one"></talent-box>{{ row.level_one.talent_name }}
-              <talent-box :talent="row.level_four"></talent-box>{{ row.level_one.level_four }}
-              <talent-box :talent="row.level_seven"></talent-box>{{ row.level_one.level_seven }}
-              <talent-box :talent="row.level_ten"></talent-box>{{ row.level_one.level_ten }}
-              <talent-box :talent="row.level_thirteen"></talent-box>{{ row.level_one.level_thirteen }}
-              <talent-box :talent="row.level_sixteen"></talent-box>{{ row.level_one.level_sixteen }}
-              <talent-box :talent="row.level_twenty"></talent-box>{{ row.level_one.level_twenty }}
+              <talent-box :talent="row.level_one"></talent-box>
+              <talent-box :talent="row.level_four"></talent-box>
+              <talent-box :talent="row.level_seven"></talent-box>
+              <talent-box :talent="row.level_ten"></talent-box>
+              <talent-box :talent="row.level_thirteen"></talent-box>
+              <talent-box :talent="row.level_sixteen"></talent-box>
+              <talent-box :talent="row.level_twenty"></talent-box>
             </div>
           </td>
           <td class="py-2 px-3 border-b border-gray-200">
             {{ this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, row.hero) }}
-            <button @click="copyToClipboard(row)">COPY TO CLIPBOARD</button>
+            <custom-button @click="copyToClipboard(row)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
           </td>
           <td class="py-2 px-3 border-b border-gray-200">{{ row.games_played }}</td>
           <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
@@ -55,9 +59,12 @@ export default {
   components: {
   },
   props: {
-    talentbuilddata: Array,
+    talentbuilddata: {
+      Type: Object|Array
+    },
     buildtype: String,
     statfilter: String,
+    talentimages: Array,
   },
   data(){
     return {

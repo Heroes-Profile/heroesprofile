@@ -29,9 +29,10 @@
       <single-select-filter v-if="includeteamtwoparty" :values="this.filters.party_combinations" :text="'Team Two Party'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter v-if="modifiedincludeminimumaccountlevel" :values="this.filters.minimum_account_level" :text="'Min. Account Level'" @input-changed="handleInputChange" :defaultValue="'100'"></single-select-filter>
       <single-select-filter v-if="modifiedincludexaxisincrements" :values="this.filters.x_axis_increments" :text="'X Axis Increments'" @input-changed="handleInputChange" :defaultValue="'25'"></single-select-filter>
-     <button @click="applyFilter" class="ml-10 bg-blue text-white p-2 ">
-      Filter
-    </button>
+      <button :disabled="isLoading" @click="applyFilter" class="ml-10 p-2" :class="{'bg-blue text-white': !isLoading, 'bg-gray-400 text-gray-700': isLoading}">
+        Filter
+      </button>
+
 
     </div>
 
@@ -48,6 +49,8 @@ export default {
   components: {
   },
   props: {
+    isLoading: Boolean,
+
     includeherorole: Boolean,
     includeleaderboardtype:Boolean,
     includegroupsize: Boolean,
@@ -76,6 +79,7 @@ export default {
     includeteamtwoparty: Boolean,
     includeminimumaccountlevel: Boolean,
     includexaxisincrements: Boolean,
+
     minimumseason: Number,
 
     filters: {
@@ -102,9 +106,13 @@ export default {
       modifiedincludexaxisincrements: null,
       modifiedincludegametype: null,
       modifiedminimumgamedefault: null,
+      modifiedincludeheroes: null,
     }
   },
   created(){    
+
+  },
+  mounted() {
     this.defaultGameType = this.gametypedefault;
 
     this.selectedSingleFilters = {
@@ -119,8 +127,13 @@ export default {
     this.modifiedincludeheroes = this.includehero;
 
     this.modifiedminimumgamedefault = this.minimumgamesdefault ? this.minimumgamesdefault : 0;
-  },
-  mounted() {
+
+        
+
+    this.selectedSingleFilters["Timeframe Type"] = this.defaultTimeframeType;
+    this.selectedMultiFilters["Game Type"] = this.gametypedefault;
+    this.selectedMultiFilters.Timeframes = this.defaultMinor;
+    this.selectedSingleFilters["Stat Filter"] = this.defaultStatType;
   },
   computed: {
     defaultMinor() {

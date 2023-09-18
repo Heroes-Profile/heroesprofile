@@ -1,7 +1,6 @@
 <template>
   <div>
-    <h1>Global Hero Statistics</h1>
-    <infobox :input="infoText"></infobox>
+    <page-heading :infoText1="infoText" :heading="'Global Hero Statistics'"></page-heading>
 
     Need to update some dynamic fields on this to make this fields required.  This page isnt fully complete but im bored of it
     <filters 
@@ -16,6 +15,9 @@
     <div v-if="data">
       Got Data
       <bar-chart :data="data"></bar-chart>
+    </div>
+    <div v-else>
+      <loading-component></loading-component>
     </div>
   </div>
 </template>
