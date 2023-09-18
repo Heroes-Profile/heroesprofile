@@ -144,7 +144,7 @@
     </div>
     </div>
     <div v-else>
-      <loading-component></loading-component>
+      <!--<loading-component></loading-component>-->
     </div>
   </div>
 </template>
@@ -262,6 +262,9 @@ export default {
     async getTalentBuildData(hero, index){
       try{
         this.loadingStates[hero] = true;
+
+
+        console.log(this.gametype);
         const response = await this.$axios.post("/api/v1/global/talents/build", {
           hero: hero,
           timeframe_type: this.timeframetype,
@@ -303,9 +306,14 @@ export default {
       this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "";
       this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : "";
 
+
+
+
+      console.log(filteredData.multi["Game Type"]);
+
       this.talentbuilddata = {};
       this.loadingStates = {};
-      this.getData();
+      //this.getData();
     },
     sortTable(key) {
       if (key === this.sortKey) {

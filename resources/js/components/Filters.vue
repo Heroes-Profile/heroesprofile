@@ -175,6 +175,10 @@ export default {
         this.modifiedincludegametype = false;
         this.modifiedincludeheroes = false;
       }
+
+
+
+      console.log(this.selectedMultiFilters);
     },
     getDefaultMinorBasedOnTimeframeType() {
       if(this.defaultTimeframeType == "minor"){
@@ -189,6 +193,10 @@ export default {
         single: this.selectedSingleFilters,
         multi: this.selectedMultiFilters
       };
+
+      console.log(this.selectedMultiFilters);
+
+
       this.onFilter(allSelectedFilters);
     },
   }

@@ -55,7 +55,9 @@ export default {
   components: {
   },
   props: {
-    talentbuilddata: Array,
+    talentbuilddata: {
+      Type: Object|Array
+    },
     buildtype: String,
     statfilter: String,
   },
