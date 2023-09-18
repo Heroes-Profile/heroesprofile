@@ -42,6 +42,7 @@
       },
       disabled: Boolean,
       targetblank: Boolean,
+      ignoreclick: Boolean,
     },
     data(){
       return {
@@ -68,15 +69,16 @@
     watch: {
     },
     methods: {
-     handleClick() {
-      if(!this.disabled) {
-        if(this.targetblank){
+      handleClick() {
+        if (this.ignoreclick || this.disabled) return;
+
+        if (this.targetblank) {
           window.open(this.href, '_blank');
-        }else{
+        } else {
           window.location.href = this.href;
         }
       }
-    }
+
   }
 }
 </script>

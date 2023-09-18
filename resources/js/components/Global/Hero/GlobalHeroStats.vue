@@ -5,6 +5,7 @@
     
 
     <filters 
+      :isLoading="isLoading"
       :onFilter="filterData" 
       :filters="filters" 
       :gametypedefault="gametypedefault"
@@ -26,11 +27,10 @@
     </filters>
 
     
-    <custom-button @click="toggleChartValue"  text="Toggle Chart" alt="Toggle Chart" size="small"></custom-button>
     <div v-if="this.data.data">
+      <custom-button @click="toggleChartValue"  text="Toggle Chart" alt="Toggle Chart" size="small" :ignoreclick="true"></custom-button>
       <div v-if="togglechart">
         <bubble-chart :heroData="this.data.data"></bubble-chart>
-
       </div>
       <div class="min-w-full px-20">
      <table class="min-w-full bg-white">
@@ -132,6 +132,9 @@
       </table>
     </div>
     </div>
+    <div v-else>
+      <loading-component></loading-component>
+    </div>
   </div>
 </template>
 
@@ -154,7 +157,7 @@ export default {
   },
   data(){
     return {
-      loading: false,
+      isLoading: false,
     	infoText: "Hero win rates based on differing increments, stat types, game type, or Rank. Click on a Hero to see detailed information. On the chart, bubble size is a combination of Win Rate, Pick Rate, and Ban Rate",
       sortKey: '',
       sortDir: 'asc',
@@ -217,7 +220,7 @@ export default {
   methods: {
   	async getData(){
       try{
-        this.loading = true;
+        this.isLoading = true;
         this.data = [];
 
         const response = await this.$axios.post("/api/v1/global/hero", {
@@ -238,14 +241,13 @@ export default {
         });
 
         this.data = response.data;
-        this.loading = false;
+        this.isLoading = false;
       }catch(error){
         console.log(error)
       }
     },
     async getTalentBuildData(hero, index){
       try{
-        console.log(hero);
         const response = await this.$axios.post("/api/v1/global/talents/build", {
           hero: hero,
           timeframe_type: this.timeframetype,
