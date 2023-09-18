@@ -5,6 +5,7 @@
     
 
     <filters 
+      :isLoading="isLoading"
       :onFilter="filterData" 
       :filters="filters" 
       :gametypedefault="gametypedefault"
@@ -26,11 +27,10 @@
     </filters>
 
     
-    <custom-button @click="toggleChartValue"  text="Toggle Chart" alt="Toggle Chart" size="small"></custom-button>
     <div v-if="this.data.data">
+      <custom-button @click="toggleChartValue"  text="Toggle Chart" alt="Toggle Chart" size="small" :ignoreclick="true"></custom-button>
       <div v-if="togglechart">
         <bubble-chart :heroData="this.data.data"></bubble-chart>
-
       </div>
       <div class="min-w-full px-20">
      <table class="min-w-full bg-white">
@@ -120,17 +120,31 @@
               <td class="py-2 px-3 border-b border-gray-200">{{ row.influence }}</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.games_played }}</td>
               <td v-if="this.showStatTypeColumn" class="py-2 px-3 border-b border-gray-200">{{ row.total_filter_type }}</td>
-              <td class="py-2 px-3 border-b border-gray-200"><custom-button @click="viewtalentbuilds(row.name, index)" text="View Talent Builds" alt="View Talent Builds" size="small">View Talent Builds</custom-button></td>
+              <td class="py-2 px-3 border-b border-gray-200">
+                <custom-button
+                  @click="viewtalentbuilds(row.name, index)"
+                  text="View Talent Builds"
+                  alt="View Talent Builds"
+                  size="small"
+                  :ignoreclick="true"
+                  :loading="loadingStates[row.name]"
+                >
+                  View Talent Builds
+                </custom-button>
+              </td>
             </tr>
-             <tr v-if="row.talentbuilddata">
+            <tr v-if="toggletalentbuilds[row.name] && talentbuilddata[row.name]">
               <td colspan="11">
-                <global-talent-builds-section v-if="toggletalentbuilds && talentbuilddata" :talentbuilddata="talentbuilddata" :buildtype="selectedbuildtype"></global-talent-builds-section>
+                <global-talent-builds-section v-if="toggletalentbuilds[row.name] && talentbuilddata[row.name]" :talentbuilddata="talentbuilddata[row.name]" :buildtype="selectedbuildtype"></global-talent-builds-section>
               </td>
             </tr> 
           </template>
         </tbody>
       </table>
     </div>
+    </div>
+    <div v-else>
+      <!--<loading-component></loading-component>-->
     </div>
   </div>
 </template>
@@ -154,14 +168,14 @@ export default {
   },
   data(){
     return {
-      loading: false,
+      isLoading: false,
     	infoText: "Hero win rates based on differing increments, stat types, game type, or Rank. Click on a Hero to see detailed information. On the chart, bubble size is a combination of Win Rate, Pick Rate, and Ban Rate",
       sortKey: '',
       sortDir: 'asc',
       data: [],
       togglechart: false,
-      toggletalentbuilds: false,
-      talentbuilddata: null,
+      toggletalentbuilds: {},
+      talentbuilddata: {},
       selectedbuildtype: "Popular",
 
 
@@ -181,6 +195,7 @@ export default {
       rolerank: null,
       mirrormatch: null,
       talentbuildtype: null,
+      loadingStates: {},
     }
   },
   created(){
@@ -217,7 +232,7 @@ export default {
   methods: {
   	async getData(){
       try{
-        this.loading = true;
+        this.isLoading = true;
         this.data = [];
 
         const response = await this.$axios.post("/api/v1/global/hero", {
@@ -238,14 +253,18 @@ export default {
         });
 
         this.data = response.data;
-        this.loading = false;
+        this.isLoading = false;
+        this.loadingStates = this.sortedData.map(() => false);
       }catch(error){
         console.log(error)
       }
     },
     async getTalentBuildData(hero, index){
       try{
-        console.log(hero);
+        this.loadingStates[hero] = true;
+
+
+        console.log(this.gametype);
         const response = await this.$axios.post("/api/v1/global/talents/build", {
           hero: hero,
           timeframe_type: this.timeframetype,
@@ -262,9 +281,10 @@ export default {
           talentbuildtype: this.talentbuildtype
         });
 
-        //this.talentbuilddata = response.data;
-
         this.sortedData[index].talentbuilddata = response.data;
+
+        this.talentbuilddata[hero] = response.data;
+        this.loadingStates[hero] = false;
 
       }catch(error){
         console.log(error);
@@ -286,8 +306,14 @@ export default {
       this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "";
       this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : "";
 
-      this.talentbuilddata = null;
-      this.getData();
+
+
+
+      console.log(filteredData.multi["Game Type"]);
+
+      this.talentbuilddata = {};
+      this.loadingStates = {};
+      //this.getData();
     },
     sortTable(key) {
       if (key === this.sortKey) {
@@ -301,11 +327,11 @@ export default {
       this.togglechart = !this.togglechart;
     },
     viewtalentbuilds(hero, index){
-      this.toggletalentbuilds = !this.toggletalentbuilds;
-
-      if(this.toggletalentbuilds && !this.talentbuilddata){
+      if (!this.talentbuilddata[hero]) {
+        this.loadingStates[hero] = true;
         this.getTalentBuildData(hero, index);
       }
+      this.toggletalentbuilds[hero] = !this.toggletalentbuilds[hero];
     },
   }
 }
