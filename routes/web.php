@@ -5,16 +5,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\BattleNetController;
 use App\Http\Controllers\Auth\PatreonController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Player\PlayerController;
-use App\Http\Controllers\Player\FriendFoeController;
-use App\Http\Controllers\Player\PlayerHeroesController;
-use App\Http\Controllers\BattletagSearchController;
 
+use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\GamedataController;
 use App\Http\Controllers\CompareController;
-
-
 
 use App\Http\Controllers\Global\GlobalHeroStatsController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
@@ -27,6 +22,15 @@ use App\Http\Controllers\Global\GlobalDraftController;
 use App\Http\Controllers\Global\GlobalPartyStatsController;
 use App\Http\Controllers\Global\GlobalExtraStats;
  
+
+use App\Http\Controllers\Player\PlayerController;
+use App\Http\Controllers\Player\FriendFoeController;
+use App\Http\Controllers\Player\PlayerHeroesController;
+use App\Http\Controllers\Player\PlayerMatchupsController;
+use App\Http\Controllers\Player\PlayerRolesController;
+use App\Http\Controllers\Player\PlayerMapsController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -102,20 +106,15 @@ Route::get('/Global/Extra', [GlobalExtraStats::class, 'show']);
 Route::get('Profile/Settings', [ProfileController::class, 'showSettings'])->middleware('ensureBattlenetAuth');
 
 //Player data
-Route::get('Player/FriendFoe/{battletag}/{blizz_id}/{region}', [FriendFoeController::class, 'show']);
-Route::get('Player/Hero/All/{battletag}/{blizz_id}/{region}', [PlayerHeroesController::class, 'showAll']);
-Route::get('Player/Hero/Single/{battletag}/{blizz_id}/{region}/{hero}', [PlayerHeroesController::class, 'showSingle']);
-
-
-
 Route::get('Player/{battletag}/{blizz_id}/{region}', [PlayerController::class, 'show']);
-
-
-
-
-
-
-
+Route::get('Player/{battletag}/{blizz_id}/{region}/FriendFoe', [FriendFoeController::class, 'show']);
+Route::get('Player/{battletag}/{blizz_id}/{region}/Hero', [PlayerHeroesController::class, 'showAll']);
+Route::get('Player/{battletag}/{blizz_id}/{region}/Hero/{hero}', [PlayerHeroesController::class, 'showSingle']);
+Route::get('Player/{battletag}/{blizz_id}/{region}/Matchups', [PlayerMatchupsController::class, 'show']);
+Route::get('Player/{battletag}/{blizz_id}/{region}/Role', [PlayerRolesController::class, 'showAll']);
+Route::get('Player/{battletag}/{blizz_id}/{region}/Role/{role}', [PlayerRolesController::class, 'showSingle']);
+Route::get('Player/{battletag}/{blizz_id}/{region}/Map', [PlayerMapsController::class, 'showAll']);
+Route::get('Player/{battletag}/{blizz_id}/{region}/Map/{map}', [PlayerMapsController::class, 'showSingle']);
 
 //Rewrite game data later
 Route::get('/Gamedata', [GamedataController::class, 'heroes']);

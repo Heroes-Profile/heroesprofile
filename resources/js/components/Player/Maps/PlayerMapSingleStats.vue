@@ -40,11 +40,6 @@
         <span>AR MMR = </span><span>{{ data.ar_mmr_data ? data.ar_mmr_data.mmr : 0 }}</span><br>
         <span>AR MMR Tier = </span><span>{{ data.ar_mmr_data ? data.ar_mmr_data.rank_tier : "" }}</span><br>
 
-        <div>
-          <span><a :href="this.getTalentPageUrl()">View Talent Data</a></span>
-        </div>
-
-
         <line-chart v-if="seasonWinRateDataArray" :data="seasonWinRateDataArray"></line-chart>
 
         <div>
@@ -53,13 +48,13 @@
           <infobox :input="'Click a map to see more information and stats, or select all maps to view maps regardless of hero.'"></infobox>
 
           <div class="flex">
-            <group-box :data="data.map_data_top_played.slice(0, 3)"></group-box>
-            <group-box :data="data.map_data_top_win_rate.slice(0, 3)"></group-box>
-            <group-box :data="data.map_data_top_latest_played.slice(0, 3)"></group-box>
+            <map-group-box :data="data.map_data_top_played.slice(0, 3)"></map-group-box>
+            <map-group-box :data="data.map_data_top_win_rate.slice(0, 3)"></map-group-box>
+            <map-group-box :data="data.map_data_top_latest_played.slice(0, 3)"></map-group-box>
           </div>
 
           <div class="flex">
-            <round-box-small v-for="(item, index) in data.map_data" :key="index" :map="item.map_object" :hovertext="'I am not sure if this is the right way to do it'"></round-box-small>
+            <map-box-small v-for="(item, index) in data.map_data" :key="index" :map="item.map_object" :hovertext="'I am not sure if this is the right way to do it'"></map-box-small>
           </div>
         </div>
 
@@ -104,6 +99,7 @@ export default {
     },
     region: Number,
     regions: Object,
+    map: String,
   },
   data(){
     return {
@@ -131,13 +127,14 @@ export default {
   methods: {
     async getData(type){
       try{
-        const response = await this.$axios.post("/api/v1/player/heroes/single", {
+        const response = await this.$axios.post("/api/v1/player/maps/single", {
           blizz_id: this.blizzid,
           region: this.region,
           game_type: this.gametype,
           hero: this.hero,
           type: "single",
-          page: "hero",
+          page: "map",
+          map: this.map,
         });
 
         this.data = response.data[0];
@@ -155,9 +152,6 @@ export default {
         //Might have to url encode this...who knows
         history.pushState(null, null, this.heroname);
       }
-    },
-    getTalentPageUrl(){
-      return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region  + "/Talents/" + "/" + this.heroname;
     },
   }
 }

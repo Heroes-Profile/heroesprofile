@@ -34,7 +34,7 @@
         <thead>
           <tr>
             <th @click="sortTable('name')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Hero
+              Role
             </th>    
             <th @click="sortTable('win_rate')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games
@@ -55,7 +55,7 @@
         </thead>
         <tbody>
           <tr v-for="row in sortedData" :key="row.id">
-            <td class="py-2 px-3 border-b border-gray-200"><a :href="getPlayerHeroPageUrl(row.name)"><hero-box-small :hero="row.hero"></hero-box-small>{{ row.name }}</a></td>
+            <td class="py-2 px-3 border-b border-gray-200"><a :href="getPlayerRolePageUrl(row.name)"><role-box :role="row.name"></role-box>{{ row.name }}</a></td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.wins }}|{{ row.losses }} {{ row.win_rate }} %</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.kda }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}/{{ row.avg_assists }}</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.kdr }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}</td>
@@ -82,7 +82,7 @@
 
 <script>
 export default {
-  name: 'PlayerHeroesAllStats',
+  name: 'PlayerRolesAllStats',
   components: {
   },
   props: {
@@ -223,7 +223,7 @@ export default {
   methods: {
     async getData(type){
       try{
-        const response = await this.$axios.post("/api/v1/player/heroes/all", {
+        const response = await this.$axios.post("/api/v1/player/roles/all", {
           blizz_id: this.blizzid,
           region: this.region,
           game_type: this.gametype,
@@ -231,7 +231,7 @@ export default {
           role: this.role,
           minimumgames: this.minimumgames,
           type: "all",
-          page: "hero",
+          page: "role",
         });
 
         this.data = response.data;
@@ -261,8 +261,8 @@ export default {
     showGameTypeColumn(game_type){
       return this.gametype.includes(game_type);
     },
-    getPlayerHeroPageUrl(hero){
-      return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region + "/Hero/" + hero;
+    getPlayerRolePageUrl(role){
+      return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region + "/" + "Role/" + role;
     },
     isDisabled(stat) {
       return this.selectedStatsCount >= 15 && !stat.selected;

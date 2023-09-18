@@ -18,8 +18,12 @@
 </head>
 <body class="bg-black text-white">
   <div id="app">
-    <main-nav :is-authenticated="{{ json_encode(Auth::check()) }}" :main-search-account="{{ json_encode($main_search_account) }}" :alt-search-account1="{{ json_encode($alt_search_account1) }}" :alt-search-account2="{{ json_encode($alt_search_account2) }}" :alt-search-account3="{{ json_encode($alt_search_account3) }}" ></main-nav>
-    <main >
+
+      @include('nav', [
+          'isAuthenticated' => Auth::check(),
+          'mainSearchAccount' => $main_search_account,
+          'altSearchAccounts' => [$alt_search_account1, $alt_search_account2, $alt_search_account3],
+      ])
       @yield('content')
     </main>
 

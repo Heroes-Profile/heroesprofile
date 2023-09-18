@@ -6,7 +6,7 @@
     <!-- Should turn into a component for easy styling? -->
     <div class="flex flex-wrap gap-1" v-if="!selectedHero">
       <div v-for="hero in heroes" :key="hero.id">
-        <hero-box-small :hero="hero" @click="clickedHero(hero)"></hero-box-small>
+        <round-box-small :hero="hero" @click="clickedHero(hero)"></round-box-small>
       </div>
     </div>
 
@@ -37,8 +37,8 @@
 
 
     <div v-if="allyenemydata" class="flex flex-wrap gap-4">
-      <hero-group-box :text="'TOP 5 ALLIES ON HEROS TEAM'" :data="allyenemydata.ally.slice(0, 5)"></hero-group-box>
-      <hero-group-box :text="'TOP 5 THREATS ON ENEMIES TEAM'" :data="allyenemydata.enemy.slice(0, 5)"></hero-group-box>
+      <group-box :text="'TOP 5 ALLIES ON HEROS TEAM'" :data="allyenemydata.ally.slice(0, 5)"></group-box>
+      <group-box :text="'TOP 5 THREATS ON ENEMIES TEAM'" :data="allyenemydata.enemy.slice(0, 5)"></group-box>
 
 
 
@@ -52,7 +52,7 @@
               Win Rate as Ally %
             </th>            
             <th @click="sortTable('win_rate_against')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Win Rate Against Abathur %
+              Win Rate Against  {{ this.selectedHero.name }} %
             </th>
             <th @click="sortTable('games_played_as_ally')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games Played As Ally
