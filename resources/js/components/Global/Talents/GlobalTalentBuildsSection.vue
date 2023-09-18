@@ -1,9 +1,13 @@
 <template>
   <div>
     <table class="min-w-full bg-white">
-      <thead>
-        <tr colspan="4"> {{ "Builds" }}</tr>
-      </thead>
+        <thead>
+          <tr>
+            <th :colspan="statfilter ? 5 : 4" class="text-center py-2 px-3 border-b border-gray-200">
+              Builds
+            </th>
+          </tr>
+        </thead>
       <thead>
         <tr>
           <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -60,6 +64,7 @@ export default {
     },
     buildtype: String,
     statfilter: String,
+    talentimages: Array,
   },
   data(){
     return {

@@ -40,6 +40,7 @@ import StatBox from './components/StatBox.vue';
 import StatBarBox from './components/StatBarBox.vue';
 import SearchedBattletagHolding from './components/SearchedBattletagHolding.vue';
 import LoadingComponent from './components/LoadingComponent.vue';
+import RenameHeroesListFilterableLater from './components/RenameHeroesListFilterableLater.vue';
 
 //Global Pages
 import GlobalHeroStats from './components/Global/Hero/GlobalHeroStats.vue';

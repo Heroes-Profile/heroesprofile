@@ -1,13 +1,9 @@
 <template>
   <div>
-    <h1>Hero Matchups Statistics</h1>
-    <infobox :input="infoText"></infobox>
+    <page-heading :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Matchups Statistics' : 'Hero Matchups Statistics'"></page-heading>
 
-    <!-- Should turn into a component for easy styling? -->
-    <div class="flex flex-wrap gap-1" v-if="!selectedHero">
-      <div v-for="hero in heroes" :key="hero.id">
-        <round-box-small :hero="hero" @click="clickedHero(hero)"></round-box-small>
-      </div>
+    <div v-if="!selectedHero">
+      <rename-heroes-list-filterable-later :heroes="heroes"></rename-heroes-list-filterable-later>
     </div>
 
     <div v-else>
@@ -28,15 +24,7 @@
       :includemirror="true"
       >
     </filters>
-
-
-    <div class="flex flex-wrap gap-4">
-      {{ this.selectedHero.name }}{{" Matchups"}}
-      {{ "Enemies and Allies" }}
-    </div>
-
-
-    <div v-if="allyenemydata" class="flex flex-wrap gap-4">
+    <div v-if="allyenemydata" class="flex flex-wrap gap-4 justify-center items-center">
       <group-box :text="'TOP 5 ALLIES ON HEROS TEAM'" :data="allyenemydata.ally.slice(0, 5)"></group-box>
       <group-box :text="'TOP 5 THREATS ON ENEMIES TEAM'" :data="allyenemydata.enemy.slice(0, 5)"></group-box>
 
@@ -65,7 +53,10 @@
         <tbody>
           <tr v-for="(row, index) in sortedData" :key="index">
             <td class="py-2 px-3 border-b border-gray-200">
-              {{ row.ally && row.ally.hero ? row.ally.hero.name : row.enemy }}
+              <div class="flex items-center">
+                <round-box-small :hero="row.ally ? row.ally.hero : row.enemy.hero "></round-box-small>
+                <span class="ml-left px-3">{{ row.ally && row.ally.hero ? row.ally.hero.name : row.enemy.hero.name }}</span>
+              </div>
             </td>
             <td class="py-2 px-3 border-b border-gray-200">
               {{ row.ally && row.ally.win_rate ? row.ally.win_rate : 0 }}
@@ -84,7 +75,9 @@
         </tbody>
       </table>
     </div>
-
+    <div v-else>
+      <loading-component></loading-component>
+    </div>
   </div>
 
 
