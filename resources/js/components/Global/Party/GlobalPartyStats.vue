@@ -1,7 +1,6 @@
 <template>
   <div>
-    <h1>Global Party Statistics</h1>
-    <infobox :input="infoText"></infobox>
+    <page-heading :infoText1="infoText" :heading="'Global Party Statistics'"></page-heading>
 
     <filters 
       :onFilter="filterData" 
@@ -244,6 +243,9 @@
         </table>  
       </div>
 
+    </div>
+    <div v-else>
+      <loading-component></loading-component>
     </div>
   </div>
 </template>

@@ -1,11 +1,8 @@
 <template>
   <div>
     <div class="grid gap-5 grid-cols-1">
-      <div>
-        <h1>Draft Statistics</h1>
-        <infobox :input="infoText1"></infobox>
-        <infobox :input="infoText2"></infobox>
-      </div>
+      <page-heading :infoText1="infoText1" :infoText2="infoText2" :heading="selectedHero ? selectedHero.name + ' Draft Statistics' : 'Draft Statistics'"></page-heading>
+
 
       <!-- Should turn into a component for easy styling? -->
       <div class="flex flex-wrap gap-1" v-if="!selectedHero">
@@ -55,8 +52,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in draftdata" :key="row.pick_number">
-              <td class="py-2 px-3 border-b border-gray-200">{{ this.determinePickOrBan(row.pick_number) }}</td>
+            <!-- ChatGPT code. this isnt working 100% -->
+            <tr 
+              v-for="row in draftdata" 
+              :key="row.pick_number"
+              :class="determinePickOrBan(row.pick_number).includes('Ban') ? 'bg-red' : ''"
+            >
+              <td class="py-2 px-3 border-b border-gray-200">
+                {{ determinePickOrBan(row.pick_number) }}
+              </td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.popularity }}</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.wins }}</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.losses }}</td>
@@ -64,6 +68,9 @@
             </tr>
           </tbody>
         </table>
+      </div>
+      <div v-else>
+        <loading-component></loading-component>
       </div>
     </div>
 

@@ -1,14 +1,11 @@
 <template>
   <div>
-    <h1>Hero Map Statistics</h1>
-    <infobox :input="infoText"></infobox>
-    
-    <!-- Should turn into a component for easy styling? -->
-    <div class="flex flex-wrap gap-1" v-if="!selectedHero">
-      <div v-for="hero in heroes" :key="hero.id">
-        <round-box-small :hero="hero" @click="clickedHero(hero)"></round-box-small>
-      </div>
+
+    <page-heading :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Map Statistics' : 'Hero Map Statistics'"></page-heading>
+    <div v-if="!selectedHero">
+      <rename-heroes-list-filterable-later :heroes="heroes"></rename-heroes-list-filterable-later>
     </div>
+
 
     <div v-else>
       <filters 
@@ -26,11 +23,12 @@
       :includemirror="true"
       >
     </filters>
-
-
-
-
-    <custom-table :columns="columns" :data="data"></custom-table>
+    <div v-if="data">
+      <custom-table :columns="columns" :data="data"></custom-table>
+    </div>
+    <div v-else>
+      <loading-component></loading-component>
+    </div>
   </div>
 
 

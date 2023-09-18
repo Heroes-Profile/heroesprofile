@@ -50,6 +50,7 @@ export default {
   },
   props: {
     isLoading: Boolean,
+
     includeherorole: Boolean,
     includeleaderboardtype:Boolean,
     includegroupsize: Boolean,
@@ -78,6 +79,7 @@ export default {
     includeteamtwoparty: Boolean,
     includeminimumaccountlevel: Boolean,
     includexaxisincrements: Boolean,
+
     minimumseason: Number,
 
     filters: {
@@ -104,9 +106,13 @@ export default {
       modifiedincludexaxisincrements: null,
       modifiedincludegametype: null,
       modifiedminimumgamedefault: null,
+      modifiedincludeheroes: null,
     }
   },
   created(){    
+
+  },
+  mounted() {
     this.defaultGameType = this.gametypedefault;
 
     this.selectedSingleFilters = {
@@ -121,8 +127,13 @@ export default {
     this.modifiedincludeheroes = this.includehero;
 
     this.modifiedminimumgamedefault = this.minimumgamesdefault ? this.minimumgamesdefault : 0;
-  },
-  mounted() {
+
+        
+
+    this.selectedSingleFilters["Timeframe Type"] = this.defaultTimeframeType;
+    this.selectedMultiFilters["Game Type"] = this.gametypedefault;
+    this.selectedMultiFilters.Timeframes = this.defaultMinor;
+    this.selectedSingleFilters["Stat Filter"] = this.defaultStatType;
   },
   computed: {
     defaultMinor() {
@@ -175,10 +186,6 @@ export default {
         this.modifiedincludegametype = false;
         this.modifiedincludeheroes = false;
       }
-
-
-
-      console.log(this.selectedMultiFilters);
     },
     getDefaultMinorBasedOnTimeframeType() {
       if(this.defaultTimeframeType == "minor"){
@@ -193,10 +200,6 @@ export default {
         single: this.selectedSingleFilters,
         multi: this.selectedMultiFilters
       };
-
-      console.log(this.selectedMultiFilters);
-
-
       this.onFilter(allSelectedFilters);
     },
   }

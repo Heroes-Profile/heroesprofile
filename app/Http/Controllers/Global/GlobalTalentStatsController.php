@@ -48,6 +48,7 @@ class GlobalTalentStatsController extends Controller
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
                 'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
+                'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
             ]);
     }
 

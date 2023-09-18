@@ -17,7 +17,7 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding-top: 10%; /* Adjust as needed to only occupy the top half */
+  padding-top: 5%; /* Adjust as needed to only occupy the top half */
   gap: 20px;
   background-color: rgba(0, 0, 0, 0.95); /* Translucent black background */
   width: 100%; /* Take full width of the parent container */

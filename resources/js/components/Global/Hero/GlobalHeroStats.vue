@@ -28,7 +28,10 @@
 
     
     <div v-if="this.data.data">
-      <custom-button @click="toggleChartValue"  text="Toggle Chart" alt="Toggle Chart" size="small" :ignoreclick="true"></custom-button>
+      <div class="float-right mr-20">
+        <custom-button @click="toggleChartValue"  text="Toggle Chart" alt="Toggle Chart" size="small" :ignoreclick="true"></custom-button>
+      </div>
+
       <div v-if="togglechart">
         <bubble-chart :heroData="this.data.data"></bubble-chart>
       </div>
@@ -141,10 +144,11 @@
           </template>
         </tbody>
       </table>
+
     </div>
     </div>
     <div v-else>
-      <!--<loading-component></loading-component>-->
+      <loading-component></loading-component>
     </div>
   </div>
 </template>
@@ -305,11 +309,6 @@ export default {
       this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : [];
       this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "";
       this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : "";
-
-
-
-
-      console.log(filteredData.multi["Game Type"]);
 
       this.talentbuilddata = {};
       this.loadingStates = {};
