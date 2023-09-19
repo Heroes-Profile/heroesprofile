@@ -7,7 +7,7 @@
       <!-- Should turn into a component for easy styling? -->
       <div class="flex flex-wrap gap-1" v-if="!selectedHero">
         <div v-for="hero in heroes" :key="hero.id">
-          <round-box-small :hero="hero" @click="clickedHero(hero)"></round-box-small>
+          <round-image :hero="hero" @click="clickedHero(hero)"></round-image>
         </div>
       </div>
 

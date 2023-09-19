@@ -11,7 +11,7 @@
     :style="{ backgroundImage: `url('/images/maps/match/match-${data.game_map.sanitized_map_name}.jpg')` }"
   >    
     <div class=" bg-red-500 absolute -left-10 -bottom-[.5em]">
-      <round-box-small size="xl" :hero="data.hero"></round-box-small>
+      <hero-image-wrapper size="xl" :hero="data.hero"></hero-image-wrapper>
     </div>
     <div class="flex w-full">
 
@@ -24,13 +24,13 @@
     
 
     <div class="flex gap-x-1 mx-2">
-      <talent-box v-if="data.level_one" :talent="data.level_one" ></talent-box>
-      <talent-box v-if="data.level_four" :talent="data.level_four"></talent-box>
-      <talent-box v-if="data.level_seven" :talent="data.level_seven"></talent-box>
-      <talent-box v-if="data.level_ten" :talent="data.level_ten"></talent-box>
-      <talent-box v-if="data.level_thirteen" :talent="data.level_thirteen"></talent-box>
-      <talent-box v-if="data.level_sixteen" :talent="data.level_sixteen"></talent-box>
-      <talent-box v-if="data.level_twenty" :talent="data.level_twenty"></talent-box>
+      <talent-image-wrapper v-if="data.level_one" :talent="data.level_one" :size="'medium'"></talent-image-wrapper>
+      <talent-image-wrapper v-if="data.level_four" :talent="data.level_four" :size="'medium'"></talent-image-wrapper>
+      <talent-image-wrapper v-if="data.level_seven" :talent="data.level_seven" :size="'medium'"></talent-image-wrapper>
+      <talent-image-wrapper v-if="data.level_ten" :talent="data.level_ten" :size="'medium'"></talent-image-wrapper>
+      <talent-image-wrapper v-if="data.level_thirteen" :talent="data.level_thirteen" :size="'medium'"></talent-image-wrapper>
+      <talent-image-wrapper v-if="data.level_sixteen" :talent="data.level_sixteen" :size="'medium'"></talent-image-wrapper>
+      <talent-image-wrapper v-if="data.level_twenty" :talent="data.level_twenty" :size="'medium'"></talent-image-wrapper>
     </div>
   </div>
 </div>
@@ -53,8 +53,7 @@ export default {
   created(){
   },
   mounted() {
-          console.log(this.data.level_seven);
-
+    console.log(this.data);
   },
   computed: {
   },

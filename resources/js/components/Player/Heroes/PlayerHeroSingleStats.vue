@@ -59,7 +59,7 @@
           </div>
 
           <div class="flex">
-            <round-box-small v-for="(item, index) in data.map_data" :key="index" :map="item.map_object" :hovertext="'I am not sure if this is the right way to do it'"></round-box-small>
+            <round-image v-for="(item, index) in data.map_data" :key="index" :map="item.map_object" :hovertext="'I am not sure if this is the right way to do it'"></round-image>
           </div>
         </div>
 
