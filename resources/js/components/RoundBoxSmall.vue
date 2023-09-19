@@ -1,37 +1,73 @@
 <template>
-  <div v-if="this.thisObj" class="relative group flex items-center " @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
-    <img :class="[
-      'card-img-top relative hover:opacity-75  rounded-full',  
+  <div v-if="this.thisObj"
+  :class="[
+      'relative group flex items-center w-10 h-10',  
       { 
         block: size === 'big', 
         'w-20': size === 'big', 
         'h-20': size === 'big',
-        'w-10': size != 'big', 
-        'h-10': size != 'big', 
+        'w-[6em]': size === 'xl',
+        'h-[6em]': size === 'xl'
         
       }
-      ]"   :src="getImage()" :alt="this.thisObj.name" >
-    <div v-if=" showTooltip" class="absolute hidden bottom-11 -left-24  bg-gray-dark  text-s p-1  group-hover:block  text-white z-50 drop-shadow-md w-60 rounded-md px-2 text-center">
-      {{ this.thisObj.name }}
+      ]"
+     @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
+    <img :class="[
+      'card-img-top relative hover:brightness-125 hover:drop-shadow  rounded-full w-full h-10 w-10  ',  
+      { 
+        block: size === 'big', 
+        'w-20': size === 'big', 
+        'h-20': size === 'big',
+        'w-[6em]': size === 'xl',
+        'h-[6em]': size === 'xl' 
+        
+      }
+      ]"   
+      :src="getImage()" 
+      :alt="this.thisObj.name" >
+    <div v-if=" showTooltip" :class="[
+      'absolute hidden group-hover:block left-1/2   transform -translate-x-1/2 text-xs bottom-[1em] -translate-y-[2em]  w-[12em] z-50',
+    {
+      'bottom-[4.5em] -translate-y-[2em]': size === 'big',
+      'text-xs' : size === 'big',
+      'bottom-[6em] -translate-y-[3em]' : size == 'xl'
+    }
+
+    ]" >
+      <div  :class="['popup-text block  bg-gray-dark  text-s p-1    text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-50 ',
+      
+      {
+        
+       
+      }
+      ]
+    ">{{ this.thisObj.name }} {{this.tooltiptext}}</div>
+    
+    <div class="popup-arrow"></div>
     </div>
+
    
   </div>
 </template>
 
 <script>
 export default {
-  name: 'RoundBoxSmall',
+  name: 'RoundBoxSmall', // Change this to RoundImageWrapper
   components: {
   },
   props: {
     obj: Object,
+    tooltiptext: String,
+    image: String,
+    size: String,
+    includehover: Boolean,
+
     hero: Object,
     map: Object,
     hovertext: String,
-    type: String,
-    includehover: Boolean,
+    type: String,    
     popuptext: String,
-    size: String
+    
   },
   data(){
     return {
@@ -53,6 +89,7 @@ export default {
   },
   computed: {
     thisObj(){
+      //remove this - put it in the wrapper component!
       
       if(typeof this.hero != 'undefined'){
 
@@ -71,6 +108,7 @@ export default {
   },
   methods: {
     getImage(){
+      //remove this - put it in the wrapper component
       if(typeof this.thisObj.sanitized_map_name != 'undefined')
       {
         return `/images/maps/icon/bg_${this.thisObj.sanitized_map_name}.jpg`;

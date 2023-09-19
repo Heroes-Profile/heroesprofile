@@ -1,19 +1,30 @@
 <template>
+  <div class="relative ml-10 ">
+    <div class="mt-4 pl-[6em] m-l-auto w-full text-right min-h-4">{{caption}}</div>
   <div
-    class="relative flex border border-white bg-cover bg-no-repeat bg-center"
+    :class="[
+      'flex border border-white border-2 bg-cover bg-no-repeat bg-center rounded-2xl border-red pl-[6em] ',
+    {
+      'border-teal': data.winner === 1
+    }
+    ]"
     :style="{ backgroundImage: `url('/images/maps/match/match-${data.game_map.sanitized_map_name}.jpg')` }"
   >    
-    <div class="flex-1 bg-red-500 p-4"><round-box-small :hero="data.hero"></round-box-small></div>
-    <div class="flex-1 bg-green-500 p-4">
+    <div class=" bg-red-500 absolute -left-10 -bottom-[.5em]">
+      <round-box-small size="xl" :hero="data.hero"></round-box-small>
+    </div>
+    <div class="flex w-full">
 
-       <stat-box :title="'Player MMR'" :value="data.player_conservative_rating" :mmrchange="data.player_change" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
+       <stat-box :title="'Player MMR'" :value="data.player_conservative_rating" :secondstat="data.player_change" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'teal' : 'red'"></stat-box>
+       <stat-box :title="'Player MMR'" :value="data.player_conservative_rating" :secondstat="data.player_change" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'teal' : 'red'"></stat-box>
+       <stat-box :title="'Player MMR'" :value="data.player_conservative_rating" :secondstat="data.player_change" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'teal' : 'red'"></stat-box>
       </div>
 
 
     
 
-    <div class="flex-1 flex gap-x-1">
-      <talent-box v-if="data.level_one" :talent="data.level_one"></talent-box>
+    <div class="flex gap-x-1 mx-2">
+      <talent-box v-if="data.level_one" :talent="data.level_one" ></talent-box>
       <talent-box v-if="data.level_four" :talent="data.level_four"></talent-box>
       <talent-box v-if="data.level_seven" :talent="data.level_seven"></talent-box>
       <talent-box v-if="data.level_ten" :talent="data.level_ten"></talent-box>
@@ -22,6 +33,7 @@
       <talent-box v-if="data.level_twenty" :talent="data.level_twenty"></talent-box>
     </div>
   </div>
+</div>
 </template>
 
 
@@ -31,7 +43,8 @@ export default {
   components: {
   },
   props: {
-    data: Object
+    data: Object,
+    caption: String
   },
   data(){
     return {

@@ -3,7 +3,7 @@
     <page-heading :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Matchups Statistics' : 'Hero Matchups Statistics'"></page-heading>
 
     <div v-if="!selectedHero">
-      <rename-heroes-list-filterable-later :heroes="heroes"></rename-heroes-list-filterable-later>
+      <hero-selection :heroes="heroes"></hero-selection>
     </div>
 
     <div v-else>

@@ -7,7 +7,7 @@
 
     
         <div v-if="!selectedHero">
-          <rename-heroes-list-filterable-later :heroes="heroes"></rename-heroes-list-filterable-later>
+          <hero-selection :heroes="heroes"></hero-selection>
         </div>
 
         <div v-else>
@@ -110,7 +110,7 @@
      }
    },
    created(){
-    this.preloadHeroImages(this.inputhero);
+    
     this.preloadTalentImages(this.inputhero);
    },
    mounted() {
@@ -223,14 +223,7 @@
         }
  
       },
-      preloadHeroImages(hero) {
-        if(!hero){
-          this.heroimages.forEach((image) => {
-            const img = new Image();
-            img.src = "/images/heroes/" + image + ".png";
-          });
-        }
-      },
+     
     }
   }
 </script>

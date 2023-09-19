@@ -62,3 +62,22 @@ h1{
 .search-input {
   color: black; /* Replace 'black' with any color you prefer */
 }
+
+
+
+.popup-arrow{
+
+
+   
+    width: 0;
+    height: 0;
+    border-left: .5em solid transparent;
+    border-right: .5em solid transparent;
+    border-top: .5em solid #333;
+    text-align: center;
+    margin-left:auto;
+    margin-right:auto;
+    
+    
+
+}

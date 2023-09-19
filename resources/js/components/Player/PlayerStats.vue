@@ -104,13 +104,12 @@
 
         </div>
 
-        <div v-if="data && data.matchData">
+        <div class="p-10 max-w-[90em] ml-auto mr-auto" v-if="data && data.matchData">
           <h2>Most Recent matches</h2>
 
-          <template v-for="(item, index) in data.matchData">
-            <div>{{ item.game_map.name }} | {{ item.game_type.name }} | {{ item.game_date }}</div>
-            <game-summary-box :data="item"></game-summary-box>
-          </template>
+                   
+            <game-summary-box v-for="(item, index) in data.matchData" :data="item" :caption="`${item.game_map.name} | ${item.game_type.name} | ${item.game_date}`"></game-summary-box>
+          
         </div>
       </div>
 

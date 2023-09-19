@@ -1,18 +1,37 @@
 <template>
-  <div class="w-auto inline-block m-1 text-center min-w-[10em] flex justify-items-stretch">
-    <div class="w-full" > <h2 class="bg-gray-light rounded-t text-blue px-2 py-1 text-sm text-center uppercase"> {{ title }}</h2>
+  <div :class="[
+    'w-auto inline-block m-1 text-center min-w-[10em] flex justify-items-stretch shadow-lg',
+  {
+   ' min-w-[15em]' : secondstat
+  }
+  ]">
+    <div class="w-full" > 
+      <h2 :class="[
+        'bg-gray-light rounded-tl-xl text-blue px-2 py-1 text-xs text-center uppercase',
+        {
+          'rounded-tr-xl' : !secondstat
+        }
+        ]"> 
+      {{ title }}
+    </h2>
 
       <div :class="[
-      'p-1 rounded-b text-center',  bgColor
+      'p-1 rounded-bl-xl text-center',  bgColor,
+      {
+        'rounded-br-xl' : !secondstat
+      }
       ]" 
       >
         {{ value }}
       </div>
     </div>
-     <div v-if="mmrchange" class="border-l-2 border-gray-light w-full"> <h2 class="bg-gray-light rounded-t text-blue px-2 py-1 text-sm text-center uppercase"> MMR Change</h2>
+     <div v-if="secondstat" class="border-l-2 border-gray-light w-full"> 
+      <h2 class="bg-gray-light rounded-tr-xl text-blue px-2 py-1 text-xs text-center uppercase"> 
+        {{secondcaption}}
+      </h2>
 
       <div :class="[
-      'p-1 rounded-b text-center',  bgColor
+      'p-1 rounded-br-xl text-center',  bgColor
       ]" >
      {{ formattedChange }}
       </div>
@@ -28,7 +47,9 @@
     },
     props: {
       title: String,
-      mmrchange: Number,
+      secondstat: Number,
+      secondtype: String,
+      secondcaption: String,
       color: String,
       winner: Boolean,
       value: {
@@ -55,7 +76,13 @@
         
     },
     formattedChange() {
-      return this.mmrchange > 0 ? `+${this.mmrchange}` : this.mmrchange;
+      if(this.secondtype == 'mmrchange'){
+        return this.secondstat > 0 ? `+${this.secondstat}` : this.secondstat;
+      }
+      else{
+        return this.secondstat;
+      }
+      
     },
     },
     watch: {
