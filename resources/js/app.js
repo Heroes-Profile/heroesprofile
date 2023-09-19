@@ -18,6 +18,18 @@ import SearchPlayer from './components/Compare/SearchPlayer.vue';
 //Random Pieces - rename later to what you want and place in folder
 import PageHeading from './components/PageHeading.vue';
 import Infobox from './components/Infobox.vue';
+import RoundImage from './components/RoundImage.vue';
+import HeroGroupBox from './components/HeroGroupBox.vue';
+import GroupBox from './components/GroupBox.vue';
+import RoleBox from './components/RoleBox.vue';
+import CustomButton from './components/CustomButton.vue';
+import CustomTable from './components/CustomTable.vue';
+import GameSummaryBox from './components/GameSummaryBox.vue';
+
+
+//Match Page
+import SingleMatch from './components/SingleMatch.vue';
+
 
 
 //Wrappers
@@ -27,16 +39,6 @@ import MapImageWrapper from './components/Wrappers/MapImageWrapper.vue';
 
 
 
-import RoundImage from './components/RoundImage.vue';
-import HeroGroupBox from './components/HeroGroupBox.vue';
-import GroupBox from './components/GroupBox.vue';
-import HeroBoxLarge from './components/HeroBoxLarge.vue';
-import RoleBox from './components/RoleBox.vue';
-import CustomButton from './components/CustomButton.vue';
-import CustomTable from './components/CustomTable.vue';
-import MapBoxSmall from './components/MapBoxSmall.vue';
-import MapGroupBox from './components/MapGroupBox.vue';
-import GameSummaryBox from './components/GameSummaryBox.vue';
 
 //Charts
 import BubbleChart from './components/Charts/BubbleChart.vue';

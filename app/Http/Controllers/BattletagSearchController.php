@@ -5,12 +5,12 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Rules\BattletagInputProhibitCharacters;
+use App\Services\GlobalDataService;
 
 use App\Models\Battletag;
 use App\Models\Replay;
 use App\Models\Player;
 use App\Models\Map;
-use App\Services\GlobalDataService;
 
 class BattletagSearchController extends Controller
 {
