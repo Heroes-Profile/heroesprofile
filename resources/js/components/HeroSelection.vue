@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="px-20">
     <div class="text-center my-5">
       <input 
         type="text" 
@@ -9,11 +9,12 @@
       />
     </div>
 
-    <div class="flex flex-wrap gap-1">
+    <div class="flex flex-wrap gap-2">
       <round-box-small 
         v-for="hero in filteredHeroes" 
         :key="hero.id" 
         :hero="hero" 
+        size="big"
         @click="clickedHero(hero)"
       ></round-box-small>
     </div>
@@ -22,7 +23,7 @@
 
 <script>
 export default {
-  name: 'RenameHeroesListFilterableLater',
+  name: 'HeroSelection',
   components: {
   },
   props: {

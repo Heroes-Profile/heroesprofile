@@ -52,8 +52,16 @@
         </div>
 
         <div>
+          <div class="flex items-center gap-10 md:px-20 py-5 justify-center" >Quick Match<stat-bar-box :title="'Win Rate'" :value=" data.qm_mmr_data ? data.qm_mmr_data.win_rate : 0 "></stat-bar-box>  <stat-box title="Rank Tier" :value="data.qm_mmr_data ? data.qm_mmr_data.rank_tier : ''"></stat-box><stat-box :title="'MMR'" :value="data.qm_mmr_data ? data.qm_mmr_data.mmr : 0 "></stat-box></div>
+
+
+          <div class="flex items-center gap-10 md:px-20 py-5 justify-center" >Quick Match<stat-bar-box :title="'Win Rate'" :value=" data.qm_mmr_data ? data.qm_mmr_data.win_rate : 0 "></stat-bar-box>  <stat-box title="Rank Tier" :value="data.qm_mmr_data ? data.qm_mmr_data.rank_tier : ''"></stat-box><stat-box :title="'MMR'" :value="data.qm_mmr_data ? data.qm_mmr_data.mmr : 0 "></stat-box></div>
+
+          <div class="flex items-center gap-10 md:px-20 py-5 justify-center" >Quick Match<stat-bar-box :title="'Win Rate'" :value=" data.qm_mmr_data ? data.qm_mmr_data.win_rate : 0 "></stat-bar-box>  <stat-box title="Rank Tier" :value="data.qm_mmr_data ? data.qm_mmr_data.rank_tier : ''"></stat-box><stat-box :title="'MMR'" :value="data.qm_mmr_data ? data.qm_mmr_data.mmr : 0 "></stat-box></div>
+
+
           <span>QM MMR = </span><span>{{ data.qm_mmr_data ? data.qm_mmr_data.mmr : 0 }}</span><br>
-          <span>QM MMR Tier = </span><span>{{ data.qm_mmr_data ? data.qm_mmr_data.rank_tier : "" }}</span><br>
+          <span>QM MMR Tier = </span><span></span><br>
 
           <span>UD MMR = </span><span>{{ data.ud_mmr_data ? data.ud_mmr_data.mmr : 0 }}</span><br>
           <span>UD MMR Tier = </span><span>{{ data.ud_mmr_data ? data.ud_mmr_data.rank_tier : "" }}</span><br>
@@ -72,9 +80,11 @@
 
         </div>
 
-        <div>
-          <h2>Maps</h2>
-          <div class="flex">
+      
+
+         <div class="bg-lighten p-10 text-center">
+          <h2 class="flex-1 text-3xl font-bold"> Maps </h2>
+          <div class="flex flex-wrap justify-center">
             <group-box :text="'Most Played'" :data="data.maps_three_most_played"></group-box>
             <group-box :text="'Highest Win Rate'" :data="data.maps_three_highest_win_rate"></group-box>
             <group-box :text="'Latest Played'" :data="data.maps_three_latest_played"></group-box>
@@ -94,13 +104,12 @@
 
         </div>
 
-        <div v-if="data && data.matchData">
+        <div class="p-10 max-w-[90em] ml-auto mr-auto" v-if="data && data.matchData">
           <h2>Most Recent matches</h2>
 
-          <template v-for="(item, index) in data.matchData">
-            <div>{{ item.game_map.name }} | {{ item.game_type.name }} | {{ item.game_date }}</div>
-            <game-summary-box :data="item"></game-summary-box>
-          </template>
+                   
+            <game-summary-box v-for="(item, index) in data.matchData" :data="item" :caption="`${item.game_map.name} | ${item.game_type.name} | ${item.game_date}`"></game-summary-box>
+          
         </div>
       </div>
 

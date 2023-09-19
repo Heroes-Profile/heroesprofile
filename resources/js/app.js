@@ -35,12 +35,12 @@ import LineChart from './components/LineChart.vue';
 import MapBoxSmall from './components/MapBoxSmall.vue';
 import MapGroupBox from './components/MapGroupBox.vue';
 import GameSummaryBox from './components/GameSummaryBox.vue';
-import MmrBox from './components/MmrBox.vue';
+
 import StatBox from './components/StatBox.vue';
 import StatBarBox from './components/StatBarBox.vue';
 import SearchedBattletagHolding from './components/SearchedBattletagHolding.vue';
 import LoadingComponent from './components/LoadingComponent.vue';
-import RenameHeroesListFilterableLater from './components/RenameHeroesListFilterableLater.vue';
+import HeroSelection from './components/HeroSelection.vue';
 
 //Global Pages
 import GlobalHeroStats from './components/Global/Hero/GlobalHeroStats.vue';

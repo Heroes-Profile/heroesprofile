@@ -1,5 +1,7 @@
 <template>
-  <div  class="relative group flex items-center mt-auto mb-auto " @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
+
+  <round-box-small size="xl"  :hero="data.hero"></round-box-small>
+  <div class="relative group flex items-center mt-auto mb-auto w-10 h-10 " @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
     <img class="card-img-top relative hover:opacity-75 w-10 h-10 rounded-full" :src="getTalentImage()" :alt="talent.title">
 
      <div v-if="showTooltip" class="absolute hidden bottom-11 -left-24  bg-gray-dark  text-xs p-1  group-hover:block  text-white z-50 drop-shadow-md w-60 rounded-md px-2 text-center">
