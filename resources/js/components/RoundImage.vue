@@ -1,5 +1,6 @@
 <template>
-  <div v-if="this.thisObj"
+  <!-- Need to add a medium value -->
+  <div
   :class="[
       'relative group flex items-center w-10 h-10',  
       { 
@@ -23,8 +24,8 @@
         
       }
       ]"   
-      :src="getImage()" 
-      :alt="this.thisObj.name" >
+      :src="image" 
+      :alt="title" >
     <div v-if=" showTooltip" :class="[
       'absolute hidden group-hover:block left-1/2   transform -translate-x-1/2 text-xs bottom-[1em] -translate-y-[2em]  w-[12em] z-50',
     {
@@ -41,8 +42,14 @@
        
       }
       ]
-    ">{{ this.thisObj.name }} {{this.tooltiptext}}</div>
-    
+    ">{{ title }}</div>
+    <!--- Need to somehow pass in the extra talent info and display it correctly 
+     <div v-if="showTooltip" class="absolute hidden bottom-11 -left-24  bg-gray-dark  text-xs p-1  group-hover:block  text-white z-50 drop-shadow-md w-60 rounded-md px-2 text-center">
+      <h2>{{ talent.title }}</h2>
+      <p>{{ this.removeNumbers(talent.hotkey) }}</p>
+      <p>{{ talent.description }}</p>
+    </div>
+    -->
     <div class="popup-arrow"></div>
     </div>
 
@@ -52,72 +59,30 @@
 
 <script>
 export default {
-  name: 'RoundBoxSmall', // Change this to RoundImageWrapper
+  name: 'RoundImage',
   components: {
   },
   props: {
-    obj: Object,
+    title: String,
     tooltiptext: String,
     image: String,
     size: String,
-    includehover: Boolean,
-
-    hero: Object,
-    map: Object,
-    hovertext: String,
-    type: String,    
-    popuptext: String,
-    
+    showTooltip: Boolean,
   },
   data(){
     return {
-      showTooltip: false,
-      staticClasses: ""
-      
     }
   },
   created(){
-    
-    
   },
   mounted() {
-    
-      
-      
-
-    
+    //console.log(this.title)
   },
   computed: {
-    thisObj(){
-      //remove this - put it in the wrapper component!
-      
-      if(typeof this.hero != 'undefined'){
-
-        return this.hero;
-      }
-      if(typeof this.map != 'undefined'){
-       
-        return this.map;
-      }
-      else{
-        return this.obj;
-      }
-    }
   },
   watch: {
   },
   methods: {
-    getImage(){
-      //remove this - put it in the wrapper component
-      if(typeof this.thisObj.sanitized_map_name != 'undefined')
-      {
-        return `/images/maps/icon/bg_${this.thisObj.sanitized_map_name}.jpg`;
-      }
-      else{
-        return `/images/heroes/${this.thisObj.short_name}.png`;
-      }
-      
-    }
   }
 }
 </script>

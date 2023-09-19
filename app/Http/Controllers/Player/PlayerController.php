@@ -465,7 +465,7 @@ class PlayerController extends Controller
 
             $top_three_win_rate_heroes = $filtered_hero_data->map(function ($item, $key) use ($heroData) {
                 if ($item['games_played'] > 0) {
-                    $item['win_rate'] = ($item['wins'] / $item['games_played']) * 100;
+                    $item['win_rate'] = round(($item['wins'] / $item['games_played']) * 100, 2);
                 } else {
                     $item['win_rate'] = 0;
                 }
@@ -484,7 +484,7 @@ class PlayerController extends Controller
 
         $top_three_most_played_heroes = $hero_data->map(function ($item, $key) use ($heroData){
             if ($item['games_played'] > 0) {
-                $item['win_rate'] = ($item['wins'] / $item['games_played']) * 100;
+                $item['win_rate'] = round(($item['wins'] / $item['games_played']) * 100, 2);
             } else {
                 $item['win_rate'] = 0;
             }
@@ -498,7 +498,7 @@ class PlayerController extends Controller
 
         $top_three_latest_played_heroes = $hero_data->map(function ($item, $key) use ($heroData) {
             if ($item['games_played'] > 0) {
-                $item['win_rate'] = ($item['wins'] / $item['games_played']) * 100;
+                $item['win_rate'] = round(($item['wins'] / $item['games_played']) * 100, 2);
             } else {
                 $item['win_rate'] = 0;
             }
@@ -560,7 +560,7 @@ class PlayerController extends Controller
 
             $top_three_win_rate_maps = $filtered_map_data->map(function ($item, $key) use ($maps){
                 if ($item['games_played'] > 0) {
-                    $item['win_rate'] = ($item['wins'] / $item['games_played']) * 100;
+                    $item['win_rate'] = round(($item['wins'] / $item['games_played']) * 100, 2);
                 } else {
                     $item['win_rate'] = 0;
                 }
@@ -579,7 +579,7 @@ class PlayerController extends Controller
 
         $top_three_most_played_maps = $map_data->map(function ($item, $key) use ($maps){
             if ($item['games_played'] > 0) {
-                $item['win_rate'] = ($item['wins'] / $item['games_played']) * 100;
+                $item['win_rate'] = round(($item['wins'] / $item['games_played']) * 100, 2);
             } else {
                 $item['win_rate'] = 0;
             }
@@ -593,7 +593,7 @@ class PlayerController extends Controller
 
         $top_three_latest_played_maps = $map_data->map(function ($item, $key) use ($maps){
             if ($item['games_played'] > 0) {
-                $item['win_rate'] = ($item['wins'] / $item['games_played']) * 100;
+                $item['win_rate'] = round(($item['wins'] / $item['games_played']) * 100, 2);
             } else {
                 $item['win_rate'] = 0;
             }
@@ -629,7 +629,8 @@ class PlayerController extends Controller
   
         $matches = collect(json_decode($data->matches, true));
 
-        $returnData->matchData = $matches->map(function($match) use ($maps, $heroData, $talentData){
+        $returnData->matchData = $matches->sortByDesc('game_date')->map(function($match) use ($maps, $heroData, $talentData){
+            $match["game_type"] = $this->globalDataService->getGameTypeIDtoString()[$match["game_type"]];
             $match["game_map"] = $maps[$match["game_map"]];
             $match['hero'] = $heroData[$match['hero']];
             $match['level_one'] = $match['level_twenty'] ? $talentData[$match['level_one']] : null;
@@ -648,7 +649,7 @@ class PlayerController extends Controller
             $match['role_change'] = round($match['role_change'], 2);
 
             return $match;
-        });
+        })->values();
 
         return $returnData;
     }

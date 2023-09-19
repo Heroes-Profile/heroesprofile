@@ -18,23 +18,37 @@ import SearchPlayer from './components/Compare/SearchPlayer.vue';
 //Random Pieces - rename later to what you want and place in folder
 import PageHeading from './components/PageHeading.vue';
 import Infobox from './components/Infobox.vue';
-import TalentBox from './components/TalentBox.vue';
-import Filters from './components/Filters.vue';
-import SingleSelectFilter from './components/SingleSelectFilter.vue';
-import MultiSelectFilter from './components/MultiSelectFilter.vue';
-import BubbleChart from './components/BubbleChart.vue';
-import BarChart from './components/BarChart.vue';
-import RoundBoxSmall from './components/RoundBoxSmall.vue';
+import RoundImage from './components/RoundImage.vue';
 import HeroGroupBox from './components/HeroGroupBox.vue';
 import GroupBox from './components/GroupBox.vue';
-import HeroBoxLarge from './components/HeroBoxLarge.vue';
 import RoleBox from './components/RoleBox.vue';
 import CustomButton from './components/CustomButton.vue';
 import CustomTable from './components/CustomTable.vue';
-import LineChart from './components/LineChart.vue';
-import MapBoxSmall from './components/MapBoxSmall.vue';
-import MapGroupBox from './components/MapGroupBox.vue';
 import GameSummaryBox from './components/GameSummaryBox.vue';
+
+
+//Match Page
+import SingleMatch from './components/SingleMatch.vue';
+
+
+
+//Wrappers
+import TalentImageWrapper from './components/Wrappers/TalentImageWrapper.vue';
+import HeroImageWrapper from './components/Wrappers/HeroImageWrapper.vue';
+import MapImageWrapper from './components/Wrappers/MapImageWrapper.vue';
+
+
+
+
+//Charts
+import BubbleChart from './components/Charts/BubbleChart.vue';
+import BarChart from './components/Charts/BarChart.vue';
+import LineChart from './components/Charts/LineChart.vue';
+
+//Filtering
+import Filters from './components/Filtering/Filters.vue';
+import SingleSelectFilter from './components/Filtering/SingleSelectFilter.vue';
+import MultiSelectFilter from './components/Filtering/MultiSelectFilter.vue';
 
 import StatBox from './components/StatBox.vue';
 import StatBarBox from './components/StatBarBox.vue';

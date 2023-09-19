@@ -53,7 +53,7 @@
 
         <div class="flex flex-wrap gap-1">
           <template v-for="(item, index) in data.hero_data_all_heroes">
-            <round-box-small :hero="item.hero"></round-box-small>
+            <round-image :hero="item.hero"></round-image>
           </template>
         </div>
 

@@ -10,6 +10,7 @@ use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\GamedataController;
 use App\Http\Controllers\CompareController;
+use App\Http\Controllers\SingleMatchController;
 
 use App\Http\Controllers\Global\GlobalHeroStatsController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
@@ -115,6 +116,14 @@ Route::get('Player/{battletag}/{blizz_id}/{region}/Role', [PlayerRolesController
 Route::get('Player/{battletag}/{blizz_id}/{region}/Role/{role}', [PlayerRolesController::class, 'showSingle']);
 Route::get('Player/{battletag}/{blizz_id}/{region}/Map', [PlayerMapsController::class, 'showAll']);
 Route::get('Player/{battletag}/{blizz_id}/{region}/Map/{map}', [PlayerMapsController::class, 'showSingle']);
+
+
+
+Route::get('Match/Single/{replayID}', [SingleMatchController::class, 'show']);
+
+
+
+
 
 //Rewrite game data later
 Route::get('/Gamedata', [GamedataController::class, 'heroes']);

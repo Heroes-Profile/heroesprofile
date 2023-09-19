@@ -44,7 +44,7 @@ class MasterMMRDataQM extends Model
             return 0;
         }
 
-        return ($this->win / $totalGames) * 100;
+        return round(($this->win / $totalGames) * 100, 2);
     }
 
     public function getMMRAttribute()

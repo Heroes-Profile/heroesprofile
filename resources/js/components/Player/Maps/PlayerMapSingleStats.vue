@@ -48,13 +48,13 @@
           <infobox :input="'Click a map to see more information and stats, or select all maps to view maps regardless of hero.'"></infobox>
 
           <div class="flex">
-            <map-group-box :data="data.map_data_top_played.slice(0, 3)"></map-group-box>
-            <map-group-box :data="data.map_data_top_win_rate.slice(0, 3)"></map-group-box>
-            <map-group-box :data="data.map_data_top_latest_played.slice(0, 3)"></map-group-box>
+            <group-box :data="data.map_data_top_played.slice(0, 3)"></group-box>
+            <group-box :data="data.map_data_top_win_rate.slice(0, 3)"></group-box>
+            <group-box :data="data.map_data_top_latest_played.slice(0, 3)"></group-box>
           </div>
 
           <div class="flex">
-            <map-box-small v-for="(item, index) in data.map_data" :key="index" :map="item.map_object" :hovertext="'I am not sure if this is the right way to do it'"></map-box-small>
+            <map-image-wrapper v-for="(item, index) in data.map_data" :key="index" :map="item.map_object" :hovertext="'I am not sure if this is the right way to do it'"></map-image-wrapper>
           </div>
         </div>
 
