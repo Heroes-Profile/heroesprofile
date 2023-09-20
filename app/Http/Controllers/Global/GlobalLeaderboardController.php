@@ -26,7 +26,7 @@ class GlobalLeaderboardController extends Controller
     public function show(Request $request){
         return view('Global.Leaderboard.globalLeaderboard')->with([
             'filters' => $this->globalDataService->getFilterData(),
-            'gametypedefault' => [$this->globalDataService->getGameTypeDefault()],
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
             'defaultseason' => (string)$this->globalDataService->getDefaultSeason(),
         ]);
     }

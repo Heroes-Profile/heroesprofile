@@ -47,7 +47,7 @@ class FriendFoeController extends Controller
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
                 'region' => $region,
-                'gametypedefault' => [$this->globalDataService->getGameTypeDefault()],
+                'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
                 'filters' => $this->globalDataService->getFilterData()
                 ]);
 

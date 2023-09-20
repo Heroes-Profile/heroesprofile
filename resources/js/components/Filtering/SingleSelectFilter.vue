@@ -52,6 +52,8 @@ export default {
   created(){
   },
   mounted() {
+    console.log(this.defaultValue);
+
     document.addEventListener("click", this.handleClickOutside);
   },
   beforeDestroy() {
