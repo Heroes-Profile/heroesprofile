@@ -120,7 +120,14 @@ Route::get('Player/{battletag}/{blizz_id}/{region}/Map/{map}', [PlayerMapsContro
 
 
 Route::get('Match/Single/{replayID}', [SingleMatchController::class, 'show']);
-
+Route::get('/Match/Single/', function (\Illuminate\Http\Request $request) {
+    $replayID = $request->query('replayID');
+    
+    if ($replayID) {
+        return redirect("/Match/Single/$replayID");
+    }
+    return redirect("/");
+});
 
 
 

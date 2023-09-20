@@ -79,8 +79,16 @@ export default {
   watch: {
   },
   methods: {
-    getCopyBuildToGame(level_one, level_four, level_seven, level_ten, level_thirteen, level_sixteen, level_twenty, hero){
-      return "[T" + level_one.sort + level_four.sort + level_seven.sort + level_ten.sort + level_thirteen.sort + level_sixteen.sort + level_twenty.sort +"," + hero.build_copy_name + "]"
+    getCopyBuildToGame(level_one, level_four, level_seven, level_ten, level_thirteen, level_sixteen, level_twenty, hero) {
+      return "[T" + 
+        (level_one ? level_one.sort : '0') + 
+        (level_four ? level_four.sort : '0') + 
+        (level_seven ? level_seven.sort : '0') + 
+        (level_ten ? level_ten.sort : '0') + 
+        (level_thirteen ? level_thirteen.sort : '0') + 
+        (level_sixteen ? level_sixteen.sort : '0') + 
+        (level_twenty ? level_twenty.sort : '0') +
+        "," + hero.build_copy_name + "]"
     },
     copyToClipboard(row) {
       const textToCopy = this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, row.hero);
