@@ -113,7 +113,7 @@
         <tbody>
           <template v-for="(row, index) in sortedData">
             <tr>
-              <td class="py-2 px-3 border-b border-gray-200 flex items-center gap-1"><round-image :hero="row" :includehover="false"></round-image>{{ row.name }}</td>
+              <a :href="'/Global/Talents/' + row.name" ><td class="py-2 px-3 border-b border-gray-200 flex items-center gap-1"><hero-image-wrapper :hero="row" :includehover="false"></hero-image-wrapper>{{ row.name }}</td></a>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
               <td class="py-2 px-3 border-b border-gray-200"><span v-html="'&#177;'"></span>{{ row.confidence_interval }}</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate_change }}</td>

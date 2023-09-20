@@ -38,12 +38,15 @@
           <tbody>
             <tr v-for="row in sortedDataFriends" :key="row.blizz_id">
               <td class="py-2 px-3 border-b border-gray-200"><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
-              <td class="py-2 px-3 border-b border-gray-200"><round-image :hero="row.heroData.hero"></round-image>({{row.heroData.total_games_played}})</td>
+              <td class="py-2 px-3 border-b border-gray-200"><hero-image-wrapper :hero="row.heroData.hero"></hero-image-wrapper>({{row.heroData.total_games_played}})</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.total_games_played }}</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
             </tr>
           </tbody>
         </table>
+      </div>
+      <div v-else>
+        <loading-component></loading-component>
       </div>
 
       <div v-if="enemydata && frienddata">
@@ -68,12 +71,15 @@
           <tbody>
             <tr v-for="row in sortedDataEnemies" :key="row.blizz_id">
               <td class="py-2 px-3 border-b border-gray-200"><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
-              <td class="py-2 px-3 border-b border-gray-200"><round-image :hero="row.heroData.hero"></round-image>({{row.heroData.total_games_played}})</td>
+              <td class="py-2 px-3 border-b border-gray-200"><hero-image-wrapper :hero="row.heroData.hero"></hero-image-wrapper>({{row.heroData.total_games_played}})</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.total_games_played }}</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
             </tr>
           </tbody>
         </table>
+      </div>
+      <div v-else>
+        <loading-component></loading-component>
       </div>
 
     </div>
@@ -100,8 +106,8 @@ export default {
   },
   data(){
     return {
-      frienddata: [],
-      enemydata: [],
+      frienddata: null,
+      enemydata: null,
       friendSortKey: '',
       friendSortDir: 'asc',
 
@@ -195,8 +201,8 @@ export default {
       console.log(this.gamemap);
       console.log(this.season);
 
-      this.frienddata = [];
-      this.enemydata = [];
+      this.frienddata = null;
+      this.enemydata = null;
       Promise.allSettled([
         this.getData("friend"),
         this.getData("enemy"),

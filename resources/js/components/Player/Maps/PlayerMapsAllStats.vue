@@ -20,16 +20,16 @@
       >
     </filters>
 
+
+
+    <div v-if="data">
     <div>
       <input type="text" v-model="searchQuery" placeholder="Search..." />
-
-     <div v-for="(stat, index) in filteredStats" :key="index" class="flex items-center">
+      <div v-for="(stat, index) in filteredStats" :key="index" class="flex items-center">
         <input type="checkbox" v-model="stat.selected" :disabled="isDisabled(stat)" @change="onCheckboxChange(stat)" />
         <label>{{ stat.name }}</label>
       </div>
     </div>
-
-    <div>
       <table class="min-w-full bg-white">
         <thead>
           <tr>
@@ -75,7 +75,9 @@
       </table>
 
     </div>
-
+    <div v-else>
+      <loading-component></loading-component>
+    </div>
 
   </div>
 </template>

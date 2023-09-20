@@ -67,10 +67,10 @@ export default {
     tooltiptext: String,
     image: String,
     size: String,
-    showTooltip: Boolean,
   },
   data(){
     return {
+      showTooltip: false,
     }
   },
   created(){

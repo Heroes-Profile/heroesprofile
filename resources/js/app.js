@@ -25,19 +25,17 @@ import RoleBox from './components/RoleBox.vue';
 import CustomButton from './components/CustomButton.vue';
 import CustomTable from './components/CustomTable.vue';
 import GameSummaryBox from './components/GameSummaryBox.vue';
-
+import SearchComponent from './components/SearchComponent.vue';
+import SearchComponentNav from './components/SearchComponentNav.vue';  //delete later if I can figure out why its not working in the nav
 
 //Match Page
 import SingleMatch from './components/SingleMatch.vue';
-
 
 
 //Wrappers
 import TalentImageWrapper from './components/Wrappers/TalentImageWrapper.vue';
 import HeroImageWrapper from './components/Wrappers/HeroImageWrapper.vue';
 import MapImageWrapper from './components/Wrappers/MapImageWrapper.vue';
-
-
 
 
 //Charts

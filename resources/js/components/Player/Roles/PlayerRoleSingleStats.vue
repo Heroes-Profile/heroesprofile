@@ -71,7 +71,9 @@
 
       </div>
     </div>
-
+    <div v-else>
+      <loading-component></loading-component>
+    </div>
   </div>
 </template>
 

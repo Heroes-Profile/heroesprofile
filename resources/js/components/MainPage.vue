@@ -1,27 +1,54 @@
 <template>
   <div>
-    <div class="text-center py-56">
-      <img class="block m-4 w-full max-w-6xl mr-auto ml-auto pl-16" src="/images/logo/full_deathwing.png"/>
-      <search-component v-if="!user" :type="'main'" :buttonText="'Show My Stats'" :labelText="'Enter your battletag'"></search-component>
+    <div class="text-center py-10">
+      <img class="block m-4 w-2/5 max-w-6xl mr-auto ml-auto pl-25" src="/images/logo/full_deathwing.png"/>
+      <div class="block text-center mx-auto align-items-center">
+        <search-component v-if="!user" :type="'main'" :buttonText="'Show My Stats'" :labelText="'Enter your battletag'"></search-component>
+        <search-component v-else :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'"></search-component>
+      </div>
     </div>
+
+
     <div class="flex space-x-20 p-20 bg-lighten">
       <div class="text-center">
-        <h3 class="text-2xl mb-10 ">In-depth player comparison</h3>
+        <h3 class="text-2xl mb-10 ">Player comparison</h3>
         <p>See how you compare to other players or to a certain league tier. You can compare up to four players at one time.</p>
         
-        <custom-button :href="'#'" :text="'Compare'" :alt="'Compare players'" :size="'big'" class="mt-10"></custom-button>
+        <custom-button :href="'/Compare'" :text="'Compare'" :alt="'Compare players'" :size="'big'" class="mt-10"></custom-button>
       </div>
       <div class="text-center">
-        <h3 class="text-2xl mb-10">Extensive player profile</h3>
-        <p>See all of your stats in one place: see data for individual maps or heroes played, match history and comparisons all from within a streamlined profile.</p>
+        <h3 class="text-2xl mb-10">Player profile</h3>
+        <p>See all player stats in one place.  See data for individual maps or heroes played, match history and comparisons all from within a streamlined profile.</p>
+
+        <search-component v-if="!user" :type="'main'" :buttonText="'Show My Stats'" :labelText="'Enter your battletag'"></search-component>
+        <search-component v-else :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'"></search-component>
+
       </div>
+      <div class="text-center">
+        <h3 class="text-2xl mb-10">Global Stats</h3>
+        <p>Variety of global stats for heroes including, overall stats, builds, compositions, and more.</p>
+        
+        <custom-button :href="'/Global/Hero'" :text="'Hero Stats'" :alt="'Hero Stats'" :size="'big'" class="mt-10" ></custom-button>
+        <custom-button :href="'/Global/Talents'" :text="'Talent Stats'" :alt="'Hero Stats'" :size="'big'" class="mt-10" ></custom-button>
+      </div>
+
       <div class="text-center">
         <h3 class="text-2xl mb-10">Variety of Leaderboards</h3>
         <p>View leaderboards based on Player, Hero, or Role using Heroes Profile Rating. Get talent builds, and navigate directly to player's profiles.</p>
         
         <custom-button :href="'#'" :text="'View Leaderboards'" :alt="'View Leaderboards'" :size="'big'" class="mt-10" ></custom-button>
       </div>
+
+
+      <div class="text-center">
+        <h3 class="text-2xl mb-10">Heroes Profile API</h3>
+        <p>Heroes Profile API is a tool used to get Heroes of the Storm data parsed for HeroesProfile.com. </p>
+        
+        <custom-button :href="'https://api.heroesprofile.com/Api'" :targetblank="true" :text="'API'" :alt="'API'"  :size="'big'" class="mt-10"  :color="'teal'"></custom-button>
+      </div>
+
     </div>
+
 
     <div class="bg-teal p-20">
       <p c>Heroes Profile uses data from Heroes Profile API.  Heroes Profile API uploads are in open Heroes of the Storm replay database with user uploaded replay data.

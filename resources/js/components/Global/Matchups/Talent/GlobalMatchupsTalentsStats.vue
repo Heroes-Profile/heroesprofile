@@ -17,8 +17,9 @@
       </filters>
 
       <div class="grid grid-cols-3 grid-rows-4 gap-4">
-        <!-- First column, single item taking up 4 rows -->
         <div class="col-start-1 row-start-1 row-span-4 bg-blue-200">
+
+          <!-- This is the wrong image wrapper for this -->
           <hero-image-wrapper :size="'large'" :hero="hero"></hero-image-wrapper>
 
           <div v-if="this.firstwinratedata">
@@ -41,8 +42,9 @@
           {{ fightoralliance }}
         </div>
 
-        <!-- Third column, single item taking up 4 rows -->
         <div class="col-start-3 row-start-1 row-span-4 bg-red-200">
+
+          <!-- This is the wrong image wrapper for this -->
           <hero-image-wrapper :size="'large'" :hero="enemyally"></hero-image-wrapper>
           <div v-if="this.secondwinratedata">
             {{ this.secondwinratedata }}{{"%"}}
