@@ -661,12 +661,12 @@ class PlayerController extends Controller
             $match["game_type"] = $this->globalDataService->getGameTypeIDtoString()[$match["game_type"]];
             $match["game_map"] = $maps[$match["game_map"]];
             $match['hero'] = $heroData[$match['hero']];
-            $match['level_one'] = $match['level_twenty'] ? $talentData[$match['level_one']] : null;
-            $match['level_four'] = $match['level_twenty'] ? $talentData[$match['level_four']] : null;
-            $match['level_seven'] = $match['level_twenty'] ? $talentData[$match['level_seven']] : null;
-            $match['level_ten'] = $match['level_twenty'] ? $talentData[$match['level_ten']] : null;
-            $match['level_thirteen'] = $match['level_twenty'] ? $talentData[$match['level_thirteen']] : null;
-            $match['level_sixteen'] = $match['level_twenty'] ? $talentData[$match['level_sixteen']] : null;
+            $match['level_one'] = $match['level_one'] ? $talentData[$match['level_one']] : null;
+            $match['level_four'] = $match['level_four'] ? $talentData[$match['level_four']] : null;
+            $match['level_seven'] = $match['level_seven'] ? $talentData[$match['level_seven']] : null;
+            $match['level_ten'] = $match['level_ten'] ? $talentData[$match['level_ten']] : null;
+            $match['level_thirteen'] = $match['level_thirteen'] ? $talentData[$match['level_thirteen']] : null;
+            $match['level_sixteen'] = $match['level_sixteen'] ? $talentData[$match['level_sixteen']] : null;
             $match['level_twenty'] = $match['level_twenty'] ? $talentData[$match['level_twenty']] : null;
             
             $match['player_conservative_rating'] = round($match['player_conservative_rating'], 2);

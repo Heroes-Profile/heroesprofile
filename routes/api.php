@@ -131,5 +131,7 @@ Route::prefix('v1')->group(function () {
     Route::get('match/single', [SingleMatchController::class, 'getData']); //testing
     Route::post('match/single', [SingleMatchController::class, 'getData']);
 
+    Route::get('profile/save/settings', [ProfileController::class, 'saveSettings']); //testing
+    Route::post('profile/save/settings', [ProfileController::class, 'saveSettings']);
 
 });
