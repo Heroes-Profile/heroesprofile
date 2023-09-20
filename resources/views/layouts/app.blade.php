@@ -23,6 +23,7 @@
           'isAuthenticated' => Auth::check(),
           'mainSearchAccount' => $main_search_account,
           'altSearchAccounts' => [$alt_search_account1, $alt_search_account2, $alt_search_account3],
+          'regions' => session('regions'),
       ])
       @yield('content')
     </main>
