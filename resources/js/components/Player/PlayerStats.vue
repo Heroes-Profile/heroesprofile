@@ -24,7 +24,10 @@
 
             <stat-box :title="'Account Level'" :value="data.account_level"></stat-box>          
           </div>
-          <div>player image goes here</div>
+          <div>
+            <hero-image-wrapper :rectangle="true" :hero-image="'autoselect3'" :title="'Auto Select'"></hero-image-wrapper>
+
+          </div>
 
           <div class="flex-1 flex flex-wrap ">
             <stat-box :title="'MVP'" :value="data.mvp_rate"></stat-box>       
@@ -110,14 +113,31 @@
 
         <div>
           <h2>Party Size Win Rates</h2>
-          solo: total games: {{ data.stack_one_total }} wins: {{ data.stack_one_wins }} losses: {{ data.stack_one_losses }} win rate: {{ data.stack_one_win_rate }}% <br>
 
-          three-man: total games: {{ data.stack_three_total }} wins: {{ data.stack_three_wins }} losses: {{ data.stack_three_losses }} win rate: {{ data.stack_three_win_rate }}% <br>
+          <div class="flex items-center gap-10 md:px-20 py-5 justify-center" >
+            <span>{{ data.stack_one_wins + data.stack_one_losses }} </span>
+            <stat-bar-box :title="'Solo'" :value="data.stack_one_win_rate + '%'"></stat-bar-box>     
+          </div>
+     
+         <div class="flex items-center gap-10 md:px-20 py-5 justify-center" >
+            <span>{{ data.stack_two_wins + data.stack_two_losses }} </span>
+            <stat-bar-box :title="'Two Stack'" :value="data.stack_two_win_rate + '%'"></stat-bar-box>     
+          </div>
 
-          four-man: total games: {{ data.stack_four_total }} wins: {{ data.stack_four_wins }} losses: {{ data.stack_four_losses }} win rate: {{ data.stack_four_win_rate }}% <br>
+         <div class="flex items-center gap-10 md:px-20 py-5 justify-center" >
+            <span>{{ data.stack_three_wins + data.stack_three_losses }} </span>
+            <stat-bar-box :title="'Three Stack'" :value="data.stack_three_win_rate + '%'"></stat-bar-box>     
+          </div>
 
-          five-man: total games: {{ data.stack_five_total }} wins: {{ data.stack_five_wins }} losses: {{ data.stack_five_losses }} win rate: {{ data.stack_five_win_rate }}% <br>
+         <div class="flex items-center gap-10 md:px-20 py-5 justify-center" >
+            <span>{{ data.stack_four_wins + data.stack_four_losses }} </span>
+            <stat-bar-box :title="'Three Stack'" :value="data.stack_four_win_rate + '%'"></stat-bar-box>     
+          </div>
 
+          <div class="flex items-center gap-10 md:px-20 py-5 justify-center" >
+            <span>{{ data.stack_five_wins + data.stack_five_losses }} </span>
+            <stat-bar-box :title="'Three Stack'" :value="data.stack_five_win_rate + '%'"></stat-bar-box>     
+          </div>
         </div>
 
         <div class="p-10 max-w-[90em] ml-auto mr-auto" v-if="data && data.matchData">
@@ -173,6 +193,7 @@ export default {
           season: "all",
         });
         this.data = response.data; 
+        console.log(this.data);
       }catch(error){
         console.log(error);
       }

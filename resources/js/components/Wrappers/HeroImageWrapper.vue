@@ -1,6 +1,10 @@
 <template>
   <div>
-    <round-image :size="size" :title="hero.name" :image="getHeroImage()" :tooltiptex="getToolTip()"></round-image>
+    <round-image v-if="!rectangle" :size="size" :title="hero.name" :image="getHeroImage()" :tooltiptex="getToolTip()"></round-image>
+    <div v-if="rectangle">
+      <!-- I am putting this here for now -->
+      <img :src="getHeroImageRectangle()" :alt="title" >
+    </div>
   </div>
 </template>
 
@@ -13,6 +17,8 @@ export default {
     hero: Object,
     size: String,
     includehover: Boolean,
+    rectangle: Boolean,
+    heroImage: String,
   },
   data(){
     return {
@@ -30,6 +36,9 @@ export default {
   methods: {
     getHeroImage(){
       return `/images/heroes/${this.hero.short_name}.png`;
+    },
+    getHeroImageRectangle(){
+      return `/images/heroes_rectangle/${this.heroImage}.jpg`;
     },
     getToolTip(){
       /*
