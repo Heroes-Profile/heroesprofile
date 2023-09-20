@@ -4,11 +4,11 @@
 
     User settings woot woot
     <div>
-      Profile Hero/Favorite Hero: <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange"></single-select-filter>
+      Profile Hero/Favorite Hero: <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange" :defaultValue="defaultHero"></single-select-filter>
     </div>
 
     <div>
-      Default Game Type: <multi-select-filter :values="this.filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange"></multi-select-filter>
+      Default Game Type: <multi-select-filter :values="this.filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="defaultGameType"></multi-select-filter>
     </div>
 
     <custom-button :ignoreclick="true" :text="'Save settings'" @click="saveSettings()"></custom-button>
@@ -39,9 +39,18 @@ export default {
   created(){
   },
   mounted() {
-    console.log(this.filters);
+    console.log(this.user);
   },
   computed: {
+    defaultHero(){
+      let hero = this.user.user_settings.find(item => item.setting === 'hero').value;
+
+      return hero ? hero : null;
+    },
+    defaultGameType(){
+      let gameType = this.user.user_settings.find(item => item.setting === 'game_type').value;
+      return gameType ? [gameType] : null;
+    },
   },
   watch: {
   },
@@ -49,22 +58,25 @@ export default {
     async saveSettings(){
       try{
         const response = await this.$axios.post("/api/v1/profile/save/settings", {
+          userid: this.user.battlenet_accounts_id,
           userhero: this.userhero,
           usergametype: this.usergametype,
         });
+        //window.location.href = "/Profile/Settings";
       }catch(error){
         console.log(error)
       }
     },
     handleInputChange(eventPayload) {
-      console.log(eventPayload);
       if(eventPayload.type === 'single') {
         if(eventPayload.field == "Heroes"){
-          this.userhero = eventPayload.value;
+          this.userhero = this.filters.heroes.find(hero => hero.code === eventPayload.value).name;
         }
 
       } else if(eventPayload.type === 'multi') {
-        //this.selectedMultiFilters[eventPayload.field] = eventPayload.value;
+        if(eventPayload.field == "Game Type"){
+          this.usergametype = eventPayload.value;
+        }
       }
     },
   }

@@ -18,7 +18,7 @@ class CompareController extends Controller
         return view('compare')
         ->with([
             'filters' => $this->globalDataService->getFilterData(),
-            'gametypedefault' => [$this->globalDataService->getGameTypeDefault()]
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault()
         ]);
     }
 }

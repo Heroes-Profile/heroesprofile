@@ -195,12 +195,18 @@ class GlobalDataService
     }
 
     public function getGameTypeDefault(){
+
         if (Auth::check()) {
             $user = Auth::user();
+
+            $gameTypeSetting = $user->userSettings->firstWhere('setting', 'game_type');
+
+            if ($gameTypeSetting) {
+                $gameTypeValue = $gameTypeSetting->value;
+                return explode(",", $gameTypeSetting->value);
+            }
         }
-
-
-        return "sl";
+        return ["sl"];
     }
 
     public function getDefaultSeason(){

@@ -49,7 +49,7 @@ class GlobalHeroMatchupsTalentsController extends Controller
 
         return view('Global.Matchups.Talents.globalMatchupsTalentsStats')->with([
                 'filters' => $this->globalDataService->getFilterData(),
-                'gametypedefault' => [$this->globalDataService->getGameTypeDefault()],
+                'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
                 'inputhero' => $inputhero,
