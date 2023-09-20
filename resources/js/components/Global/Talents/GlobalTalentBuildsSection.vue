@@ -31,13 +31,13 @@
         <tr v-for="row in talentbuilddata" :key="row">
           <td class="py-2 px-3 border-b border-gray-200">
             <div class="flex flex-wrap gap-4">
-              <talent-box :talent="row.level_one"></talent-box>
-              <talent-box :talent="row.level_four"></talent-box>
-              <talent-box :talent="row.level_seven"></talent-box>
-              <talent-box :talent="row.level_ten"></talent-box>
-              <talent-box :talent="row.level_thirteen"></talent-box>
-              <talent-box :talent="row.level_sixteen"></talent-box>
-              <talent-box :talent="row.level_twenty"></talent-box>
+              <talent-image-wrapper :talent="row.level_one"></talent-image-wrapper>
+              <talent-image-wrapper :talent="row.level_four"></talent-image-wrapper>
+              <talent-image-wrapper :talent="row.level_seven"></talent-image-wrapper>
+              <talent-image-wrapper :talent="row.level_ten"></talent-image-wrapper>
+              <talent-image-wrapper :talent="row.level_thirteen"></talent-image-wrapper>
+              <talent-image-wrapper :talent="row.level_sixteen"></talent-image-wrapper>
+              <talent-image-wrapper :talent="row.level_twenty"></talent-image-wrapper>
             </div>
           </td>
           <td class="py-2 px-3 border-b border-gray-200">

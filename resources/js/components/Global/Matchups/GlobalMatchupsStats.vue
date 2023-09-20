@@ -54,7 +54,7 @@
           <tr v-for="(row, index) in sortedData" :key="index">
             <td class="py-2 px-3 border-b border-gray-200">
               <div class="flex items-center">
-                <round-image :hero="row.ally ? row.ally.hero : row.enemy.hero "></round-image>
+                <hero-image-wrapper :hero="row.ally ? row.ally.hero : row.enemy.hero "></hero-image-wrapper>
                 <span class="ml-left px-3">{{ row.ally && row.ally.hero ? row.ally.hero.name : row.enemy.hero.name }}</span>
               </div>
             </td>

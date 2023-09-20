@@ -16,20 +16,16 @@
       :includegametypefull="true"
       :includeseason="true"
       :includeminimumgames="true"
-
       >
     </filters>
-
-    <div>
-      <input type="text" v-model="searchQuery" placeholder="Search..." />
-
-     <div v-for="(stat, index) in filteredStats" :key="index" class="flex items-center">
-        <input type="checkbox" v-model="stat.selected" :disabled="isDisabled(stat)" @change="onCheckboxChange(stat)" />
-        <label>{{ stat.name }}</label>
+    <div v-if="data">
+      <div>
+        <input type="text" v-model="searchQuery" placeholder="Search..." />
+        <div v-for="(stat, index) in filteredStats" :key="index" class="flex items-center">
+          <input type="checkbox" v-model="stat.selected" :disabled="isDisabled(stat)" @change="onCheckboxChange(stat)" />
+          <label>{{ stat.name }}</label>
+        </div>
       </div>
-    </div>
-
-    <div>
       <table class="min-w-full bg-white">
         <thead>
           <tr>
@@ -55,7 +51,7 @@
         </thead>
         <tbody>
           <tr v-for="row in sortedData" :key="row.id">
-            <td class="py-2 px-3 border-b border-gray-200"><a :href="getPlayerHeroPageUrl(row.name)"><hero-box-small :hero="row.hero"></hero-box-small>{{ row.name }}</a></td>
+            <td class="py-2 px-3 border-b border-gray-200"><a :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.name }}</a></td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.wins }}|{{ row.losses }} {{ row.win_rate }} %</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.kda }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}/{{ row.avg_assists }}</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.kdr }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}</td>
@@ -75,7 +71,9 @@
       </table>
 
     </div>
-
+    <div v-else>
+      <loading-component></loading-component>
+    </div>
 
   </div>
 </template>

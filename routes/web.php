@@ -46,6 +46,13 @@ use App\Http\Controllers\Player\PlayerMapsController;
 
 ///The way we are defining url paths to be consistent with the current site, the order of these routes cannot change.
 
+
+Route::fallback(function () {
+    return view('errors.404');
+});
+
+
+
 Route::get('/', [MainPageController::class, 'show']);
 Route::get('/battletag/searched/{userinput}/{type}', [BattletagSearchController::class, 'show']);
 

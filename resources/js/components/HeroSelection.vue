@@ -10,13 +10,13 @@
     </div>
 
     <div class="flex flex-wrap gap-2">
-      <round-image 
+      <hero-image-wrapper
         v-for="hero in filteredHeroes" 
         :key="hero.id" 
         :hero="hero" 
         size="big"
         @click="clickedHero(hero)"
-      ></round-image>
+      ></hero-image-wrapper>
     </div>
   </div>
 </template>

@@ -20,8 +20,8 @@
               <a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row[column.value] }}</a>
             </div>
             <div v-else-if="column.value === 'most_played_hero'">
-              <div class="flex gap-x-2 items-center">
-                <round-image :hero="row.most_played_hero"></round-image>
+              <div  v-if="row.most_played_hero" class="flex gap-x-2 items-center">
+                <hero-image-wrapper :hero="row.most_played_hero"></hero-image-wrapper>
                 {{ row.hero_build_games_played }}
               </div>
             </div>

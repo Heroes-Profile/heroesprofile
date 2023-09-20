@@ -21,7 +21,7 @@ class GlobalLeaderboardController extends Controller
     public function __construct(GlobalDataService $globalDataService)
     {
         $this->globalDataService = $globalDataService;
-    }
+    } 
 
     public function show(Request $request){
         return view('Global.Leaderboard.globalLeaderboard')->with([

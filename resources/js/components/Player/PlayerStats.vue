@@ -45,9 +45,9 @@
         <div class="bg-lighten p-10 text-center">
           <h2 class="flex-1 text-3xl font-bold"> Heroes </h2>
           <div class="flex flex-wrap justify-center">
-            <group-box :text="'Most Played'" :data="data.heroes_three_most_played"></group-box>
-            <group-box :text="'Highest Win Rate'" :data="data.heroes_three_highest_win_rate"></group-box>
-            <group-box :text="'Latest Played'" :data="data.heroes_three_latest_played"></group-box>
+            <group-box :playerlink="true" :text="'Most Played'" :data="data.heroes_three_most_played"></group-box>
+            <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.heroes_three_highest_win_rate"></group-box>
+            <group-box :playerlink="true" :text="'Latest Played'" :data="data.heroes_three_latest_played"></group-box>
           </div>
         </div>
 
@@ -128,7 +128,9 @@
           
         </div>
       </div>
-
+      <div v-else>
+        <loading-component></loading-component>
+      </div>
 
   </div>
 </template>
@@ -166,6 +168,7 @@ export default {
         const response = await this.$axios.post("/api/v1/player", {
           blizz_id: this.blizzid,
           region: this.region,
+          battletag: this.battletag,
           game_type: "all",
           season: "all",
         });

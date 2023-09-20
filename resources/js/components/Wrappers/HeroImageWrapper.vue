@@ -1,6 +1,6 @@
 <template>
   <div>
-    <round-image :size="size" :title="hero.name" :image="getHeroImage()" :tooltiptex="getToolTip()" :showTooltip="true"></round-image>
+    <round-image :size="size" :title="hero.name" :image="getHeroImage()" :tooltiptex="getToolTip()"></round-image>
   </div>
 </template>
 
@@ -12,6 +12,7 @@ export default {
   props: {
     hero: Object,
     size: String,
+    includehover: Boolean,
   },
   data(){
     return {
@@ -22,6 +23,7 @@ export default {
   mounted() {   
   },
   computed: {
+
   },
   watch: {
   },

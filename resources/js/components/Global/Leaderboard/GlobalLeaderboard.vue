@@ -16,7 +16,12 @@
       :minimumseason="13"
       >
     </filters>
-    <custom-table :columns="columns" :data="data"></custom-table>
+    <div v-if="data">
+      <custom-table :columns="columns" :data="data"></custom-table>
+    </div>
+    <div v-else>
+      <loading-component></loading-component>
+    </div>
   </div>
 </template>
 

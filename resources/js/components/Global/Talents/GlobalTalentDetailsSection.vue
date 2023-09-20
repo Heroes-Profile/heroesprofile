@@ -32,7 +32,7 @@
           <tr v-for="row in talentdetaildata[level]" :key="row.talentInfo.talent_id">
             <td class="py-2 px-3 border-b border-gray-200">
               <div class="flex items-center">
-                <talent-box :talent="row.talentInfo"></talent-box>
+                <talent-image-wrapper :talent="row.talentInfo"></talent-image-wrapper>
                 <span class="ml-left px-3">{{ row.talentInfo.title }}</span>
               </div>
             </td>

@@ -4,11 +4,8 @@
       <page-heading :infoText1="infoText1" :infoText2="infoText2" :heading="selectedHero ? selectedHero.name + ' Draft Statistics' : 'Draft Statistics'"></page-heading>
 
 
-      <!-- Should turn into a component for easy styling? -->
-      <div class="flex flex-wrap gap-1" v-if="!selectedHero">
-        <div v-for="hero in heroes" :key="hero.id">
-          <round-image :hero="hero" @click="clickedHero(hero)"></round-image>
-        </div>
+      <div v-if="!selectedHero">
+        <hero-selection :heroes="heroes"></hero-selection>
       </div>
 
       <div v-else>
@@ -52,7 +49,7 @@
             </tr>
           </thead>
           <tbody>
-            <!-- ChatGPT code. this isnt working 100% -->
+            <!-- ChatGPT code. this isnt working 100% colors seem messed up-->
             <tr 
               v-for="row in draftdata" 
               :key="row.pick_number"
