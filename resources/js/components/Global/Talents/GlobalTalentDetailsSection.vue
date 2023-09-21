@@ -23,7 +23,7 @@
             <th @click="sortTable('games_played', level)" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games Played
             </th>     
-            <th v-if="statfilter" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th v-if="statfilter && statfilter != 'win_rate'" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Avg {{ statfilter.charAt(0).toUpperCase() + statfilter.slice(1) }}
             </th>                            
           </tr>
@@ -39,7 +39,7 @@
             <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.popularity }}</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.games_played }}</td>
-            <td v-if="statfilter" class="py-2 px-3 border-b border-gray-200">{{ row.total_filter_type }}</td>
+            <td v-if="statfilter && statfilter != 'win_rate'" class="py-2 px-3 border-b border-gray-200">{{ row.total_filter_type }}</td>
           </tr>
         </tbody>
       </table>

@@ -33,29 +33,23 @@
           <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
         </div>
         <div v-else>
-          <loading-component></loading-component>
+          <loading-component v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+          <loading-component v-else></loading-component>
         </div>
 
 
         <div  v-if="talentbuilddata" class="container mx-auto px-4">
 
-          <single-select-filter :values="buildtypes" :text="'Talent Build Type'" :defaultValue="'Popular'" @input-changed="buildtypechange"></single-select-filter>
+          <single-select-filter :values="buildtypes" :text="'Talent Build Type'" :defaultValue="this.talentbuildtype" @input-changed="buildtypechange"></single-select-filter>
           {{ this.selectedHero.name }} {{ "Talent Builds"}}
           <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
         </div>
         <div v-else>
-          <loading-component></loading-component>
+          <loading-component v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+          <loading-component v-else></loading-component>
         </div>
-
       </div>
-   
-
   </div>
-
-
-
-
-
 </div>
 </template>
 
@@ -96,7 +90,7 @@
        timeframetype: null,
        timeframe: null,
        region: null,
-       statfilter: null,
+       statfilter: "win_rate",
        herolevel: null,
        role: null,
        hero: null,
@@ -105,8 +99,8 @@
        playerrank: null,
        herorank: null,
        rolerank: null,
-       mirrormatch: null,
-       talentbuildtype: null,
+       mirrormatch: "Exclude",
+       talentbuildtype: "Popular",
      }
    },
    created(){
@@ -204,14 +198,18 @@
         this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : [];
         this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : [];
         this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : [];
-        this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "";
+        this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "Exclude";
         this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : this.defaultbuildtype;
+
+        this.talentdetaildata = null;
+        this.talentbuilddata  = null;
 
         this.getTalentData();
         this.getTalentBuildData();
       },
       buildtypechange(eventPayload){
         this.talentbuildtype = eventPayload.value;
+        this.talentbuilddata  = null;
         this.getTalentBuildData();
       },
       preloadTalentImages(hero) {
@@ -223,7 +221,15 @@
         }
  
       },
-     
+      determineIfLargeData(){
+        console.log(this.timeframetype);
+        console.log(this.timeframe.length);
+        console.log(this.statfilter);
+        if(this.timeframetype == "major" || this.timeframe.length >= 3 || this.statfilter != "win_rate"){
+          return  true;
+        }
+        return false;
+      },
     }
   }
 </script>

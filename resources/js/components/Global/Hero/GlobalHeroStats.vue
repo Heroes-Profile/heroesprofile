@@ -334,12 +334,8 @@ export default {
     },
     determineIfLargeData(){
       if(this.timeframetype == "major" || this.timeframe.length >= 3 || this.statfilter != "win_rate"){
-        console.log(this.timeframetype);
-        console.log(this.timeframe.length);
-        console.log(this.statfilter);
         return  true;
       }
-
       return false;
     }
   }
