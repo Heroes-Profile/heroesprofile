@@ -229,7 +229,6 @@ export default {
   },
   watch: {
     combinedPlayers(){
-      console.log(this.combinedPlayers);
     }
   },
   methods: {
@@ -271,8 +270,6 @@ export default {
     },
     combinePlayerArrays(){
       this.combinedPlayers = [...this.data.players[0], ...this.data.players[1]];
-
-      console.log(this.combinedPlayers);
     },
     getCopyBuildToGame(level_one, level_four, level_seven, level_ten, level_thirteen, level_sixteen, level_twenty, hero) {
       return "[T" + 

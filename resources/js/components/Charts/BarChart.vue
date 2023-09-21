@@ -23,8 +23,6 @@ export default {
   created(){
   },
   mounted() {
-    console.log(this.data);
-
     this.chartRef = this.$refs.chartRef;
 
     const labels = this.data.map(item => item.accountLevel);

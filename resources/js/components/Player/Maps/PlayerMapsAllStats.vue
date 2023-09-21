@@ -102,7 +102,7 @@ export default {
       gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
       data: null,
       sortKey: '',
-      sortDir: 'asc',
+      sortDir: 'desc',
       role: null,
       hero: null,
       minimumgames: 0,
@@ -255,7 +255,7 @@ export default {
       if (key === this.sortKey) {
         this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
       } else {
-        this.sortDir = 'asc';
+        this.sortDir = 'desc';
       }
       this.sortKey = key;
     },

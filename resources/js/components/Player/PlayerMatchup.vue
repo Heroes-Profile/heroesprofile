@@ -77,7 +77,7 @@
         gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
         data: [],
         sortKey: '',
-        sortDir: 'asc',
+        sortDir: 'desc',
         topfiveheroes: [],
         topfiveenemies: [],
       }
@@ -128,7 +128,7 @@
         if (key === this.sortKey) {
           this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
         } else {
-          this.sortDir = 'asc';
+          this.sortDir = 'desc';
         }
         this.sortKey = key;
       },

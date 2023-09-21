@@ -178,7 +178,6 @@ export default {
           map: this.gamemap,
           league_tier: this.playerrank,
         });
-        console.log(response.data);
         this.talentdetaildata = response.data.data;
         this.firstwinratedata = response.data.first_win_rate;
         this.secondwinratedata = response.data.second_win_rate;

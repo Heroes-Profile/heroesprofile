@@ -39,7 +39,6 @@ export default {
   created(){
   },
   mounted() {
-    console.log(this.user);
   },
   computed: {
     defaultHero(){

@@ -103,7 +103,7 @@
         selectedHero: null,
         allyenemydata: null,
         sortKey: '',
-        sortDir: 'asc',
+        sortDir: 'desc',
         combineddata: null,
 
       //Sending to filter
@@ -216,7 +216,7 @@
         if (key === this.sortKey) {
           this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
         } else {
-          this.sortDir = 'asc';
+          this.sortDir = 'desc';
         }
         this.sortKey = key;
       },

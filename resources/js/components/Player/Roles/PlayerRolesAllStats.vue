@@ -103,7 +103,7 @@
         gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
         data: null,
         sortKey: '',
-        sortDir: 'asc',
+        sortDir: 'desc',
         role: null,
         hero: null,
         minimumgames: 0,
@@ -238,7 +238,6 @@ methods: {
       });
 
       this.data = response.data;
-      console.log(this.data);
     }catch(error){
       console.log(error);
     }
@@ -257,7 +256,7 @@ methods: {
     if (key === this.sortKey) {
       this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
     } else {
-      this.sortDir = 'asc';
+      this.sortDir = 'desc';
     }
     this.sortKey = key;
   },

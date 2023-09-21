@@ -154,7 +154,6 @@
         this.getData();
       },
       herochanged(eventPayload){
-        console.log(eventPayload.value)
       },
       filterData(filteredData){
         this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;

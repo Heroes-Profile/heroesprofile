@@ -132,7 +132,7 @@ export default {
     return {
       infoText: "Composition stats based on differing increments, stat types, game type, or Rank. Click on a Composition to see detailed composition information.",
       sortKey: '',
-      sortDir: 'asc',
+      sortDir: 'desc',
       compositiondata: null,
 
       //Sending to filter
@@ -242,7 +242,7 @@ export default {
       if (key === this.sortKey) {
         this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
       } else {
-        this.sortDir = 'asc';
+        this.sortDir = 'desc';
       }
       this.sortKey = key;
     },

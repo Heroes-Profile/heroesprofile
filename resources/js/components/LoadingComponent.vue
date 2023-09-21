@@ -1,17 +1,39 @@
 <template>
   <div class="loading-container">
     <img src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
-    <div class="loading-text">Loading data...</div>
+    <div class="loading-text">
+      <slot v-if="textoverride"></slot>
+      <span v-else>Loading data...</span>
+    </div>
   </div>
 </template>
-
 <script>
-export default {
-  name: 'LoadingComponent',
-};
+  export default {
+    name: 'LoadingComponent',
+    components: {
+    },
+    props: {
+      textoverride: Boolean,
+    },
+    data(){
+      return {
+      }
+    },
+    created(){
+    },
+    mounted() {
+    },
+    computed: {
+    },
+    watch: {
+    },
+    methods: {
+    }
+  }
 </script>
 
 <style scoped>
+
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -29,7 +51,7 @@ export default {
   font-family: 'Ruslan Display', cursive;
   font-size: 24px;
   text-align: center;
-  color: #fff; /* White color text */
+  color: #fff;
 }
 
 @keyframes spin {
@@ -43,8 +65,8 @@ export default {
 
 .loading-container img {
   animation: spin 2.5s linear infinite;
-  width: 121.5; /* Adjust width as needed */
-  height: 108px; /* Adjust height as needed */
+  width: 121.5;
+  height: 108px;
 }
 </style>
 

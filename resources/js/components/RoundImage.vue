@@ -76,7 +76,6 @@ export default {
   created(){
   },
   mounted() {
-    //console.log(this.title)
   },
   computed: {
   },
