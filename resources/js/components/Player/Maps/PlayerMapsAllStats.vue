@@ -237,9 +237,8 @@ export default {
         });
 
         this.data = response.data;
-        console.log(this.data);
       }catch(error){
-        console.log(error);
+        //Do something here
       }
     },
     filterData(filteredData){

@@ -115,7 +115,7 @@
           });
           this.data = response.data;
         }catch(error){
-          console.log(error);
+          //Do something here
         }
       },
       filterData(filteredData){

@@ -196,7 +196,7 @@ export default {
         });
         this.compositiondata = response.data;
       }catch(error){
-        console.log(error);
+        //Do something here
       }
     },
     async getTopHeroesData(compositionid, index){
@@ -219,7 +219,7 @@ export default {
 
         this.sortedData[index].compositionheroes = response.data;
       }catch(error){
-        console.log(error);
+        //Do something here
       }
     },
     filterData(filteredData){

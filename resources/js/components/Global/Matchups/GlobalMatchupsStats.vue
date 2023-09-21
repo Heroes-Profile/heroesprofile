@@ -195,7 +195,7 @@
           this.combineddata = response.data.combined;
 
         }catch(error){
-          console.log(error);
+          //Do something here
         }
       },
       filterData(filteredData){

@@ -161,7 +161,7 @@
 
           this.talentdetaildata = response.data;
         }catch(error){
-      //console.log(error);
+          //Do something here
         }
       },
       async getTalentBuildData(){
@@ -184,7 +184,7 @@
 
           this.talentbuilddata = response.data;
         }catch(error){
-      //console.log(error);
+          //Do something here
         }
       },
       filterData(filteredData){
@@ -222,9 +222,6 @@
  
       },
       determineIfLargeData(){
-        console.log(this.timeframetype);
-        console.log(this.timeframe.length);
-        console.log(this.statfilter);
         if(this.timeframetype == "major" || this.timeframe.length >= 3 || this.statfilter != "win_rate"){
           return  true;
         }

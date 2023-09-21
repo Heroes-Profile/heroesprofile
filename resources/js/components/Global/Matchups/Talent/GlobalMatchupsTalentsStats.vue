@@ -183,7 +183,7 @@ export default {
         this.secondwinratedata = response.data.second_win_rate;
         this.loading = false;
       }catch(error){
-        console.log(error);
+        //Do something here
         this.loading = false;
       }
     },

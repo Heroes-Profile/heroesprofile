@@ -117,8 +117,6 @@
       if(this.selectedHero){
         this.getData();
       }
-
-      console.log(this.selectedHero);
     },
     mounted() {
     },
@@ -144,7 +142,7 @@
 
           this.draftdata = response.data;
         }catch(error){
-        //console.log(error);
+          //Do something here
         }
       },
       clickedHero(hero){

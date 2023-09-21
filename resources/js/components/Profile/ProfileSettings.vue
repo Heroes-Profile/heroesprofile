@@ -61,9 +61,9 @@ export default {
           userhero: this.userhero,
           usergametype: this.usergametype,
         });
-        //window.location.href = "/Profile/Settings";
+        window.location.href = "/Profile/Settings";
       }catch(error){
-        console.log(error)
+        //Do something here
       }
     },
     handleInputChange(eventPayload) {

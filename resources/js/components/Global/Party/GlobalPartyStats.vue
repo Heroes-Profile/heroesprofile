@@ -327,7 +327,7 @@ export default {
         this.partydata = response.data;
         this.loading = false;
       }catch(error){
-        console.log(error)
+        //Do something here
       }
     },
    filterData(filteredData){

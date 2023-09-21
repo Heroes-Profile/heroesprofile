@@ -118,10 +118,8 @@
           this.data = response.data.tabledata;
           this.topfiveheroes = response.data.top_five_heroes;
           this.topfiveenemies = response.data.top_five_enemies;
-
-          console.log(response.data);
         }catch(error){
-          console.log(error);
+          //Do something here
         }
       },
       sortTable(key) {

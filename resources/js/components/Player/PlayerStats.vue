@@ -197,10 +197,9 @@ export default {
           game_type: "all",
           season: "all",
         });
-        this.data = response.data; 
-        console.log(this.data);
+        this.data = response.data;
       }catch(error){
-        console.log(error);
+        //Do something here
       }
     },
     handleInputChange(eventPayload) {

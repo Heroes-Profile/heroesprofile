@@ -261,7 +261,7 @@ export default {
         this.isLoading = false;
         this.loadingStates = this.sortedData.map(() => false);
       }catch(error){
-        console.log(error)
+        //Do something here
       }
     },
     async getTalentBuildData(hero, index){
@@ -289,7 +289,7 @@ export default {
         this.loadingStates[hero] = false;
 
       }catch(error){
-        console.log(error);
+        //Do something here
       }
     },
     filterData(filteredData){
