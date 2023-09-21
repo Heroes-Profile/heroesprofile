@@ -10,7 +10,8 @@
     <div v-else>
       <filters 
       :onFilter="filterData" 
-      :filters="filters" 
+      :filters="filters"
+      :isLoading="isLoading" 
       :gametypedefault="gametypedefault"
       :includetimeframetype="true"
       :includetimeframe="true"

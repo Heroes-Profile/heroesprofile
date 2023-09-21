@@ -14,6 +14,7 @@
           <filters 
           :onFilter="filterData" 
           :filters="filters" 
+          :isLoading="isLoading"
           :gametypedefault="gametypedefault"
           :includetimeframetype="true"
           :includetimeframe="true"
@@ -70,6 +71,7 @@
     },
     data(){
       return {
+       isLoading: false,
        infoText: "Talent win rates and Talent Builds based on patches, hero, hero level, game type, game map, or Rank.",
        selectedHero: null,
        talentdetaildata: null,
@@ -134,7 +136,6 @@
 
         let currentPath = window.location.pathname;
         history.pushState(null, null, `${currentPath}/${this.selectedHero.name}`);
-
         Promise.allSettled([
           this.getTalentData(),
           this.getTalentBuildData(),
@@ -143,6 +144,7 @@
       },
       async getTalentData(){
         try{
+          this.isLoading = true;
           const response = await this.$axios.post("/api/v1/global/talents", {
             hero: this.selectedHero.name,
             timeframe_type: this.timeframetype,
@@ -158,7 +160,7 @@
             mirrormatch: this.mirrormatch,
             talentbuildtype: this.talentbuildtype
           });
-
+          this.isLoading = false;
           this.talentdetaildata = response.data;
         }catch(error){
           //Do something here
@@ -166,6 +168,7 @@
       },
       async getTalentBuildData(){
         try{
+          this.isLoading = true;
           const response = await this.$axios.post("/api/v1/global/talents/build", {
             hero: this.selectedHero.name,
             timeframe_type: this.timeframetype,
@@ -181,7 +184,7 @@
             mirrormatch: this.mirrormatch,
             talentbuildtype: this.talentbuildtype
           });
-
+          this.isLoading = false;
           this.talentbuilddata = response.data;
         }catch(error){
           //Do something here

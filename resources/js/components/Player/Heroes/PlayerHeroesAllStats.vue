@@ -9,6 +9,7 @@
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
+      :isLoading="isLoading"
       :gametypedefault="gametype"
       :minimumgamesdefault="'0'"
       :includehero="true"

@@ -15,6 +15,7 @@
         <filters 
         :onFilter="filterData" 
         :filters="filters" 
+        :isLoading="isLoading"
         :gametypedefault="gametypedefault"
         :includetimeframetype="true"
         :includetimeframe="true"

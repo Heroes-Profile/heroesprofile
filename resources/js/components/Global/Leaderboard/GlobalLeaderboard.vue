@@ -5,6 +5,7 @@
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
+      :isLoading="isLoading"
       :gametypedefault="gametypedefault"
       :defaultSeason="defaultseason"
       :includeleaderboardtype="true"

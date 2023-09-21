@@ -5,6 +5,7 @@
     <filters 
     :onFilter="filterData" 
     :filters="filters" 
+    :isLoading="isLoading"
     :gametypedefault="gametype"
     :includehero="true"
     :includegamemap="true"

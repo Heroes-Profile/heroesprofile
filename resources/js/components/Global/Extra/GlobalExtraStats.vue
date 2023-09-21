@@ -6,6 +6,7 @@
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
+      :isLoading="isLoading"
       :includecharttype="true"
       :includeregion="true"
       :includeminimumaccountlevel="true"
