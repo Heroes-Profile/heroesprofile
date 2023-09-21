@@ -1,7 +1,7 @@
 <template>
-  <div>
+  
     <round-image :size="size" :title="talent.title" :image="getTalentImage()" :tooltiptex="getToolTip()" :showTooltip="true"></round-image>
-  </div>
+  
 </template>
 
 <script>
