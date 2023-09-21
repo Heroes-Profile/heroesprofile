@@ -6,7 +6,7 @@
     </round-image>
     <round-image v-else-if="!rectangle" :size="size" :title="hero.name" :image="getHeroImage()" :tooltiptex="getToolTip()"></round-image>
     <div v-else>
-      <img :src="getHeroImageRectangle()" :alt="title" >
+      <img :src="getHeroImageRectangle()" :alt="hero.name" >
     </div>
   </div>
 </template>
@@ -33,7 +33,6 @@ export default {
   mounted() {   
   },
   computed: {
-
   },
   watch: {
   },
@@ -42,17 +41,9 @@ export default {
       return `/images/heroes/${this.hero.short_name}.png`;
     },
     getHeroImageRectangle(){
-      return `/images/heroes_rectangle/${this.heroImage}.jpg`;
+      return `/images/heroes_rectangle/${this.hero.short_name}.jpg`;
     },
     getToolTip(){
-      /*
-        Need to style the tool tips with this info
-
-        this.hero.name
-        this.hero.win_rate
-        this.hero.games_played
-
-      */
       return this.hero.name;
     },
   }

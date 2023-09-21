@@ -26,7 +26,6 @@
           </div>
           <div>
             <hero-image-wrapper :rectangle="true" :hero-image="'autoselect3'" :title="'Auto Select'"></hero-image-wrapper>
-
           </div>
 
           <div class="flex-1 flex flex-wrap ">
