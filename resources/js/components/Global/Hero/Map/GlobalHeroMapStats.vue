@@ -25,7 +25,7 @@
       >
     </filters>
     <div v-if="data">
-      <custom-table :columns="columns" :data="data"></custom-table>
+      <custom-table :columns="dynamicColumns" :data="data"></custom-table>
     </div>
     <div v-else>
       <loading-component></loading-component>
@@ -55,12 +55,7 @@
     },
     data(){
       return {
-        columns: [
-          { text: 'Map', value: 'name', sortable: true },
-          { text: 'Win Rate %', value: 'win_rate', sortable: true },
-          { text: 'Ban Rate %', value: 'ban_rate', sortable: true },
-          { text: 'Games Played', value: 'games_played', sortable: true },
-          ],
+        isLoading: false,
         infoText: "Hero Maps provide information on which maps are good for each hero",
         selectedHero: null,
         data: null,
@@ -90,6 +85,22 @@
     mounted() {
     },
     computed: {
+       dynamicColumns() {
+        if (this.gametype.includes("sl")) {
+          return [
+            { text: 'Map', value: 'name', sortable: true },
+            { text: 'Win Rate %', value: 'win_rate', sortable: true },
+            { text: 'Ban Rate %', value: 'ban_rate', sortable: true },
+            { text: 'Games Played', value: 'games_played', sortable: true },
+          ];
+        } else {
+          return [
+            { text: 'Map', value: 'name', sortable: true },
+            { text: 'Win Rate %', value: 'win_rate', sortable: true },
+            { text: 'Games Played', value: 'games_played', sortable: true },
+          ];
+        }
+    },
     },
     watch: {
     },
@@ -102,6 +113,7 @@
       },
       async getData(){
         try{
+          this.isLoading = true;
           const response = await this.$axios.post("/api/v1/global/hero/map", {
             userinput: this.selectedHero.name,
             timeframe_type: this.timeframetype,
@@ -118,6 +130,8 @@
         }catch(error){
           //Do something here
         }
+
+        this.isLoading = false;
       },
       filterData(filteredData){
         this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
@@ -130,6 +144,7 @@
         this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : [];
         this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "";
 
+        this.data = null;
         this.getData();
       },
     }

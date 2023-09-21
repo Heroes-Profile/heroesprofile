@@ -171,7 +171,7 @@ class GlobalHeroMatchupStatsController extends Controller
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
-        $combinedData = collect($data)->groupBy($type)->map(function ($group) use ($type, $heroData){
+        $combinedData = collect($data)->groupBy($type)->map(function ($group) use ($type, $heroData) {
             $firstItem = $group->first();
             $wins = $group->where('win_loss', 1)->sum('games_played');
             $losses = $group->where('win_loss', 0)->sum('games_played');
@@ -179,8 +179,6 @@ class GlobalHeroMatchupStatsController extends Controller
 
             $winRate = $gamesPlayed != 0 ? ($wins / $gamesPlayed) * 100 : 0;
             $winRate = $type == "ally" ? $winRate : 100 - $winRate;
-
-
 
             return [
                 'hero' => $heroData[$firstItem[$type]],
@@ -190,9 +188,38 @@ class GlobalHeroMatchupStatsController extends Controller
                 'win_rate' => round($winRate, 2),
                 'hovertext' => $type == "ally" ? "Won while on a team with " . $heroData[$firstItem[$type]]["name"] .  " " . round($winRate, 2) . "%" . " of the time." : "Lost against a team with " . $heroData[$firstItem[$type]]["name"] .  " " . round($winRate, 2) . "%" . " of games."
             ];
-
         })->sortByDesc('win_rate')->values()->toArray();
 
+        $found = false;
+        $notFound = [];
+
+        foreach ($heroData as $hero) {
+            $found = false;
+            foreach ($combinedData as $data) {
+                if ($data["hero"]["id"] == $hero->id) {
+                    $found = true;
+                    break;
+                }
+            }
+
+            if (!$found) {
+                $notFound[] = $hero;
+            }
+        }
+
+        foreach ($notFound as $hero) {
+            // Add the missing hero as a separate array to $combinedData
+            $combinedData[] = [
+                'hero' => $hero,
+                'wins' => 0,
+                'losses' => 0,
+                'games_played' => 0,
+                'win_rate' => 0.0,
+                'hovertext' => "",
+            ];
+        }
+
         return $combinedData;
+
     }
 }

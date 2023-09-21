@@ -258,11 +258,11 @@ export default {
         });
 
         this.data = response.data;
-        this.isLoading = false;
         this.loadingStates = this.sortedData.map(() => false);
       }catch(error){
         //Do something here
       }
+      this.isLoading = false;
     },
     async getTalentBuildData(hero, index){
       try{

@@ -160,11 +160,11 @@
             mirrormatch: this.mirrormatch,
             talentbuildtype: this.talentbuildtype
           });
-          this.isLoading = false;
           this.talentdetaildata = response.data;
         }catch(error){
           //Do something here
         }
+        this.isLoading = false;
       },
       async getTalentBuildData(){
         try{
@@ -184,11 +184,11 @@
             mirrormatch: this.mirrormatch,
             talentbuildtype: this.talentbuildtype
           });
-          this.isLoading = false;
           this.talentbuilddata = response.data;
         }catch(error){
           //Do something here
         }
+        this.isLoading = false;
       },
       filterData(filteredData){
         this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;

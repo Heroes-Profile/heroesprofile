@@ -25,8 +25,8 @@
       >
     </filters>
     <div v-if="allyenemydata" class="flex flex-wrap gap-4 justify-center items-center">
-      <group-box :text="'TOP 5 ALLIES ON HEROS TEAM'" :data="allyenemydata.ally.slice(0, 5)"></group-box>
-      <group-box :text="'TOP 5 THREATS ON ENEMIES TEAM'" :data="allyenemydata.enemy.slice(0, 5)"></group-box>
+      <group-box :text="'TOP 5 ALLIES ON HEROS TEAM'" :data="allyenemydata.ally.slice(0, 5)" :type="'Matchups'"></group-box>
+      <group-box :text="'TOP 5 THREATS ON ENEMIES TEAM'" :data="allyenemydata.enemy.slice(0, 5)" :type="'Matchups'"></group-box>
 
 
 
@@ -193,6 +193,9 @@
           });
           this.allyenemydata = response.data;
           this.combineddata = response.data.combined;
+
+        console.log(response.data);
+
 
         }catch(error){
           //Do something here

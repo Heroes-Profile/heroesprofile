@@ -1,8 +1,11 @@
 <template>
   <div>
-    <round-image v-if="!rectangle" :size="size" :title="hero.name" :image="getHeroImage()" :tooltiptex="getToolTip()"></round-image>
-    <div v-if="rectangle">
-      <!-- I am putting this here for now -->
+    <round-image v-if="!rectangle && hovertextstyleoverride" :size="size" :title="hero.name" :image="getHeroImage()" :tooltiptex="getToolTip()" :hovertextstyleoverride="hovertextstyleoverride">
+      <slot>
+      </slot>
+    </round-image>
+    <round-image v-else-if="!rectangle" :size="size" :title="hero.name" :image="getHeroImage()" :tooltiptex="getToolTip()"></round-image>
+    <div v-else>
       <img :src="getHeroImageRectangle()" :alt="title" >
     </div>
   </div>
@@ -19,6 +22,7 @@ export default {
     includehover: Boolean,
     rectangle: Boolean,
     heroImage: String,
+    hovertextstyleoverride: Boolean,
   },
   data(){
     return {
