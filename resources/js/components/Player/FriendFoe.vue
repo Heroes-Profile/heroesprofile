@@ -5,6 +5,7 @@
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
+      :isLoading="isLoading"
       :gametypedefault="gametypedefault"
       :includehero="true"
       :includegamemap="true"
@@ -38,12 +39,15 @@
           <tbody>
             <tr v-for="row in sortedDataFriends" :key="row.blizz_id">
               <td class="py-2 px-3 border-b border-gray-200"><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
-              <td class="py-2 px-3 border-b border-gray-200"><hero-box-small :hero="row.heroData.hero"></hero-box-small>({{row.heroData.total_games_played}})</td>
+              <td class="py-2 px-3 border-b border-gray-200"><hero-image-wrapper :hero="row.heroData.hero"></hero-image-wrapper>({{row.heroData.total_games_played}})</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.total_games_played }}</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
             </tr>
           </tbody>
         </table>
+      </div>
+      <div v-else>
+        <loading-component></loading-component>
       </div>
 
       <div v-if="enemydata && frienddata">
@@ -68,12 +72,15 @@
           <tbody>
             <tr v-for="row in sortedDataEnemies" :key="row.blizz_id">
               <td class="py-2 px-3 border-b border-gray-200"><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
-              <td class="py-2 px-3 border-b border-gray-200"><hero-box-small :hero="row.heroData.hero"></hero-box-small>({{row.heroData.total_games_played}})</td>
+              <td class="py-2 px-3 border-b border-gray-200"><hero-image-wrapper :hero="row.heroData.hero"></hero-image-wrapper>({{row.heroData.total_games_played}})</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.total_games_played }}</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
             </tr>
           </tbody>
         </table>
+      </div>
+      <div v-else>
+        <loading-component></loading-component>
       </div>
 
     </div>
@@ -100,13 +107,13 @@ export default {
   },
   data(){
     return {
-      frienddata: [],
-      enemydata: [],
+      frienddata: null,
+      enemydata: null,
       friendSortKey: '',
-      friendSortDir: 'asc',
+      friendSortDir: 'desc',
 
       enemySortKey: '',
-      enemySortDir: 'asc',
+      enemySortDir: 'desc',
 
       gametype: null,
       gamemap: null,
@@ -117,8 +124,25 @@ export default {
   },
   mounted() {
     this.gametype = this.gametypedefault;
-    this.getData("friend");
-    this.getData("enemy");
+
+
+    Promise.allSettled([
+      this.getData("friend"),
+      this.getData("enemy"),
+    ]).then(results => {
+      if (results[0].status === "fulfilled") {
+        this.frienddata = results[0].value;
+      } else {
+        console.error('Friend data retrieval failed', results[0].reason);
+      }
+      
+      if (results[1].status === "fulfilled") {
+        this.enemydata = results[1].value;
+      } else {
+        console.error('Enemy data retrieval failed', results[1].reason);
+      }
+    });
+
   },
   computed: {
     sortedDataFriends() {
@@ -151,9 +175,6 @@ export default {
   methods: {
     async getData(type){
       try{
-            console.log("Game type = ");
-
-        console.log(this.gametype);
         const response = await this.$axios.post("/api/v1/player/friendfoe", {
           type: type,
           blizz_id: this.blizzid,
@@ -164,13 +185,10 @@ export default {
           season: this.season,
           hero: this.hero,
         });
-        if(type == "friend"){
-          this.frienddata = response.data;
-        }else{
-          this.enemydata = response.data;
-        }
+        
+        return response.data;
       }catch(error){
-        console.log(error);
+        //Do something here
       }
     },
     filterData(filteredData){
@@ -179,21 +197,30 @@ export default {
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : [];
       this.season = filteredData.single["Season"] ? filteredData.single["Season"] : "";
 
-      console.log(this.hero);
-      console.log(this.gametype);
-      console.log(this.gamemap);
-      console.log(this.season);
-
-      this.frienddata = [];
-      this.enemydata = [];
-      this.getData("friend");
-      this.getData("enemy");
+      this.frienddata = null;
+      this.enemydata = null;
+      Promise.allSettled([
+        this.getData("friend"),
+        this.getData("enemy"),
+      ]).then(results => {
+        if (results[0].status === "fulfilled") {
+          this.frienddata = results[0].value;
+        } else {
+          console.error('Friend data retrieval failed', results[0].reason);
+        }
+        
+        if (results[1].status === "fulfilled") {
+          this.enemydata = results[1].value;
+        } else {
+          console.error('Enemy data retrieval failed', results[1].reason);
+        }
+      });
     },
     sortTableFriend(key) {
       if (key === this.friendSortKey) {
         this.friendSortDir = this.friendSortDir === 'asc' ? 'desc' : 'asc';
       } else {
-        this.friendSortDir = 'asc';
+        this.friendSortDir = 'desc';
       }
       this.friendSortKey = key;
     },
@@ -201,7 +228,7 @@ export default {
       if (key === this.enemySortKey) {
         this.enemySortDir = this.enemySortDir === 'asc' ? 'desc' : 'asc';
       } else {
-        this.enemySortDir = 'asc';
+        this.enemySortDir = 'desc';
       }
       this.enemySortKey = key;
     },

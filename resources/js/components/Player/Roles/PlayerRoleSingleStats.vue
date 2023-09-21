@@ -53,7 +53,7 @@
 
         <div class="flex flex-wrap gap-1">
           <template v-for="(item, index) in data.hero_data_all_heroes">
-            <round-box-small :hero="item.hero"></round-box-small>
+            <round-image :hero="item.hero"></round-image>
           </template>
         </div>
 
@@ -71,7 +71,9 @@
 
       </div>
     </div>
-
+    <div v-else>
+      <loading-component></loading-component>
+    </div>
   </div>
 </template>
 
@@ -124,7 +126,7 @@
 
           this.data = response.data[0];
         }catch(error){
-          console.log(error);
+          //Do something here
         }
       },
       getRegionName(regionID){

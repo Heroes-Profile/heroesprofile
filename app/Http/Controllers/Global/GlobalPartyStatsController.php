@@ -32,7 +32,7 @@ class GlobalPartyStatsController extends Controller
         return view('Global.Party.globalPartyStats')
         ->with([
             'filters' => $this->globalDataService->getFilterData(),
-            'gametypedefault' => [$this->globalDataService->getGameTypeDefault()],
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
             'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
             'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
             'defaultbuildtype' => $this->globalDataService->getDefaultBuildType()

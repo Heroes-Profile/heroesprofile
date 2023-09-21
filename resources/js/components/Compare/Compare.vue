@@ -3,6 +3,7 @@
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
+      :isLoading="isLoading"
       :gametypedefault="gametypedefault"
       :includeherorole="true"
       :includehero="true"
@@ -62,9 +63,8 @@ export default {
         });
 
         this.data = response.data;
-        console.log(response.data);
       }catch(error){
-        console.log(error);
+        //Do something here
       }
     },
 
@@ -74,10 +74,6 @@ export default {
     },
     handleDataReturn(payload) {
       const { type, result, index } = payload;
-
-      console.log(type);
-      console.log(result);
-      console.log(index);
     },
   }
 }

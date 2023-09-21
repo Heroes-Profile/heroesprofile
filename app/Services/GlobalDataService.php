@@ -20,6 +20,7 @@ use App\Models\MasterMMRDataTL;
 use App\Models\MasterMMRDataSL;
 use App\Models\MasterMMRDataAR;
 use App\Models\Battletag;
+use App\Models\HeroesDataTalent;
 
 
 class GlobalDataService
@@ -194,12 +195,18 @@ class GlobalDataService
     }
 
     public function getGameTypeDefault(){
+
         if (Auth::check()) {
             $user = Auth::user();
+
+            $gameTypeSetting = $user->userSettings->firstWhere('setting', 'game_type');
+
+            if ($gameTypeSetting) {
+                $gameTypeValue = $gameTypeSetting->value;
+                return explode(",", $gameTypeSetting->value);
+            }
         }
-
-
-        return "sl";
+        return ["sl"];
     }
 
     public function getDefaultSeason(){
@@ -519,5 +526,22 @@ class GlobalDataService
         }
 
         return $battletag;
+    }
+
+    public function getPreloadTalentImageUrls(){
+        $talentData = HeroesDataTalent::select("hero_name", "icon")->get();
+
+        $images = $talentData->groupBy('hero_name')->map(function ($data) {
+            return $data->map(function ($item) {
+                return "/images/talents/" . $item->icon;
+            });
+        })->toArray();
+
+        return $images;
+    }
+
+    public function getPreloadHeroSmallImageUrls(){
+        $heroData = Hero::select("short_name")->get();
+        return $heroData->pluck('short_name')->toArray();
     }
 }

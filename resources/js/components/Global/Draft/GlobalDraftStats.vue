@@ -1,17 +1,11 @@
 <template>
   <div>
     <div class="grid gap-5 grid-cols-1">
-      <div>
-        <h1>Draft Statistics</h1>
-        <infobox :input="infoText1"></infobox>
-        <infobox :input="infoText2"></infobox>
-      </div>
+      <page-heading :infoText1="infoText1" :infoText2="infoText2" :heading="selectedHero ? selectedHero.name + ' Draft Statistics' : 'Draft Statistics'"></page-heading>
 
-      <!-- Should turn into a component for easy styling? -->
-      <div class="flex flex-wrap gap-1" v-if="!selectedHero">
-        <div v-for="hero in heroes" :key="hero.id">
-          <round-box-small :hero="hero" @click="clickedHero(hero)"></round-box-small>
-        </div>
+
+      <div v-if="!selectedHero">
+        <hero-selection :heroes="heroes"></hero-selection>
       </div>
 
       <div v-else>
@@ -21,6 +15,7 @@
         <filters 
         :onFilter="filterData" 
         :filters="filters" 
+        :isLoading="isLoading"
         :gametypedefault="gametypedefault"
         :includetimeframetype="true"
         :includetimeframe="true"
@@ -55,8 +50,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in draftdata" :key="row.pick_number">
-              <td class="py-2 px-3 border-b border-gray-200">{{ this.determinePickOrBan(row.pick_number) }}</td>
+            <!-- ChatGPT code. this isnt working 100% colors seem messed up-->
+            <tr 
+              v-for="row in draftdata" 
+              :key="row.pick_number"
+              :class="determinePickOrBan(row.pick_number).includes('Ban') ? 'bg-red' : ''"
+            >
+              <td class="py-2 px-3 border-b border-gray-200">
+                {{ determinePickOrBan(row.pick_number) }}
+              </td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.popularity }}</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.wins }}</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.losses }}</td>
@@ -64,6 +66,9 @@
             </tr>
           </tbody>
         </table>
+      </div>
+      <div v-else>
+        <loading-component></loading-component>
       </div>
     </div>
 
@@ -113,8 +118,6 @@
       if(this.selectedHero){
         this.getData();
       }
-
-      console.log(this.selectedHero);
     },
     mounted() {
     },
@@ -140,7 +143,7 @@
 
           this.draftdata = response.data;
         }catch(error){
-        //console.log(error);
+          //Do something here
         }
       },
       clickedHero(hero){
@@ -150,7 +153,6 @@
         this.getData();
       },
       herochanged(eventPayload){
-        console.log(eventPayload.value)
       },
       filterData(filteredData){
         this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;

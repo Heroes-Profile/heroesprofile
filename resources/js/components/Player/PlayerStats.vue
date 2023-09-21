@@ -7,8 +7,8 @@
 
       <div v-if="data" class="">
 
-        <div class="flex md:p-20 gap-10">
-          <div class="flex-1 flex flex-wrap">
+        <div class="flex md:p-20 gap-10 ">
+          <div class="flex-1 flex flex-wrap justify-end">
             <stat-box :title="'Wins'" :value="data.wins"></stat-box>
             <stat-box :title="'Losses'" :value="data.losses"></stat-box>
             <stat-box :title="'First to Ten Wins'" :value="data.first_to_ten_wins"></stat-box>
@@ -24,7 +24,9 @@
 
             <stat-box :title="'Account Level'" :value="data.account_level"></stat-box>          
           </div>
-          <div>player image goes here</div>
+          <div>
+            <hero-image-wrapper :rectangle="true" :hero-image="'autoselect3'" :title="'Auto Select'"></hero-image-wrapper>
+          </div>
 
           <div class="flex-1 flex flex-wrap ">
             <stat-box :title="'MVP'" :value="data.mvp_rate"></stat-box>       
@@ -42,68 +44,117 @@
           </div>
         </div>
 
-        <div class="bg-lighten p-10 text-center">
-          <h2 class="flex-1 text-3xl font-bold"> Heroes </h2>
+        <div class="bg-lighten p-10 ">
+          <div class=" max-w-[90em] ml-auto mr-auto">
+          <h2 class="text-3xl font-bold py-5 text-center">Heroes</h2>
           <div class="flex flex-wrap justify-center">
-            <group-box :text="'Most Played'" :data="data.heroes_three_most_played"></group-box>
-            <group-box :text="'Highest Win Rate'" :data="data.heroes_three_highest_win_rate"></group-box>
-            <group-box :text="'Latest Played'" :data="data.heroes_three_latest_played"></group-box>
+            <group-box :playerlink="true" :text="'Most Played'" :data="data.heroes_three_most_played"></group-box>
+            <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.heroes_three_highest_win_rate"></group-box>
+            <group-box :playerlink="true" :text="'Latest Played'" :data="data.heroes_three_latest_played"></group-box>
           </div>
-        </div>
-
-        <div>
-          <span>QM MMR = </span><span>{{ data.qm_mmr_data ? data.qm_mmr_data.mmr : 0 }}</span><br>
-          <span>QM MMR Tier = </span><span>{{ data.qm_mmr_data ? data.qm_mmr_data.rank_tier : "" }}</span><br>
-
-          <span>UD MMR = </span><span>{{ data.ud_mmr_data ? data.ud_mmr_data.mmr : 0 }}</span><br>
-          <span>UD MMR Tier = </span><span>{{ data.ud_mmr_data ? data.ud_mmr_data.rank_tier : "" }}</span><br>
-
-          <span>HL MMR = </span><span>{{ data.hl_mmr_data ? data.hl_mmr_data.mmr : 0 }}</span><br>
-          <span>HL MMR Tier = </span><span>{{ data.hl_mmr_data ? data.hl_mmr_data.rank_tier : "" }}</span><br>
-
-          <span>TL MMR = </span><span>{{ data.tl_mmr_data ? data.tl_mmr_data.mmr : 0 }}</span><br>
-          <span>TL MMR Tier = </span><span>{{ data.tl_mmr_data ? data.tl_mmr_data.rank_tier : "" }}</span><br>
-
-          <span>SL MMR = </span><span>{{ data.sl_mmr_data ? data.sl_mmr_data.mmr : 0 }}</span><br>
-          <span>SL MMR Tier = </span><span>{{ data.sl_mmr_data ? data.sl_mmr_data.rank_tier : "" }}</span><br>
-
-          <span>AR MMR = </span><span>{{ data.ar_mmr_data ? data.ar_mmr_data.mmr : 0 }}</span><br>
-          <span>AR MMR Tier = </span><span>{{ data.ar_mmr_data ? data.ar_mmr_data.rank_tier : "" }}</span><br>
-
-        </div>
-
-        <div>
-          <h2>Maps</h2>
-          <div class="flex">
-            <group-box :text="'Most Played'" :data="data.maps_three_most_played"></group-box>
-            <group-box :text="'Highest Win Rate'" :data="data.maps_three_highest_win_rate"></group-box>
-            <group-box :text="'Latest Played'" :data="data.maps_three_latest_played"></group-box>
-          </div>
-        </div>
-
-
-        <div>
-          <h2>Party Size Win Rates</h2>
-          solo: total games: {{ data.stack_one_total }} wins: {{ data.stack_one_wins }} losses: {{ data.stack_one_losses }} win rate: {{ data.stack_one_win_rate }}% <br>
-
-          three-man: total games: {{ data.stack_three_total }} wins: {{ data.stack_three_wins }} losses: {{ data.stack_three_losses }} win rate: {{ data.stack_three_win_rate }}% <br>
-
-          four-man: total games: {{ data.stack_four_total }} wins: {{ data.stack_four_wins }} losses: {{ data.stack_four_losses }} win rate: {{ data.stack_four_win_rate }}% <br>
-
-          five-man: total games: {{ data.stack_five_total }} wins: {{ data.stack_five_wins }} losses: {{ data.stack_five_losses }} win rate: {{ data.stack_five_win_rate }}% <br>
-
-        </div>
-
-        <div v-if="data && data.matchData">
-          <h2>Most Recent matches</h2>
-
-          <template v-for="(item, index) in data.matchData">
-            <div>{{ item.game_map.name }} | {{ item.game_type.name }} | {{ item.game_date }}</div>
-            <game-summary-box :data="item"></game-summary-box>
-          </template>
+          <custom-button class="flex justify-end " text="View All Heroes"></custom-button>
         </div>
       </div>
 
+        <div class="max-w-[1000px] mx-auto">
+          <div class="grid grid-cols-4 items-center gap-10 md:px-20 py-5 justify-center" >
+            <h4 class="text-right">Quick Match</h4>
+            <stat-bar-box :title="'Win Rate'" :value=" data.qm_mmr_data ? data.qm_mmr_data.win_rate : 0 "></stat-bar-box>
+            <stat-box title="Rank Tier" :value="data.qm_mmr_data ? data.qm_mmr_data.rank_tier : ''"></stat-box>
+            <stat-box :title="'MMR'" :value="data.qm_mmr_data ? data.qm_mmr_data.mmr : 0 "></stat-box>
+          </div>
+
+          <div class="grid grid-cols-4  items-center gap-10 md:px-20 py-5 justify-center" >
+            <h4 class="text-right">Unranked Draft</h4>
+            <stat-bar-box :title="'Win Rate'" :value=" data.ud_mmr_data ? data.ud_mmr_data.win_rate : 0 " color="teal"></stat-bar-box>
+            <stat-box title="Rank Tier" :value="data.ud_mmr_data ? data.ud_mmr_data.rank_tier : ''" color="teal"></stat-box>
+            <stat-box :title="'MMR'" :value="data.ud_mmr_data ? data.ud_mmr_data.mmr : 0 " color="teal"></stat-box>
+          </div>
+
+          <div class=" grid grid-cols-4 items-center gap-10 md:px-20 py-5 justify-center" >
+            <h4 class="text-right">Hero league</h4>
+            <stat-bar-box :title="'Win Rate'" :value=" data.hl_mmr_data ? data.hl_mmr_data.win_rate : 0 " color="red"></stat-bar-box>
+            <stat-box title="Rank Tier" :value="data.hl_mmr_data ? data.hl_mmr_data.rank_tier : ''" color="red"></stat-box>
+            <stat-box :title="'MMR'" :value="data.hl_mmr_data ? data.hl_mmr_data.mmr : 0 " color="red"></stat-box>
+          </div>
+
+
+          <div class="grid grid-cols-4 items-center gap-10 md:px-20 py-5 justify-center" >
+            <h4 class="text-right">Team league</h4>
+            <stat-bar-box :title="'Win Rate'" :value=" data.tl_mmr_data ? data.tl_mmr_data.win_rate : 0 " color="yellow"></stat-bar-box>
+            <stat-box title="Rank Tier" :value="data.tl_mmr_data ? data.tl_mmr_data.rank_tier : ''" color="yellow"></stat-box>
+            <stat-box :title="'MMR'" :value="data.tl_mmr_data ? data.tl_mmr_data.mmr : 0 " color="yellow"></stat-box>
+          </div>
+
+          <div class="grid grid-cols-4 items-center gap-10 md:px-20 py-5 justify-center" >
+           <h4 class="text-right"> Storm league</h4>
+            <stat-bar-box :title="'Win Rate'" :value=" data.sl_mmr_data ? data.sl_mmr_data.win_rate : 0 " color="gray-dark"></stat-bar-box>
+            <stat-box title="Rank Tier" :value="data.sl_mmr_data ? data.sl_mmr_data.rank_tier : ''" color="gray-dark"></stat-box>
+            <stat-box :title="'MMR'" :value="data.sl_mmr_data ? data.sl_mmr_data.mmr : 0 " color="gray-dark"></stat-box>
+          </div>
+
+          <div class="grid grid-cols-4 items-center gap-10 md:px-20 py-5 justify-center" >
+            <h4 class="text-right">ARAM</h4>
+            <stat-bar-box :title="'Win Rate'" :value=" data.ar_mmr_data ? data.ar_mmr_data.win_rate : 0 "></stat-bar-box>
+            <stat-box title="Rank Tier" :value="data.ar_mmr_data ? data.ar_mmr_data.rank_tier : ''"></stat-box>
+            <stat-box :title="'MMR'" :value="data.ar_mmr_data ? data.ar_mmr_data.mmr : 0 "></stat-box>
+          </div>
+        </div>
+
+      
+
+         <div class="bg-lighten p-10 ">
+          <div class=" max-w-[90em] ml-auto mr-auto">
+            <h2 class="text-3xl font-bold py-5 text-center">Maps</h2>
+            <div class="flex flex-wrap justify-center">
+              <group-box :text="'Most Played'" :data="data.maps_three_most_played"></group-box>
+              <group-box :text="'Highest Win Rate'" :data="data.maps_three_highest_win_rate"></group-box>
+              <group-box :text="'Latest Played'" :data="data.maps_three_latest_played"></group-box>
+            </div>
+            <custom-button class="flex justify-end " text="View All Maps"></custom-button>
+        </div>
+        </div>
+
+
+        <div class="p-10 max-w-[90em] ml-auto mr-auto">
+          <h2 class="text-3xl font-bold py-5">Party Size Win Rates</h2>
+
+          <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
+            <div class="flex gap-10 text-xs"><span>Solo</span><span>Total Games: {{ data.stack_one_wins + data.stack_one_losses }} </span></div>
+            <stat-bar-box size="big" :value="data.stack_one_win_rate "></stat-bar-box>     
+          </div>
+           <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
+            <div class="flex gap-10 text-xs"><span>Two Stack</span><span>Total Games: {{ data.stack_two_wins + data.stack_two_losses }} </span></div>
+            <stat-bar-box size="big" :value="data.stack_two_win_rate " color="teal"></stat-bar-box>     
+          </div>
+          <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
+            <div class="flex gap-10 text-xs"><span>Three Stack</span><span>Total Games: {{ data.stack_three_wins + data.stack_three_losses }} </span></div>
+            <stat-bar-box size="big" :value="data.stack_three_win_rate " color="red"></stat-bar-box>     
+          </div>
+          <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
+            <div class="flex gap-10 text-xs"><span>Four Stack</span><span>Total Games: {{ data.stack_four_wins + data.stack_four_losses }} </span></div>
+            <stat-bar-box size="big" :value="data.stack_four_win_rate " color="yellow"></stat-bar-box>     
+          </div>
+          <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
+            <div class="flex gap-10 text-xs"><span>Five Stack</span><span>Total Games: {{ data.stack_five_wins + data.stack_five_losses }} </span></div>
+            <stat-bar-box size="big" :value="data.stack_five_win_rate "></stat-bar-box>     
+          </div>
+     
+        
+
+        </div>
+
+        <div class="p-10 max-w-[90em] ml-auto mr-auto" v-if="data && data.matchData">
+          <h2 class="text-3xl font-bold py-5">Most Recent matches</h2>
+
+                   
+            <game-summary-box v-for="(item, index) in data.matchData" :data="item" :caption="`${item.game_map.name} | ${item.game_type.name} | ${item.game_date}`"></game-summary-box>
+          
+        </div>
+      </div>
+      <div v-else>
+        <loading-component></loading-component>
+      </div>
 
   </div>
 </template>
@@ -141,12 +192,13 @@ export default {
         const response = await this.$axios.post("/api/v1/player", {
           blizz_id: this.blizzid,
           region: this.region,
+          battletag: this.battletag,
           game_type: "all",
           season: "all",
         });
-        this.data = response.data; 
+        this.data = response.data;
       }catch(error){
-        console.log(error);
+        //Do something here
       }
     },
     handleInputChange(eventPayload) {

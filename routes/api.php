@@ -3,7 +3,14 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
+
+
 use App\Http\Controllers\BattletagSearchController;
+use App\Http\Controllers\SingleMatchController;
+
+
+
+//Global
 use App\Http\Controllers\Global\GlobalHeroStatsController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
 use App\Http\Controllers\Global\GlobalLeaderboardController;
@@ -14,6 +21,10 @@ use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
 use App\Http\Controllers\Global\GlobalPartyStatsController;
 use App\Http\Controllers\Global\GlobalExtraStats;
+
+
+
+//Player
 use App\Http\Controllers\Player\PlayerController;
 use App\Http\Controllers\Player\FriendFoeController;
 use App\Http\Controllers\Player\PlayerHeroesController;
@@ -21,7 +32,7 @@ use App\Http\Controllers\Player\PlayerMatchupsController;
 use App\Http\Controllers\Player\PlayerHeroesMapsRolesController;
 
 
-
+//Profile
 use App\Http\Controllers\ProfileController;
 
 /*
@@ -116,5 +127,11 @@ Route::prefix('v1')->group(function () {
 
     Route::get('player/maps/single', [PlayerHeroesMapsRolesController::class, 'getData']); //testing
     Route::post('player/maps/single', [PlayerHeroesMapsRolesController::class, 'getData']);
+
+    Route::get('match/single', [SingleMatchController::class, 'getData']); //testing
+    Route::post('match/single', [SingleMatchController::class, 'getData']);
+
+    Route::get('profile/save/settings', [ProfileController::class, 'saveSettings']); //testing
+    Route::post('profile/save/settings', [ProfileController::class, 'saveSettings']);
 
 });

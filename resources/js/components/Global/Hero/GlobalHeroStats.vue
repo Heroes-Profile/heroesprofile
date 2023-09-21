@@ -28,7 +28,10 @@
 
     
     <div v-if="this.data.data">
-      <custom-button @click="toggleChartValue"  text="Toggle Chart" alt="Toggle Chart" size="small" :ignoreclick="true"></custom-button>
+      <div class="float-right mr-20">
+        <custom-button @click="toggleChartValue"  text="Toggle Chart" alt="Toggle Chart" size="small" :ignoreclick="true"></custom-button>
+      </div>
+
       <div v-if="togglechart">
         <bubble-chart :heroData="this.data.data"></bubble-chart>
       </div>
@@ -77,7 +80,7 @@
               Hero
             </th>
             <th @click="sortTable('win_rate')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Win Rate
+              Win Rate %
             </th>
             <th @click="sortTable('confidence_interval')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Win Rate Confidence
@@ -86,13 +89,13 @@
               Win Rate Change
             </th>
             <th @click="sortTable('popularity')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Popularity
+              Popularity %
             </th>
             <th @click="sortTable('pick_rate')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Pick Rate
+              Pick Rate %
             </th>   
             <th @click="sortTable('ban_rate')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Ban Rate
+              Ban Rate %
             </th>    
             <th @click="sortTable('influence')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Influence
@@ -110,7 +113,7 @@
         <tbody>
           <template v-for="(row, index) in sortedData">
             <tr>
-              <td class="py-2 px-3 border-b border-gray-200 flex items-center gap-1"><round-box-small :hero="row" :includehover="false"></round-box-small>{{ row.name }}</td>
+              <a :href="'/Global/Talents/' + row.name" ><td class="py-2 px-3 border-b border-gray-200 flex items-center gap-1"><hero-image-wrapper :hero="row" :includehover="false"></hero-image-wrapper>{{ row.name }}</td></a>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
               <td class="py-2 px-3 border-b border-gray-200"><span v-html="'&#177;'"></span>{{ row.confidence_interval }}</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate_change }}</td>
@@ -141,10 +144,12 @@
           </template>
         </tbody>
       </table>
+
     </div>
     </div>
     <div v-else>
-      <!--<loading-component></loading-component>-->
+      <loading-component v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+      <loading-component v-else></loading-component>
     </div>
   </div>
 </template>
@@ -171,7 +176,7 @@ export default {
       isLoading: false,
     	infoText: "Hero win rates based on differing increments, stat types, game type, or Rank. Click on a Hero to see detailed information. On the chart, bubble size is a combination of Win Rate, Pick Rate, and Ban Rate",
       sortKey: '',
-      sortDir: 'asc',
+      sortDir: 'desc',
       data: [],
       togglechart: false,
       toggletalentbuilds: {},
@@ -184,7 +189,7 @@ export default {
       timeframetype: null,
       timeframe: null,
       region: null,
-      statfilter: null,
+      statfilter: "win_rate",
       herolevel: null,
       role: null,
       hero: null,
@@ -193,7 +198,7 @@ export default {
       playerrank: null,
       herorank: null,
       rolerank: null,
-      mirrormatch: null,
+      mirrormatch: "Exclude",
       talentbuildtype: null,
       loadingStates: {},
     }
@@ -209,7 +214,7 @@ export default {
   },
   computed: {
     showStatTypeColumn(){
-      if(this.statfilter && this.statfilter != "win_rate" && !this.loading){
+      if(this.statfilter && this.statfilter != "win_rate" && !this.isLoading){
         return true;      
       }
       return false;
@@ -253,18 +258,15 @@ export default {
         });
 
         this.data = response.data;
-        this.isLoading = false;
         this.loadingStates = this.sortedData.map(() => false);
       }catch(error){
-        console.log(error)
+        //Do something here
       }
+      this.isLoading = false;
     },
     async getTalentBuildData(hero, index){
       try{
         this.loadingStates[hero] = true;
-
-
-        console.log(this.gametype);
         const response = await this.$axios.post("/api/v1/global/talents/build", {
           hero: hero,
           timeframe_type: this.timeframetype,
@@ -287,7 +289,7 @@ export default {
         this.loadingStates[hero] = false;
 
       }catch(error){
-        console.log(error);
+        //Do something here
       }
     },
     filterData(filteredData){
@@ -304,22 +306,19 @@ export default {
       this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : [];
       this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : [];
       this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "";
-      this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : "";
-
-
-
-
-      console.log(filteredData.multi["Game Type"]);
+      this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : "Popular";
 
       this.talentbuilddata = {};
       this.loadingStates = {};
-      //this.getData();
+      this.sortKey = '';
+      this.sortDir = 'desc';
+      this.getData();
     },
     sortTable(key) {
       if (key === this.sortKey) {
         this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
       } else {
-        this.sortDir = 'asc';
+        this.sortDir = 'desc';
       }
       this.sortKey = key;
     },
@@ -333,6 +332,12 @@ export default {
       }
       this.toggletalentbuilds[hero] = !this.toggletalentbuilds[hero];
     },
+    determineIfLargeData(){
+      if(this.timeframetype == "major" || this.timeframe.length >= 3 || this.statfilter != "win_rate"){
+        return  true;
+      }
+      return false;
+    }
   }
 }
 </script>

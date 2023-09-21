@@ -5,6 +5,7 @@
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
+      :isLoading="isLoading"
       :gametypedefault="gametypedefault"
       :defaultSeason="defaultseason"
       :includeleaderboardtype="true"
@@ -16,7 +17,12 @@
       :minimumseason="13"
       >
     </filters>
-    <custom-table :columns="columns" :data="data"></custom-table>
+    <div v-if="data">
+      <custom-table :columns="columns" :data="data"></custom-table>
+    </div>
+    <div v-else>
+      <loading-component></loading-component>
+    </div>
   </div>
 </template>
 
@@ -78,9 +84,8 @@ export default {
         });
 
         this.data = response.data;
-        console.log(response.data);
       }catch(error){
-        console.log(error);
+        //Do something here
       }
     },
 

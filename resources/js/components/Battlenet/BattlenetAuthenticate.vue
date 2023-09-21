@@ -60,10 +60,7 @@
           console.error('Invalid region selected');
           return;
         }
-
         Cookies.set('battlenet_region', regionInt.toString(), { sameSite: 'Lax', path: '/', expires: 90 });
-
-        console.log("Cookie set");
       }
     }
   }

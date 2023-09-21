@@ -9,6 +9,7 @@
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
+      :isLoading="isLoading"
       :gametypedefault="gametype"
       :minimumgamesdefault="'0'"
       :includehero="true"
@@ -20,16 +21,16 @@
       >
     </filters>
 
+
+
+    <div v-if="data">
     <div>
       <input type="text" v-model="searchQuery" placeholder="Search..." />
-
-     <div v-for="(stat, index) in filteredStats" :key="index" class="flex items-center">
+      <div v-for="(stat, index) in filteredStats" :key="index" class="flex items-center">
         <input type="checkbox" v-model="stat.selected" :disabled="isDisabled(stat)" @change="onCheckboxChange(stat)" />
         <label>{{ stat.name }}</label>
       </div>
     </div>
-
-    <div>
       <table class="min-w-full bg-white">
         <thead>
           <tr>
@@ -75,7 +76,9 @@
       </table>
 
     </div>
-
+    <div v-else>
+      <loading-component></loading-component>
+    </div>
 
   </div>
 </template>
@@ -100,7 +103,7 @@ export default {
       gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
       data: null,
       sortKey: '',
-      sortDir: 'asc',
+      sortDir: 'desc',
       role: null,
       hero: null,
       minimumgames: 0,
@@ -235,9 +238,8 @@ export default {
         });
 
         this.data = response.data;
-        console.log(this.data);
       }catch(error){
-        console.log(error);
+        //Do something here
       }
     },
     filterData(filteredData){
@@ -253,7 +255,7 @@ export default {
       if (key === this.sortKey) {
         this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
       } else {
-        this.sortDir = 'asc';
+        this.sortDir = 'desc';
       }
       this.sortKey = key;
     },

@@ -21,8 +21,8 @@
       <multi-select-filter v-if="includeplayerrank" :values="this.filters.rank_tiers" :text="'Player Rank'" @input-changed="handleInputChange"></multi-select-filter>
       <multi-select-filter v-if="includeherorank" :values="this.filters.rank_tiers" :text="'Hero Rank'" @input-changed="handleInputChange"></multi-select-filter>
       <multi-select-filter v-if="includerolerank" :values="this.filters.rank_tiers" :text="'Role Rank'" @input-changed="handleInputChange"></multi-select-filter>
-      <single-select-filter v-if="includemirror" :values="this.filters.mirror" :text="'Mirror Matches'" @input-changed="handleInputChange"></single-select-filter>
-      <single-select-filter v-if="includetalentbuildtype" :values="this.filters.talent_build_types" :text="'Talent Build Type'" @input-changed="handleInputChange"></single-select-filter>
+      <single-select-filter v-if="includemirror" :values="this.filters.mirror" :text="'Mirror Matches'" @input-changed="handleInputChange" :defaultValue="this.filters.mirror[0].code"></single-select-filter>
+      <single-select-filter v-if="includetalentbuildtype" :values="this.filters.talent_build_types" :text="'Talent Build Type'" @input-changed="handleInputChange" :defaultValue="this.filters.talent_build_types[0].code"></single-select-filter>
       <single-select-filter v-if="includeminimumgames" :values="this.filters.minimum_games" :text="'Minimum Games'" @input-changed="handleInputChange" :defaultValue="modifiedminimumgamedefault"></single-select-filter>
       <single-select-filter v-if="includeheropartysize" :values="this.filters.hero_party_size" :text="'Hero Party Size'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter v-if="includeteamoneparty" :values="this.filters.party_combinations" :text="'Team One Party'" @input-changed="handleInputChange"></single-select-filter>
@@ -50,6 +50,7 @@ export default {
   },
   props: {
     isLoading: Boolean,
+
     includeherorole: Boolean,
     includeleaderboardtype:Boolean,
     includegroupsize: Boolean,
@@ -78,6 +79,7 @@ export default {
     includeteamtwoparty: Boolean,
     includeminimumaccountlevel: Boolean,
     includexaxisincrements: Boolean,
+
     minimumseason: Number,
 
     filters: {
@@ -104,9 +106,13 @@ export default {
       modifiedincludexaxisincrements: null,
       modifiedincludegametype: null,
       modifiedminimumgamedefault: null,
+      modifiedincludeheroes: null,
     }
   },
   created(){    
+
+  },
+  mounted() {
     this.defaultGameType = this.gametypedefault;
 
     this.selectedSingleFilters = {
@@ -121,8 +127,13 @@ export default {
     this.modifiedincludeheroes = this.includehero;
 
     this.modifiedminimumgamedefault = this.minimumgamesdefault ? this.minimumgamesdefault : 0;
-  },
-  mounted() {
+
+        
+
+    this.selectedSingleFilters["Timeframe Type"] = this.defaultTimeframeType;
+    this.selectedMultiFilters["Game Type"] = this.gametypedefault;
+    this.selectedMultiFilters.Timeframes = this.defaultMinor;
+    this.selectedSingleFilters["Stat Filter"] = this.defaultStatType;
   },
   computed: {
     defaultMinor() {
@@ -175,10 +186,6 @@ export default {
         this.modifiedincludegametype = false;
         this.modifiedincludeheroes = false;
       }
-
-
-
-      console.log(this.selectedMultiFilters);
     },
     getDefaultMinorBasedOnTimeframeType() {
       if(this.defaultTimeframeType == "minor"){
@@ -193,10 +200,6 @@ export default {
         single: this.selectedSingleFilters,
         multi: this.selectedMultiFilters
       };
-
-      console.log(this.selectedMultiFilters);
-
-
       this.onFilter(allSelectedFilters);
     },
   }

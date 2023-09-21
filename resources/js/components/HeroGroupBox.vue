@@ -4,7 +4,7 @@
 
     <div class="border border-gray-300 p-4 flex flex-wrap gap-0">
       CHANGE THIS TO group-box
-      <round-box-small v-for="(item, index) in data" :key="index" :obj="item.hero" :hovertext="item.hovertext"></round-box-small>
+      <round-image v-for="(item, index) in data" :key="index" :obj="item.hero" :hovertext="item.hovertext"></round-image>
     </div>
   </div>
 </template>

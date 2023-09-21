@@ -1,11 +1,11 @@
 <template>
   <div>
-    <h1>Global Party Statistics</h1>
-    <infobox :input="infoText"></infobox>
+    <page-heading :infoText1="infoText" :heading="'Global Party Statistics'"></page-heading>
 
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
+      :isLoading="isLoading"
       :gametypedefault="gametypedefault"
       :includetimeframetype="true"
       :includetimeframe="true"
@@ -245,6 +245,9 @@
       </div>
 
     </div>
+    <div v-else>
+      <loading-component></loading-component>
+    </div>
   </div>
 </template>
 
@@ -325,7 +328,7 @@ export default {
         this.partydata = response.data;
         this.loading = false;
       }catch(error){
-        console.log(error)
+        //Do something here
       }
     },
    filterData(filteredData){

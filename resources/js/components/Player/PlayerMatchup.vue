@@ -5,6 +5,7 @@
     <filters 
     :onFilter="filterData" 
     :filters="filters" 
+    :isLoading="isLoading"
     :gametypedefault="gametype"
     :includehero="true"
     :includegamemap="true"
@@ -77,7 +78,7 @@
         gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
         data: [],
         sortKey: '',
-        sortDir: 'asc',
+        sortDir: 'desc',
         topfiveheroes: [],
         topfiveenemies: [],
       }
@@ -118,17 +119,15 @@
           this.data = response.data.tabledata;
           this.topfiveheroes = response.data.top_five_heroes;
           this.topfiveenemies = response.data.top_five_enemies;
-
-          console.log(response.data);
         }catch(error){
-          console.log(error);
+          //Do something here
         }
       },
       sortTable(key) {
         if (key === this.sortKey) {
           this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
         } else {
-          this.sortDir = 'asc';
+          this.sortDir = 'desc';
         }
         this.sortKey = key;
       },

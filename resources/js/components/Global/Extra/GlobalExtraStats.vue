@@ -1,12 +1,12 @@
 <template>
   <div>
-    <h1>Global Hero Statistics</h1>
-    <infobox :input="infoText"></infobox>
+    <page-heading :infoText1="infoText" :heading="'Global Hero Statistics'"></page-heading>
 
     Need to update some dynamic fields on this to make this fields required.  This page isnt fully complete but im bored of it
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
+      :isLoading="isLoading"
       :includecharttype="true"
       :includeregion="true"
       :includeminimumaccountlevel="true"
@@ -16,6 +16,9 @@
     <div v-if="data">
       Got Data
       <bar-chart :data="data"></bar-chart>
+    </div>
+    <div v-else>
+      <loading-component></loading-component>
     </div>
   </div>
 </template>
@@ -68,7 +71,7 @@ export default {
         this.data = response.data;
         this.loading = false;
       }catch(error){
-        console.log(error)
+        //Do something here
       }
     },
 
@@ -85,7 +88,7 @@ export default {
         this.data = response.data;
         this.loading = false;
       }catch(error){
-        console.log(error)
+        //Do something here
       }
     },
 

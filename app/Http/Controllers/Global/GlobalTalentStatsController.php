@@ -44,10 +44,11 @@ class GlobalTalentStatsController extends Controller
             ->with([
                 'userinput' => $userinput,
                 'filters' => $this->globalDataService->getFilterData(),
-                'gametypedefault' => [$this->globalDataService->getGameTypeDefault()],
+                'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
                 'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
+                'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
             ]);
     }
 
@@ -273,6 +274,7 @@ class GlobalTalentStatsController extends Controller
 
 
             // Add win rate to the item
+            $item['games_played'] = $gamesPlayed;
             $item['win_rate'] = round($winRate * 100, 2);
             $item['hero'] = $heroData[$item['hero']];
             $item['level_one'] = $talentData[$item['level_one']];
@@ -330,7 +332,7 @@ class GlobalTalentStatsController extends Controller
             ->whereNot("level_twenty", 0)
             ->groupBy('heroesprofile.global_hero_talents.hero', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
             ->orderBy('games_played', 'DESC')
-            ->limit($this->buildsToReturn)
+            ->limit(100)
             //->toSql();
             ->get();
         $uniqueRows = collect();

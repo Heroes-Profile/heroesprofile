@@ -20,8 +20,8 @@
               <a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row[column.value] }}</a>
             </div>
             <div v-else-if="column.value === 'most_played_hero'">
-              <div class="flex gap-x-2 items-center">
-                <round-box-small :hero="row.most_played_hero"></round-box-small>
+              <div  v-if="row.most_played_hero" class="flex gap-x-2 items-center">
+                <hero-image-wrapper :hero="row.most_played_hero"></hero-image-wrapper>
                 {{ row.hero_build_games_played }}
               </div>
             </div>
@@ -47,7 +47,7 @@ export default {
   data(){
     return {
       sortKey: '',
-      sortDir: 'asc',
+      sortDir: 'desc',
 
     }
   },
@@ -76,7 +76,7 @@ export default {
       if (key === this.sortKey) {
         this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
       } else {
-        this.sortDir = 'asc';
+        this.sortDir = 'desc';
       }
       this.sortKey = key;
     },

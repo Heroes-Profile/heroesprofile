@@ -10,6 +10,7 @@ use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\GamedataController;
 use App\Http\Controllers\CompareController;
+use App\Http\Controllers\SingleMatchController;
 
 use App\Http\Controllers\Global\GlobalHeroStatsController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
@@ -44,6 +45,13 @@ use App\Http\Controllers\Player\PlayerMapsController;
 */
 
 ///The way we are defining url paths to be consistent with the current site, the order of these routes cannot change.
+
+
+Route::fallback(function () {
+    return view('errors.404');
+});
+
+
 
 Route::get('/', [MainPageController::class, 'show']);
 Route::get('/battletag/searched/{userinput}/{type}', [BattletagSearchController::class, 'show']);
@@ -115,6 +123,21 @@ Route::get('Player/{battletag}/{blizz_id}/{region}/Role', [PlayerRolesController
 Route::get('Player/{battletag}/{blizz_id}/{region}/Role/{role}', [PlayerRolesController::class, 'showSingle']);
 Route::get('Player/{battletag}/{blizz_id}/{region}/Map', [PlayerMapsController::class, 'showAll']);
 Route::get('Player/{battletag}/{blizz_id}/{region}/Map/{map}', [PlayerMapsController::class, 'showSingle']);
+
+
+
+Route::get('Match/Single/{replayID}', [SingleMatchController::class, 'show']);
+Route::get('/Match/Single/', function (\Illuminate\Http\Request $request) {
+    $replayID = $request->query('replayID');
+    
+    if ($replayID) {
+        return redirect("/Match/Single/$replayID");
+    }
+    return redirect("/");
+});
+
+
+
 
 //Rewrite game data later
 Route::get('/Gamedata', [GamedataController::class, 'heroes']);

@@ -3,11 +3,15 @@
     <div v-for="level in talentlevels">
       <table class="min-w-full bg-white">
         <thead>
-          <tr colspan="4">Level {{ level }}</tr>
+          <tr>
+            <th :colspan="statfilter ? 5 : 4" class="text-center py-2 px-3 border-b border-gray-200">
+              Level {{ level }}
+            </th>
+          </tr>
         </thead>
         <thead>
           <tr>
-            <th @click="sortTable('talent_name', level)" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('sort', level)" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Talent
             </th>
             <th @click="sortTable('win_rate', level)" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -19,18 +23,23 @@
             <th @click="sortTable('games_played', level)" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games Played
             </th>     
-            <th v-if="statfilter" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th v-if="statfilter && statfilter != 'win_rate'" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Avg {{ statfilter.charAt(0).toUpperCase() + statfilter.slice(1) }}
             </th>                            
           </tr>
         </thead>
         <tbody>
           <tr v-for="row in talentdetaildata[level]" :key="row.talentInfo.talent_id">
-            <td class="py-2 px-3 border-b border-gray-200"><talent-box :talent="row.talentInfo"></talent-box>{{ row.talentInfo.talent_name }}</td>
+            <td class="py-2 px-3 border-b border-gray-200">
+              <div class="flex items-center">
+                <talent-image-wrapper :talent="row.talentInfo"></talent-image-wrapper>
+                <span class="ml-left px-3">{{ row.talentInfo.title }}</span>
+              </div>
+            </td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.popularity }}</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.games_played }}</td>
-            <td v-if="statfilter" class="py-2 px-3 border-b border-gray-200">{{ row.total_filter_type }}</td>
+            <td v-if="statfilter && statfilter != 'win_rate'" class="py-2 px-3 border-b border-gray-200">{{ row.total_filter_type }}</td>
           </tr>
         </tbody>
       </table>
@@ -46,6 +55,7 @@ export default {
   props: {
     talentdetaildata: Object,
     statfilter: String,
+    talentimages: Array,
   },
   data(){
     return {

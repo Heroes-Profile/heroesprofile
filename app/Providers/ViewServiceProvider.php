@@ -48,9 +48,6 @@ class ViewServiceProvider extends ServiceProvider
                 $main_search_account["battletag"] = explode('#', $user["battletag"])[0];
                 $main_search_account["blizz_id"] = $user["blizz_id"];
                 $main_search_account["region"] = $user["region"];
-
-
-
             }
             $view->with('main_search_account', $main_search_account);
             $view->with('alt_search_account1', $alt_search_account1);
