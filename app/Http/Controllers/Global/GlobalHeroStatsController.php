@@ -45,7 +45,9 @@ class GlobalHeroStatsController extends Controller
         ]);
     }
 
-    public function getGlobalHeroData(Request $request){        
+    public function getGlobalHeroData(Request $request){    
+        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+    
         //return response()->json($request->all());
 
         $gameVersion = null;
@@ -71,10 +73,6 @@ class GlobalHeroStatsController extends Controller
         $statFilter = (new StatFilterInputValidation())->passes('statfilter', $request["statfilter"]);
         $hero = (new HeroInputByIDValidation())->passes('statfilter', $request["hero"]);
         $role = (new RoleInputValidation())->passes('role', $request["role"]);
-
-
-  
-
 
 
         $cacheKey = "GlobalHeroStats|" . implode('|', [

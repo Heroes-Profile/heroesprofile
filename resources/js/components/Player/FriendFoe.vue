@@ -5,6 +5,7 @@
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
+      :isLoading="isLoading"
       :gametypedefault="gametypedefault"
       :includehero="true"
       :includegamemap="true"
@@ -109,10 +110,10 @@ export default {
       frienddata: null,
       enemydata: null,
       friendSortKey: '',
-      friendSortDir: 'asc',
+      friendSortDir: 'desc',
 
       enemySortKey: '',
-      enemySortDir: 'asc',
+      enemySortDir: 'desc',
 
       gametype: null,
       gamemap: null,
@@ -187,7 +188,7 @@ export default {
         
         return response.data;
       }catch(error){
-        console.log(error);
+        //Do something here
       }
     },
     filterData(filteredData){
@@ -195,11 +196,6 @@ export default {
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametypedefault;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : [];
       this.season = filteredData.single["Season"] ? filteredData.single["Season"] : "";
-
-      console.log(this.hero);
-      console.log(this.gametype);
-      console.log(this.gamemap);
-      console.log(this.season);
 
       this.frienddata = null;
       this.enemydata = null;
@@ -224,7 +220,7 @@ export default {
       if (key === this.friendSortKey) {
         this.friendSortDir = this.friendSortDir === 'asc' ? 'desc' : 'asc';
       } else {
-        this.friendSortDir = 'asc';
+        this.friendSortDir = 'desc';
       }
       this.friendSortKey = key;
     },
@@ -232,7 +228,7 @@ export default {
       if (key === this.enemySortKey) {
         this.enemySortDir = this.enemySortDir === 'asc' ? 'desc' : 'asc';
       } else {
-        this.enemySortDir = 'asc';
+        this.enemySortDir = 'desc';
       }
       this.enemySortKey = key;
     },

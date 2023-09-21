@@ -6,6 +6,7 @@
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
+      :isLoading="isLoading"
       :includecharttype="true"
       :includeregion="true"
       :includeminimumaccountlevel="true"
@@ -70,7 +71,7 @@ export default {
         this.data = response.data;
         this.loading = false;
       }catch(error){
-        console.log(error)
+        //Do something here
       }
     },
 
@@ -87,7 +88,7 @@ export default {
         this.data = response.data;
         this.loading = false;
       }catch(error){
-        console.log(error)
+        //Do something here
       }
     },
 

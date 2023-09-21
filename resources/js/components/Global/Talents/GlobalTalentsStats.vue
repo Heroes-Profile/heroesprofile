@@ -14,6 +14,7 @@
           <filters 
           :onFilter="filterData" 
           :filters="filters" 
+          :isLoading="isLoading"
           :gametypedefault="gametypedefault"
           :includetimeframetype="true"
           :includetimeframe="true"
@@ -33,29 +34,23 @@
           <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
         </div>
         <div v-else>
-          <loading-component></loading-component>
+          <loading-component v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+          <loading-component v-else></loading-component>
         </div>
 
 
         <div  v-if="talentbuilddata" class="container mx-auto px-4">
 
-          <single-select-filter :values="buildtypes" :text="'Talent Build Type'" :defaultValue="'Popular'" @input-changed="buildtypechange"></single-select-filter>
+          <single-select-filter :values="buildtypes" :text="'Talent Build Type'" :defaultValue="this.talentbuildtype" @input-changed="buildtypechange"></single-select-filter>
           {{ this.selectedHero.name }} {{ "Talent Builds"}}
           <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
         </div>
         <div v-else>
-          <loading-component></loading-component>
+          <loading-component v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+          <loading-component v-else></loading-component>
         </div>
-
       </div>
-   
-
   </div>
-
-
-
-
-
 </div>
 </template>
 
@@ -76,6 +71,7 @@
     },
     data(){
       return {
+       isLoading: false,
        infoText: "Talent win rates and Talent Builds based on patches, hero, hero level, game type, game map, or Rank.",
        selectedHero: null,
        talentdetaildata: null,
@@ -96,7 +92,7 @@
        timeframetype: null,
        timeframe: null,
        region: null,
-       statfilter: null,
+       statfilter: "win_rate",
        herolevel: null,
        role: null,
        hero: null,
@@ -105,8 +101,8 @@
        playerrank: null,
        herorank: null,
        rolerank: null,
-       mirrormatch: null,
-       talentbuildtype: null,
+       mirrormatch: "Exclude",
+       talentbuildtype: "Popular",
      }
    },
    created(){
@@ -140,7 +136,6 @@
 
         let currentPath = window.location.pathname;
         history.pushState(null, null, `${currentPath}/${this.selectedHero.name}`);
-
         Promise.allSettled([
           this.getTalentData(),
           this.getTalentBuildData(),
@@ -149,6 +144,7 @@
       },
       async getTalentData(){
         try{
+          this.isLoading = true;
           const response = await this.$axios.post("/api/v1/global/talents", {
             hero: this.selectedHero.name,
             timeframe_type: this.timeframetype,
@@ -164,14 +160,15 @@
             mirrormatch: this.mirrormatch,
             talentbuildtype: this.talentbuildtype
           });
-
           this.talentdetaildata = response.data;
         }catch(error){
-      //console.log(error);
+          //Do something here
         }
+        this.isLoading = false;
       },
       async getTalentBuildData(){
         try{
+          this.isLoading = true;
           const response = await this.$axios.post("/api/v1/global/talents/build", {
             hero: this.selectedHero.name,
             timeframe_type: this.timeframetype,
@@ -187,11 +184,11 @@
             mirrormatch: this.mirrormatch,
             talentbuildtype: this.talentbuildtype
           });
-
           this.talentbuilddata = response.data;
         }catch(error){
-      //console.log(error);
+          //Do something here
         }
+        this.isLoading = false;
       },
       filterData(filteredData){
         this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
@@ -204,14 +201,18 @@
         this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : [];
         this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : [];
         this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : [];
-        this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "";
+        this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "Exclude";
         this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : this.defaultbuildtype;
+
+        this.talentdetaildata = null;
+        this.talentbuilddata  = null;
 
         this.getTalentData();
         this.getTalentBuildData();
       },
       buildtypechange(eventPayload){
         this.talentbuildtype = eventPayload.value;
+        this.talentbuilddata  = null;
         this.getTalentBuildData();
       },
       preloadTalentImages(hero) {
@@ -223,7 +224,12 @@
         }
  
       },
-     
+      determineIfLargeData(){
+        if(this.timeframetype == "major" || this.timeframe.length >= 3 || this.statfilter != "win_rate"){
+          return  true;
+        }
+        return false;
+      },
     }
   }
 </script>

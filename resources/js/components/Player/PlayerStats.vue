@@ -26,7 +26,6 @@
           </div>
           <div>
             <hero-image-wrapper :rectangle="true" :hero-image="'autoselect3'" :title="'Auto Select'"></hero-image-wrapper>
-
           </div>
 
           <div class="flex-1 flex flex-wrap ">
@@ -197,10 +196,9 @@ export default {
           game_type: "all",
           season: "all",
         });
-        this.data = response.data; 
-        console.log(this.data);
+        this.data = response.data;
       }catch(error){
-        console.log(error);
+        //Do something here
       }
     },
     handleInputChange(eventPayload) {

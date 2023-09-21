@@ -68,7 +68,6 @@ export default {
       this.$emit('onDataReturn', { type, result, index });
     },
     handleDataReturn(payload){
-      console.log(payload);
       //this.$emit('onDataReturn', { 'player', payload, index });
 
     },

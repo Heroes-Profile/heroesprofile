@@ -35,21 +35,10 @@
     }
 
     ]" >
-      <div  :class="['popup-text block  bg-gray-dark  text-s p-1    text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-50 ',
-      
-      {
-        
-       
-      }
-      ]
-    ">{{ title }}</div>
-    <!--- Need to somehow pass in the extra talent info and display it correctly 
-     <div v-if="showTooltip" class="absolute hidden bottom-11 -left-24  bg-gray-dark  text-xs p-1  group-hover:block  text-white z-50 drop-shadow-md w-60 rounded-md px-2 text-center">
-      <h2>{{ talent.title }}</h2>
-      <p>{{ this.removeNumbers(talent.hotkey) }}</p>
-      <p>{{ talent.description }}</p>
-    </div>
-    -->
+      <div v-if="!hovertextstyleoverride" :class="['popup-text block  bg-gray-dark  text-s p-1    text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-50 ', {}]">{{ title }}</div>
+
+      <slot v-if="hovertextstyleoverride"></slot>
+
     <div class="popup-arrow"></div>
     </div>
 
@@ -67,6 +56,7 @@ export default {
     tooltiptext: String,
     image: String,
     size: String,
+    hovertextstyleoverride: Boolean,
   },
   data(){
     return {
@@ -76,7 +66,6 @@ export default {
   created(){
   },
   mounted() {
-    //console.log(this.title)
   },
   computed: {
   },

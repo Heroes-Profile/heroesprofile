@@ -5,6 +5,7 @@
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
+      :isLoading="isLoading"
       :gametypedefault="gametypedefault"
       :defaultSeason="defaultseason"
       :includeleaderboardtype="true"
@@ -83,9 +84,8 @@ export default {
         });
 
         this.data = response.data;
-        console.log(response.data);
       }catch(error){
-        console.log(error);
+        //Do something here
       }
     },
 

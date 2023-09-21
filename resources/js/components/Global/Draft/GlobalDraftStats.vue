@@ -15,6 +15,7 @@
         <filters 
         :onFilter="filterData" 
         :filters="filters" 
+        :isLoading="isLoading"
         :gametypedefault="gametypedefault"
         :includetimeframetype="true"
         :includetimeframe="true"
@@ -117,8 +118,6 @@
       if(this.selectedHero){
         this.getData();
       }
-
-      console.log(this.selectedHero);
     },
     mounted() {
     },
@@ -144,7 +143,7 @@
 
           this.draftdata = response.data;
         }catch(error){
-        //console.log(error);
+          //Do something here
         }
       },
       clickedHero(hero){
@@ -154,7 +153,6 @@
         this.getData();
       },
       herochanged(eventPayload){
-        console.log(eventPayload.value)
       },
       filterData(filteredData){
         this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;

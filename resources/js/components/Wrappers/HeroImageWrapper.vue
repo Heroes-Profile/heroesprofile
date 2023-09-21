@@ -1,9 +1,12 @@
 <template>
   <div>
-    <round-image v-if="!rectangle" :size="size" :title="hero.name" :image="getHeroImage()" :tooltiptex="getToolTip()"></round-image>
-    <div v-if="rectangle">
-      <!-- I am putting this here for now -->
-      <img :src="getHeroImageRectangle()" :alt="title" >
+    <round-image v-if="!rectangle && hovertextstyleoverride" :size="size" :title="hero.name" :image="getHeroImage()" :tooltiptex="getToolTip()" :hovertextstyleoverride="hovertextstyleoverride">
+      <slot>
+      </slot>
+    </round-image>
+    <round-image v-else-if="!rectangle" :size="size" :title="hero.name" :image="getHeroImage()" :tooltiptex="getToolTip()"></round-image>
+    <div v-else>
+      <img :src="getHeroImageRectangle()" :alt="hero.name" >
     </div>
   </div>
 </template>
@@ -19,6 +22,7 @@ export default {
     includehover: Boolean,
     rectangle: Boolean,
     heroImage: String,
+    hovertextstyleoverride: Boolean,
   },
   data(){
     return {
@@ -29,7 +33,6 @@ export default {
   mounted() {   
   },
   computed: {
-
   },
   watch: {
   },
@@ -38,17 +41,9 @@ export default {
       return `/images/heroes/${this.hero.short_name}.png`;
     },
     getHeroImageRectangle(){
-      return `/images/heroes_rectangle/${this.heroImage}.jpg`;
+      return `/images/heroes_rectangle/${this.hero.short_name}.jpg`;
     },
     getToolTip(){
-      /*
-        Need to style the tool tips with this info
-
-        this.hero.name
-        this.hero.win_rate
-        this.hero.games_played
-
-      */
       return this.hero.name;
     },
   }

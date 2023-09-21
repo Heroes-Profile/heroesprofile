@@ -47,7 +47,7 @@ export default {
   data(){
     return {
       sortKey: '',
-      sortDir: 'asc',
+      sortDir: 'desc',
 
     }
   },
@@ -76,7 +76,7 @@ export default {
       if (key === this.sortKey) {
         this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
       } else {
-        this.sortDir = 'asc';
+        this.sortDir = 'desc';
       }
       this.sortKey = key;
     },

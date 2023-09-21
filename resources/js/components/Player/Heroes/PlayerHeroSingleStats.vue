@@ -144,7 +144,7 @@ export default {
 
         this.data = response.data[0];
       }catch(error){
-        console.log(error);
+        //Do something here
       }
     },
     getRegionName(regionID){

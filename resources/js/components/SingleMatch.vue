@@ -229,7 +229,6 @@ export default {
   },
   watch: {
     combinedPlayers(){
-      console.log(this.combinedPlayers);
     }
   },
   methods: {
@@ -241,7 +240,7 @@ export default {
         this.data = response.data; 
         this.combinePlayerArrays();
       }catch(error){
-        console.log(error);
+        //Do something here
       }
     },
     getAverageValue(type, data) {
@@ -271,8 +270,6 @@ export default {
     },
     combinePlayerArrays(){
       this.combinedPlayers = [...this.data.players[0], ...this.data.players[1]];
-
-      console.log(this.combinedPlayers);
     },
     getCopyBuildToGame(level_one, level_four, level_seven, level_ten, level_thirteen, level_sixteen, level_twenty, hero) {
       return "[T" + 
@@ -288,9 +285,9 @@ export default {
     copyToClipboard(item) {
       const textToCopy = this.getCopyBuildToGame(item.talents.level_one, item.talents.level_four, item.talents.level_seven, item.talents.level_ten, item.talents.level_thirteen, item.talents.level_sixteen, item.talents.level_twenty, item.hero);
       navigator.clipboard.writeText(textToCopy).then(function() {
-        console.log('Text successfully copied to clipboard');
+        
       }).catch(function(err) {
-        console.error('Unable to copy text to clipboard', err);
+        
       });
     }
   }

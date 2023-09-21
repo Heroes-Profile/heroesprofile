@@ -7,6 +7,13 @@
           <a v-if="item.blizz_id" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name">
             <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
           </a>
+
+          <hero-image-wrapper v-if="type == 'Matchups'" :size="'big'" :hero="item.hero" :hovertextstyleoverride="true">
+            <div class="absolute hidden bottom-11 -left-24  bg-gray-dark  text-xs p-1  group-hover:block  text-white z-50 drop-shadow-md w-60 rounded-md px-2 text-center">
+              <h2>{{ item.hero.name }}</h2>
+              <p>{{ item.hovertext }}</p>
+            </div>
+          </hero-image-wrapper>
           <hero-image-wrapper v-else :size="'big'" :hero="item.hero"></hero-image-wrapper>
         </div>
 
@@ -32,6 +39,7 @@
       text: String,
       data: Array,
       playerlink: Boolean,
+      type: String,
     },
     data(){
       return {

@@ -9,6 +9,7 @@
     <filters 
     :onFilter="filterData" 
     :filters="filters" 
+    :isLoading="isLoading"
     :gametypedefault="gametype"
     :minimumgamesdefault="'0'"
     :includehero="true"
@@ -103,7 +104,7 @@
         gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
         data: null,
         sortKey: '',
-        sortDir: 'asc',
+        sortDir: 'desc',
         role: null,
         hero: null,
         minimumgames: 0,
@@ -238,9 +239,8 @@ methods: {
       });
 
       this.data = response.data;
-      console.log(this.data);
     }catch(error){
-      console.log(error);
+      //Do something here
     }
   },
   filterData(filteredData){
@@ -257,7 +257,7 @@ methods: {
     if (key === this.sortKey) {
       this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
     } else {
-      this.sortDir = 'asc';
+      this.sortDir = 'desc';
     }
     this.sortKey = key;
   },
