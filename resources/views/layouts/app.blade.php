@@ -28,12 +28,16 @@
       @yield('content')
     </main>
 
-    <div class="footer-wrapper">
-      <div class="footer container-boxed">
-        <div class="container container-flex">
+    <div class="footer-wrapper text-center mx-auto bg-lighten border-t-4 border-teal">
+      <div class="footer container-boxed py-10">
+        <div class="container container-flex mx-auto">
 
-          <div class="logo">
-            <img alt="Heroes Profile Logo" src=""/>
+          <div class="logo ">
+            <a class="text-blue-600 hover:text-blue-800 flex justify-center items-center font-logo text-2xl py-5 mx-auto text-center" href="/">
+            Heroes
+            <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
+            Profile
+        </a>
           </div>
 
           <div class="content ">
