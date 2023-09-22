@@ -41,6 +41,7 @@ export default {
   },
   data(){
     return {
+      isLoading: false,
       infoText1: "Leaderboards are a reflection of user uploaded data. Due to replay file corruption or other issues, the data is not always reflective of real player stats. Please keep that in mind when reviewing leaderboards.",
       infoText2: " Only users who upload replays through an approved automatic uploader will be able to rank on the leaderboards. The main uploader can be found at Heroes Profile Uploader while the secondary uploader that works on platforms other than windows can be found at Heroes Profile Electron Uploader. For any questions, please contact zemill@heroesprofile.com ",
       columns: [
@@ -75,6 +76,7 @@ export default {
   },
   methods: {
     async getData(){
+      this.isLoading = true;
       try{
         const response = await this.$axios.post("/api/v1/global/leaderboard", {
           season: this.season, 
@@ -87,6 +89,7 @@ export default {
       }catch(error){
         //Do something here
       }
+      this.isLoading = false;
     },
 
     filterData(filteredData){

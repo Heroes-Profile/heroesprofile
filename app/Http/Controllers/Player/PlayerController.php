@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Player;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,6 +21,8 @@ use App\Models\MasterMMRDataHL;
 use App\Models\MasterMMRDataTL;
 use App\Models\MasterMMRDataSL;
 use App\Models\MasterMMRDataAR;
+
+use App\Models\BattlenetAccount;
 
 class PlayerController extends Controller
 {
@@ -51,8 +52,19 @@ class PlayerController extends Controller
         if ($validator->fails()) {
             return redirect('/');
         }
+        $heroUserSettings = null;
+        $checkedUser = BattlenetAccount::where("battletag", "like", $battletag . "%")
+            ->where("blizz_id", $blizz_id)
+            ->where("region", $region)
+            ->first();
+
+        if ($checkedUser) {
+            $heroUserSettings = $checkedUser->userSettings->where('setting', 'hero')->first();
+            $heroUserSettings = $this->globalDataService->getHeroesByID()[$heroUserSettings["value"]];
+        }
 
         return view('Player.player')->with([
+                'settingHero' => $heroUserSettings,
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
                 'region' => $region,
@@ -476,6 +488,7 @@ class PlayerController extends Controller
                 $item['blizz_id'] = $blizz_id;
                 $item['region'] = $region;
                 $item['battletag'] = $battletag;
+                $item['hovertext'] = $item['win_rate'] . "% win rate over " . $item['games_played'] . " games";
 
                 return $item;
             })->sortByDesc('win_rate')->take(3)->values()->all();
@@ -500,7 +513,7 @@ class PlayerController extends Controller
             $item['blizz_id'] = $blizz_id;
             $item['region'] = $region;
             $item['battletag'] = $battletag;
-
+            $item['hovertext'] = $item['win_rate'] . "% win rate over " . $item['games_played'] . " games";
             return $item;
         })->sortByDesc('games_played')->take(3)->values()->all();
 
@@ -518,6 +531,7 @@ class PlayerController extends Controller
             $item['blizz_id'] = $blizz_id;
             $item['region'] = $region;
             $item['battletag'] = $battletag;
+            $item['hovertext'] = $item['win_rate'] . "% win rate over " . $item['games_played'] . " games";
 
             return $item;
         })->sortByDesc('game_date')->take(3)->values()->all();
@@ -583,6 +597,7 @@ class PlayerController extends Controller
                 $item['blizz_id'] = $blizz_id;
                 $item['region'] = $region;
                 $item['battletag'] = $battletag;
+                $item['hovertext'] = $item['win_rate'] . "% win rate over " . $item['games_played'] . " games";
 
                 return $item;
             })->sortByDesc('win_rate')->take(3)->values()->all();
@@ -608,6 +623,7 @@ class PlayerController extends Controller
             $item['blizz_id'] = $blizz_id;
             $item['region'] = $region;
             $item['battletag'] = $battletag;
+            $item['hovertext'] = $item['win_rate'] . "% win rate over " . $item['games_played'] . " games";
 
             return $item;
         })->sortByDesc('games_played')->take(3)->values()->all();
@@ -627,6 +643,7 @@ class PlayerController extends Controller
             $item['blizz_id'] = $blizz_id;
             $item['region'] = $region;
             $item['battletag'] = $battletag;
+            $item['hovertext'] = $item['win_rate'] . "% win rate over " . $item['games_played'] . " games";
 
             return $item;
         })->sortByDesc('game_date')->take(3)->values()->all();

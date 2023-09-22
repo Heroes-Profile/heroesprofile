@@ -175,6 +175,13 @@ class GlobalDataService
         return session('heroes');
     }
 
+    public function getHeroesByID(){
+        $heroData = $this->getHeroes();
+        $heroData = $heroData->keyBy('id');
+
+        return $heroData;
+    }
+
     public function getHeroModel($heroName){
         if (!session()->has('heroes')) {
             session(['heroes' => Hero::all()]);

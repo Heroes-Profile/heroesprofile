@@ -92,8 +92,6 @@ class GlobalCompositionsController extends Controller
             'minimumGames=' . $minimumGames,
         ]);
 
-        //return $cacheKey;
-
         $data = Cache::store("database")->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion, 
                                                                                                                                  $gameType, 
                                                                                                                                  $leagueTier, 
@@ -127,7 +125,7 @@ class GlobalCompositionsController extends Controller
             $roleData = MMRTypeID::all();
             $roleData = $roleData->keyBy('mmr_type_id');
 
-            $totalGamesPlayed = collect($data)->sum('games_played');
+            $totalGamesPlayed = (collect($data)->sum('games_played') / 5);
 
 
             $filteredData = collect($data)
@@ -135,11 +133,11 @@ class GlobalCompositionsController extends Controller
                 ->map(function ($group) use ($totalGamesPlayed, $minimumGames, $roleData){
                     $wins = $group->where('win_loss', 1)->sum('games_played');
                     $losses = $group->where('win_loss', 0)->sum('games_played');
-                    $gamesPlayed = $wins + $losses;
+                    $gamesPlayed = ($wins + $losses) / 5;
 
                     $winRate = 0;
                     if ($gamesPlayed > 0) {
-                        $winRate = ($wins / $gamesPlayed) * 100;
+                        $winRate = (($wins / 5) / $gamesPlayed) * 100;
                     }
 
                     $popularity = round(($gamesPlayed / $totalGamesPlayed) * 100, 2);
@@ -154,8 +152,8 @@ class GlobalCompositionsController extends Controller
 
                     return [
                         'composition_id' => $group->first()['composition_id'],
-                        'wins' => $wins,
-                        'losses' => $losses,
+                        'wins' => $wins / 5,
+                        'losses' => $losses / 5,
                         'win_rate' => round($winRate, 2),
                         'games_played' => $gamesPlayed,
                         'popularity' => $popularity,

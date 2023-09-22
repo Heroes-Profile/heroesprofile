@@ -92,6 +92,7 @@
     },
     data(){
       return {
+        isLoading: null,
         infoText1: "Storm League Hero pick rates, ban rates, and pick order rate.",
         infoText2: "Teams win, losses, and win rate are based on where they pick a hero in the draft. So if a team bans Abathur at the first position of the draft, we are showing those teams wins and losses and win rates as well as when teams actually pick Abathur.",
         selectedHero: null,
@@ -127,6 +128,7 @@
     },
     methods: {
       async getData(){
+        this.isLoading = true;
         try{
           const response = await this.$axios.post("/api/v1/global/draft", {
             hero: this.selectedHero.name,
@@ -145,6 +147,7 @@
         }catch(error){
           //Do something here
         }
+        this.isLoading = false;
       },
       clickedHero(hero){
         this.selectedHero = hero;
@@ -163,6 +166,8 @@
         this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : [];
         this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : [];
         this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : [];
+
+        this.draftdata = null;
         this.getData();
       },
       determinePickOrBan(pick_number) {

@@ -74,8 +74,10 @@ class GlobalHeromatchupsEnemy extends Model
 
   public function scopeExcludeMirror($query, $mirror)
   {
-    if($mirror != 0){
+    if($mirror == 1){
       $query->whereIn('mirror', [0,1]);
+    }else{
+      $query->where('mirror', 0);
     }
     return $query;
   }
