@@ -70,6 +70,7 @@
                 <custom-button :href="'https://www.patreon.com/heroesprofile'" :targetblank="true" :text="'Patreon'" :alt="'Patreon'"  :size="'small'" :color="'red'"></custom-button>
             </div>
 
+
             @if($isAuthenticated)
                 <div class="relative group inline-block">
                     <div class="flex items-center cursor-pointer mr-5">

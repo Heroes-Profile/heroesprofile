@@ -267,7 +267,7 @@ export default {
   },
   data(){
     return {
-      loading: false,
+      isLoading: false,
       infoText: "Party win rates based on differing increments, stat types, game type, rank, and more. The hero filter allows you to see party data for games that only contained that hero. You can further sub-filter by looking at which party stack size hero was a part of by changing the Hero Party Size filter",
       partydata: null,
 
@@ -303,9 +303,9 @@ export default {
   watch: {
   },
   methods: {
-        async getData(){
+    async getData(){
+      this.isLoading = true;
       try{
-        this.loading = true;
         this.data = [];
 
         const response = await this.$axios.post("/api/v1/global/party", {
@@ -326,10 +326,10 @@ export default {
         });
 
         this.partydata = response.data;
-        this.loading = false;
       }catch(error){
         //Do something here
       }
+      this.isLoading = false;
     },
    filterData(filteredData){
       this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
@@ -346,6 +346,8 @@ export default {
       this.heropartysize = filteredData.single["Hero Party Size"] ? filteredData.single["Hero Party Size"] : "";
       this.teamoneparty = filteredData.single["Team One Party"] ? filteredData.single["Team One Party"] : "";
       this.teamtwoparty = filteredData.single["Team Two Party"] ? filteredData.single["Team Two Party"] : "";
+      
+      this.partydata = null;
       this.getData();
     },
     getStackName(ally_combo, enemy_combo){

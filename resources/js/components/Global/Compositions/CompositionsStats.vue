@@ -81,19 +81,19 @@
                   <tbody>
                     <div v-for="index in range">
                       <td>
-                        <round-image :hero="getHeroData(1, row, row.compositionheroes[row.role_one.name], index)"></round-image>
+                        <hero-image-wrapper :hero="getHeroData(1, row, row.compositionheroes[row.role_one.name], index)"></hero-image-wrapper>
                       </td>
                       <td>
-                        <round-image :hero="getHeroData(2, row, row.compositionheroes[row.role_two.name], index)"></round-image>
+                        <hero-image-wrapper :hero="getHeroData(2, row, row.compositionheroes[row.role_two.name], index)"></hero-image-wrapper>
                       </td>
                       <td>
-                        <round-image :hero="getHeroData(3, row, row.compositionheroes[row.role_three.name], index)"></round-image>
+                        <hero-image-wrapper :hero="getHeroData(3, row, row.compositionheroes[row.role_three.name], index)"></hero-image-wrapper>
                       </td>
                       <td>
-                        <round-image :hero="getHeroData(4, row, row.compositionheroes[row.role_four.name], index)"></round-image>
+                        <hero-image-wrapper :hero="getHeroData(4, row, row.compositionheroes[row.role_four.name], index)"></hero-image-wrapper>
                       </td>
                       <td>
-                        <round-image :hero="getHeroData(5, row, row.compositionheroes[row.role_five.name], index)"></round-image>
+                        <hero-image-wrapper :hero="getHeroData(5, row, row.compositionheroes[row.role_five.name], index)"></hero-image-wrapper>
                       </td>
                     </div>
                   </tbody>
@@ -147,8 +147,9 @@ export default {
       playerrank: null,
       herorank: null,
       rolerank: null,
-      mirrormatch: null,
+      mirrormatch: "Exclude",
       minimumgames: 100,
+      isLoading: false,
     }
   },
   created(){
@@ -180,6 +181,7 @@ export default {
   },
   methods: {
     async getData(){
+      this.isLoading = true;
       try{
         const response = await this.$axios.post("/api/v1/global/compositions", {
           timeframe_type: this.timeframetype,
@@ -199,6 +201,7 @@ export default {
       }catch(error){
         //Do something here
       }
+      this.isLoading = false;
     },
     async getTopHeroesData(compositionid, index){
       try{
@@ -237,6 +240,7 @@ export default {
       this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "";
       this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 100;
 
+      this.compositiondata = null;
       this.getData();
     },
     sortTable(key) {

@@ -25,7 +25,7 @@
             <stat-box :title="'Account Level'" :value="data.account_level"></stat-box>          
           </div>
           <div>
-            <hero-image-wrapper :rectangle="true" :hero-image="'autoselect3'" :title="'Auto Select'"></hero-image-wrapper>
+            <hero-image-wrapper :rectangle="true" :hero="inputHero" :title="inputHero.name"></hero-image-wrapper>
           </div>
 
           <div class="flex-1 flex flex-wrap ">
@@ -42,6 +42,8 @@
             <stat-bar-box :title="'Tank Win Rate'" :value="data.tank_win_rate"></stat-bar-box>       
 
           </div>
+
+            <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Role'" class="flex justify-end " text="View all Roles"></custom-button>
         </div>
 
         <div class="bg-lighten p-10 ">
@@ -52,7 +54,7 @@
             <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.heroes_three_highest_win_rate"></group-box>
             <group-box :playerlink="true" :text="'Latest Played'" :data="data.heroes_three_latest_played"></group-box>
           </div>
-          <custom-button class="flex justify-end " text="View All Heroes"></custom-button>
+          <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Hero'" class="flex justify-end " text="View All Heroes"></custom-button>
         </div>
       </div>
 
@@ -99,9 +101,10 @@
             <stat-box title="Rank Tier" :value="data.ar_mmr_data ? data.ar_mmr_data.rank_tier : ''"></stat-box>
             <stat-box :title="'MMR'" :value="data.ar_mmr_data ? data.ar_mmr_data.mmr : 0 "></stat-box>
           </div>
+                  <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/MMR'" class="flex justify-end " text="View MMR"></custom-button>
+
         </div>
 
-      
 
          <div class="bg-lighten p-10 ">
           <div class=" max-w-[90em] ml-auto mr-auto">
@@ -111,7 +114,7 @@
               <group-box :text="'Highest Win Rate'" :data="data.maps_three_highest_win_rate"></group-box>
               <group-box :text="'Latest Played'" :data="data.maps_three_latest_played"></group-box>
             </div>
-            <custom-button class="flex justify-end " text="View All Maps"></custom-button>
+            <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Map'" class="flex justify-end " text="View All Maps"></custom-button>
         </div>
         </div>
 
@@ -150,6 +153,8 @@
                    
             <game-summary-box v-for="(item, index) in data.matchData" :data="item" :caption="`${item.game_map.name} | ${item.game_type.name} | ${item.game_date}`"></game-summary-box>
           
+                            <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Match/History'" class="flex justify-end " text="View Match History"></custom-button>
+
         </div>
       </div>
       <div v-else>
@@ -165,6 +170,7 @@ export default {
   components: {
   },
   props: {
+    settinghero: Object,
     filters: Object,
     battletag: String,
     blizzid: String, 
@@ -174,13 +180,24 @@ export default {
     return {
       data: null,
       gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
+      inputHero: null,
 
     }
   },
   created(){
-    this.getData();
   },
   mounted() {
+    if(this.settinghero){
+      this.inputHero = this.settinghero;
+    }else{
+      this.inputHero = {
+        name: "Auto Select",
+        short_name: "autoselect3",
+        icon: "autoselect3.jpg",
+      };
+    }
+
+    this.getData();
   },
   computed: {
   },
