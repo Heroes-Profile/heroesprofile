@@ -45,17 +45,19 @@ class PlayerMatchupsController extends Controller
     public function getMatchupData(Request $request){
         //return response()->json($request->all());
 
-        $validator = \Validator::make($request->only(['blizz_id', 'region']), [
+        $validator = \Validator::make($request->only(['blizz_id', 'region', 'battletag']), [
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
+            'battletag' => 'required|string',
         ]);
 
         $blizz_id = $request['blizz_id'];
         $region = $request['region'];
+        $battletag = $request['battletag'];
 
         $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
         $gameMap = (new GameMapInputValidation())->passes('map', $request["map"]);
-        $hero = (new HeroInputByIDValidation())->passes('statfilter', $request["hero"]);
+        $hero = (new HeroInputByIDValidation())->passes('hero', $request["hero"]);
         $season = (new SeasonInputValidation())->passes('season', $request["season"]);
 
         $returnData = [];
@@ -90,6 +92,10 @@ class PlayerMatchupsController extends Controller
             {
                 $returnData[$value->hero]["hero"] = $heroData[$value->hero];
                 $returnData[$value->hero]["name"] = $heroData[$value->hero]["name"];
+                $returnData[$value->hero]["battletag"] = $battletag;
+                $returnData[$value->hero]["blizz_id"] = $blizz_id;
+                $returnData[$value->hero]["region"] = $region;
+
                 if($value->team == $i){
                     if($value->winner == 0){
                         $returnData[$value->hero]["ally_losses"] += $value->total;
@@ -114,14 +120,25 @@ class PlayerMatchupsController extends Controller
                 return $value['ally_games_played'] >= 5;
             })
             ->sortByDesc('ally_win_rate')
-            ->take(5)->values();
+            ->take(5)
+            ->map(function($item) {
+                $item["hovertext"] = "Won while on a team with " . $item["name"] . " " . $item["ally_win_rate"] . "% of the time";
+                return $item;
+            })
+            ->values();
 
         $topFiveEnemyHeroes = collect($returnData)
             ->filter(function($value, $key) {
                 return $value['enemy_games_played'] >= 5;
             })
             ->sortBy('enemy_win_rate')
-            ->take(5)->values();
+            ->take(5)
+            ->map(function($item) {
+                $item["hovertext"] = "Lost against a team with " . $item["name"] . " " . (100 - $item["enemy_win_rate"]) . "% of games";
+                return $item;
+            })
+            ->values();
+
 
         $returnData = array_values($returnData);
 

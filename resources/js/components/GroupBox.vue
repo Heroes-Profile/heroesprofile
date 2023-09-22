@@ -4,6 +4,7 @@
     <div class=" bg-black rounded-b  p-5 flex flex-wrap gap-5">
       <template v-for="(item, index) in data" :key="index">
         <div v-if="item.hero">
+
           <a v-if="item.blizz_id" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name">
             <hero-image-wrapper :hovertextstyleoverride="true" :size="'big'" :hero="item.hero">
               <div class="absolute hidden bottom-11 -left-24  bg-gray-dark  text-xs p-1  group-hover:block  text-white z-50 drop-shadow-md w-60 rounded-md px-2 text-center">

@@ -80,7 +80,7 @@ class GlobalExtraStats extends Controller
 
         $region = (new RegionInputValidation())->passes('region', $request["region"]);
         $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
-        $hero = (new HeroInputByIDValidation())->passes('statfilter', $request["hero"]);
+        $hero = (new HeroInputByIDValidation())->passes('hero', $request["hero"]);
 
         $cacheKey = "GlobalExtraStatsHeroLevel|" . implode('|', [
             'hero' . $hero,

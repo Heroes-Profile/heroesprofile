@@ -2,6 +2,8 @@
   <div>
     Friends And Foes
     for
+
+    <span><a :href="`/Player/${battletag}/${blizzid}/${region}`" target="_blank">{{ battletag }}</a></span>
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
@@ -13,8 +15,6 @@
       :includeseason="true"
       >
     </filters>
-    <span><a :href="`/Player/${battletag}/${blizzid}/${region}`" target="_blank">{{ battletag }}</a></span>
-
 
     <div class="flex flex-wrap gap-1">
       <div v-if="frienddata && enemydata">
@@ -47,7 +47,7 @@
         </table>
       </div>
       <div v-else>
-        <loading-component></loading-component>
+        <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
       </div>
 
       <div v-if="enemydata && frienddata">
@@ -80,7 +80,7 @@
         </table>
       </div>
       <div v-else>
-        <loading-component></loading-component>
+        <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
       </div>
 
     </div>

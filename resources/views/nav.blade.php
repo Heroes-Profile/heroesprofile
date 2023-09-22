@@ -59,6 +59,7 @@
                         <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Roles</a>
                         <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Map" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Maps</a>
                         <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Matchups" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Matchups</a>
+                        <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Talents" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Talents</a>
                     </div>
                 @endif
             </div>
@@ -102,6 +103,7 @@
                     <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Roles</a>
                     <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Map" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Maps</a>
                     <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Matchups" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Matchups</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Talents" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Talents</a>
                 </div>
             </div>
         @endif
