@@ -30,6 +30,7 @@ use App\Http\Controllers\Player\PlayerHeroesController;
 use App\Http\Controllers\Player\PlayerMatchupsController;
 use App\Http\Controllers\Player\PlayerRolesController;
 use App\Http\Controllers\Player\PlayerMapsController;
+use App\Http\Controllers\Player\PlayerTalentsController;
 
 
 
@@ -124,6 +125,8 @@ Route::get('Player/{battletag}/{blizz_id}/{region}/Role/{role}', [PlayerRolesCon
 Route::get('Player/{battletag}/{blizz_id}/{region}/Map', [PlayerMapsController::class, 'showAll']);
 Route::get('Player/{battletag}/{blizz_id}/{region}/Map/{map}', [PlayerMapsController::class, 'showSingle']);
 
+Route::get('Player/{battletag}/{blizz_id}/{region}/Talents', [PlayerTalentsController::class, 'show']);
+Route::get('Player/{battletag}/{blizz_id}/{region}/Talents/{hero}', [PlayerTalentsController::class, 'show']);
 
 
 Route::get('Match/Single/{replayID}', [SingleMatchController::class, 'show']);

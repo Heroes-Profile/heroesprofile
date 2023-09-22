@@ -71,7 +71,7 @@ class GlobalHeroStatsController extends Controller
         $mirror = (new MirrorInputValidation())->passes('mirror', $request["mirror"]);
         $region = (new RegionInputValidation())->passes('region', $request["region"]);
         $statFilter = (new StatFilterInputValidation())->passes('statfilter', $request["statfilter"]);
-        $hero = (new HeroInputByIDValidation())->passes('statfilter', $request["hero"]);
+        $hero = (new HeroInputByIDValidation())->passes('hero', $request["hero"]);
         $role = (new RoleInputValidation())->passes('role', $request["role"]);
 
 

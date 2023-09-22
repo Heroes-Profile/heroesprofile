@@ -1,6 +1,6 @@
 <template>
   <div>
-    <canvas id="myChart" width="400" height="400"></canvas>
+    <canvas id="myChart" width="1500" height="750"></canvas>
   </div>
 </template>
 
@@ -42,6 +42,7 @@ export default {
         }]
       },
       options: {
+        responsive: true,
         scales: {
           y: {
             beginAtZero: true

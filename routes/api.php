@@ -30,6 +30,7 @@ use App\Http\Controllers\Player\FriendFoeController;
 use App\Http\Controllers\Player\PlayerHeroesController;
 use App\Http\Controllers\Player\PlayerMatchupsController;
 use App\Http\Controllers\Player\PlayerHeroesMapsRolesController;
+use App\Http\Controllers\Player\PlayerTalentsController;
 
 
 //Profile
@@ -127,6 +128,16 @@ Route::prefix('v1')->group(function () {
 
     Route::get('player/maps/single', [PlayerHeroesMapsRolesController::class, 'getData']); //testing
     Route::post('player/maps/single', [PlayerHeroesMapsRolesController::class, 'getData']);
+
+
+    Route::get('player/talents/', [PlayerTalentsController::class, 'getHeroTalentData']); //testing
+    Route::post('player/talents/', [PlayerTalentsController::class, 'getHeroTalentData']);
+
+    Route::get('player/talents/build', [PlayerTalentsController::class, 'getHeroTalentBuildData']); //testing
+    Route::post('player/talents/build', [PlayerTalentsController::class, 'getHeroTalentBuildData']);
+
+
+
 
     Route::get('match/single', [SingleMatchController::class, 'getData']); //testing
     Route::post('match/single', [SingleMatchController::class, 'getData']);

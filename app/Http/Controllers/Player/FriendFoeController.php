@@ -72,7 +72,7 @@ class FriendFoeController extends Controller
 
         $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
         $gameMap = (new GameMapInputValidation())->passes('map', $request["map"]);
-        $hero = (new HeroInputByIDValidation())->passes('statfilter', $request["hero"]);
+        $hero = (new HeroInputByIDValidation())->passes('hero', $request["hero"]);
         $season = (new SeasonInputValidation())->passes('season', $request["season"]);
 
         $innerQuery = DB::table('replay')

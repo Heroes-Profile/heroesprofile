@@ -222,7 +222,6 @@
             img.src = image;
           });
         }
- 
       },
       determineIfLargeData(){
         if(this.timeframetype == "major" || this.timeframe.length >= 3 || this.statfilter != "win_rate"){

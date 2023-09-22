@@ -47,7 +47,7 @@ class PlayerHeroesMapsRolesController extends Controller
         $blizz_id = $request['blizz_id'];
         $region = $request['region'];
         $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
-        $hero = (new HeroInputByIDValidation())->passes('statfilter', $request["hero"]);
+        $hero = (new HeroInputByIDValidation())->passes('hero', $request["hero"]);
         $minimum_games = $request["minimumgames"];
         $type = $request["type"];
         $page = $request["page"];
@@ -460,16 +460,16 @@ class PlayerHeroesMapsRolesController extends Controller
 
           
             if($page == "hero"){
-                //$name = $heroData[$heroStats->pluck('hero')->first()]["name"];
+                $name = $heroData[$heroStats->pluck('hero')->first()]["name"];
             }else if($page == "map"){
-                //$name = $maps[$heroStats->pluck('game_map')->first()]["name"];
+                $name = $maps[$heroStats->pluck('game_map')->first()]["name"];
             }else if($page == "role"){
                 $name = $heroStats->pluck('new_role')->first();
             }
 
             return [
-                "name" => $index,
-                //"hero" => $heroData[$heroStats->pluck('hero')->first()],
+                "name" => $name,
+                "hero" => $heroData[$heroStats->pluck('hero')->first()],
                 //"game_map" => $maps[$heroStats->pluck('game_map')->first()],
                 'wins' => $wins,
                 'losses' => $losses,
@@ -636,6 +636,7 @@ class PlayerHeroesMapsRolesController extends Controller
             
                 'hero_data_top_played' => $heroDataStats ? $heroDataStats->sortByDesc('games_played')->values() : null,
                 'hero_data_top_win_rate' => $heroWinRateFiltered ? $heroWinRateFiltered->sortByDesc('win_rate')->values() : null,
+                'hero_data_top_latest_played' => $heroDataStats ? $heroDataStats->sortByDesc('game_date')->values() : null,
                 'hero_data_all_heroes' => $heroDataStats ? $heroDataStats->sortBy('name')->values() : null,
 
                 

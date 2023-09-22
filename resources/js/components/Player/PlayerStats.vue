@@ -158,7 +158,7 @@
         </div>
       </div>
       <div v-else>
-        <loading-component></loading-component>
+        <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
       </div>
 
   </div>

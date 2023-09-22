@@ -53,7 +53,7 @@
         <tbody>
           <tr v-for="row in sortedData" :key="row.id">
             <td class="py-2 px-3 border-b border-gray-200"><a :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.name }}</a></td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.wins }}|{{ row.losses }} {{ row.win_rate }} %</td>
+            <td class="py-2 px-3 border-b border-gray-200"><stat-bar-box :title="'Win Rate'" :value="row.win_rate"></stat-bar-box>{{ (row.wins + row.losses) }}</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.kda }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}/{{ row.avg_assists }}</td>
             <td class="py-2 px-3 border-b border-gray-200">{{ row.kdr }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}</td>
             
@@ -73,7 +73,7 @@
 
     </div>
     <div v-else>
-      <loading-component></loading-component>
+        <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
     </div>
 
   </div>
@@ -95,6 +95,7 @@ export default {
   },
   data(){
     return {
+      isLoading: false,
       infoText: "Select a hero below to view detailed stats for that hero. Use the search box above to filter the list of heroes. Or scroll down to the advanced section for table view.",
       gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
       data: null,
@@ -221,6 +222,7 @@ export default {
   },
   methods: {
     async getData(type){
+      this.isLoading = true;
       try{
         const response = await this.$axios.post("/api/v1/player/heroes/all", {
           blizz_id: this.blizzid,
@@ -237,6 +239,7 @@ export default {
       }catch(error){
         //Do something here
       }
+      this.isLoading = false;
     },
     filterData(filteredData){
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
