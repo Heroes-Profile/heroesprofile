@@ -3,8 +3,7 @@
     <div class="text-center py-10">
       <img class="block m-4 w-2/5 max-w-6xl mr-auto ml-auto pl-25" src="/images/logo/full_deathwing.png"/>
       <div class="block text-center mx-auto align-items-center">
-        <search-component v-if="!user" :type="'main'" :buttonText="'Show My Stats'" :labelText="'Enter your battletag'"></search-component>
-        <search-component v-else :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'"></search-component>
+        <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'"></search-component>
       </div>
     </div>
 
@@ -20,8 +19,7 @@
         <h3 class="text-2xl mb-10">Player profile</h3>
         <p>See all player stats in one place.  See data for individual maps or heroes played, match history and comparisons all from within a streamlined profile.</p>
 
-        <search-component v-if="!user" :type="'main'" :buttonText="'Show My Stats'" :labelText="'Enter your battletag'"></search-component>
-        <search-component v-else :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'"></search-component>
+        <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'"></search-component>
 
       </div>
       <div class="text-center">

@@ -32,7 +32,7 @@
     },
     methods: {
       clickedButton(){
-        window.location.href = '/battletag/searched/' + this.userinput + "/" + this.type;
+        window.location.href = '/battletag/searched/' + encodeURIComponent(this.userinput) + "/" + this.type;
       }
     }
   }
