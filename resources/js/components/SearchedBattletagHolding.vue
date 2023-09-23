@@ -1,19 +1,26 @@
 <template>
   <div>
-    <div v-if="battletagresponse.length > 1">
-      <div 
-        class="bg-blue p-4 rounded mb-4 w-[500px] flex flex-col items-center cursor-pointer" 
-        v-for="(item, index) in battletagresponse" 
-        :key="index" 
-        @click="redirectToProfile(item.battletag, item.blizz_id, item.region)"
-      >
-        <div>{{ item.battletagShort }} ({{ item.regionName }})</div>
-        <div>{{ item.latest_game }}</div>
-        <div>Games Played: {{ item.totalGamesPlayed }}</div>
-        <div>{{ item.latestMap.name }}</div>
-        <div><hero-box-small :hero="item.latestHero"></hero-box-small></div>
+    <div v-if="battletagresponse">
+      <div v-if="battletagresponse.length > 1">
+        <div 
+          class="bg-blue p-4 rounded mb-4 w-[500px] flex flex-col items-center cursor-pointer" 
+          v-for="(item, index) in battletagresponse" 
+          :key="index" 
+          @click="redirectToProfile(item.battletag, item.blizz_id, item.region)"
+        >
+          <div>{{ item.battletagShort }} ({{ item.regionName }})</div>
+          <div>{{ item.latest_game }}</div>
+          <div>Games Played: {{ item.totalGamesPlayed }}</div>
+          <div>{{ item.latestMap.name }}</div>
+          <div><hero-image-wrapper :hero="item.latestHero"></hero-image-wrapper></div>
+        </div>
       </div>
     </div>
+    <div v-else>
+      <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+    </div>
+
+
   </div>
 </template>
 
@@ -30,7 +37,7 @@ export default {
   },
   data(){
     return {
-      battletagresponse: [],
+      battletagresponse: null,
       alt_search_account1_exists: false,
       alt_search_account2_exists: false,
       alt_search_account3_exists: false,
@@ -60,6 +67,12 @@ export default {
 
 
         this.battletagresponse = response.data;
+
+        console.log(this.battletagresponse);
+        console.log(this.isBattletagReponseValid);
+        console.log(this.battletagresponse.length);
+
+
         if(this.isBattletagReponseValid) {
           if(this.battletagresponse.length == 1){
             this.redirectToProfile(this.battletagresponse[0].battletag, this.battletagresponse[0].blizz_id, this.battletagresponse[0].region);
