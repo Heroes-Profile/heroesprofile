@@ -88,21 +88,25 @@ class PlayerTalentsController extends Controller
             ->where("region", $region)
             //->toSql();
             ->get();
+        $talentData = HeroesDataTalent::all();
+        $talentData = $talentData->keyBy('talent_id');
+
+        $heroData = $this->globalDataService->getHeroes();
+        $heroData = $heroData->keyBy('id');
 
         return [
-            "talentData" => $this->getHeroTalentData($result),
-            "buildData" => $this->getHeroTalentBuildData($result),
+            "talentData" => $this->getHeroTalentData($result, $talentData),
+            "buildData" => $this->getHeroTalentBuildData($result, $heroData[$hero], $talentData),
         ];
     }
 
-    private function getHeroTalentData($result){
+    private function getHeroTalentData($result, $talentData){
         $returnData = [];
         $levelKeys = ["level_one", "level_four", "level_seven", "level_ten", "level_thirteen", "level_sixteen", "level_twenty"];
 
         $resultCollection = collect($result);
 
-        $talentData = HeroesDataTalent::all();
-        $talentData = $talentData->keyBy('talent_id');
+
 
         $resultCollection->each(function ($data) use (&$returnData, $levelKeys, $talentData) {
             foreach ($levelKeys as $levelKey) {
@@ -162,7 +166,7 @@ class PlayerTalentsController extends Controller
         return $formattedData;
     }
 
-    private function getHeroTalentBuildData($result){
+    private function getHeroTalentBuildData($result, $hero, $talentData){
         $returnData = [];
 
         foreach($result as $replay){
@@ -175,6 +179,8 @@ class PlayerTalentsController extends Controller
             $level_twenty = $replay->level_twenty;
 
             if($level_one == 0 || $level_four == 0 || $level_seven == 0 || $level_ten == 0 || $level_thirteen == 0 || $level_sixteen == 0 || $level_twenty == 0){
+                continue;
+            }else if(!$talentData->has($level_one ) || !$talentData->has($level_four ) || !$talentData->has($level_seven ) || !$talentData->has($level_ten ) || !$talentData->has($level_thirteen ) || !$talentData->has($level_sixteen ) || !$talentData->has($level_twenty)){
                 continue;
             }
             $key = $level_one . "|" . $level_four . "|" . $level_seven . "|" . $level_ten . "|" . $level_thirteen . "|" . $level_sixteen . "|" . $level_twenty;
@@ -206,7 +212,7 @@ class PlayerTalentsController extends Controller
             return $b['games_played'] - $a['games_played'];
         });
 
-        $returnData = array_slice($returnData, 0, 85);
+        $returnData = array_slice($returnData, 0, 7);
 
         foreach($returnData as &$data){
             foreach($result as $replay){
@@ -230,6 +236,17 @@ class PlayerTalentsController extends Controller
                 }
                 $data["games_played"]++;
             }
+        }
+        foreach($returnData as &$data){
+            $data["level_one"] = $talentData[$data["level_one"]];
+            $data["level_four"] = $talentData[$data["level_four"]];
+            $data["level_seven"] = $talentData[$data["level_seven"]];
+            $data["level_ten"] = $talentData[$data["level_ten"]];
+            $data["level_thirteen"] = $talentData[$data["level_thirteen"]];
+            $data["level_sixteen"] = $talentData[$data["level_sixteen"]];
+            $data["level_twenty"] = $talentData[$data["level_twenty"]];
+            $data["win_rate"] = round(($data["wins"] / $data["games_played"]) * 100, 2);
+            $data["hero"] = $hero;
         }
 
         return $returnData;

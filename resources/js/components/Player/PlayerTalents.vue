@@ -82,7 +82,7 @@ export default {
           game_type: this.gametype,
         });
         this.talentdetaildata = response.data.talentData
-        this.talentbuilddata = response.buildData;
+        this.talentbuilddata = response.data.buildData;
       }catch(error){
         //Do something here
       }
