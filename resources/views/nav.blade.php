@@ -1,5 +1,5 @@
 <nav class="bg-gray-dark text-white p-2 z-50 relative">
-    <div class="flex items-center justify-between flex-wrap md:flex-nowrap">
+    <div class="flex items-center justify-between flex-wrap md:flex-nowrap text-sm">
         <a class="text-blue-600 hover:text-blue-800 flex items-center font-logo text-2xl" href="/">
             Heroes
             <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
@@ -7,10 +7,10 @@
         </a>
         <div class="flex items-center space-x-5 justify-end flex-wrap md:flex-nowrap">
             
-            <div class="relative group inline-block space-x-5">
+            <div class="relative group inline-block ">
                 <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Global Hero Stats</a>
-                <div class="absolute left-0 hidden group-hover:block z-50 pt-5">
-                    <div class="bg-blue border border-gray-300 rounded-md">
+                <div class="absolute left-0  group-hover:block z-50 pt-3 block ">
+                    <div class="bg-teal  rounded-b-lg rounded-tr-lg text-sm">
                         <!-- ... (Global Hero Stats dropdown items) -->
                         <a href="/Global/Hero" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Hero Stats</a>
                         <a href="/Global/Talents" class="block px-4 py-2 text-blue-600 hover:bg-gray-200">Talent Stats</a>
