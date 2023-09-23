@@ -63,11 +63,7 @@ export default {
   mounted() {
     if(this.inputhero){
       this.selectedHero = this.inputhero;
-      Promise.allSettled([
-          this.getTalentData(),
-          this.getTalentBuildData(),
-          ]).then(results => {
-      });
+      this.getData();
     }
   },
   computed: {
@@ -75,7 +71,7 @@ export default {
   watch: {
   },
   methods: {
-    async getTalentData(){
+    async getData(){
       try{
         this.isLoading = true;
         const response = await this.$axios.post("/api/v1/player/talents", {
@@ -85,40 +81,20 @@ export default {
           blizz_id: this.blizzid,
           game_type: this.gametype,
         });
-        this.talentdetaildata = response.data;
+        this.talentdetaildata = response.data.talentData
+        this.talentbuilddata = response.buildData;
       }catch(error){
         //Do something here
       }
       this.isLoading = false;
     },
-    async getTalentBuildData(){
-      try{
-        this.isLoading = true;
-        const response = await this.$axios.post("/api/v1/player/talents/build", {
-          hero: this.selectedHero.name,
-          battletag: this.battletag,
-          region: this.region,
-          blizz_id: this.blizzid,
-          game_type: this.gametype,
-        });
-        this.talentbuilddata = response.data;
-      }catch(error){
-        //Do something here
-      }
-      this.isLoading = false;
-    },
-
     clickedHero(hero) {
       this.selectedHero = hero;
       this.preloadTalentImages(hero);
 
       let currentPath = window.location.pathname;
       history.pushState(null, null, `${currentPath}/${this.selectedHero.name}`);
-      Promise.allSettled([
-        this.getTalentData(),
-        this.getTalentBuildData(),
-        ]).then(results => {
-      });
+      this.getData();
     },
     filterData(filteredData){
       /*

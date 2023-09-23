@@ -130,11 +130,11 @@ Route::prefix('v1')->group(function () {
     Route::post('player/maps/single', [PlayerHeroesMapsRolesController::class, 'getData']);
 
 
-    Route::get('player/talents/', [PlayerTalentsController::class, 'getHeroTalentData']); //testing
-    Route::post('player/talents/', [PlayerTalentsController::class, 'getHeroTalentData']);
+    Route::get('player/talents/', [PlayerTalentsController::class, 'getPlayerTalentData']); //testing
+    Route::post('player/talents/', [PlayerTalentsController::class, 'getPlayerTalentData']);
 
-    Route::get('player/talents/build', [PlayerTalentsController::class, 'getHeroTalentBuildData']); //testing
-    Route::post('player/talents/build', [PlayerTalentsController::class, 'getHeroTalentBuildData']);
+    Route::get('player/talents/build', [PlayerTalentsController::class, 'getPlayerTalentData']); //testing
+    Route::post('player/talents/build', [PlayerTalentsController::class, 'getPlayerTalentData']);
 
 
 
