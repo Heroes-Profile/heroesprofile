@@ -10,7 +10,7 @@
             <div class="relative group inline-block ">
                 <a class=" cursor-pointer">Global Hero Stats</a>
                 <div class="absolute left-0 hidden group-hover:block z-50 pt-3  ">
-                    <div class="bg-teal  rounded-b-lg rounded-tr-lg text-sm">
+                    <div class="bg-teal  rounded-b-lg rounded-tr-lg text-sm drop-shadow">
                         <!-- ... (Global Hero Stats dropdown items) -->
                         <a href="/Global/Hero" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Hero Stats</a>
                         <a href="/Global/Talents" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Talent Stats</a>
@@ -30,7 +30,7 @@
             <div class="relative group inline-block">
                 <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Tools</a>
                 <div class="absolute left-0 hidden  group-hover:block z-50 pt-3 ">
-                    <div class="bg-teal  rounded-b-lg rounded-tr-lg text-sm">
+                    <div class="bg-teal  rounded-b-lg rounded-tr-lg text-sm drop-shadow">
                         <!-- ... (Tools dropdown items) -->
                         <a href="/" class="block px-4 py-2 border-b border-darken hover:bg-lighten cursor-not-allowed pointer-events-none">Talent Builder</a>
                         <a href="/Compare" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Compare</a>
@@ -51,8 +51,8 @@
                     <a class="cursor-pointer">
                     {{ $mainSearchAccount['battletag'] }} ({{ $regions[$mainSearchAccount['region']] }})
                     </a>
-                    <div class="absolute left-0 hidden group-hover:block z-50 pt-3  ">
-                        <div class="bg-teal  rounded-b-lg rounded-tr-lg text-sm">
+                    <div class="absolute left-0 hidden group-hover:block z-50 pt-3  drop-menu-wrapper">
+                        <div class="bg-teal  rounded-b-lg rounded-tr-lg text-sm drop-shadow drop-menu">
                             <!-- ... (mainSearchAccount dropdown items) -->
                             <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Profile</a>
                             <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/FriendFoe" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Friends and Foes</a>
@@ -96,16 +96,18 @@
 <nav class="flex justify-end">
     @foreach($altSearchAccounts as $index => $account)
         @if($account)
-            <div class="relative group inline-block ml-4 pr-2">
+            <div class="relative group inline-block  p-4 mx-4 text-sm">
                 <a class="text-blue-600 hover:text-blue-800 cursor-pointer">{{ $account['battletag'] }} ({{ $regions[$account['region']] }})</a>
-                <div class="absolute right-0 mt-2 hidden group-hover:block z-50 bg-blue border border-gray-300 rounded-md">
-                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Profile</a>
-                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/FriendFoe" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Friends and Foes</a>
-                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Hero" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Heroes</a>
-                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Roles</a>
-                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Map" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Maps</a>
-                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Matchups" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Matchups</a>
-                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Talents" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Talents</a>
+                <div class="absolute  hidden group-hover:block z-50 pt-3 absolute right-0 ">
+                    <div class="bg-teal  rounded-b-lg rounded-tr-lg text-sm drop-shadow">
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" class="block px-4 py-2 border-b border-darken hover:bg-lighten ">Profile</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/FriendFoe" class="block px-4 py-2 border-b border-darken hover:bg-lighten ">Friends and Foes</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Hero" class="block px-4 py-2 border-b border-darken hover:bg-lighten ">Heroes</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role" class="block px-4 py-2 border-b border-darken hover:bg-lighten ">Roles</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Map" class="block px-4 py-2 border-b border-darken hover:bg-lighten  ">Maps</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Matchups" class="block px-4 py-2 border-b border-darken hover:bg-lighten ">Matchups</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Talents" class="block px-4 py-2 border-b border-darken hover:bg-lighten ">Talents</a>
+                </div>
                 </div>
             </div>
         @endif
