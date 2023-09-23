@@ -6,6 +6,7 @@
      
 
       <div v-if="data" class="">
+        <h2 >{{battletag}} ({{region}})</h2>
 
         <div class="flex md:p-20 gap-10 ">
           <div class="flex-1 flex flex-wrap justify-end">
