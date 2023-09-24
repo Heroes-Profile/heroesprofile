@@ -83,6 +83,7 @@ import PlayerRoleSingleStats from './components/Player/Roles/PlayerRoleSingleSta
 import PlayerMapsAllStats from './components/Player/Maps/PlayerMapsAllStats.vue';
 import PlayerMapSingleStats from './components/Player/Maps/PlayerMapSingleStats.vue';
 import PlayerTalents from './components/Player/PlayerTalents.vue';
+import MmrData from './components/Player/MmrData.vue';
 
 
 // Automatically register Vue components

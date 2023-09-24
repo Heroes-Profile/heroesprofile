@@ -1,6 +1,5 @@
 <template>
   <div id="filter-label" class="relative">
-
       <div @click="showOptions = !showOptions" class="block text-sm font-medium text-gray-700 cursor-pointer  p-2   hover:bg-teal transition-colors">
         <span>{{ this.text }}</span> 
         <span  v-if="selectedOptionsName !== ''">: <span class="uppercase font-bold  bg-teal rounded px-1">{{ selectedOptionsName }}</span></span>      

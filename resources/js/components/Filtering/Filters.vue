@@ -2,7 +2,7 @@
   <div>
     <div class="flex flex-wrap items-center bg-gray-dark md:px-20">
       <single-select-filter v-if="includeherorole" :values="this.filters.hero_role" :text="'Hero or Role'" @input-changed="handleInputChange" :defaultValue="'Hero'"></single-select-filter>
-      <single-select-filter v-if="includeleaderboardtype" :values="this.filters.leaderboard_type" :text="'Leaderboard Type'" @input-changed="handleInputChange" :defaultValue="'Player'"></single-select-filter>
+      <single-select-filter v-if="playerheroroletype" :values="this.filters.type" :text="'Type'" @input-changed="handleInputChange" :defaultValue="'Player'"></single-select-filter>
       <single-select-filter v-if="includegroupsize" :values="this.filters.group_size" :text="'Group Size'" @input-changed="handleInputChange" :defaultValue="'Solo'"></single-select-filter>
       <single-select-filter v-if="includecharttype" :values="this.filters.chart_type" :text="'Chart Type'" @input-changed="handleInputChange" :defaultValue="'Account Level'"></single-select-filter>
       <single-select-filter v-if="includetimeframetype" :values="this.filters.timeframe_type" :text="'Timeframe Type'" :defaultValue="this.defaultTimeframeType" @input-changed="handleInputChange"></single-select-filter>
@@ -15,6 +15,7 @@
       <multi-select-filter v-if="modifiedincludegametype" :values="this.filters.game_types" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="this.defaultGameType"></multi-select-filter>
       <multi-select-filter v-if="includegametypefull" :values="this.filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="this.defaultGameType"></multi-select-filter>
       <single-select-filter v-if="includesinglegametype" :values="this.filters.game_types" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="this.defaultGameType[0]"></single-select-filter>
+      <single-select-filter v-if="includesinglegametypefull" :values="this.filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="this.defaultGameType[0]"></single-select-filter>
       <single-select-filter v-if="includeseason" :values="seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="this.defaultSeason"></single-select-filter>
       <multi-select-filter v-if="includegamemap" :values="this.filters.game_maps" :text="'Map'" @input-changed="handleInputChange"></multi-select-filter>
       <single-select-filter v-if="includesinglegamemap" :values="this.filters.game_maps" :text="'Map'" @input-changed="handleInputChange"></single-select-filter>
@@ -52,7 +53,7 @@ export default {
     isLoading: Boolean,
 
     includeherorole: Boolean,
-    includeleaderboardtype:Boolean,
+    playerheroroletype: Boolean,
     includegroupsize: Boolean,
     includecharttype: Boolean,
     includetimeframetype: Boolean,
@@ -79,7 +80,7 @@ export default {
     includeteamtwoparty: Boolean,
     includeminimumaccountlevel: Boolean,
     includexaxisincrements: Boolean,
-
+    includesinglegametypefull: Boolean,
     minimumseason: Number,
 
     filters: {
@@ -110,11 +111,7 @@ export default {
     }
   },
   created(){    
-
-  },
-  mounted() {
     this.defaultGameType = this.gametypedefault;
-
     this.selectedSingleFilters = {
     };
 
@@ -134,6 +131,8 @@ export default {
     this.selectedMultiFilters["Game Type"] = this.gametypedefault;
     this.selectedMultiFilters.Timeframes = this.defaultMinor;
     this.selectedSingleFilters["Stat Filter"] = this.defaultStatType;
+  },
+  mounted() {
   },
   computed: {
     defaultMinor() {

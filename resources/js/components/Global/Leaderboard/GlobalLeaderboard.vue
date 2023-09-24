@@ -8,7 +8,7 @@
       :isLoading="isLoading"
       :gametypedefault="gametypedefault"
       :defaultSeason="defaultseason"
-      :includeleaderboardtype="true"
+      :playerheroroletype="true"
       :includegroupsize="true"
       :includesinglegametype="true"
       :includeseason="true"

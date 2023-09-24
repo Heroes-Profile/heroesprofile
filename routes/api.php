@@ -31,6 +31,7 @@ use App\Http\Controllers\Player\PlayerHeroesController;
 use App\Http\Controllers\Player\PlayerMatchupsController;
 use App\Http\Controllers\Player\PlayerHeroesMapsRolesController;
 use App\Http\Controllers\Player\PlayerTalentsController;
+use App\Http\Controllers\Player\PlayerMMRController;
 
 
 //Profile
@@ -136,7 +137,8 @@ Route::prefix('v1')->group(function () {
     Route::get('player/talents/build', [PlayerTalentsController::class, 'getPlayerTalentData']); //testing
     Route::post('player/talents/build', [PlayerTalentsController::class, 'getPlayerTalentData']);
 
-
+    Route::get('player/mmr', [PlayerMMRController::class, 'getData']); //testing
+    Route::post('player/mmr', [PlayerMMRController::class, 'getData']);
 
 
     Route::get('match/single', [SingleMatchController::class, 'getData']); //testing

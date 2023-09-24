@@ -64,15 +64,7 @@ export default {
         const response = await this.$axios.post("/api/v1/battletag/search", {
           userinput: this.userinput,
         });
-
-
         this.battletagresponse = response.data;
-
-        console.log(this.battletagresponse);
-        console.log(this.isBattletagReponseValid);
-        console.log(this.battletagresponse.length);
-
-
         if(this.isBattletagReponseValid) {
           if(this.battletagresponse.length == 1){
             this.redirectToProfile(this.battletagresponse[0].battletag, this.battletagresponse[0].blizz_id, this.battletagresponse[0].region);
@@ -80,8 +72,6 @@ export default {
         } else {
           //Do something here
         }
-
-
       }catch(error){
         this.battletagresponse = "Invalid input: '%', '?' and ' ' are invalid inputs";
       }
@@ -91,7 +81,7 @@ export default {
         battletag: battletag.split('#')[0],
         blizz_id: blizz_id,
         region: region,
-        date: new Date().toISOString(), // Add the current date to track freshness
+        date: new Date().toISOString(),
       };
 
       const existingAccounts = [
@@ -108,7 +98,6 @@ export default {
         Cookies.set('main_search_account', JSON.stringify(data), { sameSite: 'Strict', path: '/', expires: 90 });
       } else if (this.type == "alt") {
         if (accountIndex >= 0) {
-          // If the account with the same battletag and blizz_id exists, update its region and date
           existingAccounts[accountIndex].region = region;
           existingAccounts[accountIndex].date = data.date;
         } else {
@@ -130,13 +119,10 @@ export default {
             }, null);
 
             if (oldestAccount) {
-              // Overwrite the oldest account
               Object.assign(oldestAccount, data);
             }
           }
         }
-
-        // Save the updated account data back to cookies
         existingAccounts.forEach((account, index) => {
           if (account) {
             Cookies.set('alt_search_account' + (index + 1), JSON.stringify(account), { sameSite: 'Strict', path: '/', expires: 90 });
