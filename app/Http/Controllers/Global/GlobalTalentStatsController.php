@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Global;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Services\GlobalDataService;
 
 use App\Rules\HeroInputValidation;
 use App\Rules\TimeframeMinorInputValidation;
@@ -29,14 +28,6 @@ use App\Models\SeasonGameVersion;
 
 class GlobalTalentStatsController extends Controller
 {
-    private $buildsToReturn;
-
-    public function __construct(GlobalDataService $globalDataService)
-    {
-        $this->globalDataService = $globalDataService;
-        $this->buildsToReturn = 7;
-    }
-
     public function show(Request $request){
         $userinput = $this->globalDataService->getHeroModel($request["hero"]);
 

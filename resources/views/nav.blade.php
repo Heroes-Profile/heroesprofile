@@ -61,7 +61,7 @@
                             <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Map" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Maps</a>
                             <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Matchups" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Matchups</a>
                             <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Talents" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Talents</a>
-                            <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/MMR" class="block px-4 py-2 border-b border-darken hover:bg-lighten">MMR Breakdown</a>
+                            <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Match/History" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Match History</a>
                         </div>
                     </div>
                 @endif
@@ -109,6 +109,7 @@
                     <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Matchups" class="block px-4 py-2 border-b border-darken hover:bg-lighten ">Matchups</a>
                     <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Talents" class="block px-4 py-2 border-b border-darken hover:bg-lighten ">Talents</a>
                     <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/MMR" class="block px-4 py-2 border-b border-darken hover:bg-lighten ">MMR Breakdown</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Match/History" class="block px-4 py-2 border-b border-darken hover:bg-lighten ">Match History</a>
                 </div>
                 </div>
             </div>

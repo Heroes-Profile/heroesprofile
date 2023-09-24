@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Global;
 use Illuminate\Support\Facades\Cache;
-use App\Services\GlobalDataService;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -21,13 +20,6 @@ use App\Models\Map;
 
 class GlobalHeroMapStatsController extends Controller
 {
-    protected $globalDataService;
-
-    public function __construct(GlobalDataService $globalDataService)
-    {
-        $this->globalDataService = $globalDataService;
-    }
-
     public function show(Request $request){
         $userinput = $this->globalDataService->getHeroModel($request["hero"]);
         return view('Global.Hero.Map.globalHeroMapStats')

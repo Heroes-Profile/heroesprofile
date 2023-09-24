@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Player;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Services\GlobalDataService;
 use Illuminate\Support\Collection;
 
 use App\Models\PatreonAccount;
@@ -26,13 +25,6 @@ use App\Models\BattlenetAccount;
 
 class PlayerController extends Controller
 {
-    protected $globalDataService;
-
-    public function __construct(GlobalDataService $globalDataService)
-    {
-        $this->globalDataService = $globalDataService;
-    }
-
     public function show(Request $request, $battletag, $blizz_id, $region)
     {
         ///Add in some rule handling for game type and season

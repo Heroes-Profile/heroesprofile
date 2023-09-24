@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Rules\BattletagInputProhibitCharacters;
-use App\Services\GlobalDataService;
 
 use App\Models\Battletag;
 use App\Models\Replay;
@@ -14,13 +13,6 @@ use App\Models\Map;
 
 class BattletagSearchController extends Controller
 {
-    protected $globalDataService;
-
-    public function __construct(GlobalDataService $globalDataService)
-    {
-        $this->globalDataService = $globalDataService;
-    }
-
     public function show(Request $request){
 
         return view('searchedBattletagHolding')->with(['userinput' => $request["userinput"], 'type' => $request["type"]]);

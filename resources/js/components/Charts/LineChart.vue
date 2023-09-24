@@ -53,7 +53,7 @@ export default {
             },
           },
           y: {
-            beginAtZero: true,
+            beginAtZero: false,
             grid: {
               display: true, // Hide the y-axis grid lines
             },

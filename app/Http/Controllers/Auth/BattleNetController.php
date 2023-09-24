@@ -13,13 +13,6 @@ use Illuminate\Support\Facades\Cookie;
 
 class BattleNetController extends Controller
 {
-    protected $globalDataService;
-
-    public function __construct(GlobalDataService $globalDataService)
-    {
-        $this->globalDataService = $globalDataService;
-    }
-
     public function show(Request $request){
         return view('Battlenet.authenticate')
         ->with([

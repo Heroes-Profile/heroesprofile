@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Global;
-use App\Services\GlobalDataService;
 use Illuminate\Support\Facades\Cache;
 
 use App\Http\Controllers\Controller;
@@ -22,13 +21,6 @@ use App\Models\Hero;
 
 class GlobalHeroMatchupsTalentsController extends Controller
 {
-    private $buildsToReturn;
-
-    public function __construct(GlobalDataService $globalDataService)
-    {
-        $this->globalDataService = $globalDataService;
-    }
-
     public function show(Request $request){
         $inputhero = (new HeroInputValidation())->passes('hero', $request["hero"]);
         $inputenemyally = (new HeroInputValidation())->passes('allyenemy', $request["allyenemy"]);
