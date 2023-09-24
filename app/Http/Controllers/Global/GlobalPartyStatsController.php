@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Global;
-use App\Services\GlobalDataService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -21,13 +20,6 @@ use App\Models\GlobalHeroStackSize;
 
 class GlobalPartyStatsController extends Controller
 {
-    protected $globalDataService;
-
-    public function __construct(GlobalDataService $globalDataService)
-    {
-        $this->globalDataService = $globalDataService;
-    }
-
     public function show(Request $request){
         return view('Global.Party.globalPartyStats')
         ->with([

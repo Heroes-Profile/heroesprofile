@@ -32,6 +32,7 @@ use App\Http\Controllers\Player\PlayerRolesController;
 use App\Http\Controllers\Player\PlayerMapsController;
 use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\Player\PlayerMMRController;
+use App\Http\Controllers\Player\PlayerMatchHistory;
 
 
 
@@ -127,7 +128,8 @@ Route::get('Player/{battletag}/{blizz_id}/{region}/Talents', [PlayerTalentsContr
 Route::get('Player/{battletag}/{blizz_id}/{region}/Talents/{hero}', [PlayerTalentsController::class, 'show']);
 
 Route::get('Player/{battletag}/{blizz_id}/{region}/MMR', [PlayerMMRController::class, 'show']);
-Route::get('Player/{battletag}/{blizz_id}/{region}/MMR', [PlayerMMRController::class, 'show']);
+
+Route::get('Player/{battletag}/{blizz_id}/{region}/Match/History', [PlayerMatchHistory::class, 'show']);
 
 
 

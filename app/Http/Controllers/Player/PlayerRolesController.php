@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Player;
-use App\Services\GlobalDataService;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -11,13 +10,6 @@ use App\Rules\RoleInputValidation;
 
 class PlayerRolesController extends Controller
 {
-    protected $globalDataService;
-
-    public function __construct(GlobalDataService $globalDataService)
-    {
-        $this->globalDataService = $globalDataService;
-    }
-
     public function showAll(Request $request, $battletag, $blizz_id, $region)
     {
         $validator = \Validator::make(compact('battletag', 'blizz_id', 'region'), [

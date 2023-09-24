@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Player;
-use App\Services\GlobalDataService;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -26,12 +25,6 @@ use App\Models\MMRTypeID;
 
 class PlayerHeroesMapsRolesController extends Controller
 {
-    protected $globalDataService;
-
-    public function __construct(GlobalDataService $globalDataService)
-    {
-        $this->globalDataService = $globalDataService;
-    }
     public function getData(Request $request){
         
         //return response()->json($request->all());

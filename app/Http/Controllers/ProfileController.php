@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
-use App\Services\GlobalDataService;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\BattlenetAccount;
@@ -11,13 +10,6 @@ use App\Models\GameType;
 
 class ProfileController extends Controller
 {
-    protected $globalDataService;
-
-    public function __construct(GlobalDataService $globalDataService)
-    {
-        $this->globalDataService = $globalDataService;
-    }
-
     public function showSettings(Request $request)
     {
         $user = Auth::user();

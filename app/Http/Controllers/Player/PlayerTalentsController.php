@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Player;
-use App\Services\GlobalDataService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,13 +14,6 @@ use App\Models\HeroesDataTalent;
 
 class PlayerTalentsController extends Controller
 {
-    protected $globalDataService;
-
-    public function __construct(GlobalDataService $globalDataService)
-    {
-        $this->globalDataService = $globalDataService;
-    }
-
     public function show(Request $request, $battletag, $blizz_id, $region)
     {
         $userinput = $this->globalDataService->getHeroModel($request["hero"]);

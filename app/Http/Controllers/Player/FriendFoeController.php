@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Player;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Services\GlobalDataService;
 
 use App\Rules\SeasonInputValidation;
 use App\Rules\GameMapInputValidation;
@@ -16,13 +15,6 @@ use App\Models\SeasonDate;
 
 class FriendFoeController extends Controller
 {
-    protected $globalDataService;
-
-    public function __construct(GlobalDataService $globalDataService)
-    {
-        $this->globalDataService = $globalDataService;
-    }
-
     public function show(Request $request, $battletag, $blizz_id, $region)
     {
         ///Add in some rule handling for game type and season

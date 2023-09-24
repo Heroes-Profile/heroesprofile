@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Global;
-use App\Services\GlobalDataService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\ValidationException;
 
@@ -24,13 +23,6 @@ use App\Models\Hero;
 
 class GlobalCompositionsController extends Controller
 {
-    protected $globalDataService;
-
-    public function __construct(GlobalDataService $globalDataService)
-    {
-        $this->globalDataService = $globalDataService;
-    }
-
     public function show(Request $request){
         return view('Global.Compositions.compositionsStats')  
             ->with([

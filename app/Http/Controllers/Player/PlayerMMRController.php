@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Player;
-use App\Services\GlobalDataService;
 use Illuminate\Support\Facades\DB;
 
 use App\Http\Controllers\Controller;
@@ -13,13 +12,6 @@ use App\Models\LeagueBreakdown;
 
 class PlayerMMRController extends Controller
 {
-    protected $globalDataService;
-
-    public function __construct(GlobalDataService $globalDataService)
-    {
-        $this->globalDataService = $globalDataService;
-    }
-
     public function show(Request $request, $battletag, $blizz_id, $region)
     {
         $validator = \Validator::make(compact('battletag', 'blizz_id', 'region'), [
