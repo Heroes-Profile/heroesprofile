@@ -17,6 +17,7 @@
       <single-select-filter v-if="includesinglegametype" :values="this.filters.game_types" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="this.defaultGameType[0]"></single-select-filter>
       <single-select-filter v-if="includesinglegametypefull" :values="this.filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="this.defaultGameType[0]"></single-select-filter>
       <single-select-filter v-if="includeseason" :values="seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="this.defaultSeason"></single-select-filter>
+      <input type="date" v-if="includegamedate" v-model="selectedGameDate" @input="handleGameDateChange">
       <multi-select-filter v-if="includegamemap" :values="this.filters.game_maps" :text="'Map'" @input-changed="handleInputChange"></multi-select-filter>
       <single-select-filter v-if="includesinglegamemap" :values="this.filters.game_maps" :text="'Map'" @input-changed="handleInputChange"></single-select-filter>
       <multi-select-filter v-if="includeplayerrank" :values="this.filters.rank_tiers" :text="'Player Rank'" @input-changed="handleInputChange"></multi-select-filter>
@@ -82,6 +83,7 @@ export default {
     includexaxisincrements: Boolean,
     includesinglegametypefull: Boolean,
     minimumseason: Number,
+    includegamedate: Boolean,
 
     filters: {
       type: Object,
@@ -108,6 +110,7 @@ export default {
       modifiedincludegametype: null,
       modifiedminimumgamedefault: null,
       modifiedincludeheroes: null,
+      selectedGameDate: null,
     }
   },
   created(){    
@@ -185,6 +188,8 @@ export default {
         this.modifiedincludegametype = false;
         this.modifiedincludeheroes = false;
       }
+    },
+    handleGameDateChange() {
     },
     getDefaultMinorBasedOnTimeframeType() {
       if(this.defaultTimeframeType == "minor"){

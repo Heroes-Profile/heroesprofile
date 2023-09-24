@@ -32,6 +32,7 @@ use App\Http\Controllers\Player\PlayerMatchupsController;
 use App\Http\Controllers\Player\PlayerHeroesMapsRolesController;
 use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\Player\PlayerMMRController;
+use App\Http\Controllers\Player\PlayerMatchHistory;
 
 
 //Profile
@@ -146,5 +147,12 @@ Route::prefix('v1')->group(function () {
 
     Route::get('profile/save/settings', [ProfileController::class, 'saveSettings']); //testing
     Route::post('profile/save/settings', [ProfileController::class, 'saveSettings']);
+
+    Route::get('player/match/history', [PlayerMatchHistory::class, 'getData']); //testing
+    Route::post('player/match/history', [PlayerMatchHistory::class, 'getData']);
+
+
+
+
 
 });
