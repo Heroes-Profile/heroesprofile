@@ -73,7 +73,6 @@ export default {
   created(){
   },
   mounted() {
-        console.log(this.talentbuilddata);
   },
   computed: {
   },

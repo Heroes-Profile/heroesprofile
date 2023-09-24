@@ -19,9 +19,6 @@
       <group-box :text="'Top 5 Allies with more than 5 games'" :data="topfiveheroes"></group-box>
       <group-box :text="'Top 5 Enemies with more than 5 games'" :data="topfiveenemies"></group-box>
     </div>
-
-
-
     <table class="min-w-full bg-white">
       <thead>
         <tr>

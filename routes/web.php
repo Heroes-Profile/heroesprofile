@@ -31,6 +31,7 @@ use App\Http\Controllers\Player\PlayerMatchupsController;
 use App\Http\Controllers\Player\PlayerRolesController;
 use App\Http\Controllers\Player\PlayerMapsController;
 use App\Http\Controllers\Player\PlayerTalentsController;
+use App\Http\Controllers\Player\PlayerMMRController;
 
 
 
@@ -44,9 +45,6 @@ use App\Http\Controllers\Player\PlayerTalentsController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-///The way we are defining url paths to be consistent with the current site, the order of these routes cannot change.
-
 
 Route::fallback(function () {
     return view('errors.404');
@@ -127,6 +125,10 @@ Route::get('Player/{battletag}/{blizz_id}/{region}/Map/{map}', [PlayerMapsContro
 
 Route::get('Player/{battletag}/{blizz_id}/{region}/Talents', [PlayerTalentsController::class, 'show']);
 Route::get('Player/{battletag}/{blizz_id}/{region}/Talents/{hero}', [PlayerTalentsController::class, 'show']);
+
+Route::get('Player/{battletag}/{blizz_id}/{region}/MMR', [PlayerMMRController::class, 'show']);
+Route::get('Player/{battletag}/{blizz_id}/{region}/MMR', [PlayerMMRController::class, 'show']);
+
 
 
 Route::get('Match/Single/{replayID}', [SingleMatchController::class, 'show']);
