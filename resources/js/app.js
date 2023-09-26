@@ -4,6 +4,7 @@ import axios from 'axios';
 // Create a fresh Vue app instance
 const app = createApp({});
 
+import '@fortawesome/fontawesome-free/css/all.css'
 
 // Register components
 import ExampleComponent from './components/ExampleComponent.vue';
@@ -26,7 +27,6 @@ import CustomButton from './components/CustomButton.vue';
 import CustomTable from './components/CustomTable.vue';
 import GameSummaryBox from './components/GameSummaryBox.vue';
 import SearchComponent from './components/SearchComponent.vue';
-import SearchComponentNav from './components/SearchComponentNav.vue';  //delete later if I can figure out why its not working in the nav
 
 //Match Page
 import SingleMatch from './components/SingleMatch.vue';
@@ -83,6 +83,25 @@ import PlayerRolesAllStats from './components/Player/Roles/PlayerRolesAllStats.v
 import PlayerRoleSingleStats from './components/Player/Roles/PlayerRoleSingleStats.vue';
 import PlayerMapsAllStats from './components/Player/Maps/PlayerMapsAllStats.vue';
 import PlayerMapSingleStats from './components/Player/Maps/PlayerMapSingleStats.vue';
+import PlayerTalents from './components/Player/PlayerTalents.vue';
+import MmrData from './components/Player/MmrData.vue';
+import PlayerMatchHistory from './components/Player/PlayerMatchHistory.vue';
+
+//Esports
+import EsportsMain from './components/Esports/EsportsMain.vue';
+import EsportsTeams from './components/Esports/EsportsTeams.vue';
+import EsportsRecentMatches from './components/Esports/EsportsRecentMatches.vue';
+import EsportsHeroStats from './components/Esports/EsportsHeroStats.vue';
+import EsportsTalentStats from './components/Esports/EsportsTalentStats.vue';
+
+//NGS
+import NgsMain from './components/Esports/NGS/NgsMain.vue';
+import NgsDivisions from './components/Esports/NGS/NgsDivisions.vue';
+import NgsSingleDivision from './components/Esports/NGS/NgsSingleDivision.vue';
+import NgsStandings from './components/Esports/NGS/NgsStandings.vue';
+
+
+
 
 
 // Automatically register Vue components

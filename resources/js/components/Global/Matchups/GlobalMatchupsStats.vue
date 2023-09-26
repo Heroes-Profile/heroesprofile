@@ -193,10 +193,6 @@
           });
           this.allyenemydata = response.data;
           this.combineddata = response.data.combined;
-
-        console.log(response.data);
-
-
         }catch(error){
           //Do something here
         }

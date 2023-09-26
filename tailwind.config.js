@@ -13,6 +13,7 @@ module.exports = {
       'blue' : '#213d7a',
       'lblue' : '#315bb6',
       'teal' : '#008b8b',
+      
       'lteal' : '#00d5d5',
       'yellow' : '#ffc93e',
       'lyellow' : '#ffd465',
@@ -21,6 +22,7 @@ module.exports = {
       'black' : '#0F121D',
       'white' : '#ffffff',
       'lighten' : 'rgba(255, 255, 255, 0.1)',
+      'darken' : 'rgba(0,0,0,.1)'
     },
     fontFamily: {
       'sans' : ['Open Sans'],

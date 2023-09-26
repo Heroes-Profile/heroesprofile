@@ -5,7 +5,7 @@ import tailwindcss from 'tailwindcss'
 
 
 export default defineConfig({
-    base: process.env.NODE_ENV === 'production' ? 'https://rewrite.heroesprofile.com/public' : '/',
+    //base: process.env.NODE_ENV === 'production' ? 'https://rewrite.heroesprofile.com/public' : '/',
     plugins: [
         laravel({
             input: [

@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use App\Rules\BattletagInputProhibitCharacters;
-use App\Services\GlobalDataService;
 
 use App\Models\Battletag;
 use App\Models\Replay;
@@ -14,13 +13,6 @@ use App\Models\Map;
 
 class BattletagSearchController extends Controller
 {
-    protected $globalDataService;
-
-    public function __construct(GlobalDataService $globalDataService)
-    {
-        $this->globalDataService = $globalDataService;
-    }
-
     public function show(Request $request){
 
         return view('searchedBattletagHolding')->with(['userinput' => $request["userinput"], 'type' => $request["type"]]);
@@ -28,42 +20,41 @@ class BattletagSearchController extends Controller
 
     public function battletagSearch(Request $request){
         $request->validate(['userinput' => ['required', 'string', new BattletagInputProhibitCharacters],]);
+        $data = $this->searchForBattletag($request["userinput"]);
 
+        return $data;
+    }
 
-        $data = $this->searchForSpecificBattletag($request["userinput"]);
-
-
-        
-        if(!$data->isEmpty() && $data->count() == 1){
-            return $data;
+    private function searchForBattletag($input){
+        if (strpos($input, '#') !== false) {
+            $data = Battletag::select("blizz_id", "battletag", "region", "latest_game")
+                ->where("battletag", $input)
+                ->get();
+        } else {
+            $data = Battletag::select("blizz_id", "battletag", "region", "latest_game")
+                ->where("battletag", "LIKE", $input . "#%")
+                ->get();
         }
 
-        $data = $this->searchForPartialBattletag($request["userinput"]);
+        $returnData = [];
+        $counter = 0;
+        $uniqueBlizzIDRegion = [];
+        foreach($data as $row){
 
-        return $data;
-    }
+          if(array_key_exists($row["blizz_id"] . "|" . $row["region"], $uniqueBlizzIDRegion)){
+               if($row["latest_game"] > $uniqueBlizzIDRegion[$row["blizz_id"] . "|" . $row["region"]]){
+                    $returnData[$row["blizz_id"] . "|" . $row["region"]] = $row;
+                }
+            }else{
+                $uniqueBlizzIDRegion[$row["blizz_id"] . "|" . $row["region"]] = $row["latest_game"];
+                $returnData[$row["blizz_id"] . "|" . $row["region"]] = $row;
+                $counter++;
+            }
 
-    private function searchForSpecificBattletag($input){
-        $data = Battletag::select("blizz_id", "battletag", "region", "latest_game")->where("battletag", "LIKE", $input . "#%")->get();
-        return $data;
-
-        $uniqueData = $data->groupBy(['blizz_id', 'region'])
-                   ->map(function ($dateGroup) {
-                       return $dateGroup->sortByDesc('latest_game')->first();
-                   });
-        return $uniqueData;
-    }
-
-    private function searchForPartialBattletag($input){
-        $data = Battletag::select("blizz_id", "battletag", "region", "latest_game")->where("battletag", "LIKE", $input . "#%")->get();
-
-
-        $uniqueData = $data->groupBy(function ($item) {
-            return $item->blizz_id . '-' . $item->region;
-        })->map(function ($group) {
-            return $group->sortByDesc('latest_game')->first();
-        })->values();
-        $uniqueData = $uniqueData->sortByDesc('latest_game')->values()->take(50);
+            if($counter == 50){
+                break;
+            }
+        }
 
 
         $heroData = $this->globalDataService->getHeroes();
@@ -74,7 +65,7 @@ class BattletagSearchController extends Controller
 
         $regions = $this->globalDataService->getRegionIDtoString();
 
-        foreach ($uniqueData as $item) {
+        foreach ($returnData as $item) {
             $blizzId = $item->blizz_id;
             $battletag = $item->battletag;
             $battletagShort = explode('#', $item->battletag)[0];
@@ -94,8 +85,11 @@ class BattletagSearchController extends Controller
             $item->regionName = $regionName;
 
         }
+        usort($returnData, function ($a, $b) {
+            return $b->totalGamesPlayed - $a->totalGamesPlayed;
+        });
 
-        return $uniqueData->sortByDesc('totalGamesPlayed')->values();
+        return $returnData;
     }
 
     private function getTotalGamesPlayedForPlayer($blizzId, $region, $gameType = null){

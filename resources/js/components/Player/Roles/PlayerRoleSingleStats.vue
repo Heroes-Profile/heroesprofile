@@ -53,7 +53,7 @@
 
         <div class="flex flex-wrap gap-1">
           <template v-for="(item, index) in data.hero_data_all_heroes">
-            <round-image :hero="item.hero"></round-image>
+            <hero-image-wrapper :hero="item.hero"></hero-image-wrapper>
           </template>
         </div>
 
@@ -72,7 +72,7 @@
       </div>
     </div>
     <div v-else>
-      <loading-component></loading-component>
+      <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
     </div>
   </div>
 </template>

@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Global;
-use App\Services\GlobalDataService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -14,13 +13,6 @@ use App\Rules\HeroInputByIDValidation;
 
 class GlobalExtraStats extends Controller
 {
-    protected $globalDataService;
-
-    public function __construct(GlobalDataService $globalDataService)
-    {
-        $this->globalDataService = $globalDataService;
-    }
-
     public function show(Request $request){
         return view('Global.Extra.globalExtraStats')
         ->with([
@@ -80,7 +72,7 @@ class GlobalExtraStats extends Controller
 
         $region = (new RegionInputValidation())->passes('region', $request["region"]);
         $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
-        $hero = (new HeroInputByIDValidation())->passes('statfilter', $request["hero"]);
+        $hero = (new HeroInputByIDValidation())->passes('hero', $request["hero"]);
 
         $cacheKey = "GlobalExtraStatsHeroLevel|" . implode('|', [
             'hero' . $hero,

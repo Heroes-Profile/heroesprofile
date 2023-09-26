@@ -1,11 +1,14 @@
 <template>
   <div class="">
+    <page-heading :infoText1="infoText" :heading="battletag +`(`+ region+ `)`"></page-heading>
+    
   
       <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametype"></multi-select-filter>
       <single-select-filter :values="filters.seasons" :text="'Season'" @input-changed="handleInputChange"></single-select-filter>
      
 
       <div v-if="data" class="">
+
 
         <div class="flex md:p-20 gap-10 ">
           <div class="flex-1 flex flex-wrap justify-end">
@@ -158,7 +161,7 @@
         </div>
       </div>
       <div v-else>
-        <loading-component></loading-component>
+        <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
       </div>
 
   </div>

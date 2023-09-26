@@ -1,6 +1,5 @@
 <template>
   <div id="filter-label" class="relative">
-
       <div @click="showOptions = !showOptions" class="block text-sm font-medium text-gray-700 cursor-pointer  p-2   hover:bg-teal transition-colors">
         <span>{{ this.text }}</span> 
         <span  v-if="selectedOptionsName !== ''">: <span class="uppercase font-bold  bg-teal rounded px-1">{{ selectedOptionsName }}</span></span>      
@@ -63,17 +62,19 @@ export default {
       return selected ? selected.name : '';
     },
     filteredValues() {  
-      return this.values.filter(value => 
-        value.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
-        .includes(
-          this.searchQuery.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
-        )
-      );
+      return this.values.filter(value => {
+        if (value.name && typeof value.name === 'string') {
+          return value.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+            .includes(
+              this.searchQuery.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+            );
+        }
+        return false; // Skip objects without a valid name property
+      });
     },
   },
   watch: {
     selectedOptions: function (newVal) {
-      // Emitting the change back to the parent component
       this.$emit('input-changed', { field: this.text, value: newVal, type: 'single' });
     },
     showOptions: function (newVal) {
@@ -96,7 +97,6 @@ export default {
       }
     },
     toggleSelectedOptions(value) {
-      //Change this to be dynamic later
       if (this.text !== "Timeframe Type" && this.text !== "Build Filter" && this.text !== "Stat Filter" && this.text !== "Minimum Games") {                                          
         this.selectedOptions = this.selectedOptions === value ? '' : value;
       } else {

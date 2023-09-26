@@ -30,10 +30,17 @@ use App\Http\Controllers\Player\FriendFoeController;
 use App\Http\Controllers\Player\PlayerHeroesController;
 use App\Http\Controllers\Player\PlayerMatchupsController;
 use App\Http\Controllers\Player\PlayerHeroesMapsRolesController;
+use App\Http\Controllers\Player\PlayerTalentsController;
+use App\Http\Controllers\Player\PlayerMMRController;
+use App\Http\Controllers\Player\PlayerMatchHistory;
 
 
 //Profile
 use App\Http\Controllers\ProfileController;
+
+//Esports
+use App\Http\Controllers\Esports\NGS\NGSController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -50,88 +57,74 @@ use App\Http\Controllers\ProfileController;
 
 
 Route::prefix('v1')->group(function () {
-    Route::get('battletag/search', [BattletagSearchController::class, 'battletagSearch']); //testing
     Route::post('battletag/search', [BattletagSearchController::class, 'battletagSearch']);
 
-
-    Route::get('global/hero/', [GlobalHeroStatsController::class, 'getGlobalHeroData']); //testing
     Route::post('global/hero/', [GlobalHeroStatsController::class, 'getGlobalHeroData']);
 
-    Route::get('global/talents/', [GlobalTalentStatsController::class, 'getGlobalHeroTalentData']); //testing
     Route::post('global/talents/', [GlobalTalentStatsController::class, 'getGlobalHeroTalentData']);
 
-    Route::get('global/talents/build', [GlobalTalentStatsController::class, 'getGlobalHeroTalentBuildData']); //testing
     Route::post('global/talents/build', [GlobalTalentStatsController::class, 'getGlobalHeroTalentBuildData']);
 
-    Route::get('global/leaderboard', [GlobalLeaderboardController::class, 'getLeaderboardData']); //testing
     Route::post('global/leaderboard', [GlobalLeaderboardController::class, 'getLeaderboardData']);
 
-    Route::get('global/hero/map', [GlobalHeroMapStatsController::class, 'getHeroStatMapData']); //testing
     Route::post('global/hero/map', [GlobalHeroMapStatsController::class, 'getHeroStatMapData']);
 
-
-    Route::get('global/matchups', [GlobalHeroMatchupStatsController::class, 'getHeroMatchupData']); //testing
     Route::post('global/matchups', [GlobalHeroMatchupStatsController::class, 'getHeroMatchupData']);
 
-
-    Route::get('global/matchups/talents', [GlobalHeroMatchupsTalentsController::class, 'getHeroMatchupsTalentsData']); //testing
     Route::post('global/matchups/talents', [GlobalHeroMatchupsTalentsController::class, 'getHeroMatchupsTalentsData']);
 
-
-    Route::get('global/compositions', [GlobalCompositionsController::class, 'getCompositionsData']); //testing
     Route::post('global/compositions', [GlobalCompositionsController::class, 'getCompositionsData']);
 
-    Route::get('global/compositions/heroes', [GlobalCompositionsController::class, 'getTopHeroData']); //testing
     Route::post('global/compositions/heroes', [GlobalCompositionsController::class, 'getTopHeroData']);
 
-
-    Route::get('global/draft', [GlobalDraftController::class, 'getDraftData']); //testing
     Route::post('global/draft', [GlobalDraftController::class, 'getDraftData']);
 
-    Route::get('global/party', [GlobalPartyStatsController::class, 'getPartyStats']); //testing
     Route::post('global/party', [GlobalPartyStatsController::class, 'getPartyStats']);
 
-    Route::get('global/extra/account/level', [GlobalExtraStats::class, 'getAccountLevelStats']); //testing
     Route::post('global/extra/account/level', [GlobalExtraStats::class, 'getAccountLevelStats']);
 
-    Route::get('global/extra/hero/level', [GlobalExtraStats::class, 'getHeroLevelStats']); //testing
     Route::post('global/extra/hero/level', [GlobalExtraStats::class, 'getHeroLevelStats']);
 
-
-
-    Route::get('player', [PlayerController::class, 'getPlayerData']); //testing
     Route::post('player', [PlayerController::class, 'getPlayerData']);
 
-    Route::get('player/friendfoe', [FriendFoeController::class, 'getFriendFoeData']); //testing
     Route::post('player/friendfoe', [FriendFoeController::class, 'getFriendFoeData']);
 
-
-
-    Route::get('player/matchups', [PlayerMatchupsController::class, 'getMatchupData']); //testing
     Route::post('player/matchups', [PlayerMatchupsController::class, 'getMatchupData']);
 
-
-
-    Route::get('player/heroes/all', [PlayerHeroesMapsRolesController::class, 'getData']); //testing
     Route::post('player/heroes/all', [PlayerHeroesMapsRolesController::class, 'getData']);
 
-    Route::get('player/heroes/single', [PlayerHeroesMapsRolesController::class, 'getData']); //testing
     Route::post('player/heroes/single', [PlayerHeroesMapsRolesController::class, 'getData']);
 
-    Route::get('player/roles/all/', [PlayerHeroesMapsRolesController::class, 'getData']); //testing
     Route::post('player/roles/all/', [PlayerHeroesMapsRolesController::class, 'getData']);
 
 
-    Route::get('player/maps/all/', [PlayerHeroesMapsRolesController::class, 'getData']); //testing
     Route::post('player/maps/all/', [PlayerHeroesMapsRolesController::class, 'getData']);
 
-    Route::get('player/maps/single', [PlayerHeroesMapsRolesController::class, 'getData']); //testing
     Route::post('player/maps/single', [PlayerHeroesMapsRolesController::class, 'getData']);
 
-    Route::get('match/single', [SingleMatchController::class, 'getData']); //testing
+
+    Route::post('player/talents/', [PlayerTalentsController::class, 'getPlayerTalentData']);
+
+    Route::post('player/talents/build', [PlayerTalentsController::class, 'getPlayerTalentData']);
+
+    Route::post('player/mmr', [PlayerMMRController::class, 'getData']);
+
+
     Route::post('match/single', [SingleMatchController::class, 'getData']);
 
-    Route::get('profile/save/settings', [ProfileController::class, 'saveSettings']); //testing
     Route::post('profile/save/settings', [ProfileController::class, 'saveSettings']);
+
+    Route::post('player/match/history', [PlayerMatchHistory::class, 'getData']);
+
+    Route::post('player/match/history', [PlayerMatchHistory::class, 'getData']);
+
+    Route::post('esports/ngs/standings', [NGSController::class, 'getStandingData']);
+    Route::post('esports/ngs/divisions', [NGSController::class, 'getDivisionData']);
+    Route::post('esports/ngs/teams', [NGSController::class, 'getTeamsData']);
+    Route::post('esports/ngs/player/search', [NGSController::class, 'playerSearch']);
+    Route::post('esports/ngs/matches', [NGSController::class, 'getRecentMatchData']);
+    Route::post('esports/ngs/hero/stats', [NGSController::class, 'getOverallHeroStats']);
+    Route::post('esports/ngs/hero/talents/stats', [NGSController::class, 'getOverallTalentStats']);
+
 
 });

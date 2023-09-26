@@ -30,7 +30,13 @@ use App\Http\Controllers\Player\PlayerHeroesController;
 use App\Http\Controllers\Player\PlayerMatchupsController;
 use App\Http\Controllers\Player\PlayerRolesController;
 use App\Http\Controllers\Player\PlayerMapsController;
+use App\Http\Controllers\Player\PlayerTalentsController;
+use App\Http\Controllers\Player\PlayerMMRController;
+use App\Http\Controllers\Player\PlayerMatchHistory;
 
+use App\Http\Controllers\Esports\EsportsController;
+use App\Http\Controllers\Esports\NGS\NGSController;
+use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
 
 
 /*
@@ -43,9 +49,6 @@ use App\Http\Controllers\Player\PlayerMapsController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-///The way we are defining url paths to be consistent with the current site, the order of these routes cannot change.
-
 
 Route::fallback(function () {
     return view('errors.404');
@@ -124,9 +127,17 @@ Route::get('Player/{battletag}/{blizz_id}/{region}/Role/{role}', [PlayerRolesCon
 Route::get('Player/{battletag}/{blizz_id}/{region}/Map', [PlayerMapsController::class, 'showAll']);
 Route::get('Player/{battletag}/{blizz_id}/{region}/Map/{map}', [PlayerMapsController::class, 'showSingle']);
 
+Route::get('Player/{battletag}/{blizz_id}/{region}/Talents', [PlayerTalentsController::class, 'show']);
+Route::get('Player/{battletag}/{blizz_id}/{region}/Talents/{hero}', [PlayerTalentsController::class, 'show']);
+
+Route::get('Player/{battletag}/{blizz_id}/{region}/MMR', [PlayerMMRController::class, 'show']);
+
+Route::get('Player/{battletag}/{blizz_id}/{region}/Match/History', [PlayerMatchHistory::class, 'show']);
+
 
 
 Route::get('Match/Single/{replayID}', [SingleMatchController::class, 'show']);
+
 Route::get('/Match/Single/', function (\Illuminate\Http\Request $request) {
     $replayID = $request->query('replayID');
     
@@ -137,6 +148,12 @@ Route::get('/Match/Single/', function (\Illuminate\Http\Request $request) {
 });
 
 
+Route::get('Esports', [EsportsController::class, 'show']);
+Route::get('ESports', [EsportsController::class, 'show']);
+
+
+Route::get('Esports/NGS', [NGSController::class, 'show']);
+Route::get('Esports/NGS/Division/{division}', [NGSSingleDivisionController::class, 'show']);
 
 
 //Rewrite game data later

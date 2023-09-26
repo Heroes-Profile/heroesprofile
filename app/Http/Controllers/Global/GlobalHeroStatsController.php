@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Global;
 use Illuminate\Support\Facades\Cache;
 
-use App\Services\GlobalDataService;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -27,13 +25,6 @@ use App\Models\SeasonGameVersion;
 
 class GlobalHeroStatsController extends Controller
 {
-    protected $globalDataService;
-
-    public function __construct(GlobalDataService $globalDataService)
-    {
-        $this->globalDataService = $globalDataService;
-    }
-
     public function show(Request $request){
         return view('Global.Hero.globalHeroStats')
         ->with([
@@ -71,7 +62,7 @@ class GlobalHeroStatsController extends Controller
         $mirror = (new MirrorInputValidation())->passes('mirror', $request["mirror"]);
         $region = (new RegionInputValidation())->passes('region', $request["region"]);
         $statFilter = (new StatFilterInputValidation())->passes('statfilter', $request["statfilter"]);
-        $hero = (new HeroInputByIDValidation())->passes('statfilter', $request["hero"]);
+        $hero = (new HeroInputByIDValidation())->passes('hero', $request["hero"]);
         $role = (new RoleInputValidation())->passes('role', $request["role"]);
 
 

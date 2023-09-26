@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Global;
-use App\Services\GlobalDataService;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -21,13 +20,6 @@ use App\Models\GlobalHeroStackSize;
 
 class GlobalPartyStatsController extends Controller
 {
-    protected $globalDataService;
-
-    public function __construct(GlobalDataService $globalDataService)
-    {
-        $this->globalDataService = $globalDataService;
-    }
-
     public function show(Request $request){
         return view('Global.Party.globalPartyStats')
         ->with([
@@ -63,7 +55,7 @@ class GlobalPartyStatsController extends Controller
         $heroLevel = (new HeroLevelInputValidation())->passes('hero_level', $request["hero_level"]);
         $mirror = (new MirrorInputValidation())->passes('mirror', $request["mirror"]);
         $region = (new RegionInputValidation())->passes('region', $request["region"]);
-        $hero = (new HeroInputByIDValidation())->passes('statfilter', $request["hero"]);
+        $hero = (new HeroInputByIDValidation())->passes('hero', $request["hero"]);
 
         $request->validate([
             'heropartysize' => 'nullable|integer',

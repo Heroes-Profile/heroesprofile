@@ -17,20 +17,19 @@
       :includegametypefull="true"
       :includeseason="true"
       :includeminimumgames="true"
-
       >
     </filters>
 
 
 
     <div v-if="data">
-    <div>
-      <input type="text" v-model="searchQuery" placeholder="Search..." />
-      <div v-for="(stat, index) in filteredStats" :key="index" class="flex items-center">
-        <input type="checkbox" v-model="stat.selected" :disabled="isDisabled(stat)" @change="onCheckboxChange(stat)" />
-        <label>{{ stat.name }}</label>
+      <div>
+        <input type="text" v-model="searchQuery" placeholder="Search..." />
+        <div v-for="(stat, index) in filteredStats" :key="index" class="flex items-center">
+          <input type="checkbox" v-model="stat.selected" :disabled="isDisabled(stat)" @change="onCheckboxChange(stat)" />
+          <label>{{ stat.name }}</label>
+        </div>
       </div>
-    </div>
       <table class="min-w-full bg-white">
         <thead>
           <tr>
@@ -77,7 +76,7 @@
 
     </div>
     <div v-else>
-      <loading-component></loading-component>
+      <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
     </div>
 
   </div>
@@ -99,6 +98,7 @@ export default {
   },
   data(){
     return {
+      isLoading: false,
       infoText: "Select a hero below to view detailed stats for that hero. Use the search box above to filter the list of heroes. Or scroll down to the advanced section for table view.",
       gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
       data: null,
@@ -192,7 +192,6 @@ export default {
         { name: "Max Vengeance", value: 'max_vengeance', selected: false, flash: false},
         { name: "Max Watch Tower Captures", value: 'max_watch_tower_captures', selected: false, flash: false},
         { name: "Wins", value: 'wins', selected: false, flash: false},
-
       ],
     }
   },
@@ -225,6 +224,7 @@ export default {
   },
   methods: {
     async getData(type){
+      this.isLoading = true;
       try{
         const response = await this.$axios.post("/api/v1/player/maps/all", {
           blizz_id: this.blizzid,
@@ -241,6 +241,7 @@ export default {
       }catch(error){
         //Do something here
       }
+      this.isLoading = false;
     },
     filterData(filteredData){
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;

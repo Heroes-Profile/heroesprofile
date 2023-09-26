@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Global;
-use App\Services\GlobalDataService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\ValidationException;
 
@@ -24,13 +23,6 @@ use App\Models\Hero;
 
 class GlobalCompositionsController extends Controller
 {
-    protected $globalDataService;
-
-    public function __construct(GlobalDataService $globalDataService)
-    {
-        $this->globalDataService = $globalDataService;
-    }
-
     public function show(Request $request){
         return view('Global.Compositions.compositionsStats')  
             ->with([
@@ -67,7 +59,7 @@ class GlobalCompositionsController extends Controller
         $heroLevel = (new HeroLevelInputValidation())->passes('hero_level', $request["hero_level"]);
         $mirror = (new MirrorInputValidation())->passes('mirror', $request["mirror"]);
         $region = (new RegionInputValidation())->passes('region', $request["region"]);
-        $hero = (new HeroInputByIDValidation())->passes('statfilter', $request["hero"]);
+        $hero = (new HeroInputByIDValidation())->passes('hero', $request["hero"]);
 
         $request->validate([
             'minimum_games' => 'required|integer',

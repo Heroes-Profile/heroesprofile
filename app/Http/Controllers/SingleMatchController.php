@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Services\GlobalDataService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -13,13 +12,6 @@ use App\Models\ReplayExperienceBreakdownBlob;
 
 class SingleMatchController extends Controller
 {
-    protected $globalDataService;
-
-    public function __construct(GlobalDataService $globalDataService)
-    {
-        $this->globalDataService = $globalDataService;
-    }
-
     public function show(Request $request, $replayID)
     {
         $data = [

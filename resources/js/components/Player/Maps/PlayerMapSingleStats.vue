@@ -1,9 +1,7 @@
 <template>
   <div>
-    <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange" :defaultValue="hero"></single-select-filter>
-    as played by {{ battletag }}({{ getRegionName(region) }})
-
-
+      <single-select-filter :values="this.filters.game_maps" :text="'Maps'" @input-changed="handleInputChange" :defaultValue="map"></single-select-filter>
+      as played by {{ battletag }}({{ getRegionName(region) }})
 
       <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametype"></multi-select-filter>
       <single-select-filter :values="filters.seasons" :text="'Season'" @input-changed="handleInputChange"></single-select-filter>
@@ -43,18 +41,18 @@
         <line-chart v-if="seasonWinRateDataArray" :data="seasonWinRateDataArray"></line-chart>
 
         <div>
-          <span>Maps played on {{ heroname }}</span>
+          <span>Heroes played on {{ mapname }}</span>
 
           <infobox :input="'Click a map to see more information and stats, or select all maps to view maps regardless of hero.'"></infobox>
 
           <div class="flex">
-            <group-box :data="data.map_data_top_played.slice(0, 3)"></group-box>
-            <group-box :data="data.map_data_top_win_rate.slice(0, 3)"></group-box>
-            <group-box :data="data.map_data_top_latest_played.slice(0, 3)"></group-box>
+            <group-box :data="data.hero_data_top_played.slice(0, 3)"></group-box>
+            <group-box :data="data.hero_data_top_win_rate.slice(0, 3)"></group-box>
+            <group-box :data="data.hero_data_top_latest_played.slice(0, 3)"></group-box>
           </div>
 
           <div class="flex">
-            <map-image-wrapper v-for="(item, index) in data.map_data" :key="index" :map="item.map_object" :hovertext="'I am not sure if this is the right way to do it'"></map-image-wrapper>
+            <map-image-wrapper v-for="(item, index) in data.map_data" :key="index" :map="item"></map-image-wrapper>
           </div>
         </div>
 
@@ -81,7 +79,7 @@
 
       </div>
       <div v-else>
-        <loading-component></loading-component>
+        <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
       </div>
 
   </div>
@@ -94,31 +92,30 @@ export default {
   },
   props: {
     filters: Object,
-    hero: Number,
     battletag: String,
     blizzid: {
       type: [String, Number]
     },
     region: Number,
     regions: Object,
-    map: String,
+    map: Number,
   },
   data(){
     return {
-      inputhero: null,
+      inputmap: null,
       gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
       data: null,
     }
   },
   created(){
-    this.inputhero = this.hero;
+    this.inputmap = this.map;
   },
   mounted() {
     this.getData();
   },
   computed: {
-    heroname(){
-      return this.filters.heroes.find(hero => hero.code === this.inputhero).name;
+    mapname(){
+      //return this.filters.heroes.find(hero => hero.code === this.inputhero).name;
     },
     seasonWinRateDataArray() {
       return this.data && this.data.season_win_rate_data ? Object.values(this.data.season_win_rate_data) : null;
@@ -133,7 +130,6 @@ export default {
           blizz_id: this.blizzid,
           region: this.region,
           game_type: this.gametype,
-          hero: this.hero,
           type: "single",
           page: "map",
           map: this.map,
@@ -152,7 +148,7 @@ export default {
         this.inputhero = eventPayload.value;
 
         //Might have to url encode this...who knows
-        history.pushState(null, null, this.heroname);
+        history.pushState(null, null, this.mapname);
       }
     },
   }

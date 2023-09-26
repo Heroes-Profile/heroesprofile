@@ -21,6 +21,7 @@ use App\Models\MasterMMRDataSL;
 use App\Models\MasterMMRDataAR;
 use App\Models\Battletag;
 use App\Models\HeroesDataTalent;
+use App\Models\NGS\Team;
 
 
 class GlobalDataService
@@ -413,7 +414,7 @@ class GlobalDataService
             ['code' => '250', 'name' => '250'],
         ];
 
-        $filterData->leaderboard_type = [
+        $filterData->type = [
             ['code' => 'Player', 'name' => 'Player'],
             ['code' => 'Hero', 'name' => 'Hero'],
             ['code' => 'Role', 'name' => 'Role'],
@@ -438,6 +439,13 @@ class GlobalDataService
             ['code' => 'Role', 'name' => 'Role'],
         ];
 
+        $filterData->ngs_divisions = Team::distinct()->orderBy('division', 'asc')->pluck('division')->map(function ($division) {
+            return ['code' => $division, 'name' => $division];
+        });
+
+        $filterData->ngs_seasons = Team::distinct()->orderBy('season', 'desc')->pluck('season')->map(function ($season) {
+                return ['code' => $season, 'name' => strval($season)];
+        });
 
         return $filterData;
     }
@@ -502,20 +510,58 @@ class GlobalDataService
 
         $result = '';
 
+        $counter = 5;
+        $multiply = 1;
         foreach ($rankTiers as $key => $tierInfo) {
             $minMmr = $tierInfo['min_mmr'];
             $maxMmr = $tierInfo['max_mmr'];
             $split = $tierInfo['split'];
 
-            if (($mmr >= $minMmr) && ($maxMmr == "" || $mmr < $maxMmr)) {
-                $subTier = floor(($mmr - $minMmr) / $split) + 1;
-
-                if ($subTier > 5) {
-                    $subTier = 5;
+            if($mmr >= $minMmr && $mmr < $maxMmr){
+                for($i = $minMmr; $i < $maxMmr; $i += $split){
+                    if($mmr >= $i){
+                        $result = $tierNames[$key] . " " . $counter;
+                        $counter--;
+                    }
+                } 
+            }else{
+                if($mmr >= $minMmr && $maxMmr == ''){
+                    $result = "Master";
                 }
+            }
+        }
+        return $result;
+    }
 
-                $result = $tierNames[$key] . ($key === 'master' ? '' : ' ' . $subTier);
-                break;
+    public function getSubTiers($rankTiers, $mmr){
+        $tierNames = [
+            'bronze' => 'Bronze',
+            'silver' => 'Silver',
+            'gold' => 'Gold',
+            'platinum' => 'Platinum',
+            'diamond' => 'Diamond',
+            'master' => 'Master'
+        ];
+
+
+        $result = [];
+
+        $counter = 5;
+        $multiply = 1;
+        foreach ($rankTiers as $key => $tierInfo) {
+            $minMmr = $tierInfo['min_mmr'];
+            $maxMmr = $tierInfo['max_mmr'];
+            $split = $tierInfo['split'];
+
+            if($mmr >= $minMmr && $mmr < $maxMmr){
+                for($i = $minMmr; $i < $maxMmr; $i += $split){
+                    $result[$tierNames[$key] . " " . $counter] = $i;
+                    $counter--;
+                } 
+            }else{
+                if($mmr >= $minMmr && $maxMmr == ''){
+                    $result["Master"] = $minMmr;
+                }
             }
         }
         return $result;
