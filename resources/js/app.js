@@ -4,6 +4,7 @@ import axios from 'axios';
 // Create a fresh Vue app instance
 const app = createApp({});
 
+import '@fortawesome/fontawesome-free/css/all.css'
 
 // Register components
 import ExampleComponent from './components/ExampleComponent.vue';
@@ -85,6 +86,22 @@ import PlayerMapSingleStats from './components/Player/Maps/PlayerMapSingleStats.
 import PlayerTalents from './components/Player/PlayerTalents.vue';
 import MmrData from './components/Player/MmrData.vue';
 import PlayerMatchHistory from './components/Player/PlayerMatchHistory.vue';
+
+//Esports
+import EsportsMain from './components/Esports/EsportsMain.vue';
+import EsportsTeams from './components/Esports/EsportsTeams.vue';
+import EsportsRecentMatches from './components/Esports/EsportsRecentMatches.vue';
+import EsportsHeroStats from './components/Esports/EsportsHeroStats.vue';
+import EsportsTalentStats from './components/Esports/EsportsTalentStats.vue';
+
+//NGS
+import NgsMain from './components/Esports/NGS/NgsMain.vue';
+import NgsDivisions from './components/Esports/NGS/NgsDivisions.vue';
+import NgsSingleDivision from './components/Esports/NGS/NgsSingleDivision.vue';
+import NgsStandings from './components/Esports/NGS/NgsStandings.vue';
+
+
+
 
 
 // Automatically register Vue components

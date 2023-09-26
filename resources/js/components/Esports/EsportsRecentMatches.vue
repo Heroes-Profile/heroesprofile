@@ -1,0 +1,112 @@
+<template>
+  <div>
+    <table class="min-w-full bg-white">
+      <thead>
+        <tr>
+          <th @click="sortTable('replayID')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            Game ID
+          </th>
+          <th @click="sortTable('team_0_name')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            Team 1
+          </th>
+          <th @click="sortTable('team_1_name')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            Team 2
+          </th>
+          <th>
+            Game
+          </th>
+          <th @click="sortTable('game_date')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            Game Date
+          </th>            
+          <th @click="sortTable('game_map')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            Game Map
+          </th>
+          <th @click="sortTable('hero_id')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            Heroes
+          </th>                        
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(row, index) in sortedData" :key="index">
+          <td>
+            <a :href="'/Esports/NGS/Match/Single/' + row.replayID">{{ row.replayID }}</a>
+          </td>
+          <td>
+            {{ row.team_0_name }}
+          </td>
+          <td>
+            {{ row.team_1_name }}
+          </td>
+          <td>
+            Game {{ row.game }} Round {{ row.round }}
+          </td>
+          <td>
+            {{ row.game_date }}
+          </td>
+          <td>
+            {{ row.game_map.name }}
+          </td>
+          <td class="py-2 px-3 border-b border-gray-200 flex items-center gap-1">
+            <hero-image-wrapper :hero="row.heroes[0]"></hero-image-wrapper>
+            <hero-image-wrapper :hero="row.heroes[1]"></hero-image-wrapper>
+            <hero-image-wrapper :hero="row.heroes[2]"></hero-image-wrapper>
+            <hero-image-wrapper :hero="row.heroes[3]"></hero-image-wrapper>
+            <hero-image-wrapper :hero="row.heroes[4]"></hero-image-wrapper>
+            <hero-image-wrapper :hero="row.heroes[5]"></hero-image-wrapper>
+            <hero-image-wrapper :hero="row.heroes[6]"></hero-image-wrapper>
+            <hero-image-wrapper :hero="row.heroes[7]"></hero-image-wrapper>
+            <hero-image-wrapper :hero="row.heroes[8]"></hero-image-wrapper>
+            <hero-image-wrapper :hero="row.heroes[9]"></hero-image-wrapper>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'EsportsRecentMatches',
+  components: {
+  },
+  props: {
+    data: Array,
+  },
+  data(){
+    return {
+      sortKey: '',
+      sortDir: 'desc',
+    }
+  },
+  created(){
+  },
+  mounted() {
+  },
+  computed: {
+    sortedData() {
+      if (!this.sortKey) return this.data;
+      return this.data.slice().sort((a, b) => {
+        const valA = a[this.sortKey];
+        const valB = b[this.sortKey];
+        if (this.sortDir === 'asc') {
+          return valA < valB ? -1 : 1;
+        } else {
+          return valA > valB ? -1 : 1;
+        }
+      });
+    },
+  },
+  watch: {
+  },
+  methods: {
+    sortTable(key) {
+      if (key === this.sortKey) {
+        this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.sortDir = 'desc';
+      }
+      this.sortKey = key;
+    },
+  }
+}
+</script>

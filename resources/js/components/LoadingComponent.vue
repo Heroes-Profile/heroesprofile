@@ -1,6 +1,7 @@
 <template>
   <div class="loading-container">
-    <img src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
+    <img v-if="overrideimage" :src="overrideimage" alt="dsf" />
+    <img v-else src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
     <div class="loading-text">
       <slot v-if="textoverride"></slot>
       <span v-else>Loading data...</span>
@@ -14,6 +15,7 @@
     },
     props: {
       textoverride: Boolean,
+      overrideimage: String,
     },
     data(){
       return {

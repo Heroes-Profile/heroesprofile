@@ -17,24 +17,15 @@
         
         <custom-button :href="'/Compare'" :text="'Compare'" :alt="'Compare players'" :size="'big'" class="mt-10"></custom-button>
       </div>
-      <div class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
-        <h3 class="text-2xl mb-10">Player profile</h3>
-        <p>See all player stats in one place.  See data for individual maps or heroes played, match history and comparisons all from within a streamlined profile.</p>
 
 
-<div class="flex mt-auto justify-center">
-        <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'"></search-component>
-      </div>
-
-
-      </div>
       <div class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
         <h3 class="text-2xl mb-10">Global Stats</h3>
-        <p>Variety of global stats for heroes including, overall stats, builds, compositions, and more.</p>
+        <p>Variety of global stats for heroes including, overall stats, builds, compositions, draft, matchups, and more.</p>
         
         <div class="flex gap-2 justify-around mt-auto">
           <custom-button :href="'/Global/Hero'" :text="'Hero Stats'" :alt="'Hero Stats'" :size="'big'" class="mt-10" ></custom-button>
-        <custom-button :href="'/Global/Talents'" :text="'Talent Stats'" :alt="'Hero Stats'" :size="'big'"  class="mt-10" ></custom-button>
+          <custom-button :href="'/Global/Talents'" :text="'Talent Stats'" :alt="'Hero Stats'" :size="'big'"  class="mt-10" ></custom-button>
       </div>
       </div>
 
@@ -42,17 +33,24 @@
         <h3 class="text-2xl mb-10">Variety of Leaderboards</h3>
         <p>View leaderboards based on Player, Hero, or Role using Heroes Profile Rating. Get talent builds, and navigate directly to player's profiles.</p>
         
-        <custom-button :href="'#'" :text="'View Leaderboards'" :alt="'View Leaderboards'" :size="'big'" class="mt-10" ></custom-button>
+        <custom-button :href="'/Global/Leaderboard'" :text="'View Leaderboards'" :alt="'View Leaderboards'" :size="'big'" class="mt-10" ></custom-button>
       </div>
 
 
       <div class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
         <h3 class="text-2xl mb-10">Heroes Profile API</h3>
         <p>Heroes Profile API is a tool used to get Heroes of the Storm data parsed for HeroesProfile.com. </p>
-        
+      
         <custom-button  :href="'https://api.heroesprofile.com/Api'" :targetblank="true" :text="'API'" :alt="'API'"  :size="'big'" class="mt-auto"  :color="'teal'"></custom-button>
       </div>
 
+      <div class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
+        <h3 class="text-2xl mb-10">Player profile</h3>
+        <p>See all player stats in one place.  See data for individual maps or heroes played, match history and comparisons all from within a streamlined profile.</p>
+        <div class="flex mt-auto justify-center">
+          <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'"></search-component>
+        </div>
+      </div>
     </div>
 
 
