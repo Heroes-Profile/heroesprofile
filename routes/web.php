@@ -36,6 +36,7 @@ use App\Http\Controllers\Player\PlayerMatchHistory;
 
 use App\Http\Controllers\Esports\EsportsController;
 use App\Http\Controllers\Esports\NGS\NGSController;
+use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
 
 
 /*
@@ -152,6 +153,7 @@ Route::get('ESports', [EsportsController::class, 'show']);
 
 
 Route::get('Esports/NGS', [NGSController::class, 'show']);
+Route::get('Esports/NGS/Division/{division}', [NGSSingleDivisionController::class, 'show']);
 
 
 //Rewrite game data later

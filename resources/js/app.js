@@ -97,6 +97,7 @@ import EsportsTalentStats from './components/Esports/EsportsTalentStats.vue';
 //NGS
 import NgsMain from './components/Esports/NGS/NgsMain.vue';
 import NgsDivisions from './components/Esports/NGS/NgsDivisions.vue';
+import NgsSingleDivision from './components/Esports/NGS/NgsSingleDivision.vue';
 import NgsStandings from './components/Esports/NGS/NgsStandings.vue';
 
 

@@ -13,7 +13,7 @@
       </thead>
       <tbody>
         <tr v-for="division in data" :key="division">
-          <td><a :href="'/Esports/NGS/Division/' + division">{{ division.division_0 }}</a></td>
+          <td><a :href="'/Esports/NGS/Division/' + division.division_0">{{ division.division_0 }}</a></td>
           <td>{{ division.count }}</td>
         </tr>
       </tbody>
