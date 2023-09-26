@@ -89,13 +89,15 @@ import PlayerMatchHistory from './components/Player/PlayerMatchHistory.vue';
 
 //Esports
 import EsportsMain from './components/Esports/EsportsMain.vue';
-import Teams from './components/Esports/Teams.vue';
-import RecentMatches from './components/Esports/RecentMatches.vue';
+import EsportsTeams from './components/Esports/EsportsTeams.vue';
+import EsportsRecentMatches from './components/Esports/EsportsRecentMatches.vue';
+import EsportsHeroStats from './components/Esports/EsportsHeroStats.vue';
+import EsportsTalentStats from './components/Esports/EsportsTalentStats.vue';
 
 //NGS
 import NgsMain from './components/Esports/NGS/NgsMain.vue';
-import Divisions from './components/Esports/NGS/Divisions.vue';
-import Standings from './components/Esports/NGS/Standings.vue';
+import NgsDivisions from './components/Esports/NGS/NgsDivisions.vue';
+import NgsStandings from './components/Esports/NGS/NgsStandings.vue';
 
 
 

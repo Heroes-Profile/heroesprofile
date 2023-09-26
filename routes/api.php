@@ -122,8 +122,9 @@ Route::prefix('v1')->group(function () {
     Route::post('esports/ngs/divisions', [NGSController::class, 'getDivisionData']);
     Route::post('esports/ngs/teams', [NGSController::class, 'getTeamsData']);
     Route::post('esports/ngs/player/search', [NGSController::class, 'playerSearch']);
-    Route::post('/esports/ngs/matches', [NGSController::class, 'getRecentMatchData']);
-
+    Route::post('esports/ngs/matches', [NGSController::class, 'getRecentMatchData']);
+    Route::post('esports/ngs/hero/stats', [NGSController::class, 'getOverallHeroStats']);
+    Route::post('esports/ngs/hero/talents/stats', [NGSController::class, 'getOverallTalentStats']);
 
 
 });

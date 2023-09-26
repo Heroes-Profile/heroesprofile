@@ -95,27 +95,27 @@
       <div v-if="activeButton === 'standings' && standingData">
         <div class="flex flex-wrap gap-2">
           <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
-          <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange"></single-select-filter>
+          <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
           <custom-button @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
-        <standings :data="standingData"></standings>
+        <ngs-standings :data="standingData"></ngs-standings>
       </div>
 
       <div v-if="activeButton === 'divisions' && divisionData">
         <div class="flex flex-wrap gap-2">
-          <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange"></single-select-filter>
+          <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
           <custom-button @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
-        <divisions :data="divisionData"></divisions>
+        <ngs-divisions :data="divisionData"></ngs-divisions>
       </div>
 
       <div v-if="activeButton === 'teams' && teamsData">
         <div class="flex flex-wrap gap-2">
           <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
-          <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange"></single-select-filter>
+          <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
           <custom-button @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
-        <teams :data="teamsData"></teams>
+        <esports-teams :data="teamsData"></esports-teams>
       </div>
 
       <div v-if="activeButton === 'playerSearch'">
@@ -145,10 +145,43 @@
       <div v-if="activeButton === 'recentMatches' && recentMatchesData">
         <div class="flex flex-wrap gap-2">
           <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
-          <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange"></single-select-filter>
+          <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
           <custom-button @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
-        <recent-matches :data="recentMatchesData"></recent-matches>
+        <esports-recent-matches :data="recentMatchesData"></esports-recent-matches>
+      </div>
+
+
+      <div v-if="activeButton === 'overallHeroStats' && heroStatsData">
+        <div class="flex flex-wrap gap-2">
+          <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
+          <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
+          <custom-button @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+        </div>
+        <esports-hero-stats :data="heroStatsData"></esports-hero-stats>
+      </div>
+
+      <div v-if="activeButton === 'overallTalentStats'">
+        <div v-if="!selectedHero">
+          <hero-selection :heroes="heroes"></hero-selection>
+        </div>
+
+
+        <div v-else>
+          <div v-if="talentStatsData">
+            <div class="flex flex-wrap gap-2">
+              <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange" :defaultValue="selectedHero.id"></single-select-filter>
+              <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
+              <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
+              <custom-button @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+            </div>
+
+         
+            <esports-talent-stats :talentdetaildata="talentStatsData.talentData" :talentbuilddata="talentStatsData.buildData" :talentimages="talentimages" :selectedHero="selectedHero"></esports-talent-stats>
+          </div>
+
+        </div>
+
       </div>
 
     </div>
@@ -166,6 +199,8 @@ export default {
   props: {
     defaultseason: Number,
     filters: Object,
+    heroes: Object,
+    talentimages: Object,
   },
   data() {
     return {
@@ -179,6 +214,9 @@ export default {
       divisionData: null,
       teamsData: null,
       recentMatchesData: null,
+      heroStatsData: null,
+      talentStatsData: null,
+      selectedHero: null,
 
       season: null,
       division: null,
@@ -296,6 +334,34 @@ export default {
       }
       this.loading = false;
     },
+    async getHeroStats(){
+      this.loading = true;
+      try{
+        const response = await this.$axios.post("/api/v1/esports/ngs/hero/stats", {
+          season: this.season,
+          division: this.division,
+        });
+        this.heroStatsData = response.data;
+      }catch(error){
+        //Do something here
+      }
+      this.loading = false;
+    },
+    async getTalentStats(){
+      this.loading = true;
+      try{
+        const response = await this.$axios.post("/api/v1/esports/ngs/hero/talents/stats", {
+          season: this.season,
+          division: this.division,
+          hero: this.selectedHero.name,
+        });
+        this.talentStatsData = response.data;
+      }catch(error){
+        //Do something here
+      }
+      this.loading = false;
+    },
+
     setButtonActive(buttonName) {
       this.activeButton = buttonName;
       if(this.activeButton === 'standings'){
@@ -308,6 +374,11 @@ export default {
         this.searchedPlayer();
       }else if(this.activeButton === 'recentMatches'){
         this.getRecentMatches();
+      }else if(this.activeButton === 'overallHeroStats'){
+        this.getHeroStats();
+      }else if(this.activeButton === 'overallTalentStats' && this.selectedHero){
+        this.talentStatsData = null;
+        this.getTalentStats();
       }
     },
     handleInputChange(eventPayload) {
@@ -315,6 +386,8 @@ export default {
         this.division = eventPayload.value;
       }else if(eventPayload.field == "Seasons"){
         this.season = eventPayload.value;
+      }else if(eventPayload.field == "Heroes"){
+        this.selectedHero = this.heroes.find(value => value.id === eventPayload.value);
       }
     },
     filter(){
@@ -328,7 +401,16 @@ export default {
         this.searchedPlayer();
       }else if(this.activeButton === 'recentMatches'){
         this.getRecentMatches();
+      }else if(this.activeButton === 'overallHeroStats'){
+        this.getHeroStats();
+      }else if(this.activeButton === 'overallTalentStats' && this.selectedHero){
+        this.talentStatsData = null;
+        this.getTalentStats();
       }
+    },
+    clickedHero(hero){
+      this.selectedHero = hero;
+      this.getTalentStats();
     },
     redirectToProfile(battletag, blizz_id, region) {
       window.location.href = '/Esports/NGS/Player/' + battletag.split('#')[0] + "/" + blizz_id + "/" + region;

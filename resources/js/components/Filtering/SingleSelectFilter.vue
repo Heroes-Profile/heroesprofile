@@ -75,7 +75,6 @@ export default {
   },
   watch: {
     selectedOptions: function (newVal) {
-      // Emitting the change back to the parent component
       this.$emit('input-changed', { field: this.text, value: newVal, type: 'single' });
     },
     showOptions: function (newVal) {
@@ -98,7 +97,6 @@ export default {
       }
     },
     toggleSelectedOptions(value) {
-      //Change this to be dynamic later
       if (this.text !== "Timeframe Type" && this.text !== "Build Filter" && this.text !== "Stat Filter" && this.text !== "Minimum Games") {                                          
         this.selectedOptions = this.selectedOptions === value ? '' : value;
       } else {

@@ -47,7 +47,7 @@
 
 <script>
 export default {
-  name: 'Standings',
+  name: 'NgsStandings',
   components: {
   },
   props: {

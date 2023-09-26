@@ -20,7 +20,7 @@
 
 <script>
 export default {
-  name: 'Teams',
+  name: 'EsportsTeams',
   components: {
   },
   props: {

@@ -66,7 +66,7 @@
 
 <script>
 export default {
-  name: 'RecentMatches',
+  name: 'EsportsRecentMatches',
   components: {
   },
   props: {
