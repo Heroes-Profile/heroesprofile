@@ -33,7 +33,7 @@
         <h3 class="text-2xl mb-10">Variety of Leaderboards</h3>
         <p>View leaderboards based on Player, Hero, or Role using Heroes Profile Rating. Get talent builds, and navigate directly to player's profiles.</p>
         
-        <custom-button :href="'#'" :text="'View Leaderboards'" :alt="'View Leaderboards'" :size="'big'" class="mt-10" ></custom-button>
+        <custom-button :href="'/Global/Leaderboard'" :text="'View Leaderboards'" :alt="'View Leaderboards'" :size="'big'" class="mt-10" ></custom-button>
       </div>
 
 

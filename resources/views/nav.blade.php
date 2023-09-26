@@ -45,6 +45,7 @@
                     </div>
                 </div>
             </div>
+            <a class="text-blue-600 hover:text-blue-800" href="/Esports">Community Esports</a>
 
             <div class="relative group inline-block">
                 @if(isset($mainSearchAccount))

@@ -34,6 +34,8 @@ use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\Player\PlayerMMRController;
 use App\Http\Controllers\Player\PlayerMatchHistory;
 
+use App\Http\Controllers\Esports\EsportsController;
+use App\Http\Controllers\Esports\NGS\NGSController;
 
 
 /*
@@ -134,6 +136,7 @@ Route::get('Player/{battletag}/{blizz_id}/{region}/Match/History', [PlayerMatchH
 
 
 Route::get('Match/Single/{replayID}', [SingleMatchController::class, 'show']);
+
 Route::get('/Match/Single/', function (\Illuminate\Http\Request $request) {
     $replayID = $request->query('replayID');
     
@@ -144,6 +147,11 @@ Route::get('/Match/Single/', function (\Illuminate\Http\Request $request) {
 });
 
 
+Route::get('Esports', [EsportsController::class, 'show']);
+Route::get('ESports', [EsportsController::class, 'show']);
+
+
+Route::get('Esports/NGS', [NGSController::class, 'show']);
 
 
 //Rewrite game data later
