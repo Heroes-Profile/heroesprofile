@@ -8,7 +8,7 @@
       :onFilter="filterData" 
       :filters="filters" 
       :isLoading="isLoading"
-      :gametypedefault="gametypedefault"
+      :gametypedefault="gametype"
       :includehero="true"
       :includegamemap="true"
       :includegametypefull="true"
@@ -107,6 +107,7 @@ export default {
   },
   data(){
     return {
+      isLoading: false,
       frienddata: null,
       enemydata: null,
       friendSortKey: '',
@@ -115,7 +116,7 @@ export default {
       enemySortKey: '',
       enemySortDir: 'desc',
 
-      gametype: null,
+      gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
       gamemap: null,
       season: null,
     }
@@ -123,7 +124,7 @@ export default {
   created(){
   },
   mounted() {
-    this.gametype = this.gametypedefault;
+    //this.gametype = this.gametypedefault;
 
 
     Promise.allSettled([

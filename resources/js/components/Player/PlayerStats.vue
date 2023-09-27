@@ -182,6 +182,7 @@
     data(){
       return {
         data: null,
+        infoText: "Profile data",
         gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
         inputHero: null,
 

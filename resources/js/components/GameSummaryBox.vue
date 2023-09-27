@@ -12,7 +12,7 @@
         :style="{ backgroundImage: `url('/images/maps/match/match-${data.game_map.sanitized_map_name}.jpg')` }"
         >    
         <div class=" bg-red-500 absolute -left-10 -bottom-[1em]">
-          <hero-image-wrapper size="xl" :hero="data.hero"></hero-image-wrapper>
+          <hero-image-wrapper size="xl" :hero="data.hero" :excludehover="true"></hero-image-wrapper>
         </div>
         <div class="flex w-full hover:backdrop-brightness-125">
         <div class="flex w-full ">

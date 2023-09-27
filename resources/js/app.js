@@ -27,6 +27,7 @@ import CustomButton from './components/CustomButton.vue';
 import CustomTable from './components/CustomTable.vue';
 import GameSummaryBox from './components/GameSummaryBox.vue';
 import SearchComponent from './components/SearchComponent.vue';
+import ImageHoverBox from './components/ImageHoverBox.vue';
 
 //Match Page
 import SingleMatch from './components/SingleMatch.vue';

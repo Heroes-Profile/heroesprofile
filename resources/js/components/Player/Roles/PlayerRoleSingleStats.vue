@@ -53,7 +53,9 @@
 
         <div class="flex flex-wrap gap-1">
           <template v-for="(item, index) in data.hero_data_all_heroes">
-            <hero-image-wrapper :hero="item.hero"></hero-image-wrapper>
+            <hero-image-wrapper :hero="item.hero">
+              <image-hover-box :title="item.hero.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
+            </hero-image-wrapper>
           </template>
         </div>
 

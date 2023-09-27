@@ -114,7 +114,8 @@ class PlayerMatchupsController extends Controller
             ->sortByDesc('ally_win_rate')
             ->take(5)
             ->map(function($item) {
-                $item["hovertext"] = "Won while on a team with " . $item["name"] . " " . $item["ally_win_rate"] . "% of the time";
+                $item["win_rate"] = $item["ally_win_rate"];
+                $item["games_played"] = $item["ally_games_played"];
                 return $item;
             })
             ->values();
@@ -126,7 +127,8 @@ class PlayerMatchupsController extends Controller
             ->sortBy('enemy_win_rate')
             ->take(5)
             ->map(function($item) {
-                $item["hovertext"] = "Lost against a team with " . $item["name"] . " " . (100 - $item["enemy_win_rate"]) . "% of games";
+                $item["win_rate"] = 100 - $item["enemy_win_rate"];
+                $item["games_played"] = $item["enemy_games_played"];
                 return $item;
             })
             ->values();

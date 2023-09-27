@@ -1,10 +1,12 @@
 <template>
   <div>
-    <round-image v-if="!rectangle && hovertextstyleoverride" :size="size" :title="hero.name" :image="getHeroImage()" :tooltiptex="getToolTip()" :hovertextstyleoverride="hovertextstyleoverride">
+    <round-image v-if="!rectangle" :size="size" :image="getHeroImage()" :title="hero.name" :excludehover="excludehover">
       <slot>
+        <div v-if="!hasSlotContent">
+          <h2>{{ hero.name }}</h2>
+        </div>
       </slot>
     </round-image>
-    <round-image v-else-if="!rectangle" :size="size" :title="hero.name" :image="getHeroImage()" :tooltiptex="getToolTip()"></round-image>
     <div v-else>
       <img :src="getHeroImageRectangle()" :alt="hero.name" >
     </div>
@@ -19,10 +21,9 @@ export default {
   props: {
     hero: Object,
     size: String,
-    includehover: Boolean,
+    excludehover: Boolean,
     rectangle: Boolean,
     heroImage: String,
-    hovertextstyleoverride: Boolean,
   },
   data(){
     return {
@@ -33,6 +34,9 @@ export default {
   mounted() {   
   },
   computed: {
+    hasSlotContent() {
+      return !!this.$slots.default;
+    },
   },
   watch: {
   },
@@ -42,9 +46,6 @@ export default {
     },
     getHeroImageRectangle(){
       return `/images/heroes_rectangle/${this.hero.short_name}.jpg`;
-    },
-    getToolTip(){
-      return this.hero.name;
     },
   }
 }

@@ -42,7 +42,10 @@
       <tbody>
         <tr v-for="(row, index) in sortedData" :key="index">
           <td class="py-2 px-3 border-b border-gray-200 flex items-center gap-1">
-            <a :href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Hero/Single/' + row.hero.name"><hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}</a>
+            <a :href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Hero/Single/' + row.hero.name">
+              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>
+              {{ row.hero.name }}
+            </a>
           </td>
            <td class="py-2 px-3 border-b border-gray-200">
             {{ row.ally_win_rate }}

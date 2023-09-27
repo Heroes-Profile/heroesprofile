@@ -46,9 +46,9 @@
           <infobox :input="'Click a map to see more information and stats, or select all maps to view maps regardless of hero.'"></infobox>
 
           <div class="flex">
-            <group-box :data="data.hero_data_top_played.slice(0, 3)"></group-box>
-            <group-box :data="data.hero_data_top_win_rate.slice(0, 3)"></group-box>
-            <group-box :data="data.hero_data_top_latest_played.slice(0, 3)"></group-box>
+            <group-box :text="'Most Played'" :data="data.hero_data_top_played.slice(0, 3)"></group-box>
+            <group-box :text="'Highest Win Rate'" :data="data.hero_data_top_win_rate.slice(0, 3)"></group-box>
+            <group-box :text="'Latest Played'" :data="data.hero_data_top_latest_played.slice(0, 3)"></group-box>
           </div>
 
           <div class="flex">
