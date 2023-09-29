@@ -145,8 +145,21 @@
         }
         this.sortKey = key;
       },
-      filterData(){
+      filterData(filteredData){
+        this.season = filteredData.single["Season"] ? filteredData.single["Season"] : null;
+        this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
 
+        this.data = null;
+        this.topfiveheroes = null;
+        this.topfiveenemies = null;
+        this.getData();
+
+        /*
+        this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
+        this.data = [];
+        this.sortKey = '';
+        this.sortDir ='asc';
+        */
       },
 
     }

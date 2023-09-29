@@ -11,7 +11,7 @@
           <div>{{ item.battletagShort }} ({{ item.regionName }})</div>
           <div>{{ item.latest_game }}</div>
           <div>Games Played: {{ item.totalGamesPlayed }}</div>
-          <div>{{ item.latestMap.name }}</div>
+          <div v-if="item.latestMap">{{ item.latestMap.name }}</div>
           <div><hero-image-wrapper :hero="item.latestHero"></hero-image-wrapper></div>
         </div>
       </div>
