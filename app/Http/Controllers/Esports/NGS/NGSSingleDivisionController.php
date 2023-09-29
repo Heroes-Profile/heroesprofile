@@ -45,6 +45,8 @@ class NGSSingleDivisionController extends Controller
             'game_length',
             'round',
             'game',
+            'team_0_name',
+            'team_1_name',
             'heroesprofile_ngs.teams.team_name',
             'image',
             'winner',
@@ -80,20 +82,21 @@ class NGSSingleDivisionController extends Controller
                 'round' => $group[0]['round'],
                 'team_0_name' => $group[0]['team_0_name'],
                 'team_1_name' => $group[0]['team_1_name'],
+                'winner' => 1,
                 'heroes' => [
-                    0 => $group[0] && $group[0]['hero'] ? $heroData[$group[0]['hero']] : null,
-                    1 => $group[1] && $group[1]['hero'] ? $heroData[$group[1]['hero']] : null,
-                    2 => $group[2] && $group[2]['hero'] ? $heroData[$group[2]['hero']] : null,
-                    3 => $group[3] && $group[3]['hero'] ? $heroData[$group[3]['hero']] : null,
-                    4 => $group[4] && $group[4]['hero'] ? $heroData[$group[4]['hero']] : null,
-                    5 => $group[5] && $group[5]['hero'] ? $heroData[$group[5]['hero']] : null,
-                    6 => $group[6] && $group[6]['hero'] ? $heroData[$group[6]['hero']] : null,
-                    7 => $group[7] && $group[7]['hero'] ? $heroData[$group[7]['hero']] : null,
-                    8 => $group[8] && $group[8]['hero'] ? $heroData[$group[8]['hero']] : null,
-                    9 => $group[9] && $group[9]['hero'] ? $heroData[$group[9]['hero']] : null,
+                    0 => $group[0] && $group[0]['hero'] ? ["hero" => $heroData[$group[0]['hero']]] : null,
+                    1 => $group[1] && $group[1]['hero'] ? ["hero" => $heroData[$group[1]['hero']]] : null,
+                    2 => $group[2] && $group[2]['hero'] ? ["hero" => $heroData[$group[2]['hero']]] : null,
+                    3 => $group[3] && $group[3]['hero'] ? ["hero" => $heroData[$group[3]['hero']]] : null,
+                    4 => $group[4] && $group[4]['hero'] ? ["hero" => $heroData[$group[4]['hero']]] : null,
+                    5 => $group[5] && $group[5]['hero'] ? ["hero" => $heroData[$group[5]['hero']]] : null,
+                    6 => $group[6] && $group[6]['hero'] ? ["hero" => $heroData[$group[6]['hero']]] : null,
+                    7 => $group[7] && $group[7]['hero'] ? ["hero" => $heroData[$group[7]['hero']]] : null,
+                    8 => $group[8] && $group[8]['hero'] ? ["hero" => $heroData[$group[8]['hero']]] : null,
+                    9 => $group[9] && $group[9]['hero'] ? ["hero" => $heroData[$group[9]['hero']]] : null,
                 ]
             ];
-        })->take(10)->sortByDesc('games_played')->values()->all();
+        })->sortByDesc('game_date')->take(10)->values()->all();
 
 
         $teams = $results->groupBy('team_name')->map(function ($group) {

@@ -1,8 +1,9 @@
 <template>
   <div>
     <h2>{{ title }}</h2>
-    <p>{{ paragraphOne }}</p>
-    <p>{{ paragraphTwo }}</p>
+    <p v-if="paragraphOne">{{ paragraphOne }}</p>
+    <p v-if="paragraphTwo">{{ paragraphTwo }}</p>
+    <p v-if="paragraphThree">{{ paragraphThree }}</p>
   </div>
 </template>
 
@@ -14,7 +15,8 @@ export default {
   props: {
     title: String,
     paragraphOne: String,
-    paragraphTwo: String
+    paragraphTwo: String,
+    paragraphThree: String,
   },
   data(){
     return {

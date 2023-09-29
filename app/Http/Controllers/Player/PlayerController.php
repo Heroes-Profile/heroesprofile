@@ -86,8 +86,7 @@ class PlayerController extends Controller
             ->where("game_type", $request["game_type"])
             ->where("season", $request["season"])
             ->first();
-
-
+        
 
         if(!$cachedData){
             $cachedData = $this->calculateProfile($request["blizz_id"], $request["region"], $request["game_type"], $request["season"]);
