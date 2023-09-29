@@ -198,7 +198,7 @@ export default {
       playerrank: null,
       herorank: null,
       rolerank: null,
-      mirrormatch: "Exclude",
+      mirrormatch: 0,
       talentbuildtype: null,
       loadingStates: {},
     }
@@ -249,12 +249,11 @@ export default {
           role: this.role,
           hero: this.hero,
           game_type: this.gametype,
-          map: this.gamemap,
+          game_map: this.gamemap,
           league_tier: this.playerrank,
           hero_league_tier: this.herorank,
           role_league_tier: this.rolerank,
-          mirrormatch: this.mirrormatch,
-          talentbuildtype: this.talentbuildtype
+          mirror: this.mirrormatch,
         });
 
         this.data = response.data;
@@ -275,11 +274,11 @@ export default {
           statfilter: this.statfilter,
           hero_level: this.herolevel,
           game_type: this.gametype,
-          map: this.gamemap,
+          game_map: this.gamemap,
           league_tier: this.playerrank,
           hero_league_tier: this.herorank,
           role_league_tier: this.rolerank,
-          mirrormatch: this.mirrormatch,
+          mirror: this.mirrormatch,
           talentbuildtype: this.talentbuildtype
         });
 
@@ -295,18 +294,18 @@ export default {
     filterData(filteredData){
       this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
       this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaultMinor;
-      this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : [];
-      this.statfilter = filteredData.single["Stat Filter"] ? filteredData.single["Stat Filter"] : "win_rate";
-      this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : [];
-      this.role = filteredData.single["Role"] ? filteredData.single["Role"] : "";
-      this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : "";
-      this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : [];
-      this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : [];
-      this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : [];
-      this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : [];
-      this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : [];
-      this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "";
-      this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : "Popular";
+      this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : this.region;
+      this.statfilter = filteredData.single["Stat Filter"] ? filteredData.single["Stat Filter"] : this.statfilter;
+      this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : this.herolevel;
+      this.role = filteredData.single["Role"] ? filteredData.single["Role"] : this.role;
+      this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : this.hero;
+      this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
+      this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : this.gamemap;
+      this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : this.playerrank;
+      this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : this.herorank;
+      this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : this.rolerank;
+      this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
+      this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : this.talentbuildtype;
 
       this.talentbuilddata = {};
       this.loadingStates = {};

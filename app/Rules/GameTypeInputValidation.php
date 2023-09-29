@@ -2,6 +2,7 @@
 
 namespace App\Rules;
 
+use Closure;
 use Illuminate\Contracts\Validation\Rule;
 use App\Models\GameType;
 
@@ -9,22 +10,18 @@ class GameTypeInputValidation implements Rule
 {
     public function passes($attribute, $value)
     {
-        $validGameTypes = GameType::pluck('short_name')->toArray();
-        
-        $validGameTypes = array_diff($validGameTypes, ['br', 'cu']);
-        
-        $filteredGameTypes = array_intersect($value, $validGameTypes);
-        
-        if (empty($filteredGameTypes)) {
-            // Return 5 as the default game type
-            return [5];
+        if (!is_array($value)) {
+            return false;
         }
 
-        $typeIds = GameType::whereIn('short_name', $filteredGameTypes)
-            ->pluck('type_id')
-            ->toArray();
+        $existingGameTypes = GameType::pluck('short_name')->toArray();
+        $validGameTypes = array_intersect($value, $existingGameTypes);
 
-        return $typeIds;
+        if (empty($validGameTypes)) {
+            return false;
+        }
+
+        return true;
     }
 
     public function message()

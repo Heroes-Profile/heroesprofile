@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Rules;
-use Illuminate\Contracts\Validation\Rule;
 
 use Closure;
+use Illuminate\Contracts\Validation\Rule;
 use App\Models\Hero;
 
 class RoleInputValidation implements Rule
@@ -12,15 +12,15 @@ class RoleInputValidation implements Rule
     {
         $validRoles = Hero::pluck('new_role')->toArray();
         
-        if(in_array($value, $validRoles)){
-            return $value;
+        if(!in_array($value, $validRoles)){
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     public function message()
     {
-        return 'The selected mmr types are invalid.';
+        return 'The selected role is invalid.';
     }
 }

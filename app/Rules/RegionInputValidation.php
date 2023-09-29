@@ -2,6 +2,7 @@
 
 namespace App\Rules;
 
+use Closure;
 use Illuminate\Contracts\Validation\Rule;
 
 class RegionInputValidation implements Rule
@@ -15,21 +16,17 @@ class RegionInputValidation implements Rule
 
     public function passes($attribute, $value)
     {
-        if (!is_array($value)) {
-            $value = explode(',', $value);
+        if (!is_array($value)) 
+        {
+            return false;
         }
 
         $filteredRegions = array_intersect($value, array_keys($this->validRegions));
-
-        if(count($filteredRegions) == 4){
-            return [];
-        }
-        $filteredRegionValues = [];
-        foreach ($filteredRegions as $region) {
-            $filteredRegionValues[] = $this->validRegions[$region];
+        if (empty($filteredRegions)) {
+            return false;
         }
 
-        return $filteredRegionValues ?: [];
+        return true;
     }
 
     public function message()

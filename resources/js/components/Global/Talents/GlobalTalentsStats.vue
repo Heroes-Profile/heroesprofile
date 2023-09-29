@@ -153,12 +153,11 @@
             statfilter: this.statfilter,
             hero_level: this.herolevel,
             game_type: this.gametype,
-            map: this.gamemap,
+            game_map: this.gamemap,
             league_tier: this.playerrank,
             hero_league_tier: this.herorank,
             role_league_tier: this.rolerank,
             mirrormatch: this.mirrormatch,
-            talentbuildtype: this.talentbuildtype
           });
           this.talentdetaildata = response.data;
         }catch(error){
@@ -177,7 +176,7 @@
             statfilter: this.statfilter,
             hero_level: this.herolevel,
             game_type: this.gametype,
-            map: this.gamemap,
+            game_map: this.gamemap,
             league_tier: this.playerrank,
             hero_league_tier: this.herorank,
             role_league_tier: this.rolerank,

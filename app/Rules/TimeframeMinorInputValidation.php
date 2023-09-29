@@ -2,6 +2,7 @@
 
 namespace App\Rules;
 
+use Closure;
 use Illuminate\Contracts\Validation\Rule;
 use App\Models\SeasonGameVersion;
 
@@ -9,23 +10,23 @@ class TimeframeMinorInputValidation implements Rule
 {
     public function passes($attribute, $value)
     {
-        // Fetch the existing game_versions from the database
-        $existingVersions = SeasonGameVersion::pluck('game_version')->toArray();
+        // Ensure $value is an array
+        if (!is_array($value)) {
+            return false;
+        }
 
-        // Find the values that exist in the database
+        $existingVersions = SeasonGameVersion::pluck('game_version')->toArray();
         $validVersions = array_intersect($value, $existingVersions);
 
         if (empty($validVersions)) {
-            // If no valid versions are found, return the latest version as default
-            $latestVersion = SeasonGameVersion::latest('game_version')->value('game_version');
-            return [$latestVersion];
+            return false;
         }
 
-        return array_values($validVersions);
+        return true;
     }
 
     public function message()
     {
-        return 'The selected :attribute contains invalid or missing timeframes.';
+        return 'The selected game versions are invalid.';
     }
 }
