@@ -1,5 +1,4 @@
 <template>
-  
     <div id="filter-label" class="relative" :class="{ 'bg-red': highlighttimesframes }">
       <div @click="showOptions = !showOptions" class="block text-sm font-medium text-gray-700 cursor-pointer  p-2   hover:bg-teal transition-colors">
         <span>{{ this.text }}</span>
@@ -18,20 +17,21 @@
             >
             <label for="select-all" class="ml-2 text-sm text-black">Select All</label>
           </div>
-          <div v-for="value in values" :key="value.code">
-            <input 
-              type="checkbox" 
-              :id="value.code" 
-              :value="value.code" 
-              v-model="selectedOptions"
-              class="form-checkbox h-5 w-5 text-indigo-600"
-            >
-            <label :for="value.code" class="ml-2 text-sm text-black">{{ value.name }}</label>
+          <div class="max-h-80 overflow-y-auto"> 
+            <div v-for="value in values" :key="value.code">
+              <input 
+                type="checkbox" 
+                :id="value.code" 
+                :value="value.code" 
+                v-model="selectedOptions"
+                class="form-checkbox h-5 w-5 text-indigo-600"
+              >
+              <label :for="value.code" class="ml-2 text-sm text-black">{{ value.name }}</label>
+            </div>
           </div>
         </div>
       </div>
     </div>
- 
 </template>
 
 <script>
@@ -51,10 +51,9 @@ export default {
     }
   },
   created(){
-    if(this.text == "Timeframes"){
+    if(this.text == "Timeframes" || this.text == "Game Type"){
       this.$emit('input-changed', { field: this.text, value: this.selectedOptions, type: 'multi' });
     }
-
   },
   mounted() {
     document.addEventListener("click", this.handleClickOutside);
@@ -70,7 +69,7 @@ export default {
       });
     },
     highlighttimesframes(){
-      if(this.text === "Timeframes"){
+      if(this.text === "Timeframes" || this.text === "Game Type"){
         if(this.selectedOptions.length == 0){
           return true
         }

@@ -13,6 +13,7 @@ use App\Rules\HeroLevelInputValidation;
 use App\Rules\RegionInputValidation;
 
 use App\Models\Map;
+use App\Models\SeasonGameVersion;
 
 class GlobalsInputValidationController extends Controller
 {
@@ -42,6 +43,7 @@ class GlobalsInputValidationController extends Controller
             $gameVersion = $query->get()
                 ->pluck('game_version')
                 ->toArray();
+            return $gameVersion;
         }
 
         return $timeframes;

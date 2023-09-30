@@ -306,8 +306,9 @@ export default {
       this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : null;
       this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
       this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : this.talentbuildtype;
-
+      
       this.talentbuilddata = {};
+      this.toggletalentbuilds = {};
       this.loadingStates = {};
       this.sortKey = '';
       this.sortDir = 'desc';

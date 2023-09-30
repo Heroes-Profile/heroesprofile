@@ -1,15 +1,16 @@
 <template>
   <div id="filter-label" class="relative">
-      <div @click="showOptions = !showOptions" class="block text-sm font-medium text-gray-700 cursor-pointer  p-2   hover:bg-teal transition-colors">
-        <span>{{ this.text }}</span> 
-        <span  v-if="selectedOptionsName !== ''">: <span class="uppercase font-bold  bg-teal rounded px-1">{{ selectedOptionsName }}</span></span>      
+    <div @click="showOptions = !showOptions" class="block text-sm font-medium text-gray-700 cursor-pointer p-2 hover:bg-teal transition-colors">
+      <span>{{ this.text }}</span> 
+      <span v-if="selectedOptionsName !== ''">: <span class="uppercase font-bold bg-teal rounded px-1">{{ selectedOptionsName }}</span></span>      
+    </div>
+    <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->
+    <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg expandable-dropdown z-50">
+      <div>
+        <!-- Search Input -->
+        <input v-model="searchQuery" type="text" placeholder="Search" class="w-full p-2"/>
       </div>
-      <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->
-      <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg expandable-dropdown z-50">
-        <div>
-          <!-- Search Input -->
-          <input v-model="searchQuery" type="text" placeholder="Search" class="w-full p-2"/>
-        </div>
+      <div class="max-h-80 overflow-y-auto"> 
         <div class="space-y-2 p-2">
           <div v-for="value in filteredValues" :key="value.code">
             <input 
@@ -24,9 +25,10 @@
           </div>
         </div>
       </div>
- 
+    </div>
   </div>
 </template>
+
 
 <script>
 export default {
@@ -97,7 +99,9 @@ export default {
       }
     },
     toggleSelectedOptions(value) {
-      if (this.text !== "Timeframe Type" && this.text !== "Build Filter" && this.text !== "Stat Filter" && this.text !== "Minimum Games" && this.text !== "Mirror Matches") {                                          
+      if(this.text === "Stat Filter"){
+        this.selectedOptions = this.selectedOptions === value ? 'win_rate' : value;
+      }else if (this.text !== "Timeframe Type" && this.text !== "Build Filter" && this.text !== "Minimum Games" && this.text !== "Mirror Matches") {                                          
         this.selectedOptions = this.selectedOptions === value ? '' : value;
       } else {
         this.selectedOptions = value;

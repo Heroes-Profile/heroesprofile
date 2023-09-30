@@ -56,9 +56,6 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
 
 
         $gameVersion = $this->getTimeframeFilterValues($request["timeframe_type"], $request["timeframe"]);
-
-
-
         $gameTypeRecords = GameType::whereIn("short_name", $request["game_type"])->get();
         $gameType = $gameTypeRecords->pluck("type_id")->toArray();
 

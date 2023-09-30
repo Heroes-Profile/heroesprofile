@@ -168,7 +168,12 @@ class GlobalDataService
 
         return 0;
     }
-
+    public function getGameTypes(){
+        if (!session()->has('game_types')) {
+            session(['game_types' => GameType::orderBy("type_id", "ASC")->get()]);
+        }
+        return session('game_types');
+    }
     public function getHeroes(){
         if (!session()->has('heroes')) {
             session(['heroes' => Hero::orderBy("name", "ASC")->get()]);

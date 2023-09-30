@@ -144,7 +144,7 @@ export default {
   },
   computed: {
     disabledFilter(){
-      if(this.isLoading || !this.selectedMultiFilters.hasOwnProperty('Timeframes')){
+      if(this.isLoading || !this.selectedMultiFilters.hasOwnProperty('Timeframes') || !this.selectedMultiFilters.hasOwnProperty('Game Type')){
         return true;
       }
 
@@ -186,8 +186,6 @@ export default {
         } else {
           this.selectedSingleFilters[eventPayload.field] = eventPayload.value;
         }
-
-        console.log(this.selectedSingleFilters);
       } else if(eventPayload.type === 'multi') {
         if(eventPayload.value.length == 0){
           delete this.selectedMultiFilters[eventPayload.field];
@@ -221,7 +219,7 @@ export default {
       return ''; // Default return value, adjust as needed
     },
     applyFilter() {
-      if (this.selectedMultiFilters.hasOwnProperty('Timeframes')) {
+      if (this.selectedMultiFilters.hasOwnProperty('Timeframes') && this.selectedMultiFilters.hasOwnProperty('Game Type')) {
         const allSelectedFilters = {
           single: this.selectedSingleFilters,
           multi: this.selectedMultiFilters
