@@ -23,13 +23,14 @@
       :includerolerank="true"
       :includemirror="true"
       :includetalentbuildtype="true"
+      :advancedfiltering="advancedfiltering"
       >
     </filters>
 
     
     <div v-if="this.data.data">
       <div class="float-right mr-20">
-        <custom-button @click="toggleChartValue"  text="Toggle Chart" alt="Toggle Chart" size="small" :ignoreclick="true"></custom-button>
+        <custom-button @click="toggleChartValue" text="Toggle Chart" alt="Toggle Chart" size="small" :ignoreclick="true"></custom-button>
       </div>
 
       <div v-if="togglechart">
@@ -170,6 +171,7 @@ export default {
     defaultbuildtype: String,
     defaulttimeframetype: String,
     defaulttimeframe: Array,
+    advancedfiltering: String,
   },
   data(){
     return {
@@ -337,7 +339,7 @@ export default {
         return  true;
       }
       return false;
-    }
+    },
   }
 }
 </script>

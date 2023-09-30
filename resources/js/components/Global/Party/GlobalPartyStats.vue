@@ -22,6 +22,8 @@
       :includeheropartysize="true"
       :includeteamoneparty="true"
       :includeteamtwoparty="true"
+      :advancedfiltering="advancedfiltering"
+
       >
     </filters>
     
@@ -264,6 +266,7 @@ export default {
     gametypedefault: Array,
     defaulttimeframetype: String,
     defaulttimeframe: Array,
+    advancedfiltering: String,
   },
   data(){
     return {

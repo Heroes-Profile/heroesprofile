@@ -11,6 +11,8 @@
     :includegametype="true"
     :includegamemap="true"
     :includeplayerrank="true"
+    :advancedfiltering="advancedfiltering"
+
     >
   </filters>
 
@@ -85,6 +87,7 @@
       defaulttimeframe: Array,
       inputhero: Object,
       inputenemyally: Object,
+      advancedfiltering: String,
     },
     data(){
       return {

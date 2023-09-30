@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Global;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 use App\Rules\TimeframeMinorInputValidation;
 use App\Rules\GameTypeInputValidation;

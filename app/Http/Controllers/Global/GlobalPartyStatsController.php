@@ -26,6 +26,7 @@ class GlobalPartyStatsController extends Controller
             'filters' => $this->globalDataService->getFilterData(),
             'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
             'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
+            'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
             'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
             'defaultbuildtype' => $this->globalDataService->getDefaultBuildType()
         ]);
@@ -33,6 +34,8 @@ class GlobalPartyStatsController extends Controller
 
 
     public function getPartyStats(Request $request){
+        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+
         //return response()->json($request->all());
 
         $gameVersion = null;

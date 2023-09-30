@@ -11,6 +11,11 @@
       Default Game Type: <multi-select-filter :values="this.filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="defaultGameType"></multi-select-filter>
     </div>
 
+    <div>
+      Show Advanced Filtering options: <single-select-filter :values="advancedfilteringoptions" :text="'Advanced Filtering'" @input-changed="handleInputChange" :defaultValue="defaultAdvancedFiltering"></single-select-filter>
+    </div>
+
+
     <custom-button :ignoreclick="true" :text="'Save settings'" @click="saveSettings()"></custom-button>
     <ul>
       <li>Opt Out</li>
@@ -34,21 +39,39 @@ export default {
     return {
       userhero: null,
       usergametype: null,
+      advancedfilteringoptions: [
+        { code: 'true', name: 'Show' },
+        { code: 'false', name: "Don't Show" }
+      ],
+      advancedfiltering: null,
     }
   },
   created(){
   },
   mounted() {
+    this.advancedfiltering = this.defaultAdvancedFiltering;
   },
   computed: {
     defaultHero(){
-      let hero = this.user.user_settings.find(item => item.setting === 'hero').value;
-
-      return hero ? hero : null;
+      if (this.user.user_settings.length > 0){
+        let hero = this.user.user_settings.find(item => item.setting === 'hero').value;
+        return hero ? hero : null;
+      }
+      return null;
     },
     defaultGameType(){
-      let gameType = this.user.user_settings.find(item => item.setting === 'game_type').value;
-      return gameType ? [gameType] : null;
+      if (this.user.user_settings.length > 0){
+        let gameType = this.user.user_settings.find(item => item.setting === 'game_type').value;
+        return gameType ? [gameType] : null;
+      }
+      return null;
+    },
+    defaultAdvancedFiltering(){
+      if (this.user.user_settings.length > 0){
+        let advancedfiltering = this.user.user_settings.find(item => item.setting === 'advancedfiltering').value;
+        return advancedfiltering ? advancedfiltering : 'false';
+      }
+      return "false";
     },
   },
   watch: {
@@ -60,8 +83,9 @@ export default {
           userid: this.user.battlenet_accounts_id,
           userhero: this.userhero,
           usergametype: this.usergametype,
+          advancedfiltering: this.advancedfiltering,
         });
-        window.location.href = "/Profile/Settings";
+        //window.location.href = "/Profile/Settings";
       }catch(error){
         //Do something here
       }
@@ -70,6 +94,8 @@ export default {
       if(eventPayload.type === 'single') {
         if(eventPayload.field == "Heroes"){
           this.userhero = this.filters.heroes.find(hero => hero.code === eventPayload.value).name;
+        }else if(eventPayload.field == "Advanced Filtering"){
+          this.advancedfiltering = eventPayload.value;
         }
 
       } else if(eventPayload.type === 'multi') {

@@ -43,6 +43,7 @@ class GlobalHeroMatchupsTalentsController extends Controller
                 'filters' => $this->globalDataService->getFilterData(),
                 'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
+                'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
                 'inputhero' => $inputhero,
                 'inputenemyally' => $inputenemyally,
@@ -50,6 +51,8 @@ class GlobalHeroMatchupsTalentsController extends Controller
     }
 
     public function getHeroMatchupsTalentsData(Request $request){
+        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+
         //return response()->json($request->all());
 
         $gameVersion = null;

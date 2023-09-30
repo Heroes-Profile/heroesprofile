@@ -15,6 +15,8 @@
       :includesingleleaguetier="true"
       :includesingleregion="true"
       :minimumseason="13"
+      :advancedfiltering="advancedfiltering"
+
       >
     </filters>
     <div v-if="data">
@@ -38,6 +40,7 @@ export default {
     },
     gametypedefault: Array,
     defaultseason: String,
+    advancedfiltering: String,
   },
   data(){
     return {

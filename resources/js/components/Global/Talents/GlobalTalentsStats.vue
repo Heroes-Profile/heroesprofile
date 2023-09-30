@@ -27,6 +27,8 @@
           :includeherorank="true"
           :includerolerank="true"
           :includemirror="true"
+          :advancedfiltering="advancedfiltering"
+
           >
         </filters>
 
@@ -68,6 +70,7 @@
       defaulttimeframe: Array,
       defaultbuildtype: String,
       talentimages: Object,
+      advancedfiltering: String,
     },
     data(){
       return {

@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Global;
 use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Validator;
+
 use App\Rules\HeroInputValidation;
 use App\Rules\StatFilterInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
@@ -28,6 +28,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                 'filters' => $this->globalDataService->getFilterData(),
                 'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
+                'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
                 'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
@@ -35,6 +36,8 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
     }
 
     public function getGlobalHeroTalentData(Request $request){
+        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+
         //return response()->json($request->all());
         $validationRules = array_merge($this->globalsValidationRules($request["timeframe_type"]), [
             'statfilter' => ['required', new StatFilterInputValidation()],
@@ -148,6 +151,8 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
     }
 
     public function getGlobalHeroTalentBuildData(Request $request){
+        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+
         //return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request["timeframe_type"]), [

@@ -25,6 +25,8 @@
         :includeplayerrank="true"
         :includeherorank="true"
         :includerolerank="true"
+        :advancedfiltering="advancedfiltering"
+
         >
       </filters>
 
@@ -89,6 +91,7 @@
       defaulttimeframetype: String,
       defaulttimeframe: Array,
       defaultbuildtype: String,
+      advancedfiltering: String,
     },
     data(){
       return {

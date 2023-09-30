@@ -19,6 +19,7 @@
       :includemirror="true"
       :includeminimumgames="true"
       :minimumgamesdefault="'100'"
+      :advancedfiltering="advancedfiltering"
       >
     </filters>
     <div v-if="sortedData">
@@ -128,6 +129,7 @@ export default {
     defaultbuildtype: String,
     defaulttimeframetype: String,
     defaulttimeframe: Array,
+    advancedfiltering: String,
   },
   data(){
     return {

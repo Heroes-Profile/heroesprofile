@@ -28,6 +28,7 @@ class GlobalCompositionsController extends Controller
             ->with([
                 'filters' => $this->globalDataService->getFilterData(),
                 'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
+                'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
                 'defaultbuildtype' => $this->globalDataService->getDefaultBuildType()
@@ -37,6 +38,7 @@ class GlobalCompositionsController extends Controller
     }
 
     public function getCompositionsData(Request $request){
+        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
         //return response()->json($request->all());
 
         $gameVersion = null;

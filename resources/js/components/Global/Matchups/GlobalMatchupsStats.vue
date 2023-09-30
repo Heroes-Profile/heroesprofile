@@ -22,6 +22,8 @@
       :includeherorank="true"
       :includerolerank="true"
       :includemirror="true"
+      :advancedfiltering="advancedfiltering"
+
       >
     </filters>
     <div v-if="allyenemydata" class="flex flex-wrap gap-4 justify-center items-center">
@@ -96,6 +98,7 @@
       gametypedefault: Array,
       defaulttimeframetype: String,
       defaulttimeframe: Array,
+      advancedfiltering: String,
     },
     data(){
       return {

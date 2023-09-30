@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Global;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 
 use App\Http\Controllers\Global\GlobalsController;
 use Illuminate\Http\Request;
 
-use Illuminate\Support\Facades\Validator;
 use App\Rules\StatFilterInputValidation;
 use App\Rules\HeroInputByIDValidation;
 use App\Rules\RoleInputValidation;
@@ -25,6 +25,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         ->with([
             'filters' => $this->globalDataService->getFilterData(),
             'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
+            'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
             'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
             'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
             'defaultbuildtype' => $this->globalDataService->getDefaultBuildType()
