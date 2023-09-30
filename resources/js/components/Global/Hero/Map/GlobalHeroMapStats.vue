@@ -119,8 +119,8 @@
         this.getData();
       },
       async getData(){
+        this.isLoading = true;
         try{
-          this.isLoading = true;
           const response = await this.$axios.post("/api/v1/global/hero/map", {
             hero: this.selectedHero.name,
             timeframe_type: this.timeframetype,

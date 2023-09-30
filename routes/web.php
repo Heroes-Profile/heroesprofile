@@ -86,7 +86,10 @@ Route::get('/Global/Hero', [GlobalHeroStatsController::class, 'show']);
 
 
 Route::get('/Global/Matchups/Talents', [GlobalHeroMatchupsTalentsController::class, 'show']);
-Route::get('/Global/Matchups/Talents/{hero}', [GlobalHeroMatchupsTalentsController::class, 'show']);
+Route::get('/Global/Matchups/Talents/{hero}/{allyenemy}', [GlobalHeroMatchupsTalentsController::class, 'show']);
+
+
+
 Route::get('/Global/Matchups', [GlobalHeroMatchupStatsController::class, 'show']);
 Route::get('/Global/Matchups/{hero}', [GlobalHeroMatchupStatsController::class, 'show']);
 
@@ -97,8 +100,6 @@ Route::get('/Global/Draft/General/{hero}', [GlobalDraftController::class, 'show'
 
 Route::get('/Global/Talents/', [GlobalTalentStatsController::class, 'show']);
 Route::get('/Global/Talents/{hero}', [GlobalTalentStatsController::class, 'show']);
-
-
 
 Route::get('/Global/Leaderboard', [GlobalLeaderboardController::class, 'show']);
 

@@ -143,7 +143,7 @@
             region: this.region,
             hero_level: this.herolevel,
             game_type: this.gametype,
-            map: this.gamemap,
+            game_map: this.gamemap,
             league_tier: this.playerrank,
             hero_league_tier: this.herorank,
             role_league_tier: this.rolerank,
@@ -166,12 +166,12 @@
       filterData(filteredData){
         this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
         this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaulttimeframe;
-        this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : [];
-        this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : [];
-        this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : [];
-        this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : [];
-        this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : [];
-        this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : [];
+        this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : null;
+        this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : null;
+        this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
+        this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : null;
+        this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : null;
+        this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : null;
 
         this.draftdata = null;
         this.getData();
@@ -199,7 +199,7 @@
        return mapping[pick_number];
      },
      redirectChangeHero(){
-      window.location.href = "/Draft/General";
+      window.location.href = "/Global/Draft/General";
     },
 
   }

@@ -12,11 +12,24 @@ use App\Rules\HeroInputValidation;
 use App\Models\GlobalHeromatchupsAlly;
 use App\Models\GlobalHeromatchupsEnemy;
 use App\Models\Hero;
-use App\Models\GameType;
 
 class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
 {
-    public function show(Request $request){
+    public function show(Request $request, $hero = null, $allyenemy = null){
+        if (!is_null($hero) && !is_null($allyenemy)) {
+            $validationRules = [
+                'hero' => ['required', new HeroInputValidation()],
+                'allyenemy' => ['required', new HeroInputValidation()],
+            ];
+
+            $validator = Validator::make(['hero' => $hero, 'allyenemy' => $allyenemy], $validationRules);
+
+            if ($validator->fails()) {
+                return back();
+            }
+        }
+
+
         $userinput = $this->globalDataService->getHeroModel($request["hero"]);
         return view('Global.Matchups.globalMatchupsStats')->with([
                 'userinput' => $userinput,
@@ -50,8 +63,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
 
         $hero = $this->getHeroFilterValue($request["hero"]);
         $gameVersion = $this->getTimeframeFilterValues($request["timeframe_type"], $request["timeframe"]);
-        $gameTypeRecords = GameType::whereIn("short_name", $request["game_type"])->get();
-        $gameType = $gameTypeRecords->pluck("type_id")->toArray();
+        $gameType = $this->getGameTypeFilterValues($request["game_type"]); 
         $leagueTier = $request["league_tier"];
         $heroLeagueTier = $request["hero_league_tier"];
         $roleLeagueTier = $request["role_league_tier"];

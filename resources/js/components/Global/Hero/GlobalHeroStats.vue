@@ -238,8 +238,8 @@ export default {
   },
   methods: {
   	async getData(){
+      this.isLoading = true;
       try{
-        this.isLoading = true;
         this.data = [];
 
         const response = await this.$axios.post("/api/v1/global/hero", {

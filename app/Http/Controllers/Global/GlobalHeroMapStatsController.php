@@ -12,11 +12,21 @@ use App\Rules\HeroInputValidation;
 use App\Models\GlobalHeroStats;
 use App\Models\GlobalHeroStatsBans;
 use App\Models\Map;
-use App\Models\GameType;
 
 class GlobalHeroMapStatsController extends GlobalsInputValidationController
 {
-    public function show(Request $request){
+    public function show(Request $request, $hero = null){
+        if (!is_null($hero)) {
+            $validationRules = [
+                'hero' => ['required', new HeroInputValidation()],
+            ];
+
+            $validator = Validator::make(['hero' => $hero], $validationRules);
+
+            if ($validator->fails()) {
+                return back();
+            }
+        }
         $userinput = $this->globalDataService->getHeroModel($request["hero"]);
         return view('Global.Hero.Map.globalHeroMapStats')
                      ->with([
@@ -49,8 +59,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
 
         $hero = $this->getHeroFilterValue($request["hero"]);
         $gameVersion = $this->getTimeframeFilterValues($request["timeframe_type"], $request["timeframe"]);
-        $gameTypeRecords = GameType::whereIn("short_name", $request["game_type"])->get();
-        $gameType = $gameTypeRecords->pluck("type_id")->toArray();
+        $gameType = $this->getGameTypeFilterValues($request["game_type"]); 
         $leagueTier = $request["league_tier"];
         $heroLeagueTier = $request["hero_league_tier"];
         $roleLeagueTier = $request["role_league_tier"];

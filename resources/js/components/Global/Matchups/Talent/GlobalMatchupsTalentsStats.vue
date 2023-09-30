@@ -12,7 +12,6 @@
     :includegamemap="true"
     :includeplayerrank="true"
     :advancedfiltering="advancedfiltering"
-
     >
   </filters>
 
@@ -160,7 +159,7 @@
     },
     methods: {
       async getData(){
-        //this.isLoading = true;
+        this.isLoading = true;
         try{
           const response = await this.$axios.post("/api/v1/global/matchups/talents", {
             hero: this.hero.name,
@@ -184,9 +183,28 @@
 
       herochanged(eventPayload){
         this.hero = this.heroes.find(hero => hero.id === eventPayload.value);
+
+        let currentPath = window.location.pathname;
+        const basePath = '/Global/Matchups/Talents';
+        
+        if (currentPath.startsWith(basePath + '/')) {
+          currentPath = basePath;
+        }
+
+        history.pushState(null, null, `${currentPath}/${this.hero.name}/${this.enemyally.name}`);
       },
+
       allyenemychanged(eventPayload){
         this.enemyally = this.heroes.find(hero => hero.id === eventPayload.value);
+
+        let currentPath = window.location.pathname;
+        const basePath = '/Global/Matchups/Talents';
+        
+        if (currentPath.startsWith(basePath + '/')) {
+          currentPath = basePath;
+        }
+
+        history.pushState(null, null, `${currentPath}/${this.hero.name}/${this.enemyally.name}`);
       },
 
       dropdownClosed(eventPayload) {

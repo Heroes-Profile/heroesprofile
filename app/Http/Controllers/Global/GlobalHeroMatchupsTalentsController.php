@@ -15,11 +15,25 @@ use App\Models\GlobalHeroTalentsVersusHeroes;
 use App\Models\GlobalHeroTalentsWithHeroes;
 use App\Models\Hero;
 use App\Models\SeasonGameVersion;
-use App\Models\GameType;
 
 class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationController
 {
-    public function show(Request $request){
+    public function show(Request $request, $hero = null){
+        if (!is_null($hero)  && $hero !== "Auto Select") {
+            $validationRules = [
+                'hero' => ['required', new HeroInputValidation()],
+            ];
+
+            $validator = Validator::make(['hero' => $hero], $validationRules);
+
+            if ($validator->fails()) {
+                return back();
+            }
+        }
+
+
+
+
         $inputhero = (new HeroInputValidation())->passes('hero', $request["hero"]);
         $inputenemyally = (new HeroInputValidation())->passes('allyenemy', $request["allyenemy"]);
 
@@ -70,8 +84,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
         }
         $hero = $this->getHeroFilterValue($request["hero"]);
         $allyEnemy = session('heroes')->keyBy('name')[$request["ally_enemy"]]->id;
-        $gameTypeRecords = GameType::whereIn("short_name", $request["game_type"])->get();
-        $gameType = $gameTypeRecords->pluck("type_id")->toArray();
+        $gameType = $this->getGameTypeFilterValues($request["game_type"]); 
         $leagueTier = $request["league_tier"];
         $gameMap = $this->getGameMapFilterValues($request["game_map"]);
         $type = $request["type"];

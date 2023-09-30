@@ -15,6 +15,7 @@ use App\Rules\RegionInputValidation;
 
 use App\Models\Map;
 use App\Models\SeasonGameVersion;
+use App\Models\GameType;
 
 class GlobalsInputValidationController extends Controller
 {
@@ -75,5 +76,10 @@ class GlobalsInputValidationController extends Controller
             return null;
         }
         return session('heroes')->keyBy('name')[$hero]->id;
+    }
+
+    public function getGameTypeFilterValues($game_type){
+        $gameTypeRecords = GameType::whereIn("short_name", $game_type)->get();
+        return $gameTypeRecords->pluck("type_id")->toArray();
     }
 }
