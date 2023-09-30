@@ -1,4 +1,4 @@
-<template>
+s<template>
   <div>
     <page-heading :infoText1="infoText" :heading="'Global Party Statistics'"></page-heading>
 
@@ -10,7 +10,6 @@
       :includetimeframetype="true"
       :includetimeframe="true"
       :includeregion="true"
-      :includestatfilter="true"
       :includeherolevel="true"
       :includehero="true"
       :includegametype="true"
@@ -18,12 +17,9 @@
       :includeplayerrank="true"
       :includeherorank="true"
       :includerolerank="true"
-      :includemirror="true"
-      :includeheropartysize="true"
       :includeteamoneparty="true"
       :includeteamtwoparty="true"
       :advancedfiltering="advancedfiltering"
-
       >
     </filters>
     
@@ -271,7 +267,7 @@ export default {
   data(){
     return {
       isLoading: false,
-      infoText: "Party win rates based on differing increments, stat types, game type, rank, and more. The hero filter allows you to see party data for games that only contained that hero. You can further sub-filter by looking at which party stack size hero was a part of by changing the Hero Party Size filter",
+      infoText: "Party win rates based on differing increments, stat types, game type, rank, and more. The hero filter allows you to see party data for games that only contained that hero.",
       partydata: null,
 
       //Sending to filter
@@ -287,7 +283,7 @@ export default {
       playerrank: null,
       herorank: null,
       rolerank: null,
-      mirrormatch: null,
+      mirrormatch: 0,
       heropartysize: null,
       teamoneparty: null,
       teamtwoparty: null,
@@ -318,12 +314,11 @@ export default {
           hero_level: this.herolevel,
           hero: this.hero,
           game_type: this.gametype,
-          map: this.gamemap,
+          game_map: this.gamemap,
           league_tier: this.playerrank,
           hero_league_tier: this.herorank,
           role_league_tier: this.rolerank,
           mirrormatch: this.mirrormatch,
-          heropartysize: this.heropartysize,
           teamoneparty: this.teamoneparty,
           teamtwoparty: this.teamtwoparty,
         });
@@ -337,18 +332,18 @@ export default {
    filterData(filteredData){
       this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
       this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaultMinor;
-      this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : [];
-      this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : [];
-      this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : "";
-      this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : [];
-      this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : [];
-      this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : [];
-      this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : [];
-      this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : [];
-      this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "";
-      this.heropartysize = filteredData.single["Hero Party Size"] ? filteredData.single["Hero Party Size"] : "";
-      this.teamoneparty = filteredData.single["Team One Party"] ? filteredData.single["Team One Party"] : "";
-      this.teamtwoparty = filteredData.single["Team Two Party"] ? filteredData.single["Team Two Party"] : "";
+      this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : null;
+      this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : null;
+      this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
+      this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : null;
+      this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
+      this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : null;
+      this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : null;
+      this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : null;
+      this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
+      this.heropartysize = filteredData.single["Hero Party Size"] ? filteredData.single["Hero Party Size"] : null;
+      this.teamoneparty = filteredData.single["Team One Party"] ? filteredData.single["Team One Party"] : null;
+      this.teamtwoparty = filteredData.single["Team Two Party"] ? filteredData.single["Team Two Party"] : null;
       
       this.partydata = null;
       this.getData();

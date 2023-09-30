@@ -26,7 +26,6 @@
 
       <single-select-filter v-if="includetalentbuildtype" :values="this.filters.talent_build_types" :text="'Talent Build Type'" @input-changed="handleInputChange" :defaultValue="this.filters.talent_build_types[0].code"></single-select-filter>
       <single-select-filter v-if="includeminimumgames" :values="this.filters.minimum_games" :text="'Minimum Games'" @input-changed="handleInputChange" :defaultValue="modifiedminimumgamedefault"></single-select-filter>
-      <single-select-filter v-if="includeheropartysize" :values="this.filters.hero_party_size" :text="'Hero Party Size'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter v-if="includeteamoneparty" :values="this.filters.party_combinations" :text="'Team One Party'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter v-if="includeteamtwoparty" :values="this.filters.party_combinations" :text="'Team Two Party'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter v-if="modifiedincludeminimumaccountlevel" :values="this.filters.minimum_account_level" :text="'Min. Account Level'" @input-changed="handleInputChange" :defaultValue="'100'"></single-select-filter>
@@ -82,7 +81,6 @@ export default {
     includemirror: Boolean,
     includetalentbuildtype: Boolean,
     includeminimumgames: Boolean,
-    includeheropartysize: Boolean,
     includeteamoneparty: Boolean,
     includeteamtwoparty: Boolean,
     includeminimumaccountlevel: Boolean,
