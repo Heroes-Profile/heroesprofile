@@ -39,6 +39,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 
         //return response()->json($request->all());
+
         $validationRules = array_merge($this->globalsValidationRules($request["timeframe_type"]), [
             'statfilter' => ['required', new StatFilterInputValidation()],
             'hero' => ['required', new HeroInputValidation()],
@@ -108,9 +109,8 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                 ->orderBy('win_loss')
                 ->with(['talentInfo'])
                 //->toSql();
-                //return $data;
                 ->get();
-
+                
             $data = collect($data)->groupBy('level')->map(function ($levelGroup) {
 
                 $totalGamesPlayed = collect($levelGroup)->sum('games_played');

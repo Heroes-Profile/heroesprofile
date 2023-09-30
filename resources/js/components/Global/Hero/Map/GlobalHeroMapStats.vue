@@ -27,6 +27,9 @@
       >
     </filters>
     <div v-if="data">
+      <div> 
+        <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
+      </div>
       <custom-table :columns="dynamicColumns" :data="data"></custom-table>
     </div>
     <div v-else>
@@ -156,6 +159,9 @@
           return  true;
         }
         return false;
+      },
+      redirectChangeHero(){
+        window.location.href = "/Global/Hero/Maps";
       },
     }
   }

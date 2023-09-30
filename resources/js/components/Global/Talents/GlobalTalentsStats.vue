@@ -32,6 +32,9 @@
           >
         </filters>
 
+        <div> 
+          <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
+        </div>
         <div  v-if="talentdetaildata" class="container mx-auto px-4">
           <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
         </div>
@@ -231,6 +234,9 @@
         }
         return false;
       },
+      redirectChangeHero(){
+        window.location.href = "/Global/Talents";
+      }
     }
   }
 </script>

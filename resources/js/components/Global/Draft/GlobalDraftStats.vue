@@ -30,6 +30,9 @@
         >
       </filters>
 
+      <div> 
+        <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
+      </div>
       <div v-if="draftdata">
         <table class="min-w-full bg-white">
           <thead>
@@ -54,27 +57,27 @@
           <tbody>
             <!-- ChatGPT code. this isnt working 100% colors seem messed up-->
             <tr 
-              v-for="row in draftdata" 
-              :key="row.pick_number"
-              :class="determinePickOrBan(row.pick_number).includes('Ban') ? 'bg-red' : ''"
+            v-for="row in draftdata" 
+            :key="row.pick_number"
+            :class="determinePickOrBan(row.pick_number).includes('Ban') ? 'bg-red' : ''"
             >
-              <td class="py-2 px-3 border-b border-gray-200">
-                {{ determinePickOrBan(row.pick_number) }}
-              </td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.popularity }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.wins }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.losses }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div v-else>
-        <loading-component></loading-component>
-      </div>
+            <td class="py-2 px-3 border-b border-gray-200">
+              {{ determinePickOrBan(row.pick_number) }}
+            </td>
+            <td class="py-2 px-3 border-b border-gray-200">{{ row.popularity }}</td>
+            <td class="py-2 px-3 border-b border-gray-200">{{ row.wins }}</td>
+            <td class="py-2 px-3 border-b border-gray-200">{{ row.losses }}</td>
+            <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-
+    <div v-else>
+      <loading-component></loading-component>
+    </div>
   </div>
+
+</div>
 </div>
 </template>
 
@@ -194,8 +197,11 @@
        };
        
        return mapping[pick_number];
-     }
+     },
+     redirectChangeHero(){
+      window.location.href = "/Draft/General";
+    },
 
-   }
- }
+  }
+}
 </script>

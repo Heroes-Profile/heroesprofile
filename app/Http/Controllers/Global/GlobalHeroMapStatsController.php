@@ -137,13 +137,13 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
                 ->get();
 
 
-            return $this->combineData($hero, $data, $gamesPlayedPerMap, $banData);
+            return $this->combineData($gameType, $hero, $data, $gamesPlayedPerMap, $banData);
         });
         return $data;
 
     }
 
-    private function combineData($hero, $data,  $gamesPlayedPerMap, $banData){
+    private function combineData($gameType, $hero, $data,  $gamesPlayedPerMap, $banData){
 
         $filteredData = $data->filter(function ($item) use ($hero){
             return $item->hero_id === $hero;
@@ -154,9 +154,20 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
 
         $totalGamesPlayed = $filteredData->sum('games_played');
 
-        return collect($filteredData)->groupBy(function($date) {
-            return $date['name'].$date['map_id'];
-        })->map(function ($group) use ($banData, $gamesPlayedPerMap, $mapData, $totalGamesPlayed) {
+        return collect($filteredData)
+        ->groupBy(function ($data) {
+            return $data['name'] . $data['map_id'];
+        })
+        //For some reason every hero has 1 game played in ARAM that isnt an ARAM map...something odd in my backend code
+        ->filter(function ($group) use ($gameType, $mapData) {
+            if (count($gameType) == 1 && $gameType[0] == "6") {
+                $firstItem = $group->first();
+                return $mapData[$firstItem['map_id']]["type"] == "ARAM";
+            }
+            // Keep all other maps
+            return true;
+        })
+        ->map(function ($group) use ($banData, $gamesPlayedPerMap, $mapData, $totalGamesPlayed) {
             $firstItem = $group->first();
 
             $wins = $group->where('win_loss', 1)->sum('games_played');
@@ -181,6 +192,9 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
                 'ban_rate' => $totalGamesForThisMap != 0 ? round(($bans / $totalGamesForThisMap) * 100, 2) : 0,
                 'total_games_played' => $totalGamesPlayed,
             ];
-        })->sortByDesc('win_rate')->values()->toArray();
+        })
+        ->sortByDesc('win_rate')
+        ->values()
+        ->toArray();
     }
 }

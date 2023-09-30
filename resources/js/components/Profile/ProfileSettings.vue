@@ -85,7 +85,7 @@ export default {
           usergametype: this.usergametype,
           advancedfiltering: this.advancedfiltering,
         });
-        //window.location.href = "/Profile/Settings";
+        window.location.href = "/Profile/Settings";
       }catch(error){
         //Do something here
       }
