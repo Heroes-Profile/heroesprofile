@@ -68,7 +68,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
                 "status" => "failure to validate inputs"
             ];
         }
-        $hero = session('heroes')->keyBy('name')[$request["hero"]]->id;
+        $hero = $this->getHeroFilterValue($request["hero"]);
         $allyEnemy = session('heroes')->keyBy('name')[$request["ally_enemy"]]->id;
         $gameTypeRecords = GameType::whereIn("short_name", $request["game_type"])->get();
         $gameType = $gameTypeRecords->pluck("type_id")->toArray();

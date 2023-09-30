@@ -48,7 +48,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
         }
 
 
-        $hero = session('heroes')->keyBy('name')[$request["hero"]]->id;
+        $hero = $this->getHeroFilterValue($request["hero"]);
         $gameVersion = $this->getTimeframeFilterValues($request["timeframe_type"], $request["timeframe"]);
         $gameTypeRecords = GameType::whereIn("short_name", $request["game_type"])->get();
         $gameType = $gameTypeRecords->pluck("type_id")->toArray();

@@ -69,4 +69,11 @@ class GlobalsInputValidationController extends Controller
 
         return $mapIds;
     }
+
+    public function getHeroFilterValue($hero){
+        if (is_null($hero)) {
+            return null;
+        }
+        return session('heroes')->keyBy('name')[$hero]->id;
+    }
 }

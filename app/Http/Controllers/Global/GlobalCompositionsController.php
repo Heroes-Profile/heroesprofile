@@ -2,26 +2,21 @@
 
 namespace App\Http\Controllers\Global;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Validator;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use App\Rules\TimeframeMinorInputValidation;
-use App\Rules\GameTypeInputValidation;
-use App\Rules\TierByIDInputValidation;
-use App\Rules\GameMapInputValidation;
-use App\Rules\HeroLevelInputValidation;
-use App\Rules\MirrorInputValidation;
-use App\Rules\RegionInputValidation;
-use App\Rules\HeroInputByIDValidation;
+use App\Rules\HeroInputValidation;
 
 use App\Models\GlobalCompositions;
 use App\Models\Composition;
 use App\Models\MMRTypeID;
 use App\Models\Hero;
+use App\Models\GameType;
 
-class GlobalCompositionsController extends Controller
+
+class GlobalCompositionsController extends GlobalsInputValidationController
 {
     public function show(Request $request){
         return view('Global.Compositions.compositionsStats')  
@@ -41,50 +36,41 @@ class GlobalCompositionsController extends Controller
         ini_set('max_execution_time', 300); //300 seconds = 5 minutes
         //return response()->json($request->all());
 
-        $gameVersion = null;
-
-        if($request["timeframe_type"] == "major"){
-            $gameVersions = SeasonGameVersion::select('game_version')
-                                            ->where('game_version', 'like', $request["timeframe"][0] . "%")
-                                            ->pluck('game_version')
-                                            ->toArray();                                            
-            $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $gameVersions);
-
-        }else{
-            $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $request["timeframe"]);
-        }
-        $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
-        $leagueTier = (new TierByIDInputValidation())->passes('league_tier', $request["league_tier"]);
-        $heroLeagueTier = (new TierByIDInputValidation())->passes('hero_league_tier', $request["hero_league_tier"]);
-        $roleLeagueTier = (new TierByIDInputValidation())->passes('role_league_tier', $request["role_league_tier"]);
-        $gameMap = (new GameMapInputValidation())->passes('map', $request["map"]);
-        $heroLevel = (new HeroLevelInputValidation())->passes('hero_level', $request["hero_level"]);
-        $mirror = (new MirrorInputValidation())->passes('mirror', $request["mirror"]);
-        $region = (new RegionInputValidation())->passes('region', $request["region"]);
-        $hero = (new HeroInputByIDValidation())->passes('hero', $request["hero"]);
-
-        $request->validate([
+         $validationRules = array_merge($this->globalsValidationRules($request["timeframe_type"]), [
+            'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
             'minimum_games' => 'required|integer',
         ]);
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
+        }        
+
+        $hero = $this->getHeroFilterValue($request["hero"]);
+
+        $gameVersion = $this->getTimeframeFilterValues($request["timeframe_type"], $request["timeframe"]);
+
+        $gameTypeRecords = GameType::whereIn("short_name", $request["game_type"])->get();
+        $gameType = $gameTypeRecords->pluck("type_id")->toArray();
+
+
+
+        $leagueTier = $request["league_tier"];
+        $heroLeagueTier = $request["hero_league_tier"];
+        $roleLeagueTier = $request["role_league_tier"];
+        $gameMap = $this->getGameMapFilterValues($request["game_map"]);
+        $heroLevel = $request["hero_level"];
+        $region = $this->getRegionFilterValues($request["region"]);
+        $statFilter = $request["statfilter"];
+        $mirror = $request["mirror"];
+        $talentbuildType = $request["talentbuildtype"];
         $minimumGames = $request["minimum_games"];
 
-  
-
-
-
-        $cacheKey = "GlobalCompositionStats|" . implode('|', [
-            'gameVersion=' . implode(',', $gameVersion),
-            'gameType=' . implode(',', $gameType),
-            'leagueTier=' . implode(',', $leagueTier),
-            'heroLeagueTier=' . implode(',', $heroLeagueTier),
-            'roleLeagueTier=' . implode(',', $roleLeagueTier),
-            'gameMap=' . implode(',', $gameMap),
-            'heroLevel=' . implode(',', $heroLevel),
-            'mirror=' . $mirror,
-            'region=' . implode(',', $region),
-            'hero=' . $hero,
-            'minimumGames=' . $minimumGames,
-        ]);
+        $cacheKey = "GlobalCompositionStats|" . json_encode($request->all());
 
         $data = Cache::store("database")->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion, 
                                                                                                                                  $gameType, 
@@ -149,7 +135,7 @@ class GlobalCompositionsController extends Controller
                         'wins' => $wins / 5,
                         'losses' => $losses / 5,
                         'win_rate' => round($winRate, 2),
-                        'games_played' => $gamesPlayed,
+                        'games_played' => round($gamesPlayed),
                         'popularity' => $popularity,
                         'role_one' => $role_one,
                         'role_two' => $role_two,
@@ -175,56 +161,49 @@ class GlobalCompositionsController extends Controller
     public function getTopHeroData(Request $request){
                 //return response()->json($request->all());
 
-        $gameVersion = null;
-
-        if($request["timeframe_type"] == "major"){
-            $gameVersions = SeasonGameVersion::select('game_version')
-                                            ->where('game_version', 'like', $request["timeframe"][0] . "%")
-                                            ->pluck('game_version')
-                                            ->toArray();                                            
-            $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $gameVersions);
-
-        }else{
-            $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $request["timeframe"]);
-        }
-        $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
-        $leagueTier = (new TierByIDInputValidation())->passes('league_tier', $request["league_tier"]);
-        $heroLeagueTier = (new TierByIDInputValidation())->passes('hero_league_tier', $request["hero_league_tier"]);
-        $roleLeagueTier = (new TierByIDInputValidation())->passes('role_league_tier', $request["role_league_tier"]);
-        $gameMap = (new GameMapInputValidation())->passes('map', $request["map"]);
-        $heroLevel = (new HeroLevelInputValidation())->passes('hero_level', $request["hero_level"]);
-        $mirror = (new MirrorInputValidation())->passes('mirror', $request["mirror"]);
-        $region = (new RegionInputValidation())->passes('region', $request["region"]);
-        $hero = (new HeroInputByIDValidation())->passes('statfilter', $request["hero"]);
-
-        $request->validate([
+         $validationRules = array_merge($this->globalsValidationRules($request["timeframe_type"]), [
+            'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
             'minimum_games' => 'required|integer',
             'composition_id' => 'required|integer',
         ]);
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
+        }        
+
+        $hero = $this->getHeroFilterValue($request["hero"]);
+
+        $gameVersion = $this->getTimeframeFilterValues($request["timeframe_type"], $request["timeframe"]);
+
+        $gameTypeRecords = GameType::whereIn("short_name", $request["game_type"])->get();
+        $gameType = $gameTypeRecords->pluck("type_id")->toArray();
+
+
+
+        $leagueTier = $request["league_tier"];
+        $heroLeagueTier = $request["hero_league_tier"];
+        $roleLeagueTier = $request["role_league_tier"];
+        $gameMap = $this->getGameMapFilterValues($request["game_map"]);
+        $heroLevel = $request["hero_level"];
+        $region = $this->getRegionFilterValues($request["region"]);
+        $statFilter = $request["statfilter"];
+        $mirror = $request["mirror"];
+        $talentbuildType = $request["talentbuildtype"];
         $minimumGames = $request["minimum_games"];
+
         $compositionID = $request["composition_id"];
 
   
 
 
 
-        $cacheKey = "GlobalCompositionTopHeroes|" . implode('|', [
-            'composition_id=' . $compositionID,
-            'gameVersion=' . implode(',', $gameVersion),
-            'gameType=' . implode(',', $gameType),
-            'leagueTier=' . implode(',', $leagueTier),
-            'heroLeagueTier=' . implode(',', $heroLeagueTier),
-            'roleLeagueTier=' . implode(',', $roleLeagueTier),
-            'gameMap=' . implode(',', $gameMap),
-            'heroLevel=' . implode(',', $heroLevel),
-            'mirror=' . $mirror,
-            'region=' . implode(',', $region),
-            'hero=' . $hero,
-            'minimumGames=' . $minimumGames,
-        ]);
-
+        $cacheKey = "GlobalCompositionTopHeroes|" . json_encode($request->all());
         //return $cacheKey;
-
 
         $data = Cache::store("database")->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion, 
                                                                                                                                  $gameType, 
