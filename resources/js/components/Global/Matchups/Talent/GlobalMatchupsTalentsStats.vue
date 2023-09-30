@@ -67,7 +67,7 @@
   <div class="container mx-auto px-4">
     <global-talent-details-section v-if="talentdetaildata" :talentdetaildata="talentdetaildata" :statfilter="null"></global-talent-details-section>
     <div v-else-if="isLoading">
-      <loading-component></loading-component>
+      <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
     </div>
   </div>
 
@@ -160,8 +160,8 @@
     },
     methods: {
       async getData(){
+        //this.isLoading = true;
         try{
-          this.isLoading = true;
           const response = await this.$axios.post("/api/v1/global/matchups/talents", {
             hero: this.hero.name,
             ally_enemy: this.enemyally.name,
@@ -170,17 +170,16 @@
             timeframe_type: this.timeframetype,
             timeframe: this.timeframe,
             game_type: this.gametype,
-            map: this.gamemap,
+            game_map: this.gamemap,
             league_tier: this.playerrank,
           });
           this.talentdetaildata = response.data.data;
           this.firstwinratedata = response.data.first_win_rate;
           this.secondwinratedata = response.data.second_win_rate;
-          this.loading = false;
         }catch(error){
         //Do something here
-          this.isLoading = false;
         }
+        this.isLoading = false;
       },
 
       herochanged(eventPayload){
@@ -200,9 +199,9 @@
       filterData(filteredData){
         this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
         this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaultMinor;
-        this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : [];
-        this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : [];
-        this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : [];
+        this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : null;
+        this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
+        this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : null;
 
         this.talentdetaildata = null;
 

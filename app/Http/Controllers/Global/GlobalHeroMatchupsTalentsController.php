@@ -5,21 +5,19 @@ use Illuminate\Support\Facades\Cache;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 use App\Rules\HeroInputValidation;
-use App\Rules\TimeframeMinorInputValidation;
-use App\Rules\TimeframeMinorInputValidationOutputID;
-use App\Rules\GameTypeInputValidation;
-use App\Rules\TierByIDInputValidation;
-use App\Rules\GameMapInputValidation;
 
 use App\Models\GlobalHeromatchupsAlly;
 use App\Models\GlobalHeromatchupsEnemy;
 use App\Models\GlobalHeroTalentsVersusHeroes;
 use App\Models\GlobalHeroTalentsWithHeroes;
 use App\Models\Hero;
+use App\Models\SeasonGameVersion;
+use App\Models\GameType;
 
-class GlobalHeroMatchupsTalentsController extends Controller
+class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationController
 {
     public function show(Request $request){
         $inputhero = (new HeroInputValidation())->passes('hero', $request["hero"]);
@@ -55,38 +53,39 @@ class GlobalHeroMatchupsTalentsController extends Controller
 
         //return response()->json($request->all());
 
-        $gameVersion = null;
-
-        if($request["timeframe_type"] == "major"){
-            $gameVersions = SeasonGameVersion::select('game_version')
-                                            ->where('game_version', 'like', $request["timeframe"][0] . "%")
-                                            ->pluck('game_version')
-                                            ->toArray();                                            
-            $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $gameVersions);
-
-        }else{
-            $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $request["timeframe"]);
-        }
-        $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
-        $leagueTier = (new TierByIDInputValidation())->passes('league_tier', $request["league_tier"]);
-        $gameMap = (new GameMapInputValidation())->passes('map', $request["map"]);
-        $hero = (new HeroInputValidation())->passes('hero', $request["hero"]);
-        $allyEnemy = (new HeroInputValidation())->passes('ally_enemy', $request["ally_enemy"]);
-        $type = in_array($request["type"], ["Enemy", "Ally"]) ? $request["type"] : "Enemy";
-        $talentView = in_array($request["talent_view"], ["hero", "ally_enemy"]) ? $request["talent_view"] : "Enemy";
-        $gameVersionID = (new TimeframeMinorInputValidationOutputID())->passes('timeframe', $gameVersion);
-
-        $cacheKey = "GlobalHeroMatchupsTalents|" . implode('|', [
-            'hero=' . $hero,
-            'allyEnemy=' . $allyEnemy,
-            'type=' . $type,
-            'talentView=' . $talentView,
-            'gameVersion=' . implode(',', $gameVersion),
-            'gameType=' . implode(',', $gameType),
-            'leagueTier=' . implode(',', $leagueTier),
-            'gameMap=' . implode(',', $gameMap),
+        $validationRules = array_merge($this->globalsValidationRules($request["timeframe_type"]), [
+            'hero' => ['required', new HeroInputValidation()],
+            'ally_enemy' => ['required', new HeroInputValidation()],
+            'type' => 'required|in:Enemy,Ally',
+            'talent_view' => 'required|in:hero,ally_enemy',
         ]);
 
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
+        }
+        $hero = session('heroes')->keyBy('name')[$request["hero"]]->id;
+        $allyEnemy = session('heroes')->keyBy('name')[$request["ally_enemy"]]->id;
+        $gameTypeRecords = GameType::whereIn("short_name", $request["game_type"])->get();
+        $gameType = $gameTypeRecords->pluck("type_id")->toArray();
+        $leagueTier = $request["league_tier"];
+        $gameMap = $this->getGameMapFilterValues($request["game_map"]);
+        $type = $request["type"];
+        $talentView = $request["talent_view"];
+
+
+        $gameVersion = $this->getTimeframeFilterValues($request["timeframe_type"], $request["timeframe"]);
+        $gameVersionIDs = SeasonGameVersion::whereIn("game_version", $gameVersion)->pluck("id")->toArray();
+
+
+
+
+
+        $cacheKey = "GlobalHeroMatchupsTalents|" . json_encode($request->all());
 
         //return $cacheKey;
 
@@ -96,7 +95,7 @@ class GlobalHeroMatchupsTalentsController extends Controller
                                                                                                                          $type,
                                                                                                                          $talentView,
                                                                                                                          $gameVersion, 
-                                                                                                                         $gameVersionID,
+                                                                                                                         $gameVersionIDs,
                                                                                                                          $gameType, 
                                                                                                                          $leagueTier, 
                                                                                                                          $gameMap,
@@ -112,7 +111,7 @@ class GlobalHeroMatchupsTalentsController extends Controller
             $data = $model::query()
                 ->select('win_loss', 'level', 'talent')
                 ->selectRaw('SUM(games_played) as games_played')
-                ->filterByGameVersion($gameVersionID)
+                ->filterByGameVersion($gameVersionIDs)
                 ->filterByGameType($gameType)
                 ->filterByHero($hero)
                 ->filterByAllyEnemy($allyEnemy)
@@ -167,9 +166,10 @@ class GlobalHeroMatchupsTalentsController extends Controller
             ->selectRaw('SUM(games_played) as games_played')
             ->filterByGameVersion($gameVersion)
             ->filterByGameType($gameType)
-            ->filterByHero($gameType)
+            ->filterByHero($hero)
             ->filterByAllyEnemy($allyEnemy)
             ->filterByLeagueTier($leagueTier)
+            ->excludeMirror(0)
             ->groupBy('win_loss')
             ->get();
 

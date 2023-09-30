@@ -8,12 +8,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Rules\HeroInputValidation;
-use App\Rules\TimeframeMinorInputValidation;
-use App\Rules\GameTypeInputValidation;
-use App\Rules\TierByIDInputValidation;
-use App\Rules\HeroLevelInputValidation;
-use App\Rules\MirrorInputValidation;
-use App\Rules\RegionInputValidation;
 
 use App\Models\GlobalHeroStats;
 use App\Models\GlobalHeroStatsBans;

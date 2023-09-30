@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Rules\HeroInputValidation;
 use App\Rules\StatFilterInputValidation;
-use App\Rules\TalentBuildTypeInputValidation;
 
 use App\Models\GlobalHeroTalentDetails;
 use App\Models\GlobalHeroTalents;
@@ -110,7 +109,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                 ->with(['talentInfo'])
                 //->toSql();
                 ->get();
-                
+
             $data = collect($data)->groupBy('level')->map(function ($levelGroup) {
 
                 $totalGamesPlayed = collect($levelGroup)->sum('games_played');
