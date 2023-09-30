@@ -12,13 +12,15 @@ use App\Rules\GameMapInputValidation;
 use App\Rules\HeroLevelInputValidation;
 use App\Rules\RegionInputValidation;
 
+use App\Models\Map;
+
 class GlobalsInputValidationController extends Controller
 {
-    public function globalsValidationRules()
+    public function globalsValidationRules($timeframeType)
     {
         return [
             'timeframe_type' => 'required|in:minor,major',           
-            'timeframe' => ['required', new TimeframeMinorInputValidation()],
+            'timeframe' => ['required', new TimeframeMinorInputValidation($timeframeType)],
             'game_type' => ['required', new GameTypeInputValidation()],
             'league_tier' => ['sometimes', 'nullable', new TierByIDInputValidation()],
             'hero_league_tier' => ['sometimes', 'nullable', new TierByIDInputValidation()],
@@ -28,5 +30,40 @@ class GlobalsInputValidationController extends Controller
             'mirror' => 'sometimes|in:null,0,1',   
             'region' => ['sometimes', 'nullable', new RegionInputValidation()],
         ];
+    }
+
+    public function getTimeframeFilterValues($timeframeType, $timeframes){
+        if($timeframeType == "major"){
+            $query = SeasonGameVersion::select('game_version');
+
+            foreach ($timeframes as $timeframe) {
+                $query->orWhere('game_version', 'like', $timeframe . '%');
+            }
+            $gameVersion = $query->get()
+                ->pluck('game_version')
+                ->toArray();
+        }
+
+        return $timeframes;
+    }
+
+    public function getRegionFilterValues($regions)
+    {
+        if (is_null($regions)) {
+            return null;
+        }
+
+        return array_map(function ($region) {
+            return $this->globalDataService->getRegionStringToID()[$region];
+        }, $regions);
+    }
+
+    public function getGameMapFilterValues($game_maps){
+        if (is_null($game_maps)) {
+            return null;
+        }
+        $mapIds = Map::whereIn('name', $game_maps)->pluck('map_id')->toArray();
+
+        return $mapIds;
     }
 }

@@ -5,6 +5,8 @@ namespace App\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\Rule;
 
+use App\Models\LeagueTier;
+
 class TierByIDInputValidation implements Rule
 {
     public function passes($attribute, $value)

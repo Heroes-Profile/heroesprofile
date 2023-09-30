@@ -37,7 +37,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         //return response()->json($request->all());
 
 
-        $validationRules = array_merge($this->globalsValidationRules(), [
+        $validationRules = array_merge($this->globalsValidationRules($request["timeframe_type"]), [
             'statfilter' => ['required', new StatFilterInputValidation()],
             'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation()],
             'role' => ['sometimes', 'nullable', new RoleInputValidation()],
@@ -55,14 +55,8 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
 
 
 
-        $gameVersion = $request["timeframe"];
+        $gameVersion = $this->getTimeframeFilterValues($request["timeframe_type"], $request["timeframe"]);
 
-        if($request["timeframe_type"] == "major"){
-            $gameVersions = SeasonGameVersion::select('game_version')
-                            ->where('game_version', 'like', $request["timeframe"][0] . "%")
-                            ->pluck('game_version')
-                            ->toArray();
-        }
 
 
         $gameTypeRecords = GameType::whereIn("short_name", $request["game_type"])->get();
@@ -72,16 +66,20 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         $leagueTier = $request["league_tier"];
         $heroLeagueTier = $request["hero_league_tier"];
         $roleLeagueTier = $request["role_league_tier"];
-        $gameMap = $request["game_map"];
+        $gameMap = $this->getGameMapFilterValues($request["game_map"]);
         $heroLevel = $request["hero_level"];
         $mirror = $request["mirror"];
-        $region = $request["region"];
+
+        $region = $this->getRegionFilterValues($request["region"]);
+
         $statFilter = $request["statfilter"];
         $hero = $request["hero"];
         $role = $request["role"];
 
 
         $cacheKey = "GlobalHeroStats|" . json_encode($request->all());
+        
+        //return  $cacheKey;
 
         $data = Cache::store("database")->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion, 
                                                                                                                                  $gameType, 

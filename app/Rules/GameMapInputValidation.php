@@ -4,6 +4,7 @@ namespace App\Rules;
 
 use Closure;
 use Illuminate\Contracts\Validation\Rule;
+use App\Models\Map;
 
 class GameMapInputValidation implements Rule
 {

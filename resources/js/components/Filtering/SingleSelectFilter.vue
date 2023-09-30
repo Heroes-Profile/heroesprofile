@@ -97,7 +97,7 @@ export default {
       }
     },
     toggleSelectedOptions(value) {
-      if (this.text !== "Timeframe Type" && this.text !== "Build Filter" && this.text !== "Stat Filter" && this.text !== "Minimum Games") {                                          
+      if (this.text !== "Timeframe Type" && this.text !== "Build Filter" && this.text !== "Stat Filter" && this.text !== "Minimum Games" && this.text !== "Mirror Matches") {                                          
         this.selectedOptions = this.selectedOptions === value ? '' : value;
       } else {
         this.selectedOptions = value;

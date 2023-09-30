@@ -8,18 +8,32 @@ use App\Models\SeasonGameVersion;
 
 class TimeframeMinorInputValidation implements Rule
 {
+    protected $timeframeType;
+
+    public function __construct($timeframeType)
+    {
+        $this->timeframeType = $timeframeType;
+    }
+
     public function passes($attribute, $value)
     {
-        // Ensure $value is an array
         if (!is_array($value)) {
             return false;
         }
 
-        $existingVersions = SeasonGameVersion::pluck('game_version')->toArray();
-        $validVersions = array_intersect($value, $existingVersions);
-
-        if (empty($validVersions)) {
-            return false;
+        if ($this->timeframeType === 'minor') {
+            $existingVersions = SeasonGameVersion::pluck('game_version')->toArray();
+            $invalidVersions = array_diff($value, $existingVersions);
+            if (!empty($invalidVersions)) {
+                return false;
+            }
+        } elseif ($this->timeframeType === 'major') {
+            foreach ($value as $timeframeValue) {
+                $matchingVersions = SeasonGameVersion::where('game_version', 'like', trim($timeframeValue) . '%')->count();
+                if ($matchingVersions === 0) {
+                    return false;
+                }
+            }
         }
 
         return true;

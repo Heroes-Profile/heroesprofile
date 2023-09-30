@@ -31,9 +31,12 @@
       <single-select-filter v-if="includeteamtwoparty" :values="this.filters.party_combinations" :text="'Team Two Party'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter v-if="modifiedincludeminimumaccountlevel" :values="this.filters.minimum_account_level" :text="'Min. Account Level'" @input-changed="handleInputChange" :defaultValue="'100'"></single-select-filter>
       <single-select-filter v-if="modifiedincludexaxisincrements" :values="this.filters.x_axis_increments" :text="'X Axis Increments'" @input-changed="handleInputChange" :defaultValue="'25'"></single-select-filter>
-      <button :disabled="isLoading" @click="applyFilter" class="ml-10 p-2" :class="{'bg-blue text-white': !isLoading, 'bg-gray-400 text-gray-700': isLoading}">
+      <button :disabled="disabledFilter" @click="applyFilter" class="ml-10 p-2" :class="{'bg-blue text-white': !disabledFilter, 'bg-gray-400 text-gray-700': disabledFilter}">
         Filter
       </button>
+
+
+
 
 
     </div>
@@ -46,6 +49,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'Filters',
   components: {
@@ -132,12 +136,20 @@ export default {
 
     this.selectedSingleFilters["Timeframe Type"] = this.defaultTimeframeType;
     this.selectedMultiFilters["Game Type"] = this.gametypedefault;
-    this.selectedMultiFilters.Timeframes = this.defaultMinor;
+    this.selectedMultiFilters["Timeframes"] = this.defaultMinor;
     this.selectedSingleFilters["Stat Filter"] = this.defaultStatType;
+
   },
   mounted() {
   },
   computed: {
+    disabledFilter(){
+      if(this.isLoading || !this.selectedMultiFilters.hasOwnProperty('Timeframes')){
+        return true;
+      }
+
+      return false;
+    },
     defaultMinor() {
       return this.getDefaultMinorBasedOnTimeframeType();
     },
@@ -169,10 +181,19 @@ export default {
       }
 
       if(eventPayload.type === 'single') {
-        this.selectedSingleFilters[eventPayload.field] = eventPayload.value;
+        if (eventPayload.value === '') {
+          delete this.selectedSingleFilters[eventPayload.field];
+        } else {
+          this.selectedSingleFilters[eventPayload.field] = eventPayload.value;
+        }
 
+        console.log(this.selectedSingleFilters);
       } else if(eventPayload.type === 'multi') {
-        this.selectedMultiFilters[eventPayload.field] = eventPayload.value;
+        if(eventPayload.value.length == 0){
+          delete this.selectedMultiFilters[eventPayload.field];
+        }else{
+          this.selectedMultiFilters[eventPayload.field] = eventPayload.value;
+        }
       }
 
 
@@ -200,11 +221,13 @@ export default {
       return ''; // Default return value, adjust as needed
     },
     applyFilter() {
-      const allSelectedFilters = {
-        single: this.selectedSingleFilters,
-        multi: this.selectedMultiFilters
-      };
-      this.onFilter(allSelectedFilters);
+      if (this.selectedMultiFilters.hasOwnProperty('Timeframes')) {
+        const allSelectedFilters = {
+          single: this.selectedSingleFilters,
+          multi: this.selectedMultiFilters
+        };
+        this.onFilter(allSelectedFilters); 
+      }
     },
   }
 };

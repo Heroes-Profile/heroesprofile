@@ -294,16 +294,16 @@ export default {
     filterData(filteredData){
       this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
       this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaultMinor;
-      this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : this.region;
+      this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : null;
       this.statfilter = filteredData.single["Stat Filter"] ? filteredData.single["Stat Filter"] : this.statfilter;
-      this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : this.herolevel;
-      this.role = filteredData.single["Role"] ? filteredData.single["Role"] : this.role;
-      this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : this.hero;
+      this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : null;
+      this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
+      this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
-      this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : this.gamemap;
-      this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : this.playerrank;
-      this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : this.herorank;
-      this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : this.rolerank;
+      this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
+      this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : null;
+      this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : null;
+      this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : null;
       this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
       this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : this.talentbuildtype;
 
