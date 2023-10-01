@@ -110,7 +110,7 @@ Route::get('/Global/Compositions', [GlobalCompositionsController::class, 'show']
 Route::get('/Global/Party', [GlobalPartyStatsController::class, 'show']);
 
 
-Route::get('/Global/Extra', [GlobalExtraStats::class, 'show']);
+//Route::get('/Global/Extra', [GlobalExtraStats::class, 'show']); //Not sure if I want to keep this for rewrite.  Taking it out for now
 
 
 

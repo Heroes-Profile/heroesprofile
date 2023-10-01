@@ -21,8 +21,10 @@
             </div>
             <div v-else-if="column.value === 'most_played_hero'">
               <div  v-if="row.most_played_hero" class="flex gap-x-2 items-center">
-                <hero-image-wrapper :hero="row.most_played_hero"></hero-image-wrapper>
-                {{ row.hero_build_games_played }}
+                <hero-image-wrapper :hero="row.most_played_hero">
+                  <h2>{{ row.most_played_hero.name }}</h2>
+                  <p>Games Played: {{ row.hero_build_games_played }}</p>                 
+                </hero-image-wrapper>
               </div>
             </div>
             <div v-else>

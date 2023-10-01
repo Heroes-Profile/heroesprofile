@@ -18,7 +18,7 @@ class RegionInputValidation implements Rule
     {
         if (!is_array($value)) 
         {
-            return false;
+            $value = [$value];
         }
 
         $filteredRegions = array_intersect($value, array_keys($this->validRegions));

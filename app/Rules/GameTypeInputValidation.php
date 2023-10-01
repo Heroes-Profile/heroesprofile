@@ -10,8 +10,9 @@ class GameTypeInputValidation implements Rule
 {
     public function passes($attribute, $value)
     {
+        // Convert single game type to an array
         if (!is_array($value)) {
-            return false;
+            $value = [$value];
         }
 
         $existingGameTypes = GameType::pluck('short_name')->toArray();

@@ -60,7 +60,7 @@ export default {
   },
   computed: {
     selectedOptionsName() {
-      const selected = this.values.find(value => value.code === this.selectedOptions);
+      const selected = this.values.find(value => value.code == this.selectedOptions);
       return selected ? selected.name : '';
     },
     filteredValues() {  

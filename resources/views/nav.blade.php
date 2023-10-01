@@ -11,7 +11,7 @@
                 <a class=" cursor-pointer">Global Hero Stats</a>
                 <div class="absolute left-0 hidden group-hover:block z-50 pt-3  ">
                     <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow">
-                        <!-- ... (Global Hero Stats dropdown items) -->
+                        {{-- ... (Global Hero Stats dropdown items) --}}
                         <a href="/Global/Hero" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Hero Stats</a>
                         <a href="/Global/Talents" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Talent Stats</a>
                         <a href="/Global/Hero/Maps" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Map Stats</a>
@@ -20,7 +20,7 @@
                         <a href="/Global/Compositions" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Compositional Stats</a>
                         <a href="/Global/Draft/General" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Draft Stats</a>
                         <a href="/Global/Party" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Party Stats</a>
-                        <a href="/Global/Extra" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Extra Stats</a>
+                        {{--<a href="/Global/Extra" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Extra Stats</a>--}}
                     </div>
                 </div>
             </div>
@@ -31,7 +31,7 @@
                 <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Tools</a>
                 <div class="absolute left-0 hidden  group-hover:block z-50 pt-3 ">
                     <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow">
-                        <!-- ... (Tools dropdown items) -->
+                        {{-- ... (Tools dropdown items) --}}
                         <a href="/" class="block px-4 py-2 border-b border-darken hover:bg-lighten cursor-not-allowed pointer-events-none">Talent Builder</a>
                         <a href="/Compare" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Compare</a>
                         <a href="https://drafter.heroesprofile.com/Drafter" target="_blank" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Drafter</a>
@@ -54,7 +54,7 @@
                     </a>
                     <div class="absolute left-0 hidden group-hover:block z-50 pt-3  drop-menu-wrapper">
                         <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow drop-menu">
-                            <!-- ... (mainSearchAccount dropdown items) -->
+                            {{-- ... (mainSearchAccount dropdown items) --}}
                             <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Profile</a>
                             <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/FriendFoe" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Friends and Foes</a>
                             <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Hero" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Heroes</a>
@@ -68,7 +68,7 @@
                 @endif
             </div>
 
-            <!-- Distinct white or grey line show the seperation here  -->
+            {{-- Distinct white or grey line show the seperation here  --}}
             <div class="flex space-x-5">
                 <custom-button :href="'https://api.heroesprofile.com/Api'" :targetblank="true" :text="'API'" :alt="'API'"  :size="'small'" :color="'teal'"></custom-button>
                 <custom-button :href="'https://api.heroesprofile.com/upload'" :targetblank="true" :text="'Replay Uploader'" :alt="'Replay Uploader'"  :size="'small'" :color="'blue'"></custom-button>

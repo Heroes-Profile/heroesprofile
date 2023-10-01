@@ -16,6 +16,7 @@ use App\Rules\RegionInputValidation;
 use App\Models\Map;
 use App\Models\SeasonGameVersion;
 use App\Models\GameType;
+use App\Models\MMRTypeID;
 
 class GlobalsInputValidationController extends Controller
 {
@@ -57,6 +58,10 @@ class GlobalsInputValidationController extends Controller
             return null;
         }
 
+        if(!is_array($regions)){
+            return $this->globalDataService->getRegionStringToID()[$regions];
+        }
+
         return array_map(function ($region) {
             return $this->globalDataService->getRegionStringToID()[$region];
         }, $regions);
@@ -78,8 +83,16 @@ class GlobalsInputValidationController extends Controller
         return session('heroes')->keyBy('name')[$hero]->id;
     }
 
-    public function getGameTypeFilterValues($game_type){
-        $gameTypeRecords = GameType::whereIn("short_name", $game_type)->get();
-        return $gameTypeRecords->pluck("type_id")->toArray();
+    public function getGameTypeFilterValues($game_type)
+    {   
+        if(is_array($game_type)){
+            return GameType::whereIn("short_name", $game_type)->pluck("type_id")->toArray();
+        }else{
+            return GameType::where("short_name", $game_type)->pluck("type_id")->first();
+        }
+    }
+
+    public function getMMRTypeValue($input){
+        return MMRTypeID::where("name", $input)->pluck("mmr_type_id")->first();
     }
 }
