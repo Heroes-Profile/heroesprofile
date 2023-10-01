@@ -45,8 +45,6 @@
       }
     },
     created(){
-            console.log(this.data);
-
     },
     mounted() {
     },

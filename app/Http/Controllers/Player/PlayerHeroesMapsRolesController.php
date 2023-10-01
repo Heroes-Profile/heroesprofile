@@ -4,17 +4,18 @@ namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 use App\Rules\GameTypeInputValidation;
-use App\Rules\GameMapInputValidation;
-use App\Rules\HeroInputByIDValidation;
 use App\Rules\HeroInputValidation;
+use App\Rules\GameMapInputValidation;
 use App\Rules\RoleInputValidation;
+use App\Rules\SeasonInputValidation;
 
 use App\Models\Replay;
 use App\Models\Map;
 use App\Models\HeroesDataTalent;
-
+use App\Models\GameType;
 use App\Models\MasterMMRDataQM;
 use App\Models\MasterMMRDataUD;
 use App\Models\MasterMMRDataHL;
@@ -22,34 +23,47 @@ use App\Models\MasterMMRDataTL;
 use App\Models\MasterMMRDataSL;
 use App\Models\MasterMMRDataAR;
 use App\Models\MMRTypeID;
+use App\Models\SeasonDate;
 
 class PlayerHeroesMapsRolesController extends Controller
 {
     public function getData(Request $request){
-        
         //return response()->json($request->all());
 
-        $validator = \Validator::make($request->only(['blizz_id', 'region', 'minimumgames', 'type']), [
+
+        $validationRules = [
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
             'minimumgames' => 'integer',
             'type' => 'required|in:all,single',
             'page' => 'required|in:hero,map,role',
-        ]);
+            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation()],
+            'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
+            'role' => ['sometimes', 'nullable', new RoleInputValidation()],
+            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
+            'season' => ['sometimes', 'nullable', new SeasonInputValidation()],
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+       if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
+        }
+
 
         $blizz_id = $request['blizz_id'];
         $region = $request['region'];
-        $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
-        $hero = (new HeroInputByIDValidation())->passes('hero', $request["hero"]);
+        $game_type = $request["game_type"] ? GameType::where("short_name", $request["game_type"])->pluck("type_id")->first() : null;
+        $hero = $request["hero"] ? session('heroes')->keyBy('name')[$request["hero"]]->id : null;
         $minimum_games = $request["minimumgames"];
         $type = $request["type"];
         $page = $request["page"];
-        $role = (new RoleInputValidation())->passes('role', $request["role"]);
-        $map = $request["map"];
-
-        if(count($gameType) == 6){
-            $gameType = [];
-        }
+        $role = $request["role"];
+        $game_map = $request["game_map"];
+        $season = $request["season"];
 
         $result = Replay::join('player', 'player.replayID', '=', 'replay.replayID')
                 ->join('scores', function($join) {
@@ -62,10 +76,13 @@ class PlayerHeroesMapsRolesController extends Controller
                 })
                 ->join('heroes', 'heroes.id', '=', 'player.hero')
                 ->where('region', $region)
-                ->when(!empty($gameType), function ($query) use ($gameType) {
-                        return $query->whereIn("game_type", $gameType);
-                    })
-                ->whereNot("game_type", 0)
+                 ->where(function ($query) use ($game_type) {
+                    if (is_null($game_type)) {
+                        $query->whereNot("game_type", 0);
+                    } else {
+                        $query->where("game_type", $game_type);
+                    }
+                })
                 ->where('blizz_id', $blizz_id)
                 ->when($type == "single" && $page == "hero", function ($query) use ($hero) {
                         return $query->where("hero", $hero);
@@ -73,8 +90,16 @@ class PlayerHeroesMapsRolesController extends Controller
                 ->when($type == "single" && $page == "role", function ($query) use ($role) {
                         return $query->where("new_role", $role);
                 })
-                ->when($type == "single" && $page == "map", function ($query) use ($map) {
-                        return $query->where("game_map", $map);
+                ->when($type == "single" && $page == "map", function ($query) use ($game_map) {
+                        return $query->where("game_map", $game_map);
+                })
+                ->when(!is_null($season), function ($query) use ($season){
+                    $seasonDate = SeasonDate::find($season);
+                    if ($seasonDate) {
+                        return $query->where("game_date", ">=", $seasonDate->start_date)
+                                     ->where("game_date", "<", $seasonDate->end_date);
+                    }
+                    return $query;
                 })
                 ->select([
                     'replay.replayID',
@@ -636,7 +661,14 @@ class PlayerHeroesMapsRolesController extends Controller
                 'latestGames' => $latestGames,
             ];
         })->values()->sortBy('name')->values()->all();
+        
+        if($minimum_games && $minimum_games > 0){
+            $filteredData = array_filter($returnData, function ($item) {
+                return $item['games_played'] > 200;
+            });
 
+            $returnData = array_values($filteredData);
+        }
         return $returnData;
     }
     

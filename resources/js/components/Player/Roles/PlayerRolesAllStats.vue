@@ -1,8 +1,7 @@
 <template>
   <div>
-    All Heroes
-    as played by
-    <span><a :href="`/Player/${battletag}/${blizzid}/${region}`" target="_blank">{{ battletag }}</a></span>
+    <page-heading :infoText1="'All Role data for battletag' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
+
 
     <infobox :input="infoText"></infobox>
 
@@ -12,12 +11,9 @@
     :isLoading="isLoading"
     :gametypedefault="gametype"
     :minimumgamesdefault="'0'"
-    :includehero="true"
-    :includerole="true"
     :includegametypefull="true"
-    :includeseason="true"
     :includeminimumgames="true"
-
+    :hideadvancedfilteringbutton="true"
     >
   </filters>
 

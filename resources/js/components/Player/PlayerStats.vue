@@ -1,11 +1,9 @@
 <template>
   <div class="">
     <page-heading :infoText1="infoText" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
-    
-    
 
-    <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="'All'"></single-select-filter>
-    <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" :defaultValue="'All'"></single-select-filter>
+    <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
+    <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
     
 
     <div v-if="data" class="">
@@ -257,10 +255,10 @@
             this.modifiedseason = eventPayload.value;
           }
         }
-
+      },
+      handleDropdownClosed(){
         this.data = null;
         this.getData();
-
       },
     },
 

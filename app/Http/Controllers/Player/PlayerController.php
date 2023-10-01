@@ -103,7 +103,7 @@ class PlayerController extends Controller
         $battletag = $request["battletag"];
         $blizz_id = $request["blizz_id"];
         $region = $request["region"];
-        $game_type = GameType::where("short_name", $request["game_type"])->pluck("type_id")->first();
+        $game_type = $request["game_type"] ? GameType::where("short_name", $request["game_type"])->pluck("type_id")->first() : null;
         $season = $request["season"];
 
 
@@ -125,10 +125,12 @@ class PlayerController extends Controller
                     return $query->where("game_type", $game_type);
                 })
                 ->when(!is_null($season), function ($query) use ($season){
-                    $startDate = SeasonDate::find($season)->pluck("start_date");
-                    $endDate = SeasonDate::find($season)->pluck("end_date");
-                    return $query->where("game_date", ">=", $startDate)->where("game_date", "<", $endDate);
-
+                    $seasonDate = SeasonDate::find($season);
+                    if ($seasonDate) {
+                        return $query->where("game_date", ">=", $seasonDate->start_date)
+                                     ->where("game_date", "<", $seasonDate->end_date);
+                    }
+                    return $query;
                 })
                 ->orderBy("replayID", "DESC")
                 ->limit(1)
