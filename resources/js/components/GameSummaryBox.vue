@@ -3,43 +3,43 @@
     <a :href="getHref()">
       <div class="mt-4 pl-[6em] m-l-auto w-full text-right min-h-4 py-2">{{caption}}</div>
       <div
-      :class="[
-        'flex border border-white border-2 bg-cover bg-no-repeat bg-center rounded-2xl border-red pl-[6em]  ',
-        {
-          'border-teal': data.winner === 1
-        }
-        ]"
-        :style="{ backgroundImage: `url('/images/maps/match/match-${data.game_map.sanitized_map_name}.jpg')` }"
-        >    
+        :class="[
+          'flex border border-white border-2 bg-cover bg-no-repeat bg-center rounded-2xl border-red pl-[6em]  ',
+          {
+            'border-teal': data.winner === 1
+          }
+          ]"
+          :style="{ backgroundImage: `url('/images/maps/match/match-${data.game_map.sanitized_map_name}.jpg')` }"
+          >    
 
-        <div v-if="!esport && esport != true" class=" bg-red-500 absolute -left-10 -bottom-[1em]">
-          <hero-image-wrapper size="xl" :hero="data.hero" :excludehover="true"></hero-image-wrapper>
-        </div>
-        <div v-else-if="esport && esport == true" class="flex flex-wrap gap-2">
-          <hero-image-wrapper v-for="(item, index) in data.heroes" size="big" :hero="item.hero" :excludehover="true"></hero-image-wrapper>
+          <div v-if="!esport && esport != true" class=" bg-red-500 absolute -left-10 -bottom-[1em]">
+            <hero-image-wrapper size="xl" :hero="data.hero" :excludehover="true"></hero-image-wrapper>
+          </div>
+          <div v-else-if="esport && esport == true" class="flex flex-wrap gap-2">
+            <hero-image-wrapper v-for="(item, index) in data.heroes" size="big" :hero="item.hero" :excludehover="true"></hero-image-wrapper>
 
-          <stat-box :title="'Teams'" :value="data.team_0_name + ' vs ' + data.team_1_name"></stat-box>
-        </div>
+            <stat-box :title="'Teams'" :value="data.team_0_name + ' vs ' + data.team_1_name"></stat-box>
+          </div>
 
-        <div v-if="esport && esport != true" class="flex w-full hover:backdrop-brightness-125">
-          <div class="flex w-full ">
-           <stat-box :title="'Player MMR'" :value="data.player_conservative_rating" :secondstat="data.player_change" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'teal' : 'red'"></stat-box>
-           <stat-box :title="'Player MMR'" :value="data.player_conservative_rating" :secondstat="data.player_change" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'teal' : 'red'"></stat-box>
-           <stat-box :title="'Player MMR'" :value="data.player_conservative_rating" :secondstat="data.player_change" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'teal' : 'red'"></stat-box>
-         </div>
-         <div class="flex gap-x-1 mx-2 items-center">
-          <talent-image-wrapper v-if="data.level_one" :talent="data.level_one" :size="'medium'"></talent-image-wrapper>
-          <talent-image-wrapper v-if="data.level_four" :talent="data.level_four" :size="'medium'"></talent-image-wrapper>
-          <talent-image-wrapper v-if="data.level_seven" :talent="data.level_seven" :size="'medium'"></talent-image-wrapper>
-          <talent-image-wrapper v-if="data.level_ten" :talent="data.level_ten" :size="'medium'"></talent-image-wrapper>
-          <talent-image-wrapper v-if="data.level_thirteen" :talent="data.level_thirteen" :size="'medium'"></talent-image-wrapper>
-          <talent-image-wrapper v-if="data.level_sixteen" :talent="data.level_sixteen" :size="'medium'"></talent-image-wrapper>
-          <talent-image-wrapper v-if="data.level_twenty" :talent="data.level_twenty" :size="'medium'"></talent-image-wrapper>
+          <div v-if="!esport && esport != true" class="flex w-full hover:backdrop-brightness-125">
+            <div class="flex w-full ">
+              <stat-box :title="'Player MMR'" :value="data.player_conservative_rating" :secondstat="data.player_change" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box :title="'Player MMR'" :value="data.player_conservative_rating" :secondstat="data.player_change" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box :title="'Player MMR'" :value="data.player_conservative_rating" :secondstat="data.player_change" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'teal' : 'red'"></stat-box>
+            </div>
+            <div class="flex gap-x-1 mx-2 items-center">
+              <talent-image-wrapper v-if="data.level_one" :talent="data.level_one" :size="'medium'"></talent-image-wrapper>
+              <talent-image-wrapper v-if="data.level_four" :talent="data.level_four" :size="'medium'"></talent-image-wrapper>
+              <talent-image-wrapper v-if="data.level_seven" :talent="data.level_seven" :size="'medium'"></talent-image-wrapper>
+              <talent-image-wrapper v-if="data.level_ten" :talent="data.level_ten" :size="'medium'"></talent-image-wrapper>
+              <talent-image-wrapper v-if="data.level_thirteen" :talent="data.level_thirteen" :size="'medium'"></talent-image-wrapper>
+              <talent-image-wrapper v-if="data.level_sixteen" :talent="data.level_sixteen" :size="'medium'"></talent-image-wrapper>
+              <talent-image-wrapper v-if="data.level_twenty" :talent="data.level_twenty" :size="'medium'"></talent-image-wrapper>
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  </a>
-</div>
+    </a>
+  </div>
 </template>
 
 
@@ -59,10 +59,8 @@
       }
     },
     created(){
-
     },
     mounted() {
-      console.log(this.data)
     },
     computed: {
     },

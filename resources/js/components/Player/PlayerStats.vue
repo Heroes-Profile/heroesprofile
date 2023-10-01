@@ -1,10 +1,11 @@
 <template>
   <div class="">
-    <page-heading :infoText1="infoText" :heading="battletag +`(`+ region+ `)`"></page-heading>
+    <page-heading :infoText1="infoText" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
     
     
-    <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametype"></multi-select-filter>
-    <single-select-filter :values="filters.seasons" :text="'Season'" @input-changed="handleInputChange"></single-select-filter>
+
+    <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="'All'"></single-select-filter>
+    <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" :defaultValue="'All'"></single-select-filter>
     
 
     <div v-if="data" class="">
@@ -113,9 +114,9 @@
       <div class=" max-w-[90em] ml-auto mr-auto">
         <h2 class="text-3xl font-bold py-5 text-center">Maps</h2>
         <div class="flex flex-wrap justify-center">
-          <group-box :text="'Most Played'" :data="data.maps_three_most_played"></group-box>
-          <group-box :text="'Highest Win Rate'" :data="data.maps_three_highest_win_rate"></group-box>
-          <group-box :text="'Latest Played'" :data="data.maps_three_latest_played"></group-box>
+          <group-box :playerlink="true" :text="'Most Played'" :data="data.maps_three_most_played"></group-box>
+          <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.maps_three_highest_win_rate"></group-box>
+          <group-box :playerlink="true" :text="'Latest Played'" :data="data.maps_three_latest_played"></group-box>
         </div>
         <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Map'" class="flex justify-end " text="View All Maps"></custom-button>
       </div>
@@ -178,17 +179,23 @@
       battletag: String,
       blizzid: String, 
       region: String,
+      season: Number,
+      gametype: Array,
+      regionsmap: Object,
     },
     data(){
       return {
         data: null,
         infoText: "Profile data",
-        gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
+        modifiedgametype: null,
+        modifiedseason: null,
         inputHero: null,
 
       }
     },
     created(){
+      this.modifiedgametype = this.gametype;
+      this.modifiedseason = this.season;
     },
     mounted() {
       if(this.settinghero){
@@ -204,6 +211,18 @@
       this.getData();
     },
     computed: {
+     gameTypesWithAll() {
+        const newValue = { code: 'All', name: 'All' };
+        const updatedList = [...this.filters.game_types_full];
+        updatedList.unshift(newValue);
+        return updatedList;
+      },
+      seasonsWithAll() {
+        const newValue = { code: 'All', name: 'All' };
+        const updatedList = [...this.filters.seasons];
+        updatedList.unshift(newValue);
+        return updatedList;
+      },
     },
     watch: {
     },
@@ -214,8 +233,8 @@
             blizz_id: this.blizzid,
             region: this.region,
             battletag: this.battletag,
-            game_type: "all",
-            season: "all",
+            game_type: this.modifiedgametype,
+            season: this.modifiedseason,
           });
           this.data = response.data;
         }catch(error){
@@ -223,6 +242,25 @@
         }
       },
       handleInputChange(eventPayload) {
+        if(eventPayload.field == "Game Type"){
+          if(eventPayload.value == "All"){
+            this.modifiedgametype = null;
+          }else{
+            this.modifiedgametype = eventPayload.value;
+          }
+        }
+
+        if(eventPayload.field == "Season"){
+          if(eventPayload.value == "All"){
+            this.modifiedseason = null;
+          }else{
+            this.modifiedseason = eventPayload.value;
+          }
+        }
+
+        this.data = null;
+        this.getData();
+
       },
     },
 

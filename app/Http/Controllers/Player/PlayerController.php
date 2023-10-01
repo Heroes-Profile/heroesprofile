@@ -5,6 +5,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Validator;
+
+use App\Rules\GameTypeInputValidation;
+use App\Rules\SeasonInputValidation;
 
 use App\Models\PatreonAccount;
 use App\Models\Replay;
@@ -13,6 +17,8 @@ use App\Models\Battletag;
 use App\Models\MMRTypeID;
 use App\Models\Map;
 use App\Models\HeroesDataTalent;
+use App\Models\GameType;
+use App\Models\SeasonDate;
 
 use App\Models\MasterMMRDataQM;
 use App\Models\MasterMMRDataUD;
@@ -27,23 +33,28 @@ class PlayerController extends Controller
 {
     public function show(Request $request, $battletag, $blizz_id, $region)
     {
-        ///Add in some rule handling for game type and season
-
-        $data = [
-            'battletag' => $battletag,
-            'blizz_id' => $blizz_id,
-            'region' => $region
-        ];
-
-        $validator = \Validator::make($data, [
+       $validationRules = [
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
-            'region' => 'required|integer'
-        ]);
+            'region' => 'required|integer',
+        ];
+
+        if (request()->has('game_type')) {
+            $validationRules['game_type'] = ['sometimes', 'nullable', new GameTypeInputValidation()];
+        }
+        if (request()->has('season')) {
+            $validationRules['season'] = ['sometimes', 'nullable', new SeasonInputValidation()];
+        }
+
+        $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
 
         if ($validator->fails()) {
-            return redirect('/');
+            return [
+                "data" => compact('battletag', 'blizz_id', 'region'),
+                "status" => "failure to validate inputs"
+            ];
         }
+
         $heroUserSettings = null;
         $checkedUser = BattlenetAccount::where("battletag", "like", $battletag . "%")
             ->where("blizz_id", $blizz_id)
@@ -55,59 +66,81 @@ class PlayerController extends Controller
             $heroUserSettings = $this->globalDataService->getHeroesByID()[$heroUserSettings["value"]];
         }
 
+        $season = $request["season"];
+        $game_type = $request["game_type"];
+
         return view('Player.player')->with([
                 'settingHero' => $heroUserSettings,
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
                 'region' => $region,
+                'season' => $season,
+                'game_type' => $game_type,
                 'filters' => $this->globalDataService->getFilterData(),
                 ]);
     }
 
     public function getPlayerData(Request $request){
-        $data = [
-            'blizz_id' => $request["blizz_id"],
-            'region' => $request["region"],
-            'battletag' => $request["battletag"],
-        ];
+        //return response()->json($request->all());
 
-        $validator = \Validator::make($data, [
+        $validationRules = [
+            'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
-            'battletag' => 'required|string',
-        ]);
+            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation()],
+            'season' => ['sometimes', 'nullable', new SeasonInputValidation()],
+        ];
 
-        if ($validator->fails()) {
-            return redirect('/');
+        $validator = Validator::make($request->all(), $validationRules);
+
+       if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
         }
 
-        $cachedData = LaravelProfilePage::filterByBlizzID($request["blizz_id"])
-            ->filterByRegion($request["region"])
-            ->where("game_type", $request["game_type"])
-            ->where("season", $request["season"])
+        $battletag = $request["battletag"];
+        $blizz_id = $request["blizz_id"];
+        $region = $request["region"];
+        $game_type = GameType::where("short_name", $request["game_type"])->pluck("type_id")->first();
+        $season = $request["season"];
+
+
+        $cachedData = LaravelProfilePage::filterByBlizzID($blizz_id)
+            ->filterByRegion($region)
+            ->where("game_type", $game_type)
+            ->where("season", $season)
             ->first();
         
 
         if(!$cachedData){
-            $cachedData = $this->calculateProfile($request["blizz_id"], $request["region"], $request["game_type"], $request["season"]);
+            $cachedData = $this->calculateProfile($blizz_id, $region, $game_type, $season);
         }else{
             $latestReplayID = Replay::select("replay.replayID")
                 ->join('player', 'player.replayID', '=', 'replay.replayID')
-                ->where("blizz_id", $request["blizz_id"])
-                ->where("region", $request["region"])
-                //->where("game_type", $request["game_type"]) //fix later
-                //->where("season", $request["season"]) //fix later
+                ->where("blizz_id", $blizz_id)
+                ->where("region", $region)
+                ->when(!is_null($game_type), function ($query) use ($game_type){
+                    return $query->where("game_type", $game_type);
+                })
+                ->when(!is_null($season), function ($query) use ($season){
+                    $startDate = SeasonDate::find($season)->pluck("start_date");
+                    $endDate = SeasonDate::find($season)->pluck("end_date");
+                    return $query->where("game_date", ">=", $startDate)->where("game_date", "<", $endDate);
+
+                })
                 ->orderBy("replayID", "DESC")
                 ->limit(1)
                 ->first()
                 ->replayID ?? null;
 
             if ($latestReplayID && $cachedData->latest_replayID < $latestReplayID) {
-                $cachedData = $this->calculateProfile($request["blizz_id"], $request["region"], $request["game_type"], $request["season"], $cachedData);
+                $cachedData = $this->calculateProfile($blizz_id, $region, $game_type, $season, $cachedData);
             }
         }
 
-        return $this->formatCache($cachedData, $request["blizz_id"], $request["region"], $request["battletag"]);
+        return $this->formatCache($cachedData, $blizz_id, $region, $battletag);
     }
 
     private function calculateProfile($blizz_id, $region, $game_type, $season, $cachedData = null){
@@ -155,8 +188,22 @@ class PlayerController extends Controller
                 "talents.level_twenty AS level_twenty"
             ])
             ->where("blizz_id", $blizz_id)
-            ->whereNot("game_type", 0)
             ->where("region", $region)
+            ->where(function ($query) use ($game_type) {
+                if (is_null($game_type)) {
+                    $query->whereNot("game_type", 0);
+                } else {
+                    $query->where("game_type", $game_type);
+                }
+            })
+            ->when(!is_null($season), function ($query) use ($season){
+                $seasonDate = SeasonDate::find($season);
+                if ($seasonDate) {
+                    return $query->where("game_date", ">=", $seasonDate->start_date)
+                                 ->where("game_date", "<", $seasonDate->end_date);
+                }
+                return $query;
+            })
             //->where("replay.replayID", "<=", 46984901) //testing
             ->when($cachedData, function ($query, $cachedData) {
                 return $query->where('replay.replayID', '>', $cachedData->latest_replayID);
@@ -669,13 +716,15 @@ class PlayerController extends Controller
             $match["game_type"] = $this->globalDataService->getGameTypeIDtoString()[$match["game_type"]];
             $match["game_map"] = $maps[$match["game_map"]];
             $match['hero'] = $heroData[$match['hero']];
-            $match['level_one'] = $match['level_one'] ? $talentData[$match['level_one']] : null;
-            $match['level_four'] = $match['level_four'] ? $talentData[$match['level_four']] : null;
-            $match['level_seven'] = $match['level_seven'] ? $talentData[$match['level_seven']] : null;
-            $match['level_ten'] = $match['level_ten'] ? $talentData[$match['level_ten']] : null;
-            $match['level_thirteen'] = $match['level_thirteen'] ? $talentData[$match['level_thirteen']] : null;
-            $match['level_sixteen'] = $match['level_sixteen'] ? $talentData[$match['level_sixteen']] : null;
-            $match['level_twenty'] = $match['level_twenty'] ? $talentData[$match['level_twenty']] : null;
+
+            $match['level_one'] = $match['level_one'] && $talentData->has($match['level_one']) ? $talentData[$match['level_one']] : null;
+            $match['level_four'] = $match['level_four'] && $talentData->has($match['level_four']) ? $talentData[$match['level_four']] : null;
+            $match['level_seven'] = $match['level_seven'] && $talentData->has($match['level_seven']) ? $talentData[$match['level_seven']] : null;
+            $match['level_ten'] = $match['level_ten'] && $talentData->has($match['level_ten']) ? $talentData[$match['level_ten']] : null;
+            $match['level_thirteen'] = $match['level_thirteen'] && $talentData->has($match['level_thirteen']) ? $talentData[$match['level_thirteen']] : null;
+            $match['level_sixteen'] = $match['level_sixteen'] && $talentData->has($match['level_sixteen']) ? $talentData[$match['level_sixteen']] : null;
+            $match['level_twenty'] = $match['level_twenty'] && $talentData->has($match['level_twenty']) ? $talentData[$match['level_twenty']] : null;
+
             
             $match['player_conservative_rating'] = round($match['player_conservative_rating'], 2);
             $match['player_change'] = round($match['player_change'], 2);

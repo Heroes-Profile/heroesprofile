@@ -4,5 +4,14 @@
 @section('meta_description', '')
 
 @section('content')
-  <player-stats :settinghero="{{ json_encode($settingHero) }}" :battletag="{{ json_encode($battletag) }}" :blizzid="{{ json_encode($blizz_id) }}" :region="{{ json_encode($region) }}" :filters="{{ json_encode($filters) }}"></player-stats>
+  <player-stats 
+    :settinghero="{{ json_encode($settingHero) }}" 
+    :battletag="{{ json_encode($battletag) }}" 
+    :blizzid="{{ json_encode($blizz_id) }}" 
+    :region="{{ json_encode($region) }}" 
+    :filters="{{ json_encode($filters) }}"
+    :season="{{ json_encode($season) }}"
+    :gametype="{{ json_encode($game_type) }}"
+    :regionsmap="{{ json_encode(session('regions')) }}"
+  ></player-stats>
 @endsection

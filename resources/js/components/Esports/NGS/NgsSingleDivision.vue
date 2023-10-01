@@ -130,8 +130,6 @@ export default {
           division: this.division,
         });
         this.data = response.data;
-            console.log(this.data);
-
       }catch(error){
         //Do something here
       }

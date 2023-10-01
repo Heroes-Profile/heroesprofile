@@ -1,9 +1,7 @@
 <template>
   <div>
-    Friends And Foes
-    for
+    <page-heading :infoText1="infoText" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
 
-    <span><a :href="`/Player/${battletag}/${blizzid}/${region}`" target="_blank">{{ battletag }}</a></span>
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
@@ -39,7 +37,12 @@
           <tbody>
             <tr v-for="row in sortedDataFriends" :key="row.blizz_id">
               <td class="py-2 px-3 border-b border-gray-200"><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
-              <td class="py-2 px-3 border-b border-gray-200"><hero-image-wrapper :hero="row.heroData.hero"></hero-image-wrapper>({{row.heroData.total_games_played}})</td>
+              <td class="py-2 px-3 border-b border-gray-200">
+                <hero-image-wrapper :hero="row.heroData.hero">
+                  <h2>{{ row.heroData.hero.name }}</h2>
+                  <p>Games Played: {{ row.total_games_played }}</p>
+                </hero-image-wrapper>
+              </td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.total_games_played }}</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
             </tr>
@@ -72,7 +75,12 @@
           <tbody>
             <tr v-for="row in sortedDataEnemies" :key="row.blizz_id">
               <td class="py-2 px-3 border-b border-gray-200"><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
-              <td class="py-2 px-3 border-b border-gray-200"><hero-image-wrapper :hero="row.heroData.hero"></hero-image-wrapper>({{row.heroData.total_games_played}})</td>
+              <td class="py-2 px-3 border-b border-gray-200">
+                <hero-image-wrapper :hero="row.heroData.hero">
+                  <h2>{{ row.heroData.hero.name }}</h2>
+                  <p>Games Played: {{ row.total_games_played }}</p>
+                </hero-image-wrapper>
+              </td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.total_games_played }}</td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
             </tr>
@@ -102,11 +110,12 @@ export default {
     blizzid: String, 
     region: String,
     gametypedefault: Array,
-
-
+    regionsmap: Object,
+    gamemap: String,
   },
   data(){
     return {
+      infoText: "Friends and Foe data showing who " + this.battletag + " plays the most games with and against",
       isLoading: false,
       frienddata: null,
       enemydata: null,
@@ -185,6 +194,7 @@ export default {
           map: this.gamemap,
           season: this.season,
           hero: this.hero,
+          game_map: this.gamemap,
         });
         
         return response.data;
@@ -193,10 +203,10 @@ export default {
       }
     },
     filterData(filteredData){
-      this.hero = filteredData.single["Heroes"] ? filteredData.single["Heroes"] : "";
+      this.hero = filteredData.single["Heroes"] ? filteredData.single["Heroes"] : null;
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametypedefault;
-      this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : [];
-      this.season = filteredData.single["Season"] ? filteredData.single["Season"] : "";
+      this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
+      this.season = filteredData.single["Season"] ? filteredData.single["Season"] : null;
 
       this.frienddata = null;
       this.enemydata = null;
