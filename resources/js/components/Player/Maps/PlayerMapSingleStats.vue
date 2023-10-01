@@ -1,11 +1,10 @@
 <template>
   <div>
-      <single-select-filter :values="this.filters.game_maps" :text="'Maps'" @input-changed="handleInputChange" :defaultValue="map"></single-select-filter>
-      as played by {{ battletag }}({{ getRegionName(region) }})
+    <page-heading :infoText1="'Map data for ' + battletag + ' on ' + map" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
 
-      <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametype"></multi-select-filter>
-      <single-select-filter :values="filters.seasons" :text="'Season'" @input-changed="handleInputChange"></single-select-filter>
-     
+
+      <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
+      <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
 
       <div v-if="data">
         <span>Wins = </span><span>{{ data.wins }}</span><br>
@@ -98,12 +97,13 @@ export default {
     },
     region: Number,
     regions: Object,
-    map: Number,
+    map: String,
+    regionsmap: Object,
   },
   data(){
     return {
       inputmap: null,
-      gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
+      gametype: null,
       data: null,
     }
   },
@@ -114,12 +114,21 @@ export default {
     this.getData();
   },
   computed: {
-    mapname(){
-      //return this.filters.heroes.find(hero => hero.code === this.inputhero).name;
-    },
     seasonWinRateDataArray() {
       return this.data && this.data.season_win_rate_data ? Object.values(this.data.season_win_rate_data) : null;
-    }
+    },
+    gameTypesWithAll() {
+      const newValue = { code: 'All', name: 'All' };
+      const updatedList = [...this.filters.game_types_full];
+      updatedList.unshift(newValue);
+      return updatedList;
+    },
+    seasonsWithAll() {
+      const newValue = { code: 'All', name: 'All' };
+      const updatedList = [...this.filters.seasons];
+      updatedList.unshift(newValue);
+      return updatedList;
+    },
   },
   watch: {
   },
@@ -127,12 +136,13 @@ export default {
     async getData(type){
       try{
         const response = await this.$axios.post("/api/v1/player/maps/single", {
+          battletag: this.battletag,
           blizz_id: this.blizzid,
           region: this.region,
           game_type: this.gametype,
           type: "single",
           page: "map",
-          map: this.map,
+          game_map: this.map,
         });
 
         this.data = response.data[0];

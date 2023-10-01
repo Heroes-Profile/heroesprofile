@@ -51,15 +51,17 @@
         <infobox :input="'Click a map to see more information and stats, or select all maps to view maps regardless of hero.'"></infobox>
 
         <div class="flex">
-          <group-box :text="'Most Played'" :data="data.map_data_top_played.slice(0, 3)"></group-box>
-          <group-box :text="'Highest Win Rate'" :data="data.map_data_top_win_rate.slice(0, 3)"></group-box>
-          <group-box :text="'Latest Played'" :data="data.map_data_top_latest_played.slice(0, 3)"></group-box>
+          <group-box :playerlink="true" :text="'Most Played'" :data="data.map_data_top_played.slice(0, 3)"></group-box>
+          <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.map_data_top_win_rate.slice(0, 3)"></group-box>
+          <group-box :playerlink="true" :text="'Latest Played'" :data="data.map_data_top_latest_played.slice(0, 3)"></group-box>
         </div>
 
-        <div class="flex">
-          <map-image-wrapper v-for="(item, index) in data.map_data" :key="index" :map="item.game_map">
-            <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
-          </map-image-wrapper>
+        <div class="flex">          
+          <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" v-for="(item, index) in data.map_data" :key="index">
+            <map-image-wrapper :map="item.game_map">
+              <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
+            </map-image-wrapper>
+          </a>
         </div>
       </div>
 
@@ -149,6 +151,7 @@
         this.loading = true;
         try{
           const response = await this.$axios.post("/api/v1/player/heroes/single", {
+            battletag: this.battletag,
             blizz_id: this.blizzid,
             region: this.region,
             game_type: this.modifiedgametype,
@@ -180,8 +183,6 @@
             this.modifiedseason = eventPayload.value;
           }
         }
-
-
       },
       handleDropdownClosed(){
         this.data = null;

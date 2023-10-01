@@ -30,8 +30,8 @@ class PlayerHeroesMapsRolesController extends Controller
     public function getData(Request $request){
         //return response()->json($request->all());
 
-
         $validationRules = [
+            'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
             'minimumgames' => 'integer',
@@ -54,6 +54,7 @@ class PlayerHeroesMapsRolesController extends Controller
         }
 
 
+        $battletag = $request['battletag'];
         $blizz_id = $request['blizz_id'];
         $region = $request['region'];
         $game_type = $request["game_type"] ? GameType::where("short_name", $request["game_type"])->pluck("type_id")->first() : null;
@@ -62,8 +63,10 @@ class PlayerHeroesMapsRolesController extends Controller
         $type = $request["type"];
         $page = $request["page"];
         $role = $request["role"];
-        $game_map = $request["game_map"];
+        $game_map = $request["game_map"] ? Map::where('name',  $request["game_map"])->pluck('map_id') : null;
         $season = $request["season"];
+
+        //dd($hero);
 
         $result = Replay::join('player', 'player.replayID', '=', 'replay.replayID')
                 ->join('scores', function($join) {
@@ -76,7 +79,7 @@ class PlayerHeroesMapsRolesController extends Controller
                 })
                 ->join('heroes', 'heroes.id', '=', 'player.hero')
                 ->where('region', $region)
-                 ->where(function ($query) use ($game_type) {
+                ->where(function ($query) use ($game_type) {
                     if (is_null($game_type)) {
                         $query->whereNot("game_type", 0);
                     } else {
@@ -355,7 +358,7 @@ class PlayerHeroesMapsRolesController extends Controller
 
 
 
-            $mapData = $mapData->map(function($games, $map) use ($maps){
+            $mapData = $mapData->map(function($games, $map) use ($battletag, $blizz_id, $region, $maps){
                 $gamesPlayed = $games->count();
                 $wins = $games->where('winner', 1)->count();
                 $losses = $games->where('winner', 0)->count();
@@ -365,6 +368,10 @@ class PlayerHeroesMapsRolesController extends Controller
 
             
                 return [
+                    "battletag" => $battletag,
+                    "blizz_id" => $blizz_id,
+                    "region" => $region,
+
                     'name' => $maps[$map]["name"],
                     'game_map' => $maps[$map],
                     'games_played' => $gamesPlayed,
@@ -392,7 +399,7 @@ class PlayerHeroesMapsRolesController extends Controller
                 });
             }
 
-            $heroDataStats = $heroDataStats->map(function($games, $hero) use ($heroData){
+            $heroDataStats = $heroDataStats->map(function($games, $hero) use ($battletag, $blizz_id, $region, $heroData){
                 $gamesPlayed = $games->count();
                 $wins = $games->where('winner', 1)->count();
                 $losses = $games->where('winner', 0)->count();
@@ -402,6 +409,10 @@ class PlayerHeroesMapsRolesController extends Controller
 
             
                 return [
+                    "battletag" => $battletag,
+                    "blizz_id" => $blizz_id,
+                    "region" => $region,
+
                     'name' => $heroData[$hero]["name"],
                     'hero' => $heroData[$hero],
                     'games_played' => $gamesPlayed,
@@ -444,7 +455,7 @@ class PlayerHeroesMapsRolesController extends Controller
         }
 
 
-        $returnData = $result->groupBy($groupBy)->map(function($heroStats, $index) use ($heroData, $qm_mmr_data, $ud_mmr_data, $hl_mmr_data, $tl_mmr_data, $sl_mmr_data, $ar_mmr_data, $newSeasonData, $mapData, $mapWinRateFiltered, $latestGames, $page, $heroWinRateFiltered, $heroDataStats, $maps){
+        $returnData = $result->groupBy($groupBy)->map(function($heroStats, $index) use ($battletag, $blizz_id, $region, $heroData, $qm_mmr_data, $ud_mmr_data, $hl_mmr_data, $tl_mmr_data, $sl_mmr_data, $ar_mmr_data, $newSeasonData, $mapData, $mapWinRateFiltered, $latestGames, $page, $heroWinRateFiltered, $heroDataStats, $maps){
             $deaths = $heroStats->sum('deaths');
             $avg_kills = $heroStats->avg('kills');
             $avg_takedowns = $heroStats->avg('takedowns');
@@ -486,6 +497,10 @@ class PlayerHeroesMapsRolesController extends Controller
             }
 
             return [
+                "battletag" => $battletag,
+                "blizz_id" => $blizz_id,
+                "region" => $region,
+
                 "name" => $name,
                 "hero" => $heroData[$heroStats->pluck('hero')->first()],
                 //"game_map" => $maps[$heroStats->pluck('game_map')->first()],
@@ -647,14 +662,15 @@ class PlayerHeroesMapsRolesController extends Controller
                 'sum_first_to_ten' => $heroStats->sum('first_to_ten'),
                 'sum_time_on_fire' => $heroStats->sum('time_on_fire'),
                 'season_win_rate_data' => $newSeasonData,
+                
                 'map_data' => $mapData ? $mapData->sortBy('name')->values() : null,
                 'map_data_top_played' => $mapData ? $mapData->sortByDesc('games_played')->values() : null,
                 'map_data_top_win_rate' => $mapWinRateFiltered ? $mapWinRateFiltered->sortByDesc('win_rate')->values() : null,
-                'map_data_top_latest_played' => $mapData ? $mapData->sortByDesc('game_date')->values() : null,
+                'map_data_top_latest_played' => $mapData ? $mapData->sortByDesc('latest_game')->values() : null,
             
                 'hero_data_top_played' => $heroDataStats ? $heroDataStats->sortByDesc('games_played')->values() : null,
                 'hero_data_top_win_rate' => $heroWinRateFiltered ? $heroWinRateFiltered->sortByDesc('win_rate')->values() : null,
-                'hero_data_top_latest_played' => $heroDataStats ? $heroDataStats->sortByDesc('game_date')->values() : null,
+                'hero_data_top_latest_played' => $heroDataStats ? $heroDataStats->sortByDesc('latest_game')->values() : null,
                 'hero_data_all_heroes' => $heroDataStats ? $heroDataStats->sortBy('name')->values() : null,
 
                 

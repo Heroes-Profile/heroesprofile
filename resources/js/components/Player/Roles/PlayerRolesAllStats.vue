@@ -1,10 +1,7 @@
 <template>
   <div>
-    <page-heading :infoText1="'All Role data for battletag' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
-
-
-    <infobox :input="infoText"></infobox>
-
+    <page-heading :infoText1="'All Role data for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
+    
     <filters 
     :onFilter="filterData" 
     :filters="filters" 
@@ -93,6 +90,7 @@
       battletag: String,
       blizzid: String, 
       region: String,
+      regionsmap: Object,
     },
     data(){
       return {
@@ -225,6 +223,7 @@ methods: {
     this.isLoading = true;
     try{
       const response = await this.$axios.post("/api/v1/player/roles/all", {
+        battletag: this.battletag,
         blizz_id: this.blizzid,
         region: this.region,
         game_type: this.gametype,

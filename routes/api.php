@@ -97,6 +97,8 @@ Route::prefix('v1')->group(function () {
     Route::post('player/heroes/single', [PlayerHeroesMapsRolesController::class, 'getData']);
 
     Route::post('player/roles/all/', [PlayerHeroesMapsRolesController::class, 'getData']);
+    
+    Route::post('/player/role/single', [PlayerHeroesMapsRolesController::class, 'getData']);
 
 
     Route::post('player/maps/all/', [PlayerHeroesMapsRolesController::class, 'getData']);

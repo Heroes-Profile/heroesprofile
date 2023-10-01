@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <page-heading :infoText1="'All Heroes data for battletag' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
+    <page-heading :infoText1="'All Heroes data for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
 
 
     <infobox :input="infoText"></infobox>
@@ -90,6 +90,7 @@ export default {
     battletag: String,
     blizzid: String, 
     region: String,
+    regionsmap: Object,
   },
   data(){
     return {
@@ -223,6 +224,7 @@ export default {
       this.isLoading = true;
       try{
         const response = await this.$axios.post("/api/v1/player/heroes/all", {
+          battletag: this.battletag,
           blizz_id: this.blizzid,
           region: this.region,
           game_type: this.gametype,

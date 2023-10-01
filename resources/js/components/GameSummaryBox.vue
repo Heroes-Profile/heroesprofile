@@ -17,7 +17,6 @@
           </div>
           <div v-else-if="esport && esport == true" class="flex flex-wrap gap-2">
             <hero-image-wrapper v-for="(item, index) in data.heroes" size="big" :hero="item.hero" :excludehover="true"></hero-image-wrapper>
-
             <stat-box :title="'Teams'" :value="data.team_0_name + ' vs ' + data.team_1_name"></stat-box>
           </div>
 

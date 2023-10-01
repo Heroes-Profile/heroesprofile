@@ -87,8 +87,7 @@
 
                 <td v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role') && row.most_played_hero">
                   <hero-image-wrapper :hero="row.most_played_hero">
-                    <h2>{{ row.most_played_hero.name }}</h2>
-                    <p>Games Played: {{ row.hero_build_games_played }}</p>
+                    <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Games Played:' + row.hero_build_games_played"></image-hover-box>
                   </hero-image-wrapper>
                 </td>
 

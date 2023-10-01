@@ -1,6 +1,6 @@
 /PlayerMapsAllStats.vue<template>
   <div>
-    <page-heading :infoText1="'All Map data for battletag' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
+    <page-heading :infoText1="'All Map data for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
 
 
     <infobox :input="infoText"></infobox>
@@ -224,6 +224,7 @@ export default {
       this.isLoading = true;
       try{
         const response = await this.$axios.post("/api/v1/player/maps/all", {
+          battletag: this.battletag,
           blizz_id: this.blizzid,
           region: this.region,
           game_type: this.gametype,
@@ -231,7 +232,7 @@ export default {
           role: this.role,
           type: "all",
           page: "map",
-          map: this.map,
+          game_map: this.map,
         });
 
         this.data = response.data;

@@ -39,8 +39,7 @@
               <td class="py-2 px-3 border-b border-gray-200"><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
               <td class="py-2 px-3 border-b border-gray-200">
                 <hero-image-wrapper :hero="row.heroData.hero">
-                  <h2>{{ row.heroData.hero.name }}</h2>
-                  <p>Games Played: {{ row.total_games_played }}</p>
+                  <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.total_games_played"></image-hover-box>
                 </hero-image-wrapper>
               </td>
               <td class="py-2 px-3 border-b border-gray-200">{{ row.total_games_played }}</td>

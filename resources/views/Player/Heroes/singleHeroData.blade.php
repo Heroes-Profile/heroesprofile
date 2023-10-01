@@ -10,6 +10,6 @@
     :blizzid="{{ json_encode($blizz_id) }}" 
     :region="{{ $region }}" 
     :hero="{{ json_encode($hero) }}" 
-    :regionsmap="{{ json_encode($regions) }}"
+    :regionsmap="{{ json_encode(session('regions')) }}"
   ></player-hero-single-stats>
 @endsection
