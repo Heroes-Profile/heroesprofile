@@ -168,7 +168,12 @@ class GlobalDataService
 
         return 0;
     }
-
+    public function getGameTypes(){
+        if (!session()->has('game_types')) {
+            session(['game_types' => GameType::orderBy("type_id", "ASC")->get()]);
+        }
+        return session('game_types');
+    }
     public function getHeroes(){
         if (!session()->has('heroes')) {
             session(['heroes' => Hero::orderBy("name", "ASC")->get()]);
@@ -202,6 +207,18 @@ class GlobalDataService
         return SeasonDate::select("id")->where("start_date", "<=", $date)->where("end_date", ">=", $date)->first()->id;
     }
 
+    public function getAdvancedFilterShowDefault(){
+
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            $advancedfiltering = $user->userSettings->firstWhere('setting', 'advancedfiltering')->value;
+
+            return $advancedfiltering;
+        }
+        return "false";
+    }
+
     public function getGameTypeDefault(){
 
         if (Auth::check()) {
@@ -216,6 +233,7 @@ class GlobalDataService
         }
         return ["sl"];
     }
+
 
     public function getDefaultSeason(){
         return SeasonDate::select("id")->orderBy("id", "DESC")->first()->id;

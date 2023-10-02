@@ -58,6 +58,17 @@ class ProfileController extends Controller
             );
         }
 
+        if(!is_null($request["advancedfiltering"])){
+            $user = BattlenetAccount::find($request["userid"]);
+
+            $advancedfiltering = $request["advancedfiltering"];
+
+            $user->userSettings()->updateOrCreate(
+                ['setting' => "advancedfiltering"],
+                ['value' =>  $advancedfiltering]
+            );
+        }
+
         return ["success" => true];
     }
 }

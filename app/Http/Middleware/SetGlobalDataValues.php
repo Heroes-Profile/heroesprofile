@@ -21,7 +21,6 @@ class SetGlobalDataValues
         $globalDataService->getLatestPatch();
         $globalDataService->getLatestGameDate();
         $globalDataService->getHeroes();
-        //$globalDataService->getFilterData();
         $globalDataService->getDefaultTimeframeType();
         $globalDataService->getDefaultTimeframe();
         $globalDataService->getDefaultBuildType();
@@ -29,6 +28,7 @@ class SetGlobalDataValues
         $globalDataService->getSeasonsData();
         $globalDataService->getGameTypeIDtoString();
         $globalDataService->getRegionStringToID();
+        //$globalDataService->getGameTypes();
 
         return $next($request);
     }

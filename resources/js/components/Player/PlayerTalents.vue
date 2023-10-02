@@ -12,6 +12,7 @@
         :gametypedefault="gametype"
         :includegametypefull="true"
         :includeseason="true"
+        :includegamemap="true"
         >
       </filters>
       <div  v-if="talentdetaildata" class="container mx-auto px-4">
@@ -55,7 +56,9 @@ export default {
       selectedHero: null,
       data: null,
       talentdetaildata: null,
-      talentbuilddata: [],
+      talentbuilddata: null,
+      season: null,
+      gamemap: null,
     }
   },
   created(){
@@ -80,6 +83,8 @@ export default {
           region: this.region,
           blizz_id: this.blizzid,
           game_type: this.gametype,
+          season: this.season,
+          game_map: this.gamemap,
         });
         this.talentdetaildata = response.data.talentData
         this.talentbuilddata = response.data.buildData;
@@ -97,15 +102,14 @@ export default {
       this.getData();
     },
     filterData(filteredData){
-      /*
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
-      this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
-      this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
-      this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
-      this.data = [];
-      this.sortKey = '';
-      this.sortDir ='asc';
-      */
+      this.season = filteredData.single["Season"] ? filteredData.single["Season"] : this.season;
+      this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
+
+
+      this.talentdetaildata = null;
+      this.talentbuilddata = null;
+      this.getData();
     },
     preloadTalentImages(hero) {
       if(hero){

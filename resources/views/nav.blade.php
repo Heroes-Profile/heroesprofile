@@ -10,8 +10,8 @@
             <div class="relative group inline-block ">
                 <a class=" cursor-pointer">Global Hero Stats</a>
                 <div class="absolute left-0 hidden group-hover:block z-50 pt-3  ">
-                    <div class="bg-teal  rounded-b-lg rounded-tr-lg text-sm drop-shadow">
-                        <!-- ... (Global Hero Stats dropdown items) -->
+                    <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow">
+                        {{-- ... (Global Hero Stats dropdown items) --}}
                         <a href="/Global/Hero" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Hero Stats</a>
                         <a href="/Global/Talents" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Talent Stats</a>
                         <a href="/Global/Hero/Maps" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Map Stats</a>
@@ -20,7 +20,7 @@
                         <a href="/Global/Compositions" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Compositional Stats</a>
                         <a href="/Global/Draft/General" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Draft Stats</a>
                         <a href="/Global/Party" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Party Stats</a>
-                        <a href="/Global/Extra" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Extra Stats</a>
+                        {{--<a href="/Global/Extra" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Extra Stats</a>--}}
                     </div>
                 </div>
             </div>
@@ -30,8 +30,8 @@
             <div class="relative group inline-block">
                 <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Tools</a>
                 <div class="absolute left-0 hidden  group-hover:block z-50 pt-3 ">
-                    <div class="bg-teal  rounded-b-lg rounded-tr-lg text-sm drop-shadow">
-                        <!-- ... (Tools dropdown items) -->
+                    <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow">
+                        {{-- ... (Tools dropdown items) --}}
                         <a href="/" class="block px-4 py-2 border-b border-darken hover:bg-lighten cursor-not-allowed pointer-events-none">Talent Builder</a>
                         <a href="/Compare" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Compare</a>
                         <a href="https://drafter.heroesprofile.com/Drafter" target="_blank" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Drafter</a>
@@ -53,8 +53,8 @@
                     {{ $mainSearchAccount['battletag'] }} ({{ $regions[$mainSearchAccount['region']] }})
                     </a>
                     <div class="absolute left-0 hidden group-hover:block z-50 pt-3  drop-menu-wrapper">
-                        <div class="bg-teal  rounded-b-lg rounded-tr-lg text-sm drop-shadow drop-menu">
-                            <!-- ... (mainSearchAccount dropdown items) -->
+                        <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow drop-menu">
+                            {{-- ... (mainSearchAccount dropdown items) --}}
                             <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Profile</a>
                             <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/FriendFoe" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Friends and Foes</a>
                             <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Hero" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Heroes</a>
@@ -68,7 +68,7 @@
                 @endif
             </div>
 
-            <!-- Distinct white or grey line show the seperation here  -->
+            {{-- Distinct white or grey line show the seperation here  --}}
             <div class="flex space-x-5">
                 <custom-button :href="'https://api.heroesprofile.com/Api'" :targetblank="true" :text="'API'" :alt="'API'"  :size="'small'" :color="'teal'"></custom-button>
                 <custom-button :href="'https://api.heroesprofile.com/upload'" :targetblank="true" :text="'Replay Uploader'" :alt="'Replay Uploader'"  :size="'small'" :color="'blue'"></custom-button>
@@ -101,7 +101,7 @@
             <div class="relative group inline-block  p-4 mx-4 text-sm">
                 <a class="text-blue-600 hover:text-blue-800 cursor-pointer">{{ $account['battletag'] }} ({{ $regions[$account['region']] }})</a>
                 <div class="absolute  hidden group-hover:block z-50 pt-3 absolute right-0 ">
-                    <div class="bg-teal  rounded-b-lg rounded-tr-lg text-sm drop-shadow">
+                    <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow">
                     <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" class="block px-4 py-2 border-b border-darken hover:bg-lighten ">Profile</a>
                     <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/FriendFoe" class="block px-4 py-2 border-b border-darken hover:bg-lighten ">Friends and Foes</a>
                     <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Hero" class="block px-4 py-2 border-b border-darken hover:bg-lighten ">Heroes</a>

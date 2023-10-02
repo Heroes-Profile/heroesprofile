@@ -4,5 +4,11 @@
 @section('meta_description', '')
 
 @section('content')
-  <player-roles-all-stats :filters="{{ json_encode($filters) }}" :battletag="{{ json_encode($battletag) }}" :blizzid="{{ json_encode($blizz_id) }}" :region="{{ json_encode($region) }}"></player-roles-all-stats>
+  <player-roles-all-stats 
+    :filters="{{ json_encode($filters) }}" 
+    :battletag="{{ json_encode($battletag) }}" 
+    :blizzid="{{ json_encode($blizz_id) }}" 
+    :region="{{ json_encode($region) }}"
+    :regionsmap="{{ json_encode(session('regions')) }}"
+  ></player-roles-all-stats>
 @endsection

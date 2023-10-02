@@ -1,11 +1,9 @@
 <template>
   
-    <round-image :size="size" :image="getTalentImage()" :showTooltip="true" :hovertextstyleoverride="true">
-      <div class="absolute hidden bottom-11 -left-24  bg-gray-dark  text-xs p-1  group-hover:block  text-white z-50 drop-shadow-md w-60 rounded-md px-2 text-center">
-        <h2>{{ talent.title }}</h2>
-        <p>{{ this.removeNumbers(talent.hotkey) }}</p>
-        <p>{{ talent.description }}</p>
-      </div>
+    <round-image :size="size" :image="getTalentImage()">
+      <h2>{{ talent.title }}</h2>
+      <p>{{ this.removeNumbers(talent.hotkey) }}</p>
+      <p>{{ talent.description }}</p>
     </round-image>
   
 </template>

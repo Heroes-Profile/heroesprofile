@@ -86,7 +86,10 @@ Route::get('/Global/Hero', [GlobalHeroStatsController::class, 'show']);
 
 
 Route::get('/Global/Matchups/Talents', [GlobalHeroMatchupsTalentsController::class, 'show']);
-Route::get('/Global/Matchups/Talents/{hero}', [GlobalHeroMatchupsTalentsController::class, 'show']);
+Route::get('/Global/Matchups/Talents/{hero}/{allyenemy}', [GlobalHeroMatchupsTalentsController::class, 'show']);
+
+
+
 Route::get('/Global/Matchups', [GlobalHeroMatchupStatsController::class, 'show']);
 Route::get('/Global/Matchups/{hero}', [GlobalHeroMatchupStatsController::class, 'show']);
 
@@ -98,8 +101,6 @@ Route::get('/Global/Draft/General/{hero}', [GlobalDraftController::class, 'show'
 Route::get('/Global/Talents/', [GlobalTalentStatsController::class, 'show']);
 Route::get('/Global/Talents/{hero}', [GlobalTalentStatsController::class, 'show']);
 
-
-
 Route::get('/Global/Leaderboard', [GlobalLeaderboardController::class, 'show']);
 
 Route::get('/Global/Compositions', [GlobalCompositionsController::class, 'show']);
@@ -109,7 +110,7 @@ Route::get('/Global/Compositions', [GlobalCompositionsController::class, 'show']
 Route::get('/Global/Party', [GlobalPartyStatsController::class, 'show']);
 
 
-Route::get('/Global/Extra', [GlobalExtraStats::class, 'show']);
+//Route::get('/Global/Extra', [GlobalExtraStats::class, 'show']); //Not sure if I want to keep this for rewrite.  Taking it out for now
 
 
 

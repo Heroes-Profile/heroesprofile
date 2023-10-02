@@ -9,16 +9,112 @@
       :gametypedefault="gametypedefault"
       :defaultSeason="defaultseason"
       :playerheroroletype="true"
+      :includehero="false"
+      :defaultHero="hero"
+      :defaultRole="role"
       :includegroupsize="true"
       :includesinglegametype="true"
       :includeseason="true"
       :includesingleleaguetier="true"
       :includesingleregion="true"
       :minimumseason="13"
-      >
+      :hideadvancedfilteringbutton="true"
+      :advancedfiltering="advancedfiltering"
+    >
     </filters>
     <div v-if="data">
-      <custom-table :columns="columns" :data="data"></custom-table>
+      <div class="max-w-full  md:px-20 overflow-scroll md:overflow-auto max-w-full h-[50vh] md:h-auto">
+        <table class="min-w-full bg-white">
+          <thead>
+            <tr>
+              <th @click="sortTable('rank')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                Rank
+              </th>
+              <th @click="sortTable('battletag')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                Battletag
+              </th>            
+              <th @click="sortTable('region_id')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                Region
+              </th>
+              <th @click="sortTable('win_rate')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                Win Rate %
+              </th>
+              <th @click="sortTable('rating')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                Heroes Profile Rating
+              </th>      
+              <th @click="sortTable('mmr')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                {{ leaderboardtype }} MMR
+              </th> 
+              <th @click="sortTable('tier')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                Tier
+              </th>    
+              <th @click="sortTable('games_played')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                Games Played
+              </th>     
+
+
+              <th v-if="leaderboardtype == 'Player' || leaderboardtype == 'Role' " class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+                Most Played Hero
+              </th>    
+
+              <template v-else-if="leaderboardtype == 'Hero'">
+                <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+                  Most Played Build
+                </th>  
+                <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+                  Copy Build to Game
+                </th>  
+                <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+                  Games Played With Build
+                </th>    
+              </template>
+       
+
+
+            </tr>
+          </thead>
+          <tbody>
+            <template v-for="(row, index) in sortedData">
+              <tr>
+                <td>{{ (index + 1) }}</td>
+                <td>{{ row.battletag }}</td>
+                <td>{{ row.region }}</td>
+                <td>{{ row.win_rate }}</td>
+                <td>{{ row.rating }}</td>
+                <td>{{ row.mmr }}</td>
+                <td>{{ row.tier }}</td>
+                <td>{{ row.games_played }}</td>
+
+                <td v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role') && row.most_played_hero">
+                  <hero-image-wrapper :hero="row.most_played_hero">
+                    <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Games Played:' + row.hero_build_games_played"></image-hover-box>
+                  </hero-image-wrapper>
+                </td>
+
+
+                <template v-else-if="leaderboardtype == 'Hero'">
+                  <td class="py-2 px-3 border-b border-gray-200">
+                    <div class="flex flex-wrap gap-4">
+                      <talent-image-wrapper v-if="row.level_one" :talent="row.level_one"></talent-image-wrapper>
+                      <talent-image-wrapper v-if="row.level_four" :talent="row.level_four"></talent-image-wrapper>
+                      <talent-image-wrapper v-if="row.level_seven" :talent="row.level_seven"></talent-image-wrapper>
+                      <talent-image-wrapper v-if="row.level_ten" :talent="row.level_ten"></talent-image-wrapper>
+                      <talent-image-wrapper v-if="row.level_thirteen" :talent="row.level_thirteen"></talent-image-wrapper>
+                      <talent-image-wrapper v-if="row.level_sixteen" :talent="row.level_sixteen"></talent-image-wrapper>
+                      <talent-image-wrapper v-if="row.level_twenty" :talent="row.level_twenty"></talent-image-wrapper>
+                    </div>
+                  </td>
+                  <td class="py-2 px-3 border-b border-gray-200">
+                    {{ this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, row.hero) }}
+                    <custom-button @click="copyToClipboard(row)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
+                  </td>
+                  <td>{{ row.hero_build_games_played }}</td>
+                </template>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
     </div>
     <div v-else>
       <loading-component></loading-component>
@@ -38,6 +134,7 @@ export default {
     },
     gametypedefault: Array,
     defaultseason: String,
+    advancedfiltering: String,
   },
   data(){
     return {
@@ -53,24 +150,40 @@ export default {
         { text: 'Player MMR', value: 'conservative_rating', sortable: true }, 
         { text: 'Tier', value: 'tier', sortable: true }, 
         { text: 'Games Played', value: 'games_played', sortable: true }, 
-        { text: 'Most Played Hero (Games Played with Hero)', value: 'most_played_hero', sortable: false }, 
+        { text: 'Most Played Hero', value: 'most_played_hero', sortable: false }, 
       ],
       leaderboardtype: "Player",
       groupsize: "Solo",
       gametype: null,
       season: null,
+      region: null,
       data: null,
+      hero: 1,
+      role: "Bruiser",
+      sortKey: '',
+      sortDir: 'desc',
     }
   },
   created(){
-    this.gametype = this.gametypedefault;
+    this.gametype = this.gametypedefault[0];
     this.season = this.defaultseason;
     this.getData();
   },
   mounted() {
   },
   computed: {
-
+    sortedData() {
+      if (!this.sortKey) return this.data;
+      return this.data.slice().sort((a, b) => {
+        const valA = a[this.sortKey];
+        const valB = b[this.sortKey];
+        if (this.sortDir === 'asc') {
+          return valA < valB ? -1 : 1;
+        } else {
+          return valA > valB ? -1 : 1;
+        }
+      });
+    },
   },
   watch: {
   },
@@ -80,9 +193,12 @@ export default {
       try{
         const response = await this.$axios.post("/api/v1/global/leaderboard", {
           season: this.season, 
-          gameType: this.gametype,
+          game_type: this.gametype,
           type: this.leaderboardtype.toLowerCase(),
           groupsize: this.groupsize,
+          hero: this.hero,
+          role: this.role,
+          region: this.region,
         });
 
         this.data = response.data;
@@ -93,13 +209,43 @@ export default {
     },
 
     filterData(filteredData){
-      this.leaderboardtype = filteredData.single["Leaderboard Type"] ? filteredData.single["Leaderboard Type"] : this.leaderboardtype;
+      this.leaderboardtype = filteredData.single["Type"] ? filteredData.single["Type"] : this.leaderboardtype;
       this.groupsize = filteredData.single["Group Size"] ? filteredData.single["Group Size"] : this.groupsize;
       this.gametype = filteredData.single["Game Type"] ? filteredData.single["Game Type"] : this.gametype;
       this.season = filteredData.single["Season"] ? filteredData.single["Season"] : this.season;
+      this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : this.hero;
+      this.role = filteredData.single["Role"] ? filteredData.single["Role"] : this.role;
+      this.region = filteredData.single["Regions"] ? filteredData.single["Regions"] : this.region;
 
 
+
+      this.data = null;
       this.getData();
+    },
+    sortTable(key) {
+      if (key === this.sortKey) {
+        this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.sortDir = 'desc';
+      }
+      this.sortKey = key;
+    },
+    getCopyBuildToGame(level_one, level_four, level_seven, level_ten, level_thirteen, level_sixteen, level_twenty, hero) {
+      return "[T" + 
+        (level_one ? level_one.sort : '0') + 
+        (level_four ? level_four.sort : '0') + 
+        (level_seven ? level_seven.sort : '0') + 
+        (level_ten ? level_ten.sort : '0') + 
+        (level_thirteen ? level_thirteen.sort : '0') + 
+        (level_sixteen ? level_sixteen.sort : '0') + 
+        (level_twenty ? level_twenty.sort : '0') +
+        "," + hero.build_copy_name + "]"
+    },
+    copyToClipboard(row) {
+      const textToCopy = this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, row.hero);
+      navigator.clipboard.writeText(textToCopy).then(function() {
+      }).catch(function(err) {
+      });
     },
   }
 }

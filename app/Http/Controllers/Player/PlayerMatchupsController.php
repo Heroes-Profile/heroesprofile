@@ -4,25 +4,33 @@ namespace App\Http\Controllers\Player;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 use App\Rules\SeasonInputValidation;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
 
+use App\Models\GameType;
+use App\Models\Map;
 
 class PlayerMatchupsController extends Controller
 {
     public function show(Request $request, $battletag, $blizz_id, $region)
     {
-        $validator = \Validator::make(compact('battletag', 'blizz_id', 'region'), [
+       $validationRules = [
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
-            'region' => 'required|integer'
-        ]);
+            'region' => 'required|integer',
+        ];
+
+        $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
 
         if ($validator->fails()) {
-            return redirect('/');
+            return [
+                "data" => compact('battletag', 'blizz_id', 'region'),
+                "status" => "failure to validate inputs"
+            ];
         }
 
 
@@ -43,24 +51,46 @@ class PlayerMatchupsController extends Controller
             'battletag' => 'required|string',
         ]);
 
+        $validationRules = [
+            'battletag' => 'required|string',
+            'blizz_id' => 'required|integer',
+            'region' => 'required|integer',
+            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation()],
+            'season' => ['sometimes', 'nullable', new SeasonInputValidation()],
+            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
+            'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation()],
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+       if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
+        }
+
         $blizz_id = $request['blizz_id'];
         $region = $request['region'];
         $battletag = $request['battletag'];
-
-        $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
-        $gameMap = (new GameMapInputValidation())->passes('map', $request["map"]);
-        $hero = (new HeroInputByIDValidation())->passes('hero', $request["hero"]);
-        $season = (new SeasonInputValidation())->passes('season', $request["season"]);
+        $game_type = $request["game_type"] ? GameType::whereIn("short_name", $request["game_type"])->pluck("type_id")->toArray() : null;
+        $season = $request["season"];
+        $gameMap = $request["game_map"] ? Map::whereIn('name',  $request["game_map"])->pluck('map_id')->toArray()  : null;
+        $inputhero = $request["hero"];
 
         $returnData = [];
 
         $heroData = $this->globalDataService->getHeroes();
 
         foreach ($heroData as $hero) {
+            $returnData[$hero->id]["name"] = $hero->name;
+            $returnData[$hero->id]["hero"] = $hero;
             $returnData[$hero->id]['ally_wins'] = 0;
             $returnData[$hero->id]['ally_losses'] = 0;
+            $returnData[$hero->id]['ally_games_played'] = 0;
             $returnData[$hero->id]['enemy_wins'] = 0;
             $returnData[$hero->id]['enemy_losses'] = 0;
+            $returnData[$hero->id]['enemy_games_played'] = 0;
         }
         $heroData = $heroData->keyBy('id');
 
@@ -70,7 +100,19 @@ class PlayerMatchupsController extends Controller
                 ->where('blizz_id', $blizz_id)
                 ->where('region', $region)
                 ->where('team', $i)
-                ->where('replay.game_type', '<>', 0)
+                ->where(function ($query) use ($game_type) {
+                    if (is_null($game_type)) {
+                        $query->whereNot("game_type", 0);
+                    } else {
+                        $query->whereIn("game_type", $game_type);
+                    }
+                })
+                ->when(!is_null($inputhero), function ($query) use ($inputhero) {
+                        return $query->where("hero", $inputhero);
+                })
+                ->when(!is_null($gameMap), function ($query) use ($gameMap) {
+                        return $query->whereIn("game_map", $gameMap);
+                })
                 ->select('player.replayID');
 
             $result = DB::table('player')
@@ -78,7 +120,9 @@ class PlayerMatchupsController extends Controller
                 ->where('blizz_id', '<>', $blizz_id)
                 ->groupBy('hero', 'team', 'winner')
                 ->select('hero', 'team', 'winner', DB::raw('COUNT(*) AS total'))
+                //->toSql();
                 ->get();
+
 
             foreach($result as $hero => $value)
             {
@@ -114,7 +158,8 @@ class PlayerMatchupsController extends Controller
             ->sortByDesc('ally_win_rate')
             ->take(5)
             ->map(function($item) {
-                $item["hovertext"] = "Won while on a team with " . $item["name"] . " " . $item["ally_win_rate"] . "% of the time";
+                $item["win_rate"] = $item["ally_win_rate"];
+                $item["games_played"] = $item["ally_games_played"];
                 return $item;
             })
             ->values();
@@ -126,7 +171,8 @@ class PlayerMatchupsController extends Controller
             ->sortBy('enemy_win_rate')
             ->take(5)
             ->map(function($item) {
-                $item["hovertext"] = "Lost against a team with " . $item["name"] . " " . (100 - $item["enemy_win_rate"]) . "% of games";
+                $item["win_rate"] = 100 - $item["enemy_win_rate"];
+                $item["games_played"] = $item["enemy_games_played"];
                 return $item;
             })
             ->values();

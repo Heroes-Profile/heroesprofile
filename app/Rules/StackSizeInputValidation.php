@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Rules;
-use Illuminate\Contracts\Validation\Rule;
 
 use Closure;
+use Illuminate\Contracts\Validation\Rule;
 
 class StackSizeInputValidation implements Rule
 {
@@ -18,7 +18,7 @@ class StackSizeInputValidation implements Rule
 
     public function passes($attribute, $value)
     {
-        return array_key_exists($value, $this->validStackSize) ? $this->validStackSize[$value] : false;
+        return array_key_exists($value, $this->validStackSize);
     }
 
     public function message()

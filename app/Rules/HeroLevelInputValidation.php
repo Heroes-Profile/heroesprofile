@@ -2,6 +2,7 @@
 
 namespace App\Rules;
 
+use Closure;
 use Illuminate\Contracts\Validation\Rule;
 
 class HeroLevelInputValidation implements Rule
@@ -12,18 +13,18 @@ class HeroLevelInputValidation implements Rule
 
     public function passes($attribute, $value)
     {
-        if (!is_array($value)) {
-            $value = explode(',', $value);
+        if (!is_array($value)) 
+        {
+            return false;
         }
 
         $filteredLevels = array_intersect($value, $this->validLevels);
-        $filteredLevels = array_map('intval', $filteredLevels); // Cast to integers
 
-      if(count($filteredLevels) == 9){
-            return [];
+        if (empty($filteredLevels)) {
+            return false;
         }
 
-        return $filteredLevels ?: [];
+        return true;
     }
 
     public function message()

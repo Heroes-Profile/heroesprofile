@@ -1,11 +1,10 @@
 <template>
   <div>
 
-    <round-image v-if="hovertextstyleoverride" :size="size" :title="map.name" :image="getMapImage()" :tooltiptex="getToolTip()" :showTooltip="true" :hovertextstyleoverride="true">
+    <round-image :size="size" :image="getMapImage()" :title="map.name">
       <slot>
       </slot>
     </round-image>
-    <round-image v-else :size="size" :title="map.name" :image="getMapImage()" :tooltiptex="getToolTip()" :showTooltip="true"></round-image>
   </div>
 </template>
 

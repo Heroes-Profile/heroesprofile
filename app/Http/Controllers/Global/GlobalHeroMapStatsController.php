@@ -2,69 +2,73 @@
 
 namespace App\Http\Controllers\Global;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Rules\HeroInputValidation;
-use App\Rules\TimeframeMinorInputValidation;
-use App\Rules\GameTypeInputValidation;
-use App\Rules\TierByIDInputValidation;
-use App\Rules\HeroLevelInputValidation;
-use App\Rules\MirrorInputValidation;
-use App\Rules\RegionInputValidation;
 
 use App\Models\GlobalHeroStats;
 use App\Models\GlobalHeroStatsBans;
 use App\Models\Map;
 
-class GlobalHeroMapStatsController extends Controller
+class GlobalHeroMapStatsController extends GlobalsInputValidationController
 {
-    public function show(Request $request){
+    public function show(Request $request, $hero = null){
+        if (!is_null($hero)) {
+            $validationRules = [
+                'hero' => ['required', new HeroInputValidation()],
+            ];
+
+            $validator = Validator::make(['hero' => $hero], $validationRules);
+
+            if ($validator->fails()) {
+                return back();
+            }
+        }
         $userinput = $this->globalDataService->getHeroModel($request["hero"]);
         return view('Global.Hero.Map.globalHeroMapStats')
                      ->with([
                         'userinput' => $userinput,
                         'filters' => $this->globalDataService->getFilterData(),
                         'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
+                        'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
                         'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
                         'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
                     ]);
     }
 
     public function getHeroStatMapData(Request $request){
+        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+
         //return response()->json($request->all());
-        $hero = (new HeroInputValidation())->passes('userinput', $request["userinput"]);
-        $gameVersion = null;
-        if($request["timeframe_type"] == "major"){
-            $gameVersions = SeasonGameVersion::select('game_version')
-                                            ->where('game_version', 'like', $request["timeframe"][0] . "%")
-                                            ->pluck('game_version')
-                                            ->toArray();                                            
-            $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $gameVersions);
-
-        }else{
-            $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $request["timeframe"]);
-        }
-        $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
-        $leagueTier = (new TierByIDInputValidation())->passes('league_tier', $request["league_tier"]);
-        $heroLeagueTier = (new TierByIDInputValidation())->passes('hero_league_tier', $request["hero_league_tier"]);
-        $roleLeagueTier = (new TierByIDInputValidation())->passes('role_league_tier', $request["role_league_tier"]);
-        $heroLevel = (new HeroLevelInputValidation())->passes('hero_level', $request["hero_level"]);
-        $mirror = (new MirrorInputValidation())->passes('mirror', $request["mirror"]);
-        $region = (new RegionInputValidation())->passes('region', $request["region"]);
-
-        $cacheKey = "GlobalHeroMapStats|" . implode('|', [
-            'hero' => $hero,
-            'gameVersion=' . implode(',', $gameVersion),
-            'gameType=' . implode(',', $gameType),
-            'leagueTier=' . implode(',', $leagueTier),
-            'heroLeagueTier=' . implode(',', $heroLeagueTier),
-            'roleLeagueTier=' . implode(',', $roleLeagueTier),
-            'heroLevel=' . implode(',', $heroLevel),
-            'mirror=' . $mirror,
-            'region=' . implode(',', $region),
+        $validationRules = array_merge($this->globalsValidationRules($request["timeframe_type"]), [
+            'hero' => ['required', new HeroInputValidation()],
         ]);
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
+        }
+
+
+        $hero = $this->getHeroFilterValue($request["hero"]);
+        $gameVersion = $this->getTimeframeFilterValues($request["timeframe_type"], $request["timeframe"]);
+        $gameType = $this->getGameTypeFilterValues($request["game_type"]); 
+        $leagueTier = $request["league_tier"];
+        $heroLeagueTier = $request["hero_league_tier"];
+        $roleLeagueTier = $request["role_league_tier"];
+        $gameMap = $this->getGameMapFilterValues($request["game_map"]);
+        $heroLevel = $request["hero_level"];
+        $region = $this->getRegionFilterValues($request["region"]);
+        $mirror = $request["mirror"];
+
+        $cacheKey = "GlobalHeroMapStats|" . "GlobalHeroTalentStats|" . json_encode($request->all());
 
         //return $cacheKey;
 
@@ -93,11 +97,29 @@ class GlobalHeroMapStatsController extends Controller
                 ->filterByHeroLevel($heroLevel)
                 ->excludeMirror($mirror)
                 ->filterByRegion($region)
+                ->filterByHero($hero)
                 ->groupBy("win_loss")
                 ->groupBy("hero")
                 ->groupBy("map_id")
                 //->toSql();
                 ->get();
+
+            $gamesPlayedPerMap = GlobalHeroStats::query()
+                ->select('game_map')
+                ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
+                ->filterByGameVersion($gameVersion)
+                ->filterByGameType($gameType)
+                ->filterByLeagueTier($leagueTier)
+                ->filterByHeroLeagueTier($heroLeagueTier)
+                ->filterByRoleLeagueTier($roleLeagueTier)
+                ->filterByHeroLevel($heroLevel)
+                ->excludeMirror($mirror)
+                ->filterByRegion($region)
+                ->groupBy("game_map")
+                //->toSql();
+                ->get();
+
+
 
             $banData = GlobalHeroStatsBans::query()
                 ->join('heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')
@@ -118,16 +140,13 @@ class GlobalHeroMapStatsController extends Controller
                 ->get();
 
 
-            return $this->combineData($hero, $data, $banData);
+            return $this->combineData($gameType, $hero, $data, $gamesPlayedPerMap, $banData);
         });
         return $data;
 
     }
 
-    private function combineData($hero, $data, $banData){
-        $gamesPlayedPerMap = $data->groupBy('map_id')->map(function($items) {
-            return $items->sum('games_played') / 10;
-        })->toArray();
+    private function combineData($gameType, $hero, $data,  $gamesPlayedPerMap, $banData){
 
         $filteredData = $data->filter(function ($item) use ($hero){
             return $item->hero_id === $hero;
@@ -136,11 +155,22 @@ class GlobalHeroMapStatsController extends Controller
         $mapData = Map::all();
         $mapData = $mapData->keyBy('map_id');
 
-        $totalGamesPlayed = ($filteredData)->sum('games_played');
+        $totalGamesPlayed = $filteredData->sum('games_played');
 
-        return collect($filteredData)->groupBy(function($date) {
-            return $date['name'].$date['map_id'];
-        })->map(function ($group) use ($banData, $gamesPlayedPerMap, $mapData, $totalGamesPlayed) {
+        return collect($filteredData)
+        ->groupBy(function ($data) {
+            return $data['name'] . $data['map_id'];
+        })
+        //For some reason every hero has 1 game played in ARAM that isnt an ARAM map...something odd in my backend code
+        ->filter(function ($group) use ($gameType, $mapData) {
+            if (count($gameType) == 1 && $gameType[0] == "6") {
+                $firstItem = $group->first();
+                return $mapData[$firstItem['map_id']]["type"] == "ARAM";
+            }
+            // Keep all other maps
+            return true;
+        })
+        ->map(function ($group) use ($banData, $gamesPlayedPerMap, $mapData, $totalGamesPlayed) {
             $firstItem = $group->first();
 
             $wins = $group->where('win_loss', 1)->sum('games_played');
@@ -152,7 +182,10 @@ class GlobalHeroMapStatsController extends Controller
             });
             $bans = $matchingBan ? round($matchingBan['bans']) : 0;
 
-            $totalGamesForThisMap = $gamesPlayedPerMap[$firstItem['map_id']] ?? 0;
+
+
+            $gameMapData = $gamesPlayedPerMap->where('game_map', 1)->first();
+            $totalGamesForThisMap =  $gameMapData ? $gameMapData->games_played / 10 : 0;
 
             return [
                 'name' => $mapData[$firstItem['map_id']]["name"],
@@ -162,6 +195,9 @@ class GlobalHeroMapStatsController extends Controller
                 'ban_rate' => $totalGamesForThisMap != 0 ? round(($bans / $totalGamesForThisMap) * 100, 2) : 0,
                 'total_games_played' => $totalGamesPlayed,
             ];
-        })->sortByDesc('win_rate')->values()->toArray();
+        })
+        ->sortByDesc('win_rate')
+        ->values()
+        ->toArray();
     }
 }

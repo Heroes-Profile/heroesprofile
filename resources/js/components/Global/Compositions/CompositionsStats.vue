@@ -19,9 +19,10 @@
       :includemirror="true"
       :includeminimumgames="true"
       :minimumgamesdefault="'100'"
+      :advancedfiltering="advancedfiltering"
       >
     </filters>
-    <div v-if="sortedData">
+    <div v-if="compositiondata">
       <table class="min-w-full bg-white">
         <thead>
           <tr>
@@ -128,6 +129,7 @@ export default {
     defaultbuildtype: String,
     defaulttimeframetype: String,
     defaulttimeframe: Array,
+    advancedfiltering: String,
   },
   data(){
     return {
@@ -190,7 +192,7 @@ export default {
           hero_level: this.herolevel,
           hero: this.hero,
           game_type: this.gametype,
-          map: this.gamemap,
+          game_map: this.gamemap,
           league_tier: this.playerrank,
           hero_league_tier: this.herorank,
           role_league_tier: this.rolerank,
@@ -212,7 +214,7 @@ export default {
           hero_level: this.herolevel,
           hero: this.hero,
           game_type: this.gametype,
-          map: this.gamemap,
+          game_map: this.gamemap,
           league_tier: this.playerrank,
           hero_league_tier: this.herorank,
           role_league_tier: this.rolerank,
@@ -229,16 +231,16 @@ export default {
     filterData(filteredData){
       this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
       this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaultMinor;
-      this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : [];
-      this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : [];
-      this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : "";
-      this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : [];
-      this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : [];
-      this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : [];
-      this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : [];
-      this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : [];
-      this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "";
-      this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 100;
+      this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : null;
+      this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : null;
+      this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
+      this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : null;
+      this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
+      this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : null;
+      this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : null;
+      this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : null;
+      this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : null;
+      this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : this.minimumgames;
 
       this.compositiondata = null;
       this.getData();

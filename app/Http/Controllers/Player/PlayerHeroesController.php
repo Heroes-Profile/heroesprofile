@@ -3,42 +3,30 @@
 namespace App\Http\Controllers\Player;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Validator;
 
-use App\Rules\GameTypeInputValidation;
-use App\Rules\GameMapInputValidation;
-use App\Rules\HeroInputByIDValidation;
 use App\Rules\HeroInputValidation;
-use App\Rules\RoleInputValidation;
-
-use App\Models\Replay;
-use App\Models\Map;
-use App\Models\HeroesDataTalent;
-
-use App\Models\MasterMMRDataQM;
-use App\Models\MasterMMRDataUD;
-use App\Models\MasterMMRDataHL;
-use App\Models\MasterMMRDataTL;
-use App\Models\MasterMMRDataSL;
-use App\Models\MasterMMRDataAR;
-
 
 
 class PlayerHeroesController extends Controller
 {
     public function showAll(Request $request, $battletag, $blizz_id, $region)
     {
-        $validator = \Validator::make(compact('battletag', 'blizz_id', 'region'), [
+        $validationRules = [
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
-            'region' => 'required|integer'
-        ]);
+            'region' => 'required|integer',
+        ];
+
+        $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
 
         if ($validator->fails()) {
-            return redirect('/');
+            return [
+                "data" => compact('battletag', 'blizz_id', 'region'),
+                "status" => "failure to validate inputs"
+            ];
         }
-
 
         return view('Player.Heroes.allHeroesData')->with([
                 'battletag' => $battletag,
@@ -49,17 +37,21 @@ class PlayerHeroesController extends Controller
 
     }
     public function showSingle(Request $request, $battletag, $blizz_id, $region, $hero){
-        $validator = \Validator::make(compact('battletag', 'blizz_id', 'region'), [
+        $validationRules = [
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
-            'region' => 'required|integer'
-        ]);
+            'region' => 'required|integer',
+            'hero' => ['required', new HeroInputValidation()],
+        ];
+
+        $validator = Validator::make(compact('battletag', 'blizz_id', 'region', 'hero'), $validationRules);
 
         if ($validator->fails()) {
-            return redirect('/');
+            return [
+                "data" => compact('battletag', 'blizz_id', 'region', 'hero'),
+                "status" => "failure to validate inputs"
+            ];
         }
-        $hero = (new HeroInputValidation())->passes('hero', $hero);
-
 
         return view('Player.Heroes.singleHeroData')->with([
                 'battletag' => $battletag,

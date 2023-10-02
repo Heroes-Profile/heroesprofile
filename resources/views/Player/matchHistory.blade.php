@@ -10,6 +10,7 @@
     :blizzid="{{ json_encode($blizz_id) }}" 
     :region="{{ json_encode($region) }}" 
     :gametypedefault="{{ json_encode($gametypedefault) }}" 
+    :regionsmap="{{ json_encode(session('regions')) }}"
     >  
   </player-match-history>
 @endsection

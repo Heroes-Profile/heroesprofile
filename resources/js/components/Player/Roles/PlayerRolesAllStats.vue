@@ -1,10 +1,6 @@
 <template>
   <div>
-    All Heroes
-    as played by
-    <span><a :href="`/Player/${battletag}/${blizzid}/${region}`" target="_blank">{{ battletag }}</a></span>
-
-    <infobox :input="infoText"></infobox>
+    <page-heading :infoText1="'All Role data for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
 
     <filters 
     :onFilter="filterData" 
@@ -12,12 +8,9 @@
     :isLoading="isLoading"
     :gametypedefault="gametype"
     :minimumgamesdefault="'0'"
-    :includehero="true"
-    :includerole="true"
     :includegametypefull="true"
-    :includeseason="true"
     :includeminimumgames="true"
-
+    :hideadvancedfilteringbutton="true"
     >
   </filters>
 
@@ -97,6 +90,7 @@
       battletag: String,
       blizzid: String, 
       region: String,
+      regionsmap: Object,
     },
     data(){
       return {
@@ -229,6 +223,7 @@ methods: {
     this.isLoading = true;
     try{
       const response = await this.$axios.post("/api/v1/player/roles/all", {
+        battletag: this.battletag,
         blizz_id: this.blizzid,
         region: this.region,
         game_type: this.gametype,
@@ -250,7 +245,7 @@ methods: {
     this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
     this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
     this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
-    this.data = [];
+    this.data = null;
     this.sortKey = '';
     this.sortDir ='asc';
     this.getData();

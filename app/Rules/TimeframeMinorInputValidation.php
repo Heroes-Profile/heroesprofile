@@ -2,30 +2,45 @@
 
 namespace App\Rules;
 
+use Closure;
 use Illuminate\Contracts\Validation\Rule;
 use App\Models\SeasonGameVersion;
 
 class TimeframeMinorInputValidation implements Rule
 {
+    protected $timeframeType;
+
+    public function __construct($timeframeType)
+    {
+        $this->timeframeType = $timeframeType;
+    }
+
     public function passes($attribute, $value)
     {
-        // Fetch the existing game_versions from the database
-        $existingVersions = SeasonGameVersion::pluck('game_version')->toArray();
-
-        // Find the values that exist in the database
-        $validVersions = array_intersect($value, $existingVersions);
-
-        if (empty($validVersions)) {
-            // If no valid versions are found, return the latest version as default
-            $latestVersion = SeasonGameVersion::latest('game_version')->value('game_version');
-            return [$latestVersion];
+        if (!is_array($value)) {
+            return false;
         }
 
-        return array_values($validVersions);
+        if ($this->timeframeType === 'minor') {
+            $existingVersions = SeasonGameVersion::pluck('game_version')->toArray();
+            $invalidVersions = array_diff($value, $existingVersions);
+            if (!empty($invalidVersions)) {
+                return false;
+            }
+        } elseif ($this->timeframeType === 'major') {
+            foreach ($value as $timeframeValue) {
+                $matchingVersions = SeasonGameVersion::where('game_version', 'like', trim($timeframeValue) . '%')->count();
+                if ($matchingVersions === 0) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     public function message()
     {
-        return 'The selected :attribute contains invalid or missing timeframes.';
+        return 'The selected game versions are invalid.';
     }
 }

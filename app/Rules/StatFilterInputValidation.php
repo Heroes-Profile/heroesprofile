@@ -2,6 +2,7 @@
 
 namespace App\Rules;
 
+use Closure;
 use Illuminate\Contracts\Validation\Rule;
 
 class StatFilterInputValidation implements Rule
@@ -48,11 +49,10 @@ class StatFilterInputValidation implements Rule
 
     public function passes($attribute, $value)
     {
-        if (in_array($value, $this->validStats)) {
-            return $value;
-        } else {
-            return 'win_rate';
+        if (!in_array($value, $this->validStats)) {
+            return false;
         }
+        return true;
     }
 
     public function message()
