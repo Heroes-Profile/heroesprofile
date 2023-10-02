@@ -14,7 +14,6 @@
       :includegametypefull="true"
       :includeseason="true"
       :includegamemap="true"
-      :includegamedate="true"
       >
     </filters>
 
@@ -97,20 +96,22 @@ export default {
     battletag: String,
     blizzid: String, 
     region: String,
-    gametypedefault: Array,
   },
   data(){
     return {
       isLoading: false,
       data: null,
+      role: null,
+      hero: null,
+      gamemap: null,
+      season: null,
       dataType: 'Table',
       sortKey: '',
       sortDir: 'desc',
-      gametype: null,
+      gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
     }
   },
   created(){
-    this.gametype = this.gametypedefault;
   },
   mounted() {
     this.getData();
@@ -136,10 +137,14 @@ export default {
       this.isLoading = true;
       try{
         const response = await this.$axios.post("/api/v1/player/match/history", {
+          battletag: this.battletag,
           blizz_id: this.blizzid,
           region: this.region,
           battletag: this.battletag,
           game_type: this.gametype,
+          role: this.role,
+          hero: this.hero,
+          game_map: this.gamemap,
         });
         this.data = response.data;
       }catch(error){
@@ -148,12 +153,14 @@ export default {
       this.isLoading = false;
     },
     filterData(filteredData){
-      /*
-      this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
-      this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
-      */
+      this.season = filteredData.single.Season ? filteredData.single.Season : null;
+      this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
+      this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
+
+
+      this.data = null;
       this.getData();
     },
     sortTable(key) {

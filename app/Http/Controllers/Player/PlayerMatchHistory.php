@@ -1,28 +1,38 @@
 <?php
 
 namespace App\Http\Controllers\Player;
+use Illuminate\Support\Facades\Validator;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Rules\GameTypeInputValidation;
 use Illuminate\Support\Facades\DB;
 
+use App\Rules\RoleInputValidation;
+use App\Rules\HeroInputByIDValidation;
+use App\Rules\GameMapInputValidation;
+use App\Rules\SeasonInputValidation;
+
 use App\Models\HeroesDataTalent;
+use App\Models\GameType;
 
 class PlayerMatchHistory extends Controller
 {
     public function show(Request $request, $battletag, $blizz_id, $region)
     {
-        $userinput = $this->globalDataService->getHeroModel($request["hero"]);
-
-        $validator = \Validator::make(compact('battletag', 'blizz_id', 'region'), [
+       $validationRules = [
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
-            'region' => 'required|integer'
-        ]);
+            'region' => 'required|integer',
+        ];
+
+        $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
 
         if ($validator->fails()) {
-            return redirect('/');
+            return [
+                "data" => compact('battletag', 'blizz_id', 'region'),
+                "status" => "failure to validate inputs"
+            ];
         }
 
 
@@ -39,9 +49,37 @@ class PlayerMatchHistory extends Controller
     public function getData(Request $request){
         //return response()->json($request->all());
 
+
+       $validationRules = [
+            'battletag' => 'required|string',
+            'blizz_id' => 'required|integer',
+            'region' => 'required|integer',
+            'game_type' => ['required', new GameTypeInputValidation()],
+            'role' => ['sometimes', 'nullable', new RoleInputValidation()],
+            'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation()],
+            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
+            'season' => ['sometimes', 'nullable', new SeasonInputValidation()],
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+       if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
+        }
+
+
+        $battletag = $request["battletag"];
         $blizz_id = $request["blizz_id"];
         $region = $request["region"];
-        $game_type = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
+
+        $game_type = GameType::whereIn("short_name", $request["game_type"])->pluck("type_id")->toArray();
+        $role = $request["role"];
+        $hero = $request["hero"];
+        $game_map = $request["game_map"] ? Map::whereIn('name',  $request["game_map"])->pluck('map_id')->toArray() : null;
+        $season = $request["season"];
         
         
         $result = DB::table('replay')
@@ -62,6 +100,7 @@ class PlayerMatchHistory extends Controller
                 "replay.game_map AS game_map",
                 "player.winner AS winner",
                 "player.hero AS hero",
+                "heroes.new_role as role",
                 "talents.level_one AS level_one",
                 "talents.level_four AS level_four",
                 "talents.level_seven AS level_seven",
@@ -73,11 +112,24 @@ class PlayerMatchHistory extends Controller
             ->where("blizz_id", $blizz_id)
             ->whereIn("game_type", $game_type)
             ->where("region", $region)
+            ->when(!is_null($season), function ($query) use ($season){
+                $seasonDate = SeasonDate::find($season);
+                if ($seasonDate) {
+                    return $query->where("game_date", ">=", $seasonDate->start_date)
+                                 ->where("game_date", "<", $seasonDate->end_date);
+                }
+                return $query;
+            })
+            ->when(!is_null($role), function ($query) use ($role){
+                return $query->where("new_role", $role);
+            })
+            ->when(!is_null($hero), function ($query) use ($hero){
+                return $query->where("hero", $hero);
+            })
             ->orderByDesc("game_date")
             //->toSql();
+            ->limit(100)
             ->get();
-
-
 
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
@@ -105,7 +157,6 @@ class PlayerMatchHistory extends Controller
             $item->winner = $item->winner == 1 ? "True" : "False";
             return $item;
         });
-
         return $modifiedResult;
     }
 }
