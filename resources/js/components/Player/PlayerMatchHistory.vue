@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="'Match History - TO DO pagination'" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
+    <page-heading :infoText1="'Match History'" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
 
     <filters 
       :onFilter="filterData" 
@@ -18,6 +18,24 @@
     </filters>
 
     <div v-if="data">
+
+      Pagination works.  So cool
+      <div>
+        <ul class="pagination">
+          <li class="page-item" :class="{ disabled: !data.prev_page_url }">
+            <a class="page-link" @click.prevent="getData(data.current_page - 1)" href="#">
+              Previous
+            </a>
+          </li>
+          <li class="page-item" :class="{ disabled: !data.next_page_url }">
+            <a class="page-link" @click.prevent="getData(data.current_page + 1)" href="#">
+              Next
+            </a>
+          </li>
+        </ul>
+      </div>
+
+
       <table class="min-w-full bg-white">
         <thead>
           <tr>
@@ -108,7 +126,6 @@ export default {
       hero: null,
       gamemap: null,
       season: null,
-      dataType: 'Table',
       sortKey: '',
       sortDir: 'desc',
       gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
@@ -117,12 +134,12 @@ export default {
   created(){
   },
   mounted() {
-    this.getData();
+    this.getData(1);
   },
   computed: {
     sortedData() {
-      if (!this.sortKey) return this.data;
-      return this.data.slice().sort((a, b) => {
+      if (!this.sortKey) return this.data.data;
+      return this.data.data.slice().sort((a, b) => {
         const valA = a[this.sortKey];
         const valB = b[this.sortKey];
         if (this.sortDir === 'asc') {
@@ -136,7 +153,12 @@ export default {
   watch: {
   },
   methods: {
-    async getData(){
+    async getData(page){
+     if (this.isLoading || page < 1 || (this.data && page > this.data.last_page)) {
+        return;
+      }
+    
+
       this.isLoading = true;
       try{
         const response = await this.$axios.post("/api/v1/player/match/history", {
@@ -148,6 +170,7 @@ export default {
           role: this.role,
           hero: this.hero,
           game_map: this.gamemap,
+          pagination_page: page,
         });
         this.data = response.data;
       }catch(error){
@@ -164,7 +187,7 @@ export default {
 
 
       this.data = null;
-      this.getData();
+      this.getData(1);
     },
     sortTable(key) {
       if (key === this.sortKey) {
