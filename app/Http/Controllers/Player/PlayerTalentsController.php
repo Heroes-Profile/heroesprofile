@@ -4,29 +4,45 @@ namespace App\Http\Controllers\Player;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 use App\Rules\HeroInputValidation;
 use App\Rules\GameTypeInputValidation;
+use App\Rules\SeasonInputValidation;
+use App\Rules\GameMapInputValidation;
 
 
 use App\Models\HeroesDataTalent;
+use App\Models\GameType;
+use App\Models\SeasonDate;
+use App\Models\Map;
 
 
 class PlayerTalentsController extends Controller
 {
     public function show(Request $request, $battletag, $blizz_id, $region)
     {
-        $userinput = $this->globalDataService->getHeroModel($request["hero"]);
 
-        $validator = \Validator::make(compact('battletag', 'blizz_id', 'region'), [
+       $validationRules = [
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
-            'region' => 'required|integer'
-        ]);
+            'region' => 'required|integer',
+        ];
+
+        if (request()->has('hero')) {
+            $validationRules['hero'] = ['sometimes', 'nullable', new HeroInputValidation()];
+        }
+
+        $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
 
         if ($validator->fails()) {
-            return redirect('/');
+            return [
+                "data" => compact('battletag', 'blizz_id', 'region'),
+                "status" => "failure to validate inputs"
+            ];
         }
+
+        $userinput = $this->globalDataService->getHeroModel($request["hero"]);
 
 
         return view('Player.talentData')->with([
@@ -39,24 +55,37 @@ class PlayerTalentsController extends Controller
                 ]);
     }
     public function getPlayerTalentData(Request $request){
-          //return response()->json($request->all());
+        //return response()->json($request->all());
 
-        $validator = \Validator::make($request->only(['blizz_id', 'region', 'battletag']), [
+        $validationRules = [
+            'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
-            'battletag' => 'required|string',
-        ]);
+            'game_type' => ['required', new GameTypeInputValidation()],
+            'hero' => ['required', new HeroInputValidation()],
+            'season' => ['sometimes', 'nullable', new SeasonInputValidation()],
+            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
+        ];
 
-        if ($validator->fails()) {
-            return redirect('/');
+        $validator = Validator::make($request->all(), $validationRules);
+
+       if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
         }
 
-        $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
-        $hero = (new HeroInputValidation())->passes('hero', $request["hero"]);
 
         $battletag = $request["battletag"];
         $blizz_id = $request["blizz_id"];
         $region = $request["region"];
+        $gameType = GameType::whereIn("short_name", $request["game_type"])->pluck("type_id")->toArray();
+        $hero = session('heroes')->keyBy('name')[$request["hero"]]->id;
+        $season = $request["season"];
+        $game_map = Map::whereIn('name',  $request["game_map"])->pluck('map_id')->toArray();
+
+
         $result = DB::table('replay')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
             ->join('talents', function($join) {
@@ -78,6 +107,17 @@ class PlayerTalentsController extends Controller
             ->where("hero", $hero)
             ->whereIn("game_type", $gameType)
             ->where("region", $region)
+            ->when(!is_null($season), function ($query) use ($season){
+                $seasonDate = SeasonDate::find($season);
+                if ($seasonDate) {
+                    return $query->where("game_date", ">=", $seasonDate->start_date)
+                                 ->where("game_date", "<", $seasonDate->end_date);
+                }
+                return $query;
+            })
+            ->when(!is_null($game_map), function ($query) use ($game_map){
+                return $query->whereIn("game_map", $game_map);
+            })
             //->toSql();
             ->get();
         $talentData = HeroesDataTalent::all();
