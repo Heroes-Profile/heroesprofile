@@ -2,6 +2,7 @@
 
 namespace App\Rules;
 
+use Closure;
 use Illuminate\Contracts\Validation\Rule;
 
 class TalentBuildTypeInputValidation implements Rule
@@ -12,16 +13,15 @@ class TalentBuildTypeInputValidation implements Rule
 
     public function passes($attribute, $value)
     {
-
-        if(in_array($value, $this->validBuildTypes)){
-            return $value;
+        if(!in_array($value, $this->validBuildTypes)){
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     public function message()
     {
-        return 'The :attribute must be a valid hero level.';
+        return 'The :attribute must be a valid build type.';
     }
 }

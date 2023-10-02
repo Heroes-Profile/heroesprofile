@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 use App\Rules\RoleInputValidation;
 
@@ -32,16 +33,21 @@ class PlayerRolesController extends Controller
     }
 
     public function showSingle(Request $request, $battletag, $blizz_id, $region, $role){
-        $validator = \Validator::make(compact('battletag', 'blizz_id', 'region'), [
+        $validationRules = [
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
-            'region' => 'required|integer'
-        ]);
+            'region' => 'required|integer',
+            'role' => ['required', new RoleInputValidation()],
+        ];
+
+        $validator = Validator::make(compact('battletag', 'blizz_id', 'region', 'role'), $validationRules);
 
         if ($validator->fails()) {
-            return redirect('/');
+            return [
+                "data" => compact('battletag', 'blizz_id', 'region', 'role'),
+                "status" => "failure to validate inputs"
+            ];
         }
-        $role = (new RoleInputValidation())->passes('role', $request["role"]);
 
 
         return view('Player.Roles.singleRoleData')->with([

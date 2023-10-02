@@ -21,7 +21,6 @@ class BattletagSearchController extends Controller
     public function battletagSearch(Request $request){
         $request->validate(['userinput' => ['required', 'string', new BattletagInputProhibitCharacters],]);
         $data = $this->searchForBattletag($request["userinput"]);
-
         return $data;
     }
 
@@ -39,6 +38,10 @@ class BattletagSearchController extends Controller
         $returnData = [];
         $counter = 0;
         $uniqueBlizzIDRegion = [];
+
+
+
+
         foreach($data as $row){
 
           if(array_key_exists($row["blizz_id"] . "|" . $row["region"], $uniqueBlizzIDRegion)){
@@ -56,7 +59,6 @@ class BattletagSearchController extends Controller
             }
         }
 
-
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
@@ -64,6 +66,7 @@ class BattletagSearchController extends Controller
         $maps = $maps->keyBy('map_id');
 
         $regions = $this->globalDataService->getRegionIDtoString();
+
 
         foreach ($returnData as $item) {
             $blizzId = $item->blizz_id;
@@ -78,8 +81,8 @@ class BattletagSearchController extends Controller
             $latestHero = $this->getLatestHeroPlayedForPlayer($blizzId, $region); 
 
             $item->totalGamesPlayed = $totalGamesPlayed;
-            $item->latestMap = $maps[$latestMap];
-            $item->latestHero = $heroData[$latestHero];
+            $item->latestMap = $latestMap ? $maps[$latestMap] : null;
+            $item->latestHero = $latestHero ? $heroData[$latestHero] : null;
 
             $item->battletagShort = $battletagShort;
             $item->regionName = $regionName;

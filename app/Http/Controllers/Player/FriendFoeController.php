@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Player;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 use App\Rules\SeasonInputValidation;
 use App\Rules\GameMapInputValidation;
@@ -12,33 +13,50 @@ use App\Rules\HeroInputByIDValidation;
 
 use App\Models\Hero;
 use App\Models\SeasonDate;
+use App\Models\GameType;
+use App\Models\Map;
 
 class FriendFoeController extends Controller
 {
     public function show(Request $request, $battletag, $blizz_id, $region)
     {
-        ///Add in some rule handling for game type and season
-
-        $data = [
-            'battletag' => $battletag,
-            'blizz_id' => $blizz_id,
-            'region' => $region
-        ];
-
-        $validator = \Validator::make($data, [
+       $validationRules = [
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
-            'region' => 'required|integer'
-        ]);
+            'region' => 'required|integer',
+        ];
+
+        if (request()->has('game_type')) {
+            $validationRules['game_type'] = ['sometimes', 'nullable', new GameTypeInputValidation()];
+        }
+        if (request()->has('season')) {
+            $validationRules['season'] = ['sometimes', 'nullable', new SeasonInputValidation()];
+        }
+
+        if (request()->has('game_map')) {
+            $validationRules['game_map'] = ['sometimes', 'nullable', new GameMapInputValidation()];
+        }
+
+        $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
 
         if ($validator->fails()) {
-            return redirect('/');
+            return [
+                "data" => compact('battletag', 'blizz_id', 'region'),
+                "status" => "failure to validate inputs"
+            ];
         }
+
+        $season = $request["season"];
+        $game_type = $request["game_type"];
+        $game_map = $request["game_map"];
 
         return view('Player.friendfoe')->with([
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
                 'region' => $region,
+                'season' => $season,
+                'game_type' => $game_type,
+                'game_map' => $game_map,
                 'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
                 'filters' => $this->globalDataService->getFilterData()
                 ]);
@@ -48,24 +66,35 @@ class FriendFoeController extends Controller
     public function getFriendFoeData(Request $request){
         //return response()->json($request->all());
 
-        $validator = \Validator::make($request->only(['blizz_id', 'region']), [
+
+        $validationRules = [
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
-        ]);
+            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation()],
+            'season' => ['sometimes', 'nullable', new SeasonInputValidation()],
+            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
+            'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation()],
+            'type' => 'sometimes|in:friend,enemy',           
+        ];
 
-        if($request['type'] != "friend" && $request['type'] != "enemy"){
-            return;
+        $validator = Validator::make($request->all(), $validationRules);
+
+       if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
         }
 
-        $blizz_id = $request['blizz_id'];
-        $region = $request['region'];
+        $blizz_id = $request["blizz_id"];
+        $region = $request["region"];
+        $gameType = GameType::whereIn("short_name", $request["game_type"])->pluck("type_id")->toArray();
+        $season = $request["season"];
         $type = $request['type'];
         $teamValue = $type == "friend" ? 0 : 1;
+        $gameMap = $request["game_map"] ? Map::where("name", $request["game_map"])->pluck("map_id") : null;
+        $hero = $request["hero"];
 
-        $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
-        $gameMap = (new GameMapInputValidation())->passes('map', $request["map"]);
-        $hero = (new HeroInputByIDValidation())->passes('hero', $request["hero"]);
-        $season = (new SeasonInputValidation())->passes('season', $request["season"]);
 
         $innerQuery = DB::table('replay')
             ->select('replay.replayID')
@@ -73,22 +102,21 @@ class FriendFoeController extends Controller
             ->where('player.blizz_id', $blizz_id)
             ->where('replay.region', $region)
             ->whereIn('game_type', $gameType)
-            ->when(is_int($season), function ($query) use ($season) {
+            ->when(!is_null($season), function ($query) use ($season) {
                 $data = SeasonDate::where("id", $season)->first();
                 if ($data) {
                     $query->where('game_date', '>=', $data->start_date)
-                          ->where('game_date', '<=', $data->end_date);
+                          ->where('game_date', '<', $data->end_date);
                 }
                 return $query;
             })
-            ->when(!empty($gameMap), function ($query) use ($region, $gameMap) {
+            ->when(!is_null($gameMap), function ($query) use ($region, $gameMap) {
                 return $query->whereIn('game_map', $gameMap);
             })
-            ->when(is_int($hero), function ($query) use ($hero) {
+            ->when(!is_null($hero), function ($query) use ($hero) {
                 return $query->where('hero', $hero);
             })
             ->where('team', $teamValue);
-
 
         $result_team_zero = DB::table('replay')
             ->select(
@@ -122,18 +150,18 @@ class FriendFoeController extends Controller
             ->where('player.blizz_id', $blizz_id)
             ->where('replay.region', $region)
             ->whereIn('game_type', $gameType)
-            ->when(is_int($season), function ($query) use ($season) {
+            ->when(!is_null($season), function ($query) use ($season) {
                 $data = SeasonDate::where("id", $season)->first();
                 if ($data) {
                     $query->where('game_date', '>=', $data->start_date)
-                          ->where('game_date', '<=', $data->end_date);
+                          ->where('game_date', '<', $data->end_date);
                 }
                 return $query;
             })
-            ->when(!empty($gameMap), function ($query) use ($region, $gameMap) {
+            ->when(!is_null($gameMap), function ($query) use ($region, $gameMap) {
                 return $query->whereIn('game_map', $gameMap);
             })
-            ->when(is_int($hero), function ($query) use ($hero) {
+            ->when(!is_null($hero), function ($query) use ($hero) {
                 return $query->where('hero', $hero);
             })
             ->where('team', $teamValue);

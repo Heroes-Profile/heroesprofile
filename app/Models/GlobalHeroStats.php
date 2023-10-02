@@ -23,7 +23,7 @@ class GlobalHeroStats extends Model
 
   public function scopeFilterByLeagueTier($query, $leagueTier)
   {
-    if (!empty($leagueTier)) {
+    if (!is_null($leagueTier)) {
       return $query->whereIn('league_tier', $leagueTier);
     }
     return $query;
@@ -31,7 +31,7 @@ class GlobalHeroStats extends Model
 
   public function scopeFilterByHeroLeagueTier($query, $heroLeagueTier)
   {
-    if (!empty($heroLeagueTier)) {
+    if (!is_null($heroLeagueTier)) {
       return $query->whereIn('hero_league_tier', $heroLeagueTier);
     }
     return $query;
@@ -39,7 +39,7 @@ class GlobalHeroStats extends Model
 
   public function scopeFilterByRoleLeagueTier($query, $roleLeagueTier)
   {
-    if (!empty($roleLeagueTier)) {
+    if (!is_null($roleLeagueTier)) {
       return $query->whereIn('role_league_tier', $roleLeagueTier);
     }
     return $query;
@@ -47,7 +47,7 @@ class GlobalHeroStats extends Model
 
   public function scopeFilterByGameMap($query, $gameMap)
   {
-    if (!empty($gameMap)) {
+    if (!is_null($gameMap)) {
       return $query->whereIn('game_map', $gameMap);
     }
     return $query;
@@ -55,7 +55,7 @@ class GlobalHeroStats extends Model
 
   public function scopeFilterByHeroLevel($query, $heroLevel)
   {
-    if (!empty($heroLevel)) {
+    if (!is_null($heroLevel)) {
       return $query->whereIn('hero_level', $heroLevel);
     }
     return $query;
@@ -79,7 +79,7 @@ class GlobalHeroStats extends Model
 
   public function scopeFilterByRegion($query, $region)
   {
-    if (!empty($region)) {
+    if (!is_null($region)) {
       return $query->whereIn('region', $region);
     }
     return $query;

@@ -13,6 +13,7 @@
     :defaultbuildtype="{{ json_encode($defaultbuildtype) }}" 
     :defaulttimeframetype="{{ json_encode($defaulttimeframetype) }}" 
     :talentimages="{{ json_encode($talentimages) }}" 
+    :advancedfiltering="{{ json_encode($advancedfiltering) }}"
   >
   </global-talents-stats>
 @endsection

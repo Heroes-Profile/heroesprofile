@@ -1,22 +1,16 @@
 /PlayerMapsAllStats.vue<template>
   <div>
-    All Maps
-    as played by
-    <span><a :href="`/Player/${battletag}/${blizzid}/${region}`" target="_blank">{{ battletag }}</a></span>
-
-    <infobox :input="infoText"></infobox>
-
+    <page-heading :infoText1="'All Map data for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
+    
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
       :isLoading="isLoading"
       :gametypedefault="gametype"
       :minimumgamesdefault="'0'"
-      :includehero="true"
-      :includerole="true"
       :includegametypefull="true"
-      :includeseason="true"
       :includeminimumgames="true"
+      :hideadvancedfilteringbutton="true"
       >
     </filters>
 
@@ -95,6 +89,7 @@ export default {
     battletag: String,
     blizzid: String, 
     region: String,
+    regionsmap: Object,
   },
   data(){
     return {
@@ -227,6 +222,7 @@ export default {
       this.isLoading = true;
       try{
         const response = await this.$axios.post("/api/v1/player/maps/all", {
+          battletag: this.battletag,
           blizz_id: this.blizzid,
           region: this.region,
           game_type: this.gametype,
@@ -234,7 +230,7 @@ export default {
           role: this.role,
           type: "all",
           page: "map",
-          map: this.map,
+          game_map: this.map,
         });
 
         this.data = response.data;
@@ -247,7 +243,7 @@ export default {
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
-      this.data = [];
+      this.data = null;
       this.sortKey = '';
       this.sortDir ='asc';
       this.getData();

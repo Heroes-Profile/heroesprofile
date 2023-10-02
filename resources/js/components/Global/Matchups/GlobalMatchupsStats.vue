@@ -22,6 +22,8 @@
       :includeherorank="true"
       :includerolerank="true"
       :includemirror="true"
+      :advancedfiltering="advancedfiltering"
+
       >
     </filters>
     <div v-if="allyenemydata" class="flex flex-wrap gap-4 justify-center items-center">
@@ -29,7 +31,9 @@
       <group-box :text="'TOP 5 THREATS ON ENEMIES TEAM'" :data="allyenemydata.enemy.slice(0, 5)" :type="'Matchups'"></group-box>
 
 
-
+      <div> 
+        <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
+      </div>
       <table class="min-w-full bg-white">
         <thead>
           <tr>
@@ -96,6 +100,7 @@
       gametypedefault: Array,
       defaulttimeframetype: String,
       defaulttimeframe: Array,
+      advancedfiltering: String,
     },
     data(){
       return {
@@ -184,7 +189,7 @@
             region: this.region,
             hero_level: this.herolevel,
             game_type: this.gametype,
-            map: this.gamemap,
+            game_map: this.gamemap,
             league_tier: this.playerrank,
             hero_league_tier: this.herorank,
             role_league_tier: this.rolerank,
@@ -200,15 +205,17 @@
       filterData(filteredData){
         this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
         this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaultMinor;
-        this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : [];
-        this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : [];
-        this.role = filteredData.single["Role"] ? filteredData.single["Role"] : "";
-        this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : [];
-        this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : [];
-        this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : [];
-        this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : [];
-        this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : [];
-        this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "";
+        this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : null;
+        this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : null;
+        this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : null;
+        this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
+        this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : null;
+        this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) :null;
+        this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : null;
+        this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
+
+        this.allyenemydata = null;
+        this.combineddata = null;
         this.getData();
       },
       sortTable(key) {
@@ -218,6 +225,9 @@
           this.sortDir = 'desc';
         }
         this.sortKey = key;
+      },
+      redirectChangeHero(){
+        window.location.href = "/Global/Matchups";
       },
     }
   }

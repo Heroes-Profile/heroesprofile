@@ -10,7 +10,6 @@
     :includehero="true"
     :includegamemap="true"
     :includegametypefull="true"
-    :includeseason="true"
     >
   </filters>
 
@@ -42,7 +41,10 @@
       <tbody>
         <tr v-for="(row, index) in sortedData" :key="index">
           <td class="py-2 px-3 border-b border-gray-200 flex items-center gap-1">
-            <a :href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Hero/Single/' + row.hero.name"><hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}</a>
+            <a :href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Hero/Single/' + row.hero.name">
+              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>
+              {{ row.hero.name }}
+            </a>
           </td>
            <td class="py-2 px-3 border-b border-gray-200">
             {{ row.ally_win_rate }}
@@ -83,7 +85,7 @@
     data(){
       return {
         isLoading: false,
-        infotext: "Hero Matchups provide information on which heroes you are good with and against",
+        infotext: "Hero Matchups provide information on which heroes " + this.battletag + " is good with and against",
         gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
         data: null,
         sortKey: '',
@@ -122,8 +124,7 @@
             region: this.region,
             battletag: this.battletag,
             game_type: this.gametype, 
-            map: this.gamemap,
-            season: this.season,
+            game_map: this.gamemap,
             hero: this.hero,
           });
           this.data = response.data.tabledata;
@@ -142,8 +143,15 @@
         }
         this.sortKey = key;
       },
-      filterData(){
+      filterData(filteredData){
+        this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
+        this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
+        this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
 
+        this.data = null;
+        this.topfiveheroes = null;
+        this.topfiveenemies = null;
+        this.getData();
       },
 
     }

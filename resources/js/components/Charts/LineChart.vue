@@ -21,8 +21,6 @@ export default {
     };
   },
   mounted() {
-    console.log(this.data);
-
     const labels = this.data.map(item => item.x_label);
     const totals = this.data.map(item => item[this.dataAttribute]); 
 
@@ -45,20 +43,20 @@ export default {
         scales: {
           x: {
             grid: {
-              display: true, // Hide the x-axis grid lines
+              display: true, 
             },
             ticks: {
-              display: true, // Hide x-axis labels
+              display: true, 
               //maxTicksLimit: 10, // Limit the number of x-axis ticks to 100
             },
           },
           y: {
             beginAtZero: false,
             grid: {
-              display: true, // Hide the y-axis grid lines
+              display: true,
             },
             ticks: {
-              display: true, // Hide y-axis labels
+              display: true, 
             },
           }
         }

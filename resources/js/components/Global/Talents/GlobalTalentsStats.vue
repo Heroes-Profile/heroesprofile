@@ -27,9 +27,14 @@
           :includeherorank="true"
           :includerolerank="true"
           :includemirror="true"
+          :advancedfiltering="advancedfiltering"
+
           >
         </filters>
 
+        <div> 
+          <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
+        </div>
         <div  v-if="talentdetaildata" class="container mx-auto px-4">
           <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
         </div>
@@ -68,6 +73,7 @@
       defaulttimeframe: Array,
       defaultbuildtype: String,
       talentimages: Object,
+      advancedfiltering: String,
     },
     data(){
       return {
@@ -101,7 +107,7 @@
        playerrank: null,
        herorank: null,
        rolerank: null,
-       mirrormatch: "Exclude",
+       mirrormatch: 0,
        talentbuildtype: "Popular",
      }
    },
@@ -153,12 +159,11 @@
             statfilter: this.statfilter,
             hero_level: this.herolevel,
             game_type: this.gametype,
-            map: this.gamemap,
+            game_map: this.gamemap,
             league_tier: this.playerrank,
             hero_league_tier: this.herorank,
             role_league_tier: this.rolerank,
             mirrormatch: this.mirrormatch,
-            talentbuildtype: this.talentbuildtype
           });
           this.talentdetaildata = response.data;
         }catch(error){
@@ -177,7 +182,7 @@
             statfilter: this.statfilter,
             hero_level: this.herolevel,
             game_type: this.gametype,
-            map: this.gamemap,
+            game_map: this.gamemap,
             league_tier: this.playerrank,
             hero_league_tier: this.herorank,
             role_league_tier: this.rolerank,
@@ -193,15 +198,15 @@
       filterData(filteredData){
         this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
         this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaulttimeframe;
-        this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : [];
+        this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : null;
         this.statfilter = filteredData.single["Stat Filter"] ? filteredData.single["Stat Filter"] : "win_rate";
-        this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : [];
-        this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : [];
-        this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : [];
-        this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : [];
-        this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : [];
-        this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : [];
-        this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "Exclude";
+        this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : null;
+        this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : null;
+        this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
+        this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : null;
+        this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : null;
+        this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : null;
+        this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
         this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : this.defaultbuildtype;
 
         this.talentdetaildata = null;
@@ -229,6 +234,9 @@
         }
         return false;
       },
+      redirectChangeHero(){
+        window.location.href = "/Global/Talents";
+      }
     }
   }
 </script>

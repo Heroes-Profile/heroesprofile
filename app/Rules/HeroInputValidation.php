@@ -9,19 +9,15 @@ use App\Models\Hero;
 
 class HeroInputValidation implements Rule
 {
-
     public function passes($attribute, $value)
     {
         $validHeroNames = Hero::pluck("name")->toArray();
         
-        if (in_array($value, $validHeroNames)) {
-            $hero = Hero::where('name', $value)->first();
-            if ($hero) {
-                return $hero->id;
-            }
+        if (!in_array($value, $validHeroNames)) {
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     public function message()

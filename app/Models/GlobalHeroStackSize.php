@@ -88,4 +88,18 @@ class GlobalHeroStackSize extends Model
     }
     return $query;
   }
+
+  public function scopeFilterByAllyStackSize($query, $stack_size){
+    if($stack_size){
+      return $query->where('team_ally_stack_value', $stack_size);
+    }
+    return $query;
+  }
+
+  public function scopeFilterByEnemyStackSize($query, $stack_size){
+    if($stack_size){
+      return $query->where('team_enemy_stack_value', $stack_size);
+    }
+    return $query;
+  }
 }

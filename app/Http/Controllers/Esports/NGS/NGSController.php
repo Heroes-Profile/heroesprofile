@@ -95,7 +95,7 @@ class NGSController extends Controller
 
 
                 if(strpos($image, 'undefined') !== false){
-                    $image = "/images/NGS/no-image.png";
+                    $image = "/images/NGS/no-image-clipped.png";
                 }
             }else{
                 $image = $group[0]['image'];

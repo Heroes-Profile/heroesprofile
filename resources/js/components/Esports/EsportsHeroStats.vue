@@ -50,7 +50,6 @@ export default {
   created(){
   },
   mounted() {
-    console.log(this.data);
   },
   computed: {
     sortedData() {

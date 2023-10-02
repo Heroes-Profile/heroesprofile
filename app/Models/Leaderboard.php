@@ -31,4 +31,11 @@ class Leaderboard extends Model
     {
       return $query->where('stack_size', $stackSize);
     }
+
+    public function scopeFilterByRegion($query, $region){
+      if(!is_null($region)){
+        return $query->where('region', $region);
+      }
+      return $query;
+    }
 }

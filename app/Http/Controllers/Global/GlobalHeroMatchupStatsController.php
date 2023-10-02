@@ -2,32 +2,40 @@
 
 namespace App\Http\Controllers\Global;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 use App\Rules\HeroInputValidation;
-use App\Rules\TimeframeMinorInputValidation;
-use App\Rules\GameTypeInputValidation;
-use App\Rules\TierByIDInputValidation;
-use App\Rules\GameMapInputValidation;
-use App\Rules\HeroLevelInputValidation;
-use App\Rules\MirrorInputValidation;
-use App\Rules\RegionInputValidation;
-use App\Rules\RoleInputValidation;
 
 use App\Models\GlobalHeromatchupsAlly;
 use App\Models\GlobalHeromatchupsEnemy;
 use App\Models\Hero;
 
-class GlobalHeroMatchupStatsController extends Controller
+class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
 {
-    public function show(Request $request){
+    public function show(Request $request, $hero = null, $allyenemy = null){
+        if (!is_null($hero) && !is_null($allyenemy)) {
+            $validationRules = [
+                'hero' => ['required', new HeroInputValidation()],
+                'allyenemy' => ['required', new HeroInputValidation()],
+            ];
+
+            $validator = Validator::make(['hero' => $hero, 'allyenemy' => $allyenemy], $validationRules);
+
+            if ($validator->fails()) {
+                return back();
+            }
+        }
+
+
         $userinput = $this->globalDataService->getHeroModel($request["hero"]);
         return view('Global.Matchups.globalMatchupsStats')->with([
                 'userinput' => $userinput,
                 'filters' => $this->globalDataService->getFilterData(),
                 'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
+                'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
                 'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
@@ -35,46 +43,39 @@ class GlobalHeroMatchupStatsController extends Controller
     }
 
     public function getHeroMatchupData(Request $request){
+        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+
         //return response()->json($request->all());
 
-        $gameVersion = null;
-
-        if($request["timeframe_type"] == "major"){
-            $gameVersions = SeasonGameVersion::select('game_version')
-                                            ->where('game_version', 'like', $request["timeframe"][0] . "%")
-                                            ->pluck('game_version')
-                                            ->toArray();                                            
-            $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $gameVersions);
-
-        }else{
-            $gameVersion = (new TimeframeMinorInputValidation())->passes('timeframe', $request["timeframe"]);
-        }
-        $gameType = (new GameTypeInputValidation())->passes('game_type', $request["game_type"]);
-        $leagueTier = (new TierByIDInputValidation())->passes('league_tier', $request["league_tier"]);
-        $heroLeagueTier = (new TierByIDInputValidation())->passes('hero_league_tier', $request["hero_league_tier"]);
-        $roleLeagueTier = (new TierByIDInputValidation())->passes('role_league_tier', $request["role_league_tier"]);
-        $gameMap = (new GameMapInputValidation())->passes('map', $request["map"]);
-        $heroLevel = (new HeroLevelInputValidation())->passes('hero_level', $request["hero_level"]);
-        $mirror = (new MirrorInputValidation())->passes('mirror', $request["mirror"]);
-        $region = (new RegionInputValidation())->passes('region', $request["region"]);
-        $hero = (new HeroInputValidation())->passes('hero', $request["hero"]);
-        $role = (new RoleInputValidation())->passes('role', $request["role"]);
-
-        $cacheKey = "GlobalMatchupStats|" . implode('|', [
-            'hero=' . $hero,
-            'gameVersion=' . implode(',', $gameVersion),
-            'gameType=' . implode(',', $gameType),
-            'leagueTier=' . implode(',', $leagueTier),
-            'heroLeagueTier=' . implode(',', $heroLeagueTier),
-            'roleLeagueTier=' . implode(',', $roleLeagueTier),
-            'gameMap=' . implode(',', $gameMap),
-            'heroLevel=' . implode(',', $heroLevel),
-            'mirror=' . $mirror,
-            'region=' . implode(',', $region),
-            'role=' . $role
+       $validationRules = array_merge($this->globalsValidationRules($request["timeframe_type"]), [
+            'hero' => ['required', new HeroInputValidation()],
         ]);
 
-        //return $cacheKey;
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
+        }
+
+
+        $hero = $this->getHeroFilterValue($request["hero"]);
+        $gameVersion = $this->getTimeframeFilterValues($request["timeframe_type"], $request["timeframe"]);
+        $gameType = $this->getGameTypeFilterValues($request["game_type"]); 
+        $leagueTier = $request["league_tier"];
+        $heroLeagueTier = $request["hero_league_tier"];
+        $roleLeagueTier = $request["role_league_tier"];
+        $gameMap = $this->getGameMapFilterValues($request["game_map"]);
+        $heroLevel = $request["hero_level"];
+        $region = $this->getRegionFilterValues($request["region"]);
+        $statFilter = $request["statfilter"];
+        $mirror = $request["mirror"];
+
+        $cacheKey = "GlobalMatchupStats|" . json_encode($request->all());
+
+        //return $gameMap;
 
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
                                                                                                                          $hero,

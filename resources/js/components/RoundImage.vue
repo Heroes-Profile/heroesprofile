@@ -35,9 +35,10 @@
     }
 
     ]" >
-      <div v-if="!hovertextstyleoverride" :class="['popup-text block  bg-gray-dark  text-s p-1    text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-50 ', {}]">{{ title }}</div>
+      <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-50 ', {}]">
+        <slot></slot>
+      </div>
 
-      <slot v-if="hovertextstyleoverride"></slot>
 
     <div class="popup-arrow"></div>
     </div>
@@ -53,10 +54,9 @@ export default {
   },
   props: {
     title: String,
-    tooltiptext: String,
     image: String,
     size: String,
-    hovertextstyleoverride: Boolean,
+    excludehover: Boolean,
   },
   data(){
     return {

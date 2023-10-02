@@ -4,21 +4,27 @@ namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
-use App\Rules\SingleGameMapInputValidation;
+use App\Rules\GameMapInputValidation;
 
 class PlayerMapsController extends Controller
 {
     public function showAll(Request $request, $battletag, $blizz_id, $region)
     {
-        $validator = \Validator::make(compact('battletag', 'blizz_id', 'region'), [
+        $validationRules = [
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
-            'region' => 'required|integer'
-        ]);
+            'region' => 'required|integer',
+        ];
+
+        $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
 
         if ($validator->fails()) {
-            return redirect('/');
+            return [
+                "data" => compact('battletag', 'blizz_id', 'region'),
+                "status" => "failure to validate inputs"
+            ];
         }
 
 
@@ -30,17 +36,24 @@ class PlayerMapsController extends Controller
                 ]);
     }
 
-    public function showSingle(Request $request, $battletag, $blizz_id, $region, $role){
-        $validator = \Validator::make(compact('battletag', 'blizz_id', 'region'), [
+    public function showSingle(Request $request, $battletag, $blizz_id, $region, $map){
+        $validationRules = [
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
-            'region' => 'required|integer'
-        ]);
+            'region' => 'required|integer',
+            'map' => ['required', new GameMapInputValidation()],
+        ];
+
+        $validator = Validator::make(compact('battletag', 'blizz_id', 'region', 'map'), $validationRules);
 
         if ($validator->fails()) {
-            return redirect('/');
+            return [
+                "data" => compact('battletag', 'blizz_id', 'region', 'map'),
+                "status" => "failure to validate inputs"
+            ];
         }
-        $map = (new SingleGameMapInputValidation())->passes('map', $request["map"]);
+
+        $map = $request["map"];
 
 
         return view('Player.Maps.singleMapData')->with([

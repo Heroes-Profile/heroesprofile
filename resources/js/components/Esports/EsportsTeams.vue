@@ -7,12 +7,7 @@
 
     <div class="flex flex-wrap gap-5">
       <round-image :size="'big'" v-for="(team, index) in filteredData" :key="index" :title="team.team_name" :image="team.icon_url" :hovertextstyleoverride="true">
-            <div class="absolute hidden bottom-11 -left-24  bg-gray-dark  text-xs p-1  group-hover:block  text-white z-50 drop-shadow-md w-60 rounded-md px-2 text-center">
-              <h2>{{ team.team_name }}</h2>
-              <p>Division: {{ team.division }}</p>
-              <p>Win Rate: {{ team.win_rate }}</p>
-              <p>Games Played: {{ team.games_played }}</p>
-            </div>
+        <image-hover-box :title="team.team_name" :paragraph-one="'Division: ' + team.division" :paragraph-two="'Win Rate: ' + team.win_rate" :paragraph-three="'Games Played: ' + team.games_played"></image-hover-box>
       </round-image>
     </div>
   </div>

@@ -22,13 +22,19 @@
       :includeherorank="true"
       :includerolerank="true"
       :includemirror="true"
+      :advancedfiltering="advancedfiltering"
+
       >
     </filters>
     <div v-if="data">
+      <div> 
+        <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
+      </div>
       <custom-table :columns="dynamicColumns" :data="data"></custom-table>
     </div>
     <div v-else>
-      <loading-component></loading-component>
+      <loading-component v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+      <loading-component v-else></loading-component>
     </div>
   </div>
 
@@ -52,6 +58,7 @@
       gametypedefault: Array,
       defaulttimeframe: Array,
       defaulttimeframetype: String,
+      advancedfiltering: String,
     },
     data(){
       return {
@@ -69,7 +76,7 @@
         playerrank: null,
         herorank: null,
         rolerank: null,
-        mirrormatch: null,
+        mirrormatch: 0,
       }
     },
     created(){
@@ -112,10 +119,10 @@
         this.getData();
       },
       async getData(){
+        this.isLoading = true;
         try{
-          this.isLoading = true;
           const response = await this.$axios.post("/api/v1/global/hero/map", {
-            userinput: this.selectedHero.name,
+            hero: this.selectedHero.name,
             timeframe_type: this.timeframetype,
             timeframe: this.timeframe,
             region: this.region,
@@ -136,16 +143,25 @@
       filterData(filteredData){
         this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
         this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaultMinor;
-        this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : [];
-        this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : [];
-        this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : [];
-        this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : [];
-        this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : [];
-        this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : [];
-        this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : "";
+        this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : null;
+        this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : null;
+        this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : null;
+        this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : null;
+        this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : null;
+        this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : null;
+        this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
 
         this.data = null;
         this.getData();
+      },
+      determineIfLargeData(){
+        if(this.timeframetype == "major" || this.timeframe.length >= 3){
+          return  true;
+        }
+        return false;
+      },
+      redirectChangeHero(){
+        window.location.href = "/Global/Hero/Maps";
       },
     }
   }
