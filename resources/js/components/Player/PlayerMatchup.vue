@@ -10,7 +10,6 @@
     :includehero="true"
     :includegamemap="true"
     :includegametypefull="true"
-    :includeseason="true"
     >
   </filters>
 
@@ -86,7 +85,7 @@
     data(){
       return {
         isLoading: false,
-        infotext: "Hero Matchups provide information on which heroes you are good with and against",
+        infotext: "Hero Matchups provide information on which heroes " + this.battletag + " is good with and against",
         gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
         data: null,
         sortKey: '',
@@ -125,8 +124,7 @@
             region: this.region,
             battletag: this.battletag,
             game_type: this.gametype, 
-            map: this.gamemap,
-            season: this.season,
+            game_map: this.gamemap,
             hero: this.hero,
           });
           this.data = response.data.tabledata;
@@ -146,20 +144,14 @@
         this.sortKey = key;
       },
       filterData(filteredData){
-        this.season = filteredData.single["Season"] ? filteredData.single["Season"] : null;
         this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
+        this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
+        this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
 
         this.data = null;
         this.topfiveheroes = null;
         this.topfiveenemies = null;
         this.getData();
-
-        /*
-        this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
-        this.data = [];
-        this.sortKey = '';
-        this.sortDir ='asc';
-        */
       },
 
     }
