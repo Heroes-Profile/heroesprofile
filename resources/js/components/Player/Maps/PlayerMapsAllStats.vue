@@ -1,10 +1,7 @@
 /PlayerMapsAllStats.vue<template>
   <div>
     <page-heading :infoText1="'All Map data for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
-
-
-    <infobox :input="infoText"></infobox>
-
+    
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
@@ -92,6 +89,7 @@ export default {
     battletag: String,
     blizzid: String, 
     region: String,
+    regionsmap: Object,
   },
   data(){
     return {
@@ -245,7 +243,7 @@ export default {
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
-      this.data = [];
+      this.data = null;
       this.sortKey = '';
       this.sortDir ='asc';
       this.getData();

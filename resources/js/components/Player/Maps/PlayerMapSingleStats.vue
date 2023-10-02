@@ -37,23 +37,21 @@
         <span>AR MMR = </span><span>{{ data.ar_mmr_data ? data.ar_mmr_data.mmr : 0 }}</span><br>
         <span>AR MMR Tier = </span><span>{{ data.ar_mmr_data ? data.ar_mmr_data.rank_tier : "" }}</span><br>
 
-        <line-chart v-if="seasonWinRateDataArray" :data="seasonWinRateDataArray"></line-chart>
+        <line-chart v-if="seasonWinRateDataArray" :data="seasonWinRateDataArray" :dataAttribute="'win_rate'"></line-chart>
 
-        <div>
-          <span>Heroes played on {{ mapname }}</span>
+        <h1>Heroes played on {{ map }}</h1>
+        <group-box :playerlink="true" :text="'Most Played'" :data="data.hero_data_top_played.slice(0, 3)"></group-box>
+        <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.hero_data_top_win_rate.slice(0, 3)"></group-box>
+        <group-box :playerlink="true" :text="'Latest Played'" :data="data.hero_data_top_latest_played.slice(0, 3)"></group-box>
 
-          <infobox :input="'Click a map to see more information and stats, or select all maps to view maps regardless of hero.'"></infobox>
-
-          <div class="flex">
-            <group-box :text="'Most Played'" :data="data.hero_data_top_played.slice(0, 3)"></group-box>
-            <group-box :text="'Highest Win Rate'" :data="data.hero_data_top_win_rate.slice(0, 3)"></group-box>
-            <group-box :text="'Latest Played'" :data="data.hero_data_top_latest_played.slice(0, 3)"></group-box>
-          </div>
-
-          <div class="flex">
-            <map-image-wrapper v-for="(item, index) in data.map_data" :key="index" :map="item"></map-image-wrapper>
-          </div>
+        <div class="flex flex-wrap gap-1">
+          <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" v-for="(item, index) in data.hero_data_all_heroes">
+            <hero-image-wrapper :hero="item.hero">
+              <image-hover-box :title="item.hero.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
+            </hero-image-wrapper>
+          </a>
         </div>
+
 
         <div>
           <h1>Party Size Win Rates</h1>
@@ -103,7 +101,8 @@ export default {
   data(){
     return {
       inputmap: null,
-      gametype: null,
+      modifiedgametype: null,
+      modifiedseason: null,
       data: null,
     }
   },
@@ -139,7 +138,8 @@ export default {
           battletag: this.battletag,
           blizz_id: this.blizzid,
           region: this.region,
-          game_type: this.gametype,
+          game_type: this.modifiedgametype,
+          season: this.modifiedseason,
           type: "single",
           page: "map",
           game_map: this.map,
@@ -154,12 +154,25 @@ export default {
       return this.regions[regionID];
     },
     handleInputChange(eventPayload) {
-      if (eventPayload.field === "Heroes") {
-        this.inputhero = eventPayload.value;
-
-        //Might have to url encode this...who knows
-        history.pushState(null, null, this.mapname);
+      if(eventPayload.field == "Game Type"){
+        if(eventPayload.value == "All"){
+          this.modifiedgametype = null;
+        }else{
+          this.modifiedgametype = eventPayload.value;
+        }
       }
+
+      if(eventPayload.field == "Season"){
+        if(eventPayload.value == "All"){
+          this.modifiedseason = null;
+        }else{
+          this.modifiedseason = eventPayload.value;
+        }
+      }
+    },
+    handleDropdownClosed(){
+      this.data = null;
+      this.getData();
     },
   }
 }

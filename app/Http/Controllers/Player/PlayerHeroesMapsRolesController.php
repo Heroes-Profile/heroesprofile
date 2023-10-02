@@ -57,16 +57,20 @@ class PlayerHeroesMapsRolesController extends Controller
         $battletag = $request['battletag'];
         $blizz_id = $request['blizz_id'];
         $region = $request['region'];
-        $game_type = $request["game_type"] ? GameType::where("short_name", $request["game_type"])->pluck("type_id")->first() : null;
+        $type = $request["type"];
+
+        if($type == "all"){
+            $game_type = $request["game_type"] ? GameType::whereIn("short_name", $request["game_type"])->pluck("type_id")->toArray() : null;
+        }else{
+            $game_type = $request["game_type"] ? GameType::where("short_name", $request["game_type"])->pluck("type_id")->first() : null;
+        }
+
         $hero = $request["hero"] ? session('heroes')->keyBy('name')[$request["hero"]]->id : null;
         $minimum_games = $request["minimumgames"];
-        $type = $request["type"];
         $page = $request["page"];
         $role = $request["role"];
-        $game_map = $request["game_map"] ? Map::where('name',  $request["game_map"])->pluck('map_id') : null;
+        $game_map = $request["game_map"] ? Map::where('name',  $request["game_map"])->pluck('map_id')->first() : null;
         $season = $request["season"];
-
-        //dd($hero);
 
         $result = Replay::join('player', 'player.replayID', '=', 'replay.replayID')
                 ->join('scores', function($join) {
@@ -79,11 +83,15 @@ class PlayerHeroesMapsRolesController extends Controller
                 })
                 ->join('heroes', 'heroes.id', '=', 'player.hero')
                 ->where('region', $region)
-                ->where(function ($query) use ($game_type) {
+                ->where(function ($query) use ($game_type, $type) {
                     if (is_null($game_type)) {
                         $query->whereNot("game_type", 0);
                     } else {
-                        $query->where("game_type", $game_type);
+                        if($type == "all"){
+                            $query->whereIn("game_type", $game_type);
+                        }else{
+                            $query->where("game_type", $game_type);
+                        }
                     }
                 })
                 ->where('blizz_id', $blizz_id)
@@ -163,6 +171,7 @@ class PlayerHeroesMapsRolesController extends Controller
                     'time_on_fire',
                     'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'
                     ])
+                //->toSql();
                 ->get();
 
         $heroData = $this->globalDataService->getHeroes();
@@ -503,7 +512,7 @@ class PlayerHeroesMapsRolesController extends Controller
 
                 "name" => $name,
                 "hero" => $heroData[$heroStats->pluck('hero')->first()],
-                //"game_map" => $maps[$heroStats->pluck('game_map')->first()],
+                "game_map" => $maps[$heroStats->pluck('game_map')->first()],
                 'wins' => $wins,
                 'losses' => $losses,
                 'games_played' => $games_played,

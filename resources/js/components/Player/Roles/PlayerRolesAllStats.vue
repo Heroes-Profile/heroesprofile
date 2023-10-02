@@ -1,7 +1,7 @@
 <template>
   <div>
     <page-heading :infoText1="'All Role data for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
-    
+
     <filters 
     :onFilter="filterData" 
     :filters="filters" 
@@ -245,7 +245,7 @@ methods: {
     this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
     this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
     this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
-    this.data = [];
+    this.data = null;
     this.sortKey = '';
     this.sortDir ='asc';
     this.getData();
