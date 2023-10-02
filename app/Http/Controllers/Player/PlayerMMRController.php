@@ -2,28 +2,34 @@
 
 namespace App\Http\Controllers\Player;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Rules\SingleGameTypeInputValidation;
+use App\Rules\GameTypeInputValidation;
 
 use App\Models\LeagueBreakdown;
+use App\Models\GameType;
 
 
 class PlayerMMRController extends Controller
 {
     public function show(Request $request, $battletag, $blizz_id, $region)
     {
-        $validator = \Validator::make(compact('battletag', 'blizz_id', 'region'), [
+       $validationRules = [
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
-            'region' => 'required|integer'
-        ]);
+            'region' => 'required|integer',
+        ];
+
+        $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
 
         if ($validator->fails()) {
-            return redirect('/');
+            return [
+                "data" => compact('battletag', 'blizz_id', 'region'),
+                "status" => "failure to validate inputs"
+            ];
         }
-
 
         return view('Player.mmrData')->with([
                 'battletag' => $battletag,
@@ -37,9 +43,28 @@ class PlayerMMRController extends Controller
     public function getData(Request $request){
         //return response()->json($request->all());
 
+
+        $validationRules = [
+            'battletag' => 'required|string',
+            'blizz_id' => 'required|integer',
+            'region' => 'required|integer',
+            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation()],
+            'type' => 'required|in:Player,Hero,Role',
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+       if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
+        }
+
+
         $blizz_id = $request["blizz_id"];
         $region = $request["region"];
-        $game_type = (new SingleGameTypeInputValidation())->passes('game_type', $request["game_type"]);
+        $game_type = GameType::where("short_name", $request["game_type"])->pluck("type_id")->first();
 
         $result = DB::table('replay')
             ->join('player', 'player.replayID', '=', 'replay.replayID')

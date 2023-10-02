@@ -1,7 +1,7 @@
 <template>
   <div class="relative ml-10 ">
     <a :href="getHref()">
-      <div class="mt-4 pl-[6em] m-l-auto w-full text-right min-h-4 py-2">{{caption}}</div>
+      <div class="mt-4 pl-[6em] m-l-auto w-full text-right min-h-4 py-2">{{ data.game_map.name }} | {{ data.game_type.name }} | {{ formatDate(data.game_date)}}</div>
       <div
         :class="[
           'flex border border-white border-2 bg-cover bg-no-repeat bg-center rounded-2xl border-red pl-[6em]  ',
@@ -43,13 +43,14 @@
 
 
 <script>
+  import moment from 'moment-timezone';
+
   export default {
     name: 'GameSummaryBox',
     components: {
     },
     props: {
       data: Object,
-      caption: String,
       esport: Boolean,
       esportLeague: String,
     },
@@ -71,6 +72,12 @@
           return 'Esports/' + this.esportLeague + '/Match/Single/' + this.data.replayID;
         }
         return '/Match/Single/' + this.data.replayID;
+      },
+      formatDate(dateString) {
+        const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik'); // Assuming date strings are in UTC
+        const localDate = originalDate.clone().tz(moment.tz.guess());
+
+        return localDate.format('MM/DD/YYYY h:mm:ss a');
       },
     }
   }

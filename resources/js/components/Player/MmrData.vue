@@ -8,6 +8,7 @@
       :includesinglegametypefull="true"
       :includeseason="true"
       :playerheroroletype="true"
+      :hideadvancedfilteringbutton="true"
       >
     </filters>
 
@@ -78,10 +79,10 @@
               <a :href="'/Match/Single/' + row.replayID">{{ row.replayID }}</a>
             </td>
             <td>
-              {{ row.game_date }}
+              {{ formatDate(row.game_date) }}
             </td>
             <td>
-              {{ row.mmr_date_parsed }}
+              {{ formatDate(row.mmr_date_parsed) }}
             </td>
             <td class="py-2 px-3 border-b border-gray-200 flex items-center gap-1">
               <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}
@@ -107,6 +108,8 @@
 </template>
 
 <script>
+import moment from 'moment-timezone';
+
 export default {
   name: 'MmrData',
   components: {
@@ -114,6 +117,7 @@ export default {
   props: {
     filters: Object,
     gametypedefault: Array,
+    battletag: String,
     blizzid: {
       type: [String, Number]
     },
@@ -161,6 +165,7 @@ export default {
       this.isLoading = true;
       try{
         const response = await this.$axios.post("/api/v1/player/mmr", {
+          battletag: this.battletag,
           blizz_id: this.blizzid,
           region: this.region,
           battletag: this.battletag,
@@ -220,7 +225,13 @@ export default {
       }
 
       return false;
-    }
+    },
+    formatDate(dateString) {
+      const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik'); // Assuming date strings are in UTC
+      const localDate = originalDate.clone().tz(moment.tz.guess());
+
+      return localDate.format('MM/DD/YYYY h:mm:ss a');
+    },
   }
 }
 </script>

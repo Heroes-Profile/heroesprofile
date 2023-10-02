@@ -72,7 +72,6 @@
                  
           <game-summary-box v-for="(item, index) in data.matches" 
             :data="item" 
-            :caption="`${item.game_map.name} | Round ${item.round} Game ${item.game} | ${formatDate(item.game_date)}`"  
             :esport="true" 
             :esport-league="'NGS'"
           >

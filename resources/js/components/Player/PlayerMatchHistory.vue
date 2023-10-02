@@ -13,6 +13,7 @@
       :includegametypefull="true"
       :includeseason="true"
       :includegamemap="true"
+      :hideadvancedfilteringbutton="true"
       >
     </filters>
 
@@ -49,7 +50,7 @@
               <a :href="'/Match/Single/' + row.replayID">{{ row.replayID }}</a>
             </td>
             <td>
-              {{ row.game_date }}
+              {{ formatDate(row.game_date) }}
             </td>
             <td>
               {{ row.game_type.name }}
@@ -86,6 +87,8 @@
 </template>
 
 <script>
+import moment from 'moment-timezone';
+
 export default {
   name: 'PlayerMatchHistory',
   components: {
@@ -170,6 +173,12 @@ export default {
         this.sortDir = 'desc';
       }
       this.sortKey = key;
+    },
+    formatDate(dateString) {
+      const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik'); // Assuming date strings are in UTC
+      const localDate = originalDate.clone().tz(moment.tz.guess());
+
+      return localDate.format('MM/DD/YYYY h:mm:ss a');
     },
   }
 }
