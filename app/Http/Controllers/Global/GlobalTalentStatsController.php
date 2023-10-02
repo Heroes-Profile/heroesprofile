@@ -8,12 +8,14 @@ use Illuminate\Support\Facades\Validator;
 
 use App\Rules\HeroInputValidation;
 use App\Rules\StatFilterInputValidation;
+use App\Rules\TalentBuildTypeInputValidation;
 
 use App\Models\GlobalHeroTalentDetails;
 use App\Models\GlobalHeroTalents;
 use App\Models\TalentCombination;
 use App\Models\HeroesDataTalent;
 use App\Models\SeasonGameVersion;
+use App\Models\GameType;
 
 class GlobalTalentStatsController extends GlobalsInputValidationController
 {
