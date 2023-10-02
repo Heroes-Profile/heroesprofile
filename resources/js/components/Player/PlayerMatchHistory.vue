@@ -1,7 +1,6 @@
 <template>
   <div>
-    Match History for
-    <span><a :href="`/Player/${battletag}/${blizzid}/${region}`" target="_blank">{{ battletag }}</a></span>
+    <page-heading :infoText1="'Match History - TO DO pagination'" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
 
     <filters 
       :onFilter="filterData" 
@@ -96,6 +95,7 @@ export default {
     battletag: String,
     blizzid: String, 
     region: String,
+    regionsmap: Object,
   },
   data(){
     return {

@@ -15,6 +15,7 @@ use App\Rules\SeasonInputValidation;
 
 use App\Models\HeroesDataTalent;
 use App\Models\GameType;
+use App\Models\Map;
 
 class PlayerMatchHistory extends Controller
 {
@@ -120,6 +121,9 @@ class PlayerMatchHistory extends Controller
                 }
                 return $query;
             })
+            ->when(!is_null($game_map), function ($query) use ($game_map){
+                return $query->whereIn("game_map", $game_map);
+            })
             ->when(!is_null($role), function ($query) use ($role){
                 return $query->where("new_role", $role);
             })
@@ -137,13 +141,21 @@ class PlayerMatchHistory extends Controller
         $talentData = HeroesDataTalent::all();
         $talentData = $talentData->keyBy('talent_id');
 
-        $modifiedResult = $result->map(function ($item) use ($heroData, $talentData){
+
+        $maps = Map::all();
+        $maps = $maps->keyBy('map_id');
+
+        $modifiedResult = $result->map(function ($item) use ($heroData, $talentData, $maps){
             $item->hero_id = $item->hero;
             $item->hero = $heroData[$item->hero];
 
             
             $item->game_type_id = $item->game_type;
             $item->game_type = $this->globalDataService->getGameTypeIDtoString()[$item->game_type];
+
+
+            $item->game_map = $maps[$item->game_map]["name"];
+
 
 
             $item->level_one = $item->level_one && $talentData->has($item->level_one) ? $talentData[$item->level_one] : null;
