@@ -626,16 +626,16 @@
         },
         {
             "name": "google/cloud-core",
-            "version": "v1.52.4",
+            "version": "v1.52.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-core.git",
-                "reference": "21c004745a32c71e03ab62effd7fbee0cf3ae7c6"
+                "reference": "28765cf75bd028ed063b0422b9c85bb9a54c41ca"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/21c004745a32c71e03ab62effd7fbee0cf3ae7c6",
-                "reference": "21c004745a32c71e03ab62effd7fbee0cf3ae7c6",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-core/zipball/28765cf75bd028ed063b0422b9c85bb9a54c41ca",
+                "reference": "28765cf75bd028ed063b0422b9c85bb9a54c41ca",
                 "shasum": ""
             },
             "require": {
@@ -685,22 +685,22 @@
             ],
             "description": "Google Cloud PHP shared dependency, providing functionality useful to all components.",
             "support": {
-                "source": "https://github.com/googleapis/google-cloud-php-core/tree/v1.52.4"
+                "source": "https://github.com/googleapis/google-cloud-php-core/tree/v1.52.5"
             },
-            "time": "2023-09-15T20:50:36+00:00"
+            "time": "2023-09-30T16:50:41+00:00"
         },
         {
             "name": "google/cloud-logging",
-            "version": "v1.28.1",
+            "version": "v1.28.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/google-cloud-php-logging.git",
-                "reference": "818c654fa5cb01db8f8e625d43602683448e26b1"
+                "reference": "a59fc90e9498ba2e2313e8fd54b9be04e8579b80"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/google-cloud-php-logging/zipball/818c654fa5cb01db8f8e625d43602683448e26b1",
-                "reference": "818c654fa5cb01db8f8e625d43602683448e26b1",
+                "url": "https://api.github.com/repos/googleapis/google-cloud-php-logging/zipball/a59fc90e9498ba2e2313e8fd54b9be04e8579b80",
+                "reference": "a59fc90e9498ba2e2313e8fd54b9be04e8579b80",
                 "shasum": ""
             },
             "require": {
@@ -752,22 +752,22 @@
             ],
             "description": "Stackdriver Logging Client for PHP",
             "support": {
-                "source": "https://github.com/googleapis/google-cloud-php-logging/tree/v1.28.1"
+                "source": "https://github.com/googleapis/google-cloud-php-logging/tree/v1.28.2"
             },
-            "time": "2023-09-15T20:50:36+00:00"
+            "time": "2023-09-30T16:50:41+00:00"
         },
         {
             "name": "google/common-protos",
-            "version": "v4.3.0",
+            "version": "v4.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/googleapis/common-protos-php.git",
-                "reference": "4ab56787c4f7c34277055ea7bd9982ad758b2c67"
+                "reference": "04b6c213e0add963dab058329caf2d2d9014129a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/googleapis/common-protos-php/zipball/4ab56787c4f7c34277055ea7bd9982ad758b2c67",
-                "reference": "4ab56787c4f7c34277055ea7bd9982ad758b2c67",
+                "url": "https://api.github.com/repos/googleapis/common-protos-php/zipball/04b6c213e0add963dab058329caf2d2d9014129a",
+                "reference": "04b6c213e0add963dab058329caf2d2d9014129a",
                 "shasum": ""
             },
             "require": {
@@ -804,9 +804,9 @@
             ],
             "support": {
                 "issues": "https://github.com/googleapis/common-protos-php/issues",
-                "source": "https://github.com/googleapis/common-protos-php/tree/v4.3.0"
+                "source": "https://github.com/googleapis/common-protos-php/tree/v4.4.0"
             },
-            "time": "2023-08-22T18:10:13+00:00"
+            "time": "2023-10-02T18:14:18+00:00"
         },
         {
             "name": "google/gax",
@@ -3327,16 +3327,16 @@
         },
         {
             "name": "psr/http-client",
-            "version": "1.0.2",
+            "version": "1.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/http-client.git",
-                "reference": "0955afe48220520692d2d09f7ab7e0f93ffd6a31"
+                "reference": "bb5906edc1c324c9a05aa0873d40117941e5fa90"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/http-client/zipball/0955afe48220520692d2d09f7ab7e0f93ffd6a31",
-                "reference": "0955afe48220520692d2d09f7ab7e0f93ffd6a31",
+                "url": "https://api.github.com/repos/php-fig/http-client/zipball/bb5906edc1c324c9a05aa0873d40117941e5fa90",
+                "reference": "bb5906edc1c324c9a05aa0873d40117941e5fa90",
                 "shasum": ""
             },
             "require": {
@@ -3373,9 +3373,9 @@
                 "psr-18"
             ],
             "support": {
-                "source": "https://github.com/php-fig/http-client/tree/1.0.2"
+                "source": "https://github.com/php-fig/http-client"
             },
-            "time": "2023-04-10T20:12:12+00:00"
+            "time": "2023-09-23T14:17:50+00:00"
         },
         {
             "name": "psr/http-factory",
