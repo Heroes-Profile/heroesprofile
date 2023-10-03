@@ -127,6 +127,7 @@ export default {
   },
   data(){
     return {
+      userTimezone: moment.tz.guess(),
       isLoading: false,
       gametype: null,
       data: null,

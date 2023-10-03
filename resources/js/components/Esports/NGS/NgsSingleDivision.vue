@@ -102,6 +102,7 @@ export default {
   },
   data(){
     return {
+      userTimezone: moment.tz.guess(),
       preloadedImage: new Image(),
       isLoading: false,
       data: null,

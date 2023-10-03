@@ -23,40 +23,103 @@
       <div class="bg-lighten p-10 text-center">
         <div class="flex flex-wrap justify-center">
           <div>
-            <group-box :playerlink="true" :match="true" :text="getTeamText(1, data.winner)" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'"></group-box>
+            <group-box :playerlink="true" :match="true" :text="getTeamText(0, data.winner)" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'"></group-box>
 
 
             <div v-if="data.replay_bans" class="flex flex-wrap justify-center">
-              Team 1 Bans
+              {{ esport ? this.data.team_names.team_one.team_name : "Team 1" }} Bans
               <hero-image-wrapper v-for="(item, index) in data.replay_bans[0]" :key="index" :hero="item.hero" :size="'big'"></hero-image-wrapper>
             </div>
 
 
-            <stat-box :title="'Account Level'" :value="getAverageValue('account_level', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
+            <stat-box v-if="!esport" :title="'Account Level'" :value="getAverageValue('account_level', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
             <stat-box :title="'Team Level'" :value="data.players[0][0].score.level" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
+            <stat-box v-if="esport" :title="'Avg. Hero Level'" :value="getAverageValue('avg_hero_level', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
             <stat-box :title="'Takedowns'" :value="data.players[0][0].score.takedowns" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-            <stat-box :title="'Average MMR'" :value="getAverageValue('player_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-            <stat-box :title="'Average Hero MMR'" :value="getAverageValue('hero_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-            <stat-box :title="'Average Role MMR'" :value="getAverageValue('role_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
+            <stat-box v-if="!esport" :title="'Average MMR'" :value="getAverageValue('player_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
+            <stat-box v-if="!esport" :title="'Average Hero MMR'" :value="getAverageValue('hero_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
+            <stat-box v-if="!esport" :title="'Average Role MMR'" :value="getAverageValue('role_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
+
+
+
+            <div v-if="esport">
+              Map Bans
+              <map-image-wrapper :map="data.map_bans.team_zero_ban_data.map_ban_one" :size="'big'">
+                <image-hover-box :title="data.map_bans.team_zero_ban_data.map_ban_one.name"></image-hover-box>
+              </map-image-wrapper>
+              <map-image-wrapper :map="data.map_bans.team_zero_ban_data.map_ban_two" :size="'big'">
+                <image-hover-box :title="data.map_bans.team_zero_ban_data.map_ban_two.name"></image-hover-box>
+              </map-image-wrapper>
+            </div>
+
+
           </div>
 
 
           <div>
-            <group-box :playerlink="true" :match="true" :text="getTeamText(2, data.winner)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'"></group-box>
+            <group-box :playerlink="true" :match="true" :text="getTeamText(1, data.winner)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'"></group-box>
 
             <div v-if="data.replay_bans" class="flex flex-wrap justify-center">
-              Team 2 Bans
+              {{ esport ? this.data.team_names.team_two.team_name : "Team 2" }} Bans
               <hero-image-wrapper v-for="(item, index) in data.replay_bans[1]" :key="index" :hero="item.hero" :size="'big'"></hero-image-wrapper>
             </div>
 
-            <stat-box :title="'Account Level'" :value="getAverageValue('account_level', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
+            <stat-box v-if="!esport" :title="'Account Level'" :value="getAverageValue('account_level', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
             <stat-box :title="'Team Level'" :value="data.players[1][0].score.level" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
+            <stat-box v-if="esport" :title="'Avg. Hero Level'" :value="getAverageValue('avg_hero_level', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
             <stat-box :title="'Takedowns'" :value="data.players[1][0].score.takedowns" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-            <stat-box :title="'Average MMR'" :value="getAverageValue('player_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-            <stat-box :title="'Average Hero MMR'" :value="getAverageValue('hero_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-            <stat-box :title="'Average Role MMR'" :value="getAverageValue('role_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-          </div>
+            <stat-box v-if="!esport" :title="'Average MMR'" :value="getAverageValue('player_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
+            <stat-box v-if="!esport" :title="'Average Hero MMR'" :value="getAverageValue('hero_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
+            <stat-box v-if="!esport" :title="'Average Role MMR'" :value="getAverageValue('role_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
+
+            <div v-if="esport">
+              Map Bans
+              <map-image-wrapper :map="data.map_bans.team_one_ban_data.map_ban_one" :size="'big'">
+                <image-hover-box :title="data.map_bans.team_one_ban_data.map_ban_one.name"></image-hover-box>
+              </map-image-wrapper>
+              <map-image-wrapper :map="data.map_bans.team_one_ban_data.map_ban_two" :size="'big'">
+                <image-hover-box :title="data.map_bans.team_one_ban_data.map_ban_two.name"></image-hover-box>
+              </map-image-wrapper>
+            </div>
+
+          </div >
         </div>
+      </div>
+
+
+      <div v-if="esport">
+        
+        <table class="min-w-full bg-white">
+          <thead>
+            <tr>
+              <th>
+                Game ID
+              </th>        
+              <th>
+                Round
+              </th>     
+              <th>
+                Game
+              </th> 
+              <th>
+                Game Map
+              </th>                      
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(row, index) in data.match_games" :key="index">
+              <td>{{ row.replayID }}</td>
+              <td>{{ row.round }}</td>
+              <td>{{ row.game }}</td>
+              <td>
+                <map-image-wrapper :map="row.game_map">
+                  <image-hover-box :title="row.game_map.name"></image-hover-box>
+                </map-image-wrapper>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
       </div>
 
       <div class="p-10 text-center">
@@ -115,7 +178,7 @@
 
 
 
-      <div v-if="data.draft_order" class="p-10 text-center">
+      <div v-if="data.draft_order && data.draft_order.length > 0" class="p-10 text-center">
         Draft Order
 
         <table class="min-w-full bg-white">
@@ -191,7 +254,7 @@
         </div>
       </div>
 
-      <div class="max-w-full  md:px-20 overflow-scroll md:overflow-auto max-w-full h-[50vh] md:h-auto">
+      <div v-if="!esport" class="max-w-full  md:px-20 overflow-scroll md:overflow-auto max-w-full h-[50vh] md:h-auto">
         Team 1 Advanced MMR data
         <table >
           <thead>
@@ -236,7 +299,7 @@
         </table>
       </div>
 
-      <div class="max-w-full  md:px-20 overflow-scroll md:overflow-auto max-w-full h-[50vh] md:h-auto">
+      <div  v-if="!esport" class="max-w-full  md:px-20 overflow-scroll md:overflow-auto max-w-full h-[50vh] md:h-auto">
         Team 2 Advanced MMR data
         <table >
           <thead>
@@ -347,10 +410,12 @@ export default {
   components: {
   },
   props: {
+    esport: String,
     replayid: Number
   },
   data(){
     return {
+      userTimezone: moment.tz.guess(),
       data: null,
       combinedPlayers: null,
       showTooltip: false,
@@ -446,6 +511,7 @@ export default {
     async getData(){
       try{
         const response = await this.$axios.post("/api/v1/match/single", {
+          esport: this.esport,
           replayID: this.replayid
         });
         this.data = response.data; 
@@ -476,8 +542,58 @@ export default {
     },
 
     getTeamText(team, winner){
-      let winnerText = (team == 1 && winner == 0) ? "Winner" : "Loser";
-      return "Team " + team + " - " + winnerText;
+
+
+      if(this.esport){
+        let first_pick = this.data.first_pick;
+
+        let teamName = "";
+        if(team == 0){
+
+          teamName = this.data.team_names.team_one.team_name;
+        }else{
+          teamName = this.data.team_names.team_two.team_name;
+        }
+
+        if(winner == 0 && team == 0){
+          if(first_pick == team){
+            return teamName + " - First Pick - Winner";
+          }else{
+            return teamName + " - Map Pick - Winner";
+          }
+        }else if(winner == 1 && team == 0){
+          if(first_pick == team){
+            return teamName + " - First Pick - Loser";
+          }else{
+            return teamName + " - Map Pick - Loser";
+          }
+        }else if(winner == 0 && team == 1){
+          if(first_pick == team){
+            return teamName + " - First Pick - Loser";
+          }else{
+            return teamName + " - Map Pick - Loser";
+          }
+        }else if(winner == 1 && team == 1){
+          if(first_pick == team){
+            return teamName + " - First Pick - Winner";
+          }else{
+            return teamName + " - Map Pick - Winner";
+          }
+        }
+      }
+
+
+      if(winner == 0 && team == 0){
+        return "Team 1 Winner";
+      }else if(winner == 1 && team == 0){
+        return "Team 1 Loser";
+      }else if(winner == 0 && team == 1){
+        return "Team 1 Loser";
+      }else if(winner == 1 && team == 1){
+        return "Team 1 Winner";
+      }
+
+
     },
     combinePlayerArrays(){
       this.combinedPlayers = [...this.data.players[0], ...this.data.players[1]];

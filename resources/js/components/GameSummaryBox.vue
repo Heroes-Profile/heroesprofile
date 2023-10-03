@@ -1,7 +1,7 @@
 <template>
   <div class="relative ml-10 ">
     <a :href="getHref()">
-      <div class="mt-4 pl-[6em] m-l-auto w-full text-right min-h-4 py-2">{{ data.game_map.name }} | {{ data.game_type.name }} | {{ formatDate(data.game_date)}}</div>
+      <div class="mt-4 pl-[6em] m-l-auto w-full text-right min-h-4 py-2">{{ getCaptions() }}</div>
       <div
         :class="[
           'flex border border-white border-2 bg-cover bg-no-repeat bg-center rounded-2xl border-red pl-[6em]  ',
@@ -15,6 +15,7 @@
           <div v-if="!esport && esport != true" class=" bg-red-500 absolute -left-10 -bottom-[1em]">
             <hero-image-wrapper size="xl" :hero="data.hero" :excludehover="true"></hero-image-wrapper>
           </div>
+
           <div v-else-if="esport && esport == true" class="flex flex-wrap gap-2">
             <hero-image-wrapper v-for="(item, index) in data.heroes" size="big" :hero="item.hero" :excludehover="true"></hero-image-wrapper>
             <stat-box :title="'Teams'" :value="data.team_0_name + ' vs ' + data.team_1_name"></stat-box>
@@ -56,6 +57,7 @@
     },
     data(){
       return {
+        userTimezone: moment.tz.guess(),
       }
     },
     created(){
@@ -69,7 +71,7 @@
     methods: {
       getHref(){
         if(this.esport){
-          return 'Esports/' + this.esportLeague + '/Match/Single/' + this.data.replayID;
+          return '/Esports/' + this.esportLeague + '/Match/Single/' + this.data.replayID;
         }
         return '/Match/Single/' + this.data.replayID;
       },
@@ -79,6 +81,13 @@
 
         return localDate.format('MM/DD/YYYY h:mm:ss a');
       },
+      getCaptions(){
+        if(!this.esport){
+          return this.data.game_map.name + "|" + this.data.game_type.name + "|" + this.formatDate(this.data.game_date);
+        }else{
+          return this.data.game_map.name + "|" + "Round " + this.data.round + " Game " + this.data.game + "|" + this.formatDate(this.data.game_date);
+        }
+      }
     }
   }
 </script>

@@ -4,5 +4,5 @@
 @section('meta_description', '')
 
 @section('content')
-  <single-match :replayid="{{ $replayID }}"></single-match >
+  <single-match :esport="{{ json_encode($esport) }}" :replayid="{{ $replayID }}"></single-match >
 @endsection

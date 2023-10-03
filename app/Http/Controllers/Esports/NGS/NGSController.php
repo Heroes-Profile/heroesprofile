@@ -5,9 +5,13 @@ namespace App\Http\Controllers\Esports\NGS;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 
+use App\Rules\NGSDivisionInputValidation;
 use App\Rules\NGSSeasonInputValidation;
+
+
 use App\Rules\HeroInputValidation;
 use App\Rules\BattletagInputProhibitCharacters;
 
@@ -31,14 +35,27 @@ class NGSController extends Controller
                 'filters' => $this->globalDataService->getFilterData(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
             ]);
-
-   
     }
 
     public function getStandingData(Request $request){
         //return response()->json($request->all());
 
-        $season = (new NGSSeasonInputValidation())->passes('season', $request["season"]);
+        $validationRules = [
+            'season' => ['required', new NGSSeasonInputValidation()],
+            'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation()],
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+       if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
+        }
+
+
+        $season = $request["season"];
         $division = $request["division"];
 
         $results = Standing::where("season", $season)
@@ -56,7 +73,21 @@ class NGSController extends Controller
     }
 
     public function getDivisionData(Request $request){
-        $season = (new NGSSeasonInputValidation())->passes('season', $request["season"]);
+       $validationRules = [
+            'season' => ['required', new NGSSeasonInputValidation()],
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+       if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
+        }
+
+
+        $season = $request["season"];
 
         $results = Replay::where('season', $season)
             ->select('division_0')
@@ -71,8 +102,24 @@ class NGSController extends Controller
     public function getTeamsData(Request $request){
         //return response()->json($request->all());
 
-        $season = (new NGSSeasonInputValidation())->passes('season', $request["season"]);
+        $validationRules = [
+            'season' => ['required', new NGSSeasonInputValidation()],
+            'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation()],
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+       if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
+        }
+
+
+        $season = $request["season"];
         $division = $request["division"];
+
 
         $results = Replay::join('heroesprofile_ngs.player', 'heroesprofile_ngs.player.replayID', '=', 'heroesprofile_ngs.replay.replayID')
             ->join('heroesprofile_ngs.teams', 'heroesprofile_ngs.teams.team_id', '=', 'heroesprofile_ngs.player.team_name')
@@ -84,8 +131,8 @@ class NGSController extends Controller
             ->get();
 
         $groupedResults = $results->groupBy('team_name')->map(function ($group) {
-            $wins = $group->sum('winner');
-            $losses = count($group) - $wins;
+            $wins = $group->where('winner', 1)->count() / 5;
+            $losses = $group->where('winner', 0)->count() / 5;
             $gamesPlayed = $wins + $losses;
 
             $image = "";
@@ -116,7 +163,20 @@ class NGSController extends Controller
 
     public function playerSearch(Request $request){
         //return response()->json($request->all());
-        $request->validate(['userinput' => ['required', 'string', new BattletagInputProhibitCharacters],]);
+
+        $validationRules = [
+            'userinput' => ['required', 'string', new BattletagInputProhibitCharacters],
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+       if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
+        }
+
         $input = $request["userinput"];
         $daa = null;
         if (strpos($input, '#') !== false) {
@@ -222,23 +282,51 @@ class NGSController extends Controller
     }
 
     public function getRecentMatchData(Request $request){
-        $season = (new NGSSeasonInputValidation())->passes('season', $request["season"]);
+        //return response()->json($request->all());
+
+        $validationRules = [
+            'season' => ['required', new NGSSeasonInputValidation()],
+            'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation()],
+            'pagination_page' => 'required:integer',
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+       if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
+        }
+
+        $season =  $request["season"];
         $division = $request["division"];
+
+        $pagination_page = $request["pagination_page"];
+        $perPage = 1000;
 
         $results = Replay::select("heroesprofile_ngs.replay.replayID", "hero", "game_map", "team_0_name", "team_1_name", "round", "game", "game_date")
             ->join('heroesprofile_ngs.player', 'heroesprofile_ngs.player.replayID', '=', 'heroesprofile_ngs.replay.replayID')
+            ->join('heroesprofile_ngs.teams', 'heroesprofile_ngs.teams.team_id', '=', 'heroesprofile_ngs.player.team_name')
             ->orderBy("game_date", "DESC")
-            ->where("season", $season)
+            ->where("replay.season", $season)
             ->when(!is_null($division), function ($query) use ($division) {
                 return $query->where('heroesprofile_ngs.teams.division', $division);
             })
-            ->get();
+            ->paginate($perPage, ['*'], 'page', $pagination_page);
 
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
         $maps = Map::all();
         $maps = $maps->keyBy('map_id');
+
+        $paginationInfo = [
+            'current_page' => $results->currentPage(),
+            'per_page' => $results->perPage(),
+            'total' => $results->total(),
+            'last_page' => $results->lastPage(),
+        ];
 
         $groupedResults = $results->groupBy('replayID')->map(function ($group) use ($heroData, $maps){
             return [
@@ -266,17 +354,34 @@ class NGSController extends Controller
 
 
 
-        return $groupedResults;
+        return ["data" => $groupedResults, "pagination" => $paginationInfo];
     }
 
     public function getOverallHeroStats(Request $request){
-        $season = (new NGSSeasonInputValidation())->passes('season', $request["season"]);
+        //return response()->json($request->all());
+
+        $validationRules = [
+            'season' => ['required', new NGSSeasonInputValidation()],
+            'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation()],
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+       if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
+        }
+
+        $season = $request["season"];
         $division = $request["division"];
 
 
         $heroResults = Replay::select("replay.replayID", "hero", "winner")
             ->join('heroesprofile_ngs.player', 'heroesprofile_ngs.player.replayID', '=', 'heroesprofile_ngs.replay.replayID')
-            ->where("season", $season)
+            ->join('heroesprofile_ngs.teams', 'heroesprofile_ngs.teams.team_id', '=', 'heroesprofile_ngs.player.team_name')
+            ->where("replay.season", $season)
             ->when(!is_null($division), function ($query) use ($division) {
                 return $query->where('heroesprofile_ngs.teams.division', $division);
             })
@@ -327,9 +432,25 @@ class NGSController extends Controller
     public function getOverallTalentStats(Request $request){
         //return response()->json($request->all());
 
-        $season = (new NGSSeasonInputValidation())->passes('season', $request["season"]);
+        $validationRules = [
+            'season' => ['required', new NGSSeasonInputValidation()],
+            'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation()],
+            'hero' => ['required', new HeroInputValidation()],
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+       if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
+        }
+
+
+        $season = $request["season"];
         $division = $request["division"];
-        $hero = (new HeroInputValidation())->passes('hero', $request["hero"]);
+        $hero = session('heroes')->keyBy('name')[$request["hero"]]->id;
 
         $result = DB::table('heroesprofile_ngs.replay')
             ->join('heroesprofile_ngs.player', 'heroesprofile_ngs.player.replayID', '=', 'heroesprofile_ngs.replay.replayID')

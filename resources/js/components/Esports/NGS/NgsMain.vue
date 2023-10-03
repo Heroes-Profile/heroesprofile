@@ -92,30 +92,30 @@
     <div v-else>
 
 
-      <div v-if="activeButton === 'standings' && standingData">
+      <div v-if="activeButton === 'standings'">
         <div class="flex flex-wrap gap-2">
           <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
           <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="loading" @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
-        <ngs-standings :data="standingData"></ngs-standings>
+        <ngs-standings v-if="standingData" :data="standingData"></ngs-standings>
       </div>
 
-      <div v-if="activeButton === 'divisions' && divisionData">
+      <div v-if="activeButton === 'divisions'">
         <div class="flex flex-wrap gap-2">
           <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
-        <ngs-divisions :data="divisionData"></ngs-divisions>
+        <ngs-divisions v-if="divisionData" :data="divisionData"></ngs-divisions>
       </div>
 
-      <div v-if="activeButton === 'teams' && teamsData">
+      <div v-if="activeButton === 'teams'">
         <div class="flex flex-wrap gap-2">
           <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
           <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
-        <esports-teams :data="teamsData"></esports-teams>
+        <esports-teams v-if="teamsData" :data="teamsData"></esports-teams>
       </div>
 
       <div v-if="activeButton === 'playerSearch'">
@@ -142,23 +142,43 @@
         </div>
       </div>
 
-      <div v-if="activeButton === 'recentMatches' && recentMatchesData">
+      <div v-if="activeButton === 'recentMatches'">
         <div class="flex flex-wrap gap-2">
           <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
           <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
-        <esports-recent-matches :data="recentMatchesData"></esports-recent-matches>
+
+
+
+
+        <div v-if="recentMatchesData">
+          <ul class="pagination">
+            <li class="page-item" :class="{ disabled: !recentMatchesData.pagination.prev_page_url }">
+              <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page - 1)" href="#">
+                Previous
+              </a>
+            </li>
+            <li class="page-item" :class="{ disabled: !recentMatchesData.pagination.next_page_url }">
+              <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page + 1)" href="#">
+                Next
+              </a>
+            </li>
+          </ul>
+        </div>
+
+
+        <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data"></esports-recent-matches>
       </div>
 
 
-      <div v-if="activeButton === 'overallHeroStats' && heroStatsData">
+      <div v-if="activeButton === 'overallHeroStats'">
         <div class="flex flex-wrap gap-2">
           <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
           <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
-        <esports-hero-stats :data="heroStatsData"></esports-hero-stats>
+        <esports-hero-stats v-if="heroStatsData" :data="heroStatsData"></esports-hero-stats>
       </div>
 
       <div v-if="activeButton === 'overallTalentStats'">
@@ -173,10 +193,10 @@
               <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange" :defaultValue="selectedHero.id"></single-select-filter>
               <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
               <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-              <custom-button @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+              <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
             </div>
 
-         
+            
             <esports-talent-stats :talentdetaildata="talentStatsData.talentData" :talentbuilddata="talentStatsData.buildData" :talentimages="talentimages" :selectedHero="selectedHero"></esports-talent-stats>
           </div>
 
@@ -321,12 +341,17 @@ export default {
       }
       this.loading = false;
     },
-    async getRecentMatches(){
+    async getRecentMatches(page){
+      if (this.loading || page < 1 || (this.recentMatchesData && page > this.recentMatchesData.last_page)) {
+        return;
+      }
+
       this.loading = true;
       try{
         const response = await this.$axios.post("/api/v1/esports/ngs/matches", {
           season: this.season,
           division: this.division,
+          pagination_page: page,
         });
         this.recentMatchesData = response.data;
       }catch(error){
@@ -364,23 +389,32 @@ export default {
 
     setButtonActive(buttonName) {
       this.activeButton = buttonName;
+      this.season = this.defaultseason;
+      this.division = null;
+
       if(this.activeButton === 'standings'){
+        this.standingData = null;
         this.getStandingsData();
       }else if(this.activeButton === 'divisions'){
+        this.divisionData = null;
         this.getDivisionsData();
       }else if(this.activeButton === 'teams'){
+        this.teamsData = null;
         this.getTeamsData();
       }else if(this.activeButton === 'searchPlayer'){
         this.searchedPlayer();
       }else if(this.activeButton === 'recentMatches'){
-        this.getRecentMatches();
+        this.recentMatchesData = null;
+        this.getRecentMatches(1);
       }else if(this.activeButton === 'overallHeroStats'){
+        this.heroStatsData = null;
         this.getHeroStats();
       }else if(this.activeButton === 'overallTalentStats' && this.selectedHero){
         this.talentStatsData = null;
         this.getTalentStats();
       }
     },
+
     handleInputChange(eventPayload) {
       if(eventPayload.field == "Divisions"){
         this.division = eventPayload.value;
@@ -390,18 +424,24 @@ export default {
         this.selectedHero = this.heroes.find(value => value.id === eventPayload.value);
       }
     },
+
     filter(){
       if(this.activeButton === 'standings'){
+        this.standingData = null;
         this.getStandingsData();
       }else if(this.activeButton === 'divisions'){
+        this.divisionData = null;
         this.getDivisionsData();
       }else if(this.activeButton === 'teams'){
+        this.teamsData = null;
         this.getTeamsData();
       }else if(this.activeButton === 'playerSearch'){
         this.searchedPlayer();
       }else if(this.activeButton === 'recentMatches'){
-        this.getRecentMatches();
+        this.recentMatchesData = null;
+        this.getRecentMatches(1);
       }else if(this.activeButton === 'overallHeroStats'){
+        this.heroStatsData = null;
         this.getHeroStats();
       }else if(this.activeButton === 'overallTalentStats' && this.selectedHero){
         this.talentStatsData = null;

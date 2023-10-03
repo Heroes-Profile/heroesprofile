@@ -12,7 +12,7 @@ class NGSSeasonInputValidation implements Rule
     public function passes($attribute, $value)
     {
         $validSeasons = Team::distinct('season')->pluck('season')->toArray();
-        return in_array($value, $validSeasons) ? $value : false;
+        return in_array($value, $validSeasons);
     }
 
     public function message()

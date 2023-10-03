@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 use App\Models\HeroesDataTalent;
 use App\Models\Map;
@@ -13,125 +14,175 @@ use App\Models\ReplayExperienceBreakdownBlob;
 
 class SingleMatchController extends Controller
 {
-    public function show(Request $request, $replayID)
-    {
-        $data = [
-            'replayID' => $replayID,
+    private $esport;
+    private $schema;
+
+    public function showWithoutEsport(Request $request, $replayID)
+    {        
+        $validationRules = [
+            'replayID' => 'required|integer',
         ];
 
-        $validator = \Validator::make($data, [
-            'replayID' => 'required|integer',
-        ]);
+        $validator = Validator::make(compact('replayID'), $validationRules);
 
         if ($validator->fails()) {
-            return redirect('/')->withErrors($validator);
+            return [
+                "data" => compact('replayID'),
+                "status" => "failure to validate inputs"
+            ];
         }
 
-        return view('singleMatch')->with(['replayID' => $replayID]);
+        return view('singleMatch')->with([
+            'esport' => null,
+            'replayID' => $replayID
+        ]);
+    }
+
+    public function showWithEsport(Request $request, $esport, $replayID)
+    {
+        $validationRules = [
+            'esport' => 'required|in:NGS',
+            'replayID' => 'required|integer',
+        ];
+
+        $validator = Validator::make(compact('esport', 'replayID'), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                "data" => compact('esport', 'replayID'),
+                "status" => "failure to validate inputs"
+            ];
+        }
+
+        return view('singleMatch')->with([
+            'esport' => $esport,
+            'replayID' => $replayID
+        ]);
     }
     
     public function getData(Request $request){
-        $data = [
-            'replayID' => $request["replayID"],
+        $validationRules = [
+            'esport' => 'nullable|in:NGS',
+            'replayID' => 'required|integer',
         ];
 
-        $validator = \Validator::make($data, [
-            'replayID' => 'required|integer',
-        ]);
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
+        }
 
         if ($validator->fails()) {
             return redirect('/')->withErrors($validator);
         }
 
+        $this->esport = $request["esport"];
         $replayID = $request["replayID"];
 
-        $result = DB::table('replay')
-        ->join('player', 'player.replayID', '=', 'replay.replayID')
-        ->join('battletags', 'battletags.player_id', '=', 'player.battletag')
-        ->join('scores', function($join) {
-            $join->on('scores.replayID', '=', 'replay.replayID')
-            ->on('scores.battletag', '=', 'player.battletag');
+        $this->schema = "heroesprofile";
+        if($this->esport){
+            $this->schema .= "_" . strtolower($this->esport);
+        }
+
+        $result = DB::table($this->schema . '.replay')
+        ->join($this->schema . '.player', $this->schema . '.player.replayID', '=', $this->schema . '.replay.replayID')
+        ->join($this->schema . '.battletags', $this->schema . '.battletags.player_id', '=', $this->schema . '.player.battletag')
+        ->join($this->schema . '.scores', function($join) {
+            $join->on($this->schema . '.scores.replayID', '=', $this->schema . '.replay.replayID')
+            ->on($this->schema . '.scores.battletag', '=', $this->schema . '.player.battletag');
         })
-        ->join('talents', function($join) {
-            $join->on('talents.replayID', '=', 'replay.replayID')
-            ->on('talents.battletag', '=', 'player.battletag');
+        ->join($this->schema . '.talents', function($join) {
+            $join->on($this->schema . '.talents.replayID', '=', $this->schema . '.replay.replayID')
+            ->on($this->schema . '.talents.battletag', '=', $this->schema . '.player.battletag');
         })
         ->select([
-            "replay.game_type",
-            "replay.game_date",
-            "replay.game_map",
-            "replay.game_length",
-            "replay.region",
-
-            "player.winner",
-            "player.blizz_id",
-            "player.party",
-            "player.hero",
-            "player.team",
-            "player.player_conservative_rating",
-            "player.player_change",
-            "player.hero_conservative_rating",
-            "player.hero_change",
-            "player.role_conservative_rating",
-            "player.role_change",
-            "player.hero_level",
-            "player.mastery_taunt",
-
-            "battletags.battletag",
-            "battletags.account_level",
-
-            "scores.level", 
-            "scores.kills", 
-            "scores.assists", 
-            "scores.takedowns", 
-            "scores.deaths", 
-            "scores.highest_kill_streak", 
-            "scores.hero_damage", 
-            "scores.siege_damage", 
-            "scores.structure_damage", 
-            "scores.minion_damage", 
-            "scores.creep_damage", 
-            "scores.summon_damage", 
-            "scores.time_cc_enemy_heroes", 
-            "scores.healing", 
-            "scores.self_healing", 
-            "scores.damage_taken", 
-            "scores.experience_contribution", 
-            "scores.town_kills", 
-            "scores.time_spent_dead", 
-            "scores.merc_camp_captures", 
-            "scores.watch_tower_captures", 
-            "scores.meta_experience", 
-            "scores.match_award", 
-            "scores.protection_allies", 
-            "scores.silencing_enemies", 
-            "scores.rooting_enemies", 
-            "scores.stunning_enemies", 
-            "scores.clutch_heals", 
-            "scores.escapes", 
-            "scores.vengeance", 
-            "scores.outnumbered_deaths", 
-            "scores.teamfight_escapes", 
-            "scores.teamfight_healing", 
-            "scores.teamfight_damage_taken", 
-            "scores.teamfight_hero_damage", 
-            "scores.multikill", 
-            "scores.physical_damage", 
-            "scores.spell_damage", 
-            "scores.regen_globes", 
-            "scores.first_to_ten", 
-            "scores.time_on_fire",
+            $this->schema . ".replay.game_date",
+            $this->schema . ".replay.game_map",
+            $this->schema . ".replay.game_length",
+            $this->schema . ".replay.region",
+            $this->schema . ".player.winner",
+            $this->schema . ".player.blizz_id",
+            $this->schema . ".player.party",
+            $this->schema . ".player.hero",
+            $this->schema . ".player.team",
+            $this->schema . ".player.hero_level",
+            $this->schema . ".battletags.battletag",
+            $this->schema . ".scores.level", 
+            $this->schema . ".scores.kills", 
+            $this->schema . ".scores.assists", 
+            $this->schema . ".scores.takedowns", 
+            $this->schema . ".scores.deaths", 
+            $this->schema . ".scores.highest_kill_streak", 
+            $this->schema . ".scores.hero_damage", 
+            $this->schema . ".scores.siege_damage", 
+            $this->schema . ".scores.structure_damage", 
+            $this->schema . ".scores.minion_damage", 
+            $this->schema . ".scores.creep_damage", 
+            $this->schema . ".scores.summon_damage", 
+            $this->schema . ".scores.time_cc_enemy_heroes", 
+            $this->schema . ".scores.healing", 
+            $this->schema . ".scores.self_healing", 
+            $this->schema . ".scores.damage_taken", 
+            $this->schema . ".scores.experience_contribution", 
+            $this->schema . ".scores.town_kills", 
+            $this->schema . ".scores.time_spent_dead", 
+            $this->schema . ".scores.merc_camp_captures", 
+            $this->schema . ".scores.watch_tower_captures", 
+            $this->schema . ".scores.meta_experience", 
+            $this->schema . ".scores.protection_allies", 
+            $this->schema . ".scores.silencing_enemies", 
+            $this->schema . ".scores.rooting_enemies", 
+            $this->schema . ".scores.stunning_enemies", 
+            $this->schema . ".scores.clutch_heals", 
+            $this->schema . ".scores.escapes", 
+            $this->schema . ".scores.vengeance", 
+            $this->schema . ".scores.outnumbered_deaths", 
+            $this->schema . ".scores.teamfight_escapes", 
+            $this->schema . ".scores.teamfight_healing", 
+            $this->schema . ".scores.teamfight_damage_taken", 
+            $this->schema . ".scores.teamfight_hero_damage", 
+            $this->schema . ".scores.multikill", 
+            $this->schema . ".scores.physical_damage", 
+            $this->schema . ".scores.spell_damage", 
+            $this->schema . ".scores.regen_globes", 
+            $this->schema . ".scores.first_to_ten", 
 
 
-            "talents.level_one AS level_one",
-            "talents.level_four AS level_four",
-            "talents.level_seven AS level_seven",
-            "talents.level_ten AS level_ten",
-            "talents.level_thirteen AS level_thirteen",
-            "talents.level_sixteen AS level_sixteen",
-            "talents.level_twenty AS level_twenty"
+            $this->schema . ".talents.level_one AS level_one",
+            $this->schema . ".talents.level_four AS level_four",
+            $this->schema . ".talents.level_seven AS level_seven",
+            $this->schema . ".talents.level_ten AS level_ten",
+            $this->schema . ".talents.level_thirteen AS level_thirteen",
+            $this->schema . ".talents.level_sixteen AS level_sixteen",
+            $this->schema . ".talents.level_twenty AS level_twenty"
         ])
-        ->where("replay.replayID", $replayID)
+        ->when(!$this->esport, function ($query) {
+            return $query->addSelect([
+                $this->schema . ".replay.game_type",
+                $this->schema . ".player.player_conservative_rating",
+                $this->schema . ".player.player_change",
+                $this->schema . ".player.hero_conservative_rating",
+                $this->schema . ".player.hero_change",
+                $this->schema . ".player.role_conservative_rating",
+                $this->schema . ".player.role_change",
+                $this->schema . ".player.mastery_taunt",
+                $this->schema . ".battletags.account_level",
+                $this->schema . ".scores.match_award", 
+                $this->schema . ".scores.time_on_fire",
+            ]);
+        })
+        ->when($this->esport, function ($query) {
+            return $query->addSelect([
+                $this->schema . ".player.mastery_tier as mastery_taunt",
+                $this->schema . ".player.team_name",
+                $this->schema . ".replay.first_pick",
+
+            ]);
+        })
+        ->where($this->schema . ".replay.replayID", $replayID)
             //->toSql();
         ->get();
 
@@ -144,15 +195,18 @@ class SingleMatchController extends Controller
         $maps = Map::all();
         $maps = $maps->keyBy('map_id');
 
-        $groupedData = $result->groupBy('replayID')->map(function ($replayGroup) use ($talentData, $heroData, $maps, $replayID) {
+        $groupedData = $result->groupBy('replayID')->map(function ($replayGroup) use ($result, $talentData, $heroData, $maps, $replayID) {
             $totalSeconds = $replayGroup[0]->game_length - 70;
             $minutes = floor($totalSeconds / 60);
             $seconds = $totalSeconds % 60;
             $timeFormat = "$minutes minutes $seconds seconds";
             $region = $replayGroup[0]->region;
+            
+            $team_names = $this->esport ? $this->getTeamNames($result) : null;
+
             $replayDetails = [
                 'region' => $replayGroup[0]->region,
-                'game_type' => $this->globalDataService->getGameTypeIDtoString()[$replayGroup[0]->game_type]["name"],
+                'game_type' => !$this->esport ? $this->globalDataService->getGameTypeIDtoString()[$replayGroup[0]->game_type]["name"] : null,
                 'game_date' => $replayGroup[0]->game_date,
                 'game_map' => $maps[$replayGroup[0]->game_map]["name"],
                 'game_length' => $timeFormat,
@@ -161,23 +215,39 @@ class SingleMatchController extends Controller
                 'replay_bans' => $this->getReplayBans($replayID, $heroData),
                 'draft_order' => $this->getDraftOrder($replayID, $heroData),
                 'experience_breakdown' => $this->getExperienceBreakdown($replayID),
+                'team_names' => $team_names,
+                'map_bans' => $this->esport ? $this->getMapBans($replayID, $maps, $team_names) : null,
+                'first_pick' => $this->esport ? $replayGroup[0]->first_pick : null,
+                'match_games' => $this->esport ? $this->getMatchGames($replayID, $maps) : null,
             ];
 
             $replayDetails['players'] = $replayGroup->groupBy('team')->map(function ($teamGroup) use ($heroData, $talentData, $region) {
                 return $teamGroup->map(function ($row) use ($heroData, $talentData, $region) {
                     $hero_level_calculated = $row->hero_level;
+                    $avg_hero_level = $row->hero_level;
 
                     if($row->mastery_taunt == 1){
                         $hero_level_calculated = "15-25";
+                        $avg_hero_level = 20;
+
                     }else if($row->mastery_taunt == 2){
                         $hero_level_calculated = "25-50";
+                         $avg_hero_level = 37.5;
+
                     }else if($row->mastery_taunt == 3){
                         $hero_level_calculated = "50-75";
+                        $avg_hero_level = 62.5;
+
                     }else if($row->mastery_taunt == 4){
                         $hero_level_calculated = "75-100";
+                        $avg_hero_level = 87.5;
+ 
                     }else if($row->mastery_taunt == 5){
                         $hero_level_calculated = "100+";
+                        $avg_hero_level = 100;
+
                     }
+
                     return [
                         'region' => $region,
                         'battletag' => explode('#', $row->battletag)[0],
@@ -187,16 +257,17 @@ class SingleMatchController extends Controller
                         'party' => $row->party,
                         'hero' => $heroData[$row->hero],
                         'hero_level' => $hero_level_calculated,
-                        'account_level' => $row->account_level,
-                        'player_conservative_rating' => $row->player_conservative_rating,
-                        'player_mmr' => round(1800 + 40 * $row->player_conservative_rating),
-                        'player_change' => round($row->player_change, 2),
-                        'hero_conservative_rating' => $row->hero_conservative_rating,
-                        'hero_mmr' => round(1800 + 40 * $row->hero_conservative_rating),
-                        'hero_change' => round($row->hero_change, 2),
-                        'role_conservative_rating' => $row->role_conservative_rating,
-                        'role_mmr' => round(1800 + 40 * $row->role_conservative_rating),
-                        'role_change' => round($row->role_change, 2),
+                        'avg_hero_level' => $avg_hero_level,
+                        'account_level' => !$this->esport ? $row->account_level : null,
+                        'player_conservative_rating' => !$this->esport ? $row->player_conservative_rating : null,
+                        'player_mmr' => !$this->esport ? round(1800 + 40 * $row->player_conservative_rating) : null,
+                        'player_change' => !$this->esport ? round($row->player_change, 2) : null,
+                        'hero_conservative_rating' => !$this->esport ? $row->hero_conservative_rating : null,
+                        'hero_mmr' => !$this->esport ? round(1800 + 40 * $row->hero_conservative_rating) : null,
+                        'hero_change' => !$this->esport ? round($row->hero_change, 2) : null,
+                        'role_conservative_rating' => !$this->esport ? $row->role_conservative_rating : null,
+                        'role_mmr' => !$this->esport ? round(1800 + 40 * $row->role_conservative_rating) : null,
+                        'role_change' => !$this->esport ? round($row->role_change, 2) : null,
                         ///Need to work on Heroes Profile Score
                         'score' => [
                             'level' => $row->level,
@@ -222,7 +293,7 @@ class SingleMatchController extends Controller
                             'merc_camp_captures' => $row->merc_camp_captures,
                             'watch_tower_captures' => $row->watch_tower_captures,
                             'meta_experience' => $row->meta_experience,
-                            'match_award' => $row->match_award,
+                            'match_award' => !$this->esport ? $row->match_award : null,
                             'protection_allies' => $row->protection_allies,
                             'silencing_enemies' => $row->silencing_enemies,
                             'rooting_enemies' => $row->rooting_enemies,
@@ -240,16 +311,18 @@ class SingleMatchController extends Controller
                             'spell_damage' => $row->spell_damage,
                             'regen_globes' => $row->regen_globes,
                             'first_to_ten' => $row->first_to_ten,
-                            'time_on_fire' => $row->time_on_fire,
+                            'time_on_fire' => !$this->esport ? $row->time_on_fire : null,
                         ],
                         'talents' => [
-                            'level_one' => $row->level_one ? $talentData[$row->level_one] : null,
-                            'level_four' => $row->level_four ? $talentData[$row->level_four] : null,
-                            'level_seven' => $row->level_seven ? $talentData[$row->level_seven] : null,
-                            'level_ten' => $row->level_ten ? $talentData[$row->level_ten] : null,
-                            'level_thirteen' => $row->level_thirteen ? $talentData[$row->level_thirteen] : null,
-                            'level_sixteen' => $row->level_sixteen ? $talentData[$row->level_sixteen] : null,
-                            'level_twenty' => $row->level_twenty ? $talentData[$row->level_twenty] : null, ],
+                            'level_one' => isset($talentData[$row->level_one]) ? $talentData[$row->level_one] : null,
+                            'level_four' => isset($talentData[$row->level_four]) ? $talentData[$row->level_four] : null,
+                            'level_seven' => isset($talentData[$row->level_seven]) ? $talentData[$row->level_seven] : null,
+                            'level_ten' => isset($talentData[$row->level_ten]) ? $talentData[$row->level_ten] : null,
+                            'level_thirteen' => isset($talentData[$row->level_thirteen]) ? $talentData[$row->level_thirteen] : null,
+                            'level_sixteen' => isset($talentData[$row->level_sixteen]) ? $talentData[$row->level_sixteen] : null,
+                            'level_twenty' => isset($talentData[$row->level_twenty]) ? $talentData[$row->level_twenty] : null, 
+                        ],
+
                     ];
                 });
             })->toArray();
@@ -435,6 +508,7 @@ class SingleMatchController extends Controller
 
         return $playerArray;
     }
+
     private function setRankValue($playerArray, $data, $player, $array, $value){
 
 
@@ -459,7 +533,7 @@ class SingleMatchController extends Controller
     }
 
     private function getReplayBans($replayID, $heroData){
-        return ReplayBan::select("team", "hero")
+        return DB::table($this->schema . '.replay_bans')->select("team", "hero")
         ->where("replayID", $replayID)
         ->get()
         ->groupBy('team')
@@ -472,7 +546,7 @@ class SingleMatchController extends Controller
     }
 
     private function getDraftOrder($replayID, $heroData){
-        $data = ReplayDraftOrder::where("replayID", $replayID)->orderBy("pick_number")->get();
+        $data = DB::table($this->schema . '.replay_draft_order')->where("replayID", $replayID)->orderBy("pick_number")->get();
         $modifiedData = $data->map(function ($item) use ($heroData){
             $item->hero = $heroData[$item->hero];
             return $item;
@@ -484,6 +558,9 @@ class SingleMatchController extends Controller
     private function getExperienceBreakdown($replayID){
         $data = ReplayExperienceBreakdownBlob::where("replayID", $replayID)->get();
 
+        if ($data->isEmpty()) {
+            return null;
+        }
         $team_one = $data[0]->data;
 
         $x_axis_time = [];
@@ -533,5 +610,93 @@ class SingleMatchController extends Controller
             "team_one_level" => $team_one_level,
             "team_two_level" => $team_two_level,
         ];
+    }
+
+    private function getTeamNames($results){
+        $team_one_id = null;
+        $team_zero_id = null;
+
+        foreach ($results as $row) {
+
+            if($row->team == 0){
+                $team_zero_id = $row->team_name;
+            }else{
+                $team_one_id = $row->team_name;
+            }
+
+            if(!is_null($team_one_id) && !is_null($team_zero_id)){
+                break;
+            }
+        }
+
+        return [
+            "team_one" => DB::table($this->schema . '.teams')->where("team_id", $team_zero_id)->first(), 
+            "team_two" => DB::table($this->schema . '.teams')->where("team_id", $team_one_id)->first()
+        ];
+    }    
+
+    private function getMapBans($replayID, $maps, $team_names){
+        $result = DB::table($this->schema . '.replay')->select("season", "division_0", "team_0_name", "team_1_name", "team_0_map_ban", "team_0_map_ban_2", "team_1_map_ban", "team_1_map_ban_2")->where("replayID", $replayID)->first();
+
+        $team_zero_data = DB::table($this->schema . '.teams')->where("season", $result->season)->where("division", $result->division_0)->where("team_name", $result->team_0_name)->first();
+        $team_one_data = DB::table($this->schema . '.teams')->where("season", $result->season)->where("division", $result->division_0)->where("team_name", $result->team_1_name)->first();
+
+
+        if($team_names["team_one"]->team_name == $team_zero_data->team_name){
+           $team_zero_ban_data = [
+                "team_data" => $team_zero_data,
+                "name" => $team_zero_data->team_name,
+                "map_ban_one" => $maps[$result->team_0_map_ban],
+                "map_ban_two" => $maps[$result->team_0_map_ban_2],
+            ];
+        }else{
+            $team_zero_ban_data = [
+                "team_data" => $team_one_data,
+                "name" => $team_one_data->team_name,
+                "map_ban_one" => $maps[$result->team_1_map_ban],
+                "map_ban_two" => $maps[$result->team_1_map_ban_2],
+            ];
+        }
+
+
+        if($team_names["team_two"]->team_name == $team_one_data->team_name){
+            $team_one_ban_data = [
+                "team_data" => $team_one_data,
+                "name" => $team_one_data->team_name,
+                "map_ban_one" => $maps[$result->team_1_map_ban],
+                "map_ban_two" => $maps[$result->team_1_map_ban_2],
+            ];
+        }else{
+            $team_one_ban_data = [
+                "team_data" => $team_zero_data,
+                "name" => $team_zero_data->team_name,
+                "map_ban_one" => $maps[$result->team_0_map_ban],
+                "map_ban_two" => $maps[$result->team_0_map_ban_2],
+            ];
+        }
+
+
+        return [
+            "team_zero_ban_data" => $team_zero_ban_data,
+            "team_one_ban_data" => $team_one_ban_data,
+        ];
+    }        
+
+    private function getMatchGames($replayID, $maps){
+        $result = DB::table($this->schema . '.replay')->select("season", "division_0", "team_0_name", "team_1_name")->where("replayID", $replayID)->first();
+
+        $matches = DB::table($this->schema . '.replay')
+            ->select("replayID", "round", "game", "game_map")
+            ->where("season", $result->season)
+            ->where("division_0", $result->division_0)
+            ->where("team_0_name", $result->team_0_name)
+            ->where("team_1_name", $result->team_1_name)
+            ->orderBy("game_date", "asc")
+            ->get();
+
+        foreach ($matches as $row) {
+            $row->game_map = $maps[$row->game_map];
+        }
+        return $matches;
     }
 }

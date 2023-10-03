@@ -37,6 +37,7 @@ use App\Http\Controllers\Player\PlayerMatchHistory;
 use App\Http\Controllers\Esports\EsportsController;
 use App\Http\Controllers\Esports\NGS\NGSController;
 use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
+use App\Http\Controllers\Esports\NGS\NGSSingleMatchController;
 
 
 /*
@@ -137,7 +138,8 @@ Route::get('Player/{battletag}/{blizz_id}/{region}/Match/History', [PlayerMatchH
 
 
 
-Route::get('Match/Single/{replayID}', [SingleMatchController::class, 'show']);
+
+Route::get('Match/Single/{replayID}', [SingleMatchController::class, 'showWithoutEsport']);
 
 Route::get('/Match/Single/', function (\Illuminate\Http\Request $request) {
     $replayID = $request->query('replayID');
@@ -148,6 +150,8 @@ Route::get('/Match/Single/', function (\Illuminate\Http\Request $request) {
     return redirect("/");
 });
 
+Route::get('Esports/{esport}/Match/Single/{replayID}', [SingleMatchController::class, 'showWithEsport']);
+
 
 Route::get('Esports', [EsportsController::class, 'show']);
 Route::get('ESports', [EsportsController::class, 'show']);
@@ -155,6 +159,10 @@ Route::get('ESports', [EsportsController::class, 'show']);
 
 Route::get('Esports/NGS', [NGSController::class, 'show']);
 Route::get('Esports/NGS/Division/{division}', [NGSSingleDivisionController::class, 'show']);
+
+
+
+
 
 
 //Rewrite game data later

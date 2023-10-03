@@ -120,6 +120,7 @@ export default {
   },
   data(){
     return {
+      userTimezone: moment.tz.guess(),
       isLoading: false,
       data: null,
       role: null,

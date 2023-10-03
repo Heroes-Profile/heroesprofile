@@ -1,5 +1,8 @@
 <template>
   <div>
+
+
+
     <table class="min-w-full bg-white">
       <thead>
         <tr>
@@ -41,7 +44,7 @@
             Game {{ row.game }} Round {{ row.round }}
           </td>
           <td>
-            {{ row.game_date }}
+            {{ formatDate(row.game_date) }}
           </td>
           <td>
             {{ row.game_map.name }}
@@ -65,6 +68,8 @@
 </template>
 
 <script>
+import moment from 'moment-timezone';
+
 export default {
   name: 'EsportsRecentMatches',
   components: {
@@ -74,6 +79,7 @@ export default {
   },
   data(){
     return {
+      userTimezone: moment.tz.guess(),
       sortKey: '',
       sortDir: 'desc',
     }
@@ -106,6 +112,12 @@ export default {
         this.sortDir = 'desc';
       }
       this.sortKey = key;
+    },
+    formatDate(dateString) {
+      const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik'); // Assuming date strings are in UTC
+      const localDate = originalDate.clone().tz(this.userTimezone);
+
+      return localDate.format('MM/DD/YYYY h:mm:ss a');
     },
   }
 }
