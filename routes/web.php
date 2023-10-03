@@ -161,6 +161,7 @@ Route::get('Esports/NGS', [NGSController::class, 'show']);
 Route::get('Esports/NGS/Division/{division}', [NGSSingleDivisionController::class, 'show']);
 
 
+Route::get('Esports/NGS/Division/{division}/Team/{team}', [EsportsController::class, 'showNGSSingleTeam']);
 
 
 

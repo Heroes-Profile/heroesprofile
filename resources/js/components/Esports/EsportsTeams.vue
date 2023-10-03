@@ -6,9 +6,11 @@
     </div>
 
     <div class="flex flex-wrap gap-5">
-      <round-image :size="'big'" v-for="(team, index) in filteredData" :key="index" :title="team.team_name" :image="team.icon_url" :hovertextstyleoverride="true">
-        <image-hover-box :title="team.team_name" :paragraph-one="'Division: ' + team.division" :paragraph-two="'Win Rate: ' + team.win_rate" :paragraph-three="'Games Played: ' + team.games_played"></image-hover-box>
-      </round-image>
+      <a :href="`/Esports/${esport}/Division/${team.division}/Team/${team.team_name}?season=${season}`"  v-for="(team, index) in filteredData" :key="index" >
+        <round-image :size="'big'" :title="team.team_name" :image="team.icon_url" :hovertextstyleoverride="true">
+          <image-hover-box :title="team.team_name" :paragraph-one="'Division: ' + team.division" :paragraph-two="'Win Rate: ' + team.win_rate" :paragraph-three="'Games Played: ' + team.games_played"></image-hover-box>
+        </round-image>
+      </a>
     </div>
   </div>
 </template>
@@ -19,6 +21,8 @@ export default {
   components: {
   },
   props: {
+    esport: String,
+    season: Number,
     data: Array,
   },
   data(){
