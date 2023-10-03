@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 use App\Models\HeroesDataTalent;
 use App\Models\Map;
@@ -153,6 +154,7 @@ class SingleMatchController extends Controller
                 'game_date' => $replayGroup[0]->game_date,
                 'game_map' => $maps[$replayGroup[0]->game_map]["name"],
                 'game_length' => $timeFormat,
+                'winner' => ($replayGroup[0]->team == 0 && $replayGroup[0]->winner == 1) ? 0 : 1,
                 'players' => [],
                 'replay_bans' => $this->getReplayBans($replayID, $heroData),
                 'draft_order' => $this->getDraftOrder($replayID, $heroData),
@@ -257,11 +259,67 @@ class SingleMatchController extends Controller
 
 
     private function getDraftOrder($replayID, $heroData){
-        return ReplayDraftOrder::where("replayID", $replayID)->get();
+        $data = ReplayDraftOrder::where("replayID", $replayID)->orderBy("pick_number")->get();
+        $modifiedData = $data->map(function ($item) use ($heroData){
+            $item->hero = $heroData[$item->hero];
+            return $item;
+        });
+
+        return $data;
     }
 
     private function getExperienceBreakdown($replayID){
-        return ReplayExperienceBreakdownBlob::where("replayID", $replayID)->get();
+        $data = ReplayExperienceBreakdownBlob::where("replayID", $replayID)->get();
+
+        $team_one = $data[0]->data;
+
+        $x_axis_time = [];
+        $team_one_values = [];
+        $team_two_values = [];
+
+        $team_one_level = [];
+        $team_two_level = [];
+
+        foreach($data[0]->data as $experienceData){
+            $carbon = Carbon::parse($experienceData["TimeSpan"]);
+            $minutes = $carbon->minute;
+
+
+            $x_axis_time[$minutes] = $minutes;
+            $team_one_values[$minutes] = $experienceData["HeroXP"];
+            //$team_one_values[$minutes] = $experienceData["TotalXP"]; //Add in other XP values later
+            $team_one_level[$minutes] = $experienceData["TeamLevel"];
+        }
+
+        foreach($data[1]->data as $experienceData){
+            $carbon = Carbon::parse($experienceData["TimeSpan"]);
+            $minutes = $carbon->minute;
+
+
+            $x_axis_time[$minutes] = $minutes;
+            $team_two_values[$minutes] = $experienceData["HeroXP"];
+            //$team_two_values[$minutes] = $experienceData["TotalXP"]; //Add in other XP values later
+            $team_two_level[$minutes] = $experienceData["TeamLevel"];
+        }
+
+        $team_one_differences = [];
+        $team_two_differences = [];
+
+        foreach($x_axis_time as $minute){
+            $team_one_differences[$minute] = ($team_one_values[$minute] - $team_two_values[$minute]) > 0 ? ($team_one_values[$minute] - $team_two_values[$minute]) : 0;
+            $team_two_differences[$minute] = ($team_two_values[$minute] - $team_one_values[$minute]) > 0 ? ($team_two_values[$minute] - $team_one_values[$minute]) : 0;
+        }
+
+        return [
+            "data" => $data,
+            "team_one_values" => $team_one_values,
+            "team_two_values" => $team_two_values,
+            "team_one_differences" => $team_one_differences,
+            "team_two_differences" => $team_two_differences,
+            "x_axis_time" => $x_axis_time,
+            "team_one_level" => $team_one_level,
+            "team_two_level" => $team_two_level,
+        ];
     }
 
 }

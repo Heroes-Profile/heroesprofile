@@ -10,7 +10,7 @@
       </div>
 
       <div>
-        <h1>{{ data.game_date }}</h1>
+        <h1>{{ formatDate(data.game_date) }}</h1>
       </div>
 
       <div class="box thing woot woot">
@@ -24,6 +24,14 @@
         <div class="flex flex-wrap justify-center">
           <div>
             <group-box :text="getTeamText(1, data.players[0])" :data="data.players[0]"></group-box>
+
+
+            <div v-if="data.replay_bans" class="flex flex-wrap justify-center">
+              Team 1 Bans
+              <hero-image-wrapper v-for="(item, index) in data.replay_bans[0]" :key="index" :hero="item.hero" :size="'big'"></hero-image-wrapper>
+            </div>
+
+
             <stat-box :title="'Account Level'" :value="getAverageValue('account_level', data.players[0])"></stat-box>
             <stat-box :title="'Team Level'" :value="data.players[0][0].score.level"></stat-box>
             <stat-box :title="'Takedowns'" :value="data.players[0][0].score.takedowns"></stat-box>
@@ -35,6 +43,12 @@
 
           <div>
             <group-box :text="getTeamText(2, data.players[1])" :data="data.players[1]"></group-box>
+
+            <div v-if="data.replay_bans" class="flex flex-wrap justify-center">
+              Team 2 Bans
+              <hero-image-wrapper v-for="(item, index) in data.replay_bans[1]" :key="index" :hero="item.hero" :size="'big'"></hero-image-wrapper>
+            </div>
+
             <stat-box :title="'Account Level'" :value="getAverageValue('account_level', data.players[1])"></stat-box>
             <stat-box :title="'Team Level'" :value="data.players[1][0].score.level"></stat-box>
             <stat-box :title="'Takedowns'" :value="data.players[1][0].score.takedowns"></stat-box>
@@ -64,6 +78,36 @@
           </a>
         </template>
       </div>
+
+
+
+      <div v-if="data.draft_order" class="p-10 text-center">
+        Draft Order
+
+        <table class="min-w-full bg-white">
+          <thead>
+            <tr>
+              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+                Hero
+              </th>
+              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+                Draft Order
+              </th>            
+              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+                Type
+              </th>                
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(row, index) in data.draft_order" :key="index" class="">      
+              <td><hero-image-wrapper :size="'small'" :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}</td>
+              <td>{{ row.pick_number + 1 }}</td>
+              <td>{{ row.type == 0 ? "Ban" : "Pick" }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
 
 
       <div class="p-10 text-center">
@@ -105,11 +149,12 @@
         </template>
       </div>
 
-        This is where I need to be the experience graph charts
-
-
-      <div class="draft section">
-        
+     <div class="bg-lighten p-10 text-center">
+        <div class="flex flex-wrap justify-center">
+          <div v-if="data.experience_breakdown">
+            <dual-line-chart :data="data.experience_breakdown" :winner="data.winner"></dual-line-chart>
+          </div>
+        </div>
       </div>
 
       <div class="max-w-full  md:px-20 overflow-scroll md:overflow-auto max-w-full h-[50vh] md:h-auto">
@@ -209,6 +254,8 @@
 </template>
 
 <script>
+import moment from 'moment-timezone';
+
 export default {
   name: 'SingleMatch',
   components: {
@@ -291,7 +338,13 @@ export default {
       }).catch(function(err) {
         
       });
-    }
+    },
+    formatDate(dateString) {
+      const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik'); // Assuming date strings are in UTC
+      const localDate = originalDate.clone().tz(moment.tz.guess());
+
+      return localDate.format('MM/DD/YYYY h:mm:ss a');
+    },
   }
 }
 </script>

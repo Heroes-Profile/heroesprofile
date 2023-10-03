@@ -46,6 +46,7 @@ import MapImageWrapper from './components/Wrappers/MapImageWrapper.vue';
 import BubbleChart from './components/Charts/BubbleChart.vue';
 import BarChart from './components/Charts/BarChart.vue';
 import LineChart from './components/Charts/LineChart.vue';
+import DualLineChart from './components/Charts/DualLineChart.vue';
 
 //Filtering
 import Filters from './components/Filtering/Filters.vue';
