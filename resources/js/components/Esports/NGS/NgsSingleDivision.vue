@@ -23,9 +23,11 @@
 
       <h1>Teams in Division {{ division }}</h1>
       <div class="flex flex-wrap gap-2">
-        <round-image v-for="(item, index) in data.teams" :size="'big'" :image="item.image" :showTooltip="true" :hovertextstyleoverride="true">
-          <image-hover-box :title="item.team_name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
-        </round-image>
+        <a :href="`/Esports/NGS/Team/${item.team_name}?season=${season}&division=${division}`" v-for="(item, index) in data.teams">
+          <round-image :size="'big'" :image="item.image" :showTooltip="true" :hovertextstyleoverride="true">
+            <image-hover-box :title="item.team_name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
+          </round-image>
+        </a>
       </div>
 
       <div class="bg-lighten p-10 ">

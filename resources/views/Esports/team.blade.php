@@ -6,7 +6,6 @@
 @section('content')
   <esports-single-team 
     :esport="{{ json_encode($esport) }}" 
-    :divisions="{{ json_encode($divisions) }}" 
     :division="{{ json_encode($division) }}" 
     :team="{{ json_encode($team) }}" 
     :season="{{ json_encode($season) }}" 

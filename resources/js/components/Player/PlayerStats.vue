@@ -184,6 +184,7 @@
     },
     data(){
       return {
+        loading: false,
         data: null,
         infoText: "Profile data",
         modifiedgametype: null,
@@ -227,6 +228,7 @@
     },
     methods: {
       async getData(){
+        this.loading = true;
         try{
           const response = await this.$axios.post("/api/v1/player", {
             blizz_id: this.blizzid,
@@ -239,6 +241,7 @@
         }catch(error){
         //Do something here
         }
+        this.loading = false;
       },
       handleInputChange(eventPayload) {
         if(eventPayload.field == "Game Type"){

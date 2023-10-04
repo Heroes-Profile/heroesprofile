@@ -41,6 +41,7 @@ use App\Http\Controllers\ProfileController;
 //Esports
 use App\Http\Controllers\Esports\NGS\NGSController;
 use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
+use App\Http\Controllers\Esports\EsportsController;
 
 
 /*
@@ -130,6 +131,9 @@ Route::prefix('v1')->group(function () {
     Route::post('esports/ngs/hero/talents/stats', [NGSController::class, 'getOverallTalentStats']);
 
     Route::post('esports/ngs/division/single', [NGSSingleDivisionController::class, 'getSingleDivisionData']);
+
+
+    Route::post('esports/single/team', [EsportsController::class, 'getSingleTeamData']);
 
 
 });
