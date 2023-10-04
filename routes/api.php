@@ -133,7 +133,8 @@ Route::prefix('v1')->group(function () {
     Route::post('esports/ngs/division/single', [NGSSingleDivisionController::class, 'getSingleDivisionData']);
 
 
-    Route::post('esports/single/team', [EsportsController::class, 'getSingleTeamData']);
+    Route::post('esports/single/team', [EsportsController::class, 'getData']);
+    Route::post('esports/single/player', [EsportsController::class, 'getData']);
 
 
 });
