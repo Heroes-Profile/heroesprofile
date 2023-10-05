@@ -3,8 +3,9 @@
     <page-heading :infoText1="infoText1" :heading="esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div v-if="data">
-      <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="season"></single-select-filter>
-      <single-select-filter :values="data.divisions" :text="'Divisions'" @input-changed="handleInputChange" :defaultValue="division"></single-select-filter>
+      <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifiedseason"></single-select-filter>
+      <single-select-filter :values="data.divisions" :text="'Divisions'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifieddivision"></single-select-filter>
+
 
       <div>
         <stat-box :title="'Wins'" :value="data.wins"></stat-box>
@@ -45,13 +46,15 @@
           <tbody>
             <tr v-for="(row, index) in data.players" :key="index">
               <td>
-                <a :href="`/Esports/${esport}/Player/${row.battletag}/${row.blizz_id}?season=${season}&division=${division}`">{{ row.battletag }}</a>
+                <a :href="row.playerlink">{{ row.battletag }}</a>
               </td>
               <td>
                 {{ row.games_played }}
               </td>
               <td>
-                <hero-image-wrapper :hero="row.most_played_hero"></hero-image-wrapper>
+                <a :href="row.herolink">
+                  <hero-image-wrapper :hero="row.most_played_hero"></hero-image-wrapper>
+                </a>
               </td>
               <td>
                 {{ row.win_rate_on_hero }}
@@ -80,7 +83,7 @@
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Enemy Teams</h2>
           <div class="flex flex-wrap justify-center">
-            <a :href="`/Esports/${esport}/Team/${team.team_name}?season=${season}&division=${division}`"  v-for="(team, index) in data.enemy_teams" :key="index" >
+            <a :href="team.enemy_link"  v-for="(team, index) in data.enemy_teams" :key="index" >
               <round-image :size="'big'" :title="team.team" :image="team.icon_url" :hovertextstyleoverride="true">
                 <image-hover-box :title="team.team_name" :paragraph-one="team.inputhover"></image-hover-box>
               </round-image>
@@ -217,9 +220,13 @@ export default {
       data: null,
       sortKey: '',
       sortDir: 'desc',
+      modifiedseason: null,
+      modifieddivision: null,
     }
   },
   created(){
+    this.modifiedseason = this.season;
+    this.modifieddivision = this.division;
   },
   mounted() {
     this.getData();
@@ -237,7 +244,7 @@ export default {
     },
     infoText1(){
       if(this.esport == "NGS"){
-        return `${this.team} in division ${this.division} during season ${this.season}`
+        return `${this.team} in division ${this.modifieddivision ? this.modifieddivision : " All "} during season ${this.modifiedseason ? this.modifiedseason : " All "}`
       }
     },
     sortedData() {
@@ -261,9 +268,9 @@ export default {
       try{
         const response = await this.$axios.post("/api/v1/esports/single/team", {
           esport: this.esport,
-          division: this.division,
+          division: this.modifieddivision,
           team: this.team,
-          season: this.season,
+          season: this.modifiedseason,
         });
         this.data = response.data;
       }catch(error){
@@ -272,7 +279,29 @@ export default {
       this.loading = false;
     },
     handleInputChange(eventPayload){
+        if(eventPayload.field == "Seasons"){
+            this.modifiedseason = eventPayload.value;
+        }
 
+        if(eventPayload.field == "Divisions"){
+          this.modifieddivision = eventPayload.value;
+        }
+
+      let newURL = `/Esports/${this.esport}/Team/${this.team}`;
+      if (this.modifiedseason && this.modifieddivision) {
+        newURL += `?season=${this.modifiedseason}&division=${this.modifieddivision}`;
+      } else if (this.modifiedseason) {
+        newURL += `?season=${this.modifiedseason}`;
+      } else if (this.modifieddivision) {
+        newURL += `?division=${this.modifieddivision}`;
+      }
+
+      // Update the browser's URL without reloading the page
+      history.pushState({}, "", newURL);
+    },
+    handleDropdownClosed(){
+      this.data = null;
+      this.getData();
     },
     sortTable(key) {
       if (key === this.sortKey) {

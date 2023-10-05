@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Esports\NGS;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -18,12 +19,25 @@ class NGSSingleDivisionController extends Controller
     public function show(Request $request, $division){
         $defaultseason = Team::max('season');
 
+       $validationRules = [
+            'season' => ['sometimes', 'nullable', new NGSSeasonInputValidation()],
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+       if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
+        }
+
         return view('Esports.NGS.singleDivision')  
             ->with([
                 'defaultseason' => $defaultseason,
                 'filters' => $this->globalDataService->getFilterData(),
                 'division' => $division,
-                //'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
+                'season' => $request["season"],
             ]);
 
    
@@ -33,7 +47,7 @@ class NGSSingleDivisionController extends Controller
         //return response()->json($request->all());
 
         $validationRules = [
-            'season' => ['required', new NGSSeasonInputValidation()],
+            'season' => ['sometimes', 'nullable', new NGSSeasonInputValidation()],
             'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation()],
         ];
 
@@ -230,6 +244,16 @@ class NGSSingleDivisionController extends Controller
 
 
 
+        $seasons = DB::table('heroesprofile_ngs.teams')
+            ->select("season")
+            ->distinct()
+            ->orderByDesc('season') // Order by season in descending order
+            ->pluck('season')
+            ->map(function ($season) {
+                return ['code' => strval($season), 'name' => strval($season)];
+            })
+            ->values()
+            ->all();
 
 
 
@@ -255,6 +279,7 @@ class NGSSingleDivisionController extends Controller
             "map_top_three_most_played" => $mapTopthreeMostPlayed->values(),
             "map_top_three_highest_win_rate" => $mapTopthreeHighestWinRate->values(),
             "map_top_three_lowest_win_rate" => $mapTopthreeLowestWinRate->values(),
+            "seasons" => $seasons,
         ];
     }
 }

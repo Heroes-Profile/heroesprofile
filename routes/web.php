@@ -163,6 +163,8 @@ Route::get('Esports/NGS/Division/{division}', [NGSSingleDivisionController::clas
 
 Route::get('Esports/{esport}/Team/{team}', [EsportsController::class, 'showSingleTeam']);
 Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}', [EsportsController::class, 'showPlayer']);
+Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Hero/{hero}', [EsportsController::class, 'showPlayerHero']);
+Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Map/{game_map}', [EsportsController::class, 'showPlayerMap']);
 
 
 

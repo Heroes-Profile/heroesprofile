@@ -98,7 +98,7 @@
           <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
           <custom-button :disabled="loading" @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
-        <ngs-standings v-if="standingData" :data="standingData"></ngs-standings>
+        <ngs-standings v-if="standingData" :data="standingData" :season="defaultseason"></ngs-standings>
       </div>
 
       <div v-if="activeButton === 'divisions'">
@@ -106,7 +106,7 @@
           <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
           <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
-        <ngs-divisions v-if="divisionData" :data="divisionData"></ngs-divisions>
+        <ngs-divisions v-if="divisionData" :data="divisionData" :season="season"></ngs-divisions>
       </div>
 
       <div v-if="activeButton === 'teams'">
@@ -453,7 +453,7 @@ export default {
       this.getTalentStats();
     },
     redirectToProfile(battletag, blizz_id, region) {
-      window.location.href = '/Esports/NGS/Player/' + battletag.split('#')[0] + "/" + blizz_id + "/" + region;
+      window.location.href = '/Esports/NGS/Player/' + battletag.split('#')[0] + "/" + blizz_id;
     }
   }
 }

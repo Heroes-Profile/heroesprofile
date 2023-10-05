@@ -1,4 +1,4 @@
-<template>
+EsportsPlayerHeroStats<template>
   <div>
     <page-heading :infoText1="infoText1" :heading="esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
@@ -21,72 +21,31 @@
         <stat-box :title="'Time spent dead'" :value="data.time_spent_dead"></stat-box>
       </div>
 
+      <div class="bg-lighten p-10 ">
+        <div class=" max-w-[90em] ml-auto mr-auto">
+          <h2 class="text-3xl font-bold py-5 text-center">Hero Enemies and Allies</h2>
+          <div class="flex flex-wrap justify-center">
+            <group-box :useinputforhover="true" :text="'Top Heroes Lost Against'" :data="data.heroes_lost_against.slice(0,5)"></group-box>
+            <group-box :useinputforhover="true" :text="'Top Heroes Won Against'" :data="data.heroes_won_against.slice(0,5)"></group-box>
+          </div>
+        </div>
+      </div>
+
 
       <div class="bg-lighten p-10 ">
         <div class=" max-w-[90em] ml-auto mr-auto">
-          <h2 class="text-3xl font-bold py-5 text-center">Heroes played by {{ battletag }}</h2>
+          <h2 class="text-3xl font-bold py-5 text-center">Heroes</h2>
           <div class="flex flex-wrap justify-center">
-            <group-box :esport="esport" :playerlink="true" :text="'Most Played'" :data="data.hero_top_three_most_played"></group-box>
-            <group-box :esport="esport" :playerlink="true" :text="'Highest Win Rate'" :data="data.hero_top_three_highest_win_rate"></group-box>
-            <group-box :esport="esport" :playerlink="true" :text="'Lowest Win Rate'" :data="data.hero_top_three_lowest_win_rate"></group-box>
+            <group-box :text="'Most Played (5+ games)'" :data="data.hero_top_three_most_played"></group-box>
+            <group-box :text="'Highest Win Rate (5+ games)'" :data="data.hero_top_three_highest_win_rate"></group-box>
+            <group-box :text="'Lowest Win Rate (5+ games)'" :data="data.hero_top_three_lowest_win_rate"></group-box>
           </div>
         </div>
-
-
 
         <div class="flex flex-wrap gap-2">
-          <a :href="item.link" v-for="(item, index) in data.heroes" >
-            <hero-image-wrapper :size="'big'" :hero="item.hero">
-              <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
-            </hero-image-wrapper>
-          </a>
-        </div>
-
-
-        <table class="min-w-full bg-white">
-          <thead>
-            <tr>
-              <th @click="sortTable('hero_id')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Hero
-              </th>
-              <th @click="sortTable('win_rate')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Win Rate %
-              </th>            
-              <th @click="sortTable('games_played')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                Games Played
-              </th>              
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(row, index) in sortedData" :key="index">
-              <td>
-                <a :href="row.link">
-                  <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}
-                </a>
-              </td>
-              <td>
-                {{ row.win_rate }}
-              </td>
-              <td>
-                {{ row.games_played }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-
-
-
-      </div>
-
-      <div class="">
-        <div class=" max-w-[90em] ml-auto mr-auto">
-          <h2 class="text-3xl font-bold py-5 text-center">Maps played by {{ battletag }}</h2>
-          <div class="flex flex-wrap justify-center">
-            <group-box :esport="esport" :playerlink="true" :text="'Most Played'" :data="data.map_top_three_most_played"></group-box>
-            <group-box :esport="esport" :playerlink="true" :text="'Highest Win Rate'" :data="data.map_top_three_highest_win_rate"></group-box>
-            <group-box :esport="esport" :playerlink="true" :text="'Lowest Win Rate'" :data="data.map_top_three_lowest_win_rate"></group-box>
-          </div>
+          <hero-image-wrapper v-for="(item, index) in data.heroes" :size="'big'" :hero="item.hero">
+            <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
+          </hero-image-wrapper>
         </div>
       </div>
 
@@ -115,7 +74,7 @@
 
 <script>
 export default {
-  name: 'EsportsPlayerStats',
+  name: 'EsportsPlayerMapStats',
   components: {
   },
   props: {
@@ -128,6 +87,7 @@ export default {
     season: {
       type: [Number, String]
     },
+    game_map: String,
   },
   data(){
     return {
@@ -180,12 +140,13 @@ export default {
     async getData(){
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/single/player", {
+        const response = await this.$axios.post("/api/v1/esports/single/player/map", {
           esport: this.esport,
           division: this.modifieddivision,
           battletag: this.battletag,
           blizz_id: this.blizz_id,
           season: this.modifiedseason,
+          game_map: this.game_map,
         });
         this.data = response.data;
       }catch(error){

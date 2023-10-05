@@ -1,8 +1,10 @@
 <template>
   <div>
     <page-heading :infoText1="infoText1" :heading="'NGS'" :heading-image="'/images/NGS/600-600-ngs_large_header.png'" :heading-image-url="'https://www.nexusgamingseries.org/'"></page-heading>
-
+  
     <div v-if="data">
+      <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifiedseason"></single-select-filter>
+
       <h1>Division {{ division }}</h1>
       <img :src="'/images/NGS/Divisions/Division ' + division + '.png'"/>
 
@@ -23,7 +25,7 @@
 
       <h1>Teams in Division {{ division }}</h1>
       <div class="flex flex-wrap gap-2">
-        <a :href="`/Esports/NGS/Team/${item.team_name}?season=${season}&division=${division}`" v-for="(item, index) in data.teams">
+        <a :href="`/Esports/NGS/Team/${item.team_name}?season=${modifiedseason}&division=${division}`" v-for="(item, index) in data.teams">
           <round-image :size="'big'" :image="item.image" :showTooltip="true" :hovertextstyleoverride="true">
             <image-hover-box :title="item.team_name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
           </round-image>
@@ -109,12 +111,12 @@ export default {
       isLoading: false,
       data: null,
       infoText1: "Heroes of the Storm statistics and comparison for the Nexus Gaming Series",
-      season: null,
+      modifiedseason: null,
     }
   },
   created(){
     this.preloadedImage.src = '/images/NGS/no-image-clipped.png';
-    this.season = this.defaultseason;
+    this.modifiedseason = this.defaultseason;
   },
   mounted() {
     this.getData();
@@ -128,7 +130,7 @@ export default {
       this.isLoading = true;
       try{
         const response = await this.$axios.post("/api/v1/esports/ngs/division/single", {
-          season: this.season,
+          season: this.modifiedseason,
           division: this.division,
         });
         this.data = response.data;
@@ -142,6 +144,21 @@ export default {
       const localDate = originalDate.clone().tz(moment.tz.guess());
 
       return localDate.format('MM/DD/YYYY h:mm:ss a');
+    },
+    handleInputChange(eventPayload){
+        if(eventPayload.field == "Seasons"){
+            this.modifiedseason = eventPayload.value;
+        }
+
+      let newURL = `/Esports/NGS/Division/${this.division}`;
+      if (this.modifiedseason) {
+        newURL += `?season=${this.modifiedseason}`;
+      }
+      history.pushState({}, "", newURL);
+    },
+    handleDropdownClosed(){
+      this.data = null;
+      this.getData();
     },
   }
 }

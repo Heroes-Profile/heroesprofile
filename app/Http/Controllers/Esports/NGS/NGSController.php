@@ -178,7 +178,9 @@ class NGSController extends Controller
         }
 
         $input = $request["userinput"];
-        $daa = null;
+        $input = str_replace(' ', '', $input);
+
+        $data = null;
         if (strpos($input, '#') !== false) {
             $data = Battletag::select("blizz_id", "battletag", "region")
                 ->where("battletag", $input)
@@ -188,6 +190,9 @@ class NGSController extends Controller
                 ->where("battletag", "LIKE", $input . "#%")
                 ->get();
         }
+
+
+
 
         $returnData = [];
         $counter = 0;
