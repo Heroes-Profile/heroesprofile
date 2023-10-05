@@ -110,6 +110,10 @@ import NgsDivisions from './components/Esports/NGS/NgsDivisions.vue';
 import NgsSingleDivision from './components/Esports/NGS/NgsSingleDivision.vue';
 import NgsStandings from './components/Esports/NGS/NgsStandings.vue';
 
+//CCL
+import CclMain from './components/Esports/CCL/CclMain.vue';
+import CclOrganizations from './components/Esports/CCL/CclOrganizations.vue';
+
 
 
 

@@ -35,9 +35,12 @@ use App\Http\Controllers\Player\PlayerMMRController;
 use App\Http\Controllers\Player\PlayerMatchHistory;
 
 use App\Http\Controllers\Esports\EsportsController;
+
 use App\Http\Controllers\Esports\NGS\NGSController;
 use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
 use App\Http\Controllers\Esports\NGS\NGSSingleMatchController;
+
+use App\Http\Controllers\Esports\CCL\CCLController;
 
 
 /*
@@ -159,6 +162,10 @@ Route::get('ESports', [EsportsController::class, 'show']);
 
 Route::get('Esports/NGS', [NGSController::class, 'show']);
 Route::get('Esports/NGS/Division/{division}', [NGSSingleDivisionController::class, 'show']);
+
+Route::get('Esports/CCL', [CCLController::class, 'show']);
+Route::get('Esports/{esport}/Organization/{team}', [EsportsController::class, 'showSingleTeam']);
+
 
 
 Route::get('Esports/{esport}/Team/{team}', [EsportsController::class, 'showSingleTeam']);

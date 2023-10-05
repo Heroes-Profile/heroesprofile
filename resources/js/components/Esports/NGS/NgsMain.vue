@@ -352,6 +352,7 @@ export default {
           season: this.season,
           division: this.division,
           pagination_page: page,
+          esport: "NGS",
         });
         this.recentMatchesData = response.data;
       }catch(error){
@@ -365,6 +366,7 @@ export default {
         const response = await this.$axios.post("/api/v1/esports/ngs/hero/stats", {
           season: this.season,
           division: this.division,
+          esport: "NGS",
         });
         this.heroStatsData = response.data;
       }catch(error){
@@ -379,6 +381,7 @@ export default {
           season: this.season,
           division: this.division,
           hero: this.selectedHero.name,
+          esport: "NGS",
         });
         this.talentStatsData = response.data;
       }catch(error){
