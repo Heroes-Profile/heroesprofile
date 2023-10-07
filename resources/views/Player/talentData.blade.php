@@ -12,7 +12,7 @@
     :filters="{{ json_encode($filters) }}"
     :heroes="{{ json_encode(session('heroes')) }}"
     :talentimages="{{ json_encode($talentimages) }}"  
-    
+    :regionsmap="{{ json_encode(session('regions')) }}"
     >
     </player-talents>
 @endsection

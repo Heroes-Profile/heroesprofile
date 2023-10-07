@@ -35,8 +35,13 @@ use App\Http\Controllers\Player\PlayerMMRController;
 use App\Http\Controllers\Player\PlayerMatchHistory;
 
 use App\Http\Controllers\Esports\EsportsController;
+
 use App\Http\Controllers\Esports\NGS\NGSController;
 use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
+use App\Http\Controllers\Esports\NGS\NGSSingleMatchController;
+
+use App\Http\Controllers\Esports\CCL\CCLController;
+use App\Http\Controllers\Esports\NutCup\NutCupController;
 
 
 /*
@@ -137,7 +142,8 @@ Route::get('Player/{battletag}/{blizz_id}/{region}/Match/History', [PlayerMatchH
 
 
 
-Route::get('Match/Single/{replayID}', [SingleMatchController::class, 'show']);
+
+Route::get('Match/Single/{replayID}', [SingleMatchController::class, 'showWithoutEsport']);
 
 Route::get('/Match/Single/', function (\Illuminate\Http\Request $request) {
     $replayID = $request->query('replayID');
@@ -148,6 +154,8 @@ Route::get('/Match/Single/', function (\Illuminate\Http\Request $request) {
     return redirect("/");
 });
 
+Route::get('Esports/{esport}/Match/Single/{replayID}', [SingleMatchController::class, 'showWithEsport']);
+
 
 Route::get('Esports', [EsportsController::class, 'show']);
 Route::get('ESports', [EsportsController::class, 'show']);
@@ -155,6 +163,19 @@ Route::get('ESports', [EsportsController::class, 'show']);
 
 Route::get('Esports/NGS', [NGSController::class, 'show']);
 Route::get('Esports/NGS/Division/{division}', [NGSSingleDivisionController::class, 'show']);
+
+Route::get('Esports/CCL', [CCLController::class, 'show']);
+Route::get('Esports/{esport}/Organization/{team}', [EsportsController::class, 'showSingleTeam']);
+
+
+
+Route::get('Esports/{esport}/Team/{team}', [EsportsController::class, 'showSingleTeam']);
+Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}', [EsportsController::class, 'showPlayer']);
+Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Hero/{hero}', [EsportsController::class, 'showPlayerHero']);
+Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Map/{game_map}', [EsportsController::class, 'showPlayerMap']);
+
+
+Route::get('Esports/NutCup', [NutCupController::class, 'show']);
 
 
 //Rewrite game data later

@@ -46,6 +46,7 @@ import MapImageWrapper from './components/Wrappers/MapImageWrapper.vue';
 import BubbleChart from './components/Charts/BubbleChart.vue';
 import BarChart from './components/Charts/BarChart.vue';
 import LineChart from './components/Charts/LineChart.vue';
+import DualLineChart from './components/Charts/DualLineChart.vue';
 
 //Filtering
 import Filters from './components/Filtering/Filters.vue';
@@ -97,6 +98,11 @@ import EsportsTeams from './components/Esports/EsportsTeams.vue';
 import EsportsRecentMatches from './components/Esports/EsportsRecentMatches.vue';
 import EsportsHeroStats from './components/Esports/EsportsHeroStats.vue';
 import EsportsTalentStats from './components/Esports/EsportsTalentStats.vue';
+import EsportsSingleTeam from './components/Esports/EsportsSingleTeam.vue';
+import EsportsPlayerStats from './components/Esports/Player/EsportsPlayerStats.vue';
+import EsportsPlayerHeroStats from './components/Esports/Player/EsportsPlayerHeroStats.vue';
+import EsportsPlayerMapStats from './components/Esports/Player/EsportsPlayerMapStats.vue';
+
 
 //NGS
 import NgsMain from './components/Esports/NGS/NgsMain.vue';
@@ -104,7 +110,12 @@ import NgsDivisions from './components/Esports/NGS/NgsDivisions.vue';
 import NgsSingleDivision from './components/Esports/NGS/NgsSingleDivision.vue';
 import NgsStandings from './components/Esports/NGS/NgsStandings.vue';
 
+//CCL
+import CclMain from './components/Esports/CCL/CclMain.vue';
+import CclOrganizations from './components/Esports/CCL/CclOrganizations.vue';
 
+//Nut Cup
+import NutCupMain from './components/Esports/NutCup/NutCupMain.vue';
 
 
 

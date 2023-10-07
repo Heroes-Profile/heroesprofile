@@ -11,6 +11,7 @@
       :includegamemap="true"
       :includegametypefull="true"
       :includeseason="true"
+      :hideadvancedfilteringbutton="true"
       >
     </filters>
 
@@ -110,7 +111,6 @@ export default {
     region: String,
     gametypedefault: Array,
     regionsmap: Object,
-    gamemap: String,
   },
   data(){
     return {
@@ -190,7 +190,6 @@ export default {
           region: this.region,
           
           game_type: this.gametype,
-          map: this.gamemap,
           season: this.season,
           hero: this.hero,
           game_map: this.gamemap,

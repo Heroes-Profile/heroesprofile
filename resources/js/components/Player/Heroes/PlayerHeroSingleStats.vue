@@ -1,7 +1,9 @@
 <template>
   <div>
 
-    <page-heading :infoText1="hero + ' stats for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
+    <page-heading :infoText1="hero + ' stats for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`">
+            <hero-image-wrapper :hero="heroobject" :size="'big'"></hero-image-wrapper>
+    </page-heading>
 
     <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
     <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
@@ -102,6 +104,7 @@
     props: {
       filters: Object,
       hero: String,
+      heroobject: Object,
       battletag: String,
       blizzid: {
         type: [String, Number]
@@ -112,7 +115,6 @@
     data(){
       return {
         loading: false,
-        inputhero: null,
         modifiedgametype: null,
         modifiedseason: null,
         data: null,
@@ -120,9 +122,6 @@
       }
     },
     created(){
-      this.inputhero = this.hero;
-      //this.modifiedgametype = this.gametype;
-      //this.modifiedseason = this.season;
     },
     mounted() {
       this.getData();

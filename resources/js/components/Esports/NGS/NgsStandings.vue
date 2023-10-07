@@ -32,7 +32,7 @@
         <tbody>
           <tr v-for="(team, teamData) in division" :key="teamData.team_name">
             <td>{{ team.rank }}</td>
-            <td><a :href="'/Esports/NGS/Team/' + team.team_name">{{ team.team_name }}</a></td>
+            <td><a :href="`/Esports/NGS/Team/${team.team_name}?season=${season}&division=${divisionName}`">{{ team.team_name }}</a></td>
             <td>{{ team.points }}</td>
             <td>{{ team.dominations }}</td>
             <td>{{ team.games_won }}</td>
@@ -52,7 +52,7 @@ export default {
   },
   props: {
     divisions: Array,
-    seasons: Array,
+    season: Number,
     data: Object,
   },
   data(){

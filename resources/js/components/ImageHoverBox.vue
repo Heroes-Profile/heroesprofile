@@ -4,6 +4,9 @@
     <p v-if="paragraphOne">{{ paragraphOne }}</p>
     <p v-if="paragraphTwo">{{ paragraphTwo }}</p>
     <p v-if="paragraphThree">{{ paragraphThree }}</p>
+    <p v-if="paragraphFour">{{ paragraphFour }}</p>
+    <p v-if="paragraphFive">{{ paragraphFive }}</p>
+    <p v-if="paragraphSix">{{ paragraphSix }}</p>
   </div>
 </template>
 
@@ -17,6 +20,9 @@ export default {
     paragraphOne: String,
     paragraphTwo: String,
     paragraphThree: String,
+    paragraphFour: String,
+    paragraphFive: String,
+    paragraphSix: String,
   },
   data(){
     return {

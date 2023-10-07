@@ -153,7 +153,7 @@
       <h2 class="text-3xl font-bold py-5">Most Recent matches</h2>
 
       
-      <game-summary-box v-for="(item, index) in data.matchData" :data="item" :caption="`${item.game_map.name} | ${item.game_type.name} | ${item.game_date}`"></game-summary-box>
+      <game-summary-box v-for="(item, index) in data.matchData" :data="item"></game-summary-box>
       
       <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Match/History'" class="flex justify-end " text="View Match History"></custom-button>
 
@@ -167,6 +167,7 @@
 </template>
 
 <script>
+
   export default {
     name: 'PlayerStats',
     components: {
@@ -183,6 +184,7 @@
     },
     data(){
       return {
+        loading: false,
         data: null,
         infoText: "Profile data",
         modifiedgametype: null,
@@ -226,6 +228,7 @@
     },
     methods: {
       async getData(){
+        this.loading = true;
         try{
           const response = await this.$axios.post("/api/v1/player", {
             blizz_id: this.blizzid,
@@ -238,6 +241,7 @@
         }catch(error){
         //Do something here
         }
+        this.loading = false;
       },
       handleInputChange(eventPayload) {
         if(eventPayload.field == "Game Type"){

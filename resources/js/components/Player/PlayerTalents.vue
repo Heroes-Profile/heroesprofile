@@ -1,5 +1,8 @@
 <template>
   <div>
+    <page-heading :infoText1="inputhero.name + ' talent stats and builds player by ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`">
+      <hero-image-wrapper :hero="inputhero" :size="'big'"></hero-image-wrapper>
+    </page-heading>
 
     <div v-if="!selectedHero">
       <hero-selection :heroes="heroes"></hero-selection>
@@ -13,6 +16,7 @@
         :includegametypefull="true"
         :includeseason="true"
         :includegamemap="true"
+        :hideadvancedfilteringbutton="true"
         >
       </filters>
       <div  v-if="talentdetaildata" class="container mx-auto px-4">
@@ -48,6 +52,7 @@ export default {
     inputhero: Object,
     heroes: Array,
     talentimages: Object,
+    regionsmap: Object,
   },
   data(){
     return {

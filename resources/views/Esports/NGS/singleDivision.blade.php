@@ -8,6 +8,7 @@
     :defaultseason="{{ json_encode($defaultseason) }}" 
     :filters="{{ json_encode($filters) }}"
     :division="{{ json_encode($division) }}"
+    :season="{{ json_encode($season) }}"
   >
   </ngs-single-division>
 @endsection
