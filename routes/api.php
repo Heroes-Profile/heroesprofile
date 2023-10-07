@@ -21,6 +21,7 @@ use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
 use App\Http\Controllers\Global\GlobalPartyStatsController;
 use App\Http\Controllers\Global\GlobalExtraStats;
+use App\Http\Controllers\Global\GlobalTalentBuilderController;
 
 
 
@@ -63,6 +64,8 @@ Route::prefix('v1')->group(function () {
     Route::post('battletag/search', [BattletagSearchController::class, 'battletagSearch']);
 
     Route::post('global/hero/', [GlobalHeroStatsController::class, 'getGlobalHeroData']);
+
+    Route::post('global/talents/builder', [GlobalTalentBuilderController::class, 'getData']);
 
     Route::post('global/talents/', [GlobalTalentStatsController::class, 'getGlobalHeroTalentData']);
 

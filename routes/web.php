@@ -22,6 +22,7 @@ use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
 use App\Http\Controllers\Global\GlobalPartyStatsController;
 use App\Http\Controllers\Global\GlobalExtraStats;
+use App\Http\Controllers\Global\GlobalTalentBuilderController;
  
 
 use App\Http\Controllers\Player\PlayerController;
@@ -104,6 +105,8 @@ Route::get('/Global/Draft/General/{hero}', [GlobalDraftController::class, 'show'
 
 
 Route::get('/Global/Talents/', [GlobalTalentStatsController::class, 'show']);
+Route::get('/Global/Talents/Build', [GlobalTalentBuilderController::class, 'show']);
+Route::get('/Global/Talents/Build/{hero}', [GlobalTalentBuilderController::class, 'show']);
 Route::get('/Global/Talents/{hero}', [GlobalTalentStatsController::class, 'show']);
 
 Route::get('/Global/Leaderboard', [GlobalLeaderboardController::class, 'show']);

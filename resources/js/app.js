@@ -74,6 +74,11 @@ import GlobalPartyStats from './components/Global/Party/GlobalPartyStats.vue';
 import GlobalExtraStats from './components/Global/Extra/GlobalExtraStats.vue';
 
 
+import GlobalTalentsBuilder from './components/Global/Talents/Builder/GlobalTalentsBuilder.vue';
+import TalentBuilderColumn from './components/Global/Talents/Builder/TalentBuilderColumn.vue';
+import TalentBuilderClickBox from './components/Global/Talents/Builder/TalentBuilderClickBox.vue';
+
+
 //Authentication
 import ProfileSettings from './components/Profile/ProfileSettings.vue';
 import BattlenetAuthenticate from './components/Battlenet/BattlenetAuthenticate.vue';
