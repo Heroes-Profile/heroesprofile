@@ -27,6 +27,7 @@ class EsportsController extends Controller
     private $season;
     private $division;
     private $team;
+    private $team_name;
     private $hero;
     private $game_map;
 
@@ -43,7 +44,7 @@ class EsportsController extends Controller
 
     public function showSingleTeam(Request $request, $esport, $team){
         $validationRules = [
-            'esport' => 'required|in:NGS,CCL',
+            'esport' => 'required|in:NGS,CCL,NutCup',
             'team' => 'required|string',
         ];
 
@@ -74,7 +75,7 @@ class EsportsController extends Controller
 
     public function showPlayer(Request $request, $esport, $battletag, $blizz_id){
         $validationRules = [
-            'esport' => 'required|in:NGS',
+            'esport' => 'required|in:NGS,CCL',
             'battletag' => 'required|string',
             'blizz_id' => 'required|numeric',
         ];
@@ -107,7 +108,7 @@ class EsportsController extends Controller
 
     public function showPlayerHero(Request $request, $esport, $battletag, $blizz_id, $hero){
         $validationRules = [
-            'esport' => 'required|in:NGS',
+            'esport' => 'required|in:NGS,CCL',
             'battletag' => 'required|string',
             'blizz_id' => 'required|numeric',
             'hero' => ['required', new HeroInputValidation()],
@@ -142,7 +143,7 @@ class EsportsController extends Controller
 
     public function showPlayerMap(Request $request, $esport, $battletag, $blizz_id, $game_map){
         $validationRules = [
-            'esport' => 'required|in:NGS',
+            'esport' => 'required|in:NGS,CCL',
             'battletag' => 'required|string',
             'blizz_id' => 'required|numeric',
             'game_map' => ['required', new GameMapInputValidation()],
@@ -307,7 +308,7 @@ class EsportsController extends Controller
         //return response()->json($request->all());
 
         $validationRules = [
-            'esport' => 'required|in:NGS,CCL',
+            'esport' => 'required|in:NGS,CCL,NutCup',
             'season' => 'required|numeric',
             'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation()],
         ];
@@ -335,13 +336,6 @@ class EsportsController extends Controller
 
         $heroResults = DB::table($this->schema . '.replay')->select("replay.replayID", "hero", "winner")
             ->join($this->schema . '.player', $this->schema . '.player.replayID', '=', $this->schema . '.replay.replayID')
-            ->join($this->schema . '.teams', function ($join) {
-                if ($this->esport == "NGS") {
-                    $join->on($this->schema . '.teams.team_id', '=', $this->schema . '.player.team_name');
-                } elseif ($this->esport == "CCL") {
-                    $join->on($this->schema . '.teams.team_id', '=', $this->schema . '.player.team_id');
-                }
-            })
             ->where("replay.season", $this->season)
             ->when(!is_null($this->division), function ($query) {
                 return $query->where($this->schema . '.teams.division', $this->division);
@@ -394,7 +388,7 @@ class EsportsController extends Controller
         //return response()->json($request->all());
 
         $validationRules = [
-            'esport' => 'required|in:NGS,CCL',
+            'esport' => 'required|in:NGS,CCL,NutCup',
             'season' => 'required|numeric',
             'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation()],
             'hero' => ['required', new HeroInputValidation()],
@@ -652,7 +646,8 @@ class EsportsController extends Controller
 
 
         if($this->esport == "CCL"){
-            $this->team = CCLTeam::where("season", $this->season)->where("team_name", $request["team"])->first()->team_id;
+            $this->team = $request["team"] ? CCLTeam::where("season", $this->season)->where("team_name", $request["team"])->first()->team_id : null;
+            $this->team_name = $request["team"];
         }
 
         if($this->esport){
@@ -1018,7 +1013,7 @@ class EsportsController extends Controller
                 return $query->where('team_0_name', $this->team);
             })
             ->when($this->esport == "CCL", function ($query) {
-                return $query->where('team_0_id', $this->team);
+                return $query->where('team_0_id', $this->team_name);
             })
             ->union(function ($query) use ($replayIDs) {
                 $query->selectRaw("distinct(round), team_1_map_ban as ban1, team_1_map_ban_2 as ban2")
@@ -1027,8 +1022,8 @@ class EsportsController extends Controller
                     ->when($this->esport == "NGS", function ($query) {
                         return $query->where('team_1_name', $this->team);
                     })
-                    ->when($this->esport == "CCL", function ($query) {
-                        return $query->where('team_1_id', $this->team);
+                    ->when($this->esport == "CCL", function ($query){
+                        return $query->where('team_1_id', $this->team_name);
                     });
             })
             ->get();
@@ -1051,6 +1046,9 @@ class EsportsController extends Controller
         $mapBanReturn = [];
         $counter = 0;
         foreach($mapBanDataTransformed as $mapValue => $value){
+            if($mapValue == 0){
+                continue;
+            }
             $mapBanReturn[$counter]["game_map"] = $maps[$mapValue];
             $mapBanReturn[$counter]["value"] = $value;
             $mapBanReturn[$counter]["inputhover"] = "Times Banned: " . $value;

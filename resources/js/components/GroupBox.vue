@@ -50,7 +50,7 @@
           </map-image-wrapper>
         </a>
 
-        <a v-if="esport && playerlink && item.game_map" :href="item.link">
+        <a v-else-if="esport && playerlink && item.game_map" :href="item.link">
           <map-image-wrapper :size="'big'" :map="item.game_map">
             <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
           </map-image-wrapper>

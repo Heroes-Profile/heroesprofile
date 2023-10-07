@@ -106,19 +106,25 @@ export default {
     this.getData();
   },
   computed: {
-  	headingImage(){
+    headingImage(){
       if(this.esport == "NGS"){
         return "/images/NGS/600-600-ngs_large_header.png"
+      }else if(this.esport == "CCL"){
+        return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
       }
     },
     headingImageUrl(){
       if(this.esport == "NGS"){
         return "https://www.nexusgamingseries.org/"
+      }else if(this.esport == "CCL"){
+        return "Heroes of the Storm statistics and comparison for the Community Clash League"
       }
     },
     infoText1(){
       if(this.esport == "NGS"){
-        return `${this.battletag} in division ${this.modifieddivision ? this.modifieddivision : " All "} during season ${this.modifiedseason ? this.modifiedseason : " All "}`
+        return `${this.team} in division ${this.modifieddivision ? this.modifieddivision : " All "} during season ${this.modifiedseason ? this.modifiedseason : " All "}`
+      }else if(this.esport == "CCL"){
+        return `${this.battletag} during season ${this.modifiedseason}`;
       }
     },
     sortedData() {
@@ -189,7 +195,9 @@ export default {
     },
     getLoadingImage(){
       if(this.esport == "NGS"){
-        return '/images/NGS/no-image-clipped.png';
+        return "/images/NGS/600-600-ngs_large_header.png"
+      }else if(this.esport == "CCL"){
+        return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
       }
     },
   }

@@ -14,7 +14,7 @@
       </div>
 
       <div class="box thing woot woot">
-        <span>{{ data.game_map }}</span>
+        <span>{{ data.game_map.name }}</span>
         <span>{{ data.game_type }}</span>
         <span>{{ data.game_length }}</span>
       </div>
@@ -44,10 +44,10 @@
 
             <div v-if="esport">
               Map Bans
-              <map-image-wrapper :map="data.map_bans.team_zero_ban_data.map_ban_one" :size="'big'">
+              <map-image-wrapper v-if="data.map_bans.team_zero_ban_data.map_ban_one" :map="data.map_bans.team_zero_ban_data.map_ban_one" :size="'big'">
                 <image-hover-box :title="data.map_bans.team_zero_ban_data.map_ban_one.name"></image-hover-box>
               </map-image-wrapper>
-              <map-image-wrapper :map="data.map_bans.team_zero_ban_data.map_ban_two" :size="'big'">
+              <map-image-wrapper v-if="data.map_bans.team_zero_ban_data.map_ban_two" :map="data.map_bans.team_zero_ban_data.map_ban_two" :size="'big'">
                 <image-hover-box :title="data.map_bans.team_zero_ban_data.map_ban_two.name"></image-hover-box>
               </map-image-wrapper>
             </div>
@@ -74,10 +74,10 @@
 
             <div v-if="esport">
               Map Bans
-              <map-image-wrapper :map="data.map_bans.team_one_ban_data.map_ban_one" :size="'big'">
+              <map-image-wrapper v-if="data.map_bans.team_one_ban_data.map_ban_one" :map="data.map_bans.team_one_ban_data.map_ban_one" :size="'big'">
                 <image-hover-box :title="data.map_bans.team_one_ban_data.map_ban_one.name"></image-hover-box>
               </map-image-wrapper>
-              <map-image-wrapper :map="data.map_bans.team_one_ban_data.map_ban_two" :size="'big'">
+              <map-image-wrapper v-if="data.map_bans.team_one_ban_data.map_ban_two" :map="data.map_bans.team_one_ban_data.map_ban_two" :size="'big'">
                 <image-hover-box :title="data.map_bans.team_one_ban_data.map_ban_two.name"></image-hover-box>
               </map-image-wrapper>
             </div>

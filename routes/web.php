@@ -41,6 +41,7 @@ use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
 use App\Http\Controllers\Esports\NGS\NGSSingleMatchController;
 
 use App\Http\Controllers\Esports\CCL\CCLController;
+use App\Http\Controllers\Esports\NutCup\NutCupController;
 
 
 /*
@@ -174,6 +175,7 @@ Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Hero/{hero}', [Esport
 Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Map/{game_map}', [EsportsController::class, 'showPlayerMap']);
 
 
+Route::get('Esports/NutCup', [NutCupController::class, 'show']);
 
 
 //Rewrite game data later

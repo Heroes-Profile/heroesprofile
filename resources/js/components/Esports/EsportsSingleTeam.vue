@@ -198,6 +198,9 @@
 
     </div>
 
+    <div v-else>
+      <loading-component :overrideimage="loadingImageUrl"></loading-component>
+    </div>
 
   </div>
 </template>
@@ -244,6 +247,13 @@ export default {
         return "https://www.nexusgamingseries.org/"
       }else if(this.esport == "CCL"){
         return "Heroes of the Storm statistics and comparison for the Community Clash League"
+      }
+    },
+    loadingImageUrl(){
+     if(this.esport == "NGS"){
+        return "/images/NGS/600-600-ngs_large_header.png"
+      }else if(this.esport == "CCL"){
+        return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
       }
     },
     infoText1(){

@@ -146,6 +146,8 @@ Route::prefix('v1')->group(function () {
     Route::post('esports/ccl/hero/stats', [EsportsController::class, 'getOverallHeroStats']);
     Route::post('esports/ccl/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
 
+    Route::post('esports/nutcup/hero/stats', [EsportsController::class, 'getOverallHeroStats']);
+    Route::post('esports/nutcup/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
 
 
 });

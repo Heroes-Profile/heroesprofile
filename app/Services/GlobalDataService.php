@@ -471,6 +471,12 @@ class GlobalDataService
                 return ['code' => $season, 'name' => strval($season)];
         });
 
+        $filterData->nut_cup_seasons = [
+            ['code' => '1', 'name' => '1'],
+            ['code' => '2', 'name' => '2'],
+        ];
+
+
         return $filterData;
     }
 

@@ -114,7 +114,8 @@ import NgsStandings from './components/Esports/NGS/NgsStandings.vue';
 import CclMain from './components/Esports/CCL/CclMain.vue';
 import CclOrganizations from './components/Esports/CCL/CclOrganizations.vue';
 
-
+//Nut Cup
+import NutCupMain from './components/Esports/NutCup/NutCupMain.vue';
 
 
 
