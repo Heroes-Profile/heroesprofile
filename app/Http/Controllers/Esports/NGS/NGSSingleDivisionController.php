@@ -1,10 +1,13 @@
 <?php
 
 namespace App\Http\Controllers\Esports\NGS;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Rules\NGSSeasonInputValidation;
+use App\Rules\NGSDivisionInputValidation;
 
 use App\Models\NGS\Team;
 use App\Models\NGS\Replay;
@@ -16,19 +19,48 @@ class NGSSingleDivisionController extends Controller
     public function show(Request $request, $division){
         $defaultseason = Team::max('season');
 
+       $validationRules = [
+            'season' => ['sometimes', 'nullable', new NGSSeasonInputValidation()],
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+       if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
+        }
+
         return view('Esports.NGS.singleDivision')  
             ->with([
                 'defaultseason' => $defaultseason,
                 'filters' => $this->globalDataService->getFilterData(),
                 'division' => $division,
-                //'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
+                'season' => $request["season"],
             ]);
 
    
     }
 
     public function getSingleDivisionData(Request $request){
-        $season = (new NGSSeasonInputValidation())->passes('season', $request["season"]);
+        //return response()->json($request->all());
+
+        $validationRules = [
+            'season' => ['sometimes', 'nullable', new NGSSeasonInputValidation()],
+            'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation()],
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+       if ($validator->fails()) {
+            return [
+                "data" => $request->all(),
+                "status" => "failure to validate inputs"
+            ];
+        }
+
+        $season = $request["season"];
         $division = $request["division"];
 
         $results = Replay::join('heroesprofile_ngs.player', 'heroesprofile_ngs.player.replayID', '=', 'heroesprofile_ngs.replay.replayID')
@@ -102,11 +134,11 @@ class NGSSingleDivisionController extends Controller
         $teams = $results->groupBy('team_name')->map(function ($group) {
             $wins = $group->sum(function ($item) {
                 return $item['winner'] == 1 ? 1 : 0;
-            });
+            }) / 5;
 
             $losses = $group->sum(function ($item) {
                 return $item['winner'] == 0 ? 1 : 0;
-            });
+            }) / 5;
 
             $gamesPlayed = $wins + $losses;
 
@@ -171,11 +203,11 @@ class NGSSingleDivisionController extends Controller
         $mapData = $results->groupBy('game_map')->map(function ($group) use ($maps) {
             $wins = $group->sum(function ($item) {
                 return $item['winner'] == 1 ? 1 : 0;
-            });
+            }) / 10;
 
             $losses = $group->sum(function ($item) {
                 return $item['winner'] == 0 ? 1 : 0;
-            });
+            }) / 10;
 
             $gamesPlayed = $wins + $losses;
 
@@ -212,6 +244,16 @@ class NGSSingleDivisionController extends Controller
 
 
 
+        $seasons = DB::table('heroesprofile_ngs.teams')
+            ->select("season")
+            ->distinct()
+            ->orderByDesc('season') // Order by season in descending order
+            ->pluck('season')
+            ->map(function ($season) {
+                return ['code' => strval($season), 'name' => strval($season)];
+            })
+            ->values()
+            ->all();
 
 
 
@@ -237,6 +279,7 @@ class NGSSingleDivisionController extends Controller
             "map_top_three_most_played" => $mapTopthreeMostPlayed->values(),
             "map_top_three_highest_win_rate" => $mapTopthreeHighestWinRate->values(),
             "map_top_three_lowest_win_rate" => $mapTopthreeLowestWinRate->values(),
+            "seasons" => $seasons,
         ];
     }
 }

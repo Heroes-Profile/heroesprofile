@@ -10,6 +10,7 @@
     :includehero="true"
     :includegamemap="true"
     :includegametypefull="true"
+    :hideadvancedfilteringbutton="true"
     >
   </filters>
 

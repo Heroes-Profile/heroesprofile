@@ -1,10 +1,6 @@
 <template>
   <div>
-
     <page-heading :infoText1="'All Heroes data for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
-
-
-    <infobox :input="infoText"></infobox>
 
     <filters 
       :onFilter="filterData" 

@@ -83,7 +83,7 @@ class PlayerTalentsController extends Controller
         $gameType = GameType::whereIn("short_name", $request["game_type"])->pluck("type_id")->toArray();
         $hero = session('heroes')->keyBy('name')[$request["hero"]]->id;
         $season = $request["season"];
-        $game_map = Map::whereIn('name',  $request["game_map"])->pluck('map_id')->toArray();
+        $game_map = $request["game_map"] ? Map::whereIn('name',  $request["game_map"])->pluck('map_id')->toArray() : null;
 
 
         $result = DB::table('replay')

@@ -137,7 +137,7 @@
       >
 
       <!-- Game Map Multiselect -->
-      <multi-select-filter v-if="includegamemap && toggleExtraFilters" 
+      <multi-select-filter v-if="includegamemap" 
         :values="filters.game_maps" 
         :text="'Map'" 
         @input-changed="handleInputChange"

@@ -41,6 +41,8 @@ use App\Http\Controllers\ProfileController;
 //Esports
 use App\Http\Controllers\Esports\NGS\NGSController;
 use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
+use App\Http\Controllers\Esports\EsportsController;
+use App\Http\Controllers\Esports\CCL\CCLController;
 
 
 /*
@@ -125,11 +127,27 @@ Route::prefix('v1')->group(function () {
     Route::post('esports/ngs/divisions', [NGSController::class, 'getDivisionData']);
     Route::post('esports/ngs/teams', [NGSController::class, 'getTeamsData']);
     Route::post('esports/ngs/player/search', [NGSController::class, 'playerSearch']);
-    Route::post('esports/ngs/matches', [NGSController::class, 'getRecentMatchData']);
-    Route::post('esports/ngs/hero/stats', [NGSController::class, 'getOverallHeroStats']);
-    Route::post('esports/ngs/hero/talents/stats', [NGSController::class, 'getOverallTalentStats']);
+    Route::post('esports/ngs/matches', [EsportsController::class, 'getRecentMatchData']);
+    Route::post('esports/ngs/hero/stats', [EsportsController::class, 'getOverallHeroStats']);
+    Route::post('esports/ngs/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
 
     Route::post('esports/ngs/division/single', [NGSSingleDivisionController::class, 'getSingleDivisionData']);
+
+
+    Route::post('esports/single/team', [EsportsController::class, 'getData']);
+    Route::post('esports/single/player', [EsportsController::class, 'getData']);
+    Route::post('esports/single/player/hero', [EsportsController::class, 'getData']);
+    Route::post('esports/single/player/map', [EsportsController::class, 'getData']);
+
+
+    Route::post('esports/ccl/organizations', [CCLController::class, 'getOrganizationData']);
+    Route::post('esports/ccl/matches', [EsportsController::class, 'getRecentMatchData']);
+
+    Route::post('esports/ccl/hero/stats', [EsportsController::class, 'getOverallHeroStats']);
+    Route::post('esports/ccl/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
+
+    Route::post('esports/nutcup/hero/stats', [EsportsController::class, 'getOverallHeroStats']);
+    Route::post('esports/nutcup/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
 
 
 });

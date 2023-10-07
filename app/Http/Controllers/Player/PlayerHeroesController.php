@@ -58,6 +58,7 @@ class PlayerHeroesController extends Controller
                 'blizz_id' => $blizz_id,
                 'region' => $region,
                 'hero' => $hero,
+                'heroObject' => $this->globalDataService->getHeroModel($hero),
                 'filters' => $this->globalDataService->getFilterData(),
                 'regions' => $this->globalDataService->getRegionIDtoString(),
                 ]);

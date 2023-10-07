@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Player;
 use Illuminate\Support\Facades\Validator;
-
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Rules\GameTypeInputValidation;
@@ -60,6 +59,7 @@ class PlayerMatchHistory extends Controller
             'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation()],
             'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
             'season' => ['sometimes', 'nullable', new SeasonInputValidation()],
+            'pagination_page' => 'required:integer',
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -82,7 +82,9 @@ class PlayerMatchHistory extends Controller
         $game_map = $request["game_map"] ? Map::whereIn('name',  $request["game_map"])->pluck('map_id')->toArray() : null;
         $season = $request["season"];
         
-        
+        $pagination_page = $request["pagination_page"];
+        $perPage = 100;
+
         $result = DB::table('replay')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
             ->join('scores', function($join) {
@@ -131,9 +133,8 @@ class PlayerMatchHistory extends Controller
                 return $query->where("hero", $hero);
             })
             ->orderByDesc("game_date")
-            //->toSql();
-            ->limit(100)
-            ->get();
+            ->paginate($perPage, ['*'], 'page', $pagination_page);
+
 
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
@@ -169,6 +170,7 @@ class PlayerMatchHistory extends Controller
             $item->winner = $item->winner == 1 ? "True" : "False";
             return $item;
         });
-        return $modifiedResult;
+
+        return $result;
     }
 }

@@ -13,7 +13,7 @@
       </thead>
       <tbody>
         <tr v-for="division in data" :key="division">
-          <td><a :href="'/Esports/NGS/Division/' + division.division_0">{{ division.division_0 }}</a></td>
+          <td><a :href="getUrl(division.division_0)">{{ division.division_0 }}</a></td>
           <td>{{ division.count }}</td>
         </tr>
       </tbody>
@@ -28,6 +28,9 @@ export default {
   },
   props: {
     data: Array,
+    season: {
+      type: [String, Number ]
+    }
   },
   data(){
     return {
@@ -42,6 +45,14 @@ export default {
   watch: {
   },
   methods: {
+    getUrl(division){
+      let newURL = `/Esports/NGS/Division/${division}`;
+      if (this.season) {
+        newURL += `?season=${this.season}`;
+      }
+
+      return newURL;
+    },
   }
 }
 </script>

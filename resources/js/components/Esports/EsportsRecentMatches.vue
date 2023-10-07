@@ -1,5 +1,8 @@
 <template>
   <div>
+
+
+
     <table class="min-w-full bg-white">
       <thead>
         <tr>
@@ -26,45 +29,40 @@
           </th>                        
         </tr>
       </thead>
-      <tbody>
-        <tr v-for="(row, index) in sortedData" :key="index">
-          <td>
-            <a :href="'/Esports/NGS/Match/Single/' + row.replayID">{{ row.replayID }}</a>
-          </td>
-          <td>
-            {{ row.team_0_name }}
-          </td>
-          <td>
-            {{ row.team_1_name }}
-          </td>
-          <td>
-            Game {{ row.game }} Round {{ row.round }}
-          </td>
-          <td>
-            {{ row.game_date }}
-          </td>
-          <td>
-            {{ row.game_map.name }}
-          </td>
-          <td class="py-2 px-3 border-b border-gray-200 flex items-center gap-1">
-            <hero-image-wrapper :hero="row.heroes[0]"></hero-image-wrapper>
-            <hero-image-wrapper :hero="row.heroes[1]"></hero-image-wrapper>
-            <hero-image-wrapper :hero="row.heroes[2]"></hero-image-wrapper>
-            <hero-image-wrapper :hero="row.heroes[3]"></hero-image-wrapper>
-            <hero-image-wrapper :hero="row.heroes[4]"></hero-image-wrapper>
-            <hero-image-wrapper :hero="row.heroes[5]"></hero-image-wrapper>
-            <hero-image-wrapper :hero="row.heroes[6]"></hero-image-wrapper>
-            <hero-image-wrapper :hero="row.heroes[7]"></hero-image-wrapper>
-            <hero-image-wrapper :hero="row.heroes[8]"></hero-image-wrapper>
-            <hero-image-wrapper :hero="row.heroes[9]"></hero-image-wrapper>
-          </td>
-        </tr>
-      </tbody>
+        <tbody>
+          <tr v-for="(row, index) in sortedData" :key="index">
+            <td>
+              <a :href="'/Esports/NGS/Match/Single/' + row.replayID">{{ row.replayID }}</a>
+            </td>
+            <td>
+              {{ row.team_0_name }}
+            </td>
+            <td>
+              {{ row.team_1_name }}
+            </td>
+            <td>
+              Game {{ row.game }} Round {{ row.round }}
+            </td>
+            <td>
+              {{ formatDate(row.game_date) }}
+            </td>
+            <td>
+              {{ row.game_map.name }}
+            </td>
+            <td class="py-2 px-3 border-b border-gray-200 flex items-center gap-1">
+              <template v-for="(hero, heroIndex) in row.heroes">
+                <hero-image-wrapper v-if="hero" :hero="hero" :key="heroIndex"></hero-image-wrapper>
+              </template>
+            </td>
+          </tr>
+        </tbody>
     </table>
   </div>
 </template>
 
 <script>
+import moment from 'moment-timezone';
+
 export default {
   name: 'EsportsRecentMatches',
   components: {
@@ -74,6 +72,7 @@ export default {
   },
   data(){
     return {
+      userTimezone: moment.tz.guess(),
       sortKey: '',
       sortDir: 'desc',
     }
@@ -106,6 +105,12 @@ export default {
         this.sortDir = 'desc';
       }
       this.sortKey = key;
+    },
+    formatDate(dateString) {
+      const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik'); // Assuming date strings are in UTC
+      const localDate = originalDate.clone().tz(this.userTimezone);
+
+      return localDate.format('MM/DD/YYYY h:mm:ss a');
     },
   }
 }
