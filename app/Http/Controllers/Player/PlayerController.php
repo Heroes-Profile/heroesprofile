@@ -141,7 +141,6 @@ class PlayerController extends Controller
                 $cachedData = $this->calculateProfile($blizz_id, $region, $game_type, $season, $cachedData);
             }
         }
-
         return $this->formatCache($cachedData, $blizz_id, $region, $battletag);
     }
 
