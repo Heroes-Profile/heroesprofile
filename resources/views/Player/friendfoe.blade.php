@@ -1,8 +1,7 @@
 @extends('layouts.app')
-@section('title', 'Heroes Profile')
-@section('meta_keywords', '')
-@section('meta_description', '')
-
+@section('title', $battletag . " Friend and Foe Data")
+@section('meta_keywords', 'Friend and Foe Data, Player Connections, Player Statistics')
+@section('meta_description', 'Explore the connections and statistics for ' . $battletag . ', including friends and foes. Analyze the players ' . $battletag . ' frequently plays with and against.')
 @section('content')
   <friend-foe  
     :filters="{{ json_encode($filters) }}" 

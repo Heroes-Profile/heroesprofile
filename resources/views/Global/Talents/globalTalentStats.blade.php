@@ -1,8 +1,7 @@
 @extends('layouts.app')
-@section('title', 'Heroes Profile')
-@section('meta_keywords', '')
-@section('meta_description', '')
-
+@section('title', $userinput . ' Talent Stats & Builds')
+@section('meta_keywords', 'Talent Stats, Talent Win Rates, Talent Builds, Hero Talents')
+@section('meta_description', 'Explore talent stats for heroes, including talent win rates and talent builds. Analyze which talents perform well and customize your hero builds for success.')
 @section('content')
   <global-talents-stats 
     :heroes="{{ json_encode(session('heroes')) }}" 

@@ -1,8 +1,7 @@
 @extends('layouts.app')
-@section('title', 'Heroes Profile')
-@section('meta_keywords', '')
-@section('meta_description', '')
-
+@section('title', 'Talent Builder')
+@section('meta_keywords', 'Talent Builder, Talent Builds, Hero Talents, Custom Builds')
+@section('meta_description', 'Build and customize your own hero talent builds. Analyze talent performance with real data to optimize your hero builds for success.')
 @section('content')
   <global-talents-builder 
     :heroes="{{ json_encode(session('heroes')) }}" 

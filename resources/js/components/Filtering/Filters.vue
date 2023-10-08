@@ -301,6 +301,7 @@ export default {
     }
   },
   created(){    
+
     this.defaultGameType = this.gametypedefault;
     this.selectedSingleFilters = {
     };
@@ -323,6 +324,7 @@ export default {
     this.selectedSingleFilters["Stat Filter"] = this.defaultStatType;
     
     this.toggleExtraFilters = this.advancedfiltering;
+
     this.modifiedincluderole = this.includerole
     this.modifiedincludegroupsize = this.includegroupsize;
   },

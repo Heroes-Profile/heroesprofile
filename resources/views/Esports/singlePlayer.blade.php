@@ -1,7 +1,8 @@
 @extends('layouts.app')
-@section('title', 'Heroes Profile')
-@section('meta_keywords', '')
-@section('meta_description', '')
+
+@section('title', 'Player Stats Esports')
+@section('meta_keywords', 'Heroes Profile, esports player stats, esports leagues, player performance, Heroes of the Storm')
+@section('meta_description', 'Explore player statistics and performance in various esports leagues on Heroes Profile. Analyze player data, track their performance, and compare stats across different esports leagues.')
 
 @section('content')
   <esports-player-stats 
