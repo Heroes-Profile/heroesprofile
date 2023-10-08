@@ -1,8 +1,7 @@
 @extends('layouts.app')
-@section('title', 'Heroes Profile')
-@section('meta_keywords', '')
-@section('meta_description', '')
-
+@section('title', $battletag . "'s Main Player Stats")
+@section('meta_keywords', 'Player Stats, Hero Statistics, Player Profile, Player Performance')
+@section('meta_description', 'Explore the main player stats of ' . $battletag . ', including hero statistics, player profile, and performance metrics.')
 @section('content')
   <player-stats 
     :settinghero="{{ json_encode($settingHero) }}" 

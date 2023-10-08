@@ -1,8 +1,7 @@
 @extends('layouts.app')
-@section('title', 'Heroes Profile')
-@section('meta_keywords', '')
-@section('meta_description', '')
-
+@section('title', $battletag . " All Role Stats")
+@section('meta_keywords', 'Player Role Stats, Role Statistics, Player Stats')
+@section('meta_description', 'Explore the statistics and data for all roles played by ' . $battletag . '. Analyze player performance and stats for different roles.')
 @section('content')
   <player-roles-all-stats 
     :filters="{{ json_encode($filters) }}" 

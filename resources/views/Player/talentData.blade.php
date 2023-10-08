@@ -1,8 +1,7 @@
 @extends('layouts.app')
-@section('title', 'Heroes Profile')
-@section('meta_keywords', '')
-@section('meta_description', '')
-
+@section('title', $battletag . "'s Talent Stats")
+@section('meta_keywords', 'Player Talents, Talent Statistics, Talent Performance, Talent Builds, Talent Win Rate')
+@section('meta_description', 'Explore the talent stats of ' . $battletag . ', including talent performance, talent builds, and win rate statistics.')
 @section('content')
   <player-talents 
     :battletag="{{ json_encode($battletag) }}" 
@@ -13,6 +12,5 @@
     :heroes="{{ json_encode(session('heroes')) }}"
     :talentimages="{{ json_encode($talentimages) }}"  
     :regionsmap="{{ json_encode(session('regions')) }}"
-    >
-    </player-talents>
+  ></player-talents>
 @endsection

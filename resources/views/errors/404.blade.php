@@ -1,7 +1,8 @@
 @extends('layouts.app')
-@section('title', 'Heroes Profile')
-@section('meta_keywords', '')
-@section('meta_description', '')
+
+@section('title', 'Error')
+@section('meta_keywords', '404 error, page not found, not found error, website error, error page, site not found')
+@section('meta_description', 'The page you were looking for could not be found.')
 
 @section('content')
 <h1 class="p-20 text-center font-logo">You got lost</h1>
@@ -11,4 +12,3 @@
 
 <div style="font-size: 10px;">Image referenced from https://static.heroesofthestorm.com/comics/secrets-of-the-storm/en-us-09ab7fb85c.pdf</div>
 @endsection
-
