@@ -37,7 +37,7 @@
                         <a href="https://drafter.heroesprofile.com/Drafter" target="_blank" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Drafter</a>
                         <a href="https://dev.heroesprofile.com/" target="_blank" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Game Data</a>
                         <a href="https://api.heroesprofile.com/upload" target="_blank" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Replay Uploader</a>
-                        <a href="/" class="block px-4 py-2 border-b border-darken hover:bg-lighten cursor-not-allowed pointer-events-none">Activity Graphs</a>
+                        {{--<a href="/" class="block px-4 py-2 border-b border-darken hover:bg-lighten cursor-not-allowed pointer-events-none">Activity Graphs</a>--}}
                         <a href="/" class="block px-4 py-2 border-b border-darken hover:bg-lighten cursor-not-allowed pointer-events-none">Auto Battler</a>
                         <a href="/" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Find a Player</a>
 

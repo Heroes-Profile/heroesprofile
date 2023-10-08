@@ -62,7 +62,7 @@ class SingleMatchController extends Controller
     
     public function getData(Request $request){
         $validationRules = [
-            'esport' => 'required|in:NGS,CCL',
+            'esport' => 'nullable|in:NGS,CCL',
             'replayID' => 'required|integer',
         ];
 

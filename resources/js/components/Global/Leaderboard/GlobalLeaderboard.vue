@@ -2,6 +2,27 @@
   <div>
     <page-heading :infoText1="infoText1" :infoText2="infoText2" :heading="'Leaderboard'"></page-heading>
       
+
+
+
+
+    <custom-button @click="showLeaderboardRequirements = !showLeaderboardRequirements" :text="'Show Leaderboard Requirements'" :alt="'Show Leaderboard Requirements'" size="small" :ignoreclick="true"></custom-button>
+      <div v-if="showLeaderboardRequirements">
+        To be eligible for leaderboards, the following conditions must be met:
+    
+        <li>
+          <th>1:  Account level must be greater than or equal to 250.</th>
+          <th>2:  Must have played at least 5 times the number of weeks since the season started.</th>
+          <th>3:  Must have a win rate greater than or equal to 50%.</th>
+        </li>
+
+      Heroes Profile Rating forumla
+      <img :src="'/images/miscellaneous/mmr_calculation.png'"/>
+    </div>
+
+
+
+
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
@@ -162,6 +183,7 @@ export default {
       role: "Bruiser",
       sortKey: '',
       sortDir: 'desc',
+      showLeaderboardRequirements: false,
     }
   },
   created(){
