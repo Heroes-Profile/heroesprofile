@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText" :heading="'Talent Builder'"></page-heading>
+    <page-heading :infoText1="infoText1" :infoText2="infoText2" :heading="'Talent Builder'"></page-heading>
 
     <div v-if="!selectedHero">
       <hero-selection :heroes="heroes"></hero-selection>
@@ -30,7 +30,7 @@
     <div v-if="isLoading">
       <loading-component></loading-component>
     </div>
-    
+
     <div v-if="data"  class="flex">
       <talent-builder-column :data="data['1']" :level="1" :clickedData="clickedData"></talent-builder-column>
       <talent-builder-column :data="data['4']" :level="4" :clickedData="clickedData"></talent-builder-column>
@@ -40,6 +40,100 @@
       <talent-builder-column :data="data['16']" :level="16" :clickedData="clickedData"></talent-builder-column>
       <talent-builder-column :data="data['20']" :level="20" :clickedData="clickedData"></talent-builder-column>
     </div>
+
+    <infobox :input="'Build win rate and how many players have played that exact build. Win rate for builds to level 20 are inflated because teams that make it to level 20 win more. Therefore it is not an accurate representation of a builds viabllity. See table below for that calculation'"></infobox>
+
+
+    <infobox :input="'Calculated build win chance tries to guage what the builds win rate will be at any point during the game.'"></infobox>
+      <table v-if="builddata" class="min-w-full bg-white">
+        <thead>
+          <tr>
+            <th>
+              Talents
+            </th>
+            <th>
+              Copy Build to Game
+            </th>
+            <th>
+              Games Played with Build
+            </th>
+            <th>
+              Win rate
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="flex gap-x-1 mx-2 items-center">
+                <talent-image-wrapper v-if="builddata.level_one" :talent="builddata.level_one" :size="'medium'"></talent-image-wrapper>
+                <talent-image-wrapper v-if="builddata.level_four" :talent="builddata.level_four" :size="'medium'"></talent-image-wrapper>
+                <talent-image-wrapper v-if="builddata.level_seven" :talent="builddata.level_seven" :size="'medium'"></talent-image-wrapper>
+                <talent-image-wrapper v-if="builddata.level_ten" :talent="builddata.level_ten" :size="'medium'"></talent-image-wrapper>
+                <talent-image-wrapper v-if="builddata.level_thirteen" :talent="builddata.level_thirteen" :size="'medium'"></talent-image-wrapper>
+                <talent-image-wrapper v-if="builddata.level_sixteen" :talent="builddata.level_sixteen" :size="'medium'"></talent-image-wrapper>
+                <talent-image-wrapper v-if="builddata.level_twenty" :talent="builddata.level_twenty" :size="'medium'"></talent-image-wrapper>
+              </div>
+            </td>
+            <td class="py-2 px-3 border-b border-gray-200">
+            {{ this.getCopyBuildToGame(builddata.level_one, builddata.level_four, builddata.level_seven, builddata.level_ten, builddata.level_thirteen, builddata.level_sixteen, builddata.level_twenty, selectedHero) }}
+            <custom-button @click="copyToClipboard(builddata)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
+          </td>
+          <td>
+            {{ builddata.games_played}}
+          </td>
+          <td>
+            {{ builddata.win_rate}}
+          </td>
+          </tr>
+        </tbody>
+      </table>
+
+
+    <infobox :input="'Possible Replays do not take into account Hero Level, Hero Rank, Role Rank, or Mirror Match Filter options'"></infobox>
+
+    <table class="min-w-full bg-white">
+      <thead>
+        <tr>
+          <th>
+            Game ID
+          </th>
+          <th>
+            Map
+          </th>
+          <th>
+            Winner
+          </th>
+          <th>
+            Talents
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(row, index) in replays" :key="index">
+          <td>
+            <a :href="`/Match/Single/${row.replayID}`">{{ row.replayID}}</a>
+          </td>
+          <td>
+            {{ row.name}}
+          </td>
+          <td>
+            {{ row.winner == 0 ? "False" : "Winner" }}
+          </td>
+          <td>
+            <div class="flex gap-x-1 mx-2 items-center">
+              <talent-image-wrapper v-if="row.level_one" :talent="row.level_one" :size="'medium'"></talent-image-wrapper>
+              <talent-image-wrapper v-if="row.level_four" :talent="row.level_four" :size="'medium'"></talent-image-wrapper>
+              <talent-image-wrapper v-if="row.level_seven" :talent="row.level_seven" :size="'medium'"></talent-image-wrapper>
+              <talent-image-wrapper v-if="row.level_ten" :talent="row.level_ten" :size="'medium'"></talent-image-wrapper>
+              <talent-image-wrapper v-if="row.level_thirteen" :talent="row.level_thirteen" :size="'medium'"></talent-image-wrapper>
+              <talent-image-wrapper v-if="row.level_sixteen" :talent="row.level_sixteen" :size="'medium'"></talent-image-wrapper>
+              <talent-image-wrapper v-if="row.level_twenty" :talent="row.level_twenty" :size="'medium'"></talent-image-wrapper>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
 
 
@@ -67,7 +161,10 @@ export default {
       isLoading: false,
       selectedHero: null,
       data: null,
-      infoText: "Pick a talent in any tier below to start. The tool will calculate talent win rates dynamically as you change your build choices. Talents on tiers already selected will change based on updates made to the build. Select Hero. You can also see what games have been played for the build you are making. See Games.",
+      replays: null,
+      builddata: null,
+      infoText1: "Pick a talent in any tier below to start. The tool will calculate talent win rates dynamically as you change your build choices.",
+      infoText2: "Build win chance and win rate, along with games played by the build can be found below the talents.",
       clickedData: {
         1: null,
         4: null,
@@ -110,6 +207,7 @@ export default {
   methods: {
     async getData(){
       this.isLoading = true;
+      this.replays = null;
       try{
         const response = await this.$axios.post("/api/v1/global/talents/builder", {
           hero: this.selectedHero.name,
@@ -126,7 +224,11 @@ export default {
           mirrormatch: this.mirrormatch,
         });
 
-        this.data = response.data;
+        this.data = response.data.talentData;
+        this.replays = response.data.replays;
+        this.builddata = response.data.buildData;
+
+        console.log(this.builddata);
       }catch(error){
         //Do something here
       }
@@ -135,9 +237,6 @@ export default {
 
     talentClicked(talent, index, level){
       this.clickedData[level] = talent.talent_id;
-
-            console.log(this.clickedData);
-
       this.getData();
     },
 
@@ -171,6 +270,23 @@ export default {
 
       this.getData();
     },
+    getCopyBuildToGame(level_one, level_four, level_seven, level_ten, level_thirteen, level_sixteen, level_twenty, hero) {
+      return "[T" + 
+        (level_one ? level_one.sort : '0') + 
+        (level_four ? level_four.sort : '0') + 
+        (level_seven ? level_seven.sort : '0') + 
+        (level_ten ? level_ten.sort : '0') + 
+        (level_thirteen ? level_thirteen.sort : '0') + 
+        (level_sixteen ? level_sixteen.sort : '0') + 
+        (level_twenty ? level_twenty.sort : '0') +
+        "," + hero.build_copy_name + "]"
+    },
+    copyToClipboard(row) {
+      const textToCopy = this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, this.selectedHero);
+      navigator.clipboard.writeText(textToCopy).then(function() {
+      }).catch(function(err) {
+      });
+    }
   }
 }
 </script>
