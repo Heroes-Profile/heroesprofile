@@ -495,8 +495,14 @@ class PlayerController extends Controller
             $returnData->average_time_on_fire = "0 minutes, 0 seconds";
         }
 
-        //There is an issue with this
-        $hero_data = collect(json_decode($data->hero_data, true));
+        $hero_data = null;
+
+        if (is_string($data->hero_data)) {
+            $hero_data = collect(json_decode($data->hero_data, true));
+        }else{
+            $hero_data = collect($data->hero_data);
+        }
+
         $top_three_win_rate_heroes = null;
         $gamePlayedThresholds = [20, 15, 10, 5, 0];
 
@@ -616,7 +622,15 @@ class PlayerController extends Controller
         $returnData->ar_mmr_data = $ar_mmr_data;
 
 
-        $map_data = collect(json_decode($data->map_data, true));
+        $map_data = null;
+
+        if (is_string($data->map_data)) {
+            $map_data = collect(json_decode($data->map_data, true));
+        }else{
+            $map_data = collect($data->map_data);
+        }
+
+
         $top_three_win_rate_maps = null;
 
         foreach ($gamePlayedThresholds as $threshold) {
@@ -711,7 +725,13 @@ class PlayerController extends Controller
         $returnData->stack_five_win_rate = ($data->stack_five_wins + $data->stack_five_losses) > 0 ? round(($data->stack_five_wins / ($data->stack_five_wins + $data->stack_five_losses)) * 100, 2) : 0;
 
   
-        $matches = collect(json_decode($data->matches, true));
+        $matches = null;
+
+        if (is_string($data->matches)) {
+            $matches = collect(json_decode($data->matches, true));
+        }else{
+            $matches = $data->matches;
+        }
 
         $returnData->matchData = $matches->sortByDesc('game_date')->map(function($match) use ($maps, $heroData, $talentData){
             $match["game_type"] = $this->globalDataService->getGameTypeIDtoString()[$match["game_type"]];
