@@ -9,6 +9,7 @@
     :battletag="{{ json_encode($battletag) }}" 
     :blizzid="{{ json_encode($blizz_id) }}" 
     :region="{{ json_encode($region) }}"
+    :accountlevel="{{ json_encode($account_level) }}" 
     :regionsmap="{{ json_encode(session('regions')) }}"
   ></player-maps-all-stats>
 @endsection

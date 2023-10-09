@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Player;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 use App\Rules\GameMapInputValidation;
+use App\Models\Battletag;
 
 class PlayerMapsController extends Controller
 {
@@ -27,10 +29,16 @@ class PlayerMapsController extends Controller
             ];
         }
 
+        $account_level = $result = Battletag::where("blizz_id", $blizz_id)
+            ->where("region", $region)
+            ->select('account_level')
+            ->orderByDesc('account_level')
+            ->first()->account_level;
 
         return view('Player.Maps.allMapData')->with([
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
+                'account_level' => $account_level,
                 'region' => $region,
                 'filters' => $this->globalDataService->getFilterData(),
                 ]);

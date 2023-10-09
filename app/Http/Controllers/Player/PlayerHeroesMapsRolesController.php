@@ -298,13 +298,13 @@ class PlayerHeroesMapsRolesController extends Controller
                 $game->game_type = $gameTypes[$game->game_type];
                 $game->hero = $heroData[$game->hero];
                 $game->game_map = $maps[$game->game_map];
-                $game->level_one = $game->level_one ? $talentData[$game->level_one] : null;
-                $game->level_four = $game->level_four ? $talentData[$game->level_four] : null;
-                $game->level_seven = $game->level_seven ? $talentData[$game->level_seven] : null;
-                $game->level_ten = $game->level_ten ? $talentData[$game->level_ten] : null;
-                $game->level_thirteen = $game->level_thirteen ? $talentData[$game->level_thirteen] : null;
-                $game->level_sixteen = $game->level_sixteen ? $talentData[$game->level_sixteen] : null;
-                $game->level_twenty = $game->level_twenty ? $talentData[$game->level_twenty] : null;
+                $game->level_one = $game->level_one && isset($talentData[$game->level_one]) ? $talentData[$game->level_one] : null;
+                $game->level_four = $game->level_four && isset($talentData[$game->level_four])  ? $talentData[$game->level_four] : null;
+                $game->level_seven = $game->level_seven && isset($talentData[$game->level_seven])  ? $talentData[$game->level_seven] : null;
+                $game->level_ten = $game->level_ten  && isset($talentData[$game->level_ten]) ? $talentData[$game->level_ten] : null;
+                $game->level_thirteen = $game->level_thirteen && isset($talentData[$game->level_thirteen]) ? $talentData[$game->level_thirteen] : null;
+                $game->level_sixteen = $game->level_sixteen && isset($talentData[$game->level_sixteen])  ? $talentData[$game->level_sixteen] : null;
+                $game->level_twenty = $game->level_twenty && isset($talentData[$game->level_twenty]) ? $talentData[$game->level_twenty] : null;
 
                 $game->player_conservative_rating = round(1800 + 40 * $game->player_conservative_rating);
                 $game->hero_conservative_rating = round(1800 + 40 * $game->hero_conservative_rating);

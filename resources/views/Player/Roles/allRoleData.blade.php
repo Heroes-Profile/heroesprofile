@@ -7,6 +7,7 @@
     :filters="{{ json_encode($filters) }}" 
     :battletag="{{ json_encode($battletag) }}" 
     :blizzid="{{ json_encode($blizz_id) }}" 
+    :accountlevel="{{ json_encode($account_level) }}" 
     :region="{{ json_encode($region) }}"
     :regionsmap="{{ json_encode(session('regions')) }}"
   ></player-roles-all-stats>
