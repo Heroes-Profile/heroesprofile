@@ -71,7 +71,7 @@
 
 </div>
 <div v-else>
-  <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+  <loading-component :textoverride="true" :timer="true" :starttime="timertime">Large amount of data.<br/>Please be patient.<br/></loading-component>
 </div>
 
 </div>
@@ -91,6 +91,7 @@
       blizzid: String, 
       region: String,
       regionsmap: Object,
+      accountlevel: Number,
     },
     data(){
       return {
@@ -197,6 +198,9 @@ mounted() {
   this.getData();
 },
 computed: {
+  timertime(){
+    return parseInt(this.accountlevel * 3 * .003);
+  },
   filteredStats() {
     return this.stats.filter(stat => stat.name.toLowerCase().includes(this.searchQuery.toLowerCase()));
   },
