@@ -34,6 +34,7 @@
       <div> 
         <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
       </div>
+      <div class="min-w-[1500px] px-20 ">
       <table class="min-w-full bg-white">
         <thead>
           <tr>
@@ -78,6 +79,7 @@
           </tr>
         </tbody>
       </table>
+    </div>
     </div>
     <div v-else>
       <loading-component></loading-component>
