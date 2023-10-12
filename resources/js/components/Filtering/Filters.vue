@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="flex flex-wrap items-center bg-gray-dark md:px-20">
-
+    <div class="flex  items-center bg-gray-dark md:px-20">
+      <div class="flex flex-wrap items-center">
       <!--Hero or Role -->
       <single-select-filter v-if="includeherorole" 
         :values="filters.hero_role" 
@@ -211,12 +211,14 @@
         @input-changed="handleInputChange" 
         :defaultValue="filters.mirror[0].code"
       ></single-select-filter>
-
-
-      <button :disabled="disabledFilter" @click="applyFilter" class="ml-10 p-2" :class="{'bg-blue text-white': !disabledFilter, 'bg-gray-400 text-gray-700': disabledFilter}">
+</div>
+<button :disabled="disabledFilter" @click="applyFilter" class="ml-10 p-2" :class="{'bg-blue text-white': !disabledFilter, 'bg-gray-400 text-gray-700': disabledFilter}">
         Filter
       </button>
+
+      
     </div>
+
     <custom-button v-if="!hideadvancedfilteringbutton" @click="toggleExtraFilters = !toggleExtraFilters" :text="toggleButtonText" :alt="toggleButtonText" size="small" :ignoreclick="true"></custom-button>
 
 
