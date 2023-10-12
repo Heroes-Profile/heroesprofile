@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class LaravelProfilePage extends Model
 {
     protected $table = 'laravel_profile_page';
+
     protected $primaryKey = 'profile_page_id';
+
     protected $connection = 'heroesprofile_cache';
 
     public $timestamps = false;
@@ -22,15 +24,13 @@ class LaravelProfilePage extends Model
         return $query->where('region', $region);
     }
 
-
-
-/*
-      public function scopeFilterByRoleLeagueTier($query, $roleLeagueTier)
-  {
-    if (!empty($roleLeagueTier)) {
-      return $query->whereIn('role_league_tier', $roleLeagueTier);
-    }
-    return $query;
-  }
-  */
+    /*
+          public function scopeFilterByRoleLeagueTier($query, $roleLeagueTier)
+      {
+        if (!empty($roleLeagueTier)) {
+          return $query->whereIn('role_league_tier', $roleLeagueTier);
+        }
+        return $query;
+      }
+      */
 }

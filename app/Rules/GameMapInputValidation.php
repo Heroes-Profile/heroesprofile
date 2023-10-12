@@ -2,15 +2,14 @@
 
 namespace App\Rules;
 
-use Closure;
-use Illuminate\Contracts\Validation\Rule;
 use App\Models\Map;
+use Illuminate\Contracts\Validation\Rule;
 
 class GameMapInputValidation implements Rule
 {
     public function passes($attribute, $value)
     {
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             $value = [$value];
         }
 

@@ -2,7 +2,6 @@
 
 namespace App\Rules;
 
-use Closure;
 use Illuminate\Contracts\Validation\Rule;
 
 class StackSizeInputValidation implements Rule

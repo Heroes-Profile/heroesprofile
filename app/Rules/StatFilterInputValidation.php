@@ -2,7 +2,6 @@
 
 namespace App\Rules;
 
-use Closure;
 use Illuminate\Contracts\Validation\Rule;
 
 class StatFilterInputValidation implements Rule
@@ -44,14 +43,15 @@ class StatFilterInputValidation implements Rule
         'multikill',
         'physical_damage',
         'spell_damage',
-        'regen_globes'
+        'regen_globes',
     ];
 
     public function passes($attribute, $value)
     {
-        if (!in_array($value, $this->validStats)) {
+        if (! in_array($value, $this->validStats)) {
             return false;
         }
+
         return true;
     }
 

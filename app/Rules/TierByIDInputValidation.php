@@ -2,23 +2,20 @@
 
 namespace App\Rules;
 
-use Closure;
-use Illuminate\Contracts\Validation\Rule;
-
 use App\Models\LeagueTier;
+use Illuminate\Contracts\Validation\Rule;
 
 class TierByIDInputValidation implements Rule
 {
     public function passes($attribute, $value)
     {
         // Ensure $value is an array
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             return false;
         }
 
         $validTier = LeagueTier::pluck('tier_id')->toArray();
         $filteredTiers = array_intersect($value, $validTier);
-        
 
         if (empty($filteredTiers)) {
             return false;

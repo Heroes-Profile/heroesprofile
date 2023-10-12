@@ -2,34 +2,31 @@
 
 namespace App\Http\Controllers\Global;
 
-use App\Http\Controllers\Controller;
+use App\Models\HeroesDataTalent;
+use App\Models\Leaderboard;
+use App\Rules\GameTypeInputValidation;
+use App\Rules\HeroInputByIDValidation;
+use App\Rules\RegionInputValidation;
+use App\Rules\RoleInputValidation;
+use App\Rules\SeasonInputValidation;
+use App\Rules\StackSizeInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-use App\Rules\SeasonInputValidation;
-use App\Rules\HeroInputByIDValidation;
-use App\Rules\RegionInputValidation;
-use App\Rules\MMRTypeInputValidation;
-use App\Rules\StackSizeInputValidation;
-use App\Rules\GameTypeInputValidation;
-use App\Rules\RoleInputValidation;
-
-use App\Models\Leaderboard;
-use App\Models\Hero;
-use App\Models\HeroesDataTalent;
-
 class GlobalLeaderboardController extends GlobalsInputValidationController
 {
-    public function show(Request $request){
+    public function show(Request $request)
+    {
         return view('Global.Leaderboard.globalLeaderboard')->with([
             'filters' => $this->globalDataService->getFilterData(),
             'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
             'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
-            'defaultseason' => (string)$this->globalDataService->getDefaultSeason(),
+            'defaultseason' => (string) $this->globalDataService->getDefaultSeason(),
         ]);
     }
 
-    public function getLeaderboardData(Request $request){
+    public function getLeaderboardData(Request $request)
+    {
         //return response()->json($request->all());
 
         $validationRules = [
@@ -46,44 +43,44 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
         if ($validator->fails()) {
             return [
-                "data" => $request->all(),
-                "status" => "failure to validate inputs"
+                'data' => $request->all(),
+                'status' => 'failure to validate inputs',
             ];
         }
 
-        $hero = $request["hero"];
-        $role = $this->getMMRTypeValue($request["role"]);
+        $hero = $request['hero'];
+        $role = $this->getMMRTypeValue($request['role']);
 
-        $gameType = $this->getGameTypeFilterValues($request["game_type"]); 
-        $season = $request["season"];
-        $region = $this->getRegionFilterValues($request["region"]);
+        $gameType = $this->getGameTypeFilterValues($request['game_type']);
+        $season = $request['season'];
+        $region = $this->getRegionFilterValues($request['region']);
 
-        $type = $request["type"];
+        $type = $request['type'];
         $typeNumber = 0;
 
-        if($type == "player"){
-            $typeNumber = $this->getMMRTypeValue($request["type"]);
-        }else if($type == "hero"){
+        if ($type == 'player') {
+            $typeNumber = $this->getMMRTypeValue($request['type']);
+        } elseif ($type == 'hero') {
             $typeNumber = $hero;
-        }else if($type == "role"){
+        } elseif ($type == 'role') {
             $typeNumber = $role;
         }
 
         $groupsize = -1;
-        if($season < 20){
+        if ($season < 20) {
             $groupsize = 0;
-        }else{
-            if($request["groupsize"] == "Solo"){
+        } else {
+            if ($request['groupsize'] == 'Solo') {
                 $groupsize = 1;
-            }else if($request["groupsize"] == "Duo"){
+            } elseif ($request['groupsize'] == 'Duo') {
                 $groupsize = 2;
-            }else if($request["groupsize"] == "3 Players"){
+            } elseif ($request['groupsize'] == '3 Players') {
                 $groupsize = 3;
-            }else if($request["groupsize"] == "4 Players"){
+            } elseif ($request['groupsize'] == '4 Players') {
                 $groupsize = 4;
-            }else if($request["groupsize"] == "5 Players"){
+            } elseif ($request['groupsize'] == '5 Players') {
                 $groupsize = 5;
-            }else if($request["groupsize"] == "All"){
+            } elseif ($request['groupsize'] == 'All') {
                 $groupsize = 0;
             }
         }
@@ -106,15 +103,14 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         $talentData = HeroesDataTalent::all();
         $talentData = $talentData->keyBy('talent_id');
 
-        $data = $data->map(function ($item) use ($gameType, $heroData, $rankTiers, $talentData, $type, $typeNumber) {
-            $item->mmr = round(1800 + 40 * $item->conservative_rating); 
+        $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber) {
+            $item->mmr = round(1800 + 40 * $item->conservative_rating);
             $item->win_rate = round($item->win_rate, 2);
             $item->rating = round($item->rating, 2);
             $item->most_played_hero = $item->most_played_hero ? $heroData[$item->most_played_hero] : null;
             $item->tier = $this->globalDataService->calculateSubTier($rankTiers, $item->mmr);
             $item->region_id = $item->region;
             $item->region = $this->globalDataService->getRegionIDtoString()[$item->region];
-
 
             $item->level_one = $item->level_one && $item->level_one != 0 ? $talentData[$item->level_one] : null;
             $item->level_four = $item->level_four && $item->level_four != 0 ? $talentData[$item->level_four] : null;
@@ -124,12 +120,11 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             $item->level_sixteen = $item->level_sixteen && $item->level_sixteen != 0 ? $talentData[$item->level_sixteen] : null;
             $item->level_twenty = $item->level_twenty && $item->level_twenty != 0 ? $talentData[$item->level_twenty] : null;
 
-            $item->hero = $type == "hero" ? $heroData[$typeNumber] : null;
+            $item->hero = $type == 'hero' ? $heroData[$typeNumber] : null;
 
             return $item;
         });
+
         return $data;
     }
-
-
 }

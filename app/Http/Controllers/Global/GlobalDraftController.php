@@ -1,20 +1,18 @@
 <?php
 
 namespace App\Http\Controllers\Global;
-use Illuminate\Support\Facades\Cache;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-
-use App\Rules\HeroInputValidation;
 
 use App\Models\GlobalHeroDraftOrder;
-use App\Models\GlobalHeroStatsBans;
+use App\Rules\HeroInputValidation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Validator;
 
 class GlobalDraftController extends GlobalsInputValidationController
 {
-    public function show(Request $request, $hero = null){
-        if (!is_null($hero)) {
+    public function show(Request $request, $hero = null)
+    {
+        if (! is_null($hero)) {
             $validationRules = [
                 'hero' => ['required', new HeroInputValidation()],
             ];
@@ -25,7 +23,7 @@ class GlobalDraftController extends GlobalsInputValidationController
                 return back();
             }
         }
-        $userinput = $this->globalDataService->getHeroModel($request["hero"]);
+        $userinput = $this->globalDataService->getHeroModel($request['hero']);
 
         return view('Global.Draft.globalDraftStats')
             ->with([
@@ -38,12 +36,13 @@ class GlobalDraftController extends GlobalsInputValidationController
             ]);
     }
 
-    public function getDraftData(Request $request){
+    public function getDraftData(Request $request)
+    {
         ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 
         //return response()->json($request->all());
 
-        $validationRules = array_merge($this->globalsValidationRules($request["timeframe_type"]), [
+        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type']), [
             'hero' => ['required', new HeroInputValidation()],
         ]);
 
@@ -51,38 +50,37 @@ class GlobalDraftController extends GlobalsInputValidationController
 
         if ($validator->fails()) {
             return [
-                "data" => $request->all(),
-                "status" => "failure to validate inputs"
+                'data' => $request->all(),
+                'status' => 'failure to validate inputs',
             ];
         }
 
+        $hero = $this->getHeroFilterValue($request['hero']);
+        $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameType = $this->getGameTypeFilterValues($request['game_type']);
+        $leagueTier = $request['league_tier'];
+        $heroLeagueTier = $request['hero_league_tier'];
+        $roleLeagueTier = $request['role_league_tier'];
+        $gameMap = $this->getGameMapFilterValues($request['game_map']);
+        $heroLevel = $request['hero_level'];
+        $region = $this->getRegionFilterValues($request['region']);
 
-        $hero = $this->getHeroFilterValue($request["hero"]);
-        $gameVersion = $this->getTimeframeFilterValues($request["timeframe_type"], $request["timeframe"]);
-        $gameType = $this->getGameTypeFilterValues($request["game_type"]); 
-        $leagueTier = $request["league_tier"];
-        $heroLeagueTier = $request["hero_league_tier"];
-        $roleLeagueTier = $request["role_league_tier"];
-        $gameMap = $this->getGameMapFilterValues($request["game_map"]);
-        $heroLevel = $request["hero_level"];
-        $region = $this->getRegionFilterValues($request["region"]);
-
-        $cacheKey = "GlobalDraftStats|" . json_encode($request->all());
+        $cacheKey = 'GlobalDraftStats|'.json_encode($request->all());
 
         //return $cacheKey;
 
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
-                                                                                                                         $hero,
-                                                                                                                         $gameVersion, 
-                                                                                                                         $gameType, 
-                                                                                                                         $leagueTier, 
-                                                                                                                         $heroLeagueTier,
-                                                                                                                         $roleLeagueTier,
-                                                                                                                         $gameMap,
-                                                                                                                         $heroLevel,
-                                                                                                                         $region,
-                                                                                                                        ){
-  
+            $hero,
+            $gameVersion,
+            $gameType,
+            $leagueTier,
+            $heroLeagueTier,
+            $roleLeagueTier,
+            $gameMap,
+            $heroLevel,
+            $region,
+        ) {
+
             $data = GlobalHeroDraftOrder::query()
                 ->select('pick_number', 'win_loss')
                 ->selectRaw('SUM(count) as games_played')
@@ -102,7 +100,6 @@ class GlobalDraftController extends GlobalsInputValidationController
                 //return $data;
                 ->get();
 
-
             $totalGamesPlayed = $data->sum('games_played');
 
             $data = $data->groupBy('pick_number')->map(function ($group) use ($totalGamesPlayed) {
@@ -116,7 +113,6 @@ class GlobalDraftController extends GlobalsInputValidationController
 
                 $popularity = $totalGamesPlayed > 0 ? round(($gamesPlayed / $totalGamesPlayed) * 100, 2) : 0;
 
-
                 return [
                     'pick_number' => $firstItem['pick_number'],
                     'wins' => $wins,
@@ -129,6 +125,7 @@ class GlobalDraftController extends GlobalsInputValidationController
 
             return $data;
         });
+
         return $data;
     }
 }

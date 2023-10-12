@@ -2,16 +2,15 @@
 
 namespace App\Rules;
 
-use Closure;
-use Illuminate\Contracts\Validation\Rule;
 use App\Models\GameType;
+use Illuminate\Contracts\Validation\Rule;
 
 class GameTypeInputValidation implements Rule
 {
     public function passes($attribute, $value)
     {
         // Convert single game type to an array
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             $value = [$value];
         }
 

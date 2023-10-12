@@ -2,15 +2,15 @@
 
 namespace App\Rules;
 
-use Closure;
-use Illuminate\Contracts\Validation\Rule;
 use App\Models\MMRTypeID;
+use Illuminate\Contracts\Validation\Rule;
 
 class MMRTypeInputValidation implements Rule
 {
     public function passes($attribute, $value)
     {
         $validTypes = MMRTypeID::pluck('name')->toArray();
+
         return in_array($value, $validTypes);
     }
 

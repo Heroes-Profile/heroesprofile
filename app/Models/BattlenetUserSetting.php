@@ -4,18 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use App\Models\Hero;
-
 class BattlenetUserSetting extends Model
 {
     protected $table = 'battlenet_user_settings';
+
     protected $primaryKey = 'battlenet_user_settings_id';
+
     protected $connection = 'heroesprofile';
 
-
     protected $fillable = [
-        "setting",
-        "value"
+        'setting',
+        'value',
     ];
 
     public function battlenetAccount()
@@ -24,11 +23,12 @@ class BattlenetUserSetting extends Model
     }
 
     public function getValueAttribute($value)
-    {   
+    {
         $setting = $this->attributes['setting'];
-        if($setting == "hero"){
-            return Hero::where("name", $value)->first()->id;
+        if ($setting == 'hero') {
+            return Hero::where('name', $value)->first()->id;
         }
+
         return $value;
     }
 }
