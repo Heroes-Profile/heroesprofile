@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Talent Matchup Stats')
+@section('title', 'Global Talent Matchup Stats')
 @section('meta_keywords', 'Talent Matchup Stats, Hero Talents, Hero Matchups, Talent Performance')
 @section('meta_description', 'Explore talent matchup stats between heroes, both as allies and opponents. Analyze which talents work well together and customize your hero builds for success.')
 

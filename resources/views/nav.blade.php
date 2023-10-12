@@ -18,7 +18,7 @@
                         <a href="/Global/Matchups" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Matchup Stats</a>
                         <a href="/Global/Matchups/Talents" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Matchup Talent Stats</a>
                         <a href="/Global/Compositions" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Compositional Stats</a>
-                        <a href="/Global/Draft/General" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Draft Stats</a>
+                        <a href="/Global/Draft" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Draft Stats</a>
                         <a href="/Global/Party" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Party Stats</a>
                         {{--<a href="/Global/Extra" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Extra Stats</a>--}}
                     </div>

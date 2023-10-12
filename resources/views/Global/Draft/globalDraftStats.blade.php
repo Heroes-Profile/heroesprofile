@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
-@section('title', $userinput . ' Global Draft Stats')
+@if ($userinput)
+  @section('title', $userinput["name"] . ' Global Draft Stats')
+@else
+  @section('title', 'Global Draft Stats')
+@endif
+
 @section('meta_keywords', 'Draft Stats, Hero Bans, Hero Picks, Draft Order, Drafting Data')
 @section('meta_description', 'Explore global draft stats. Analyze hero bans, picks, draft order, and drafting data to strategize your games effectively. Filter and analyze hero data to make informed decisions.')
 
