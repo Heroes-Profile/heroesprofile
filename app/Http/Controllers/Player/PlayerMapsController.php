@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
+use App\Models\Battletag;
+use App\Rules\GameMapInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
-
-use App\Rules\GameMapInputValidation;
-use App\Models\Battletag;
 
 class PlayerMapsController extends Controller
 {
@@ -24,27 +22,28 @@ class PlayerMapsController extends Controller
 
         if ($validator->fails()) {
             return [
-                "data" => compact('battletag', 'blizz_id', 'region'),
-                "status" => "failure to validate inputs"
+                'data' => compact('battletag', 'blizz_id', 'region'),
+                'status' => 'failure to validate inputs',
             ];
         }
 
-        $account_level = $result = Battletag::where("blizz_id", $blizz_id)
-            ->where("region", $region)
+        $account_level = $result = Battletag::where('blizz_id', $blizz_id)
+            ->where('region', $region)
             ->select('account_level')
             ->orderByDesc('account_level')
             ->first()->account_level;
 
         return view('Player.Maps.allMapData')->with([
-                'battletag' => $battletag,
-                'blizz_id' => $blizz_id,
-                'account_level' => $account_level,
-                'region' => $region,
-                'filters' => $this->globalDataService->getFilterData(),
-                ]);
+            'battletag' => $battletag,
+            'blizz_id' => $blizz_id,
+            'account_level' => $account_level,
+            'region' => $region,
+            'filters' => $this->globalDataService->getFilterData(),
+        ]);
     }
 
-    public function showSingle(Request $request, $battletag, $blizz_id, $region, $map){
+    public function showSingle(Request $request, $battletag, $blizz_id, $region, $map)
+    {
         $validationRules = [
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
@@ -56,21 +55,20 @@ class PlayerMapsController extends Controller
 
         if ($validator->fails()) {
             return [
-                "data" => compact('battletag', 'blizz_id', 'region', 'map'),
-                "status" => "failure to validate inputs"
+                'data' => compact('battletag', 'blizz_id', 'region', 'map'),
+                'status' => 'failure to validate inputs',
             ];
         }
 
-        $map = $request["map"];
-
+        $map = $request['map'];
 
         return view('Player.Maps.singleMapData')->with([
-                'battletag' => $battletag,
-                'blizz_id' => $blizz_id,
-                'region' => $region,
-                'map' => $map,
-                'filters' => $this->globalDataService->getFilterData(),
-                'regions' => $this->globalDataService->getRegionIDtoString(),
-                ]);
+            'battletag' => $battletag,
+            'blizz_id' => $blizz_id,
+            'region' => $region,
+            'map' => $map,
+            'filters' => $this->globalDataService->getFilterData(),
+            'regions' => $this->globalDataService->getRegionIDtoString(),
+        ]);
     }
 }

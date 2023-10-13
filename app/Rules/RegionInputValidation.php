@@ -2,22 +2,20 @@
 
 namespace App\Rules;
 
-use Closure;
 use Illuminate\Contracts\Validation\Rule;
 
 class RegionInputValidation implements Rule
 {
     protected $validRegions = [
-        "NA" => 1,
-        "EU" => 2,
-        "KR" => 3,
-        "CN" => 5
+        'NA' => 1,
+        'EU' => 2,
+        'KR' => 3,
+        'CN' => 5,
     ];
 
     public function passes($attribute, $value)
     {
-        if (!is_array($value)) 
-        {
+        if (! is_array($value)) {
             $value = [$value];
         }
 

@@ -1,30 +1,21 @@
 <?php
 
 namespace App\Services;
+
+use App\Models\Battletag;
+use App\Models\CCL\CCLTeam;
+use App\Models\GameType;
+use App\Models\Hero;
+use App\Models\HeroesDataTalent;
+use App\Models\LeagueTier;
+use App\Models\Map;
+use App\Models\NGS\NGSTeam;
+use App\Models\Replay;
+use App\Models\SeasonDate;
+use App\Models\SeasonGameVersion;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Carbon\Carbon;
-
-use App\Models\Replay;
-use App\Models\Hero;
-use App\Models\SeasonGameVersion;
-use App\Models\GameType;
-use App\Models\Map;
-use App\Models\LeagueTier;
-use App\Models\SeasonDate;
-
-use App\Models\MasterMMRDataQM;
-use App\Models\MasterMMRDataUD;
-use App\Models\MasterMMRDataHL;
-use App\Models\MasterMMRDataTL;
-use App\Models\MasterMMRDataSL;
-use App\Models\MasterMMRDataAR;
-use App\Models\Battletag;
-use App\Models\HeroesDataTalent;
-
-use App\Models\NGS\NGSTeam;
-use App\Models\CCL\CCLTeam;
-
 
 class GlobalDataService
 {
@@ -33,71 +24,78 @@ class GlobalDataService
     public function __construct()
     {
         //can add modifier here for patreons to reduce what they can filter on
-        $this->filtersMinimumPatch ="2.53.0.83004";
+        $this->filtersMinimumPatch = '2.53.0.83004';
     }
 
-
-    public function calculateMaxReplayNumber(){
-        if (!session()->has('maxReplayID')) {
+    public function calculateMaxReplayNumber()
+    {
+        if (! session()->has('maxReplayID')) {
             session(['maxReplayID' => Replay::max('replayID')]);
         }
 
         return session('maxReplayID');
     }
 
-    public function getDefaultTimeframeType(){
+    public function getDefaultTimeframeType()
+    {
         if (Auth::check()) {
             $user = Auth::user();
         }
-        return "minor";
+
+        return 'minor';
     }
 
-    public function getDefaultTimeframe(){
-        if (!session()->has('defaulttimeframe')) {
-            session(['defaulttimeframe' => SeasonGameVersion::select("game_version")->orderBy("game_version", "DESC")->first()->game_version]);
+    public function getDefaultTimeframe()
+    {
+        if (! session()->has('defaulttimeframe')) {
+            session(['defaulttimeframe' => SeasonGameVersion::select('game_version')->orderBy('game_version', 'DESC')->first()->game_version]);
         }
 
         return session('defaulttimeframe');
     }
 
-    public function getDefaultBuildType(){
+    public function getDefaultBuildType()
+    {
         if (Auth::check()) {
             $user = Auth::user();
         }
-        if (!session()->has('defaultbuildtype')) {
-            session(['defaultbuildtype' => "Popular"]);
+        if (! session()->has('defaultbuildtype')) {
+            session(['defaultbuildtype' => 'Popular']);
         }
 
         return session('defaultbuildtype');
     }
 
-    public function getLatestPatch(){
-        if (!session()->has('latestPatch')) {
+    public function getLatestPatch()
+    {
+        if (! session()->has('latestPatch')) {
             session(['latestPatch' => SeasonGameVersion::orderBy('id', 'desc')->limit(1)->value('game_version')]);
         }
 
         return session('latestPatch');
     }
 
-    public function getLatestGameDate(){
-        if (!session()->has('latestGameDate')) {
+    public function getLatestGameDate()
+    {
+        if (! session()->has('latestGameDate')) {
             session(['latestGameDate' => Replay::where('game_date', '<=', now())
-                                            ->orderByDesc('game_date')
-                                            ->value('game_date')
-                    ]);
+                ->orderByDesc('game_date')
+                ->value('game_date'),
+            ]);
         }
 
         return session('latestGameDate');
     }
 
-    public function getRegionIDtoString(){
-        if (!session()->has('regions')) {
+    public function getRegionIDtoString()
+    {
+        if (! session()->has('regions')) {
             $regions = [
-                1 => "NA",
-                2 => "EU",
-                3 => "KR",
+                1 => 'NA',
+                2 => 'EU',
+                3 => 'KR',
                 /*  4 => "UNK",*/
-                5 => "CN"
+                5 => 'CN',
             ];
             session(['regions' => $regions]);
         }
@@ -105,14 +103,15 @@ class GlobalDataService
         return session('regions');
     }
 
-    public function getRegionStringToID(){
-        if (!session()->has('regions_string')) {
+    public function getRegionStringToID()
+    {
+        if (! session()->has('regions_string')) {
             $regions = [
-                "NA" => 1,
-                "EU" => 2,
-                "KR" => 3,
+                'NA' => 1,
+                'EU' => 2,
+                'KR' => 3,
                 /*  4 => "UNK",*/
-                "CN" => 5
+                'CN' => 5,
             ];
             session(['regions_string' => $regions]);
         }
@@ -120,8 +119,9 @@ class GlobalDataService
         return session('regions_string');
     }
 
-    public function getGameTypeIDtoString(){
-        if (!session()->has('game_types')) {
+    public function getGameTypeIDtoString()
+    {
+        if (! session()->has('game_types')) {
             $game_types = GameType::all();
             $game_types = $game_types->keyBy('type_id');
             session(['game_types' => $game_types]);
@@ -130,86 +130,101 @@ class GlobalDataService
         return session('game_types');
     }
 
-    public function getBlizzIDGivenFullBattletag($battletag, $region){
-        $blizzID = Battletag::where("battletag", $battletag)
-                            ->where("region", $region)
-                            ->orderBy("latest_game", "DESC")
-                            ->first();
+    public function getBlizzIDGivenFullBattletag($battletag, $region)
+    {
+        $blizzID = Battletag::where('battletag', $battletag)
+            ->where('region', $region)
+            ->orderBy('latest_game', 'DESC')
+            ->first();
 
-        if(is_null($blizzID)){
+        if (is_null($blizzID)) {
             return null;
-        }else{
+        } else {
             return $blizzID->blizz_id;
         }
     }
 
-    public function calculateCacheTimeInMinutes($timeframe){
+    public function calculateCacheTimeInMinutes($timeframe)
+    {
         if (app()->environment('production')) {
-            if(count($timeframe) == 1 && $timeframe[0] == session('latestPatch')){
-                $date = SeasonGameVersion::where("game_version", min($timeframe))->value("date_added");
+            if (count($timeframe) == 1 && $timeframe[0] == session('latestPatch')) {
+                $date = SeasonGameVersion::where('game_version', min($timeframe))->value('date_added');
                 $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
 
-
-                if($changeInMinutes < 1440){  //1 day
+                if ($changeInMinutes < 1440) {  //1 day
                     return .25; //15 min
-                }else if($changeInMinutes < (1440 * 3.5)){ //half week
+                } elseif ($changeInMinutes < (1440 * 3.5)) { //half week
                     return 6 * 60; //6 hours
-                }else if($changeInMinutes < (1440 * 7)){ //1 week
+                } elseif ($changeInMinutes < (1440 * 7)) { //1 week
                     return 24 * 60; //1 day
-                }else if($changeInMinutes < (1440 * 2)){ //2 week
+                } elseif ($changeInMinutes < (1440 * 2)) { //2 week
                     return 24 * 60 * 7; //7 day
-                }else{
+                } else {
                     return 24 * 60 * 7 * 2; //2 weeks
                 }
-            }else{
-                $date = SeasonGameVersion::where("game_version", min($timeframe))->value("date_added");
+            } else {
+                $date = SeasonGameVersion::where('game_version', min($timeframe))->value('date_added');
                 $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
+
                 return $changeInMinutes;
             }
         }
 
         return 0;
     }
-    public function getGameTypes(){
-        if (!session()->has('game_types')) {
-            session(['game_types' => GameType::orderBy("type_id", "ASC")->get()]);
+
+    public function getGameTypes()
+    {
+        if (! session()->has('game_types')) {
+            session(['game_types' => GameType::orderBy('type_id', 'ASC')->get()]);
         }
+
         return session('game_types');
     }
-    public function getHeroes(){
-        if (!session()->has('heroes')) {
-            session(['heroes' => Hero::orderBy("name", "ASC")->get()]);
+
+    public function getHeroes()
+    {
+        if (! session()->has('heroes')) {
+            session(['heroes' => Hero::orderBy('name', 'ASC')->get()]);
         }
+
         return session('heroes');
     }
 
-    public function getHeroesByID(){
+    public function getHeroesByID()
+    {
         $heroData = $this->getHeroes();
         $heroData = $heroData->keyBy('id');
 
         return $heroData;
     }
 
-    public function getHeroModel($heroName){
-        if (!session()->has('heroes')) {
+    public function getHeroModel($heroName)
+    {
+        if (! session()->has('heroes')) {
             session(['heroes' => Hero::all()]);
         }
         $heroModel = session('heroes')->firstWhere('name', $heroName);
+
         return $heroModel;
     }
 
-    public function getSeasonsData(){
-       if (!session()->has('seasonData')) {
-            session(['seasonData' => SeasonDate::orderBy("id", "desc")->get()]);
+    public function getSeasonsData()
+    {
+        if (! session()->has('seasonData')) {
+            session(['seasonData' => SeasonDate::orderBy('id', 'desc')->get()]);
         }
+
         return session('seasonData');
     }
 
-    public function getSeasonFromDate($date){
-        return SeasonDate::select("id")->where("start_date", "<=", $date)->where("end_date", ">=", $date)->first()->id;
+    public function getSeasonFromDate($date)
+    {
+        return SeasonDate::select('id')->where('start_date', '<=', $date)->where('end_date', '>=', $date)->first()->id;
     }
 
-    public function getAdvancedFilterShowDefault(){
+    public function getAdvancedFilterShowDefault()
+    {
 
         if (Auth::check()) {
             $user = Auth::user();
@@ -218,10 +233,12 @@ class GlobalDataService
 
             return $advancedfiltering;
         }
-        return "false";
+
+        return 'false';
     }
 
-    public function getGameTypeDefault(){
+    public function getGameTypeDefault()
+    {
 
         if (Auth::check()) {
             $user = Auth::user();
@@ -230,38 +247,41 @@ class GlobalDataService
 
             if ($gameTypeSetting) {
                 $gameTypeValue = $gameTypeSetting->value;
-                return explode(",", $gameTypeSetting->value);
+
+                return explode(',', $gameTypeSetting->value);
             }
         }
-        return ["sl"];
+
+        return ['sl'];
     }
 
-
-    public function getDefaultSeason(){
-        return SeasonDate::select("id")->orderBy("id", "DESC")->first()->id;
+    public function getDefaultSeason()
+    {
+        return SeasonDate::select('id')->orderBy('id', 'DESC')->first()->id;
     }
 
-    public function getFilterData(){
+    public function getFilterData()
+    {
         $filterData = new \stdClass;
 
-        $filterData->timeframe_type  = [
+        $filterData->timeframe_type = [
             ['code' => 'major', 'name' => 'Major Patch'],
             ['code' => 'minor', 'name' => 'Minor Patch'],
         ];
 
-        $filterData->timeframes = SeasonGameVersion::select("game_version")
-            ->where("game_version", ">=", $this->filtersMinimumPatch)
-            ->orderBy("game_version", "DESC")
+        $filterData->timeframes = SeasonGameVersion::select('game_version')
+            ->where('game_version', '>=', $this->filtersMinimumPatch)
+            ->orderBy('game_version', 'DESC')
             ->get()
             ->map(function ($item) {
                 return ['code' => $item->game_version, 'name' => $item->game_version];
             });
 
-        $filterData->timeframes_grouped = SeasonGameVersion::select("game_version")
-            ->where("game_version", ">=", $this->filtersMinimumPatch)
-            ->orderBy("game_version", "DESC")
+        $filterData->timeframes_grouped = SeasonGameVersion::select('game_version')
+            ->where('game_version', '>=', $this->filtersMinimumPatch)
+            ->orderBy('game_version', 'DESC')
             ->get()
-            ->groupBy(function($date) {
+            ->groupBy(function ($date) {
                 return substr($date->game_version, 0, 4);  // group by years (first 4 characters)
             })
             ->map(function ($grouped) {
@@ -272,12 +292,11 @@ class GlobalDataService
                 return ['code' => substr($item->game_version, 0, 4), 'name' => substr($item->game_version, 0, 4)];  // use the first 4 characters
             });
 
-
         $filterData->regions = [
             ['code' => 'NA', 'name' => 'NA'],
             ['code' => 'EU', 'name' => 'EU'],
             ['code' => 'KR', 'name' => 'KR'],
-            ['code' => 'CN', 'name' => 'CN']
+            ['code' => 'CN', 'name' => 'CN'],
         ];
 
         $filterData->stat_filter = [
@@ -319,7 +338,6 @@ class GlobalDataService
             ['code' => 'watch_tower_captures', 'name' => 'Watch Tower Captures'],
         ];
 
-
         $filterData->hero_level = [
             ['code' => '1', 'name' => '1-5'],
             ['code' => '5', 'name' => '5-10'],
@@ -329,7 +347,7 @@ class GlobalDataService
             ['code' => '40', 'name' => '40-60'],
             ['code' => '60', 'name' => '60-80'],
             ['code' => '80', 'name' => '80-100'],
-            ['code' => '100', 'name' => '100+']
+            ['code' => '100', 'name' => '100+'],
         ];
 
         $filterData->role = [
@@ -338,7 +356,7 @@ class GlobalDataService
             ['code' => 'Melee Assassin', 'name' => 'Melee Assassin'],
             ['code' => 'Ranged Assassi', 'name' => 'Ranged Assassi'],
             ['code' => 'Support', 'name' => 'Support'],
-            ['code' => 'Tank', 'name' => 'Tank']
+            ['code' => 'Tank', 'name' => 'Tank'],
         ];
 
         $filterData->heroes = $this->getHeroes()->map(function ($hero) {
@@ -346,35 +364,33 @@ class GlobalDataService
         });
 
         $filterData->game_types = GameType::whereNotIn('type_id', [-1, 0, 3, 4])
-            ->orderBy("type_id", "ASC")
+            ->orderBy('type_id', 'ASC')
             ->get()
             ->map(function ($gameType) {
                 return ['code' => $gameType->short_name, 'name' => $gameType->name];
             });
 
         $filterData->game_types_full = GameType::whereNotIn('type_id', [-1, 0])
-            ->orderBy("type_id", "ASC")
+            ->orderBy('type_id', 'ASC')
             ->get()
             ->map(function ($gameType) {
                 return ['code' => $gameType->short_name, 'name' => $gameType->name];
             });
 
-
         $filterData->game_maps = Map::where('playable', 1)
-            ->orderBy("name", "ASC")
+            ->orderBy('name', 'ASC')
             ->get()
             ->map(function ($map) {
                 return ['code' => $map->name, 'name' => $map->name];
             });
 
-        $filterData->rank_tiers = LeagueTier::whereNot("tier_id", 7)->orderBy("tier_id", "DESC")->get()->map(function ($tiers) {
-                return ['code' => $tiers->tier_id, 'name' => ucfirst($tiers->name)];
-            });
-
+        $filterData->rank_tiers = LeagueTier::whereNot('tier_id', 7)->orderBy('tier_id', 'DESC')->get()->map(function ($tiers) {
+            return ['code' => $tiers->tier_id, 'name' => ucfirst($tiers->name)];
+        });
 
         $filterData->mirror = [
             ['code' => '0', 'name' => 'Exclude'],
-            ['code' => '1', 'name' => 'Include']
+            ['code' => '1', 'name' => 'Include'],
         ];
 
         $filterData->talent_build_types = [
@@ -386,17 +402,17 @@ class GlobalDataService
             ['code' => 'Unique Lvl 10', 'name' => 'Unique Lvl 10'],
             ['code' => 'Unique Lvl 13', 'name' => 'Unique Lvl 13'],
             ['code' => 'Unique Lvl 16', 'name' => 'Unique Lvl 16'],
-            ['code' => 'Unique Lvl 20', 'name' => 'Unique Lvl 20']
+            ['code' => 'Unique Lvl 20', 'name' => 'Unique Lvl 20'],
         ];
 
         $filterData->minimum_games = [];
         for ($i = 0; $i <= 5000; $i += 25) {
-            $filterData->minimum_games[] = ['code' => (string)$i, 'name' => (string)$i];
+            $filterData->minimum_games[] = ['code' => (string) $i, 'name' => (string) $i];
         }
 
         $filterData->hero_party_size = [];
         for ($i = 1; $i <= 5; $i++) {
-            $filterData->hero_party_size[] = ['code' => (string)$i, 'name' => (string)$i];
+            $filterData->hero_party_size[] = ['code' => (string) $i, 'name' => (string) $i];
         }
 
         $filterData->party_combinations = [
@@ -411,7 +427,7 @@ class GlobalDataService
 
         $filterData->chart_type = [
             ['code' => 'Account Level', 'name' => 'Account Level'],
-            ['code' => 'Hero Level', 'name' => 'Hero Level']
+            ['code' => 'Hero Level', 'name' => 'Hero Level'],
         ];
 
         $filterData->minimum_account_level = [
@@ -449,10 +465,9 @@ class GlobalDataService
             ['code' => '5 Players', 'name' => '5 Players'],
         ];
 
-
-        $filterData->seasons = SeasonDate::select('id', 'year', 'season')->orderBy("id", "DESC")->get()->map(function ($data) {
-                return ['code' => $data->id, 'name' => $data->year .  ' Season ' .   $data->season];
-            });
+        $filterData->seasons = SeasonDate::select('id', 'year', 'season')->orderBy('id', 'DESC')->get()->map(function ($data) {
+            return ['code' => $data->id, 'name' => $data->year.' Season '.$data->season];
+        });
 
         $filterData->hero_role = [
             ['code' => 'Hero', 'name' => 'Hero'],
@@ -464,11 +479,11 @@ class GlobalDataService
         });
 
         $filterData->ngs_seasons = NGSTeam::distinct()->orderBy('season', 'desc')->pluck('season')->map(function ($season) {
-                return ['code' => $season, 'name' => strval($season)];
+            return ['code' => $season, 'name' => strval($season)];
         });
 
         $filterData->ccl_seasons = CCLTeam::distinct()->orderBy('season', 'desc')->pluck('season')->map(function ($season) {
-                return ['code' => $season, 'name' => strval($season)];
+            return ['code' => $season, 'name' => strval($season)];
         });
 
         $filterData->nut_cup_seasons = [
@@ -476,16 +491,16 @@ class GlobalDataService
             ['code' => '2', 'name' => '2'],
         ];
 
-
         return $filterData;
     }
 
-    public function getRankTiers($game_type, $type){
+    public function getRankTiers($game_type, $type)
+    {
         $result = DB::table('league_breakdowns')
-                    ->select('game_type', 'league_tier', 'min_mmr')
-                    ->where('type_role_hero', $type)
-                    ->where('game_type', $game_type)
-                    ->get();
+            ->select('game_type', 'league_tier', 'min_mmr')
+            ->where('type_role_hero', $type)
+            ->where('game_type', $game_type)
+            ->get();
 
         $returnData = [];
         $prevMin = 0;
@@ -528,14 +543,15 @@ class GlobalDataService
         return $returnData;
     }
 
-    public function calculateSubTier($rankTiers, $mmr) {
+    public function calculateSubTier($rankTiers, $mmr)
+    {
         $tierNames = [
             'bronze' => 'Bronze',
             'silver' => 'Silver',
             'gold' => 'Gold',
             'platinum' => 'Platinum',
             'diamond' => 'Diamond',
-            'master' => 'Master'
+            'master' => 'Master',
         ];
 
         $result = '';
@@ -547,32 +563,33 @@ class GlobalDataService
             $maxMmr = $tierInfo['max_mmr'];
             $split = $tierInfo['split'];
 
-            if($mmr >= $minMmr && $mmr < $maxMmr){
-                for($i = $minMmr; $i < $maxMmr; $i += $split){
-                    if($mmr >= $i){
-                        $result = $tierNames[$key] . " " . $counter;
+            if ($mmr >= $minMmr && $mmr < $maxMmr) {
+                for ($i = $minMmr; $i < $maxMmr; $i += $split) {
+                    if ($mmr >= $i) {
+                        $result = $tierNames[$key].' '.$counter;
                         $counter--;
                     }
-                } 
-            }else{
-                if($mmr >= $minMmr && $maxMmr == ''){
-                    $result = "Master";
+                }
+            } else {
+                if ($mmr >= $minMmr && $maxMmr == '') {
+                    $result = 'Master';
                 }
             }
         }
+
         return $result;
     }
 
-    public function getSubTiers($rankTiers, $mmr){
+    public function getSubTiers($rankTiers, $mmr)
+    {
         $tierNames = [
             'bronze' => 'Bronze',
             'silver' => 'Silver',
             'gold' => 'Gold',
             'platinum' => 'Platinum',
             'diamond' => 'Diamond',
-            'master' => 'Master'
+            'master' => 'Master',
         ];
-
 
         $result = [];
 
@@ -583,21 +600,23 @@ class GlobalDataService
             $maxMmr = $tierInfo['max_mmr'];
             $split = $tierInfo['split'];
 
-            if($mmr >= $minMmr && $mmr < $maxMmr){
-                for($i = $minMmr; $i < $maxMmr; $i += $split){
-                    $result[$tierNames[$key] . " " . $counter] = $i;
+            if ($mmr >= $minMmr && $mmr < $maxMmr) {
+                for ($i = $minMmr; $i < $maxMmr; $i += $split) {
+                    $result[$tierNames[$key].' '.$counter] = $i;
                     $counter--;
-                } 
-            }else{
-                if($mmr >= $minMmr && $maxMmr == ''){
-                    $result["Master"] = $minMmr;
+                }
+            } else {
+                if ($mmr >= $minMmr && $maxMmr == '') {
+                    $result['Master'] = $minMmr;
                 }
             }
         }
+
         return $result;
     }
 
-    public function getBattletagShort($blizz_id, $region){
+    public function getBattletagShort($blizz_id, $region)
+    {
         $battletag = Battletag::where('blizz_id', $blizz_id)
             ->where('region', $region)
             ->orderBy('latest_game', 'desc')
@@ -611,20 +630,23 @@ class GlobalDataService
         return $battletag;
     }
 
-    public function getPreloadTalentImageUrls(){
-        $talentData = HeroesDataTalent::select("hero_name", "icon")->get();
+    public function getPreloadTalentImageUrls()
+    {
+        $talentData = HeroesDataTalent::select('hero_name', 'icon')->get();
 
         $images = $talentData->groupBy('hero_name')->map(function ($data) {
             return $data->map(function ($item) {
-                return "/images/talents/" . $item->icon;
+                return '/images/talents/'.$item->icon;
             });
         })->toArray();
 
         return $images;
     }
 
-    public function getPreloadHeroSmallImageUrls(){
-        $heroData = Hero::select("short_name")->get();
+    public function getPreloadHeroSmallImageUrls()
+    {
+        $heroData = Hero::select('short_name')->get();
+
         return $heroData->pluck('short_name')->toArray();
     }
 }

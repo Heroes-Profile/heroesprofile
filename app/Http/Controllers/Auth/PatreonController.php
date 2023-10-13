@@ -3,27 +3,23 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Laravel\Socialite\Facades\Socialite;
+use App\Models\BattlenetAccount;
+use App\Models\PatreonAccount;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
-
-
-use App\Models\PatreonAccount;
-use App\Models\BattlenetAccount;
-
+use Laravel\Socialite\Facades\Socialite;
 
 class PatreonController extends Controller
 {
     public function redirectToProvider()
     {
-       return Socialite::driver('patreon')
+        return Socialite::driver('patreon')
             ->scopes(['identity', 'identity[email]', 'campaigns'])
             ->redirect();
     }
 
     public function handleProviderCallback()
-    {   
+    {
         $user = Socialite::driver('patreon')->user();
 
         $patreonData = [
@@ -41,12 +37,10 @@ class PatreonController extends Controller
             array_merge($patreonData, ['battlenet_accounts_id' => $currentBattlenetId])
         );
 
-
         $battlenetAccount = BattlenetAccount::find($currentBattlenetId);
         $data = $battlenetAccount->patreonAccount;
 
-
-        if($this->getUserDataCheckIfSubscribed($user->token)){
+        if ($this->getUserDataCheckIfSubscribed($user->token)) {
             $battlenetAccount->patreon = 1;
             $battlenetAccount->save();
         }
@@ -57,20 +51,21 @@ class PatreonController extends Controller
     private function getUserDataCheckIfSubscribed($accessToken)
     {
         $client = new Client();
-        $response = $client->get("https://www.patreon.com/api/oauth2/v2/identity", [
+        $response = $client->get('https://www.patreon.com/api/oauth2/v2/identity', [
             'headers' => [
                 'Authorization' => "Bearer {$accessToken}",
             ],
             'query' => [
                 'include' => 'memberships.campaign',
-                'fields[member]' => 'patron_status'
-            ]
+                'fields[member]' => 'patron_status',
+            ],
         ]);
 
         return $this->checkActivePatron(json_decode($response->getBody(), true), env('PATREON_CAMPAIGN_ID'));
     }
 
-    private function checkActivePatron($api_return, $campaign_id) {
+    private function checkActivePatron($api_return, $campaign_id)
+    {
         $memberships = $api_return['included'] ?? [];
 
         foreach ($memberships as $membership) {

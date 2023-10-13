@@ -36,12 +36,12 @@ return [
     'connections' => [
         'heroesprofile' => [
             'driver' => 'mysql',
-            'host' => env('APP_ENV') == "production" ? "" : env('HEROESPROFILE_DB_HOST_LOCAL'),
-            'port' => env('APP_ENV') == "production" ? "" : env('HEROESPROFILE_DB_PORT'), 
+            'host' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_HOST_LOCAL'),
+            'port' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_PORT'),
             'database' => env('HEROESPROFILE_DB_DATABASE'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
             'password' => env('HEROESPROFILE_DB_PASSWORD'),
-            'unix_socket' => env('APP_ENV') == "production" ? env('HEROESPROFILE_DB_HOST') : "",         
+            'unix_socket' => env('APP_ENV') == 'production' ? env('HEROESPROFILE_DB_HOST') : '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
@@ -55,12 +55,12 @@ return [
 
         'heroesprofile_ngs' => [
             'driver' => 'mysql',
-            'host' => env('APP_ENV') == "production" ? "" : env('HEROESPROFILE_DB_HOST_LOCAL'),
-            'port' => env('APP_ENV') == "production" ? "" : env('HEROESPROFILE_DB_PORT'), 
+            'host' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_HOST_LOCAL'),
+            'port' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_PORT'),
             'database' => env('HEROESPROFILE_DB_DATABASE_NGS'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
             'password' => env('HEROESPROFILE_DB_PASSWORD'),
-            'unix_socket' => env('APP_ENV') == "production" ? env('HEROESPROFILE_DB_HOST') : "",         
+            'unix_socket' => env('APP_ENV') == 'production' ? env('HEROESPROFILE_DB_HOST') : '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
@@ -74,12 +74,12 @@ return [
 
         'heroesprofile_ccl' => [
             'driver' => 'mysql',
-            'host' => env('APP_ENV') == "production" ? "" : env('HEROESPROFILE_DB_HOST_LOCAL'),
-            'port' => env('APP_ENV') == "production" ? "" : env('HEROESPROFILE_DB_PORT'), 
+            'host' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_HOST_LOCAL'),
+            'port' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_PORT'),
             'database' => env('HEROESPROFILE_DB_DATABASE_CCL'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
             'password' => env('HEROESPROFILE_DB_PASSWORD'),
-            'unix_socket' => env('APP_ENV') == "production" ? env('HEROESPROFILE_DB_HOST') : "",         
+            'unix_socket' => env('APP_ENV') == 'production' ? env('HEROESPROFILE_DB_HOST') : '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
@@ -90,15 +90,15 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
-        
+
         'heroesprofile_cache' => [
             'driver' => 'mysql',
-            'host' => env('APP_ENV') == "production" ? "" : env('HEROESPROFILE_DB_HOST_LOCAL'),         
-            'port' => env('APP_ENV') == "production" ? "" : env('HEROESPROFILE_DB_PORT'), 
+            'host' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_HOST_LOCAL'),
+            'port' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_PORT'),
             'database' => env('HEROESPROFILE_DB_CACHE_DATABASE'),
             'username' => env('HEROESPROFILE_DB_USERNAME'),
             'password' => env('HEROESPROFILE_DB_PASSWORD'),
-            'unix_socket' => env('APP_ENV') == "production" ? env('HEROESPROFILE_DB_HOST') : "",         
+            'unix_socket' => env('APP_ENV') == 'production' ? env('HEROESPROFILE_DB_HOST') : '',
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',

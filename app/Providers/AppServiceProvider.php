@@ -4,10 +4,6 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-
-
-use Illuminate\Support\Facades\DB;
-
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -15,7 +11,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-         $this->app->bind(GlobalDataService::class, function ($app) {
+        $this->app->bind(GlobalDataService::class, function ($app) {
             return new GlobalDataService();
         });
     }
@@ -25,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if(config('app.env') === 'production') {
+        if (config('app.env') === 'production') {
             \URL::forceScheme('https');
         }
     }

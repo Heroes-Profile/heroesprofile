@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class PatreonAccount extends Model
 {
     protected $table = 'patreon_accounts';
+
     protected $primaryKey = 'patreon_accounts_id';
+
     protected $connection = 'heroesprofile';
 
     protected $fillable = [
@@ -19,7 +21,7 @@ class PatreonAccount extends Model
         'remember_token',
         'expires_in',
         'updated_at',
-        'created_at'
+        'created_at',
     ];
 
     public function battlenetAccount()

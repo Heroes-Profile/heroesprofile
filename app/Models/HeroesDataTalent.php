@@ -2,13 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 
 class HeroesDataTalent extends Model
 {
     protected $table = 'heroes_data_talents';
+
     protected $primaryKey = 'talent_id';
+
     protected $connection = 'heroesprofile';
 
     public $timestamps = false;

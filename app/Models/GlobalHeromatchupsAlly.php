@@ -6,89 +6,96 @@ use Illuminate\Database\Eloquent\Model;
 
 class GlobalHeromatchupsAlly extends Model
 {
-  protected $table = 'global_hero_matchups_ally';
-  protected $primaryKey = 'global_hero_matchups_ally_id';
-  protected $connection = 'heroesprofile';
+    protected $table = 'global_hero_matchups_ally';
 
-  public $timestamps = false;
+    protected $primaryKey = 'global_hero_matchups_ally_id';
 
-  public function scopeFilterByGameVersion($query, $gameVersion)
-  {
-      return $query->whereIn('game_version', $gameVersion);
-  }
+    protected $connection = 'heroesprofile';
 
-  public function scopeFilterByGameType($query, $gameType)
-  {
-      return $query->whereIn('game_type', $gameType);
-  }
+    public $timestamps = false;
 
-  public function scopeFilterByHero($query, $hero)
-  {
-    return $query->where('hero', $hero);
-  }
-
-  public function scopeFilterByLeagueTier($query, $leagueTier)
-  {
-    if (!empty($leagueTier)) {
-      return $query->whereIn('league_tier', $leagueTier);
+    public function scopeFilterByGameVersion($query, $gameVersion)
+    {
+        return $query->whereIn('game_version', $gameVersion);
     }
-    return $query;
-  }
 
-  public function scopeFilterByHeroLeagueTier($query, $heroLeagueTier)
-  {
-    if (!empty($heroLeagueTier)) {
-      return $query->whereIn('hero_league_tier', $heroLeagueTier);
+    public function scopeFilterByGameType($query, $gameType)
+    {
+        return $query->whereIn('game_type', $gameType);
     }
-    return $query;
-  }
 
-  public function scopeFilterByRoleLeagueTier($query, $roleLeagueTier)
-  {
-    if (!empty($roleLeagueTier)) {
-      return $query->whereIn('role_league_tier', $roleLeagueTier);
+    public function scopeFilterByHero($query, $hero)
+    {
+        return $query->where('hero', $hero);
     }
-    return $query;
-  }
 
-  public function scopeFilterByGameMap($query, $gameMap)
-  {
-    if (!empty($gameMap)) {
-      return $query->whereIn('game_map', $gameMap);
+    public function scopeFilterByLeagueTier($query, $leagueTier)
+    {
+        if (! empty($leagueTier)) {
+            return $query->whereIn('league_tier', $leagueTier);
+        }
+
+        return $query;
     }
-    return $query;
-  }
 
-  public function scopeFilterByHeroLevel($query, $heroLevel)
-  {
-    if (!empty($heroLevel)) {
-      return $query->whereIn('hero_level', $heroLevel);
+    public function scopeFilterByHeroLeagueTier($query, $heroLeagueTier)
+    {
+        if (! empty($heroLeagueTier)) {
+            return $query->whereIn('hero_league_tier', $heroLeagueTier);
+        }
+
+        return $query;
     }
-    return $query;
-  }
 
+    public function scopeFilterByRoleLeagueTier($query, $roleLeagueTier)
+    {
+        if (! empty($roleLeagueTier)) {
+            return $query->whereIn('role_league_tier', $roleLeagueTier);
+        }
 
-  public function scopeFilterByAllyEnemy($query, $hero)
-  {
-    return $query->where('ally', $hero);
-  }
-
-
-  public function scopeExcludeMirror($query, $mirror)
-  {
-    if($mirror == 1){
-      $query->whereIn('mirror', [0,1]);
-    }else{
-      $query->where('mirror', 0);
+        return $query;
     }
-    return $query;
-  }
 
-  public function scopeFilterByRegion($query, $region)
-  {
-    if (!empty($region)) {
-      return $query->whereIn('region', $region);
+    public function scopeFilterByGameMap($query, $gameMap)
+    {
+        if (! empty($gameMap)) {
+            return $query->whereIn('game_map', $gameMap);
+        }
+
+        return $query;
     }
-    return $query;
-  }
+
+    public function scopeFilterByHeroLevel($query, $heroLevel)
+    {
+        if (! empty($heroLevel)) {
+            return $query->whereIn('hero_level', $heroLevel);
+        }
+
+        return $query;
+    }
+
+    public function scopeFilterByAllyEnemy($query, $hero)
+    {
+        return $query->where('ally', $hero);
+    }
+
+    public function scopeExcludeMirror($query, $mirror)
+    {
+        if ($mirror == 1) {
+            $query->whereIn('mirror', [0, 1]);
+        } else {
+            $query->where('mirror', 0);
+        }
+
+        return $query;
+    }
+
+    public function scopeFilterByRegion($query, $region)
+    {
+        if (! empty($region)) {
+            return $query->whereIn('region', $region);
+        }
+
+        return $query;
+    }
 }

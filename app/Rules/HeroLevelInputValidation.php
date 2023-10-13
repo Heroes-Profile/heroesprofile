@@ -2,19 +2,17 @@
 
 namespace App\Rules;
 
-use Closure;
 use Illuminate\Contracts\Validation\Rule;
 
 class HeroLevelInputValidation implements Rule
 {
     protected $validLevels = [
-        1, 5, 10, 15, 25, 40, 60, 80, 100
+        1, 5, 10, 15, 25, 40, 60, 80, 100,
     ];
 
     public function passes($attribute, $value)
     {
-        if (!is_array($value)) 
-        {
+        if (! is_array($value)) {
             return false;
         }
 

@@ -6,51 +6,54 @@ use Illuminate\Database\Eloquent\Model;
 
 class GlobalHeroTalentsVersusHeroes extends Model
 {
-  protected $table = 'global_hero_talents_versus_heroes';
-  protected $primaryKey = 'global_hero_talents_versus_heroes_id';
-  protected $connection = 'heroesprofile';
+    protected $table = 'global_hero_talents_versus_heroes';
 
-  public $timestamps = false;
+    protected $primaryKey = 'global_hero_talents_versus_heroes_id';
 
-  public function talentInfo()
-  {
-      return $this->belongsTo(HeroesDataTalent::class, 'talent', 'talent_id');
-  }
-  
-  public function scopeFilterByGameVersion($query, $gameVersion)
-  {
-      return $query->whereIn('game_version', $gameVersion);
-  }
+    protected $connection = 'heroesprofile';
 
-  public function scopeFilterByGameType($query, $gameType)
-  {
-      return $query->whereIn('game_type', $gameType);
-  }
+    public $timestamps = false;
 
-  public function scopeFilterByLeagueTier($query, $leagueTier)
-  {
-    if (!empty($leagueTier)) {
-      return $query->whereIn('league_tier', $leagueTier);
+    public function talentInfo()
+    {
+        return $this->belongsTo(HeroesDataTalent::class, 'talent', 'talent_id');
     }
-    return $query;
-  }
 
-  public function scopeFilterByGameMap($query, $gameMap)
-  {
-    if (!empty($gameMap)) {
-      return $query->whereIn('game_map', $gameMap);
+    public function scopeFilterByGameVersion($query, $gameVersion)
+    {
+        return $query->whereIn('game_version', $gameVersion);
     }
-    return $query;
-  }
 
-  public function scopeFilterByHero($query, $hero)
-  {
-    return $query->where('hero', $hero);
-  }
+    public function scopeFilterByGameType($query, $gameType)
+    {
+        return $query->whereIn('game_type', $gameType);
+    }
 
-  public function scopeFilterByAllyEnemy($query, $hero)
-  {
-    return $query->where('enemy', $hero);
-  }
+    public function scopeFilterByLeagueTier($query, $leagueTier)
+    {
+        if (! empty($leagueTier)) {
+            return $query->whereIn('league_tier', $leagueTier);
+        }
 
+        return $query;
+    }
+
+    public function scopeFilterByGameMap($query, $gameMap)
+    {
+        if (! empty($gameMap)) {
+            return $query->whereIn('game_map', $gameMap);
+        }
+
+        return $query;
+    }
+
+    public function scopeFilterByHero($query, $hero)
+    {
+        return $query->where('hero', $hero);
+    }
+
+    public function scopeFilterByAllyEnemy($query, $hero)
+    {
+        return $query->where('enemy', $hero);
+    }
 }

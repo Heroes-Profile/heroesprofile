@@ -15,7 +15,7 @@ class SelectedTalentInputValidation implements Rule
 
         // Check if all values are either null or numbers
         foreach ($value as $tier => $talent) {
-            if (!is_null($talent) && !is_numeric($talent)) {
+            if (! is_null($talent) && ! is_numeric($talent)) {
                 return false;
             }
         }

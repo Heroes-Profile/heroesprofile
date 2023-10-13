@@ -2,9 +2,8 @@
 
 namespace App\Rules;
 
-use Closure;
-use Illuminate\Contracts\Validation\Rule;
 use App\Models\SeasonGameVersion;
+use Illuminate\Contracts\Validation\Rule;
 
 class TimeframeMinorInputValidation implements Rule
 {
@@ -17,19 +16,19 @@ class TimeframeMinorInputValidation implements Rule
 
     public function passes($attribute, $value)
     {
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             return false;
         }
 
         if ($this->timeframeType === 'minor') {
             $existingVersions = SeasonGameVersion::pluck('game_version')->toArray();
             $invalidVersions = array_diff($value, $existingVersions);
-            if (!empty($invalidVersions)) {
+            if (! empty($invalidVersions)) {
                 return false;
             }
         } elseif ($this->timeframeType === 'major') {
             foreach ($value as $timeframeValue) {
-                $matchingVersions = SeasonGameVersion::where('game_version', 'like', trim($timeframeValue) . '%')->count();
+                $matchingVersions = SeasonGameVersion::where('game_version', 'like', trim($timeframeValue).'%')->count();
                 if ($matchingVersions === 0) {
                     return false;
                 }
