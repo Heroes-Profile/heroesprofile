@@ -321,9 +321,9 @@ class PlayerController extends Controller
         });
 
         if ($cachedData) {
-            $existingMatches = json_decode($cachedData->matches);
-            $mergedMatches = collect($existingMatches)->merge($matches);
-            $matches = $mergedMatches->sortByDesc('game_date')->take(5)->values()->toArray();
+            $existingMatches = collect(json_decode($cachedData->matches, true));
+            $mergedMatches = $existingMatches->merge($matches);
+            $matches = $mergedMatches->sortByDesc('game_date')->take(5);
         }
 
         $heroData = $result->groupBy('hero')->map(function ($items, $hero) {
@@ -713,12 +713,10 @@ class PlayerController extends Controller
         $matches = null;
 
         if (is_string($data->matches)) {
-            $matches = collect(json_decode($data->matches, true));
-        } else {
-            $matches = $data->matches;
+            $matches = json_decode($data->matches, true);
         }
 
-        $returnData->matchData = $matches->sortByDesc('game_date')->map(function ($match) use ($maps, $heroData, $talentData) {
+        $returnData->matchData = collect($matches)->sortByDesc('game_date')->map(function ($match) use ($maps, $heroData, $talentData) {
             $match['game_type'] = $this->globalDataService->getGameTypeIDtoString()[$match['game_type']];
             $match['game_map'] = $maps[$match['game_map']];
             $match['hero'] = $heroData[$match['hero']];
