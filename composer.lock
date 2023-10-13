@@ -688,6 +688,7 @@
                 "source": "https://github.com/googleapis/google-cloud-php-core/tree/v1.52.6"
             },
             "time": "2023-10-06T21:49:26+00:00"
+
         },
         {
             "name": "google/cloud-logging",
