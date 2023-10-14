@@ -38,42 +38,42 @@
       <table class="min-w-full bg-white">
         <thead>
           <tr>
-            <th @click="sortTable('hero_name')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('hero_name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Hero
             </th>
-            <th @click="sortTable('win_rate_as_ally')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('win_rate_as_ally')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Win Rate as Ally %
             </th>            
-            <th @click="sortTable('win_rate_against')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('win_rate_against')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Win Rate Against  {{ this.selectedHero.name }} %
             </th>
-            <th @click="sortTable('games_played_as_ally')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('games_played_as_ally')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games Played As Ally
             </th>
-            <th @click="sortTable('games_played_against')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('games_played_against')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games Played Against {{ this.selectedHero.name }}
             </th>                 
           </tr>
         </thead>
         <tbody>
           <tr v-for="(row, index) in sortedData" :key="index">
-            <td class="py-2 px-3 border-b border-gray-200">
+            <td class="py-2 px-3 ">
               <div class="flex items-center">
                 <hero-image-wrapper :hero="row.ally ? row.ally.hero : row.enemy.hero "></hero-image-wrapper>
                 <span class="ml-left px-3">{{ row.ally && row.ally.hero ? row.ally.hero.name : row.enemy.hero.name }}</span>
               </div>
             </td>
-            <td class="py-2 px-3 border-b border-gray-200">
+            <td class="py-2 px-3 ">
               {{ row.ally && row.ally.win_rate ? row.ally.win_rate : 0 }}
             </td>
-            <td class="py-2 px-3 border-b border-gray-200">
+            <td class="py-2 px-3 ">
               {{ row.enemy && row.enemy.win_rate ? row.enemy.win_rate : 0 }}
             </td>
-            <td class="py-2 px-3 border-b border-gray-200">
+            <td class="py-2 px-3 ">
               {{ row.ally && row.ally.games_played ? row.ally.games_played : 0 }}
             </td>
 
-            <td class="py-2 px-3 border-b border-gray-200">
+            <td class="py-2 px-3 ">
               {{ row.enemy && row.enemy.games_played ? row.enemy.games_played : 0 }}
             </td>
           </tr>

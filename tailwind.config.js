@@ -9,6 +9,7 @@ module.exports = {
     colors: {
       'gray-dark': '#333',
       'gray-light' : '#ddd',
+      'gray-xlight' : '#cbcbcb',
       'gray-md' : '#cbcbcb',
       'blue' : '#213d7a',
       'lblue' : '#315bb6',

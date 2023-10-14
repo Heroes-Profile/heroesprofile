@@ -30,26 +30,26 @@ s<template>
         <table class="min-w-full bg-white">
           <thead>
             <tr>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Stack
               </th>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Win Rate %
               </th>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Wins
               </th>                
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Losses
               </th>                                 
             </tr>
           </thead>
           <tbody>
             <tr v-for="row in partydata.solo" :key="(row.ally_combo + '|' + row.enemy_combo)">
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.wins }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
+              <td class="py-2 px-3 ">{{ row.wins }}</td>
+              <td class="py-2 px-3 ">{{ row.losses }}</td>
             </tr>
           </tbody>
         </table>  
@@ -61,26 +61,26 @@ s<template>
         <table class="min-w-full bg-white">
           <thead>
             <tr>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Stack
               </th>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Win Rate %
               </th>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Wins
               </th>                
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Losses
               </th>                                 
             </tr>
           </thead>
           <tbody>
             <tr v-for="row in partydata.double" :key="(row.ally_combo + '|' + row.enemy_combo)">
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.wins }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
+              <td class="py-2 px-3 ">{{ row.wins }}</td>
+              <td class="py-2 px-3 ">{{ row.losses }}</td>
             </tr>
           </tbody>
         </table>  
@@ -92,26 +92,26 @@ s<template>
         <table class="min-w-full bg-white">
           <thead>
             <tr>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Stack
               </th>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Win Rate %
               </th>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Wins
               </th>                
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Losses
               </th>                                 
             </tr>
           </thead>
           <tbody>
             <tr v-for="row in partydata.double_double" :key="(row.ally_combo + '|' + row.enemy_combo)">
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.wins }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
+              <td class="py-2 px-3 ">{{ row.wins }}</td>
+              <td class="py-2 px-3 ">{{ row.losses }}</td>
             </tr>
           </tbody>
         </table>  
@@ -123,26 +123,26 @@ s<template>
         <table class="min-w-full bg-white">
           <thead>
             <tr>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Stack
               </th>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Win Rate %
               </th>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Wins
               </th>                
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Losses
               </th>                                 
             </tr>
           </thead>
           <tbody>
             <tr v-for="row in partydata.triple" :key="(row.ally_combo + '|' + row.enemy_combo)">
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.wins }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
+              <td class="py-2 px-3 ">{{ row.wins }}</td>
+              <td class="py-2 px-3 ">{{ row.losses }}</td>
             </tr>
           </tbody>
         </table>  
@@ -154,26 +154,26 @@ s<template>
         <table class="min-w-full bg-white">
           <thead>
             <tr>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Stack
               </th>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Win Rate %
               </th>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Wins
               </th>                
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Losses
               </th>                                 
             </tr>
           </thead>
           <tbody>
             <tr v-for="row in partydata.triple_double" :key="(row.ally_combo + '|' + row.enemy_combo)">
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.wins }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
+              <td class="py-2 px-3 ">{{ row.wins }}</td>
+              <td class="py-2 px-3 ">{{ row.losses }}</td>
             </tr>
           </tbody>
         </table>  
@@ -185,26 +185,26 @@ s<template>
         <table class="min-w-full bg-white">
           <thead>
             <tr>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Stack
               </th>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Win Rate %
               </th>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Wins
               </th>                
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Losses
               </th>                                 
             </tr>
           </thead>
           <tbody>
             <tr v-for="row in partydata.quadruple" :key="(row.ally_combo + '|' + row.enemy_combo)">
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.wins }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
+              <td class="py-2 px-3 ">{{ row.wins }}</td>
+              <td class="py-2 px-3 ">{{ row.losses }}</td>
             </tr>
           </tbody>
         </table>  
@@ -217,26 +217,26 @@ s<template>
         <table class="min-w-full bg-white">
           <thead>
             <tr>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Stack
               </th>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Win Rate %
               </th>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Wins
               </th>                
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Losses
               </th>                                 
             </tr>
           </thead>
           <tbody>
             <tr v-for="row in partydata.quintuple" :key="(row.ally_combo + '|' + row.enemy_combo)">
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.wins }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
+              <td class="py-2 px-3 ">{{ row.wins }}</td>
+              <td class="py-2 px-3 ">{{ row.losses }}</td>
             </tr>
           </tbody>
         </table>  

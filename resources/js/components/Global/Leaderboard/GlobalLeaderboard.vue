@@ -7,17 +7,19 @@
 
 
     <custom-button @click="showLeaderboardRequirements = !showLeaderboardRequirements" :text="'Show Leaderboard Requirements'" :alt="'Show Leaderboard Requirements'" size="small" :ignoreclick="true"></custom-button>
-      <div v-if="showLeaderboardRequirements">
-        To be eligible for leaderboards, the following conditions must be met:
-    
-        <li>
-          <th>1:  Account level must be greater than or equal to 250.</th>
-          <th>2:  Must have played at least 5 times the number of weeks since the season started.</th>
-          <th>3:  Must have a win rate greater than or equal to 50%.</th>
-        </li>
+      <div v-if="showLeaderboardRequirements" class="flex flex-col items-center p-[2em] border w-auto ml-auto mr-auto max-w-[1500px] bg-teal mb-2">
+        <h3 class="font-bold text-2xl uppercase">To be eligible for leaderboards, the following conditions must be met:</h3>
+        <div class="bg-teal p-[1em] pl-[2em] ">
+      <ol class="list-disc">
+        <li>Account level must be greater than or equal to 250.</li>
+          <li> Must have played at least 5 times the number of weeks since the season started.</li>
+          <li>Must have a win rate greater than or equal to 50%.</li>
+     
+      </ol>
+    </div>
 
-      Heroes Profile Rating forumla
-      <img :src="'/images/miscellaneous/mmr_calculation.png'"/>
+      <h3 class="font-bold text-2xl uppercase pb-2">Heroes Profile Rating formula</h3>
+      <img class="max-w-[1000px]" :src="'/images/miscellaneous/mmr_calculation.png'"/>
     </div>
 
 
@@ -44,48 +46,48 @@
     >
     </filters>
     <div v-if="data">
-      <div class="max-w-full  md:px-20 overflow-scroll md:overflow-auto max-w-full h-[50vh] md:h-auto">
+      <div class="max-w-[1500px]  md:px-20 overflow-scroll md:overflow-auto  h-[50vh] md:h-auto ml-auto mr-auto">
         <table class="min-w-full bg-white">
           <thead>
             <tr>
-              <th @click="sortTable('rank')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('rank')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Rank
               </th>
-              <th @click="sortTable('battletag')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Battletag
               </th>            
-              <th @click="sortTable('region_id')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('region_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Region
               </th>
-              <th @click="sortTable('win_rate')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Win Rate %
               </th>
-              <th @click="sortTable('rating')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('rating')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Heroes Profile Rating
               </th>      
-              <th @click="sortTable('mmr')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('mmr')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 {{ leaderboardtype }} MMR
               </th> 
-              <th @click="sortTable('tier')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('tier')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Tier
               </th>    
-              <th @click="sortTable('games_played')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Games Played
               </th>     
 
 
-              <th v-if="leaderboardtype == 'Player' || leaderboardtype == 'Role' " class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th v-if="leaderboardtype == 'Player' || leaderboardtype == 'Role' " class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Most Played Hero
               </th>    
 
               <template v-else-if="leaderboardtype == 'Hero'">
-                <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+                <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                   Most Played Build
                 </th>  
-                <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+                <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                   Copy Build to Game
                 </th>  
-                <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+                <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                   Games Played With Build
                 </th>    
               </template>
@@ -114,7 +116,7 @@
 
 
                 <template v-else-if="leaderboardtype == 'Hero'">
-                  <td class="py-2 px-3 border-b border-gray-200">
+                  <td class="py-2 px-3 ">
                     <div class="flex flex-wrap gap-4">
                       <talent-image-wrapper v-if="row.level_one" :talent="row.level_one"></talent-image-wrapper>
                       <talent-image-wrapper v-if="row.level_four" :talent="row.level_four"></talent-image-wrapper>
@@ -125,7 +127,7 @@
                       <talent-image-wrapper v-if="row.level_twenty" :talent="row.level_twenty"></talent-image-wrapper>
                     </div>
                   </td>
-                  <td class="py-2 px-3 border-b border-gray-200">
+                  <td class="py-2 px-3 ">
                     {{ this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, row.hero) }}
                     <custom-button @click="copyToClipboard(row)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
                   </td>

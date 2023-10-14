@@ -27,8 +27,8 @@
       ])
       @yield('content')
     </main>
-
-    <div class="footer-wrapper text-center mx-auto bg-lighten border-t-4 border-teal mt-auto w-full">
+    <div class="mt-auto">
+    <div class="footer-wrapper text-center mx-auto bg-lighten border-t-4 border-teal mt-[2em] w-full">
       <div class="footer container-boxed py-10">
         <div class="container container-flex mx-auto">
 
@@ -54,6 +54,7 @@
         <div class="disclaimer">
 
         </div>
+      </div>
       </div>
     </div>
   </div>
