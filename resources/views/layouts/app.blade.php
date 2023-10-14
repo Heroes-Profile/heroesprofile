@@ -17,7 +17,7 @@
 
 </head>
 <body class="bg-black text-white">
-  <div id="app">
+  <div id="app" class="flex flex-col align-stretch" style="min-height:100vh;">
 
       @include('nav', [
           'isAuthenticated' => Auth::check(),
@@ -28,7 +28,7 @@
       @yield('content')
     </main>
 
-    <div class="footer-wrapper text-center mx-auto bg-lighten border-t-4 border-teal">
+    <div class="footer-wrapper text-center mx-auto bg-lighten border-t-4 border-teal mt-auto w-full">
       <div class="footer container-boxed py-10">
         <div class="container container-flex mx-auto">
 
