@@ -36,8 +36,8 @@
       <div v-if="togglechart">
         <bubble-chart :heroData="this.data.data"></bubble-chart>
       </div>
-      <div class="min-w-full px-20">
-     <table class="min-w-full bg-white">
+      <div class="min-w-[1500px] px-20">
+     <table class=" bg-white">
         <thead>
           <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
             Avg
@@ -113,16 +113,16 @@
         </thead>
         <tbody>
           <template v-for="(row, index) in sortedData">
-            <tr>
-              <a :href="'/Global/Talents/' + row.name" ><td class="py-2 px-3 border-b border-gray-200 flex items-center gap-1"><hero-image-wrapper :hero="row" :includehover="false"></hero-image-wrapper>{{ row.name }}</td></a>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 border-b border-gray-200"><span v-html="'&#177;'"></span>{{ row.confidence_interval }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate_change }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.popularity }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.pick_rate }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.ban_rate }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.influence }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.games_played }}</td>
+            <tr class="border-b">
+              <a :href="'/Global/Talents/' + row.name" ><td class="py-2 px-3  border-gray-200 flex items-center gap-1"><hero-image-wrapper :hero="row" :includehover="false"></hero-image-wrapper>{{ row.name }}</td></a>
+              <td class="py-2 px-3  ">{{ row.win_rate }}</td>
+              <td class="py-2 px-3 "><span v-html="'&#177;'"></span>{{ row.confidence_interval }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate_change }}</td>
+              <td class="py-2 px-3">{{ row.popularity }}</td>
+              <td class="py-2 px-3">{{ row.pick_rate }}</td>
+              <td class="py-2 px-3">{{ row.ban_rate }}</td>
+              <td class="py-2 px-3">{{ row.influence }}</td>
+              <td class="py-2 px-3 ">{{ row.games_played }}</td>
               <td v-if="this.showStatTypeColumn" class="py-2 px-3 border-b border-gray-200">{{ row.total_filter_type }}</td>
               <td class="py-2 px-3 border-b border-gray-200">
                 <custom-button
