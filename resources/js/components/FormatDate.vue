@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <span>
     {{ formatDate(input) }}
-  </div>
+  </span>
 </template>
 
 <script>

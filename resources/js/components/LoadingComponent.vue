@@ -1,6 +1,7 @@
 <template>
+
   <div class="loading-container z-49">
-    <img v-if="overrideimage" :src="overrideimage" alt="dsf" />
+    <img v-if="overrideimage" :src="overrideimage" alt="loading" />
     <img v-else src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
     <div class="loading-text">
       <div v-if="textoverride">

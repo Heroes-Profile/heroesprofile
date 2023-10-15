@@ -25,23 +25,23 @@
         <label>{{ stat.name }}</label>
       </div>
     </div>
-    <table class="min-w-full bg-white">
+    <table class="">
       <thead>
         <tr>
-          <th @click="sortTable('name')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             Role
           </th>    
-          <th @click="sortTable('win_rate')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             Games
           </th>
-          <th @click="sortTable('kda')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('kda')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             KDA
           </th>  
-          <th @click="sortTable('kdr')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('kdr')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             KDR
           </th>
           <template   v-for="stat in stats">
-            <th  v-if="stat.selected" @click="sortTable(stat.value)" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th  v-if="stat.selected" @click="sortTable(stat.value)" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               {{ stat.name }}
             </th>
           </template> 
@@ -50,16 +50,16 @@
       </thead>
       <tbody>
         <tr v-for="row in sortedData" :key="row.id">
-          <td class="py-2 px-3 border-b border-gray-200"><a :href="getPlayerRolePageUrl(row.name)"><role-box :role="row.name"></role-box>{{ row.name }}</a></td>
-          <td class="py-2 px-3 border-b border-gray-200">{{ row.wins }}|{{ row.losses }} {{ row.win_rate }} %</td>
-          <td class="py-2 px-3 border-b border-gray-200">{{ row.kda }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}/{{ row.avg_assists }}</td>
-          <td class="py-2 px-3 border-b border-gray-200">{{ row.kdr }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}</td>
+          <td class="py-2 px-3 "><a :href="getPlayerRolePageUrl(row.name)"><role-box :role="row.name"></role-box>{{ row.name }}</a></td>
+          <td class="py-2 px-3 ">{{ row.wins }}|{{ row.losses }} {{ row.win_rate }} %</td>
+          <td class="py-2 px-3 ">{{ row.kda }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}/{{ row.avg_assists }}</td>
+          <td class="py-2 px-3 ">{{ row.kdr }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}</td>
           
           <template v-for="stat in stats" >
             <td 
             v-if="stat.selected" 
             :class="{ flash: stat.flash }"
-            class="py-2 px-3 border-b border-gray-200">
+            class="py-2 px-3 ">
             {{ row[stat.value] }}
           </td>
         </template>

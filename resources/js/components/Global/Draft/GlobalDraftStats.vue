@@ -30,26 +30,26 @@
         >
       </filters>
 
-      <div> 
+      <div class="max-w-[1500px] mx-auto flex justify-end mb-2"> 
         <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
       </div>
       <div v-if="draftdata">
-        <table class="min-w-full bg-white">
+        <table class="">
           <thead>
             <tr>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Pick Order
               </th>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Pick/Ban Rate % at position
               </th>            
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Team Wins
               </th>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Team Losses
               </th>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Team Win Rate %
               </th>                 
             </tr>
@@ -59,15 +59,15 @@
             <tr 
             v-for="row in draftdata" 
             :key="row.pick_number"
-            :class="determinePickOrBan(row.pick_number).includes('Ban') ? 'bg-red' : ''"
+            :class="determinePickOrBan(row.pick_number).includes('Ban') ? 'bg-hred border-b border-gray-light' : ''"
             >
-            <td class="py-2 px-3 border-b border-gray-200">
+            <td class="py-2 px-3 ">
               {{ determinePickOrBan(row.pick_number) }}
             </td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.popularity }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.wins }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.losses }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
+            <td class="py-2 px-3 ">{{ row.popularity }}</td>
+            <td class="py-2 px-3 ">{{ row.wins }}</td>
+            <td class="py-2 px-3 ">{{ row.losses }}</td>
+            <td class="py-2 px-3 ">{{ row.win_rate }}</td>
           </tr>
         </tbody>
       </table>

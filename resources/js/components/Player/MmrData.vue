@@ -18,16 +18,16 @@
 
 
       {{ this.gametype.toUpperCase() }} - League Tier Breakdowns | Player MMR: {{ data[0].mmr }}
-      <table class="min-w-full bg-white">
+      <table class="">
         <thead>
           <tr>
-            <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
               League
             </th>
-            <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
               Min MMR
             </th>            
-            <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
               Max MMR
             </th>                
           </tr>
@@ -47,28 +47,28 @@
         </tbody>
       </table>
 
-      <table class="min-w-full bg-white">
+      <table class="">
         <thead>
           <tr>
-            <th @click="sortTable('replayID')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('replayID')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Game ID
             </th>
-            <th @click="sortTable('game_date')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('game_date')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Game Date
             </th>            
-            <th @click="sortTable('mmr_date_parsed')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('mmr_date_parsed')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               MMR Date Parsed
             </th>
-            <th @click="sortTable('hero_id')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('hero_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Hero
             </th>
-            <th @click="sortTable('mmr')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('mmr')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               MMR
             </th>    
-            <th @click="sortTable('mmr_change')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('mmr_change')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               MMR Change
             </th>      
-            <th @click="sortTable('winner')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('winner')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Winner
             </th>                 
           </tr>
@@ -84,7 +84,7 @@
             <td>
               {{ formatDate(row.mmr_date_parsed) }}
             </td>
-            <td class="py-2 px-3 border-b border-gray-200 flex items-center gap-1">
+            <td class="py-2 px-3  flex items-center gap-1">
               <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}
             </td>
             <td>

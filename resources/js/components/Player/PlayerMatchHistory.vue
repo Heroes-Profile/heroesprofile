@@ -36,28 +36,28 @@
       </div>
 
 
-      <table class="min-w-full bg-white">
+      <table class="">
         <thead>
           <tr>
-            <th @click="sortTable('replayID')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('replayID')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Game ID
             </th>
-            <th @click="sortTable('game_date')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('game_date')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Game Date
             </th>            
-            <th @click="sortTable('game_type_id')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('game_type_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Game Type
             </th>
-            <th @click="sortTable('game_map')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('game_map')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Game Map
             </th>
-            <th @click="sortTable('hero_id')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('hero_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Hero
             </th>    
-            <th @click="sortTable('winner')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('winner')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Winner
             </th>    
-            <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
               Talents
             </th>                   
           </tr>
@@ -76,7 +76,7 @@
             <td>
               {{ row.game_map }}
             </td>
-            <td class="py-2 px-3 border-b border-gray-200 flex items-center gap-1">
+            <td class="py-2 px-3  flex items-center gap-1">
               <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}
             </td>
             <td>

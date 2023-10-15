@@ -4,12 +4,12 @@
       <input 
         type="text" 
         v-model="searchQuery" 
-        class="border rounded p-2" 
+        class="border rounded p-2 text-black" 
         placeholder="Search for a hero..."
       />
     </div>
 
-    <div class="flex flex-wrap gap-2">
+    <div class="flex flex-wrap gap-2 max-w-[1200px] mx-auto">
       <hero-image-wrapper
         v-for="hero in filteredHeroes" 
         :key="hero.id" 

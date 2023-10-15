@@ -17,19 +17,19 @@
 
     <div class="flex flex-wrap gap-1">
       <div v-if="frienddata && enemydata">
-        <table class="min-w-full bg-white">
+        <table class="">
           <thead>
             <tr>
-              <th @click="sortTableFriend('battletag')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTableFriend('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Player
               </th>
-              <th @click="sortTableFriend('hero')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTableFriend('hero')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Favorite Hero
               </th>            
-              <th @click="sortTableFriend('total_games_played')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTableFriend('total_games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Games Played With
               </th>
-              <th @click="sortTableFriend('win_rate')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTableFriend('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Win Rate with Friend
               </th>                  
             </tr>
@@ -37,14 +37,14 @@
 
           <tbody>
             <tr v-for="row in sortedDataFriends" :key="row.blizz_id">
-              <td class="py-2 px-3 border-b border-gray-200"><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
-              <td class="py-2 px-3 border-b border-gray-200">
+              <td class="py-2 px-3 "><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
+              <td class="py-2 px-3 ">
                 <hero-image-wrapper :hero="row.heroData.hero">
                   <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.total_games_played"></image-hover-box>
                 </hero-image-wrapper>
               </td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.total_games_played }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
+              <td class="py-2 px-3 ">{{ row.total_games_played }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
             </tr>
           </tbody>
         </table>
@@ -54,19 +54,19 @@
       </div>
 
       <div v-if="enemydata && frienddata">
-        <table class="min-w-full bg-white">
+        <table class="">
           <thead>
             <tr>
-              <th @click="sortTableEnemy('battletag')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTableEnemy('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Player
               </th>
-              <th @click="sortTableEnemy('hero')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTableEnemy('hero')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Favorite Hero
               </th>            
-              <th @click="sortTableEnemy('total_games_played')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTableEnemy('total_games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Games Played Against
               </th>
-              <th @click="sortTableEnemy('win_rate')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTableEnemy('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Foe's Win Rate Against {{ battletag }}
               </th>                  
             </tr>
@@ -74,15 +74,15 @@
 
           <tbody>
             <tr v-for="row in sortedDataEnemies" :key="row.blizz_id">
-              <td class="py-2 px-3 border-b border-gray-200"><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
-              <td class="py-2 px-3 border-b border-gray-200">
+              <td class="py-2 px-3 "><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
+              <td class="py-2 px-3 ">
                 <hero-image-wrapper :hero="row.heroData.hero">
                   <h2>{{ row.heroData.hero.name }}</h2>
                   <p>Games Played: {{ row.total_games_played }}</p>
                 </hero-image-wrapper>
               </td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.total_games_played }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
+              <td class="py-2 px-3 ">{{ row.total_games_played }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
             </tr>
           </tbody>
         </table>

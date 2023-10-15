@@ -45,7 +45,7 @@
 
 
     <infobox :input="'Calculated build win chance tries to guage what the builds win rate will be at any point during the game.'"></infobox>
-      <table v-if="builddata" class="min-w-full bg-white">
+      <table v-if="builddata" class="">
         <thead>
           <tr>
             <th>
@@ -75,7 +75,7 @@
                 <talent-image-wrapper v-if="builddata.level_twenty" :talent="builddata.level_twenty" :size="'medium'"></talent-image-wrapper>
               </div>
             </td>
-            <td class="py-2 px-3 border-b border-gray-200">
+            <td class="py-2 px-3 ">
             {{ this.getCopyBuildToGame(builddata.level_one, builddata.level_four, builddata.level_seven, builddata.level_ten, builddata.level_thirteen, builddata.level_sixteen, builddata.level_twenty, selectedHero) }}
             <custom-button @click="copyToClipboard(builddata)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
           </td>
@@ -92,7 +92,7 @@
 
     <infobox :input="'Possible Replays do not take into account Hero Level, Hero Rank, Role Rank, or Mirror Match Filter options'"></infobox>
 
-    <table class="min-w-full bg-white">
+    <table class="">
       <thead>
         <tr>
           <th>

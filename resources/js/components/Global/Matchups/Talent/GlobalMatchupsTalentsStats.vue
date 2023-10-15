@@ -14,34 +14,38 @@
     :advancedfiltering="advancedfiltering"
     >
   </filters>
+<div class="flex justify-center items-center gap-10">
+  <div class="">
+      <single-select-filter :values="firstHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="herochanged"></single-select-filter>
 
-  <div class="grid grid-cols-3 grid-rows-4 gap-4">
-    <div class="col-start-1 row-start-1 row-span-4 bg-blue-200">
-
-      <hero-image-wrapper :rectangle="true" :size="'large'" :hero="hero"></hero-image-wrapper>
+    </div>
+    <div class="">
+      {{ vsorwith }}
+    </div>
+    <div class="">
+      <single-select-filter :values="secondHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="allyenemychanged"></single-select-filter>
+    </div>
+</div>
+  <div class="flex justify-center relative gap-10">
+    <div class="absolute z-20 font-logo text-[5em] text-red drop-shadow-lg rotate-12 mt-[1em]" style="    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: white;">
+      {{ fightoralliance }}!!
+    </div>
+    <div class="">  
+    
+      <hero-image-wrapper class="" :rectangle="true" :size="'large'" :hero="hero"></hero-image-wrapper>
 
       <div v-if="this.firstwinratedata">
         {{ this.firstwinratedata }}{{"%"}}
       </div>
     </div>
 
-    <div class="col-start-2 row-start-1 bg-green-200">
-      <single-select-filter :values="firstHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="herochanged"></single-select-filter>
+    
+    
 
-    </div>
-    <div class="col-start-2 row-start-2 bg-green-300">
-      {{ vsorwith }}
-    </div>
-    <div class="col-start-2 row-start-3 bg-green-400">
-      <single-select-filter :values="secondHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="allyenemychanged"></single-select-filter>
-    </div>
-    <div class="col-start-2 row-start-4 bg-green-500">
-      {{ fightoralliance }}
-    </div>
+    <div class="">
 
-    <div class="col-start-3 row-start-1 row-span-4 bg-red-200">
-
-      <hero-image-wrapper :rectangle="true" :size="'large'" :hero="enemyally"></hero-image-wrapper>
+      <hero-image-wrapper class="" :rectangle="true" :size="'large'" :hero="enemyally"></hero-image-wrapper>
 
       <div v-if="this.secondwinratedata">
         {{ this.secondwinratedata }}{{"%"}}
@@ -50,20 +54,22 @@
   </div>
 
 
-  <div v-if="showTalentHeroToggle" class="container">
+  <div v-if="showTalentHeroToggle" class="text-center">
     Talents:    
-      <custom-button :text="this.hero.name" :ignoreclick="true" @click="talentHeroOrEnemySideSelected(this.hero, 'left')"></custom-button>
-      <custom-button  :text="this.enemyally.name" :ignoreclick="true" @click="talentHeroOrEnemySideSelected(this.enemyally, 'right')"></custom-button>
+
+    <tab-button :tab1text="this.hero.name" :ignoreclick="true" :tab2text="this.enemyally.name"   > </tab-button>
+      
+
   </div>
 
-  <div class="container">
+  <div class="text-center">
     <custom-button :text="'Enemy'" :ignoreclick="true" @click="heroOrEnemySideSelected(this.hero, 'left')"></custom-button>
     <custom-button  :text="'Ally'" :ignoreclick="true" @click="heroOrEnemySideSelected(this.enemyally, 'right')"></custom-button>
   </div>
 
 
 
-  <div class="container mx-auto px-4">
+  <div class=" mx-auto px-4">
     <global-talent-details-section v-if="talentdetaildata" :talentdetaildata="talentdetaildata" :statfilter="null"></global-talent-details-section>
     <div v-else-if="isLoading">
       <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
