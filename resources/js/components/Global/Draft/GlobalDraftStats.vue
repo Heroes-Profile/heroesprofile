@@ -30,7 +30,7 @@
         >
       </filters>
 
-      <div> 
+      <div class="max-w-[1500px] mx-auto flex justify-end mb-2"> 
         <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
       </div>
       <div v-if="draftdata">
@@ -59,7 +59,7 @@
             <tr 
             v-for="row in draftdata" 
             :key="row.pick_number"
-            :class="determinePickOrBan(row.pick_number).includes('Ban') ? 'bg-red' : ''"
+            :class="determinePickOrBan(row.pick_number).includes('Ban') ? 'bg-hred border-b border-gray-light' : ''"
             >
             <td class="py-2 px-3 ">
               {{ determinePickOrBan(row.pick_number) }}

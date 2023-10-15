@@ -39,9 +39,10 @@ table{
  
 }
 
-tr{
+tr:not(.bg-hred){
 @apply even:bg-gray-xlight ;
 }
+
 th{
   @apply text-left text-sm leading-4  tracking-wider cursor-pointer py-1 px-3 border-b;
 }

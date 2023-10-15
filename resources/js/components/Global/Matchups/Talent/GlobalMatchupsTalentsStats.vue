@@ -14,34 +14,38 @@
     :advancedfiltering="advancedfiltering"
     >
   </filters>
+<div class="flex justify-center">
+  <div class="">
+      <single-select-filter :values="firstHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="herochanged"></single-select-filter>
 
-  <div class="grid grid-cols-3 grid-rows-4 gap-4">
-    <div class="col-start-1 row-start-1 row-span-4 bg-blue-200">
-
-      <hero-image-wrapper :rectangle="true" :size="'large'" :hero="hero"></hero-image-wrapper>
+    </div>
+    <div class="">
+      {{ vsorwith }}
+    </div>
+    <div class="">
+      <single-select-filter :values="secondHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="allyenemychanged"></single-select-filter>
+    </div>
+</div>
+  <div class="flex justify-center relative">
+    <div class="absolute z-20 font-logo text-[5em] text-red drop-shadow-lg rotate-12 mt-[1em]" style="    -webkit-text-stroke-width: 1px;
+    -webkit-text-stroke-color: white;">
+      {{ fightoralliance }}!!
+    </div>
+    <div class="relative">  
+    
+      <hero-image-wrapper class="w-[20em]" :rectangle="true" :size="'large'" :hero="hero"></hero-image-wrapper>
 
       <div v-if="this.firstwinratedata">
         {{ this.firstwinratedata }}{{"%"}}
       </div>
     </div>
 
-    <div class="col-start-2 row-start-1 bg-green-200">
-      <single-select-filter :values="firstHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="herochanged"></single-select-filter>
+    
+    
 
-    </div>
-    <div class="col-start-2 row-start-2 bg-green-300">
-      {{ vsorwith }}
-    </div>
-    <div class="col-start-2 row-start-3 bg-green-400">
-      <single-select-filter :values="secondHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="allyenemychanged"></single-select-filter>
-    </div>
-    <div class="col-start-2 row-start-4 bg-green-500">
-      {{ fightoralliance }}
-    </div>
+    <div class="">
 
-    <div class="col-start-3 row-start-1 row-span-4 bg-red-200">
-
-      <hero-image-wrapper :rectangle="true" :size="'large'" :hero="enemyally"></hero-image-wrapper>
+      <hero-image-wrapper class="w-[20em]" :rectangle="true" :size="'large'" :hero="enemyally"></hero-image-wrapper>
 
       <div v-if="this.secondwinratedata">
         {{ this.secondwinratedata }}{{"%"}}

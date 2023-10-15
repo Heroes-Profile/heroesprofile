@@ -8,19 +8,18 @@
         'w-20': size === 'big', 
         'h-20': size === 'big',
         'w-[6em]': size === 'xl',
-        'h-[6em]': size === 'xl'
+        'h-[6em]': size === 'xl',
+        'w-72': size === 'large',
+        'h-auto': size === 'large'
         
       }
       ]"
      @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
     <img :class="[
-      'card-img-top relative hover:brightness-125 hover:drop-shadow  rounded-full w-full h-10 w-10  ',  
+      'card-img-top relative hover:brightness-125 hover:drop-shadow   w-full ',  
       { 
-        block: size === 'big', 
-        'w-20': size === 'big', 
-        'h-20': size === 'big',
-        'w-[6em]': size === 'xl',
-        'h-[6em]': size === 'xl' 
+        
+        'rounded-full' : rectangle != true 
         
       }
       ]"   
@@ -56,6 +55,7 @@ export default {
     title: String,
     image: String,
     size: String,
+    rectangle: Boolean,
     excludehover: Boolean,
   },
   data(){
