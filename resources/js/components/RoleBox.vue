@@ -1,9 +1,7 @@
 <template>
-  <div class="card relative" style="width: 18rem;">
-    <img class="card-img-top relative hover:opacity-75 w-24 h-35" :src="getRoleImage()" :alt="role" @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
-    <div v-if="showTooltip" class="absolute top-0 left-0 bg-gray-700 text-white text-xs p-1 opacity-90" :style="{ left: '50%', transform: 'translateX(-50%)' }">
-      {{ popuptext }}
-    </div>
+  <div class="card relative text-center flex-1">
+    <img class="card-img-top relative  w-16  mx-auto" :src="getRoleImage()" :alt="role" @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
+    
     {{ role }}
   </div>
 </template>
@@ -37,8 +35,12 @@ export default {
       let formattedRole = this.role.toLowerCase();
 
       //This is the wrong image I think?  The other one is without _compare
-      return `/images/roles/${formattedRole}_compare.png`;
+      return `/images/roles/${formattedRole}.png`;
     }
   }
 }
 </script>
+<style scoped>
+  img{filter: brightness(0);}
+
+  </style>

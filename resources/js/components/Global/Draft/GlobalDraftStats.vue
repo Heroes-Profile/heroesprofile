@@ -37,19 +37,19 @@
         <table class="min-w-full bg-white">
           <thead>
             <tr>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Pick Order
               </th>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Pick/Ban Rate % at position
               </th>            
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Team Wins
               </th>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Team Losses
               </th>
-              <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                 Team Win Rate %
               </th>                 
             </tr>
@@ -61,13 +61,13 @@
             :key="row.pick_number"
             :class="determinePickOrBan(row.pick_number).includes('Ban') ? 'bg-red' : ''"
             >
-            <td class="py-2 px-3 border-b border-gray-200">
+            <td class="py-2 px-3 ">
               {{ determinePickOrBan(row.pick_number) }}
             </td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.popularity }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.wins }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.losses }}</td>
-            <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
+            <td class="py-2 px-3 ">{{ row.popularity }}</td>
+            <td class="py-2 px-3 ">{{ row.wins }}</td>
+            <td class="py-2 px-3 ">{{ row.losses }}</td>
+            <td class="py-2 px-3 ">{{ row.win_rate }}</td>
           </tr>
         </tbody>
       </table>

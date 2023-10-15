@@ -23,19 +23,19 @@
       >
     </filters>
     <div v-if="compositiondata">
-      <table class="min-w-full bg-white">
+      <table class=" max-w-[1500px]">
         <thead>
           <tr>
-            <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
               Composition
             </th>
-            <th @click="sortTable('win_rate')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Win Rate %
             </th>            
-            <th @click="sortTable('popularity')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('popularity')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Popularity %
             </th>
-            <th @click="sortTable('games_played')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games Played
             </th>       
             <th></th>          
@@ -44,43 +44,45 @@
         <tbody>
           <template v-for="(row, index) in sortedData">
             <tr>
-              <td class="flex flex-wrap gap-1">
+              <td >
+                <div class="flex flex-wrap gap-1 justify-center w-auto ">
                 <role-box :role="row.role_one.name"></role-box>
                 <role-box :role="row.role_two.name"></role-box>
                 <role-box :role="row.role_three.name"></role-box>
                 <role-box :role="row.role_four.name"></role-box>
                 <role-box :role="row.role_five.name"></role-box>
+              </div>
               </td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.popularity }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.games_played }}</td>
-              <td class="py-2 px-3 border-b border-gray-200"><button @click="viewTopHeroes(row.composition_id, index)" class="mt-4 bg-blue-500 text-white p-2 rounded">View Top Heroes</button></td>
+              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
+              <td class="py-2 px-3 ">{{ row.popularity }}</td>
+              <td class="py-2 px-3 ">{{ row.games_played }}</td>
+              <td class="py-2 px-3 "><button @click="viewTopHeroes(row.composition_id, index)" class="mt-4 bg-blue-500 text-white p-2 rounded">View Top Heroes</button></td>
             </tr>
             <tr v-if="row.compositionheroes">
-              <td>
-                <table class="min-w-full bg-white">
+              <td colspan=5>
+                <table class="min-w-0 ml-0 ">
                   <thead>
                     <tr>
-                      <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+                      <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                         Top {{ row.role_one.name }}
                       </th>
-                      <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+                      <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                         Top {{ row.role_two.name }}
                       </th>
-                      <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+                      <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                         Top {{ row.role_three.name }}
                       </th>
-                      <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+                      <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                         Top {{ row.role_four.name }}
                       </th>
-                      <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+                      <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                         Top {{ row.role_five.name }}
                       </th>
                     </tr>
    
                   </thead>
                   <tbody>
-                    <div v-for="index in range">
+                    <tr v-for="index in range">
                       <td>
                         <hero-image-wrapper :hero="getHeroData(1, row, row.compositionheroes[row.role_one.name], index)"></hero-image-wrapper>
                       </td>
@@ -96,7 +98,7 @@
                       <td>
                         <hero-image-wrapper :hero="getHeroData(5, row, row.compositionheroes[row.role_five.name], index)"></hero-image-wrapper>
                       </td>
-                    </div>
+                    </tr>
                   </tbody>
                 </table>
               </td>

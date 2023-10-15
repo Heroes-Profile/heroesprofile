@@ -6,25 +6,25 @@
     <table class="min-w-full bg-white">
       <thead>
         <tr>
-          <th @click="sortTable('replayID')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('replayID')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             Game ID
           </th>
-          <th @click="sortTable('team_0_name')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('team_0_name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             Team 1
           </th>
-          <th @click="sortTable('team_1_name')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('team_1_name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             Team 2
           </th>
           <th>
             Game
           </th>
-          <th @click="sortTable('game_date')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('game_date')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             Game Date
           </th>            
-          <th @click="sortTable('game_map')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('game_map')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             Game Map
           </th>
-          <th @click="sortTable('hero_id')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('hero_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             Heroes
           </th>                        
         </tr>
@@ -49,7 +49,7 @@
             <td>
               {{ row.game_map.name }}
             </td>
-            <td class="py-2 px-3 border-b border-gray-200 flex items-center gap-1">
+            <td class="py-2 px-3  flex items-center gap-1">
               <template v-for="(hero, heroIndex) in row.heroes">
                 <hero-image-wrapper v-if="hero" :hero="hero" :key="heroIndex"></hero-image-wrapper>
               </template>

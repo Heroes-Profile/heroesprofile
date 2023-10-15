@@ -7,24 +7,24 @@
             <th colspan="7"><a :href="'/Esports/NGS/Division/' + divisionName">Division {{ divisionName }}</a></th>
           </tr>
           <tr>
-            <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
             </th>
-            <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
               Team
             </th>            
-            <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
               Points
             </th>
-            <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
               Dominations
             </th>
-            <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
               Games Won
             </th>   
-            <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
               Games Lost
             </th>   
-            <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
               Matches Played
             </th>     
           </tr>

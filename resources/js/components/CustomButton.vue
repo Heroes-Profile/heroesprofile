@@ -1,5 +1,4 @@
 <template>
-  <div>
     <a 
     :class="[
       staticClasses, 
@@ -25,7 +24,6 @@
         <span v-for="(letter, index) in loadingText" :key="index" :style="{ animationDelay: index * 0.5 + 's' }">{{ letter }}</span>
       </span>
     </a>
-  </div>
 </template>
 
 <script>
