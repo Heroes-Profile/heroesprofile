@@ -89,7 +89,7 @@
 
       <div v-if="esport">
         
-        <table class="min-w-full bg-white">
+        <table class="">
           <thead>
             <tr>
               <th>
@@ -181,7 +181,7 @@
       <div v-if="data.draft_order && data.draft_order.length > 0" class="p-10 text-center">
         Draft Order
 
-        <table class="min-w-full bg-white">
+        <table class="">
           <thead>
             <tr>
               <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">

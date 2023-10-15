@@ -47,7 +47,7 @@
     </filters>
     <div v-if="data">
       <div class="max-w-[1500px]  md:px-20 overflow-scroll md:overflow-auto  h-[50vh] md:h-auto ml-auto mr-auto">
-        <table class="min-w-full bg-white">
+        <table class="">
           <thead>
             <tr>
               <th @click="sortTable('rank')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">

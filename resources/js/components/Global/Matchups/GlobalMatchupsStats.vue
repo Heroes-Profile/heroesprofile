@@ -35,7 +35,7 @@
         <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
       </div>
       <div class="min-w-[1500px] px-20 ">
-      <table class="min-w-full bg-white">
+      <table class="">
         <thead>
           <tr>
             <th @click="sortTable('hero_name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">

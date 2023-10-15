@@ -19,7 +19,7 @@
       <group-box :text="'Top 5 Allies with more than 5 games'" :data="topfiveheroes"></group-box>
       <group-box :text="'Top 5 Enemies with more than 5 games'" :data="topfiveenemies"></group-box>
     </div>
-    <table class="min-w-full bg-white">
+    <table class="">
       <thead>
         <tr>
           <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-for="(division, divisionName) in data" :key="divisionName">
-      <table class="min-w-full bg-white">
+      <table class="">
         <thead>
           <tr>
             <th colspan="7"><a :href="'/Esports/NGS/Division/' + divisionName">Division {{ divisionName }}</a></th>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-for="level in talentlevels">
-      <table class="min-w-full bg-white">
+      <table class="">
         <thead>
           <tr>
             <th :colspan="statfilter ? 5 : 4" class="text-center py-2 px-3 ">

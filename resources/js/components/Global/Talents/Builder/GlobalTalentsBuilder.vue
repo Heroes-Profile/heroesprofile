@@ -45,7 +45,7 @@
 
 
     <infobox :input="'Calculated build win chance tries to guage what the builds win rate will be at any point during the game.'"></infobox>
-      <table v-if="builddata" class="min-w-full bg-white">
+      <table v-if="builddata" class="">
         <thead>
           <tr>
             <th>
@@ -92,7 +92,7 @@
 
     <infobox :input="'Possible Replays do not take into account Hero Level, Hero Rank, Role Rank, or Mirror Match Filter options'"></infobox>
 
-    <table class="min-w-full bg-white">
+    <table class="">
       <thead>
         <tr>
           <th>

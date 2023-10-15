@@ -17,7 +17,7 @@
 
     <div class="flex flex-wrap gap-1">
       <div v-if="frienddata && enemydata">
-        <table class="min-w-full bg-white">
+        <table class="">
           <thead>
             <tr>
               <th @click="sortTableFriend('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -54,7 +54,7 @@
       </div>
 
       <div v-if="enemydata && frienddata">
-        <table class="min-w-full bg-white">
+        <table class="">
           <thead>
             <tr>
               <th @click="sortTableEnemy('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">

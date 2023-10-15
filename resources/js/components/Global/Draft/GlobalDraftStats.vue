@@ -34,7 +34,7 @@
         <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
       </div>
       <div v-if="draftdata">
-        <table class="min-w-full bg-white">
+        <table class="">
           <thead>
             <tr>
               <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">

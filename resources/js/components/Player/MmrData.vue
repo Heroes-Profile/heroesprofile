@@ -18,7 +18,7 @@
 
 
       {{ this.gametype.toUpperCase() }} - League Tier Breakdowns | Player MMR: {{ data[0].mmr }}
-      <table class="min-w-full bg-white">
+      <table class="">
         <thead>
           <tr>
             <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
@@ -47,7 +47,7 @@
         </tbody>
       </table>
 
-      <table class="min-w-full bg-white">
+      <table class="">
         <thead>
           <tr>
             <th @click="sortTable('replayID')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
