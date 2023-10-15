@@ -25,6 +25,7 @@ import GroupBox from './components/GroupBox.vue';
 import RoleBox from './components/RoleBox.vue';
 import CustomButton from './components/CustomButton.vue';
 import CustomTable from './components/CustomTable.vue';
+import TabButton from './components/TabButton.vue';
 import GameSummaryBox from './components/GameSummaryBox.vue';
 import SearchComponent from './components/SearchComponent.vue';
 import ImageHoverBox from './components/ImageHoverBox.vue';

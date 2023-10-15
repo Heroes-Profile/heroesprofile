@@ -10,16 +10,19 @@
         'w-[6em]': size === 'xl',
         'h-[6em]': size === 'xl',
         'w-72': size === 'large',
-        'h-auto': size === 'large'
+        'h-[23em]': size === 'large',
+        'overflow-hidden': size === 'large'
         
       }
       ]"
      @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
     <img :class="[
-      'card-img-top relative hover:brightness-125 hover:drop-shadow   w-full ',  
+      'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow   w-full ',  
       { 
         
-        'rounded-full' : rectangle != true 
+        'rounded-full' : rectangle != true,
+        'h-full': size === 'large',
+        'w-auto': size === 'large'
         
       }
       ]"   
