@@ -9,9 +9,6 @@
       </div>
 
       <div v-else>
-        <single-select-filter :values="filters.heroes" :text="'Hero'" :defaultValue="this.selectedHero.id.toString()" @input-changed="herochanged"></single-select-filter>
-
-
         <filters 
         :onFilter="filterData" 
         :filters="filters" 
@@ -30,8 +27,8 @@
         >
       </filters>
 
-      <div class="max-w-[1500px] mx-auto flex justify-end mb-2"> 
-        <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
+      <div class="max-w-[1500px] mx-auto flex justify-start mb-2"> 
+      <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Draft Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
       </div>
       <div v-if="draftdata">
         <table class="">

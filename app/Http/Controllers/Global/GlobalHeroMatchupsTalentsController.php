@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Validator;
 
 class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationController
 {
-    public function show(Request $request, $hero = null)
+    public function show(Request $request, $hero = null, $allyenemy = null)
     {
         if (! is_null($hero) && $hero !== 'Auto Select') {
             $validationRules = [
@@ -29,8 +29,21 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
             }
         }
 
-        $inputhero = (new HeroInputValidation())->passes('hero', $request['hero']);
-        $inputenemyally = (new HeroInputValidation())->passes('allyenemy', $request['allyenemy']);
+        if (! is_null($allyenemy) && $allyenemy !== 'Auto Select') {
+            $validationRules = [
+                'allyenemy' => ['required', new HeroInputValidation()],
+            ];
+
+            $validator = Validator::make(['allyenemy' => $allyenemy], $validationRules);
+
+            if ($validator->fails()) {
+                return back();
+            }
+        }
+
+
+        $inputhero = Hero::where("name", $request['hero'])->first();
+        $inputenemyally = Hero::where("name", $request['allyenemy'])->first();
 
         if (! $inputhero) {
             $inputhero = new Hero;

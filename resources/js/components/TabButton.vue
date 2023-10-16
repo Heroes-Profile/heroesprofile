@@ -66,13 +66,8 @@
     },
     methods: {
       handleClick(side) {
-        if (this.ignoreclick || this.disabled) return;
-        console.log('side', side);
-        this.$parent.talentHeroOrEnemySideSelected(this.hero, side);
-        
-        return;
+        this.$emit('tab-click', side);
       }
-
   }
 }
 </script>

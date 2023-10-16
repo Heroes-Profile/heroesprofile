@@ -33,7 +33,7 @@
         </filters>
 
         
-        <div  v-if="talentdetaildata" class="container mx-auto px-4 ">
+        <div  v-if="talentdetaildata" class="container mx-auto px-4">
          
          <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Talent Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
           <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
