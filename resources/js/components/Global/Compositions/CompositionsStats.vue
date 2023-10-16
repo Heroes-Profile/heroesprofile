@@ -56,7 +56,9 @@
               <td class="py-2 px-3 ">{{ row.win_rate }}</td>
               <td class="py-2 px-3 ">{{ row.popularity }}</td>
               <td class="py-2 px-3 ">{{ row.games_played }}</td>
-              <td class="py-2 px-3 "><button @click="viewTopHeroes(row.composition_id, index)" class="mt-4 bg-blue-500 text-white p-2 rounded">View Top Heroes</button></td>
+              <td>
+                <custom-button @click="viewTopHeroes(row.composition_id, index)" :text="'View Top Heroes'" :alt="'View Top Heroes'" size="small" :ignoreclick="true"></custom-button>
+              </td>
             </tr>
             <tr v-if="row.compositionheroes">
               <td colspan=5>
