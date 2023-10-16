@@ -1,6 +1,18 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" >
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-2T71M0W00N"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-2T71M0W00N');
+  </script>
+
+
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -17,7 +29,7 @@
 
 </head>
 <body class="bg-black text-white">
-  <div id="app">
+  <div id="app" class="flex flex-col align-stretch" style="min-height:100vh;">
 
       @include('nav', [
           'isAuthenticated' => Auth::check(),
@@ -27,8 +39,8 @@
       ])
       @yield('content')
     </main>
-
-    <div class="footer-wrapper text-center mx-auto bg-lighten border-t-4 border-teal">
+    <div class="mt-auto">
+    <div class="footer-wrapper text-center mx-auto bg-lighten border-t-4 border-teal mt-[2em] w-full">
       <div class="footer container-boxed py-10">
         <div class="container container-flex mx-auto">
 
@@ -54,6 +66,7 @@
         <div class="disclaimer">
 
         </div>
+      </div>
       </div>
     </div>
   </div>

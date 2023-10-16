@@ -1,9 +1,14 @@
 <template>
-  <div class="loading-container">
-    <img v-if="overrideimage" :src="overrideimage" alt="dsf" />
+
+  <div class="loading-container z-49">
+    <img v-if="overrideimage" :src="overrideimage" alt="loading" />
     <img v-else src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
     <div class="loading-text">
-      <slot v-if="textoverride"></slot>
+      <div v-if="textoverride">
+        <slot></slot>
+        <span v-if="timer">~{{ countdown }} seconds remaining</span>
+      </div>
+
       <span v-else>Loading data...</span>
     </div>
   </div>
@@ -16,21 +21,43 @@
     props: {
       textoverride: Boolean,
       overrideimage: String,
+      timer: Boolean,
+      starttime: Number,
     },
     data(){
       return {
+        countdown: this.starttime, // Initialize countdown with starttime
+        timerInterval: null, // Store the interval reference
       }
     },
     created(){
+      if (this.timer) {
+        this.startTimer(this.starttime);
+      }
     },
     mounted() {
+      console.log();
     },
     computed: {
     },
     watch: {
     },
     methods: {
-    }
+      startTimer() {
+        if (this.countdown > 0) {
+          this.timerInterval = setInterval(() => {
+            this.countdown -= 1; // Decrement countdown
+            if (this.countdown <= 0) {
+              clearInterval(this.timerInterval); // Clear the interval when countdown reaches 0
+            }
+          }, 1000); // Update countdown every 1 second (1000 milliseconds)
+        }
+      },
+    },
+    beforeDestroy() {
+      // Clear the timer interval to prevent memory leaks when the component is destroyed
+      clearInterval(this.timerInterval);
+    },
   }
 </script>
 

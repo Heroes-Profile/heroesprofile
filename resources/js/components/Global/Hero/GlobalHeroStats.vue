@@ -29,102 +29,106 @@
 
     
     <div v-if="this.data.data">
-      <div class="float-right mr-20">
+      <div class="max-w-[1500px] mx-auto flex justify-end mb-2">
         <custom-button @click="toggleChartValue" text="Toggle Chart" alt="Toggle Chart" size="small" :ignoreclick="true"></custom-button>
       </div>
 
       <div v-if="togglechart">
         <bubble-chart :heroData="this.data.data"></bubble-chart>
       </div>
-      <div class="min-w-full px-20">
-     <table class="min-w-full bg-white">
+      <div class="min-w-[1500px] px-20">
+     <table class=" bg-white">
         <thead>
-          <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th class="py-2 px-3  border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
             Avg
           </th>
-          <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th class="py-2 px-3  border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ this.data.average_win_rate }}
           </th>
-          <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ "&#177;" }}{{ this.data.average_confidence_interval }}
           </th>
-          <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ this.data.average_positive_win_rate_change }}{{ "|" }}{{ this.data.average_negative_win_rate_change }}
           </th>
-          <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ this.data.average_popularity }}
           </th>
-          <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ this.data.average_pick_rate }}
           </th>
-          <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ this.data.average_ban_rate }}
           </th>
-          <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ this.data.average_positive_influence }}{{ "|" }}{{ this.data.average_negative_influence }}
           </th>
-          <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ this.data.average_games_played }}
           </th>
 
-          <th  v-if="this.showStatTypeColumn"  class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th  v-if="this.showStatTypeColumn"  class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ data.averaege_total_filter_type }}
           </th>
 
-          <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
           </th>
 
         </thead>
         <thead>
           <tr>
-            <th @click="sortTable('name')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Hero
             </th>
-            <th @click="sortTable('win_rate')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Win Rate %
             </th>
-            <th @click="sortTable('confidence_interval')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('confidence_interval')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Win Rate Confidence
             </th>
-            <th @click="sortTable('win_rate_change')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('win_rate_change')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Win Rate Change
             </th>
-            <th @click="sortTable('popularity')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('popularity')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Popularity %
             </th>
-            <th @click="sortTable('pick_rate')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('pick_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Pick Rate %
             </th>   
-            <th @click="sortTable('ban_rate')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('ban_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Ban Rate %
             </th>    
-            <th @click="sortTable('influence')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('influence')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Influence
             </th>                  
-            <th @click="sortTable('games_played')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games Played
             </th>       
-            <th v-if="this.showStatTypeColumn" @click="sortTable('games_played')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th v-if="this.showStatTypeColumn" @click="sortTable('games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               {{ this.statfilter }}
             </th>
-            <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             </th>                              
           </tr>
         </thead>
         <tbody>
           <template v-for="(row, index) in sortedData">
-            <tr>
-              <a :href="'/Global/Talents/' + row.name" ><td class="py-2 px-3 border-b border-gray-200 flex items-center gap-1"><hero-image-wrapper :hero="row" :includehover="false"></hero-image-wrapper>{{ row.name }}</td></a>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 border-b border-gray-200"><span v-html="'&#177;'"></span>{{ row.confidence_interval }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate_change }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.popularity }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.pick_rate }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.ban_rate }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.influence }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">{{ row.games_played }}</td>
-              <td v-if="this.showStatTypeColumn" class="py-2 px-3 border-b border-gray-200">{{ row.total_filter_type }}</td>
-              <td class="py-2 px-3 border-b border-gray-200">
+            <tr >
+              <a :href="'/Global/Talents/' + row.name" >
+                <td class="py-2 px-3 flex items-center gap-1">
+                  <hero-image-wrapper class="mr-2" :hero="row" :includehover="false"></hero-image-wrapper>{{ row.name }}
+                </td>
+              </a>
+              <td class="  ">{{ row.win_rate }}</td>
+              <td class="py-2 px-3 "><span v-html="'&#177;'"></span>{{ row.confidence_interval }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate_change }}</td>
+              <td class="py-2 px-3">{{ row.popularity }}</td>
+              <td class="py-2 px-3">{{ row.pick_rate }}</td>
+              <td class="py-2 px-3">{{ row.ban_rate }}</td>
+              <td class="py-2 px-3">{{ row.influence }}</td>
+              <td class="py-2 px-3 ">{{ row.games_played }}</td>
+              <td v-if="this.showStatTypeColumn" class="py-2 px-3 ">{{ row.total_filter_type }}</td>
+              <td class="py-2 px-3 ">
                 <custom-button
                   @click="viewtalentbuilds(row.name, index)"
                   text="View Talent Builds"

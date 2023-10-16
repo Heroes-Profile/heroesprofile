@@ -1,39 +1,34 @@
 <?php
 
 namespace App\Http\Controllers\Player;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Validator;
 
+use App\Http\Controllers\Controller;
+use App\Models\BattlenetAccount;
+use App\Models\Battletag;
+use App\Models\GameType;
+use App\Models\HeroesDataTalent;
+use App\Models\LaravelProfilePage;
+use App\Models\Map;
+use App\Models\MasterMMRDataAR;
+use App\Models\MasterMMRDataHL;
+use App\Models\MasterMMRDataQM;
+use App\Models\MasterMMRDataSL;
+use App\Models\MasterMMRDataTL;
+use App\Models\MasterMMRDataUD;
+use App\Models\MMRTypeID;
+use App\Models\Replay;
+use App\Models\SeasonDate;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\SeasonInputValidation;
-
-use App\Models\PatreonAccount;
-use App\Models\Replay;
-use App\Models\LaravelProfilePage;
-use App\Models\Battletag;
-use App\Models\MMRTypeID;
-use App\Models\Map;
-use App\Models\HeroesDataTalent;
-use App\Models\GameType;
-use App\Models\SeasonDate;
-
-use App\Models\MasterMMRDataQM;
-use App\Models\MasterMMRDataUD;
-use App\Models\MasterMMRDataHL;
-use App\Models\MasterMMRDataTL;
-use App\Models\MasterMMRDataSL;
-use App\Models\MasterMMRDataAR;
-
-use App\Models\BattlenetAccount;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class PlayerController extends Controller
 {
     public function show(Request $request, $battletag, $blizz_id, $region)
     {
-       $validationRules = [
+        $validationRules = [
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
@@ -50,37 +45,38 @@ class PlayerController extends Controller
 
         if ($validator->fails()) {
             return [
-                "data" => compact('battletag', 'blizz_id', 'region'),
-                "status" => "failure to validate inputs"
+                'data' => compact('battletag', 'blizz_id', 'region'),
+                'status' => 'failure to validate inputs',
             ];
         }
 
         $heroUserSettings = null;
-        $checkedUser = BattlenetAccount::where("battletag", "like", $battletag . "%")
-            ->where("blizz_id", $blizz_id)
-            ->where("region", $region)
+        $checkedUser = BattlenetAccount::where('battletag', 'like', $battletag.'%')
+            ->where('blizz_id', $blizz_id)
+            ->where('region', $region)
             ->first();
 
         if ($checkedUser) {
             $heroUserSettings = $checkedUser->userSettings->where('setting', 'hero')->first();
-            $heroUserSettings = $this->globalDataService->getHeroesByID()[$heroUserSettings["value"]];
+            $heroUserSettings = $this->globalDataService->getHeroesByID()[$heroUserSettings['value']];
         }
 
-        $season = $request["season"];
-        $game_type = $request["game_type"];
+        $season = $request['season'];
+        $game_type = $request['game_type'];
 
         return view('Player.player')->with([
-                'settingHero' => $heroUserSettings,
-                'battletag' => $battletag,
-                'blizz_id' => $blizz_id,
-                'region' => $region,
-                'season' => $season,
-                'game_type' => $game_type,
-                'filters' => $this->globalDataService->getFilterData(),
-                ]);
+            'settingHero' => $heroUserSettings,
+            'battletag' => $battletag,
+            'blizz_id' => $blizz_id,
+            'region' => $region,
+            'season' => $season,
+            'game_type' => $game_type,
+            'filters' => $this->globalDataService->getFilterData(),
+        ]);
     }
 
-    public function getPlayerData(Request $request){
+    public function getPlayerData(Request $request)
+    {
         //return response()->json($request->all());
 
         $validationRules = [
@@ -93,46 +89,45 @@ class PlayerController extends Controller
 
         $validator = Validator::make($request->all(), $validationRules);
 
-       if ($validator->fails()) {
+        if ($validator->fails()) {
             return [
-                "data" => $request->all(),
-                "status" => "failure to validate inputs"
+                'data' => $request->all(),
+                'status' => 'failure to validate inputs',
             ];
         }
 
-        $battletag = $request["battletag"];
-        $blizz_id = $request["blizz_id"];
-        $region = $request["region"];
-        $game_type = $request["game_type"] ? GameType::where("short_name", $request["game_type"])->pluck("type_id")->first() : null;
-        $season = $request["season"];
-
+        $battletag = $request['battletag'];
+        $blizz_id = $request['blizz_id'];
+        $region = $request['region'];
+        $game_type = $request['game_type'] ? GameType::where('short_name', $request['game_type'])->pluck('type_id')->first() : null;
+        $season = $request['season'];
 
         $cachedData = LaravelProfilePage::filterByBlizzID($blizz_id)
             ->filterByRegion($region)
-            ->where("game_type", $game_type)
-            ->where("season", $season)
+            ->where('game_type', $game_type)
+            ->where('season', $season)
             ->first();
-        
 
-        if(!$cachedData){
+        if (! $cachedData) {
             $cachedData = $this->calculateProfile($blizz_id, $region, $game_type, $season);
-        }else{
-            $latestReplayID = Replay::select("replay.replayID")
+        } else {
+            $latestReplayID = Replay::select('replay.replayID')
                 ->join('player', 'player.replayID', '=', 'replay.replayID')
-                ->where("blizz_id", $blizz_id)
-                ->where("region", $region)
-                ->when(!is_null($game_type), function ($query) use ($game_type){
-                    return $query->where("game_type", $game_type);
+                ->where('blizz_id', $blizz_id)
+                ->where('region', $region)
+                ->when(! is_null($game_type), function ($query) use ($game_type) {
+                    return $query->where('game_type', $game_type);
                 })
-                ->when(!is_null($season), function ($query) use ($season){
+                ->when(! is_null($season), function ($query) use ($season) {
                     $seasonDate = SeasonDate::find($season);
                     if ($seasonDate) {
-                        return $query->where("game_date", ">=", $seasonDate->start_date)
-                                     ->where("game_date", "<", $seasonDate->end_date);
+                        return $query->where('game_date', '>=', $seasonDate->start_date)
+                            ->where('game_date', '<', $seasonDate->end_date);
                     }
+
                     return $query;
                 })
-                ->orderBy("replayID", "DESC")
+                ->orderBy('replayID', 'DESC')
                 ->limit(1)
                 ->first()
                 ->replayID ?? null;
@@ -145,65 +140,67 @@ class PlayerController extends Controller
         return $this->formatCache($cachedData, $blizz_id, $region, $battletag);
     }
 
-    private function calculateProfile($blizz_id, $region, $game_type, $season, $cachedData = null){
+    private function calculateProfile($blizz_id, $region, $game_type, $season, $cachedData = null)
+    {
         ini_set('max_execution_time', 300); //300 seconds = 5 minutes
-        
+
         $result = DB::table('replay')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
-            ->join('scores', function($join) {
+            ->join('scores', function ($join) {
                 $join->on('scores.replayID', '=', 'replay.replayID')
-                     ->on('scores.battletag', '=', 'player.battletag');
+                    ->on('scores.battletag', '=', 'player.battletag');
             })
-            ->join('talents', function($join) {
+            ->join('talents', function ($join) {
                 $join->on('talents.replayID', '=', 'replay.replayID')
-                     ->on('talents.battletag', '=', 'player.battletag');
+                    ->on('talents.battletag', '=', 'player.battletag');
             })
             ->join('heroes', 'heroes.id', '=', 'player.hero')
             ->select([
-                "replay.replayID AS replayID",
-                "replay.game_type AS game_type",
-                "replay.game_date as game_date",
-                "replay.game_map AS game_map",
-                "replay.game_length AS game_length",
-                "player.winner AS winner",
-                "player.stack_size AS stack_size",
-                "player.hero AS hero",
-                "player.player_conservative_rating AS player_conservative_rating",
-                "player.player_change AS player_change",
-                "player.hero_conservative_rating AS hero_conservative_rating",
-                "player.hero_change AS hero_change",
-                "player.role_conservative_rating AS role_conservative_rating",
-                "player.role_change AS role_change",
-                "scores.first_to_ten AS first_to_ten",
-                "scores.kills AS kills",
-                "scores.deaths AS deaths",
-                "scores.time_on_fire AS time_on_fire",
-                "scores.takedowns AS takedowns",
-                "scores.match_award AS match_award",
-                "heroes.new_role as role",
-                "talents.level_one AS level_one",
-                "talents.level_four AS level_four",
-                "talents.level_seven AS level_seven",
-                "talents.level_ten AS level_ten",
-                "talents.level_thirteen AS level_thirteen",
-                "talents.level_sixteen AS level_sixteen",
-                "talents.level_twenty AS level_twenty"
+                'replay.replayID AS replayID',
+                'replay.game_type AS game_type',
+                'replay.game_date as game_date',
+                'replay.game_map AS game_map',
+                'replay.game_length AS game_length',
+                'player.winner AS winner',
+                'player.stack_size AS stack_size',
+                'player.hero AS hero',
+                'player.player_conservative_rating AS player_conservative_rating',
+                'player.player_change AS player_change',
+                'player.hero_conservative_rating AS hero_conservative_rating',
+                'player.hero_change AS hero_change',
+                'player.role_conservative_rating AS role_conservative_rating',
+                'player.role_change AS role_change',
+                'scores.first_to_ten AS first_to_ten',
+                'scores.kills AS kills',
+                'scores.deaths AS deaths',
+                'scores.time_on_fire AS time_on_fire',
+                'scores.takedowns AS takedowns',
+                'scores.match_award AS match_award',
+                'heroes.new_role as role',
+                'talents.level_one AS level_one',
+                'talents.level_four AS level_four',
+                'talents.level_seven AS level_seven',
+                'talents.level_ten AS level_ten',
+                'talents.level_thirteen AS level_thirteen',
+                'talents.level_sixteen AS level_sixteen',
+                'talents.level_twenty AS level_twenty',
             ])
-            ->where("blizz_id", $blizz_id)
-            ->where("region", $region)
+            ->where('blizz_id', $blizz_id)
+            ->where('region', $region)
             ->where(function ($query) use ($game_type) {
                 if (is_null($game_type)) {
-                    $query->whereNot("game_type", 0);
+                    $query->whereNot('game_type', 0);
                 } else {
-                    $query->where("game_type", $game_type);
+                    $query->where('game_type', $game_type);
                 }
             })
-            ->when(!is_null($season), function ($query) use ($season){
+            ->when(! is_null($season), function ($query) use ($season) {
                 $seasonDate = SeasonDate::find($season);
                 if ($seasonDate) {
-                    return $query->where("game_date", ">=", $seasonDate->start_date)
-                                 ->where("game_date", "<", $seasonDate->end_date);
+                    return $query->where('game_date', '>=', $seasonDate->start_date)
+                        ->where('game_date', '<', $seasonDate->end_date);
                 }
+
                 return $query;
             })
             //->where("replay.replayID", "<=", 46984901) //testing
@@ -212,7 +209,6 @@ class PlayerController extends Controller
             })
             //->toSql();
             ->get();
-
 
         if ($result->isEmpty()) {
             return $cachedData;
@@ -225,49 +221,47 @@ class PlayerController extends Controller
         $deaths = $result->sum('deaths');
         $takedowns = $result->sum('takedowns');
 
-        $first_to_ten_wins = $result->where('winner', 1)->where("first_to_ten", 1)->count();
-        $first_to_ten_losses = $result->where('winner', 0)->where("first_to_ten", 1)->count();
+        $first_to_ten_wins = $result->where('winner', 1)->where('first_to_ten', 1)->count();
+        $first_to_ten_losses = $result->where('winner', 0)->where('first_to_ten', 1)->count();
 
-        $second_to_ten_wins = $result->where('winner', 1)->where("first_to_ten", 0)->whereNotNull('first_to_ten')->count();
-        $second_to_ten_losses = $result->where('winner', 0)->where("first_to_ten", 0)->whereNotNull('first_to_ten')->count();
+        $second_to_ten_wins = $result->where('winner', 1)->where('first_to_ten', 0)->whereNotNull('first_to_ten')->count();
+        $second_to_ten_losses = $result->where('winner', 0)->where('first_to_ten', 0)->whereNotNull('first_to_ten')->count();
 
-        $bruiser_wins = $result->where('winner', 1)->where("role", "Bruiser")->count();
-        $bruiser_losses = $result->where('winner', 0)->where("role", "Bruiser")->count();
+        $bruiser_wins = $result->where('winner', 1)->where('role', 'Bruiser')->count();
+        $bruiser_losses = $result->where('winner', 0)->where('role', 'Bruiser')->count();
 
-        $support_wins = $result->where('winner', 1)->where("role", "Support")->count();
-        $support_losses = $result->where('winner', 0)->where("role", "Support")->count();
+        $support_wins = $result->where('winner', 1)->where('role', 'Support')->count();
+        $support_losses = $result->where('winner', 0)->where('role', 'Support')->count();
 
-        $ranged_assassin_wins = $result->where('winner', 1)->where("role", "Ranged Assassin")->count();
-        $ranged_assassin_losses = $result->where('winner', 0)->where("role", "Ranged Assassin")->count();
+        $ranged_assassin_wins = $result->where('winner', 1)->where('role', 'Ranged Assassin')->count();
+        $ranged_assassin_losses = $result->where('winner', 0)->where('role', 'Ranged Assassin')->count();
 
-        $melee_assassin_wins = $result->where('winner', 1)->where("role", "Melee Assassin")->count();
-        $melee_assassin_losses = $result->where('winner', 0)->where("role", "Melee Assassin")->count();
+        $melee_assassin_wins = $result->where('winner', 1)->where('role', 'Melee Assassin')->count();
+        $melee_assassin_losses = $result->where('winner', 0)->where('role', 'Melee Assassin')->count();
 
-        $healer_wins = $result->where('winner', 1)->where("role", "Healer")->count();
-        $healer_losses = $result->where('winner', 0)->where("role", "Healer")->count();
+        $healer_wins = $result->where('winner', 1)->where('role', 'Healer')->count();
+        $healer_losses = $result->where('winner', 0)->where('role', 'Healer')->count();
 
-        $tank_wins = $result->where('winner', 1)->where("role", "Tank")->count();
-        $tank_losses = $result->where('winner', 0)->where("role", "Tank")->count();
+        $tank_wins = $result->where('winner', 1)->where('role', 'Tank')->count();
+        $tank_losses = $result->where('winner', 0)->where('role', 'Tank')->count();
 
         $total_time_played = $result->sum('game_length');
 
-        $account_level = Battletag::where("blizz_id", $blizz_id)
-            ->where("region", $region)
+        $account_level = Battletag::where('blizz_id', $blizz_id)
+            ->where('region', $region)
             ->max('account_level');
 
-        //10355545 is the replayID where we started tracking mvp 
-        $mvp_games = $result->where('replayID', ">", 10355545)->count();
+        //10355545 is the replayID where we started tracking mvp
+        $mvp_games = $result->where('replayID', '>', 10355545)->count();
         $games_mvp = $result->where('match_award', 1)->count();
 
-
-        $time_on_fire_games = $result->filter(function($item) {
-            return !is_null($item->time_on_fire);
+        $time_on_fire_games = $result->filter(function ($item) {
+            return ! is_null($item->time_on_fire);
         })->count();
 
-        $time_on_fire_total = $result->filter(function($item) {
-            return !is_null($item->time_on_fire);
+        $time_on_fire_total = $result->filter(function ($item) {
+            return ! is_null($item->time_on_fire);
         })->sum('time_on_fire');
-
 
         $stack_one_wins = $result->sum(function ($item) {
             return (isset($item->stack_size) && $item->stack_size !== '' && isset($item->winner) && $item->winner !== '' && $item->stack_size == 0 && $item->winner == 1) ? 1 : 0;
@@ -309,9 +303,7 @@ class PlayerController extends Controller
             return ($item->stack_size == 5 && $item->winner == 0) ? 1 : 0;
         });
 
-
         $latest_replayID = $result->max('replayID');
-
 
         $matches = $result->sortByDesc('game_date')->take(5);
         $matches = $matches->map(function ($item) {
@@ -324,16 +316,17 @@ class PlayerController extends Controller
             unset($item->match_award);
             unset($item->first_to_ten);
             unset($item->role);
+
             return $item;
         });
 
-        if($cachedData){
-            $existingMatches = json_decode($cachedData->matches);
-            $mergedMatches = collect($existingMatches)->merge($matches);
-            $matches = $mergedMatches->sortByDesc('game_date')->take(5)->values()->toArray();
+        if ($cachedData) {
+            $existingMatches = collect(json_decode($cachedData->matches, true));
+            $mergedMatches = $existingMatches->merge($matches);
+            $matches = $mergedMatches->sortByDesc('game_date')->take(5);
         }
 
-        $heroData = $result->groupBy('hero')->map(function($items, $hero) {
+        $heroData = $result->groupBy('hero')->map(function ($items, $hero) {
             $wins = $items->where('winner', 1)->count();
             $losses = $items->where('winner', 0)->count();
             $games_played = $wins + $losses;
@@ -343,11 +336,11 @@ class PlayerController extends Controller
                 'wins' => $wins,
                 'losses' => $losses,
                 'games_played' => $games_played,
-                'game_date' => $latest_game_date
+                'game_date' => $latest_game_date,
             ];
         });
 
-      if($cachedData){
+        if ($cachedData) {
             $existingHeroData = json_decode($cachedData->hero_data, true);
             foreach ($heroData as $hero => $data) {
                 if (isset($existingHeroData[$hero])) {
@@ -362,7 +355,7 @@ class PlayerController extends Controller
             $heroData = $existingHeroData;
         }
 
-        $mapData = $result->groupBy('game_map')->map(function($items, $game_map) {
+        $mapData = $result->groupBy('game_map')->map(function ($items, $game_map) {
             $wins = $items->where('winner', 1)->count();
             $losses = $items->where('winner', 0)->count();
             $games_played = $wins + $losses;
@@ -372,11 +365,11 @@ class PlayerController extends Controller
                 'wins' => $wins,
                 'losses' => $losses,
                 'games_played' => $games_played,
-                'game_date' => $latest_game_date
+                'game_date' => $latest_game_date,
             ];
         });
 
-        if($cachedData){
+        if ($cachedData) {
             $existingMapData = json_decode($cachedData->map_data, true);
             foreach ($mapData as $map => $data) {
                 if (isset($existingMapData[$map])) {
@@ -391,8 +384,7 @@ class PlayerController extends Controller
             $mapData = $existingMapData;
         }
 
-
-        if(!$cachedData){
+        if (! $cachedData) {
             $dataToSave = new LaravelProfilePage;
             $dataToSave->blizz_id = $blizz_id;
             $dataToSave->region = $region;
@@ -400,10 +392,10 @@ class PlayerController extends Controller
             $dataToSave->season = $season;
 
             $dataToSave->save();
-        }else{
+        } else {
             $dataToSave = $cachedData;
         }
-        
+
         $dataToSave->wins += $wins;
         $dataToSave->losses += $losses;
         $dataToSave->kills += $kills;
@@ -441,8 +433,6 @@ class PlayerController extends Controller
         $dataToSave->stack_five_losses += $stack_five_losses;
         $dataToSave->total_time_played += $total_time_played;
 
-
-        
         $dataToSave->account_level = $account_level;
         $dataToSave->latest_replayID = $latest_replayID;
 
@@ -455,17 +445,18 @@ class PlayerController extends Controller
         return $dataToSave;
     }
 
-    private function formatCache($data, $blizz_id, $region, $battletag){
+    private function formatCache($data, $blizz_id, $region, $battletag)
+    {
         ini_set('max_execution_time', 300); //300 seconds = 5 minutes
         $returnData = new \stdClass;
         $returnData->wins = $data->wins;
         $returnData->losses = $data->losses;
         $returnData->first_to_ten_wins = $data->first_to_ten_wins;
         $returnData->first_to_ten_losses = $data->first_to_ten_losses;
-        $returnData->first_to_ten_win_rate = ($data->first_to_ten_wins + $data->first_to_ten_losses) > 0 ? round(($data->first_to_ten_wins / ($data->first_to_ten_wins + $data->first_to_ten_losses)) * 100, 2): 0;
+        $returnData->first_to_ten_win_rate = ($data->first_to_ten_wins + $data->first_to_ten_losses) > 0 ? round(($data->first_to_ten_wins / ($data->first_to_ten_wins + $data->first_to_ten_losses)) * 100, 2) : 0;
         $returnData->second_to_ten_wins = $data->second_to_ten_wins;
         $returnData->second_to_ten_losses = $data->second_to_ten_losses;
-        $returnData->second_to_ten_win_rate = ($data->second_to_ten_wins + $data->second_to_ten_losses) > 0 ? round(($data->second_to_ten_wins / ($data->second_to_ten_wins + $data->second_to_ten_losses)) * 100, 2): 0;
+        $returnData->second_to_ten_win_rate = ($data->second_to_ten_wins + $data->second_to_ten_losses) > 0 ? round(($data->second_to_ten_wins / ($data->second_to_ten_wins + $data->second_to_ten_losses)) * 100, 2) : 0;
         $returnData->kdr = $data->deaths > 0 ? round($data->kills / $data->deaths, 2) : $data->kills;
         $returnData->kda = $data->deaths > 0 ? round($data->takedowns / $data->deaths, 2) : $data->takedowns;
         $returnData->account_level = $data->account_level;
@@ -493,14 +484,19 @@ class PlayerController extends Controller
 
             $returnData->average_time_on_fire = "{$minutes} minutes, {$seconds} seconds";
         } else {
-            $returnData->average_time_on_fire = "0 minutes, 0 seconds";
+            $returnData->average_time_on_fire = '0 minutes, 0 seconds';
         }
 
-        //There is an issue with this
-        $hero_data = collect(json_decode($data->hero_data, true));
+        $hero_data = null;
+
+        if (is_string($data->hero_data)) {
+            $hero_data = collect(json_decode($data->hero_data, true));
+        } else {
+            $hero_data = collect($data->hero_data);
+        }
+
         $top_three_win_rate_heroes = null;
         $gamePlayedThresholds = [20, 15, 10, 5, 0];
-
 
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
@@ -510,7 +506,6 @@ class PlayerController extends Controller
 
         $talentData = HeroesDataTalent::all();
         $talentData = $talentData->keyBy('talent_id');
-
 
         foreach ($gamePlayedThresholds as $threshold) {
             $filtered_hero_data = $hero_data->filter(function ($item) use ($threshold) {
@@ -528,7 +523,7 @@ class PlayerController extends Controller
                 $item['blizz_id'] = $blizz_id;
                 $item['region'] = $region;
                 $item['battletag'] = $battletag;
-                $item['hovertext'] = $item['win_rate'] . "% win rate over " . $item['games_played'] . " games";
+                $item['hovertext'] = $item['win_rate'].'% win rate over '.$item['games_played'].' games';
 
                 return $item;
             })->sortByDesc('win_rate')->take(3)->values()->all();
@@ -540,8 +535,7 @@ class PlayerController extends Controller
 
         $returnData->heroes_three_highest_win_rate = $top_three_win_rate_heroes;
 
-
-        $top_three_most_played_heroes = $hero_data->map(function ($item, $key) use ($heroData, $blizz_id, $region, $battletag){
+        $top_three_most_played_heroes = $hero_data->map(function ($item, $key) use ($heroData, $blizz_id, $region, $battletag) {
             if ($item['games_played'] > 0) {
                 $item['win_rate'] = round(($item['wins'] / $item['games_played']) * 100, 2);
             } else {
@@ -553,7 +547,8 @@ class PlayerController extends Controller
             $item['blizz_id'] = $blizz_id;
             $item['region'] = $region;
             $item['battletag'] = $battletag;
-            $item['hovertext'] = $item['win_rate'] . "% win rate over " . $item['games_played'] . " games";
+            $item['hovertext'] = $item['win_rate'].'% win rate over '.$item['games_played'].' games';
+
             return $item;
         })->sortByDesc('games_played')->take(3)->values()->all();
 
@@ -571,41 +566,41 @@ class PlayerController extends Controller
             $item['blizz_id'] = $blizz_id;
             $item['region'] = $region;
             $item['battletag'] = $battletag;
-            $item['hovertext'] = $item['win_rate'] . "% win rate over " . $item['games_played'] . " games";
+            $item['hovertext'] = $item['win_rate'].'% win rate over '.$item['games_played'].' games';
 
             return $item;
         })->sortByDesc('game_date')->take(3)->values()->all();
 
         $returnData->heroes_three_latest_played = $top_three_latest_played_heroes;
 
-        $type = MMRTypeID::select("mmr_type_id")->filterByName("player")->first()->mmr_type_id;
+        $type = MMRTypeID::select('mmr_type_id')->filterByName('player')->first()->mmr_type_id;
 
-        $qm_mmr_data = MasterMMRDataQM::select("conservative_rating", "win", "loss")->filterByType(10000)->filterByGametype(1)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
-        if($qm_mmr_data){
+        $qm_mmr_data = MasterMMRDataQM::select('conservative_rating', 'win', 'loss')->filterByType(10000)->filterByGametype(1)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
+        if ($qm_mmr_data) {
             $qm_mmr_data->rank_tier = $this->globalDataService->calculateSubTier($this->globalDataService->getRankTiers(1, 10000), $qm_mmr_data->mmr);
         }
 
-        $ud_mmr_data = MasterMMRDataUD::select("conservative_rating", "win", "loss")->filterByType(10000)->filterByGametype(2)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
-        if($ud_mmr_data){
+        $ud_mmr_data = MasterMMRDataUD::select('conservative_rating', 'win', 'loss')->filterByType(10000)->filterByGametype(2)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
+        if ($ud_mmr_data) {
             $ud_mmr_data->rank_tier = $this->globalDataService->calculateSubTier($this->globalDataService->getRankTiers(2, 10000), $ud_mmr_data->mmr);
         }
 
-        $hl_mmr_data = MasterMMRDataHL::select("conservative_rating", "win", "loss")->filterByType(10000)->filterByGametype(3)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
-        if($hl_mmr_data){
+        $hl_mmr_data = MasterMMRDataHL::select('conservative_rating', 'win', 'loss')->filterByType(10000)->filterByGametype(3)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
+        if ($hl_mmr_data) {
             $hl_mmr_data->rank_tier = $this->globalDataService->calculateSubTier($this->globalDataService->getRankTiers(3, 10000), $hl_mmr_data->mmr);
         }
 
-        $tl_mmr_data = MasterMMRDataTL::select("conservative_rating", "win", "loss")->filterByType(10000)->filterByGametype(4)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
-        if($tl_mmr_data){
+        $tl_mmr_data = MasterMMRDataTL::select('conservative_rating', 'win', 'loss')->filterByType(10000)->filterByGametype(4)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
+        if ($tl_mmr_data) {
             $tl_mmr_data->rank_tier = $this->globalDataService->calculateSubTier($this->globalDataService->getRankTiers(4, 10000), $tl_mmr_data->mmr);
         }
 
-        $sl_mmr_data = MasterMMRDataSL::select("conservative_rating", "win", "loss")->filterByType(10000)->filterByGametype(5)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
-        if($sl_mmr_data){
+        $sl_mmr_data = MasterMMRDataSL::select('conservative_rating', 'win', 'loss')->filterByType(10000)->filterByGametype(5)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
+        if ($sl_mmr_data) {
             $sl_mmr_data->rank_tier = $this->globalDataService->calculateSubTier($this->globalDataService->getRankTiers(5, 10000), $sl_mmr_data->mmr);
         }
-        $ar_mmr_data = MasterMMRDataAR::select("conservative_rating", "win", "loss")->filterByType(10000)->filterByGametype(6)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
-        if($ar_mmr_data){
+        $ar_mmr_data = MasterMMRDataAR::select('conservative_rating', 'win', 'loss')->filterByType(10000)->filterByGametype(6)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
+        if ($ar_mmr_data) {
             $ar_mmr_data->rank_tier = $this->globalDataService->calculateSubTier($this->globalDataService->getRankTiers(6, 10000), $ar_mmr_data->mmr);
         }
 
@@ -616,8 +611,14 @@ class PlayerController extends Controller
         $returnData->sl_mmr_data = $sl_mmr_data;
         $returnData->ar_mmr_data = $ar_mmr_data;
 
+        $map_data = null;
 
-        $map_data = collect(json_decode($data->map_data, true));
+        if (is_string($data->map_data)) {
+            $map_data = collect(json_decode($data->map_data, true));
+        } else {
+            $map_data = collect($data->map_data);
+        }
+
         $top_three_win_rate_maps = null;
 
         foreach ($gamePlayedThresholds as $threshold) {
@@ -625,7 +626,7 @@ class PlayerController extends Controller
                 return $item['games_played'] >= $threshold;
             });
 
-            $top_three_win_rate_maps = $filtered_map_data->map(function ($item, $key) use ($maps, $blizz_id, $region, $battletag){
+            $top_three_win_rate_maps = $filtered_map_data->map(function ($item, $key) use ($maps, $blizz_id, $region, $battletag) {
                 if ($item['games_played'] > 0) {
                     $item['win_rate'] = round(($item['wins'] / $item['games_played']) * 100, 2);
                 } else {
@@ -637,7 +638,7 @@ class PlayerController extends Controller
                 $item['blizz_id'] = $blizz_id;
                 $item['region'] = $region;
                 $item['battletag'] = $battletag;
-                $item['hovertext'] = $item['win_rate'] . "% win rate over " . $item['games_played'] . " games";
+                $item['hovertext'] = $item['win_rate'].'% win rate over '.$item['games_played'].' games';
 
                 return $item;
             })->sortByDesc('win_rate')->take(3)->values()->all();
@@ -649,8 +650,7 @@ class PlayerController extends Controller
 
         $returnData->maps_three_highest_win_rate = $top_three_win_rate_maps;
 
-
-        $top_three_most_played_maps = $map_data->map(function ($item, $key) use ($maps, $blizz_id, $region, $battletag){
+        $top_three_most_played_maps = $map_data->map(function ($item, $key) use ($maps, $blizz_id, $region, $battletag) {
             if ($item['games_played'] > 0) {
                 $item['win_rate'] = round(($item['wins'] / $item['games_played']) * 100, 2);
             } else {
@@ -659,18 +659,18 @@ class PlayerController extends Controller
 
             $item['map_id'] = $key;
             $item['game_map'] = $maps[$key];
-            
+
             $item['blizz_id'] = $blizz_id;
             $item['region'] = $region;
             $item['battletag'] = $battletag;
-            $item['hovertext'] = $item['win_rate'] . "% win rate over " . $item['games_played'] . " games";
+            $item['hovertext'] = $item['win_rate'].'% win rate over '.$item['games_played'].' games';
 
             return $item;
         })->sortByDesc('games_played')->take(3)->values()->all();
 
         $returnData->maps_three_most_played = $top_three_most_played_maps;
 
-        $top_three_latest_played_maps = $map_data->map(function ($item, $key) use ($maps, $blizz_id, $region, $battletag){
+        $top_three_latest_played_maps = $map_data->map(function ($item, $key) use ($maps, $blizz_id, $region, $battletag) {
             if ($item['games_played'] > 0) {
                 $item['win_rate'] = round(($item['wins'] / $item['games_played']) * 100, 2);
             } else {
@@ -683,18 +683,17 @@ class PlayerController extends Controller
             $item['blizz_id'] = $blizz_id;
             $item['region'] = $region;
             $item['battletag'] = $battletag;
-            $item['hovertext'] = $item['win_rate'] . "% win rate over " . $item['games_played'] . " games";
+            $item['hovertext'] = $item['win_rate'].'% win rate over '.$item['games_played'].' games';
 
             return $item;
         })->sortByDesc('game_date')->take(3)->values()->all();
 
         $returnData->maps_three_latest_played = $top_three_latest_played_maps;
 
-
         $returnData->stack_one_wins = $data->stack_one_wins;
         $returnData->stack_one_losses = $data->stack_one_losses;
         $returnData->stack_one_win_rate = ($data->stack_one_wins + $data->stack_one_losses) > 0 ? round(($data->stack_one_wins / ($data->stack_one_wins + $data->stack_one_losses)) * 100, 2) : 0;
-        
+
         $returnData->stack_two_wins = $data->stack_two_wins;
         $returnData->stack_two_losses = $data->stack_two_losses;
         $returnData->stack_two_win_rate = ($data->stack_two_wins + $data->stack_two_losses) > 0 ? round(($data->stack_two_wins / ($data->stack_two_wins + $data->stack_two_losses)) * 100, 2) : 0;
@@ -711,12 +710,15 @@ class PlayerController extends Controller
         $returnData->stack_five_losses = $data->stack_five_losses;
         $returnData->stack_five_win_rate = ($data->stack_five_wins + $data->stack_five_losses) > 0 ? round(($data->stack_five_wins / ($data->stack_five_wins + $data->stack_five_losses)) * 100, 2) : 0;
 
-  
-        $matches = collect(json_decode($data->matches, true));
+        $matches = null;
 
-        $returnData->matchData = $matches->sortByDesc('game_date')->map(function($match) use ($maps, $heroData, $talentData){
-            $match["game_type"] = $this->globalDataService->getGameTypeIDtoString()[$match["game_type"]];
-            $match["game_map"] = $maps[$match["game_map"]];
+        if (is_string($data->matches)) {
+            $matches = json_decode($data->matches, true);
+        }
+
+        $returnData->matchData = collect($matches)->sortByDesc('game_date')->map(function ($match) use ($maps, $heroData, $talentData) {
+            $match['game_type'] = $this->globalDataService->getGameTypeIDtoString()[$match['game_type']];
+            $match['game_map'] = $maps[$match['game_map']];
             $match['hero'] = $heroData[$match['hero']];
 
             $match['level_one'] = $match['level_one'] && $talentData->has($match['level_one']) ? $talentData[$match['level_one']] : null;
@@ -727,7 +729,6 @@ class PlayerController extends Controller
             $match['level_sixteen'] = $match['level_sixteen'] && $talentData->has($match['level_sixteen']) ? $talentData[$match['level_sixteen']] : null;
             $match['level_twenty'] = $match['level_twenty'] && $talentData->has($match['level_twenty']) ? $talentData[$match['level_twenty']] : null;
 
-            
             $match['player_conservative_rating'] = round($match['player_conservative_rating'], 2);
             $match['player_change'] = round($match['player_change'], 2);
             $match['hero_conservative_rating'] = round($match['hero_conservative_rating'], 2);
@@ -741,4 +742,3 @@ class PlayerController extends Controller
         return $returnData;
     }
 }
-

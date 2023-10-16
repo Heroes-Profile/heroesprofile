@@ -27,9 +27,7 @@
       >
     </filters>
     <div v-if="data">
-      <div> 
-        <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
-      </div>
+      <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Map Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
       <custom-table :columns="dynamicColumns" :data="data"></custom-table>
     </div>
     <div v-else>

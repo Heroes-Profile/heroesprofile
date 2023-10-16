@@ -30,21 +30,29 @@ table{
 
   
 
-  width:100% ;
+  width:auto ;
   @apply bg-gray-light text-black;
+  min-width:1500px;
+  margin-left:auto;
+  margin-right:auto;
+
  
 }
 
-tr{
-@apply even:bg-gray-md;
+tr:not(.bg-hred){
+@apply even:bg-gray-xlight ;
 }
+
 th{
-  @apply text-left text-sm leading-4  tracking-wider cursor-pointer py-1 px-3;
+  @apply text-left text-sm leading-4  tracking-wider cursor-pointer py-1 px-3 border-b;
 }
 
 td{
-  @apply py-1 px-3  ;
+  @apply py-2 px-3 ;
+  border-right: 1.5px solid rgb(203 203 203 / var(--tw-bg-opacity));
+
 }
+td:last-child{border-right:none;}
 thead{
   @apply bg-teal text-white ;
 }
@@ -87,4 +95,106 @@ h1{
 
 .drop-menu{
 
+}
+
+
+
+/* Stack */
+
+.stack-wrapper {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.stack-single {
+  width: 5em;
+  display: flex;
+}
+
+.stack-single.stack-solo {
+  width: 2em;
+  margin-left: 0.5em;
+}
+
+.stack-single.stack-solo:first-child {
+  margin-left: 0;
+}
+
+.stack-single.stack-double {
+  width: 3em;
+  margin-left: 0.5em;
+}
+
+.stack-single.stack-double:first-child {
+  margin-left: 0;
+}
+
+.stack-single.stack-triple,
+.stack-single.stack-quad,
+.stack-single.stack-quint {
+  width: 6em;
+}
+
+.stack-single.stack-triple:first-child {
+  width: 4.5em;
+}
+
+.stack-text {
+  margin-right: auto;
+}
+
+.stack-icons {
+  display: flex;
+  flex-basis: 13.5em;
+}
+
+.stack-header {
+  display: flex;
+  flex-wrap: wrap;
+  font-size:1.5em;
+  align-items:center;
+
+}
+
+.stack-header .stack-wrapper {
+  margin: 0 1em;
+}
+
+.stack-header .stack-wrapper .stack-single {
+  width: auto !important;
+}
+
+.quintuple {
+  color: black;
+  text-shadow: 0px 0px 2px grey;
+}
+
+.solo {
+  /*text-shadow: 0px 0px 2px $lightBlue;*/
+}
+
+
+
+.solo,.double,.triple,.quadruple,.quintuple{
+  margin:0 0;
+
+}
+
+.solo{
+  
+   @apply text-blue;
+
+
+}
+.double{
+ @apply  text-red;
+  
+}
+.triple{
+  @apply text-teal;
+
+}
+.quadruple{
+  @apply text-gray-light;
 }

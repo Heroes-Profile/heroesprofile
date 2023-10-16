@@ -2,18 +2,16 @@
 
 namespace App\Rules;
 
-use Closure;
-use Illuminate\Contracts\Validation\Rule;
-
 use App\Models\Hero;
+use Illuminate\Contracts\Validation\Rule;
 
 class HeroInputValidation implements Rule
 {
     public function passes($attribute, $value)
     {
-        $validHeroNames = Hero::pluck("name")->toArray();
-        
-        if (!in_array($value, $validHeroNames)) {
+        $validHeroNames = Hero::pluck('name')->toArray();
+
+        if (! in_array($value, $validHeroNames)) {
             return false;
         }
 

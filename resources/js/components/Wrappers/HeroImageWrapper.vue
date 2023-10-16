@@ -1,15 +1,13 @@
 <template>
   <div>
-    <round-image v-if="!rectangle" :size="size" :image="getHeroImage()" :title="hero.name" :excludehover="excludehover">
+    <round-image :rectangle="rectangle" :size="size" :image="getHeroImage()" :title="hero.name" :excludehover="excludehover">
       <slot>
         <div v-if="!hasSlotContent">
           <h2>{{ hero.name }}</h2>
         </div>
       </slot>
     </round-image>
-    <div v-else>
-      <img :src="getHeroImageRectangle()" :alt="hero.name" >
-    </div>
+    
   </div>
 </template>
 
@@ -42,11 +40,14 @@ export default {
   },
   methods: {
     getHeroImage(){
+      if(this.rectangle){
+        return `/images/heroes_rectangle/${this.hero.short_name}.jpg`;
+      }
+      else{
       return `/images/heroes/${this.hero.short_name}.png`;
+      }
     },
-    getHeroImageRectangle(){
-      return `/images/heroes_rectangle/${this.hero.short_name}.jpg`;
-    },
+   
   }
 }
 </script>

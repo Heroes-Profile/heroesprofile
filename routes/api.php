@@ -1,49 +1,35 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-
-
-
 use App\Http\Controllers\BattletagSearchController;
-use App\Http\Controllers\SingleMatchController;
-
-
-
+use App\Http\Controllers\Esports\CCL\CCLController;
+use App\Http\Controllers\Esports\EsportsController;
 //Global
-use App\Http\Controllers\Global\GlobalHeroStatsController;
-use App\Http\Controllers\Global\GlobalTalentStatsController;
-use App\Http\Controllers\Global\GlobalLeaderboardController;
-use App\Http\Controllers\Global\GlobalHeroMapStatsController;
-use App\Http\Controllers\Global\GlobalHeroMatchupStatsController;
-use App\Http\Controllers\Global\GlobalHeroMatchupsTalentsController;
-use App\Http\Controllers\Global\GlobalCompositionsController;
-use App\Http\Controllers\Global\GlobalDraftController;
-use App\Http\Controllers\Global\GlobalPartyStatsController;
-use App\Http\Controllers\Global\GlobalExtraStats;
-
-
-
-//Player
-use App\Http\Controllers\Player\PlayerController;
-use App\Http\Controllers\Player\FriendFoeController;
-use App\Http\Controllers\Player\PlayerHeroesController;
-use App\Http\Controllers\Player\PlayerMatchupsController;
-use App\Http\Controllers\Player\PlayerHeroesMapsRolesController;
-use App\Http\Controllers\Player\PlayerTalentsController;
-use App\Http\Controllers\Player\PlayerMMRController;
-use App\Http\Controllers\Player\PlayerMatchHistory;
-
-
-//Profile
-use App\Http\Controllers\ProfileController;
-
-//Esports
 use App\Http\Controllers\Esports\NGS\NGSController;
 use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
-use App\Http\Controllers\Esports\EsportsController;
-use App\Http\Controllers\Esports\CCL\CCLController;
-
+use App\Http\Controllers\Global\GlobalCompositionsController;
+use App\Http\Controllers\Global\GlobalDraftController;
+use App\Http\Controllers\Global\GlobalExtraStats;
+use App\Http\Controllers\Global\GlobalHeroMapStatsController;
+use App\Http\Controllers\Global\GlobalHeroMatchupsTalentsController;
+use App\Http\Controllers\Global\GlobalHeroMatchupStatsController;
+use App\Http\Controllers\Global\GlobalHeroStatsController;
+use App\Http\Controllers\Global\GlobalLeaderboardController;
+use App\Http\Controllers\Global\GlobalPartyStatsController;
+//Player
+use App\Http\Controllers\Global\GlobalTalentBuilderController;
+use App\Http\Controllers\Global\GlobalTalentStatsController;
+use App\Http\Controllers\Player\FriendFoeController;
+use App\Http\Controllers\Player\PlayerController;
+use App\Http\Controllers\Player\PlayerHeroesMapsRolesController;
+use App\Http\Controllers\Player\PlayerMatchHistory;
+use App\Http\Controllers\Player\PlayerMatchupsController;
+//Profile
+use App\Http\Controllers\Player\PlayerMMRController;
+//Esports
+use App\Http\Controllers\Player\PlayerTalentsController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SingleMatchController;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,13 +42,12 @@ use App\Http\Controllers\Esports\CCL\CCLController;
 |
 */
 
-
-
-
 Route::prefix('v1')->group(function () {
     Route::post('battletag/search', [BattletagSearchController::class, 'battletagSearch']);
 
     Route::post('global/hero/', [GlobalHeroStatsController::class, 'getGlobalHeroData']);
+
+    Route::post('global/talents/builder', [GlobalTalentBuilderController::class, 'getData']);
 
     Route::post('global/talents/', [GlobalTalentStatsController::class, 'getGlobalHeroTalentData']);
 
@@ -99,21 +84,18 @@ Route::prefix('v1')->group(function () {
     Route::post('player/heroes/single', [PlayerHeroesMapsRolesController::class, 'getData']);
 
     Route::post('player/roles/all/', [PlayerHeroesMapsRolesController::class, 'getData']);
-    
-    Route::post('/player/role/single', [PlayerHeroesMapsRolesController::class, 'getData']);
 
+    Route::post('/player/role/single', [PlayerHeroesMapsRolesController::class, 'getData']);
 
     Route::post('player/maps/all/', [PlayerHeroesMapsRolesController::class, 'getData']);
 
     Route::post('player/maps/single', [PlayerHeroesMapsRolesController::class, 'getData']);
-
 
     Route::post('player/talents/', [PlayerTalentsController::class, 'getPlayerTalentData']);
 
     Route::post('player/talents/build', [PlayerTalentsController::class, 'getPlayerTalentData']);
 
     Route::post('player/mmr', [PlayerMMRController::class, 'getData']);
-
 
     Route::post('match/single', [SingleMatchController::class, 'getData']);
 
@@ -133,12 +115,10 @@ Route::prefix('v1')->group(function () {
 
     Route::post('esports/ngs/division/single', [NGSSingleDivisionController::class, 'getSingleDivisionData']);
 
-
     Route::post('esports/single/team', [EsportsController::class, 'getData']);
     Route::post('esports/single/player', [EsportsController::class, 'getData']);
     Route::post('esports/single/player/hero', [EsportsController::class, 'getData']);
     Route::post('esports/single/player/map', [EsportsController::class, 'getData']);
-
 
     Route::post('esports/ccl/organizations', [CCLController::class, 'getOrganizationData']);
     Route::post('esports/ccl/matches', [EsportsController::class, 'getRecentMatchData']);
@@ -148,6 +128,5 @@ Route::prefix('v1')->group(function () {
 
     Route::post('esports/nutcup/hero/stats', [EsportsController::class, 'getOverallHeroStats']);
     Route::post('esports/nutcup/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
-
 
 });

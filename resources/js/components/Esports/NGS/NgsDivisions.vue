@@ -1,12 +1,12 @@
 <template>
   <div>
-    <table class="min-w-full bg-white">
+    <table class="">
       <thead>
         <tr>
-          <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
             Division
           </th>            
-          <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
             Games Played
           </th>  
         </tr>

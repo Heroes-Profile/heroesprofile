@@ -1,24 +1,23 @@
 <?php
 
 namespace App\Http\Controllers\Player;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
 
-use App\Rules\SeasonInputValidation;
+use App\Http\Controllers\Controller;
+use App\Models\GameType;
+use App\Models\Map;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
-
-use App\Models\GameType;
-use App\Models\Map;
+use App\Rules\SeasonInputValidation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class PlayerMatchupsController extends Controller
 {
     public function show(Request $request, $battletag, $blizz_id, $region)
     {
-       $validationRules = [
+        $validationRules = [
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
@@ -28,21 +27,21 @@ class PlayerMatchupsController extends Controller
 
         if ($validator->fails()) {
             return [
-                "data" => compact('battletag', 'blizz_id', 'region'),
-                "status" => "failure to validate inputs"
+                'data' => compact('battletag', 'blizz_id', 'region'),
+                'status' => 'failure to validate inputs',
             ];
         }
 
-
         return view('Player.matchupData')->with([
-                'battletag' => $battletag,
-                'blizz_id' => $blizz_id,
-                'region' => $region,
-                'filters' => $this->globalDataService->getFilterData(),
-                ]);
+            'battletag' => $battletag,
+            'blizz_id' => $blizz_id,
+            'region' => $region,
+            'filters' => $this->globalDataService->getFilterData(),
+        ]);
     }
 
-    public function getMatchupData(Request $request){
+    public function getMatchupData(Request $request)
+    {
         //return response()->json($request->all());
 
         $validator = \Validator::make($request->only(['blizz_id', 'region', 'battletag']), [
@@ -63,28 +62,28 @@ class PlayerMatchupsController extends Controller
 
         $validator = Validator::make($request->all(), $validationRules);
 
-       if ($validator->fails()) {
+        if ($validator->fails()) {
             return [
-                "data" => $request->all(),
-                "status" => "failure to validate inputs"
+                'data' => $request->all(),
+                'status' => 'failure to validate inputs',
             ];
         }
 
         $blizz_id = $request['blizz_id'];
         $region = $request['region'];
         $battletag = $request['battletag'];
-        $game_type = $request["game_type"] ? GameType::whereIn("short_name", $request["game_type"])->pluck("type_id")->toArray() : null;
-        $season = $request["season"];
-        $gameMap = $request["game_map"] ? Map::whereIn('name',  $request["game_map"])->pluck('map_id')->toArray()  : null;
-        $inputhero = $request["hero"];
+        $game_type = $request['game_type'] ? GameType::whereIn('short_name', $request['game_type'])->pluck('type_id')->toArray() : null;
+        $season = $request['season'];
+        $gameMap = $request['game_map'] ? Map::whereIn('name', $request['game_map'])->pluck('map_id')->toArray() : null;
+        $inputhero = $request['hero'];
 
         $returnData = [];
 
         $heroData = $this->globalDataService->getHeroes();
 
         foreach ($heroData as $hero) {
-            $returnData[$hero->id]["name"] = $hero->name;
-            $returnData[$hero->id]["hero"] = $hero;
+            $returnData[$hero->id]['name'] = $hero->name;
+            $returnData[$hero->id]['hero'] = $hero;
             $returnData[$hero->id]['ally_wins'] = 0;
             $returnData[$hero->id]['ally_losses'] = 0;
             $returnData[$hero->id]['ally_games_played'] = 0;
@@ -94,7 +93,7 @@ class PlayerMatchupsController extends Controller
         }
         $heroData = $heroData->keyBy('id');
 
-        for($i = 0; $i <= 1; $i++){
+        for ($i = 0; $i <= 1; $i++) {
             $subquery = DB::table('player')
                 ->join('replay', 'replay.replayID', '=', 'player.replayID')
                 ->where('blizz_id', $blizz_id)
@@ -102,16 +101,16 @@ class PlayerMatchupsController extends Controller
                 ->where('team', $i)
                 ->where(function ($query) use ($game_type) {
                     if (is_null($game_type)) {
-                        $query->whereNot("game_type", 0);
+                        $query->whereNot('game_type', 0);
                     } else {
-                        $query->whereIn("game_type", $game_type);
+                        $query->whereIn('game_type', $game_type);
                     }
                 })
-                ->when(!is_null($inputhero), function ($query) use ($inputhero) {
-                        return $query->where("hero", $inputhero);
+                ->when(! is_null($inputhero), function ($query) use ($inputhero) {
+                    return $query->where('hero', $inputhero);
                 })
-                ->when(!is_null($gameMap), function ($query) use ($gameMap) {
-                        return $query->whereIn("game_map", $gameMap);
+                ->when(! is_null($gameMap), function ($query) use ($gameMap) {
+                    return $query->whereIn('game_map', $gameMap);
                 })
                 ->select('player.replayID');
 
@@ -123,68 +122,66 @@ class PlayerMatchupsController extends Controller
                 //->toSql();
                 ->get();
 
+            foreach ($result as $hero => $value) {
+                $returnData[$value->hero]['hero'] = $heroData[$value->hero];
+                $returnData[$value->hero]['name'] = $heroData[$value->hero]['name'];
+                $returnData[$value->hero]['battletag'] = $battletag;
+                $returnData[$value->hero]['blizz_id'] = $blizz_id;
+                $returnData[$value->hero]['region'] = $region;
 
-            foreach($result as $hero => $value)
-            {
-                $returnData[$value->hero]["hero"] = $heroData[$value->hero];
-                $returnData[$value->hero]["name"] = $heroData[$value->hero]["name"];
-                $returnData[$value->hero]["battletag"] = $battletag;
-                $returnData[$value->hero]["blizz_id"] = $blizz_id;
-                $returnData[$value->hero]["region"] = $region;
-
-                if($value->team == $i){
-                    if($value->winner == 0){
-                        $returnData[$value->hero]["ally_losses"] += $value->total;
-                    }else{
-                        $returnData[$value->hero]["ally_wins"] += $value->total;
+                if ($value->team == $i) {
+                    if ($value->winner == 0) {
+                        $returnData[$value->hero]['ally_losses'] += $value->total;
+                    } else {
+                        $returnData[$value->hero]['ally_wins'] += $value->total;
                     }
-                    $returnData[$value->hero]["ally_games_played"] = $returnData[$value->hero]["ally_wins"] + $returnData[$value->hero]["ally_losses"];
-                    $returnData[$value->hero]["ally_win_rate"] = $returnData[$value->hero]["ally_games_played"] ? round(($returnData[$value->hero]["ally_wins"] / $returnData[$value->hero]["ally_games_played"]) * 100, 2): 0;
-                }else{
-                    if($value->winner == 0){
-                        $returnData[$value->hero]["enemy_losses"] += $value->total;
-                    }else{
-                        $returnData[$value->hero]["enemy_wins"] += $value->total;
+                    $returnData[$value->hero]['ally_games_played'] = $returnData[$value->hero]['ally_wins'] + $returnData[$value->hero]['ally_losses'];
+                    $returnData[$value->hero]['ally_win_rate'] = $returnData[$value->hero]['ally_games_played'] ? round(($returnData[$value->hero]['ally_wins'] / $returnData[$value->hero]['ally_games_played']) * 100, 2) : 0;
+                } else {
+                    if ($value->winner == 0) {
+                        $returnData[$value->hero]['enemy_losses'] += $value->total;
+                    } else {
+                        $returnData[$value->hero]['enemy_wins'] += $value->total;
                     }
-                    $returnData[$value->hero]["enemy_games_played"] = $returnData[$value->hero]["enemy_wins"] + $returnData[$value->hero]["enemy_losses"];
-                    $returnData[$value->hero]["enemy_win_rate"] = $returnData[$value->hero]["enemy_games_played"] ? round(100 - ($returnData[$value->hero]["enemy_wins"] / $returnData[$value->hero]["enemy_games_played"]) * 100, 2): 0;
+                    $returnData[$value->hero]['enemy_games_played'] = $returnData[$value->hero]['enemy_wins'] + $returnData[$value->hero]['enemy_losses'];
+                    $returnData[$value->hero]['enemy_win_rate'] = $returnData[$value->hero]['enemy_games_played'] ? round(100 - ($returnData[$value->hero]['enemy_wins'] / $returnData[$value->hero]['enemy_games_played']) * 100, 2) : 0;
                 }
             }
         }
         $topFiveAllyHeroes = collect($returnData)
-            ->filter(function($value, $key) {
+            ->filter(function ($value, $key) {
                 return $value['ally_games_played'] >= 5;
             })
             ->sortByDesc('ally_win_rate')
             ->take(5)
-            ->map(function($item) {
-                $item["win_rate"] = $item["ally_win_rate"];
-                $item["games_played"] = $item["ally_games_played"];
+            ->map(function ($item) {
+                $item['win_rate'] = $item['ally_win_rate'];
+                $item['games_played'] = $item['ally_games_played'];
+
                 return $item;
             })
             ->values();
 
         $topFiveEnemyHeroes = collect($returnData)
-            ->filter(function($value, $key) {
+            ->filter(function ($value, $key) {
                 return $value['enemy_games_played'] >= 5;
             })
             ->sortBy('enemy_win_rate')
             ->take(5)
-            ->map(function($item) {
-                $item["win_rate"] = 100 - $item["enemy_win_rate"];
-                $item["games_played"] = $item["enemy_games_played"];
+            ->map(function ($item) {
+                $item['win_rate'] = 100 - $item['enemy_win_rate'];
+                $item['games_played'] = $item['enemy_games_played'];
+
                 return $item;
             })
             ->values();
-
 
         $returnData = array_values($returnData);
 
         usort($returnData, function ($a, $b) {
             return strcmp($a['name'], $b['name']);
         });
-        
-        return ["tabledata" => $returnData, "top_five_heroes" => $topFiveAllyHeroes , "top_five_enemies" => $topFiveEnemyHeroes];
-    }
 
+        return ['tabledata' => $returnData, 'top_five_heroes' => $topFiveAllyHeroes, 'top_five_enemies' => $topFiveEnemyHeroes];
+    }
 }

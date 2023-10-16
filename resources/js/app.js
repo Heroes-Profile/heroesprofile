@@ -25,6 +25,7 @@ import GroupBox from './components/GroupBox.vue';
 import RoleBox from './components/RoleBox.vue';
 import CustomButton from './components/CustomButton.vue';
 import CustomTable from './components/CustomTable.vue';
+import TabButton from './components/TabButton.vue';
 import GameSummaryBox from './components/GameSummaryBox.vue';
 import SearchComponent from './components/SearchComponent.vue';
 import ImageHoverBox from './components/ImageHoverBox.vue';
@@ -72,6 +73,11 @@ import GlobalTalentBuildsSection from './components/Global/Talents/GlobalTalentB
 import GlolbalDraftStats from './components/Global/Draft/GlobalDraftStats.vue';
 import GlobalPartyStats from './components/Global/Party/GlobalPartyStats.vue';
 import GlobalExtraStats from './components/Global/Extra/GlobalExtraStats.vue';
+
+
+import GlobalTalentsBuilder from './components/Global/Talents/Builder/GlobalTalentsBuilder.vue';
+import TalentBuilderColumn from './components/Global/Talents/Builder/TalentBuilderColumn.vue';
+import TalentBuilderClickBox from './components/Global/Talents/Builder/TalentBuilderClickBox.vue';
 
 
 //Authentication

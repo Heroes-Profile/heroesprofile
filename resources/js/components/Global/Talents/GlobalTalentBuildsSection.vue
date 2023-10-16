@@ -1,35 +1,35 @@
 <template>
   <div>
-    <table class="min-w-full bg-white">
+    <table class="min-w-0 ml-0 bg-white">
         <thead>
           <tr>
-            <th :colspan="statfilter ? 5 : 4" class="text-center py-2 px-3 border-b border-gray-200">
+            <th :colspan="statfilter ? 5 : 4" class="text-center py-2 px-3 ">
               Builds
             </th>
           </tr>
         </thead>
       <thead>
         <tr>
-          <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             Talents
           </th>
-          <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             Copy Build top Game
           </th>
-          <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             Total
           </th>                
-          <th class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             Win Chance
           </th>        
-          <th v-if="statfilter && statfilter != 'win_rate'" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th v-if="statfilter && statfilter != 'win_rate'" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             Avg {{ statfilter.charAt(0).toUpperCase() + statfilter.slice(1) }}
           </th>                           
         </tr>
       </thead>
       <tbody>
         <tr v-for="row in talentbuilddata" :key="row">
-          <td class="py-2 px-3 border-b border-gray-200">
+          <td class="py-2 px-3 ">
             <div class="flex flex-wrap gap-4">
               <talent-image-wrapper :talent="row.level_one"></talent-image-wrapper>
               <talent-image-wrapper :talent="row.level_four"></talent-image-wrapper>
@@ -40,13 +40,13 @@
               <talent-image-wrapper :talent="row.level_twenty"></talent-image-wrapper>
             </div>
           </td>
-          <td class="py-2 px-3 border-b border-gray-200">
+          <td class="py-2 px-3 ">
             {{ this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, row.hero) }}
             <custom-button @click="copyToClipboard(row)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
           </td>
-          <td class="py-2 px-3 border-b border-gray-200">{{ row.games_played }}</td>
-          <td class="py-2 px-3 border-b border-gray-200">{{ row.win_rate }}</td>
-          <td v-if="statfilter && statfilter != 'win_rate'" class="py-2 px-3 border-b border-gray-200">{{ row.total_filter_type }}</td>
+          <td class="py-2 px-3 ">{{ row.games_played }}</td>
+          <td class="py-2 px-3 ">{{ row.win_rate }}</td>
+          <td v-if="statfilter && statfilter != 'win_rate'" class="py-2 px-3 ">{{ row.total_filter_type }}</td>
         </tr>
       </tbody>
     </table>

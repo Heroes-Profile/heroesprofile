@@ -18,7 +18,7 @@
                         <a href="/Global/Matchups" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Matchup Stats</a>
                         <a href="/Global/Matchups/Talents" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Matchup Talent Stats</a>
                         <a href="/Global/Compositions" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Compositional Stats</a>
-                        <a href="/Global/Draft/General" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Draft Stats</a>
+                        <a href="/Global/Draft" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Draft Stats</a>
                         <a href="/Global/Party" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Party Stats</a>
                         {{--<a href="/Global/Extra" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Extra Stats</a>--}}
                     </div>
@@ -32,12 +32,12 @@
                 <div class="absolute left-0 hidden  group-hover:block z-50 pt-3 ">
                     <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow">
                         {{-- ... (Tools dropdown items) --}}
-                        <a href="/" class="block px-4 py-2 border-b border-darken hover:bg-lighten cursor-not-allowed pointer-events-none">Talent Builder</a>
+                        <a href="/Global/Talents/Build" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Talent Builder</a>
                         <a href="/Compare" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Compare</a>
                         <a href="https://drafter.heroesprofile.com/Drafter" target="_blank" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Drafter</a>
                         <a href="https://dev.heroesprofile.com/" target="_blank" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Game Data</a>
                         <a href="https://api.heroesprofile.com/upload" target="_blank" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Replay Uploader</a>
-                        <a href="/" class="block px-4 py-2 border-b border-darken hover:bg-lighten cursor-not-allowed pointer-events-none">Activity Graphs</a>
+                        {{--<a href="/" class="block px-4 py-2 border-b border-darken hover:bg-lighten cursor-not-allowed pointer-events-none">Activity Graphs</a>--}}
                         <a href="/" class="block px-4 py-2 border-b border-darken hover:bg-lighten cursor-not-allowed pointer-events-none">Auto Battler</a>
                         <a href="/" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Find a Player</a>
 
@@ -78,18 +78,25 @@
 
 
             @if($isAuthenticated)
-                <div class="relative group inline-block">
-                    <div class="flex items-center cursor-pointer mr-5">
-                        <img 
-                        class="card-img-top relative hover:opacity-75 w-12 h-12 rounded-full" 
-                        src="/images/heroes/auto_select.jpg" 
-                        alt="Settings">
+                <div class="relative group inline-block ">
+                        <div class="flex items-center cursor-pointer mr-5">
+                            <img 
+                            class="card-img-top relative hover:opacity-75 w-12 h-12 rounded-full" 
+                            src="/images/heroes/auto_select.jpg" 
+                            alt="Settings">
+                        </div>
+                        <div class="absolute left-0 hidden group-hover:block z-50 pt-3  ">
+                            <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow">
+                                <a href="/Profile/Settings" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Settings</a>
+                                <a href="/Battlenet/Logout" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Logout</a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="absolute right-0 mt-2 hidden group-hover:block z-50 bg-blue border border-gray-300 rounded-md transition duration-150">
-                        <a href="/Profile/Settings" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Settings</a>
-                        <a href="/Battlenet/Logout" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Logout</a>
-                    </div>
-                </div>
+
+
+
+
+
             @else
                 <custom-button :href="'/Authenticate/Battlenet'" :text="'Login'" :alt="'Login'" :size="'small'"></custom-button>
             @endif

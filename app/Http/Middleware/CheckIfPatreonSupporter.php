@@ -4,8 +4,8 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
+use Symfony\Component\HttpFoundation\Response;
 
 class CheckIfPatreonSupporter
 {
@@ -18,10 +18,11 @@ class CheckIfPatreonSupporter
     {
         if (Auth::check()) {
             $user = Auth::user();
-            if($user->patreon == 1){
+            if ($user->patreon == 1) {
                 session(['patreonSubscriber' => true]);
             }
         }
+
         return $next($request);
     }
 }

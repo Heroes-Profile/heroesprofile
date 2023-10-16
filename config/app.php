@@ -57,8 +57,8 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
-    'asset_url' => env('APP_ENV') == "production" ?  env('ASSET_URL') : null,
-    
+    'asset_url' => env('APP_ENV') == 'production' ? env('ASSET_URL') : null,
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

@@ -134,6 +134,8 @@
       height: 100%;
       max-width: 1500px;
       max-height: 750px;
+      margin-left:auto;
+      margin-right:auto;
     }
     #hero-bubble-chart canvas {
       width: 100% !important;

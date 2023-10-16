@@ -30,54 +30,54 @@
       <group-box :text="'TOP 5 ALLIES ON HEROS TEAM'" :data="allyenemydata.ally.slice(0, 5)" :type="'Matchups'"></group-box>
       <group-box :text="'TOP 5 THREATS ON ENEMIES TEAM'" :data="allyenemydata.enemy.slice(0, 5)" :type="'Matchups'"></group-box>
 
+      <div class="min-w-[1500px] px-20">
 
-      <div> 
-        <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
-      </div>
-      <table class="min-w-full bg-white">
+      <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Talent Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
+      <table class="">
         <thead>
           <tr>
-            <th @click="sortTable('hero_name')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('hero_name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Hero
             </th>
-            <th @click="sortTable('win_rate_as_ally')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('win_rate_as_ally')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Win Rate as Ally %
             </th>            
-            <th @click="sortTable('win_rate_against')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('win_rate_against')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Win Rate Against  {{ this.selectedHero.name }} %
             </th>
-            <th @click="sortTable('games_played_as_ally')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('games_played_as_ally')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games Played As Ally
             </th>
-            <th @click="sortTable('games_played_against')" class="py-2 px-3 border-b border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('games_played_against')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games Played Against {{ this.selectedHero.name }}
             </th>                 
           </tr>
         </thead>
         <tbody>
           <tr v-for="(row, index) in sortedData" :key="index">
-            <td class="py-2 px-3 border-b border-gray-200">
+            <td class="py-2 px-3 ">
               <div class="flex items-center">
                 <hero-image-wrapper :hero="row.ally ? row.ally.hero : row.enemy.hero "></hero-image-wrapper>
                 <span class="ml-left px-3">{{ row.ally && row.ally.hero ? row.ally.hero.name : row.enemy.hero.name }}</span>
               </div>
             </td>
-            <td class="py-2 px-3 border-b border-gray-200">
+            <td class="py-2 px-3 ">
               {{ row.ally && row.ally.win_rate ? row.ally.win_rate : 0 }}
             </td>
-            <td class="py-2 px-3 border-b border-gray-200">
+            <td class="py-2 px-3 ">
               {{ row.enemy && row.enemy.win_rate ? row.enemy.win_rate : 0 }}
             </td>
-            <td class="py-2 px-3 border-b border-gray-200">
+            <td class="py-2 px-3 ">
               {{ row.ally && row.ally.games_played ? row.ally.games_played : 0 }}
             </td>
 
-            <td class="py-2 px-3 border-b border-gray-200">
+            <td class="py-2 px-3 ">
               {{ row.enemy && row.enemy.games_played ? row.enemy.games_played : 0 }}
             </td>
           </tr>
         </tbody>
       </table>
+    </div>
     </div>
     <div v-else>
       <loading-component></loading-component>
