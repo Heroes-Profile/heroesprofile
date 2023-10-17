@@ -28,7 +28,8 @@
 
 
     <div v-if="isLoading">
-      <loading-component></loading-component>
+      <loading-component v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+      <loading-component v-else></loading-component>
     </div>
 
     <div v-if="data"  class="flex">
@@ -196,6 +197,7 @@ export default {
     this.timeframe = this.defaulttimeframe;
     this.gametype = this.gametypedefault;
     this.timeframetype = this.defaulttimeframetype;
+
     this.getData();
   },
   mounted() {
@@ -224,10 +226,12 @@ export default {
           mirrormatch: this.mirrormatch,
         });
 
+        console.log("Get data");
+
         this.data = response.data.talentData;
         this.replays = response.data.replays;
         this.builddata = response.data.buildData;
-
+        
         console.log(this.builddata);
       }catch(error){
         //Do something here
@@ -286,7 +290,13 @@ export default {
       navigator.clipboard.writeText(textToCopy).then(function() {
       }).catch(function(err) {
       });
-    }
+    },
+    determineIfLargeData(){
+      if(this.timeframetype == "major" || this.timeframe.length >= 3){
+        return  true;
+      }
+      return false;
+    },
   }
 }
 </script>
