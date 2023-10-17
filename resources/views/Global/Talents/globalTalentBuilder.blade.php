@@ -1,5 +1,12 @@
 @extends('layouts.app')
-@section('title', $userinput["name"] . ' Global Talent Builder')
+
+@if ($userinput)
+  @section('title', $userinput["name"] . ' Global Talent Builder')
+@else
+  @section('title', 'Global Talent Builder')
+@endif
+
+
 @section('meta_keywords', 'Talent Builder, Talent Builds, Hero Talents, Custom Builds')
 @section('meta_description', 'Build and customize your own hero talent builds. Analyze talent performance with real data to optimize your hero builds for success.')
 @section('content')
