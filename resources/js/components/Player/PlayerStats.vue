@@ -27,7 +27,7 @@
           <stat-box :title="'Account Level'" :value="data.account_level"></stat-box>          
         </div>
         <div>
-          <hero-image-wrapper :rectangle="true" :hero="inputHero" :title="inputHero.name"></hero-image-wrapper>
+          <hero-image-wrapper :rectangle="true" :hero="inputHero" :title="inputHero.name" size="large"></hero-image-wrapper>
         </div>
 
         <div class="flex-1 flex flex-wrap ">
