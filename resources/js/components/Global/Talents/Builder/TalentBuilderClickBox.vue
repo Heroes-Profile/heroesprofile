@@ -1,10 +1,10 @@
 <template>
-  <div class=" border-b text-black  flex flex-col justify-stretch">
+  <div class="border-b text-black flex flex-col justify-stretch">
     <div
       class="cursor-pointer p-4 transition duration-300 hover:bg-gray-md h-full min-h-[170px] m-2"
       :class="{ 'bg-gray-medium': isClicked }"
     >
-      <div class="flex flex-col items-center justify-center ">
+      <div class="flex flex-col items-center justify-center text-center">
         {{ talent.title }}
         <talent-image-wrapper :talent="talent" :size="'medium'"></talent-image-wrapper>
         <span v-if="talent.win_rate">{{ talent.win_rate }}%</span>
