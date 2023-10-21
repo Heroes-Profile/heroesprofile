@@ -58,8 +58,8 @@
     </div>
   </div>
 
-
-  <div v-if="showTalentHeroToggle" class="text-center">
+  <div class="flex justify-between max-w-[1500px] mx-auto mb-2">
+  <div v-if="showTalentHeroToggle" class="text-center flex items-center gap-2">
     Talents:    
 
     <tab-button :tab1text="this.hero.name" :ignoreclick="true" :tab2text="this.enemyally.name" @tab-click="talentHeroOrEnemySideSelected" > </tab-button>
@@ -67,9 +67,10 @@
 
   </div>
 
-  <div class="text-center">
+  <div class="text-center mt-auto">
     <tab-button :tab1text="'Enemy'" :ignoreclick="true" :tab2text="'Ally'" @tab-click="heroOrEnemySideSelected" > </tab-button>
   </div>
+</div>
 
 
 
