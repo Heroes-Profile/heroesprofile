@@ -16,14 +16,14 @@
   </filters>
   <div class="flex justify-center items-center gap-10">
     <div class="">
-      <single-select-filter :values="firstHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="herochanged"></single-select-filter>
+      <single-select-filter :values="firstHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="herochanged" :defaultValue="hero.id"></single-select-filter>
 
     </div>
     <div class="">
       {{ vsorwith }}
     </div>
     <div class="">
-      <single-select-filter :values="secondHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="allyenemychanged"></single-select-filter>
+      <single-select-filter :values="secondHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="allyenemychanged" :defaultValue="enemyally.id"></single-select-filter>
     </div>
   </div>
   <div class="flex justify-center relative gap-10">
@@ -171,7 +171,6 @@
     methods: {
       async getData(){
         this.isLoading = true;
-
         try{
           const response = await this.$axios.post("/api/v1/global/matchups/talents", {
             hero: this.hero.name,
@@ -237,19 +236,18 @@
 
         this.getData();
       },
+
       talentHeroOrEnemySideSelected(side){
-        if(side == "right"){
-          this.talent_view = "hero";
+        if(side == "left"){
+          this.talentview = "hero";
         }else{
-          this.talent_view = "ally_enemy";
+          this.talentview = "ally_enemy";
         }
         if(this.shouldFilterData){
           this.talentdetaildata = null;
           this.getData();
         }
-      },
-
-
+      },  
 
       heroOrEnemySideSelected(side){
         if(side == "left"){

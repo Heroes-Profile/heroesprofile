@@ -29,6 +29,10 @@ use App\Http\Controllers\Player\PlayerMMRController;
 use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
+
+
+use App\Http\Controllers\CompareController;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -128,5 +132,10 @@ Route::prefix('v1')->group(function () {
 
     Route::post('esports/nutcup/hero/stats', [EsportsController::class, 'getOverallHeroStats']);
     Route::post('esports/nutcup/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
+
+    Route::post('compare', [CompareController::class, 'getData']);
+
+
+
 
 });
