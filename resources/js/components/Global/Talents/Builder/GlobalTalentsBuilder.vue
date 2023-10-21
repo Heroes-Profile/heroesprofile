@@ -32,7 +32,7 @@
       <loading-component v-else></loading-component>
     </div>
 
-    <div v-if="data"  class="flex">
+    <div v-if="data"  class="flex px-3 mx-auto justify-center">
       <talent-builder-column :data="data['1']" :level="1" :clickedData="clickedData"></talent-builder-column>
       <talent-builder-column :data="data['4']" :level="4" :clickedData="clickedData"></talent-builder-column>
       <talent-builder-column :data="data['7']" :level="7" :clickedData="clickedData"></talent-builder-column>
@@ -41,11 +41,12 @@
       <talent-builder-column :data="data['16']" :level="16" :clickedData="clickedData"></talent-builder-column>
       <talent-builder-column :data="data['20']" :level="20" :clickedData="clickedData"></talent-builder-column>
     </div>
+    <div class=" my-5 bg-teal py-5 px-2">
+    <infobox class="max-w-[1500px] mx-auto " :input="'Build win rate and how many players have played that exact build. Win rate for builds to level 20 are inflated because teams that make it to level 20 win more. Therefore it is not an accurate representation of a builds viabllity. See table below for that calculation'"></infobox>
 
-    <infobox :input="'Build win rate and how many players have played that exact build. Win rate for builds to level 20 are inflated because teams that make it to level 20 win more. Therefore it is not an accurate representation of a builds viabllity. See table below for that calculation'"></infobox>
 
-
-    <infobox :input="'Calculated build win chance tries to guage what the builds win rate will be at any point during the game.'"></infobox>
+    <infobox class="max-w-[1500px] mx-auto " :input="'Calculated build win chance tries to gauge what the builds win rate will be at any point during the game.'"></infobox>
+  </div>
       <table v-if="builddata" class="">
         <thead>
           <tr>
@@ -91,7 +92,7 @@
       </table>
 
 
-    <infobox :input="'Possible Replays do not take into account Hero Level, Hero Rank, Role Rank, or Mirror Match Filter options'"></infobox>
+    <div class=" my-5 bg-teal py-5 px-2"><infobox class="max-w-[1500px] mx-auto " :input="'Possible Replays do not take into account Hero Level, Hero Rank, Role Rank, or Mirror Match Filter options'"></infobox></div>
 
     <table class="">
       <thead>
