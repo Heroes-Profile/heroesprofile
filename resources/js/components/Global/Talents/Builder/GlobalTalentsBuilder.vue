@@ -198,7 +198,9 @@ export default {
     this.gametype = this.gametypedefault;
     this.timeframetype = this.defaulttimeframetype;
 
-    this.getData();
+    if(this.selectedHero){
+      this.getData();
+    }
   },
   mounted() {
   },
@@ -226,7 +228,6 @@ export default {
           mirrormatch: this.mirrormatch,
         });
 
-        console.log("Get data");
 
         this.data = response.data.talentData;
         this.replays = response.data.replays;
@@ -250,6 +251,8 @@ export default {
 
       let currentPath = window.location.pathname;
       history.pushState(null, null, `${currentPath}/${this.selectedHero.name}`);
+
+      this.getData();
     },
     preloadTalentImages(hero) {
       if(hero){
