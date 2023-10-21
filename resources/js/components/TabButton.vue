@@ -2,7 +2,11 @@
   <div class="">
     <a 
     :class="[
-      staticClasses, 'bg-blue rounded-l  hover:bg-lblue', 
+      staticClasses, ' rounded-l ', 
+      {
+      'bg-blue  hover:bg-lblue ring-inset ring-lblue ring-2' : selectedSide === 'left',
+      ' bg-gray-dark hover:bg-gray-light' : selectedSide === 'right'
+      }
     
       ]" 
       
@@ -15,8 +19,11 @@
     </a>
     <a 
     :class="[
-      staticClasses, 'bg-teal hover:bg-lteal rounded-r' 
-    
+      staticClasses, 'rounded-r', 
+      {
+       'bg-blue  hover:bg-lblue ring-inset ring-lblue ring-2' : selectedSide === 'right',
+       ' bg-gray-dark hover:bg-gray-light' : selectedSide === 'left'
+      }
       ]" 
      
       :alt="tab2alt"
@@ -50,6 +57,7 @@
     data(){
       return {
         staticClasses: 'transition-colors text-white  py-2 px-4 text-lg inline-block',
+        selectedSide: 'left'
 
       }
     },
@@ -66,6 +74,7 @@
     },
     methods: {
       handleClick(side) {
+        this.selectedSide = side;
         this.$emit('tab-click', side);
       }
   }
@@ -86,4 +95,6 @@
     transform: translateY(0);
   }
 }
+
+.selected{background-color: black;}
 </style>
