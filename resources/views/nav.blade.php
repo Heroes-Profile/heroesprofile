@@ -9,7 +9,7 @@
             
             <div class="relative group inline-block ">
                 <a class=" cursor-pointer">Global Hero Stats</a>
-                <div class="absolute left-0 hidden group-hover:block z-50 pt-3  ">
+                <div class="absolute left-0 hidden group-hover:block z-50 pt-3  min-w-[200px]">
                     <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow">
                         {{-- ... (Global Hero Stats dropdown items) --}}
                         <a href="/Global/Hero" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Hero Stats</a>
@@ -29,8 +29,8 @@
 
             <div class="relative group inline-block">
                 <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Tools</a>
-                <div class="absolute left-0 hidden  group-hover:block z-50 pt-3 ">
-                    <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow">
+                <div class="absolute left-0 hidden  group-hover:block z-50 pt-3 min-w-[200px]">
+                    <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow ">
                         {{-- ... (Tools dropdown items) --}}
                         <a href="/Global/Talents/Build" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Talent Builder</a>
                         <a href="/Compare" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Compare</a>
@@ -52,7 +52,7 @@
                     <a class="cursor-pointer">
                     {{ $mainSearchAccount['battletag'] }} ({{ $regions[$mainSearchAccount['region']] }})
                     </a>
-                    <div class="absolute left-0 hidden group-hover:block z-50 pt-3  drop-menu-wrapper">
+                    <div class="absolute left-0 hidden group-hover:block z-50 pt-3  drop-menu-wrapper min-w-[200px]">
                         <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow drop-menu">
                             {{-- ... (mainSearchAccount dropdown items) --}}
                             <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Profile</a>
@@ -106,9 +106,9 @@
 <nav class="flex justify-end">
     @foreach($altSearchAccounts as $index => $account)
         @if($account)
-            <div class="relative group inline-block  p-4 mx-4 text-sm">
+            <div class="relative group inline-block  p-4 mx-4 text-sm ">
                 <a class="text-blue-600 hover:text-blue-800 cursor-pointer">{{ $account['battletag'] }} ({{ $regions[$account['region']] }})</a>
-                <div class="absolute  hidden group-hover:block z-50 pt-3 absolute right-0 ">
+                <div class="absolute  hidden group-hover:block z-50 pt-3 absolute right-0 min-w-[200px]">
                     <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow">
                     <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" class="block px-4 py-2 border-b border-darken hover:bg-lighten ">Profile</a>
                     <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/FriendFoe" class="block px-4 py-2 border-b border-darken hover:bg-lighten ">Friends and Foes</a>
