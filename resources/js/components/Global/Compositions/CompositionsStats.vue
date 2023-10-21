@@ -57,7 +57,15 @@
               <td class="py-2 px-3 ">{{ row.popularity }}</td>
               <td class="py-2 px-3 ">{{ row.games_played }}</td>
               <td>
-                <custom-button @click="viewTopHeroes(row.composition_id, index)" :text="'View Top Heroes'" :alt="'View Top Heroes'" size="small" :ignoreclick="true"></custom-button>
+                <custom-button 
+                  @click="viewTopHeroes(row.composition_id, index)" 
+                  :text="'View Top Heroes'" 
+                  :alt="'View Top Heroes'" 
+                  size="small" 
+                  :ignoreclick="true"
+                  :loading="loadingStates[index]"
+                  >
+                  </custom-button>
               </td>
             </tr>
             <tr v-if="row.compositionheroes">
@@ -156,6 +164,7 @@ export default {
       mirrormatch: "Exclude",
       minimumgames: 100,
       isLoading: false,
+      loadingStates: {},
     }
   },
   created(){
@@ -204,6 +213,7 @@ export default {
           minimum_games: this.minimumgames
         });
         this.compositiondata = response.data;
+        this.loadingStates = this.sortedData.map(() => false);
       }catch(error){
         //Do something here
       }
@@ -211,6 +221,7 @@ export default {
     },
     async getTopHeroesData(compositionid, index){
       try{
+        this.loadingStates[index] = true;
         const response = await this.$axios.post("/api/v1/global/compositions/heroes", {
           timeframe_type: this.timeframetype,
           timeframe: this.timeframe,
@@ -228,6 +239,8 @@ export default {
         });
 
         this.sortedData[index].compositionheroes = response.data;
+        this.loadingStates[index] = false;
+
       }catch(error){
         //Do something here
       }
@@ -245,6 +258,7 @@ export default {
       this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : null;
       this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : null;
       this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : this.minimumgames;
+      this.loadingStates = {};
 
       this.compositiondata = null;
       this.getData();
@@ -258,6 +272,7 @@ export default {
       this.sortKey = key;
     },
     viewTopHeroes(compositionid, index){
+      this.loadingStates[index] = true;
       this.getTopHeroesData(compositionid, index);
     },
 

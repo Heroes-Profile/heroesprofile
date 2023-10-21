@@ -54,6 +54,7 @@ Route::get('/', [MainPageController::class, 'show']);
 Route::get('/battletag/searched/{userinput}/{type}', [BattletagSearchController::class, 'show']);
 
 Route::get('/Compare', [CompareController::class, 'show']);
+Route::get('/Compare/{hero}', [CompareController::class, 'show']);
 
 //Login
 Route::get('/Authenticate/Battlenet', [BattleNetController::class, 'show']);
