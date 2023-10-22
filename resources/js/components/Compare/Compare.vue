@@ -17,8 +17,9 @@
       :includehero="true"
       :includesinglegamemap="true"
       :includesinglegametype="true"
-      :includeseason="true"
+      :includeseasonwithall="true"
       :defaultHero="selectedHero.id"
+      :defaultSeason="season"
       >
     </filters>
 
@@ -42,6 +43,21 @@
       <custom-button v-if="this.range.length < 5" @click="newPlayerAddded" text="Change to a plus sign with text 'Add New Player to Compare'" alt="Change to a plus sign with text 'Add New Player to Compare'" size="small" :ignoreclick="true"></custom-button>
 
     </div>
+
+
+    <div v-if="this.data">
+
+      <div v-for="stat in stats" :key="stat">
+        <div v-for="player in playerData" :key="player.battletag">
+          <stat-box :title="`${player.battletag} ${stat}`" :value="getStatValue(stat.replace(/ /g, '_').toLowerCase(), player.battletag)"></stat-box>
+        </div>
+      </div>
+
+      <img :src="getHeroImage()" />
+
+    </div>
+
+
   </div>
 
 
@@ -76,21 +92,28 @@
         gametype: null,
         season: null,
         gamemap: null,
+
+        stats: [
+          'Takedowns',
+          'Deaths',
+          'Experience Contribution',
+          'Siege Damage',
+          'Hero Damage',
+          'Healing',
+          'Damage Taken',
+        ],
+
       }
     },
     created(){
       this.selectedHero = this.inputhero;
       this.gametype = this.gametypedefault;
+      this.season = "All";
     },
     mounted() {
     },
     computed: {
-      seasonsWithAll() {
-        const newValue = { code: 'All', name: 'All' };
-        const updatedList = [...this.filters.seasons];
-        updatedList.unshift(newValue);
-        return updatedList;
-      },
+
     },
     watch: {
     },
@@ -140,7 +163,17 @@
         let currentPath = window.location.pathname;
         history.pushState(null, null, `${currentPath}/${this.selectedHero.name}`);
       },
+      getHeroImage(){
+        return `/images/heroes_rectangle_large/${this.selectedHero.short_name}.jpg`;
+      },
+      getStatValue(stat, battletag){
+        const statValue = this.data[battletag].averages[stat];
 
+        if (typeof statValue === "undefined") {
+          return 0;
+        }
+        return this.data[battletag].averages[stat].avg_value;
+      },
     }
   }
 </script>
