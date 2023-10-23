@@ -23,7 +23,7 @@
       <div class="bg-lighten p-10 text-center">
         <div class="flex flex-wrap justify-center">
           <div>
-            <group-box :playerlink="true" :match="true" :text="getTeamText(0, data.winner)" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'"></group-box>
+            <group-box :playerlink="true" :match="true" :esport="esport" :text="getTeamText(0, data.winner)" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'"></group-box>
 
 
             <div v-if="data.replay_bans" class="flex flex-wrap justify-center">
@@ -57,7 +57,7 @@
 
 
           <div>
-            <group-box :playerlink="true" :match="true" :text="getTeamText(1, data.winner)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'"></group-box>
+            <group-box :playerlink="true" :match="true" :esport="esport" :text="getTeamText(1, data.winner)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'"></group-box>
 
             <div v-if="data.replay_bans" class="flex flex-wrap justify-center">
               {{ esport ? this.data.team_names.team_two.team_name : "Team 2" }} Bans
@@ -419,7 +419,8 @@ export default {
       data: null,
       combinedPlayers: null,
       showTooltip: false,
-      sortDirection: 'desc',
+      sortDirectionTeam: 'desc',
+      sortDirectionHpScore: 'desc',
       sections: [
         {
           title: 'Combat',
@@ -601,23 +602,26 @@ export default {
     sortCombinedPlayers(type) {
 
       this.combinedPlayers.sort((a, b) => {
-        if (this.sortDirection === 'desc') {
-          if(type == "total_rank"){
+        if(type == "total_rank"){
+          if (this.sortDirectionHpScore === 'desc') {
             return b.total_rank - a.total_rank;
-          }else if(type == "team"){
-            return b.team - a.team;
-          }
-        } else {
-          if(type == "total_rank"){
+          }else{
             return a.total_rank - b.total_rank;
-          }else if(type == "team"){
+          }
+        }else{
+          if (this.sortDirectionHpScore === 'desc') {
+            return b.team - a.team;
+          }else{
             return a.team - b.team;
           }
         }
       });
 
-      // Toggle the sorting direction for the next click
-      this.sortDirection = this.sortDirection === 'desc' ? 'asc' : 'desc';
+      if (this.sortDirectionHpScore === 'desc') {
+        this.sortDirectionHpScore = this.sortDirectionHpScore === 'desc' ? 'asc' : 'desc';
+      }else{
+        this.sortDirectionHpScore = this.sortDirectionHpScore === 'desc' ? 'asc' : 'desc';
+      }
     },
     getCopyBuildToGame(level_one, level_four, level_seven, level_ten, level_thirteen, level_sixteen, level_twenty, hero) {
       return "[T" + 

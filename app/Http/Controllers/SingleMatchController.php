@@ -682,7 +682,7 @@ class SingleMatchController extends Controller
 
         $team_zero_data = DB::table($this->schema.'.teams')
             ->where('season', $result->season)
-            ->when($this->esport == 'NGS', function ($query) {
+            ->when($this->esport == 'NGS', function ($query) use ($result) {
                 return $query->where('division', $result->division_0);
             })
             ->where('team_name', $team_name_0)
@@ -690,7 +690,7 @@ class SingleMatchController extends Controller
 
         $team_one_data = DB::table($this->schema.'.teams')
             ->where('season', $result->season)
-            ->when($this->esport == 'NGS', function ($query) {
+            ->when($this->esport == 'NGS', function ($query)  use ($result) {
                 return $query->where('division', $result->division_0);
             })
             ->where('team_name', $team_name_1)
@@ -760,7 +760,7 @@ class SingleMatchController extends Controller
             ->when($this->esport == 'NGS', function ($query) use ($result) {
                 return $query->where('division_0', $result->division_0)->where('team_0_name', $result->team_0_name)->where('team_1_name', $result->team_1_name);
             })
-            ->when($this->esport == 'NGS', function ($query) use ($result) {
+            ->when($this->esport == 'CCL', function ($query) use ($result) {
                 return $query->where('team_0_id', $result->team_0_name)->where('team_1_id', $result->team_1_name);
             })
             ->where('round', $result->round)
