@@ -2,7 +2,6 @@
 
 namespace App\Models\MastersClash;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class MastersClashTeam extends Model
