@@ -157,7 +157,7 @@
 
 
         <template v-for="(item, index) in combinedPlayers" :key="index">
-          <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
+          <a :href="esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
             {{ item.battletag }}
             <div class="flex space-x-9 items-center">
               <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
@@ -197,7 +197,7 @@
           </thead>
           <tbody>
             <tr v-for="(row, index) in data.draft_order" :key="index" class="">      
-              <td><hero-image-wrapper :size="'small'" :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}</td>
+              <td><hero-image-wrapper :size="'medium'" :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}</td>
               <td>{{ row.pick_number + 1 }}</td>
               <td>{{ row.type == 0 ? "Ban" : "Pick" }}</td>
             </tr>
@@ -210,7 +210,7 @@
       <div class="p-10 text-center">
         Talents
         <template v-for="(item, index) in data.players[0]" :key="index">
-          <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
+          <a :href="esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
             {{ item.battletag }} - {{ item.hero.name }}
             <div class="flex space-x-9 items-center">
               <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>

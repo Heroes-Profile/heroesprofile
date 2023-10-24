@@ -50,7 +50,7 @@ class EsportsController extends Controller
     public function showSingleTeam(Request $request, $esport, $team)
     {
         $validationRules = [
-            'esport' => 'required|in:NGS,CCL,NutCup',
+            'esport' => 'required|in:NGS,CCL,MastersClash,NutCup',
             'team' => 'required|string',
         ];
 
@@ -82,7 +82,7 @@ class EsportsController extends Controller
     public function showPlayer(Request $request, $esport, $battletag, $blizz_id)
     {
         $validationRules = [
-            'esport' => 'required|in:NGS,CCL',
+            'esport' => 'required|in:NGS,CCL,MastersClash',
             'battletag' => 'required|string',
             'blizz_id' => 'required|numeric',
         ];
@@ -116,7 +116,7 @@ class EsportsController extends Controller
     public function showPlayerHero(Request $request, $esport, $battletag, $blizz_id, $hero)
     {
         $validationRules = [
-            'esport' => 'required|in:NGS,CCL',
+            'esport' => 'required|in:NGS,CCL,MastersClash',
             'battletag' => 'required|string',
             'blizz_id' => 'required|numeric',
             'hero' => ['required', new HeroInputValidation()],
@@ -152,7 +152,7 @@ class EsportsController extends Controller
     public function showPlayerMap(Request $request, $esport, $battletag, $blizz_id, $game_map)
     {
         $validationRules = [
-            'esport' => 'required|in:NGS,CCL',
+            'esport' => 'required|in:NGS,CCL,MastersClash',
             'battletag' => 'required|string',
             'blizz_id' => 'required|numeric',
             'game_map' => ['required', new GameMapInputValidation()],
@@ -190,7 +190,7 @@ class EsportsController extends Controller
         //return response()->json($request->all());
 
         $validationRules = [
-            'esport' => 'required|in:NGS,CCL',
+            'esport' => 'required|in:NGS,CCL,MastersClash',
             'team' => 'nullable|string',
             'battletag' => 'nullable|string',
             'blizz_id' => 'nullable|string',
@@ -222,7 +222,9 @@ class EsportsController extends Controller
         $this->hero = $request['hero'] ? session('heroes')->keyBy('name')[$request['hero']]->id : null;
         $this->game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->toArray() : null;
 
-        if ($this->esport) {
+        if ($this->esport == 'MastersClash') {
+            $this->schema .= '_mcl';
+        } elseif ($this->esport) {
             $this->schema .= '_'.strtolower($this->esport);
         }
 
@@ -232,13 +234,13 @@ class EsportsController extends Controller
         $results = DB::table($this->schema.'.replay')->select($this->schema.'.replay.replayID', 'hero', 'game_map', 'round', 'game', 'game_date')
             ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
             ->join($this->schema.'.teams', function ($join) {
-                if ($this->esport == 'NGS') {
+                if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
                     $join->on($this->schema.'.teams.team_id', '=', $this->schema.'.player.team_name');
                 } elseif ($this->esport == 'CCL') {
                     $join->on($this->schema.'.teams.team_id', '=', $this->schema.'.player.team_id');
                 }
             })
-            ->when($this->esport == 'NGS', function ($query) {
+            ->when($this->esport == 'NGS' || $this->esport == 'MastersClash', function ($query) {
                 return $query->addSelect([
                     $this->schema.'.replay.team_0_name',
                     $this->schema.'.replay.team_1_name',
@@ -282,7 +284,7 @@ class EsportsController extends Controller
             $team_0_name = null;
             $team_1_name = null;
 
-            if ($this->esport == 'NGS') {
+            if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
                 $team_0_name = $group[0]->team_0_name;
                 $team_1_name = $group[0]->team_1_name;
             } elseif ($this->esport == 'CCL') {
@@ -310,7 +312,7 @@ class EsportsController extends Controller
         //return response()->json($request->all());
 
         $validationRules = [
-            'esport' => 'required|in:NGS,CCL,NutCup',
+            'esport' => 'required|in:NGS,CCL,MastersClash,NutCup',
             'season' => 'required|numeric',
             'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation()],
         ];
@@ -330,7 +332,9 @@ class EsportsController extends Controller
         $this->esport = $request['esport'];
         $this->schema = 'heroesprofile';
 
-        if ($this->esport) {
+        if ($this->esport == 'MastersClash') {
+            $this->schema .= '_mcl';
+        } elseif ($this->esport) {
             $this->schema .= '_'.strtolower($this->esport);
         }
 
@@ -388,7 +392,7 @@ class EsportsController extends Controller
         //return response()->json($request->all());
 
         $validationRules = [
-            'esport' => 'required|in:NGS,CCL,NutCup',
+            'esport' => 'required|in:NGS,CCL,MastersClash,NutCup',
             'season' => 'required|numeric',
             'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation()],
             'hero' => ['required', new HeroInputValidation()],
@@ -410,7 +414,9 @@ class EsportsController extends Controller
         $this->esport = $request['esport'];
         $this->schema = 'heroesprofile';
 
-        if ($this->esport) {
+        if ($this->esport == 'MastersClash') {
+            $this->schema .= '_mcl';
+        } elseif ($this->esport) {
             $this->schema .= '_'.strtolower($this->esport);
         }
 
@@ -605,7 +611,7 @@ class EsportsController extends Controller
         //return response()->json($request->all());
 
         $validationRules = [
-            'esport' => 'required|in:NGS,CCL',
+            'esport' => 'required|in:NGS,CCL,MastersClash',
             'team' => 'nullable|string',
             'battletag' => 'nullable|string',
             'blizz_id' => 'nullable|string',
@@ -641,7 +647,9 @@ class EsportsController extends Controller
             $this->team_name = $request['team'];
         }
 
-        if ($this->esport) {
+        if ($this->esport == 'MastersClash') {
+            $this->schema .= '_mcl';
+        } elseif ($this->esport) {
             $this->schema .= '_'.strtolower($this->esport);
         }
 
@@ -657,7 +665,7 @@ class EsportsController extends Controller
                     ->on($this->schema.'.talents.battletag', '=', $this->schema.'.player.battletag');
             })
             ->join($this->schema.'.teams', function ($join) {
-                if ($this->esport == 'NGS') {
+                if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
                     $join->on($this->schema.'.teams.team_id', '=', $this->schema.'.player.team_name');
                 } elseif ($this->esport == 'CCL') {
                     $join->on($this->schema.'.teams.team_id', '=', $this->schema.'.player.team_id');
@@ -699,7 +707,7 @@ class EsportsController extends Controller
                 $this->schema.'.talents.level_twenty AS level_twenty',
 
             ])
-            ->when($this->esport == 'NGS', function ($query) {
+            ->when($this->esport == 'NGS' || $this->esport == 'MastersClash', function ($query) {
                 return $query->addSelect([
                     $this->schema.'.replay.team_0_name',
                     $this->schema.'.replay.team_1_name',
@@ -716,7 +724,7 @@ class EsportsController extends Controller
             ->when(! is_null($this->game_map), function ($query) {
                 return $query->where($this->schema.'.replay.game_map', $this->game_map);
             })
-            ->when(! is_null($this->team) && $this->esport == 'NGS', function ($query) {
+            ->when(! is_null($this->team) && ($this->esport == 'NGS' || $this->esport == 'MastersClash'), function ($query) {
                 return $query->where($this->schema.'.teams.team_name', $this->team);
             })
             ->when(! is_null($this->team) && $this->esport == 'CCL', function ($query) {
@@ -757,7 +765,7 @@ class EsportsController extends Controller
         $teamData = DB::table($this->schema.'.replay')
             ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
             ->join($this->schema.'.teams', function ($join) {
-                if ($this->esport == 'NGS') {
+                if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
                     $join->on($this->schema.'.teams.team_id', '=', $this->schema.'.player.team_name');
                 } elseif ($this->esport == 'CCL') {
                     $join->on($this->schema.'.teams.team_id', '=', $this->schema.'.player.team_id');
@@ -848,7 +856,7 @@ class EsportsController extends Controller
             $team_0_name = null;
             $team_1_name = null;
 
-            if ($this->esport == 'NGS') {
+            if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
                 $team_0_name = $group[0]->team_0_name;
                 $team_1_name = $group[0]->team_1_name;
             } elseif ($this->esport == 'CCL') {
@@ -972,7 +980,7 @@ class EsportsController extends Controller
         $mapBanData = DB::table($this->schema.'.replay')
             ->selectRaw('distinct(round), team_0_map_ban as ban1, team_0_map_ban_2 as ban2')
             ->whereIn($this->schema.'.replay.replayID', $replayIDs)
-            ->when($this->esport == 'NGS', function ($query) {
+            ->when($this->esport == 'NGS' || $this->esport == 'MastersClash', function ($query) {
                 return $query->where('team_0_name', $this->team);
             })
             ->when($this->esport == 'CCL', function ($query) {
@@ -982,7 +990,7 @@ class EsportsController extends Controller
                 $query->selectRaw('distinct(round), team_1_map_ban as ban1, team_1_map_ban_2 as ban2')
                     ->from($this->schema.'.replay')
                     ->whereIn($this->schema.'.replay.replayID', $replayIDs)
-                    ->when($this->esport == 'NGS', function ($query) {
+                    ->when($this->esport == 'NGS' || $this->esport == 'MastersClash', function ($query) {
                         return $query->where('team_1_name', $this->team);
                     })
                     ->when($this->esport == 'CCL', function ($query) {
@@ -1021,7 +1029,7 @@ class EsportsController extends Controller
 
         $seasons = DB::table($this->schema.'.teams')
             ->join($this->schema.'.player', function ($join) {
-                if ($this->esport == 'NGS') {
+                if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
                     $join->on($this->schema.'.player.team_name', '=', $this->schema.'.teams.team_id');
                 } elseif ($this->esport == 'CCL') {
                     $join->on($this->schema.'.player.team_id', '=', $this->schema.'.teams.team_id');
@@ -1029,7 +1037,7 @@ class EsportsController extends Controller
             })
             ->join($this->schema.'.battletags', $this->schema.'.battletags.player_id', '=', $this->schema.'.player.battletag')
             ->select('season')
-            ->when(! is_null($this->team) && $this->esport == 'NGS', function ($query) {
+            ->when(! is_null($this->team) && $this->esport == 'NGS' || $this->esport == 'MastersClash', function ($query) {
                 return $query->where($this->schema.'.teams.team_name', $this->team);
             })
             ->when(! is_null($this->team) && $this->esport == 'CCL', function ($query) {
@@ -1145,7 +1153,7 @@ class EsportsController extends Controller
         $results = DB::table($this->schema.'.replay')
             ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
             ->join($this->schema.'.teams', function ($join) {
-                if ($this->esport == 'NGS') {
+                if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
                     $join->on($this->schema.'.teams.team_id', '=', $this->schema.'.player.team_name');
                 } elseif ($this->esport == 'CCL') {
                     $join->on($this->schema.'.teams.team_id', '=', $this->schema.'.player.team_id');
@@ -1185,7 +1193,7 @@ class EsportsController extends Controller
         $results = DB::table($this->schema.'.replay')
             ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
             ->join($this->schema.'.teams', function ($join) {
-                if ($this->esport == 'NGS') {
+                if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
                     $join->on($this->schema.'.teams.team_id', '=', $this->schema.'.player.team_name');
                 } elseif ($this->esport == 'CCL') {
                     $join->on($this->schema.'.teams.team_id', '=', $this->schema.'.player.team_id');
@@ -1197,7 +1205,7 @@ class EsportsController extends Controller
                 $this->schema.'.teams.image',
             ])
             ->whereIn($this->schema.'.replay.replayID', $replayIDs)
-            ->when($this->esport == 'NGS', function ($query) use ($team) {
+            ->when($this->esport == 'NGS' || $this->esport == 'MastersClash', function ($query) use ($team) {
                 return $query->whereNot($this->schema.'.teams.team_name', $team);
             })
             ->when($this->esport == 'CCL', function ($query) use ($team) {
@@ -1228,8 +1236,10 @@ class EsportsController extends Controller
                 } else {
                     $image = $image;
                 }
-            } else {
+            } elseif ($this->esport == 'CCL') {
                 $image = '/images/CCL/Organizations/Logos/'.$image;
+            } elseif ($this->esport == 'MastersClash') {
+                $image = '/images/MCL/'.$image;
             }
 
             $returnData[$counter]['icon_url'] = $image;

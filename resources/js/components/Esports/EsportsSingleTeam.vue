@@ -240,26 +240,34 @@ export default {
         return "/images/NGS/600-600-ngs_large_header.png"
       }else if(this.esport == "CCL"){
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
+      }else if(this.esport == "MastersClash"){
+        return "/images/MCL/no-image.png"
       }
     },
     headingImageUrl(){
       if(this.esport == "NGS"){
-        return "https://www.nexusgamingseries.org/"
+        return "/Esports/NGS"
       }else if(this.esport == "CCL"){
-        return "Heroes of the Storm statistics and comparison for the Community Clash League"
+        return "/Esports/CCL"
+      }else if(this.esport == "MastersClash"){
+        return "/Esports/MastersClash"
       }
     },
     loadingImageUrl(){
      if(this.esport == "NGS"){
-        return "/images/NGS/600-600-ngs_large_header.png"
+        return "/images/NGS/no-image-clipped.png"
       }else if(this.esport == "CCL"){
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
+      }else if(this.esport == "MastersClash"){
+        return "/images/MCL/no-image.png"
       }
     },
     infoText1(){
       if(this.esport == "NGS"){
         return `${this.team} in division ${this.modifieddivision ? this.modifieddivision : " All "} during season ${this.modifiedseason ? this.modifiedseason : " All "}`
       }else if(this.esport == "CCL"){
+        return `${this.team} during season ${this.modifiedseason}`;
+      }else if(this.esport == "MastersClash"){
         return `${this.team} during season ${this.modifiedseason}`;
       }
     },

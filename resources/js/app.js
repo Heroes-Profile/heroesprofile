@@ -107,6 +107,7 @@ import EsportsSingleTeam from './components/Esports/EsportsSingleTeam.vue';
 import EsportsPlayerStats from './components/Esports/Player/EsportsPlayerStats.vue';
 import EsportsPlayerHeroStats from './components/Esports/Player/EsportsPlayerHeroStats.vue';
 import EsportsPlayerMapStats from './components/Esports/Player/EsportsPlayerMapStats.vue';
+import EsportsOrganizations from './components/Esports/EsportsOrganizations.vue';
 
 
 //NGS
@@ -117,10 +118,18 @@ import NgsStandings from './components/Esports/NGS/NgsStandings.vue';
 
 //CCL
 import CclMain from './components/Esports/CCL/CclMain.vue';
-import CclOrganizations from './components/Esports/CCL/CclOrganizations.vue';
 
 //Nut Cup
 import NutCupMain from './components/Esports/NutCup/NutCupMain.vue';
+
+//Masters Clash
+import MastersClashMain from './components/Esports/MastersClash/MastersClashMain.vue';
+
+//Heroes International
+import HeroesInternationalEntry from './components/Esports/HeroesInternational/HeroesInternationalEntry.vue';
+import HeroesInternationalMain from './components/Esports/HeroesInternational/HeroesInternationalMain.vue';
+import HeroesInternationalNationsCup from './components/Esports/HeroesInternational/HeroesInternationalNationsCup.vue';
+
 
 
 

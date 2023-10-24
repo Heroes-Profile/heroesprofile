@@ -1,13 +1,12 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" :heading="'CCL'" :heading-image="'/images/CCL/600-600-HHE_CCL_Logo_rectangle.png'" :heading-image-url="'/Esports/CCL'"></page-heading>
+    <page-heading :infoText1="infoText1" :heading="'Heroes International'" :heading-image="'/images/HI/heroes_international.png'" :heading-image-url="'/Esports/HeroesInternational/Main'"></page-heading>
 
       <!---You are going to have to design this better, I am going to use buttons for now -->
       <div class="flex flex-1">
         <div class="mx-5">
-          <custom-button @click="setButtonActive('organizations')" :text="'Organizations'" :size="'big'" class="mt-10" :active="organizationsClicked" :ignoreclick="true"></custom-button>
+          <custom-button @click="setButtonActive('teams')" :text="'Teams'" :size="'big'" class="mt-10" :active="teamsClicked" :ignoreclick="true"></custom-button>
         </div>
-
         <div class="mx-5">
           <custom-button @click="setButtonActive('recentMatches')" :text="'Recent Matches'" :size="'big'" class="mt-10" :active="recentMatchesClicked" :ignoreclick="true"></custom-button>
         </div>
@@ -27,18 +26,18 @@
 
         <div class="text-center md:w-[15%] mb-15 mx-5">
           <i class="fas fa-users" style="font-size: 100px"></i>
-          <h3>Organizations</h3>
-          <custom-button @click="setButtonActive('organizations')" :text="'Organizations'" :size="'big'" class="mt-10" :active="organizationsClicked" :ignoreclick="true"></custom-button>
+          <h3>Teams</h3>
+          <custom-button @click="setButtonActive('teams')" :text="'Teams'" :size="'big'" class="mt-10" :active="teamsClicked" :ignoreclick="true"></custom-button>
         </div>
+
 
         <div class="text-center md:w-[15%] mb-15 mx-5">
           <i class="fas fa-list" style="font-size: 100px"></i>
           <h3>Recent Matches</h3>
           <custom-button @click="setButtonActive('recentMatches')" :text="'Recent Matches'" :size="'big'" class="mt-10" :active="recentMatchesClicked" :ignoreclick="true"></custom-button>
         </div>
-
         
-        <div class="text-center md:w-[15%] mb-15 mx-5">
+          <div class="text-center md:w-[15%] mb-15 mx-5">
           <i class="fa-solid fa-chart-bar" style="font-size: 100px"></i>
           <h3>Overall Hero Stats</h3>
           <custom-button @click="setButtonActive('overallHeroStats')" :text="'Overall Hero Stats'" :size="'big'" class="mt-10" :active="overallHeroStatsClicked" :ignoreclick="true"></custom-button>
@@ -49,22 +48,27 @@
           <h3>Overall Talent Stats</h3>
           <custom-button @click="setButtonActive('overallTalentStats')" :text="'Overall Talent Stats'" :size="'big'" class="mt-10" :active="overallTalentStatsClicked" :ignoreclick="true"></custom-button>
         </div>
+
       </div>
+
+
 
     </div>
     <div v-else>
 
-      <div v-if="activeButton === 'organizations'">
+
+      <div v-if="activeButton === 'teams'">
         <div class="flex flex-wrap gap-2">
-          <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
+          <single-select-filter :values="filters.mcl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
           <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
-        <esports-organizations v-if="organizationsData" :data="organizationsData" :esport="'CCL'" :season="season"></esports-organizations>
+        <esports-organizations v-if="teamsData" :data="teamsData" :esport="'HeroesInternationalMain'" :season="season"></esports-organizations>
       </div>
+
 
       <div v-if="activeButton === 'recentMatches'">
         <div class="flex flex-wrap gap-2">
-          <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
+          <single-select-filter :values="filters.mcl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
           <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
 
@@ -87,13 +91,13 @@
         </div>
 
 
-        <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'CCL'"></esports-recent-matches>
+        <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'HeroesInternationalMain'"></esports-recent-matches>
       </div>
 
 
       <div v-if="activeButton === 'overallHeroStats'">
         <div class="flex flex-wrap gap-2">
-          <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
+          <single-select-filter :values="filters.mcl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
           <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
         <esports-hero-stats v-if="heroStatsData" :data="heroStatsData"></esports-hero-stats>
@@ -109,7 +113,7 @@
           <div v-if="talentStatsData">
             <div class="flex flex-wrap gap-2">
               <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange" :defaultValue="selectedHero.id"></single-select-filter>
-              <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
+              <single-select-filter :values="filters.mcl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
               <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
             </div>
 
@@ -123,14 +127,14 @@
 
     </div>
     <div v-if="loading">
-      <loading-component :overrideimage="'/images/CCL/600-600-HHE_CCL_Logo_rectangle.png'"></loading-component>
+      <loading-component :overrideimage="'/images/MCL/no-image.png'"></loading-component>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'CclMain',
+  name: 'HeroesInternationalMain',
   components: {
   },
   props: {
@@ -144,32 +148,26 @@ export default {
       preloadedImage: new Image(),
 
       loading: false,
-      infoText1: "Heroes of the Storm statistics and comparison for the Community Clash League",
+      infoText1: "Heroes of the Storm statistics and comparison for the Heroes International League",
       activeButton: null,
-      organizationsData: null,
+
+      teamsData: null,
       recentMatchesData: null,
       heroStatsData: null,
       talentStatsData: null,
       selectedHero: null,
-
       season: null,
-
-      userinput: null,
-      battletagresponse: null,
     };
   },
   created(){
-    this.preloadedImage.src = '/images/CCL/600-600-HHE_CCL_Logo_rectangle.png';
+    this.preloadedImage.src = '/images/HI/heroes_international.png';
     this.season = this.defaultseason;
   },
   mounted() {
   },
   computed: {
-    isBattletagReponseValid(){
-      return this.battletagresponse[0] && this.battletagresponse[0].battletag && this.battletagresponse[0].blizz_id !== undefined && this.battletagresponse[0].region !== undefined;
-    },
-    organizationsClicked() {
-      return this.activeButton === 'organizations';
+    teamsClicked() {
+      return this.activeButton === 'teams';
     },
     recentMatchesClicked() {
       return this.activeButton === 'recentMatches';
@@ -185,13 +183,14 @@ export default {
   watch: {
   },
   methods: {
-    async getOrganizationsData(){
+    async getTeamsData(){
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/ccl/organizations", {
+        const response = await this.$axios.post("/api/v1/esports/heroesinternational/main/teams", {
           season: this.season,
+          esport: "HeroesInternationalMain",
         });
-        this.organizationsData = response.data;
+        this.teamsData = response.data;
       }catch(error){
         //Do something here
       }
@@ -204,10 +203,10 @@ export default {
 
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/ccl/matches", {
+        const response = await this.$axios.post("/api/v1/esports/heroesinternational/main/matches", {
           season: this.season,
           pagination_page: page,
-          esport: "CCL",
+          esport: "HeroesInternationalMain",
         });
         this.recentMatchesData = response.data;
       }catch(error){
@@ -218,9 +217,9 @@ export default {
     async getHeroStats(){
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/ccl/hero/stats", {
+        const response = await this.$axios.post("/api/v1/esports/heroesinternational/main/hero/stats", {
           season: this.season,
-          esport: "CCL",
+          esport: "HeroesInternationalMain",
         });
         this.heroStatsData = response.data;
       }catch(error){
@@ -231,10 +230,10 @@ export default {
     async getTalentStats(){
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/ccl/hero/talents/stats", {
+        const response = await this.$axios.post("/api/v1/esports/heroesinternational/main/hero/talents/stats", {
           season: this.season,
           hero: this.selectedHero.name,
-          esport: "CCL",
+          esport: "HeroesInternationalMain",
         });
         this.talentStatsData = response.data;
       }catch(error){
@@ -247,9 +246,9 @@ export default {
       this.activeButton = buttonName;
       this.season = this.defaultseason;
 
-      if(this.activeButton === 'organizations'){
-        this.organizationsData = null;
-        this.getOrganizationsData();
+      if(this.activeButton === 'teams'){
+        this.teamsData = null;
+        this.getTeamsData();
       }else if(this.activeButton === 'recentMatches'){
         this.recentMatchesData = null;
         this.getRecentMatches(1);
@@ -271,9 +270,9 @@ export default {
     },
 
     filter(){
-      if(this.activeButton === 'organizations'){
-        this.organizationsData = null;
-        this.getOrganizationsData();
+      if(this.activeButton === 'teams'){
+        this.teamsData = null;
+        this.getTeamsData();
       }else if(this.activeButton === 'recentMatches'){
         this.recentMatchesData = null;
         this.getRecentMatches(1);

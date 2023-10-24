@@ -6,9 +6,11 @@ use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\CompareController;
 use App\Http\Controllers\Esports\CCL\CCLController;
 use App\Http\Controllers\Esports\EsportsController;
+use App\Http\Controllers\Esports\MastersClash\MastersClashController;
 use App\Http\Controllers\Esports\NGS\NGSController;
 use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
 use App\Http\Controllers\Esports\NutCup\NutCupController;
+use App\Http\Controllers\Esports\HeroesInternational\HeroesInternationalController;
 use App\Http\Controllers\GamedataController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
@@ -34,6 +36,9 @@ use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
 use Illuminate\Support\Facades\Route;
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -142,6 +147,13 @@ Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Hero/{hero}', [Esport
 Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Map/{game_map}', [EsportsController::class, 'showPlayerMap']);
 
 Route::get('Esports/NutCup', [NutCupController::class, 'show']);
+
+Route::get('Esports/MastersClash', [MastersClashController::class, 'show']);
+
+Route::get('Esports/HeroesInternational', [HeroesInternationalController::class, 'show']);
+Route::get('Esports/HeroesInternational/Main', [HeroesInternationalController::class, 'showMain']);
+Route::get('Esports/HeroesInternational/NationsCup', [HeroesInternationalController::class, 'showNationsCup']);
+
 
 //Rewrite game data later
 Route::get('/Gamedata', [GamedataController::class, 'heroes']);
