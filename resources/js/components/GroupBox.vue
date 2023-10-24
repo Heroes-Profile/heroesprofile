@@ -19,7 +19,7 @@
           </hero-image-wrapper>
         </a>
 
-        <a v-else-if="esport && match && playerlink && item.hero" :href="'/Esports/NGS/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name">
+        <a v-else-if="esport && match && playerlink && item.hero" :href="'/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name">
           <hero-image-wrapper :size="'big'" :hero="item.hero">
             <image-hover-box 
               :title="item.hero.name" 

@@ -761,7 +761,7 @@ class SingleMatchController extends Controller
                 return $query->where('division_0', $result->division_0)->where('team_0_name', $result->team_0_name)->where('team_1_name', $result->team_1_name);
             })
             ->when($this->esport == 'CCL', function ($query) use ($result) {
-                return $query->where('team_0_id', $result->team_0_name)->where('team_1_id', $result->team_1_name);
+                return $query->where('team_0_id', $result->team_0_id)->where('team_1_id', $result->team_1_id);
             })
             ->where('round', $result->round)
             ->orderBy('game_date', 'asc')
