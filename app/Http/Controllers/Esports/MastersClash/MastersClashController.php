@@ -3,13 +3,11 @@
 namespace App\Http\Controllers\Esports\MastersClash;
 
 use App\Http\Controllers\Controller;
+use App\Models\Map;
+use App\Models\MastersClash\MastersClashTeam;
+use App\Models\MastersClash\Replay;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
-use App\Models\MastersClash\MastersClashTeam;
-
-use App\Models\MastersClash\Replay;
-use App\Models\Map;
 
 class MastersClashController extends Controller
 {
@@ -24,7 +22,6 @@ class MastersClashController extends Controller
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
             ]);
     }
-
 
     public function getTeamsData(Request $request)
     {
@@ -47,6 +44,7 @@ class MastersClashController extends Controller
 
         return MastersClashTeam::where('season', $request['season'])->get();
     }
+
     public function getRecentMatchData(Request $request)
     {
         //return response()->json($request->all());

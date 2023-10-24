@@ -1,18 +1,16 @@
 <?php
 
 namespace App\Http\Controllers\Esports\NGS;
+
 use App\Http\Controllers\Controller;
+use App\Models\Map;
+use App\Models\NGS\NGSTeam;
+use App\Models\NGS\Replay;
+use App\Rules\NGSDivisionInputValidation;
+use App\Rules\NGSSeasonInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-
-use App\Rules\NGSDivisionInputValidation;
-use App\Rules\NGSSeasonInputValidation;
-
-
-use App\Models\Map;
-use App\Models\NGS\Replay;
-use App\Models\NGS\NGSTeam;
 
 class NGSSingleDivisionController extends Controller
 {

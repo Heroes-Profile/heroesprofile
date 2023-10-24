@@ -41,9 +41,8 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
             }
         }
 
-
-        $inputhero = Hero::where("name", $request['hero'])->first();
-        $inputenemyally = Hero::where("name", $request['allyenemy'])->first();
+        $inputhero = Hero::where('name', $request['hero'])->first();
+        $inputenemyally = Hero::where('name', $request['allyenemy'])->first();
 
         if (! $inputhero) {
             $inputhero = new Hero;
@@ -106,7 +105,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
 
         //return $cacheKey;
 
-        if($talentView == "ally_enemy"){
+        if ($talentView == 'ally_enemy') {
             $temp = $hero;
             $hero = $allyEnemy;
             $allyEnemy = $temp;

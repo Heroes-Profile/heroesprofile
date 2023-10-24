@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-
-use App\Rules\HeroInputValidation;
-use App\Rules\GameTypeInputValidation;
-use App\Rules\SeasonInputValidation;
-
 use App\Models\GameType;
 use App\Models\SeasonDate;
+use App\Rules\GameTypeInputValidation;
+use App\Rules\HeroInputValidation;
+use App\Rules\SeasonInputValidation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class CompareController extends Controller
 {
@@ -39,7 +37,8 @@ class CompareController extends Controller
             ]);
     }
 
-    public function getData(Request $request){
+    public function getData(Request $request)
+    {
         //return response()->json($request->all());
 
         $validationRules = [
@@ -53,10 +52,10 @@ class CompareController extends Controller
         ];
 
         foreach ($players as $player) {
-            if (!is_null($request[$player])) {
-                $validationRules[$player . '.battletag'] = 'required|string';
-                $validationRules[$player . '.blizz_id'] = 'required|integer';
-                $validationRules[$player . '.region'] = 'required|integer';
+            if (! is_null($request[$player])) {
+                $validationRules[$player.'.battletag'] = 'required|string';
+                $validationRules[$player.'.blizz_id'] = 'required|integer';
+                $validationRules[$player.'.region'] = 'required|integer';
             }
         }
 
@@ -69,18 +68,18 @@ class CompareController extends Controller
             ];
         }
 
-        $hero = session('heroes')->keyBy('name')[$request["hero"]]->id;
-        $game_type = GameType::where('short_name', $request["game_type"])->pluck('type_id')->first();
-        
+        $hero = session('heroes')->keyBy('name')[$request['hero']]->id;
+        $game_type = GameType::where('short_name', $request['game_type'])->pluck('type_id')->first();
+
         $season = $request['season'];
         $seasonDate = null;
-        if($season != "All"){
+        if ($season != 'All') {
             $seasonDate = SeasonDate::find($season);
         }
 
         $returnData = [];
         foreach ($players as $player) {
-            if (!is_null($request[$player])) {
+            if (! is_null($request[$player])) {
 
                 $result = DB::table('replay')
                     ->join('player', 'player.replayID', '=', 'replay.replayID')
@@ -131,11 +130,11 @@ class CompareController extends Controller
                         'first_to_ten',
                         'time_on_fire',
                     ])
-                    ->where('blizz_id', $request[$player]["blizz_id"])
-                    ->where('region',  $request[$player]["region"])
+                    ->where('blizz_id', $request[$player]['blizz_id'])
+                    ->where('region', $request[$player]['region'])
                     ->where('game_type', $game_type)
                     ->where('hero', $hero)
-                    ->when($season != "All", function ($query) use ($seasonDate) {
+                    ->when($season != 'All', function ($query) use ($seasonDate) {
                         return $query->where('game_date', '>=', $seasonDate->start_date)->where('game_date', '<', $seasonDate->end_date);
                     })
                     //->toSql();
@@ -195,17 +194,13 @@ class CompareController extends Controller
                     ];
                 }
 
-                $returnData[$request[$player]["battletag"]] = [
+                $returnData[$request[$player]['battletag']] = [
                     'wins' => $winCount,
                     'losses' => $lossCount,
                     'averages' => $columnStatistics,
                 ];
             }
         }
-        
-
-
-
 
         return $returnData;
     }

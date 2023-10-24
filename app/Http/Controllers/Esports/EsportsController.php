@@ -222,9 +222,9 @@ class EsportsController extends Controller
         $this->hero = $request['hero'] ? session('heroes')->keyBy('name')[$request['hero']]->id : null;
         $this->game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->toArray() : null;
 
-        if($this->esport == "MastersClash"){
-            $this->schema .= "_mcl";
-        }else if ($this->esport) {
+        if ($this->esport == 'MastersClash') {
+            $this->schema .= '_mcl';
+        } elseif ($this->esport) {
             $this->schema .= '_'.strtolower($this->esport);
         }
 
@@ -240,7 +240,7 @@ class EsportsController extends Controller
                     $join->on($this->schema.'.teams.team_id', '=', $this->schema.'.player.team_id');
                 }
             })
-            ->when($this->esport == 'NGS'  || $this->esport == 'MastersClash', function ($query) {
+            ->when($this->esport == 'NGS' || $this->esport == 'MastersClash', function ($query) {
                 return $query->addSelect([
                     $this->schema.'.replay.team_0_name',
                     $this->schema.'.replay.team_1_name',
@@ -284,7 +284,7 @@ class EsportsController extends Controller
             $team_0_name = null;
             $team_1_name = null;
 
-            if ($this->esport == 'NGS'  || $this->esport == 'MastersClash') {
+            if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
                 $team_0_name = $group[0]->team_0_name;
                 $team_1_name = $group[0]->team_1_name;
             } elseif ($this->esport == 'CCL') {
@@ -332,9 +332,9 @@ class EsportsController extends Controller
         $this->esport = $request['esport'];
         $this->schema = 'heroesprofile';
 
-        if($this->esport == "MastersClash"){
-            $this->schema .= "_mcl";
-        }else if ($this->esport) {
+        if ($this->esport == 'MastersClash') {
+            $this->schema .= '_mcl';
+        } elseif ($this->esport) {
             $this->schema .= '_'.strtolower($this->esport);
         }
 
@@ -414,9 +414,9 @@ class EsportsController extends Controller
         $this->esport = $request['esport'];
         $this->schema = 'heroesprofile';
 
-        if($this->esport == "MastersClash"){
-            $this->schema .= "_mcl";
-        }else if ($this->esport) {
+        if ($this->esport == 'MastersClash') {
+            $this->schema .= '_mcl';
+        } elseif ($this->esport) {
             $this->schema .= '_'.strtolower($this->esport);
         }
 
@@ -647,9 +647,9 @@ class EsportsController extends Controller
             $this->team_name = $request['team'];
         }
 
-        if($this->esport == "MastersClash"){
-            $this->schema .= "_mcl";
-        }else if ($this->esport) {
+        if ($this->esport == 'MastersClash') {
+            $this->schema .= '_mcl';
+        } elseif ($this->esport) {
             $this->schema .= '_'.strtolower($this->esport);
         }
 
@@ -765,7 +765,7 @@ class EsportsController extends Controller
         $teamData = DB::table($this->schema.'.replay')
             ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
             ->join($this->schema.'.teams', function ($join) {
-                if ($this->esport == 'NGS'  || $this->esport == 'MastersClash') {
+                if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
                     $join->on($this->schema.'.teams.team_id', '=', $this->schema.'.player.team_name');
                 } elseif ($this->esport == 'CCL') {
                     $join->on($this->schema.'.teams.team_id', '=', $this->schema.'.player.team_id');
@@ -1236,9 +1236,9 @@ class EsportsController extends Controller
                 } else {
                     $image = $image;
                 }
-            } else if($this->esport == 'CCL'){
+            } elseif ($this->esport == 'CCL') {
                 $image = '/images/CCL/Organizations/Logos/'.$image;
-            }else if($this->esport == 'MastersClash'){
+            } elseif ($this->esport == 'MastersClash') {
                 $image = '/images/MCL/'.$image;
             }
 

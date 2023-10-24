@@ -84,12 +84,11 @@ class SingleMatchController extends Controller
 
         $this->schema = 'heroesprofile';
 
-        if($this->esport == "MastersClash"){
-            $this->schema .= "_mcl";
-        }else if ($this->esport) {
+        if ($this->esport == 'MastersClash') {
+            $this->schema .= '_mcl';
+        } elseif ($this->esport) {
             $this->schema .= '_'.strtolower($this->esport);
         }
-
 
         $result = DB::table($this->schema.'.replay')
             ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
@@ -700,7 +699,7 @@ class SingleMatchController extends Controller
 
         $team_one_data = DB::table($this->schema.'.teams')
             ->where('season', $result->season)
-            ->when($this->esport == 'NGS', function ($query)  use ($result) {
+            ->when($this->esport == 'NGS', function ($query) use ($result) {
                 return $query->where('division', $result->division_0);
             })
             ->where('team_name', $team_name_1)
