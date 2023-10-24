@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" :heading="'Masters Clash'" :heading-image="'/images/MCL/no-image.png'" :heading-image-url="'/Esports/MastersClash'"></page-heading>
+    <page-heading :infoText1="infoText1" :heading="'Heroes International'" :heading-image="'/images/HI/heroes_international.png'" :heading-image-url="'/Esports/HeroesInternational/NationsCup'"></page-heading>
 
       <!---You are going to have to design this better, I am going to use buttons for now -->
       <div class="flex flex-1">
@@ -62,7 +62,7 @@
           <single-select-filter :values="filters.mcl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
           <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
-        <esports-organizations v-if="teamsData" :data="teamsData" :esport="'MastersClash'" :season="season"></esports-organizations>
+        <esports-organizations v-if="teamsData" :data="teamsData" :esport="'HeroesInternationalNationsCup'" :season="season"></esports-organizations>
       </div>
 
 
@@ -91,7 +91,7 @@
         </div>
 
 
-        <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'MastersClash'"></esports-recent-matches>
+        <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'HeroesInternationalNationsCup'"></esports-recent-matches>
       </div>
 
 
@@ -127,14 +127,14 @@
 
     </div>
     <div v-if="loading">
-      <loading-component :overrideimage="'/images/MCL/no-image.png'"></loading-component>
+      <loading-component :overrideimage="'/images/HI/heroes_international.png'"></loading-component>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'MastersClashMain',
+  name: 'HeroesInternationalNationsCup',
   components: {
   },
   props: {
@@ -148,16 +148,22 @@ export default {
       preloadedImage: new Image(),
 
       loading: false,
-      infoText1: "Heroes of the Storm statistics and comparison for the Masters Clash",
+      infoText1: "Heroes of the Storm statistics and comparison for the Heroes International League",
       activeButton: null,
 
+      standingData: null,
+      divisionData: null,
       teamsData: null,
       recentMatchesData: null,
       heroStatsData: null,
       talentStatsData: null,
       selectedHero: null,
-      season: null,
 
+      season: null,
+      division: null,
+
+      userinput: null,
+      battletagresponse: null,
     };
   },
   created(){
@@ -187,8 +193,9 @@ export default {
     async getTeamsData(){
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/mastersclash/teams", {
+        const response = await this.$axios.post("/api/v1/esports/heroesinternational/nationscup/teams", {
           season: this.season,
+          division: this.division,
         });
         this.teamsData = response.data;
       }catch(error){
@@ -203,10 +210,11 @@ export default {
 
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/mastersclash/matches", {
+        const response = await this.$axios.post("/api/v1/esports/heroesinternational/nationscup/matches", {
           season: this.season,
+          division: this.division,
           pagination_page: page,
-          esport: "MastersClash",
+          esport: "HeroesInternationalNationsCup",
         });
         this.recentMatchesData = response.data;
       }catch(error){
@@ -217,9 +225,10 @@ export default {
     async getHeroStats(){
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/mastersclash/hero/stats", {
+        const response = await this.$axios.post("/api/v1/esports/heroesinternational/nationscup/hero/stats", {
           season: this.season,
-          esport: "MastersClash",
+          division: this.division,
+          esport: "HeroesInternationalNationsCup",
         });
         this.heroStatsData = response.data;
       }catch(error){
@@ -230,10 +239,11 @@ export default {
     async getTalentStats(){
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/mastersclash/hero/talents/stats", {
+        const response = await this.$axios.post("/api/v1/esports/heroesinternational/nationscup/hero/talents/stats", {
           season: this.season,
+          division: this.division,
           hero: this.selectedHero.name,
-          esport: "MastersClash",
+          esport: "HeroesInternationalNationsCup",
         });
         this.talentStatsData = response.data;
       }catch(error){

@@ -14,17 +14,17 @@
       </div>
 
       <div class="text-center md:w-[15%] mb-15 mx-5">
-        <a :href="'/Esports/NutCup'"><img src="images/NutCup/600-600-nut-cup.png" alt="Nut Cup"/></a>
+        <a :href="'/Esports/NutCup'"><img src="/images/NutCup/600-600-nut-cup.png" alt="Nut Cup"/></a>
         <custom-button :href="'/Esports/NutCup'" :text="'Nut Cup'" :alt="'Nut Cup'" :size="'big'" class="mt-10"></custom-button>
       </div>
 
       <div class="text-center md:w-[15%] mb-15 mx-5">
-        <a :href="'/Esports/MastersClash'"><img src="images/MCL/600-600-MCC_logo_2021.png" alt="Masters Clash"/></a>
+        <a :href="'/Esports/MastersClash'"><img src="/images/MCL/600-600-MCC_logo_2021.png" alt="Masters Clash"/></a>
         <custom-button :href="'/Esports/MastersClash'" :text="'Masters Clash'" :alt="'Masters Clash'" :size="'big'" class="mt-10"></custom-button>
       </div>
 
       <div class="text-center md:w-[15%] mb-15 mx-5">
-        <a :href="'/Esports/HeroesInternational'"><img src="images/HI/heroes_international.png" alt="Heroes International"/></a>
+        <a :href="'/Esports/HeroesInternational'"><img src="/images/HI/heroes_international.png" alt="Heroes International"/></a>
         <custom-button :href="'/Esports/HeroesInternational'" :text="'Heroes International'" :alt="'Heroes International'" :size="'big'" class="mt-10"></custom-button>
       </div>
 

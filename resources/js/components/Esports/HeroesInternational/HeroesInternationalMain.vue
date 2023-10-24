@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" :heading="'Masters Clash'" :heading-image="'/images/MCL/no-image.png'" :heading-image-url="'/Esports/MastersClash'"></page-heading>
+    <page-heading :infoText1="infoText1" :heading="'Heroes International'" :heading-image="'/images/HI/heroes_international.png'" :heading-image-url="'/Esports/HeroesInternational/Main'"></page-heading>
 
       <!---You are going to have to design this better, I am going to use buttons for now -->
       <div class="flex flex-1">
@@ -62,7 +62,7 @@
           <single-select-filter :values="filters.mcl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
           <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
-        <esports-organizations v-if="teamsData" :data="teamsData" :esport="'MastersClash'" :season="season"></esports-organizations>
+        <esports-organizations v-if="teamsData" :data="teamsData" :esport="'HeroesInternationalMain'" :season="season"></esports-organizations>
       </div>
 
 
@@ -91,7 +91,7 @@
         </div>
 
 
-        <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'MastersClash'"></esports-recent-matches>
+        <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'HeroesInternationalMain'"></esports-recent-matches>
       </div>
 
 
@@ -134,7 +134,7 @@
 
 <script>
 export default {
-  name: 'MastersClashMain',
+  name: 'HeroesInternationalMain',
   components: {
   },
   props: {
@@ -148,7 +148,7 @@ export default {
       preloadedImage: new Image(),
 
       loading: false,
-      infoText1: "Heroes of the Storm statistics and comparison for the Masters Clash",
+      infoText1: "Heroes of the Storm statistics and comparison for the Heroes International League",
       activeButton: null,
 
       teamsData: null,
@@ -157,11 +157,10 @@ export default {
       talentStatsData: null,
       selectedHero: null,
       season: null,
-
     };
   },
   created(){
-    this.preloadedImage.src = '/images/MCL/no-image.png';
+    this.preloadedImage.src = '/images/HI/heroes_international.png';
     this.season = this.defaultseason;
   },
   mounted() {
@@ -187,8 +186,9 @@ export default {
     async getTeamsData(){
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/mastersclash/teams", {
+        const response = await this.$axios.post("/api/v1/esports/heroesinternational/main/teams", {
           season: this.season,
+          esport: "HeroesInternationalMain",
         });
         this.teamsData = response.data;
       }catch(error){
@@ -203,10 +203,10 @@ export default {
 
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/mastersclash/matches", {
+        const response = await this.$axios.post("/api/v1/esports/heroesinternational/main/matches", {
           season: this.season,
           pagination_page: page,
-          esport: "MastersClash",
+          esport: "HeroesInternationalMain",
         });
         this.recentMatchesData = response.data;
       }catch(error){
@@ -217,9 +217,9 @@ export default {
     async getHeroStats(){
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/mastersclash/hero/stats", {
+        const response = await this.$axios.post("/api/v1/esports/heroesinternational/main/hero/stats", {
           season: this.season,
-          esport: "MastersClash",
+          esport: "HeroesInternationalMain",
         });
         this.heroStatsData = response.data;
       }catch(error){
@@ -230,10 +230,10 @@ export default {
     async getTalentStats(){
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/mastersclash/hero/talents/stats", {
+        const response = await this.$axios.post("/api/v1/esports/heroesinternational/main/hero/talents/stats", {
           season: this.season,
           hero: this.selectedHero.name,
-          esport: "MastersClash",
+          esport: "HeroesInternationalMain",
         });
         this.talentStatsData = response.data;
       }catch(error){

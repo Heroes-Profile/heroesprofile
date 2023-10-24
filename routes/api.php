@@ -6,6 +6,7 @@ use App\Http\Controllers\Esports\CCL\CCLController;
 //Global
 use App\Http\Controllers\Esports\EsportsController;
 use App\Http\Controllers\Esports\MastersClash\MastersClashController;
+use App\Http\Controllers\Esports\HeroesInternational\HeroesInternationalController;
 use App\Http\Controllers\Esports\NGS\NGSController;
 use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
@@ -32,6 +33,9 @@ use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
 use Illuminate\Support\Facades\Route;
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -135,6 +139,18 @@ Route::prefix('v1')->group(function () {
     Route::post('esports/mastersclash/matches', [MastersClashController::class, 'getRecentMatchData']);
     Route::post('esports/mastersclash/hero/stats', [EsportsController::class, 'getOverallHeroStats']);
     Route::post('esports/mastersclash/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
+
+
+
+    Route::post('esports/heroesinternational/main/teams', [HeroesInternationalController::class, 'getTeamsData']);
+    Route::post('esports/heroesinternational/main/matches', [HeroesInternationalController::class, 'getRecentMatchData']);
+    Route::post('esports/heroesinternational/main/hero/stats', [EsportsController::class, 'getOverallHeroStats']);
+    Route::post('esports/heroesinternational/main/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
+
+    Route::post('esports/heroesinternational/nationscup/teams', [HeroesInternationalController::class, 'getTeamsData']);
+    Route::post('esports/heroesinternational/nationscup/matches', [HeroesInternationalController::class, 'getRecentMatchData']);
+    Route::post('esports/heroesinternational/nationscup/hero/stats', [EsportsController::class, 'getOverallHeroStats']);
+    Route::post('esports/heroesinternational/nationscup/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
 
     Route::post('compare', [CompareController::class, 'getData']);
 

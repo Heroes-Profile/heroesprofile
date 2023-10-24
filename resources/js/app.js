@@ -125,6 +125,11 @@ import NutCupMain from './components/Esports/NutCup/NutCupMain.vue';
 //Masters Clash
 import MastersClashMain from './components/Esports/MastersClash/MastersClashMain.vue';
 
+//Heroes International
+import HeroesInternationalEntry from './components/Esports/HeroesInternational/HeroesInternationalEntry.vue';
+import HeroesInternationalMain from './components/Esports/HeroesInternational/HeroesInternationalMain.vue';
+import HeroesInternationalNationsCup from './components/Esports/HeroesInternational/HeroesInternationalNationsCup.vue';
+
 
 
 
