@@ -40,7 +40,7 @@ class SingleMatchController extends Controller
     public function showWithEsport(Request $request, $esport, $replayID)
     {
         $validationRules = [
-            'esport' => 'required|in:NGS,CCL',
+            'esport' => 'required|in:NGS,CCL,MastersClash',
             'replayID' => 'required|integer',
         ];
 
@@ -62,7 +62,7 @@ class SingleMatchController extends Controller
     public function getData(Request $request)
     {
         $validationRules = [
-            'esport' => 'nullable|in:NGS,CCL',
+            'esport' => 'nullable|in:NGS,CCL,MastersClash',
             'replayID' => 'required|integer',
         ];
 
@@ -83,9 +83,13 @@ class SingleMatchController extends Controller
         $replayID = $request['replayID'];
 
         $this->schema = 'heroesprofile';
-        if ($this->esport) {
+
+        if($this->esport == "MastersClash"){
+            $this->schema .= "_mcl";
+        }else if ($this->esport) {
             $this->schema .= '_'.strtolower($this->esport);
         }
+
 
         $result = DB::table($this->schema.'.replay')
             ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
@@ -172,7 +176,7 @@ class SingleMatchController extends Controller
                     $this->schema.'.player.party',
                 ]);
             })
-            ->when($this->esport == 'NGS', function ($query) {
+            ->when($this->esport == 'NGS' || $this->esport == 'MastersClash', function ($query) {
                 return $query->addSelect([
                     $this->schema.'.player.mastery_tier as mastery_taunt',
                     $this->schema.'.player.team_name',
@@ -219,7 +223,7 @@ class SingleMatchController extends Controller
                 'winner' => ($replayGroup[0]->team == 0 && $replayGroup[0]->winner == 1) ? 0 : 1,
                 'players' => [],
                 'replay_bans' => $this->getReplayBans($replayID, $heroData),
-                'draft_order' => $this->esport != 'CCL' ? $this->getDraftOrder($replayID, $heroData) : null,
+                'draft_order' => $this->esport != 'CCL' && $this->esport != 'MastersClash' ? $this->getDraftOrder($replayID, $heroData) : null,
                 'experience_breakdown' => $this->getExperienceBreakdown($replayID),
                 'team_names' => $team_names,
                 'map_bans' => $this->esport ? $this->getMapBans($replayID, $maps, $team_names) : null,
@@ -624,13 +628,13 @@ class SingleMatchController extends Controller
         foreach ($results as $row) {
 
             if ($row->team == 0) {
-                if ($this->esport == 'NGS') {
+                if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
                     $team_zero_id = $row->team_name;
                 } elseif ($this->esport == 'CCL') {
                     $team_zero_id = $row->team_id;
                 }
             } else {
-                if ($this->esport == 'NGS') {
+                if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
                     $team_one_id = $row->team_name;
                 } elseif ($this->esport == 'CCL') {
                     $team_one_id = $row->team_id;
@@ -660,6 +664,12 @@ class SingleMatchController extends Controller
                     $this->schema.'.replay.team_1_name',
                 ]);
             })
+            ->when($this->esport == 'MastersClash', function ($query) {
+                return $query->addSelect([
+                    $this->schema.'.replay.team_0_name',
+                    $this->schema.'.replay.team_1_name',
+                ]);
+            })
             ->when($this->esport == 'CCL', function ($query) {
                 return $query->addSelect([
                     $this->schema.'.replay.team_0_id',
@@ -672,7 +682,7 @@ class SingleMatchController extends Controller
         $team_name_0 = null;
         $team_name_1 = null;
 
-        if ($this->esport == 'NGS') {
+        if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
             $team_name_0 = $result->team_0_name;
             $team_name_1 = $result->team_1_name;
         } elseif ($this->esport == 'CCL') {
@@ -745,6 +755,12 @@ class SingleMatchController extends Controller
                     $this->schema.'.replay.team_1_name',
                 ]);
             })
+            ->when($this->esport == 'MastersClash', function ($query) {
+                return $query->addSelect([
+                    $this->schema.'.replay.team_0_name',
+                    $this->schema.'.replay.team_1_name',
+                ]);
+            })
             ->when($this->esport == 'CCL', function ($query) {
                 return $query->addSelect([
                     $this->schema.'.replay.team_0_id',
@@ -759,6 +775,9 @@ class SingleMatchController extends Controller
             ->where('season', $result->season)
             ->when($this->esport == 'NGS', function ($query) use ($result) {
                 return $query->where('division_0', $result->division_0)->where('team_0_name', $result->team_0_name)->where('team_1_name', $result->team_1_name);
+            })
+            ->when($this->esport == 'MastersClash', function ($query) use ($result) {
+                return $query->where('team_0_name', $result->team_0_name)->where('team_1_name', $result->team_1_name);
             })
             ->when($this->esport == 'CCL', function ($query) use ($result) {
                 return $query->where('team_0_id', $result->team_0_id)->where('team_1_id', $result->team_1_id);

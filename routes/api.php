@@ -35,6 +35,10 @@ use App\Http\Controllers\CompareController;
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Esports\MastersClash\MastersClashController;
+
+
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -132,6 +136,14 @@ Route::prefix('v1')->group(function () {
 
     Route::post('esports/nutcup/hero/stats', [EsportsController::class, 'getOverallHeroStats']);
     Route::post('esports/nutcup/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
+
+
+
+    Route::post('esports/mastersclash/teams', [MastersClashController::class, 'getTeamsData']);
+    Route::post('esports/mastersclash/matches', [MastersClashController::class, 'getRecentMatchData']);
+    Route::post('esports/mastersclash/hero/stats', [EsportsController::class, 'getOverallHeroStats']);
+    Route::post('esports/mastersclash/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
+
 
     Route::post('compare', [CompareController::class, 'getData']);
 
