@@ -1,5 +1,12 @@
 <template>
   <div>
+
+    <div v-if="showPopup" class="modal">
+      <new-user-popup @popupclosed="showPopup = false"></new-user-popup>
+    </div>
+
+
+
     <div class="text-center py-10">
       <img class="block m-4 w-2/5 max-w-6xl mr-auto ml-auto pl-25" src="/images/logo/full_deathwing.png"/>
 
@@ -11,15 +18,21 @@
 
 
     <div class="flex   p-20 bg-lighten flex-wrap justify-center">
-      <div class="text-center md:w-[30%] mb-20 mx-5">
+      <a href="/Compare" class="text-center md:w-[30%] mb-20 mx-5">
+
+        <i class="fas fa-users" style="font-size: 100px;"></i>
+
         <h3 class="text-2xl mb-10 ">Player comparison</h3>
         <p>See how you compare to other players or to a certain league tier. You can compare up to four players at one time.</p>
         
         <custom-button :href="'/Compare'" :text="'Compare'" :alt="'Compare players'" :size="'big'" class="mt-10"></custom-button>
-      </div>
+      </a>
 
 
       <div class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
+
+        <i class="fa-solid fa-globe" style="font-size: 100px;"></i>
+
         <h3 class="text-2xl mb-10">Global Stats</h3>
         <p>Variety of global stats for heroes including, overall stats, builds, compositions, draft, matchups, and more.</p>
         
@@ -29,22 +42,31 @@
       </div>
       </div>
 
-      <div class="text-center md:w-[30%] mb-20 mx-5">
+      <a href="/Global/Leaderboard" class="text-center md:w-[30%] mb-20 mx-5">
+
+        <i class="fas fa-list-ol" style="font-size: 100px;"></i>
+
         <h3 class="text-2xl mb-10">Variety of Leaderboards</h3>
         <p>View leaderboards based on Player, Hero, or Role using Heroes Profile Rating. Get talent builds, and navigate directly to player's profiles.</p>
         
         <custom-button :href="'/Global/Leaderboard'" :text="'View Leaderboards'" :alt="'View Leaderboards'" :size="'big'" class="mt-10" ></custom-button>
-      </div>
+      </a>
 
 
-      <div class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
+      <a href="https://api.heroesprofile.com/Api" target="_blank" class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
+
+        <i class="fa-solid fa-database" style="font-size: 100px;"></i>
+
         <h3 class="text-2xl mb-10">Heroes Profile API</h3>
         <p>Heroes Profile API is a tool used to get Heroes of the Storm data parsed for HeroesProfile.com. </p>
       
         <custom-button  :href="'https://api.heroesprofile.com/Api'" :targetblank="true" :text="'API'" :alt="'API'"  :size="'big'" class="mt-auto"  :color="'teal'"></custom-button>
-      </div>
+      </a>
 
       <div class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
+
+        <i class="fas fa-address-card" style="font-size: 100px;"></i>
+
         <h3 class="text-2xl mb-10">Player profile</h3>
         <p>See all player stats in one place.  See data for individual maps or heroes played, match history and comparisons all from within a streamlined profile.</p>
         <div class="flex mt-auto justify-center">
@@ -74,12 +96,18 @@
     },
     data(){
       return {
+        showPopup: true,
       }
     },
     created(){
-
+      if (localStorage.getItem('newUserPopup')) {
+        console.log("here");
+        this.showPopup = false;
+      }
     },
     mounted() {
+      console.log(localStorage.getItem('newUserPopup'));
+      console.log(this.showPopup);
     },
     computed: {
 

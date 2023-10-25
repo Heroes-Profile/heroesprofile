@@ -11,9 +11,10 @@ class SeasonInputValidation implements Rule
     {
         $validSeasons = SeasonDate::pluck('id')->toArray();
 
-        if($value == "All"){
+        if ($value == 'All') {
             return true;
         }
+
         return in_array($value, $validSeasons);
     }
 

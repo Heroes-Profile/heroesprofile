@@ -12,5 +12,6 @@
     :blizz_id="{{ json_encode($blizz_id) }}" 
     :season="{{ json_encode($season) }}" 
     :hero="{{ json_encode($hero) }}" 
+    :tournament="{{ json_encode($tournament) }}" 
   ></esports-player-hero-stats>
 @endsection

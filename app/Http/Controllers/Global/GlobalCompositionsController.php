@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Global;
 
+use App\Models\GameType;
 use App\Models\GlobalCompositions;
 use App\Models\Hero;
 use App\Models\MMRTypeID;
@@ -9,7 +10,6 @@ use App\Rules\HeroInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
-use App\Models\GameType;
 
 class GlobalCompositionsController extends GlobalsInputValidationController
 {

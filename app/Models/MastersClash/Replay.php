@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Models\CCL;
+namespace App\Models\MastersClash;
 
 use Illuminate\Database\Eloquent\Model;
 
-class CCLReplay extends Model
+class Replay extends Model
 {
     protected $table = 'replay';
 
     protected $primaryKey = 'replayID';
 
-    protected $connection = 'heroesprofile_ccl';
+    protected $connection = 'heroesprofile_mcl';
 
     public $timestamps = false;
 }

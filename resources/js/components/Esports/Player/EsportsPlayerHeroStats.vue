@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" :heading="esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+    <page-heading :infoText1="infoText1" :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div v-if="data">
       <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifiedseason"></single-select-filter>
@@ -83,6 +83,7 @@ export default {
       type: [Number, String]
     },
     hero: String,
+    tournament: String,
   },
   data(){
     return {
@@ -106,19 +107,25 @@ export default {
         return "/images/NGS/600-600-ngs_large_header.png"
       }else if(this.esport == "CCL"){
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
+      }else if(this.esport == "MastersClash"){
+        return "/images/MCL/no-image.png"
       }
     },
     headingImageUrl(){
       if(this.esport == "NGS"){
-        return "https://www.nexusgamingseries.org/"
+        return "/Esports/NGS"
       }else if(this.esport == "CCL"){
-        return "Heroes of the Storm statistics and comparison for the Community Clash League"
+        return "/Esports/CCL"
+      }else if(this.esport == "MastersClash"){
+        return "/Esports/MastersClash"
       }
     },
     infoText1(){
       if(this.esport == "NGS"){
-        return `${this.team} in division ${this.modifieddivision ? this.modifieddivision : " All "} during season ${this.modifiedseason ? this.modifiedseason : " All "}`
+        return `${this.battletag} in division ${this.modifieddivision ? this.modifieddivision : " All "} during season ${this.modifiedseason ? this.modifiedseason : " All "}`
       }else if(this.esport == "CCL"){
+        return `${this.battletag} during season ${this.modifiedseason}`;
+      }else if(this.esport == "MastersClash"){
         return `${this.battletag} during season ${this.modifiedseason}`;
       }
     },
@@ -148,6 +155,7 @@ export default {
           blizz_id: this.blizz_id,
           season: this.modifiedseason,
           hero: this.hero,
+          tournament: this.tournament,
         });
         this.data = response.data;
       }catch(error){
@@ -190,7 +198,7 @@ export default {
     },
     getLoadingImage(){
       if(this.esport == "NGS"){
-        return "/images/NGS/600-600-ngs_large_header.png"
+        return "/images/NGS/no-image-clipped.png"
       }else if(this.esport == "CCL"){
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
       }

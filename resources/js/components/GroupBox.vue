@@ -5,7 +5,7 @@
       <template v-for="(item, index) in data" :key="index">
 
         <!-- Hero Section -->
-        <a v-if="match && playerlink && item.hero" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name">
+        <a v-if="!esport && match && playerlink && item.hero" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name">
           <hero-image-wrapper :size="'big'" :hero="item.hero">
             <image-hover-box 
               :title="item.hero.name" 
@@ -19,7 +19,15 @@
           </hero-image-wrapper>
         </a>
 
-
+        <a v-else-if="esport && match && playerlink && item.hero" :href="'/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name">
+          <hero-image-wrapper :size="'big'" :hero="item.hero">
+            <image-hover-box 
+              :title="item.hero.name" 
+              :paragraph-one="`Played by ${item.battletag}`" 
+              :paragraph-six="`Hero Level: ${item.hero_level}`"
+            ></image-hover-box>
+          </hero-image-wrapper>
+        </a>
 
         <a v-else-if="!esport && playerlink && item.hero" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name">
           <hero-image-wrapper :size="'big'" :hero="item.hero">

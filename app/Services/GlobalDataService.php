@@ -9,6 +9,7 @@ use App\Models\Hero;
 use App\Models\HeroesDataTalent;
 use App\Models\LeagueTier;
 use App\Models\Map;
+use App\Models\MastersClash\MastersClashTeam;
 use App\Models\NGS\NGSTeam;
 use App\Models\Replay;
 use App\Models\SeasonDate;
@@ -479,6 +480,10 @@ class GlobalDataService
         });
 
         $filterData->ngs_seasons = NGSTeam::distinct()->orderBy('season', 'desc')->pluck('season')->map(function ($season) {
+            return ['code' => $season, 'name' => strval($season)];
+        });
+
+        $filterData->mcl_seasons = MastersClashTeam::distinct()->orderBy('season', 'desc')->pluck('season')->map(function ($season) {
             return ['code' => $season, 'name' => strval($season)];
         });
 

@@ -10,5 +10,7 @@
     :division="{{ json_encode($division) }}" 
     :team="{{ json_encode($team) }}" 
     :season="{{ json_encode($season) }}" 
+    :tournament="{{ json_encode($tournament) }}" 
+    
   ></esports-single-team>
 @endsection
