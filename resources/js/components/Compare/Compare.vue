@@ -27,29 +27,34 @@
 
 
 
-    <div class="flex flex-center">
-      <div :class="'col-start-' + index + ' row-start-1 bg-teal'" v-for="index in range" :key="index">
+    <div class="flex justify-center gap-2  mx-auto  ">
+      <div class="border  rounded-md compare-selection-box"  v-for="index in range" :key="index">
 
-        <div v-if="playerChosen(index)">
+        <div class=" p-2 rounded-t-md compare-selection-title" v-if="playerChosen(index)">
           {{ playerData[index].battletag_short }}({{ playerData[index].region_name }})
         </div>
-        <div v-else>
+        <div v-else class="p-2 mx-auto">
           <hero-or-league-choice-box :index="index" @onDataReturn="handleDataReturn"></hero-or-league-choice-box>
         </div>
 
 
       </div>
+      <div class="border p-2 flex flex-col rounded-md" v-if="this.range.length < 5" @click="newPlayerAddded">
 
-      <custom-button v-if="this.range.length < 5" @click="newPlayerAddded" text="Change to a plus sign with text 'Add New Player to Compare'" alt="Change to a plus sign with text 'Add New Player to Compare'" size="small" :ignoreclick="true"></custom-button>
+      <custom-button class="my-auto mx-auto text-xl"   text="+" alt="Change to a plus sign with text 'Add New Player to Compare'" size="small" :ignoreclick="true"></custom-button>
+      Add a player to compare
+      </div>
 
     </div>
 
 
-    <div v-if="this.data">
+    <div v-if="this.data" class="flex">
+      (The value needs to be a # out of 100 - so you will need to compare all of the stats across players for a certain stat, make the largest stat = 100, and then have the other values be a comparison of that. Have the actual value be the "displaytext" field)
 
-      <div v-for="stat in stats" :key="stat">
+      <div v-for="stat in stats" :key="stat" class="flex">
         <div v-for="player in playerData" :key="player.battletag">
-          <stat-box :title="`${player.battletag} ${stat}`" :value="getStatValue(stat.replace(/ /g, '_').toLowerCase(), player.battletag)"></stat-box>
+         <!-- <stat-bar-box  :title="`${player.battletag} ${stat}`" :displaytext="getStatValue(stat.replace(/ /g, '_').toLowerCase(), player.battletag)" :value="getStatValue(stat.replace(/ /g, '_').toLowerCase(), player.battletag)"></stat-bar-box>-->
+          <stat-bar-box  :title="`${player.battletag} ${stat}`" displaytext="1.5" :value="75"></stat-bar-box>
         </div>
       </div>
 
