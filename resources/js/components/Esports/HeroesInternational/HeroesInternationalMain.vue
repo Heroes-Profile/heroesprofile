@@ -62,7 +62,7 @@
           <single-select-filter :values="filters.mcl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
           <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
-        <esports-organizations v-if="teamsData" :data="teamsData" :esport="'HeroesInternationalMain'" :season="season"></esports-organizations>
+        <esports-organizations v-if="teamsData" :data="teamsData" :esport="'hi'" :season="season"></esports-organizations>
       </div>
 
 
@@ -91,7 +91,7 @@
         </div>
 
 
-        <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'HeroesInternationalMain'"></esports-recent-matches>
+        <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'hi'"></esports-recent-matches>
       </div>
 
 
@@ -186,9 +186,9 @@ export default {
     async getTeamsData(){
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/heroesinternational/main/teams", {
+        const response = await this.$axios.post("/api/v1/esports/heroesinternational/teams", {
           season: this.season,
-          esport: "HeroesInternationalMain",
+          esport: "hi",
         });
         this.teamsData = response.data;
       }catch(error){
@@ -203,10 +203,10 @@ export default {
 
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/heroesinternational/main/matches", {
+        const response = await this.$axios.post("/api/v1/esports/heroesinternational/matches", {
           season: this.season,
           pagination_page: page,
-          esport: "HeroesInternationalMain",
+          esport: "hi",
         });
         this.recentMatchesData = response.data;
       }catch(error){
@@ -217,9 +217,9 @@ export default {
     async getHeroStats(){
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/heroesinternational/main/hero/stats", {
+        const response = await this.$axios.post("/api/v1/esports/heroesinternational/hero/stats", {
           season: this.season,
-          esport: "HeroesInternationalMain",
+          esport: "hi",
         });
         this.heroStatsData = response.data;
       }catch(error){
@@ -230,10 +230,10 @@ export default {
     async getTalentStats(){
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/heroesinternational/main/hero/talents/stats", {
+        const response = await this.$axios.post("/api/v1/esports/heroesinternational/hero/talents/stats", {
           season: this.season,
           hero: this.selectedHero.name,
-          esport: "HeroesInternationalMain",
+          esport: "hi",
         });
         this.talentStatsData = response.data;
       }catch(error){

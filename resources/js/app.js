@@ -29,6 +29,8 @@ import GameSummaryBox from './components/GameSummaryBox.vue';
 import SearchComponent from './components/SearchComponent.vue';
 import ImageHoverBox from './components/ImageHoverBox.vue';
 import FormatDate from './components/FormatDate.vue';
+import NewUserPopup from './components/NewUserPopup.vue';
+
 
 
 
@@ -129,7 +131,6 @@ import MastersClashMain from './components/Esports/MastersClash/MastersClashMain
 import HeroesInternationalEntry from './components/Esports/HeroesInternational/HeroesInternationalEntry.vue';
 import HeroesInternationalMain from './components/Esports/HeroesInternational/HeroesInternationalMain.vue';
 import HeroesInternationalNationsCup from './components/Esports/HeroesInternational/HeroesInternationalNationsCup.vue';
-
 
 
 

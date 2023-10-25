@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" :heading="esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+    <page-heading :infoText1="infoText1" :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div v-if="data">
       <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifiedseason"></single-select-filter>
@@ -217,6 +217,7 @@ export default {
     season: {
       type: [Number, String]
     },
+    tournament: String,
   },
   data(){
     return {
@@ -237,11 +238,13 @@ export default {
   computed: {
     headingImage(){
       if(this.esport == "NGS"){
-        return "/images/NGS/600-600-ngs_large_header.png"
+        return "/images/NGS/600-600-ngs_large_header.png";
       }else if(this.esport == "CCL"){
-        return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
+        return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png";
       }else if(this.esport == "MastersClash"){
-        return "/images/MCL/no-image.png"
+        return "/images/MCL/no-image.png";
+      }else if(this.esport == "HeroesInternational"){
+        return "/images/HI/heroes_international.png";
       }
     },
     headingImageUrl(){
@@ -251,6 +254,8 @@ export default {
         return "/Esports/CCL"
       }else if(this.esport == "MastersClash"){
         return "/Esports/MastersClash"
+      }else if(this.esport == "HeroesInternational"){
+        return "/Esports/HeroesInternational"
       }
     },
     loadingImageUrl(){
@@ -260,6 +265,8 @@ export default {
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
       }else if(this.esport == "MastersClash"){
         return "/images/MCL/no-image.png"
+      }else if(this.esport == "HeroesInternational"){
+        return "/images/HI/heroes_international.png";
       }
     },
     infoText1(){
@@ -295,6 +302,7 @@ export default {
           division: this.modifieddivision,
           team: this.team,
           season: this.modifiedseason,
+          tournament: this.tournament,
         });
         this.data = response.data;
       }catch(error){

@@ -11,5 +11,6 @@
     :battletag="{{ json_encode($battletag) }}" 
     :blizz_id="{{ json_encode($blizz_id) }}" 
     :season="{{ json_encode($season) }}" 
+    :tournament="{{ json_encode($tournament) }}" 
   ></esports-player-stats>
 @endsection

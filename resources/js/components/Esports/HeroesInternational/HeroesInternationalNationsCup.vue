@@ -62,7 +62,7 @@
           <single-select-filter :values="filters.mcl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
           <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
-        <esports-organizations v-if="teamsData" :data="teamsData" :esport="'HeroesInternationalNationsCup'" :season="season"></esports-organizations>
+        <esports-organizations v-if="teamsData" :data="teamsData" :esport="'hi_nc'" :season="season"></esports-organizations>
       </div>
 
 
@@ -91,7 +91,7 @@
         </div>
 
 
-        <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'HeroesInternationalNationsCup'"></esports-recent-matches>
+        <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'hi_nc'"></esports-recent-matches>
       </div>
 
 
@@ -151,8 +151,6 @@ export default {
       infoText1: "Heroes of the Storm statistics and comparison for the Heroes International League",
       activeButton: null,
 
-      standingData: null,
-      divisionData: null,
       teamsData: null,
       recentMatchesData: null,
       heroStatsData: null,
@@ -160,10 +158,7 @@ export default {
       selectedHero: null,
 
       season: null,
-      division: null,
 
-      userinput: null,
-      battletagresponse: null,
     };
   },
   created(){
@@ -193,9 +188,9 @@ export default {
     async getTeamsData(){
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/heroesinternational/nationscup/teams", {
+        const response = await this.$axios.post("/api/v1/esports/heroesinternational/teams", {
           season: this.season,
-          division: this.division,
+          esport: "hi_nc",
         });
         this.teamsData = response.data;
       }catch(error){
@@ -210,11 +205,10 @@ export default {
 
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/heroesinternational/nationscup/matches", {
+        const response = await this.$axios.post("/api/v1/esports/heroesinternational/matches", {
           season: this.season,
-          division: this.division,
           pagination_page: page,
-          esport: "HeroesInternationalNationsCup",
+          esport: "hi_nc",
         });
         this.recentMatchesData = response.data;
       }catch(error){
@@ -225,10 +219,9 @@ export default {
     async getHeroStats(){
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/heroesinternational/nationscup/hero/stats", {
+        const response = await this.$axios.post("/api/v1/esports/heroesinternational/hero/stats", {
           season: this.season,
-          division: this.division,
-          esport: "HeroesInternationalNationsCup",
+          esport: "hi_nc",
         });
         this.heroStatsData = response.data;
       }catch(error){
@@ -239,11 +232,10 @@ export default {
     async getTalentStats(){
       this.loading = true;
       try{
-        const response = await this.$axios.post("/api/v1/esports/heroesinternational/nationscup/hero/talents/stats", {
+        const response = await this.$axios.post("/api/v1/esports/heroesinternational/hero/talents/stats", {
           season: this.season,
-          division: this.division,
           hero: this.selectedHero.name,
-          esport: "HeroesInternationalNationsCup",
+          esport: "hi_nc",
         });
         this.talentStatsData = response.data;
       }catch(error){

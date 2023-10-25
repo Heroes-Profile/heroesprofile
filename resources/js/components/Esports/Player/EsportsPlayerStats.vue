@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" :heading="esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+    <page-heading :infoText1="infoText1" :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div v-if="data">
       <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifiedseason"></single-select-filter>
@@ -128,6 +128,7 @@ export default {
     season: {
       type: [Number, String]
     },
+    tournament: String,
   },
   data(){
     return {
@@ -141,6 +142,7 @@ export default {
   created(){
     this.modifiedseason = this.season;
     this.modifieddivision = this.division;
+    console.log(this.tournament);
   },
   mounted() {
     this.getData();
@@ -198,6 +200,7 @@ export default {
           battletag: this.battletag,
           blizz_id: this.blizz_id,
           season: this.modifiedseason,
+          tournament: this.tournament,
         });
         this.data = response.data;
       }catch(error){

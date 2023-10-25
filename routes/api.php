@@ -142,15 +142,10 @@ Route::prefix('v1')->group(function () {
 
 
 
-    Route::post('esports/heroesinternational/main/teams', [HeroesInternationalController::class, 'getTeamsData']);
-    Route::post('esports/heroesinternational/main/matches', [HeroesInternationalController::class, 'getRecentMatchData']);
-    Route::post('esports/heroesinternational/main/hero/stats', [EsportsController::class, 'getOverallHeroStats']);
-    Route::post('esports/heroesinternational/main/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
-
-    Route::post('esports/heroesinternational/nationscup/teams', [HeroesInternationalController::class, 'getTeamsData']);
-    Route::post('esports/heroesinternational/nationscup/matches', [HeroesInternationalController::class, 'getRecentMatchData']);
-    Route::post('esports/heroesinternational/nationscup/hero/stats', [EsportsController::class, 'getOverallHeroStats']);
-    Route::post('esports/heroesinternational/nationscup/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
+    Route::post('esports/heroesinternational/teams', [HeroesInternationalController::class, 'getTeamsData']);
+    Route::post('esports/heroesinternational/matches', [HeroesInternationalController::class, 'getRecentMatchData']);
+    Route::post('esports/heroesinternational/hero/stats', [EsportsController::class, 'getOverallHeroStats']);
+    Route::post('esports/heroesinternational/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
 
     Route::post('compare', [CompareController::class, 'getData']);
 

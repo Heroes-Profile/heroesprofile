@@ -4,14 +4,14 @@
     <div class="flex   p-20 bg-lighten flex-wrap justify-center">
 
       <div class="text-center md:w-[15%] mb-15 mx-5">
-        <a :href="'/Esports/HeroesInternational/Main'"><img src="/images/HI/heroes_international.png" alt="Heroes International"/></a>
-        <custom-button :href="'/Esports/HeroesInternational/Main'" :text="'Heroes International'" :alt="'Heroes International'" :size="'big'" class="mt-10"></custom-button>
+        <a :href="'/Esports/HeroesInternational/?tournament=main'"><img src="/images/HI/heroes_international.png" alt="Heroes International"/></a>
+        <custom-button :href="'/Esports/HeroesInternational/?tournament=main'" :text="'Heroes International'" :alt="'Heroes International'" :size="'big'" class="mt-10"></custom-button>
       </div>
 
 
       <div class="text-center md:w-[15%] mb-15 mx-5">
-        <a :href="'/Esports/HeroesInternational/NationsCup'"><img src="/images/HI/Flags/AllFlags.png" alt="Heroes International"/></a>
-        <custom-button :href="'/Esports/HeroesInternational/NationsCup'" :text="'Heroes International'" :alt="'Heroes International'" :size="'big'" class="mt-10"></custom-button>
+        <a :href="'/Esports/HeroesInternational/?tournament=nationscup'"><img src="/images/HI/Flags/AllFlags.png" alt="Heroes International"/></a>
+        <custom-button :href="'/Esports/HeroesInternational/?tournament=nationscup'" :text="'Heroes International'" :alt="'Heroes International'" :size="'big'" class="mt-10"></custom-button>
       </div>
 
     </div>
