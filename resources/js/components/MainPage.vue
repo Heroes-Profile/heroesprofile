@@ -1,5 +1,12 @@
 <template>
   <div>
+
+    <div v-if="showPopup" class="modal">
+      <new-user-popup @popupclosed="showPopup = false"></new-user-popup>
+    </div>
+
+
+
     <div class="text-center py-10">
       <img class="block m-4 w-2/5 max-w-6xl mr-auto ml-auto pl-25" src="/images/logo/full_deathwing.png"/>
 
@@ -74,12 +81,18 @@
     },
     data(){
       return {
+        showPopup: true,
       }
     },
     created(){
-
+      if (localStorage.getItem('newUserPopup')) {
+        console.log("here");
+        this.showPopup = false;
+      }
     },
     mounted() {
+      console.log(localStorage.getItem('newUserPopup'));
+      console.log(this.showPopup);
     },
     computed: {
 
