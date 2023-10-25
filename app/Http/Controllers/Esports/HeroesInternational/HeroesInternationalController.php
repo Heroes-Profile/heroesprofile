@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Esports\HeroesInternational;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 use App\Models\HeroesInternational\HeroesInternationalMainTeam;
 use App\Models\HeroesInternational\HeroesInternationalNationsCupTeam;
+
+use App\Models\Map;
 
 class HeroesInternationalController extends Controller
 {
@@ -16,36 +19,47 @@ class HeroesInternationalController extends Controller
 
     public function show(Request $request)
     {
-        return view('Esports.HeroesInternational.heroesInternationalEntry');
-    }
+        $validationRules = [
+            'tournament' => 'nullable|in:main,nationscup',
+        ];
 
-    public function showMain(Request $request)
-    {
-        return view('Esports.HeroesInternational.heroesInternationalMain')
-            ->with([
-                'defaultseason' => 1,
-                'filters' => $this->globalDataService->getFilterData(),
-                'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
-            ]);
-    }
+        $validator = Validator::make($request->all(), $validationRules);
 
-    public function showNationsCup(Request $request)
-    {
-        return view('Esports.HeroesInternational.heroesInternationalNationsCup')         
-            ->with([
-                'defaultseason' => 1,
-                'filters' => $this->globalDataService->getFilterData(),
-                'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
-            ]);
-    }
+        if ($validator->fails()) {
+            return [
+                'data' => $request->all(),
+                'status' => 'failure to validate inputs',
+            ];
+        }
 
+
+        $tournament = $request["tournament"];
+
+        if($tournament == "main"){
+            return view('Esports.HeroesInternational.heroesInternationalMain')
+                ->with([
+                    'defaultseason' => 1,
+                    'filters' => $this->globalDataService->getFilterData(),
+                    'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
+                ]);
+        }else if($tournament == "nationscup"){
+            return view('Esports.HeroesInternational.heroesInternationalNationsCup')         
+                ->with([
+                    'defaultseason' => 1,
+                    'filters' => $this->globalDataService->getFilterData(),
+                    'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
+                ]);
+        }else{
+            return view('Esports.HeroesInternational.heroesInternationalEntry');
+        }
+    }
     public function getTeamsData(Request $request)
     {
         //return response()->json($request->all());
 
         $validationRules = [
             'season' => 'required|in:1',
-            'esport' => 'required|in:HeroesInternationalMain,HeroesInternationalNationsCup',
+            'esport' => 'required|in:hi,hi_nc',
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -60,7 +74,7 @@ class HeroesInternationalController extends Controller
         $season = $request['season'];
         $this->esport = $request['esport'];
 
-        if ($this->esport == 'HeroesInternationalMain') {
+        if ($this->esport == 'hi') {
             return HeroesInternationalMainTeam::where('season', $request['season'])->get();
         } elseif ($this->esport) {
             return HeroesInternationalNationsCupTeam::where('season', $request['season'])->get();
@@ -75,7 +89,7 @@ class HeroesInternationalController extends Controller
 
         $validationRules = [
             'season' => 'required|in:1',
-            'esport' => 'required|in:HeroesInternationalMain,HeroesInternationalNationsCup',
+            'esport' => 'required|in:hi,hi_nc',
             'pagination_page' => 'required:integer',
         ];
 
@@ -94,20 +108,16 @@ class HeroesInternationalController extends Controller
         $pagination_page = $request['pagination_page'];
         $perPage = 1000;
 
-        $this->schema = 'heroesprofile';
+        $this->schema = 'heroesprofile_' . $this->esport;
 
-        if ($this->esport == 'HeroesInternationalMain') {
-            $this->schema .= '_hi';
-        } elseif ($this->esport) {
-            $this->schema .= '_hi_nc';
-        }
-
-        $results = Replay::select($this->schema.'.replay.replayID', 'hero', 'game_map', 'replay.team_0_name', 'replay.team_1_name', 'round', 'game', 'game_date')
+        $results = DB::table($this->schema . '.replay')->select($this->schema.'.replay.replayID', 'hero', 'game_map', 'replay.team_0_id', 'replay.team_1_id', 'round', 'game', 'game_date')
             ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
-            ->join($this->schema.'.teams', $this->schema.'.teams.team_id', '=', $this->schema.'.player.team_name')
+            ->join($this->schema.'.teams', $this->schema.'.teams.team_id', '=', $this->schema.'.player.team_id')
             ->orderBy('game_date', 'DESC')
             ->where('replay.season', $season)
             ->paginate($perPage, ['*'], 'page', $pagination_page);
+
+
 
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
@@ -125,18 +135,20 @@ class HeroesInternationalController extends Controller
         $groupedResults = $results->groupBy('replayID')->map(function ($group) use ($heroData, $maps) {
             $heroes = [];
 
+
             for ($i = 0; $i < 10; $i++) {
-                $heroes[$i] = isset($group[$i]) && isset($group[$i]['hero']) ? $heroData[$group[$i]['hero']] : null;
+                $heroes[$i] = isset($group[$i]) && isset($group[$i]->hero) ? $heroData[$group[$i]->hero] : null;
             }
 
+
             return [
-                'replayID' => $group[0]['replayID'],
-                'game_date' => $group[0]['game_date'],
-                'game_map' => isset($maps[$group[0]['game_map']]) ? $maps[$group[0]['game_map']] : null,
-                'game' => $group[0]['game'],
-                'round' => $group[0]['round'],
-                'team_0_name' => $group[0]['team_0_name'],
-                'team_1_name' => $group[0]['team_1_name'],
+                'replayID' => $group[0]->replayID,
+                'game_date' => $group[0]->game_date,
+                'game_map' => isset($maps[$group[0]->game_map]) ? $maps[$group[0]->game_map] : null,
+                'game' => $group[0]->game,
+                'round' => $group[0]->round,
+                'team_0_id' => $group[0]->team_0_id,
+                'team_1_id' => $group[0]->team_1_id,
                 'heroes' => $heroes,
             ];
         })->values()->all();

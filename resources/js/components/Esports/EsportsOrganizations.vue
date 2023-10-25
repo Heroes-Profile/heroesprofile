@@ -14,6 +14,16 @@
           <h3>{{ row.team_name }}</h3>
         </a>
  
+        <a v-else-if="esport == 'hi'" :href="`/Esports/HeroesInternational/Team/${row.team_name}?tournament=main&season=${season}`">
+          <img :src="`/images/HI/Team/Logos/${row.image}.png`" :alt="row.team_name"/>
+          <h3>{{ row.team_name }}</h3>
+        </a>
+
+        <a v-else-if="esport == 'hi_nc'" :href="`/Esports/HeroesInternational/Team/${row.team_name}?tournament=nationscup&season=${season}`">
+          <img :src="`/images/HI/Flags/${row.image}.png`" :alt="row.team_name"/>
+          <h3>{{ row.team_name }}</h3>
+        </a>
+
       </div>
 
 

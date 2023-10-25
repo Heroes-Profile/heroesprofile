@@ -151,8 +151,6 @@ Route::get('Esports/NutCup', [NutCupController::class, 'show']);
 Route::get('Esports/MastersClash', [MastersClashController::class, 'show']);
 
 Route::get('Esports/HeroesInternational', [HeroesInternationalController::class, 'show']);
-Route::get('Esports/HeroesInternational/Main', [HeroesInternationalController::class, 'showMain']);
-Route::get('Esports/HeroesInternational/NationsCup', [HeroesInternationalController::class, 'showNationsCup']);
 
 
 //Rewrite game data later
