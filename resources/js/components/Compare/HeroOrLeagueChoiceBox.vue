@@ -1,9 +1,9 @@
 <template>
-  <div class="w-96 h-96 bg-blue-500 border border-gray-300 p-4">
+  <div class="text-center">
     <div class="input-group mb-3">
-      <input type="text" class="form-control search-input mr-3" placeholder="Enter a battletag" aria-label="Enter a battletag" aria-describedby="basic-addon2" v-model="userinput">
+      <input type="text" class="form-control search-input" placeholder="Enter a battletag" aria-label="Enter a battletag" aria-describedby="basic-addon2" v-model="userinput">
       <div class="input-group-append">
-        <button class="btn btn-outline-secondary" type="button" @click="clickedPlayerSearch">{{ "Search For Player" }}</button>
+        <custom-button class="btn btn-outline-secondary" text="Search For Player" @click="clickedPlayerSearch">{{ "Search For Player" }}</custom-button>
       </div>
     </div>
 

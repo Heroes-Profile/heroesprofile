@@ -35,7 +35,7 @@
 
   <div v-if="data">
 
-    <div class="flex px-3 mx-auto justify-center">
+    <div class="flex px-3 gap-5 mx-auto justify-center">
       <talent-builder-column :data="data['1']" :level="1" :clickedData="clickedData"></talent-builder-column>
       <talent-builder-column :data="data['4']" :level="4" :clickedData="clickedData"></talent-builder-column>
       <talent-builder-column :data="data['7']" :level="7" :clickedData="clickedData"></talent-builder-column>

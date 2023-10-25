@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="w-[200px] inline-block m-1 bg-gray-light rounded">
-      <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase relative">Level {{ level }} 
+    <div class="w-[170px] inline-block m-1 bg-gray-light rounded-2xl">
+      <h2 class="bg-blue rounded-t-2xl p-2 text-sm text-center uppercase relative">Level {{ level }} 
         <div @click="removeAnySelections" class="absolute right-0 top-0 text-bold p-2 rounded hover:bg-teal">
           <i class="fa-solid fa-xmark"></i>
         </div>

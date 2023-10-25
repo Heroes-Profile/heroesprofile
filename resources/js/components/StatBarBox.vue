@@ -25,7 +25,7 @@
         {
           'py-2' : size === 'big',
         }
-        ]">{{ value }}<span class="text-xs">%</span></span>
+        ]"><span v-if="displaytext">{{displaytext}}</span><span v-else>{{ value }}<span class="text-xs">%</span></span></span>
       </div>
     </div>
   </div>
@@ -43,6 +43,7 @@ export default {
     value: {
       type: [String, Number]
     },
+    displaytext: String
   },
   data(){
     return {
