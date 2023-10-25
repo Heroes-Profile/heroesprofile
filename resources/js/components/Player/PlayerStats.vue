@@ -1,16 +1,16 @@
 <template>
   <div class="">
     <page-heading :infoText1="infoText" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
-
+    <div class="flex justify-center max-w-[1500px] mx-auto">
     <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
     <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
-  
+  </div>
 
     <div v-if="data" class="">
 
 
-      <div class="flex md:p-20 gap-10 ">
-        <div class="flex-1 flex flex-wrap justify-end">
+      <div class="flex md:p-20 gap-10 mx-auto justify-center">
+        <div class="flex-1 flex flex-wrap justify-end max-w-[500px]">
           <stat-box :title="'Wins'" :value="data.wins"></stat-box>
           <stat-box :title="'Losses'" :value="data.losses"></stat-box>
           <stat-box :title="'First to Ten Wins'" :value="data.first_to_ten_wins"></stat-box>
@@ -30,7 +30,7 @@
           <hero-image-wrapper :rectangle="true" :hero="inputHero" :title="inputHero.name" size="large"></hero-image-wrapper>
         </div>
 
-        <div class="flex-1 flex flex-wrap ">
+        <div class="flex-1 flex flex-wrap max-w-[500px]">
           <stat-box :title="'MVP'" :value="data.mvp_rate"></stat-box>       
           <stat-box :title="'Total Time Played'" :value="data.total_time_played"></stat-box>       
           <stat-box :title="'AVG. Time on Fire'" :value="data.average_time_on_fire"></stat-box>       
@@ -45,8 +45,11 @@
 
         </div>
 
-        <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Role'" class="flex justify-end " text="View all Roles"></custom-button>
+       
       </div>
+      <div class="max-w-[1500px] mx-auto text-right mb-2">
+      <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Role'" class="flex-1 " text="View all Roles"></custom-button>
+       </div>
 
       <div class="bg-lighten p-10 ">
         <div class=" max-w-[90em] ml-auto mr-auto">
@@ -56,7 +59,10 @@
             <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.heroes_three_highest_win_rate"></group-box>
             <group-box :playerlink="true" :text="'Latest Played'" :data="data.heroes_three_latest_played"></group-box>
           </div>
-          <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Hero'" class="flex justify-end " text="View All Heroes"></custom-button>
+
+        </div>
+        <div class="max-w-[1500px] mx-auto text-right mb-2">
+          <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Hero'" class=" " text="View All Heroes"></custom-button>
         </div>
       </div>
 
@@ -103,8 +109,9 @@
         <stat-box title="Rank Tier" :value="data.ar_mmr_data ? data.ar_mmr_data.rank_tier : ''"></stat-box>
         <stat-box :title="'MMR'" :value="data.ar_mmr_data ? data.ar_mmr_data.mmr : 0 "></stat-box>
       </div>
-      <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/MMR'" class="flex justify-end " text="View MMR"></custom-button>
-
+      <div class="max-w-[1500px] mx-auto text-right my-2">
+      <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/MMR'" class=" " text="View MMR"></custom-button>
+    </div>
     </div>
 
 
@@ -116,7 +123,9 @@
           <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.maps_three_highest_win_rate"></group-box>
           <group-box :playerlink="true" :text="'Latest Played'" :data="data.maps_three_latest_played"></group-box>
         </div>
-        <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Map'" class="flex justify-end " text="View All Maps"></custom-button>
+        <div class="max-w-[1500px] mx-auto text-right my-2">
+        <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Map'" class=" " text="View All Maps"></custom-button>
+      </div>
       </div>
     </div>
 
@@ -154,9 +163,9 @@
 
       
       <game-summary-box v-for="(item, index) in data.matchData" :data="item"></game-summary-box>
-      
-      <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Match/History'" class="flex justify-end " text="View Match History"></custom-button>
-
+      <div class="max-w-[1500px] mx-auto text-right my-2">
+      <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Match/History'" class="" text="View Match History"></custom-button>
+    </div>
     </div>
   </div>
   <div v-else>
