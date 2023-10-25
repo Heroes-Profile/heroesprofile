@@ -3,7 +3,7 @@
     <div class="input-group mb-3">
       <input type="text" class="form-control search-input" placeholder="Enter a battletag" aria-label="Enter a battletag" aria-describedby="basic-addon2" v-model="userinput">
       <div class="input-group-append">
-        <custom-button class="btn btn-outline-secondary" text="Search For Player" @click="clickedPlayerSearch">{{ "Search For Player" }}</custom-button>
+        <custom-button class="btn btn-outline-secondary" text="Search For Player" :ignoreclick="true" @click="clickedPlayerSearch">{{ "Search For Player" }}</custom-button>
       </div>
     </div>
 
