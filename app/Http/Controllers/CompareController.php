@@ -78,6 +78,7 @@ class CompareController extends Controller
         }
 
         $returnData = [];
+        $maxValues = [];
         foreach ($players as $player) {
             if (! is_null($request[$player])) {
 
@@ -185,9 +186,20 @@ class CompareController extends Controller
 
                 $columnStatistics = [];
                 foreach ($statistics as $column) {
+               
+
                     $winCount = $result->where('winner', 1)->count();
                     $lossCount = $result->where('winner', 0)->count();
                     $averageValue = $result->avg($column);
+
+
+                    $maxValue = $averageValue;
+         
+
+                    if ($maxValue > ($maxValues[$column] ?? 0)) {
+                        $maxValues[$column] = round($maxValue, 2);
+                    }   
+                    
 
                     $columnStatistics[$column] = [
                         'avg_value' => round($averageValue, 2),
@@ -195,12 +207,27 @@ class CompareController extends Controller
                 }
 
                 $returnData[$request[$player]['battletag']] = [
+                    "battletag_short" => $request[$player]['battletag_short'],
+                    "blizz_id" => $request[$player]['blizz_id'],
+                    "region" => $request[$player]['region'],
+                    "region_name" => $request[$player]['region_name'],
                     'wins' => $winCount,
                     'losses' => $lossCount,
                     'averages' => $columnStatistics,
                 ];
             }
         }
+        foreach ($returnData as &$playerData) {
+            foreach ($playerData["averages"] as $stat => &$statData) {
+                $maxValue = $maxValues[$stat] ?? 0;
+                $averageValue = $statData["avg_value"];
+
+                $scaledValue = $maxValue > 0 ? ($averageValue / $maxValue) * 100 : 0;
+
+                $statData["scaled_value"] = round($scaledValue, 2);
+            }
+        }
+     
 
         return $returnData;
     }

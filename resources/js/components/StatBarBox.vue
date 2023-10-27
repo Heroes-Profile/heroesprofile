@@ -37,13 +37,17 @@ export default {
   components: {
   },
   props: {
-    title: String,
+    title: {
+      type: [String, Number]
+    },
     color: String,
     size: String,
     value: {
       type: [String, Number]
     },
-    displaytext: String
+    displaytext: {
+      type: [String, Number]
+    },
   },
   data(){
     return {

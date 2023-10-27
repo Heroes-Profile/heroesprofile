@@ -289,7 +289,7 @@ export default {
     gametypedefault: Array,
     minimumgamesdefault: String,
     defaultSeason: String,
-    advancedfiltering: String,
+    advancedfiltering: Boolean,
     defaultHero: Number,
     defaultRole: String,
   },

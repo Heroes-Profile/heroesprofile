@@ -20,7 +20,12 @@
     <ul>
       <li>Opt Out</li>
     </ul>
+
+
+
     <custom-button  v-if="!this.user.patreon_account" :href="'/authenticate/patreon'" :text="'Login with Patreon'" :alt="'Login with Patreon'"  :size="'medium'" :color="'blue'"></custom-button>
+    <custom-button  v-if="this.user.patreon_account" :ignoreclick="true" :text="'Remove Patreon'" :alt="'Remove Patreon'"  :size="'medium'" :color="'blue'" @click="removePatreon()"></custom-button>
+
 
 
   </div>
@@ -102,6 +107,16 @@ export default {
         if(eventPayload.field == "Game Type"){
           this.usergametype = eventPayload.value;
         }
+      }
+    },
+    async removePatreon(){
+      try{
+        const response = await this.$axios.post("/api/v1/profile/remove/patreon", {
+          userid: this.user.battlenet_accounts_id,
+        });
+        window.location.href = "/Profile/Settings";
+      }catch(error){
+        //Do something here
       }
     },
   }
