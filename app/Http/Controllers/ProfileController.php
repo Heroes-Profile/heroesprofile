@@ -7,6 +7,7 @@ use App\Models\GameType;
 use App\Models\Hero;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\PatreonAccount;
 
 class ProfileController extends Controller
 {
@@ -71,5 +72,19 @@ class ProfileController extends Controller
         }
 
         return ['success' => true];
+    }
+
+    public function removePatreon (Request $request){
+        try{
+            $userIdToDelete = $request["userid"];
+            $account = PatreonAccount::where('battlenet_accounts_id', $userIdToDelete)->first();
+            if ($account) {
+                $account->delete();
+            }
+
+        } catch (\Exception $e) {   
+            return ["status" => "failure"];
+        }    
+        return ["status" => "success"];
     }
 }

@@ -226,16 +226,15 @@ class GlobalDataService
 
     public function getAdvancedFilterShowDefault()
     {
-
-        if (Auth::check()) {
+        if (Auth::check()) {            
             $user = Auth::user();
 
             $advancedfiltering = $user->userSettings->firstWhere('setting', 'advancedfiltering')->value;
 
-            return $advancedfiltering;
+            return $advancedfiltering === 'true';
         }
 
-        return 'false';
+        return false;
     }
 
     public function getGameTypeDefault()

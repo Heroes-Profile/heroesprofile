@@ -175,7 +175,7 @@ export default {
     defaultbuildtype: String,
     defaulttimeframetype: String,
     defaulttimeframe: Array,
-    advancedfiltering: String,
+    advancedfiltering: Boolean,
   },
   data(){
     return {
@@ -217,6 +217,7 @@ export default {
   	this.getData();
   },
   mounted() {
+    console.log("Value = " + this.advancedfiltering)
   },
   computed: {
     showStatTypeColumn(){
