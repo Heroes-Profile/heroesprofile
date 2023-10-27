@@ -41,29 +41,58 @@
       </div>
       <div class="border p-2 flex flex-col rounded-md" v-if="this.range.length < 5" @click="newPlayerAddded">
 
-      <custom-button class="my-auto mx-auto text-xl"   text="+" alt="Change to a plus sign with text 'Add New Player to Compare'" size="small" :ignoreclick="true"></custom-button>
-      Add a player to compare
+        <custom-button class="my-auto mx-auto text-xl"   text="+" alt="Change to a plus sign with text 'Add New Player to Compare'" size="small" :ignoreclick="true"></custom-button>
+        Add a player to compare
       </div>
 
     </div>
 
 
     <div v-if="this.data" class="flex">
-      (The value needs to be a # out of 100 - so you will need to compare all of the stats across players for a certain stat, make the largest stat = 100, and then have the other values be a comparison of that. Have the actual value be the "displaytext" field)
-
       <div v-for="stat in stats" :key="stat" class="flex">
         <div v-for="player in playerData" :key="player.battletag">
-         <!-- <stat-bar-box  :title="`${player.battletag} ${stat}`" :displaytext="getStatValue(stat.replace(/ /g, '_').toLowerCase(), player.battletag)" :value="getStatValue(stat.replace(/ /g, '_').toLowerCase(), player.battletag)"></stat-bar-box>-->
-          <stat-bar-box  :title="`${player.battletag} ${stat}`" displaytext="1.5" :value="75"></stat-bar-box>
-        </div>
-      </div>
+         <stat-bar-box  :title="`${player.battletag_short} ${stat}`" :displaytext="getStatText(stat.replace(/ /g, '_').toLowerCase(), player.battletag)" :value="getStatValue(stat.replace(/ /g, '_').toLowerCase(), player.battletag)"></stat-bar-box>
+       </div>
+     </div>
 
-      <img :src="getHeroImage()" />
-
-    </div>
+     <img :src="getHeroImage()" />
 
 
+
+   </div>
+   <div v-if="this.data">
+    <table v-for="(section, sectionIndex) in sections" :key="sectionIndex">
+      <thead>
+        <tr>
+          <td class="teal"></td>
+          
+          <td
+          v-for="(player, index) in data"
+          :key="index"
+          class="teal"
+          >
+          <a :href="`/Player/${player.battletag_short}/${player.blizz_id}/${player.region}`">{{ player.battletag_short }}</a>
+        </td>
+
+      </tr>
+    </thead>
+    <tbody>
+        
+          <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
+            <td>{{ row.label }}</td>
+            <td v-for="(player, playerIndex) in data" :key="playerIndex">{{ formatValue(player.averages[row.key].avg_value) }}</td>
+          </tr>
+    
+      </tbody>
+    </table>
   </div>
+
+  <div v-if="isLoading">
+    <loading-component></loading-component>
+  </div>
+
+</div>
+
 
 
 
@@ -106,8 +135,81 @@
           'Hero Damage',
           'Healing',
           'Damage Taken',
+          ],
+        sections: [
+        {
+          title: 'Combat',
+          rows: [
+            { label: 'Kills', key: 'kills' },
+            { label: 'Assists', key: 'assists' },
+            { label: 'Takedowns', key: 'takedowns' },
+            { label: 'Deaths', key: 'deaths' },
+            ],
+        },
+        {
+          title: 'Player',
+          rows: [
+            { label: 'Regeneration Globes', key: 'regen_globes' },
+            { label: 'Hero Damage', key: 'hero_damage' },
+            { label: 'Physical Damage Done', key: 'physical_damage' },
+            { label: 'Spell Damage Done', key: 'spell_damage' },
+            { label: 'Damage Taken', key: 'damage_taken' },
+            { label: 'Time Spent Dead', key: 'time_spent_dead' },
+            { label: 'Enemy Silence Duration', key: 'silencing_enemies' },
+            { label: 'Enemy Rooted Duration', key: 'rooting_enemies' },
+            { label: 'Enemy Stunned Duration', key: 'stunning_enemies' },
+            { label: 'Escapes', key: 'escapes' },
+            { label: 'Vengeances', key: 'vengeance' },
+            { label: 'Outnumbered Deaths', key: 'outnumbered_deaths' },
+            ],
+        },
+        {
+          title: 'Siege',
+          rows: [
+            { label: 'Siege Damage', key: 'siege_damage' },
+            { label: 'Structure Damage', key: 'structure_damage' },
+            { label: 'Minion Damage', key: 'minion_damage' },
+            { label: 'Lane Merc. Damage', key: 'creep_damage' },
+            { label: 'Summon Damage', key: 'summon_damage' },
+            ],
+        },
+        {
+          title: 'Macro',
+          rows: [
+            { label: 'Experience Contribution', key: 'experience_contribution' },
+            { label: 'Merc. Camp Captures', key: 'merc_camp_captures' },
+            { label: 'Watch Tower Captures', key: 'watch_tower_captures' },
+            { label: 'Team Exp.', key: 'meta_experience' },
+            ],
+        },
+        {
+          title: 'Team Fight',
+          rows: [
+            { label: 'Teamfight Damage Taken', key: 'teamfight_damage_taken' },
+            { label: 'Teamfight Hero Damage', key: 'teamfight_hero_damage' },
+            { label: 'Teamfight Escapes', key: 'teamfight_escapes' },
+            { label: 'Teamfight Healing', key: 'teamfight_healing' },
+            ],
+        },
+        {
+          title: 'Defense/Healing',
+          rows: [
+            { label: 'Healing', key: 'healing' },
+            { label: 'Self Healing', key: 'self_healing' },
+            { label: 'Clutch Heals', key: 'clutch_heals' },
+            { label: 'Ally Protection', key: 'protection_allies' },
+            { label: 'Crowd Control Enemies', key: 'time_cc_enemy_heroes' },
+            ],
+        },
+        {
+          title: 'Other',
+          rows: [
+            { label: 'Town Kills', key: 'town_kills' },
+            { label: 'Kill Streak', key: 'highest_kill_streak' },
+            { label: 'Multikills', key: 'multikill' },
+            ],
+        },
         ],
-
       }
     },
     created(){
@@ -151,7 +253,7 @@
       },
       handleDataReturn(index, payload) {
         this.playerData[index] = payload;
-
+        this.data = null;
         this.getData();
       },
       newPlayerAddded(){
@@ -177,8 +279,19 @@
         if (typeof statValue === "undefined") {
           return 0;
         }
+        return this.data[battletag].averages[stat].scaled_value;
+      },
+      getStatText(stat, battletag){
+        const statValue = this.data[battletag].averages[stat];
+
+        if (typeof statValue === "undefined") {
+          return 0;
+        }
         return this.data[battletag].averages[stat].avg_value;
       },
+      formatValue(value){
+        return value ? value.toLocaleString() : 0;
+      }
     }
   }
 </script>
