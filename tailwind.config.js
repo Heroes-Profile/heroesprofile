@@ -9,7 +9,7 @@ module.exports = {
     colors: {
       'gray-dark': '#333',
       'gray-light' : '#ddd',
-      'gray-xlight' : '#cbcbcb',
+      'gray-xlight' : '#eee',
       'gray-md' : '#cbcbcb',
       'gray-medium' : '#aaa',
       'blue' : '#213d7a',

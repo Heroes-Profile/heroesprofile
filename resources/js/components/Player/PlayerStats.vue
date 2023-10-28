@@ -9,43 +9,47 @@
     <div v-if="data" class="">
 
 
-      <div class="flex md:p-20 gap-10 mx-auto justify-center">
-        <div class="flex-1 flex flex-wrap justify-end max-w-[500px]">
-          <stat-box :title="'Wins'" :value="data.wins"></stat-box>
-          <stat-box :title="'Losses'" :value="data.losses"></stat-box>
-          <stat-box :title="'First to Ten Wins'" :value="data.first_to_ten_wins"></stat-box>
-          <stat-box :title="'First to Ten Losses'" :value="data.first_to_ten_losses"></stat-box>
-          <stat-bar-box :title="'First to Ten Win Rate'" :value="data.first_to_ten_win_rate"></stat-bar-box>
+      <div class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
+        <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
+          <stat-box class="w-[48%]" :title="'Wins'" :value="data.wins"></stat-box>
+          <stat-box class="w-[48%]" :title="'Losses'" :value="data.losses"></stat-box>
 
-          <stat-box :title="'Second to Ten Wins'" :value="data.second_to_ten_wins"></stat-box>
-          <stat-box :title="'Second to Ten Losses'" :value="data.second_to_ten_losses"></stat-box>
-          <stat-bar-box :title="'Second to Ten Win Rate'" :value="data.second_to_ten_win_rate"></stat-bar-box>         
           
-          <stat-box :title="'KDR'" :value="data.kdr"></stat-box>          
-          <stat-box :title="'KDA'" :value="data.kda"></stat-box>          
+          <div class="w-full mx-auto text-center">
+            <stat-bar-box class="w-full " size="full" :title="'First to Ten Win Rate'" :value="data.first_to_ten_win_rate" color="teal"></stat-bar-box>
+          </div>
+         
+           <div class="w-full mx-auto text-center">
+            <stat-bar-box class="w-full" size="full" :title="'Second to Ten Win Rate'" :value="data.second_to_ten_win_rate" color="red"></stat-bar-box>         
+           </div>
+          <stat-box class="w-[48%]" :title="'KDR'" :value="data.kdr" color="yellow"></stat-box>          
+          <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="yellow"></stat-box>          
 
-          <stat-box :title="'Account Level'" :value="data.account_level"></stat-box>          
+          <stat-box class="w-full" :title="'Account Level'" :value="data.account_level"></stat-box>          
         </div>
-        <div>
+        <div class="my-auto">
           <hero-image-wrapper :rectangle="true" :hero="inputHero" :title="inputHero.name" size="large"></hero-image-wrapper>
         </div>
 
-        <div class="flex-1 flex flex-wrap max-w-[500px]">
-          <stat-box :title="'MVP'" :value="data.mvp_rate"></stat-box>       
-          <stat-box :title="'Total Time Played'" :value="data.total_time_played"></stat-box>       
-          <stat-box :title="'AVG. Time on Fire'" :value="data.average_time_on_fire"></stat-box>       
+        <div class="flex flex-col max-w-[450px] text-left w-full items-between ">
+               
+          
+                
 
-          <stat-bar-box :title="'Win Rate'" :value="data.win_rate"></stat-bar-box>       
-          <stat-bar-box :title="'Bruiser Win Rate'" :value="data.bruiser_win_rate"></stat-bar-box>       
-          <stat-bar-box :title="'Support Win Rate'" :value="data.support_win_rate"></stat-bar-box>       
-          <stat-bar-box :title="'Ranged Assassin Win Rate'" :value="data.ranged_assassin_win_rate"></stat-bar-box>       
-          <stat-bar-box :title="'Melee Assassin Win Rate'" :value="data.melee_assassin_win_rate"></stat-bar-box>       
-          <stat-bar-box :title="'Healer Win Rate'" :value="data.healer_win_rate"></stat-bar-box>       
-          <stat-bar-box :title="'Tank Win Rate'" :value="data.tank_win_rate"></stat-bar-box>       
+          <stat-bar-box class="w-full" size="full" :title="'Win Rate'" :value="data.win_rate"></stat-bar-box>       
+          <stat-bar-box class="w-full" size="full" :title="'Bruiser Win Rate'" :value="data.bruiser_win_rate" color="teal"></stat-bar-box>       
+          <stat-bar-box class="w-full" size="full" :title="'Support Win Rate'" :value="data.support_win_rate" color="red"></stat-bar-box>       
+          <stat-bar-box class="w-full" size="full" :title="'Ranged Assassin Win Rate'" :value="data.ranged_assassin_win_rate" color="yellow"></stat-bar-box>       
+          <stat-bar-box class="w-full" size="full" :title="'Melee Assassin Win Rate'" :value="data.melee_assassin_win_rate"></stat-bar-box>       
+          <stat-bar-box class="w-full" size="full" :title="'Healer Win Rate'" :value="data.healer_win_rate" color="teal"></stat-bar-box>       
+          <stat-bar-box class="w-full" size="full" :title="'Tank Win Rate'" :value="data.tank_win_rate" color="red"></stat-bar-box>       
 
         </div>
 
        
+      </div>
+      <div class="flex mx-auto justify-center max-w-[1500px]">
+        <stat-box :title="'MVP'" :value="data.mvp_rate"></stat-box>  <stat-box :title="'Total Time Played'" :value="data.total_time_played"></stat-box>  <stat-box :title="'AVG. Time on Fire'" :value="data.average_time_on_fire"></stat-box>      
       </div>
       <div class="max-w-[1500px] mx-auto text-right mb-2">
       <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Role'" class="flex-1 " text="View all Roles"></custom-button>
