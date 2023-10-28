@@ -1,6 +1,6 @@
 <template>
   <div :class="[
-    'w-auto inline-block m-1 text-center min-w-[10em] flex justify-items-stretch shadow-lg',
+    'w-auto inline-block m-1 text-center min-w-[10em] flex items-center shadow-lg',
   {
    ' min-w-[15em]' : secondstat
   }

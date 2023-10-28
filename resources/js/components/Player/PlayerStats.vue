@@ -9,18 +9,16 @@
     <div v-if="data" class="">
 
 
-      <div class="flex md:p-20 gap-10 mx-auto justify-center ">
-        <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full">
+      <div class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
+        <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
           <stat-box class="w-[48%]" :title="'Wins'" :value="data.wins"></stat-box>
           <stat-box class="w-[48%]" :title="'Losses'" :value="data.losses"></stat-box>
 
-          <stat-box class="w-[48%]" :title="'First to Ten Wins'" :value="data.first_to_ten_wins" color="teal"></stat-box>
-          <stat-box class="w-[48%]" :title="'First to Ten Losses'" :value="data.first_to_ten_losses" color="teal"></stat-box>
+          
           <div class="w-full mx-auto text-center">
             <stat-bar-box class="w-full " size="full" :title="'First to Ten Win Rate'" :value="data.first_to_ten_win_rate" color="teal"></stat-bar-box>
           </div>
-          <stat-box class="w-[48%]" :title="'Second to Ten Wins'" :value="data.second_to_ten_wins" color="red"></stat-box>
-          <stat-box class="w-[48%]" :title="'Second to Ten Losses'" :value="data.second_to_ten_losses" color="red"></stat-box>
+         
            <div class="w-full mx-auto text-center">
             <stat-bar-box class="w-full" size="full" :title="'Second to Ten Win Rate'" :value="data.second_to_ten_win_rate" color="red"></stat-bar-box>         
            </div>
@@ -33,7 +31,7 @@
           <hero-image-wrapper :rectangle="true" :hero="inputHero" :title="inputHero.name" size="large"></hero-image-wrapper>
         </div>
 
-        <div class="flex flex-col max-w-[450px] text-left w-full">
+        <div class="flex flex-col max-w-[450px] text-left w-full items-between ">
                
           
                 
