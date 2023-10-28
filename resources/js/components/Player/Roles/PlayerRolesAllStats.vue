@@ -281,6 +281,7 @@ methods: {
 }
 </script>
 
+<!--
 <style>
   .flash-animation {
     animation: flash 0.5s;
@@ -296,3 +297,5 @@ methods: {
     animation: flash 1s;
   }
 </style>
+
+-->
