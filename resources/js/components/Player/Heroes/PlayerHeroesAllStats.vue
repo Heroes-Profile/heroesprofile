@@ -16,10 +16,10 @@
     <div v-if="data">
       <div  class="relative max-w-[1500px] mx-auto">
         
-          <custom-button class="ml-auto text-right" @click="showOptions = !showOptions" text="Show (hide?) Column Selection" :ignoreclick="true"></custom-button>
+          <custom-button class="ml-auto" @click="showOptions = !showOptions" text="Show (hide?) Column Selection" :ignoreclick="true"></custom-button>
           
         <div v-if="showOptions">
-          <div  :key="index" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg text-black z-50 flex flex-wrap  p-2 ">
+          <div  :key="index" class="absolute left-0 mt-2 w-full bg-gray-light border border-gray-300 rounded shadow-lg text-black z-50 flex flex-wrap  p-2 ">
             <input class="w-full p-2" type="text" v-model="searchQuery" placeholder="Search..." />
               <div v-for="(stat, index) in filteredStats" :class="[
               'flex-1 min-w-[24%] border-gray border p-1 cursor-pointer hover:bg-gray-light hover:text-black',
