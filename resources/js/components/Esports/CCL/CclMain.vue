@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" :heading="'CCL'" :heading-image="'/images/CCL/600-600-HHE_CCL_Logo_rectangle.png'" :heading-image-url="'https://heroeshearth.com/b/workhorse/read/everything-you-need-to-know-about-ccl/'"></page-heading>
+    <page-heading :infoText1="infoText1" :heading="'CCL'" :heading-image="'/images/CCL/600-600-HHE_CCL_Logo_rectangle.png'" :heading-image-url="'/Esports/CCL'"></page-heading>
 
       <!---You are going to have to design this better, I am going to use buttons for now -->
       <div class="flex flex-1">
@@ -59,7 +59,7 @@
           <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
           <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
-        <ccl-organizations v-if="organizationsData" :data="organizationsData" :esport="'CCL'" :season="season"></ccl-organizations>
+        <esports-organizations v-if="organizationsData" :data="organizationsData" :esport="'CCL'" :season="season"></esports-organizations>
       </div>
 
       <div v-if="activeButton === 'recentMatches'">
@@ -87,7 +87,7 @@
         </div>
 
 
-        <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data"></esports-recent-matches>
+        <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'CCL'"></esports-recent-matches>
       </div>
 
 

@@ -2,9 +2,9 @@
   <div id="filter-label" class="relative" :class="{ 'bg-red': highlighttimesframes }">
     <div @click="showOptions = !showOptions" class="flex flex-col text-sm font-medium text-gray-700 cursor-pointer  p-2    transition-colors">
       <span>{{ this.text }}</span>
-      <span class="w-[200px] h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2 flex relative">
+      <span class="min-w-[200px] h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2 flex relative">
         <span v-if="selectedOptions.length <= 3" v-for="name in selectedOptionsName" class="uppercase whitespace-nowrap  font-bold  bg-teal rounded px-1 mx-1 flex no-wrap">{{ name }}</span>
-        <span v-else-if="selectedOptions.length > 3" class="m-l-auto text-right absolute right-0  uppercase whitespace-nowrap  font-bold  bg-teal rounded px-1 mx-1 flex no-wrap">{{ selectedOptions.length }} of {{ values.length }} selected</span>
+        <span v-else-if="selectedOptions.length > 3" class="uppercase whitespace-nowrap  font-bold  bg-teal rounded px-1 mx-1 flex no-wrap">{{ selectedOptions.length }} of {{ values.length }} selected</span>
       </span>
     </div>
     <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->

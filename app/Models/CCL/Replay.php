@@ -13,9 +13,4 @@ class CCLReplay extends Model
     protected $connection = 'heroesprofile_ccl';
 
     public $timestamps = false;
-
-    public function players()
-    {
-        return $this->hasMany(Player::class, 'replayID', 'replayID');
-    }
 }

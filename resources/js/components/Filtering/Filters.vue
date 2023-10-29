@@ -130,6 +130,14 @@
         :defaultValue="defaultSeason"
       ></single-select-filter>
 
+      <!-- All Seasons -->
+      <single-select-filter v-if="includeseasonwithall" 
+        :values="seasonsWithAll" 
+        :text="'Season'" 
+        @input-changed="handleInputChange" 
+        :defaultValue="defaultSeason"
+      ></single-select-filter>
+
       <!-- Game Date -->
       <input type="date" v-if="includegamedate" 
         v-model="selectedGameDate" 
@@ -269,6 +277,7 @@ export default {
     minimumseason: Number,
     includegamedate: Boolean,
     hideadvancedfilteringbutton: Boolean,
+    includeseasonwithall: Boolean,
     filters: {
       type: Object,
       required: true
@@ -280,7 +289,7 @@ export default {
     gametypedefault: Array,
     minimumgamesdefault: String,
     defaultSeason: String,
-    advancedfiltering: String,
+    advancedfiltering: Boolean,
     defaultHero: Number,
     defaultRole: String,
   },
@@ -365,7 +374,13 @@ export default {
         return "Hide Advanced Filters";
       }
       return "Show Advanced Filters";
-    }
+    },
+    seasonsWithAll() {
+      const newValue = { code: 'All', name: 'All' };
+      const updatedList = [...this.filters.seasons];
+      updatedList.unshift(newValue);
+      return updatedList;
+    },
   },
   watch: {
     toggleExtraFilters(value){

@@ -198,3 +198,45 @@ h1{
 .quadruple{
   @apply text-gray-light;
 }
+
+.compare-selection-box:nth-child(1n) .compare-selection-title{
+  
+    @apply bg-blue;
+  
+}
+.compare-selection-box:nth-child(2n) .compare-selection-title{
+  
+    @apply bg-teal;
+  
+}
+.compare-selection-box:nth-child(3n) .compare-selection-title{
+  
+    @apply bg-red;
+  
+}
+.compare-selection-box:nth-child(4n) .compare-selection-title{
+  
+    @apply bg-yellow;
+  
+}
+
+
+
+.flash-animation {
+  animation: flash 0.5s;
+}
+
+@keyframes flash {
+  0% { background-color: transparent; }
+  50% { background-color: #008b8b; }
+  100% { background-color: transparent; }
+}
+
+.flash {
+  animation: flash 1s;
+}
+
+.link {
+  text-decoration: underline;
+  cursor: pointer;
+}

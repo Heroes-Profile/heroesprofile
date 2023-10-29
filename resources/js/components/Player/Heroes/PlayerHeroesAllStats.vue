@@ -14,11 +14,23 @@
       >
     </filters>
     <div v-if="data">
-      <div>
-        <input type="text" v-model="searchQuery" placeholder="Search..." />
-        <div v-for="(stat, index) in filteredStats" :key="index" class="flex items-center">
-          <input type="checkbox" v-model="stat.selected" :disabled="isDisabled(stat)" @change="onCheckboxChange(stat)" />
-          <label>{{ stat.name }}</label>
+      <div  class="relative max-w-[1500px] mx-auto">
+        
+          <custom-button class="ml-auto" @click="showOptions = !showOptions" :text="showOptions ? 'Hide Column Selection' : 'Show Column Selection'" :ignoreclick="true"></custom-button>
+          
+        <div v-if="showOptions">
+          <div class="absolute left-0 mt-2 w-full bg-gray-light border border-gray-300 rounded shadow-lg text-black z-50 flex flex-wrap  p-2 ">
+            <input class="w-full p-2" type="text" v-model="searchQuery" placeholder="Search..." />
+              <div v-for="(stat, index) in filteredStats" :class="[
+              'flex-1 min-w-[24%] border-gray border p-1 cursor-pointer hover:bg-gray-light hover:text-black',
+              {
+                'bg-teal text-white' : stat.selected
+              } ]
+              ">
+                <label class="cursor-pointer"><input type="checkbox" v-model="stat.selected" :disabled="isDisabled(stat)" @change="onCheckboxChange(stat)" />
+              {{ stat.name }}</label>
+            </div>
+          </div>
         </div>
       </div>
       <table class="">
@@ -28,13 +40,20 @@
               Hero
             </th>    
             <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Games
+              Win Rate | Total Games
+                <!--The stat bar heres background is same color as table so it melts in, look at Artanis-->
             </th>
             <th @click="sortTable('kda')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              KDA
+              <div class=""> <!--How do you get these things to stack on top of each other ?-->
+                KDA
+                Kills/Deaths/Takedowns
+              </div>
             </th>  
             <th @click="sortTable('kdr')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              KDR
+              <div class=""> <!--How do you get these things to stack on top of each other ?-->
+                KDR
+                Kills/Deaths
+              </div>
             </th>
             <template   v-for="stat in stats">
               <th  v-if="stat.selected" @click="sortTable(stat.value)" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -56,7 +75,12 @@
                 v-if="stat.selected" 
                 :class="{ flash: stat.flash }"
                 class="py-2 px-3 ">
-                {{ row[stat.value] }}
+                <div v-if="statContainsMax(stat)">
+                  <span class="link" @click="navigateToMaxStatMatch(row.hero, stat.value, row[stat.value])" title="Navigate to this match">{{ row[stat.value] }}</span>
+                </div>
+                <div v-else>
+                  {{ row[stat.value] }}
+                </div>
               </td>
             </template>
 
@@ -66,10 +90,12 @@
       </table>
 
     </div>
-    <div v-else>
+    <div v-if="isLoading">
         <loading-component :textoverride="true" :timer="true" :starttime="timertime">Large amount of data.<br/>Please be patient.<br/></loading-component>
     </div>
-
+    <div v-if="matchIsLoading">
+      <loading-component></loading-component>
+    </div>
   </div>
 </template>
 
@@ -91,7 +117,9 @@ export default {
   },
   data(){
     return {
+      showOptions: false,
       isLoading: false,
+      matchIsLoading: false,
       infoText: "Select a hero below to view detailed stats for that hero. Use the search box above to filter the list of heroes. Or scroll down to the advanced section for table view.",
       gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
       data: null,
@@ -274,22 +302,30 @@ export default {
             inputStat.flash = false;
           }, 1000);
     },
+    statContainsMax(stat) {
+      return stat.value.toLowerCase().includes('max');
+    },
+    async navigateToMaxStatMatch(hero, stat, value){
+      this.matchIsLoading = true;
+      try{
+        const response = await this.$axios.post("/api/v1/player/find/max/stat/match", {
+          battletag: this.battletag,
+          blizz_id: this.blizzid,
+          region: this.region,
+          game_type: this.gametype,
+          hero: hero.name,
+          page: "hero",
+          stat: stat,
+          value: value,
+          type: "all",
+        });
+        window.location.href = `/Match/Single/${response.data}`
+
+      }catch(error){
+        //Do something here
+      }
+      this.matchIsLoading = false;
+    },
   }
 }
 </script>
-
-<style>
-.flash-animation {
-  animation: flash 0.5s;
-}
-
-@keyframes flash {
-  0% { background-color: transparent; }
-  50% { background-color: blue; }
-  100% { background-color: transparent; }
-}
-
-.flash {
-  animation: flash 1s;
-}
-</style>

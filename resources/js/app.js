@@ -13,7 +13,6 @@ import MainPage from './components/MainPage.vue';
 //Compare Page
 import Compare from './components/Compare/Compare.vue';
 import HeroOrLeagueChoiceBox from './components/Compare/HeroOrLeagueChoiceBox.vue';
-import SearchPlayer from './components/Compare/SearchPlayer.vue';
 
 
 //Random Pieces - rename later to what you want and place in folder
@@ -30,6 +29,8 @@ import GameSummaryBox from './components/GameSummaryBox.vue';
 import SearchComponent from './components/SearchComponent.vue';
 import ImageHoverBox from './components/ImageHoverBox.vue';
 import FormatDate from './components/FormatDate.vue';
+import NewUserPopup from './components/NewUserPopup.vue';
+
 
 
 
@@ -108,6 +109,7 @@ import EsportsSingleTeam from './components/Esports/EsportsSingleTeam.vue';
 import EsportsPlayerStats from './components/Esports/Player/EsportsPlayerStats.vue';
 import EsportsPlayerHeroStats from './components/Esports/Player/EsportsPlayerHeroStats.vue';
 import EsportsPlayerMapStats from './components/Esports/Player/EsportsPlayerMapStats.vue';
+import EsportsOrganizations from './components/Esports/EsportsOrganizations.vue';
 
 
 //NGS
@@ -118,10 +120,17 @@ import NgsStandings from './components/Esports/NGS/NgsStandings.vue';
 
 //CCL
 import CclMain from './components/Esports/CCL/CclMain.vue';
-import CclOrganizations from './components/Esports/CCL/CclOrganizations.vue';
 
 //Nut Cup
 import NutCupMain from './components/Esports/NutCup/NutCupMain.vue';
+
+//Masters Clash
+import MastersClashMain from './components/Esports/MastersClash/MastersClashMain.vue';
+
+//Heroes International
+import HeroesInternationalEntry from './components/Esports/HeroesInternational/HeroesInternationalEntry.vue';
+import HeroesInternationalMain from './components/Esports/HeroesInternational/HeroesInternationalMain.vue';
+import HeroesInternationalNationsCup from './components/Esports/HeroesInternational/HeroesInternationalNationsCup.vue';
 
 
 

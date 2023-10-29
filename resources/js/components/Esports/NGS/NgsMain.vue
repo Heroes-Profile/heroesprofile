@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" :heading="'NGS'" :heading-image="'/images/NGS/600-600-ngs_large_header.png'" :heading-image-url="'https://www.nexusgamingseries.org/'"></page-heading>
+    <page-heading :infoText1="infoText1" :heading="'NGS'" :heading-image="'/images/NGS/600-600-ngs_large_header.png'" :heading-image-url="'/Esports/NGS'"></page-heading>
 
       <!---You are going to have to design this better, I am going to use buttons for now -->
       <div class="flex flex-1">
@@ -168,7 +168,7 @@
         </div>
 
 
-        <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data"></esports-recent-matches>
+        <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'NGS'"></esports-recent-matches>
       </div>
 
 

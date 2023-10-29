@@ -113,7 +113,6 @@ export default {
   },
   methods: {
     async getHeroStats(){
-      console.log(this.season)
       this.loading = true;
       try{
         const response = await this.$axios.post("/api/v1/esports/nutcup/hero/stats", {

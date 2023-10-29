@@ -9,7 +9,7 @@
       />
     </div>
 
-    <div class="flex flex-wrap gap-2 max-w-[1200px] mx-auto">
+    <div class="flex flex-wrap gap-2 max-w-[1200px] mx-auto cursor-pointer">
       <hero-image-wrapper
         v-for="hero in filteredHeroes" 
         :key="hero.id" 
@@ -38,16 +38,23 @@ export default {
   computed: {
     filteredHeroes() {
       if (this.searchQuery) {
-        return this.heroes.filter(hero => 
-          hero.name.toLowerCase().includes(this.searchQuery.toLowerCase())
-        );
+        const normalizedQuery = this.normalizeString(this.searchQuery);
+
+        return this.heroes.filter(hero => {
+          const normalizedHeroName = this.normalizeString(hero.name);
+          return normalizedHeroName.includes(normalizedQuery);
+        });
       }
+
       return this.heroes;
-    },
+    }, 
   },
   methods: {
     clickedHero(hero) {
       this.$parent.clickedHero(hero);
+    },
+    normalizeString(input) {
+      return input.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
     }
   }
 }

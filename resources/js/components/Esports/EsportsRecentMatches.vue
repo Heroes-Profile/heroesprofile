@@ -32,13 +32,13 @@
         <tbody>
           <tr v-for="(row, index) in sortedData" :key="index">
             <td>
-              <a :href="'/Esports/NGS/Match/Single/' + row.replayID">{{ row.replayID }}</a>
+              <a :href="`/Esports/${esport}/Match/Single/${row.replayID}`">{{ row.replayID }}</a>
             </td>
             <td>
-              {{ row.team_0_name }}
+              {{ row.team_0_name ? row.team_0_name : row.team_0_id }}
             </td>
             <td>
-              {{ row.team_1_name }}
+              {{ row.team_1_name ? row.team_1_name : row.team_1_id }}
             </td>
             <td>
               Game {{ row.game }} Round {{ row.round }}
@@ -69,6 +69,7 @@ export default {
   },
   props: {
     data: Array,
+    esport: String,
   },
   data(){
     return {

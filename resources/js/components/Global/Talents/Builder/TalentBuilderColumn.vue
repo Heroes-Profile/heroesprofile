@@ -1,9 +1,13 @@
 <template>
   <div>
-    <div class="w-auto inline-block m-1">
-      <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Level {{ level }}</h2>
+    <div class="w-[170px] inline-block m-1 bg-gray-light rounded-2xl">
+      <h2 class="bg-blue rounded-t-2xl p-2 text-sm text-center uppercase relative">Level {{ level }} 
+        <div @click="removeAnySelections" class="absolute right-0 top-0 text-bold p-2 rounded hover:bg-teal">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+      </h2>
 
-      <div v-for="(talent, index) in data" :key="talent.title">
+      <div v-for="(talent, index) in data" :key="talent.title" >
         <talent-builder-click-box
           :talent="talent"
           :isClicked="isSelected(talent)"
@@ -45,6 +49,9 @@ export default {
     isSelected(talent) {
       //return this.selectedTalent === talent;
       return this.clickedData[this.level] === talent.talent_id;
+    },
+    removeAnySelections(){
+      this.$parent.removeLevelSelections(this.level);
     },
   }
 }

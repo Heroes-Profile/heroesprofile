@@ -37,7 +37,7 @@
         <bubble-chart :heroData="this.data.data"></bubble-chart>
       </div>
       <div class="min-w-[1500px] px-20">
-     <table class=" bg-white">
+     <table class="">
         <thead>
           <th class="py-2 px-3  border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
             Avg
@@ -175,7 +175,7 @@ export default {
     defaultbuildtype: String,
     defaulttimeframetype: String,
     defaulttimeframe: Array,
-    advancedfiltering: String,
+    advancedfiltering: Boolean,
   },
   data(){
     return {

@@ -2,7 +2,7 @@
     <a 
     :class="[
       staticClasses, 
-      disabled ? 'bg-gray-400' : colorClass, 
+      disabled ? 'bg-gray' : colorClass, 
       { 
         block: size === 'big', 
         'py-4': size === 'big', 

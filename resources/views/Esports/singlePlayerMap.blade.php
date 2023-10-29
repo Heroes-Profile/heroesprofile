@@ -12,5 +12,6 @@
     :blizz_id="{{ json_encode($blizz_id) }}" 
     :season="{{ json_encode($season) }}" 
     :game_map="{{ json_encode($game_map) }}" 
+    :tournament="{{ json_encode($tournament) }}" 
   ></esports-player-map-stats>
 @endsection

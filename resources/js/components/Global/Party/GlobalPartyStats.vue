@@ -57,7 +57,7 @@ s<template>
 
 
       <div class="container mx-auto mb-10" id="1 Double Stack">
-       <h2 class="stack-header">1 Double Stack <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> vs.</h2>
+       <h2 class="stack-header">1 Double Stack vs.<div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div></h2>
         <table class="">
           <thead>
             <tr>
@@ -88,7 +88,7 @@ s<template>
 
 
       <div class="container mx-auto mb-10" id="2 Double Stack">
-        <h2 class="stack-header">2 Double Stack <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> vs.</h2>
+        <h2 class="stack-header">2 Double Stack vs.<div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> </h2>
         <table class="">
           <thead>
             <tr>
@@ -119,7 +119,7 @@ s<template>
 
 
       <div class="container mx-auto mb-10" id="2 Double Stack">
-        <h2 class="stack-header">1 Triple Stack and 2 Solos <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> vs.</h2>
+        <h2 class="stack-header">1 Triple Stack and 2 Solos vs.<div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div></h2>
         <table class="">
           <thead>
             <tr>
@@ -150,7 +150,7 @@ s<template>
 
 
       <div class="container mx-auto mb-10" id="2 Double Stack">
-        <h2 class="stack-header">1 Triple Stack and 1 Double Stack <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div> vs.</h2>
+        <h2 class="stack-header">1 Triple Stack and 1 Double Stack vs.<div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div></h2>
         <table class="">
           <thead>
             <tr>
@@ -181,7 +181,7 @@ s<template>
 
 
       <div class="container mx-auto mb-10" id="2 Double Stack">
-        <h2 class="stack-header">1 Quadruple Stack and 1 Solo <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> vs.</h2>
+        <h2 class="stack-header">1 Quadruple Stack and 1 Solo vs.<div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div></h2>
         <table class="">
           <thead>
             <tr>
@@ -213,7 +213,7 @@ s<template>
 
 
       <div class="container mx-auto " id="2 Double Stack">
-        <h2 class="stack-header">5 player Stack <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div> vs.</h2>
+        <h2 class="stack-header">5 player Stack vs. <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div> </h2>
         <table class="">
           <thead>
             <tr>
@@ -262,7 +262,7 @@ export default {
     gametypedefault: Array,
     defaulttimeframetype: String,
     defaulttimeframe: Array,
-    advancedfiltering: String,
+    advancedfiltering: Boolean,
   },
   data(){
     return {

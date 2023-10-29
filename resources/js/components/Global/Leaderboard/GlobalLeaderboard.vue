@@ -5,8 +5,8 @@
 
 
 
-
-    <custom-button @click="showLeaderboardRequirements = !showLeaderboardRequirements" :text="'Show Leaderboard Requirements'" :alt="'Show Leaderboard Requirements'" size="small" :ignoreclick="true"></custom-button>
+    <div class="max-w-[1500px] mx-auto my-2 text-right">
+    <custom-button @click="showLeaderboardRequirements = !showLeaderboardRequirements" :text="'Show Leaderboard Requirements'" :alt="'Show Leaderboard Requirements'" size="small" :ignoreclick="true"></custom-button></div>
       <div v-if="showLeaderboardRequirements" class="flex flex-col items-center p-[2em] border w-auto ml-auto mr-auto max-w-[1500px] bg-teal mb-2">
         <h3 class="font-bold text-2xl uppercase">To be eligible for leaderboards, the following conditions must be met:</h3>
         <div class="bg-teal p-[1em] pl-[2em] ">
@@ -46,7 +46,7 @@
     >
     </filters>
     <div v-if="data">
-      <div class="max-w-[1500px]  md:px-20 overflow-scroll md:overflow-auto  h-[50vh] md:h-auto ml-auto mr-auto">
+      <div class="max-w-[2000px]  md:px-20   h-[50vh] md:h-auto ml-auto mr-auto">
         <table class="">
           <thead>
             <tr>
@@ -100,7 +100,7 @@
             <template v-for="(row, index) in sortedData">
               <tr>
                 <td>{{ (index + 1) }}</td>
-                <td>{{ row.battletag }}</td>
+                <td><a :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`">{{ row.split_battletag }}</a></td>
                 <td>{{ row.region }}</td>
                 <td>{{ row.win_rate }}</td>
                 <td>{{ row.rating }}</td>
@@ -157,7 +157,7 @@ export default {
     },
     gametypedefault: Array,
     defaultseason: String,
-    advancedfiltering: String,
+    advancedfiltering: Boolean,
   },
   data(){
     return {

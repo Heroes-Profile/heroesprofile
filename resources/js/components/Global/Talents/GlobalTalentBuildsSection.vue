@@ -1,6 +1,6 @@
 <template>
   <div>
-    <table class="min-w-0 ml-0 bg-white">
+    <table class="min-w-0 ml-0">
         <thead>
           <tr>
             <th :colspan="statfilter ? 5 : 4" class="text-center py-2 px-3 ">

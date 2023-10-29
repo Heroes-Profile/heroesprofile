@@ -1,6 +1,6 @@
 <template>
 
-  <div class="loading-container z-49">
+  <div class="loading-container z-40">
     <img v-if="overrideimage" :src="overrideimage" alt="loading" />
     <img v-else src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
     <div class="loading-text">
@@ -36,7 +36,6 @@
       }
     },
     mounted() {
-      console.log();
     },
     computed: {
     },

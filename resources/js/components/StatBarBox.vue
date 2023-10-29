@@ -1,5 +1,5 @@
 <template>
-  <div :class="['w-auto inline-block m-1 text-center min-w-[5em] ',
+  <div :class="['w-auto inline-block m-1 text-center items-center  min-w-[5em] ',
   {
       'w-full': size === 'big',
       'w-[10em]': size != 'big',
@@ -11,21 +11,26 @@
      {
       'w-full': size === 'big',
       'w-[10em]': size != 'big',
+      'w-full text-left': size === 'full',
+
 
     }
     ]">
       <div :class="[
         'stat-bar bg-blue rounded-l border-r-2 border-black ',
         bgColor,
+        {
+          'w-full': size === 'full'
+        }
         
         ]"
           :style="{ width: this.value +'%' }">
         <span :class="[
-        ' px-2 flex items-center',
+        ' px-2 flex items-center text-white ',
         {
           'py-2' : size === 'big',
         }
-        ]">{{ value }}<span class="text-xs">%</span></span>
+        ]"><span v-if="displaytext">{{displaytext}}</span><span v-else>{{ value }}<span class="text-xs">%</span></span></span>
       </div>
     </div>
   </div>
@@ -37,10 +42,15 @@ export default {
   components: {
   },
   props: {
-    title: String,
+    title: {
+      type: [String, Number]
+    },
     color: String,
     size: String,
     value: {
+      type: [String, Number]
+    },
+    displaytext: {
       type: [String, Number]
     },
   },

@@ -9,6 +9,7 @@ use App\Models\Hero;
 use App\Models\HeroesDataTalent;
 use App\Models\LeagueTier;
 use App\Models\Map;
+use App\Models\MastersClash\MastersClashTeam;
 use App\Models\NGS\NGSTeam;
 use App\Models\Replay;
 use App\Models\SeasonDate;
@@ -225,16 +226,15 @@ class GlobalDataService
 
     public function getAdvancedFilterShowDefault()
     {
-
-        if (Auth::check()) {
+        if (Auth::check()) {            
             $user = Auth::user();
 
             $advancedfiltering = $user->userSettings->firstWhere('setting', 'advancedfiltering')->value;
 
-            return $advancedfiltering;
+            return $advancedfiltering === 'true';
         }
 
-        return 'false';
+        return false;
     }
 
     public function getGameTypeDefault()
@@ -479,6 +479,10 @@ class GlobalDataService
         });
 
         $filterData->ngs_seasons = NGSTeam::distinct()->orderBy('season', 'desc')->pluck('season')->map(function ($season) {
+            return ['code' => $season, 'name' => strval($season)];
+        });
+
+        $filterData->mcl_seasons = MastersClashTeam::distinct()->orderBy('season', 'desc')->pluck('season')->map(function ($season) {
             return ['code' => $season, 'name' => strval($season)];
         });
 
