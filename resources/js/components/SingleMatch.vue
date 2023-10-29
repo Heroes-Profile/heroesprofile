@@ -588,10 +588,10 @@ export default {
         return "Team 1 Winner";
       }else if(winner == 1 && team == 0){
         return "Team 1 Loser";
-      }else if(winner == 0 && team == 1){
-        return "Team 1 Loser";
       }else if(winner == 1 && team == 1){
-        return "Team 1 Winner";
+        return "Team 2 Winner";
+      }else if(winner == 0 && team == 1){
+        return "Team 2 Loser";
       }
 
 

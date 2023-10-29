@@ -91,7 +91,7 @@
       defaulttimeframetype: String,
       defaulttimeframe: Array,
       defaultbuildtype: String,
-      advancedfiltering: String,
+      advancedfiltering: Boolean,
     },
     data(){
       return {

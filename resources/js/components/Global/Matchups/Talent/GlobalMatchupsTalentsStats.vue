@@ -99,7 +99,7 @@
       defaulttimeframe: Array,
       inputhero: Object,
       inputenemyally: Object,
-      advancedfiltering: String,
+      advancedfiltering: Boolean,
     },
     data(){
       return {

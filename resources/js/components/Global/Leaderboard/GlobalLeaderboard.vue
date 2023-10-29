@@ -100,7 +100,7 @@
             <template v-for="(row, index) in sortedData">
               <tr>
                 <td>{{ (index + 1) }}</td>
-                <td>{{ row.battletag }}</td>
+                <td><a :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`">{{ row.split_battletag }}</a></td>
                 <td>{{ row.region }}</td>
                 <td>{{ row.win_rate }}</td>
                 <td>{{ row.rating }}</td>
@@ -157,7 +157,7 @@ export default {
     },
     gametypedefault: Array,
     defaultseason: String,
-    advancedfiltering: String,
+    advancedfiltering: Boolean,
   },
   data(){
     return {

@@ -677,4 +677,93 @@ class PlayerHeroesMapsRolesController extends Controller
 
         return $returnData;
     }
+
+    public function findMatch(Request $request){
+        //return response()->json($request->all());
+
+        $validationRules = [
+            'battletag' => 'required|string',
+            'blizz_id' => 'required|integer',
+            'region' => 'required|integer',
+            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation()],
+            'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
+            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
+            'season' => ['sometimes', 'nullable', new SeasonInputValidation()],
+            'stat' => 'required|string',
+            'value' => 'required|integer',
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                'data' => $request->all(),
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        $battletag = $request['battletag'];
+        $blizz_id = $request['blizz_id'];
+        $region = $request['region'];
+        $type = $request['type'];
+
+        if ($type == 'all') {
+            $game_type = $request['game_type'] ? GameType::whereIn('short_name', $request['game_type'])->pluck('type_id')->toArray() : null;
+        } else {
+            $game_type = $request['game_type'] ? GameType::where('short_name', $request['game_type'])->pluck('type_id')->first() : null;
+        }
+
+        $hero = $request['hero'] ? session('heroes')->keyBy('name')[$request['hero']]->id : null;
+        $minimum_games = $request['minimumgames'];
+        $page = $request['page'];
+        $role = $request['role'];
+        $game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->first() : null;
+        $season = $request['season'];
+        $stat = $request['stat'];
+        $value = $request['value'];
+        $stat = str_replace('max_', '', $stat);
+
+        $result = Replay::join('player', 'player.replayID', '=', 'replay.replayID')
+            ->join('scores', function ($join) {
+                $join->on('scores.replayID', '=', 'replay.replayID')
+                    ->on('scores.battletag', '=', 'player.battletag');
+            })
+            ->where('region', $region)
+            ->where(function ($query) use ($game_type, $type) {
+                if (is_null($game_type)) {
+                    $query->whereNot('game_type', 0);
+                } else {
+                    if ($type == 'all') {
+                        $query->whereIn('game_type', $game_type);
+                    } else {
+                        $query->where('game_type', $game_type);
+                    }
+                }
+            })
+            ->where('blizz_id', $blizz_id)
+            ->when($type == 'single' && $page == 'hero', function ($query) use ($hero) {
+                return $query->where('hero', $hero);
+            })
+            ->when($type == 'single' && $page == 'role', function ($query) use ($role) {
+                return $query->where('new_role', $role);
+            })
+            ->when($type == 'single' && $page == 'map', function ($query) use ($game_map) {
+                return $query->where('game_map', $game_map);
+            })
+            ->when(! is_null($season), function ($query) use ($season) {
+                $seasonDate = SeasonDate::find($season);
+                if ($seasonDate) {
+                    return $query->where('game_date', '>=', $seasonDate->start_date)
+                        ->where('game_date', '<', $seasonDate->end_date);
+                }
+
+                return $query;
+            })
+            ->where("hero", $hero)
+            ->where($stat, $value)
+            ->select("replay.replayID")
+            //->toSql();
+            ->first();
+        return $result->replayID;
+    }
 }

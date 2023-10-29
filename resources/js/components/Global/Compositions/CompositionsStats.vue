@@ -141,7 +141,7 @@ export default {
     defaultbuildtype: String,
     defaulttimeframetype: String,
     defaulttimeframe: Array,
-    advancedfiltering: String,
+    advancedfiltering: Boolean,
   },
   data(){
     return {

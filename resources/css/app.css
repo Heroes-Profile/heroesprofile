@@ -219,3 +219,24 @@ h1{
     @apply bg-yellow;
   
 }
+
+
+
+.flash-animation {
+  animation: flash 0.5s;
+}
+
+@keyframes flash {
+  0% { background-color: transparent; }
+  50% { background-color: #008b8b; }
+  100% { background-color: transparent; }
+}
+
+.flash {
+  animation: flash 1s;
+}
+
+.link {
+  text-decoration: underline;
+  cursor: pointer;
+}

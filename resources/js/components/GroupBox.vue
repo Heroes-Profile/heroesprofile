@@ -90,6 +90,7 @@
       match: Boolean,
       useinputforhover: Boolean,
       esport: String,
+      color: String,
     },
     data(){
       return {

@@ -56,7 +56,7 @@
       gametypedefault: Array,
       defaulttimeframe: Array,
       defaulttimeframetype: String,
-      advancedfiltering: String,
+      advancedfiltering: Boolean,
     },
     data(){
       return {

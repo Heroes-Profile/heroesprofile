@@ -85,7 +85,7 @@ Route::prefix('v1')->group(function () {
 
     Route::post('player/matchups', [PlayerMatchupsController::class, 'getMatchupData']);
 
-    Route::post('player/heroes/all', [PlayerHeroesMapsRolesController::class, 'getData']);
+    Route::post('player/heroes/all', [PlayerHeroesMapsRolesController::class, 'getData']);   
 
     Route::post('player/heroes/single', [PlayerHeroesMapsRolesController::class, 'getData']);
 
@@ -96,6 +96,8 @@ Route::prefix('v1')->group(function () {
     Route::post('player/maps/all/', [PlayerHeroesMapsRolesController::class, 'getData']);
 
     Route::post('player/maps/single', [PlayerHeroesMapsRolesController::class, 'getData']);
+
+    Route::post('player/find/max/stat/match', [PlayerHeroesMapsRolesController::class, 'findMatch']);
 
     Route::post('player/talents/', [PlayerTalentsController::class, 'getPlayerTalentData']);
 

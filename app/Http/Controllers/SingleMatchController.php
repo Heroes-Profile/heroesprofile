@@ -192,6 +192,7 @@ class SingleMatchController extends Controller
                 ]);
             })
             ->where($this->schema.'.replay.replayID', $replayID)
+            ->orderBy("team", "ASC")
             //->toSql();
             ->get();
 
@@ -538,14 +539,14 @@ class SingleMatchController extends Controller
 
     private function getReplayBans($replayID, $heroData)
     {
-        return DB::table($this->schema.'.replay_bans')->select('team', 'hero')
+        $replayBans = DB::table($this->schema.'.replay_bans')
+            ->select('team', 'hero')
             ->where('replayID', $replayID)
             ->get()
             ->groupBy('team')
             ->map(function ($teamGroup) use ($heroData) {
                 return $teamGroup->map(function ($replayBan) use ($heroData) {
                     $replayBan->hero = $heroData[$replayBan->hero] ?? $replayBan->hero;
-
                     return $replayBan;
                 });
             });
@@ -553,14 +554,29 @@ class SingleMatchController extends Controller
 
     private function getDraftOrder($replayID, $heroData)
     {
-        $data = DB::table($this->schema.'.replay_draft_order')->where('replayID', $replayID)->orderBy('pick_number')->get();
-        $modifiedData = $data->map(function ($item) use ($heroData) {
+        $allZeros = true;
+
+        $replayBans = DB::table($this->schema.'.replay_draft_order')->where('replayID', $replayID)->orderBy('pick_number')->get();
+        $modifiedData = $replayBans->map(function ($item) use ($heroData) {
             $item->hero = $heroData[$item->hero];
 
             return $item;
         });
 
-        return $data;
+        foreach ($replayBans as $teamGroup) {
+            foreach ($teamGroup as $replayBan) {
+                if ($replayBan->hero != 0) {
+                    $allZeros = false;
+                    break 2; // Break both loops if a non-zero hero is found
+                }
+            }
+        }
+
+        if ($allZeros) {
+            return null;
+        } else {
+            return $replayBans;
+        }
     }
 
     private function getExperienceBreakdown($replayID)
