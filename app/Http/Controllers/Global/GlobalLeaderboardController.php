@@ -86,7 +86,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         }
 
         $data = Leaderboard::query()
-            ->select('rank', 'split_battletag as battletag', 'blizz_id', 'region', 'win_rate', 'games_played', 'conservative_rating', 'rating', 'normalized_rating', 'most_played_hero', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty', 'hero_build_games_played')
+            ->select('rank', 'battletag', 'split_battletag', 'blizz_id', 'region', 'win_rate', 'games_played', 'conservative_rating', 'rating', 'normalized_rating', 'most_played_hero', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty', 'hero_build_games_played')
             ->filterByGameType($gameType)
             ->filterBySeason($season)
             ->filterByType($typeNumber)

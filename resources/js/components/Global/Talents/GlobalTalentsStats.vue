@@ -75,7 +75,7 @@
       defaulttimeframe: Array,
       defaultbuildtype: String,
       talentimages: Object,
-      advancedfiltering: String,
+      advancedfiltering: Boolean,
     },
     data(){
       return {
