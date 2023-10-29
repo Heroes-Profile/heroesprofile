@@ -217,7 +217,6 @@ export default {
   	this.getData();
   },
   mounted() {
-    console.log("Value = " + this.advancedfiltering)
   },
   computed: {
     showStatTypeColumn(){

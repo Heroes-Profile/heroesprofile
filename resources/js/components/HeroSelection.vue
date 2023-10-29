@@ -9,7 +9,7 @@
       />
     </div>
 
-    <div class="flex flex-wrap gap-2 max-w-[1200px] mx-auto">
+    <div class="flex flex-wrap gap-2 max-w-[1200px] mx-auto cursor-pointer">
       <hero-image-wrapper
         v-for="hero in filteredHeroes" 
         :key="hero.id" 
