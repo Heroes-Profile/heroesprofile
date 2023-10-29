@@ -36,7 +36,6 @@
       }
     },
     mounted() {
-      console.log();
     },
     computed: {
     },

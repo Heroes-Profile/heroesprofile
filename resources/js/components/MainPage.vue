@@ -101,13 +101,10 @@
     },
     created(){
       if (localStorage.getItem('newUserPopup')) {
-        console.log("here");
         this.showPopup = false;
       }
     },
     mounted() {
-      console.log(localStorage.getItem('newUserPopup'));
-      console.log(this.showPopup);
     },
     computed: {
 

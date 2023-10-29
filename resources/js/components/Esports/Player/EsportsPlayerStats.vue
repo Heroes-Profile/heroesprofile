@@ -142,7 +142,6 @@ export default {
   created(){
     this.modifiedseason = this.season;
     this.modifieddivision = this.division;
-    console.log(this.tournament);
   },
   mounted() {
     this.getData();
