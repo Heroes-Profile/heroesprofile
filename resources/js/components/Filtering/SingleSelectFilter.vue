@@ -39,7 +39,7 @@ export default {
     values: Array,
     text: String,
     defaultValue: {
-      type: [String, Number]
+      type: [String, Number, Boolean ]
     },
     trackclosure: Boolean,
   },
