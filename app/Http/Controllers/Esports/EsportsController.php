@@ -652,12 +652,11 @@ class EsportsController extends Controller
         $this->esport = $request['esport'];
         $this->tournament = $request['tournament'];
 
-        if($request['tournament'] == "main"){
-            $this->esport = "hi";
-        }else if($request['tournament'] == "nationscup"){
-            $this->esport = "hi_nc";
+        if ($request['tournament'] == 'main') {
+            $this->esport = 'hi';
+        } elseif ($request['tournament'] == 'nationscup') {
+            $this->esport = 'hi_nc';
         }
-
 
         $this->schema = 'heroesprofile';
 
@@ -672,27 +671,22 @@ class EsportsController extends Controller
         $this->hero = $request['hero'] ? session('heroes')->keyBy('name')[$request['hero']]->id : null;
         $this->game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->toArray() : null;
 
-
-
-
-
-
         if ($this->esport == 'CCL') {
             $this->team = $request['team'] ? CCLTeam::where('season', $this->season)->where('team_name', $request['team'])->first()->team_id : null;
             $this->team_name = $request['team'];
-        }else if ($this->esport == "HeroesInternational" && $this->tournament == "main") {
+        } elseif ($this->esport == 'HeroesInternational' && $this->tournament == 'main') {
             $this->team = $request['team'] ? HeroesInternationalMainTeam::where('season', $this->season)->where('team_name', $request['team'])->first()->team_id : null;
             $this->team_name = $request['team'];
-        }else if ($this->esport == "HeroesInternational" && $this->tournament == "nationscup") {
+        } elseif ($this->esport == 'HeroesInternational' && $this->tournament == 'nationscup') {
             $this->team = $request['team'] ? HeroesInternationalNationsCupTeam::where('season', $this->season)->where('team_name', $request['team'])->first()->team_id : null;
             $this->team_name = $request['team'];
         }
 
         if ($this->esport == 'MastersClash') {
             $this->schema .= '_mcl';
-        }elseif ($this->esport == "HeroesInternational" && $this->tournament == "main") {
+        } elseif ($this->esport == 'HeroesInternational' && $this->tournament == 'main') {
             $this->schema .= '_hi';
-        }elseif ($this->esport) {
+        } elseif ($this->esport) {
             $this->schema .= '_'.strtolower($this->esport);
         }
 
@@ -844,12 +838,11 @@ class EsportsController extends Controller
 
             $battletag = explode('#', $battletag)[0];
 
-            if($this->esport == "hi" || $this->esport == "hi_nc"){
+            if ($this->esport == 'hi' || $this->esport == 'hi_nc') {
                 $playerlink = "/Esports/HeroesInternational/Player/{$battletag}/{$blizzId}";
-            }else{
+            } else {
                 $playerlink = "/Esports/{$this->esport}/Player/{$battletag}/{$blizzId}";
             }
-
 
             if ($this->season) {
                 $playerlink .= "?season={$this->season}";
@@ -873,10 +866,9 @@ class EsportsController extends Controller
                 $playerlink .= "?tournament={$this->tournament}";
             }
 
-
-            if($this->esport == "hi" || $this->esport == "hi_nc"){
+            if ($this->esport == 'hi' || $this->esport == 'hi_nc') {
                 $herolink = "/Esports/HeroesInternational/Player/{$battletag}/{$blizzId}/Hero/{$heroData[$mostPlayedHero]['name']}";
-            }else{
+            } else {
                 $herolink = "/Esports/{$this->esport}/Player/{$battletag}/{$blizzId}/Hero/{$heroData[$mostPlayedHero]['name']}";
             }
 
@@ -959,14 +951,12 @@ class EsportsController extends Controller
 
             $gamesPlayed = $wins + $losses;
 
-        
-            if($this->esport == "hi" || $this->esport == "hi_nc"){
+            if ($this->esport == 'hi' || $this->esport == 'hi_nc') {
                 $link = "/Esports/HeroesInternational/Player/{$this->battletag}/{$this->blizz_id}/Hero/{$heroData[$group[0]->hero]['name']}";
 
-            }else{
+            } else {
                 $link = "/Esports/{$this->esport}/Player/{$this->battletag}/{$this->blizz_id}/Hero/{$heroData[$group[0]->hero]['name']}";
             }
-
 
             if ($this->season) {
                 $link .= "?season={$this->season}";
@@ -974,20 +964,17 @@ class EsportsController extends Controller
                 if ($this->division) {
                     $link .= "&division={$this->division}";
                 }
-                if($this->tournament){
+                if ($this->tournament) {
                     $link .= "&tournament={$this->tournament}";
                 }
             } elseif ($this->division) {
                 $link .= "?division={$this->division}";
-                if($this->tournament){
+                if ($this->tournament) {
                     $link .= "&tournament={$this->tournament}";
                 }
-            }elseif($this->tournament){
+            } elseif ($this->tournament) {
                 $link .= "?tournament={$this->tournament}";
             }
-
-           
-
 
             return [
                 'hero_id' => $group[0]->hero,
@@ -1030,10 +1017,9 @@ class EsportsController extends Controller
 
             $gamesPlayed = $wins + $losses;
 
-
-            if($this->esport == "hi" || $this->esport == "hi_nc"){
+            if ($this->esport == 'hi' || $this->esport == 'hi_nc') {
                 $link = "/Esports/HeroesInternational/Player/{$this->battletag}/{$this->blizz_id}/Map/{$maps[$group[0]->game_map]['name']}";
-            }else{
+            } else {
                 $link = "/Esports/{$this->esport}/Player/{$this->battletag}/{$this->blizz_id}/Map/{$maps[$group[0]->game_map]['name']}";
             }
 
@@ -1343,18 +1329,18 @@ class EsportsController extends Controller
             } elseif ($this->esport == 'MastersClash') {
                 $image = '/images/MCL/'.$image;
             } elseif ($this->esport == 'hi') {
-                $image = '/images/HI/Team/Logos/'.$image.".png";
+                $image = '/images/HI/Team/Logos/'.$image.'.png';
             } elseif ($this->esport == 'hi_nc') {
-                $image = '/images/HI/Flags/'.$image.".png";
+                $image = '/images/HI/Flags/'.$image.'.png';
             }
 
             $returnData[$counter]['icon_url'] = $image;
 
             $returnData[$counter]['inputhover'] = 'Lost agains team '.$enemyteam.' '.$count.' times ('.round((($count / (count($replayIDs))) * 100) * 5, 2).'% of all games lost as '.$team.')';
 
-            if($this->esport == "hi" || $this->esport == "hi_nc"){
+            if ($this->esport == 'hi' || $this->esport == 'hi_nc') {
                 $enemy_link = "/Esports/HeroesInternational/Team/{$enemyteam}";
-            }else{
+            } else {
                 $enemy_link = "/Esports/{$this->esport}/Team/{$enemyteam}";
             }
 

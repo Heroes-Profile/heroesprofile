@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\BattlenetAccount;
 use App\Models\Battletag;
 use App\Models\CCL\CCLTeam;
 use App\Models\GameType;
@@ -14,8 +15,6 @@ use App\Models\NGS\NGSTeam;
 use App\Models\Replay;
 use App\Models\SeasonDate;
 use App\Models\SeasonGameVersion;
-use App\Models\BattlenetAccount;
-
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -32,7 +31,7 @@ class GlobalDataService
 
     public function getPrivateAccounts()
     {
-        $privateAccounts = BattlenetAccount::select("battletag", "blizz_id", "region")->where("private", 1)->get();
+        $privateAccounts = BattlenetAccount::select('battletag', 'blizz_id', 'region')->where('private', 1)->get();
         $filteredAccounts = $privateAccounts->map(function ($account) {
             return [
                 'battletag' => $account->battletag,
@@ -40,8 +39,10 @@ class GlobalDataService
                 'region' => $account->region,
             ];
         });
+
         return $filteredAccounts;
     }
+
     public function calculateMaxReplayNumber()
     {
         if (! session()->has('maxReplayID')) {
@@ -240,7 +241,7 @@ class GlobalDataService
 
     public function getAdvancedFilterShowDefault()
     {
-        if (Auth::check()) {            
+        if (Auth::check()) {
             $user = Auth::user();
 
             $advancedfiltering = $user->userSettings->firstWhere('setting', 'advancedfiltering')->value;

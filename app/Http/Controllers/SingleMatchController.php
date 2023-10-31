@@ -192,7 +192,7 @@ class SingleMatchController extends Controller
                 ]);
             })
             ->where($this->schema.'.replay.replayID', $replayID)
-            ->orderBy("team", "ASC")
+            ->orderBy('team', 'ASC')
             //->toSql();
             ->get();
 
@@ -206,7 +206,6 @@ class SingleMatchController extends Controller
         $maps = $maps->keyBy('map_id');
 
         $privateAccounts = $this->globalDataService->getPrivateAccounts();
-
 
         $groupedData = $result->groupBy('replayID')->map(function ($replayGroup) use ($privateAccounts, $result, $talentData, $heroData, $maps, $replayID) {
             $totalSeconds = $replayGroup[0]->game_length - 70;
@@ -235,7 +234,7 @@ class SingleMatchController extends Controller
             ];
 
             $replayDetails['players'] = $replayGroup->groupBy('team')->map(function ($teamGroup) use ($privateAccounts, $heroData, $talentData, $region) {
-                return $teamGroup->map(function ($row) use ($privateAccounts,$heroData, $talentData, $region) {
+                return $teamGroup->map(function ($row) use ($privateAccounts, $heroData, $talentData, $region) {
                     $hero_level_calculated = $row->hero_level;
                     $avg_hero_level = $row->hero_level;
 
@@ -262,7 +261,7 @@ class SingleMatchController extends Controller
                     }
                     $blizz_id = $row->blizz_id;
 
-                    $containsAccount = $privateAccounts->contains(function ($account) use ($blizz_id,  $region) {
+                    $containsAccount = $privateAccounts->contains(function ($account) use ($blizz_id, $region) {
                         return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
                     });
 
@@ -555,9 +554,11 @@ class SingleMatchController extends Controller
             ->map(function ($teamGroup) use ($heroData) {
                 return $teamGroup->map(function ($replayBan) use ($heroData) {
                     $replayBan->hero = $heroData[$replayBan->hero] ?? $replayBan->hero;
+
                     return $replayBan;
                 });
             });
+
         return $replayBans;
     }
 
@@ -573,7 +574,7 @@ class SingleMatchController extends Controller
         });
 
         return $replayBans;
-        
+
     }
 
     private function getExperienceBreakdown($replayID)
