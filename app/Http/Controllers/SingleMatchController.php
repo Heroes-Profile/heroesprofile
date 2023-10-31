@@ -205,7 +205,10 @@ class SingleMatchController extends Controller
         $maps = Map::all();
         $maps = $maps->keyBy('map_id');
 
-        $groupedData = $result->groupBy('replayID')->map(function ($replayGroup) use ($result, $talentData, $heroData, $maps, $replayID) {
+        $privateAccounts = $this->globalDataService->getPrivateAccounts();
+
+
+        $groupedData = $result->groupBy('replayID')->map(function ($replayGroup) use ($privateAccounts, $result, $talentData, $heroData, $maps, $replayID) {
             $totalSeconds = $replayGroup[0]->game_length - 70;
             $minutes = floor($totalSeconds / 60);
             $seconds = $totalSeconds % 60;
@@ -231,8 +234,8 @@ class SingleMatchController extends Controller
                 'match_games' => $this->esport ? $this->getMatchGames($replayID, $maps) : null,
             ];
 
-            $replayDetails['players'] = $replayGroup->groupBy('team')->map(function ($teamGroup) use ($heroData, $talentData, $region) {
-                return $teamGroup->map(function ($row) use ($heroData, $talentData, $region) {
+            $replayDetails['players'] = $replayGroup->groupBy('team')->map(function ($teamGroup) use ($privateAccounts, $heroData, $talentData, $region) {
+                return $teamGroup->map(function ($row) use ($privateAccounts,$heroData, $talentData, $region) {
                     $hero_level_calculated = $row->hero_level;
                     $avg_hero_level = $row->hero_level;
 
@@ -257,28 +260,33 @@ class SingleMatchController extends Controller
                         $avg_hero_level = 100;
 
                     }
+                    $blizz_id = $row->blizz_id;
+
+                    $containsAccount = $privateAccounts->contains(function ($account) use ($blizz_id,  $region) {
+                        return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
+                    });
 
                     return [
-                        'region' => $region,
-                        'battletag' => explode('#', $row->battletag)[0],
-                        'blizz_id' => $row->blizz_id,
+                        'check' => $containsAccount,
+                        'region' => $this->esport ? $region : ($containsAccount ? null : $region),
+                        'battletag' => $this->esport ? explode('#', $row->battletag)[0] : ($containsAccount ? null : explode('#', $row->battletag)[0]),
+                        'blizz_id' => $this->esport ? $row->blizz_id : ($containsAccount ? null : $row->blizz_id),
                         'winner' => $row->winner,
                         'team' => $row->team,
                         'party' => ! $this->esport ? $row->party : null,
                         'hero' => $heroData[$row->hero],
-                        'hero_level' => $hero_level_calculated,
-                        'avg_hero_level' => $avg_hero_level,
-                        'account_level' => ! $this->esport ? $row->account_level : null,
-                        'player_conservative_rating' => ! $this->esport ? $row->player_conservative_rating : null,
-                        'player_mmr' => ! $this->esport ? round(1800 + 40 * $row->player_conservative_rating) : null,
-                        'player_change' => ! $this->esport ? round($row->player_change, 2) : null,
-                        'hero_conservative_rating' => ! $this->esport ? $row->hero_conservative_rating : null,
-                        'hero_mmr' => ! $this->esport ? round(1800 + 40 * $row->hero_conservative_rating) : null,
-                        'hero_change' => ! $this->esport ? round($row->hero_change, 2) : null,
-                        'role_conservative_rating' => ! $this->esport ? $row->role_conservative_rating : null,
-                        'role_mmr' => ! $this->esport ? round(1800 + 40 * $row->role_conservative_rating) : null,
-                        'role_change' => ! $this->esport ? round($row->role_change, 2) : null,
-                        ///Need to work on Heroes Profile Score
+                        'hero_level' => $containsAccount ? null : $hero_level_calculated,
+                        'avg_hero_level' => $containsAccount ? null : $avg_hero_level,
+                        'account_level' => ($this->esport || $containsAccount) ? null : $row->account_level,
+                        'player_conservative_rating' => ($this->esport || $containsAccount) ? null : $row->player_conservative_rating,
+                        'player_mmr' => ($this->esport || $containsAccount) ? null : round(1800 + 40 * $row->player_conservative_rating),
+                        'player_change' => ($this->esport || $containsAccount) ? null : round($row->player_change, 2),
+                        'hero_conservative_rating' => ($this->esport || $containsAccount) ? null : $row->hero_conservative_rating,
+                        'hero_mmr' => ($this->esport || $containsAccount) ? null : round(1800 + 40 * $row->hero_conservative_rating),
+                        'hero_change' => ($this->esport || $containsAccount) ? null : round($row->hero_change, 2),
+                        'role_conservative_rating' => ($this->esport || $containsAccount) ? null : $row->role_conservative_rating,
+                        'role_mmr' => ($this->esport || $containsAccount) ? null : round(1800 + 40 * $row->role_conservative_rating),
+                        'role_change' => ($this->esport || $containsAccount) ? null : round($row->role_change, 2),
                         'score' => [
                             'level' => $row->level,
                             'takedowns' => $row->takedowns,

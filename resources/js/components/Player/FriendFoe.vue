@@ -124,7 +124,7 @@ export default {
       enemySortKey: '',
       enemySortDir: 'desc',
 
-      gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
+      gametype: ["qm"],
       gamemap: null,
       season: null,
     }

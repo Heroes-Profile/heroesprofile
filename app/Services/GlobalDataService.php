@@ -14,6 +14,8 @@ use App\Models\NGS\NGSTeam;
 use App\Models\Replay;
 use App\Models\SeasonDate;
 use App\Models\SeasonGameVersion;
+use App\Models\BattlenetAccount;
+
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -28,6 +30,18 @@ class GlobalDataService
         $this->filtersMinimumPatch = '2.53.0.83004';
     }
 
+    public function getPrivateAccounts()
+    {
+        $privateAccounts = BattlenetAccount::select("battletag", "blizz_id", "region")->where("private", 1)->get();
+        $filteredAccounts = $privateAccounts->map(function ($account) {
+            return [
+                'battletag' => $account->battletag,
+                'blizz_id' => $account->blizz_id,
+                'region' => $account->region,
+            ];
+        });
+        return $filteredAccounts;
+    }
     public function calculateMaxReplayNumber()
     {
         if (! session()->has('maxReplayID')) {

@@ -40,17 +40,28 @@ class BattletagSearchController extends Controller
         $counter = 0;
         $uniqueBlizzIDRegion = [];
 
+        $privateAccounts = $this->globalDataService->getPrivateAccounts();
         foreach ($data as $row) {
+            $blizz_id = $row['blizz_id'];
+            $region = $row['region'];
 
-            if (array_key_exists($row['blizz_id'].'|'.$row['region'], $uniqueBlizzIDRegion)) {
-                if ($row['latest_game'] > $uniqueBlizzIDRegion[$row['blizz_id'].'|'.$row['region']]) {
+            $containsAccount = $privateAccounts->contains(function ($account) use ($blizz_id,  $region) {
+                return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
+            });
+
+            if(!$containsAccount){
+
+                if (array_key_exists($row['blizz_id'].'|'.$row['region'], $uniqueBlizzIDRegion)) {
+                    if ($row['latest_game'] > $uniqueBlizzIDRegion[$row['blizz_id'].'|'.$row['region']]) {
+                        $returnData[$row['blizz_id'].'|'.$row['region']] = $row;
+                    }
+                } else {
+                    $uniqueBlizzIDRegion[$row['blizz_id'].'|'.$row['region']] = $row['latest_game'];
                     $returnData[$row['blizz_id'].'|'.$row['region']] = $row;
+                    $counter++;
                 }
-            } else {
-                $uniqueBlizzIDRegion[$row['blizz_id'].'|'.$row['region']] = $row['latest_game'];
-                $returnData[$row['blizz_id'].'|'.$row['region']] = $row;
-                $counter++;
             }
+
 
             if ($counter == 50) {
                 break;

@@ -27,6 +27,7 @@ class BattlenetAccount extends Authenticatable
         'remember_token',
         'updated_at',
         'created_at',
+        'private',
     ];
 
     public function patreonAccount()

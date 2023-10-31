@@ -157,7 +157,20 @@
 
 
         <template v-for="(item, index) in combinedPlayers" :key="index">
-          <a :href="esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
+          <div v-if="!esport && item.check">
+           <div class="flex space-x-9 items-center">
+              <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
+              <stat-box :title="'Kills'" :value="item.score.kills" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box :title="'Takedowns'" :value="item.score.takedowns" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box :title="'Deaths'" :value="item.score.deaths" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box :title="'Siege Dmg.'" :value="item.score.siege_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box :title="'Hero Dmg.'" :value="item.score.hero_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box :title="'Healing'" :value="item.score.total_healing" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box :title="'Dmg. Taken'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box :title="'Exp. Con.'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+            </div>
+          </div>
+          <a v-else :href="esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
             {{ item.battletag }}
             <div class="flex space-x-9 items-center">
               <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
@@ -210,7 +223,21 @@
       <div class="p-10 text-center">
         Talents
         <template v-for="(item, index) in data.players[0]" :key="index">
-          <a :href="esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
+          <div v-if="!esport && item.check">
+            <div class="flex space-x-9 items-center">
+              <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
+              <talent-image-wrapper v-if="item.talents.level_one" :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
+              <talent-image-wrapper v-if="item.talents.level_four" :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
+              <talent-image-wrapper v-if="item.talents.level_seven" :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
+              <talent-image-wrapper v-if="item.talents.level_ten" :size="'medium'" :talent="item.talents.level_ten"></talent-image-wrapper>
+              <talent-image-wrapper v-if="item.talents.level_thirteen" :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
+              <talent-image-wrapper v-if="item.talents.level_sixteen" :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
+              <talent-image-wrapper v-if="item.talents.level_twenty" :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
+              {{ this.getCopyBuildToGame(item.talents.level_one, item.talents.level_four, item.talents.level_seven, item.talents.level_ten, item.talents.level_thirteen, item.talents.level_sixteen, item.talents.level_twenty, item.hero) }}
+              <custom-button @click="copyToClipboard(item)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
+            </div>
+          </div>
+          <a v-else :href="esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
             {{ item.battletag }} - {{ item.hero.name }}
             <div class="flex space-x-9 items-center">
               <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>

@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PatreonAccount;
 
+use App\Rules\GameTypeInputValidation;
+use Illuminate\Support\Facades\Validator;
+
 class ProfileController extends Controller
 {
     public function showSettings(Request $request)
@@ -24,6 +27,20 @@ class ProfileController extends Controller
     public function saveSettings(Request $request)
     {
         //return response()->json($request->all());
+
+        $validationRules = [
+            'userhero' => 'nullable|numeric',
+            'usergametype' => ['sometimes', 'nullable', new GameTypeInputValidation()],
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                'data' => $request->all(),
+                'status' => 'failure to validate inputs',
+            ];
+        }
 
         $userhero = null;
         $usergametype = null;
@@ -75,12 +92,54 @@ class ProfileController extends Controller
     }
 
     public function removePatreon (Request $request){
+        $validationRules = [
+            'userid' => 'required|numeric',
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                'data' => $request->all(),
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
         try{
             $userIdToDelete = $request["userid"];
             $account = PatreonAccount::where('battlenet_accounts_id', $userIdToDelete)->first();
             if ($account) {
                 $account->delete();
             }
+
+        } catch (\Exception $e) {   
+            return ["status" => "failure"];
+        }    
+        return ["status" => "success"];
+    }
+
+    public function setAccountVisibility(Request $request){
+        $validationRules = [
+            'userid' => 'required|numeric',
+            'accountVisibility' => 'required|in:true,false',
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                'data' => $request->all(),
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        try{
+            $accountVisibility = $request["accountVisibility"];
+            $value = $accountVisibility == "true" ? 1 : 0;
+
+            $user = BattlenetAccount::find($request['userid']);
+            $user->private = $value;
+            $user->save();
 
         } catch (\Exception $e) {   
             return ["status" => "failure"];

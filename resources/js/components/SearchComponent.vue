@@ -25,9 +25,6 @@
     created(){
     },
     mounted() {
-      console.log(this.type);
-      console.log(this.buttonText);
-      console.log(this.labelText);
     },
     computed: {
     },

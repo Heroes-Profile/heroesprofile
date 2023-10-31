@@ -109,6 +109,7 @@ Route::prefix('v1')->group(function () {
 
     Route::post('profile/save/settings', [ProfileController::class, 'saveSettings']);
     Route::post('profile/remove/patreon', [ProfileController::class, 'removePatreon']);
+    Route::post('profile/set/account/visibility', [ProfileController::class, 'setAccountVisibility']);
 
 
     Route::post('player/match/history', [PlayerMatchHistory::class, 'getData']);
