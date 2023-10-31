@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Validator;
 class GlobalHeroStatsController extends GlobalsInputValidationController
 {
     public function show(Request $request)
-    {        
+    {
         return view('Global.Hero.globalHeroStats')
             ->with([
                 'filters' => $this->globalDataService->getFilterData(),

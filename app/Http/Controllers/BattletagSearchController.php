@@ -45,11 +45,11 @@ class BattletagSearchController extends Controller
             $blizz_id = $row['blizz_id'];
             $region = $row['region'];
 
-            $containsAccount = $privateAccounts->contains(function ($account) use ($blizz_id,  $region) {
+            $containsAccount = $privateAccounts->contains(function ($account) use ($blizz_id, $region) {
                 return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
             });
 
-            if(!$containsAccount){
+            if (! $containsAccount) {
 
                 if (array_key_exists($row['blizz_id'].'|'.$row['region'], $uniqueBlizzIDRegion)) {
                     if ($row['latest_game'] > $uniqueBlizzIDRegion[$row['blizz_id'].'|'.$row['region']]) {
@@ -61,7 +61,6 @@ class BattletagSearchController extends Controller
                     $counter++;
                 }
             }
-
 
             if ($counter == 50) {
                 break;
