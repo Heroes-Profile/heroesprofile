@@ -558,6 +558,7 @@ class SingleMatchController extends Controller
                     return $replayBan;
                 });
             });
+        return $replayBans;
     }
 
     private function getDraftOrder($replayID, $heroData)
@@ -571,20 +572,8 @@ class SingleMatchController extends Controller
             return $item;
         });
 
-        foreach ($replayBans as $teamGroup) {
-            foreach ($teamGroup as $replayBan) {
-                if ($replayBan->hero != 0) {
-                    $allZeros = false;
-                    break 2; // Break both loops if a non-zero hero is found
-                }
-            }
-        }
-
-        if ($allZeros) {
-            return null;
-        } else {
-            return $replayBans;
-        }
+        return $replayBans;
+        
     }
 
     private function getExperienceBreakdown($replayID)
