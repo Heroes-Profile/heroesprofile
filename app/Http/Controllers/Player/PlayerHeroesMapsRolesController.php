@@ -678,7 +678,8 @@ class PlayerHeroesMapsRolesController extends Controller
         return $returnData;
     }
 
-    public function findMatch(Request $request){
+    public function findMatch(Request $request)
+    {
         //return response()->json($request->all());
 
         $validationRules = [
@@ -759,11 +760,12 @@ class PlayerHeroesMapsRolesController extends Controller
 
                 return $query;
             })
-            ->where("hero", $hero)
+            ->where('hero', $hero)
             ->where($stat, $value)
-            ->select("replay.replayID")
+            ->select('replay.replayID')
             //->toSql();
             ->first();
+
         return $result->replayID;
     }
 }
