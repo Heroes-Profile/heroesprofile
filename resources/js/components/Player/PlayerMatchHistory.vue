@@ -86,13 +86,13 @@
             <td>
 
               <div class="flex gap-x-1 mx-2 items-center">
-                <talent-image-wrapper v-if="row.level_one" :talent="row.level_one" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_four" :talent="row.level_four" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_seven" :talent="row.level_seven" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_ten" :talent="row.level_ten" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_thirteen" :talent="row.level_thirteen" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_sixteen" :talent="row.level_sixteen" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_twenty" :talent="row.level_twenty" :size="'small'"></talent-image-wrapper>
+                <talent-image-wrapper :talent="row.level_one" :size="'small'"></talent-image-wrapper>
+                <talent-image-wrapper :talent="row.level_four" :size="'small'"></talent-image-wrapper>
+                <talent-image-wrapper :talent="row.level_seven" :size="'small'"></talent-image-wrapper>
+                <talent-image-wrapper :talent="row.level_ten" :size="'small'"></talent-image-wrapper>
+                <talent-image-wrapper :talent="row.level_thirteen" :size="'small'"></talent-image-wrapper>
+                <talent-image-wrapper :talent="row.level_sixteen" :size="'small'"></talent-image-wrapper>
+                <talent-image-wrapper :talent="row.level_twenty" :size="'small'"></talent-image-wrapper>
               </div>
             </td>
           </tr>

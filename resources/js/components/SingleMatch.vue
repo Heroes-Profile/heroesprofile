@@ -226,13 +226,13 @@
           <div v-if="!esport && item.check">
             <div class="flex space-x-9 items-center">
               <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_one" :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_four" :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_seven" :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_ten" :size="'medium'" :talent="item.talents.level_ten"></talent-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_thirteen" :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_sixteen" :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_twenty" :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_ten"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
               {{ this.getCopyBuildToGame(item.talents.level_one, item.talents.level_four, item.talents.level_seven, item.talents.level_ten, item.talents.level_thirteen, item.talents.level_sixteen, item.talents.level_twenty, item.hero) }}
               <custom-button @click="copyToClipboard(item)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
             </div>
@@ -241,13 +241,13 @@
             {{ item.battletag }} - {{ item.hero.name }}
             <div class="flex space-x-9 items-center">
               <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_one" :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_four" :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_seven" :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_ten" :size="'medium'" :talent="item.talents.level_ten"></talent-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_thirteen" :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_sixteen" :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_twenty" :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_ten"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
               {{ this.getCopyBuildToGame(item.talents.level_one, item.talents.level_four, item.talents.level_seven, item.talents.level_ten, item.talents.level_thirteen, item.talents.level_sixteen, item.talents.level_twenty, item.hero) }}
               <custom-button @click="copyToClipboard(item)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
             </div>
@@ -259,13 +259,13 @@
             {{ item.battletag }} - {{ item.hero.name }}
             <div class="flex space-x-9 items-center">
               <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_one" :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_four" :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_seven" :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_ten" :size="'medium'" :talent="item.talents.level_ten"></talent-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_thirteen" :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_sixteen" :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
-              <talent-image-wrapper v-if="item.talents.level_twenty" :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_ten"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
+              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
               {{ this.getCopyBuildToGame(item.talents.level_one, item.talents.level_four, item.talents.level_seven, item.talents.level_ten, item.talents.level_thirteen, item.talents.level_sixteen, item.talents.level_twenty, item.hero) }}
               <custom-button @click="copyToClipboard(item)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
             </div>

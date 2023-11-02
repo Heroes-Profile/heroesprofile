@@ -318,6 +318,18 @@ export default {
       this.loadingStates = {};
       this.sortKey = '';
       this.sortDir = 'desc';
+
+      /*
+
+      let queryString = `?timeframe_type=${this.timeframetype}`;
+      queryString += `&timeframe=${this.timeframe}`;
+      queryString += `&game_type=${this.gametype}`;
+
+      const currentUrl = window.location.href;
+      let currentPath = window.location.pathname;
+      history.pushState(null, null, `${currentPath}${queryString}`);
+      */
+
       this.getData();
     },
     sortTable(key) {
