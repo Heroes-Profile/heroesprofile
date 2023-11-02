@@ -721,13 +721,53 @@ class PlayerController extends Controller
             $match['game_map'] = $maps[$match['game_map']];
             $match['hero'] = $heroData[$match['hero']];
 
-            $match['level_one'] = $match['level_one'] && $talentData->has($match['level_one']) ? $talentData[$match['level_one']] : null;
-            $match['level_four'] = $match['level_four'] && $talentData->has($match['level_four']) ? $talentData[$match['level_four']] : null;
-            $match['level_seven'] = $match['level_seven'] && $talentData->has($match['level_seven']) ? $talentData[$match['level_seven']] : null;
-            $match['level_ten'] = $match['level_ten'] && $talentData->has($match['level_ten']) ? $talentData[$match['level_ten']] : null;
-            $match['level_thirteen'] = $match['level_thirteen'] && $talentData->has($match['level_thirteen']) ? $talentData[$match['level_thirteen']] : null;
-            $match['level_sixteen'] = $match['level_sixteen'] && $talentData->has($match['level_sixteen']) ? $talentData[$match['level_sixteen']] : null;
-            $match['level_twenty'] = $match['level_twenty'] && $talentData->has($match['level_twenty']) ? $talentData[$match['level_twenty']] : null;
+            if ($match['level_one']) {
+                if ($match['level_one'] != 0) {
+                    $match['level_one'] = $talentData->has($match['level_one']) ? $talentData[$match['level_one']] : null;
+                }
+            }
+
+            if ($match['level_four']) {
+                if ($match['level_four'] != 0) {
+                    $match['level_four'] = $talentData->has($match['level_four']) ? $talentData[$match['level_four']] : null;
+                }
+
+            }
+
+            if ($match['level_seven']) {
+                if ($match['level_seven'] != 0) {
+                    $match['level_seven'] = $talentData->has($match['level_seven']) ? $talentData[$match['level_seven']] : null;
+                }
+
+            }
+
+            if ($match['level_ten']) {
+                if ($match['level_ten'] != 0) {
+                    $match['level_ten'] = $talentData->has($match['level_ten']) ? $talentData[$match['level_ten']] : null;
+                }
+
+            }
+
+            if ($match['level_thirteen']) {
+                if ($match['level_thirteen'] != 0) {
+                    $match['level_thirteen'] = $talentData->has($match['level_thirteen']) ? $talentData[$match['level_thirteen']] : null;
+                }
+
+            }
+
+            if ($match['level_sixteen']) {
+                if ($match['level_sixteen'] != 0) {
+                    $match['level_sixteen'] = $talentData->has($match['level_sixteen']) ? $talentData[$match['level_sixteen']] : null;
+                }
+
+            }
+
+            if ($match['level_twenty']) {
+                if ($match['level_twenty'] != 0) {
+                    $match['level_twenty'] = $talentData->has($match['level_twenty']) ? $talentData[$match['level_twenty']] : null;
+                }
+            }
+
 
             $match['player_conservative_rating'] = round($match['player_conservative_rating'], 2);
             $match['player_change'] = round($match['player_change'], 2);

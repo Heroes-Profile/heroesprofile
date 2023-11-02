@@ -1,11 +1,13 @@
 <template>
-  
-    <round-image :size="size" :image="getTalentImage()">
+    
+    <round-image v-if="talent" :size="size" :image="getTalentImage()">
       <h2>{{ talent.title }}</h2>
       <p>{{ this.removeNumbers(talent.hotkey) }}</p>
       <p>{{ talent.description }}</p>
     </round-image>
-  
+    <round-image v-else-if="talent != 0" :size="size" :image="'/images/talents/no-image.png'">
+      <h2>{{ "Talent removed or changed" }}</h2>
+    </round-image>
 </template>
 
 <script>

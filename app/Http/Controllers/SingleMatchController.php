@@ -265,6 +265,55 @@ class SingleMatchController extends Controller
                         return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
                     });
 
+
+
+
+                    if($row->level_one){
+                        if($row->level_one != 0){
+                            $row->level_one = $talentData->has($row->level_one) ? $talentData[$row->level_one] : null;
+                        }
+                    }
+
+
+                    if($row->level_four){
+                        if($row->level_four != 0){
+                            $row->level_four = $talentData->has($row->level_four) ? $talentData[$row->level_four] : null;
+                        }
+                    }
+
+                    if($row->level_seven){
+                        if($row->level_seven != 0){
+                            $row->level_seven = $talentData->has($row->level_seven) ? $talentData[$row->level_seven] : null;
+                        }
+                    }
+
+                    
+                    if($row->level_ten){
+                        if($row->level_ten != 0){
+                            $row->level_ten = $talentData->has($row->level_ten) ? $talentData[$row->level_ten] : null;
+                        }
+                    }
+
+                    if($row->level_thirteen){
+                        if($row->level_thirteen != 0){
+                            $row->level_thirteen = $talentData->has($row->level_thirteen) ? $talentData[$row->level_thirteen] : null;
+                        }
+                    }
+
+                    if($row->level_sixteen){
+                        if($row->level_sixteen != 0){
+                            $row->level_sixteen = $talentData->has($row->level_sixteen) ? $talentData[$row->level_sixteen] : null;
+                        }
+                    }
+
+                    if($row->level_twenty){
+                        if($row->level_twenty != 0){
+                            $row->level_twenty = $talentData->has($row->level_twenty) ? $talentData[$row->level_twenty] : null;
+                        }
+                    }
+
+
+
                     return [
                         'check' => $containsAccount,
                         'region' => $this->esport ? $region : ($containsAccount ? null : $region),
@@ -331,13 +380,13 @@ class SingleMatchController extends Controller
                             'time_on_fire' => ! $this->esport ? $row->time_on_fire : null,
                         ],
                         'talents' => [
-                            'level_one' => isset($talentData[$row->level_one]) ? $talentData[$row->level_one] : null,
-                            'level_four' => isset($talentData[$row->level_four]) ? $talentData[$row->level_four] : null,
-                            'level_seven' => isset($talentData[$row->level_seven]) ? $talentData[$row->level_seven] : null,
-                            'level_ten' => isset($talentData[$row->level_ten]) ? $talentData[$row->level_ten] : null,
-                            'level_thirteen' => isset($talentData[$row->level_thirteen]) ? $talentData[$row->level_thirteen] : null,
-                            'level_sixteen' => isset($talentData[$row->level_sixteen]) ? $talentData[$row->level_sixteen] : null,
-                            'level_twenty' => isset($talentData[$row->level_twenty]) ? $talentData[$row->level_twenty] : null,
+                            'level_one' => $row->level_one,
+                            'level_four' => $row->level_four,
+                            'level_seven' => $row->level_seven,
+                            'level_ten' => $row->level_ten,
+                            'level_thirteen' => $row->level_thirteen,
+                            'level_sixteen' => $row->level_sixteen,
+                            'level_twenty' => $row->level_twenty,
                         ],
 
                     ];

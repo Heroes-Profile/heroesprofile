@@ -118,13 +118,13 @@
                 <template v-else-if="leaderboardtype == 'Hero'">
                   <td class="py-2 px-3 ">
                     <div class="flex flex-wrap gap-4">
-                      <talent-image-wrapper v-if="row.level_one" :talent="row.level_one"></talent-image-wrapper>
-                      <talent-image-wrapper v-if="row.level_four" :talent="row.level_four"></talent-image-wrapper>
-                      <talent-image-wrapper v-if="row.level_seven" :talent="row.level_seven"></talent-image-wrapper>
-                      <talent-image-wrapper v-if="row.level_ten" :talent="row.level_ten"></talent-image-wrapper>
-                      <talent-image-wrapper v-if="row.level_thirteen" :talent="row.level_thirteen"></talent-image-wrapper>
-                      <talent-image-wrapper v-if="row.level_sixteen" :talent="row.level_sixteen"></talent-image-wrapper>
-                      <talent-image-wrapper v-if="row.level_twenty" :talent="row.level_twenty"></talent-image-wrapper>
+                      <talent-image-wrapper :talent="row.level_one"></talent-image-wrapper>
+                      <talent-image-wrapper :talent="row.level_four"></talent-image-wrapper>
+                      <talent-image-wrapper :talent="row.level_seven"></talent-image-wrapper>
+                      <talent-image-wrapper :talent="row.level_ten"></talent-image-wrapper>
+                      <talent-image-wrapper :talent="row.level_thirteen"></talent-image-wrapper>
+                      <talent-image-wrapper :talent="row.level_sixteen"></talent-image-wrapper>
+                      <talent-image-wrapper :talent="row.level_twenty"></talent-image-wrapper>
                     </div>
                   </td>
                   <td class="py-2 px-3 ">
