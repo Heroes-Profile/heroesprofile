@@ -7,7 +7,7 @@
   ]">
        <h2 class="rounded  px-2 py-1 text-sm text-center uppercase"> {{ title }}</h2>
     
-    <div :class=" ['bg-gray-light  rounded rounded-l-lg ',
+    <div :class=" ['bg-gray-light  rounded rounded-l-lg border-gray-medium border',
      {
       'w-full': size === 'big',
       'w-[10em]': size != 'big',
