@@ -14,10 +14,11 @@
 
     <div v-if="data">
 
-      <line-chart :data="reversedData" :dataAttribute="'mmr'"></line-chart>
+      <line-chart class="max-w-[1500px] mx-auto" :data="reversedData" :dataAttribute="'mmr'"></line-chart>
 
-
-      {{ this.gametype.toUpperCase() }} - League Tier Breakdowns | Player MMR: {{ data[0].mmr }}
+      <div class="max-w-[1500px] mx-auto mt-2">
+        {{ this.gametype.toUpperCase() }} - League Tier Breakdowns | Player MMR: {{ data[0].mmr }}
+      </div>
       <table class="">
         <thead>
           <tr>
