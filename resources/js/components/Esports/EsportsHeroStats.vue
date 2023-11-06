@@ -23,10 +23,10 @@
       <tbody>
         <tr v-for="(row, index) in sortedData" :key="index">
           <td><hero-image-wrapper :hero="row.hero" :includehover="false"></hero-image-wrapper>{{ row.hero.name }}</td>
-          <td>{{ row.win_rate }}</td>
-          <td>{{ row.popularity }}</td>
-          <td>{{ row.ban_rate }}</td>
-          <td>{{ row.games_played }}</td>
+          <td>{{ row.win_rate.toFixed(2) }}</td>
+          <td>{{ row.popularity.toFixed(2) }}</td>
+          <td>{{ row.ban_rate.toFixed(2) }}</td>
+          <td>{{ row.games_played.toLocaleString() }}</td>
         </tr>
       </tbody>
     </table>

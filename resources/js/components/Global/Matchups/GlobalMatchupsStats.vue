@@ -62,17 +62,17 @@
               </div>
             </td>
             <td class="py-2 px-3 ">
-              {{ row.ally && row.ally.win_rate ? row.ally.win_rate : 0 }}
+              {{ row.ally && row.ally.win_rate.toFixed(2) ? row.ally.win_rate.toFixed(2) : 0 }}
             </td>
             <td class="py-2 px-3 ">
-              {{ row.enemy && row.enemy.win_rate ? row.enemy.win_rate : 0 }}
+              {{ row.enemy && row.enemy.win_rate.toFixed(2) ? row.enemy.win_rate.toFixed(2) : 0 }}
             </td>
             <td class="py-2 px-3 ">
-              {{ row.ally && row.ally.games_played ? row.ally.games_played : 0 }}
+              {{ row.ally && row.ally.games_played.toLocaleString() ? row.ally.games_played.toLocaleString() : 0 }}
             </td>
 
             <td class="py-2 px-3 ">
-              {{ row.enemy && row.enemy.games_played ? row.enemy.games_played : 0 }}
+              {{ row.enemy && row.enemy.games_played.toLocaleString() ? row.enemy.games_played.toLocaleString() : 0 }}
             </td>
           </tr>
         </tbody>

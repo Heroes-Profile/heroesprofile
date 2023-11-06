@@ -1,7 +1,7 @@
 <template>
   <div>
-    <page-heading :infoText1="inputhero.name + ' talent stats and builds player by ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`">
-      <hero-image-wrapper :hero="inputhero" :size="'big'"></hero-image-wrapper>
+    <page-heading :infoText1="selectedHero ? selectedHero.name + ' talent stats and builds player by ' + battletag : ' talent stats and builds player by ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`">
+      <hero-image-wrapper v-if="selectedHero" :hero="selectedHero" :size="'big'"></hero-image-wrapper>
     </page-heading>
 
     <div v-if="!selectedHero">

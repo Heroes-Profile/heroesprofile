@@ -106,7 +106,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                 ->orderBy('ally')
                 //->toSql();
                 ->get();
-            $allyData = $this->combineData($allyData, 'ally');
+            $allyData = $this->combineData($allyData, 'ally', $hero);
 
             $enemyData = GlobalHeromatchupsEnemy::query()
                 ->select('enemy', 'win_loss')
@@ -125,7 +125,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                 ->groupBy('win_loss')
                 //->toSql();
                 ->get();
-            $enemyData = $this->combineData($enemyData, 'enemy');
+            $enemyData = $this->combineData($enemyData, 'enemy', $hero);
 
             $allyDataKeyed = collect($allyData)->keyBy(function ($item) {
                 return $item['hero']['name'];
@@ -157,7 +157,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
         return $data;
     }
 
-    private function combineData($data, $type)
+    private function combineData($data, $type, $heroID)
     {
 
         $heroData = $this->globalDataService->getHeroes();
@@ -185,6 +185,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
         $found = false;
         $notFound = [];
 
+
         foreach ($heroData as $hero) {
             $found = false;
             foreach ($combinedData as $data) {
@@ -194,13 +195,12 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                 }
             }
 
-            if (! $found) {
+            if (! $found && $heroID != $hero->id) {
                 $notFound[] = $hero;
             }
         }
 
         foreach ($notFound as $hero) {
-            // Add the missing hero as a separate array to $combinedData
             $combinedData[] = [
                 'hero' => $hero,
                 'wins' => 0,

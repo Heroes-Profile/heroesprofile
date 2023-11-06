@@ -7,8 +7,8 @@
       <div class="flex flex-col items-center justify-center text-center">
        <h3 class="min-h-[80px]"> {{ talent.title }}</h3>
         <talent-image-wrapper :talent="talent" :size="'medium'" class="mb-10"></talent-image-wrapper>
-        <span v-if="talent.win_rate">{{ talent.win_rate }}%</span>
-        <span v-if="talent.games_played" class="text-xs">{{ talent.games_played }} games</span>
+        <span v-if="talent.win_rate">{{ talent.win_rate.toFixed(2) }}%</span>
+        <span v-if="talent.games_played" class="text-xs">{{ talent.games_played.toLocaleString() }} games</span>
       </div>
     </div>
   </div>

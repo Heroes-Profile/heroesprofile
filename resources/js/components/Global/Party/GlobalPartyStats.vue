@@ -47,9 +47,9 @@ s<template>
           <tbody>
             <tr v-for="row in partydata.solo" :key="(row.ally_combo + '|' + row.enemy_combo)">
               <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 ">{{ row.wins }}</td>
-              <td class="py-2 px-3 ">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
             </tr>
           </tbody>
         </table>  
@@ -78,9 +78,9 @@ s<template>
           <tbody>
             <tr v-for="row in partydata.double" :key="(row.ally_combo + '|' + row.enemy_combo)">
               <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 ">{{ row.wins }}</td>
-              <td class="py-2 px-3 ">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
             </tr>
           </tbody>
         </table>  
@@ -109,9 +109,9 @@ s<template>
           <tbody>
             <tr v-for="row in partydata.double_double" :key="(row.ally_combo + '|' + row.enemy_combo)">
               <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 ">{{ row.wins }}</td>
-              <td class="py-2 px-3 ">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
             </tr>
           </tbody>
         </table>  
@@ -140,9 +140,9 @@ s<template>
           <tbody>
             <tr v-for="row in partydata.triple" :key="(row.ally_combo + '|' + row.enemy_combo)">
               <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 ">{{ row.wins }}</td>
-              <td class="py-2 px-3 ">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
             </tr>
           </tbody>
         </table>  
@@ -171,9 +171,9 @@ s<template>
           <tbody>
             <tr v-for="row in partydata.triple_double" :key="(row.ally_combo + '|' + row.enemy_combo)">
               <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 ">{{ row.wins }}</td>
-              <td class="py-2 px-3 ">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
             </tr>
           </tbody>
         </table>  
@@ -202,9 +202,9 @@ s<template>
           <tbody>
             <tr v-for="row in partydata.quadruple" :key="(row.ally_combo + '|' + row.enemy_combo)">
               <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 ">{{ row.wins }}</td>
-              <td class="py-2 px-3 ">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
             </tr>
           </tbody>
         </table>  
@@ -234,9 +234,9 @@ s<template>
           <tbody>
             <tr v-for="row in partydata.quintuple" :key="(row.ally_combo + '|' + row.enemy_combo)">
               <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 ">{{ row.wins }}</td>
-              <td class="py-2 px-3 ">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
             </tr>
           </tbody>
         </table>  

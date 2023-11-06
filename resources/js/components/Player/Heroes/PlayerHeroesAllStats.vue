@@ -74,12 +74,12 @@
               <td 
                 v-if="stat.selected" 
                 :class="{ flash: stat.flash }"
-                class="py-2 px-3 ">
+                class="py-2 px-3 text-right">
                 <div v-if="statContainsMax(stat)">
                   <span class="link" @click="navigateToMaxStatMatch(row.hero, stat.value, row[stat.value])" title="Navigate to this match">{{ row[stat.value] }}</span>
                 </div>
                 <div v-else>
-                  {{ row[stat.value] }}
+                  {{ showStatValue(row[stat.value]) }}
                 </div>
               </td>
             </template>
@@ -325,6 +325,13 @@ export default {
         //Do something here
       }
       this.matchIsLoading = false;
+    },
+    showStatValue(value){
+      if(value < 1000){
+        return value.toFixed(2);
+      }else{
+        return Math.round(value).toLocaleString();
+      }
     },
   }
 }
