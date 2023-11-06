@@ -58,7 +58,9 @@ class PlayerController extends Controller
 
         if ($checkedUser) {
             $heroUserSettings = $checkedUser->userSettings->where('setting', 'hero')->first();
-            $heroUserSettings = $this->globalDataService->getHeroesByID()[$heroUserSettings['value']];
+            if(!is_null($heroUserSettings)){
+                $heroUserSettings = $this->globalDataService->getHeroesByID()[$heroUserSettings['value']];
+            }
         }
 
         $season = $request['season'];
