@@ -36,9 +36,9 @@
                 <span class="ml-left px-3">{{ row.talentInfo.title }}</span>
               </div>
             </td>
-            <td class="py-2 px-3  ">{{ row.win_rate }}</td>
-            <td class="py-2 px-3  ">{{ row.popularity }}</td>
-            <td class="py-2 px-3  ">{{ row.games_played }}</td>
+            <td class="py-2 px-3  ">{{ row.win_rate.toFixed(2) }}</td>
+            <td class="py-2 px-3  ">{{ row.popularity.toFixed(2) }}</td>
+            <td class="py-2 px-3  ">{{ row.games_played.toLocaleString() }}</td>
             <td v-if="statfilter && statfilter != 'win_rate'" class="py-2 px-3 ">{{ row.total_filter_type }}</td>
           </tr>
         </tbody>

@@ -40,11 +40,11 @@
               <td class="py-2 px-3 "><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
               <td class="py-2 px-3 ">
                 <hero-image-wrapper :hero="row.heroData.hero">
-                  <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.total_games_played"></image-hover-box>
+                  <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.total_games_played.toLocaleString()"></image-hover-box>
                 </hero-image-wrapper>
               </td>
-              <td class="py-2 px-3 ">{{ row.total_games_played }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
+              <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
             </tr>
           </tbody>
         </table>
@@ -78,11 +78,11 @@
               <td class="py-2 px-3 ">
                 <hero-image-wrapper :hero="row.heroData.hero">
                   <h2>{{ row.heroData.hero.name }}</h2>
-                  <p>Games Played: {{ row.total_games_played }}</p>
+                  <p>Games Played: {{ row.total_games_played.toLocaleString() }}</p>
                 </hero-image-wrapper>
               </td>
-              <td class="py-2 px-3 ">{{ row.total_games_played }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
+              <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
             </tr>
           </tbody>
         </table>

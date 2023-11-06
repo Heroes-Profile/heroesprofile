@@ -53,9 +53,9 @@
                 <role-box :role="row.role_five.name"></role-box>
               </div>
               </td>
-              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 ">{{ row.popularity }}</td>
-              <td class="py-2 px-3 ">{{ row.games_played }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 ">{{ row.popularity.toFixed(2) }}</td>
+              <td class="py-2 px-3 ">{{ row.games_played.toLocaleString() }}</td>
               <td>
                 <custom-button 
                   @click="viewTopHeroes(row.composition_id, index)" 

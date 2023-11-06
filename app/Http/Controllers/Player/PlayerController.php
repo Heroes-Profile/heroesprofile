@@ -772,10 +772,15 @@ class PlayerController extends Controller
 
 
             $match['player_conservative_rating'] = round($match['player_conservative_rating'], 2);
+            $match['player_mmr'] = round(1800 + 40 * $match['player_conservative_rating']);
             $match['player_change'] = round($match['player_change'], 2);
+
             $match['hero_conservative_rating'] = round($match['hero_conservative_rating'], 2);
+            $match['hero_mmr'] = round(1800 + 40 * $match['hero_conservative_rating']);
             $match['hero_change'] = round($match['hero_change'], 2);
+
             $match['role_conservative_rating'] = round($match['role_conservative_rating'], 2);
+            $match['role_mmr'] = round(1800 + 40 * $match['role_conservative_rating']);
             $match['role_change'] = round($match['role_change'], 2);
 
             return $match;

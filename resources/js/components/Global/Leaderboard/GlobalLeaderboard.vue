@@ -102,11 +102,11 @@
                 <td>{{ (index + 1) }}</td>
                 <td><a :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`">{{ row.split_battletag }}</a></td>
                 <td>{{ row.region }}</td>
-                <td>{{ row.win_rate }}</td>
-                <td>{{ row.rating }}</td>
-                <td>{{ row.mmr }}</td>
+                <td>{{ row.win_rate.toFixed(2) }}</td>
+                <td>{{ row.rating.toFixed(2) }}</td>
+                <td>{{ row.mmr.toLocaleString() }}</td>
                 <td>{{ row.tier }}</td>
-                <td>{{ row.games_played }}</td>
+                <td>{{ row.games_played.toLocaleString() }}</td>
 
                 <td v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role') && row.most_played_hero">
                   <hero-image-wrapper :hero="row.most_played_hero">
@@ -131,7 +131,7 @@
                     {{ this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, row.hero) }}
                     <custom-button @click="copyToClipboard(row)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
                   </td>
-                  <td>{{ row.hero_build_games_played }}</td>
+                  <td>{{ row.hero_build_games_played.toLocaleString() }}</td>
                 </template>
               </tr>
             </template>
