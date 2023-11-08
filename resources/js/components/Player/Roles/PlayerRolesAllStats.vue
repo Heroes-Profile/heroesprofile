@@ -13,16 +13,23 @@
     :hideadvancedfilteringbutton="true"
     >
   </filters>
-
-
-
   <div v-if="data">
-    <div>
-      <input type="text" v-model="searchQuery" placeholder="Search..." />
-
-      <div v-for="(stat, index) in filteredStats" :key="index" class="flex items-center">
-        <input type="checkbox" v-model="stat.selected" :disabled="isDisabled(stat)" @change="onCheckboxChange(stat)" />
-        <label>{{ stat.name }}</label>
+    <div  class="relative max-w-[1500px] mx-auto">
+      <custom-button class="ml-auto" @click="showOptions = !showOptions" :text="showOptions ? 'Hide Column Selection' : 'Show Column Selection'" :ignoreclick="true"></custom-button>
+        
+      <div v-if="showOptions">
+        <div class="absolute left-0 mt-2 w-full bg-gray-light border border-gray-300 rounded shadow-lg text-black z-50 flex flex-wrap  p-2 ">
+          <input class="w-full p-2" type="text" v-model="searchQuery" placeholder="Search..." />
+            <div v-for="(stat, index) in filteredStats" :class="[
+            'flex-1 min-w-[24%] border-gray border p-1 cursor-pointer hover:bg-gray-light hover:text-black',
+            {
+              'bg-teal text-white' : stat.selected
+            } ]
+            ">
+              <label class="cursor-pointer"><input type="checkbox" v-model="stat.selected" :disabled="isDisabled(stat)" @change="onCheckboxChange(stat)" />
+            {{ stat.name }}</label>
+          </div>
+        </div>
       </div>
     </div>
     <table class="">
@@ -95,6 +102,7 @@
     },
     data(){
       return {
+        showOptions: false,
         isLoading: false,
         infoText: "Select a hero below to view detailed stats for that hero. Use the search box above to filter the list of heroes. Or scroll down to the advanced section for table view.",
         gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
@@ -280,22 +288,3 @@ methods: {
 }
 }
 </script>
-
-<!--
-<style>
-  .flash-animation {
-    animation: flash 0.5s;
-  }
-
-  @keyframes flash {
-    0% { background-color: transparent; }
-    50% { background-color: blue; }
-    100% { background-color: transparent; }
-  }
-
-  .flash {
-    animation: flash 1s;
-  }
-</style>
-
--->
