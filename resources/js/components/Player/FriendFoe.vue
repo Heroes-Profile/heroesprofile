@@ -38,10 +38,11 @@
           <tbody>
             <tr v-for="row in sortedDataFriends" :key="row.blizz_id">
               <td class="py-2 px-3 "><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
-              <td class="py-2 px-3 ">
+              <td class="py-2 px-3 flex items-center gap-1">
                 <hero-image-wrapper :hero="row.heroData.hero">
                   <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.total_games_played.toLocaleString()"></image-hover-box>
                 </hero-image-wrapper>
+                {{ row.heroData.hero.name }}
               </td>
               <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString() }}</td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
@@ -75,11 +76,12 @@
           <tbody>
             <tr v-for="row in sortedDataEnemies" :key="row.blizz_id">
               <td class="py-2 px-3 "><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
-              <td class="py-2 px-3 ">
+              <td class="py-2 px-3 flex items-center gap-1">
                 <hero-image-wrapper :hero="row.heroData.hero">
                   <h2>{{ row.heroData.hero.name }}</h2>
                   <p>Games Played: {{ row.total_games_played.toLocaleString() }}</p>
                 </hero-image-wrapper>
+                {{ row.heroData.hero.name }}
               </td>
               <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString() }}</td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
