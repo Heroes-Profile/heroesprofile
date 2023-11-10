@@ -94,19 +94,19 @@
                   <tbody>
                     <tr v-for="index in range">
                       <td>
-                        <hero-image-wrapper :hero="getHeroData(1, row, row.compositionheroes[row.role_one.name], index)"></hero-image-wrapper>
+                        <hero-image-wrapper :hero="getHeroData(1, row, row.compositionheroes[row.role_one.name], index)"></hero-image-wrapper>{{ getHeroData(1, row, row.compositionheroes[row.role_one.name], index).name }}
                       </td>
                       <td>
-                        <hero-image-wrapper :hero="getHeroData(2, row, row.compositionheroes[row.role_two.name], index)"></hero-image-wrapper>
+                        <hero-image-wrapper :hero="getHeroData(2, row, row.compositionheroes[row.role_two.name], index)"></hero-image-wrapper>{{ getHeroData(2, row, row.compositionheroes[row.role_two.name], index).name }}
                       </td>
                       <td>
-                        <hero-image-wrapper :hero="getHeroData(3, row, row.compositionheroes[row.role_three.name], index)"></hero-image-wrapper>
+                        <hero-image-wrapper :hero="getHeroData(3, row, row.compositionheroes[row.role_three.name], index)"></hero-image-wrapper>{{ getHeroData(3, row, row.compositionheroes[row.role_three.name], index).name }}
                       </td>
                       <td>
-                        <hero-image-wrapper :hero="getHeroData(4, row, row.compositionheroes[row.role_four.name], index)"></hero-image-wrapper>
+                        <hero-image-wrapper :hero="getHeroData(4, row, row.compositionheroes[row.role_four.name], index)"></hero-image-wrapper>{{ getHeroData(4, row, row.compositionheroes[row.role_four.name], index).name }}
                       </td>
                       <td>
-                        <hero-image-wrapper :hero="getHeroData(5, row, row.compositionheroes[row.role_five.name], index)"></hero-image-wrapper>
+                        <hero-image-wrapper :hero="getHeroData(5, row, row.compositionheroes[row.role_five.name], index)"></hero-image-wrapper>{{ getHeroData(5, row, row.compositionheroes[row.role_five.name], index).name }}
                       </td>
                     </tr>
                   </tbody>
