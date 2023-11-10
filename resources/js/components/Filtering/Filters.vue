@@ -461,7 +461,7 @@
       },
       resetGameDate(){
         this.selectedGameDate = null;
-        this.selectedSingleFilters["From Date"] = this.selectedGameDate;
+        delete this.selectedSingleFilters["From Date"];
       },
       getDefaultMinorBasedOnTimeframeType() {
         if(this.defaultTimeframeType == "minor"){

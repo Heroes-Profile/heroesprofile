@@ -11,6 +11,7 @@ use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputValidation;
 use App\Rules\SeasonInputValidation;
+use App\Rules\DateInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -63,7 +64,7 @@ class PlayerTalentsController extends Controller
             'hero' => ['required', new HeroInputValidation()],
             'season' => ['sometimes', 'nullable', new SeasonInputValidation()],
             'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
-            //'fromdate' => ['sometimes', 'nullable', new DateInputValidation()],
+            'fromdate' => ['sometimes', 'nullable', new DateInputValidation()],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);

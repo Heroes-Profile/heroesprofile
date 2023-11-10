@@ -113,7 +113,7 @@ export default {
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
       this.season = filteredData.single["Season"] ? filteredData.single["Season"] : this.season;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
-      this.fromdate = filteredData.single["From Date"] ? filteredData.single["From Date"] : this.fromdate;
+      this.fromdate = filteredData.single["From Date"] ? filteredData.single["From Date"] : null;
 
 
       this.talentdetaildata = null;
