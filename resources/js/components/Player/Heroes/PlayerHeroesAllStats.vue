@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="'All Heroes data for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
+    <page-heading :infoText1="'All Heroes data for ' + battletag + '. Click a hero to see individual hero statistics'" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
 
     <filters 
       :onFilter="filterData" 

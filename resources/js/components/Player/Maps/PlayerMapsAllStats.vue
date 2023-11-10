@@ -1,6 +1,6 @@
 /PlayerMapsAllStats.vue<template>
   <div>
-    <page-heading :infoText1="'All Map data for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
+    <page-heading :infoText1="'All Map data for ' + battletag + '. Click a map to see individual map statistics'" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
     
     <filters 
       :onFilter="filterData" 
