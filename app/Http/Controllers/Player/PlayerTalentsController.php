@@ -53,7 +53,7 @@ class PlayerTalentsController extends Controller
 
     public function getPlayerTalentData(Request $request)
     {
-        return response()->json($request->all());
+        //return response()->json($request->all());
 
         $validationRules = [
             'battletag' => 'required|string',
