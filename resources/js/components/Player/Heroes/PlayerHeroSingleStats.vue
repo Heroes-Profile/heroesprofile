@@ -33,7 +33,7 @@
 
       </div>
       <div class="flex mx-auto justify-center max-w-[1500px]">
-        <span><a class="link" :href="this.getTalentPageUrl()">View Talent Data</a></span>
+        <span><a class="link" :href="getTalentPageUrl()">View Talent Data</a></span>
       </div>
 
       <div class="bg-lighten p-10 ">
@@ -342,7 +342,7 @@
         this.getData();
       },
       getTalentPageUrl(){
-        return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region  + "/Talents/" + "/" + this.hero;
+        return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region  + "/Talents/" + this.hero;
       },
       formatValue(value){
         return value ? value.toLocaleString() : 0;
