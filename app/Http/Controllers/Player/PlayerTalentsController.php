@@ -11,6 +11,7 @@ use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputValidation;
 use App\Rules\SeasonInputValidation;
+use App\Rules\DateInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -63,6 +64,7 @@ class PlayerTalentsController extends Controller
             'hero' => ['required', new HeroInputValidation()],
             'season' => ['sometimes', 'nullable', new SeasonInputValidation()],
             'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
+            'fromdate' => ['sometimes', 'nullable', new DateInputValidation()],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -81,6 +83,7 @@ class PlayerTalentsController extends Controller
         $hero = session('heroes')->keyBy('name')[$request['hero']]->id;
         $season = $request['season'];
         $game_map = $request['game_map'] ? Map::whereIn('name', $request['game_map'])->pluck('map_id')->toArray() : null;
+        $fromdate = $request['fromdate'];
 
         $result = DB::table('replay')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
@@ -114,6 +117,9 @@ class PlayerTalentsController extends Controller
             })
             ->when(! is_null($game_map), function ($query) use ($game_map) {
                 return $query->whereIn('game_map', $game_map);
+            })
+            ->when(! is_null($fromdate), function ($query) use ($fromdate) {
+                return $query->where('game_date', '>=', $fromdate);
             })
             //->toSql();
             ->get();
