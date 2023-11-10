@@ -2,9 +2,9 @@
   <div class="">
     <page-heading :infoText1="infoText" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
     <div class="flex justify-center max-w-[1500px] mx-auto">
-    <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
-    <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
-  </div>
+      <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
+      <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
+    </div>
 
     <div v-if="data" class="">
 
@@ -32,10 +32,6 @@
         </div>
 
         <div class="flex flex-col max-w-[450px] text-left w-full items-between ">
-               
-          
-                
-
           <stat-bar-box class="w-full" size="full" :title="'Win Rate'" :value="data.win_rate.toFixed(2)"></stat-bar-box>       
           <stat-bar-box class="w-full" size="full" :title="'Bruiser Win Rate'" :value="data.bruiser_win_rate.toFixed(2)" color="teal"></stat-bar-box>       
           <stat-bar-box class="w-full" size="full" :title="'Support Win Rate'" :value="data.support_win_rate.toFixed(2)" color="red"></stat-bar-box>       
@@ -43,7 +39,6 @@
           <stat-bar-box class="w-full" size="full" :title="'Melee Assassin Win Rate'" :value="data.melee_assassin_win_rate.toFixed(2)"></stat-bar-box>       
           <stat-bar-box class="w-full" size="full" :title="'Healer Win Rate'" :value="data.healer_win_rate.toFixed(2)" color="teal"></stat-bar-box>       
           <stat-bar-box class="w-full" size="full" :title="'Tank Win Rate'" :value="data.tank_win_rate.toFixed(2)" color="red"></stat-bar-box>       
-
         </div>
 
        
@@ -162,15 +157,18 @@
 
     </div>
 
-    <div class="p-10 max-w-[90em] ml-auto mr-auto" v-if="data && data.matchData">
-      <h2 class="text-3xl font-bold py-5">Most Recent matches</h2>
+    <div class="bg-lighten">
+      <div class="p-10 max-w-[90em] ml-auto mr-auto" v-if="data && data.matchData">
+        <h2 class="text-3xl font-bold py-5">Most Recent matches</h2>
 
-      
-      <game-summary-box v-for="(item, index) in data.matchData" :data="item"></game-summary-box>
-      <div class="max-w-[1500px] mx-auto text-right my-2">
-      <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Match/History'" class="" text="View Match History"></custom-button>
+        
+        <game-summary-box v-for="(item, index) in data.matchData" :data="item"></game-summary-box>
+        <div class="max-w-[1500px] mx-auto text-right my-2">
+        <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Match/History'" class="" text="View Match History"></custom-button>
+      </div>
+      </div>
     </div>
-    </div>
+
   </div>
   <div v-else>
     <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>

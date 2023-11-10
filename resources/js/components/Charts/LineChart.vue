@@ -20,7 +20,7 @@ export default {
       chart: null,
     };
   },
-  mounted() {
+  mounted() {    
     const labels = this.data.map(item => item.x_label);
     const totals = this.data.map(item => item[this.dataAttribute]); 
 
