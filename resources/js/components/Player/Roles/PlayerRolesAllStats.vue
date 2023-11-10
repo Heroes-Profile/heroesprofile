@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="'All Role data for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
+    <page-heading :infoText1="'All Role data for ' + battletag + '. Click a role to see individual role statistics'" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
 
     <filters 
     :onFilter="filterData" 
