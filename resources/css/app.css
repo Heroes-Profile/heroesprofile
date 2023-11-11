@@ -240,3 +240,19 @@ h1{
   text-decoration: underline;
   cursor: pointer;
 }
+
+
+.match-page table{
+  @apply table-fixed;
+  width:100%;
+
+}
+.match-page table td{
+  width:16%;
+}
+.match-page table.loser thead td{
+  @apply bg-red;
+}
+.match-page table.winner thead td{
+  @apply bg-teal;
+}
