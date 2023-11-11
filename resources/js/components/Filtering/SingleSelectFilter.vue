@@ -8,7 +8,7 @@
     <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg expandable-dropdown z-50">
       <div>
         <!-- Search Input -->
-        <input v-model="searchQuery" type="text" placeholder="Search" class="w-full p-2"/>
+        <input v-model="searchQuery" type="text" placeholder="Search" class="w-full p-2 text-black"/>
       </div>
       <div class="max-h-80 overflow-y-auto"> 
         <div class="space-y-2 p-2">
