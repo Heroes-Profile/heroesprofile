@@ -41,17 +41,17 @@
             </th>    
             <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Win Rate | Total Games
-                <!--The stat bar heres background is same color as table so it melts in, look at Artanis-->
+              
             </th>
             <th @click="sortTable('kda')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               <div class=""> <!--How do you get these things to stack on top of each other ?-->
-                KDA
+                KDA <br/>
                 Kills/Deaths/Takedowns
               </div>
             </th>  
             <th @click="sortTable('kdr')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               <div class=""> <!--How do you get these things to stack on top of each other ?-->
-                KDR
+                KDR <br/>
                 Kills/Deaths
               </div>
             </th>
