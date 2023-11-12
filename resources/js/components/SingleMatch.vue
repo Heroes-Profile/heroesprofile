@@ -122,18 +122,19 @@
 
       </div>
 
-      <div class="p-10 text-center max-w-[2000px] mx-auto">
-        Match Scores - See advanced stats below
-
+      <div class="p-10  max-w-[2000px] mx-auto">
+        <h2 class="text-3xl font-bold py-5">Match Scores</h2>
+         <p>See advanced stats below</p>
+            <p>
             Heroes Profile Score is a match based analysis ranking showing how a player performed in the match compared to other players in the same match.  100 would be a perfect match with most MVPs hovering between 70-75.
+            </p>
 
 
 
 
 
 
-
-
+        <div class="ml-auto flex justify-end">
         Sort By: 
         <custom-button
           @click="sortCombinedPlayers('team')"          
@@ -153,7 +154,7 @@
           :ignoreclick="true"
         >
         </custom-button>
-
+      </div>
 
 
         <template v-for="(item, index) in combinedPlayers" :key="index">
@@ -170,22 +171,35 @@
               <stat-box :title="'Exp. Con.'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
             </div>
           </div>
-          <a v-else :href="esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
-            {{ item.battletag }}
-            <div class="flex space-x-9 items-center">
-              <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
-              <stat-box :title="'Kills'" :value="item.score.kills" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-              <stat-box :title="'Takedowns'" :value="item.score.takedowns" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-              <stat-box :title="'Deaths'" :value="item.score.deaths" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-              <stat-box :title="'Siege Dmg.'" :value="item.score.siege_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-              <stat-box :title="'Hero Dmg.'" :value="item.score.hero_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-              <stat-box :title="'Healing'" :value="item.score.total_healing" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-              <stat-box :title="'Dmg. Taken'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-              <stat-box :title="'Exp. Con.'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+          <div v-else> <!-- I think this is doing the opposite for some reason as it's showing up when i'm not on esports -->
+          <a class="flex flex-wrap items-end my-5 w-full justify-evenly"  :href="esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
+            <hero-image-wrapper :size="'big'" :hero="item.hero" class="mr-2"></hero-image-wrapper>
+           <div>
+              <div class="flex justify-between flex-1">
+                <span> {{ item.battletag }}</span> 
+                <span>Heroes Profile Rating: {{ item.total_rank }}</span>
+              </div>
+              <div class="flex space-x-9 items-between w-full flex-1 ">
+                <div class="flex flex-1">
+                  <stat-box :title="'Kills'" :value="item.score.kills" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                  <stat-box :title="'Takedowns'" :value="item.score.takedowns" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                  <stat-box :title="'Deaths'" :value="item.score.deaths" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                </div>
+                <div class="flex flex-1">
+                  <stat-box :title="'Siege Dmg.'" :value="item.score.siege_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                  <stat-box :title="'Hero Dmg.'" :value="item.score.hero_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                  <stat-box :title="'Healing'" :value="item.score.total_healing" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                </div>
+                <div class="flex flex-1">
+                  <stat-box :title="'Dmg. Taken'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                  <stat-box :title="'Exp. Con.'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                </div>
+              </div>
             </div>
 
-            <span>Heroes Profile Rating: {{ item.total_rank }}</span>
+            
           </a>
+        </div>
         </template>
       </div>
 
