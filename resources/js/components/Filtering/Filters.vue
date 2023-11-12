@@ -216,15 +216,15 @@
 
         <!-- Game Date -->
         <div id="filter-label" class="relative">
-          <div v-if="includegamedate" class="flex flex-col text-sm font-medium text-gray-700 cursor-pointer p-2  transition-colors">
-            <span>From Date</span> 
+          <div v-if="includegamedate" class="flex items-end  text-sm font-medium text-gray-700 cursor-pointer p-2  transition-colors">
+            <div class="flex flex-col"><span>From Date  </span>
             <input type="date" 
               v-model="selectedGameDate" 
               @input="handleGameDateChange"
               @blur="handleDateInputBlur"
-              class="text-black"
-            >
-            <button @click="resetGameDate()">X</button>
+              class="w-[200px] h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2 text-white"
+            ></div>
+            <button class="h-[40px] bg-blue m-t-auto  p-2 border-r-[1px] border-t-[1px] border-b-[1px] hover:bg-teal" @click="resetGameDate()">X</button>
           </div>
         </div>
       </div>
