@@ -58,7 +58,7 @@ class PlayerController extends Controller
 
         if ($checkedUser) {
             $heroUserSettings = $checkedUser->userSettings->where('setting', 'hero')->first();
-            if(!is_null($heroUserSettings)){
+            if (! is_null($heroUserSettings)) {
                 $heroUserSettings = $this->globalDataService->getHeroesByID()[$heroUserSettings['value']];
             }
         }
@@ -769,7 +769,6 @@ class PlayerController extends Controller
                     $match['level_twenty'] = $talentData->has($match['level_twenty']) ? $talentData[$match['level_twenty']] : null;
                 }
             }
-
 
             $match['player_conservative_rating'] = round($match['player_conservative_rating'], 2);
             $match['player_mmr'] = round(1800 + 40 * $match['player_conservative_rating']);
