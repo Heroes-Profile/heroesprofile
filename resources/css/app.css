@@ -269,3 +269,7 @@ h1{
 .match-page table.winner thead td{
   @apply bg-teal;
 }
+
+::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+}
