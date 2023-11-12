@@ -15,9 +15,9 @@
       >
     </filters>
 
-    <div class=" gap-1 mx-auto mw-[1500px]">
+    <div class=" gap-1 mx-auto  flex justify-center">
       <div v-if="frienddata && enemydata">
-        <table class="">
+        <table class="min-w-0">
           <thead>
             <tr>
               <th  @click="sortTableFriend('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%]">
@@ -55,8 +55,8 @@
       </div>
 
       <div v-if="enemydata && frienddata">
-        <table class="">
-          <thead>
+        <table class="min-w-0 ">
+          <thead class="bg-red">
             <tr>
               <th @click="sortTableEnemy('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%]">
                 Player
