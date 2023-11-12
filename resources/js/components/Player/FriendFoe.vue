@@ -15,9 +15,9 @@
       >
     </filters>
 
-    <div class=" gap-1 mx-auto mw-[1500px]">
+    <div class=" gap-1 mx-auto  flex justify-center">
       <div v-if="frienddata && enemydata">
-        <table class="">
+        <table class="min-w-0">
           <thead>
             <tr>
               <th  @click="sortTableFriend('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%]">
@@ -38,13 +38,14 @@
           <tbody>
             <tr v-for="row in sortedDataFriends" :key="row.blizz_id">
               <td class="py-2 px-3 "><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
-              <td class="py-2 px-3 ">
+              <td class="py-2 px-3 flex items-center gap-1">
                 <hero-image-wrapper :hero="row.heroData.hero">
-                  <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.total_games_played"></image-hover-box>
+                  <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.total_games_played.toLocaleString()"></image-hover-box>
                 </hero-image-wrapper>
+                {{ row.heroData.hero.name }}
               </td>
-              <td class="py-2 px-3 ">{{ row.total_games_played }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
+              <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
             </tr>
           </tbody>
         </table>
@@ -54,8 +55,8 @@
       </div>
 
       <div v-if="enemydata && frienddata">
-        <table class="">
-          <thead>
+        <table class="min-w-0 ">
+          <thead class="bg-red">
             <tr>
               <th @click="sortTableEnemy('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%]">
                 Player
@@ -75,14 +76,15 @@
           <tbody>
             <tr v-for="row in sortedDataEnemies" :key="row.blizz_id">
               <td class="py-2 px-3 "><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
-              <td class="py-2 px-3 ">
+              <td class="py-2 px-3 flex items-center gap-1">
                 <hero-image-wrapper :hero="row.heroData.hero">
                   <h2>{{ row.heroData.hero.name }}</h2>
-                  <p>Games Played: {{ row.total_games_played }}</p>
+                  <p>Games Played: {{ row.total_games_played.toLocaleString() }}</p>
                 </hero-image-wrapper>
+                {{ row.heroData.hero.name }}
               </td>
-              <td class="py-2 px-3 ">{{ row.total_games_played }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
+              <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
             </tr>
           </tbody>
         </table>
@@ -124,7 +126,7 @@ export default {
       enemySortKey: '',
       enemySortDir: 'desc',
 
-      gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
+      gametype: ["qm"],
       gamemap: null,
       season: null,
     }

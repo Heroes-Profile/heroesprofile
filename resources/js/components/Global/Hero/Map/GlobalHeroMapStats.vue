@@ -1,7 +1,9 @@
 <template>
   <div>
 
-    <page-heading :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Map Statistics' : 'Hero Map Statistics'"></page-heading>
+    <page-heading :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Map Statistics' : 'Hero Map Statistics'">
+      <hero-image-wrapper v-if="selectedHero" :hero="selectedHero" :size="'big'"></hero-image-wrapper>
+    </page-heading>
     <div v-if="!selectedHero">
       <hero-selection :heroes="heroes"></hero-selection>
     </div>
@@ -28,7 +30,44 @@
     </filters>
     <div v-if="data">
       <div class="max-w-[1500px] mx-auto"><span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Map Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span></div>
-      <custom-table :columns="dynamicColumns" :data="data"></custom-table>
+
+
+      <div class="max-w-full  md:px-20 overflow-scroll md:overflow-auto max-w-full h-[50vh] md:h-auto">
+        <table >
+          <thead>
+            <tr>
+              <th 
+                v-for="column in dynamicColumns" 
+                :key="column.value" 
+                :class="['py-2', 'px-3', 'border-b', 'border-gray-200', 'text-left', 'text-sm', 'leading-4', 'text-gray-500', 'tracking-wider', column.sortable ? 'cursor-pointer' : '']"
+                @click="column.sortable ? sortTable(column.value) : null"
+                >
+                  {{ column.text }}
+              </th>        
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in sortedData" :key="row.rank">
+              <td v-for="column in dynamicColumns" :key="column.value" class="">
+                <div v-if="column.value === 'battletag'">
+                  <a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row[column.value] }}</a>
+                </div>
+                <div v-else-if="column.value === 'most_played_hero'">
+                  <div  v-if="row.most_played_hero" class="flex gap-x-2 items-center">
+                    <hero-image-wrapper :hero="row.most_played_hero">
+                      <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Games Played:' + row.hero_build_games_played"></image-hover-box>
+                    </hero-image-wrapper>
+                  </div>
+                </div>
+                <div v-else>
+                  {{ row[column.value] }}
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
     <div v-else>
       <loading-component v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
@@ -64,6 +103,8 @@
         infoText: "Hero Maps provide information on which maps are good for each hero",
         selectedHero: null,
         data: null,
+        sortKey: '',
+        sortDir: 'desc',
 
       //Sending to filter
         timeframetype: null,
@@ -105,7 +146,19 @@
             { text: 'Games Played', value: 'games_played', sortable: true },
           ];
         }
-    },
+      },
+      sortedData() {
+        if (!this.sortKey) return this.data;
+        return this.data.slice().sort((a, b) => {
+          const valA = a[this.sortKey];
+          const valB = b[this.sortKey];
+          if (this.sortDir === 'asc') {
+            return valA < valB ? -1 : 1;
+          } else {
+            return valA > valB ? -1 : 1;
+          }
+        });
+      },
     },
     watch: {
     },
@@ -160,6 +213,14 @@
       },
       redirectChangeHero(){
         window.location.href = "/Global/Hero/Maps";
+      },
+      sortTable(key) {
+        if (key === this.sortKey) {
+          this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+          this.sortDir = 'desc';
+        }
+        this.sortKey = key;
       },
     }
   }

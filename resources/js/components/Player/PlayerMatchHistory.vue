@@ -18,17 +18,14 @@
     </filters>
 
     <div v-if="data">
-
-      Pagination works.  So cool- Hey needs some sort of loading thing when you press the next/prev buttons otherwise you just sit there and spam it over and over not realizing it's loading. also like x of x pages or something might be good
-
       <div>
         <ul class="pagination flex max-w-[1500px] mx-auto justify-between mb-2">
-          <li class="page-item underline underline-offset-4" :class="{ disabled: !data.prev_page_url }">
+          <li v-if="data.current_page != 1" class="page-item underline underline-offset-4" :class="{ disabled: !data.prev_page_url }">
             <a class="page-link" @click.prevent="getData(data.current_page - 1)" href="#">
               Previous
             </a>
           </li>
-          <li class="page-item underline underline-offset-4" :class="{ disabled: !data.next_page_url }">
+          <li v-if="data.current_page != 61" class="page-item underline underline-offset-4" :class="{ disabled: !data.next_page_url }">
             <a class="page-link" @click.prevent="getData(data.current_page + 1)" href="#">
               Next
             </a>
@@ -66,7 +63,7 @@
         <tbody>
           <tr v-for="(row, index) in sortedData" :key="index">
             <td>
-              <a :href="'/Match/Single/' + row.replayID">{{ row.replayID }}</a>
+              <a class="link" :href="'/Match/Single/' + row.replayID">{{ row.replayID }}</a>
             </td>
             <td>
               {{ formatDate(row.game_date) }}
@@ -86,13 +83,13 @@
             <td>
 
               <div class="flex gap-x-1 mx-2 items-center">
-                <talent-image-wrapper v-if="row.level_one" :talent="row.level_one" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_four" :talent="row.level_four" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_seven" :talent="row.level_seven" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_ten" :talent="row.level_ten" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_thirteen" :talent="row.level_thirteen" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_sixteen" :talent="row.level_sixteen" :size="'small'"></talent-image-wrapper>
-                <talent-image-wrapper v-if="row.level_twenty" :talent="row.level_twenty" :size="'small'"></talent-image-wrapper>
+                <talent-image-wrapper :talent="row.level_one" :size="'small'"></talent-image-wrapper>
+                <talent-image-wrapper :talent="row.level_four" :size="'small'"></talent-image-wrapper>
+                <talent-image-wrapper :talent="row.level_seven" :size="'small'"></talent-image-wrapper>
+                <talent-image-wrapper :talent="row.level_ten" :size="'small'"></talent-image-wrapper>
+                <talent-image-wrapper :talent="row.level_thirteen" :size="'small'"></talent-image-wrapper>
+                <talent-image-wrapper :talent="row.level_sixteen" :size="'small'"></talent-image-wrapper>
+                <talent-image-wrapper :talent="row.level_twenty" :size="'small'"></talent-image-wrapper>
               </div>
             </td>
           </tr>
@@ -155,12 +152,12 @@ export default {
   watch: {
   },
   methods: {
-    async getData(page){
+    async getData(page){      
      if (this.isLoading || page < 1 || (this.data && page > this.data.last_page)) {
         return;
       }
     
-
+      this.data = null;
       this.isLoading = true;
       try{
         const response = await this.$axios.post("/api/v1/player/match/history", {

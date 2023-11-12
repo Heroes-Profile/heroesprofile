@@ -20,7 +20,7 @@
             Total
           </th>                
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-            Win Chance
+            Win Chance %
           </th>        
           <th v-if="statfilter && statfilter != 'win_rate'" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             Avg {{ statfilter.charAt(0).toUpperCase() + statfilter.slice(1) }}
@@ -44,9 +44,9 @@
             {{ this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, row.hero) }}
             <custom-button @click="copyToClipboard(row)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
           </td>
-          <td class="py-2 px-3 ">{{ row.games_played }}</td>
-          <td class="py-2 px-3 ">{{ row.win_rate }}</td>
-          <td v-if="statfilter && statfilter != 'win_rate'" class="py-2 px-3 ">{{ row.total_filter_type }}</td>
+          <td class="py-2 px-3 ">{{ row.games_played.toLocaleString() }}</td>
+          <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+          <td v-if="statfilter && statfilter != 'win_rate'" class="py-2 px-3 ">{{ row.total_filter_type.toLocaleString() }}</td>
         </tr>
       </tbody>
     </table>

@@ -192,7 +192,7 @@ class SingleMatchController extends Controller
                 ]);
             })
             ->where($this->schema.'.replay.replayID', $replayID)
-            ->orderBy("team", "ASC")
+            ->orderBy('team', 'ASC')
             //->toSql();
             ->get();
 
@@ -205,7 +205,9 @@ class SingleMatchController extends Controller
         $maps = Map::all();
         $maps = $maps->keyBy('map_id');
 
-        $groupedData = $result->groupBy('replayID')->map(function ($replayGroup) use ($result, $talentData, $heroData, $maps, $replayID) {
+        $privateAccounts = $this->globalDataService->getPrivateAccounts();
+
+        $groupedData = $result->groupBy('replayID')->map(function ($replayGroup) use ($privateAccounts, $result, $talentData, $heroData, $maps, $replayID) {
             $totalSeconds = $replayGroup[0]->game_length - 70;
             $minutes = floor($totalSeconds / 60);
             $seconds = $totalSeconds % 60;
@@ -231,8 +233,8 @@ class SingleMatchController extends Controller
                 'match_games' => $this->esport ? $this->getMatchGames($replayID, $maps) : null,
             ];
 
-            $replayDetails['players'] = $replayGroup->groupBy('team')->map(function ($teamGroup) use ($heroData, $talentData, $region) {
-                return $teamGroup->map(function ($row) use ($heroData, $talentData, $region) {
+            $replayDetails['players'] = $replayGroup->groupBy('team')->map(function ($teamGroup) use ($privateAccounts, $heroData, $talentData, $region) {
+                return $teamGroup->map(function ($row) use ($privateAccounts, $heroData, $talentData, $region) {
                     $hero_level_calculated = $row->hero_level;
                     $avg_hero_level = $row->hero_level;
 
@@ -257,28 +259,75 @@ class SingleMatchController extends Controller
                         $avg_hero_level = 100;
 
                     }
+                    $blizz_id = $row->blizz_id;
+
+                    $containsAccount = $privateAccounts->contains(function ($account) use ($blizz_id, $region) {
+                        return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
+                    });
+
+                    if ($row->level_one) {
+                        if ($row->level_one != 0) {
+                            $row->level_one = $talentData->has($row->level_one) ? $talentData[$row->level_one] : null;
+                        }
+                    }
+
+                    if ($row->level_four) {
+                        if ($row->level_four != 0) {
+                            $row->level_four = $talentData->has($row->level_four) ? $talentData[$row->level_four] : null;
+                        }
+                    }
+
+                    if ($row->level_seven) {
+                        if ($row->level_seven != 0) {
+                            $row->level_seven = $talentData->has($row->level_seven) ? $talentData[$row->level_seven] : null;
+                        }
+                    }
+
+                    if ($row->level_ten) {
+                        if ($row->level_ten != 0) {
+                            $row->level_ten = $talentData->has($row->level_ten) ? $talentData[$row->level_ten] : null;
+                        }
+                    }
+
+                    if ($row->level_thirteen) {
+                        if ($row->level_thirteen != 0) {
+                            $row->level_thirteen = $talentData->has($row->level_thirteen) ? $talentData[$row->level_thirteen] : null;
+                        }
+                    }
+
+                    if ($row->level_sixteen) {
+                        if ($row->level_sixteen != 0) {
+                            $row->level_sixteen = $talentData->has($row->level_sixteen) ? $talentData[$row->level_sixteen] : null;
+                        }
+                    }
+
+                    if ($row->level_twenty) {
+                        if ($row->level_twenty != 0) {
+                            $row->level_twenty = $talentData->has($row->level_twenty) ? $talentData[$row->level_twenty] : null;
+                        }
+                    }
 
                     return [
-                        'region' => $region,
-                        'battletag' => explode('#', $row->battletag)[0],
-                        'blizz_id' => $row->blizz_id,
+                        'check' => $containsAccount,
+                        'region' => $this->esport ? $region : ($containsAccount ? null : $region),
+                        'battletag' => $this->esport ? explode('#', $row->battletag)[0] : ($containsAccount ? null : explode('#', $row->battletag)[0]),
+                        'blizz_id' => $this->esport ? $row->blizz_id : ($containsAccount ? null : $row->blizz_id),
                         'winner' => $row->winner,
                         'team' => $row->team,
                         'party' => ! $this->esport ? $row->party : null,
                         'hero' => $heroData[$row->hero],
-                        'hero_level' => $hero_level_calculated,
-                        'avg_hero_level' => $avg_hero_level,
-                        'account_level' => ! $this->esport ? $row->account_level : null,
-                        'player_conservative_rating' => ! $this->esport ? $row->player_conservative_rating : null,
-                        'player_mmr' => ! $this->esport ? round(1800 + 40 * $row->player_conservative_rating) : null,
-                        'player_change' => ! $this->esport ? round($row->player_change, 2) : null,
-                        'hero_conservative_rating' => ! $this->esport ? $row->hero_conservative_rating : null,
-                        'hero_mmr' => ! $this->esport ? round(1800 + 40 * $row->hero_conservative_rating) : null,
-                        'hero_change' => ! $this->esport ? round($row->hero_change, 2) : null,
-                        'role_conservative_rating' => ! $this->esport ? $row->role_conservative_rating : null,
-                        'role_mmr' => ! $this->esport ? round(1800 + 40 * $row->role_conservative_rating) : null,
-                        'role_change' => ! $this->esport ? round($row->role_change, 2) : null,
-                        ///Need to work on Heroes Profile Score
+                        'hero_level' => $containsAccount ? null : $hero_level_calculated,
+                        'avg_hero_level' => $containsAccount ? null : $avg_hero_level,
+                        'account_level' => ($this->esport || $containsAccount) ? null : $row->account_level,
+                        'player_conservative_rating' => ($this->esport || $containsAccount) ? null : $row->player_conservative_rating,
+                        'player_mmr' => ($this->esport || $containsAccount) ? null : round(1800 + 40 * $row->player_conservative_rating),
+                        'player_change' => ($this->esport || $containsAccount) ? null : round($row->player_change, 2),
+                        'hero_conservative_rating' => ($this->esport || $containsAccount) ? null : $row->hero_conservative_rating,
+                        'hero_mmr' => ($this->esport || $containsAccount) ? null : round(1800 + 40 * $row->hero_conservative_rating),
+                        'hero_change' => ($this->esport || $containsAccount) ? null : round($row->hero_change, 2),
+                        'role_conservative_rating' => ($this->esport || $containsAccount) ? null : $row->role_conservative_rating,
+                        'role_mmr' => ($this->esport || $containsAccount) ? null : round(1800 + 40 * $row->role_conservative_rating),
+                        'role_change' => ($this->esport || $containsAccount) ? null : round($row->role_change, 2),
                         'score' => [
                             'level' => $row->level,
                             'takedowns' => $row->takedowns,
@@ -324,13 +373,13 @@ class SingleMatchController extends Controller
                             'time_on_fire' => ! $this->esport ? $row->time_on_fire : null,
                         ],
                         'talents' => [
-                            'level_one' => isset($talentData[$row->level_one]) ? $talentData[$row->level_one] : null,
-                            'level_four' => isset($talentData[$row->level_four]) ? $talentData[$row->level_four] : null,
-                            'level_seven' => isset($talentData[$row->level_seven]) ? $talentData[$row->level_seven] : null,
-                            'level_ten' => isset($talentData[$row->level_ten]) ? $talentData[$row->level_ten] : null,
-                            'level_thirteen' => isset($talentData[$row->level_thirteen]) ? $talentData[$row->level_thirteen] : null,
-                            'level_sixteen' => isset($talentData[$row->level_sixteen]) ? $talentData[$row->level_sixteen] : null,
-                            'level_twenty' => isset($talentData[$row->level_twenty]) ? $talentData[$row->level_twenty] : null,
+                            'level_one' => $row->level_one,
+                            'level_four' => $row->level_four,
+                            'level_seven' => $row->level_seven,
+                            'level_ten' => $row->level_ten,
+                            'level_thirteen' => $row->level_thirteen,
+                            'level_sixteen' => $row->level_sixteen,
+                            'level_twenty' => $row->level_twenty,
                         ],
 
                     ];
@@ -547,9 +596,12 @@ class SingleMatchController extends Controller
             ->map(function ($teamGroup) use ($heroData) {
                 return $teamGroup->map(function ($replayBan) use ($heroData) {
                     $replayBan->hero = $heroData[$replayBan->hero] ?? $replayBan->hero;
+
                     return $replayBan;
                 });
             });
+
+        return $replayBans;
     }
 
     private function getDraftOrder($replayID, $heroData)
@@ -563,20 +615,8 @@ class SingleMatchController extends Controller
             return $item;
         });
 
-        foreach ($replayBans as $teamGroup) {
-            foreach ($teamGroup as $replayBan) {
-                if ($replayBan->hero != 0) {
-                    $allZeros = false;
-                    break 2; // Break both loops if a non-zero hero is found
-                }
-            }
-        }
+        return $replayBans;
 
-        if ($allZeros) {
-            return null;
-        } else {
-            return $replayBans;
-        }
     }
 
     private function getExperienceBreakdown($replayID)

@@ -194,7 +194,16 @@ class FriendFoeController extends Controller
         $heroDataByID = $this->globalDataService->getHeroes();
         $heroDataByID = $heroDataByID->keyBy('id');
 
-        $finalResults = $groupedResultsByBlizzId->map(function ($data, $blizz_id) use ($heroDataByID, $region) {
+        $privateAccounts = $this->globalDataService->getPrivateAccounts();
+        $checkedData = $groupedResultsByBlizzId->reject(function ($group) use ($privateAccounts, $region) {
+            $blizzId = $group->first()->blizz_id; // Accessing the blizz_id property from the first item in the group
+
+            return $privateAccounts->contains(function ($account) use ($blizzId, $region) {
+                return $account['blizz_id'] == $blizzId && $account['region'] == $region;
+            });
+        });
+
+        $finalResults = $checkedData->map(function ($data, $blizz_id) use ($heroDataByID, $region) {
             $totalWins = $data->where('winner', 1)->sum('total');
             $totalLosses = $data->where('winner', 0)->sum('total');
 

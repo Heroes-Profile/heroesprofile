@@ -87,10 +87,10 @@
             <custom-button @click="copyToClipboard(builddata)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
           </td>
           <td>
-            {{ builddata.games_played}}
+            {{ builddata.games_played.toLocaleString() }}
           </td>
           <td>
-            {{ builddata.win_rate}}
+            {{ builddata.win_rate.toFixed(2) }}
           </td>
         </tr>
       </tbody>
@@ -119,23 +119,23 @@
       <tbody>
         <tr v-for="(row, index) in replays" :key="index">
           <td>
-            <a :href="`/Match/Single/${row.replayID}`">{{ row.replayID}}</a>
+            <a class="link" :href="`/Match/Single/${row.replayID}`">{{ row.replayID}}</a>
           </td>
           <td>
             {{ row.name}}
           </td>
           <td>
-            {{ row.winner == 0 ? "False" : "Winner" }}
+            {{ row.winner == 0 ? "False" : "True" }}
           </td>
           <td>
             <div class="flex gap-x-1 mx-2 items-center">
-              <talent-image-wrapper v-if="row.level_one" :talent="row.level_one" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper v-if="row.level_four" :talent="row.level_four" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper v-if="row.level_seven" :talent="row.level_seven" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper v-if="row.level_ten" :talent="row.level_ten" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper v-if="row.level_thirteen" :talent="row.level_thirteen" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper v-if="row.level_sixteen" :talent="row.level_sixteen" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper v-if="row.level_twenty" :talent="row.level_twenty" :size="'medium'"></talent-image-wrapper>
+              <talent-image-wrapper :talent="row.level_one" :size="'medium'"></talent-image-wrapper>
+              <talent-image-wrapper :talent="row.level_four" :size="'medium'"></talent-image-wrapper>
+              <talent-image-wrapper :talent="row.level_seven" :size="'medium'"></talent-image-wrapper>
+              <talent-image-wrapper :talent="row.level_ten" :size="'medium'"></talent-image-wrapper>
+              <talent-image-wrapper :talent="row.level_thirteen" :size="'medium'"></talent-image-wrapper>
+              <talent-image-wrapper :talent="row.level_sixteen" :size="'medium'"></talent-image-wrapper>
+              <talent-image-wrapper :talent="row.level_twenty" :size="'medium'"></talent-image-wrapper>
             </div>
           </td>
         </tr>

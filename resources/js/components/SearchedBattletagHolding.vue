@@ -15,6 +15,13 @@
           <div><hero-image-wrapper :hero="item.latestHero"></hero-image-wrapper></div>
         </div>
       </div>
+      <div v-else>
+        No battletag found for {{ userinput }}
+
+        Try Again?
+        <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'"></search-component>
+
+      </div>
     </div>
     <div v-else>
       <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>

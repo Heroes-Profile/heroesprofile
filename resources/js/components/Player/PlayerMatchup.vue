@@ -48,16 +48,16 @@
             </a>
           </td>
            <td class="py-2 px-3 ">
-            {{ row.ally_win_rate }}
+            {{ row.ally_win_rate.toFixed(2) }}
           </td>
           <td class="py-2 px-3 ">
-            {{ row.enemy_win_rate }}
+            {{ row.enemy_win_rate.toFixed(2) }}
           </td>
           <td class="py-2 px-3 ">
-            {{ row.ally_games_played }}
+            {{ row.ally_games_played.toLocaleString() }}
           </td>
           <td class="py-2 px-3 ">
-            {{ row.enemy_games_played }}
+            {{ row.enemy_games_played.toLocaleString() }}
           </td>
         </tr>
       </tbody>

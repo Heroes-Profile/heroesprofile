@@ -22,6 +22,19 @@ body{
   letter-spacing: .14em;
 }
 
+
+
+/* Navigation */
+.nav-dropdown{
+  @apply absolute  left-0 hidden group-hover:block z-50 pt-3  min-w-[200px];
+}
+.nav-dropdown a{
+  text-wrap:nowrap;
+}
+
+
+
+/*  end navigation */
 .search-input{
   @apply rounded p-2;
 }
@@ -239,4 +252,24 @@ h1{
 .link {
   text-decoration: underline;
   cursor: pointer;
+}
+
+
+.match-page table{
+  @apply table-fixed;
+  width:100%;
+
+}
+.match-page table td{
+  width:16%;
+}
+.match-page table.loser thead td{
+  @apply bg-red;
+}
+.match-page table.winner thead td{
+  @apply bg-teal;
+}
+
+::-webkit-calendar-picker-indicator {
+    filter: invert(1);
 }

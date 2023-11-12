@@ -46,10 +46,43 @@ s<template>
           </thead>
           <tbody>
             <tr v-for="row in partydata.solo" :key="(row.ally_combo + '|' + row.enemy_combo)">
-              <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 ">{{ row.wins }}</td>
-              <td class="py-2 px-3 ">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">
+                {{ row.stack_size_name }}
+
+                <span v-if="row.stack_size_name == '5 Solo'">
+                  <div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                </span>
+                <span v-if="row.stack_size_name == '1 Double, 3 Solo'">
+                  <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                </span>
+
+                <span v-if="row.stack_size_name == '2 Double, 1 Solo'">
+                  <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                </span>
+
+                <span v-if="row.stack_size_name == '1 Triple, 2 Solo'">
+                  <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                </span>
+
+                <span v-if="row.stack_size_name == '1 Triple, 1 Double'">
+                  <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div>
+                </span>
+
+                <span v-if="row.stack_size_name == '1 Quad, 1 Solo'">
+                  <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                </span>
+
+                <span v-if="row.stack_size_name == '1 team of 5'">
+                  <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div>
+                </span>
+              </td>
+
+
+
+
+              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
             </tr>
           </tbody>
         </table>  
@@ -78,9 +111,9 @@ s<template>
           <tbody>
             <tr v-for="row in partydata.double" :key="(row.ally_combo + '|' + row.enemy_combo)">
               <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 ">{{ row.wins }}</td>
-              <td class="py-2 px-3 ">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
             </tr>
           </tbody>
         </table>  
@@ -109,16 +142,16 @@ s<template>
           <tbody>
             <tr v-for="row in partydata.double_double" :key="(row.ally_combo + '|' + row.enemy_combo)">
               <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 ">{{ row.wins }}</td>
-              <td class="py-2 px-3 ">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
             </tr>
           </tbody>
         </table>  
       </div>
 
 
-      <div class="container mx-auto mb-10" id="2 Double Stack">
+      <div class="container mx-auto mb-10" id="1 Tripe 2 Solo">
         <h2 class="stack-header">1 Triple Stack and 2 Solos vs.<div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div></h2>
         <table class="">
           <thead>
@@ -140,16 +173,16 @@ s<template>
           <tbody>
             <tr v-for="row in partydata.triple" :key="(row.ally_combo + '|' + row.enemy_combo)">
               <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 ">{{ row.wins }}</td>
-              <td class="py-2 px-3 ">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
             </tr>
           </tbody>
         </table>  
       </div>
 
 
-      <div class="container mx-auto mb-10" id="2 Double Stack">
+      <div class="container mx-auto mb-10" id="1 Tripe 1 Double">
         <h2 class="stack-header">1 Triple Stack and 1 Double Stack vs.<div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div></h2>
         <table class="">
           <thead>
@@ -171,16 +204,16 @@ s<template>
           <tbody>
             <tr v-for="row in partydata.triple_double" :key="(row.ally_combo + '|' + row.enemy_combo)">
               <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 ">{{ row.wins }}</td>
-              <td class="py-2 px-3 ">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
             </tr>
           </tbody>
         </table>  
       </div>
 
 
-      <div class="container mx-auto mb-10" id="2 Double Stack">
+      <div class="container mx-auto mb-10" id="1 Quad 1 Solo">
         <h2 class="stack-header">1 Quadruple Stack and 1 Solo vs.<div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div></h2>
         <table class="">
           <thead>
@@ -202,9 +235,9 @@ s<template>
           <tbody>
             <tr v-for="row in partydata.quadruple" :key="(row.ally_combo + '|' + row.enemy_combo)">
               <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 ">{{ row.wins }}</td>
-              <td class="py-2 px-3 ">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
             </tr>
           </tbody>
         </table>  
@@ -212,7 +245,7 @@ s<template>
 
 
 
-      <div class="container mx-auto " id="2 Double Stack">
+      <div class="container mx-auto " id="5 Player">
         <h2 class="stack-header">5 player Stack vs. <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div> </h2>
         <table class="">
           <thead>
@@ -234,9 +267,9 @@ s<template>
           <tbody>
             <tr v-for="row in partydata.quintuple" :key="(row.ally_combo + '|' + row.enemy_combo)">
               <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 ">{{ row.wins }}</td>
-              <td class="py-2 px-3 ">{{ row.losses }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
             </tr>
           </tbody>
         </table>  

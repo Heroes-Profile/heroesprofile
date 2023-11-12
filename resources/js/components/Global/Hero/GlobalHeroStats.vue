@@ -121,13 +121,14 @@
               </a>
               <td class="  ">{{ row.win_rate }}</td>
               <td class="py-2 px-3 "><span v-html="'&#177;'"></span>{{ row.confidence_interval }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate_change }}</td>
-              <td class="py-2 px-3">{{ row.popularity }}</td>
-              <td class="py-2 px-3">{{ row.pick_rate }}</td>
-              <td class="py-2 px-3">{{ row.ban_rate }}</td>
+              <td v-if="row.win_rate_change < 0" class="py-2 px-3 ">{{ row.win_rate_change.toFixed(2) }}</td>
+              <td v-else-if="row.win_rate_change >= 0" class="py-2 px-3 "><span v-html="'&plus;'"></span>{{ row.win_rate_change.toFixed(2) }}</td>
+              <td class="py-2 px-3">{{ row.popularity.toFixed(2) }}</td>
+              <td class="py-2 px-3">{{ row.pick_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3">{{ row.ban_rate.toFixed(2) }}</td>
               <td class="py-2 px-3">{{ row.influence }}</td>
-              <td class="py-2 px-3 ">{{ row.games_played }}</td>
-              <td v-if="this.showStatTypeColumn" class="py-2 px-3 ">{{ row.total_filter_type }}</td>
+              <td class="py-2 px-3 ">{{ row.games_played.toLocaleString() }}</td>
+              <td v-if="this.showStatTypeColumn" class="py-2 px-3 ">{{ row.total_filter_type.toFixed(2).toLocaleString() }}</td>
               <td class="py-2 px-3 ">
                 <custom-button
                   @click="viewtalentbuilds(row.name, index)"
@@ -318,6 +319,18 @@ export default {
       this.loadingStates = {};
       this.sortKey = '';
       this.sortDir = 'desc';
+
+      /*
+
+      let queryString = `?timeframe_type=${this.timeframetype}`;
+      queryString += `&timeframe=${this.timeframe}`;
+      queryString += `&game_type=${this.gametype}`;
+
+      const currentUrl = window.location.href;
+      let currentPath = window.location.pathname;
+      history.pushState(null, null, `${currentPath}${queryString}`);
+      */
+
       this.getData();
     },
     sortTable(key) {

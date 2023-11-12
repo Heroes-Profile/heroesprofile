@@ -14,10 +14,11 @@
 
     <div v-if="data">
 
-      <line-chart :data="reversedData" :dataAttribute="'mmr'"></line-chart>
+      <line-chart class="max-w-[1500px] mx-auto" :data="reversedData" :dataAttribute="'mmr'"></line-chart>
 
-
-      {{ this.gametype.toUpperCase() }} - League Tier Breakdowns | Player MMR: {{ data[0].mmr }}
+      <div class="max-w-[1500px] mx-auto mt-2">
+        {{ this.gametype.toUpperCase() }} - League Tier Breakdowns | Player MMR: {{ data[0].mmr }}
+      </div>
       <table class="">
         <thead>
           <tr>
@@ -38,10 +39,10 @@
               {{ printLeagueName(row.tier, row.league_tier) }}
             </td>
             <td>
-              {{ row.min_mmr }}
+              {{ row.min_mmr.toLocaleString() }}
             </td>
             <td>
-              {{ row.max_mmr }}
+              {{ row.max_mmr ? row.max_mmr.toLocaleString() : "" }}
             </td>
           </tr>
         </tbody>
@@ -76,7 +77,7 @@
         <tbody>
           <tr v-for="(row, index) in sortedData" :key="index">
             <td>
-              <a :href="'/Match/Single/' + row.replayID">{{ row.replayID }}</a>
+              <a class="link" :href="'/Match/Single/' + row.replayID">{{ row.replayID }}</a>
             </td>
             <td>
               {{ formatDate(row.game_date) }}
@@ -88,10 +89,10 @@
               <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}
             </td>
             <td>
-              {{ row.mmr }}
+              {{ row.mmr.toLocaleString() }}
             </td>
             <td>
-              {{ row.mmr_change }}
+              {{ row.mmr_change.toFixed(2) }}
             </td>
             <td>
               {{ row.winner }}

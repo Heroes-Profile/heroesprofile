@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="'All Heroes data for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
+    <page-heading :infoText1="'All Heroes data for ' + battletag + '. Click a hero to see individual hero statistics'" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
 
     <filters 
       :onFilter="filterData" 
@@ -41,17 +41,17 @@
             </th>    
             <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Win Rate | Total Games
-                <!--The stat bar heres background is same color as table so it melts in, look at Artanis-->
+              
             </th>
             <th @click="sortTable('kda')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               <div class=""> <!--How do you get these things to stack on top of each other ?-->
-                KDA
+                KDA <br/>
                 Kills/Deaths/Takedowns
               </div>
             </th>  
             <th @click="sortTable('kdr')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               <div class=""> <!--How do you get these things to stack on top of each other ?-->
-                KDR
+                KDR <br/>
                 Kills/Deaths
               </div>
             </th>
@@ -66,7 +66,7 @@
         <tbody>
           <tr v-for="row in sortedData" :key="row.id">
             <td class="py-2 px-3 "><a :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.name }}</a></td>
-            <td class="py-2 px-3 "><stat-bar-box :title="'Win Rate'" :value="row.win_rate"></stat-bar-box>{{ (row.wins + row.losses) }}</td>
+            <td class="py-2 px-3 "><stat-bar-box :title="'Win Rate'" :value="row.win_rate" :color="getWinRateColor(row.win_rate)"></stat-bar-box>{{ (row.wins + row.losses) }}</td>
             <td class="py-2 px-3 ">{{ row.kda }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}/{{ row.avg_assists }}</td>
             <td class="py-2 px-3 ">{{ row.kdr }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}</td>
             
@@ -74,12 +74,12 @@
               <td 
                 v-if="stat.selected" 
                 :class="{ flash: stat.flash }"
-                class="py-2 px-3 ">
+                class="py-2 px-3 text-right">
                 <div v-if="statContainsMax(stat)">
                   <span class="link" @click="navigateToMaxStatMatch(row.hero, stat.value, row[stat.value])" title="Navigate to this match">{{ row[stat.value] }}</span>
                 </div>
                 <div v-else>
-                  {{ row[stat.value] }}
+                  {{ showStatValue(row[stat.value]) }}
                 </div>
               </td>
             </template>
@@ -326,6 +326,21 @@ export default {
       }
       this.matchIsLoading = false;
     },
+    showStatValue(value){
+      if(value < 1000){
+        return value.toFixed(2);
+      }else{
+        return Math.round(value).toLocaleString();
+      }
+    },
+    getWinRateColor(win_rate){
+      if(win_rate < 40){
+        return "red";
+      }else if(win_rate < 50){
+        return "yellow";
+      }
+      return "blue";
+    }
   }
 }
 </script>

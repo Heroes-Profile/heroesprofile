@@ -6,11 +6,11 @@ use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\CompareController;
 use App\Http\Controllers\Esports\CCL\CCLController;
 use App\Http\Controllers\Esports\EsportsController;
+use App\Http\Controllers\Esports\HeroesInternational\HeroesInternationalController;
 use App\Http\Controllers\Esports\MastersClash\MastersClashController;
 use App\Http\Controllers\Esports\NGS\NGSController;
 use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
 use App\Http\Controllers\Esports\NutCup\NutCupController;
-use App\Http\Controllers\Esports\HeroesInternational\HeroesInternationalController;
 use App\Http\Controllers\GamedataController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
@@ -36,9 +36,6 @@ use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
 use Illuminate\Support\Facades\Route;
-
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -101,22 +98,19 @@ Route::get('/Global/Party', [GlobalPartyStatsController::class, 'show']);
 Route::get('Profile/Settings', [ProfileController::class, 'showSettings'])->middleware('ensureBattlenetAuth');
 
 //Player data
-Route::get('Player/{battletag}/{blizz_id}/{region}', [PlayerController::class, 'show']);
-Route::get('Player/{battletag}/{blizz_id}/{region}/FriendFoe', [FriendFoeController::class, 'show']);
-Route::get('Player/{battletag}/{blizz_id}/{region}/Hero', [PlayerHeroesController::class, 'showAll']);
-Route::get('Player/{battletag}/{blizz_id}/{region}/Hero/{hero}', [PlayerHeroesController::class, 'showSingle']);
-Route::get('Player/{battletag}/{blizz_id}/{region}/Matchups', [PlayerMatchupsController::class, 'show']);
-Route::get('Player/{battletag}/{blizz_id}/{region}/Role', [PlayerRolesController::class, 'showAll']);
-Route::get('Player/{battletag}/{blizz_id}/{region}/Role/{role}', [PlayerRolesController::class, 'showSingle']);
-Route::get('Player/{battletag}/{blizz_id}/{region}/Map', [PlayerMapsController::class, 'showAll']);
-Route::get('Player/{battletag}/{blizz_id}/{region}/Map/{map}', [PlayerMapsController::class, 'showSingle']);
-
-Route::get('Player/{battletag}/{blizz_id}/{region}/Talents', [PlayerTalentsController::class, 'show']);
-Route::get('Player/{battletag}/{blizz_id}/{region}/Talents/{hero}', [PlayerTalentsController::class, 'show']);
-
-Route::get('Player/{battletag}/{blizz_id}/{region}/MMR', [PlayerMMRController::class, 'show']);
-
-Route::get('Player/{battletag}/{blizz_id}/{region}/Match/History', [PlayerMatchHistory::class, 'show']);
+Route::get('Player/{battletag}/{blizz_id}/{region}', [PlayerController::class, 'show'])->middleware('checkIfPrivateProfilePage');
+Route::get('Player/{battletag}/{blizz_id}/{region}/FriendFoe', [FriendFoeController::class, 'show'])->middleware('checkIfPrivateProfilePage');
+Route::get('Player/{battletag}/{blizz_id}/{region}/Hero', [PlayerHeroesController::class, 'showAll'])->middleware('checkIfPrivateProfilePage');
+Route::get('Player/{battletag}/{blizz_id}/{region}/Hero/{hero}', [PlayerHeroesController::class, 'showSingle'])->middleware('checkIfPrivateProfilePage');
+Route::get('Player/{battletag}/{blizz_id}/{region}/Matchups', [PlayerMatchupsController::class, 'show'])->middleware('checkIfPrivateProfilePage');
+Route::get('Player/{battletag}/{blizz_id}/{region}/Role', [PlayerRolesController::class, 'showAll'])->middleware('checkIfPrivateProfilePage');
+Route::get('Player/{battletag}/{blizz_id}/{region}/Role/{role}', [PlayerRolesController::class, 'showSingle'])->middleware('checkIfPrivateProfilePage');
+Route::get('Player/{battletag}/{blizz_id}/{region}/Map', [PlayerMapsController::class, 'showAll'])->middleware('checkIfPrivateProfilePage');
+Route::get('Player/{battletag}/{blizz_id}/{region}/Map/{map}', [PlayerMapsController::class, 'showSingle'])->middleware('checkIfPrivateProfilePage');
+Route::get('Player/{battletag}/{blizz_id}/{region}/Talents', [PlayerTalentsController::class, 'show'])->middleware('checkIfPrivateProfilePage');
+Route::get('Player/{battletag}/{blizz_id}/{region}/Talents/{hero}', [PlayerTalentsController::class, 'show'])->middleware('checkIfPrivateProfilePage');
+Route::get('Player/{battletag}/{blizz_id}/{region}/MMR', [PlayerMMRController::class, 'show'])->middleware('checkIfPrivateProfilePage');
+Route::get('Player/{battletag}/{blizz_id}/{region}/Match/History', [PlayerMatchHistory::class, 'show'])->middleware('checkIfPrivateProfilePage');
 
 Route::get('Match/Single/{replayID}', [SingleMatchController::class, 'showWithoutEsport']);
 
@@ -151,7 +145,6 @@ Route::get('Esports/NutCup', [NutCupController::class, 'show']);
 Route::get('Esports/MastersClash', [MastersClashController::class, 'show']);
 
 Route::get('Esports/HeroesInternational', [HeroesInternationalController::class, 'show']);
-
 
 //Rewrite game data later
 Route::get('/Gamedata', [GamedataController::class, 'heroes']);

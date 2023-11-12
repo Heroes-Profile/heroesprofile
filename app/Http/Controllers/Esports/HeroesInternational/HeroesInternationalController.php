@@ -3,19 +3,16 @@
 namespace App\Http\Controllers\Esports\HeroesInternational;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\DB;
-
 use App\Models\HeroesInternational\HeroesInternationalMainTeam;
 use App\Models\HeroesInternational\HeroesInternationalNationsCupTeam;
-
 use App\Models\Map;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class HeroesInternationalController extends Controller
 {
     private $esport;
-
 
     public function show(Request $request)
     {
@@ -32,27 +29,27 @@ class HeroesInternationalController extends Controller
             ];
         }
 
+        $tournament = $request['tournament'];
 
-        $tournament = $request["tournament"];
-
-        if($tournament == "main"){
+        if ($tournament == 'main') {
             return view('Esports.HeroesInternational.heroesInternationalMain')
                 ->with([
                     'defaultseason' => 1,
                     'filters' => $this->globalDataService->getFilterData(),
                     'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
                 ]);
-        }else if($tournament == "nationscup"){
-            return view('Esports.HeroesInternational.heroesInternationalNationsCup')         
+        } elseif ($tournament == 'nationscup') {
+            return view('Esports.HeroesInternational.heroesInternationalNationsCup')
                 ->with([
                     'defaultseason' => 1,
                     'filters' => $this->globalDataService->getFilterData(),
                     'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
                 ]);
-        }else{
+        } else {
             return view('Esports.HeroesInternational.heroesInternationalEntry');
         }
     }
+
     public function getTeamsData(Request $request)
     {
         //return response()->json($request->all());
@@ -79,7 +76,6 @@ class HeroesInternationalController extends Controller
         } elseif ($this->esport) {
             return HeroesInternationalNationsCupTeam::where('season', $request['season'])->get();
         }
-
 
     }
 
@@ -108,16 +104,14 @@ class HeroesInternationalController extends Controller
         $pagination_page = $request['pagination_page'];
         $perPage = 1000;
 
-        $this->schema = 'heroesprofile_' . $this->esport;
+        $this->schema = 'heroesprofile_'.$this->esport;
 
-        $results = DB::table($this->schema . '.replay')->select($this->schema.'.replay.replayID', 'hero', 'game_map', 'replay.team_0_id', 'replay.team_1_id', 'round', 'game', 'game_date')
+        $results = DB::table($this->schema.'.replay')->select($this->schema.'.replay.replayID', 'hero', 'game_map', 'replay.team_0_id', 'replay.team_1_id', 'round', 'game', 'game_date')
             ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
             ->join($this->schema.'.teams', $this->schema.'.teams.team_id', '=', $this->schema.'.player.team_id')
             ->orderBy('game_date', 'DESC')
             ->where('replay.season', $season)
             ->paginate($perPage, ['*'], 'page', $pagination_page);
-
-
 
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
@@ -135,11 +129,9 @@ class HeroesInternationalController extends Controller
         $groupedResults = $results->groupBy('replayID')->map(function ($group) use ($heroData, $maps) {
             $heroes = [];
 
-
             for ($i = 0; $i < 10; $i++) {
                 $heroes[$i] = isset($group[$i]) && isset($group[$i]->hero) ? $heroData[$group[$i]->hero] : null;
             }
-
 
             return [
                 'replayID' => $group[0]->replayID,

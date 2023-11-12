@@ -23,18 +23,18 @@
 
           <div v-if="!esport && esport != true" class="flex w-full hover:backdrop-brightness-125">
             <div class="flex w-full ">
-              <stat-box :title="'Player MMR'" :value="data.player_conservative_rating" :secondstat="data.player_change" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'teal' : 'red'"></stat-box>
-              <stat-box :title="'Player MMR'" :value="data.player_conservative_rating" :secondstat="data.player_change" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'teal' : 'red'"></stat-box>
-              <stat-box :title="'Player MMR'" :value="data.player_conservative_rating" :secondstat="data.player_change" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box :title="'Player MMR'" :value="data.player_mmr.toLocaleString()" :secondstat="data.player_change.toFixed(2)" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
+              <stat-box :title="'Hero MMR'" :value="data.hero_mmr.toLocaleString()" :secondstat="data.hero_change.toFixed(2)" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
+              <stat-box :title="'Role MMR'" :value="data.role_mmr.toLocaleString()" :secondstat="data.role_change.toFixed(2)" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
             </div>
-            <div class="flex gap-x-1 mx-2 items-center">
-              <talent-image-wrapper v-if="data.level_one" :talent="data.level_one" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper v-if="data.level_four" :talent="data.level_four" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper v-if="data.level_seven" :talent="data.level_seven" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper v-if="data.level_ten" :talent="data.level_ten" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper v-if="data.level_thirteen" :talent="data.level_thirteen" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper v-if="data.level_sixteen" :talent="data.level_sixteen" :size="'medium'"></talent-image-wrapper>
-              <talent-image-wrapper v-if="data.level_twenty" :talent="data.level_twenty" :size="'medium'"></talent-image-wrapper>
+            <div class="flex gap-x-1 mx-2 items-center justify-start w-[450px] pl-2">
+              <div class="flex-1"><talent-image-wrapper :talent="data.level_one" :size="'medium'"></talent-image-wrapper></div>
+              <div class="flex-1"><talent-image-wrapper :talent="data.level_four" :size="'medium'"></talent-image-wrapper></div>
+              <div class="flex-1"><talent-image-wrapper :talent="data.level_seven" :size="'medium'"></talent-image-wrapper></div>
+              <div class="flex-1"><talent-image-wrapper :talent="data.level_ten" :size="'medium'"></talent-image-wrapper></div>
+              <div class="flex-1"><talent-image-wrapper :talent="data.level_thirteen" :size="'medium'"></talent-image-wrapper></div>
+              <div class="flex-1"> <talent-image-wrapper :talent="data.level_sixteen" :size="'medium'"></talent-image-wrapper></div>
+              <div class="flex-1"><talent-image-wrapper :talent="data.level_twenty" :size="'medium'"></talent-image-wrapper></div>
             </div>
           </div>
         </div>

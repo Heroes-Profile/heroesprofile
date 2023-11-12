@@ -5,8 +5,8 @@ use App\Http\Controllers\CompareController;
 use App\Http\Controllers\Esports\CCL\CCLController;
 //Global
 use App\Http\Controllers\Esports\EsportsController;
-use App\Http\Controllers\Esports\MastersClash\MastersClashController;
 use App\Http\Controllers\Esports\HeroesInternational\HeroesInternationalController;
+use App\Http\Controllers\Esports\MastersClash\MastersClashController;
 use App\Http\Controllers\Esports\NGS\NGSController;
 use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
@@ -33,9 +33,6 @@ use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
 use Illuminate\Support\Facades\Route;
-
-
-
 
 /*
 |--------------------------------------------------------------------------
@@ -85,7 +82,7 @@ Route::prefix('v1')->group(function () {
 
     Route::post('player/matchups', [PlayerMatchupsController::class, 'getMatchupData']);
 
-    Route::post('player/heroes/all', [PlayerHeroesMapsRolesController::class, 'getData']);   
+    Route::post('player/heroes/all', [PlayerHeroesMapsRolesController::class, 'getData']);
 
     Route::post('player/heroes/single', [PlayerHeroesMapsRolesController::class, 'getData']);
 
@@ -109,7 +106,7 @@ Route::prefix('v1')->group(function () {
 
     Route::post('profile/save/settings', [ProfileController::class, 'saveSettings']);
     Route::post('profile/remove/patreon', [ProfileController::class, 'removePatreon']);
-
+    Route::post('profile/set/account/visibility', [ProfileController::class, 'setAccountVisibility']);
 
     Route::post('player/match/history', [PlayerMatchHistory::class, 'getData']);
 
@@ -143,8 +140,6 @@ Route::prefix('v1')->group(function () {
     Route::post('esports/mastersclash/matches', [MastersClashController::class, 'getRecentMatchData']);
     Route::post('esports/mastersclash/hero/stats', [EsportsController::class, 'getOverallHeroStats']);
     Route::post('esports/mastersclash/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
-
-
 
     Route::post('esports/heroesinternational/teams', [HeroesInternationalController::class, 'getTeamsData']);
     Route::post('esports/heroesinternational/matches', [HeroesInternationalController::class, 'getRecentMatchData']);

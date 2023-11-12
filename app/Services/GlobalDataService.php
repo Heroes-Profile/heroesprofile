@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\BattlenetAccount;
 use App\Models\Battletag;
 use App\Models\CCL\CCLTeam;
 use App\Models\GameType;
@@ -26,6 +27,20 @@ class GlobalDataService
     {
         //can add modifier here for patreons to reduce what they can filter on
         $this->filtersMinimumPatch = '2.53.0.83004';
+    }
+
+    public function getPrivateAccounts()
+    {
+        $privateAccounts = BattlenetAccount::select('battletag', 'blizz_id', 'region')->where('private', 1)->get();
+        $filteredAccounts = $privateAccounts->map(function ($account) {
+            return [
+                'battletag' => $account->battletag,
+                'blizz_id' => $account->blizz_id,
+                'region' => $account->region,
+            ];
+        });
+
+        return $filteredAccounts;
     }
 
     public function calculateMaxReplayNumber()
@@ -226,7 +241,7 @@ class GlobalDataService
 
     public function getAdvancedFilterShowDefault()
     {
-        if (Auth::check()) {            
+        if (Auth::check()) {
             $user = Auth::user();
 
             $advancedfiltering = $user->userSettings->firstWhere('setting', 'advancedfiltering')->value;

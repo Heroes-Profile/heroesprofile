@@ -1,7 +1,7 @@
 <template>
   <div>
-    <page-heading :infoText1="inputhero.name + ' talent stats and builds player by ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`">
-      <hero-image-wrapper :hero="inputhero" :size="'big'"></hero-image-wrapper>
+    <page-heading :infoText1="selectedHero ? selectedHero.name + ' talent stats and builds player by ' + battletag : ' talent stats and builds player by ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`">
+      <hero-image-wrapper v-if="selectedHero" :hero="selectedHero" :size="'big'"></hero-image-wrapper>
     </page-heading>
 
     <div v-if="!selectedHero">
@@ -17,6 +17,7 @@
         :includeseason="true"
         :includegamemap="true"
         :hideadvancedfilteringbutton="true"
+        :includegamedate="true"
         >
       </filters>
       <div  v-if="talentdetaildata" class="container mx-auto px-4">
@@ -64,6 +65,7 @@ export default {
       talentbuilddata: null,
       season: null,
       gamemap: null,
+      fromdate: null,
     }
   },
   created(){
@@ -90,6 +92,7 @@ export default {
           game_type: this.gametype,
           season: this.season,
           game_map: this.gamemap,
+          fromdate: this.fromdate,
         });
         this.talentdetaildata = response.data.talentData
         this.talentbuilddata = response.data.buildData;
@@ -110,6 +113,7 @@ export default {
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
       this.season = filteredData.single["Season"] ? filteredData.single["Season"] : this.season;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
+      this.fromdate = filteredData.single["From Date"] ? filteredData.single["From Date"] : null;
 
 
       this.talentdetaildata = null;

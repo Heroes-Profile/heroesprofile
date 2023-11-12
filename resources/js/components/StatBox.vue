@@ -47,7 +47,9 @@
     },
     props: {
       title: String,
-      secondstat: Number,
+      secondstat: {
+        type: [String, Number]
+      },
       secondtype: String,
       secondcaption: String,
       color: String,

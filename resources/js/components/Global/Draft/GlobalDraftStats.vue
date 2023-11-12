@@ -1,7 +1,9 @@
 <template>
   <div>
     <div class="grid gap-5 grid-cols-1">
-      <page-heading :infoText1="infoText1" :infoText2="infoText2" :heading="selectedHero ? selectedHero.name + ' Draft Statistics' : 'Draft Statistics'"></page-heading>
+      <page-heading :infoText1="infoText1" :infoText2="infoText2" :heading="selectedHero ? selectedHero.name + ' Draft Statistics' : 'Draft Statistics'">
+        <hero-image-wrapper v-if="selectedHero" :hero="selectedHero" :size="'big'"></hero-image-wrapper>
+      </page-heading>
 
 
       <div v-if="!selectedHero">
@@ -61,10 +63,10 @@
             <td class="py-2 px-3 ">
               {{ determinePickOrBan(row.pick_number) }}
             </td>
-            <td class="py-2 px-3 ">{{ row.popularity }}</td>
-            <td class="py-2 px-3 ">{{ row.wins }}</td>
-            <td class="py-2 px-3 ">{{ row.losses }}</td>
-            <td class="py-2 px-3 ">{{ row.win_rate }}</td>
+            <td class="py-2 px-3 ">{{ row.popularity.toFixed(2) }}</td>
+            <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
+            <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
+            <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
           </tr>
         </tbody>
       </table>

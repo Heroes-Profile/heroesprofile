@@ -151,13 +151,47 @@ class PlayerMatchHistory extends Controller
 
             $item->game_map = $maps[$item->game_map]['name'];
 
-            $item->level_one = $item->level_one && $talentData->has($item->level_one) ? $talentData[$item->level_one] : null;
-            $item->level_four = $item->level_four && $talentData->has($item->level_four) ? $talentData[$item->level_four] : null;
-            $item->level_seven = $item->level_seven && $talentData->has($item->level_seven) ? $talentData[$item->level_seven] : null;
-            $item->level_ten = $item->level_ten && $talentData->has($item->level_ten) ? $talentData[$item->level_ten] : null;
-            $item->level_thirteen = $item->level_thirteen && $talentData->has($item->level_thirteen) ? $talentData[$item->level_thirteen] : null;
-            $item->level_sixteen = $item->level_sixteen && $talentData->has($item->level_sixteen) ? $talentData[$item->level_sixteen] : null;
-            $item->level_twenty = $item->level_twenty && $talentData->has($item->level_twenty) ? $talentData[$item->level_twenty] : null;
+            if ($item->level_one) {
+                if ($item->level_one != 0) {
+                    $item->level_one = $talentData->has($item->level_one) ? $talentData[$item->level_one] : null;
+                }
+            }
+
+            if ($item->level_four) {
+                if ($item->level_four != 0) {
+                    $item->level_four = $talentData->has($item->level_four) ? $talentData[$item->level_four] : null;
+                }
+            }
+
+            if ($item->level_seven) {
+                if ($item->level_seven != 0) {
+                    $item->level_seven = $talentData->has($item->level_seven) ? $talentData[$item->level_seven] : null;
+                }
+            }
+
+            if ($item->level_ten) {
+                if ($item->level_ten != 0) {
+                    $item->level_ten = $talentData->has($item->level_ten) ? $talentData[$item->level_ten] : null;
+                }
+            }
+
+            if ($item->level_thirteen) {
+                if ($item->level_thirteen != 0) {
+                    $item->level_thirteen = $talentData->has($item->level_thirteen) ? $talentData[$item->level_thirteen] : null;
+                }
+            }
+
+            if ($item->level_sixteen) {
+                if ($item->level_sixteen != 0) {
+                    $item->level_sixteen = $talentData->has($item->level_sixteen) ? $talentData[$item->level_sixteen] : null;
+                }
+            }
+
+            if ($item->level_twenty) {
+                if ($item->level_twenty != 0) {
+                    $item->level_twenty = $talentData->has($item->level_twenty) ? $talentData[$item->level_twenty] : null;
+                }
+            }
 
             $item->winner = $item->winner == 1 ? 'True' : 'False';
 

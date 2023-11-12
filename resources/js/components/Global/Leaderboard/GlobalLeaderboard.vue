@@ -102,36 +102,37 @@
                 <td>{{ (index + 1) }}</td>
                 <td><a :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`">{{ row.split_battletag }}</a></td>
                 <td>{{ row.region }}</td>
-                <td>{{ row.win_rate }}</td>
-                <td>{{ row.rating }}</td>
-                <td>{{ row.mmr }}</td>
+                <td>{{ row.win_rate.toFixed(2) }}</td>
+                <td>{{ row.rating.toFixed(2) }}</td>
+                <td>{{ row.mmr.toLocaleString() }}</td>
                 <td>{{ row.tier }}</td>
-                <td>{{ row.games_played }}</td>
+                <td>{{ row.games_played.toLocaleString() }}</td>
 
-                <td v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role') && row.most_played_hero">
+                <td class="py-2 px-3 flex items-center gap-1" v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role') && row.most_played_hero">
                   <hero-image-wrapper :hero="row.most_played_hero">
                     <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Games Played:' + row.hero_build_games_played"></image-hover-box>
                   </hero-image-wrapper>
+                  {{ row.most_played_hero.name }}
                 </td>
 
 
                 <template v-else-if="leaderboardtype == 'Hero'">
                   <td class="py-2 px-3 ">
                     <div class="flex flex-wrap gap-4">
-                      <talent-image-wrapper v-if="row.level_one" :talent="row.level_one"></talent-image-wrapper>
-                      <talent-image-wrapper v-if="row.level_four" :talent="row.level_four"></talent-image-wrapper>
-                      <talent-image-wrapper v-if="row.level_seven" :talent="row.level_seven"></talent-image-wrapper>
-                      <talent-image-wrapper v-if="row.level_ten" :talent="row.level_ten"></talent-image-wrapper>
-                      <talent-image-wrapper v-if="row.level_thirteen" :talent="row.level_thirteen"></talent-image-wrapper>
-                      <talent-image-wrapper v-if="row.level_sixteen" :talent="row.level_sixteen"></talent-image-wrapper>
-                      <talent-image-wrapper v-if="row.level_twenty" :talent="row.level_twenty"></talent-image-wrapper>
+                      <talent-image-wrapper :talent="row.level_one"></talent-image-wrapper>
+                      <talent-image-wrapper :talent="row.level_four"></talent-image-wrapper>
+                      <talent-image-wrapper :talent="row.level_seven"></talent-image-wrapper>
+                      <talent-image-wrapper :talent="row.level_ten"></talent-image-wrapper>
+                      <talent-image-wrapper :talent="row.level_thirteen"></talent-image-wrapper>
+                      <talent-image-wrapper :talent="row.level_sixteen"></talent-image-wrapper>
+                      <talent-image-wrapper :talent="row.level_twenty"></talent-image-wrapper>
                     </div>
                   </td>
                   <td class="py-2 px-3 ">
                     {{ this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, row.hero) }}
                     <custom-button @click="copyToClipboard(row)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
                   </td>
-                  <td>{{ row.hero_build_games_played }}</td>
+                  <td>{{ row.hero_build_games_played.toLocaleString() }}</td>
                 </template>
               </tr>
             </template>

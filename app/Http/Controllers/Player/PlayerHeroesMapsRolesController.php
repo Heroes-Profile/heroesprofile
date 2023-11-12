@@ -301,9 +301,9 @@ class PlayerHeroesMapsRolesController extends Controller
                 $game->level_sixteen = $game->level_sixteen && isset($talentData[$game->level_sixteen]) ? $talentData[$game->level_sixteen] : null;
                 $game->level_twenty = $game->level_twenty && isset($talentData[$game->level_twenty]) ? $talentData[$game->level_twenty] : null;
 
-                $game->player_conservative_rating = round(1800 + 40 * $game->player_conservative_rating);
-                $game->hero_conservative_rating = round(1800 + 40 * $game->hero_conservative_rating);
-                $game->role_conservative_rating = round(1800 + 40 * $game->role_conservative_rating);
+                $game->player_mmr = round(1800 + 40 * $game->player_conservative_rating);
+                $game->hero_mmr = round(1800 + 40 * $game->hero_conservative_rating);
+                $game->role_mmr = round(1800 + 40 * $game->role_conservative_rating);
 
                 $game->player_change = round($game->player_change, 2);
                 $game->hero_change = round($game->hero_change, 2);
@@ -678,7 +678,8 @@ class PlayerHeroesMapsRolesController extends Controller
         return $returnData;
     }
 
-    public function findMatch(Request $request){
+    public function findMatch(Request $request)
+    {
         //return response()->json($request->all());
 
         $validationRules = [
@@ -759,11 +760,12 @@ class PlayerHeroesMapsRolesController extends Controller
 
                 return $query;
             })
-            ->where("hero", $hero)
+            ->where('hero', $hero)
             ->where($stat, $value)
-            ->select("replay.replayID")
+            ->select('replay.replayID')
             //->toSql();
             ->first();
+
         return $result->replayID;
     }
 }

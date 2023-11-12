@@ -47,29 +47,35 @@
 
     </div>
 
-
-    <div v-if="this.data" class="flex">
-      <div v-for="stat in stats" :key="stat" class="flex">
-        <div v-for="player in playerData" :key="player.battletag">
-         <stat-bar-box  :title="`${player.battletag_short} ${stat}`" :displaytext="getStatText(stat.replace(/ /g, '_').toLowerCase(), player.battletag)" :value="getStatValue(stat.replace(/ /g, '_').toLowerCase(), player.battletag)"></stat-bar-box>
+<div class="flex justify-center gap-10 mt-10">
+    <div v-if="this.data" class="flex flex-col gap-10">
+      <div v-for="(stat, index) in stats.slice(0,4)" :key="stat" class="">
+        <div v-for="(player, playerIndex) in playerData" :key="player.battletag" class="flex flex-col" >
+         <stat-bar-box align="right"  :color="colors[playerIndex]"  :title="`${player.battletag_short} ${stat}`" :displaytext="getStatText(stat.replace(/ /g, '_').toLowerCase(), player.battletag)" :value="getStatValue(stat.replace(/ /g, '_').toLowerCase(), player.battletag)"></stat-bar-box>
        </div>
      </div>
-
+</div>
      <img :src="getHeroImage()" />
-
+ <div v-if="this.data" class="flex flex-col gap-10">
+      <div v-for="(stat, index) in stats.slice(4)" :key="stat" class="">
+        <div v-for="(player, playerIndex) in playerData" :key="player.battletag" class="flex flex-col" >
+         <stat-bar-box align="left"  :color="colors[playerIndex]"  :title="`${player.battletag_short} ${stat}`" :displaytext="getStatText(stat.replace(/ /g, '_').toLowerCase(), player.battletag)" :value="getStatValue(stat.replace(/ /g, '_').toLowerCase(), player.battletag)"></stat-bar-box>
+       </div>
+     </div>
+</div>
 
 
    </div>
    <div v-if="this.data">
-    <table v-for="(section, sectionIndex) in sections" :key="sectionIndex">
+    <table v-for="(section, sectionIndex) in sections" :key="sectionIndex" class="table-fixed">
       <thead>
         <tr>
-          <td class="teal"></td>
+          <td  class="teal"></td>
           
           <td
           v-for="(player, index) in data"
           :key="index"
-          class="teal"
+          width="25%"
           >
           <a :href="`/Player/${player.battletag_short}/${player.blizz_id}/${player.region}`">{{ player.battletag_short }}</a>
         </td>
@@ -79,8 +85,8 @@
     <tbody>
         
           <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
-            <td>{{ row.label }}</td>
-            <td v-for="(player, playerIndex) in data" :key="playerIndex">{{ formatValue(player.averages[row.key].avg_value) }}</td>
+            <td class="flex-1">{{ row.label }}</td>
+            <td class="flex-1" v-for="(player, playerIndex) in data" :key="playerIndex">{{ formatValue(player.averages[row.key].avg_value) }}</td>
           </tr>
     
       </tbody>
@@ -126,6 +132,7 @@
         gametype: null,
         season: null,
         gamemap: null,
+        colors: ['blue', 'teal', 'red', 'yellow'],
 
         stats: [
           'Takedowns',
@@ -221,6 +228,8 @@
     },
     computed: {
 
+
+
     },
     watch: {
     },
@@ -287,7 +296,7 @@
         if (typeof statValue === "undefined") {
           return 0;
         }
-        return this.data[battletag].averages[stat].avg_value;
+        return this.data[battletag].averages[stat].avg_value.toFixed(2).toLocaleString();
       },
       formatValue(value){
         return value ? value.toLocaleString() : 0;
