@@ -11,11 +11,11 @@
     </div>
 
     <div v-if="data">
-      <div class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
+      <div class="flex md:p-20 gap-10 mx-auto justify-center items-center ">
         <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
           <stat-box class="w-[48%]" :title="'Wins'" :value="data.wins.toLocaleString()"></stat-box>
           <stat-box class="w-[48%]" :title="'Losses'" :value="data.losses.toLocaleString()"></stat-box>
-          <stat-bar-box class="w-full" size="full" :title="'Win Rate'" :value="data.win_rate.toFixed(2)" color="teal"></stat-bar-box>       
+          <stat-bar-box class="w-full mb-5" size="full" :title="'Win Rate'" :value="data.win_rate.toFixed(2)" color="teal"></stat-bar-box>       
           <stat-box class="w-[48%]" :title="'KDR'" :value="data.kdr" color="red"></stat-box>          
           <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="red"></stat-box>                  
         </div>
@@ -23,7 +23,7 @@
           <hero-image-wrapper :rectangle="true" :hero="heroobject" :title="heroobject.name" size="large"></hero-image-wrapper>
         </div>
 
-        <div class="flex flex-col max-w-[450px] text-left w-full items-between ">
+        <div class="flex flex-col max-w-[450px] text-left w-full items-between h-full justify-center">
           <stat-box class="w-[48%]" :title="'Takedowns'" :value="data.sum_takedowns.toLocaleString()"></stat-box>
           <stat-box class="w-[48%]" :title="'Kills'" :value="data.sum_kills.toLocaleString()"></stat-box>
           <stat-box class="w-[48%]" :title="'Assists'" :value="data.sum_assists.toLocaleString()"></stat-box>
@@ -32,10 +32,11 @@
         </div>
 
       </div>
-      <div class="flex mx-auto justify-center max-w-[1500px]">
-        <span><a class="link" :href="this.getTalentPageUrl()">View Talent Data</a></span>
-      </div>
+    
 
+      <div class="max-w-[1500px] mx-auto text-right mb-2">
+      <custom-button :href="this.getTalentPageUrl()" class="flex-1 " text="View Talent Data"></custom-button>
+       </div>
       <div class="bg-lighten p-10 ">
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Maps played on {{ hero }}</h2>
@@ -44,9 +45,9 @@
             <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.map_data_top_win_rate.slice(0, 3)"></group-box>
             <group-box :playerlink="true" :text="'Latest Played'" :data="data.map_data_top_latest_played.slice(0, 3)"></group-box>
           </div>
-          <div class="flex">
+          <div class="flex flex-wrap mx-auto gap-2 pt-5">
             <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" v-for="(item, index) in data.map_data" :key="index">
-              <map-image-wrapper :map="item.game_map">
+              <map-image-wrapper :map="item.game_map" size="big">
                 <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
               </map-image-wrapper>
             </a>
@@ -54,7 +55,7 @@
         </div>
       </div>
 
-      <line-chart v-if="seasonWinRateDataArray" :data="seasonWinRateDataArray" :dataAttribute="'win_rate'"></line-chart>
+      <line-chart v-if="seasonWinRateDataArray" :data="seasonWinRateDataArray" :dataAttribute="'win_rate'" class="max-w-[1500px] mx-auto"></line-chart>
 
       <div class="bg-lighten">
         <div class="max-w-[1000px] mx-auto">
@@ -100,7 +101,7 @@
             <stat-box title="Rank Tier" :value="data.ar_mmr_data ? data.ar_mmr_data.rank_tier : ''"></stat-box>
             <stat-box :title="'MMR'" :value="data.ar_mmr_data ? data.ar_mmr_data.mmr.toLocaleString() : 0 "></stat-box>
           </div>
-          <div class="max-w-[1500px] mx-auto text-right my-2">
+          <div class="max-w-[1500px] mx-auto text-right my-2 pb-2">
             <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/MMR/Hero/' + heroobject.name" class=" " text="View MMR Breakdown"></custom-button>
           </div>
         </div>        
@@ -142,8 +143,8 @@
 
 
 
-      <div>
-        Advanced Stats
+      <div class="max-w-[1500px] mx-auto">
+        <h2 class="text-3xl font-bold py-5">Advanced Stats</h2>
         <table v-for="(section, sectionIndex) in sections" :key="sectionIndex">
           <thead>
             <tr>
@@ -155,10 +156,10 @@
           </thead>
           <tbody>
             <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
-              <td>{{ row.label }}</td>
-              <td>{{ formatValue(this.data["sum_" + row.key])}}</td>
-              <td>{{ formatValue(this.data["avg_" + row.key]) }}</td>
-              <td>{{ formatValue(this.data["max_" + row.key]) }}</td>
+              <td width="25%">{{ row.label }}</td>
+              <td width="25%">{{ formatValue(this.data["sum_" + row.key])}}</td>
+              <td width="25%">{{ formatValue(this.data["avg_" + row.key]) }}</td>
+              <td width="25%">{{ formatValue(this.data["max_" + row.key]) }}</td>
             </tr>
           </tbody>
         </table>
