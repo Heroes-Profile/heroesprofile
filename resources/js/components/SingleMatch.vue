@@ -132,28 +132,14 @@
 
 
 
-
+          
 
         <div class="ml-auto flex justify-end">
-        Sort By: 
-        <custom-button
-          @click="sortCombinedPlayers('team')"          
-          text="Team"
-          alt="Team"
-          size="small"
-          :ignoreclick="true"
-        >
+          <div class="text-center flex items-center gap-2">
+          Sort By: 
+            <tab-button :tab1text="'Team'" :ignoreclick="true" :tab2text="'HP Score'" @tab-click="sortCombinedPlayers" > </tab-button>
+        </div>
         
-        </custom-button>
-
-        <custom-button
-          @click="sortCombinedPlayers('total_rank')"          
-          text="HP Score"
-          alt="HP Score"
-          size="small"
-          :ignoreclick="true"
-        >
-        </custom-button>
       </div>
 
 
@@ -220,62 +206,65 @@
 
 
 
-      <div class="p-10 text-center max-w-[2000px] mx-auto">
-        Talents
-        <div class="flex">
-        <div><template v-for="(item, index) in data.players[0]" :key="index">
-          <div v-if="!esport && item.check">
-            <div class="flex items-center">
-              <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_ten"></talent-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
-              {{ this.getCopyBuildToGame(item.talents.level_one, item.talents.level_four, item.talents.level_seven, item.talents.level_ten, item.talents.level_thirteen, item.talents.level_sixteen, item.talents.level_twenty, item.hero) }}
-              <custom-button @click="copyToClipboard(item)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
+      <div class="p-10  max-w-[1500px] mx-auto">
+         <h2 class="text-3xl font-bold py-5">Talents</h2>
+        <div class="flex gap-5 justify-between">
+          <div class="">
+            <div class="w-full  mb-5" v-for="(item, index) in data.players[0]" :key="index">
+            
+            <a class="flex  w-full"  :href="item.check ? 'javascript:void(0)' : esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
+              <hero-image-wrapper class="mr-5" :size="'big'" :hero="item.hero"></hero-image-wrapper>
+              <div>
+                {{ item.battletag }} - {{ item.hero.name }}
+                <div class="flex  items-center gap-2 mb-2">
+                  
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_ten"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
+                 
+                </div>
+              </div>
+            </a>
+              <div class="text-xs text-right">
+             {{ this.getCopyBuildToGame(item.talents.level_one, item.talents.level_four, item.talents.level_seven, item.talents.level_ten, item.talents.level_thirteen, item.talents.level_sixteen, item.talents.level_twenty, item.hero) }}
+                <custom-button class="text-xs" @click="copyToClipboard(item)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
+              </div>
             </div>
-          </div>
-          <a v-else :href="esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
-            {{ item.battletag }} - {{ item.hero.name }}
-            <div class="flex  items-center">
-              <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_ten"></talent-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
-              {{ this.getCopyBuildToGame(item.talents.level_one, item.talents.level_four, item.talents.level_seven, item.talents.level_ten, item.talents.level_thirteen, item.talents.level_sixteen, item.talents.level_twenty, item.hero) }}
-              <custom-button @click="copyToClipboard(item)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
+        
+        </div>
+        <div class="">
+          <div class="w-full  mb-5" v-for="(item, index) in data.players[1]" :key="index">
+            
+            <a class="flex  w-full"  :href="item.check ? 'javascript:void(0)' : esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
+              <hero-image-wrapper class="mr-5" :size="'big'" :hero="item.hero"></hero-image-wrapper>
+              <div>
+                {{ item.battletag }} - {{ item.hero.name }}
+                <div class="flex  items-center gap-2 mb-2">
+                  
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_ten"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
+                 
+                </div>
+              </div>
+            </a>
+              <div class="text-xs text-right">
+             {{ this.getCopyBuildToGame(item.talents.level_one, item.talents.level_four, item.talents.level_seven, item.talents.level_ten, item.talents.level_thirteen, item.talents.level_sixteen, item.talents.level_twenty, item.hero) }}
+                <custom-button class="text-xs" @click="copyToClipboard(item)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
+              </div>
             </div>
-          </a>
-        </template>
-      </div>
-      <div>
 
-         <template v-for="(item, index) in data.players[1]" :key="index">
-          <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
-            {{ item.battletag }} - {{ item.hero.name }}
-            <div class="flex space-x-9 items-center">
-              <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_ten"></talent-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
-              <talent-image-wrapper :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
-              {{ this.getCopyBuildToGame(item.talents.level_one, item.talents.level_four, item.talents.level_seven, item.talents.level_ten, item.talents.level_thirteen, item.talents.level_sixteen, item.talents.level_twenty, item.hero) }}
-              <custom-button @click="copyToClipboard(item)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
-            </div>
-          </a>
-        </template>
+           
+        </div>
       </div>
-    </div>
       </div>
 
      <div class="bg-lighten p-10 text-center">
@@ -633,8 +622,14 @@ export default {
     combinePlayerArrays(){
       this.combinedPlayers = [...this.data.players[0], ...this.data.players[1]];
     },
-    sortCombinedPlayers(type) {
-
+    sortCombinedPlayers(side) {
+      let type = "team";
+      if(side == 'left'){
+        type = "team";
+      }
+      else{
+        type = "total_rank";
+      }
       this.combinedPlayers.sort((a, b) => {
         if(type == "total_rank"){
           if (this.sortDirectionHpScore === 'desc') {

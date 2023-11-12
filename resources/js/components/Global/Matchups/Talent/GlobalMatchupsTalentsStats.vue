@@ -67,7 +67,7 @@
 
   </div>
 
-  <div class="text-center mt-auto">
+  <div v-if="showTalentHeroToggle" class="text-center mt-auto">
     <tab-button :tab1text="'Enemy'" :ignoreclick="true" :tab2text="'Ally'" @tab-click="heroOrEnemySideSelected" > </tab-button>
   </div>
 </div>
