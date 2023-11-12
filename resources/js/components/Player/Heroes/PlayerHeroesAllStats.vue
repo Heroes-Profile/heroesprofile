@@ -66,7 +66,7 @@
         <tbody>
           <tr v-for="row in sortedData" :key="row.id">
             <td class="py-2 px-3 "><a :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.name }}</a></td>
-            <td class="py-2 px-3 "><stat-bar-box :title="'Win Rate'" :value="row.win_rate"></stat-bar-box>{{ (row.wins + row.losses) }}</td>
+            <td class="py-2 px-3 "><stat-bar-box :title="'Win Rate'" :value="row.win_rate" :color="getWinRateColor(row.win_rate)"></stat-bar-box>{{ (row.wins + row.losses) }}</td>
             <td class="py-2 px-3 ">{{ row.kda }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}/{{ row.avg_assists }}</td>
             <td class="py-2 px-3 ">{{ row.kdr }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}</td>
             
@@ -333,6 +333,14 @@ export default {
         return Math.round(value).toLocaleString();
       }
     },
+    getWinRateColor(win_rate){
+      if(win_rate < 40){
+        return "red";
+      }else if(win_rate < 50){
+        return "yellow";
+      }
+      return "blue";
+    }
   }
 }
 </script>

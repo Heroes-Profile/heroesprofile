@@ -32,7 +32,7 @@
         </div>
 
       </div>
-    
+
 
       <div class="max-w-[1500px] mx-auto text-right mb-2">
       <custom-button :href="this.getTalentPageUrl()" class="flex-1 " text="View Talent Data"></custom-button>
@@ -343,7 +343,7 @@
         this.getData();
       },
       getTalentPageUrl(){
-        return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region  + "/Talents/" + "/" + this.hero;
+        return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region  + "/Talents/" + this.hero;
       },
       formatValue(value){
         return value ? value.toLocaleString() : 0;
