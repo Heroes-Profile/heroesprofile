@@ -58,7 +58,7 @@
         <tbody>
           <tr v-for="row in sortedData" :key="row.id">
             <td class="py-2 px-3 "><a :href="getPlayerMapPageUrl(row.name)">{{ row.name }}</a></td>
-            <td class="py-2 px-3 ">{{ row.wins }}|{{ row.losses }} {{ row.win_rate }} %</td>
+            <td class="py-2 px-3 "><stat-bar-box :title="'Win Rate'" :value="row.win_rate"></stat-bar-box>{{ (row.wins + row.losses) }}</td>
             <td class="py-2 px-3 ">{{ row.kda }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}/{{ row.avg_assists }}</td>
             <td class="py-2 px-3 ">{{ row.kdr }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}</td>
             
