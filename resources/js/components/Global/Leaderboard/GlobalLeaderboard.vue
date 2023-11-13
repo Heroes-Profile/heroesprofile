@@ -12,7 +12,7 @@
         <div class="bg-teal p-[1em] pl-[2em] ">
       <ol class="list-disc">
         <li>Account level must be greater than or equal to 250.</li>
-          <li> Must have played at least 5 times the number of weeks since the season started.</li>
+          <li> Must have played at least 5 times the number of weeks since the season started. (Currently that is {{ weekssincestart * 5 }} games)</li>
           <li>Must have a win rate greater than or equal to 50%.</li>
      
       </ol>
@@ -68,7 +68,7 @@
               <th @click="sortTable('mmr')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 {{ leaderboardtype }} MMR
               </th> 
-              <th @click="sortTable('tier')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('tier_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Tier
               </th>    
               <th @click="sortTable('games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -99,7 +99,7 @@
           <tbody>
             <template v-for="(row, index) in sortedData">
               <tr>
-                <td>{{ (index + 1) }}</td>
+                <td>{{ row.rank }}</td>
                 <td><a :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`">{{ row.split_battletag }}</a></td>
                 <td>{{ row.region }}</td>
                 <td>{{ row.win_rate.toFixed(2) }}</td>
@@ -159,6 +159,7 @@ export default {
     gametypedefault: Array,
     defaultseason: String,
     advancedfiltering: Boolean,
+    weekssincestart: Number,
   },
   data(){
     return {
