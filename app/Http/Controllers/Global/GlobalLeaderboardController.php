@@ -22,6 +22,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
             'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
             'defaultseason' => (string) $this->globalDataService->getDefaultSeason(),
+            'weekssincestart' => $this->globalDataService->getWeeksSinceSeasonStart(),
         ]);
     }
 
@@ -109,6 +110,9 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             $item->rating = round($item->rating, 2);
             $item->most_played_hero = $item->most_played_hero ? $heroData[$item->most_played_hero] : null;
             $item->tier = $this->globalDataService->calculateSubTier($rankTiers, $item->mmr);
+            $item->tier_id = $this->globalDataService->calculateTierID($item->tier);
+
+
             $item->region_id = $item->region;
             $item->region = $this->globalDataService->getRegionIDtoString()[$item->region];
 
