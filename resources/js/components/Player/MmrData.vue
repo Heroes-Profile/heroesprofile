@@ -101,8 +101,8 @@
         </tbody>
       </table>
     </div>
-    <div v-else>
-      <loading-component></loading-component>
+    <div v-else-if="isLoading">
+      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
 
   </div>
@@ -128,6 +128,7 @@ export default {
   },
   data(){
     return {
+      cancelTokenSource: null,
       userTimezone: moment.tz.guess(),
       isLoading: false,
       gametype: null,
@@ -165,6 +166,12 @@ export default {
   methods: {
     async getData(){
       this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+
       try{
         const response = await this.$axios.post("/api/v1/player/mmr", {
           battletag: this.battletag,
@@ -173,13 +180,23 @@ export default {
           battletag: this.battletag,
           game_type: this.gametype,
           type: "Player",
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
         });
         this.data = response.data.tableData;
         this.leaguedata = response.data.leagueData;
       }catch(error){
         //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
       }
-      this.isLoading = false;
+    },
+    cancelAxiosRequest() {
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled by user');
+      }
     },
     filterData(filteredData){
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;

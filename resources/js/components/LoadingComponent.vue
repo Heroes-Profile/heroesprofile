@@ -11,6 +11,8 @@
 
       <span v-else>Loading data...</span>
     </div>
+    <!-- Unforunately this only cancels the front end request, and I have found no way to cancel the backend request -->
+    <!--<custom-button @click="cancelRequest" text="Cancel Request" alt="Cancel Request" size="small" :ignoreclick="true">Cancel Request</custom-button>-->
   </div>
 </template>
 <script>
@@ -51,6 +53,9 @@
             }
           }, 1000); // Update countdown every 1 second (1000 milliseconds)
         }
+      },
+      cancelRequest() {
+        this.$emit('cancel-request');
       },
     },
     beforeDestroy() {

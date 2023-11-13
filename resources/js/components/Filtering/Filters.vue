@@ -472,7 +472,6 @@
         return '';
       },
       applyFilter() {
-        console.log(this.selectedSingleFilters);
         if (this.selectedMultiFilters.hasOwnProperty('Timeframes') && this.selectedMultiFilters.hasOwnProperty('Game Type')) {
           const allSelectedFilters = {
             single: this.selectedSingleFilters,

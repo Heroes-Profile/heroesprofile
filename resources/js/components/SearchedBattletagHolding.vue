@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="battletagresponse">
-      <div v-if="battletagresponse.length > 1">
+      <div class="flex flex-col items-center" v-if="battletagresponse.length > 1">
         <div 
           class="bg-blue p-4 rounded mb-4 w-[500px] flex flex-col items-center cursor-pointer" 
           v-for="(item, index) in battletagresponse" 
@@ -24,7 +24,7 @@
       </div>
     </div>
     <div v-else>
-      <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+      <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
     </div>
 
 
@@ -48,6 +48,7 @@ export default {
       alt_search_account1_exists: false,
       alt_search_account2_exists: false,
       alt_search_account3_exists: false,
+      cancelTokenSource: null,
     }
   },
   created(){
@@ -67,9 +68,19 @@ export default {
   },
   methods: {
     async getData(){
+      this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+
       try{
         const response = await this.$axios.post("/api/v1/battletag/search", {
           userinput: this.userinput,
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
         });
         this.battletagresponse = response.data;
         if(this.isBattletagReponseValid) {
@@ -81,6 +92,15 @@ export default {
         }
       }catch(error){
         this.battletagresponse = "Invalid input: '%', '?' and ' ' are invalid inputs";
+      }finally {
+        this.cancelTokenSource = null; // Reset cancel token source
+        this.isLoading = false;
+      }
+    },
+    cancelAxiosRequest() {
+      // Cancel the request if it's in progress
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled by user');
       }
     },
     redirectToProfile(battletag, blizz_id, region) {

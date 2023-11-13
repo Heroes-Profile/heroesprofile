@@ -77,8 +77,8 @@
       </table>
 
     </div>
-    <div v-else>
-      <loading-component :textoverride="true" :timer="true" :starttime="timertime">Large amount of data.<br/>Please be patient.<br/></loading-component>
+    <div v-else-if="isLoading">
+      <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true" :timer="true" :starttime="timertime">Large amount of data.<br/>Please be patient.<br/></loading-component>
     </div>
 
   </div>
@@ -102,6 +102,7 @@ export default {
   },
   data(){
     return {
+      cancelTokenSource: null,
       showOptions: false,
       isLoading: false,
       infoText: "Select a hero below to view detailed stats for that hero. Use the search box above to filter the list of heroes. Or scroll down to the advanced section for table view.",
@@ -233,6 +234,12 @@ export default {
   methods: {
     async getData(type){
       this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+
       try{
         const response = await this.$axios.post("/api/v1/player/maps/all", {
           battletag: this.battletag,
@@ -244,13 +251,23 @@ export default {
           type: "all",
           page: "map",
           game_map: this.map,
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
         });
 
         this.data = response.data;
       }catch(error){
         //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
       }
-      this.isLoading = false;
+    },
+    cancelAxiosRequest() {
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled by user');
+      }
     },
     filterData(filteredData){
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;

@@ -91,10 +91,10 @@
 
     </div>
     <div v-if="isLoading">
-        <loading-component :textoverride="true" :timer="true" :starttime="timertime">Large amount of data.<br/>Please be patient.<br/></loading-component>
+        <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true" :timer="true" :starttime="timertime">Large amount of data.<br/>Please be patient.<br/></loading-component>
     </div>
     <div v-if="matchIsLoading">
-      <loading-component></loading-component>
+      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
   </div>
 </template>
@@ -120,6 +120,7 @@ export default {
       showOptions: false,
       isLoading: false,
       matchIsLoading: false,
+      cancelTokenSource: null,
       infoText: "Select a hero below to view detailed stats for that hero. Use the search box above to filter the list of heroes. Or scroll down to the advanced section for table view.",
       gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
       data: null,
@@ -222,6 +223,14 @@ export default {
   mounted() {
     this.getData();
   },
+  beforeDestroy() {
+    this.cancelAxiosRequest();
+  },
+
+  beforeRouteLeave(to, from, next) {
+    this.cancelAxiosRequest();
+    next();
+  },
   computed: {
     timertime(){
       return parseInt(this.accountlevel * 3 * .003);
@@ -250,6 +259,12 @@ export default {
   methods: {
     async getData(type){
       this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+
       try{
         const response = await this.$axios.post("/api/v1/player/heroes/all", {
           battletag: this.battletag,
@@ -261,13 +276,23 @@ export default {
           minimumgames: this.minimumgames,
           type: "all",
           page: "hero",
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
         });
 
         this.data = response.data;
       }catch(error){
         //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
       }
-      this.isLoading = false;
+    },
+    cancelAxiosRequest() {
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled by user');
+      }
     },
     filterData(filteredData){
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;

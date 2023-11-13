@@ -23,15 +23,15 @@
       <div  v-if="talentdetaildata" class="container mx-auto px-4">
         <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
       </div>
-      <div v-else>
-        <loading-component></loading-component>
+      <div v-else-if="isLoading">
+        <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
       </div>
       <div  v-if="talentbuilddata" class="container mx-auto px-4">
         {{ this.selectedHero.name }} {{ "Talent Builds"}}
         <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="'Popular'" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
       </div>
-      <div v-else>
-        <loading-component></loading-component>
+      <div v-else-if="isLoading">
+        <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
       </div>
     </div>
   </div>
@@ -57,6 +57,7 @@ export default {
   },
   data(){
     return {
+      cancelTokenSource: null,
       isLoading: false,
       gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
       selectedHero: null,
@@ -84,6 +85,12 @@ export default {
     async getData(){
       try{
         this.isLoading = true;
+
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled');
+        }
+        this.cancelTokenSource = this.$axios.CancelToken.source();
+
         const response = await this.$axios.post("/api/v1/player/talents", {
           hero: this.selectedHero.name,
           battletag: this.battletag,
@@ -93,13 +100,23 @@ export default {
           season: this.season,
           game_map: this.gamemap,
           fromdate: this.fromdate,
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
         });
         this.talentdetaildata = response.data.talentData
         this.talentbuilddata = response.data.buildData;
       }catch(error){
         //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
       }
-      this.isLoading = false;
+    },
+    cancelAxiosRequest() {
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled by user');
+      }
     },
     clickedHero(hero) {
       this.selectedHero = hero;

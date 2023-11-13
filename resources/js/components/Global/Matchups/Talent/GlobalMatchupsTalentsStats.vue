@@ -59,18 +59,18 @@
   </div>
 
   <div class="flex justify-between max-w-[1500px] mx-auto mb-2">
-  <div v-if="showTalentHeroToggle" class="text-center flex items-center gap-2">
-    Talents:    
+    <div v-if="showTalentHeroToggle" class="text-center flex items-center gap-2">
+      Talents:    
 
-    <tab-button :tab1text="this.hero.name" :ignoreclick="true" :tab2text="this.enemyally.name" @tab-click="talentHeroOrEnemySideSelected" > </tab-button>
+      <tab-button :tab1text="this.hero.name" :ignoreclick="true" :tab2text="this.enemyally.name" @tab-click="talentHeroOrEnemySideSelected" > </tab-button>
 
 
+    </div>
+
+    <div class="text-center mt-auto">
+      <tab-button :tab1text="'Enemy'" :ignoreclick="true" :tab2text="'Ally'" @tab-click="heroOrEnemySideSelected" > </tab-button>
+    </div>
   </div>
-
-  <div class="text-center mt-auto">
-    <tab-button :tab1text="'Enemy'" :ignoreclick="true" :tab2text="'Ally'" @tab-click="heroOrEnemySideSelected" > </tab-button>
-  </div>
-</div>
 
 
 
@@ -80,7 +80,7 @@
   </div>
 
   <div v-if="isLoading">
-    <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+    <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
   </div>
 
 </div>
@@ -106,7 +106,7 @@
         isLoading: false,
         infoText1: 'This page allows you to look at talent win rates and popularity, for a hero against, or with another hero. If you click on the "enemy" button, you will see talent data for games where those two heroes played against each other. If you click on the "ally" button, you will see talent data for games where those two heroes were on the same team.',
         infoText2: "NOTICE: This page may take longer to load data than our normal pages.",
-
+        cancelTokenSource: null,
         talentdetaildata: null,
 
       //Sending to filter
@@ -171,6 +171,12 @@
     methods: {
       async getData(){
         this.isLoading = true;
+
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled');
+        }
+        this.cancelTokenSource = this.$axios.CancelToken.source();
+        
         try{
           const response = await this.$axios.post("/api/v1/global/matchups/talents", {
             hero: this.hero.name,
@@ -182,16 +188,25 @@
             game_type: this.gametype,
             game_map: this.gamemap,
             league_tier: this.playerrank,
+          }, 
+          {
+            cancelToken: this.cancelTokenSource.token,
           });
           this.talentdetaildata = response.data.data;
           this.firstwinratedata = response.data.first_win_rate;
           this.secondwinratedata = response.data.second_win_rate;
         }catch(error){
         //Do something here
+        }finally {
+          this.cancelTokenSource = null;
+          this.isLoading = false;
         }
-        this.isLoading = false;
       },
-
+      cancelAxiosRequest() {
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled by user');
+        }
+      },
       herochanged(eventPayload){
         this.hero = this.heroes.find(hero => hero.id === eventPayload.value);
 

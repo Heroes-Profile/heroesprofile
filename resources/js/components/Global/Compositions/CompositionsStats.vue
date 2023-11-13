@@ -118,8 +118,8 @@
       </table>
 
     </div>
-    <div v-else>
-      <loading-component></loading-component>
+    <div v-else-if="isLoading">
+      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
 
 
@@ -149,8 +149,7 @@ export default {
       sortKey: '',
       sortDir: 'desc',
       compositiondata: null,
-
-      //Sending to filter
+      cancelTokenSource: null,
       timeframetype: null,
       timeframe: null,
       region: null,
@@ -197,6 +196,12 @@ export default {
   methods: {
     async getData(){
       this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+
       try{
         const response = await this.$axios.post("/api/v1/global/compositions", {
           timeframe_type: this.timeframetype,
@@ -211,16 +216,29 @@ export default {
           role_league_tier: this.rolerank,
           mirrormatch: this.mirrormatch,
           minimum_games: this.minimumgames
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
         });
+
         this.compositiondata = response.data;
         this.loadingStates = this.sortedData.map(() => false);
       }catch(error){
         //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
       }
-      this.isLoading = false;
     },
     async getTopHeroesData(compositionid, index){
       try{
+        this.isLoading = true;
+
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled');
+        }
+        this.cancelTokenSource = this.$axios.CancelToken.source();
+
         this.loadingStates[index] = true;
         const response = await this.$axios.post("/api/v1/global/compositions/heroes", {
           timeframe_type: this.timeframetype,
@@ -236,13 +254,25 @@ export default {
           mirrormatch: this.mirrormatch,
           minimum_games: this.minimumgames,
           composition_id: compositionid,
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
         });
+
 
         this.sortedData[index].compositionheroes = response.data;
         this.loadingStates[index] = false;
 
       }catch(error){
         //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
+      }
+    },
+    cancelAxiosRequest() {
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled by user');
       }
     },
     filterData(filteredData){
