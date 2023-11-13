@@ -96,7 +96,7 @@
         <div class="flex flex-wrap gap-2">
           <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
           <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button :disabled="loading" @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="isLoading" @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
         <ngs-standings v-if="standingData" :data="standingData" :season="defaultseason"></ngs-standings>
       </div>
@@ -104,7 +104,7 @@
       <div v-if="activeButton === 'divisions'">
         <div class="flex flex-wrap gap-2">
           <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
         <ngs-divisions v-if="divisionData" :data="divisionData" :season="season"></ngs-divisions>
       </div>
@@ -113,7 +113,7 @@
         <div class="flex flex-wrap gap-2">
           <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
           <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
         <esports-teams v-if="teamsData" :data="teamsData" :esport="'NGS'" :season="season"></esports-teams>
       </div>
@@ -146,7 +146,7 @@
         <div class="flex flex-wrap gap-2">
           <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
           <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
 
 
@@ -176,7 +176,7 @@
         <div class="flex flex-wrap gap-2">
           <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
           <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
         <esports-hero-stats v-if="heroStatsData" :data="heroStatsData"></esports-hero-stats>
       </div>
@@ -193,7 +193,7 @@
               <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange" :defaultValue="selectedHero.id"></single-select-filter>
               <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
               <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-              <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+              <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
             </div>
 
             
@@ -205,8 +205,8 @@
       </div>
 
     </div>
-    <div v-if="loading">
-      <loading-component :overrideimage="'/images/NGS/no-image-clipped.png'"></loading-component>
+    <div v-if="isLoading">
+      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="'/images/NGS/no-image-clipped.png'"></loading-component>
     </div>
   </div>
 </template>
@@ -225,8 +225,9 @@ export default {
   data() {
     return {
       preloadedImage: new Image(),
+      cancelTokenSource: null,
 
-      loading: false,
+      isLoading: false,
       infoText1: "Heroes of the Storm statistics and comparison for the Nexus Gaming Series",
       activeButton: null,
 
@@ -282,49 +283,91 @@ export default {
   },
   methods: {
     async getStandingsData(){
-      this.loading = true;
+      this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+
       try{
         const response = await this.$axios.post("/api/v1/esports/ngs/standings", {
           season: this.season,
           division: this.division,
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
         });
         this.standingData = response.data;
       }catch(error){
         //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
       }
-      this.loading = false;
     },
     async getDivisionsData(){
-      this.loading = true;
+      this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+
       try{
         const response = await this.$axios.post("/api/v1/esports/ngs/divisions", {
           season: this.season,
           division: this.division,
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
         });
         this.divisionData = response.data;
       }catch(error){
         //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
       }
-      this.loading = false;
     },
     async getTeamsData(){
-      this.loading = true;
+      this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+
       try{
         const response = await this.$axios.post("/api/v1/esports/ngs/teams", {
           season: this.season,
           division: this.division,
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
         });
         this.teamsData = response.data;
       }catch(error){
         //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
       }
-      this.loading = false;
     },
     async searchedPlayer(){
-      this.loading = true;
+      this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+      ;
       try{
         const response = await this.$axios.post("/api/v1/esports/ngs/player/search", {
           userinput: this.userinput
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
         });
         this.battletagresponse = response.data;
         if(this.isBattletagReponseValid) {
@@ -334,62 +377,99 @@ export default {
         } else {
           //Do something here
         }
-
-
       }catch(error){
         //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
       }
-      this.loading = false;
     },
     async getRecentMatches(page){
-      if (this.loading || page < 1 || (this.recentMatchesData && page > this.recentMatchesData.last_page)) {
+      if (this.isLoading || page < 1 || (this.recentMatchesData && page > this.recentMatchesData.last_page)) {
         return;
       }
 
-      this.loading = true;
+      this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+
       try{
         const response = await this.$axios.post("/api/v1/esports/ngs/matches", {
           season: this.season,
           division: this.division,
           pagination_page: page,
           esport: "NGS",
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
         });
         this.recentMatchesData = response.data;
       }catch(error){
         //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
       }
-      this.loading = false;
     },
     async getHeroStats(){
-      this.loading = true;
+      this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+
       try{
         const response = await this.$axios.post("/api/v1/esports/ngs/hero/stats", {
           season: this.season,
           division: this.division,
           esport: "NGS",
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
         });
         this.heroStatsData = response.data;
       }catch(error){
         //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
       }
-      this.loading = false;
     },
     async getTalentStats(){
-      this.loading = true;
+      this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+
       try{
         const response = await this.$axios.post("/api/v1/esports/ngs/hero/talents/stats", {
           season: this.season,
           division: this.division,
           hero: this.selectedHero.name,
           esport: "NGS",
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
         });
         this.talentStatsData = response.data;
       }catch(error){
         //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
       }
-      this.loading = false;
     },
-
+    cancelAxiosRequest() {
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled by user');
+      }
+    },
     setButtonActive(buttonName) {
       this.activeButton = buttonName;
       this.season = this.defaultseason;

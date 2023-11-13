@@ -170,8 +170,8 @@
     </div>
 
   </div>
-  <div v-else>
-    <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+  <div v-else-if="isLoading">
+    <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
   </div>
 
 </div>
@@ -195,7 +195,8 @@
     },
     data(){
       return {
-        loading: false,
+        cancelTokenSource: null,
+        isLoading: false,
         data: null,
         infoText: "Profile data",
         modifiedgametype: null,
@@ -239,7 +240,13 @@
     },
     methods: {
       async getData(){
-        this.loading = true;
+        this.isLoading = true;
+
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled');
+        }
+        this.cancelTokenSource = this.$axios.CancelToken.source();
+
         try{
           const response = await this.$axios.post("/api/v1/player", {
             blizz_id: this.blizzid,
@@ -247,12 +254,22 @@
             battletag: this.battletag,
             game_type: this.modifiedgametype,
             season: this.modifiedseason,
+          }, 
+          {
+            cancelToken: this.cancelTokenSource.token,
           });
           this.data = response.data;
         }catch(error){
         //Do something here
+        }finally {
+          this.cancelTokenSource = null;
+          this.isLoading = false;
         }
-        this.loading = false;
+      },
+      cancelAxiosRequest() {
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled by user');
+        }
       },
       handleInputChange(eventPayload) {
         if(eventPayload.field == "Game Type"){

@@ -88,7 +88,7 @@
 
 
       <div v-if="esport" class="max-w-[2000px] mx-auto">
-        
+
         <table class="">
           <thead>
             <tr>
@@ -134,306 +134,298 @@
 
 
 
-        Sort By: 
+          Sort By: 
         <custom-button
-        @click="sortCombinedPlayers('team')"          
-        text="Team"
-        alt="Team"
-        size="small"
-        :ignoreclick="true"
-        >
-        
-      </custom-button>
+          @click="sortCombinedPlayers('team')"          
+          text="Team"
+          alt="Team"
+          size="small"
+          :ignoreclick="true"
+          >
+        </custom-button>
 
-      <custom-button
-      @click="sortCombinedPlayers('total_rank')"          
-      text="HP Score"
-      alt="HP Score"
-      size="small"
-      :ignoreclick="true"
-      >
-    </custom-button>
-
+        <custom-button
+          @click="sortCombinedPlayers('total_rank')"          
+          text="HP Score"
+          alt="HP Score"
+          size="small"
+          :ignoreclick="true"
+          >
+        </custom-button>
 
 
-    <template v-for="(item, index) in combinedPlayers" :key="index">
-      <div v-if="!esport && item.check" class="">
-       <div class="flex space-x-9 items-center">
-        <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
-        <stat-box :title="'Kills'" :value="item.score.kills" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-        <stat-box :title="'Takedowns'" :value="item.score.takedowns" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-        <stat-box :title="'Deaths'" :value="item.score.deaths" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-        <stat-box :title="'Siege Dmg.'" :value="item.score.siege_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-        <stat-box :title="'Hero Dmg.'" :value="item.score.hero_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-        <stat-box :title="'Healing'" :value="item.score.total_healing" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-        <stat-box :title="'Dmg. Taken'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-        <stat-box :title="'Exp. Con.'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+
+        <template v-for="(item, index) in combinedPlayers" :key="index">
+          <div v-if="!esport && item.check" class="">
+            <div class="flex space-x-9 items-center">
+            <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
+            <stat-box :title="'Kills'" :value="item.score.kills" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+            <stat-box :title="'Takedowns'" :value="item.score.takedowns" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+            <stat-box :title="'Deaths'" :value="item.score.deaths" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+            <stat-box :title="'Siege Dmg.'" :value="item.score.siege_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+            <stat-box :title="'Hero Dmg.'" :value="item.score.hero_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+            <stat-box :title="'Healing'" :value="item.score.total_healing" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+            <stat-box :title="'Dmg. Taken'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+            <stat-box :title="'Exp. Con.'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+            </div>
+          </div>
+          <a v-else :href="esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
+            {{ item.battletag }}
+            <div class="flex space-x-9 items-center">
+              <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
+              <stat-box :title="'Kills'" :value="item.score.kills" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box :title="'Takedowns'" :value="item.score.takedowns" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box :title="'Deaths'" :value="item.score.deaths" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box :title="'Siege Dmg.'" :value="item.score.siege_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box :title="'Hero Dmg.'" :value="item.score.hero_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box :title="'Healing'" :value="item.score.total_healing" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box :title="'Dmg. Taken'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box :title="'Exp. Con.'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+            </div>
+
+            <span>Heroes Profile Rating: {{ item.total_rank }}</span>
+          </a>
+        </template>
       </div>
-    </div>
-    <a v-else :href="esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
-      {{ item.battletag }}
-      <div class="flex space-x-9 items-center">
-        <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
-        <stat-box :title="'Kills'" :value="item.score.kills" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-        <stat-box :title="'Takedowns'" :value="item.score.takedowns" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-        <stat-box :title="'Deaths'" :value="item.score.deaths" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-        <stat-box :title="'Siege Dmg.'" :value="item.score.siege_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-        <stat-box :title="'Hero Dmg.'" :value="item.score.hero_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-        <stat-box :title="'Healing'" :value="item.score.total_healing" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-        <stat-box :title="'Dmg. Taken'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-        <stat-box :title="'Exp. Con.'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+
+      <div v-if="data.draft_order && data.draft_order.length > 0" class="p-10 text-center max-w-[2000px] mx-auto">
+        Draft Order
+
+        <table class="">
+          <thead>
+            <tr>
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                Hero
+              </th>
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                Draft Order
+              </th>            
+              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                Type
+              </th>                
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(row, index) in data.draft_order" :key="index" class="">      
+              <td width="25%"><hero-image-wrapper :size="'medium'" :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}</td>
+              <td width="25%">{{ row.pick_number + 1 }}</td>
+              <td width="25%">{{ row.type == 0 ? "Ban" : "Pick" }}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
-      <span>Heroes Profile Rating: {{ item.total_rank }}</span>
-    </a>
-  </template>
-</div>
 
 
-
-<div v-if="data.draft_order && data.draft_order.length > 0" class="p-10 text-center max-w-[2000px] mx-auto">
-  Draft Order
-
-  <table class="">
-    <thead>
-      <tr>
-        <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-          Hero
-        </th>
-        <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-          Draft Order
-        </th>            
-        <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-          Type
-        </th>                
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(row, index) in data.draft_order" :key="index" class="">      
-        <td width="25%"><hero-image-wrapper :size="'medium'" :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}</td>
-        <td width="25%">{{ row.pick_number + 1 }}</td>
-        <td width="25%">{{ row.type == 0 ? "Ban" : "Pick" }}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-
-
-<div class="p-10 text-center max-w-[2000px] mx-auto">
-  Talents
-  <div class="flex">
-    <div><template v-for="(item, index) in data.players[0]" :key="index">
-      <div v-if="!esport && item.check">
-        <div class="flex items-center">
-          <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
-          <talent-image-wrapper :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
-          <talent-image-wrapper :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
-          <talent-image-wrapper :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
-          <talent-image-wrapper :size="'medium'" :talent="item.talents.level_ten"></talent-image-wrapper>
-          <talent-image-wrapper :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
-          <talent-image-wrapper :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
-          <talent-image-wrapper :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
-          {{ this.getCopyBuildToGame(item.talents.level_one, item.talents.level_four, item.talents.level_seven, item.talents.level_ten, item.talents.level_thirteen, item.talents.level_sixteen, item.talents.level_twenty, item.hero) }}
-          <custom-button @click="copyToClipboard(item)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
+      <div class="p-10 text-center max-w-[2000px] mx-auto">
+        Talents
+        <div class="flex">
+          <div>
+            <template v-for="(item, index) in data.players[0]" :key="index">
+              <div v-if="!esport && item.check">
+                <div class="flex items-center">
+                  <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_ten"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
+                  {{ this.getCopyBuildToGame(item.talents.level_one, item.talents.level_four, item.talents.level_seven, item.talents.level_ten, item.talents.level_thirteen, item.talents.level_sixteen, item.talents.level_twenty, item.hero) }}
+                  <custom-button @click="copyToClipboard(item)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
+                </div>
+              </div>
+              <a v-else :href="esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
+                {{ item.battletag }} - {{ item.hero.name }}
+                <div class="flex  items-center">
+                  <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_ten"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
+                  {{ this.getCopyBuildToGame(item.talents.level_one, item.talents.level_four, item.talents.level_seven, item.talents.level_ten, item.talents.level_thirteen, item.talents.level_sixteen, item.talents.level_twenty, item.hero) }}
+                  <custom-button @click="copyToClipboard(item)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
+                </div>
+              </a>
+            </template>
+          </div>
+          <div>
+            <template v-for="(item, index) in data.players[1]" :key="index">
+              <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
+                {{ item.battletag }} - {{ item.hero.name }}
+                <div class="flex space-x-9 items-center">
+                  <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_ten"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
+                  <talent-image-wrapper :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
+                  {{ this.getCopyBuildToGame(item.talents.level_one, item.talents.level_four, item.talents.level_seven, item.talents.level_ten, item.talents.level_thirteen, item.talents.level_sixteen, item.talents.level_twenty, item.hero) }}
+                  <custom-button @click="copyToClipboard(item)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
+                </div>
+              </a>
+            </template>
+          </div>
         </div>
       </div>
-      <a v-else :href="esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
-        {{ item.battletag }} - {{ item.hero.name }}
-        <div class="flex  items-center">
-          <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
-          <talent-image-wrapper :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
-          <talent-image-wrapper :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
-          <talent-image-wrapper :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
-          <talent-image-wrapper :size="'medium'" :talent="item.talents.level_ten"></talent-image-wrapper>
-          <talent-image-wrapper :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
-          <talent-image-wrapper :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
-          <talent-image-wrapper :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
-          {{ this.getCopyBuildToGame(item.talents.level_one, item.talents.level_four, item.talents.level_seven, item.talents.level_ten, item.talents.level_thirteen, item.talents.level_sixteen, item.talents.level_twenty, item.hero) }}
-          <custom-button @click="copyToClipboard(item)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
+
+      <div class="bg-lighten p-10 text-center">
+        <div class="flex flex-wrap justify-center max-w-[2000px] mx-auto">
+          <div v-if="data.experience_breakdown">
+            <dual-line-chart :data="data.experience_breakdown" :winner="data.winner"></dual-line-chart>
+          </div>
         </div>
-      </a>
-    </template>
-  </div>
-  <div>
-
-   <template v-for="(item, index) in data.players[1]" :key="index">
-    <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
-      {{ item.battletag }} - {{ item.hero.name }}
-      <div class="flex space-x-9 items-center">
-        <hero-image-wrapper :size="'big'" :hero="item.hero"></hero-image-wrapper>
-        <talent-image-wrapper :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
-        <talent-image-wrapper :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
-        <talent-image-wrapper :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
-        <talent-image-wrapper :size="'medium'" :talent="item.talents.level_ten"></talent-image-wrapper>
-        <talent-image-wrapper :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
-        <talent-image-wrapper :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
-        <talent-image-wrapper :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
-        {{ this.getCopyBuildToGame(item.talents.level_one, item.talents.level_four, item.talents.level_seven, item.talents.level_ten, item.talents.level_thirteen, item.talents.level_sixteen, item.talents.level_twenty, item.hero) }}
-        <custom-button @click="copyToClipboard(item)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
       </div>
-    </a>
-  </template>
-</div>
-</div>
-</div>
 
-<div class="bg-lighten p-10 text-center">
-  <div class="flex flex-wrap justify-center max-w-[2000px] mx-auto">
-    <div v-if="data.experience_breakdown">
-      <dual-line-chart :data="data.experience_breakdown" :winner="data.winner"></dual-line-chart>
+      <div v-if="!esport" class="overflow-scroll md:overflow-auto  h-[50vh] md:h-auto max-w-[2000px] mx-auto">
+        Team 1 Advanced MMR data
+        <table :class="{ winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }">
+          <thead>
+            <tr>
+              <td colspan="2"></td>
+              <td colspan="3">Pre-Match</td>
+              <td colspan="3">Post-Match</td>
+            </tr>
+            <tr>
+              <td >Player</td>
+              <td >Hero</td>
+              <td >Player MMR</td>
+              <td >Hero MMR</td>
+              <td >Role MMR</td>
+              <td >Player MMR</td>
+              <td >Hero MMR</td>
+              <td >Role MMR</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in data.players[0]" :key="index">
+              <td><a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR/' + item.hero.name + '/' + data.game_type">{{ item.battletag }}</a></td>
+              <td>{{ item.hero.name }}</td>
+              <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
+              <td>{{ Math.round(item.hero_mmr - item.hero_change) }}</td>
+              <td>{{ Math.round(item.role_mmr - item.role_change)}}</td>
+              <td>{{ item.player_mmr }} ({{ item.player_change }})</td>
+              <td>{{ item.hero_mmr }} ({{ item.hero_change }})</td>
+              <td>{{ item.role_mmr }} ({{ item.role_change }})</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>Average</td>
+              <td>{{ getAverageValue('prev_player_mmr', data.players[0]) }}</td>
+              <td>{{ getAverageValue('prev_hero_mmr', data.players[0]) }}</td>
+              <td>{{ getAverageValue('prev_role_mmr', data.players[0]) }}</td>
+              <td>{{ getAverageValue('player_mmr', data.players[0]) }}</td>
+              <td>{{ getAverageValue('hero_mmr', data.players[0]) }}</td>
+              <td>{{ getAverageValue('role_mmr', data.players[0]) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div  v-if="!esport" class="overflow-scroll md:overflow-auto  h-[50vh] md:h-auto max-w-[2000px] mx-auto">
+        Team 2 Advanced MMR data
+        <table :class="{ winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }">
+          <thead>
+            <tr>
+              <td colspan="2"></td>
+              <td colspan="3">Pre-Match</td>
+              <td colspan="3">Post-Match</td>
+            </tr>
+            <tr>
+              <td>Player</td>
+              <td>Hero</td>
+              <td>Player MMR</td>
+              <td>Hero MMR</td>
+              <td>Role MMR</td>
+              <td>Player MMR</td>
+              <td>Hero MMR</td>
+              <td>Role MMR</td>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(item, index) in data.players[1]" :key="index">
+              <td><a :href="`/Player/${item.battletag}/${item.blizz_id}/${item.region}`">{{ item.battletag }}</a></td>
+              <td>{{ item.hero.name }}</td>
+              <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
+              <td>{{ Math.round(item.hero_mmr - item.hero_change) }}</td>
+              <td>{{ Math.round(item.role_mmr - item.role_change)}}</td>
+              <td>{{ item.player_mmr }} ({{ item.player_change }})</td>
+              <td>{{ item.hero_mmr }} ({{ item.hero_change }})</td>
+              <td>{{ item.role_mmr }} ({{ item.role_change }})</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>Average</td>
+              <td>{{ getAverageValue('prev_player_mmr', data.players[1]) }}</td>
+              <td>{{ getAverageValue('prev_hero_mmr', data.players[1]) }}</td>
+              <td>{{ getAverageValue('prev_role_mmr', data.players[1]) }}</td>
+              <td>{{ getAverageValue('player_mmr', data.players[1]) }}</td>
+              <td>{{ getAverageValue('hero_mmr', data.players[1]) }}</td>
+              <td>{{ getAverageValue('role_mmr', data.players[1]) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+
+      <div class="max-w-[2000px] mx-auto">
+        Team 1 Advanced Stats
+        <table :class="{ winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
+          <thead>
+            <tr>
+              <td >{{ section.title }}</td>
+              <td
+              v-for="(player, playerIndex) in data.players[0]"
+              :key="playerIndex"
+              
+              >
+              <a :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`">{{ player.battletag }}</a>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
+            <td>{{ row.label }}</td>
+            <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">{{ formatValue(player.score[row.key]) }}</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="max-w-[2000px] mx-auto">
+        Team 2 Advanced Stats
+        <table :class="{ winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
+          <thead>
+            <tr>
+              <td >{{ section.title }}</td>
+              <td
+              v-for="(player, playerIndex) in data.players[1]"
+              :key="playerIndex"
+              
+              >
+              <a :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`">{{ player.battletag }}</a>
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
+            <td>{{ row.label }}</td>
+            <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">{{ formatValue(player.score[row.key]) }}</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+    <div v-else-if="isLoading">
+      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
   </div>
-</div>
-
-<div v-if="!esport" class=" overflow-scroll md:overflow-auto  h-[50vh] md:h-auto max-w-[2000px] mx-auto">
-  Team 1 Advanced MMR data
-
-  {{}}
-  <table :class="{ winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }">
-    <thead>
-      <tr>
-        <td colspan="2"></td>
-        <td colspan="3">Pre-Match</td>
-        <td colspan="3">Post-Match</td>
-      </tr>
-      <tr>
-        <td >Player</td>
-        <td >Hero</td>
-        <td >Player MMR</td>
-        <td >Hero MMR</td>
-        <td >Role MMR</td>
-        <td >Player MMR</td>
-        <td >Hero MMR</td>
-        <td >Role MMR</td>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(item, index) in data.players[0]" :key="index">
-        <td><a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR/' + item.hero.name + '/' + data.game_type">{{ item.battletag }}</a></td>
-        <td>{{ item.hero.name }}</td>
-        <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
-        <td>{{ Math.round(item.hero_mmr - item.hero_change) }}</td>
-        <td>{{ Math.round(item.role_mmr - item.role_change)}}</td>
-        <td>{{ item.player_mmr }} ({{ item.player_change }})</td>
-        <td>{{ item.hero_mmr }} ({{ item.hero_change }})</td>
-        <td>{{ item.role_mmr }} ({{ item.role_change }})</td>
-      </tr>
-      <tr>
-        <td></td>
-        <td>Average</td>
-        <td>{{ getAverageValue('prev_player_mmr', data.players[0]) }}</td>
-        <td>{{ getAverageValue('prev_hero_mmr', data.players[0]) }}</td>
-        <td>{{ getAverageValue('prev_role_mmr', data.players[0]) }}</td>
-        <td>{{ getAverageValue('player_mmr', data.players[0]) }}</td>
-        <td>{{ getAverageValue('hero_mmr', data.players[0]) }}</td>
-        <td>{{ getAverageValue('role_mmr', data.players[0]) }}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-<div  v-if="!esport" class="   overflow-scroll md:overflow-auto  h-[50vh] md:h-auto max-w-[2000px] mx-auto">
-  Team 2 Advanced MMR data
-  <table :class="{ winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }">
-    <thead>
-      <tr>
-        <td colspan="2"></td>
-        <td colspan="3">Pre-Match</td>
-        <td colspan="3">Post-Match</td>
-      </tr>
-      <tr>
-        <td>Player</td>
-        <td>Hero</td>
-        <td>Player MMR</td>
-        <td>Hero MMR</td>
-        <td>Role MMR</td>
-        <td>Player MMR</td>
-        <td>Hero MMR</td>
-        <td>Role MMR</td>
-      </tr>
-    </thead>
-    <tbody>
-      <tr v-for="(item, index) in data.players[1]" :key="index">
-        <td><a :href="`/Player/${item.battletag}/${item.blizz_id}/${item.region}`">{{ item.battletag }}</a></td>
-        <td>{{ item.hero.name }}</td>
-        <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
-        <td>{{ Math.round(item.hero_mmr - item.hero_change) }}</td>
-        <td>{{ Math.round(item.role_mmr - item.role_change)}}</td>
-        <td>{{ item.player_mmr }} ({{ item.player_change }})</td>
-        <td>{{ item.hero_mmr }} ({{ item.hero_change }})</td>
-        <td>{{ item.role_mmr }} ({{ item.role_change }})</td>
-      </tr>
-      <tr>
-        <td></td>
-        <td>Average</td>
-        <td>{{ getAverageValue('prev_player_mmr', data.players[1]) }}</td>
-        <td>{{ getAverageValue('prev_hero_mmr', data.players[1]) }}</td>
-        <td>{{ getAverageValue('prev_role_mmr', data.players[1]) }}</td>
-        <td>{{ getAverageValue('player_mmr', data.players[1]) }}</td>
-        <td>{{ getAverageValue('hero_mmr', data.players[1]) }}</td>
-        <td>{{ getAverageValue('role_mmr', data.players[1]) }}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-
-
-<div class="max-w-[2000px] mx-auto">
-  Team 1 Advanced Stats
-  <table :class="{ winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
-    <thead>
-      <tr>
-        <td >{{ section.title }}</td>
-        <td
-        v-for="(player, playerIndex) in data.players[0]"
-        :key="playerIndex"
-        
-        >
-        <a :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`">{{ player.battletag }}</a>
-      </td>
-    </tr>
-  </thead>
-  <tbody>
-    <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
-      <td>{{ row.label }}</td>
-      <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">{{ formatValue(player.score[row.key]) }}</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-<div class="max-w-[2000px] mx-auto">
-  Team 2 Advanced Stats
-  <table :class="{ winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
-    <thead>
-      <tr>
-        <td >{{ section.title }}</td>
-        <td
-        v-for="(player, playerIndex) in data.players[1]"
-        :key="playerIndex"
-        
-        >
-        <a :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`">{{ player.battletag }}</a>
-      </td>
-    </tr>
-  </thead>
-  <tbody>
-    <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
-      <td>{{ row.label }}</td>
-      <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">{{ formatValue(player.score[row.key]) }}</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
-
-</div>
-<div v-else>
-  <loading-component></loading-component>
-</div>
-</div>
 </template>
 
 <script>
@@ -449,10 +441,12 @@
     },
     data(){
       return {
+        isLoading: false,
         userTimezone: moment.tz.guess(),
         data: null,
         combinedPlayers: null,
         showTooltip: false,
+        cancelTokenSource: null,
         sortDirectionTeam: 'desc',
         sortDirectionHpScore: 'desc',
         sections: [
@@ -539,20 +533,36 @@
     computed: {
     },
     watch: {
-      combinedPlayers(){
-      }
     },
     methods: {
       async getData(){
+        this.isLoading = true;
+
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled');
+        }
+        this.cancelTokenSource = this.$axios.CancelToken.source();
+
         try{
           const response = await this.$axios.post("/api/v1/match/single", {
             esport: this.esport,
             replayID: this.replayid
+          }, 
+          {
+            cancelToken: this.cancelTokenSource.token,
           });
           this.data = response.data; 
           this.combinePlayerArrays();
         }catch(error){
         //Do something here
+        }finally {
+          this.cancelTokenSource = null; // Reset cancel token source
+          this.isLoading = false;
+        }
+      },
+      cancelAxiosRequest() {
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled by user');
         }
       },
       getAverageValue(type, data) {
@@ -671,9 +681,9 @@
     copyToClipboard(item) {
       const textToCopy = this.getCopyBuildToGame(item.talents.level_one, item.talents.level_four, item.talents.level_seven, item.talents.level_ten, item.talents.level_thirteen, item.talents.level_sixteen, item.talents.level_twenty, item.hero);
       navigator.clipboard.writeText(textToCopy).then(function() {
-        
+
       }).catch(function(err) {
-        
+
       });
     },
     formatDate(dateString) {

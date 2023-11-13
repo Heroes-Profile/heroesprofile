@@ -24,9 +24,8 @@
     </div>
 
 
-    <div v-if="isLoading">
-      <!-- We need a loading component that fits inside its container -->
-      <loading-component></loading-component>
+    <div v-else-if="isLoading">
+      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
   </div>
 </template>
@@ -44,6 +43,7 @@
         isLoading: false,
         userinput: null,
         battletagresponse: null,
+        cancelTokenSource: null,
       }
     },
     created(){
@@ -55,11 +55,20 @@
     watch: {
     },
     methods: {
-      async clickedPlayerSearch(){
+      async clickedPlayerSearch(){        
         this.isLoading = true;
+
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled');
+        }
+        this.cancelTokenSource = this.$axios.CancelToken.source();
+        
         try{
           const response = await this.$axios.post("/api/v1/battletag/search", {
             userinput: this.userinput,
+          }, 
+          {
+            cancelToken: this.cancelTokenSource.token,
           });
 
           this.battletagresponse = response.data;
@@ -68,8 +77,15 @@
             this.setBattletag(this.battletagresponse[0]);
           }
         }catch(error){
+        }finally {
+          this.cancelTokenSource = null;
+          this.isLoading = false;
         }
-        this.isLoading = false;
+      },
+      cancelAxiosRequest() {
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled by user');
+        }
       },
       setBattletag(item){
         let blizz_id = item.blizz_id;

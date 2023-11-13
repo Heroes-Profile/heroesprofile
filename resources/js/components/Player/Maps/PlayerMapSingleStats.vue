@@ -75,8 +75,8 @@
         </div>
 
       </div>
-      <div v-else>
-        <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+      <div v-else-if="isLoading">
+        <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
       </div>
 
   </div>
@@ -100,6 +100,8 @@ export default {
   },
   data(){
     return {
+      isLoading: false,
+      cancelTokenSource: null,
       inputmap: null,
       modifiedgametype: null,
       modifiedseason: null,
@@ -133,6 +135,13 @@ export default {
   },
   methods: {
     async getData(type){
+      this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+
       try{
         const response = await this.$axios.post("/api/v1/player/maps/single", {
           battletag: this.battletag,
@@ -143,11 +152,22 @@ export default {
           type: "single",
           page: "map",
           game_map: this.map,
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
         });
 
         this.data = response.data[0];
       }catch(error){
         //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
+      }
+    },
+    cancelAxiosRequest() {
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled by user');
       }
     },
     getRegionName(regionID){

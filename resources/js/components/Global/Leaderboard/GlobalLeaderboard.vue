@@ -140,8 +140,8 @@
         </table>
       </div>
     </div>
-    <div v-else>
-      <loading-component></loading-component>
+    <div v-else-if="isLoading">
+      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
   </div>
 </template>
@@ -164,6 +164,7 @@ export default {
   data(){
     return {
       isLoading: false,
+      cancelTokenSource: null,
       infoText1: "Leaderboards are a reflection of user uploaded data. Due to replay file corruption or other issues, the data is not always reflective of real player stats. Please keep that in mind when reviewing leaderboards.",
       infoText2: " Only users who upload replays through an approved automatic uploader will be able to rank on the leaderboards. The main uploader can be found at Heroes Profile Uploader while the secondary uploader that works on platforms other than windows can be found at Heroes Profile Electron Uploader. For any questions, please contact zemill@heroesprofile.com ",
       columns: [
@@ -216,6 +217,12 @@ export default {
   methods: {
     async getData(){
       this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+
       try{
         const response = await this.$axios.post("/api/v1/global/leaderboard", {
           season: this.season, 
@@ -225,15 +232,24 @@ export default {
           hero: this.hero,
           role: this.role,
           region: this.region,
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
         });
 
         this.data = response.data;
       }catch(error){
         //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
       }
-      this.isLoading = false;
     },
-
+    cancelAxiosRequest() {
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled by user');
+      }
+    },
     filterData(filteredData){
       this.leaderboardtype = filteredData.single["Type"] ? filteredData.single["Type"] : this.leaderboardtype;
       this.groupsize = filteredData.single["Group Size"] ? filteredData.single["Group Size"] : this.groupsize;

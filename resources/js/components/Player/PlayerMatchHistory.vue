@@ -97,7 +97,7 @@
       </table>
     </div>
     <div v-else>
-      <loading-component></loading-component>
+      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
   </div>
 </template>
@@ -118,6 +118,7 @@ export default {
   },
   data(){
     return {
+      cancelTokenSource: null,
       userTimezone: moment.tz.guess(),
       isLoading: false,
       data: null,

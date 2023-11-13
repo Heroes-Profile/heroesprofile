@@ -276,8 +276,8 @@ s<template>
       </div>
 
     </div>
-    <div v-else>
-      <loading-component></loading-component>
+    <div v-else-if="isLoading">
+      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
   </div>
 </template>
@@ -302,7 +302,7 @@ export default {
       isLoading: false,
       infoText: "Party win rates based on differing increments, stat types, game type, rank, and more. The hero filter allows you to see party data for games that only contained that hero.",
       partydata: null,
-
+      cancelTokenSource: null,
       //Sending to filter
       timeframetype: null,
       timeframe: null,
@@ -337,9 +337,13 @@ export default {
   methods: {
     async getData(){
       this.isLoading = true;
-      try{
-        this.data = [];
 
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+
+      try{
         const response = await this.$axios.post("/api/v1/global/party", {
           timeframe_type: this.timeframetype,
           timeframe: this.timeframe,
@@ -354,15 +358,25 @@ export default {
           mirrormatch: this.mirrormatch,
           teamoneparty: this.teamoneparty,
           teamtwoparty: this.teamtwoparty,
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
         });
 
         this.partydata = response.data;
       }catch(error){
         //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
       }
-      this.isLoading = false;
     },
-   filterData(filteredData){
+    cancelAxiosRequest() {
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled by user');
+      }
+    },
+    filterData(filteredData){
       this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
       this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaultMinor;
       this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : null;

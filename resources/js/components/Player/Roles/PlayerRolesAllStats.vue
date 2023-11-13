@@ -16,17 +16,17 @@
   <div v-if="data">
     <div  class="relative max-w-[1500px] mx-auto">
       <custom-button class="ml-auto" @click="showOptions = !showOptions" :text="showOptions ? 'Hide Column Selection' : 'Show Column Selection'" :ignoreclick="true"></custom-button>
-        
+
       <div v-if="showOptions">
         <div class="absolute left-0 mt-2 w-full bg-gray-light border border-gray-300 rounded shadow-lg text-black z-50 flex flex-wrap  p-2 ">
           <input class="w-full p-2" type="text" v-model="searchQuery" placeholder="Search..." />
-            <div v-for="(stat, index) in filteredStats" :class="[
+          <div v-for="(stat, index) in filteredStats" :class="[
             'flex-1 min-w-[24%] border-gray border p-1 cursor-pointer hover:bg-gray-light hover:text-black',
             {
               'bg-teal text-white' : stat.selected
             } ]
             ">
-              <label class="cursor-pointer"><input type="checkbox" v-model="stat.selected" :disabled="isDisabled(stat)" @change="onCheckboxChange(stat)" />
+            <label class="cursor-pointer"><input type="checkbox" v-model="stat.selected" :disabled="isDisabled(stat)" @change="onCheckboxChange(stat)" />
             {{ stat.name }}</label>
           </div>
         </div>
@@ -58,7 +58,7 @@
       <tbody>
         <tr v-for="row in sortedData" :key="row.id">
           <td class="py-2 px-3 "><a :href="getPlayerRolePageUrl(row.name)"><role-box :role="row.name"></role-box></a></td>
-            <td class="py-2 px-3 "><stat-bar-box :title="'Win Rate'" :value="row.win_rate"></stat-bar-box>{{ (row.wins + row.losses) }}</td>
+          <td class="py-2 px-3 "><stat-bar-box :title="'Win Rate'" :value="row.win_rate"></stat-bar-box>{{ (row.wins + row.losses) }}</td>
           <td class="py-2 px-3 ">{{ row.kda }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}/{{ row.avg_assists }}</td>
           <td class="py-2 px-3 ">{{ row.kdr }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}</td>
           
@@ -77,8 +77,8 @@
   </table>
 
 </div>
-<div v-else>
-  <loading-component :textoverride="true" :timer="true" :starttime="timertime">Large amount of data.<br/>Please be patient.<br/></loading-component>
+<div v-else-if="isLoading">
+  <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true" :timer="true" :starttime="timertime">Large amount of data.<br/>Please be patient.<br/></loading-component>
 </div>
 
 </div>
@@ -102,6 +102,7 @@
     },
     data(){
       return {
+        cancelTokenSource: null,
         showOptions: false,
         isLoading: false,
         infoText: "Select a hero below to view detailed stats for that hero. Use the search box above to filter the list of heroes. Or scroll down to the advanced section for table view.",
@@ -233,6 +234,12 @@ watch: {
 methods: {
   async getData(type){
     this.isLoading = true;
+
+    if (this.cancelTokenSource) {
+      this.cancelTokenSource.cancel('Request canceled');
+    }
+    this.cancelTokenSource = this.$axios.CancelToken.source();
+
     try{
       const response = await this.$axios.post("/api/v1/player/roles/all", {
         battletag: this.battletag,
@@ -244,13 +251,23 @@ methods: {
         minimumgames: this.minimumgames,
         type: "all",
         page: "role",
+      }, 
+      {
+        cancelToken: this.cancelTokenSource.token,
       });
 
       this.data = response.data;
     }catch(error){
       //Do something here
+    }finally {
+      this.cancelTokenSource = null;
+      this.isLoading = false;
     }
-    this.isLoading = false;
+  },
+  cancelAxiosRequest() {
+    if (this.cancelTokenSource) {
+      this.cancelTokenSource.cancel('Request canceled by user');
+    }
   },
   filterData(filteredData){
     this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
