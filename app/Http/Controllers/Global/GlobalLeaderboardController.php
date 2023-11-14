@@ -112,7 +112,6 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             $item->tier = $this->globalDataService->calculateSubTier($rankTiers, $item->mmr);
             $item->tier_id = $this->globalDataService->calculateTierID($item->tier);
 
-
             $item->region_id = $item->region;
             $item->region = $this->globalDataService->getRegionIDtoString()[$item->region];
 

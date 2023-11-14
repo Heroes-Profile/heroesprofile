@@ -4,15 +4,15 @@ namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
 use App\Models\GameType;
+use App\Models\Hero;
 use App\Models\LeagueBreakdown;
+use App\Models\MMRTypeID;
 use App\Rules\GameTypeInputValidation;
+use App\Rules\HeroInputByIDValidation;
+use App\Rules\RoleInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use App\Rules\HeroInputByIDValidation;
-use App\Rules\RoleInputValidation;
-use App\Models\MMRTypeID;
-use App\Models\Hero;
 
 class PlayerMMRController extends Controller
 {
@@ -69,8 +69,8 @@ class PlayerMMRController extends Controller
         $region = $request['region'];
         $game_type = GameType::where('short_name', $request['game_type'])->pluck('type_id')->first();
         $hero = $request['hero'] ? $this->globalDataService->getHeroesByID()[$request['hero']] : null;
-        $type = $request["type"];
-        $role = $request["role"];
+        $type = $request['type'];
+        $role = $request['role'];
 
         $result = DB::table('replay')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
@@ -95,15 +95,13 @@ class PlayerMMRController extends Controller
                 return $query->where('hero', $hero->id);
             })
             ->when(! is_null($role), function ($query) use ($role) {
-                return $query->whereIn('hero', Hero::select("id")->where("new_role", $role)->get()->toArray());
+                return $query->whereIn('hero', Hero::select('id')->where('new_role', $role)->get()->toArray());
             })
             //->toSql();
             ->orderByDesc('mmr_date_parsed')
             ->get();
 
-
-
-        if(count($result) == 0){
+        if (count($result) == 0) {
             return;
         }
         $heroData = $this->globalDataService->getHeroes();
@@ -113,13 +111,13 @@ class PlayerMMRController extends Controller
             $item->hero_id = $item->hero;
             $item->hero = $heroData[$item->hero];
 
-            if($type == "Player"){
+            if ($type == 'Player') {
                 $item->mmr = round(1800 + 40 * $item->player_conservative_rating);
                 $item->mmr_change = round($item->player_change, 2);
-            }else if($type == "Hero"){
+            } elseif ($type == 'Hero') {
                 $item->mmr = round(1800 + 40 * $item->hero_conservative_rating);
                 $item->mmr_change = round($item->hero_change, 2);
-            }else if($type == "Role"){
+            } elseif ($type == 'Role') {
                 $item->mmr = round(1800 + 40 * $item->role_conservative_rating);
                 $item->mmr_change = round($item->role_change, 2);
             }
@@ -131,12 +129,12 @@ class PlayerMMRController extends Controller
         });
 
         $mmrType = 0;
-        if($type == "Player"){
+        if ($type == 'Player') {
             $mmrType = 10000;
-        }else if($type == "Hero"){
-            $mmrType = MMRTypeID::where("name", $hero->name)->first()->mmr_type_id;
-        }else if($type == "Role"){
-            $mmrType = MMRTypeID::where("name", $role)->first()->mmr_type_id;
+        } elseif ($type == 'Hero') {
+            $mmrType = MMRTypeID::where('name', $hero->name)->first()->mmr_type_id;
+        } elseif ($type == 'Role') {
+            $mmrType = MMRTypeID::where('name', $role)->first()->mmr_type_id;
         }
 
         $leagueBreakdown = LeagueBreakdown::where('type_role_hero', $mmrType)->where('game_type', $game_type)->get();

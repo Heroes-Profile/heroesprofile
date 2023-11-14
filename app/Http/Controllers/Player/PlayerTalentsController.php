@@ -85,7 +85,6 @@ class PlayerTalentsController extends Controller
         $game_map = $request['game_map'] ? Map::whereIn('name', $request['game_map'])->pluck('map_id')->toArray() : null;
         $fromdate = $request['fromdate'];
 
-
         $result = DB::table('replay')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
             ->join('talents', function ($join) {
@@ -124,7 +123,6 @@ class PlayerTalentsController extends Controller
             })
             //->toSql();
             ->get();
-
 
         $talentData = HeroesDataTalent::all();
         $talentData = $talentData->keyBy('talent_id');
