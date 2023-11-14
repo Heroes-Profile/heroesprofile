@@ -46,7 +46,7 @@
         </div>
 
 
-        <div  v-if="talentbuilddata" class=" mx-auto px-4 w-auto flex flex-col items-center">
+        <div  v-if="talentbuilddata" class="mx-auto px-4 w-auto flex flex-col items-center">
         <div class="">
           <single-select-filter :values="buildtypes" :text="'Talent Build Type'" :defaultValue="this.talentbuildtype" @input-changed="buildtypechange"></single-select-filter>
           {{ this.selectedHero.name }} {{ "Talent Builds"}}

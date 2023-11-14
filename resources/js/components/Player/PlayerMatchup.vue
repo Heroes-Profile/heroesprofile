@@ -7,7 +7,6 @@
     :filters="filters" 
     :isLoading="isLoading"
     :gametypedefault="gametype"
-    :includehero="true"
     :includegamemap="true"
     :includegametypefull="true"
     :hideadvancedfilteringbutton="true"
@@ -41,23 +40,22 @@
       </thead>
       <tbody>
         <tr v-for="(row, index) in sortedData" :key="index">
-          <td class="py-2 px-3  flex items-center gap-1">
-            <a :href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Hero/Single/' + row.hero.name">
-              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>
-              {{ row.hero.name }}
+          <td class="py-2 px-3 flex items-center gap-1">
+            <a class="link" :href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Hero/Single/' + row.hero.name">
+              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}
             </a>
           </td>
            <td class="py-2 px-3 ">
-            {{ row.ally_win_rate.toFixed(2) }}
+            {{ row.ally_win_rate ? row.ally_win_rate.toFixed(2) : "No data" }}
           </td>
           <td class="py-2 px-3 ">
-            {{ row.enemy_win_rate.toFixed(2) }}
+            {{ row.enemy_win_rate ? row.enemy_win_rate.toFixed(2) : "No data" }}
           </td>
           <td class="py-2 px-3 ">
-            {{ row.ally_games_played.toLocaleString() }}
+            {{ row.ally_games_played ? row.ally_games_played.toLocaleString() : "No data" }}
           </td>
           <td class="py-2 px-3 ">
-            {{ row.enemy_games_played.toLocaleString() }}
+            {{ row.enemy_games_played ? row.enemy_games_played.toLocaleString() : "No data" }}
           </td>
         </tr>
       </tbody>
