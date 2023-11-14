@@ -2,8 +2,8 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
 use Carbon\Carbon;
+use Illuminate\Contracts\Validation\Rule;
 
 class DateInputValidation implements Rule
 {

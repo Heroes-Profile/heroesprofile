@@ -7,11 +7,11 @@ use App\Models\GameType;
 use App\Models\HeroesDataTalent;
 use App\Models\Map;
 use App\Models\SeasonDate;
+use App\Rules\DateInputValidation;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputValidation;
 use App\Rules\SeasonInputValidation;
-use App\Rules\DateInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -123,6 +123,7 @@ class PlayerTalentsController extends Controller
             })
             //->toSql();
             ->get();
+
         $talentData = HeroesDataTalent::all();
         $talentData = $talentData->keyBy('talent_id');
 

@@ -29,8 +29,8 @@
 
 
   <div v-if="isLoading">
-    <loading-component v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
-    <loading-component v-else></loading-component>
+    <loading-component @cancel-request="cancelAxiosRequest" v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+    <loading-component @cancel-request="cancelAxiosRequest" v-else></loading-component>
   </div>
 
   <div v-if="data">
@@ -165,6 +165,7 @@
     },
     data(){
       return {
+        cancelTokenSource: null,
         isLoading: false,
         selectedHero: null,
         data: null,
@@ -217,6 +218,12 @@
     methods: {
       async getData(){
         this.isLoading = true;
+
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled');
+        }
+        this.cancelTokenSource = this.$axios.CancelToken.source();
+      
         this.replays = null;
         try{
           const response = await this.$axios.post("/api/v1/global/talents/builder", {
@@ -232,6 +239,9 @@
             hero_league_tier: this.herorank,
             role_league_tier: this.rolerank,
             mirrormatch: this.mirrormatch,
+          }, 
+          {
+            cancelToken: this.cancelTokenSource.token,
           });
 
 
@@ -240,10 +250,16 @@
           this.builddata = response.data.buildData;
         }catch(error){
         //Do something here
+        }finally {
+          this.cancelTokenSource = null;
+          this.isLoading = false;
         }
-        this.isLoading = false;
       },
-
+      cancelAxiosRequest() {
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled by user');
+        }
+      },
       talentClicked(talent, index, level){
         this.clickedData[level] = talent.talent_id;
         this.getData();

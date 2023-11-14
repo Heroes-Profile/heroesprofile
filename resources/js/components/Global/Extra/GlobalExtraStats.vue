@@ -18,7 +18,7 @@
       <bar-chart :data="data"></bar-chart>
     </div>
     <div v-else>
-      <loading-component></loading-component>
+      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
   </div>
 </template>
@@ -46,6 +46,7 @@ export default {
       xaxisincrements: 25,
       hero: "Abathur",
       gametype: ["sl"],
+      cancelTokenSource: null,
     }
   },
   created(){

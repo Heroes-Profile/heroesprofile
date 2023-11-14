@@ -16,7 +16,7 @@
           <filters 
           :onFilter="filterData" 
           :filters="filters" 
-          :isLoading="isLoading"
+          :isLoading="isTalentsLoading || isBuildsLoading"
           :gametypedefault="gametypedefault"
           :includetimeframetype="true"
           :includetimeframe="true"
@@ -40,22 +40,22 @@
          <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Talent Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
           <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
         </div>
-        <div v-else>
-          <loading-component v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
-          <loading-component v-else></loading-component>
+        <div v-else-if="isTalentsLoading">
+          <loading-component v-if="determineIfLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+          <loading-component v-else @cancel-request="cancelAxiosRequest"></loading-component>
         </div>
 
 
-        <div  v-if="talentbuilddata" class=" mx-auto px-4 w-auto flex flex-col items-center">
+        <div  v-if="talentbuilddata" class="mx-auto px-4 w-auto flex flex-col items-center">
         <div class="">
           <single-select-filter :values="buildtypes" :text="'Talent Build Type'" :defaultValue="this.talentbuildtype" @input-changed="buildtypechange"></single-select-filter>
           {{ this.selectedHero.name }} {{ "Talent Builds"}}
           <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
         </div>
         </div>
-        <div v-else>
-          <loading-component v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
-          <loading-component v-else></loading-component>
+        <div v-else-if="isBuildsLoading">
+          <loading-component v-if="determineIfLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+          <loading-component v-else @cancel-request="cancelAxiosRequest"></loading-component>
         </div>
       
       </div>
@@ -81,7 +81,10 @@
     },
     data(){
       return {
-       isLoading: false,
+       isTalentsLoading: false,
+       isBuildsLoading: false,
+       cancelTalentsTokenSource: null,
+       cancelBuildsTokenSource: null,
        infoText: "Talent win rates and Talent Builds based on patches, hero, hero level, game type, game map, or Rank.",
        selectedHero: null,
        talentdetaildata: null,
@@ -153,8 +156,14 @@
         });
       },
       async getTalentData(){
+        this.isTalentsLoading = true;
+
+        if (this.cancelTalentsTokenSource) {
+          this.cancelTalentsTokenSource.cancel('Request canceled');
+        }
+        this.cancelTalentsTokenSource = this.$axios.CancelToken.source();
+
         try{
-          this.isLoading = true;
           const response = await this.$axios.post("/api/v1/global/talents", {
             hero: this.selectedHero.name,
             timeframe_type: this.timeframetype,
@@ -168,16 +177,28 @@
             hero_league_tier: this.herorank,
             role_league_tier: this.rolerank,
             mirrormatch: this.mirrormatch,
+          }, 
+          {
+            cancelToken: this.cancelTalentsTokenSource.token,
           });
           this.talentdetaildata = response.data;
         }catch(error){
           //Do something here
+        }finally {
+          this.cancelTalentsTokenSource = null;
+          this.isTalentsLoading = false;
         }
-        this.isLoading = false;
       },
+      
       async getTalentBuildData(){
+        this.isBuildsLoading = true;
+
+        if (this.cancelBuildsTokenSource) {
+          this.cancelBuildsTokenSource.cancel('Request canceled');
+        }
+        this.cancelBuildsTokenSource = this.$axios.CancelToken.source();
+
         try{
-          this.isLoading = true;
           const response = await this.$axios.post("/api/v1/global/talents/build", {
             hero: this.selectedHero.name,
             timeframe_type: this.timeframetype,
@@ -192,12 +213,23 @@
             role_league_tier: this.rolerank,
             mirrormatch: this.mirrormatch,
             talentbuildtype: this.talentbuildtype
+          }, 
+          {
+            cancelToken: this.cancelBuildsTokenSource.token,
           });
           this.talentbuilddata = response.data;
         }catch(error){
           //Do something here
+        }finally {
+          this.cancelBuildsTokenSource = null;
+          this.isBuildsLoading = false;
         }
-        this.isLoading = false;
+      },
+      cancelAxiosRequest() {
+        if (this.cancelTalentsTokenSource || this.cancelBuildsTokenSource) {
+          this.cancelTalentsTokenSource.cancel('Request canceled by user');
+          this.cancelBuildsTokenSource.cancel('Request canceled by user');
+        }
       },
       filterData(filteredData){
         this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;

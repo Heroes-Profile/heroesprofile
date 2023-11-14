@@ -55,7 +55,7 @@
         </div>
       </div>
 
-      <line-chart v-if="seasonWinRateDataArray" :data="seasonWinRateDataArray" :dataAttribute="'win_rate'" class="max-w-[1500px] mx-auto"></line-chart>
+      <line-chart v-if="seasonWinRateDataArray" class="max-w-[1500px] mx-auto" :data="seasonWinRateDataArray" :dataAttribute="'win_rate'" :title="`${battletag} Win Rate Data Per Season with ${heroobject.name}`"></line-chart>
 
       <div class="bg-lighten">
         <div class="max-w-[1000px] mx-auto">
@@ -170,8 +170,8 @@
 
 
     </div>
-    <div v-else-if="loading">
-      <loading-component></loading-component>
+    <div v-else-if="isLoading">
+      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
 
   </div>
@@ -195,7 +195,8 @@
     },
     data(){
       return {
-        loading: false,
+        cancelTokenSource: null,
+        isLoading: false,
         modifiedgametype: null,
         modifiedseason: null,
         data: null,
@@ -302,7 +303,13 @@
     },
     methods: {
       async getData(type){
-        this.loading = true;
+        this.isLoading = true;
+
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled');
+        }
+        this.cancelTokenSource = this.$axios.CancelToken.source();
+
         try{
           const response = await this.$axios.post("/api/v1/player/heroes/single", {
             battletag: this.battletag,
@@ -313,13 +320,23 @@
             hero: this.hero,
             type: "single",
             page: "hero",
+          }, 
+          {
+            cancelToken: this.cancelTokenSource.token,
           });
 
           this.data = response.data[0];
         }catch(error){
         //Do something here
+        }finally {
+          this.cancelTokenSource = null;
+          this.isLoading = false;
         }
-        this.loading = false;
+      },
+      cancelAxiosRequest() {
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled by user');
+        }
       },
       handleInputChange(eventPayload) {
         if(eventPayload.field == "Game Type"){
