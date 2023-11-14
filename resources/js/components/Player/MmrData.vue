@@ -6,7 +6,6 @@
       :isLoading="isLoading"
       :gametypedefault="gametypedefault"
       :includesinglegametypefull="true"
-      :includeseason="true"
       :playerheroroletype="true"
       :hideadvancedfilteringbutton="true"
       >
@@ -14,7 +13,7 @@
 
     <div v-if="data">
 
-      <line-chart class="max-w-[1500px] mx-auto" :data="reversedData" :dataAttribute="'mmr'"></line-chart>
+      <line-chart class="max-w-[1500px] mx-auto" :data="reversedData" :dataAttribute="'mmr'" :title="`${battletag} MMR Graph for ${gametype}`"></line-chart>
 
       <div class="max-w-[1500px] mx-auto mt-2">
         {{ this.gametype.toUpperCase() }} - League Tier Breakdowns | Player MMR: {{ data[0].mmr }}
@@ -136,6 +135,7 @@ export default {
       sortKey: '',
       sortDir: 'desc',
       leaguedata: null,
+      type: "Player",
     }
   },
   created(){
@@ -179,7 +179,9 @@ export default {
           region: this.region,
           battletag: this.battletag,
           game_type: this.gametype,
-          type: "Player",
+          type: this.type,
+          hero: this.hero,
+          role: this.role,
         }, 
         {
           cancelToken: this.cancelTokenSource.token,
@@ -199,11 +201,12 @@ export default {
       }
     },
     filterData(filteredData){
-      this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
+      this.gametype = filteredData.single["Game Type"] ? filteredData.single["Game Type"] : this.gametype;
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
       this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
-      this.data = [];
+      this.type = filteredData.single["Type"] ? filteredData.single["Type"] : "Player";
+      this.data = null;
       this.sortKey = '';
       this.sortDir ='asc';
       this.getData();

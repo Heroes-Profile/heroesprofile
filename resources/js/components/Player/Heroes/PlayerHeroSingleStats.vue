@@ -55,7 +55,7 @@
         </div>
       </div>
 
-      <line-chart v-if="seasonWinRateDataArray" :data="seasonWinRateDataArray" :dataAttribute="'win_rate'" class="max-w-[1500px] mx-auto"></line-chart>
+      <line-chart v-if="seasonWinRateDataArray" class="max-w-[1500px] mx-auto" :data="seasonWinRateDataArray" :dataAttribute="'win_rate'" :title="`${battletag} Win Rate Data Per Season with ${heroobject.name}`"></line-chart>
 
       <div class="bg-lighten">
         <div class="max-w-[1000px] mx-auto">

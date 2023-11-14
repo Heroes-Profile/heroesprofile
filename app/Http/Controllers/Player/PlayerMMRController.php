@@ -9,6 +9,10 @@ use App\Rules\GameTypeInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Rules\HeroInputByIDValidation;
+use App\Rules\RoleInputValidation;
+use App\Models\MMRTypeID;
+use App\Models\Hero;
 
 class PlayerMMRController extends Controller
 {
@@ -48,6 +52,8 @@ class PlayerMMRController extends Controller
             'region' => 'required|integer',
             'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation()],
             'type' => 'required|in:Player,Hero,Role',
+            'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation()],
+            'role' => ['sometimes', 'nullable', new RoleInputValidation()],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -62,6 +68,9 @@ class PlayerMMRController extends Controller
         $blizz_id = $request['blizz_id'];
         $region = $request['region'];
         $game_type = GameType::where('short_name', $request['game_type'])->pluck('type_id')->first();
+        $hero = $request['hero'] ? $this->globalDataService->getHeroesByID()[$request['hero']] : null;
+        $type = $request["type"];
+        $role = $request["role"];
 
         $result = DB::table('replay')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
@@ -82,19 +91,38 @@ class PlayerMMRController extends Controller
             ->where('blizz_id', $blizz_id)
             ->where('game_type', $game_type)
             ->where('region', $region)
+            ->when(! is_null($hero), function ($query) use ($hero) {
+                return $query->where('hero', $hero->id);
+            })
+            ->when(! is_null($role), function ($query) use ($role) {
+                return $query->whereIn('hero', Hero::select("id")->where("new_role", $role)->get()->toArray());
+            })
             //->toSql();
             ->orderByDesc('mmr_date_parsed')
             ->get();
 
+
+
+        if(count($result) == 0){
+            return;
+        }
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
-        $modifiedResult = $result->map(function ($item) use ($heroData) {
+        $modifiedResult = $result->map(function ($item) use ($heroData, $type) {
             $item->hero_id = $item->hero;
             $item->hero = $heroData[$item->hero];
 
-            $item->mmr = round(1800 + 40 * $item->player_conservative_rating);
-            $item->mmr_change = round($item->player_change, 2);
+            if($type == "Player"){
+                $item->mmr = round(1800 + 40 * $item->player_conservative_rating);
+                $item->mmr_change = round($item->player_change, 2);
+            }else if($type == "Hero"){
+                $item->mmr = round(1800 + 40 * $item->hero_conservative_rating);
+                $item->mmr_change = round($item->hero_change, 2);
+            }else if($type == "Role"){
+                $item->mmr = round(1800 + 40 * $item->role_conservative_rating);
+                $item->mmr_change = round($item->role_change, 2);
+            }
 
             $item->winner = $item->winner == 1 ? 'True' : 'False';
             $item->x_label = $item->game_date;
@@ -102,7 +130,16 @@ class PlayerMMRController extends Controller
             return $item;
         });
 
-        $leagueBreakdown = LeagueBreakdown::where('type_role_hero', 10000)->where('game_type', $game_type)->get();
+        $mmrType = 0;
+        if($type == "Player"){
+            $mmrType = 10000;
+        }else if($type == "Hero"){
+            $mmrType = MMRTypeID::where("name", $hero->name)->first()->mmr_type_id;
+        }else if($type == "Role"){
+            $mmrType = MMRTypeID::where("name", $role)->first()->mmr_type_id;
+        }
+
+        $leagueBreakdown = LeagueBreakdown::where('type_role_hero', $mmrType)->where('game_type', $game_type)->get();
 
         foreach ($leagueBreakdown as $data) {
             $data->min_mmr = round($data->min_mmr);
@@ -114,8 +151,8 @@ class PlayerMMRController extends Controller
                 }
             }
         }
-        $fullBreakdownForTier = $this->globalDataService->getSubTiers($this->globalDataService->getRankTiers($game_type, 10000), $modifiedResult[0]->mmr);
-        $rankTier = $this->globalDataService->calculateSubTier($this->globalDataService->getRankTiers($game_type, 10000), $modifiedResult[0]->mmr);
+        $fullBreakdownForTier = $this->globalDataService->getSubTiers($this->globalDataService->getRankTiers($game_type, $mmrType), $modifiedResult[0]->mmr);
+        $rankTier = $this->globalDataService->calculateSubTier($this->globalDataService->getRankTiers($game_type, $mmrType), $modifiedResult[0]->mmr);
 
         $leagueBreakdownArray = $leagueBreakdown->toArray();
         $fullBreakdownForTierArray = $fullBreakdownForTier;
