@@ -64,14 +64,18 @@
 
     <tab-button :tab1text="this.hero.name" :ignoreclick="true" :tab2text="this.enemyally.name" @tab-click="talentHeroOrEnemySideSelected" > </tab-button>
 
+
   </div>
+</div>
 
 
   <div v-if="showTalentHeroToggle" class="text-center mt-auto">
     <tab-button :tab1text="'Enemy'" :ignoreclick="true" :tab2text="'Ally'" @tab-click="heroOrEnemySideSelected" > </tab-button>
 
 
+   
   </div>
+
 
 
 
