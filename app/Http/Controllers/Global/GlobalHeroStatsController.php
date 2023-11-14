@@ -131,7 +131,6 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
                     ->get();
             }
 
-
             return $this->combineData($data, $statFilter, $banData, $changeData, $hero, $role);
         });
 

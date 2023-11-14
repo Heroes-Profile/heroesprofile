@@ -146,10 +146,12 @@ class GlobalDataService
         return session('game_types');
     }
 
-    public function getWeeksSinceSeasonStart(){
+    public function getWeeksSinceSeasonStart()
+    {
         $currentSeasonStartDate = SeasonDate::orderBy('id', 'desc')->limit(1)->value('start_date');
         $startDate = Carbon::parse($currentSeasonStartDate);
         $currentDate = Carbon::now();
+
         return $startDate->diffInWeeks($currentDate);
     }
 
@@ -605,27 +607,30 @@ class GlobalDataService
 
         return $result;
     }
-    public function calculateTierID($rankName){
-        if($rankName == "Master"){
+
+    public function calculateTierID($rankName)
+    {
+        if ($rankName == 'Master') {
             return 6;
         }
 
         $split = explode(' ', $rankName);
 
-        if($split[0] == "Diamond"){
+        if ($split[0] == 'Diamond') {
             return 6 - ($split[1] / 10);
-        }else if($split[0] == "Platinum"){
+        } elseif ($split[0] == 'Platinum') {
             return 5 - ($split[1] / 10);
-        }else if($split[0] == "Gold"){
+        } elseif ($split[0] == 'Gold') {
             return 4 - ($split[1] / 10);
-        }else if($split[0] == "Silver"){
+        } elseif ($split[0] == 'Silver') {
             return 3 - ($split[1] / 10);
-        }else if($split[0] == "Bronze"){
+        } elseif ($split[0] == 'Bronze') {
             return 2 - ($split[1] / 10);
-        }else if($split[0] == "Wood"){
+        } elseif ($split[0] == 'Wood') {
             return 1 - ($split[1] / 10);
         }
     }
+
     public function getSubTiers($rankTiers, $mmr)
     {
         $tierNames = [
