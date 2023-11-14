@@ -275,7 +275,7 @@
         </div>
       </div>
 
-      <div v-if="!esport" class=" overflow-scroll md:overflow-auto  h-[50vh] md:h-auto max-w-[2000px] mx-auto">
+      <div v-if="!esport" class=" overflow-scroll md:overflow-auto  h-[50vh] md:h-auto max-w-[2000px] mx-auto my-5">
         Team 1 Advanced MMR data
 
         {{}}
@@ -322,7 +322,7 @@
         </table>
       </div>
 
-      <div  v-if="!esport" class="   overflow-scroll md:overflow-auto  h-[50vh] md:h-auto max-w-[2000px] mx-auto">
+      <div  v-if="!esport" class="   overflow-scroll md:overflow-auto  h-[50vh] md:h-auto max-w-[2000px] mx-auto my-5">
         Team 2 Advanced MMR data
         <table :class="{ winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }">
           <thead>
@@ -368,7 +368,7 @@
       </div>
 
 
-      <div class="max-w-[2000px] mx-auto">
+      <div class="max-w-[2000px] mx-auto my-5">
         Team 1 Advanced Stats
         <table :class="{ winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
           <thead>
