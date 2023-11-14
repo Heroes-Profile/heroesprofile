@@ -6,7 +6,12 @@
       <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
     </div>
 
-    <div v-if="data" class="">
+    <div v-if="data == ''" class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
+      <div class="flex items-center">
+        <span>No data for this player and filters</span>
+      </div>
+    </div>
+    <div v-else-if="data" class="">
 
 
       <div class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
@@ -259,6 +264,7 @@
             cancelToken: this.cancelTokenSource.token,
           });
           this.data = response.data;
+          console.log(this.data);
         }catch(error){
         //Do something here
         }finally {
