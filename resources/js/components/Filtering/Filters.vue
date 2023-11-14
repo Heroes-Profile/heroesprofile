@@ -400,7 +400,7 @@
           delete this.selectedMultiFilters['Role Rank'];
           delete this.selectedMultiFilters['Mirror Matches'];
         }
-      }
+      },
     },
     methods: {
       handleInputChange(eventPayload) {
@@ -442,6 +442,15 @@
         if(eventPayload.field == "Type"){
           this.modifiedincludeheroes = (eventPayload.value == "Hero");
           this.modifiedincluderole = (eventPayload.value == "Role");
+
+          if(eventPayload.value == "Player"){
+            delete this.selectedSingleFilters['Heroes'];
+            delete this.selectedSingleFilters['Role'];
+          }else if(eventPayload.value == "Hero"){
+            delete this.selectedSingleFilters['Role'];
+          }else if(eventPayload.value == "Role"){
+            delete this.selectedSingleFilters['Heroes'];
+          }
         }
 
         if(eventPayload.field == "Season" && this.includegroupsize){
