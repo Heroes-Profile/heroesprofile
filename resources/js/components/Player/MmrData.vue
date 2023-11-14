@@ -1,5 +1,6 @@
 <template>
   <div>
+    <page-heading :infoText1="infoText" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
@@ -124,6 +125,7 @@ export default {
     region: {
       type: [String, Number]
     },
+    regionsmap: Object,
   },
   data(){
     return {
@@ -136,6 +138,7 @@ export default {
       sortDir: 'desc',
       leaguedata: null,
       type: "Player",
+      infoText: "MMR Data",
     }
   },
   created(){

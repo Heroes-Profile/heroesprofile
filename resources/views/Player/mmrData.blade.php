@@ -9,5 +9,6 @@
     :region="{{ json_encode($region) }}" 
     :filters="{{ json_encode($filters) }}" 
     :gametypedefault="{{ json_encode($gametypedefault) }}"
+    :regionsmap="{{ json_encode(session('regions')) }}"
   ></mmr-data>
 @endsection
