@@ -122,6 +122,7 @@
 
       </div>
 
+
       <div class="p-10  max-w-[2000px] mx-auto">
         <h2 class="text-3xl font-bold py-5">Match Scores</h2>
          <p>See advanced stats below</p>
@@ -129,10 +130,7 @@
             Heroes Profile Score is a match based analysis ranking showing how a player performed in the match compared to other players in the same match.  100 would be a perfect match with most MVPs hovering between 70-75.
             </p>
 
-
-
-
-          
+      
 
         <div class="ml-auto flex justify-end">
           <div class="text-center flex items-center gap-2">
@@ -169,6 +167,7 @@
                   <stat-box :title="'Exp. Con.'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
                 </div>
               </div>
+
             </div>
           </a>
         </div>
@@ -206,6 +205,7 @@
 
 
 
+
       <div class="p-10  max-w-[1500px] mx-auto">
          <h2 class="text-3xl font-bold py-5">Talents</h2>
         <div class="flex gap-5 justify-between">
@@ -217,7 +217,7 @@
               <div>
                 {{ item.battletag }} - {{ item.hero.name }}
                 <div class="flex  items-center gap-2 mb-2">
-                  
+
                   <talent-image-wrapper :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
                   <talent-image-wrapper :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
                   <talent-image-wrapper :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
@@ -225,6 +225,7 @@
                   <talent-image-wrapper :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
                   <talent-image-wrapper :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
                   <talent-image-wrapper :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
+
                  
                 </div>
               </div>
@@ -245,6 +246,7 @@
                 {{ item.battletag }} - {{ item.hero.name }}
                 <div class="flex  items-center gap-2 mb-2">
                   
+
                   <talent-image-wrapper :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
                   <talent-image-wrapper :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
                   <talent-image-wrapper :size="'medium'" :talent="item.talents.level_seven"></talent-image-wrapper>
@@ -252,6 +254,7 @@
                   <talent-image-wrapper :size="'medium'" :talent="item.talents.level_thirteen"></talent-image-wrapper>
                   <talent-image-wrapper :size="'medium'" :talent="item.talents.level_sixteen"></talent-image-wrapper>
                   <talent-image-wrapper :size="'medium'" :talent="item.talents.level_twenty"></talent-image-wrapper>
+
                  
                 </div>
               </div>
@@ -265,6 +268,7 @@
            
         </div>
       </div>
+
       </div>
 
      <div class="bg-lighten p-10 text-center">
@@ -275,7 +279,9 @@
         </div>
       </div>
 
+
       <div v-if="!esport" class=" overflow-scroll md:overflow-auto  h-[50vh] md:h-auto max-w-[2000px] mx-auto my-5">
+
         Team 1 Advanced MMR data
 
         {{}}
@@ -322,7 +328,9 @@
         </table>
       </div>
 
+
       <div  v-if="!esport" class="   overflow-scroll md:overflow-auto  h-[50vh] md:h-auto max-w-[2000px] mx-auto my-5">
+
         Team 2 Advanced MMR data
         <table :class="{ winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }">
           <thead>
