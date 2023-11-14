@@ -21,12 +21,13 @@
         >
       </filters>
       <div  v-if="talentdetaildata" class="container mx-auto px-4">
+        <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Talent Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
         <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
       </div>
       <div v-else-if="isLoading">
         <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
       </div>
-      <div  v-if="talentbuilddata" class="container mx-auto px-4">
+      <div  v-if="talentbuilddata" class="cmx-auto px-4 w-auto flex flex-col items-center">
         {{ this.selectedHero.name }} {{ "Talent Builds"}}
         <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="'Popular'" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
       </div>
@@ -128,7 +129,7 @@ export default {
     },
     filterData(filteredData){
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
-      this.season = filteredData.single["Season"] ? filteredData.single["Season"] : this.season;
+      this.season = filteredData.single["Season"] ? filteredData.single["Season"] : null;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
       this.fromdate = filteredData.single["From Date"] ? filteredData.single["From Date"] : null;
 
@@ -145,6 +146,9 @@ export default {
         });
       }
     },
+    redirectChangeHero(){
+      window.location.href = `/Player/${this.battletag}/${this.blizzid}/${this.region}/Talents`;
+    }
   }
 }
 </script>

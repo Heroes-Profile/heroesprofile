@@ -42,10 +42,16 @@
               Games
             </th>
             <th @click="sortTable('kda')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              KDA
+              <div class="">
+                KDA <br/>
+                Kills/Deaths/Takedowns
+              </div>
             </th>  
             <th @click="sortTable('kdr')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              KDR
+              <div class="">
+                KDR <br/>
+                Kills/Deaths
+              </div>
             </th>
             <template   v-for="stat in stats">
               <th  v-if="stat.selected" @click="sortTable(stat.value)" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -57,8 +63,8 @@
         </thead>
         <tbody>
           <tr v-for="row in sortedData" :key="row.id">
-            <td class="py-2 px-3 "><a :href="getPlayerMapPageUrl(row.name)">{{ row.name }}</a></td>
-            <td class="py-2 px-3 "><stat-bar-box :title="'Win Rate'" :value="row.win_rate"></stat-bar-box>{{ (row.wins + row.losses) }}</td>
+            <td class="py-2 px-3 "><a class="link" :href="getPlayerMapPageUrl(row.name)">{{ row.name }}</a></td>
+            <td class="py-2 px-3 "><stat-bar-box :title="'Win Rate'" :value="row.win_rate" :color="getWinRateColor(row.win_rate)"></stat-bar-box>{{ (row.wins + row.losses) }}</td>
             <td class="py-2 px-3 ">{{ row.kda }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}/{{ row.avg_assists }}</td>
             <td class="py-2 px-3 ">{{ row.kdr }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}</td>
             
@@ -300,6 +306,14 @@ export default {
       setTimeout(() => {
             inputStat.flash = false;
           }, 1000);
+    },
+    getWinRateColor(win_rate){
+      if(win_rate < 40){
+        return "red";
+      }else if(win_rate < 50){
+        return "yellow";
+      }
+      return "blue";
     },
   }
 }

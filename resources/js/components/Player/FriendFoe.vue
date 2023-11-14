@@ -37,7 +37,7 @@
 
           <tbody>
             <tr v-for="row in sortedDataFriends" :key="row.blizz_id">
-              <td class="py-2 px-3 "><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
+              <td class="py-2 px-3 "><a class="link" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
               <td class="py-2 px-3 flex items-center gap-1">
                 <hero-image-wrapper :hero="row.heroData.hero">
                   <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.total_games_played.toLocaleString()"></image-hover-box>
@@ -71,7 +71,7 @@
 
           <tbody>
             <tr v-for="row in sortedDataEnemies" :key="row.blizz_id">
-              <td class="py-2 px-3 "><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
+              <td class="py-2 px-3 "><a class="link" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
               <td class="py-2 px-3 flex items-center gap-1">
                 <hero-image-wrapper :hero="row.heroData.hero">
                   <h2>{{ row.heroData.hero.name }}</h2>
@@ -121,7 +121,7 @@ export default {
       enemySortKey: '',
       enemySortDir: 'desc',
 
-      gametype: ["qm"],
+      gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
       gamemap: null,
       season: null,
       friendCancelTokenSource: null,

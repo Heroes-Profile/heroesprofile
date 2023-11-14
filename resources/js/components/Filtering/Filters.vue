@@ -444,7 +444,7 @@
           this.modifiedincluderole = (eventPayload.value == "Role");
         }
 
-        if(eventPayload.field == "Season"){
+        if(eventPayload.field == "Season" && this.includegroupsize){
           this.modifiedincludegroupsize = (eventPayload.value >= 20);
         }
 

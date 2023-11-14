@@ -44,13 +44,13 @@
               
             </th>
             <th @click="sortTable('kda')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              <div class=""> <!--How do you get these things to stack on top of each other ?-->
+              <div class="">
                 KDA <br/>
                 Kills/Deaths/Takedowns
               </div>
             </th>  
             <th @click="sortTable('kdr')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              <div class=""> <!--How do you get these things to stack on top of each other ?-->
+              <div class="">
                 KDR <br/>
                 Kills/Deaths
               </div>
@@ -365,7 +365,7 @@ export default {
         return "yellow";
       }
       return "blue";
-    }
+    },
   }
 }
 </script>
