@@ -86,8 +86,8 @@
       </div>
 
     </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="'/images/NGS/no-image-clipped.png'"></loading-component>
+    <div v-else>
+      <loading-component :overrideimage="'/images/NGS/no-image-clipped.png'"></loading-component>
     </div>
   </div>
 </template>
@@ -112,7 +112,6 @@ export default {
       data: null,
       infoText1: "Heroes of the Storm statistics and comparison for the Nexus Gaming Series",
       modifiedseason: null,
-      cancelTokenSource: null,
     }
   },
   created(){
@@ -129,32 +128,16 @@ export default {
   methods: {    
     async getData(){
       this.isLoading = true;
-
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled');
-      }
-      this.cancelTokenSource = this.$axios.CancelToken.source();
-
       try{
         const response = await this.$axios.post("/api/v1/esports/ngs/division/single", {
           season: this.modifiedseason,
           division: this.division,
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
         });
         this.data = response.data;
       }catch(error){
         //Do something here
-      }finally {
-        this.cancelTokenSource = null;
-        this.isLoading = false;
       }
-    },
-    cancelAxiosRequest() {
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled by user');
-      }
+      this.isLoading = false;
     },
     formatDate(dateString) {
       const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik'); // Assuming date strings are in UTC

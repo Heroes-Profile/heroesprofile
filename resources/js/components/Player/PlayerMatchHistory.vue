@@ -18,14 +18,17 @@
     </filters>
 
     <div v-if="data">
+
+      Pagination works.  So cool- Hey needs some sort of loading thing when you press the next/prev buttons otherwise you just sit there and spam it over and over not realizing it's loading. also like x of x pages or something might be good
+
       <div>
         <ul class="pagination flex max-w-[1500px] mx-auto justify-between mb-2">
-          <li v-if="data.current_page != 1" class="page-item underline underline-offset-4" :class="{ disabled: !data.prev_page_url }">
+          <li class="page-item underline underline-offset-4" :class="{ disabled: !data.prev_page_url }">
             <a class="page-link" @click.prevent="getData(data.current_page - 1)" href="#">
               Previous
             </a>
           </li>
-          <li v-if="data.current_page != 61" class="page-item underline underline-offset-4" :class="{ disabled: !data.next_page_url }">
+          <li class="page-item underline underline-offset-4" :class="{ disabled: !data.next_page_url }">
             <a class="page-link" @click.prevent="getData(data.current_page + 1)" href="#">
               Next
             </a>
@@ -97,7 +100,7 @@
       </table>
     </div>
     <div v-else>
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+      <loading-component></loading-component>
     </div>
   </div>
 </template>
@@ -118,7 +121,6 @@ export default {
   },
   data(){
     return {
-      cancelTokenSource: null,
       userTimezone: moment.tz.guess(),
       isLoading: false,
       data: null,
@@ -153,12 +155,12 @@ export default {
   watch: {
   },
   methods: {
-    async getData(page){      
+    async getData(page){
      if (this.isLoading || page < 1 || (this.data && page > this.data.last_page)) {
         return;
       }
     
-      this.data = null;
+
       this.isLoading = true;
       try{
         const response = await this.$axios.post("/api/v1/player/match/history", {

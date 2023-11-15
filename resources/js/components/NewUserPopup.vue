@@ -53,7 +53,7 @@ export default {
   },
   methods: {
     closePopup() {
-      localStorage.setItem('newUserPopup', 'true');
+      //localStorage.setItem('newUserPopup', 'true');
       this.$emit('popupclosed');
     },
   }

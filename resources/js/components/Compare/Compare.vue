@@ -47,55 +47,55 @@
 
     </div>
 
-    <div class="flex justify-center gap-10 mt-10">
-      <div v-if="this.data" class="flex flex-col gap-10">
-        <div v-for="(stat, index) in stats.slice(0,4)" :key="stat" class="">
-          <div v-for="(player, playerIndex) in playerData" :key="player.battletag" class="flex flex-col" >
-           <stat-bar-box align="right"  :color="colors[playerIndex]"  :title="`${player.battletag_short} ${stat}`" :displaytext="getStatText(stat.replace(/ /g, '_').toLowerCase(), player.battletag)" :value="getStatValue(stat.replace(/ /g, '_').toLowerCase(), player.battletag)"></stat-bar-box>
-         </div>
+<div class="flex justify-center gap-10 mt-10">
+    <div v-if="this.data" class="flex flex-col gap-10">
+      <div v-for="(stat, index) in stats.slice(0,4)" :key="stat" class="">
+        <div v-for="(player, playerIndex) in playerData" :key="player.battletag" class="flex flex-col" >
+         <stat-bar-box align="right"  :color="colors[playerIndex]"  :title="`${player.battletag_short} ${stat}`" :displaytext="getStatText(stat.replace(/ /g, '_').toLowerCase(), player.battletag)" :value="getStatValue(stat.replace(/ /g, '_').toLowerCase(), player.battletag)"></stat-bar-box>
        </div>
      </div>
+</div>
      <img :src="getHeroImage()" />
-     <div v-if="this.data" class="flex flex-col gap-10">
+ <div v-if="this.data" class="flex flex-col gap-10">
       <div v-for="(stat, index) in stats.slice(4)" :key="stat" class="">
         <div v-for="(player, playerIndex) in playerData" :key="player.battletag" class="flex flex-col" >
          <stat-bar-box align="left"  :color="colors[playerIndex]"  :title="`${player.battletag_short} ${stat}`" :displaytext="getStatText(stat.replace(/ /g, '_').toLowerCase(), player.battletag)" :value="getStatValue(stat.replace(/ /g, '_').toLowerCase(), player.battletag)"></stat-bar-box>
        </div>
      </div>
+</div>
+
+
    </div>
+   <div v-if="this.data">
+    <table v-for="(section, sectionIndex) in sections" :key="sectionIndex" class="table-fixed">
+      <thead>
+        <tr>
+          <td  class="teal"></td>
+          
+          <td
+          v-for="(player, index) in data"
+          :key="index"
+          width="25%"
+          >
+          <a :href="`/Player/${player.battletag_short}/${player.blizz_id}/${player.region}`">{{ player.battletag_short }}</a>
+        </td>
 
-
- </div>
- <div v-if="data">
-  <table v-for="(section, sectionIndex) in sections" :key="sectionIndex" class="table-fixed">
-    <thead>
-      <tr>
-        <td  class="teal"></td>
-
-        <td
-        v-for="(player, index) in data"
-        :key="index"
-        width="25%"
-        >
-        <a :href="`/Player/${player.battletag_short}/${player.blizz_id}/${player.region}`">{{ player.battletag_short }}</a>
-      </td>
-
-    </tr>
-  </thead>
-  <tbody>
-
-    <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
-      <td class="flex-1">{{ row.label }}</td>
-      <td class="flex-1" v-for="(player, playerIndex) in data" :key="playerIndex">{{ formatValue(player.averages[row.key].avg_value) }}</td>
-    </tr>
+      </tr>
+    </thead>
+    <tbody>
+        
+          <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
+            <td class="flex-1">{{ row.label }}</td>
+            <td class="flex-1" v-for="(player, playerIndex) in data" :key="playerIndex">{{ formatValue(player.averages[row.key].avg_value) }}</td>
+          </tr>
     
-  </tbody>
-</table>
-</div>
+      </tbody>
+    </table>
+  </div>
 
-<div v-else-if="isLoading">
-  <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
-</div>
+  <div v-if="isLoading">
+    <loading-component></loading-component>
+  </div>
 
 </div>
 
@@ -123,7 +123,6 @@
     },
     data(){
       return {
-        cancelTokenSource: null,
         isLoading: false,
         range: [0],
         playerData: [],
@@ -228,18 +227,15 @@
     mounted() {
     },
     computed: {
+
+
+
     },
     watch: {
     },
     methods: {
       async getData(){
         this.isLoading = true;
-
-        if (this.cancelTokenSource) {
-          this.cancelTokenSource.cancel('Request canceled');
-        }
-        this.cancelTokenSource = this.$axios.CancelToken.source();
-
         try{
           const response = await this.$axios.post("/api/v1/compare", {
             hero: this.selectedHero.name, 
@@ -251,23 +247,14 @@
             player3: this.playerData[2] ? this.playerData[2] : null,
             player4: this.playerData[3] ? this.playerData[3] : null,
             player5: this.playerData[4] ? this.playerData[4] : null,
-          }, 
-          {
-            cancelToken: this.cancelTokenSource.token,
           });
 
           this.data = response.data;
         }catch(error){
         //Do something here
-        }finally {
-          this.cancelTokenSource = null;
-          this.isLoading = false;
         }
-      },
-      cancelAxiosRequest() {
-        if (this.cancelTokenSource) {
-          this.cancelTokenSource.cancel('Request canceled by user');
-        }
+        this.isLoading = false;
+
       },
       filterData(filteredData){
         this.charttype = filteredData.single["Chart Type"] ? filteredData.single["Chart Type"] : "Account Level";

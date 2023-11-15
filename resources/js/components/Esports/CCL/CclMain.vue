@@ -57,7 +57,7 @@
       <div v-if="activeButton === 'organizations'">
         <div class="flex flex-wrap gap-2">
           <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
         <esports-organizations v-if="organizationsData" :data="organizationsData" :esport="'CCL'" :season="season"></esports-organizations>
       </div>
@@ -65,7 +65,7 @@
       <div v-if="activeButton === 'recentMatches'">
         <div class="flex flex-wrap gap-2">
           <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
 
 
@@ -94,7 +94,7 @@
       <div v-if="activeButton === 'overallHeroStats'">
         <div class="flex flex-wrap gap-2">
           <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
         <esports-hero-stats v-if="heroStatsData" :data="heroStatsData"></esports-hero-stats>
       </div>
@@ -110,7 +110,7 @@
             <div class="flex flex-wrap gap-2">
               <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange" :defaultValue="selectedHero.id"></single-select-filter>
               <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-              <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+              <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
             </div>
 
             
@@ -122,8 +122,8 @@
       </div>
 
     </div>
-    <div v-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="'/images/CCL/600-600-HHE_CCL_Logo_rectangle.png'"></loading-component>
+    <div v-if="loading">
+      <loading-component :overrideimage="'/images/CCL/600-600-HHE_CCL_Logo_rectangle.png'"></loading-component>
     </div>
   </div>
 </template>
@@ -143,7 +143,7 @@ export default {
     return {
       preloadedImage: new Image(),
 
-      isLoading: false,
+      loading: false,
       infoText1: "Heroes of the Storm statistics and comparison for the Community Clash League",
       activeButton: null,
       organizationsData: null,
@@ -151,7 +151,7 @@ export default {
       heroStatsData: null,
       talentStatsData: null,
       selectedHero: null,
-      cancelTokenSource: null,
+
       season: null,
 
       userinput: null,
@@ -186,109 +186,63 @@ export default {
   },
   methods: {
     async getOrganizationsData(){
-      this.isLoading = true;
-
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled');
-      }
-      this.cancelTokenSource = this.$axios.CancelToken.source();
-
+      this.loading = true;
       try{
         const response = await this.$axios.post("/api/v1/esports/ccl/organizations", {
           season: this.season,
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
         });
         this.organizationsData = response.data;
       }catch(error){
         //Do something here
-      }finally {
-        this.cancelTokenSource = null;
-        this.isLoading = false;
       }
+      this.loading = false;
     },
     async getRecentMatches(page){
-      if (this.isLoading || page < 1 || (this.recentMatchesData && page > this.recentMatchesData.last_page)) {
+      if (this.loading || page < 1 || (this.recentMatchesData && page > this.recentMatchesData.last_page)) {
         return;
       }
 
-      this.isLoading = true;
-
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled');
-      }
-      this.cancelTokenSource = this.$axios.CancelToken.source();
-
+      this.loading = true;
       try{
         const response = await this.$axios.post("/api/v1/esports/ccl/matches", {
           season: this.season,
           pagination_page: page,
           esport: "CCL",
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
         });
         this.recentMatchesData = response.data;
       }catch(error){
         //Do something here
-      }finally {
-        this.cancelTokenSource = null;
-        this.isLoading = false;
       }
+      this.loading = false;
     },
     async getHeroStats(){
-      this.isLoading = true;
-
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled');
-      }
-      this.cancelTokenSource = this.$axios.CancelToken.source();
+      this.loading = true;
       try{
         const response = await this.$axios.post("/api/v1/esports/ccl/hero/stats", {
           season: this.season,
           esport: "CCL",
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
         });
         this.heroStatsData = response.data;
       }catch(error){
         //Do something here
-      }finally {
-        this.cancelTokenSource = null;
-        this.isLoading = false;
       }
+      this.loading = false;
     },
     async getTalentStats(){
-      this.isLoading = true;
-
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled');
-      }
-      this.cancelTokenSource = this.$axios.CancelToken.source();
+      this.loading = true;
       try{
         const response = await this.$axios.post("/api/v1/esports/ccl/hero/talents/stats", {
           season: this.season,
           hero: this.selectedHero.name,
           esport: "CCL",
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
         });
         this.talentStatsData = response.data;
       }catch(error){
         //Do something here
-      }finally {
-        this.cancelTokenSource = null;
-        this.isLoading = false;
       }
+      this.loading = false;
     },
-    cancelAxiosRequest() {
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled by user');
-      }
-    },
+
     setButtonActive(buttonName) {
       this.activeButton = buttonName;
       this.season = this.defaultseason;
