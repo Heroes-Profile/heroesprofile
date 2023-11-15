@@ -98,7 +98,7 @@
           <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
           <custom-button :disabled="isLoading" @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
-        <ngs-standings v-if="standingData" :data="standingData" :season="defaultseason"></ngs-standings>
+        <ngs-standings v-if="standingData" :data="standingData" :season="season"></ngs-standings>
       </div>
 
       <div v-if="activeButton === 'divisions'">
@@ -149,26 +149,22 @@
           <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
 
-
-
-
         <div v-if="recentMatchesData">
-          <ul class="pagination">
-            <li class="page-item" :class="{ disabled: !recentMatchesData.pagination.prev_page_url }">
+          <ul class="pagination flex max-w-[1500px] mx-auto justify-between mb-2">
+            <li v-if="recentMatchesData.pagination.current_page != 1" class="page-item underline underline-offset-4" :class="{ disabled: !recentMatchesData.pagination.prev_page_url }">
               <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page - 1)" href="#">
                 Previous
               </a>
             </li>
-            <li class="page-item" :class="{ disabled: !recentMatchesData.pagination.next_page_url }">
+            <li v-if="recentMatchesData.pagination.current_page != recentMatchesData.pagination.last_page" class="page-item underline underline-offset-4" :class="{ disabled: !recentMatchesData.pagination.next_page_url }">
               <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page + 1)" href="#">
                 Next
               </a>
             </li>
           </ul>
+          <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'NGS'"></esports-recent-matches>
         </div>
 
-
-        <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'NGS'"></esports-recent-matches>
       </div>
 
 

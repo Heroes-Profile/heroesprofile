@@ -3,25 +3,32 @@
     <page-heading :infoText1="infoText1" :heading="'NGS'" :heading-image="'/images/NGS/600-600-ngs_large_header.png'" :heading-image-url="'/Esports/NGS'"></page-heading>
   
     <div v-if="data">
-      <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifiedseason"></single-select-filter>
+      <div class="flex justify-center max-w-[1500px] mx-auto">
+        <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifiedseason"></single-select-filter>
+      </div>
 
-      <h1>Division {{ division }}</h1>
-      <img :src="'/images/NGS/Divisions/Division ' + division + '.png'"/>
 
-      <stat-box :title="'Vengeances'" :value="data.vengeances"></stat-box>
-      <stat-box :title="'Escapes'" :value="data.escapes"></stat-box>
 
-      <stat-bar-box :title="'Avg. Game Length to 30min'" :value="data.length_to_30"></stat-bar-box>
-
-      <stat-box :title="'Avg. Hero Damage'" :value="data.hero_damage"></stat-box>
-      <stat-box :title="'Avg. Siege Damage'" :value="data.siege_damage"></stat-box>
-      <stat-box :title="'Avg. Siege Damage'" :value="data.siege_damage"></stat-box>
-      <stat-box :title="'Takedowns'" :value="data.takedowns"></stat-box>
-      <stat-box :title="'Kills'" :value="data.kills"></stat-box>
-      <stat-box :title="'Assists'" :value="data.assists"></stat-box>
-      <stat-box :title="'# of Games'" :value="data.total_games"></stat-box>
-      <stat-box :title="'Avg. Healing'" :value="data.healing"></stat-box>
-      <stat-box :title="'Total Time Spend Dead'" :value="data.time_spent_dead"></stat-box>
+      <div class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
+        <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
+          <stat-box class="w-[48%]" :title="'Vengeances'" :value="data.vengeances.toLocaleString()"></stat-box>
+          <stat-box class="w-[48%]" :title="'Escapes'" :value="data.escapes.toLocaleString()"></stat-box>
+          <stat-bar-box class="w-full" size="full" :title="'Avg. Game Length to 30min'" :value="data.length_to_30"></stat-bar-box>
+          <stat-box class="w-[48%]" :title="'Avg. Hero Damage'" :value="data.hero_damage" color="yellow"></stat-box>          
+          <stat-box class="w-[48%]" :title="'Avg. Siege Damage'" :value="data.siege_damage" color="yellow"></stat-box>          
+        </div>
+        <div>
+          <h1>Division {{ division }}</h1>
+          <img :src="'/images/NGS/Divisions/Division ' + division + '.png'"/>
+        </div>
+        <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
+          <stat-box class="w-[48%]" :title="'Takedowns'" :value="data.takedowns.toLocaleString()"></stat-box>
+          <stat-box class="w-[48%]" :title="'Kills'" :value="data.kills.toLocaleString()"></stat-box>
+          <stat-box :title="'Total Time spent dead'" :value="data.time_spent_dead"></stat-box>
+          <stat-box class="w-[48%]" :title="'Assists'" :value="data.assists" color="teal"></stat-box>          
+          <stat-box class="w-[48%]" :title="'Healing'" :value="data.healing" color="teal"></stat-box>          
+        </div>
+      </div>
 
       <h1>Teams in Division {{ division }}</h1>
       <div class="flex flex-wrap gap-2">
@@ -81,7 +88,7 @@
           >
           </game-summary-box>
         
-          <custom-button class="flex justify-end " text="View Match History" :esport="true" :esport-league="'NGS'"></custom-button>
+          <custom-button :href="`/Esports/NGS/Division/${division}/Match/History`" class="flex justify-end " text="View Match History"></custom-button>
 
       </div>
 

@@ -11,6 +11,6 @@
     :team="{{ json_encode($team) }}" 
     :season="{{ json_encode($season) }}" 
     :tournament="{{ json_encode($tournament) }}" 
-    
+    :image="{{ json_encode($image) }}" 
   ></esports-single-team>
 @endsection

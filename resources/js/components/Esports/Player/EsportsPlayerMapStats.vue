@@ -3,22 +3,29 @@ EsportsPlayerHeroStats<template>
     <page-heading :infoText1="infoText1" :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div v-if="data">
-      <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifiedseason"></single-select-filter>
-      <single-select-filter :values="data.divisions" :text="'Divisions'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifieddivision"></single-select-filter>
+      <div class="flex justify-center max-w-[1500px] mx-auto">
+        <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifiedseason"></single-select-filter>
+        <single-select-filter v-if="esport == 'NGS'" :values="data.divisions" :text="'Divisions'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifieddivision"></single-select-filter>
+      </div>
 
-
-       <div>
-        <stat-box :title="'Wins'" :value="data.wins"></stat-box>
-        <stat-box :title="'Losses'" :value="data.losses"></stat-box>
-        <stat-bar-box :title="'Win Rate'" :value="data.win_rate"></stat-bar-box>         
-        <stat-box :title="'KDR'" :value="data.kdr"></stat-box>
-        <stat-box :title="'KDA'" :value="data.kda"></stat-box>
-        <stat-box :title="'Takedowns'" :value="data.takedowns"></stat-box>
-        <stat-box :title="'Kills'" :value="data.Kills"></stat-box>
-        <stat-box :title="'Assists'" :value="data.assists"></stat-box>
-        <stat-box :title="'# Games'" :value="data.total_games"></stat-box>
-        <stat-box :title="'Deaths'" :value="data.deaths"></stat-box>
-        <stat-box :title="'Time spent dead'" :value="data.time_spent_dead"></stat-box>
+      <div class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
+        <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
+          <stat-box class="w-[48%]" :title="'Wins'" :value="data.wins.toLocaleString()"></stat-box>
+          <stat-box class="w-[48%]" :title="'Losses'" :value="data.losses.toLocaleString()"></stat-box>
+          <stat-bar-box class="w-full" size="full" :title="'Win Rate'" :value="data.win_rate.toFixed(2)"></stat-bar-box>
+          <stat-box class="w-[48%]" :title="'KDR'" :value="data.kdr" color="yellow"></stat-box>          
+          <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="yellow"></stat-box>          
+        </div>
+        <div class="my-auto">
+          <map-image-wrapper :rectangle="true" :map="game_map" :title="game_map.name" size="large"></map-image-wrapper>
+        </div>
+        <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
+          <stat-box class="w-[48%]" :title="'Takedowns'" :value="data.takedowns.toLocaleString()"></stat-box>
+          <stat-box class="w-[48%]" :title="'Kills'" :value="data.kills.toLocaleString()"></stat-box>
+          <stat-box :title="'Total Time spent dead'" :value="data.time_spent_dead"></stat-box>
+          <stat-box class="w-[48%]" :title="'Assists'" :value="data.assists" color="teal"></stat-box>          
+          <stat-box class="w-[48%]" :title="'Deaths'" :value="data.deaths" color="teal"></stat-box>          
+        </div>
       </div>
 
       <div class="bg-lighten p-10 ">
@@ -87,7 +94,7 @@ export default {
     season: {
       type: [Number, String]
     },
-    game_map: String,
+    game_map: Object,
     tournament: String,
   },
   data(){
@@ -167,7 +174,7 @@ export default {
           battletag: this.battletag,
           blizz_id: this.blizz_id,
           season: this.modifiedseason,
-          game_map: this.game_map,
+          game_map: this.game_map.name,
           tournament: this.tournament,
         }, 
         {

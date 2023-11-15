@@ -142,6 +142,16 @@ Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}', [EsportsController:
 Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Hero/{hero}', [EsportsController::class, 'showPlayerHero']);
 Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Map/{game_map}', [EsportsController::class, 'showPlayerMap']);
 
+
+
+Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Match/History', [EsportsController::class, 'showPlayerMatchHistory']);
+Route::get('Esports/{esport}/Team/{team}/Match/History', [EsportsController::class, 'showTeamMatchHistory']);
+Route::get('Esports/NGS/Division/{division}/Match/History', [NGSSingleDivisionController::class, 'showDivisionMatchHistory']);
+
+
+
+
+
 Route::get('Esports/NutCup', [NutCupController::class, 'show']);
 
 Route::get('Esports/MastersClash', [MastersClashController::class, 'show']);

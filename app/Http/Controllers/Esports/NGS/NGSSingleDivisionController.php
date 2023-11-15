@@ -41,6 +41,94 @@ class NGSSingleDivisionController extends Controller
 
     }
 
+    public function showDivisionMatchHistory(Request $request, $division){
+        $defaultseason = NGSTeam::max('season');
+
+        $validationRules = [
+            'season' => ['sometimes', 'nullable', new NGSSeasonInputValidation()],
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                'data' => $request->all(),
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        return view('Esports.matchHistory')
+            ->with([
+                'defaultseason' => $defaultseason,
+                'filters' => $this->globalDataService->getFilterData(),
+                'division' => $division,
+                'season' => $request['season'],
+                'esport' => "NGS",
+            ]);
+    }
+
+    public function getSingleDivisionMatchHistory(Request $request){
+        //return response()->json($request->all());
+
+        $validationRules = [
+            'season' => ['sometimes', 'nullable', new NGSSeasonInputValidation()],
+            'division' => ['required', new NGSDivisionInputValidation()],
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                'data' => $request->all(),
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        $season = $request['season'];
+        $division = $request['division'];
+
+        $result = Replay::join('heroesprofile_ngs.player', 'heroesprofile_ngs.player.replayID', '=', 'heroesprofile_ngs.replay.replayID')
+            ->join('heroesprofile_ngs.teams', 'heroesprofile_ngs.teams.team_id', '=', 'heroesprofile_ngs.player.team_name')
+            ->select([
+                'replay.replayID',
+                'hero',
+                'game_date',
+                'game_map',
+                'game_length',
+                'round',
+                'game',
+                'team_0_name',
+                'team_1_name',
+                'heroesprofile_ngs.teams.team_name',
+                'image',
+                'winner',
+            ])
+            ->where('heroesprofile_ngs.teams.season', $season)
+            ->where('heroesprofile_ngs.teams.division', $division)
+            ->orderByDesc('game_date')
+            ->get();
+
+
+            return $result;
+
+
+        $heroData = $this->globalDataService->getHeroes();
+        $heroData = $heroData->keyBy('id');
+
+        $maps = Map::all();
+        $maps = $maps->keyBy('map_id');
+
+        $modifiedResult = $result->map(function ($item) use ($heroData,  $maps) {
+            $item->hero_id = $item->hero;
+            $item->hero = $heroData[$item->hero];
+            $item->game_map = $maps[$item->game_map]['name'];
+            $item->winner = $item->winner == 1 ? 'True' : 'False';
+
+            return $item;
+        });
+
+        return $result;
+    }
     public function getSingleDivisionData(Request $request)
     {
         //return response()->json($request->all());

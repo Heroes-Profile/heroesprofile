@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Esports;
 
 use App\Http\Controllers\Controller;
 use App\Models\CCL\CCLTeam;
+use App\Models\NGS\NGSTeam;
 use App\Models\CCL\HeroesInternationalMainTeam;
 use App\Models\CCL\HeroesInternationalNationsCupTeam;
 use App\Models\HeroesDataTalent;
@@ -76,6 +77,11 @@ class EsportsController extends Controller
             ];
         }
 
+        $image = "";
+        if($esport == "NGS"){
+            $image = NGSTeam::select("image")->where("team_name", $team)->first()->image;
+        }
+
         return view('Esports.team')
             ->with([
                 'esport' => $esport,
@@ -83,6 +89,7 @@ class EsportsController extends Controller
                 'season' => $request['season'],
                 'division' => $request['division'],
                 'tournament' => $request['tournament'],
+                'image' => $image,
             ]);
     }
 
@@ -148,6 +155,8 @@ class EsportsController extends Controller
             ];
         }
 
+        $hero = $this->globalDataService->getHeroModel($request['hero']);
+        
         return view('Esports.singlePlayerHero')
             ->with([
                 'esport' => $esport,
@@ -157,7 +166,6 @@ class EsportsController extends Controller
                 'division' => $request['division'],
                 'hero' => $hero,
                 'tournament' => $request['tournament'],
-
             ]);
     }
 
@@ -186,6 +194,7 @@ class EsportsController extends Controller
                 'status' => 'failure to validate inputs',
             ];
         }
+        $mapobject = Map::where("name", $request["game_map"])->first();
 
         return view('Esports.singlePlayerMap')
             ->with([
@@ -194,11 +203,10 @@ class EsportsController extends Controller
                 'blizz_id' => $blizz_id,
                 'season' => $request['season'],
                 'division' => $request['division'],
-                'game_map' => $game_map,
+                'game_map' => $mapobject,
                 'tournament' => $request['tournament'],
             ]);
     }
-
     public function getRecentMatchData(Request $request)
     {
         //return response()->json($request->all());

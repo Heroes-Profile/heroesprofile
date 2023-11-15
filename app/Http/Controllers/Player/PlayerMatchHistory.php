@@ -84,10 +84,12 @@ class PlayerMatchHistory extends Controller
 
         $result = DB::table('replay')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
+            /*
             ->join('scores', function ($join) {
                 $join->on('scores.replayID', '=', 'replay.replayID')
                     ->on('scores.battletag', '=', 'player.battletag');
             })
+            */
             ->join('talents', function ($join) {
                 $join->on('talents.replayID', '=', 'replay.replayID')
                     ->on('talents.battletag', '=', 'player.battletag');

@@ -3,22 +3,30 @@
     <page-heading :infoText1="infoText1" :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div v-if="data">
-      <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifiedseason"></single-select-filter>
-      <single-select-filter v-if="esport == 'NGS'" :values="data.divisions" :text="'Divisions'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifieddivision"></single-select-filter>
+      <div class="flex justify-center max-w-[1500px] mx-auto">
+        <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifiedseason"></single-select-filter>
+        <single-select-filter v-if="esport == 'NGS'" :values="data.divisions" :text="'Divisions'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifieddivision"></single-select-filter>
+      </div>
 
 
-      <div>
-        <stat-box :title="'Wins'" :value="data.wins"></stat-box>
-        <stat-box :title="'Losses'" :value="data.losses"></stat-box>
-        <stat-bar-box :title="'Win Rate'" :value="data.win_rate"></stat-bar-box>         
-        <stat-box :title="'KDR'" :value="data.kdr"></stat-box>
-        <stat-box :title="'KDA'" :value="data.kda"></stat-box>
-        <stat-box :title="'Takedowns'" :value="data.takedowns"></stat-box>
-        <stat-box :title="'Kills'" :value="data.Kills"></stat-box>
-        <stat-box :title="'Assists'" :value="data.assists"></stat-box>
-        <stat-box :title="'# Games'" :value="data.total_games"></stat-box>
-        <stat-box :title="'Deaths'" :value="data.deaths"></stat-box>
-        <stat-box :title="'Time spent dead'" :value="data.time_spent_dead"></stat-box>
+      <div class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
+        <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
+          <stat-box class="w-[48%]" :title="'Wins'" :value="data.wins.toLocaleString()"></stat-box>
+          <stat-box class="w-[48%]" :title="'Losses'" :value="data.losses.toLocaleString()"></stat-box>
+          <stat-bar-box class="w-full" size="full" :title="'Win Rate'" :value="data.win_rate.toFixed(2)"></stat-bar-box>
+          <stat-box class="w-[48%]" :title="'KDR'" :value="data.kdr" color="yellow"></stat-box>          
+          <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="yellow"></stat-box>          
+        </div>
+        <div class="my-auto">
+          <round-image :title="team" :image="image" size="large" :rectangle="true"></round-image>
+        </div>
+        <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
+          <stat-box class="w-[48%]" :title="'Takedowns'" :value="data.takedowns.toLocaleString()"></stat-box>
+          <stat-box class="w-[48%]" :title="'Kills'" :value="data.kills.toLocaleString()"></stat-box>
+          <stat-box :title="'Total Time spent dead'" :value="data.time_spent_dead"></stat-box>
+          <stat-box class="w-[48%]" :title="'Assists'" :value="data.assists" color="teal"></stat-box>          
+          <stat-box class="w-[48%]" :title="'Deaths'" :value="data.deaths" color="teal"></stat-box>          
+        </div>
       </div>
 
       <div>
@@ -46,7 +54,7 @@
           <tbody>
             <tr v-for="(row, index) in data.players" :key="index">
               <td>
-                <a :href="row.playerlink">{{ row.battletag }}</a>
+                <a class="link" :href="row.playerlink">{{ row.battletag }}</a>
               </td>
               <td>
                 {{ row.games_played }}
@@ -218,6 +226,7 @@ export default {
       type: [Number, String]
     },
     tournament: String,
+    image: String,
   },
   data(){
     return {

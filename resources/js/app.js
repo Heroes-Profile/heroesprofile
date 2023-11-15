@@ -110,6 +110,7 @@ import EsportsPlayerStats from './components/Esports/Player/EsportsPlayerStats.v
 import EsportsPlayerHeroStats from './components/Esports/Player/EsportsPlayerHeroStats.vue';
 import EsportsPlayerMapStats from './components/Esports/Player/EsportsPlayerMapStats.vue';
 import EsportsOrganizations from './components/Esports/EsportsOrganizations.vue';
+import EsportsMatchHistory from './components/Esports/EsportsMatchHistory.vue';
 
 
 //NGS

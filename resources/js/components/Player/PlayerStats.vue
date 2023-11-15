@@ -45,9 +45,8 @@
           <stat-bar-box class="w-full" size="full" :title="'Healer Win Rate'" :value="data.healer_win_rate.toFixed(2)" color="teal"></stat-bar-box>       
           <stat-bar-box class="w-full" size="full" :title="'Tank Win Rate'" :value="data.tank_win_rate.toFixed(2)" color="red"></stat-bar-box>       
         </div>
-
-       
       </div>
+
       <div class="flex mx-auto justify-center max-w-[1500px]">
         <stat-box :title="'MVP%'" :value="data.mvp_rate.toFixed(2)"></stat-box>  <stat-box :title="'Total Time Played'" :value="data.total_time_played"></stat-box>  <stat-box :title="'AVG. Time on Fire'" :value="data.average_time_on_fire"></stat-box>      
       </div>

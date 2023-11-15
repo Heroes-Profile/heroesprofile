@@ -1,11 +1,13 @@
 <template>
   <div>
-    <div v-for="(division, divisionName) in data" :key="divisionName">
+    <div v-for="(division, divisionName) in data" :key="divisionName" class="max-w-[1500px] mx-auto flex justify-start mb-2">
       <table class="">
         <thead>
           <tr>
             <th colspan="7"><a :href="'/Esports/NGS/Division/' + divisionName">Division {{ divisionName }}</a></th>
           </tr>
+        </thead>
+        <thead>
           <tr>
             <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
             </th>
@@ -32,7 +34,7 @@
         <tbody>
           <tr v-for="(team, teamData) in division" :key="teamData.team_name">
             <td>{{ team.rank }}</td>
-            <td><a :href="`/Esports/NGS/Team/${team.team_name}?season=${season}&division=${divisionName}`">{{ team.team_name }}</a></td>
+            <td><a class="link" :href="`/Esports/NGS/Team/${team.team_name}?season=${season}&division=${divisionName}`">{{ team.team_name }}</a></td>
             <td>{{ team.points }}</td>
             <td>{{ team.dominations }}</td>
             <td>{{ team.games_won }}</td>

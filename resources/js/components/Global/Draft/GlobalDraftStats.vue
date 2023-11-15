@@ -30,7 +30,7 @@
       </filters>
 
       <div class="max-w-[1500px] mx-auto flex justify-start mb-2"> 
-      <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Draft Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
+        <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Draft Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
       </div>
       <div v-if="draftdata">
         <table class="">
