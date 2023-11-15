@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <page-heading :infoText1="hero + ' stats for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`">
       <hero-image-wrapper :hero="heroobject" :size="'big'"></hero-image-wrapper>
     </page-heading>
@@ -35,8 +34,9 @@
 
 
       <div class="max-w-[1500px] mx-auto text-right mb-2">
-      <custom-button :href="this.getTalentPageUrl()" class="flex-1 " text="View Talent Data"></custom-button>
-       </div>
+        <custom-button :href="this.getTalentPageUrl()" class="flex-1 " text="View Talent Data"></custom-button>
+      </div>
+      
       <div class="bg-lighten p-10 ">
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Maps played on {{ hero }}</h2>

@@ -73,7 +73,7 @@
                 v-if="stat.selected" 
                 :class="{ flash: stat.flash }"
                 class="py-2 px-3 ">
-                {{ row[stat.value] }}
+                {{ showStatValue(row[stat.value]) }}
               </td>
             </template>
 
@@ -314,6 +314,13 @@ export default {
         return "yellow";
       }
       return "blue";
+    },
+    showStatValue(value){
+      if(value < 1000){
+        return value.toFixed(2);
+      }else{
+        return Math.round(value).toLocaleString();
+      }
     },
   }
 }
