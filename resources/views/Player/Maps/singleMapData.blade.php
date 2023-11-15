@@ -9,6 +9,7 @@
     :blizzid="{{ json_encode($blizz_id) }}" 
     :region="{{ $region }}" 
     :map="{{ json_encode($map) }}" 
+    :mapobject="{{ json_encode($mapobject) }}" 
     :regions="{{ json_encode($regions) }}"
     :regionsmap="{{ json_encode(session('regions')) }}"
   ></player-map-single-stats>

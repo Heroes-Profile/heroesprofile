@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
 use App\Models\Battletag;
+use App\Models\Map;
 use App\Rules\GameMapInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -61,12 +62,14 @@ class PlayerMapsController extends Controller
         }
 
         $map = $request['map'];
+        $mapobject = Map::where("name", $map)->first();
 
         return view('Player.Maps.singleMapData')->with([
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,
             'map' => $map,
+            'mapobject' => $mapobject,
             'filters' => $this->globalDataService->getFilterData(),
             'regions' => $this->globalDataService->getRegionIDtoString(),
         ]);

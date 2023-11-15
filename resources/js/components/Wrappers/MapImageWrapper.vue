@@ -1,7 +1,7 @@
 <template>
   <div>
 
-    <round-image :size="size" :image="getMapImage()" :title="map.name">
+    <round-image :size="size" :image="getMapImage()" :title="map.name" :excludehover="true">
       <slot>
       </slot>
     </round-image>

@@ -140,9 +140,6 @@
         </div>
       </div>
 
-
-
-
       <div class="max-w-[1500px] mx-auto">
         <h2 class="text-3xl font-bold py-5">Advanced Stats</h2>
         <table v-for="(section, sectionIndex) in sections" :key="sectionIndex">
@@ -164,11 +161,6 @@
           </tbody>
         </table>
       </div>
-
-
-
-
-
     </div>
     <div v-else-if="isLoading">
       <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
