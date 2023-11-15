@@ -35,6 +35,7 @@ use App\Http\Controllers\Player\PlayerRolesController;
 use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
+use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -53,6 +54,7 @@ Route::fallback(function () {
 });
 
 Route::get('/', [MainPageController::class, 'show']);
+Route::get('/Contact', [ContactController::class, 'show']);
 Route::get('/battletag/searched/{userinput}/{type}', [BattletagSearchController::class, 'show']);
 
 Route::get('/Compare', [CompareController::class, 'show']);
