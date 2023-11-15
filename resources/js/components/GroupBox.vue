@@ -1,7 +1,7 @@
 <template>
   <div class=" w-auto inline-block m-1">
     <h2 class="bg-blue rounded-t  p-2 text-sm text-center uppercase"> {{ this.text }}</h2>
-    <div class=" bg-black rounded-b  p-5 flex flex-wrap gap-5">
+    <div class=" bg-black rounded-b  p-5 flex flex-wrap gap-5 justify-center">
       <template v-for="(item, index) in data" :key="index">
 
         <!-- Hero Section -->

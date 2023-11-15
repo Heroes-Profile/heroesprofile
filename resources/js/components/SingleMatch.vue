@@ -1,29 +1,31 @@
 <template>
   <div class="match-page">
     <div v-if="data" class=" mx-auto">
-      <div>
-        <span>Match Scores</span>
-        <span>Talents</span>
-        <span>Experience</span>
-        <span>MMR</span>
-        <span>Advanced Stats</span>
+      <div class="text-center">
+       <!-- <div>
+          <span>Match Scores</span>
+          <span>Talents</span>
+          <span>Experience</span>
+          <span>MMR</span>
+          <span>Advanced Stats</span>
+        </div>-->
+
+        <div class="mb-4">
+          <h1>{{ formatDate(data.game_date) }}</h1>
+        </div>
+
+        <div class="w-full max-w-[1500px] bg-blue rounded flex justify-between gap-2 mx-auto p-4 mb-4">
+          <span>{{ data.game_map.name }}</span>
+          <span>{{ data.game_type }}</span>
+          <span>{{ data.game_length }}</span>
+        </div>
       </div>
 
-      <div>
-        <h1>{{ formatDate(data.game_date) }}</h1>
-      </div>
 
-      <div class="box thing woot woot">
-        <span>{{ data.game_map.name }}</span>
-        <span>{{ data.game_type }}</span>
-        <span>{{ data.game_length }}</span>
-      </div>
-
-
-      <div class="bg-lighten p-10 text-center">
-        <div class="flex flex-wrap justify-center max-w-[2000px] mx-auto">
+      <div class=" p-10 text-center">
+        <div class="flex flex-wrap justify-center max-w-[2000px] mx-auto gap-10">
           <div>
-            <group-box :playerlink="true" :match="true" :esport="esport" :text="getTeamText(0, data.winner)" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'"></group-box>
+            <group-box class="w-full" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(0, data.winner)" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'"></group-box>
 
 
             <div v-if="data.replay_bans" class="flex flex-wrap justify-center">
@@ -31,15 +33,15 @@
               <hero-image-wrapper v-for="(item, index) in data.replay_bans[0]" :key="index" :hero="item.hero" :size="'big'"></hero-image-wrapper>
             </div>
 
-
-            <stat-box v-if="!esport" :title="'Account Level'" :value="getAverageValue('account_level', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-            <stat-box :title="'Team Level'" :value="data.players[0][0].score.level" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-            <stat-box v-if="esport" :title="'Avg. Hero Level'" :value="getAverageValue('avg_hero_level', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-            <stat-box :title="'Takedowns'" :value="data.players[0][0].score.takedowns" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-            <stat-box v-if="!esport" :title="'Average MMR'" :value="getAverageValue('player_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-            <stat-box v-if="!esport" :title="'Average Hero MMR'" :value="getAverageValue('hero_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-            <stat-box v-if="!esport" :title="'Average Role MMR'" :value="getAverageValue('role_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-
+            <div class="flex flex-wrap justify-center">
+              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Account Level'" :value="getAverageValue('account_level', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" :title="'Team Level'" :value="data.players[0][0].score.level" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" v-if="esport" :title="'Avg. Hero Level'" :value="getAverageValue('avg_hero_level', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" :title="'Takedowns'" :value="data.players[0][0].score.takedowns" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average MMR'" :value="getAverageValue('player_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average Hero MMR'" :value="getAverageValue('hero_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average Role MMR'" :value="getAverageValue('role_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
+            </div>
 
 
             <div v-if="esport">
@@ -57,21 +59,22 @@
 
 
           <div>
-            <group-box :playerlink="true" :match="true" :esport="esport" :text="getTeamText(1, data.winner)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'"></group-box>
+            <group-box class="w-full" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(1, data.winner)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'"></group-box>
 
             <div v-if="data.replay_bans" class="flex flex-wrap justify-center">
               {{ esport ? this.data.team_names.team_two.team_name : "Team 2" }} Bans
               <hero-image-wrapper v-for="(item, index) in data.replay_bans[1]" :key="index" :hero="item.hero" :size="'big'"></hero-image-wrapper>
             </div>
+            <div class="flex flex-wrap justify-center">
 
-            <stat-box v-if="!esport" :title="'Account Level'" :value="getAverageValue('account_level', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-            <stat-box :title="'Team Level'" :value="data.players[1][0].score.level" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-            <stat-box v-if="esport" :title="'Avg. Hero Level'" :value="getAverageValue('avg_hero_level', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-            <stat-box :title="'Takedowns'" :value="data.players[1][0].score.takedowns" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-            <stat-box v-if="!esport" :title="'Average MMR'" :value="getAverageValue('player_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-            <stat-box v-if="!esport" :title="'Average Hero MMR'" :value="getAverageValue('hero_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-            <stat-box v-if="!esport" :title="'Average Role MMR'" :value="getAverageValue('role_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-
+              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Account Level'" :value="getAverageValue('account_level', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" :title="'Team Level'" :value="data.players[1][0].score.level" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" v-if="esport" :title="'Avg. Hero Level'" :value="getAverageValue('avg_hero_level', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" :title="'Takedowns'" :value="data.players[1][0].score.takedowns" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average MMR'" :value="getAverageValue('player_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average Hero MMR'" :value="getAverageValue('hero_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average Role MMR'" :value="getAverageValue('role_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
+              </div>
             <div v-if="esport">
               Map Bans
               <map-image-wrapper v-if="data.map_bans.team_one_ban_data.map_ban_one" :map="data.map_bans.team_one_ban_data.map_ban_one" :size="'big'">
@@ -122,8 +125,8 @@
 
       </div>
 
-
-      <div class="p-10  max-w-[2000px] mx-auto">
+      <div class="bg-lighten">
+        <div class="p-10  max-w-[2000px] mx-auto  ">
         <h2 class="text-3xl font-bold py-5">Match Scores</h2>
          <p>See advanced stats below</p>
             <p>
@@ -137,8 +140,8 @@
           Sort By: 
             <tab-button :tab1text="'Team'" :ignoreclick="true" :tab2text="'HP Score'" @tab-click="sortCombinedPlayers" > </tab-button>
         </div>
-        
-      </div>
+      </div>  
+      
 
 
         <template v-for="(item, index) in combinedPlayers" :key="index">
@@ -173,7 +176,7 @@
         </div>
         </template>
       </div>
-
+</div>
 
 
       <div v-if="data.draft_order && data.draft_order.length > 0" class="p-10 text-center max-w-[2000px] mx-auto">
