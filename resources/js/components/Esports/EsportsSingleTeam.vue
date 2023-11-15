@@ -198,8 +198,8 @@
 
     </div>
 
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="isLoadingImageUrl"></loading-component>
+    <div v-else>
+      <loading-component :overrideimage="loadingImageUrl"></loading-component>
     </div>
 
   </div>
@@ -221,13 +221,11 @@ export default {
   },
   data(){
     return {
-      isLoading: false,
       data: null,
       sortKey: '',
       sortDir: 'desc',
       modifiedseason: null,
       modifieddivision: null,
-      cancelTokenSource: null,
     }
   },
   created(){
@@ -260,7 +258,7 @@ export default {
         return "/Esports/HeroesInternational"
       }
     },
-    isLoadingImageUrl(){
+    loadingImageUrl(){
      if(this.esport == "NGS"){
         return "/images/NGS/no-image-clipped.png"
       }else if(this.esport == "CCL"){
@@ -297,13 +295,7 @@ export default {
   },
   methods: {
     async getData(){
-      this.isLoading = true;
-
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled');
-      }
-      this.cancelTokenSource = this.$axios.CancelToken.source();
-
+      this.loading = true;
       try{
         const response = await this.$axios.post("/api/v1/esports/single/team", {
           esport: this.esport,
@@ -311,22 +303,12 @@ export default {
           team: this.team,
           season: this.modifiedseason,
           tournament: this.tournament,
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
         });
         this.data = response.data;
       }catch(error){
       //Do something here
-      }finally {
-        this.cancelTokenSource = null;
-        this.isLoading = false;
       }
-    },
-    cancelAxiosRequest() {
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled by user');
-      }
+      this.loading = false;
     },
     handleInputChange(eventPayload){
         if(eventPayload.field == "Seasons"){
@@ -346,7 +328,7 @@ export default {
         newURL += `?division=${this.modifieddivision}`;
       }
 
-      // Update the browser's URL without reisLoading the page
+      // Update the browser's URL without reloading the page
       history.pushState({}, "", newURL);
     },
     handleDropdownClosed(){

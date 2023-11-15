@@ -13,8 +13,7 @@ export default {
   components: {},
   props: {
     data: Array,
-    dataAttribute: String,
-    title: String,
+    dataAttribute: String,  //need to pass in win_rate for seasonal winrate info
   },
   data() {
     return {
@@ -31,7 +30,7 @@ export default {
       data: {
         labels: labels,
         datasets: [{
-          label: this.title,
+          label: 'Total',
           data: totals,
           backgroundColor: 'rgba(75, 192, 192, 0.2)',
           borderColor: 'rgba(75, 192, 192, 1)',

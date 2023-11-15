@@ -66,8 +66,8 @@ EsportsPlayerHeroStats<template>
 
 
     </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="getLoadingImage()"></loading-component>
+    <div v-else>
+      <loading-component :overrideimage="getLoadingImage()"></loading-component>
     </div>
   </div>
 </template>
@@ -92,13 +92,11 @@ export default {
   },
   data(){
     return {
-      isLoading: false,
       data: null,
       sortKey: '',
       sortDir: 'desc',
       modifiedseason: null,
       modifieddivision: null,
-      cancelTokenSource: null,
     }
   },
   created(){
@@ -153,13 +151,7 @@ export default {
   },
   methods: {
     async getData(){
-      this.isLoading = true;
-
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled');
-      }
-      this.cancelTokenSource = this.$axios.CancelToken.source();
-
+      this.loading = true;
       try{
         const response = await this.$axios.post("/api/v1/esports/single/player/map", {
           esport: this.esport,
@@ -169,22 +161,12 @@ export default {
           season: this.modifiedseason,
           game_map: this.game_map,
           tournament: this.tournament,
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
         });
         this.data = response.data;
       }catch(error){
       //Do something here
-      }finally {
-        this.cancelTokenSource = null;
-        this.isLoading = false;
       }
-    },
-    cancelAxiosRequest() {
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled by user');
-      }
+      this.loading = false;
     },
     handleInputChange(eventPayload){
         if(eventPayload.field == "Seasons"){
@@ -204,6 +186,7 @@ export default {
         newURL += `?division=${this.modifieddivision}`;
       }
 
+      // Update the browser's URL without reloading the page
       history.pushState({}, "", newURL);
     },
     handleDropdownClosed(){

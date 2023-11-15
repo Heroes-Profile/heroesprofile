@@ -58,7 +58,7 @@ class PlayerController extends Controller
 
         if ($checkedUser) {
             $heroUserSettings = $checkedUser->userSettings->where('setting', 'hero')->first();
-            if (! is_null($heroUserSettings)) {
+            if(!is_null($heroUserSettings)){
                 $heroUserSettings = $this->globalDataService->getHeroesByID()[$heroUserSettings['value']];
             }
         }
@@ -138,11 +138,8 @@ class PlayerController extends Controller
                 $cachedData = $this->calculateProfile($blizz_id, $region, $game_type, $season, $cachedData);
             }
         }
-        if ($cachedData) {
-            return $this->formatCache($cachedData, $blizz_id, $region, $battletag);
-        } else {
-            return null;
-        }
+
+        return $this->formatCache($cachedData, $blizz_id, $region, $battletag);
     }
 
     private function calculateProfile($blizz_id, $region, $game_type, $season, $cachedData = null)
@@ -772,6 +769,7 @@ class PlayerController extends Controller
                     $match['level_twenty'] = $talentData->has($match['level_twenty']) ? $talentData[$match['level_twenty']] : null;
                 }
             }
+
 
             $match['player_conservative_rating'] = round($match['player_conservative_rating'], 2);
             $match['player_mmr'] = round(1800 + 40 * $match['player_conservative_rating']);

@@ -37,7 +37,7 @@
       <div v-if="activeButton === 'overallHeroStats'">
         <div class="flex flex-wrap gap-2">
           <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="season"></single-select-filter>
-          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
         </div>
         <esports-hero-stats v-if="heroStatsData" :data="heroStatsData"></esports-hero-stats>
       </div>
@@ -53,7 +53,7 @@
             <div class="flex flex-wrap gap-2">
               <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange" :defaultValue="selectedHero.id"></single-select-filter>
               <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="season"></single-select-filter>
-              <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+              <custom-button :disabled="loading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
             </div>
 
             
@@ -65,8 +65,8 @@
       </div>
 
     </div>
-    <div v-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="'/images/NutCup/logo-circular.png'"></loading-component>
+    <div v-if="loading">
+      <loading-component :overrideimage="'/images/NutCup/logo-circular.png'"></loading-component>
     </div>
   </div>
 </template>
@@ -84,14 +84,13 @@ export default {
   data() {
     return {
       preloadedImage: new Image(),
-      isLoading: false,
+      loading: false,
       infoText1: "Heroes of the Storm statistics and comparison for the Nut Cup",
       activeButton: null,
       heroStatsData: null,
       talentStatsData: null,
       selectedHero: null,
       season: null,
-      cancelTokenSource: null,
     };
   },
   created(){
@@ -114,59 +113,33 @@ export default {
   },
   methods: {
     async getHeroStats(){
-      this.isLoading = true;
-
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled');
-      }
-      this.cancelTokenSource = this.$axios.CancelToken.source();
-
+      this.loading = true;
       try{
         const response = await this.$axios.post("/api/v1/esports/nutcup/hero/stats", {
           season: this.season,
           esport: "NutCup",
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
         });
         this.heroStatsData = response.data;
       }catch(error){
         //Do something here
-      }finally {
-        this.cancelTokenSource = null;
-        this.isLoading = false;
       }
+      this.loading = false;
     },
     async getTalentStats(){
-      this.isLoading = true;
-
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled');
-      }
-      this.cancelTokenSource = this.$axios.CancelToken.source();
-
+      this.loading = true;
       try{
         const response = await this.$axios.post("/api/v1/esports/nutcup/hero/talents/stats", {
           season: this.season,
           hero: this.selectedHero.name,
           esport: "NutCup",
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
         });
         this.talentStatsData = response.data;
       }catch(error){
         //Do something here
-      }finally {
-        this.cancelTokenSource = null;
-        this.isLoading = false;
       }
+      this.loading = false;
     },
-    cancelAxiosRequest() {
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled by user');
-      }
-    },
+
     setButtonActive(buttonName) {
       this.activeButton = buttonName;
       this.season = 2;

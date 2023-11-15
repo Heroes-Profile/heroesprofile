@@ -400,7 +400,7 @@
           delete this.selectedMultiFilters['Role Rank'];
           delete this.selectedMultiFilters['Mirror Matches'];
         }
-      },
+      }
     },
     methods: {
       handleInputChange(eventPayload) {
@@ -442,18 +442,9 @@
         if(eventPayload.field == "Type"){
           this.modifiedincludeheroes = (eventPayload.value == "Hero");
           this.modifiedincluderole = (eventPayload.value == "Role");
-
-          if(eventPayload.value == "Player"){
-            delete this.selectedSingleFilters['Heroes'];
-            delete this.selectedSingleFilters['Role'];
-          }else if(eventPayload.value == "Hero"){
-            delete this.selectedSingleFilters['Role'];
-          }else if(eventPayload.value == "Role"){
-            delete this.selectedSingleFilters['Heroes'];
-          }
         }
 
-        if(eventPayload.field == "Season" && this.includegroupsize){
+        if(eventPayload.field == "Season"){
           this.modifiedincludegroupsize = (eventPayload.value >= 20);
         }
 
@@ -481,6 +472,7 @@
         return '';
       },
       applyFilter() {
+        console.log(this.selectedSingleFilters);
         if (this.selectedMultiFilters.hasOwnProperty('Timeframes') && this.selectedMultiFilters.hasOwnProperty('Game Type')) {
           const allSelectedFilters = {
             single: this.selectedSingleFilters,

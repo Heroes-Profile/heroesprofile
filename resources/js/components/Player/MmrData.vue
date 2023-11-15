@@ -6,6 +6,7 @@
       :isLoading="isLoading"
       :gametypedefault="gametypedefault"
       :includesinglegametypefull="true"
+      :includeseason="true"
       :playerheroroletype="true"
       :hideadvancedfilteringbutton="true"
       >
@@ -13,7 +14,7 @@
 
     <div v-if="data">
 
-      <line-chart class="max-w-[1500px] mx-auto" :data="reversedData" :dataAttribute="'mmr'" :title="`${battletag} MMR Graph for ${gametype}`"></line-chart>
+      <line-chart class="max-w-[1500px] mx-auto" :data="reversedData" :dataAttribute="'mmr'"></line-chart>
 
       <div class="max-w-[1500px] mx-auto mt-2">
         {{ this.gametype.toUpperCase() }} - League Tier Breakdowns | Player MMR: {{ data[0].mmr }}
@@ -100,8 +101,8 @@
         </tbody>
       </table>
     </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+    <div v-else>
+      <loading-component></loading-component>
     </div>
 
   </div>
@@ -127,7 +128,6 @@ export default {
   },
   data(){
     return {
-      cancelTokenSource: null,
       userTimezone: moment.tz.guess(),
       isLoading: false,
       gametype: null,
@@ -135,7 +135,6 @@ export default {
       sortKey: '',
       sortDir: 'desc',
       leaguedata: null,
-      type: "Player",
     }
   },
   created(){
@@ -166,12 +165,6 @@ export default {
   methods: {
     async getData(){
       this.isLoading = true;
-
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled');
-      }
-      this.cancelTokenSource = this.$axios.CancelToken.source();
-
       try{
         const response = await this.$axios.post("/api/v1/player/mmr", {
           battletag: this.battletag,
@@ -179,34 +172,21 @@ export default {
           region: this.region,
           battletag: this.battletag,
           game_type: this.gametype,
-          type: this.type,
-          hero: this.hero,
-          role: this.role,
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
+          type: "Player",
         });
         this.data = response.data.tableData;
         this.leaguedata = response.data.leagueData;
       }catch(error){
         //Do something here
-      }finally {
-        this.cancelTokenSource = null;
-        this.isLoading = false;
       }
-    },
-    cancelAxiosRequest() {
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled by user');
-      }
+      this.isLoading = false;
     },
     filterData(filteredData){
-      this.gametype = filteredData.single["Game Type"] ? filteredData.single["Game Type"] : this.gametype;
+      this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
       this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
-      this.type = filteredData.single["Type"] ? filteredData.single["Type"] : "Player";
-      this.data = null;
+      this.data = [];
       this.sortKey = '';
       this.sortDir ='asc';
       this.getData();

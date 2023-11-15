@@ -153,9 +153,9 @@
 
     </div>
     </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
-      <loading-component @cancel-request="cancelAxiosRequest" v-else></loading-component>
+    <div v-else>
+      <loading-component v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+      <loading-component v-else></loading-component>
     </div>
   </div>
 </template>
@@ -189,7 +189,7 @@ export default {
       toggletalentbuilds: {},
       talentbuilddata: {},
       selectedbuildtype: "Popular",
-      cancelTokenSource: null,
+
 
 
       //Sending to filter
@@ -244,12 +244,6 @@ export default {
   methods: {
   	async getData(){
       this.isLoading = true;
-
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled');
-      }
-      this.cancelTokenSource = this.$axios.CancelToken.source();
-
       try{
         this.data = [];
 
@@ -267,28 +261,16 @@ export default {
           hero_league_tier: this.herorank,
           role_league_tier: this.rolerank,
           mirror: this.mirrormatch,
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
         });
 
         this.data = response.data;
         this.loadingStates = this.sortedData.map(() => false);
       }catch(error){
         //Do something here
-      }finally {
-        this.cancelTokenSource = null;
-        this.isLoading = false;
       }
+      this.isLoading = false;
     },
     async getTalentBuildData(hero, index){
-      this.isLoading = true;
-
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled');
-      }
-      this.cancelTokenSource = this.$axios.CancelToken.source();
-
       try{
         this.loadingStates[hero] = true;
         const response = await this.$axios.post("/api/v1/global/talents/build", {
@@ -305,9 +287,6 @@ export default {
           role_league_tier: this.rolerank,
           mirror: this.mirrormatch,
           talentbuildtype: this.talentbuildtype
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
         });
 
         this.sortedData[index].talentbuilddata = response.data;
@@ -317,14 +296,6 @@ export default {
 
       }catch(error){
         //Do something here
-      }finally {
-        this.cancelTokenSource = null;
-        this.isLoading = false;
-      }
-    },
-    cancelAxiosRequest() {
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled by user');
       }
     },
     filterData(filteredData){

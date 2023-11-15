@@ -69,9 +69,9 @@
       </div>
 
     </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
-      <loading-component @cancel-request="cancelAxiosRequest" v-else></loading-component>
+    <div v-else>
+      <loading-component v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+      <loading-component v-else></loading-component>
     </div>
   </div>
 
@@ -105,7 +105,8 @@
         data: null,
         sortKey: '',
         sortDir: 'desc',
-        cancelTokenSource: null,
+
+      //Sending to filter
         timeframetype: null,
         timeframe: null,
         region: null,
@@ -170,12 +171,6 @@
       },
       async getData(){
         this.isLoading = true;
-
-        if (this.cancelTokenSource) {
-          this.cancelTokenSource.cancel('Request canceled');
-        }
-        this.cancelTokenSource = this.$axios.CancelToken.source();
-
         try{
           const response = await this.$axios.post("/api/v1/global/hero/map", {
             hero: this.selectedHero.name,
@@ -188,24 +183,13 @@
             hero_league_tier: this.herorank,
             role_league_tier: this.rolerank,
             mirrormatch: this.mirrormatch,
-          }, 
-          {
-            cancelToken: this.cancelTokenSource.token,
           });
           this.data = response.data;
         }catch(error){
           //Do something here
-        }finally {
-          this.cancelTokenSource = null;
-          this.isLoading = false;
         }
 
         this.isLoading = false;
-      },
-      cancelAxiosRequest() {
-        if (this.cancelTokenSource) {
-          this.cancelTokenSource.cancel('Request canceled by user');
-        }
       },
       filterData(filteredData){
         this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;

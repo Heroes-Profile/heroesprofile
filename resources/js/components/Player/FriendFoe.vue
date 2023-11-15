@@ -5,7 +5,7 @@
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
-      :isLoading="friendIsLoading || enemyIsLoading"
+      :isLoading="isLoading"
       :gametypedefault="gametype"
       :includehero="true"
       :includegamemap="true"
@@ -15,8 +15,8 @@
       >
     </filters>
 
-    <div v-if="frienddata && enemydata" class="gap-1 mx-auto  flex justify-center">
-      <div>
+    <div class=" gap-1 mx-auto  flex justify-center">
+      <div v-if="frienddata && enemydata">
         <table class="min-w-0">
           <thead>
             <tr>
@@ -37,7 +37,7 @@
 
           <tbody>
             <tr v-for="row in sortedDataFriends" :key="row.blizz_id">
-              <td class="py-2 px-3 "><a class="link" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
+              <td class="py-2 px-3 "><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
               <td class="py-2 px-3 flex items-center gap-1">
                 <hero-image-wrapper :hero="row.heroData.hero">
                   <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.total_games_played.toLocaleString()"></image-hover-box>
@@ -50,7 +50,11 @@
           </tbody>
         </table>
       </div>
-      <div>
+      <div v-else>
+        <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+      </div>
+
+      <div v-if="enemydata && frienddata">
         <table class="min-w-0 ">
           <thead class="bg-red">
             <tr>
@@ -71,7 +75,7 @@
 
           <tbody>
             <tr v-for="row in sortedDataEnemies" :key="row.blizz_id">
-              <td class="py-2 px-3 "><a class="link" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
+              <td class="py-2 px-3 "><a :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" target="_blank">{{ row.battletag }}</a></td>
               <td class="py-2 px-3 flex items-center gap-1">
                 <hero-image-wrapper :hero="row.heroData.hero">
                   <h2>{{ row.heroData.hero.name }}</h2>
@@ -85,10 +89,12 @@
           </tbody>
         </table>
       </div>
+      <div v-else>
+        <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+      </div>
+
     </div>
-    <div v-else-if="friendIsLoading || enemyIsLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
-    </div>
+
   </div>
 </template>
 
@@ -110,9 +116,8 @@ export default {
   },
   data(){
     return {
-      friendIsLoading: false,
-      enemyIsLoading: false,
       infoText: "Friends and Foe data showing who " + this.battletag + " plays the most games with and against",
+      isLoading: false,
       frienddata: null,
       enemydata: null,
       friendSortKey: '',
@@ -121,16 +126,17 @@ export default {
       enemySortKey: '',
       enemySortDir: 'desc',
 
-      gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
+      gametype: ["qm"],
       gamemap: null,
       season: null,
-      friendCancelTokenSource: null,
-      enemyCancelTokenSource: null,
     }
   },
   created(){
   },
   mounted() {
+    //this.gametype = this.gametypedefault;
+
+
     Promise.allSettled([
       this.getData("friend"),
       this.getData("enemy"),
@@ -138,11 +144,13 @@ export default {
       if (results[0].status === "fulfilled") {
         this.frienddata = results[0].value;
       } else {
+        console.error('Friend data retrieval failed', results[0].reason);
       }
       
       if (results[1].status === "fulfilled") {
         this.enemydata = results[1].value;
       } else {
+        console.error('Enemy data retrieval failed', results[1].reason);
       }
     });
 
@@ -177,26 +185,6 @@ export default {
   },
   methods: {
     async getData(type){
-
-      let cancelTokenSource;
-
-
-      if (cancelTokenSource) {
-        cancelTokenSource.cancel('Request canceled');
-      }
-
-
-      if (type === 'friend') {
-        this.friendCancelTokenSource = this.$axios.CancelToken.source();
-        cancelTokenSource = this.friendCancelTokenSource;
-        this.friendIsLoading = true;
-      } else if (type === 'enemy') {
-        this.enemyCancelTokenSource = this.$axios.CancelToken.source();
-        cancelTokenSource = this.enemyCancelTokenSource;
-        this.enemyIsLoading = true;
-      }
-
-
       try{
         const response = await this.$axios.post("/api/v1/player/friendfoe", {
           type: type,
@@ -207,28 +195,11 @@ export default {
           season: this.season,
           hero: this.hero,
           game_map: this.gamemap,
-        }, 
-        {
-          cancelToken: cancelTokenSource.token,
         });
         
         return response.data;
       }catch(error){
         //Do something here
-      }finally {
-        if (type === 'friend') {
-          this.friendCancelTokenSource = null;
-          this.friendIsLoading = false;
-        } else if (type === 'enemy') {
-          this.enemyCancelTokenSource = null;
-          this.enemyIsLoading = false;
-        }
-      }
-    },
-    cancelAxiosRequest() {
-      if (this.friendCancelTokenSource || this.enemyCancelTokenSource) {
-        this.friendCancelTokenSource.cancel('Request canceled by user');
-        this.enemyCancelTokenSource.cancel('Request canceled by user');
       }
     },
     filterData(filteredData){

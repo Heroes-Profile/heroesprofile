@@ -80,6 +80,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
             $hero,
             $role
         ) {
+
             $data = GlobalHeroStats::query()
                 ->join('heroes', 'heroes.id', '=', 'global_hero_stats.hero')
                 ->select('heroes.name', 'heroes.short_name', 'heroes.id as hero_id', 'global_hero_stats.win_loss', 'heroes.new_role as role')

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Global;
 
 use App\Models\GlobalHeromatchupsAlly;
 use App\Models\GlobalHeromatchupsEnemy;
+use App\Models\Hero;
 use App\Rules\HeroInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -183,6 +184,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
 
         $found = false;
         $notFound = [];
+
 
         foreach ($heroData as $hero) {
             $found = false;

@@ -42,16 +42,10 @@
               Games
             </th>
             <th @click="sortTable('kda')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              <div class="">
-                KDA <br/>
-                Kills/Deaths/Takedowns
-              </div>
+              KDA
             </th>  
             <th @click="sortTable('kdr')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              <div class="">
-                KDR <br/>
-                Kills/Deaths
-              </div>
+              KDR
             </th>
             <template   v-for="stat in stats">
               <th  v-if="stat.selected" @click="sortTable(stat.value)" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -63,8 +57,8 @@
         </thead>
         <tbody>
           <tr v-for="row in sortedData" :key="row.id">
-            <td class="py-2 px-3 "><a class="link" :href="getPlayerMapPageUrl(row.name)">{{ row.name }}</a></td>
-            <td class="py-2 px-3 "><stat-bar-box :title="'Win Rate'" :value="row.win_rate" :color="getWinRateColor(row.win_rate)"></stat-bar-box>{{ (row.wins + row.losses) }}</td>
+            <td class="py-2 px-3 "><a :href="getPlayerMapPageUrl(row.name)">{{ row.name }}</a></td>
+            <td class="py-2 px-3 "><stat-bar-box :title="'Win Rate'" :value="row.win_rate"></stat-bar-box>{{ (row.wins + row.losses) }}</td>
             <td class="py-2 px-3 ">{{ row.kda }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}/{{ row.avg_assists }}</td>
             <td class="py-2 px-3 ">{{ row.kdr }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}</td>
             
@@ -83,8 +77,8 @@
       </table>
 
     </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true" :timer="true" :starttime="timertime">Large amount of data.<br/>Please be patient.<br/></loading-component>
+    <div v-else>
+      <loading-component :textoverride="true" :timer="true" :starttime="timertime">Large amount of data.<br/>Please be patient.<br/></loading-component>
     </div>
 
   </div>
@@ -108,7 +102,6 @@ export default {
   },
   data(){
     return {
-      cancelTokenSource: null,
       showOptions: false,
       isLoading: false,
       infoText: "Select a hero below to view detailed stats for that hero. Use the search box above to filter the list of heroes. Or scroll down to the advanced section for table view.",
@@ -240,12 +233,6 @@ export default {
   methods: {
     async getData(type){
       this.isLoading = true;
-
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled');
-      }
-      this.cancelTokenSource = this.$axios.CancelToken.source();
-
       try{
         const response = await this.$axios.post("/api/v1/player/maps/all", {
           battletag: this.battletag,
@@ -257,23 +244,13 @@ export default {
           type: "all",
           page: "map",
           game_map: this.map,
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
         });
 
         this.data = response.data;
       }catch(error){
         //Do something here
-      }finally {
-        this.cancelTokenSource = null;
-        this.isLoading = false;
       }
-    },
-    cancelAxiosRequest() {
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled by user');
-      }
+      this.isLoading = false;
     },
     filterData(filteredData){
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
@@ -306,14 +283,6 @@ export default {
       setTimeout(() => {
             inputStat.flash = false;
           }, 1000);
-    },
-    getWinRateColor(win_rate){
-      if(win_rate < 40){
-        return "red";
-      }else if(win_rate < 50){
-        return "yellow";
-      }
-      return "blue";
     },
   }
 }

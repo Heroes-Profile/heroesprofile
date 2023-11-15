@@ -12,7 +12,7 @@
         <div class="bg-teal p-[1em] pl-[2em] ">
       <ol class="list-disc">
         <li>Account level must be greater than or equal to 250.</li>
-          <li> Must have played at least 5 times the number of weeks since the season started. (Currently that is {{ weekssincestart * 5 }} games)</li>
+          <li> Must have played at least 5 times the number of weeks since the season started.</li>
           <li>Must have a win rate greater than or equal to 50%.</li>
      
       </ol>
@@ -68,7 +68,7 @@
               <th @click="sortTable('mmr')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 {{ leaderboardtype }} MMR
               </th> 
-              <th @click="sortTable('tier_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <th @click="sortTable('tier')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Tier
               </th>    
               <th @click="sortTable('games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -99,7 +99,7 @@
           <tbody>
             <template v-for="(row, index) in sortedData">
               <tr>
-                <td>{{ row.rank }}</td>
+                <td>{{ (index + 1) }}</td>
                 <td><a :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`">{{ row.split_battletag }}</a></td>
                 <td>{{ row.region }}</td>
                 <td>{{ row.win_rate.toFixed(2) }}</td>
@@ -140,8 +140,8 @@
         </table>
       </div>
     </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+    <div v-else>
+      <loading-component></loading-component>
     </div>
   </div>
 </template>
@@ -159,12 +159,10 @@ export default {
     gametypedefault: Array,
     defaultseason: String,
     advancedfiltering: Boolean,
-    weekssincestart: Number,
   },
   data(){
     return {
       isLoading: false,
-      cancelTokenSource: null,
       infoText1: "Leaderboards are a reflection of user uploaded data. Due to replay file corruption or other issues, the data is not always reflective of real player stats. Please keep that in mind when reviewing leaderboards.",
       infoText2: " Only users who upload replays through an approved automatic uploader will be able to rank on the leaderboards. The main uploader can be found at Heroes Profile Uploader while the secondary uploader that works on platforms other than windows can be found at Heroes Profile Electron Uploader. For any questions, please contact zemill@heroesprofile.com ",
       columns: [
@@ -217,12 +215,6 @@ export default {
   methods: {
     async getData(){
       this.isLoading = true;
-
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled');
-      }
-      this.cancelTokenSource = this.$axios.CancelToken.source();
-
       try{
         const response = await this.$axios.post("/api/v1/global/leaderboard", {
           season: this.season, 
@@ -232,24 +224,15 @@ export default {
           hero: this.hero,
           role: this.role,
           region: this.region,
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
         });
 
         this.data = response.data;
       }catch(error){
         //Do something here
-      }finally {
-        this.cancelTokenSource = null;
-        this.isLoading = false;
       }
+      this.isLoading = false;
     },
-    cancelAxiosRequest() {
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled by user');
-      }
-    },
+
     filterData(filteredData){
       this.leaderboardtype = filteredData.single["Type"] ? filteredData.single["Type"] : this.leaderboardtype;
       this.groupsize = filteredData.single["Group Size"] ? filteredData.single["Group Size"] : this.groupsize;

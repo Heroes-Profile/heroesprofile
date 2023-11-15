@@ -21,18 +21,17 @@
         >
       </filters>
       <div  v-if="talentdetaildata" class="container mx-auto px-4">
-        <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Talent Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
         <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
       </div>
-      <div v-else-if="isLoading">
-        <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+      <div v-else>
+        <loading-component></loading-component>
       </div>
-      <div  v-if="talentbuilddata" class="cmx-auto px-4 w-auto flex flex-col items-center">
+      <div  v-if="talentbuilddata" class="container mx-auto px-4">
         {{ this.selectedHero.name }} {{ "Talent Builds"}}
         <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="'Popular'" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
       </div>
-      <div v-else-if="isLoading">
-        <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+      <div v-else>
+        <loading-component></loading-component>
       </div>
     </div>
   </div>
@@ -58,7 +57,6 @@ export default {
   },
   data(){
     return {
-      cancelTokenSource: null,
       isLoading: false,
       gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
       selectedHero: null,
@@ -86,12 +84,6 @@ export default {
     async getData(){
       try{
         this.isLoading = true;
-
-        if (this.cancelTokenSource) {
-          this.cancelTokenSource.cancel('Request canceled');
-        }
-        this.cancelTokenSource = this.$axios.CancelToken.source();
-
         const response = await this.$axios.post("/api/v1/player/talents", {
           hero: this.selectedHero.name,
           battletag: this.battletag,
@@ -101,23 +93,13 @@ export default {
           season: this.season,
           game_map: this.gamemap,
           fromdate: this.fromdate,
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
         });
         this.talentdetaildata = response.data.talentData
         this.talentbuilddata = response.data.buildData;
       }catch(error){
         //Do something here
-      }finally {
-        this.cancelTokenSource = null;
-        this.isLoading = false;
       }
-    },
-    cancelAxiosRequest() {
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled by user');
-      }
+      this.isLoading = false;
     },
     clickedHero(hero) {
       this.selectedHero = hero;
@@ -129,7 +111,7 @@ export default {
     },
     filterData(filteredData){
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
-      this.season = filteredData.single["Season"] ? filteredData.single["Season"] : null;
+      this.season = filteredData.single["Season"] ? filteredData.single["Season"] : this.season;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
       this.fromdate = filteredData.single["From Date"] ? filteredData.single["From Date"] : null;
 
@@ -146,9 +128,6 @@ export default {
         });
       }
     },
-    redirectChangeHero(){
-      window.location.href = `/Player/${this.battletag}/${this.blizzid}/${this.region}/Talents`;
-    }
   }
 }
 </script>

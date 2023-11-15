@@ -71,8 +71,8 @@
         </tbody>
       </table>
     </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+    <div v-else>
+      <loading-component></loading-component>
     </div>
   </div>
 
@@ -98,7 +98,6 @@
     data(){
       return {
         isLoading: null,
-        cancelTokenSource: null,
         infoText1: "Storm League Hero pick rates, ban rates, and pick order rate.",
         infoText2: "Teams win, losses, and win rate are based on where they pick a hero in the draft. So if a team bans Abathur at the first position of the draft, we are showing those teams wins and losses and win rates as well as when teams actually pick Abathur.",
         selectedHero: null,
@@ -135,12 +134,6 @@
     methods: {
       async getData(){
         this.isLoading = true;
-
-        if (this.cancelTokenSource) {
-          this.cancelTokenSource.cancel('Request canceled');
-        }
-        this.cancelTokenSource = this.$axios.CancelToken.source();
-
         try{
           const response = await this.$axios.post("/api/v1/global/draft", {
             hero: this.selectedHero.name,
@@ -153,23 +146,13 @@
             league_tier: this.playerrank,
             hero_league_tier: this.herorank,
             role_league_tier: this.rolerank,
-          }, 
-          {
-            cancelToken: this.cancelTokenSource.token,
           });
 
           this.draftdata = response.data;
         }catch(error){
           //Do something here
-        }finally {
-          this.cancelTokenSource = null;
-          this.isLoading = false;
         }
-      },
-      cancelAxiosRequest() {
-        if (this.cancelTokenSource) {
-          this.cancelTokenSource.cancel('Request canceled by user');
-        }
+        this.isLoading = false;
       },
       clickedHero(hero){
         this.selectedHero = hero;

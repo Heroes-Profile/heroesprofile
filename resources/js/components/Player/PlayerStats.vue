@@ -6,12 +6,7 @@
       <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
     </div>
 
-    <div v-if="data == ''" class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
-      <div class="flex items-center">
-        <span>No data for this player and filters</span>
-      </div>
-    </div>
-    <div v-else-if="data" class="">
+    <div v-if="data" class="">
 
 
       <div class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
@@ -175,8 +170,8 @@
     </div>
 
   </div>
-  <div v-else-if="isLoading">
-    <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+  <div v-else>
+    <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
   </div>
 
 </div>
@@ -200,8 +195,7 @@
     },
     data(){
       return {
-        cancelTokenSource: null,
-        isLoading: false,
+        loading: false,
         data: null,
         infoText: "Profile data",
         modifiedgametype: null,
@@ -245,13 +239,7 @@
     },
     methods: {
       async getData(){
-        this.isLoading = true;
-
-        if (this.cancelTokenSource) {
-          this.cancelTokenSource.cancel('Request canceled');
-        }
-        this.cancelTokenSource = this.$axios.CancelToken.source();
-
+        this.loading = true;
         try{
           const response = await this.$axios.post("/api/v1/player", {
             blizz_id: this.blizzid,
@@ -259,23 +247,12 @@
             battletag: this.battletag,
             game_type: this.modifiedgametype,
             season: this.modifiedseason,
-          }, 
-          {
-            cancelToken: this.cancelTokenSource.token,
           });
           this.data = response.data;
-          console.log(this.data);
         }catch(error){
         //Do something here
-        }finally {
-          this.cancelTokenSource = null;
-          this.isLoading = false;
         }
-      },
-      cancelAxiosRequest() {
-        if (this.cancelTokenSource) {
-          this.cancelTokenSource.cancel('Request canceled by user');
-        }
+        this.loading = false;
       },
       handleInputChange(eventPayload) {
         if(eventPayload.field == "Game Type"){
