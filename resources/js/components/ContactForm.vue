@@ -5,13 +5,13 @@
     <div>
       <form @submit.prevent="submitForm">
         <label for="name">Battletag:</label>
-        <input class="text-black" type="text" id="name" v-model="formData.battletag" required>
+        <input class="form-control search-input mr-3 text-black" type="text" id="name" v-model="formData.battletag" required>
 
         <label for="email">Email:</label>
-        <input class="text-black" type="email" id="email" v-model="formData.email" required>
+        <input class="form-control search-input mr-3 text-black" type="email" id="email" v-model="formData.email" required>
 
         <label for="message">Message:</label>
-        <textarea class="text-black" id="message" v-model="formData.message" required></textarea>
+        <textarea class="form-control search-input mr-3 text-black" id="message" v-model="formData.message" required></textarea>
 
         <button type="submit">Submit</button>
       </form>
