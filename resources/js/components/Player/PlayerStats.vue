@@ -6,7 +6,12 @@
       <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
     </div>
 
-    <div v-if="data" class="">
+    <div v-if="data == ''" class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
+      <div class="flex items-center">
+        <span>No data for this player and filters</span>
+      </div>
+    </div>
+    <div v-else-if="data" class="">
 
 
       <div class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
@@ -40,9 +45,8 @@
           <stat-bar-box class="w-full" size="full" :title="'Healer Win Rate'" :value="data.healer_win_rate.toFixed(2)" color="teal"></stat-bar-box>       
           <stat-bar-box class="w-full" size="full" :title="'Tank Win Rate'" :value="data.tank_win_rate.toFixed(2)" color="red"></stat-bar-box>       
         </div>
-
-       
       </div>
+
       <div class="flex mx-auto justify-center max-w-[1500px]">
         <stat-box :title="'MVP%'" :value="data.mvp_rate.toFixed(2)"></stat-box>  <stat-box :title="'Total Time Played'" :value="data.total_time_played"></stat-box>  <stat-box :title="'AVG. Time on Fire'" :value="data.average_time_on_fire"></stat-box>      
       </div>
@@ -170,8 +174,8 @@
     </div>
 
   </div>
-  <div v-else>
-    <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+  <div v-else-if="isLoading">
+    <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
   </div>
 
 </div>
@@ -195,7 +199,8 @@
     },
     data(){
       return {
-        loading: false,
+        cancelTokenSource: null,
+        isLoading: false,
         data: null,
         infoText: "Profile data",
         modifiedgametype: null,
@@ -239,7 +244,13 @@
     },
     methods: {
       async getData(){
-        this.loading = true;
+        this.isLoading = true;
+
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled');
+        }
+        this.cancelTokenSource = this.$axios.CancelToken.source();
+
         try{
           const response = await this.$axios.post("/api/v1/player", {
             blizz_id: this.blizzid,
@@ -247,12 +258,23 @@
             battletag: this.battletag,
             game_type: this.modifiedgametype,
             season: this.modifiedseason,
+          }, 
+          {
+            cancelToken: this.cancelTokenSource.token,
           });
           this.data = response.data;
+          console.log(this.data);
         }catch(error){
         //Do something here
+        }finally {
+          this.cancelTokenSource = null;
+          this.isLoading = false;
         }
-        this.loading = false;
+      },
+      cancelAxiosRequest() {
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled by user');
+        }
       },
       handleInputChange(eventPayload) {
         if(eventPayload.field == "Game Type"){

@@ -81,8 +81,8 @@
       </table>
     </div>
     </div>
-    <div v-else>
-      <loading-component></loading-component>
+    <div v-else-if="isLoading">
+      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
   </div>
 
@@ -106,8 +106,10 @@
     },
     data(){
       return {
+        isLoading: false,
         infoText: "Hero Matchups provide information on which heroes are good with and against for a particular hero",
         selectedHero: null,
+        cancelTokenSource: null,
         allyenemydata: null,
         sortKey: '',
         sortDir: 'desc',
@@ -183,6 +185,12 @@
         this.getData();
       },
       async getData(){
+        this.isLoading = true;
+
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled');
+        }
+        this.cancelTokenSource = this.$axios.CancelToken.source();
         try{
           const response = await this.$axios.post("/api/v1/global/matchups", {
             hero: this.selectedHero.name,
@@ -197,11 +205,22 @@
             role_league_tier: this.rolerank,
             mirrormatch: this.mirrormatch,
             role: this.role,
+          }, 
+          {
+            cancelToken: this.cancelTokenSource.token,
           });
           this.allyenemydata = response.data;
           this.combineddata = response.data.combined;
         }catch(error){
           //Do something here
+        }finally {
+          this.cancelTokenSource = null;
+          this.isLoading = false;
+        }
+      },
+      cancelAxiosRequest() {
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled by user');
         }
       },
       filterData(filteredData){

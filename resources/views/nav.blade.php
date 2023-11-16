@@ -31,7 +31,6 @@
                 <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Tools</a>
                 <div class="nav-dropdown absolute left-0 hidden  group-hover:block z-50 pt-3 min-w-[200px]">
                     <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow ">
-                        {{-- ... (Tools dropdown items) --}}
                         <a href="/Global/Talents/Build" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Talent Builder</a>
                         <a href="/Compare" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Compare</a>
                         <a href="https://drafter.heroesprofile.com/Drafter" target="_blank" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Drafter</a>
@@ -46,6 +45,17 @@
                 </div>
             </div>
             <a class="text-blue-600 hover:text-blue-800" href="/Esports">Community Esports</a>
+
+
+            <div class="relative group inline-block">
+                <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Help</a>
+                <div class="nav-dropdown absolute left-0 hidden  group-hover:block z-50 pt-3 min-w-[200px]">
+                    <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow ">
+                        <a href="https://github.com/Heroes-Profile/heroesprofile/issues" target="_blank" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Submit an Issue</a>
+                        <a href="/Contact" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Contact Us</a>
+                    </div>
+                </div>
+            </div>
 
             <div class="relative group inline-block">
                 @if(isset($mainSearchAccount))
@@ -68,6 +78,7 @@
                     </div>
                 @endif
             </div>
+
 
             {{-- Distinct white or grey line show the seperation here  --}}
             <div class="flex space-x-5">

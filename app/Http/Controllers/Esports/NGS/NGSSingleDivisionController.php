@@ -41,6 +41,119 @@ class NGSSingleDivisionController extends Controller
 
     }
 
+    public function showDivisionMatchHistory(Request $request, $division){
+        $defaultseason = NGSTeam::max('season');
+
+        $validationRules = [
+            'season' => ['sometimes', 'nullable', new NGSSeasonInputValidation()],
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                'data' => $request->all(),
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        return view('Esports.ngs.ngsSingleDivisionMatchHistory')
+            ->with([
+                'defaultseason' => $defaultseason,
+                'filters' => $this->globalDataService->getFilterData(),
+                'division' => $division,
+                'season' => $request['season'],
+                'esport' => "NGS",
+            ]);
+    }
+
+    public function getSingleDivisionMatchHistory(Request $request){
+        //return response()->json($request->all());
+
+        $validationRules = [
+            'season' => ['sometimes', 'nullable', new NGSSeasonInputValidation()],
+            'division' => ['required', new NGSDivisionInputValidation()],
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                'data' => $request->all(),
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        $season = $request['season'];
+        $division = $request['division'];
+
+        $result = Replay::join('heroesprofile_ngs.player', 'heroesprofile_ngs.player.replayID', '=', 'heroesprofile_ngs.replay.replayID')
+            ->join('heroesprofile_ngs.teams', 'heroesprofile_ngs.teams.team_id', '=', 'heroesprofile_ngs.player.team_name')
+            ->select([
+                'replay.replayID',
+                'hero',
+                'game_date',
+                'game_map',
+                'game_length',
+                'round',
+                'game',
+                'team_0_name',
+                'team_1_name',
+                'heroesprofile_ngs.teams.team_name',
+                'image',
+                'winner',
+            ])
+            ->where('heroesprofile_ngs.teams.season', $season)
+            ->where('heroesprofile_ngs.teams.division', $division)
+            ->orderByDesc('game_date')
+            ->get();
+
+
+        $heroData = $this->globalDataService->getHeroes();
+        $heroData = $heroData->keyBy('id');
+
+        $maps = Map::all();
+        $maps = $maps->keyBy('map_id');
+
+        $matches = $result->groupBy('replayID')->map(function ($group) use ($heroData, $maps) {
+            return [
+                'replayID' => $group[0]['replayID'],
+                'game_date' => $group[0]['game_date'],
+                'game_map' => $maps[$group[0]['game_map']],
+                'game' => $group[0]['game'],
+                'round' => $group[0]['round'],
+                'team_0_name' => $group[0]['team_0_name'],
+                'team_1_name' => $group[0]['team_1_name'],
+                'winner' => 1,
+                'heroes' => [
+                    0 => $group[0] && $group[0]['hero'] ? ['hero' => $heroData[$group[0]['hero']]] : null,
+                    1 => $group[1] && $group[1]['hero'] ? ['hero' => $heroData[$group[1]['hero']]] : null,
+                    2 => $group[2] && $group[2]['hero'] ? ['hero' => $heroData[$group[2]['hero']]] : null,
+                    3 => $group[3] && $group[3]['hero'] ? ['hero' => $heroData[$group[3]['hero']]] : null,
+                    4 => $group[4] && $group[4]['hero'] ? ['hero' => $heroData[$group[4]['hero']]] : null,
+                    5 => $group[5] && $group[5]['hero'] ? ['hero' => $heroData[$group[5]['hero']]] : null,
+                    6 => $group[6] && $group[6]['hero'] ? ['hero' => $heroData[$group[6]['hero']]] : null,
+                    7 => $group[7] && $group[7]['hero'] ? ['hero' => $heroData[$group[7]['hero']]] : null,
+                    8 => $group[8] && $group[8]['hero'] ? ['hero' => $heroData[$group[8]['hero']]] : null,
+                    9 => $group[9] && $group[9]['hero'] ? ['hero' => $heroData[$group[9]['hero']]] : null,
+                ],
+            ];
+        })->sortByDesc('game_date')->values()->all();
+
+        $seasons = DB::table('heroesprofile_ngs.teams')
+            ->select('season')
+            ->distinct()
+            ->orderByDesc('season') // Order by season in descending order
+            ->pluck('season')
+            ->map(function ($season) {
+                return ['code' => strval($season), 'name' => strval($season)];
+            })
+            ->values()
+            ->all();
+
+        return ["matches" => $matches, "seasons" => $seasons];
+    }
+
     public function getSingleDivisionData(Request $request)
     {
         //return response()->json($request->all());

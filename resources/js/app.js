@@ -29,6 +29,7 @@ import SearchComponent from './components/SearchComponent.vue';
 import ImageHoverBox from './components/ImageHoverBox.vue';
 import FormatDate from './components/FormatDate.vue';
 import NewUserPopup from './components/NewUserPopup.vue';
+import ContactForm from './components/ContactForm.vue';
 
 
 
@@ -108,6 +109,7 @@ import EsportsSingleTeam from './components/Esports/EsportsSingleTeam.vue';
 import EsportsPlayerStats from './components/Esports/Player/EsportsPlayerStats.vue';
 import EsportsPlayerHeroStats from './components/Esports/Player/EsportsPlayerHeroStats.vue';
 import EsportsPlayerMapStats from './components/Esports/Player/EsportsPlayerMapStats.vue';
+import EsportsPlayerMatchHistory from './components/Esports/Player/EsportsPlayerMatchHistory.vue';
 import EsportsOrganizations from './components/Esports/EsportsOrganizations.vue';
 
 
@@ -116,6 +118,7 @@ import NgsMain from './components/Esports/NGS/NgsMain.vue';
 import NgsDivisions from './components/Esports/NGS/NgsDivisions.vue';
 import NgsSingleDivision from './components/Esports/NGS/NgsSingleDivision.vue';
 import NgsStandings from './components/Esports/NGS/NgsStandings.vue';
+import NgsSingleDivisionMatchHistory from './components/Esports/NGS/NgsSingleDivisionMatchHistory.vue';
 
 //CCL
 import CclMain from './components/Esports/CCL/CclMain.vue';

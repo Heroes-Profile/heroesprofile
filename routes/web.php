@@ -35,6 +35,7 @@ use App\Http\Controllers\Player\PlayerRolesController;
 use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
+use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -53,6 +54,7 @@ Route::fallback(function () {
 });
 
 Route::get('/', [MainPageController::class, 'show']);
+Route::get('/Contact', [ContactController::class, 'show']);
 Route::get('/battletag/searched/{userinput}/{type}', [BattletagSearchController::class, 'show']);
 
 Route::get('/Compare', [CompareController::class, 'show']);
@@ -139,6 +141,16 @@ Route::get('Esports/{esport}/Team/{team}', [EsportsController::class, 'showSingl
 Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}', [EsportsController::class, 'showPlayer']);
 Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Hero/{hero}', [EsportsController::class, 'showPlayerHero']);
 Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Map/{game_map}', [EsportsController::class, 'showPlayerMap']);
+
+
+
+Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Match/History', [EsportsController::class, 'showPlayerMatchHistory']);
+Route::get('Esports/{esport}/Team/{team}/Match/History', [EsportsController::class, 'showTeamMatchHistory']);
+Route::get('Esports/NGS/Division/{division}/Match/History', [NGSSingleDivisionController::class, 'showDivisionMatchHistory']);
+
+
+
+
 
 Route::get('Esports/NutCup', [NutCupController::class, 'show']);
 

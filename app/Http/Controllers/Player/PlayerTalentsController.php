@@ -123,6 +123,7 @@ class PlayerTalentsController extends Controller
             })
             //->toSql();
             ->get();
+
         $talentData = HeroesDataTalent::all();
         $talentData = $talentData->keyBy('talent_id');
 

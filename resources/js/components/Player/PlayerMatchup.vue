@@ -7,7 +7,6 @@
     :filters="filters" 
     :isLoading="isLoading"
     :gametypedefault="gametype"
-    :includehero="true"
     :includegamemap="true"
     :includegametypefull="true"
     :hideadvancedfilteringbutton="true"
@@ -41,30 +40,29 @@
       </thead>
       <tbody>
         <tr v-for="(row, index) in sortedData" :key="index">
-          <td class="py-2 px-3  flex items-center gap-1">
-            <a :href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Hero/Single/' + row.hero.name">
-              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>
-              {{ row.hero.name }}
+          <td class="py-2 px-3 flex items-center gap-1">
+            <a class="link" :href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Hero/Single/' + row.hero.name">
+              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}
             </a>
           </td>
            <td class="py-2 px-3 ">
-            {{ row.ally_win_rate.toFixed(2) }}
+            {{ row.ally_win_rate ? row.ally_win_rate.toFixed(2) : "No data" }}
           </td>
           <td class="py-2 px-3 ">
-            {{ row.enemy_win_rate.toFixed(2) }}
+            {{ row.enemy_win_rate ? row.enemy_win_rate.toFixed(2) : "No data" }}
           </td>
           <td class="py-2 px-3 ">
-            {{ row.ally_games_played.toLocaleString() }}
+            {{ row.ally_games_played ? row.ally_games_played.toLocaleString() : "No data" }}
           </td>
           <td class="py-2 px-3 ">
-            {{ row.enemy_games_played.toLocaleString() }}
+            {{ row.enemy_games_played ? row.enemy_games_played.toLocaleString() : "No data" }}
           </td>
         </tr>
       </tbody>
     </table>
   </div>
-  <div v-else>
-    <loading-component :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+  <div v-else-if="isLoading">
+    <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
   </div>
 
 
@@ -85,6 +83,7 @@
     },
     data(){
       return {
+        cancelTokenSource: null,
         isLoading: false,
         infotext: "Hero Matchups provide information on which heroes " + this.battletag + " is good with and against",
         gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
@@ -119,6 +118,12 @@
     methods: {
       async getData(){
         this.isLoading = true;
+
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled');
+        }
+        this.cancelTokenSource = this.$axios.CancelToken.source();
+      
         try{
           const response = await this.$axios.post("/api/v1/player/matchups", {
             blizz_id: this.blizzid,
@@ -127,14 +132,24 @@
             game_type: this.gametype, 
             game_map: this.gamemap,
             hero: this.hero,
+          }, 
+          {
+            cancelToken: this.cancelTokenSource.token,
           });
           this.data = response.data.tabledata;
           this.topfiveheroes = response.data.top_five_heroes;
           this.topfiveenemies = response.data.top_five_enemies;
         }catch(error){
           //Do something here
+        }finally {
+          this.cancelTokenSource = null;
+          this.isLoading = false;
         }
-        this.isLoading = false;
+      },
+      cancelAxiosRequest() {
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled by user');
+        }
       },
       sortTable(key) {
         if (key === this.sortKey) {

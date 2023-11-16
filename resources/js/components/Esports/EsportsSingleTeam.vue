@@ -3,22 +3,30 @@
     <page-heading :infoText1="infoText1" :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div v-if="data">
-      <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifiedseason"></single-select-filter>
-      <single-select-filter v-if="esport == 'NGS'" :values="data.divisions" :text="'Divisions'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifieddivision"></single-select-filter>
+      <div class="flex justify-center max-w-[1500px] mx-auto">
+        <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifiedseason"></single-select-filter>
+        <single-select-filter v-if="esport == 'NGS'" :values="data.divisions" :text="'Divisions'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifieddivision"></single-select-filter>
+      </div>
 
 
-      <div>
-        <stat-box :title="'Wins'" :value="data.wins"></stat-box>
-        <stat-box :title="'Losses'" :value="data.losses"></stat-box>
-        <stat-bar-box :title="'Win Rate'" :value="data.win_rate"></stat-bar-box>         
-        <stat-box :title="'KDR'" :value="data.kdr"></stat-box>
-        <stat-box :title="'KDA'" :value="data.kda"></stat-box>
-        <stat-box :title="'Takedowns'" :value="data.takedowns"></stat-box>
-        <stat-box :title="'Kills'" :value="data.Kills"></stat-box>
-        <stat-box :title="'Assists'" :value="data.assists"></stat-box>
-        <stat-box :title="'# Games'" :value="data.total_games"></stat-box>
-        <stat-box :title="'Deaths'" :value="data.deaths"></stat-box>
-        <stat-box :title="'Time spent dead'" :value="data.time_spent_dead"></stat-box>
+      <div class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
+        <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
+          <stat-box class="w-[48%]" :title="'Wins'" :value="data.wins.toLocaleString()"></stat-box>
+          <stat-box class="w-[48%]" :title="'Losses'" :value="data.losses.toLocaleString()"></stat-box>
+          <stat-bar-box class="w-full" size="full" :title="'Win Rate'" :value="data.win_rate.toFixed(2)"></stat-bar-box>
+          <stat-box class="w-[48%]" :title="'KDR'" :value="data.kdr" color="yellow"></stat-box>          
+          <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="yellow"></stat-box>          
+        </div>
+        <div class="my-auto">
+          <round-image :title="team" :image="image" size="large" :rectangle="true"></round-image>
+        </div>
+        <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
+          <stat-box class="w-[48%]" :title="'Takedowns'" :value="data.takedowns.toLocaleString()"></stat-box>
+          <stat-box class="w-[48%]" :title="'Kills'" :value="data.kills.toLocaleString()"></stat-box>
+          <stat-box :title="'Total Time spent dead'" :value="data.time_spent_dead"></stat-box>
+          <stat-box class="w-[48%]" :title="'Assists'" :value="data.assists" color="teal"></stat-box>          
+          <stat-box class="w-[48%]" :title="'Deaths'" :value="data.deaths" color="teal"></stat-box>          
+        </div>
       </div>
 
       <div>
@@ -46,7 +54,7 @@
           <tbody>
             <tr v-for="(row, index) in data.players" :key="index">
               <td>
-                <a :href="row.playerlink">{{ row.battletag }}</a>
+                <a class="link" :href="row.playerlink">{{ row.battletag }}</a>
               </td>
               <td>
                 {{ row.games_played }}
@@ -198,8 +206,8 @@
 
     </div>
 
-    <div v-else>
-      <loading-component :overrideimage="loadingImageUrl"></loading-component>
+    <div v-else-if="isLoading">
+      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="isLoadingImageUrl"></loading-component>
     </div>
 
   </div>
@@ -218,14 +226,17 @@ export default {
       type: [Number, String]
     },
     tournament: String,
+    image: String,
   },
   data(){
     return {
+      isLoading: false,
       data: null,
       sortKey: '',
       sortDir: 'desc',
       modifiedseason: null,
       modifieddivision: null,
+      cancelTokenSource: null,
     }
   },
   created(){
@@ -258,7 +269,7 @@ export default {
         return "/Esports/HeroesInternational"
       }
     },
-    loadingImageUrl(){
+    isLoadingImageUrl(){
      if(this.esport == "NGS"){
         return "/images/NGS/no-image-clipped.png"
       }else if(this.esport == "CCL"){
@@ -295,7 +306,13 @@ export default {
   },
   methods: {
     async getData(){
-      this.loading = true;
+      this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+
       try{
         const response = await this.$axios.post("/api/v1/esports/single/team", {
           esport: this.esport,
@@ -303,12 +320,22 @@ export default {
           team: this.team,
           season: this.modifiedseason,
           tournament: this.tournament,
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
         });
         this.data = response.data;
       }catch(error){
       //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
       }
-      this.loading = false;
+    },
+    cancelAxiosRequest() {
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled by user');
+      }
     },
     handleInputChange(eventPayload){
         if(eventPayload.field == "Seasons"){
@@ -328,7 +355,7 @@ export default {
         newURL += `?division=${this.modifieddivision}`;
       }
 
-      // Update the browser's URL without reloading the page
+      // Update the browser's URL without reisLoading the page
       history.pushState({}, "", newURL);
     },
     handleDropdownClosed(){
