@@ -248,8 +248,6 @@ class EsportsController extends Controller
             'blizz_id' => 'nullable|string',
             'division' => 'nullable|string',
             'season' => 'nullable|numeric',
-            'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
-            'game_map' => ['sometimes', 'nullable',  new GameMapInputValidation()],
             'pagination_page' => 'required:integer',
             'tournament' => 'nullable|in:main,nationscup',
         ];
