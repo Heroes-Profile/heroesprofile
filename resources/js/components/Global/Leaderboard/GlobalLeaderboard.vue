@@ -100,7 +100,7 @@
             <template v-for="(row, index) in sortedData">
               <tr>
                 <td>{{ row.rank }}</td>
-                <td><a :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`">{{ row.split_battletag }}</a></td>
+                <td><a class="link" :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`">{{ row.split_battletag }}</a></td>
                 <td>{{ row.region }}</td>
                 <td>{{ row.win_rate.toFixed(2) }}</td>
                 <td>{{ row.rating.toFixed(2) }}</td>
