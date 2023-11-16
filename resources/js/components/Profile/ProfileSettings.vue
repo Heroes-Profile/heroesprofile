@@ -4,10 +4,12 @@
 
     <h1>Profile Site Settings</h1>
     <div class="flex">
+
+      <!-- Removing for now as I am not sure if this functionality is all that useful
      <div>
         Profile Hero/Favorite Hero: <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange" :defaultValue="defaultHero"></single-select-filter>
       </div>
-
+    -->
       <div>
         Default Game Type: <multi-select-filter :values="this.filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="defaultGameType"></multi-select-filter>
       </div>
