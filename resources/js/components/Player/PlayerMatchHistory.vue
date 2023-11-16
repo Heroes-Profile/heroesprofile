@@ -96,7 +96,7 @@
         </tbody>
       </table>
     </div>
-    <div v-else>
+    <div v-else-if="isLoading">
       <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
   </div>
@@ -160,23 +160,37 @@ export default {
     
       this.data = null;
       this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
       try{
         const response = await this.$axios.post("/api/v1/player/match/history", {
           battletag: this.battletag,
           blizz_id: this.blizzid,
           region: this.region,
-          battletag: this.battletag,
           game_type: this.gametype,
           role: this.role,
           hero: this.hero,
           game_map: this.gamemap,
           pagination_page: page,
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
         });
         this.data = response.data;
       }catch(error){
         //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
       }
-      this.isLoading = false;
+    },
+    cancelAxiosRequest() {
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled by user');
+      }
     },
     filterData(filteredData){
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;

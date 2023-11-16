@@ -431,7 +431,8 @@
 
 </div>
 <div v-else-if="isLoading">
-  <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+  <loading-component v-if="esport" @cancel-request="cancelAxiosRequest" :overrideimage="getLoadingImage()"></loading-component>
+  <loading-component v-else @cancel-request="cancelAxiosRequest"></loading-component>
 </div>
 </div>
 </template>
@@ -708,7 +709,14 @@
     },
     formatValue(value){
       return value ? value.toLocaleString() : 0;
-    }
+    },
+    getLoadingImage(){
+      if(this.esport == "NGS"){
+        return "/images/NGS/no-image-clipped.png"
+      }else if(this.esport == "CCL"){
+        return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
+      }
+    },
   }
 }
 </script>

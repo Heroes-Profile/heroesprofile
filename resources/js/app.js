@@ -109,6 +109,7 @@ import EsportsSingleTeam from './components/Esports/EsportsSingleTeam.vue';
 import EsportsPlayerStats from './components/Esports/Player/EsportsPlayerStats.vue';
 import EsportsPlayerHeroStats from './components/Esports/Player/EsportsPlayerHeroStats.vue';
 import EsportsPlayerMapStats from './components/Esports/Player/EsportsPlayerMapStats.vue';
+import EsportsPlayerMatchHistory from './components/Esports/Player/EsportsPlayerMatchHistory.vue';
 import EsportsOrganizations from './components/Esports/EsportsOrganizations.vue';
 
 

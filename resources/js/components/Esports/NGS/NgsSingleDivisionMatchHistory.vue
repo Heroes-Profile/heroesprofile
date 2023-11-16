@@ -103,10 +103,9 @@ export default {
     }
   },
   created(){
+    this.modifiedseason = this.defaultseason;
   },
   mounted() {
-    this.modifiedseason = this.defaultseason;
-    this.infoText1 = `Division ${this.division} Match History for season ${this.modifiedseason}`;
     this.getData();
   },
   computed: {

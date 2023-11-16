@@ -1,39 +1,8 @@
 <template>
-  <div>
-    <page-heading :infoText1="'Match History'" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
-
-    <filters 
-      :onFilter="filterData" 
-      :filters="filters" 
-      :isLoading="isLoading"
-      :gametypedefault="gametype"
-      :minimumgamesdefault="'0'"
-      :includehero="true"
-      :includerole="true"
-      :includegametypefull="true"
-      :includeseason="true"
-      :includegamemap="true"
-      :hideadvancedfilteringbutton="true"
-      >
-    </filters>
+  <div>    
+    <page-heading :infoText1="`${esport == 'HeroesInternational' ? 'Heroes International' : esport} ${battletag} Match History`" :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div v-if="data">
-      <div>
-        <ul class="pagination flex max-w-[1500px] mx-auto justify-between mb-2">
-          <li v-if="data.current_page != 1" class="page-item underline underline-offset-4" :class="{ disabled: !data.prev_page_url }">
-            <a class="page-link" @click.prevent="getData(data.current_page - 1)" href="#">
-              Previous
-            </a>
-          </li>
-          <li v-if="data.current_page != data.last_page" class="page-item underline underline-offset-4" :class="{ disabled: !data.next_page_url }">
-            <a class="page-link" @click.prevent="getData(data.current_page + 1)" href="#">
-              Next
-            </a>
-          </li>
-        </ul>
-      </div>
-
-
       <table class="">
         <thead>
           <tr>
@@ -42,10 +11,7 @@
             </th>
             <th @click="sortTable('game_date')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Game Date
-            </th>            
-            <th @click="sortTable('game_type_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Game Type
-            </th>
+            </th>     
             <th @click="sortTable('game_map')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Game Map
             </th>
@@ -63,13 +29,10 @@
         <tbody>
           <tr v-for="(row, index) in sortedData" :key="index">
             <td>
-              <a class="link" :href="'/Match/Single/' + row.replayID">{{ row.replayID }}</a>
+              <a class="link" :href="`/Esports/${esport}/Match/Single/` + row.replayID">{{ row.replayID }}</a>
             </td>
             <td>
               {{ formatDate(row.game_date) }}
-            </td>
-            <td>
-              {{ row.game_type.name }}
             </td>
             <td>
               {{ row.game_map }}
@@ -96,8 +59,8 @@
         </tbody>
       </table>
     </div>
-    <div v-else>
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+    <div v-else-if="isLoading">
+      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="getLoadingImage()"></loading-component>
     </div>
   </div>
 </template>
@@ -106,15 +69,15 @@
 import moment from 'moment-timezone';
 
 export default {
-  name: 'PlayerMatchHistory',
+  name: 'EsportsPlayerMatchHistory',
   components: {
   },
   props: {
     filters: Object,
     battletag: String,
     blizzid: String, 
-    region: String,
-    regionsmap: Object,
+    esport: String,
+    season: Number,
   },
   data(){
     return {
@@ -122,21 +85,38 @@ export default {
       userTimezone: moment.tz.guess(),
       isLoading: false,
       data: null,
-      role: null,
-      hero: null,
       gamemap: null,
       season: null,
       sortKey: '',
       sortDir: 'desc',
-      gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
+      modifiedSeason: null,
     }
   },
   created(){
+    this.modifiedSeason = this.season;
   },
   mounted() {
     this.getData(1);
   },
   computed: {
+    headingImage(){
+      if(this.esport == "NGS"){
+        return "/images/NGS/600-600-ngs_large_header.png"
+      }else if(this.esport == "CCL"){
+        return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
+      }else if(this.esport == "MastersClash"){
+        return "/images/MCL/no-image.png"
+      }
+    },
+    headingImageUrl(){
+      if(this.esport == "NGS"){
+        return "/Esports/NGS"
+      }else if(this.esport == "CCL"){
+        return "/Esports/CCL"
+      }else if(this.esport == "MastersClash"){
+        return "/Esports/MastersClash"
+      }
+    },
     sortedData() {
       if (!this.sortKey) return this.data.data;
       return this.data.data.slice().sort((a, b) => {
@@ -160,23 +140,33 @@ export default {
     
       this.data = null;
       this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
       try{
-        const response = await this.$axios.post("/api/v1/player/match/history", {
+        const response = await this.$axios.post("/api/v1/esports/single/player/match/history", {
+          esport: this.esport,
           battletag: this.battletag,
           blizz_id: this.blizzid,
-          region: this.region,
-          battletag: this.battletag,
-          game_type: this.gametype,
-          role: this.role,
-          hero: this.hero,
-          game_map: this.gamemap,
           pagination_page: page,
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
         });
         this.data = response.data;
       }catch(error){
         //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
       }
-      this.isLoading = false;
+    },
+    cancelAxiosRequest() {
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled by user');
+      }
     },
     filterData(filteredData){
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
@@ -202,6 +192,13 @@ export default {
       const localDate = originalDate.clone().tz(moment.tz.guess());
 
       return localDate.format('MM/DD/YYYY h:mm:ss a');
+    },
+    getLoadingImage(){
+      if(this.esport == "NGS"){
+        return "/images/NGS/no-image-clipped.png"
+      }else if(this.esport == "CCL"){
+        return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
+      }
     },
   }
 }
