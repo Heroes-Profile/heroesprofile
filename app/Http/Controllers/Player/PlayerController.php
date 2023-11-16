@@ -111,33 +111,47 @@ class PlayerController extends Controller
             ->first();
 
         if (! $cachedData) {
-            $cachedData = $this->calculateProfile($blizz_id, $region, $game_type, $season);
-        } else {
-            $latestReplayID = Replay::select('replay.replayID')
-                ->join('player', 'player.replayID', '=', 'replay.replayID')
-                ->where('blizz_id', $blizz_id)
-                ->where('region', $region)
-                ->when(! is_null($game_type), function ($query) use ($game_type) {
-                    return $query->where('game_type', $game_type);
-                })
-                ->when(! is_null($season), function ($query) use ($season) {
-                    $seasonDate = SeasonDate::find($season);
-                    if ($seasonDate) {
-                        return $query->where('game_date', '>=', $seasonDate->start_date)
-                            ->where('game_date', '<', $seasonDate->end_date);
-                    }
+            $this->calculateProfile($blizz_id, $region, $game_type, $season);
 
-                    return $query;
-                })
-                ->orderBy('replayID', 'DESC')
-                ->limit(1)
-                ->first()
-                ->replayID ?? null;
-
-            if ($latestReplayID && $cachedData->latest_replayID < $latestReplayID) {
-                $cachedData = $this->calculateProfile($blizz_id, $region, $game_type, $season, $cachedData);
-            }
+            $cachedData = LaravelProfilePage::filterByBlizzID($blizz_id)
+                ->filterByRegion($region)
+                ->where('game_type', $game_type)
+                ->where('season', $season)
+                ->first();
         }
+
+
+        $latestReplayID = Replay::select('replay.replayID')
+            ->join('player', 'player.replayID', '=', 'replay.replayID')
+            ->where('blizz_id', $blizz_id)
+            ->where('region', $region)
+            ->when(! is_null($game_type), function ($query) use ($game_type) {
+                return $query->where('game_type', $game_type);
+            })
+            ->when(! is_null($season), function ($query) use ($season) {
+                $seasonDate = SeasonDate::find($season);
+                if ($seasonDate) {
+                    return $query->where('game_date', '>=', $seasonDate->start_date)
+                        ->where('game_date', '<', $seasonDate->end_date);
+                }
+
+                return $query;
+            })
+            ->orderBy('replayID', 'DESC')
+            ->limit(1)
+            ->first()
+            ->replayID ?? null;
+
+        if ($latestReplayID && $cachedData->latest_replayID < $latestReplayID) {
+            $this->calculateProfile($blizz_id, $region, $game_type, $season, $cachedData);
+            $cachedData = LaravelProfilePage::filterByBlizzID($blizz_id)
+                ->filterByRegion($region)
+                ->where('game_type', $game_type)
+                ->where('season', $season)
+                ->first();
+        }
+       
+
         if ($cachedData) {
             return $this->formatCache($cachedData, $blizz_id, $region, $battletag);
         } else {
@@ -719,6 +733,8 @@ class PlayerController extends Controller
 
         if (is_string($data->matches)) {
             $matches = json_decode($data->matches, true);
+        }else{
+            $matches = $data->matches;
         }
 
         $returnData->matchData = collect($matches)->sortByDesc('game_date')->map(function ($match) use ($maps, $heroData, $talentData) {
