@@ -189,6 +189,11 @@ class CompareController extends Controller
 
                     $winCount = $result->where('winner', 1)->count();
                     $lossCount = $result->where('winner', 0)->count();
+
+                    $gamesPlayed = $winCount + $lossCount;
+
+                    $winRate = $gamesPlayed > 0 ? ($winCount / $gamesPlayed) * 100: 0;
+
                     $averageValue = $result->avg($column);
 
                     $maxValue = $averageValue;
@@ -201,7 +206,6 @@ class CompareController extends Controller
                         'avg_value' => round($averageValue, 2),
                     ];
                 }
-
                 $returnData[$request[$player]['battletag']] = [
                     'battletag_short' => $request[$player]['battletag_short'],
                     'blizz_id' => $request[$player]['blizz_id'],
@@ -209,6 +213,8 @@ class CompareController extends Controller
                     'region_name' => $request[$player]['region_name'],
                     'wins' => $winCount,
                     'losses' => $lossCount,
+                    'games_played' => $gamesPlayed,
+                    'win_rate' => $winRate,
                     'averages' => $columnStatistics,
                 ];
             }
