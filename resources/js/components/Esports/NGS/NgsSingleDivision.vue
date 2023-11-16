@@ -88,7 +88,7 @@
           >
           </game-summary-box>
         
-          <custom-button :href="`/Esports/NGS/Division/${division}/Match/History`" class="flex justify-end " text="View Match History"></custom-button>
+          <custom-button :href="`/Esports/NGS/Division/${division}/Match/History?season=${this.modifiedseason}`" class="flex justify-end " text="View Match History"></custom-button>
 
       </div>
 
