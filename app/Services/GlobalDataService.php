@@ -18,6 +18,7 @@ use App\Models\SeasonGameVersion;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Models\HeaderAlert;
 
 class GlobalDataService
 {
@@ -27,6 +28,17 @@ class GlobalDataService
     {
         //can add modifier here for patreons to reduce what they can filter on
         $this->filtersMinimumPatch = '2.53.0.83004';
+    }
+
+    public function getHeaderAlert(){
+        if (! session()->has('headeralert')) {
+            $alert = HeaderAlert::select('text')->where("valid", 1)->first();
+
+            if(!empty($alert)){
+                session(['headeralert' => $alert->text]);
+            }
+        }
+        return session('headeralert');
     }
 
     public function getPrivateAccounts()
