@@ -43,32 +43,32 @@
             Avg
           </th>
           <th class="py-2 px-3  border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_win_rate }}
+            {{ this.data.average_win_rate.toFixed(2) }}
           </th>
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ "&#177;" }}{{ this.data.average_confidence_interval }}
+            {{ "&#177;" }}{{ this.data.average_confidence_interval.toFixed(2) }}
           </th>
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_positive_win_rate_change }}{{ "|" }}{{ this.data.average_negative_win_rate_change }}
+            {{ this.data.average_positive_win_rate_change.toFixed(2) }}{{ "|" }}{{ this.data.average_negative_win_rate_change.toFixed(2) }}
           </th>
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_popularity }}
+            {{ this.data.average_popularity.toFixed(2) }}
           </th>
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_pick_rate }}
+            {{ this.data.average_pick_rate.toFixed(2) }}
           </th>
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_ban_rate }}
+            {{ this.data.average_ban_rate.toFixed(2) }}
           </th>
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_positive_influence }}{{ "|" }}{{ this.data.average_negative_influence }}
+            {{ this.data.average_positive_influence.toLocaleString() }}{{ "|" }}{{ this.data.average_negative_influence.toLocaleString() }}
           </th>
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_games_played }}
+            {{ this.data.average_games_played.toLocaleString() }}
           </th>
 
           <th  v-if="this.showStatTypeColumn"  class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ data.averaege_total_filter_type }}
+            {{ data.averaege_total_filter_type.toFixed(2).toLocaleString() }}
           </th>
 
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
@@ -119,14 +119,14 @@
                   <hero-image-wrapper class="mr-2" :hero="row" :includehover="false"></hero-image-wrapper>{{ row.name }}
                 </td>
               </a>
-              <td class="  ">{{ row.win_rate }}</td>
-              <td class="py-2 px-3 "><span v-html="'&#177;'"></span>{{ row.confidence_interval }}</td>
+              <td class="  ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 "><span v-html="'&#177;'"></span>{{ row.confidence_interval.toFixed(2) }}</td>
               <td v-if="row.win_rate_change < 0" class="py-2 px-3 ">{{ row.win_rate_change.toFixed(2) }}</td>
               <td v-else-if="row.win_rate_change >= 0" class="py-2 px-3 "><span v-html="'&plus;'"></span>{{ row.win_rate_change.toFixed(2) }}</td>
               <td class="py-2 px-3">{{ row.popularity.toFixed(2) }}</td>
               <td class="py-2 px-3">{{ row.pick_rate.toFixed(2) }}</td>
               <td class="py-2 px-3">{{ row.ban_rate.toFixed(2) }}</td>
-              <td class="py-2 px-3">{{ row.influence }}</td>
+              <td class="py-2 px-3">{{ row.influence.toLocaleString() }}</td>
               <td class="py-2 px-3 ">{{ row.games_played.toLocaleString() }}</td>
               <td v-if="this.showStatTypeColumn" class="py-2 px-3 ">{{ row.total_filter_type.toFixed(2).toLocaleString() }}</td>
               <td class="py-2 px-3 ">

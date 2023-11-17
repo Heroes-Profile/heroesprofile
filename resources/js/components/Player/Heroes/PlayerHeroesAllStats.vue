@@ -39,9 +39,14 @@
             <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Hero
             </th>    
-            <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Win Rate | Total Games
-              
+            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <span @click="sortTable('win_rate')">
+                Win Rate
+              </span>
+              |
+              <span @click="sortTable('games_played')">
+                Total Games
+              </span>
             </th>
             <th @click="sortTable('kda')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               <div class="">
