@@ -4,7 +4,7 @@
       <input type="text" class="form-control search-input" placeholder="Enter a battletag" aria-label="Enter a battletag" aria-describedby="basic-addon2" v-model="userinput"  @keyup.enter="clickedPlayerSearch
       ">
       <div class="input-group-append">
-        <custom-button class="btn btn-outline-secondary" text="Search For Player" :ignoreclick="true" @click="clickedPlayerSearch">{{ "Search For Player" }}</custom-button>
+        <custom-button class="btn btn-outline-secondary" text="Search For Player" :ignoreclick="true" :disabled="isLoading" @click="clickedPlayerSearch">{{ "Search For Player" }}</custom-button>
       </div>
     </div>
 
@@ -19,13 +19,10 @@
           <div>{{ item.latest_game }}</div>
           <div>Games Played: {{ item.totalGamesPlayed }}</div>
           <div v-if="item.latestMap">{{ item.latestMap.name }}</div>
-          <div><hero-image-wrapper :hero="item.latestHero"></hero-image-wrapper></div>
+          <div>
+            <hero-image-wrapper :hero="item.latestHero"></hero-image-wrapper>
+          </div>
         </div>
-    </div>
-
-
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
   </div>
 </template>
@@ -56,6 +53,7 @@
     },
     methods: {
       async clickedPlayerSearch(){        
+        this.$emit('data-loading');
         this.isLoading = true;
 
         if (this.cancelTokenSource) {
@@ -80,6 +78,7 @@
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
+          this.$emit('data-loading-finished');
         }
       },
       cancelAxiosRequest() {

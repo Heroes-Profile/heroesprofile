@@ -9,100 +9,93 @@
 
     <div v-else>
       <filters 
-      :onFilter="filterData" 
-      :filters="filters" 
-      :isLoading="isLoading"
-      :gametypedefault="gametypedefault"
-      :includeherorole="true"
-      :includehero="true"
-      :includesinglegamemap="true"
-      :includesinglegametype="true"
-      :includeseasonwithall="true"
-      :defaultHero="selectedHero.id"
-      :defaultSeason="season"
-      >
-    </filters>
-
-
-
-
-
-    <div class="flex justify-center gap-2  mx-auto  ">
-      <div class="border  rounded-md compare-selection-box"  v-for="index in range" :key="index">
-
-        <div class=" p-2 rounded-t-md compare-selection-title" v-if="playerChosen(index)">
-          {{ playerData[index].battletag_short }}({{ playerData[index].region_name }})
-        </div>
-        <div v-else class="p-2 mx-auto">
-          <hero-or-league-choice-box :index="index" @onDataReturn="handleDataReturn"></hero-or-league-choice-box>
-        </div>
-
-
-      </div>
-      <div class="border p-2 flex flex-col rounded-md" v-if="this.range.length < 5" @click="newPlayerAddded">
-
-        <custom-button class="my-auto mx-auto text-xl"   text="+" alt="Change to a plus sign with text 'Add New Player to Compare'" size="small" :ignoreclick="true"></custom-button>
-        Add a player to compare
-      </div>
-
-    </div>
-
-    <div class="flex justify-center gap-10 mt-10">
-      <div v-if="this.data" class="flex flex-col gap-10">
-        <div v-for="(stat, index) in stats.slice(0,4)" :key="stat" class="">
-          <div v-for="(player, playerIndex) in playerData" :key="player.battletag" class="flex flex-col" >
-           <stat-bar-box align="right"  :color="colors[playerIndex]"  :title="`${player.battletag_short} ${stat}`" :displaytext="getStatText(stat.replace(/ /g, '_').toLowerCase(), player.battletag)" :value="getStatValue(stat.replace(/ /g, '_').toLowerCase(), player.battletag)"></stat-bar-box>
-         </div>
-       </div>
-     </div>
-     <img :src="getHeroImage()" />
-     <div v-if="this.data" class="flex flex-col gap-10">
-      <div v-for="(stat, index) in stats.slice(4)" :key="stat" class="">
-        <div v-for="(player, playerIndex) in playerData" :key="player.battletag" class="flex flex-col" >
-         <stat-bar-box align="left"  :color="colors[playerIndex]"  :title="`${player.battletag_short} ${stat}`" :displaytext="getStatText(stat.replace(/ /g, '_').toLowerCase(), player.battletag)" :value="getStatValue(stat.replace(/ /g, '_').toLowerCase(), player.battletag)"></stat-bar-box>
-       </div>
-     </div>
-   </div>
-
-
- </div>
- <div v-if="data">
-  <table v-for="(section, sectionIndex) in sections" :key="sectionIndex" class="table-fixed">
-    <thead>
-      <tr>
-        <td  class="teal"></td>
-
-        <td
-        v-for="(player, index) in data"
-        :key="index"
-        width="25%"
+        :onFilter="filterData" 
+        :filters="filters" 
+        :isLoading="isLoading"
+        :gametypedefault="gametypedefault"
+        :includeherorole="true"
+        :includehero="true"
+        :includesinglegamemap="true"
+        :includesinglegametype="true"
+        :includeseasonwithall="true"
+        :defaultHero="selectedHero.id"
+        :defaultSeason="season"
         >
-        <a :href="`/Player/${player.battletag_short}/${player.blizz_id}/${player.region}`">{{ player.battletag_short }}</a>
-      </td>
+      </filters>
 
-    </tr>
-  </thead>
-  <tbody>
+      <div class="flex justify-center gap-2  mx-auto  ">
+        <div class="border  rounded-md compare-selection-box"  v-for="index in range" :key="index">
 
-    <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
-      <td class="flex-1">{{ row.label }}</td>
-      <td class="flex-1" v-for="(player, playerIndex) in data" :key="playerIndex">{{ formatValue(player.averages[row.key].avg_value) }}</td>
-    </tr>
-    
-  </tbody>
-</table>
-</div>
+          <div v-if="playerChosen(index)">
+            <div class=" p-2 rounded-t-md compare-selection-title">
+              {{ playerData[index].battletag_short }}({{ playerData[index].region_name }})
+            </div>
+            <div v-if="data">
+              Games Played: {{ data[playerData[index].battletag].games_played }}
+              <stat-bar-box class="w-full" size="full" :title="'Win Rate'" :value="data[playerData[index].battletag].win_rate.toFixed(2)" color="blue"></stat-bar-box>         
+            </div>
+          </div>
+        
+          
+          <div v-else class="p-2 mx-auto">
+            <hero-or-league-choice-box :index="index" @onDataReturn="handleDataReturn" @data-loading="isLoading = true" @data-loading-finished="isLoading = false"></hero-or-league-choice-box>
+          </div>
+        </div>
+        <div class="border p-2 flex flex-col rounded-md" v-if="this.range.length < 5" @click="newPlayerAddded">
+          <custom-button class="my-auto mx-auto text-xl"   text="+" alt="Change to a plus sign with text 'Add New Player to Compare'" size="small" :ignoreclick="true"></custom-button>
+          Add a player to compare
+        </div>
+      </div>
 
-<div v-else-if="isLoading">
-  <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
-</div>
+      <div v-if="data && !isLoading">
+        <div class="flex justify-center gap-10 mt-10">
+          <div v-if="this.data" class="flex flex-col gap-10">
+            <div v-for="(stat, index) in stats.slice(0,4)" :key="stat" class="">
+              <div v-for="(player, playerIndex) in playerData" :key="player.battletag" class="flex flex-col" >
+                <stat-bar-box align="right"  :color="colors[playerIndex]"  :title="`${player.battletag_short} ${stat}`" :displaytext="getStatText(stat.replace(/ /g, '_').toLowerCase(), player.battletag)" :value="getStatValue(stat.replace(/ /g, '_').toLowerCase(), player.battletag)"></stat-bar-box>
+             </div>
+           </div>
+          </div>
+          <img :src="getHeroImage()" />
+          <div v-if="this.data" class="flex flex-col gap-10">
+            <div v-for="(stat, index) in stats.slice(4)" :key="stat" class="">
+              <div v-for="(player, playerIndex) in playerData" :key="player.battletag" class="flex flex-col" >
+                <stat-bar-box align="left"  :color="colors[playerIndex]"  :title="`${player.battletag_short} ${stat}`" :displaytext="getStatText(stat.replace(/ /g, '_').toLowerCase(), player.battletag)" :value="getStatValue(stat.replace(/ /g, '_').toLowerCase(), player.battletag)"></stat-bar-box>
+              </div>
+            </div>
+          </div>
+        </div>
 
-</div>
+        <table v-for="(section, sectionIndex) in sections" :key="sectionIndex" class="table-fixed">
+          <thead>
+            <tr>
+              <td  class="teal"></td>
 
+              <td
+                v-for="(player, index) in data"
+                :key="index"
+                width="25%"
+                >
+                <a :href="`/Player/${player.battletag_short}/${player.blizz_id}/${player.region}`">{{ player.battletag_short }}</a>
+              </td>
 
+            </tr>
+          </thead>
+          <tbody>
 
+            <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
+              <td class="flex-1">{{ row.label }}</td>
+              <td class="flex-1" v-for="(player, playerIndex) in data" :key="playerIndex">{{ formatValue(player.averages[row.key].avg_value) }}</td>
+            </tr>
+            
+          </tbody>
+        </table>
+      </div>
 
-
+      <div v-else-if="isLoading || overrideloading">
+        <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+      </div>
+    </div>
 </div>
 </template>
 
@@ -125,6 +118,7 @@
       return {
         cancelTokenSource: null,
         isLoading: false,
+        overrideloading: false,
         range: [0],
         playerData: [],
         data: null,
@@ -234,7 +228,6 @@
     methods: {
       async getData(){
         this.isLoading = true;
-
         if (this.cancelTokenSource) {
           this.cancelTokenSource.cancel('Request canceled');
         }
@@ -262,6 +255,7 @@
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
+          this.overrideloading = false;
         }
       },
       cancelAxiosRequest() {
@@ -276,10 +270,11 @@
       handleDataReturn(index, payload) {
         this.playerData[index] = payload;
         this.data = null;
+        this.overrideloading = true;
         this.getData();
       },
       newPlayerAddded(){
-        this.range.push(1);
+        this.range.push(this.range.length);
       },
       playerChosen(index) {
         if (index in this.playerData) {

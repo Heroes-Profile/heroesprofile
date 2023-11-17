@@ -15,8 +15,6 @@ Laravel - https://laravel.com/
 
 PHP - PHP can be installed in different ways. If you do not currently have PHP installed, use google to find the best method for you.
 
--   Increase your local PHP memory_limit var. We use 1g. memory_limit = 1G
-
 MySQL - MySQL can be installed in different ways. If you do not currently have MySQL installed, use google to find the best method for you.
 
 Optional - A visual tool for looking at the database and data is suggested. MySql Workbench is our preference - https://www.mysql.com/products/workbench/
@@ -27,8 +25,8 @@ For windows users, Wampserver64 is a useful tool as it installs the MySql server
 
 ## Database setup (TBD)
 
--   Create the following schemas in your MySql database. `heroesprofile`, `heroesprofile_cache`
--   Increase your local mysql max_allowed_packet var. We use 64M.
+-   Create the following schemas in your MySql database. `heroesprofile`, `heroesprofile_cache`, `heroesprofile_hi`, `heroesprofile_hi_nc`, `heroesprofile_mcl`, `heroesprofile_ml`, `heroesprofile_ngs`, `heroesprofile_nutcup`
+-   Table structure and table data will be provided on an as-needed basis.  If you are wanting to make a change and need to know this information, please log a ticket or contact us directly explaining what you are doing and what data you need.
 
 ## Project Setup
 
@@ -52,5 +50,3 @@ For windows users, Wampserver64 is a useful tool as it installs the MySql server
 All contributions are welcome. The owners of Heroes Profile reserve the right to include or deny any merge requests from the community. Also, please try and only create pull requests that contain updates to the specific update you want to make. Including environment or auto-generated updates to framework code that are not required for your change only complicates making updates.
 
 If a contribution requires changes to the database, or how the data is grabbed from replays, please log an issue report detailing your need.
-
--   If backend code from the production site is needed, it can be found in the live_side_code folder of this repository. If there is code you need that is missing, please create a PR to have that added.
