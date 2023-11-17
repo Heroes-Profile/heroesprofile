@@ -1,13 +1,13 @@
-<nav class="bg-gray-dark text-white p-2 z-50 relative">
+<nav class="bg-gray-dark text-white z-50 relative">
     <div class="flex items-center justify-between flex-wrap  text-sm">
-        <a class="text-blue-600 hover:text-blue-800 flex items-center font-logo text-2xl" href="/">
+        <a class=" flex items-center font-logo text-2xl" href="/">
             Heroes
             <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
             Profile
         </a>
         <div class="flex items-center space-x-5 justify-end flex-wrap md:flex-nowrap">
             
-            <div class="relative group inline-block ">
+            <div class="relative group inline-block nav-item">
                 <a class=" cursor-pointer">Global Hero Stats</a>
                 <div class="nav-dropdown absolute left-0 hidden group-hover:block z-50 pt-3  min-w-[200px]">
                     <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow">
@@ -25,10 +25,10 @@
                 </div>
             </div>
 
-            <a class="text-blue-600 hover:text-blue-800" href="/Global/Leaderboard">Leaderboards</a>
+            <a class="  nav-item" href="/Global/Leaderboard">Leaderboards</a>
 
-            <div class="relative group inline-block">
-                <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Tools</a>
+            <div class="relative group inline-block nav-item">
+                <a class=" cursor-pointer">Tools</a>
                 <div class="nav-dropdown absolute left-0 hidden  group-hover:block z-50 pt-3 min-w-[200px]">
                     <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow ">
                         <a href="/Global/Talents/Build" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Talent Builder</a>
@@ -44,11 +44,11 @@
                     </div>
                 </div>
             </div>
-            <a class="text-blue-600 hover:text-blue-800" href="/Esports">Community Esports</a>
+            <a class=" nav-item" href="/Esports">Community Esports</a>
 
 
-            <div class="relative group inline-block">
-                <a class="text-blue-600 hover:text-blue-800 cursor-pointer">Help</a>
+            <div class="relative group inline-block nav-item">
+                <a class=" cursor-pointer">Help</a>
                 <div class="nav-dropdown absolute left-0 hidden  group-hover:block z-50 pt-3 min-w-[200px]">
                     <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow ">
                         <a href="https://github.com/Heroes-Profile/heroesprofile/issues" target="_blank" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Submit an Issue</a>
@@ -57,7 +57,7 @@
                 </div>
             </div>
 
-            <div class="relative group inline-block">
+            <div class="relative group inline-block nav-item">
                 @if(isset($mainSearchAccount))
                     <a class="cursor-pointer">
                     {{ $mainSearchAccount['battletag'] }} ({{ $regions[$mainSearchAccount['region']] }})
@@ -81,7 +81,7 @@
 
 
             {{-- Distinct white or grey line show the seperation here  --}}
-            <div class="flex space-x-5">
+            <div class="flex space-x-5 bg-lighten p-3">
                 <custom-button :href="'https://api.heroesprofile.com/Api'" :targetblank="true" :text="'API'" :alt="'API'"  :size="'small'" :color="'teal'"></custom-button>
                 <custom-button :href="'https://api.heroesprofile.com/upload'" :targetblank="true" :text="'Replay Uploader'" :alt="'Replay Uploader'"  :size="'small'" :color="'blue'"></custom-button>
                 <custom-button :href="'https://www.patreon.com/heroesprofile'" :targetblank="true" :text="'Patreon'" :alt="'Patreon'"  :size="'small'" :color="'red'"></custom-button>
@@ -89,7 +89,7 @@
 
 
             @if($isAuthenticated)
-                <div class="relative group inline-block ">
+                <div class="relative group inline-block  ">
                         <div class="flex items-center cursor-pointer mr-5">
                             <img 
                             class="card-img-top relative hover:opacity-75 w-12 h-12 rounded-full" 
@@ -118,7 +118,7 @@
     @foreach($altSearchAccounts as $index => $account)
         @if($account)
             <div class="relative group inline-block  p-4 mx-4 text-sm ">
-                <a class="text-blue-600 hover:text-blue-800 cursor-pointer">{{ $account['battletag'] }} ({{ $regions[$account['region']] }})</a>
+                <a class=" cursor-pointer">{{ $account['battletag'] }} ({{ $regions[$account['region']] }})</a>
                 <div class="nav-dropdown absolute  hidden group-hover:block z-50 pt-3 absolute right-0 min-w-[200px]">
                     <div class="bg-blue  rounded-b-lg rounded-tl-lg text-sm drop-shadow">
                     <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" class="block px-4 py-2 border-b border-darken hover:bg-lighten ">Profile</a>

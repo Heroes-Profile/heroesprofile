@@ -31,6 +31,16 @@ body{
 .nav-dropdown a{
   text-wrap:nowrap;
 }
+.nav-item:not(:first-child)::before{
+ content: '|';
+ padding-right:20px;
+ height:100%;
+ font-size:1.5em;
+}
+.nav-item{
+  padding-top:10px; 
+  padding-bottom:10px;
+}
 
 
 
