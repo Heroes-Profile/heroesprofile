@@ -96,8 +96,8 @@
                             src="/images/heroes/auto_select.jpg" 
                             alt="Settings">
                         </div>
-                        <div class="absolute left-0 hidden group-hover:block z-50 pt-3  ">
-                            <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow">
+                        <div class="absolute right-0 hidden group-hover:block z-50 pt-3  ">
+                            <div class="bg-blue  rounded-b-lg rounded-tl-lg text-sm drop-shadow">
                                 <a href="/Profile/Settings" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Settings</a>
                                 <a href="/Battlenet/Logout" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Logout</a>
                             </div>
@@ -120,7 +120,7 @@
             <div class="relative group inline-block  p-4 mx-4 text-sm ">
                 <a class="text-blue-600 hover:text-blue-800 cursor-pointer">{{ $account['battletag'] }} ({{ $regions[$account['region']] }})</a>
                 <div class="nav-dropdown absolute  hidden group-hover:block z-50 pt-3 absolute right-0 min-w-[200px]">
-                    <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow">
+                    <div class="bg-blue  rounded-b-lg rounded-tl-lg text-sm drop-shadow">
                     <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" class="block px-4 py-2 border-b border-darken hover:bg-lighten ">Profile</a>
                     <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/FriendFoe" class="block px-4 py-2 border-b border-darken hover:bg-lighten ">Friends and Foes</a>
                     <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Hero" class="block px-4 py-2 border-b border-darken hover:bg-lighten ">Heroes</a>
