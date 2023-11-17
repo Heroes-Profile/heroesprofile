@@ -30,8 +30,10 @@ body{
 }
 .nav-dropdown a{
   text-wrap:nowrap;
+  display:flex;
+  white-space:nowrap;
 }
-.nav-item:not(:first-child)::before{
+.nav-item:not(:first-child):not(:last-child)::before{
  content: '|';
  padding-right:20px;
  height:100%;

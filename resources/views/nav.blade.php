@@ -1,10 +1,11 @@
-<nav class="bg-gray-dark text-white z-50 relative">
+<nav class="bg-gray-dark text-white z-50 relative px-4">
     <div class="flex items-center justify-between flex-wrap  text-sm">
+         
         <a class=" flex items-center font-logo text-2xl" href="/">
             Heroes
             <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
             Profile
-        </a>
+        </a><div class="flex items-center justify-between flex-wrap  text-sm ml-auto">
         <div class="flex items-center space-x-5 justify-end flex-wrap md:flex-nowrap">
             
             <div class="relative group inline-block nav-item">
@@ -78,10 +79,10 @@
                     </div>
                 @endif
             </div>
-
+        </div>
 
             {{-- Distinct white or grey line show the seperation here  --}}
-            <div class="flex space-x-5 bg-lighten p-3">
+            <div class="flex space-x-5 bg-lighten p-3 mx-2">
                 <custom-button :href="'https://api.heroesprofile.com/Api'" :targetblank="true" :text="'API'" :alt="'API'"  :size="'small'" :color="'teal'"></custom-button>
                 <custom-button :href="'https://api.heroesprofile.com/upload'" :targetblank="true" :text="'Replay Uploader'" :alt="'Replay Uploader'"  :size="'small'" :color="'blue'"></custom-button>
                 <custom-button :href="'https://www.patreon.com/heroesprofile'" :targetblank="true" :text="'Patreon'" :alt="'Patreon'"  :size="'small'" :color="'red'"></custom-button>
