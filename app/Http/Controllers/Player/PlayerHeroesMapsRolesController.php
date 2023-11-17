@@ -669,7 +669,7 @@ class PlayerHeroesMapsRolesController extends Controller
 
         if ($minimum_games && $minimum_games > 0) {
             $filteredData = array_filter($returnData, function ($item) {
-                return $item['games_played'] > 200;
+                return $item['games_played'] > $minimum_games;
             });
 
             $returnData = array_values($filteredData);
