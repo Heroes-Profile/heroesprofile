@@ -25,7 +25,8 @@ For windows users, Wampserver64 is a useful tool as it installs the MySql server
 
 ## Database setup (TBD)
 
--   Create the following schemas in your MySql database. `heroesprofile`, `heroesprofile_cache`, heroesprofile_hi, heroesprofile_hi_nc, heroesprofile_mcl, heroesprofile_ml, heroesprofile_ngs, heroesprofile_nutcup
+-   Create the following schemas in your MySql database. `heroesprofile`, `heroesprofile_cache`, `heroesprofile_hi`, `heroesprofile_hi_nc`, `heroesprofile_mcl`, `heroesprofile_ml`, `heroesprofile_ngs`, `heroesprofile_nutcup`
+-   Table structure and table data will be provided on an as-needed basis.  If you are wanting to make a change and need to know this information, please log a ticket or contact us directly explaining what you are doing and what data you need.
 
 ## Project Setup
 
