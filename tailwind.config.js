@@ -17,8 +17,11 @@ module.exports = {
       'teal' : '#008b8b',
       
       'lteal' : '#00d5d5',
-      'yellow' : '#ffc93e',
+      /*'yellow' : '#ffc93e',*/
       'lyellow' : '#ffd465',
+      /*'yellow' : '#118e6d',*/
+      'yellow' : '#d98c40',
+
       'red' : '#b33616',
       'hred' : 'rgba(214, 142, 124, 0.5)',
       'lred' : '#e44a23',
