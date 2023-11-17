@@ -45,7 +45,7 @@ s<template>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in partydata.solo" :key="(row.ally_combo + '|' + row.enemy_combo)">
+            <tr v-if="partydata.solo" v-for="row in partydata.solo" :key="(row.ally_combo + '|' + row.enemy_combo)">
               <td class="py-2 px-3 ">
                 {{ row.stack_size_name }}
 
@@ -76,13 +76,12 @@ s<template>
                   <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div>
                 </span>
               </td>
-
-
-
-
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
               <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
+            </tr>
+            <tr v-else>
+              <td colspan="4" class="text-center">No Data</td>
             </tr>
           </tbody>
         </table>  
@@ -109,11 +108,14 @@ s<template>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in partydata.double" :key="(row.ally_combo + '|' + row.enemy_combo)">
+            <tr v-if="partydata.double" v-for="row in partydata.double" :key="(row.ally_combo + '|' + row.enemy_combo)">
               <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
               <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
+            </tr>
+            <tr v-else>
+              <td colspan="4" class="text-center">No Data</td>
             </tr>
           </tbody>
         </table>  
@@ -140,11 +142,14 @@ s<template>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in partydata.double_double" :key="(row.ally_combo + '|' + row.enemy_combo)">
+            <tr v-if="partydata.double_double" v-for="row in partydata.double_double" :key="(row.ally_combo + '|' + row.enemy_combo)">
               <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
               <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
+            </tr>
+            <tr v-else>
+              <td colspan="4" class="text-center">No Data</td>
             </tr>
           </tbody>
         </table>  
@@ -171,11 +176,14 @@ s<template>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in partydata.triple" :key="(row.ally_combo + '|' + row.enemy_combo)">
+            <tr v-if="partydata.triple" v-for="row in partydata.triple" :key="(row.ally_combo + '|' + row.enemy_combo)">
               <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
               <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
+            </tr>
+            <tr v-else>
+              <td colspan="4" class="text-center">No Data</td>
             </tr>
           </tbody>
         </table>  
@@ -202,11 +210,14 @@ s<template>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in partydata.triple_double" :key="(row.ally_combo + '|' + row.enemy_combo)">
+            <tr v-if="partydata.triple_double" v-for="row in partydata.triple_double" :key="(row.ally_combo + '|' + row.enemy_combo)">
               <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
               <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
+            </tr>
+            <tr v-else>
+              <td colspan="4" class="text-center">No Data</td>
             </tr>
           </tbody>
         </table>  
@@ -233,11 +244,14 @@ s<template>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in partydata.quadruple" :key="(row.ally_combo + '|' + row.enemy_combo)">
+            <tr v-if="partydata.quadruple" v-for="row in partydata.quadruple" :key="(row.ally_combo + '|' + row.enemy_combo)">
               <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
               <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
+            </tr>
+            <tr v-else>
+              <td colspan="4" class="text-center">No Data</td>
             </tr>
           </tbody>
         </table>  
@@ -265,11 +279,14 @@ s<template>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="row in partydata.quintuple" :key="(row.ally_combo + '|' + row.enemy_combo)">
+            <tr v-if="partydata.quintuple" v-for="row in partydata.quintuple" :key="(row.ally_combo + '|' + row.enemy_combo)">
               <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
               <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
+            </tr>
+            <tr v-else>
+              <td colspan="4" class="text-center">No Data</td>
             </tr>
           </tbody>
         </table>  
@@ -388,10 +405,57 @@ export default {
       this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : null;
       this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : null;
       this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
-      this.heropartysize = filteredData.single["Hero Party Size"] ? filteredData.single["Hero Party Size"] : null;
+      
+      //this.heropartysize = filteredData.single["Hero Party Size"] ? filteredData.single["Hero Party Size"] : null;
+      
       this.teamoneparty = filteredData.single["Team One Party"] ? filteredData.single["Team One Party"] : null;
       this.teamtwoparty = filteredData.single["Team Two Party"] ? filteredData.single["Team Two Party"] : null;
       
+
+      let queryString = `?timeframe_type=${this.timeframetype}`;
+      queryString += `&timeframe=${this.timeframe}`;
+      queryString += `&game_type=${this.gametype}`;
+
+      if(this.region){
+        queryString += `&region=${this.region}`;
+      }
+
+      if(this.herolevel){
+        queryString += `&hero_level=${this.herolevel}`;
+      }
+
+      if(this.gamemap){
+        queryString += `&game_map=${this.gamemap}`;
+      }
+
+      if(this.hero){
+        queryString += `&hero=${this.hero}`;
+      }
+
+      if(this.playerrank){
+        queryString += `&league_tier=${this.playerrank}`;
+      }
+
+      if(this.herorank){
+        queryString += `&hero_league_tier=${this.herorank}`;
+      }
+
+      if(this.rolerank){
+        queryString += `&role_league_tier=${this.rolerank}`;
+      }
+
+      if(this.teamoneparty){
+        queryString += `&teamoneparty=${this.teamoneparty}`;
+      }
+
+      if(this.teamtwoparty){
+        queryString += `&teamtwoparty=${this.teamtwoparty}`;
+      }
+
+      const currentUrl = window.location.href;
+      let currentPath = window.location.pathname;
+      history.pushState(null, null, `${currentPath}${queryString}`);
+
       this.partydata = null;
       this.getData();
     },

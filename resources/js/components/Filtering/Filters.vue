@@ -44,6 +44,38 @@
         @input-changed="handleInputChange"
         ></multi-select-filter>
 
+        <!-- Current Game Type Multiselect-->
+        <multi-select-filter v-if="modifiedincludegametype" 
+        :values="filters.game_types" 
+        :text="'Game Type'" 
+        @input-changed="handleInputChange" 
+        :defaultValue="defaultGameType"
+        ></multi-select-filter>
+
+        <!-- All Game Types Multiselect -->
+        <multi-select-filter v-if="includegametypefull" 
+        :values="filters.game_types_full" 
+        :text="'Game Type'" 
+        @input-changed="handleInputChange" 
+        :defaultValue="defaultGameType"
+        ></multi-select-filter>
+
+        <!-- Current Game Type Single -->
+        <single-select-filter v-if="includesinglegametype" 
+        :values="filters.game_types" 
+        :text="'Game Type'" 
+        @input-changed="handleInputChange" 
+        :defaultValue="defaultGameType[0]"
+        ></single-select-filter>
+
+        <!-- All Game Type Single -->
+        <single-select-filter v-if="includesinglegametypefull" 
+        :values="filters.game_types_full" 
+        :text="'Game Type'" 
+        @input-changed="handleInputChange" 
+        :defaultValue="defaultGameType[0]"
+        ></single-select-filter>
+        
         <!-- Regions Multiselect-->
         <multi-select-filter v-if="includeregion" 
         :values="filters.regions" 
@@ -88,38 +120,6 @@
         :text="'Role'" 
         :defaultValue="defaultRole"
         @input-changed="handleInputChange"
-        ></single-select-filter>
-
-        <!-- Current Game Type Multiselect-->
-        <multi-select-filter v-if="modifiedincludegametype" 
-        :values="filters.game_types" 
-        :text="'Game Type'" 
-        @input-changed="handleInputChange" 
-        :defaultValue="defaultGameType"
-        ></multi-select-filter>
-
-        <!-- All Game Types Multiselect -->
-        <multi-select-filter v-if="includegametypefull" 
-        :values="filters.game_types_full" 
-        :text="'Game Type'" 
-        @input-changed="handleInputChange" 
-        :defaultValue="defaultGameType"
-        ></multi-select-filter>
-
-        <!-- Current Game Type Single -->
-        <single-select-filter v-if="includesinglegametype" 
-        :values="filters.game_types" 
-        :text="'Game Type'" 
-        @input-changed="handleInputChange" 
-        :defaultValue="defaultGameType[0]"
-        ></single-select-filter>
-
-        <!-- All Game Type Single -->
-        <single-select-filter v-if="includesinglegametypefull" 
-        :values="filters.game_types_full" 
-        :text="'Game Type'" 
-        @input-changed="handleInputChange" 
-        :defaultValue="defaultGameType[0]"
         ></single-select-filter>
 
         <!-- Season -->

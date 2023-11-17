@@ -247,8 +247,24 @@
         this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
         this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : null;
 
-        this.talentdetaildata = null;
 
+        let queryString = `?timeframe_type=${this.timeframetype}`;
+        queryString += `&timeframe=${this.timeframe}`;
+        queryString += `&game_type=${this.gametype}`;
+      
+        if(this.gamemap){
+          queryString += `&game_map=${this.gamemap}`;
+        }
+
+        if(this.playerrank){
+          queryString += `&league_tier=${this.playerrank}`;
+        }
+
+        const currentUrl = window.location.href;
+        let currentPath = window.location.pathname;
+        history.pushState(null, null, `${currentPath}${queryString}`);
+
+        this.talentdetaildata = null;
         this.getData();
       },
 
