@@ -1,8 +1,8 @@
 <template>
 
   <div class="loading-container z-40">
-    <img v-if="overrideimage" :src="overrideimage" alt="loading" />
-    <img v-else src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
+    <img v-if="overrideimage" loading="eager" :src="overrideimage" alt="loading" />
+    <img v-else loading="eager" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
     <div class="loading-text">
       <div v-if="textoverride">
         <slot></slot>
