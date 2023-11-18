@@ -228,7 +228,7 @@
           </div>
         </div>
       </div>
-      <button :disabled="disabledFilter" @click="applyFilter"  :class="{'bg-teal rounded text-white ml-10 p-4': !disabledFilter, 'bg-gray-400 text-gray-700': disabledFilter}">
+      <button :disabled="disabledFilter" @click="applyFilter"  :class="{'bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal': !disabledFilter, 'bg-gray-400 text-gray-700': disabledFilter}">
         Filter
       </button>
 
