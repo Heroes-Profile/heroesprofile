@@ -17,36 +17,36 @@
     </div>
 
 
-    <div class="flex   p-20 bg-lighten flex-wrap justify-center">
-      <a href="/Compare" class="text-center md:w-[30%] mb-20 mx-5">
+    <div class="flex   p-20 bg-lighten flex-wrap justify-center items-between">
+      <a href="/Compare" class="text-center md:w-[30%] mb-20 mx-5 flex flex-col justify-stretch">
 
         <i class="fas fa-users" style="font-size: 100px;"></i>
 
-        <h3 class="text-2xl mb-10 ">Player comparison</h3>
+        <h3 class="text-2xl mb-10 mt-2">Player comparison</h3>
         <p>See how you compare to other players or to a certain league tier. You can compare up to four players at one time.</p>
         
-        <custom-button :href="'/Compare'" :text="'Compare'" :alt="'Compare players'" :size="'big'" class="mt-10"></custom-button>
+        <custom-button  :href="'/Compare'" :text="'Compare'" :alt="'Compare players'" :size="'big'" class="mt-auto"></custom-button>
       </a>
 
 
-      <div class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
+        <div class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
 
-        <i class="fa-solid fa-globe" style="font-size: 100px;"></i>
+            <i class="fa-solid fa-globe" style="font-size: 100px;"></i>
 
-        <h3 class="text-2xl mb-10">Global Stats</h3>
-        <p>Variety of global stats for heroes including, overall stats, builds, compositions, draft, matchups, and more.</p>
-        
-        <div class="flex gap-2 justify-around mt-auto">
-          <custom-button :href="'/Global/Hero'" :text="'Hero Stats'" :alt="'Hero Stats'" :size="'big'" class="mt-10" ></custom-button>
-          <custom-button :href="'/Global/Talents'" :text="'Talent Stats'" :alt="'Hero Stats'" :size="'big'"  class="mt-10" ></custom-button>
-      </div>
-      </div>
+            <h3 class="text-2xl mb-10 mt-2">Global Stats</h3>
+            <p>Variety of global stats for heroes including, overall stats, builds, compositions, draft, matchups, and more.</p>
+            <div class="flex mt-auto gap-10">
+              <custom-button  :href="'/Global/Hero'" :text="'Hero Stats'" :alt="'Hero Stats'" :size="'big'" class="mt-auto flex-1" ></custom-button>
+              <custom-button :href="'/Global/Talents'" :text="'Talent Stats'" :alt="'Hero Stats'" :size="'big'"  class="mt-auto flex-1" ></custom-button>
+            </div>
+        </div>
+      
 
       <a href="/Global/Leaderboard" class="text-center md:w-[30%] mb-20 mx-5">
 
         <i class="fas fa-list-ol" style="font-size: 100px;"></i>
 
-        <h3 class="text-2xl mb-10">Variety of Leaderboards</h3>
+        <h3 class="text-2xl mb-10 mt-2">Variety of Leaderboards</h3>
         <p>View leaderboards based on Player, Hero, or Role using Heroes Profile Rating. Get talent builds, and navigate directly to player's profiles.</p>
         
         <custom-button :href="'/Global/Leaderboard'" :text="'View Leaderboards'" :alt="'View Leaderboards'" :size="'big'" class="mt-10" ></custom-button>
@@ -57,8 +57,8 @@
 
         <i class="fa-solid fa-database" style="font-size: 100px;"></i>
 
-        <h3 class="text-2xl mb-10">Heroes Profile API</h3>
-        <p>Heroes Profile API is a tool used to get Heroes of the Storm data parsed for HeroesProfile.com. </p>
+        <h3 class="text-2xl mb-10 mt-2">Heroes Profile API</h3>
+        <p class="mb-10">Heroes Profile API is a tool used to get Heroes of the Storm data parsed for HeroesProfile.com. </p>
       
         <custom-button  :href="'https://api.heroesprofile.com/Api'" :targetblank="true" :text="'API'" :alt="'API'"  :size="'big'" class="mt-auto"  :color="'teal'"></custom-button>
       </a>
@@ -67,7 +67,7 @@
 
         <i class="fas fa-address-card" style="font-size: 100px;"></i>
 
-        <h3 class="text-2xl mb-10">Player profile</h3>
+        <h3 class="text-2xl mb-10 mt-2">Player profile</h3>
         <p>See all player stats in one place.  See data for individual maps or heroes played, match history and comparisons all from within a streamlined profile.</p>
         <div class="flex mt-auto justify-center">
           <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'"></search-component>

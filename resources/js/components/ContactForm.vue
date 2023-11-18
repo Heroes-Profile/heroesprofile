@@ -15,6 +15,10 @@
 
         <button type="submit" class="transition-colors text-white rounded text-center bg-blue hover:bg-lblue py-2 px-4 w-auto ml-auto mr-2 my-2">Submit</button>
       </form>
+      <div class="mx-auto max-w-[1500px] bg-teal p-4 text-center">
+        <p>Email Sent Successfully!</p>
+      </div>
+
     </div>
 
   </div>
