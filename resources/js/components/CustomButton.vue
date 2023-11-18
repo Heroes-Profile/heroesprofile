@@ -48,7 +48,7 @@
     },
     data(){
       return {
-        staticClasses: 'transition-colors text-white rounded',
+        staticClasses: 'transition-colors text-white rounded text-center',
 
       }
     },
