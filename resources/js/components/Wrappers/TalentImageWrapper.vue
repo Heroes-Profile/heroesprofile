@@ -1,6 +1,6 @@
 <template>
     
-    <round-image v-if="talent" :size="size" :image="getTalentImage()">
+    <round-image v-if="talent" :size="size" popupsize="large" :image="getTalentImage()">
       <h2>{{ talent.title }}</h2>
       <p>{{ this.removeNumbers(talent.hotkey) }}</p>
       <p>{{ talent.description }}</p>
