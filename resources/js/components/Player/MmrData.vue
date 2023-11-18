@@ -34,7 +34,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(row, index) in leaguedata" :key="index" :class="{ 'bg-yellow-200':  checkIfTierFound(row.min_mmr, row.max_mmr, row.tierFound) }">            
+          <tr  v-for="(row, index) in leaguedata" :key="index" :class="{ 'bg-yellow':  checkIfTierFound(row.min_mmr, row.max_mmr, row.tierFound) }">            
             <td>
               {{ printLeagueName(row.tier, row.league_tier) }}
             </td>
