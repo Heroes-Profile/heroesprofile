@@ -118,10 +118,10 @@
         </div>
     </div>
 </nav>
-<nav class="flex justify-end">
+<nav class="flex justify-end mr-8">
     @foreach($altSearchAccounts as $index => $account)
         @if($account)
-            <div class="relative group inline-block  p-4 mx-4 text-sm ">
+            <div class="relative group inline-block  p-4 mx-4 text-sm  ">
                 <a class=" cursor-pointer">{{ $account['battletag'] }} ({{ $regions[$account['region']] }})</a>
                 <div class="nav-dropdown absolute  hidden group-hover:block z-50 pt-3 absolute right-0 min-w-[200px]">
                     <div class="bg-blue  rounded-b-lg rounded-tl-lg text-sm drop-shadow">
