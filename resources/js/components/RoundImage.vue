@@ -16,7 +16,7 @@
       }
       ]"
      @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
-    <img :class="[
+    <img loading="eager" :class="[
       'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow   w-full min-h-10 min-w-10',  
       { 
         
