@@ -34,11 +34,13 @@
       :src="image" 
       :alt="title" >
     <div v-if=" showTooltip" :class="[
-      'absolute hidden group-hover:block left-1/2   transform -translate-x-1/2 text-xs bottom-[1em] -translate-y-[2em]  w-[12em] z-30',
+      'absolute hidden group-hover:block left-1/2   transform -translate-x-1/2 text-xs bottom-[1em] -translate-y-[2em]  z-30',
     {
       'bottom-[4.5em] -translate-y-[2em]': size === 'big',
       'text-xs' : size === 'big',
-      'bottom-[6em] -translate-y-[3em]' : size == 'xl'
+      'bottom-[6em] -translate-y-[3em]' : size == 'xl',
+      'w-[12em]' : popupsize != 'large',
+      'w-[20em]' : popupsize == 'large'
     }
 
     ]" >
@@ -65,6 +67,7 @@ export default {
     size: String,
     rectangle: Boolean,
     excludehover: Boolean,
+    popupsize: String
   },
   data(){
     return {
