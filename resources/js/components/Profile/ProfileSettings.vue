@@ -1,26 +1,29 @@
 <template>
-  <div>
+  <div class=" mx-auto max-w-[700px]  bg-lighten rounded-lg mt-[10vh]">
     <!-- Other content -->
 
-    <h1>Profile Site Settings</h1>
-    <div class="flex">
+    <h1 class="mb-4 bg-teal p-4 rounded-t-lg">Site Settings</h1>
+    <div class="flex items-center flex-wrap justify-start p-4">
 
       <!-- Removing for now as I am not sure if this functionality is all that useful
      <div>
         Profile Hero/Favorite Hero: <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange" :defaultValue="defaultHero"></single-select-filter>
       </div>
     -->
-      <div>
-        Default Game Type: <multi-select-filter :values="this.filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="defaultGameType"></multi-select-filter>
+      <div class="flex flex-wrap justify-center">
+        <div class="border-r-[1px] px-4  border-white">
+          <h3>Default Game Type:</h3> <multi-select-filter :values="this.filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="defaultGameType"></multi-select-filter>
+        </div>
+
+
+        <div class="px-4">
+          <h3>Show Advanced Filtering options:</h3> <single-select-filter :values="advancedfilteringoptions" :text="'Advanced Filtering'" @input-changed="handleInputChange" :defaultValue="defaultAdvancedFiltering"></single-select-filter>
+        </div>
       </div>
 
 
-      <div>
-        Show Advanced Filtering options: <single-select-filter :values="advancedfilteringoptions" :text="'Advanced Filtering'" @input-changed="handleInputChange" :defaultValue="defaultAdvancedFiltering"></single-select-filter>
-      </div>
 
-
-      <custom-button :ignoreclick="true" :text="'Save settings'" @click="saveSettings()"></custom-button>
+     
 
 
     </div>
@@ -30,11 +33,11 @@
 
 
 
-    <h1>Profile Settings</h1>
+    <h1 class="mb-4 bg-teal p-4 ">Profile Settings</h1>
 
-    <div class="flex">
-      <div>
-        Swap account between private and not private 
+    <div class="flex items-stretch gap-10 p-4">
+      <div class="max-w-[50%] border-r-[1px] px-4 border-white">
+        <h3 class="mb-auto">Swap account between private and not private </h3>
         <single-select-filter 
           :values="privateOptions" 
           :text="'Account Visibility'" 
@@ -45,11 +48,12 @@
           >
         </single-select-filter>
       </div>
+      <div>
+      <h3 class="mb-auto">Link Patreon: <span class="bg-teal px-2"  v-if="this.user.patreon_account">Connected</span></h3>
+      <custom-button class="ml-auto mt-4" v-if="!this.user.patreon_account" :href="'/authenticate/patreon'" :text="'Login with Patreon'" :alt="'Login with Patreon'"  :size="'medium'" :color="'blue'"></custom-button>
 
-
-      <custom-button  v-if="!this.user.patreon_account" :href="'/authenticate/patreon'" :text="'Login with Patreon'" :alt="'Login with Patreon'"  :size="'medium'" :color="'blue'"></custom-button>
-      <custom-button  v-if="this.user.patreon_account" :ignoreclick="true" :text="'Remove Patreon'" :alt="'Remove Patreon'"  :size="'medium'" :color="'blue'" @click="removePatreon()"></custom-button>
-
+      <custom-button class="ml-auto text-sm mt-4"  v-if="this.user.patreon_account" :ignoreclick="true" :text="'Remove Patreon'" :alt="'Remove Patreon'"  :size="'medium'" :color="'red'" @click="removePatreon()"></custom-button>
+    </div>
     </div>
 
 
