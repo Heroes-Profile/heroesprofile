@@ -35,12 +35,15 @@
         </filters>
 
         
-        <div  v-if="talentdetaildata" class="mx-auto px-4">
-          <span><custom-button @click="scrollToBuilds" :text="'Scroll To Builds'" :alt="'Scroll To Builds'" size="small" :ignoreclick="true"></custom-button></span>
-          <span class="flex gap-4 mb-2"> 
-            {{ this.selectedHero.name }} {{ "Talent Stats"}} <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
-          </span>
-          <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
+        <div  v-if="talentdetaildata" class="mx-auto  px-4">
+          <div class="flex justify-between max-w-[1500px] mx-auto">
+            
+            <span class="flex gap-4 mb-2"> 
+              {{ this.selectedHero.name }} {{ "Talent Stats"}} <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
+            </span>
+            <span><custom-button @click="scrollToBuilds" :text="'Scroll To Builds'" :alt="'Scroll To Builds'" size="small" :ignoreclick="true"></custom-button></span>
+          </div>
+          <global-talent-details-section class="mx-auto" :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
         </div>
 
         <div v-else-if="isTalentsLoading">
