@@ -1,8 +1,8 @@
 <template>
 
-  <div class="modal-mask">
-      <div class="modal-wrapper">
-        <div class="modal-container">
+  <div class="modal-mask ">
+      <div class="modal-wrapper ">
+        <div class="modal-container bg-blue rounded-lg p-10 w-[30vw]">
 
           <div class="modal-header">
             <slot name="header">
@@ -14,16 +14,18 @@
           <div class="modal-body">
             <slot name="body">
 
-      *Automatically uploads replays
-      *Pre-match Game Analysis
-      *Post-match Game Analysis
-              <img src="/images/miscellaneous\windowsUploader.PNG" style="width: 500px" />
+      <ul class="list-disc mx-auto ml-4">
+        <li>Automatically uploads replays</li>
+        <li>Pre-match Game Analysis</li>
+        <li>Post-match Game Analysis</li>
+      </ul>
+              <img  class="text-center mx-auto mt-4" src="/images/miscellaneous\windowsUploader.PNG" style="width: 500px" />
             </slot>
           </div>
 
-          <div class="modal-footer">
+          <div class="modal-footer flex">
             <slot name="footer">
-              <button @click="closePopup">Close</button>
+              <button class="bg-teal p-2 rounded-lg ml-auto" @click="closePopup">Close</button>
 
             </slot>
           </div>
@@ -79,19 +81,18 @@ export default {
 }
 
 .modal-container {
-  width: 1000px;
+  
   margin: 0px auto;
-  padding: 20px 30px;
-  background-color: #213d7a;
-  border-radius: 2px;
+  
+  
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
-  font-family: Helvetica, Arial, sans-serif;
+  
 }
 
 .modal-header h3 {
   margin-top: 0;
-  color: #42b983;
+  
 }
 
 .modal-body {
