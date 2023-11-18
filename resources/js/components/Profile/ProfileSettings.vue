@@ -20,7 +20,7 @@
           <h3>Show Advanced Filtering options:</h3> <single-select-filter :values="advancedfilteringoptions" :text="'Advanced Filtering'" @input-changed="handleInputChange" :defaultValue="defaultAdvancedFiltering"></single-select-filter>
         </div>
       </div>
-      
+
 
 
      
@@ -49,10 +49,10 @@
         </single-select-filter>
       </div>
       <div>
-      <h3 class="mb-auto">Link Patreon: <span class="bg-teal px-2"  v-if="!this.user.patreon_account">Connected</span></h3>
-      <custom-button class="ml-auto mt-4" v-if="this.user.patreon_account" :href="'/authenticate/patreon'" :text="'Login with Patreon'" :alt="'Login with Patreon'"  :size="'medium'" :color="'blue'"></custom-button>
+      <h3 class="mb-auto">Link Patreon: <span class="bg-teal px-2"  v-if="this.user.patreon_account">Connected</span></h3>
+      <custom-button class="ml-auto mt-4" v-if="!this.user.patreon_account" :href="'/authenticate/patreon'" :text="'Login with Patreon'" :alt="'Login with Patreon'"  :size="'medium'" :color="'blue'"></custom-button>
 
-      <custom-button class="ml-auto text-sm mt-4"  v-if="!this.user.patreon_account" :ignoreclick="true" :text="'Remove Patreon'" :alt="'Remove Patreon'"  :size="'medium'" :color="'red'" @click="removePatreon()"></custom-button>
+      <custom-button class="ml-auto text-sm mt-4"  v-if="this.user.patreon_account" :ignoreclick="true" :text="'Remove Patreon'" :alt="'Remove Patreon'"  :size="'medium'" :color="'red'" @click="removePatreon()"></custom-button>
     </div>
     </div>
 
