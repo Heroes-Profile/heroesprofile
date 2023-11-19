@@ -227,7 +227,7 @@ h1{
 
 }
 .quadruple{
-  @apply text-gray-light;
+  @apply text-yellow;
 }
 
 .compare-selection-box:nth-child(1n) .compare-selection-title{
