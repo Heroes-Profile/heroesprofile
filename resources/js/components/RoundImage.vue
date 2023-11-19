@@ -34,22 +34,22 @@
       :src="image" 
       :alt="title" >
     <div v-if=" showTooltip" :class="[
-      'absolute hidden group-hover:block left-1/2   transform -translate-x-1/2 text-xs bottom-[1em] -translate-y-[2em]  z-30',
-    {
-      'bottom-[4.5em] -translate-y-[2em]': size === 'big',
-      'text-xs' : size === 'big',
-      'bottom-[6em] -translate-y-[3em]' : size == 'xl',
-      'w-[12em]' : popupsize != 'large',
-      'w-[20em]' : popupsize == 'large'
-    }
+        'absolute hidden group-hover:block left-1/2   transform -translate-x-1/2 text-xs bottom-[1em] -translate-y-[2em]  z-30',
+      {
+        'bottom-[4.5em] -translate-y-[2em]': size === 'big',
+        'text-xs' : size === 'big',
+        'bottom-[6em] -translate-y-[3em]' : size == 'xl',
+        'w-[12em]' : popupsize != 'large',
+        'w-[20em]' : popupsize == 'large'
+      }
 
-    ]" >
-      <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 ', {}]">
-        <slot></slot>
-      </div>
+      ]" >
+        <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 ', {}]">
+          <slot></slot>
+        </div>
 
 
-    <div class="popup-arrow"></div>
+      <div class="popup-arrow"></div>
     </div>
 
    
