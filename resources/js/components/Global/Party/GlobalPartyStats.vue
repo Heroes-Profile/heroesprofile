@@ -24,57 +24,76 @@ s<template>
     </filters>
     
     <div v-if="partydata" class="max-w-[1500px] mx-auto">
+      <div class="flex">
+        <div class="w-auto inline-block m-1 ml-auto">
+          <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Legend</h2>
+          <div class=" bg-gray-light rounded-b p-5 gap-5 justify-center">
+            <span class="text-black block">Group of 1 <i class="fas fa-user solo"></i></span>
+            <span class="text-black block">Group of 2 <i class="fas fa-user double"></i><i class="fas fa-user double"></i></span>
+            <span class="text-black block">Group of 3 <i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></span>
+            <span class="text-black block">Group of 4 <i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></span>
+            <span class="text-black block">Group of 5 <i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></span>
+          </div>
+        </div>
+      </div>
+
 
       <div class=" mx-auto mb-10" id="5 Solo players">
-        <h3 class="stack-header">5 Solo Players vs. <div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div></h3>
+        <h3 class="stack-header">5 Solo Players<div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> vs. </h3>
         <table class="">
           <thead>
             <tr>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Stack
               </th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Win Rate %
               </th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Wins
               </th>                
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Losses
               </th>                                 
             </tr>
           </thead>
           <tbody>
             <tr v-if="partydata.solo" v-for="row in partydata.solo" :key="(row.ally_combo + '|' + row.enemy_combo)">
-              <td class="py-2 px-3  ">
-                {{ row.stack_size_name }}
+              <td class="py-2 px-3 w-[35%]">
+                <div class="flex flex-wrap py">
+                  <div>
+                    {{ row.stack_size_name }}
+                  </div>
+                  <div class="mx-10">
+                    <span class="flex" v-if="row.stack_size_name == '5 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+                    <span class="flex" v-if="row.stack_size_name == '1 Double, 3 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
 
-                <span class="flex" v-if="row.stack_size_name == '5 Solo'">
-                  <div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                </span>
-                <span class="flex" v-if="row.stack_size_name == '1 Double, 3 Solo'">
-                  <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                </span>
+                    <span class="flex" v-if="row.stack_size_name == '2 Double, 1 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
 
-                <span class="flex" v-if="row.stack_size_name == '2 Double, 1 Solo'">
-                  <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                </span>
+                    <span class="flex" v-if="row.stack_size_name == '1 Triple, 2 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
 
-                <span class="flex" v-if="row.stack_size_name == '1 Triple, 2 Solo'">
-                  <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                </span>
+                    <span class="flex" v-if="row.stack_size_name == '1 Triple, 1 Double'">
+                      <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div>
+                    </span>
 
-                <span class="flex" v-if="row.stack_size_name == '1 Triple, 1 Double'">
-                  <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div>
-                </span>
+                    <span class="flex" v-if="row.stack_size_name == '1 Quad, 1 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
 
-                <span class="flex" v-if="row.stack_size_name == '1 Quad, 1 Solo'">
-                  <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
-                </span>
+                    <span class="flex" v-if="row.stack_size_name == '1 team of 5'">
+                      <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div>
+                    </span>
+                  </div>
 
-                <span class="flex" v-if="row.stack_size_name == '1 team of 5'">
-                  <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div>
-                </span>
+                </div>
               </td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
@@ -89,28 +108,62 @@ s<template>
 
 
       <div class="container mx-auto mb-10" id="1 Double Stack">
-       <h2 class="stack-header">1 Double Stack vs.<div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div></h2>
+       <h3 class="stack-header">1 Double Stack <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> vs. </h3>
         <table class="">
           <thead>
             <tr>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Stack
               </th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Win Rate %
               </th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Wins
               </th>                
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Losses
               </th>                                 
             </tr>
           </thead>
           <tbody>
             <tr v-if="partydata.double" v-for="row in partydata.double" :key="(row.ally_combo + '|' + row.enemy_combo)">
-              <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 w-[35%]">
+                <div class="flex flex-wrap py">
+                  <div>
+                    {{ row.stack_size_name }}
+                  </div>
+                  <div class="mx-10">
+                    <span class="flex" v-if="row.stack_size_name == '5 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+                    <span class="flex" v-if="row.stack_size_name == '1 Double, 3 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '2 Double, 1 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 Triple, 2 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 Triple, 1 Double'">
+                      <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 Quad, 1 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 team of 5'">
+                      <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div>
+                    </span>
+                  </div>
+
+                </div>
+              </td>              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
               <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
             </tr>
@@ -123,28 +176,62 @@ s<template>
 
 
       <div class="container mx-auto mb-10" id="2 Double Stack">
-        <h2 class="stack-header">2 Double Stack vs.<div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> </h2>
+        <h3 class="stack-header">2 Double Stack vs.<div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div> vs. </h3>
         <table class="">
           <thead>
             <tr>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Stack
               </th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Win Rate %
               </th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Wins
               </th>                
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Losses
               </th>                                 
             </tr>
           </thead>
           <tbody>
             <tr v-if="partydata.double_double" v-for="row in partydata.double_double" :key="(row.ally_combo + '|' + row.enemy_combo)">
-              <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 w-[35%]">
+                <div class="flex flex-wrap py">
+                  <div>
+                    {{ row.stack_size_name }}
+                  </div>
+                  <div class="mx-10">
+                    <span class="flex" v-if="row.stack_size_name == '5 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+                    <span class="flex" v-if="row.stack_size_name == '1 Double, 3 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '2 Double, 1 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 Triple, 2 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 Triple, 1 Double'">
+                      <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 Quad, 1 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 team of 5'">
+                      <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div>
+                    </span>
+                  </div>
+
+                </div>
+              </td>              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
               <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
             </tr>
@@ -157,28 +244,62 @@ s<template>
 
 
       <div class="container mx-auto mb-10" id="1 Tripe 2 Solo">
-        <h2 class="stack-header">1 Triple Stack and 2 Solos vs.<div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div></h2>
+        <h3 class="stack-header">1 Triple Stack and 2 Solos vs.<div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>vs.</h3>
         <table class="">
           <thead>
             <tr>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Stack
               </th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Win Rate %
               </th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Wins
               </th>                
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Losses
               </th>                                 
             </tr>
           </thead>
           <tbody>
             <tr v-if="partydata.triple" v-for="row in partydata.triple" :key="(row.ally_combo + '|' + row.enemy_combo)">
-              <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 w-[35%]">
+                <div class="flex flex-wrap py">
+                  <div>
+                    {{ row.stack_size_name }}
+                  </div>
+                  <div class="mx-10">
+                    <span class="flex" v-if="row.stack_size_name == '5 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+                    <span class="flex" v-if="row.stack_size_name == '1 Double, 3 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '2 Double, 1 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 Triple, 2 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 Triple, 1 Double'">
+                      <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 Quad, 1 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 team of 5'">
+                      <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div>
+                    </span>
+                  </div>
+
+                </div>
+              </td>              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
               <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
             </tr>
@@ -191,28 +312,62 @@ s<template>
 
 
       <div class="container mx-auto mb-10" id="1 Tripe 1 Double">
-        <h2 class="stack-header">1 Triple Stack and 1 Double Stack vs.<div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div></h2>
+        <h3 class="stack-header">1 Triple Stack and 1 Double Stack vs.<div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div>vs.</h3>
         <table class="">
           <thead>
             <tr>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Stack
               </th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Win Rate %
               </th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Wins
               </th>                
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Losses
               </th>                                 
             </tr>
           </thead>
           <tbody>
             <tr v-if="partydata.triple_double" v-for="row in partydata.triple_double" :key="(row.ally_combo + '|' + row.enemy_combo)">
-              <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 w-[35%]">
+                <div class="flex flex-wrap py">
+                  <div>
+                    {{ row.stack_size_name }}
+                  </div>
+                  <div class="mx-10">
+                    <span class="flex" v-if="row.stack_size_name == '5 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+                    <span class="flex" v-if="row.stack_size_name == '1 Double, 3 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '2 Double, 1 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 Triple, 2 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 Triple, 1 Double'">
+                      <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 Quad, 1 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 team of 5'">
+                      <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div>
+                    </span>
+                  </div>
+
+                </div>
+              </td>              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
               <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
             </tr>
@@ -225,28 +380,62 @@ s<template>
 
 
       <div class="container mx-auto mb-10" id="1 Quad 1 Solo">
-        <h2 class="stack-header">1 Quadruple Stack and 1 Solo vs.<div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div></h2>
+        <h3 class="stack-header">1 Quadruple Stack and 1 Solo vs.<div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>vs.</h3>
         <table class="">
           <thead>
             <tr>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Stack
               </th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Win Rate %
               </th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Wins
               </th>                
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Losses
               </th>                                 
             </tr>
           </thead>
           <tbody>
             <tr v-if="partydata.quadruple" v-for="row in partydata.quadruple" :key="(row.ally_combo + '|' + row.enemy_combo)">
-              <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 w-[35%]">
+                <div class="flex flex-wrap py">
+                  <div>
+                    {{ row.stack_size_name }}
+                  </div>
+                  <div class="mx-10">
+                    <span class="flex" v-if="row.stack_size_name == '5 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+                    <span class="flex" v-if="row.stack_size_name == '1 Double, 3 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '2 Double, 1 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 Triple, 2 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 Triple, 1 Double'">
+                      <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 Quad, 1 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 team of 5'">
+                      <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div>
+                    </span>
+                  </div>
+
+                </div>
+              </td>              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
               <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
             </tr>
@@ -260,28 +449,62 @@ s<template>
 
 
       <div class="container mx-auto " id="5 Player">
-        <h2 class="stack-header">5 player Stack vs. <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div> </h2>
+        <h3 class="stack-header">5 player Stack vs. <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div>vs.</h3>
         <table class="">
           <thead>
             <tr>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Stack
               </th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Win Rate %
               </th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Wins
               </th>                
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <th class="py-2 px-3  text-left text-sm leading-4 tracking-wider">
                 Losses
               </th>                                 
             </tr>
           </thead>
           <tbody>
             <tr v-if="partydata.quintuple" v-for="row in partydata.quintuple" :key="(row.ally_combo + '|' + row.enemy_combo)">
-              <td class="py-2 px-3 ">{{ row.stack_size_name }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3 w-[35%]">
+                <div class="flex flex-wrap py">
+                  <div>
+                    {{ row.stack_size_name }}
+                  </div>
+                  <div class="mx-10">
+                    <span class="flex" v-if="row.stack_size_name == '5 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+                    <span class="flex" v-if="row.stack_size_name == '1 Double, 3 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '2 Double, 1 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 Triple, 2 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 Triple, 1 Double'">
+                      <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 Quad, 1 Solo'">
+                      <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
+                    </span>
+
+                    <span class="flex" v-if="row.stack_size_name == '1 team of 5'">
+                      <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div>
+                    </span>
+                  </div>
+
+                </div>
+              </td>              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
               <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
             </tr>
