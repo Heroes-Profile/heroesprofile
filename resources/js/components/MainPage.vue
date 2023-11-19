@@ -76,11 +76,11 @@
     </div>
 
 
-    <div class="bg-teal p-20">
+    <div class="bg-teal p-5">
       <p c>Heroes Profile uses data from Heroes Profile API.  Heroes Profile API uploads are in open Heroes of the Storm replay database with user uploaded replay data.
         Currently, Heroes Profile has pulled 49,812,486 replays up to and including data from patch
       2.55.3.90670 and date/time 2023-09-06 18:20:21  and incorporated them into our dataset.</p>
-      <p>For more information on Heroes Profile API navigate to <a href="https://api.heroesprofile.com/">https://api.heroesprofile.com/</a></p>
+      <p>For more information on Heroes Profile API navigate to <a class="link" href="https://api.heroesprofile.com/">https://api.heroesprofile.com/</a></p>
     </div>
   </div>
 </template>
