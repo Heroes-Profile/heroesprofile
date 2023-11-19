@@ -11,7 +11,7 @@
 
 
       <div class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
-        <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
+        <div class="flex-1 flex flex-wrap justify-between max-w-[350px] w-full items-between mt-[1em]">
           <stat-box class="w-[48%]" :title="'Wins'" :value="data.wins.toLocaleString()"></stat-box>
           <stat-box class="w-[48%]" :title="'Losses'" :value="data.losses.toLocaleString()"></stat-box>
           <stat-bar-box class="w-full" size="full" :title="'Win Rate'" :value="data.win_rate.toFixed(2)"></stat-bar-box>
@@ -21,7 +21,7 @@
         <div class="my-auto">
           <hero-image-wrapper :rectangle="true" :hero="inputHero" :title="inputHero.name" size="large"></hero-image-wrapper>
         </div>
-        <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
+        <div class="flex-1 flex flex-wrap justify-between max-w-[350px] w-full items-between mt-[1em]">
           <stat-box class="w-[48%]" :title="'Takedowns'" :value="data.takedowns.toLocaleString()"></stat-box>
           <stat-box class="w-[48%]" :title="'Kills'" :value="data.kills.toLocaleString()"></stat-box>
           <stat-box :title="'Total Time spent dead'" :value="data.time_spent_dead"></stat-box>

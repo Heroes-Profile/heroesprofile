@@ -10,7 +10,7 @@
 
 
       <div class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
-        <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
+        <div class="flex-1 flex flex-wrap justify-between max-w-[400px] w-full items-between mt-[1em]">
           <stat-box class="w-[48%]" :title="'Wins'" :value="data.wins.toLocaleString()"></stat-box>
           <stat-box class="w-[48%]" :title="'Losses'" :value="data.losses.toLocaleString()"></stat-box>
           <stat-bar-box class="w-full" size="full" :title="'Win Rate'" :value="data.win_rate.toFixed(2)"></stat-bar-box>
@@ -20,10 +20,10 @@
         <div class="my-auto">
           <round-image :title="team" :image="image" size="large" :rectangle="true"></round-image>
         </div>
-        <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
+        <div class="flex-1 flex flex-wrap justify-between max-w-[400px] w-full items-between mt-[1em]">
           <stat-box class="w-[48%]" :title="'Takedowns'" :value="data.takedowns.toLocaleString()"></stat-box>
           <stat-box class="w-[48%]" :title="'Kills'" :value="data.kills.toLocaleString()"></stat-box>
-          <stat-box :title="'Total Time spent dead'" :value="data.time_spent_dead"></stat-box>
+          <stat-box class="w-full" :title="'Total Time spent dead'" :value="data.time_spent_dead"></stat-box>
           <stat-box class="w-[48%]" :title="'Assists'" :value="data.assists" color="teal"></stat-box>          
           <stat-box class="w-[48%]" :title="'Deaths'" :value="data.deaths" color="teal"></stat-box>          
         </div>
@@ -31,7 +31,7 @@
 
       <div>
 
-        <table class="">
+        <table class="mb-4">
           <thead>
             <tr>
               <th>
@@ -87,10 +87,10 @@
         </div>
       </div>
 
-      <div class="">
-        <div class=" max-w-[90em] ml-auto mr-auto">
+      <div class="bg-lighten p-10">
+        <div class=" max-w-[90em] ml-auto mr-auto mb-10">
           <h2 class="text-3xl font-bold py-5 text-center">Enemy Teams</h2>
-          <div class="flex flex-wrap justify-center">
+          <div class="flex flex-wrap justify-center gap-4">
             <a :href="team.enemy_link"  v-for="(team, index) in data.enemy_teams" :key="index" >
               <round-image :size="'big'" :title="team.team" :image="team.icon_url" :hovertextstyleoverride="true">
                 <image-hover-box :title="team.team_name" :paragraph-one="team.inputhover"></image-hover-box>
@@ -101,8 +101,8 @@
       </div>
 
 
-      <div class="bg-lighten p-10 ">
-        <div class=" max-w-[90em] ml-auto mr-auto">
+      <div class=" p-10 ">
+        <div class=" max-w-[90em] ml-auto mr-auto mb-10">
           <h2 class="text-3xl font-bold py-5 text-center">Heroes played by {{ team }}</h2>
           <div class="flex flex-wrap justify-center">
             <group-box :text="'Most Played'" :data="data.hero_top_three_most_played" color="blue"></group-box>
@@ -113,16 +113,17 @@
 
 
 
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap gap-2 max-w-[1500px] mx-auto mb-10">
           <hero-image-wrapper v-for="(item, index) in data.heroes" :size="'big'" :hero="item.hero">
             <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
           </hero-image-wrapper>
         </div>
 
+      </div>
 
-        <table class="">
+        <table class="max-w-[800px] min-w-[800px] mt-10">
           <thead>
-            <tr>
+            <tr >
               <th @click="sortTable('hero_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Hero
               </th>
@@ -135,7 +136,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(row, index) in sortedData" :key="index">
+            <tr class="@apply even:bg-gray-xlight" v-for="(row, index) in sortedData" :key="index">
               <td>
                 <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}
               </td>
@@ -149,9 +150,9 @@
           </tbody>
         </table>
 
-      </div>
+      
 
-      <div class="">
+      <div class=" p-10 mt-10">
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">{{ team }} Hero Ban Data</h2>
           <div class="flex flex-wrap justify-center">
@@ -163,7 +164,7 @@
 
 
 
-      <div class="bg-lighten p-10">
+      <div class="bg-lighten p-10 ">
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Maps played by {{ team }}</h2>
           <div class="flex flex-wrap justify-center">
@@ -175,21 +176,22 @@
       </div>
 
 
-      <div class="">
+      <div class="bg-lighten p-10">
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Maps banned by {{ team }}</h2>
           <div class="flex flex-wrap justify-center">
             <group-box :useinputforhover="true" :text="'Maps Banned'" :data="data.maps_banned" color="blue"></group-box>
           </div>
         </div>
-
-        <map-image-wrapper v-for="(item, index) in data.maps_banned" :size="'big'" :map="item.game_map">
-          <image-hover-box :title="item.game_map.name" :paragraph-one="item.inputhover"></image-hover-box>
-        </map-image-wrapper>
+        <div class="flex flex-wrap gap-2 max-w-[1500px] mx-auto mb-10 pt-10">
+          <map-image-wrapper v-for="(item, index) in data.maps_banned" :size="'big'" :map="item.game_map">
+            <image-hover-box :title="item.game_map.name" :paragraph-one="item.inputhover"></image-hover-box>
+          </map-image-wrapper>
+        </div>
 
 
       </div>
-      <div class="bg-lighten p-10">
+      <div class="">
 
         <div class="p-10 max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5">Most Recent matches</h2>
@@ -199,7 +201,9 @@
             :esport-league="esport"
             :data="item"
           ></game-summary-box>
-          <custom-button :href="`/Esports/${esport}/Team/${team}/Match/History`" class="flex justify-end " text="View Match History"></custom-button>
+          <div class="flex justify-end mt-4">
+          <custom-button :href="`/Esports/${esport}/Team/${team}/Match/History`" class=" ml-auto" text="View Match History"></custom-button>
+        </div>
         </div>
       </div>
 

@@ -3,7 +3,7 @@
     <page-heading :infoText1="infoText1" :heading="'NGS'" :heading-image="'/images/NGS/600-600-ngs_large_header.png'" :heading-image-url="'/Esports/NGS'"></page-heading>
 
       <!---You are going to have to design this better, I am going to use buttons for now -->
-      <div class="flex flex-1">
+      <div class="flex flex-1 mx-auto justify-center mb-4">
         <div class="mx-5">
           <custom-button @click="setButtonActive('standings')" :text="'Standings'" :size="'big'" class="mt-10" :active="standingsClicked" :ignoreclick="true"></custom-button>
         </div>

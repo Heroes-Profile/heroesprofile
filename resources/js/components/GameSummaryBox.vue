@@ -1,12 +1,23 @@
 <template>
-  <div class="relative ml-10 ">
+  <div :class="[
+  'relative ml-10 ',
+  {
+    'ml-10' : !esport
+  } ]">
     <a :href="getHref()">
-      <div class="mt-4 pl-[6em] m-l-auto w-full text-right min-h-4 py-2">{{ getCaptions() }}</div>
+      <div :class="[
+      'mt-4  m-l-auto w-full text-right min-h-4 py-2 pl-[6em]',
+      {
+        'pl-[6em]' : esport != true
+      }
+      ]
+      ">{{ getCaptions() }}</div>
       <div
         :class="[
-          'flex border border-white border-2 bg-cover bg-no-repeat bg-center rounded-2xl border-red pl-[6em]  ',
+          'flex border border-white border-2 bg-cover bg-no-repeat bg-center  rounded-2xl border-red  pl-10',
           {
-            'border-teal': data.winner === 1
+            'border-teal': data.winner === 1,
+            'pl-[6em] ': esport != true
           }
           ]"
           :style="{ backgroundImage: `url('/images/maps/match/match-${data.game_map.sanitized_map_name}.jpg')` }"
@@ -16,13 +27,13 @@
             <hero-image-wrapper size="xl" :hero="data.hero" :excludehover="true"></hero-image-wrapper>
           </div>
 
-          <div v-else-if="esport && esport == true" class="flex flex-wrap gap-2">
+          <div v-else-if="esport && esport == true" class="flex flex-wrap justify-between gap-2 w-full hover:backdrop-brightness-125 py-1">
             <hero-image-wrapper v-for="(item, index) in data.heroes" size="big" :hero="item.hero" :excludehover="true"></hero-image-wrapper>
-            <stat-box :title="'Teams'" :value="data.team_0_name + ' vs ' + data.team_1_name"></stat-box>
+            <stat-box class="ml-auto w-[40%] mr-10" :title="'Teams'" :value="data.team_0_name + ' vs ' + data.team_1_name"></stat-box>
           </div>
 
           <div v-if="!esport && esport != true" class="flex w-full hover:backdrop-brightness-125">
-            <div class="flex w-full ">
+            <div class="flex w-full ml-10">
               <stat-box :title="'Player MMR'" :value="data.player_mmr.toLocaleString()" :secondstat="data.player_change.toFixed(2)" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
               <stat-box :title="'Hero MMR'" :value="data.hero_mmr.toLocaleString()" :secondstat="data.hero_change.toFixed(2)" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
               <stat-box :title="'Role MMR'" :value="data.role_mmr.toLocaleString()" :secondstat="data.role_change.toFixed(2)" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
