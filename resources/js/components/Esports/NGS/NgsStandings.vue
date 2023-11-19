@@ -1,9 +1,9 @@
 <template>
   <div>
-    <div v-for="(division, divisionName) in data" :key="divisionName" class="max-w-[1500px] mx-auto flex justify-start mb-2">
+    <div v-for="(division, divisionName) in data" :key="divisionName" class="max-w-[1500px] mx-auto flex justify-start mb-2 mt-4">
       <table class="">
         <thead>
-          <tr>
+          <tr class="bg-blue">
             <th colspan="7"><a :href="'/Esports/NGS/Division/' + divisionName">Division {{ divisionName }}</a></th>
           </tr>
         </thead>

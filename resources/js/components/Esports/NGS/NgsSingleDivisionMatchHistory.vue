@@ -2,7 +2,7 @@
   <div>
     <page-heading :infoText1="infoText1" :heading="'NGS'" :heading-image="'/images/NGS/600-600-ngs_large_header.png'" :heading-image-url="'/Esports/NGS'"></page-heading>
 
-    <div class="flex flex-wrap gap-2">
+    <div class="flex flex-wrap gap-2 mx-auto">
       <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
       <custom-button :disabled="isLoading" @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
     </div>
