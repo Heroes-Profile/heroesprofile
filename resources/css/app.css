@@ -58,6 +58,7 @@ table{
   width:auto ;
   @apply bg-gray-light text-black;
   min-width:1500px;
+  width: 1500px;
   margin-left:auto;
   margin-right:auto;
 
@@ -297,3 +298,4 @@ h1{
 a[href*="javascript:void(0)"] {
   cursor: auto;
 }
+
