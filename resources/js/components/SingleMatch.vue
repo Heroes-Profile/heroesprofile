@@ -10,6 +10,9 @@
           <span>Advanced Stats</span>
         </div>-->
 
+Need to add background image.  It is going to be <img :src="`/images/maps/background/header-${data.game_map.sanitized_map_name}.jpg`">
+
+
         <div class="mb-4">
           <h1>{{ formatDate(data.game_date) }}</h1>
         </div>
@@ -141,7 +144,10 @@
             Heroes Profile Score is a match based analysis ranking showing how a player performed in the match compared to other players in the same match.  100 would be a perfect match with most MVPs hovering between 70-75.
           </p>
 
-          
+          <i class="fas fa-info">
+          </i>
+
+
 
           <div class="ml-auto flex justify-end">
             <div class="text-center flex items-center gap-2">
