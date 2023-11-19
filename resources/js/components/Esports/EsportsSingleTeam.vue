@@ -31,7 +31,7 @@
 
       <div>
 
-        <table class="mb-4">
+        <table class="mb-10">
           <thead>
             <tr>
               <th>

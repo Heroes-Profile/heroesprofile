@@ -64,8 +64,14 @@ table{
  
 }
 
-tr:not(.bg-hred):not('.bg-yellow'){
+tr{
 @apply even:bg-gray-xlight ;
+}
+tr.bg-hred{
+  background-color: rgba(214, 142, 124, 0.5);
+}
+tr.bg-yellow{
+  background-color: #d98c40;
 }
 
 th{
