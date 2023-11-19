@@ -183,7 +183,7 @@
             <group-box :useinputforhover="true" :text="'Maps Banned'" :data="data.maps_banned" color="blue"></group-box>
           </div>
         </div>
-        <div class="flex flex-wrap gap-2 max-w-[1500px] mx-auto mb-10 pt-10">
+        <div class="flex flex-wrap gap-2 max-w-[1500px] mx-auto mb-10 pt-10 justify-center">
           <map-image-wrapper v-for="(item, index) in data.maps_banned" :size="'big'" :map="item.game_map">
             <image-hover-box :title="item.game_map.name" :paragraph-one="item.inputhover"></image-hover-box>
           </map-image-wrapper>
