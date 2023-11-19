@@ -62,7 +62,8 @@
           blue: 'bg-blue hover:bg-lblue',
           red: 'bg-red hover:bg-lred',
           teal: 'bg-teal hover:bg-lteal',
-          yellow: 'bg-yellow hover:bg-lyellow'
+          yellow: 'bg-yellow hover:bg-lyellow',
+          lblue: 'bg-lblue'
         }
         const defaultClass = 'bg-blue hover:bg-lblue';
         return colorToClassMap[this.color] || defaultClass;

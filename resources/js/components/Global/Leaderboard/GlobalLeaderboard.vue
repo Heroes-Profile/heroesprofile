@@ -108,11 +108,13 @@
                 <td>{{ row.tier }}</td>
                 <td>{{ row.games_played.toLocaleString() }}</td>
 
-                <td class="py-2 px-3 flex items-center gap-1" v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role') && row.most_played_hero">
+                <td class="py-2 px-3 flex items-center gap-1" v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role')">
+                  <template v-if="row.most_played_hero">
                   <hero-image-wrapper :hero="row.most_played_hero">
                     <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Games Played:' + row.hero_build_games_played"></image-hover-box>
                   </hero-image-wrapper>
                   {{ row.most_played_hero.name }}
+                </template>
                 </td>
 
 

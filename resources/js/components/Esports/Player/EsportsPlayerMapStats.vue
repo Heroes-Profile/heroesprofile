@@ -22,7 +22,7 @@ EsportsPlayerHeroStats<template>
         <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
           <stat-box class="w-[48%]" :title="'Takedowns'" :value="data.takedowns.toLocaleString()"></stat-box>
           <stat-box class="w-[48%]" :title="'Kills'" :value="data.kills.toLocaleString()"></stat-box>
-          <stat-box :title="'Total Time spent dead'" :value="data.time_spent_dead"></stat-box>
+          <stat-box class="w-full" :title="'Total Time spent dead'" :value="data.time_spent_dead"></stat-box>
           <stat-box class="w-[48%]" :title="'Assists'" :value="data.assists" color="teal"></stat-box>          
           <stat-box class="w-[48%]" :title="'Deaths'" :value="data.deaths" color="teal"></stat-box>          
         </div>
@@ -49,7 +49,7 @@ EsportsPlayerHeroStats<template>
           </div>
         </div>
 
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap gap-2 justify-center mt-10">
           <hero-image-wrapper v-for="(item, index) in data.heroes" :size="'big'" :hero="item.hero">
             <image-hover-box :title="item.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
           </hero-image-wrapper>
@@ -57,7 +57,7 @@ EsportsPlayerHeroStats<template>
       </div>
 
 
-      <div class="bg-lighten p-10">
+      <div class=" p-10">
 
         <div class="p-10 max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5">Most Recent matches</h2>
@@ -67,7 +67,9 @@ EsportsPlayerHeroStats<template>
             :esport-league="esport"
             :data="item"
           ></game-summary-box>
+          <div class="max-w-[1500px] mx-auto flex justify-end mt-4">
           <custom-button :href="`/Esports/${esport}/Player/${battletag}/${blizz_id}/Match/History`" class="flex justify-end " text="View Match History"></custom-button>
+        </div>
         </div>
       </div>
 

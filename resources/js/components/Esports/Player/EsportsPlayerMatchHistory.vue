@@ -3,7 +3,7 @@
     <page-heading :infoText1="`${esport == 'HeroesInternational' ? 'Heroes International' : esport} ${battletag} Match History`" :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div v-if="data">
-      <table class="">
+      <table class="mt-10">
         <thead>
           <tr>
             <th @click="sortTable('replayID')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">

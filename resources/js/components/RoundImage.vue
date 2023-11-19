@@ -17,7 +17,7 @@
       ]"
      @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
     <img loading="eager" :class="[
-      'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow   w-full min-h-10 min-w-10',  
+      'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow   w-full h-10 min-w-10',  
       { 
         
         'rounded-full' : rectangle != true,

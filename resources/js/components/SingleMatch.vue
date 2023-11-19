@@ -28,12 +28,14 @@
             <group-box class="w-full" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(0, data.winner)" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'"></group-box>
 
 
-            <div v-if="data.replay_bans" class="flex flex-wrap justify-center">
+            <div v-if="data.replay_bans" class="mb-10">
               {{ esport ? this.data.team_names.team_one.team_name : "Team 1" }} Bans
+              <div class="flex gap-2 justify-center mt-4">
               <hero-image-wrapper v-for="(item, index) in data.replay_bans[0]" :key="index" :hero="item.hero" :size="'big'"></hero-image-wrapper>
             </div>
+            </div>
 
-            <div class="flex flex-wrap justify-center">
+            <div class="flex flex-wrap justify-center mb-4">
               <stat-box class="min-w-[30%]" v-if="!esport" :title="'Account Level'" :value="getAverageValue('account_level', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" :title="'Team Level'" :value="data.players[0][0].score.level" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="esport" :title="'Avg. Hero Level'" :value="getAverageValue('avg_hero_level', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
@@ -46,12 +48,14 @@
 
             <div v-if="esport">
               Map Bans
-              <map-image-wrapper v-if="data.map_bans.team_zero_ban_data.map_ban_one" :map="data.map_bans.team_zero_ban_data.map_ban_one" :size="'big'">
-                <image-hover-box :title="data.map_bans.team_zero_ban_data.map_ban_one.name"></image-hover-box>
-              </map-image-wrapper>
-              <map-image-wrapper v-if="data.map_bans.team_zero_ban_data.map_ban_two" :map="data.map_bans.team_zero_ban_data.map_ban_two" :size="'big'">
-                <image-hover-box :title="data.map_bans.team_zero_ban_data.map_ban_two.name"></image-hover-box>
-              </map-image-wrapper>
+              <div class="flex gap-2 justify-center mt-4">
+                <map-image-wrapper v-if="data.map_bans.team_zero_ban_data.map_ban_one" :map="data.map_bans.team_zero_ban_data.map_ban_one" :size="'big'">
+                  <image-hover-box :title="data.map_bans.team_zero_ban_data.map_ban_one.name"></image-hover-box>
+                </map-image-wrapper>
+                <map-image-wrapper v-if="data.map_bans.team_zero_ban_data.map_ban_two" :map="data.map_bans.team_zero_ban_data.map_ban_two" :size="'big'">
+                  <image-hover-box :title="data.map_bans.team_zero_ban_data.map_ban_two.name"></image-hover-box>
+                </map-image-wrapper>
+              </div>
             </div>
 
 
@@ -61,11 +65,13 @@
           <div>
             <group-box class="w-full" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(1, data.winner)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'"></group-box>
 
-            <div v-if="data.replay_bans" class="flex flex-wrap justify-center">
+            <div v-if="data.replay_bans" class="mb-10">
               {{ esport ? this.data.team_names.team_two.team_name : "Team 2" }} Bans
-              <hero-image-wrapper v-for="(item, index) in data.replay_bans[1]" :key="index" :hero="item.hero" :size="'big'"></hero-image-wrapper>
+              <div class="flex gap-2 justify-center mt-4">
+               <hero-image-wrapper v-for="(item, index) in data.replay_bans[1]" :key="index" :hero="item.hero" :size="'big'"></hero-image-wrapper>
+              </div>
             </div>
-            <div class="flex flex-wrap justify-center">
+            <div class="flex flex-wrap justify-center mb-4">
 
               <stat-box class="min-w-[30%]" v-if="!esport" :title="'Account Level'" :value="getAverageValue('account_level', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" :title="'Team Level'" :value="data.players[1][0].score.level" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
@@ -75,8 +81,9 @@
               <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average Hero MMR'" :value="getAverageValue('hero_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average Role MMR'" :value="getAverageValue('role_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
             </div>
-            <div v-if="esport">
+            <div v-if="esport" class="">
               Map Bans
+              <div class="flex gap-2 justify-center mt-4">
               <map-image-wrapper v-if="data.map_bans.team_one_ban_data.map_ban_one" :map="data.map_bans.team_one_ban_data.map_ban_one" :size="'big'">
                 <image-hover-box :title="data.map_bans.team_one_ban_data.map_ban_one.name"></image-hover-box>
               </map-image-wrapper>
@@ -84,15 +91,16 @@
                 <image-hover-box :title="data.map_bans.team_one_ban_data.map_ban_two.name"></image-hover-box>
               </map-image-wrapper>
             </div>
+            </div>
 
           </div >
         </div>
       </div>
 
 
-      <div v-if="esport" class="max-w-[2000px] mx-auto">
+      <div v-if="esport" class="max-w-[2000px] mx-auto mb-10">
         
-        <table class="">
+        <table class="min-w-[1000px] max-w-[1000px]">
           <thead>
             <tr>
               <th>
@@ -115,7 +123,7 @@
               <td width="25%">{{ row.round }}</td>
               <td width="25%">{{ row.game }}</td>
               <td width="25%">
-                <map-image-wrapper :map="row.game_map">
+                <map-image-wrapper size="small" :map="row.game_map">
                   <image-hover-box :title="row.game_map.name"></image-hover-box>
                 </map-image-wrapper>
               </td>
@@ -182,7 +190,7 @@
       <div v-if="data.draft_order && data.draft_order.length > 0" class="p-10 text-center max-w-[2000px] mx-auto">
         Draft Order
 
-        <table class="">
+        <table class="min-w-[600px] max-w-[600px] mt-2">
           <thead>
             <tr>
               <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
@@ -198,7 +206,7 @@
           </thead>
           <tbody>
             <tr v-for="(row, index) in data.draft_order" :key="index" class="">      
-              <td width="25%"><hero-image-wrapper :size="'medium'" :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}</td>
+              <td width="25%"><div class="flex gap-4 items-center"><hero-image-wrapper :size="'medium'" :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}</div></td>
               <td width="25%">{{ row.pick_number + 1 }}</td>
               <td width="25%">{{ row.type == 0 ? "Ban" : "Pick" }}</td>
             </tr>
@@ -211,9 +219,9 @@
 
       <div class="p-10  max-w-[1500px] mx-auto">
        <h2 class="text-3xl font-bold py-5">Talents</h2>
-       <div class="flex gap-5 justify-between">
+       <div class="flex gap-20 justify-around">
         <div class="">
-          <div class="w-full  mb-5" v-for="(item, index) in data.players[0]" :key="index">
+          <div class="w-full  mb-10" v-for="(item, index) in data.players[0]" :key="index">
             
             <a class="flex  w-full"  :href="item.check ? 'javascript:void(0)' : esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
               <hero-image-wrapper class="mr-5" :size="'big'" :hero="item.hero"></hero-image-wrapper>
@@ -241,7 +249,7 @@
          
        </div>
        <div class="">
-        <div class="w-full  mb-5" v-for="(item, index) in data.players[1]" :key="index">
+        <div class="w-full  mb-10" v-for="(item, index) in data.players[1]" :key="index">
           
           <a class="flex  w-full"  :href="item.check ? 'javascript:void(0)' : esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
             <hero-image-wrapper class="mr-5" :size="'big'" :hero="item.hero"></hero-image-wrapper>
@@ -274,9 +282,9 @@
 
  </div>
 
- <div class="bg-lighten p-10 text-center">
+ <div v-if="data.experience_breakdown" class="bg-lighten p-10 text-center">
   <div class="flex flex-wrap justify-center max-w-[2000px] mx-auto">
-    <div v-if="data.experience_breakdown">
+    <div >
       <dual-line-chart :data="data.experience_breakdown" :winner="data.winner"></dual-line-chart>
     </div>
   </div>

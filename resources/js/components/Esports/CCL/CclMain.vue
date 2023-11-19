@@ -3,21 +3,21 @@
     <page-heading :infoText1="infoText1" :heading="'CCL'" :heading-image="'/images/CCL/600-600-HHE_CCL_Logo_rectangle.png'" :heading-image-url="'/Esports/CCL'"></page-heading>
 
       <!---You are going to have to design this better, I am going to use buttons for now -->
-      <div class="flex flex-1">
-        <div class="mx-5">
-          <custom-button @click="setButtonActive('organizations')" :text="'Organizations'" :size="'big'" class="mt-10" :active="organizationsClicked" :ignoreclick="true"></custom-button>
+      <div class="flex flex-1 mx-auto justify-center mb-4 w-full bg-blue">
+        <div class="border-r border-white">
+          <custom-button @click="setButtonActive('organizations')" :text="'Organizations'" :size="'big'" class="rounded-none " :color="activeButton === 'organizations' ? 'lblue' : ''" :active="organizationsClicked" :ignoreclick="true"></custom-button>
         </div>
 
-        <div class="mx-5">
-          <custom-button @click="setButtonActive('recentMatches')" :text="'Recent Matches'" :size="'big'" class="mt-10" :active="recentMatchesClicked" :ignoreclick="true"></custom-button>
+        <div class="border-r border-white">
+          <custom-button @click="setButtonActive('recentMatches')" :text="'Recent Matches'" :size="'big'" class="rounded-none" :color="activeButton === 'recentMatches' ? 'lblue' : ''" :active="recentMatchesClicked" :ignoreclick="true"></custom-button>
         </div>
 
-        <div class="mx-5">
-          <custom-button @click="setButtonActive('overallHeroStats')" :text="'Overall Hero Stats'" :size="'big'" class="mt-10" :active="overallHeroStatsClicked" :ignoreclick="true"></custom-button>
+        <div class="border-r border-white">
+          <custom-button @click="setButtonActive('overallHeroStats')" :text="'Overall Hero Stats'" :size="'big'" class="rounded-none" :active="overallHeroStatsClicked" :color="activeButton === 'overallHeroStats' ? 'lblue' : ''" :ignoreclick="true"></custom-button>
         </div>
 
-      <div class="mx-5">
-          <custom-button @click="setButtonActive('overallTalentStats')" :text="'Overall Talent Stats'" :size="'big'" class="mt-10" :active="overallTalentStatsClicked" :ignoreclick="true"></custom-button>
+      <div class="">
+          <custom-button @click="setButtonActive('overallTalentStats')" :text="'Overall Talent Stats'" :size="'big'" class="rounded-none" :active="overallTalentStatsClicked" :color="activeButton === 'overallTalentStats' ? 'lblue' : ''" :ignoreclick="true"></custom-button>
         </div>
       </div>
 
@@ -55,17 +55,17 @@
     <div v-else>
 
       <div v-if="activeButton === 'organizations'">
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
           <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
         </div>
         <esports-organizations v-if="organizationsData" :data="organizationsData" :esport="'CCL'" :season="season"></esports-organizations>
       </div>
 
       <div v-if="activeButton === 'recentMatches'">
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
           <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
         </div>
 
 
@@ -73,13 +73,13 @@
 
         <div v-if="recentMatchesData">
           <ul class="pagination flex max-w-[1500px] mx-auto justify-between mb-2">
-            <li v-if="recentMatchesData.pagination.current_page != 1" class="page-item underline underline-offset-4" :class="{ disabled: !recentMatchesData.pagination.prev_page_url }">
-              <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page - 1)" href="#">
+            <li v-if="recentMatchesData.pagination.current_page != 1" class="page-item underline underline-offset-4 mr-auto" :class="{ disabled: !recentMatchesData.pagination.prev_page_url }">
+              <a class="page-link mr-auto" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page - 1)" href="#">
                 Previous
               </a>
             </li>
-            <li v-if="recentMatchesData.pagination.current_page != recentMatchesData.pagination.last_page" class="page-item underline underline-offset-4" :class="{ disabled: !recentMatchesData.pagination.next_page_url }">
-              <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page + 1)" href="#">
+            <li v-if="recentMatchesData.pagination.current_page != recentMatchesData.pagination.last_page" class="page-item underline underline-offset-4 ml-auto" :class="{ disabled: !recentMatchesData.pagination.next_page_url }">
+              <a class="page-link ml-auto" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page + 1)" href="#">
                 Next
               </a>
             </li>
@@ -92,9 +92,9 @@
 
 
       <div v-if="activeButton === 'overallHeroStats'">
-        <div class="flex flex-wrap gap-2">
+           <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
           <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
         </div>
         <esports-hero-stats v-if="heroStatsData" :data="heroStatsData"></esports-hero-stats>
       </div>
@@ -107,10 +107,10 @@
 
         <div v-else>
           <div v-if="talentStatsData">
-            <div class="flex flex-wrap gap-2">
+               <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
               <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange" :defaultValue="selectedHero.id"></single-select-filter>
               <single-select-filter :values="filters.ccl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
-              <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'big'" class="mt-10" :ignoreclick="true"></custom-button>
+              <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
             </div>
 
             
