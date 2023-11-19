@@ -46,10 +46,11 @@
     >
     </filters>
     <div v-if="data">
-      <div class="max-w-[2000px]  md:px-20   h-[50vh] md:h-auto ml-auto mr-auto">
+      <div class="flex">
+      <div class="w-auto   relative  h-[50vh] overflow-scroll   mx-4 2xl:mx-auto  ">
         <table class="">
-          <thead>
-            <tr>
+          <thead class=" top-0 w-full sticky z-40">
+            <tr class="">
               <th @click="sortTable('rank')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Rank
               </th>
@@ -141,6 +142,7 @@
           </tbody>
         </table>
       </div>
+    </div>
     </div>
     <div v-else-if="isLoading">
       <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
