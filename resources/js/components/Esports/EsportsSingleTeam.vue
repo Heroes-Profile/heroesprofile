@@ -167,9 +167,9 @@
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Maps played by {{ team }}</h2>
           <div class="flex flex-wrap justify-center">
-            <group-box :playerlink="true" :text="'Lowest Win Rate'" :data="data.map_top_three_lowest_win_rate" color="red"></group-box>
-            <group-box :playerlink="true" :text="'Most Played'" :data="data.map_top_three_most_played" color="blue"></group-box>
-            <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.map_top_three_highest_win_rate" color="teal"></group-box>
+            <group-box :text="'Lowest Win Rate'" :data="data.map_top_three_lowest_win_rate" color="red"></group-box>
+            <group-box :text="'Most Played'" :data="data.map_top_three_most_played" color="blue"></group-box>
+            <group-box :text="'Highest Win Rate'" :data="data.map_top_three_highest_win_rate" color="teal"></group-box>
           </div>
         </div>
       </div>
