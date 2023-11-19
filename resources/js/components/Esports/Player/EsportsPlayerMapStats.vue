@@ -32,8 +32,8 @@ EsportsPlayerHeroStats<template>
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Hero Enemies and Allies</h2>
           <div class="flex flex-wrap justify-center">
-            <group-box :useinputforhover="true" :text="'Top Heroes Lost Against'" :data="data.heroes_lost_against.slice(0,5)"></group-box>
-            <group-box :useinputforhover="true" :text="'Top Heroes Won Against'" :data="data.heroes_won_against.slice(0,5)"></group-box>
+            <group-box :useinputforhover="true" :text="'Top Heroes Won Against'" :data="data.heroes_won_against.slice(0,5)" color="blue"></group-box>
+            <group-box :useinputforhover="true" :text="'Top Heroes Lost Against'" :data="data.heroes_lost_against.slice(0,5)" color="red"></group-box>
           </div>
         </div>
       </div>
@@ -43,9 +43,9 @@ EsportsPlayerHeroStats<template>
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Heroes</h2>
           <div class="flex flex-wrap justify-center">
-            <group-box :text="'Most Played (5+ games)'" :data="data.hero_top_three_most_played"></group-box>
-            <group-box :text="'Highest Win Rate (5+ games)'" :data="data.hero_top_three_highest_win_rate"></group-box>
-            <group-box :text="'Lowest Win Rate (5+ games)'" :data="data.hero_top_three_lowest_win_rate"></group-box>
+            <group-box :text="'Most Played (5+ games)'" :data="data.hero_top_three_most_played" color="blue"></group-box>
+            <group-box :text="'Highest Win Rate (5+ games)'" :data="data.hero_top_three_highest_win_rate" color="teal"></group-box>
+            <group-box :text="'Lowest Win Rate (5+ games)'" :data="data.hero_top_three_lowest_win_rate" color="yellow"></group-box>
           </div>
         </div>
 

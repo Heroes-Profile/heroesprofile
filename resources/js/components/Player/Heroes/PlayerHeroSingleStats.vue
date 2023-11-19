@@ -41,9 +41,9 @@
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Maps played on {{ hero }}</h2>
           <div class="flex flex-wrap justify-center">
-            <group-box :playerlink="true" :text="'Most Played'" :data="data.map_data_top_played.slice(0, 3)"></group-box>
-            <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.map_data_top_win_rate.slice(0, 3)"></group-box>
-            <group-box :playerlink="true" :text="'Latest Played'" :data="data.map_data_top_latest_played.slice(0, 3)"></group-box>
+            <group-box :playerlink="true" :text="'Most Played'" :data="data.map_data_top_played.slice(0, 3)" color="blue"></group-box>
+            <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.map_data_top_win_rate.slice(0, 3)" color="teal"></group-box>
+            <group-box :playerlink="true" :text="'Latest Played'" :data="data.map_data_top_latest_played.slice(0, 3)" color="yellow"></group-box>
           </div>
           <div class="flex flex-wrap mx-auto gap-2 pt-5">
             <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" v-for="(item, index) in data.map_data" :key="index">
@@ -355,7 +355,13 @@
         return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region  + "/Talents/" + this.hero;
       },
       formatValue(value){
-        return value ? value.toLocaleString() : 0;
+        if(!value){
+          return 0;
+        }else if(value < 1000){
+          return value.toFixed(2);
+        }else{
+          return Math.round(value).toLocaleString();
+        }
       },
     }
   }

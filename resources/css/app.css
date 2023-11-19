@@ -64,7 +64,7 @@ table{
  
 }
 
-tr:not(.bg-hred){
+tr:not(.bg-hred):not('.bg-yellow'){
 @apply even:bg-gray-xlight ;
 }
 

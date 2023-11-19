@@ -36,9 +36,9 @@
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Heroes played by {{ battletag }}</h2>
           <div class="flex flex-wrap justify-center">
-            <group-box :esport="esport" :playerlink="true" :text="'Most Played'" :data="data.hero_top_three_most_played"></group-box>
-            <group-box :esport="esport" :playerlink="true" :text="'Highest Win Rate'" :data="data.hero_top_three_highest_win_rate"></group-box>
-            <group-box :esport="esport" :playerlink="true" :text="'Lowest Win Rate'" :data="data.hero_top_three_lowest_win_rate"></group-box>
+            <group-box :esport="esport" :playerlink="true" :text="'Most Played'" :data="data.hero_top_three_most_played" color="blue"></group-box>
+            <group-box :esport="esport" :playerlink="true" :text="'Highest Win Rate'" :data="data.hero_top_three_highest_win_rate" color="teal"></group-box>
+            <group-box :esport="esport" :playerlink="true" :text="'Lowest Win Rate'" :data="data.hero_top_three_lowest_win_rate" color="yellow"></group-box>
           </div>
         </div>
 
@@ -93,9 +93,9 @@
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Maps played by {{ battletag }}</h2>
           <div class="flex flex-wrap justify-center">
-            <group-box :esport="esport" :playerlink="true" :text="'Most Played'" :data="data.map_top_three_most_played"></group-box>
-            <group-box :esport="esport" :playerlink="true" :text="'Highest Win Rate'" :data="data.map_top_three_highest_win_rate"></group-box>
-            <group-box :esport="esport" :playerlink="true" :text="'Lowest Win Rate'" :data="data.map_top_three_lowest_win_rate"></group-box>
+            <group-box :esport="esport" :playerlink="true" :text="'Most Played'" :data="data.map_top_three_most_played" color="blue"></group-box>
+            <group-box :esport="esport" :playerlink="true" :text="'Highest Win Rate'" :data="data.map_top_three_highest_win_rate" color="teal"></group-box>
+            <group-box :esport="esport" :playerlink="true" :text="'Lowest Win Rate'" :data="data.map_top_three_lowest_win_rate" color="yellow"></group-box>
           </div>
         </div>
       </div>

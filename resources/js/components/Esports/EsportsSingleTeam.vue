@@ -81,8 +81,8 @@
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Hero Enemies and Allies</h2>
           <div class="flex flex-wrap justify-center">
-            <group-box :useinputforhover="true" :text="'Top Heroes Lost Against'" :data="data.heroes_lost_against.slice(0,5)"></group-box>
-            <group-box :useinputforhover="true" :text="'Top Heroes Won Against'" :data="data.heroes_won_against.slice(0,5)"></group-box>
+            <group-box :useinputforhover="true" :text="'Top Heroes Won Against'" :data="data.heroes_won_against.slice(0,5)" color="blue"></group-box>
+            <group-box :useinputforhover="true" :text="'Top Heroes Lost Against'" :data="data.heroes_lost_against.slice(0,5)" color="red"></group-box>
           </div>
         </div>
       </div>
@@ -105,9 +105,9 @@
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Heroes played by {{ team }}</h2>
           <div class="flex flex-wrap justify-center">
-            <group-box :text="'Most Played'" :data="data.hero_top_three_most_played"></group-box>
-            <group-box :text="'Highest Win Rate'" :data="data.hero_top_three_highest_win_rate"></group-box>
-            <group-box :text="'Lowest Win Rate'" :data="data.hero_top_three_lowest_win_rate"></group-box>
+            <group-box :text="'Most Played'" :data="data.hero_top_three_most_played" color="blue"></group-box>
+            <group-box :text="'Highest Win Rate'" :data="data.hero_top_three_highest_win_rate" color="teal"></group-box>
+            <group-box :text="'Lowest Win Rate'" :data="data.hero_top_three_lowest_win_rate" color="red"></group-box>
           </div>
         </div>
 
@@ -155,8 +155,8 @@
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">{{ team }} Hero Ban Data</h2>
           <div class="flex flex-wrap justify-center">
-            <group-box :useinputforhover="true" :text="`Most Banned by ${team}`" :data="data.team_ban_date.slice(0,5)"></group-box>
-            <group-box :useinputforhover="true" :text="`Most Banned Against ${team}`" :data="data.enemy_ban_date.slice(0,5)"></group-box>
+            <group-box :useinputforhover="true" :text="`Most Banned by ${team}`" :data="data.team_ban_date.slice(0,5)" color="blue"></group-box>
+            <group-box :useinputforhover="true" :text="`Most Banned Against ${team}`" :data="data.enemy_ban_date.slice(0,5)" color="red"></group-box>
           </div>
         </div>
       </div>
@@ -167,9 +167,9 @@
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Maps played by {{ team }}</h2>
           <div class="flex flex-wrap justify-center">
-            <group-box :playerlink="true" :text="'Most Played'" :data="data.map_top_three_most_played"></group-box>
-            <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.map_top_three_highest_win_rate"></group-box>
-            <group-box :playerlink="true" :text="'Lowest Win Rate'" :data="data.map_top_three_lowest_win_rate"></group-box>
+            <group-box :playerlink="true" :text="'Lowest Win Rate'" :data="data.map_top_three_lowest_win_rate" color="red"></group-box>
+            <group-box :playerlink="true" :text="'Most Played'" :data="data.map_top_three_most_played" color="blue"></group-box>
+            <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.map_top_three_highest_win_rate" color="teal"></group-box>
           </div>
         </div>
       </div>
@@ -179,7 +179,7 @@
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Maps banned by {{ team }}</h2>
           <div class="flex flex-wrap justify-center">
-            <group-box :useinputforhover="true" :text="'Maps Banned'" :data="data.maps_banned"></group-box>
+            <group-box :useinputforhover="true" :text="'Maps Banned'" :data="data.maps_banned" color="blue"></group-box>
           </div>
         </div>
 
