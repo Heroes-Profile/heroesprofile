@@ -68,7 +68,8 @@
                         <a class=" cursor-pointer">Help</a>
                         <div class="nav-dropdown absolute left-0 hidden  group-hover:block z-50 pt-3 min-w-[200px]">
                             <div class="bg-blue  rounded-b-lg rounded-tr-lg text-sm drop-shadow ">
-                                <a href="https://github.com/Heroes-Profile/heroesprofile/issues" target="_blank" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Submit an Issue</a>
+                                <a href="https://github.com/Heroes-Profile/heroesprofile/issues/new?assignees=&labels=&projects=&template=bug_report.md" target="_blank" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Submit an Issue</a>
+                                <a href="https://github.com/Heroes-Profile/heroesprofile/issues/new?assignees=&labels=&projects=&template=feature_request.md" target="_blank" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Submit a Request</a>
                                 <a href="/Contact" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Contact Us</a>
                             </div>
 
