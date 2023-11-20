@@ -5,11 +5,12 @@
                 <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
                 Profile
         </a>
-        <button class="md:hidden bg-blue rounded-lg">=</button>
+        <button  id="mobile-toggle" class="md:hidden bg-blue rounded-lg">=</button>
+        <mobile-nav-hack></mobile-nav-hack>
     </div>
 </div>
 
-<div class="  main-navigation-wrapper"> <!-- max-md:hidden  - This needs to hide/show on click of the button but only on mobile - either detect mobile with vue, or have a class that is added/taken away that only applies to mobile -->
+<div id="main-menu" class="  main-navigation-wrapper"> <!-- max-md:hidden  - This needs to hide/show on click of the button but only on mobile - either detect mobile with vue, or have a class that is added/taken away that only applies to mobile -->
     <nav class="bg-gray-dark text-white z-50 relative px-4 text-sm ">
         
         <div class="flex items-center justify-between flex-wrap  " >
@@ -157,3 +158,4 @@
         @endforeach
     </nav>
 </div>
+
