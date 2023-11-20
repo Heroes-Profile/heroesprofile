@@ -101,7 +101,7 @@
     },
     created(){
       if (localStorage.getItem('newUserPopup')) {
-        this.showPopup = false;
+        this.showPopup = true;
       }
     },
     mounted() {
