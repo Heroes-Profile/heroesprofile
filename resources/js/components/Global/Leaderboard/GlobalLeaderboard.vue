@@ -47,8 +47,8 @@
     </filters>
     <div v-if="data">
       <div class="flex">
-      <div class="w-auto   relative  h-[50vh] overflow-scroll   mx-4 2xl:mx-auto  ">
-        <table class="">
+      <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
+        <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
           <thead class=" top-0 w-full sticky z-40">
             <tr class="">
               <th @click="sortTable('rank')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -167,6 +167,7 @@ export default {
   },
   data(){
     return {
+      windowWidth: window.innerWidth,
       isLoading: false,
       cancelTokenSource: null,
       infoText1: "Leaderboards are a reflection of user uploaded data. Due to replay file corruption or other issues, the data is not always reflective of real player stats. Please keep that in mind when reviewing leaderboards.",
@@ -199,8 +200,11 @@ export default {
     this.gametype = this.gametypedefault[0];
     this.season = this.defaultseason;
     this.getData();
+
+
   },
   mounted() {
+
   },
   computed: {
     sortedData() {
@@ -214,7 +218,7 @@ export default {
           return valA > valB ? -1 : 1;
         }
       });
-    },
+    }
   },
   watch: {
   },
@@ -247,6 +251,26 @@ export default {
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
+        this.$nextTick(() => {
+        const responsivetable = this.$refs.responsivetable;
+        if (responsivetable && this.windowWidth < 1500) {
+
+          console.log(responsivetable.clientWidth); // Use clientWidth for innerWidth equivalent
+          console.log(this.windowWidth);
+          const newTableWidth = this.windowWidth /responsivetable.clientWidth;
+          console.log(newTableWidth);
+          responsivetable.style.transformOrigin = 'top left';
+         responsivetable.style.transform = `scale(${newTableWidth})`;
+         const container = this.$refs.tablecontainer;
+          console.log('container', container.clientHeight);
+
+          container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+         
+         
+
+        }
+      });
+       
       }
     },
     cancelAxiosRequest() {
