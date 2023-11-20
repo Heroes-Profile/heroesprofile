@@ -9,6 +9,7 @@ import '@fortawesome/fontawesome-free/css/all.css'
 // Register components
 import ExampleComponent from './components/ExampleComponent.vue';
 import MainPage from './components/MainPage.vue';
+import MobileNavHack from './components/MobileNavHack.vue';
 
 //Compare Page
 import Compare from './components/Compare/Compare.vue';
