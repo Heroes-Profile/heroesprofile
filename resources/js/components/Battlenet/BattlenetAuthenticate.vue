@@ -1,6 +1,6 @@
 <template>
   <div class="battlenet-login mx-auto max-w-[700px]  bg-lighten rounded-lg mt-[10vh]">
-    <h1 class="mb-4 bg-teal p-4 rounded-t-lg">Welcome to the App</h1>
+    <h1 class="mb-4 bg-teal p-4 rounded-t-lg">Heroes Profile Login</h1>
     <div class="p-4">
     <p>If you want to access your profile, you need to log in through Battle.net.</p>
     
