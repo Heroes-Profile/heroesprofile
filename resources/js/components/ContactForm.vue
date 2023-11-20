@@ -13,9 +13,9 @@
         <label for="message">Message:</label>
         <textarea class="form-control search-input mr-3 text-black" id="message" v-model="formData.message" required></textarea>
 
-        <button type="submit" class="transition-colors text-white rounded text-center bg-blue hover:bg-lblue py-2 px-4 w-auto ml-auto mr-2 my-2">Submit</button>
+        <button :disabled="isLoading" type="submit" class="transition-colors text-white rounded text-center bg-blue hover:bg-lblue py-2 px-4 w-auto ml-auto mr-2 my-2">Submit</button>
       </form>
-      <div class="mx-auto max-w-[1500px] bg-teal p-4 text-center">
+      <div v-if="emailSent" class="mx-auto max-w-[1500px] bg-teal p-4 text-center">
         <p>Email Sent Successfully!</p>
       </div>
 
@@ -41,6 +41,7 @@ export default {
         message: '',
       },
       infoText1: "If you find an issue on the website, or have general questions, please contact us directly at ZEMILL@heroesprofile.com, or fill out the form below",
+      emailSent: false,
     }
   },
   created(){
@@ -54,13 +55,12 @@ export default {
   methods: {
     async submitForm() {
       this.isLoading = true;
+      this.emailSent = false;
 
       if (this.cancelTokenSource) {
         this.cancelTokenSource.cancel('Request canceled');
       }
       this.cancelTokenSource = this.$axios.CancelToken.source();
-
-      console.log(this.formData.name);
       try{
         const response = await this.$axios.post("/api/v1/contact", {
           battletag: this.formData.battletag,
@@ -71,7 +71,11 @@ export default {
           cancelToken: this.cancelTokenSource.token,
         });
 
-        this.data = response.data[0];
+        this.data = response.data;
+
+        if(this.data == "success"){
+          this.emailSent = true;
+        }
       }catch(error){
         //Do something here
       }finally {
