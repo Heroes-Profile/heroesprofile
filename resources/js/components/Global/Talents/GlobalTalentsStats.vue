@@ -35,11 +35,17 @@
         </filters>
 
         
-        <div  v-if="talentdetaildata" class="mx-auto px-4">
-         
-         <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Talent Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
-          <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
+        <div  v-if="talentdetaildata" class="mx-auto  px-4">
+          <div class="flex justify-between max-w-[1500px] mx-auto">
+            
+            <span class="flex gap-4 mb-2"> 
+              {{ this.selectedHero.name }} {{ "Talent Stats"}} <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
+            </span>
+            <span><custom-button @click="scrollToBuilds" :text="'Scroll To Builds'" :alt="'Scroll To Builds'" size="small" :ignoreclick="true"></custom-button></span>
+          </div>
+          <global-talent-details-section class="mx-auto" :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
         </div>
+
         <div v-else-if="isTalentsLoading">
           <loading-component v-if="determineIfLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
           <loading-component v-else @cancel-request="cancelAxiosRequest"></loading-component>
@@ -47,11 +53,11 @@
 
 
         <div  v-if="talentbuilddata" class="mx-auto px-4 w-auto flex flex-col items-center">
-        <div class="">
-          <single-select-filter :values="buildtypes" :text="'Talent Build Type'" :defaultValue="this.talentbuildtype" @input-changed="buildtypechange"></single-select-filter>
-          {{ this.selectedHero.name }} {{ "Talent Builds"}}
-          <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
-        </div>
+          <div id="builds" class="">
+            <single-select-filter :values="buildtypes" :text="'Talent Build Type'" :defaultValue="this.talentbuildtype" @input-changed="buildtypechange"></single-select-filter>
+            {{ this.selectedHero.name }} {{ "Talent Builds"}}
+            <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
+          </div>
         </div>
         <div v-else-if="isBuildsLoading">
           <loading-component v-if="determineIfLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
@@ -245,6 +251,43 @@
         this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
         this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : this.defaultbuildtype;
 
+
+        let queryString = `?timeframe_type=${this.timeframetype}`;
+        queryString += `&timeframe=${this.timeframe}`;
+        queryString += `&game_type=${this.gametype}`;
+
+        if(this.region){
+          queryString += `&region=${this.region}`;
+        }
+
+        if(this.herolevel){
+          queryString += `&hero_level=${this.herolevel}`;
+        }
+
+        if(this.gamemap){
+          queryString += `&game_map=${this.gamemap}`;
+        }
+
+        if(this.playerrank){
+          queryString += `&league_tier=${this.playerrank}`;
+        }
+
+        if(this.herorank){
+          queryString += `&hero_league_tier=${this.herorank}`;
+        }
+
+        if(this.rolerank){
+          queryString += `&role_league_tier=${this.rolerank}`;
+        }
+
+        queryString += `&statfilter=${this.statfilter}`;
+        queryString += `&build_type=${this.talentbuildtype}`;
+        queryString += `&mirror=${this.mirrormatch}`;
+
+        const currentUrl = window.location.href;
+        let currentPath = window.location.pathname;
+        history.pushState(null, null, `${currentPath}${queryString}`);
+
         this.talentdetaildata = null;
         this.talentbuilddata  = null;
 
@@ -272,7 +315,13 @@
       },
       redirectChangeHero(){
         window.location.href = "/Global/Talents";
-      }
+      },
+      scrollToBuilds(){
+        const buildsSection = document.getElementById('builds');
+        if (buildsSection) {
+          buildsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+      },
     }
   }
 </script>

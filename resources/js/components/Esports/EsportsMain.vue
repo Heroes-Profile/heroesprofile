@@ -1,7 +1,7 @@
 <template>
   <div>
     <page-heading :infoText1="infoText1" :heading="'Community Esports'"></page-heading>
-    <div class="flex   p-20 bg-lighten flex-wrap justify-center">
+    <div class="flex p-20 bg-lighten flex-wrap justify-center">
       
       <div class="text-center md:w-[15%] mb-15 mx-5">
         <a :href="'/Esports/NGS'"><img src="/images/NGS/600-600-ngs_large.png" alt="NGS"/></a>

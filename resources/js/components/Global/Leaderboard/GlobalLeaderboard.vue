@@ -46,10 +46,11 @@
     >
     </filters>
     <div v-if="data">
-      <div class="max-w-[2000px]  md:px-20   h-[50vh] md:h-auto ml-auto mr-auto">
+      <div class="flex">
+      <div class="w-auto   relative  h-[50vh] overflow-scroll   mx-4 2xl:mx-auto  ">
         <table class="">
-          <thead>
-            <tr>
+          <thead class=" top-0 w-full sticky z-40">
+            <tr class="">
               <th @click="sortTable('rank')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                 Rank
               </th>
@@ -108,11 +109,13 @@
                 <td>{{ row.tier }}</td>
                 <td>{{ row.games_played.toLocaleString() }}</td>
 
-                <td class="py-2 px-3 flex items-center gap-1" v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role') && row.most_played_hero">
+                <td class="py-2 px-3 flex items-center gap-1" v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role')">
+                  <template v-if="row.most_played_hero">
                   <hero-image-wrapper :hero="row.most_played_hero">
                     <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Games Played:' + row.hero_build_games_played"></image-hover-box>
                   </hero-image-wrapper>
                   {{ row.most_played_hero.name }}
+                </template>
                 </td>
 
 
@@ -139,6 +142,7 @@
           </tbody>
         </table>
       </div>
+    </div>
     </div>
     <div v-else-if="isLoading">
       <loading-component @cancel-request="cancelAxiosRequest"></loading-component>

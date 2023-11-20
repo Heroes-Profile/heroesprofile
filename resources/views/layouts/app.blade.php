@@ -14,7 +14,7 @@
 
 
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1,  user-scalable=yes">
 
   <!-- CSRF Token -->
   <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -31,7 +31,7 @@
 <body class="bg-black text-white">
   <div id="app" class="flex flex-col align-stretch" style="min-height:100vh;">
  <div class="bg-red text-sm text-center p-1">
-      Site Has Not Been Styled For Mobile Yet.
+      Site has not been styled for mobile yet.
       {{ session('headeralert') }}
     </div>
       @include('nav', [

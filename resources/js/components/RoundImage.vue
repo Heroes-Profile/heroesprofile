@@ -16,8 +16,8 @@
       }
       ]"
      @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
-    <img :class="[
-      'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow   w-full min-h-10 min-w-10',  
+    <img loading="eager" :class="[
+      'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow   w-full h-10 min-w-10',  
       { 
         
         'rounded-full' : rectangle != true,
@@ -34,20 +34,22 @@
       :src="image" 
       :alt="title" >
     <div v-if=" showTooltip" :class="[
-      'absolute hidden group-hover:block left-1/2   transform -translate-x-1/2 text-xs bottom-[1em] -translate-y-[2em]  w-[12em] z-30',
-    {
-      'bottom-[4.5em] -translate-y-[2em]': size === 'big',
-      'text-xs' : size === 'big',
-      'bottom-[6em] -translate-y-[3em]' : size == 'xl'
-    }
+        'absolute hidden group-hover:block left-1/2   transform -translate-x-1/2 text-xs bottom-[1em] -translate-y-[2em]  z-30',
+      {
+        'bottom-[4.5em] -translate-y-[2em]': size === 'big',
+        'text-xs' : size === 'big',
+        'bottom-[6em] -translate-y-[3em]' : size == 'xl',
+        'w-[12em]' : popupsize != 'large',
+        'w-[20em]' : popupsize == 'large'
+      }
 
-    ]" >
-      <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 ', {}]">
-        <slot></slot>
-      </div>
+      ]" >
+        <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 ', {}]">
+          <slot></slot>
+        </div>
 
 
-    <div class="popup-arrow"></div>
+      <div class="popup-arrow"></div>
     </div>
 
    
@@ -65,6 +67,7 @@ export default {
     size: String,
     rectangle: Boolean,
     excludehover: Boolean,
+    popupsize: String
   },
   data(){
     return {

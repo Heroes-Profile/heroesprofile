@@ -23,7 +23,7 @@
         <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
           <stat-box class="w-[48%]" :title="'Takedowns'" :value="data.takedowns.toLocaleString()"></stat-box>
           <stat-box class="w-[48%]" :title="'Kills'" :value="data.kills.toLocaleString()"></stat-box>
-          <stat-box :title="'Total Time spent dead'" :value="data.time_spent_dead"></stat-box>
+          <stat-box class="w-full" :title="'Total Time spent dead'" :value="data.time_spent_dead"></stat-box>
           <stat-box class="w-[48%]" :title="'Assists'" :value="data.assists" color="teal"></stat-box>          
           <stat-box class="w-[48%]" :title="'Deaths'" :value="data.deaths" color="teal"></stat-box>          
         </div>
@@ -33,8 +33,8 @@
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Hero Enemies and Allies</h2>
           <div class="flex flex-wrap justify-center">
-            <group-box :useinputforhover="true" :text="'Top Heroes Lost Against'" :data="data.heroes_lost_against.slice(0,5)"></group-box>
-            <group-box :useinputforhover="true" :text="'Top Heroes Won Against'" :data="data.heroes_won_against.slice(0,5)"></group-box>
+            <group-box :useinputforhover="true" :text="'Top Heroes Won Against'" :data="data.heroes_won_against.slice(0,5)" color="red"></group-box>
+            <group-box :useinputforhover="true" :text="'Top Heroes Lost Against'" :data="data.heroes_lost_against.slice(0,5)" color="blue"></group-box>
           </div>
         </div>
       </div>
@@ -45,9 +45,9 @@
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Maps played by {{ battletag }}</h2>
           <div class="flex flex-wrap justify-center">
-            <group-box :esport="esport" :playerlink="true" :text="'Most Played'" :data="data.map_top_three_most_played"></group-box>
-            <group-box :esport="esport" :playerlink="true" :text="'Highest Win Rate'" :data="data.map_top_three_highest_win_rate"></group-box>
-            <group-box :esport="esport" :playerlink="true" :text="'Lowest Win Rate'" :data="data.map_top_three_lowest_win_rate"></group-box>
+            <group-box :esport="esport" :playerlink="true" :text="'Most Played'" :data="data.map_top_three_most_played" color="blue"></group-box>
+            <group-box :esport="esport" :playerlink="true" :text="'Highest Win Rate'" :data="data.map_top_three_highest_win_rate" color="teal"></group-box>
+            <group-box :esport="esport" :playerlink="true" :text="'Lowest Win Rate'" :data="data.map_top_three_lowest_win_rate" color="yellow"></group-box>
           </div>
         </div>
       </div>
@@ -63,7 +63,9 @@
             :esport-league="esport"
             :data="item"
           ></game-summary-box>
-          <custom-button :href="`/Esports/${esport}/Player/${battletag}/${blizz_id}/Match/History`" class="flex justify-end " text="View Match History"></custom-button>
+          <div class="max-w-[1500px] mx-auto flex justify-end">
+          <custom-button :href="`/Esports/${esport}/Player/${battletag}/${blizz_id}/Match/History`" class="ml-auto mt-4" text="View Match History"></custom-button>
+        </div>
         </div>
       </div>
 

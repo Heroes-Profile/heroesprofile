@@ -2,7 +2,7 @@
     <a 
     :class="[
       staticClasses, 
-      disabled ? 'bg-gray' : colorClass, 
+      disabled ? 'bg-lighten text-lighten' : colorClass, 
       { 
         block: size === 'big', 
         'py-4': size === 'big', 
@@ -48,7 +48,7 @@
     },
     data(){
       return {
-        staticClasses: 'transition-colors text-white rounded',
+        staticClasses: 'transition-colors text-white rounded text-center',
 
       }
     },
@@ -62,7 +62,8 @@
           blue: 'bg-blue hover:bg-lblue',
           red: 'bg-red hover:bg-lred',
           teal: 'bg-teal hover:bg-lteal',
-          yellow: 'bg-yellow hover:bg-lyellow'
+          yellow: 'bg-yellow hover:bg-lyellow',
+          lblue: 'bg-lblue'
         }
         const defaultClass = 'bg-blue hover:bg-lblue';
         return colorToClassMap[this.color] || defaultClass;

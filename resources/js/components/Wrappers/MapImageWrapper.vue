@@ -1,8 +1,10 @@
 <template>
   <div>
-
-    <round-image :size="size" :image="getMapImage()" :title="map.name" :excludehover="true">
+    <round-image :size="size" :image="getMapImage()" :title="map.name" :excludehover="hovertextstyleoverride">
       <slot>
+        <div v-if="!hasSlotContent">
+          <h2>{{ map.name }}</h2>
+        </div>
       </slot>
     </round-image>
   </div>
@@ -28,6 +30,9 @@ export default {
   mounted() {
   },
   computed: {
+    hasSlotContent() {
+      return !!this.$slots.default;
+    },
   },
   watch: {
   },

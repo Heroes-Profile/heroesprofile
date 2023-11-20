@@ -15,7 +15,7 @@
 
 
       <div class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
-        <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
+        <div class="flex-1 flex flex-wrap justify-between max-w-[400px] w-full items-between mt-[1em]">
           <stat-box class="w-[48%]" :title="'Wins'" :value="data.wins.toLocaleString()"></stat-box>
           <stat-box class="w-[48%]" :title="'Losses'" :value="data.losses.toLocaleString()"></stat-box>
 
@@ -36,7 +36,7 @@
           <hero-image-wrapper :rectangle="true" :hero="inputHero" :title="inputHero.name" size="large"></hero-image-wrapper>
         </div>
 
-        <div class="flex flex-col max-w-[450px] text-left w-full items-between ">
+        <div class="flex flex-col max-w-[400px] text-left w-full items-between ">
           <stat-bar-box class="w-full" size="full" :title="'Win Rate'" :value="data.win_rate.toFixed(2)"></stat-bar-box>       
           <stat-bar-box class="w-full" size="full" :title="'Bruiser Win Rate'" :value="data.bruiser_win_rate.toFixed(2)" color="teal"></stat-bar-box>       
           <stat-bar-box class="w-full" size="full" :title="'Support Win Rate'" :value="data.support_win_rate.toFixed(2)" color="red"></stat-bar-box>       
@@ -58,9 +58,9 @@
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Heroes</h2>
           <div class="flex flex-wrap justify-center">
-            <group-box :playerlink="true" :text="'Most Played'" :data="data.heroes_three_most_played"></group-box>
-            <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.heroes_three_highest_win_rate"></group-box>
-            <group-box :playerlink="true" :text="'Latest Played'" :data="data.heroes_three_latest_played"></group-box>
+            <group-box :playerlink="true" :text="'Most Played'" :data="data.heroes_three_most_played" color="blue"></group-box>
+            <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.heroes_three_highest_win_rate" color="teal"></group-box>
+            <group-box :playerlink="true" :text="'Latest Played'" :data="data.heroes_three_latest_played" color="yellow"></group-box>
           </div>
 
         </div>
@@ -122,9 +122,9 @@
       <div class=" max-w-[90em] ml-auto mr-auto">
         <h2 class="text-3xl font-bold py-5 text-center">Maps</h2>
         <div class="flex flex-wrap justify-center">
-          <group-box :playerlink="true" :text="'Most Played'" :data="data.maps_three_most_played"></group-box>
-          <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.maps_three_highest_win_rate"></group-box>
-          <group-box :playerlink="true" :text="'Latest Played'" :data="data.maps_three_latest_played"></group-box>
+          <group-box :playerlink="true" :text="'Most Played'" :data="data.maps_three_most_played" color="blue"></group-box>
+          <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.maps_three_highest_win_rate" color="teal"></group-box>
+          <group-box :playerlink="true" :text="'Latest Played'" :data="data.maps_three_latest_played" color="yellow"></group-box>
         </div>
         <div class="max-w-[1500px] mx-auto text-right my-2">
         <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Map'" class=" " text="View All Maps"></custom-button>

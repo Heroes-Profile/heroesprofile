@@ -58,14 +58,21 @@ table{
   width:auto ;
   @apply bg-gray-light text-black;
   min-width:1500px;
+  width: 1500px;
   margin-left:auto;
   margin-right:auto;
 
  
 }
 
-tr:not(.bg-hred){
+tr{
 @apply even:bg-gray-xlight ;
+}
+tr.bg-hred{
+  background-color: rgba(214, 142, 124, 0.5);
+}
+tr.bg-yellow{
+  background-color: #d98c40;
 }
 
 th{
@@ -221,7 +228,7 @@ h1{
 
 }
 .quadruple{
-  @apply text-gray-light;
+  @apply text-yellow;
 }
 
 .compare-selection-box:nth-child(1n) .compare-selection-title{
@@ -291,3 +298,4 @@ h1{
 a[href*="javascript:void(0)"] {
   cursor: auto;
 }
+

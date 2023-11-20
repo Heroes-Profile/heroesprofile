@@ -3,7 +3,7 @@
     <page-heading :infoText1="infoText1" heading="Contact"></page-heading>
 
     <div>
-      <form @submit.prevent="submitForm">
+      <form @submit.prevent="submitForm" class="flex flex-col max-w-[1500px] mx-auto p-4 gap-2">
         <label for="name">Battletag:</label>
         <input class="form-control search-input mr-3 text-black" type="text" id="name" v-model="formData.battletag" required>
 
@@ -13,8 +13,12 @@
         <label for="message">Message:</label>
         <textarea class="form-control search-input mr-3 text-black" id="message" v-model="formData.message" required></textarea>
 
-        <button type="submit">Submit</button>
+        <button type="submit" class="transition-colors text-white rounded text-center bg-blue hover:bg-lblue py-2 px-4 w-auto ml-auto mr-2 my-2">Submit</button>
       </form>
+      <div class="mx-auto max-w-[1500px] bg-teal p-4 text-center">
+        <p>Email Sent Successfully!</p>
+      </div>
+
     </div>
 
   </div>

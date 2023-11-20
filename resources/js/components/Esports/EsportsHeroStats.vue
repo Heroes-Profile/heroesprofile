@@ -1,6 +1,6 @@
 <template>
   <div>
-    <table class="">
+    <table class="max-w-[1000px] min-w-[1000px]">
       <thead>
         <tr>
           <th @click="sortTable('hero_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">

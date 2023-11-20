@@ -295,6 +295,42 @@
         this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
         this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : this.defaultbuildtype;
 
+
+        let queryString = `?timeframe_type=${this.timeframetype}`;
+        queryString += `&timeframe=${this.timeframe}`;
+        queryString += `&game_type=${this.gametype}`;
+
+        if(this.region){
+          queryString += `&region=${this.region}`;
+        }
+
+        if(this.herolevel){
+          queryString += `&hero_level=${this.herolevel}`;
+        }
+
+        if(this.gamemap){
+          queryString += `&game_map=${this.gamemap}`;
+        }
+
+        if(this.playerrank){
+          queryString += `&league_tier=${this.playerrank}`;
+        }
+
+        if(this.herorank){
+          queryString += `&hero_league_tier=${this.herorank}`;
+        }
+
+        if(this.rolerank){
+          queryString += `&role_league_tier=${this.rolerank}`;
+        }
+
+        queryString += `&mirror=${this.mirrormatch}`;
+
+        const currentUrl = window.location.href;
+        let currentPath = window.location.pathname;
+        history.pushState(null, null, `${currentPath}${queryString}`);
+
+
         this.data = null;
         this.replays = null;
         this.builddata = null;

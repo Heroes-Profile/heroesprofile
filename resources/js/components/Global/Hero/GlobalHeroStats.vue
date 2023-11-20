@@ -114,11 +114,13 @@
         <tbody>
           <template v-for="(row, index) in sortedData">
             <tr >
-              <a :href="'/Global/Talents/' + row.name" >
+              
                 <td class="py-2 px-3 flex items-center gap-1">
+                  <a class="flex w-full items-center" :href="'/Global/Talents/' + row.name" >
                   <hero-image-wrapper class="mr-2" :hero="row" :includehover="false"></hero-image-wrapper>{{ row.name }}
+                  </a>
                 </td>
-              </a>
+              
               <td class="  ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3 "><span v-html="'&#177;'"></span>{{ row.confidence_interval.toFixed(2) }}</td>
               <td v-if="row.win_rate_change < 0" class="py-2 px-3 ">{{ row.win_rate_change.toFixed(2) }}</td>
@@ -349,17 +351,52 @@ export default {
       this.sortKey = '';
       this.sortDir = 'desc';
 
-      /*
 
       let queryString = `?timeframe_type=${this.timeframetype}`;
       queryString += `&timeframe=${this.timeframe}`;
       queryString += `&game_type=${this.gametype}`;
 
+      if(this.region){
+        queryString += `&region=${this.region}`;
+      }
+
+      if(this.herolevel){
+        queryString += `&hero_level=${this.herolevel}`;
+      }
+
+      if(this.gamemap){
+        queryString += `&game_map=${this.gamemap}`;
+      }
+
+      if(this.hero){
+        queryString += `&hero=${this.hero}`;
+      }
+
+      if(this.role){
+        queryString += `&role=${this.role}`;
+      }
+
+      if(this.playerrank){
+        queryString += `&league_tier=${this.playerrank}`;
+      }
+
+      if(this.herorank){
+        queryString += `&hero_league_tier=${this.herorank}`;
+      }
+
+      if(this.rolerank){
+        queryString += `&role_league_tier=${this.rolerank}`;
+      }
+
+      queryString += `&statfilter=${this.statfilter}`;
+      queryString += `&build_type=${this.talentbuildtype}`;
+      queryString += `&mirror=${this.mirrormatch}`;
+
       const currentUrl = window.location.href;
       let currentPath = window.location.pathname;
       history.pushState(null, null, `${currentPath}${queryString}`);
-      */
-
+   
+      this.data = null;
       this.getData();
     },
     sortTable(key) {
