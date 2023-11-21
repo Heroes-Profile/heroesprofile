@@ -162,3 +162,17 @@ Route::get('Esports/HeroesInternational', [HeroesInternationalController::class,
 Route::get('/Gamedata', [GamedataController::class, 'heroes']);
 Route::get('/Gamedata/Heroes', [GamedataController::class, 'heroes']);
 Route::get('/Gamedata/Heroes/{id}', [GamedataController::class, 'hero']);
+
+
+//Ads.txt redirects
+Route::redirect('/ads.txt', 'https://adstxt.venatusmedia.com/60f587eddd63d722e7e57bc1_ads.txt');
+Route::redirect('/ads.txt', 'https://adstxt.venatusmedia.com/60f587eddd63d722e7e57bc1_ads.txt')->name('ads.txt');
+
+Route::redirect('http://www.{any}/ads.txt', 'https://adstxt.venatusmedia.com/60f587eddd63d722e7e57bc1_ads.txt');
+Route::redirect('http://www.{any}/ads.txt', 'https://adstxt.venatusmedia.com/60f587eddd63d722e7e57bc1_ads.txt')->name('www.ads.txt');
+
+Route::redirect('https://www.{any}/ads.txt', 'https://adstxt.venatusmedia.com/60f587eddd63d722e7e57bc1_ads.txt');
+Route::redirect('https://www.{any}/ads.txt', 'https://adstxt.venatusmedia.com/60f587eddd63d722e7e57bc1_ads.txt')->name('https.www.ads.txt');
+
+Route::redirect('https://{any}/ads.txt', 'https://adstxt.venatusmedia.com/60f587eddd63d722e7e57bc1_ads.txt');
+Route::redirect('https://{any}/ads.txt', 'https://adstxt.venatusmedia.com/60f587eddd63d722e7e57bc1_ads.txt')->name('https.ads.txt');
