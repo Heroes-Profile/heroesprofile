@@ -1,39 +1,19 @@
 <template>
   <div>
 
-      <!-- This probably needs to in the round-image component, but putting it here for now -->
-      <!--Awards go in the bottom right corner -->
-      <div v-if="award">
-        {{ award.title }}
-        <img :src="getAwardIcon()"/>
-      </div>
 
-
-      <!-- This probably needs to in the round-image component, but putting it here for now -->
-      <!--Heroes Profile Owner goes in the top left corner -->
-      <div v-if="hpowner">
-        {{ "HP Owner" }}
-        <i class="fas fa-crown"></i>
-      </div>
-
-      <!-- I need to add the logic for this, but this is the icon.  Leaving it true for now so it displays -->
-      <div v-else="true">
-        {{ "Patreon Subscriber" }}
-        <i class="fas fa-star"></i>
-      </div>
-
-
-      <!-- This probably needs to in the round-image component, but putting it here for now -->
-      <!--Party Icon go in the bottom right corner -->
-      <div v-if="party">
-        {{ party }}
-        <img :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${party}.png`"/>
-      </div>
-
-    <round-image :rectangle="rectangle" :size="size" :image="getHeroImage()" :title="hero.name" :excludehover="excludehover">
-
-
-
+    <round-image 
+      :rectangle="rectangle" 
+      :size="size" 
+      :image="getHeroImage()" 
+      :title="hero.name" 
+      :excludehover="excludehover" 
+      :hpowner="hpowner"
+      :award="award"
+      :awardicon="getAwardIcon()"
+      :party="party"
+      :ispatreon="ispatreon"
+    >
       <slot>
         <div v-if="!hasSlotContent">
           <h2>{{ hero.name }}</h2>
@@ -59,6 +39,7 @@ export default {
     winner: Boolean,
     hpowner: Boolean,
     party: String,
+    ispatreon: Boolean,
   },
   data(){
     return {
@@ -85,6 +66,9 @@ export default {
       }
     },
     getAwardIcon(){
+      if(!this.award){
+        return null;
+      }
       let color = "blue";
       if(!this.winner){
         color = "red";

@@ -6,6 +6,7 @@ use App\Models\HeroesDataTalent;
 use App\Models\Map;
 use App\Models\Award;
 use App\Models\ReplayExperienceBreakdownBlob;
+use App\Models\BattlenetAccount;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -320,6 +321,7 @@ class SingleMatchController extends Controller
                         'team' => $row->team,
                         'party' => ! $this->esport ? $row->party : null,
                         'hero' => $heroData[$row->hero],
+                        'patreon_subscriber' => ! $this->esport ? $this->isPatreonSubscriber($row->battletag, $blizz_id, $region) : null,
                         'match_award' => ! $this->esport ? Award::where("award_id", $row->match_award)->first() : null,
                         'hero_level' => $containsAccount ? null : $hero_level_calculated,
                         'avg_hero_level' => $containsAccount ? null : $avg_hero_level,
@@ -398,6 +400,23 @@ class SingleMatchController extends Controller
         $groupedData = array_values($groupedData->toArray());
 
         return $groupedData[0];
+    }
+
+    private function isPatreonSubscriber($battletag, $blizz_id, $region){
+        $data = BattlenetAccount::where("blizz_id", $blizz_id)->where("region", $region)->first();
+        
+        if(empty($data)){
+            return false;
+        }
+
+        $data = $data->patreonAccount;
+
+
+
+        if($data->site_flair == 1){
+            return true;
+        }
+        return false;
     }
     private function updatePartyData(&$playerArray) {
         $partyArray = [];

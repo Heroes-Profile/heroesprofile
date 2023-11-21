@@ -1,5 +1,34 @@
 <template>
-  <!-- Need to add a medium value -->
+
+
+      <!-- This probably needs to in the round-image component, but putting it here for now -->
+      <!--Awards go in the bottom right corner -->
+      <div v-if="award">
+        {{ award.title }}
+        <img :src="awardicon"/>
+      </div>
+
+
+      <!-- This probably needs to in the round-image component, but putting it here for now -->
+      <!--Heroes Profile Owner goes in the top left corner -->
+      <div v-if="hpowner">
+        {{ "HP Owner" }}
+        <i class="fas fa-crown"></i>
+      </div>
+
+      <!-- I need to add the logic for this, but this is the icon.  Leaving it true for now so it displays -->
+      <div v-if="ispatreon">
+        {{ "Patreon Subscriber" }}
+        <i class="fas fa-star"></i>
+      </div>
+
+
+      <!-- This probably needs to in the round-image component, but putting it here for now -->
+      <!--Party Icon go in the bottom right corner -->
+      <div v-if="party">
+        {{ party }}
+        <img :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${party}.png`"/>
+      </div>
   <div
   :class="[
       'relative group flex items-center w-10 h-10',  
@@ -67,7 +96,12 @@ export default {
     size: String,
     rectangle: Boolean,
     excludehover: Boolean,
-    popupsize: String
+    popupsize: String,
+    award: Object,
+    awardicon: String,
+    party: String,
+    hpowner: Boolean,
+    ispatreon: Boolean,
   },
   data(){
     return {

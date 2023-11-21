@@ -81,30 +81,4 @@ class PatreonController extends Controller
 
         return false;
     }
-
-    //Code for determing all memberships.  Need to create backend to iterate through these and update users
-    /*
-    public function getCampaignData($accessToken)
-    {
-            $accessToken = "qfPOtcf8DyZofzrpMZ7su6-N1YMjpoQb2SfwgIbyp7c";
-
-         $campaign_id = "2353115";  // your campaign ID
-
-        $client = new Client();
-        $response = $client->get("https://www.patreon.com/api/oauth2/v2/campaigns/{$campaign_id}/members", [
-            'headers' => [
-                'Authorization' => "Bearer {$accessToken}",
-            ],
-            'query' => [
-                'include' => 'user',
-                'fields[member]' => 'lifetime_support_cents,patron_status,pledge_relationship_start,currently_entitled_amount_cents',
-                'fields[user]' => 'social_connections'
-            ]
-        ]);
-
-        $membershipData = json_decode($response->getBody(), true);
-
-        return $membershipData;
-    }
-    */
 }
