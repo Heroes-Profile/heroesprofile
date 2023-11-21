@@ -2,6 +2,7 @@
   <div>
     <h2>{{ title }}</h2>
     <p v-if="paragraphOne">{{ paragraphOne }}</p>
+    <p v-if="hpOwner">{{ hpOwner }}</p>
     <p v-if="paragraphTwo">{{ paragraphTwo }}</p>
     <p v-if="paragraphThree">{{ paragraphThree }}</p>
     <p v-if="paragraphFour">{{ paragraphFour }}</p>
@@ -23,6 +24,7 @@ export default {
     paragraphFour: String,
     paragraphFive: String,
     paragraphSix: String,
+    hpOwner: String,
   },
   data(){
     return {

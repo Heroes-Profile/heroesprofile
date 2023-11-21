@@ -6,7 +6,7 @@
 
         <!-- Hero Section -->
         <a v-if="!esport && match && playerlink && item.hero && !item.check" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name">
-          <hero-image-wrapper :size="'big'" :hero="item.hero">
+          <hero-image-wrapper :size="'big'" :hero="item.hero" :award="item.match_award" :winner="winner" :hpowner="item.hp_owner" :party="item.party">
             <image-hover-box 
               :title="item.hero.name" 
               :paragraph-one="`Played by ${item.battletag}`" 
@@ -15,6 +15,7 @@
               :paragraph-four="`Hero MMR: ${item.hero_mmr}`"
               :paragraph-five="`Role MMR: ${item.role_mmr}`"
               :paragraph-six="`Hero Level: ${item.hero_level}`"
+              :hpOwner="item.hp_owner ? 'Heroes Profile Owner' : null"
             ></image-hover-box>
           </hero-image-wrapper>
         </a>
@@ -99,12 +100,14 @@
       useinputforhover: Boolean,
       esport: String,
       color: String,
+      winner: Boolean,
     },
     data(){
       return {
       }
     },
     created(){
+      console.log(this.data);
     },
     mounted() {
     },
