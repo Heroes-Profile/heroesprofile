@@ -16,6 +16,12 @@
         <i class="fas fa-crown"></i>
       </div>
 
+      <!-- I need to add the logic for this, but this is the icon.  Leaving it true for now so it displays -->
+      <div v-else="true">
+        {{ "Patreon Subscriber" }}
+        <i class="fas fa-star popup-trigger starred">
+      </div>
+
 
       <!-- This probably needs to in the round-image component, but putting it here for now -->
       <!--Party Icon go in the bottom right corner -->
