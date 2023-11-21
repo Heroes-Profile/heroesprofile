@@ -19,7 +19,7 @@
       <!-- I need to add the logic for this, but this is the icon.  Leaving it true for now so it displays -->
       <div v-else="true">
         {{ "Patreon Subscriber" }}
-        <i class="fas fa-star popup-trigger starred">
+        <i class="fas fa-star"></i>
       </div>
 
 
