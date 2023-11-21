@@ -28,7 +28,7 @@ Need to add background image.  It is going to be <img :src="`/images/maps/backgr
       <div class=" p-10 text-center">
         <div class="flex flex-wrap justify-center max-w-[2000px] mx-auto gap-10">
           <div>
-            <group-box class="w-full" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(0, data.winner)" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'"></group-box>
+            <group-box class="w-full" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(0, data.winner)" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
 
 
             <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
@@ -66,7 +66,7 @@ Need to add background image.  It is going to be <img :src="`/images/maps/backgr
 
 
           <div>
-            <group-box class="w-full" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(1, data.winner)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'"></group-box>
+            <group-box class="w-full" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(1, data.winner)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'" :winner="data.winner == 1 ? true : false"></group-box>
 
             <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
               {{ esport ? this.data.team_names.team_two.team_name : "Team 2" }} Bans
