@@ -36,6 +36,7 @@
         Site has not been styled for mobile yet.
         {{ session('headeralert') }}
       </div>
+      <horizontal-banner-ad></horizontal-banner-ad>
       @include('nav', [
       'isAuthenticated' => Auth::check(),
       'mainSearchAccount' => $main_search_account,
