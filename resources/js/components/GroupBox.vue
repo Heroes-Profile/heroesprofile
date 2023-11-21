@@ -107,6 +107,8 @@
     created(){
     },
     mounted() {
+            console.log(this.data)
+
     },
     computed: {
     },

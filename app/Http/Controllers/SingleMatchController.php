@@ -315,6 +315,7 @@ class SingleMatchController extends Controller
                         'winner' => $row->winner,
                         'team' => $row->team,
                         'party' => ! $this->esport ? $row->party : null,
+                        'match_award' => ! $this->esport ? Awards::find($row->match_award) : null,
                         'hero' => $heroData[$row->hero],
                         'hero_level' => $containsAccount ? null : $hero_level_calculated,
                         'avg_hero_level' => $containsAccount ? null : $avg_hero_level,
