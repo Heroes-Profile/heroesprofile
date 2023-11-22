@@ -1,7 +1,9 @@
 <template>
   <div class="match-page">
     <div v-if="data" class=" mx-auto">
-      <div class="text-center">
+      
+<div class="" :style="`background-image: url('/images/maps/background/header-${data.game_map.sanitized_map_name}.jpg')`">
+<div class="text-center pt-4">
        <!-- <div>
           <span>Match Scores</span>
           <span>Talents</span>
@@ -9,8 +11,6 @@
           <span>MMR</span>
           <span>Advanced Stats</span>
         </div>-->
-
-Need to add background image.  It is going to be <img :src="`/images/maps/background/header-${data.game_map.sanitized_map_name}.jpg`">
 
 
         <div class="mb-4">
@@ -28,7 +28,7 @@ Need to add background image.  It is going to be <img :src="`/images/maps/backgr
       <div class=" p-10 text-center">
         <div class="flex flex-wrap justify-center max-w-[2000px] mx-auto gap-10">
           <div>
-            <group-box class="w-full" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(0, data.winner)" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
+            <group-box class="w-full" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(0, data.winner)" popupsize="large" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
 
 
             <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
@@ -99,7 +99,7 @@ Need to add background image.  It is going to be <img :src="`/images/maps/backgr
           </div >
         </div>
       </div>
-
+    </div>
 
       <div v-if="esport" class="max-w-[2000px] mx-auto mb-10">
         
@@ -137,7 +137,7 @@ Need to add background image.  It is going to be <img :src="`/images/maps/backgr
       </div>
 
       <div class="bg-lighten">
-        <div class="p-10  max-w-[2000px] mx-auto  ">
+        <div class="p-10  max-w-[1800px] mx-auto  ">
           <h2 class="text-3xl font-bold py-5">Match Scores</h2>
           <p>See advanced stats below</p>
           <p>

@@ -13,6 +13,7 @@
       :awardicon="getAwardIcon()"
       :party="party"
       :ispatreon="ispatreon"
+      popupsize="large"
     >
       <slot>
         <div v-if="!hasSlotContent">
@@ -40,6 +41,7 @@ export default {
     hpowner: Boolean,
     party: String,
     ispatreon: Boolean,
+    popupsize: String
   },
   data(){
     return {

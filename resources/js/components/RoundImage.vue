@@ -3,32 +3,17 @@
 
       <!-- This probably needs to in the round-image component, but putting it here for now -->
       <!--Awards go in the bottom right corner -->
-      <div v-if="award">
-        {{ award.title }}
-        <img :src="awardicon"/>
-      </div>
+   
 
 
       <!-- This probably needs to in the round-image component, but putting it here for now -->
       <!--Heroes Profile Owner goes in the top left corner -->
-      <div v-if="hpowner">
-        {{ "HP Owner" }}
-        <i class="fas fa-crown"></i>
-      </div>
-
-      <!-- I need to add the logic for this, but this is the icon.  Leaving it true for now so it displays -->
-      <div v-if="ispatreon">
-        {{ "Patreon Subscriber" }}
-        <i class="fas fa-star"></i>
-      </div>
+   
 
 
       <!-- This probably needs to in the round-image component, but putting it here for now -->
       <!--Party Icon go in the bottom right corner -->
-      <div v-if="party">
-        {{ party }}
-        <img :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${party}.png`"/>
-      </div>
+    
   <div
   :class="[
       'relative group flex items-center w-10 h-10',  
@@ -45,6 +30,24 @@
       }
       ]"
      @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
+        <div class="absolute z-10 bottom-0 right-0 w-9"  v-if="award">
+        <!--{{ award.title }} -->
+        <img :src="awardicon"/>
+      </div>
+      <div class="absolute top-0 left-0 z-10" v-if="hpowner">
+       <!-- {{ "HP Owner" }} -->
+        <i class="fas fa-crown text" style="color:gold;"></i>
+      </div>
+
+      <!-- I need to add the logic for this, but this is the icon.  Leaving it true for now so it displays -->
+      <div class="absolute z-10 top-0 left-0" v-if="ispatreon">
+       <!-- {{ "Patreon Subscriber" }} -->
+        <i class="fas fa-star" style="color:gold"></i>
+      </div>
+        <div class="absolute z-10 top-0 right-0 w-9" v-if="party">
+       <!--  {{ party }} -->
+        <img :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${party}.png`"/>
+      </div>
     <img loading="eager" :class="[
       'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow   w-full h-10 min-w-10',  
       { 
@@ -74,7 +77,12 @@
 
       ]" >
         <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 ', {}]">
+          <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>
+          <div class="bg-teal" v-if="party">{{ party }}</div>
+          <div class="bg-red" v-if="ispatreon">Patreon Subscriber</div>
+          <div class="bg-teal" v-if="award">{{award.title}}</div>
           <slot></slot>
+
         </div>
 
 
