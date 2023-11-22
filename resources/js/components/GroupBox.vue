@@ -6,7 +6,7 @@
 
         <!-- Hero Section -->
         <a v-if="!esport && match && playerlink && item.hero && !item.check" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name">
-          <hero-image-wrapper :size="'big'" :hero="item.hero" :award="item.match_award" :winner="winner" :hpowner="item.hp_owner" :party="item.party" :ispatreon="item.patreon_subscriber">
+          <hero-image-wrapper :size="'big'" :hero="item.hero" :award="item.match_award" :winner="winner" :hpowner="item.hp_owner" :party="item.party" :ispatreon="item.patreon_subscriber" popupsize="large">
             <image-hover-box 
               :title="item.hero.name" 
               :paragraph-one="`Played by ${item.battletag}`" 
@@ -101,6 +101,7 @@
       esport: String,
       color: String,
       winner: Boolean,
+      popupsize: String
     },
     data(){
       return {
