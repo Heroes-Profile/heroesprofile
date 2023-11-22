@@ -1,7 +1,5 @@
 <template>
   <div>
-
-
     <round-image 
       :rectangle="rectangle" 
       :size="size" 

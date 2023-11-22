@@ -1,19 +1,4 @@
 <template>
-
-
-      <!-- This probably needs to in the round-image component, but putting it here for now -->
-      <!--Awards go in the bottom right corner -->
-   
-
-
-      <!-- This probably needs to in the round-image component, but putting it here for now -->
-      <!--Heroes Profile Owner goes in the top left corner -->
-   
-
-
-      <!-- This probably needs to in the round-image component, but putting it here for now -->
-      <!--Party Icon go in the bottom right corner -->
-    
   <div
   :class="[
       'relative group items-center w-10 h-10',  
@@ -35,7 +20,6 @@
       ]"
      @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
         <div class="absolute z-10 bottom-0 right-0 w-9"  v-if="award">
-        <!--{{ award.title }} -->
         <img :src="awardicon"/>
       </div>
       <div class="absolute top-0 left-0 z-10" v-if="hpowner">
@@ -87,10 +71,9 @@
       ]" >
         <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 ', {}]">
           <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>
-          <div class="bg-teal" v-if="party">{{ party }}</div>
           <div class="bg-red" v-if="ispatreon">Patreon Subscriber</div>
-          <div class="bg-teal" v-if="award">{{award.title}}</div>
           <slot></slot>
+          <div class="bg-teal" v-if="award">{{award.title}}</div>
 
         </div>
 
