@@ -75,6 +75,7 @@ tr.bg-yellow{
   background-color: #d98c40;
 }
 
+
 th{
   @apply text-left text-sm leading-4  tracking-wider cursor-pointer py-1 px-3 border-b;
 }
@@ -282,10 +283,10 @@ h1{
 .match-page table td{
   width:16%;
 }
-.match-page table.loser thead td{
+.match-page table.loser thead td:not(.color-cell){
   @apply bg-red;
 }
-.match-page table.winner thead td{
+.match-page table.winner thead td:not(.color-cell){
   @apply bg-teal;
 }
 

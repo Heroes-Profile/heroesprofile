@@ -304,10 +304,10 @@
   {{}}
   <table :class="{ winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }">
     <thead>
-      <tr>
-        <td colspan="2"></td>
-        <td colspan="3">Pre-Match</td>
-        <td colspan="3">Post-Match</td>
+      <tr >
+        <td class="color-cell bg-black " colspan="2"></td>
+        <td class="color-cell bg-yellow" colspan="3">Pre-Match</td>
+        <td class="color-cell bg-blue" colspan="3">Post-Match</td>
       </tr>
       <tr>
         <td >Player</td>
@@ -322,7 +322,7 @@
     </thead>
     <tbody>
       <tr v-for="(item, index) in data.players[0]" :key="index">
-        <td><a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR/' + item.hero.name + '/' + data.game_type">{{ item.battletag }}</a></td>
+        <td class="bg-blue text-white border-white border"><a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR/' + item.hero.name + '/' + data.game_type">{{ item.battletag }}</a></td>
         <td>{{ item.hero.name }}</td>
         <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
         <td>{{ Math.round(item.hero_mmr - item.hero_change) }}</td>
@@ -332,14 +332,14 @@
         <td>{{ item.role_mmr }} ({{ item.role_change }})</td>
       </tr>
       <tr>
-        <td></td>
-        <td>Average</td>
-        <td>{{ getAverageValue('prev_player_mmr', data.players[0]) }}</td>
-        <td>{{ getAverageValue('prev_hero_mmr', data.players[0]) }}</td>
-        <td>{{ getAverageValue('prev_role_mmr', data.players[0]) }}</td>
-        <td>{{ getAverageValue('player_mmr', data.players[0]) }}</td>
-        <td>{{ getAverageValue('hero_mmr', data.players[0]) }}</td>
-        <td>{{ getAverageValue('role_mmr', data.players[0]) }}</td>
+        <td class="bg-blue border-white border"></td>
+        <td class="color-cell bg-blue text-white">Average</td>
+        <td class="color-cell bg-blue text-white">{{ getAverageValue('prev_player_mmr', data.players[0]) }}</td>
+        <td class="color-cell bg-blue text-white">{{ getAverageValue('prev_hero_mmr', data.players[0]) }}</td>
+        <td class="color-cell bg-blue text-white">{{ getAverageValue('prev_role_mmr', data.players[0]) }}</td>
+        <td class="color-cell bg-blue text-white">{{ getAverageValue('player_mmr', data.players[0]) }}</td>
+        <td class="color-cell bg-blue text-white">{{ getAverageValue('hero_mmr', data.players[0]) }}</td>
+        <td class="color-cell bg-blue text-white">{{ getAverageValue('role_mmr', data.players[0]) }}</td>
       </tr>
     </tbody>
   </table>
@@ -352,9 +352,9 @@
   <table :class="{ winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }">
     <thead>
       <tr>
-        <td colspan="2"></td>
-        <td colspan="3">Pre-Match</td>
-        <td colspan="3">Post-Match</td>
+       <td class="color-cell bg-black " colspan="2"></td>
+        <td class="color-cell bg-yellow" colspan="3">Pre-Match</td>
+        <td class="color-cell bg-blue" colspan="3">Post-Match</td>
       </tr>
       <tr>
         <td>Player</td>
@@ -369,7 +369,7 @@
     </thead>
     <tbody>
       <tr v-for="(item, index) in data.players[1]" :key="index">
-        <td><a :href="`/Player/${item.battletag}/${item.blizz_id}/${item.region}`">{{ item.battletag }}</a></td>
+        <td class="bg-blue text-white border-white border"><a :href="`/Player/${item.battletag}/${item.blizz_id}/${item.region}`">{{ item.battletag }}</a></td>
         <td>{{ item.hero.name }}</td>
         <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
         <td>{{ Math.round(item.hero_mmr - item.hero_change) }}</td>
@@ -379,14 +379,14 @@
         <td>{{ item.role_mmr }} ({{ item.role_change }})</td>
       </tr>
       <tr>
-        <td></td>
-        <td>Average</td>
-        <td>{{ getAverageValue('prev_player_mmr', data.players[1]) }}</td>
-        <td>{{ getAverageValue('prev_hero_mmr', data.players[1]) }}</td>
-        <td>{{ getAverageValue('prev_role_mmr', data.players[1]) }}</td>
-        <td>{{ getAverageValue('player_mmr', data.players[1]) }}</td>
-        <td>{{ getAverageValue('hero_mmr', data.players[1]) }}</td>
-        <td>{{ getAverageValue('role_mmr', data.players[1]) }}</td>
+        <td class="bg-blue text-white border-white border"></td>
+        <td class="color-cell bg-blue text-white border-white border">Average</td>
+        <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('prev_player_mmr', data.players[1]) }}</td>
+        <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('prev_hero_mmr', data.players[1]) }}</td>
+        <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('prev_role_mmr', data.players[1]) }}</td>
+        <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('player_mmr', data.players[1]) }}</td>
+        <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('hero_mmr', data.players[1]) }}</td>
+        <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('role_mmr', data.players[1]) }}</td>
       </tr>
     </tbody>
   </table>
@@ -399,7 +399,7 @@
     <thead>
       <tr>
         <td >{{ section.title }}</td>
-        <td
+        <td 
         v-for="(player, playerIndex) in data.players[0]"
         :key="playerIndex"
         
@@ -410,7 +410,7 @@
   </thead>
   <tbody>
     <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
-      <td>{{ row.label }}</td>
+      <td class="bg-blue text-white border-white border">{{ row.label }}</td>
       <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">{{ formatValue(player.score[row.key]) }}</td>
     </tr>
   </tbody>
@@ -422,7 +422,7 @@
   <table :class="{ winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
     <thead>
       <tr>
-        <td >{{ section.title }}</td>
+        <td class="bg-blue text-white border-white border">{{ section.title }}</td>
         <td
         v-for="(player, playerIndex) in data.players[1]"
         :key="playerIndex"
@@ -434,7 +434,7 @@
   </thead>
   <tbody>
     <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
-      <td>{{ row.label }}</td>
+      <td class="bg-blue text-white border-white border">{{ row.label }}</td>
       <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">{{ formatValue(player.score[row.key]) }}</td>
     </tr>
   </tbody>
