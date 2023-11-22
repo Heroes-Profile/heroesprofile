@@ -16,7 +16,7 @@
     
   <div
   :class="[
-      'relative group flex items-center w-10 h-10',  
+      'relative group items-center w-10 h-10',  
       { 
         block: size === 'big', 
         'w-20': size === 'big', 
@@ -25,7 +25,11 @@
         'h-[6em]': size === 'xl',
         'w-72': size === 'large',
         'h-[23em]': size === 'large',
-        'overflow-hidden': size === 'large'
+        'overflow-hidden': size === 'large',
+        'inline-block' : icon,
+        'flex': !icon,
+        'w-[1.7em]': icon,
+        'h-[1.7em]': icon
         
       }
       ]"
@@ -48,7 +52,12 @@
        <!--  {{ party }} -->
         <img :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${party}.png`"/>
       </div>
-    <img loading="eager" :class="[
+      
+      <span class="bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em]  flex justify-center pl-[1px] items-center bold " v-if="icon" >
+        <i :class="icon" ></i>
+      </span>
+    
+    <img v-else loading="eager" :class="[
       'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow   w-full h-10 min-w-10',  
       { 
         
@@ -110,6 +119,7 @@ export default {
     party: String,
     hpowner: Boolean,
     ispatreon: Boolean,
+    icon: String
   },
   data(){
     return {
@@ -121,6 +131,7 @@ export default {
   mounted() {
   },
   computed: {
+
   },
   watch: {
   },

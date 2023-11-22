@@ -140,19 +140,22 @@
         <div class="p-10  max-w-[1500px] mx-auto  ">
           <h2 class="text-3xl font-bold py-5">Match Scores</h2>
           <p>See advanced stats below</p>
-          <p>
-            Heroes Profile Score is a match based analysis ranking showing how a player performed in the match compared to other players in the same match.  100 would be a perfect match with most MVPs hovering between 70-75.
-          </p>
-
-          <i class="fas fa-info">
-          </i>
-
+         
+       
+          
 
 
           <div class="ml-auto flex justify-end">
             <div class="text-center flex items-center gap-2">
               Sort By: 
               <tab-button :tab1text="'Team'" :ignoreclick="true" :tab2text="'HP Score'" @tab-click="sortCombinedPlayers" > </tab-button>
+                <round-image class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large">
+              <slot>
+                <div>
+                  <p>Heroes Profile Score is a match based analysis ranking showing how a player performed in the match compared to other players in the same match.  100 would be a perfect match with most MVPs hovering between 70-75.</p>
+                </div>
+              </slot>
+            </round-image>
             </div>
           </div>  
           
