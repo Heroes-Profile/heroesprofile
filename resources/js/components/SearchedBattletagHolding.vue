@@ -12,7 +12,9 @@
           <div>{{ item.latest_game }}</div>
           <div>Games Played: {{ item.totalGamesPlayed }}</div>
           <div v-if="item.latestMap">{{ item.latestMap.name }}</div>
-          <div><hero-image-wrapper :hero="item.latestHero"></hero-image-wrapper></div>
+          <div v-if="item.latestHero">
+            <hero-image-wrapper :hero="item.latestHero"></hero-image-wrapper>
+          </div>
         </div>
       </div>
       <div v-else-if="battletagresponse.length == 1">
