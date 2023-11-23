@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="imageHoverBox flex flex-col gap-2 my-2 text-bold">
     <h2>{{ title }}</h2>
-    <p v-if="paragraphOne">{{ paragraphOne }}</p>
+    <p v-html="paragraphOne" v-if="paragraphOne"></p>
     <p v-if="hpOwner">{{ hpOwner }}</p>
     <p v-if="paragraphTwo">{{ paragraphTwo }}</p>
     <p v-if="paragraphThree">{{ paragraphThree }}</p>
