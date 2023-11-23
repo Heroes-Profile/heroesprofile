@@ -13,11 +13,18 @@
           <div>{{ item.latest_game }}</div>
           <div>Games Played: {{ item.totalGamesPlayed }}</div>
           <div v-if="item.latestMap">{{ item.latestMap.name }}</div>
-          <div><hero-image-wrapper :hero="item.latestHero"></hero-image-wrapper></div>
+          <div v-if="item.latestHero">
+            <hero-image-wrapper :hero="item.latestHero"></hero-image-wrapper>
+          </div>
         </div>
       </div>
-      <div class="flex justify-center items-center flex-col" v-else>
-        
+
+      <div v-else-if="battletagresponse.length == 1">
+        Loading Profile...
+        <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+      </div>
+
+        <div class="flex justify-center items-center flex-col" v-else>
         <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'"></search-component>
 <div class="rounded bg-red text-white p-4 mb-4">No battletag found for {{ userinput }}
 
