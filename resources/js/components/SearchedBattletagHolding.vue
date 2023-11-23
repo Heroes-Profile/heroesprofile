@@ -15,6 +15,10 @@
           <div><hero-image-wrapper :hero="item.latestHero"></hero-image-wrapper></div>
         </div>
       </div>
+      <div v-else-if="battletagresponse.length == 1">
+        Loading Profile...
+        <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+      </div>
       <div v-else>
         No battletag found for {{ userinput }}
 
