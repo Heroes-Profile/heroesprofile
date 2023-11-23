@@ -2,7 +2,7 @@
   <div class="match-page">
     <div v-if="data" class=" mx-auto">
       
-<div class="" :style="`background-image: url('/images/maps/background/header-${data.game_map.sanitized_map_name}.jpg')`">
+<div class="" :style="`background-size: cover; background-image: url('/images/maps/background/header-${data.game_map.sanitized_map_name}.jpg')`">
 <div class="text-center pt-4">
        <!-- <div>
           <span>Match Scores</span>

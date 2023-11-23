@@ -9,7 +9,7 @@
           <hero-image-wrapper :size="'big'" :hero="item.hero" :award="item.match_award" :winner="winner" :hpowner="item.hp_owner" :party="item.party" :ispatreon="item.patreon_subscriber" popupsize="large">
             <image-hover-box 
               :title="item.hero.name" 
-              :paragraph-one="`Played by ${item.battletag}`" 
+              :paragraph-one="`Played by : <b>${item.battletag}</b>`" 
               :paragraph-two="`Account Level: ${item.account_level}`"
               :paragraph-three="`Player MMR: ${item.player_mmr}`"
               :paragraph-four="`Hero MMR: ${item.hero_mmr}`"

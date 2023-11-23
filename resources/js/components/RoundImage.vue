@@ -32,7 +32,7 @@
        <!-- {{ "Patreon Subscriber" }} -->
         <i class="fas fa-star" style="color:gold"></i>
       </div>
-        <div class="absolute z-10 top-0 right-0 w-9" v-if="party">
+        <div class="absolute z-10 -top-2 -right-2 w-8" v-if="party">
        <!--  {{ party }} -->
         <img :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${party}.png`"/>
       </div>
