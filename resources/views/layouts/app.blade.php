@@ -41,7 +41,7 @@
           'regions' => session('regions'),
       ])
       @yield('content')
-    </main>
+  
     <div class="mt-auto">
     <div class="footer-wrapper text-center mx-auto bg-lighten border-t-4 border-teal mt-[2em] w-full">
       <div class="footer container-boxed py-10">
