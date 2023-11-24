@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Rules\BattletagInputProhibitCharacters;
 use Illuminate\Http\Request;
 use Mail;
-use App\Rules\BattletagInputProhibitCharacters;
 
 class ContactController extends Controller
 {
@@ -13,7 +13,8 @@ class ContactController extends Controller
         return view('contact');
     }
 
-    public function submitMessage(Request $request){
+    public function submitMessage(Request $request)
+    {
         //return response()->json($request->all());
 
         $data = $request->validate([
@@ -23,6 +24,7 @@ class ContactController extends Controller
         ]);
 
         Mail::to('contact@heroesprofile.com')->send(new \App\Mail\ContactFormMail($data));
-        return "success";
+
+        return 'success';
     }
 }

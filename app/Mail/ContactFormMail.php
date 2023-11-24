@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
@@ -29,6 +28,6 @@ class ContactFormMail extends Mailable
     public function build()
     {
         return $this->subject('New Contact Form Submission')
-                    ->view('emails.contact-form');
+            ->view('emails.contact-form');
     }
 }

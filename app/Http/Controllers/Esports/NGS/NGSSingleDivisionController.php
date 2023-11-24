@@ -41,7 +41,8 @@ class NGSSingleDivisionController extends Controller
 
     }
 
-    public function showDivisionMatchHistory(Request $request, $division){
+    public function showDivisionMatchHistory(Request $request, $division)
+    {
         $defaultseason = NGSTeam::max('season');
 
         $validationRules = [
@@ -63,11 +64,12 @@ class NGSSingleDivisionController extends Controller
                 'filters' => $this->globalDataService->getFilterData(),
                 'division' => $division,
                 'season' => $request['season'],
-                'esport' => "NGS",
+                'esport' => 'NGS',
             ]);
     }
 
-    public function getSingleDivisionMatchHistory(Request $request){
+    public function getSingleDivisionMatchHistory(Request $request)
+    {
         //return response()->json($request->all());
 
         $validationRules = [
@@ -107,7 +109,6 @@ class NGSSingleDivisionController extends Controller
             ->where('heroesprofile_ngs.teams.division', $division)
             ->orderByDesc('game_date')
             ->get();
-
 
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
@@ -151,7 +152,7 @@ class NGSSingleDivisionController extends Controller
             ->values()
             ->all();
 
-        return ["matches" => $matches, "seasons" => $seasons];
+        return ['matches' => $matches, 'seasons' => $seasons];
     }
 
     public function getSingleDivisionData(Request $request)
