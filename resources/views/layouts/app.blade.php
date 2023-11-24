@@ -27,18 +27,7 @@
 
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-
-  </head>
-  <body class="bg-black text-white">
-    <div id="app" class="flex flex-col align-stretch" style="min-height:100vh;">
-      <div class="bg-red text-sm text-center p-1">
-        Site has not been styled for mobile yet.<br/>
-        Patreon subscribers please log in and link your Patreon account to get site flair and ad-free.
-        {{ session('headeralert') }}
-      </div>
-      <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></horizontal-banner-ad>
-
+    
 </head>
 <body class="bg-black text-white">
   <div id="app" class="flex flex-col align-stretch" style="min-height:100vh;">
