@@ -17,7 +17,7 @@ class PatreonAccount extends Model
         'patreon_id',
         'name',
         'email',
-        'site_flair', 
+        'site_flair',
         'ad_free',
         'access_token',
         'remember_token',

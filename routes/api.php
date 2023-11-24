@@ -2,8 +2,9 @@
 
 use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\CompareController;
-use App\Http\Controllers\Esports\CCL\CCLController;
+use App\Http\Controllers\ContactController;
 //Global
+use App\Http\Controllers\Esports\CCL\CCLController;
 use App\Http\Controllers\Esports\EsportsController;
 use App\Http\Controllers\Esports\HeroesInternational\HeroesInternationalController;
 use App\Http\Controllers\Esports\MastersClash\MastersClashController;
@@ -15,25 +16,24 @@ use App\Http\Controllers\Global\GlobalExtraStats;
 use App\Http\Controllers\Global\GlobalHeroMapStatsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupsTalentsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupStatsController;
-use App\Http\Controllers\Global\GlobalHeroStatsController;
 //Player
+use App\Http\Controllers\Global\GlobalHeroStatsController;
 use App\Http\Controllers\Global\GlobalLeaderboardController;
 use App\Http\Controllers\Global\GlobalPartyStatsController;
 use App\Http\Controllers\Global\GlobalTalentBuilderController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
 use App\Http\Controllers\Player\FriendFoeController;
 use App\Http\Controllers\Player\PlayerController;
-use App\Http\Controllers\Player\PlayerHeroesMapsRolesController;
 //Profile
-use App\Http\Controllers\Player\PlayerMatchHistory;
+use App\Http\Controllers\Player\PlayerHeroesMapsRolesController;
 //Esports
+use App\Http\Controllers\Player\PlayerMatchHistory;
 use App\Http\Controllers\Player\PlayerMatchupsController;
 use App\Http\Controllers\Player\PlayerMMRController;
 use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ContactController;
 
 /*
 |--------------------------------------------------------------------------
@@ -126,7 +126,6 @@ Route::prefix('v1')->group(function () {
 
     Route::post('esports/single/team', [EsportsController::class, 'getData']);
 
-
     Route::post('esports/single/player', [EsportsController::class, 'getData']);
 
     Route::post('esports/single/player/match/history', [EsportsController::class, 'getDataSinglePlayerMatchHistory']);
@@ -154,7 +153,6 @@ Route::prefix('v1')->group(function () {
     Route::post('esports/heroesinternational/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
 
     Route::post('compare', [CompareController::class, 'getData']);
-
 
     Route::post('contact', [ContactController::class, 'submitMessage']);
 
