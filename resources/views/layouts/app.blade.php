@@ -39,6 +39,15 @@
       </div>
       <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></horizontal-banner-ad>
 
+</head>
+<body class="bg-black text-white">
+  <div id="app" class="flex flex-col align-stretch" style="min-height:100vh;">
+ <div class="bg-red text-sm text-center p-1">
+      Site has not been styled for mobile yet.<br/>
+      Patreon subscribers please log in and link you Patreon account as we migrate to new site flair and ad-free infrastructure.
+      {{ session('headeralert') }}
+    </div>
+
       @include('nav', [
       'isAuthenticated' => Auth::check(),
       'mainSearchAccount' => $main_search_account,
@@ -50,11 +59,19 @@
       <rich-media-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></rich-media-ad>
 
       @yield('content')
-      </main>
-      <div class="mt-auto">
-        <div class="footer-wrapper text-center mx-auto bg-lighten border-t-4 border-teal mt-[2em] w-full">
-          <div class="footer container-boxed py-10">
-            <div class="container container-flex mx-auto">
+ 
+    <div class="mt-auto">
+    <div class="footer-wrapper text-center mx-auto bg-lighten border-t-4 border-teal mt-[2em] w-full">
+      <div class="footer container-boxed py-10">
+        <div class="container container-flex mx-auto">
+
+          <div class="logo ">
+            <a class="text-blue-600 hover:text-blue-800 flex justify-center items-center font-logo text-2xl py-5 mx-auto text-center" href="/">
+            Heroes
+            <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
+            Profile
+        </a>
+          </div>
 
               <div class="logo ">
                 <a class="text-blue-600 hover:text-blue-800 flex justify-center items-center font-logo text-2xl py-5 mx-auto text-center" href="/">

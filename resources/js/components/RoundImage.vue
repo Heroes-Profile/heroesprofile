@@ -1,8 +1,7 @@
 <template>
-  <!-- Need to add a medium value -->
   <div
   :class="[
-      'relative group flex items-center w-10 h-10',  
+      'relative group items-center w-10 h-10',  
       { 
         block: size === 'big', 
         'w-20': size === 'big', 
@@ -11,12 +10,38 @@
         'h-[6em]': size === 'xl',
         'w-72': size === 'large',
         'h-[23em]': size === 'large',
-        'overflow-hidden': size === 'large'
+        'overflow-hidden': size === 'large',
+        'inline-block' : icon,
+        'flex': !icon,
+        'w-[1.7em]': icon,
+        'h-[1.7em]': icon
         
       }
       ]"
      @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
-    <img loading="eager" :class="[
+        <div class="absolute z-10 bottom-0 right-0 w-9"  v-if="award">
+        <img :src="awardicon"/>
+      </div>
+      <div class="absolute top-0 left-0 z-10" v-if="hpowner">
+       <!-- {{ "HP Owner" }} -->
+        <i class="fas fa-crown text" style="color:gold;"></i>
+      </div>
+
+      <!-- I need to add the logic for this, but this is the icon.  Leaving it true for now so it displays -->
+      <div class="absolute z-10 top-0 left-0" v-if="ispatreon">
+       <!-- {{ "Patreon Subscriber" }} -->
+        <i class="fas fa-star" style="color:gold"></i>
+      </div>
+        <div class="absolute z-10 -top-2 -right-2 w-8" v-if="party">
+       <!--  {{ party }} -->
+        <img :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${party}.png`"/>
+      </div>
+      
+      <span class="bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em]  flex justify-center pl-[1px] items-center bold " v-if="icon" >
+        <i :class="icon" ></i>
+      </span>
+    
+    <img v-else loading="eager" :class="[
       'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow   w-full h-10 min-w-10',  
       { 
         
@@ -45,7 +70,11 @@
 
       ]" >
         <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 ', {}]">
+          <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>
+          <div class="bg-red" v-if="ispatreon">Patreon Subscriber</div>
           <slot></slot>
+          <div class="bg-teal" v-if="award">{{award.title}}</div>
+
         </div>
 
 
@@ -67,7 +96,13 @@ export default {
     size: String,
     rectangle: Boolean,
     excludehover: Boolean,
-    popupsize: String
+    popupsize: String,
+    award: Object,
+    awardicon: String,
+    party: String,
+    hpowner: Boolean,
+    ispatreon: Boolean,
+    icon: String
   },
   data(){
     return {
@@ -79,6 +114,7 @@ export default {
   mounted() {
   },
   computed: {
+
   },
   watch: {
   },

@@ -26,23 +26,61 @@ body{
 
 /* Navigation */
 .nav-dropdown{
-  @apply absolute  left-0 hidden group-hover:block z-50 pt-3  min-w-[200px];
+  @apply absolute  left-0 hidden group-hover:block z-50 md:pt-3  min-w-[200px] max-md:relative;
 }
 .nav-dropdown a{
   text-wrap:nowrap;
   display:flex;
   white-space:nowrap;
+  max-md:flex-col;
 }
-.nav-item:not(:first-child)::before{
- content: '|';
- padding-right:20px;
- height:100%;
- font-size:1.5em;
+@media (min-width:768px){
+  .nav-item:not(:first-child)::before{
+   content: '|';
+   padding-right:20px;
+   height:100%;
+   font-size:1.5em;
+  }
+
 }
 .nav-item{
   padding-top:10px; 
   padding-bottom:10px;
+  @apply max-md:w-full text-center;
 }
+
+
+
+.nav-dropdown-inner-wrapper{
+  @apply bg-blue   text-sm drop-shadow;
+}
+.alt-acct-nav .nav-dropdown-inner-wrapper{
+  @apply  rounded-tl-lg rounded-tr-none ;
+}
+.nav-dropdown a{
+  @apply block px-4 py-2 md:border-b md:border-darken hover:bg-lighten;
+}
+
+@media (max-width:768px){
+    .main-navigation-wrapper{
+      @apply min-h-[100vh] absolute w-full hidden ;
+    }
+    .main-navigation-wrapper nav{
+      @apply min-h-[100vh]  flex-col ;
+    }
+    .nav-item{
+      @apply border-b border-white;
+    }
+    .nav-dropdown a{
+     @apply border-t border-white;
+    }
+    .nav-dropdown:not('nav-dropdown-secondary-nav'){
+      @apply mt-2;
+    }
+    .alt-acct-nav .nav-dropdown-inner-wrapper{
+        @apply rounded-none;
+    }
+  }
 
 
 
@@ -52,16 +90,12 @@ body{
 }
 
 table{
-
-  
-
   width:auto ;
   @apply bg-gray-light text-black;
   min-width:1500px;
   width: 1500px;
   margin-left:auto;
   margin-right:auto;
-
  
 }
 
@@ -74,6 +108,7 @@ tr.bg-hred{
 tr.bg-yellow{
   background-color: #d98c40;
 }
+
 
 th{
   @apply text-left text-sm leading-4  tracking-wider cursor-pointer py-1 px-3 border-b;
@@ -282,10 +317,10 @@ h1{
 .match-page table td{
   width:16%;
 }
-.match-page table.loser thead td{
+.match-page table.loser thead td:not(.color-cell){
   @apply bg-red;
 }
-.match-page table.winner thead td{
+.match-page table.winner thead td:not(.color-cell){
   @apply bg-teal;
 }
 
