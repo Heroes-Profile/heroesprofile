@@ -11,6 +11,10 @@ import ExampleComponent from './components/ExampleComponent.vue';
 import MainPage from './components/MainPage.vue';
 import MobileNavHack from './components/MobileNavHack.vue';
 
+// Ads
+import RichMediaAd from './components/Ads/RichMediaAd.vue';
+
+
 //Compare Page
 import Compare from './components/Compare/Compare.vue';
 import HeroOrLeagueChoiceBox from './components/Compare/HeroOrLeagueChoiceBox.vue';

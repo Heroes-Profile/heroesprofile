@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Esports;
 
 use App\Http\Controllers\Controller;
 use App\Models\CCL\CCLTeam;
-use App\Models\NGS\NGSTeam;
 use App\Models\CCL\HeroesInternationalMainTeam;
 use App\Models\CCL\HeroesInternationalNationsCupTeam;
 use App\Models\HeroesDataTalent;
 use App\Models\Map;
+use App\Models\NGS\NGSTeam;
 use App\Rules\GameMapInputValidation;
 use App\Rules\HeroInputValidation;
 use App\Rules\NGSDivisionInputValidation;
@@ -52,7 +52,8 @@ class EsportsController extends Controller
             ]);
     }
 
-    public function showPlayerMatchHistory(Request $request, $esport, $battletag, $blizz_id){
+    public function showPlayerMatchHistory(Request $request, $esport, $battletag, $blizz_id)
+    {
         $validationRules = [
             'esport' => 'required|in:NGS,CCL,MastersClash,NutCup,HeroesInternational',
             'battletag' => 'required|string',
@@ -83,6 +84,7 @@ class EsportsController extends Controller
             'season' => $request['season'],
         ]);
     }
+
     public function showSingleTeam(Request $request, $esport, $team)
     {
         $validationRules = [
@@ -108,9 +110,9 @@ class EsportsController extends Controller
             ];
         }
 
-        $image = "";
-        if($esport == "NGS"){
-            $image = NGSTeam::select("image")->where("team_name", $team)->first()->image;
+        $image = '';
+        if ($esport == 'NGS') {
+            $image = NGSTeam::select('image')->where('team_name', $team)->first()->image;
         }
 
         return view('Esports.team')
@@ -187,7 +189,7 @@ class EsportsController extends Controller
         }
 
         $hero = $this->globalDataService->getHeroModel($request['hero']);
-        
+
         return view('Esports.singlePlayerHero')
             ->with([
                 'esport' => $esport,
@@ -225,7 +227,7 @@ class EsportsController extends Controller
                 'status' => 'failure to validate inputs',
             ];
         }
-        $mapobject = Map::where("name", $request["game_map"])->first();
+        $mapobject = Map::where('name', $request['game_map'])->first();
 
         return view('Esports.singlePlayerMap')
             ->with([
@@ -238,7 +240,9 @@ class EsportsController extends Controller
                 'tournament' => $request['tournament'],
             ]);
     }
-    public function getDataSinglePlayerMatchHistory(Request $request){
+
+    public function getDataSinglePlayerMatchHistory(Request $request)
+    {
         //return response()->json($request->all());
 
         $validationRules = [
@@ -377,6 +381,7 @@ class EsportsController extends Controller
 
         return $result;
     }
+
     public function getRecentMatchData(Request $request)
     {
         //return response()->json($request->all());

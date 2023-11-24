@@ -18,8 +18,12 @@ class CheckIfPatreonSupporter
     {
         if (Auth::check()) {
             $user = Auth::user();
-            if ($user->patreon == 1) {
-                session(['patreonSubscriber' => true]);
+            if ($user->site_flair == 1) {
+                session(['patreonSubscriberSiteFlair' => true]);
+            }
+
+            if ($user->ad_free == 1) {
+                session(['patreonSubscriberAdFree' => true]);
             }
         }
 

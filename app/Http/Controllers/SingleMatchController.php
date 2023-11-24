@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Award;
+use App\Models\BattlenetAccount;
 use App\Models\HeroesDataTalent;
 use App\Models\Map;
-use App\Models\Award;
 use App\Models\ReplayExperienceBreakdownBlob;
-use App\Models\BattlenetAccount;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-
 
 class SingleMatchController extends Controller
 {
@@ -311,18 +310,20 @@ class SingleMatchController extends Controller
                     }
 
                     $blizz_id = $this->esport ? $row->blizz_id : ($containsAccount ? null : $row->blizz_id);
+
                     return [
                         'check' => $containsAccount,
                         'region' => $this->esport ? $region : ($containsAccount ? null : $region),
                         'battletag' => $this->esport ? explode('#', $row->battletag)[0] : ($containsAccount ? null : explode('#', $row->battletag)[0]),
                         'blizz_id' => $blizz_id,
-                        'hp_owner' => ($row->battletag == "Zemill#1940" && $region == 1 && $blizz_id == "67280") ? true : false,
+                        'hp_owner' => ($row->battletag == 'Zemill#1940' && $region == 1 && $blizz_id == '67280') ? true : false,
                         'winner' => $row->winner,
                         'team' => $row->team,
                         'party' => ! $this->esport ? $row->party : null,
+                        'match_award' => ! $this->esport ? Awards::find($row->match_award) : null,
                         'hero' => $heroData[$row->hero],
                         'patreon_subscriber' => ! $this->esport ? $this->isPatreonSubscriber($row->battletag, $blizz_id, $region) : null,
-                        'match_award' => ! $this->esport ? Award::where("award_id", $row->match_award)->first() : null,
+                        'match_award' => ! $this->esport ? Award::where('award_id', $row->match_award)->first() : null,
                         'hero_level' => $containsAccount ? null : $hero_level_calculated,
                         'avg_hero_level' => $containsAccount ? null : $avg_hero_level,
                         'account_level' => ($this->esport || $containsAccount) ? null : $row->account_level,
@@ -402,41 +403,43 @@ class SingleMatchController extends Controller
         return $groupedData[0];
     }
 
-    private function isPatreonSubscriber($battletag, $blizz_id, $region){
-        $data = BattlenetAccount::where("blizz_id", $blizz_id)->where("region", $region)->first();
-        
-        if(empty($data)){
+    private function isPatreonSubscriber($battletag, $blizz_id, $region)
+    {
+        $data = BattlenetAccount::where('blizz_id', $blizz_id)->where('region', $region)->first();
+
+        if (empty($data)) {
             return false;
         }
 
         $data = $data->patreonAccount;
 
-
-
-        if($data->site_flair == 1){
+        if ($data->site_flair == 1) {
             return true;
         }
+
         return false;
     }
-    private function updatePartyData(&$playerArray) {
+
+    private function updatePartyData(&$playerArray)
+    {
         $partyArray = [];
-        $partColorArray = ["red", "blue", "teal", "orange", "brown", "purple"];
+        $partColorArray = ['red', 'blue', 'teal', 'orange', 'brown', 'purple'];
         $colorCounter = 0;
 
         foreach ($playerArray[0] as &$playerData) {
-            if ($playerData["party"] != 0 && !array_key_exists($playerData["party"], $partyArray)) {
-                $partyArray[$playerData["party"]] = $partColorArray[$colorCounter];
+            if ($playerData['party'] != 0 && ! array_key_exists($playerData['party'], $partyArray)) {
+                $partyArray[$playerData['party']] = $partColorArray[$colorCounter];
                 $colorCounter++;
             }
-            $playerData["party"] = $playerData["party"] != 0 ? $partyArray[$playerData["party"]] : null;
+            $playerData['party'] = $playerData['party'] != 0 ? $partyArray[$playerData['party']] : null;
         }
 
         foreach ($playerArray[1] as &$playerData) {
-            if ($playerData["party"] != 0 && !array_key_exists($playerData["party"], $partyArray)) {
-                $partyArray[$playerData["party"]] = $partColorArray[$colorCounter];
+            if ($playerData['party'] != 0 && ! array_key_exists($playerData['party'], $partyArray)) {
+                $partyArray[$playerData['party']] = $partColorArray[$colorCounter];
                 $colorCounter++;
             }
-            $playerData["party"] = $playerData["party"] != 0 ? $partyArray[$playerData["party"]] : null;
+            $playerData['party'] = $playerData['party'] != 0 ? $partyArray[$playerData['party']] : null;
         }
 
         // Unset the references to avoid potential issues

@@ -120,7 +120,6 @@ class PlayerController extends Controller
                 ->first();
         }
 
-
         $latestReplayID = Replay::select('replay.replayID')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
             ->where('blizz_id', $blizz_id)
@@ -150,7 +149,6 @@ class PlayerController extends Controller
                 ->where('season', $season)
                 ->first();
         }
-       
 
         if ($cachedData) {
             return $this->formatCache($cachedData, $blizz_id, $region, $battletag);
@@ -733,7 +731,7 @@ class PlayerController extends Controller
 
         if (is_string($data->matches)) {
             $matches = json_decode($data->matches, true);
-        }else{
+        } else {
             $matches = $data->matches;
         }
 

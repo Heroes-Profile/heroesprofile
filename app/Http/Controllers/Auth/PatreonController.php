@@ -22,6 +22,7 @@ class PatreonController extends Controller
     {
         $user = Socialite::driver('patreon')->user();
 
+        dd($user);
         $patreonData = [
             'patreon_id' => $user->id,
             'name' => $user->name,
