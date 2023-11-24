@@ -74,7 +74,7 @@ body{
     .nav-dropdown a{
      @apply border-t border-white;
     }
-    .nav-dropdown:not('nav-dropdown-secondary-nav'){
+    .nav-dropdown:not('.nav-dropdown-secondary-nav'){
       @apply mt-2;
     }
     .alt-acct-nav .nav-dropdown-inner-wrapper{
