@@ -35,7 +35,7 @@ export default {
       let formattedRole = this.role.toLowerCase();
 
       //This is the wrong image I think?  The other one is without _compare
-      return `/images/roles/${formattedRole}.png`;
+      return `/images/roles/${formattedRole}.PNG`;
     }
   }
 }
