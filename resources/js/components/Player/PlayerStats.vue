@@ -263,7 +263,6 @@
             cancelToken: this.cancelTokenSource.token,
           });
           this.data = response.data;
-          console.log(this.data);
         }catch(error){
         //Do something here
         }finally {

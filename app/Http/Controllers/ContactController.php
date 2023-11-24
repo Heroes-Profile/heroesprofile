@@ -22,7 +22,7 @@ class ContactController extends Controller
             'message' => 'required|string',
         ]);
 
-        Mail::to('zemill@heroesprofile.com')->send(new \App\Mail\ContactFormMail($data));
-        return response()->json(['message' => 'Email sent successfully']);
+        Mail::to('contact@heroesprofile.com')->send(new \App\Mail\ContactFormMail($data));
+        return "success";
     }
 }

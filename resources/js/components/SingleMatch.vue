@@ -1,7 +1,9 @@
 <template>
   <div class="match-page">
     <div v-if="data" class=" mx-auto">
-      <div class="text-center">
+      
+<div class="" :style="`background-size: cover; background-image: url('/images/maps/background/header-${data.game_map.sanitized_map_name}.jpg')`">
+<div class="text-center pt-4">
        <!-- <div>
           <span>Match Scores</span>
           <span>Talents</span>
@@ -10,14 +12,12 @@
           <span>Advanced Stats</span>
         </div>-->
 
-Need to add background image.  It is going to be <img :src="`/images/maps/background/header-${data.game_map.sanitized_map_name}.jpg`">
-
 
         <div class="mb-4">
           <h1>{{ formatDate(data.game_date) }}</h1>
         </div>
 
-        <div class="w-full max-w-[1500px] bg-blue rounded flex justify-between gap-2 mx-auto p-4 mb-4">
+        <div class="w-full max-w-[1000px] bg-blue rounded flex justify-between gap-2 mx-auto p-4 mb-4">
           <span>{{ data.game_map.name }}</span>
           <span>{{ data.game_type }}</span>
           <span>{{ data.game_length }}</span>
@@ -25,10 +25,10 @@ Need to add background image.  It is going to be <img :src="`/images/maps/backgr
       </div>
 
 
-      <div class=" p-10 text-center">
-        <div class="flex flex-wrap justify-center max-w-[2000px] mx-auto gap-10">
-          <div>
-            <group-box class="w-full" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(0, data.winner)" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'"></group-box>
+      <div class=" p-10 text-center ">
+        <div class="flex  justify-center max-w-[1500px] mx-auto gap-10">
+          <div class="max-w-[600px]">
+            <group-box class="w-full" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(0, data.winner)" popupsize="large" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
 
 
             <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
@@ -65,8 +65,8 @@ Need to add background image.  It is going to be <img :src="`/images/maps/backgr
           </div>
 
 
-          <div>
-            <group-box class="w-full" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(1, data.winner)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'"></group-box>
+          <div class="max-w-[600px]">
+            <group-box class="w-full" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(1, data.winner)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'" :winner="data.winner == 1 ? true : false"></group-box>
 
             <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
               {{ esport ? this.data.team_names.team_two.team_name : "Team 2" }} Bans
@@ -99,9 +99,9 @@ Need to add background image.  It is going to be <img :src="`/images/maps/backgr
           </div >
         </div>
       </div>
+    </div>
 
-
-      <div v-if="esport" class="max-w-[2000px] mx-auto mb-10">
+      <div v-if="esport" class="max-w-[1500px] mx-auto mb-10">
         
         <table class="min-w-[1000px] max-w-[1000px]">
           <thead>
@@ -137,22 +137,25 @@ Need to add background image.  It is going to be <img :src="`/images/maps/backgr
       </div>
 
       <div class="bg-lighten">
-        <div class="p-10  max-w-[2000px] mx-auto  ">
+        <div class="p-10  max-w-[1500px] mx-auto  ">
           <h2 class="text-3xl font-bold py-5">Match Scores</h2>
           <p>See advanced stats below</p>
-          <p>
-            Heroes Profile Score is a match based analysis ranking showing how a player performed in the match compared to other players in the same match.  100 would be a perfect match with most MVPs hovering between 70-75.
-          </p>
-
-          <i class="fas fa-info">
-          </i>
-
+         
+       
+          
 
 
           <div class="ml-auto flex justify-end">
             <div class="text-center flex items-center gap-2">
               Sort By: 
               <tab-button :tab1text="'Team'" :ignoreclick="true" :tab2text="'HP Score'" @tab-click="sortCombinedPlayers" > </tab-button>
+                <round-image class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large">
+              <slot>
+                <div>
+                  <p>Heroes Profile Score is a match based analysis ranking showing how a player performed in the match compared to other players in the same match.  100 would be a perfect match with most MVPs hovering between 70-75.</p>
+                </div>
+              </slot>
+            </round-image>
             </div>
           </div>  
           
@@ -161,7 +164,7 @@ Need to add background image.  It is going to be <img :src="`/images/maps/backgr
           <template v-for="(item, index) in combinedPlayers" :key="index">
             
             <div>
-              <a class="flex flex-wrap items-end my-5 w-full justify-evenly"  :href="item.check ? 'javascript:void(0)' : esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
+              <a class="flex items-end my-5 w-full justify-evenly"  :href="item.check ? 'javascript:void(0)' : esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
                 <hero-image-wrapper :size="'big'" :hero="item.hero" class="mr-2"></hero-image-wrapper>
                 <div>
                   <div class="flex justify-between flex-1">
@@ -170,18 +173,18 @@ Need to add background image.  It is going to be <img :src="`/images/maps/backgr
                   </div>
                   <div class="flex space-x-9 items-between w-full flex-1 ">
                     <div class="flex flex-1">
-                      <stat-box :title="'Kills'" :value="item.score.kills" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-                      <stat-box :title="'Takedowns'" :value="item.score.takedowns" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-                      <stat-box :title="'Deaths'" :value="item.score.deaths" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                      <stat-box class="min-w-[8em]" :title="'Kills'" :value="item.score.kills" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                      <stat-box class="min-w-[8em]" :title="'Takedowns'" :value="item.score.takedowns" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                      <stat-box class="min-w-[8em]" :title="'Deaths'" :value="item.score.deaths" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
                     </div>
                     <div class="flex flex-1">
-                      <stat-box :title="'Siege Dmg.'" :value="item.score.siege_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-                      <stat-box :title="'Hero Dmg.'" :value="item.score.hero_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-                      <stat-box :title="'Healing'" :value="item.score.total_healing" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                      <stat-box class="min-w-[8em]" :title="'Siege Dmg.'" :value="item.score.siege_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                      <stat-box class="min-w-[8em]" :title="'Hero Dmg.'" :value="item.score.hero_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                      <stat-box class="min-w-[8em]" :title="'Healing'" :value="item.score.total_healing" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
                     </div>
                     <div class="flex flex-1">
-                      <stat-box :title="'Dmg. Taken'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-                      <stat-box :title="'Exp. Con.'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                      <stat-box class="min-w-[8em]" :title="'Dmg. Taken'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                      <stat-box class="min-w-[8em]" :title="'Exp. Con.'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
                     </div>
                   </div>
 
@@ -297,17 +300,17 @@ Need to add background image.  It is going to be <img :src="`/images/maps/backgr
 </div>
 
 
-<div v-if="!esport" class=" overflow-scroll md:overflow-auto  h-[50vh] md:h-auto max-w-[2000px] mx-auto my-5">
+<div v-if="!esport" class=" overflow-scroll md:overflow-auto  h-[50vh] md:h-auto max-w-[1500px] mx-auto my-5">
 
   Team 1 Advanced MMR data
 
   {{}}
   <table :class="{ winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }">
     <thead>
-      <tr>
-        <td colspan="2"></td>
-        <td colspan="3">Pre-Match</td>
-        <td colspan="3">Post-Match</td>
+      <tr >
+        <td class="color-cell bg-black " colspan="2"></td>
+        <td class="color-cell bg-yellow" colspan="3">Pre-Match</td>
+        <td class="color-cell bg-blue" colspan="3">Post-Match</td>
       </tr>
       <tr>
         <td >Player</td>
@@ -322,7 +325,7 @@ Need to add background image.  It is going to be <img :src="`/images/maps/backgr
     </thead>
     <tbody>
       <tr v-for="(item, index) in data.players[0]" :key="index">
-        <td><a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR/' + item.hero.name + '/' + data.game_type">{{ item.battletag }}</a></td>
+        <td class="bg-blue text-white border-white border"><a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR/' + item.hero.name + '/' + data.game_type">{{ item.battletag }}</a></td>
         <td>{{ item.hero.name }}</td>
         <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
         <td>{{ Math.round(item.hero_mmr - item.hero_change) }}</td>
@@ -332,29 +335,29 @@ Need to add background image.  It is going to be <img :src="`/images/maps/backgr
         <td>{{ item.role_mmr }} ({{ item.role_change }})</td>
       </tr>
       <tr>
-        <td></td>
-        <td>Average</td>
-        <td>{{ getAverageValue('prev_player_mmr', data.players[0]) }}</td>
-        <td>{{ getAverageValue('prev_hero_mmr', data.players[0]) }}</td>
-        <td>{{ getAverageValue('prev_role_mmr', data.players[0]) }}</td>
-        <td>{{ getAverageValue('player_mmr', data.players[0]) }}</td>
-        <td>{{ getAverageValue('hero_mmr', data.players[0]) }}</td>
-        <td>{{ getAverageValue('role_mmr', data.players[0]) }}</td>
+        <td class="bg-blue border-white border"></td>
+        <td class="color-cell bg-blue text-white">Average</td>
+        <td class="color-cell bg-blue text-white">{{ getAverageValue('prev_player_mmr', data.players[0]) }}</td>
+        <td class="color-cell bg-blue text-white">{{ getAverageValue('prev_hero_mmr', data.players[0]) }}</td>
+        <td class="color-cell bg-blue text-white">{{ getAverageValue('prev_role_mmr', data.players[0]) }}</td>
+        <td class="color-cell bg-blue text-white">{{ getAverageValue('player_mmr', data.players[0]) }}</td>
+        <td class="color-cell bg-blue text-white">{{ getAverageValue('hero_mmr', data.players[0]) }}</td>
+        <td class="color-cell bg-blue text-white">{{ getAverageValue('role_mmr', data.players[0]) }}</td>
       </tr>
     </tbody>
   </table>
 </div>
 
 
-<div  v-if="!esport" class="   overflow-scroll md:overflow-auto  h-[50vh] md:h-auto max-w-[2000px] mx-auto my-5">
+<div  v-if="!esport" class="   overflow-scroll md:overflow-auto  h-[50vh] md:h-auto max-w-[1500px] mx-auto my-5">
 
   Team 2 Advanced MMR data
   <table :class="{ winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }">
     <thead>
       <tr>
-        <td colspan="2"></td>
-        <td colspan="3">Pre-Match</td>
-        <td colspan="3">Post-Match</td>
+       <td class="color-cell bg-black " colspan="2"></td>
+        <td class="color-cell bg-yellow" colspan="3">Pre-Match</td>
+        <td class="color-cell bg-blue" colspan="3">Post-Match</td>
       </tr>
       <tr>
         <td>Player</td>
@@ -369,7 +372,7 @@ Need to add background image.  It is going to be <img :src="`/images/maps/backgr
     </thead>
     <tbody>
       <tr v-for="(item, index) in data.players[1]" :key="index">
-        <td><a :href="`/Player/${item.battletag}/${item.blizz_id}/${item.region}`">{{ item.battletag }}</a></td>
+        <td class="bg-blue text-white border-white border"><a :href="`/Player/${item.battletag}/${item.blizz_id}/${item.region}`">{{ item.battletag }}</a></td>
         <td>{{ item.hero.name }}</td>
         <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
         <td>{{ Math.round(item.hero_mmr - item.hero_change) }}</td>
@@ -379,27 +382,27 @@ Need to add background image.  It is going to be <img :src="`/images/maps/backgr
         <td>{{ item.role_mmr }} ({{ item.role_change }})</td>
       </tr>
       <tr>
-        <td></td>
-        <td>Average</td>
-        <td>{{ getAverageValue('prev_player_mmr', data.players[1]) }}</td>
-        <td>{{ getAverageValue('prev_hero_mmr', data.players[1]) }}</td>
-        <td>{{ getAverageValue('prev_role_mmr', data.players[1]) }}</td>
-        <td>{{ getAverageValue('player_mmr', data.players[1]) }}</td>
-        <td>{{ getAverageValue('hero_mmr', data.players[1]) }}</td>
-        <td>{{ getAverageValue('role_mmr', data.players[1]) }}</td>
+        <td class="bg-blue text-white border-white border"></td>
+        <td class="color-cell bg-blue text-white border-white border">Average</td>
+        <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('prev_player_mmr', data.players[1]) }}</td>
+        <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('prev_hero_mmr', data.players[1]) }}</td>
+        <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('prev_role_mmr', data.players[1]) }}</td>
+        <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('player_mmr', data.players[1]) }}</td>
+        <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('hero_mmr', data.players[1]) }}</td>
+        <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('role_mmr', data.players[1]) }}</td>
       </tr>
     </tbody>
   </table>
 </div>
 
 
-<div class="max-w-[2000px] mx-auto my-5">
+<div class="max-w-[1500px] mx-auto my-5">
   Team 1 Advanced Stats
   <table :class="{ winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
     <thead>
       <tr>
         <td >{{ section.title }}</td>
-        <td
+        <td 
         v-for="(player, playerIndex) in data.players[0]"
         :key="playerIndex"
         
@@ -410,19 +413,19 @@ Need to add background image.  It is going to be <img :src="`/images/maps/backgr
   </thead>
   <tbody>
     <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
-      <td>{{ row.label }}</td>
+      <td class="bg-blue text-white border-white border">{{ row.label }}</td>
       <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">{{ formatValue(player.score[row.key]) }}</td>
     </tr>
   </tbody>
 </table>
 </div>
 
-<div class="max-w-[2000px] mx-auto">
+<div class="max-w-[1500px] mx-auto">
   Team 2 Advanced Stats
   <table :class="{ winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
     <thead>
       <tr>
-        <td >{{ section.title }}</td>
+        <td class="bg-blue text-white border-white border">{{ section.title }}</td>
         <td
         v-for="(player, playerIndex) in data.players[1]"
         :key="playerIndex"
@@ -434,7 +437,7 @@ Need to add background image.  It is going to be <img :src="`/images/maps/backgr
   </thead>
   <tbody>
     <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
-      <td>{{ row.label }}</td>
+      <td class="bg-blue text-white border-white border">{{ row.label }}</td>
       <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">{{ formatValue(player.score[row.key]) }}</td>
     </tr>
   </tbody>

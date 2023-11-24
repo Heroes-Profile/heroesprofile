@@ -1,9 +1,10 @@
 <template>
   <div>
-    <div v-if="battletagresponse">
-      <div class="flex flex-col items-center" v-if="battletagresponse.length > 1">
+    <div class="max-w-[1500px] mx-auto mt-10 w-full" v-if="battletagresponse">
+      <div class="flex flex-col items-center justify-center " v-if="battletagresponse.length > 1">
+        <h2 class="text-xl mb-4 ">Results</h2>
         <div 
-          class="bg-blue p-4 rounded mb-4 w-[500px] flex flex-col items-center cursor-pointer" 
+          class="bg-blue hover:bg-lblue p-4 rounded mb-4 w-[500px] flex flex-col items-center cursor-pointer" 
           v-for="(item, index) in battletagresponse" 
           :key="index" 
           @click="redirectToProfile(item.battletag, item.blizz_id, item.region)"
@@ -12,15 +13,22 @@
           <div>{{ item.latest_game }}</div>
           <div>Games Played: {{ item.totalGamesPlayed }}</div>
           <div v-if="item.latestMap">{{ item.latestMap.name }}</div>
-          <div><hero-image-wrapper :hero="item.latestHero"></hero-image-wrapper></div>
+          <div v-if="item.latestHero">
+            <hero-image-wrapper :hero="item.latestHero"></hero-image-wrapper>
+          </div>
         </div>
       </div>
-      <div v-else>
-        No battletag found for {{ userinput }}
 
-        Try Again?
+      <div v-else-if="battletagresponse.length == 1">
+        Loading Profile...
+        <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+      </div>
+
+        <div class="flex justify-center items-center flex-col" v-else>
         <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'"></search-component>
+<div class="rounded bg-red text-white p-4 mb-4">No battletag found for {{ userinput }}
 
+        Try Again?</div>
       </div>
     </div>
     <div v-else>
