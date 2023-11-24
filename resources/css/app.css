@@ -34,7 +34,7 @@ body{
   white-space:nowrap;
   max-md:flex-col;
 }
-@media (min-width:1500px){
+@media (min-width:768px){
 .nav-item:not(:first-child)::before{
  content: '|';
  padding-right:20px;
@@ -60,12 +60,12 @@ body{
   @apply block px-4 py-2 md:border-b md:border-darken hover:bg-lighten;
 }
 
-@media (max-width:1500px){
+@media (max-width:768px){
     .main-navigation-wrapper{
-      @apply h-[100vh] absolute w-[100vw] hidden;
+      @apply min-h-[100vh] absolute w-full hidden ;
     }
     .main-navigation-wrapper nav{
-      @apply h-[100vh] w-[100vw] flex-col;
+      @apply min-h-[100vh]  flex-col ;
     }
    }
 

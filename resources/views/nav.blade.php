@@ -5,14 +5,16 @@
                 <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
                 Profile
         </a>
-        <button  id="mobile-toggle" class="md:hidden bg-blue rounded-lg">=</button>
-        <mobile-nav-hack></mobile-nav-hack>
+        <button  id="mobile-toggle" class="md:hidden bg-blue rounded-lg px-2 ">=</button>
+         
+        
     </div>
 </div>
 
 <div id="main-menu" class="  main-navigation-wrapper"> <!-- max-md:hidden  - This needs to hide/show on click of the button but only on mobile - either detect mobile with vue, or have a class that is added/taken away that only applies to mobile -->
-    <nav class="bg-gray-dark text-white z-50 relative md:px-4 text-sm ">
-        
+    <nav class="bg-gray-dark text-white z-40 relative md:px-4 text-sm ">
+      <button  id="mobile-nav-close" class="hidden bg-blue rounded-lg px-2 py-1 ml-auto">x</button>
+       
         <div class="flex items-center justify-between flex-wrap  max-md:flex-col" >
              
             <a class=" flex items-center font-logo text-2xl" href="/">
@@ -79,7 +81,7 @@
 
                     
                         @if(isset($mainSearchAccount))
-                        <div class="relative group inline-block nav-item">
+                        <div class="relative group inline-block nav-item max-md:hidden">
                             <a class="cursor-pointer">
                             {{ $mainSearchAccount['battletag'] }} ({{ $regions[$mainSearchAccount['region']] }})
                             </a>
@@ -111,7 +113,7 @@
 
 
                 @if($isAuthenticated)
-                    <div class="relative group inline-block  ml-5">
+                    <div class="relative group inline-block  ml-5 ">
                             <div class="flex items-center cursor-pointer mr-5">
                                 <img 
                                 class="card-img-top relative hover:opacity-75 w-12 h-12 rounded-full" 
@@ -133,6 +135,44 @@
                 @else
                     <custom-button class="ml-4" :href="'/Authenticate/Battlenet'" :text="'Login'" :alt="'Login'" :size="'small'"></custom-button>
                 @endif
+                <div class="md:hidden">
+                    @foreach($altSearchAccounts as $index => $account)
+            @if($account)
+                <div class="relative group inline-block  p-4 mx-4 text-sm  ">
+                    <a class=" cursor-pointer">{{ $account['battletag'] }} ({{ $regions[$account['region']] }})</a>
+                    <div class="nav-dropdown ">
+                        <div class="nav-dropdown-inner-wrapper ">
+                        <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" >Profile</a>
+                        <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/FriendFoe" >Friends and Foes</a>
+                        <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Hero" >Heroes</a>
+                        <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role">Roles</a>
+                        <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Map" >Maps</a>
+                        <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Matchups">Matchups</a>
+                        <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Talents" >Talents</a>
+                        <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/MMR">MMR Breakdown</a>
+                        <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Match/History" >Match History</a>
+                    </div>
+                    </div>
+                </div>
+                 <div class="relative group inline-block  p-4 mx-4 text-sm  ">
+                    <a class=" cursor-pointer">{{ $account['battletag'] }} ({{ $regions[$account['region']] }})</a>
+                    <div class="nav-dropdown ">
+                        <div class="nav-dropdown-inner-wrapper ">
+                        <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" >Profile</a>
+                        <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/FriendFoe" >Friends and Foes</a>
+                        <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Hero" >Heroes</a>
+                        <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role">Roles</a>
+                        <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Map" >Maps</a>
+                        <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Matchups">Matchups</a>
+                        <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Talents" >Talents</a>
+                        <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/MMR">MMR Breakdown</a>
+                        <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Match/History" >Match History</a>
+                    </div>
+                    </div>
+                </div>
+            @endif
+        @endforeach
+    </div>
             </div>
         </div>
     </nav>
@@ -159,4 +199,5 @@
         @endforeach
     </nav>
 </div>
+<mobile-nav-hack></mobile-nav-hack>
 
