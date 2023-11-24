@@ -62,7 +62,7 @@ class PlayerMapsController extends Controller
         }
 
         $map = $request['map'];
-        $mapobject = Map::where("name", $map)->first();
+        $mapobject = Map::where('name', $map)->first();
 
         return view('Player.Maps.singleMapData')->with([
             'battletag' => $battletag,

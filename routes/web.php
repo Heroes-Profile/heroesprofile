@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\BattleNetController;
 use App\Http\Controllers\Auth\PatreonController;
 use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\CompareController;
+use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Esports\CCL\CCLController;
 use App\Http\Controllers\Esports\EsportsController;
 use App\Http\Controllers\Esports\HeroesInternational\HeroesInternationalController;
@@ -35,7 +36,6 @@ use App\Http\Controllers\Player\PlayerRolesController;
 use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
-use App\Http\Controllers\ContactController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -142,15 +142,9 @@ Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}', [EsportsController:
 Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Hero/{hero}', [EsportsController::class, 'showPlayerHero']);
 Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Map/{game_map}', [EsportsController::class, 'showPlayerMap']);
 
-
-
 Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Match/History', [EsportsController::class, 'showPlayerMatchHistory']);
 Route::get('Esports/{esport}/Team/{team}/Match/History', [EsportsController::class, 'showTeamMatchHistory']);
 Route::get('Esports/NGS/Division/{division}/Match/History', [NGSSingleDivisionController::class, 'showDivisionMatchHistory']);
-
-
-
-
 
 Route::get('Esports/NutCup', [NutCupController::class, 'show']);
 
@@ -162,7 +156,6 @@ Route::get('Esports/HeroesInternational', [HeroesInternationalController::class,
 Route::get('/Gamedata', [GamedataController::class, 'heroes']);
 Route::get('/Gamedata/Heroes', [GamedataController::class, 'heroes']);
 Route::get('/Gamedata/Heroes/{id}', [GamedataController::class, 'hero']);
-
 
 //Ads.txt redirects
 Route::redirect('/ads.txt', 'https://adstxt.venatusmedia.com/60f587eddd63d722e7e57bc1_ads.txt');

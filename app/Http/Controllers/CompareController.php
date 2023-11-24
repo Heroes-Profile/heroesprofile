@@ -192,7 +192,7 @@ class CompareController extends Controller
 
                     $gamesPlayed = $winCount + $lossCount;
 
-                    $winRate = $gamesPlayed > 0 ? ($winCount / $gamesPlayed) * 100: 0;
+                    $winRate = $gamesPlayed > 0 ? ($winCount / $gamesPlayed) * 100 : 0;
 
                     $averageValue = $result->avg($column);
 

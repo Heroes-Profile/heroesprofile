@@ -6,6 +6,7 @@ use App\Models\BattlenetAccount;
 use App\Models\Battletag;
 use App\Models\CCL\CCLTeam;
 use App\Models\GameType;
+use App\Models\HeaderAlert;
 use App\Models\Hero;
 use App\Models\HeroesDataTalent;
 use App\Models\LeagueTier;
@@ -18,7 +19,6 @@ use App\Models\SeasonGameVersion;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use App\Models\HeaderAlert;
 
 class GlobalDataService
 {
@@ -30,14 +30,16 @@ class GlobalDataService
         $this->filtersMinimumPatch = '2.53.0.83004';
     }
 
-    public function getHeaderAlert(){
+    public function getHeaderAlert()
+    {
         if (! session()->has('headeralert')) {
-            $alert = HeaderAlert::select('text')->where("valid", 1)->first();
+            $alert = HeaderAlert::select('text')->where('valid', 1)->first();
 
-            if(!empty($alert)){
+            if (! empty($alert)) {
                 session(['headeralert' => $alert->text]);
             }
         }
+
         return session('headeralert');
     }
 
