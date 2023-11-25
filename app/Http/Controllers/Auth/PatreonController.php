@@ -21,8 +21,6 @@ class PatreonController extends Controller
     public function handleProviderCallback()
     {
         $user = Socialite::driver('patreon')->user();
-
-        dd($user);
         $patreonData = [
             'patreon_id' => $user->id,
             'name' => $user->name,
