@@ -26,7 +26,7 @@ body{
 
 /* Navigation */
 .nav-dropdown{
-  @apply absolute  left-0 hidden group-hover:block z-50 md:pt-3  min-w-[200px] max-md:relative;
+  @apply absolute  left-0 hidden  z-50 md:pt-3  min-w-[200px] max-md:relative;
 }
 .nav-dropdown a{
   text-wrap:nowrap;
@@ -40,6 +40,9 @@ body{
    padding-right:20px;
    height:100%;
    font-size:1.5em;
+  }
+  .nav-dropdown{
+      @apply group-hover:block;
   }
 
 }
@@ -75,7 +78,7 @@ body{
      @apply border-t border-white;
     }
     .nav-dropdown:not(.nav-dropdown-secondary-nav){
-      @apply mt-2;
+      @apply mt-4;
     }
     .alt-acct-nav .nav-dropdown-inner-wrapper{
         @apply rounded-none;
