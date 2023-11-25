@@ -320,7 +320,6 @@ class SingleMatchController extends Controller
                         'winner' => $row->winner,
                         'team' => $row->team,
                         'party' => ! $this->esport ? $row->party : null,
-                        'match_award' => ! $this->esport ? Awards::find($row->match_award) : null,
                         'hero' => $heroData[$row->hero],
                         'patreon_subscriber' => ! $this->esport ? $this->isPatreonSubscriber($row->battletag, $blizz_id, $region) : null,
                         'match_award' => ! $this->esport ? Award::where('award_id', $row->match_award)->first() : null,
