@@ -45,6 +45,10 @@
       :advancedfiltering="advancedfiltering"
     >
     </filters>
+
+    <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
+    <dynamic-square-ad :patreon-user="patreonUser"></dynamic-square-ad>
+
     <div v-if="data">
       <div class="flex">
       <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
@@ -99,6 +103,11 @@
           </thead>
           <tbody>
             <template v-for="(row, index) in sortedData">
+              <tr v-if="!patreonUser && index != 0 && index % 50 === 0">
+                <td colspan="10" class="align-content-center">
+                  <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
+                </td>
+              </tr>
               <tr>
                 <td>{{ row.rank }}</td>
                 <td><a class="link" :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`">{{ row.split_battletag }}</a></td>
@@ -164,6 +173,7 @@ export default {
     defaultseason: String,
     advancedfiltering: Boolean,
     weekssincestart: Number,
+    patreonUser: Boolean
   },
   data(){
     return {
@@ -254,15 +264,10 @@ export default {
         this.$nextTick(() => {
         const responsivetable = this.$refs.responsivetable;
         if (responsivetable && this.windowWidth < 1500) {
-
-          console.log(responsivetable.clientWidth); // Use clientWidth for innerWidth equivalent
-          console.log(this.windowWidth);
           const newTableWidth = this.windowWidth /responsivetable.clientWidth;
-          console.log(newTableWidth);
           responsivetable.style.transformOrigin = 'top left';
          responsivetable.style.transform = `scale(${newTableWidth})`;
          const container = this.$refs.tablecontainer;
-          console.log('container', container.clientHeight);
 
           container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
          

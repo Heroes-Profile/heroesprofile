@@ -33,7 +33,6 @@ const openButtons = document.querySelectorAll('.mobile-secondary-nav-open');
 openButtons.forEach(function(button) {
   button.addEventListener('click', function() {
     if(isSmallScreen()){
-    console.log('testing?');
     // Get the data-battletag value from the clicked link
     var battletag = button.getAttribute('data-battletag');
     
@@ -81,7 +80,6 @@ openButtons.forEach(function(button) {
   },
   mounted() {
     const openButtons = document.querySelectorAll('.mobile-secondary-nav-open');
-    console.log(openButtons);
   },
   computed: {
   },

@@ -13,6 +13,10 @@ import MobileNavHack from './components/MobileNavHack.vue';
 
 // Ads
 import RichMediaAd from './components/Ads/RichMediaAd.vue';
+import TakeoverAd from './components/Ads/TakeoverAd.vue';
+import DynamicBannerAd from './components/Ads/DynamicBannerAd.vue';
+import HorizontalBannerAd from './components/Ads/HorizontalBannerAd.vue';
+import DynamicSquareAd from './components/Ads/DynamicSquareAd.vue';
 
 
 //Compare Page
