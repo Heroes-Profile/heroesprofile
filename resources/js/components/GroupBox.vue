@@ -108,11 +108,8 @@
       }
     },
     created(){
-      console.log(this.data);
     },
     mounted() {
-            console.log(this.data)
-
     },
     computed: {
     },
