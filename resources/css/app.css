@@ -34,6 +34,16 @@ body{
   white-space:nowrap;
   max-md:flex-col;
 }
+
+.nav-item{
+  padding-top:10px; 
+  padding-bottom:10px;
+  @apply max-md:w-full text-center;
+}
+.nav-dropdown-inner-wrapper{
+  @apply bg-blue   text-sm drop-shadow ;
+}
+
 @media (min-width:768px){
   .nav-item:not(:first-child)::before{
    content: '|';
@@ -44,22 +54,26 @@ body{
   .nav-dropdown{
       @apply group-hover:block;
   }
-
-}
-.nav-item{
-  padding-top:10px; 
-  padding-bottom:10px;
-  @apply max-md:w-full text-center;
-}
-
-
-
-.nav-dropdown-inner-wrapper{
-  @apply bg-blue   text-sm drop-shadow;
-}
+  .nav-dropdown-inner-wrapper{
+     @apply rounded-b-lg rounded-tr-lg;
+    }
+    
 .alt-acct-nav .nav-dropdown-inner-wrapper{
   @apply  rounded-tl-lg rounded-tr-none ;
 }
+.nav-dropdown-inner-wrapper a:last-child{
+  @apply rounded-b-lg;
+}
+.nav-dropdown-inner-wrapper a:first-child{
+  @apply rounded-tr-lg;
+}
+.alt-acct-nav .nav-dropdown-inner-wrapper a:first-child{
+   @apply rounded-tl-lg rounded-tr-none;
+}
+
+}
+
+
 .nav-dropdown a{
   @apply block px-4 py-2 md:border-b md:border-darken hover:bg-lighten;
 }

@@ -28,7 +28,7 @@ module.exports = {
       'black' : '#0F121D',
       'white' : '#ffffff',
       'lighten' : 'rgba(255, 255, 255, 0.1)',
-      'darken' : 'rgba(0,0,0,.1)'
+      'darken' : 'rgba(0,0,0,.3)'
     },
      screens: {
       'sm': '640px',
