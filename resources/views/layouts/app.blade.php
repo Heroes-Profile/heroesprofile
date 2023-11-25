@@ -49,7 +49,7 @@
 
       @yield('content')
  
-    <div class="mt-auto">
+     <div class="mt-auto">
     <div class="footer-wrapper text-center mx-auto bg-lighten border-t-4 border-teal mt-[2em] w-full">
       <div class="footer container-boxed py-10">
         <div class="container container-flex mx-auto">
@@ -62,31 +62,23 @@
         </a>
           </div>
 
-              <div class="logo ">
-                <a class="text-blue-600 hover:text-blue-800 flex justify-center items-center font-logo text-2xl py-5 mx-auto text-center" href="/">
-                Heroes
-                <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
-                Profile
-                </a>
-              </div>
-
-              <div class="content ">
-                <div class="footer-nav">
-
-                </div>
-
-                <div>{{ session('maxReplayID') }} replays | Patch {{ session('latestPatch') }} | Up to date as of: <format-date :input="'{{ session('latestGameDate') }}'"></format-date></div>
-                <div class="copyright">Skill Tree Development, LLC | <a href="https://heroesprofile.com">Heroes Profile</a></div>
-              </div>
+          <div class="content ">
+            <div class="footer-nav">
 
             </div>
 
-            <div class="disclaimer">
-
-            </div>
+            <div>{{ session('maxReplayID') }} replays | Patch {{ session('latestPatch') }} | Up to date as of: <format-date :input="'{{ session('latestGameDate') }}'"></format-date></div>
+            <div class="copyright">Skill Tree Development, LLC | <a href="https://heroesprofile.com">Heroes Profile</a></div>
           </div>
+
+        </div>
+
+        <div class="disclaimer">
+
         </div>
       </div>
+      </div>
     </div>
-  </body>
+  </div>
+</body>
 </html>
