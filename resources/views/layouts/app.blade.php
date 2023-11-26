@@ -51,7 +51,7 @@
     <dynamic-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></dynamic-banner-ad>
 
     <div class="mt-auto">
-      <div class="footer-wrapper text-center mx-auto bg-lighten border-t-4 border-teal mt-[2em] w-full">
+      <div class="footer-wrapper text-center mx-auto bg-lighten border-t-4 border-teal mt-[2em] w-full px-4">
         <div class="footer container-boxed py-10">
           <div class="container container-flex mx-auto">
             <div class="logo ">
