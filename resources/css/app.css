@@ -57,7 +57,7 @@ body{
   .nav-dropdown-inner-wrapper{
      @apply rounded-b-lg rounded-tr-lg;
     }
-    
+
 .alt-acct-nav .nav-dropdown-inner-wrapper{
   @apply  rounded-tl-lg rounded-tr-none ;
 }
@@ -79,6 +79,7 @@ body{
 }
 
 @media (max-width:768px){
+ 
     .main-navigation-wrapper{
       @apply min-h-[100vh] absolute w-full hidden ;
     }

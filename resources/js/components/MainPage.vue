@@ -8,7 +8,7 @@
 
 
     <div class="text-center py-10">
-      <img class="block m-4 w-2/5 max-w-6xl mr-auto ml-auto pl-25" src="/images/logo/full_deathwing.png"/>
+      <img class="block m-4 md:w-2/5 md:max-w-6xl mr-auto ml-auto pl-25 max-md:px-4" src="/images/logo/full_deathwing.png"/>
 
       <div class="block text-center mx-auto align-items-center justify-center flex">
         <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'"></search-component>
@@ -17,7 +17,7 @@
     </div>
 
 
-    <div class="flex   p-20 bg-lighten flex-wrap justify-center items-between">
+    <div class="flex   md:p-20 bg-lighten flex-wrap justify-center items-between max-md:py-4">
       <a href="/Compare" class="text-center md:w-[30%] mb-20 mx-5 flex flex-col justify-stretch">
 
         <i class="fas fa-users" style="font-size: 100px;"></i>

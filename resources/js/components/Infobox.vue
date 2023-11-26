@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>{{ this.input }}</h2>
+    <p class="text-lg max-md:text-sm">{{ this.input }}</p>
   </div>
 </template>
 

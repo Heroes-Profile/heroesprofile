@@ -8,9 +8,9 @@
     <div class="max-w-[1500px] mx-auto my-2 text-right">
     <custom-button @click="showLeaderboardRequirements = !showLeaderboardRequirements" :text="'Show Leaderboard Requirements'" :alt="'Show Leaderboard Requirements'" size="small" :ignoreclick="true"></custom-button></div>
       <div v-if="showLeaderboardRequirements" class="flex flex-col items-center p-[2em] border w-auto ml-auto mr-auto max-w-[1500px] bg-teal mb-2">
-        <h3 class="font-bold text-2xl uppercase">To be eligible for leaderboards, the following conditions must be met:</h3>
+        <h3 class="font-bold md:text-2xl max-md:text-base uppercase">To be eligible for leaderboards, the following conditions must be met:</h3>
         <div class="bg-teal p-[1em] pl-[2em] ">
-      <ol class="list-disc">
+      <ol class="list-disc max-md:text-sm">
         <li>Account level must be greater than or equal to 250.</li>
           <li> Must have played at least 5 times the number of weeks since the season started. (Currently that is {{ weekssincestart * 5 }} games)</li>
           <li>Must have a win rate greater than or equal to 50%.</li>
@@ -18,8 +18,8 @@
       </ol>
     </div>
 
-      <h3 class="font-bold text-2xl uppercase pb-2">Heroes Profile Rating formula</h3>
-      <img class="max-w-[1000px]" :src="'/images/miscellaneous/mmr_calculation.png'"/>
+      <h3 class="font-bold text-2xl uppercase pb-2 max-md:text-base">Heroes Profile Rating formula</h3>
+      <img class="max-w-[1000px] w-full" :src="'/images/miscellaneous/mmr_calculation.png'"/>
     </div>
 
 
@@ -264,6 +264,9 @@ export default {
         this.$nextTick(() => {
         const responsivetable = this.$refs.responsivetable;
         if (responsivetable && this.windowWidth < 1500) {
+          
+          
+
           const newTableWidth = this.windowWidth /responsivetable.clientWidth;
           responsivetable.style.transformOrigin = 'top left';
          responsivetable.style.transform = `scale(${newTableWidth})`;
