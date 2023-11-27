@@ -28,7 +28,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="row in talentbuilddata" :key="row">
+        <tr v-for="(row, index) in talentbuilddata" :key="row">
           <td class="py-2 px-3 ">
             <div class="flex flex-wrap gap-4">
               <talent-image-wrapper :talent="row.level_one"></talent-image-wrapper>
@@ -42,7 +42,7 @@
           </td>
           <td class="py-2 px-3 ">
             {{ this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, row.hero) }}
-            <custom-button @click="copyToClipboard(row)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
+            <custom-button @click="copyToClipboard(index, row)" :text="buildCopyText[index]" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true" :color="buildCopyColor[index]">{{ buildCopyText[index] }}</custom-button>
           </td>
           <td class="py-2 px-3 ">{{ row.games_played.toLocaleString() }}</td>
           <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
@@ -66,12 +66,21 @@ export default {
     statfilter: String,
     talentimages: Array,
   },
-  data(){
+  data() {
     return {
+      buildCopyText: [],
+      buildCopyColor: [],
+    };
+  },
+  created() {
+    for (let i = 0; i < this.talentbuilddata.length; i++) {
+      this.buildCopyText[i] = "COPY TO CLIPBOARD";
+    }
+    for (let i = 0; i < this.talentbuilddata.length; i++) {
+      this.buildCopyColor[i] = "blue";
     }
   },
-  created(){
-  },
+
   mounted() {
   },
   computed: {
@@ -90,7 +99,20 @@ export default {
         (level_twenty ? level_twenty.sort : '0') +
         "," + hero.build_copy_name + "]"
     },
-    copyToClipboard(row) {
+    copyToClipboard(index, row) {
+      this.buildCopyText[index] = "COPIED TO CLIPBOARD";
+      this.buildCopyColor[index] = "teal";
+      for (let i = 0; i < this.talentbuilddata.length; i++) {
+        if(i != index){
+          this.buildCopyText[i] = "COPY TO CLIPBOARD";
+        }
+        if(i != index){
+          this.buildCopyColor[i] = "blue";
+        }
+      }
+
+      console.log(this.buildCopyText);
+
       const textToCopy = this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, row.hero);
       navigator.clipboard.writeText(textToCopy).then(function() {
       }).catch(function(err) {
