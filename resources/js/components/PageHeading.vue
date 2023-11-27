@@ -10,10 +10,13 @@
 
    
 
-    <h1 v-else class=" text-xl md:text-3xl">{{heading}}</h1>
-    <div>
+    <h1 v-else class=" text-xl md:text-3xl">{{ heading }}</h1>
+    <div v-if="!hideText">
       <infobox :input="infoText1"></infobox>
       <infobox :input="infoText2"></infobox>
+    </div>
+    <div v-else>
+      <custom-button @click="hideText = !hideText" text="Show Header Information" alt="Show Header Information" size="small" :ignoreclick="true">Show Header Information</custom-button>
     </div>
   </div>
 </template>
@@ -32,13 +35,21 @@ export default {
   },
   data(){
     return {
+      hideText: false,
     }
   },
   created(){
+    if(this.infoTextTotalCharacters > 250 && window.innerWidth < 768){
+      this.hideText = true;
+    }
   },
   mounted() {
   },
   computed: {
+    infoTextTotalCharacters() {
+      const combinedText = (this.infoText1 || '') + (this.infoText2 || '');
+      return combinedText.length;
+    },
   },
   watch: {
   },
