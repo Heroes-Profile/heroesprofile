@@ -12,7 +12,7 @@
 
     <h1 v-else class="text-xl md:text-3xl">
       <div class="flex items-center">
-        <div class="absolute z-10 top-0 left-0" v-if="isPatreon">
+        <div class="" v-if="isPatreon">
          <!-- Patreon Subscriber -->
           <i class="fas fa-star" style="color:gold"></i>
         </div>
