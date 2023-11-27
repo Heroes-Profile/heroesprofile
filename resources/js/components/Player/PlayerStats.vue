@@ -212,8 +212,6 @@
       }
     },
     created(){
-      console.log(this.isPatreon);
-
       this.modifiedgametype = this.gametype;
       this.modifiedseason = this.season;
     },

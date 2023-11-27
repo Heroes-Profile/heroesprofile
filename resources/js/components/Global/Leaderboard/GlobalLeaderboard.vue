@@ -110,7 +110,14 @@
               </tr>
               <tr>
                 <td>{{ row.rank }}</td>
-                <td><a class="link" :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`">{{ row.split_battletag }}</a></td>
+                <td>
+                  <div class="flex items-center">
+                    <div class="" v-if="row.patreon">
+                    <i class="fas fa-star" style="color:gold"></i>
+                  </div>
+                    <a class="link" :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`">{{ row.split_battletag }}</a>
+                  </div>
+                </td>
                 <td>{{ row.region }}</td>
                 <td>{{ row.win_rate.toFixed(2) }}</td>
                 <td>{{ row.rating.toFixed(2) }}</td>
