@@ -1,252 +1,249 @@
 <template>
   <div>
-  <button  class="md:hidden p-2 bg-blue w-full" @click="showMobile">Show Filters</button>
-    <keep-alive>
-      <div v-if="showNav" class="bg-gray-dark py-2 md:px-20 mb-[2em] max-md:fixed max-md:top-0 max-md:z-50 max-md:h-[100vh] max-md:flex max-md:flex-wrap max-md:px-4 max-md:flex-col">
-        <button class="md:hidden ml-auto" @click="showMobile">x</button>
-        <div class="flex  items-center justify-center max-md:flex-wrap">
-          <div class="flex flex-wrap items-center justify-center">
-            <!--Hero or Role -->
-            <single-select-filter v-if="includeherorole" 
-            :values="filters.hero_role" 
-            :text="'Hero or Role'" 
-            @input-changed="handleInputChange"
-            :defaultValue="'Hero'"
-            ></single-select-filter>
+    <button  class="md:hidden p-2 bg-blue w-full" @click="showMobile">Show Filters</button>
+    <div v-show="showNav" class="bg-gray-dark py-2 md:px-20 mb-[2em] max-md:fixed max-md:top-0 max-md:z-50 max-md:h-[100vh] max-md:flex max-md:flex-wrap max-md:px-4 max-md:flex-col">
+      <button class="md:hidden ml-auto" @click="showMobile">x</button>
+      <div class="flex  items-center justify-center max-md:flex-wrap">
+        <div class="flex flex-wrap items-center justify-center">
+          <!--Hero or Role -->
+          <single-select-filter v-if="includeherorole" 
+          :values="filters.hero_role" 
+          :text="'Hero or Role'" 
+          @input-changed="handleInputChange"
+          :defaultValue="'Hero'"
+          ></single-select-filter>
 
-            <!-- Type -->
-            <single-select-filter v-if="playerheroroletype" 
-            :values="filters.type" 
-            :text="'Type'"
-            @input-changed="handleInputChange" 
-            :defaultValue="'Player'"
-            ></single-select-filter>
+          <!-- Type -->
+          <single-select-filter v-if="playerheroroletype" 
+          :values="filters.type" 
+          :text="'Type'"
+          @input-changed="handleInputChange" 
+          :defaultValue="'Player'"
+          ></single-select-filter>
 
-            <!-- Group Size -->
-            <single-select-filter v-if="modifiedincludegroupsize" 
-            :values="filters.group_size" 
-            :text="'Group Size'" 
-            @input-changed="handleInputChange" 
-            :defaultValue="'Solo'"
-            ></single-select-filter>
+          <!-- Group Size -->
+          <single-select-filter v-if="modifiedincludegroupsize" 
+          :values="filters.group_size" 
+          :text="'Group Size'" 
+          @input-changed="handleInputChange" 
+          :defaultValue="'Solo'"
+          ></single-select-filter>
 
-            <!--<single-select-filter v-if="includecharttype" :values="filters.chart_type" :text="'Chart Type'" @input-changed="handleInputChange" :defaultValue="'Account Level'"></single-select-filter>-->
+          <!--<single-select-filter v-if="includecharttype" :values="filters.chart_type" :text="'Chart Type'" @input-changed="handleInputChange" :defaultValue="'Account Level'"></single-select-filter>-->
 
-            <!-- Timeframe Type -->
-            <single-select-filter v-if="includetimeframetype" 
-            :values="filters.timeframe_type" 
-            :text="'Timeframe Type'" 
-            :defaultValue="defaultTimeframeType" 
-            @input-changed="handleInputChange"
-            ></single-select-filter>
+          <!-- Timeframe Type -->
+          <single-select-filter v-if="includetimeframetype" 
+          :values="filters.timeframe_type" 
+          :text="'Timeframe Type'" 
+          :defaultValue="defaultTimeframeType" 
+          @input-changed="handleInputChange"
+          ></single-select-filter>
 
-            <!-- Timeframes -->
-            <multi-select-filter v-if="includetimeframe" 
-            :values="timeframes" 
-            :text="'Timeframes'" 
-            :defaultValue="defaultMinor" 
-            @input-changed="handleInputChange"
-            ></multi-select-filter>
+          <!-- Timeframes -->
+          <multi-select-filter v-if="includetimeframe" 
+          :values="timeframes" 
+          :text="'Timeframes'" 
+          :defaultValue="defaultMinor" 
+          @input-changed="handleInputChange"
+          ></multi-select-filter>
 
-            <!-- Current Game Type Multiselect-->
-            <multi-select-filter v-if="modifiedincludegametype" 
-            :values="filters.game_types" 
-            :text="'Game Type'" 
-            @input-changed="handleInputChange" 
-            :defaultValue="defaultGameType"
-            ></multi-select-filter>
+          <!-- Current Game Type Multiselect-->
+          <multi-select-filter v-if="modifiedincludegametype" 
+          :values="filters.game_types" 
+          :text="'Game Type'" 
+          @input-changed="handleInputChange" 
+          :defaultValue="defaultGameType"
+          ></multi-select-filter>
 
-            <!-- All Game Types Multiselect -->
-            <multi-select-filter v-if="includegametypefull" 
-            :values="filters.game_types_full" 
-            :text="'Game Type'" 
-            @input-changed="handleInputChange" 
-            :defaultValue="defaultGameType"
-            ></multi-select-filter>
+          <!-- All Game Types Multiselect -->
+          <multi-select-filter v-if="includegametypefull" 
+          :values="filters.game_types_full" 
+          :text="'Game Type'" 
+          @input-changed="handleInputChange" 
+          :defaultValue="defaultGameType"
+          ></multi-select-filter>
 
-            <!-- Current Game Type Single -->
-            <single-select-filter v-if="includesinglegametype" 
-            :values="filters.game_types" 
-            :text="'Game Type'" 
-            @input-changed="handleInputChange" 
-            :defaultValue="defaultGameType[0]"
-            ></single-select-filter>
-
-            <!-- All Game Type Single -->
-            <single-select-filter v-if="includesinglegametypefull" 
-            :values="filters.game_types_full" 
-            :text="'Game Type'" 
-            @input-changed="handleInputChange" 
-            :defaultValue="defaultGameType[0]"
-            ></single-select-filter>
-            
-            <!-- Regions Multiselect-->
-            <multi-select-filter v-if="includeregion" 
-            :values="filters.regions" 
-            :text="'Regions'" 
-            @input-changed="handleInputChange"
-            ></multi-select-filter>
-
-            <!-- Regions Single-->
-            <single-select-filter v-if="includesingleregion" 
-            :values="filters.regions" 
-            :text="'Regions'" 
-            @input-changed="handleInputChange"
-            ></single-select-filter>
+          <!-- Current Game Type Single -->
+          <single-select-filter v-if="includesinglegametype" 
+          :values="filters.game_types" 
+          :text="'Game Type'" 
+          @input-changed="handleInputChange" 
+          :defaultValue="defaultGameType[0]"
+          ></single-select-filter>
 
 
-            <!-- Stat Type Filter -->
-            <single-select-filter v-if="includestatfilter && toggleExtraFilters" 
-            :values="filters.stat_filter" 
-            :text="'Stat Filter'" 
-            :defaultValue="defaultStatType" 
-            @input-changed="handleInputChange"
-            ></single-select-filter>
+          <!-- All Game Type Single -->
+          <single-select-filter v-if="includesinglegametypefull" 
+          :values="filters.game_types_full" 
+          :text="'Game Type'" 
+          @input-changed="handleInputChange" 
+          :defaultValue="defaultGameType[0]"
+          ></single-select-filter>
+          
+          <!-- Regions Multiselect-->
+          <multi-select-filter v-if="includeregion" 
+          :values="filters.regions" 
+          :text="'Regions'" 
+          @input-changed="handleInputChange"
+          ></multi-select-filter>
 
-            <!-- Hero Level -->
-            <multi-select-filter v-if="includeherolevel && toggleExtraFilters" 
-            :values="filters.hero_level" 
-            :text="'Hero Level'" 
-            @input-changed="handleInputChange"
-            ></multi-select-filter>
-
-            <!-- Heroes -->
-            <single-select-filter v-if="modifiedincludeheroes" 
-            :values="filters.heroes" 
-            :text="'Heroes'" 
-            :defaultValue="defaultHero"
-            @input-changed="handleInputChange"
-            ></single-select-filter>
-
-            <!-- Role -->
-            <single-select-filter v-if="modifiedincluderole" 
-            :values="filters.role" 
-            :text="'Role'" 
-            :defaultValue="defaultRole"
-            @input-changed="handleInputChange"
-            ></single-select-filter>
-
-            <!-- Season -->
-            <single-select-filter v-if="includeseason" 
-            :values="seasons" 
-            :text="'Season'" 
-            @input-changed="handleInputChange" 
-            :defaultValue="defaultSeason"
-            ></single-select-filter>
-
-            <!-- All Seasons -->
-            <single-select-filter v-if="includeseasonwithall" 
-            :values="seasonsWithAll" 
-            :text="'Season'" 
-            @input-changed="handleInputChange" 
-            :defaultValue="defaultSeason"
-            ></single-select-filter>
-
-            <!-- Game Map Multiselect -->
-            <multi-select-filter v-if="includegamemap" 
-            :values="filters.game_maps" 
-            :text="'Map'" 
-            @input-changed="handleInputChange"
-            ></multi-select-filter>
-
-            <!-- Game Map Single -->
-            <single-select-filter v-if="includesinglegamemap" 
-            :values="filters.game_maps" 
-            :text="'Map'" 
-            @input-changed="handleInputChange"
-            ></single-select-filter>
-
-            <!-- Player Rank -->
-            <multi-select-filter v-if="includeplayerrank" 
-            :values="filters.rank_tiers" 
-            :text="'Player Rank'"
-            @input-changed="handleInputChange"
-            ></multi-select-filter>
-
-            <!-- Hero Rank -->
-            <multi-select-filter v-if="includeherorank && toggleExtraFilters" 
-            :values="filters.rank_tiers" 
-            :text="'Hero Rank'" 
-            @input-changed="handleInputChange"
-            ></multi-select-filter>
-
-            <multi-select-filter v-if="includerolerank && toggleExtraFilters" 
-            :values="filters.rank_tiers" 
-            :text="'Role Rank'" 
-            @input-changed="handleInputChange"
-            ></multi-select-filter>
-
-            <!-- Talent built Type -->
-            <single-select-filter v-if="includetalentbuildtype" 
-            :values="filters.talent_build_types" 
-            :text="'Talent Build Type'" 
-            @input-changed="handleInputChange" 
-            :defaultValue="filters.talent_build_types[0].code"
-            ></single-select-filter>
-
-            <!-- Minimum Games -->
-            <single-select-filter v-if="includeminimumgames" 
-            :values="filters.minimum_games" 
-            :text="'Minimum Games'" 
-            @input-changed="handleInputChange" 
-            :defaultValue="modifiedminimumgamedefault"
-            ></single-select-filter>
-
-            <!-- Team One Party -->
-            <single-select-filter v-if="includeteamoneparty" 
-            :values="filters.party_combinations" 
-            :text="'Team One Party'" 
-            @input-changed="handleInputChange"
-            ></single-select-filter>
-
-            <!-- Team Two Party -->
-            <single-select-filter v-if="includeteamtwoparty" 
-            :values="filters.party_combinations" 
-            :text="'Team Two Party'" 
-            @input-changed="handleInputChange"
-            ></single-select-filter>
+          <!-- Regions Single-->
+          <single-select-filter v-if="includesingleregion" 
+          :values="filters.regions" 
+          :text="'Regions'" 
+          @input-changed="handleInputChange"
+          ></single-select-filter>
 
 
-            <!--<single-select-filter v-if="modifiedincludeminimumaccountlevel" :values="filters.minimum_account_level" :text="'Min. Account Level'" @input-changed="handleInputChange" :defaultValue="'100'"></single-select-filter>-->
-            <!--<single-select-filter v-if="modifiedincludexaxisincrements" :values="filters.x_axis_increments" :text="'X Axis Increments'" @input-changed="handleInputChange" :defaultValue="'25'"></single-select-filter>-->
+          <!-- Stat Type Filter -->
+          <single-select-filter v-if="includestatfilter && toggleExtraFilters" 
+          :values="filters.stat_filter" 
+          :text="'Stat Filter'" 
+          :defaultValue="defaultStatType" 
+          @input-changed="handleInputChange"
+          ></single-select-filter>
 
-            <!-- Mirror -->
-            <single-select-filter v-if="includemirror && toggleExtraFilters" 
-            :values="filters.mirror" 
-            :text="'Mirror Matches'" 
-            @input-changed="handleInputChange" 
-            :defaultValue="filters.mirror[0].code"
-            ></single-select-filter>
+          <!-- Hero Level -->
+          <multi-select-filter v-if="includeherolevel && toggleExtraFilters" 
+          :values="filters.hero_level" 
+          :text="'Hero Level'" 
+          @input-changed="handleInputChange"
+          ></multi-select-filter>
 
-            <!-- Game Date -->
-            <div id="filter-label" class="relative">
-              <div v-if="includegamedate" class="flex items-end  text-sm font-medium text-gray-700 cursor-pointer p-2  transition-colors">
-                <div class="flex flex-col"><span>From Date  </span>
-                <input type="date" 
-                  v-model="selectedGameDate" 
-                  @input="handleGameDateChange"
-                  @blur="handleDateInputBlur"
-                  class="w-[200px] h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2 text-white"
-                ></div>
-                <button class="h-[40px] bg-blue m-t-auto  p-2 border-r-[1px] border-t-[1px] border-b-[1px] hover:bg-teal" @click="resetGameDate()">X</button>
-              </div>
+          <!-- Heroes -->
+          <single-select-filter v-if="modifiedincludeheroes" 
+          :values="filters.heroes" 
+          :text="'Heroes'" 
+          :defaultValue="defaultHero"
+          @input-changed="handleInputChange"
+          ></single-select-filter>
+
+          <!-- Role -->
+          <single-select-filter v-if="modifiedincluderole" 
+          :values="filters.role" 
+          :text="'Role'" 
+          :defaultValue="defaultRole"
+          @input-changed="handleInputChange"
+          ></single-select-filter>
+
+          <!-- Season -->
+          <single-select-filter v-if="includeseason" 
+          :values="seasons" 
+          :text="'Season'" 
+          @input-changed="handleInputChange" 
+          :defaultValue="defaultSeason"
+          ></single-select-filter>
+
+          <!-- All Seasons -->
+          <single-select-filter v-if="includeseasonwithall" 
+          :values="seasonsWithAll" 
+          :text="'Season'" 
+          @input-changed="handleInputChange" 
+          :defaultValue="defaultSeason"
+          ></single-select-filter>
+
+          <!-- Game Map Multiselect -->
+          <multi-select-filter v-if="includegamemap" 
+          :values="filters.game_maps" 
+          :text="'Map'" 
+          @input-changed="handleInputChange"
+          ></multi-select-filter>
+
+          <!-- Game Map Single -->
+          <single-select-filter v-if="includesinglegamemap" 
+          :values="filters.game_maps" 
+          :text="'Map'" 
+          @input-changed="handleInputChange"
+          ></single-select-filter>
+
+          <!-- Player Rank -->
+          <multi-select-filter v-if="includeplayerrank" 
+          :values="filters.rank_tiers" 
+          :text="'Player Rank'"
+          @input-changed="handleInputChange"
+          ></multi-select-filter>
+
+          <!-- Hero Rank -->
+          <multi-select-filter v-if="includeherorank && toggleExtraFilters" 
+          :values="filters.rank_tiers" 
+          :text="'Hero Rank'" 
+          @input-changed="handleInputChange"
+          ></multi-select-filter>
+
+          <multi-select-filter v-if="includerolerank && toggleExtraFilters" 
+          :values="filters.rank_tiers" 
+          :text="'Role Rank'" 
+          @input-changed="handleInputChange"
+          ></multi-select-filter>
+
+          <!-- Talent built Type -->
+          <single-select-filter v-if="includetalentbuildtype" 
+          :values="filters.talent_build_types" 
+          :text="'Talent Build Type'" 
+          @input-changed="handleInputChange" 
+          :defaultValue="filters.talent_build_types[0].code"
+          ></single-select-filter>
+
+          <!-- Minimum Games -->
+          <single-select-filter v-if="includeminimumgames" 
+          :values="filters.minimum_games" 
+          :text="'Minimum Games'" 
+          @input-changed="handleInputChange" 
+          :defaultValue="modifiedminimumgamedefault"
+          ></single-select-filter>
+
+          <!-- Team One Party -->
+          <single-select-filter v-if="includeteamoneparty" 
+          :values="filters.party_combinations" 
+          :text="'Team One Party'" 
+          @input-changed="handleInputChange"
+          ></single-select-filter>
+
+          <!-- Team Two Party -->
+          <single-select-filter v-if="includeteamtwoparty" 
+          :values="filters.party_combinations" 
+          :text="'Team Two Party'" 
+          @input-changed="handleInputChange"
+          ></single-select-filter>
+
+
+          <!--<single-select-filter v-if="modifiedincludeminimumaccountlevel" :values="filters.minimum_account_level" :text="'Min. Account Level'" @input-changed="handleInputChange" :defaultValue="'100'"></single-select-filter>-->
+          <!--<single-select-filter v-if="modifiedincludexaxisincrements" :values="filters.x_axis_increments" :text="'X Axis Increments'" @input-changed="handleInputChange" :defaultValue="'25'"></single-select-filter>-->
+
+          <!-- Mirror -->
+          <single-select-filter v-if="includemirror && toggleExtraFilters" 
+          :values="filters.mirror" 
+          :text="'Mirror Matches'" 
+          @input-changed="handleInputChange" 
+          :defaultValue="filters.mirror[0].code"
+          ></single-select-filter>
+
+          <!-- Game Date -->
+          <div id="filter-label" class="relative">
+            <div v-if="includegamedate" class="flex items-end  text-sm font-medium text-gray-700 cursor-pointer p-2  transition-colors">
+              <div class="flex flex-col"><span>From Date  </span>
+              <input type="date" 
+                v-model="selectedGameDate" 
+                @input="handleGameDateChange"
+                @blur="handleDateInputBlur"
+                class="w-[200px] h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2 text-white"
+              ></div>
+              <button class="h-[40px] bg-blue m-t-auto  p-2 border-r-[1px] border-t-[1px] border-b-[1px] hover:bg-teal" @click="resetGameDate()">X</button>
             </div>
           </div>
-          <button :disabled="disabledFilter" @click="applyFilter"  :class="{'bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal': !disabledFilter, 'bg-gray-400 text-gray-700': disabledFilter}">
-            Filter
-          </button>
-
-          
         </div>
-        <div class="flex justify-end">
-          <button class="m-l-auto underline" v-if="!hideadvancedfilteringbutton" @click="toggleExtraFilters = !toggleExtraFilters" >{{toggleButtonText}}</button>
+        <button :disabled="disabledFilter" @click="applyFilter"  :class="{'bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal': !disabledFilter, 'bg-gray-400 text-gray-700': disabledFilter}">
+          Filter
+        </button>
 
-        </div>
-
+        
+      </div>
+      <div class="flex justify-end">
+        <button class="m-l-auto underline" v-if="!hideadvancedfilteringbutton" @click="toggleExtraFilters = !toggleExtraFilters" >{{toggleButtonText}}</button>
 
       </div>
-  </keep-alive>
-</div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -327,8 +324,7 @@
         showNav: true
       }
     },
-    created(){    
-
+    created(){
       this.defaultGameType = this.gametypedefault;
       this.selectedSingleFilters = {
       };
