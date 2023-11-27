@@ -99,7 +99,18 @@
               Ban Rate %
             </th>    
             <th @click="sortTable('influence')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Influence
+              <div class="flex items-center">
+                <div class="">
+                  Influence
+                </div>
+                <round-image class="" size="small" icon="fas fa-info" title="info" popupsize="large">
+                  <slot>
+                    <div>
+                      <p>Influence is an integer scaled from -1000 to 1000 that combines Win Rate, Games Played, Pick Rate, and Ban Rate to determine the impact a hero will have on a particular team.</p>
+                    </div>
+                  </slot>
+                </round-image>
+              </div>
             </th>                  
             <th @click="sortTable('games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games Played
