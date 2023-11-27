@@ -1,6 +1,7 @@
 <template>
   <div class="">
-    <page-heading :infoText1="infoText" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
+    <page-heading :infoText1="infoText" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon">
+    </page-heading>
     <div class="flex justify-center max-w-[1500px] mx-auto">
       <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
       <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
@@ -196,6 +197,7 @@
       season: Number,
       gametype: Array,
       regionsmap: Object,
+      isPatreon: Boolean,
     },
     data(){
       return {
@@ -210,6 +212,8 @@
       }
     },
     created(){
+      console.log(this.isPatreon);
+
       this.modifiedgametype = this.gametype;
       this.modifiedseason = this.season;
     },

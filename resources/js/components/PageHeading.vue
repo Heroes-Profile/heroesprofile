@@ -10,7 +10,15 @@
 
    
 
-    <h1 v-else class=" text-xl md:text-3xl">{{ heading }}</h1>
+    <h1 v-else class="text-xl md:text-3xl">
+      <div class="flex items-center">
+        <div class="absolute z-10 top-0 left-0" v-if="isPatreon">
+         <!-- Patreon Subscriber -->
+          <i class="fas fa-star" style="color:gold"></i>
+        </div>
+        {{ heading }}
+      </div>
+    </h1>
     <div v-if="!hideText">
       <infobox :input="infoText1"></infobox>
       <infobox :input="infoText2"></infobox>
@@ -32,6 +40,7 @@ export default {
     headingImageUrl: String,
     infoText1: String,
     infoText2: String,
+    isPatreon: false,
   },
   data(){
     return {

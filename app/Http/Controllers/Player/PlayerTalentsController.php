@@ -49,6 +49,7 @@ class PlayerTalentsController extends Controller
             'region' => $region,
             'filters' => $this->globalDataService->getFilterData(),
             'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
+            'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);
     }
 

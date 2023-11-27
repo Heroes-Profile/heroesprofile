@@ -11,5 +11,6 @@
     :region="{{ json_encode($region) }}"
     :accountlevel="{{ json_encode($account_level) }}" 
     :regionsmap="{{ json_encode(session('regions')) }}"
+    :is-patreon="{{ json_encode($patreon) }}"
   ></player-maps-all-stats>
 @endsection

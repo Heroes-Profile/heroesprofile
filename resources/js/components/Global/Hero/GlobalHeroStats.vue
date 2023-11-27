@@ -124,14 +124,12 @@
         </thead>
         <tbody>
           <template v-for="(row, index) in sortedData">
-            <tr >
-              
-                <td class="py-2 px-3 flex items-center gap-1">
-                  <a class="flex w-full items-center" :href="'/Global/Talents/' + row.name" >
-                  <hero-image-wrapper class="mr-2" :hero="row" :includehover="false"></hero-image-wrapper>{{ row.name }}
-                  </a>
-                </td>
-              
+            <tr>
+              <td class="py-2 px-3 flex items-center gap-1">
+                <a class="flex w-full items-center" :href="'/Global/Talents/' + row.name" >
+                <hero-image-wrapper class="mr-2" :hero="row" :includehover="false"></hero-image-wrapper>{{ row.name }}
+                </a>
+              </td>
               <td class="  ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3 "><span v-html="'&#177;'"></span>{{ row.confidence_interval.toFixed(2) }}</td>
               <td v-if="row.win_rate_change < 0" class="py-2 px-3 ">{{ row.win_rate_change.toFixed(2) }}</td>

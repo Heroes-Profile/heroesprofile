@@ -65,7 +65,7 @@ class PlayerController extends Controller
 
         $season = $request['season'];
         $game_type = $request['game_type'];
-
+        
         return view('Player.player')->with([
             'settingHero' => $heroUserSettings,
             'battletag' => $battletag,
@@ -74,6 +74,7 @@ class PlayerController extends Controller
             'season' => $season,
             'game_type' => $game_type,
             'filters' => $this->globalDataService->getFilterData(),
+            'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);
     }
 

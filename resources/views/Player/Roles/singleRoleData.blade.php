@@ -10,5 +10,6 @@
     :region="{{ $region }}" 
     :role="{{ json_encode($role) }}" 
     :regionsmap="{{ json_encode(session('regions')) }}"
+    :is-patreon="{{ json_encode($patreon) }}"
   ></player-role-single-stats>
 @endsection

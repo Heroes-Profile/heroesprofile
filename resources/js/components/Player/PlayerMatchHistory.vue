@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="'Match History'" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
+    <page-heading :infoText1="'Match History'" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon"></page-heading>
 
     <filters 
       :onFilter="filterData" 
@@ -115,6 +115,7 @@ export default {
     blizzid: String, 
     region: String,
     regionsmap: Object,
+    isPatreon: Boolean,
   },
   data(){
     return {

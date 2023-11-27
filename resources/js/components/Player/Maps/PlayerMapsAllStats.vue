@@ -1,6 +1,6 @@
 /PlayerMapsAllStats.vue<template>
   <div>
-    <page-heading :infoText1="'All Map data for ' + battletag + '. Click a map to see individual map statistics'" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
+    <page-heading :infoText1="'All Map data for ' + battletag + '. Click a map to see individual map statistics'" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon"></page-heading>
     
     <filters 
       :onFilter="filterData" 
@@ -105,6 +105,7 @@ export default {
     region: String,
     regionsmap: Object,
     accountlevel: Number,
+    isPatreon: Boolean,
   },
   data(){
     return {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
+    <page-heading :infoText1="infoText" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon"></page-heading>
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
@@ -126,6 +126,7 @@ export default {
       type: [String, Number]
     },
     regionsmap: Object,
+    isPatreon: Boolean,
   },
   data(){
     return {

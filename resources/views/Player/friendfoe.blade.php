@@ -13,5 +13,6 @@
     :gametype="{{ json_encode($game_type) }}"
     :gamemap="{{ json_encode($game_map) }}"
     :regionsmap="{{ json_encode(session('regions')) }}"
+    :is-patreon="{{ json_encode($patreon) }}"
   ></friend-foe>
 @endsection
