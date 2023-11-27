@@ -16,6 +16,7 @@
       :hideadvancedfilteringbutton="true"
       >
     </filters>
+    <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
 
     <div v-if="data">
       <div>
@@ -116,6 +117,7 @@ export default {
     region: String,
     regionsmap: Object,
     isPatreon: Boolean,
+    patreonUser: Boolean,
   },
   data(){
     return {

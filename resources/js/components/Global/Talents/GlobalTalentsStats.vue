@@ -33,6 +33,7 @@
 
           >
         </filters>
+        <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
 
         
         <div  v-if="talentdetaildata" class="mx-auto  px-4">
@@ -51,6 +52,8 @@
           <loading-component v-else @cancel-request="cancelAxiosRequest"></loading-component>
         </div>
 
+
+        <dynamic-banner-ad :patreon-user="patreonUser" :index="3"></dynamic-banner-ad>
 
         <div  v-if="talentbuilddata" class="mx-auto px-4 w-auto flex flex-col items-center">
           <div id="builds" class="">

@@ -2,9 +2,6 @@
   <div>
     <page-heading :infoText1="infoText1" :infoText2="infoText2" :heading="'Leaderboard'"></page-heading>
       
-
-
-
     <div class="max-w-[1500px] mx-auto my-2 text-right">
     <custom-button @click="showLeaderboardRequirements = !showLeaderboardRequirements" :text="'Show Leaderboard Requirements'" :alt="'Show Leaderboard Requirements'" size="small" :ignoreclick="true"></custom-button></div>
       <div v-if="showLeaderboardRequirements" class="flex flex-col items-center p-[2em] border w-auto ml-auto mr-auto max-w-[1500px] bg-teal mb-2">
@@ -21,9 +18,6 @@
       <h3 class="font-bold text-2xl uppercase pb-2 max-md:text-base">Heroes Profile Rating formula</h3>
       <img class="max-w-[1000px] w-full" :src="'/images/miscellaneous/mmr_calculation.png'"/>
     </div>
-
-
-
 
     <filters 
       :onFilter="filterData" 
@@ -46,8 +40,7 @@
     >
     </filters>
 
-    <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
-    <dynamic-square-ad :patreon-user="patreonUser"></dynamic-square-ad>
+    <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
 
     <div v-if="data">
       <div class="flex">
@@ -105,7 +98,7 @@
             <template v-for="(row, index) in sortedData">
               <tr v-if="!patreonUser && index != 0 && index % 50 === 0">
                 <td colspan="10" class="align-content-center">
-                  <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
+                  <dynamic-banner-ad :patreon-user="patreonUser" :index="index + 3"></dynamic-banner-ad>
                 </td>
               </tr>
               <tr>
@@ -164,6 +157,7 @@
       <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
   </div>
+
 </template>
 
 <script>

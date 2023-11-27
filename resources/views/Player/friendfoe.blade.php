@@ -14,5 +14,6 @@
     :gamemap="{{ json_encode($game_map) }}"
     :regionsmap="{{ json_encode(session('regions')) }}"
     :is-patreon="{{ json_encode($patreon) }}"
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
   ></friend-foe>
 @endsection

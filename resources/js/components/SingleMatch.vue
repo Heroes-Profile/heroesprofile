@@ -195,7 +195,7 @@
         </div>
       </div>
 
-
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
       <div v-if="data.draft_order && data.draft_order.length > 0" class="p-10 text-center max-w-[2000px] mx-auto">
         Draft Order
 
@@ -225,7 +225,7 @@
 
 
 
-
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="2"></dynamic-banner-ad>
       <div class="p-10  max-w-[1500px] mx-auto">
        <h2 class="text-3xl font-bold py-5">Talents</h2>
        <div class="flex gap-20 justify-around">
@@ -290,6 +290,7 @@
    </div>
 
  </div>
+  <dynamic-banner-ad :patreon-user="patreonUser" :index="3"></dynamic-banner-ad>
 
  <div v-if="data.experience_breakdown" class="bg-lighten p-10 text-center">
   <div class="flex flex-wrap justify-center max-w-[2000px] mx-auto">
@@ -303,8 +304,6 @@
 <div v-if="!esport" class=" overflow-scroll md:overflow-auto  h-[50vh] md:h-auto max-w-[1500px] mx-auto my-5">
 
   Team 1 Advanced MMR data
-
-  {{}}
   <table :class="{ winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }">
     <thead>
       <tr >
@@ -395,6 +394,7 @@
   </table>
 </div>
 
+<dynamic-banner-ad :patreon-user="patreonUser" :index="5"></dynamic-banner-ad>
 
 <div class="max-w-[1500px] mx-auto my-5">
   Team 1 Advanced Stats
@@ -420,6 +420,7 @@
 </table>
 </div>
 
+<dynamic-banner-ad :patreon-user="patreonUser" :index="6"></dynamic-banner-ad>
 <div class="max-w-[1500px] mx-auto">
   Team 2 Advanced Stats
   <table :class="{ winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
@@ -452,6 +453,8 @@
   <loading-component v-else @cancel-request="cancelAxiosRequest"></loading-component>
 </div>
 </div>
+  <dynamic-banner-ad :patreon-user="patreonUser" :index="7"></dynamic-banner-ad>
+
 </template>
 
 <script>
@@ -463,7 +466,8 @@
     },
     props: {
       esport: String,
-      replayid: Number
+      replayid: Number,
+      patreonUser: Boolean,
     },
     data(){
       return {

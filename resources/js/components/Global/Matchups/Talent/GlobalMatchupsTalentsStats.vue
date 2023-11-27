@@ -14,6 +14,8 @@
     :advancedfiltering="advancedfiltering"
     >
   </filters>
+  <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
+
   <div class="flex justify-center items-center gap-10">
     <div class="">
       <single-select-filter :values="firstHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="herochanged" :defaultValue="hero.id"></single-select-filter>
@@ -84,6 +86,7 @@
   </div>
 
 </div>
+
 </template>
 
 <script>

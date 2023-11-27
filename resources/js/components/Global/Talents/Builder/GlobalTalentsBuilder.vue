@@ -25,6 +25,8 @@
       :advancedfiltering="advancedfiltering"
       >
     </filters>
+    <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
+
   </div>
 
 

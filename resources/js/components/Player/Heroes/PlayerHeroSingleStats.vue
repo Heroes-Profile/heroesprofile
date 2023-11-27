@@ -56,6 +56,7 @@
       </div>
 
       <line-chart v-if="seasonWinRateDataArray" class="max-w-[1500px] mx-auto" :data="seasonWinRateDataArray" :dataAttribute="'win_rate'" :title="`${battletag} Win Rate Data Per Season with ${heroobject.name}`"></line-chart>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
 
       <div class="bg-lighten">
         <div class="max-w-[1000px] mx-auto">
@@ -104,8 +105,11 @@
           <div class="max-w-[1500px] mx-auto text-right my-2 pb-2">
             <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/MMR/Hero/' + heroobject.name" class=" " text="View MMR Breakdown"></custom-button>
           </div>
-        </div>        
+        </div>   
+        <dynamic-square-ad :patreon-user="patreonUser" :index="1"></dynamic-square-ad>
+     
       </div>
+
       <div class="p-10 max-w-[90em] ml-auto mr-auto">
         <h2 class="text-3xl font-bold py-5">Party Size Win Rates</h2>
         <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
@@ -128,6 +132,7 @@
           <div class="flex gap-10 text-s"><span>Five Stack</span><span>Total Games: {{ (data.stack_size_five_wins + data.stack_size_five_losses).toLocaleString() }} </span></div>
           <stat-bar-box size="big" :value="data.stack_size_five_win_rate.toFixed(2) "></stat-bar-box>     
         </div>
+        <dynamic-square-ad :patreon-user="patreonUser" :index="2"></dynamic-square-ad>
       </div>
 
       <div class="bg-lighten">
@@ -185,6 +190,7 @@
       region: Number,
       regionsmap: Object,
       isPatreon: Boolean,
+      patreonUser: Boolean,
     },
     data(){
       return {

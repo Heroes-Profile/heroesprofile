@@ -12,5 +12,6 @@
     :regionsmap="{{ json_encode(session('regions')) }}"
     :heroobject="{{ json_encode($heroObject) }}"
     :is-patreon="{{ json_encode($patreon) }}"
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
   ></player-hero-single-stats>
 @endsection

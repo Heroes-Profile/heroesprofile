@@ -22,7 +22,8 @@ s<template>
       :advancedfiltering="advancedfiltering"
       >
     </filters>
-    
+    <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
+
     <div v-if="partydata" class="max-w-[1500px] mx-auto">
       <div class="flex">
         <div class="w-auto inline-block m-1 ml-auto">

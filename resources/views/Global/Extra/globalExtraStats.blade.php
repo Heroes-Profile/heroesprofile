@@ -4,5 +4,9 @@
 @section('meta_description', '')
 
 @section('content')
-  <global-extra-stats :filters="{{ json_encode($filters) }}"></global-extra-stats>
+  <global-extra-stats 
+    :filters="{{ json_encode($filters) }}"
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+  >
+  </global-extra-stats>
 @endsection

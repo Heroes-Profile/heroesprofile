@@ -1,21 +1,16 @@
 <template v-if="!patreonUser">
-  <div class="vm-placement" data-id="60f5939d46e4640fd9497d35"></div>
+  <div :id="`dynamic-square-ad-container-${index}`"></div>
 </template>
 
 <script>
-  /*
-Placement configurations for HeroesProfile - 300x250 Dynamic (60f5939d46e4640fd9497d35)
-<!-- HeroesProfile - 300x250 Dynamic (60f5939d46e4640fd9497d35) - 300x250, 300x600, 160x600 - Place in <BODY> of page where ad should appear -->
-<div class="vm-placement" data-id="60f5939d46e4640fd9497d35"></div>
-<!-- / HeroesProfile - 300x250 Dynamic (60f5939d46e4640fd9497d35) -->
-*/
 
 export default {
   name: 'DynamicSquareAd',
   components: {
   },
   props: {
-    patreonUser: Boolean
+    patreonUser: Boolean,
+    index: Number,
   },
   data(){
     return {
@@ -24,6 +19,35 @@ export default {
   created(){
   },
   mounted() {
+    let htmlComponent = `#dynamic-square-ad-container-${this.index}`;
+
+    if(!this.patreonUser){
+      window.top.__vm_add = window.top.__vm_add || [];
+
+      //this is a x-browser way to make sure content has loaded.
+
+      (function (success) {
+          if (window.document.readyState !== "loading") {
+              success();
+          } else {
+              window.document.addEventListener("DOMContentLoaded", function () {
+                  success();
+              });
+          }
+      })(function () {
+          var placement = document.createElement("div");
+          placement.setAttribute("class", "vm-placement");
+          if (window.innerWidth > 1000) {
+              //load desktop placement
+              placement.setAttribute("data-id", "60f5939d46e4640fd9497d35");
+          } else {
+              //load mobile placement
+              placement.setAttribute("data-id", "60f5939d46e4640fd9497d35");
+          }
+          document.querySelector(htmlComponent).appendChild(placement);
+          window.top.__vm_add.push(placement);
+      });
+    }
   },
   computed: {
   },

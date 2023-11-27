@@ -25,9 +25,10 @@
       :includerolerank="true"
       :includemirror="true"
       :advancedfiltering="advancedfiltering"
-
       >
     </filters>
+    <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
+
     <div v-if="data">
       <div class="max-w-[1500px] mx-auto"><span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Map Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span></div>
 
