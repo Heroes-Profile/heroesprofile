@@ -12,5 +12,6 @@
     :mapobject="{{ json_encode($mapobject) }}" 
     :regions="{{ json_encode($regions) }}"
     :regionsmap="{{ json_encode(session('regions')) }}"
+    :is-patreon="{{ json_encode($patreon) }}"
   ></player-map-single-stats>
 @endsection

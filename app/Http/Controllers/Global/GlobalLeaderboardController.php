@@ -10,6 +10,7 @@ use App\Rules\RegionInputValidation;
 use App\Rules\RoleInputValidation;
 use App\Rules\SeasonInputValidation;
 use App\Rules\StackSizeInputValidation;
+use App\Models\BattlenetAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -104,7 +105,13 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         $talentData = HeroesDataTalent::all();
         $talentData = $talentData->keyBy('talent_id');
 
-        $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber) {
+
+        $patreonAccounts = BattlenetAccount::has('patreonAccount')->get();
+
+        $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber, $patreonAccounts) {
+            $patreonAccount = $patreonAccounts->where("blizz_id", $item->blizz_id)->where("region", $item->region);
+
+            $item->patreon = is_null($patreonAccount) || empty($patreonAccount) || count($patreonAccount) == 0 ? false : true;
             $item->mmr = round(1800 + 40 * $item->conservative_rating);
             $item->win_rate = round($item->win_rate, 2);
             $item->rating = round($item->rating, 2);

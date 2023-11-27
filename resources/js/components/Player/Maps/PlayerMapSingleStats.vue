@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="'Map data for ' + battletag + ' on ' + map" :heading="battletag +`(`+ regionsmap[region] + `)`">
+    <page-heading :infoText1="'Map data for ' + battletag + ' on ' + map" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon">
             <map-image-wrapper :map="mapobject" :size="'big'"></map-image-wrapper>
     </page-heading>
 
@@ -113,6 +113,7 @@ export default {
     map: String,
     regionsmap: Object,
     mapobject: Object,
+    isPatreon: Boolean,
   },
   data(){
     return {

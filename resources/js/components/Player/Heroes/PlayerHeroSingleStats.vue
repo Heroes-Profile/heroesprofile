@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="hero + ' stats for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`">
+    <page-heading :infoText1="hero + ' stats for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon">
       <hero-image-wrapper :hero="heroobject" :size="'big'"></hero-image-wrapper>
     </page-heading>
 
@@ -184,6 +184,7 @@
       },
       region: Number,
       regionsmap: Object,
+      isPatreon: Boolean,
     },
     data(){
       return {

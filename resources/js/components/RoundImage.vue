@@ -27,7 +27,6 @@
         <i class="fas fa-crown text" style="color:gold;"></i>
       </div>
 
-      <!-- I need to add the logic for this, but this is the icon.  Leaving it true for now so it displays -->
       <div class="absolute z-10 top-0 left-0" v-if="ispatreon">
        <!-- {{ "Patreon Subscriber" }} -->
         <i class="fas fa-star" style="color:gold"></i>

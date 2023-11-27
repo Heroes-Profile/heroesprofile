@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :heading="'Matchups'" :infoText1="infotext"></page-heading>
+    <page-heading :heading="'Matchups'" :infoText1="infotext" :isPatreon="isPatreon"></page-heading>
     
     <filters 
     :onFilter="filterData" 
@@ -80,6 +80,7 @@
       battletag: String,
       blizzid: String, 
       region: String,
+      isPatreon: Boolean,
     },
     data(){
       return {

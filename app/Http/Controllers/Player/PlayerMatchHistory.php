@@ -40,7 +40,7 @@ class PlayerMatchHistory extends Controller
             'region' => $region,
             'filters' => $this->globalDataService->getFilterData(),
             'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
-            //'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
+            'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);
     }
 

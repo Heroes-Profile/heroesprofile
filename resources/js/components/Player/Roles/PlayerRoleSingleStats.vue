@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="'Role data for ' + battletag + ' on ' + role" :heading="battletag +`(`+ regionsmap[region] + `)`">
+    <page-heading :infoText1="'Role data for ' + battletag + ' on ' + role" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon">
       <slot>
         <round-image :image="`/images/roles/${role}.png`" :excludehover="true"></round-image>
       </slot>
@@ -130,7 +130,8 @@
         type: [String, Number]
       },
       region: Number,
-      regionsmap: Object
+      regionsmap: Object,
+      isPatreon: Boolean,
     },
     data(){
       return {

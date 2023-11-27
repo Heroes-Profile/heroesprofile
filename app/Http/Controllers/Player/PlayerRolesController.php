@@ -34,6 +34,7 @@ class PlayerRolesController extends Controller
             'account_level' => $account_level,
             'region' => $region,
             'filters' => $this->globalDataService->getFilterData(),
+            'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);
     }
 
@@ -62,6 +63,7 @@ class PlayerRolesController extends Controller
             'role' => $role,
             'filters' => $this->globalDataService->getFilterData(),
             'regions' => $this->globalDataService->getRegionIDtoString(),
+            'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);
     }
 }
