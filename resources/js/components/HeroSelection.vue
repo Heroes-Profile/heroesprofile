@@ -1,5 +1,5 @@
 <template>
-  <div class="px-20">
+  <div class="md:px-20 max-md:px-4">
     <div class="text-center my-5">
       <input 
         type="text" 
@@ -9,8 +9,8 @@
       />
     </div>
 
-    <div class="flex flex-wrap gap-2 max-w-[1200px] mx-auto cursor-pointer">
-      <hero-image-wrapper
+    <div class="flex flex-wrap gap-2 max-w-[1200px] mx-auto cursor-pointer justify-center max-md:justify-between">
+      <hero-image-wrapper class="max-md:w-[30%]" 
         v-for="hero in filteredHeroes" 
         :key="hero.id" 
         :hero="hero" 

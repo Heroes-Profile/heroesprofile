@@ -1,20 +1,20 @@
 <template>
   <div
   :class="[
-      'relative group items-center w-10 h-10',  
+      'relative group items-center md:w-10 md:h-10',  
       { 
         block: size === 'big', 
-        'w-20': size === 'big', 
-        'h-20': size === 'big',
-        'w-[6em]': size === 'xl',
-        'h-[6em]': size === 'xl',
-        'w-72': size === 'large',
-        'h-[23em]': size === 'large',
+        'md:w-20': size === 'big', 
+        'md:h-20': size === 'big',
+        'md:w-[6em]': size === 'xl',
+        'md:h-[6em]': size === 'xl',
+        'md:w-72': size === 'large',
+        'md:h-[23em]': size === 'large',
         'overflow-hidden': size === 'large',
         'inline-block' : icon,
-        'flex': !icon,
-        'w-[1.7em]': icon,
-        'h-[1.7em]': icon
+        'flex flex-col': !icon,
+        'md:w-[1.7em]': icon,
+        'md:h-[1.7em]': icon
         
       }
       ]"
@@ -41,7 +41,7 @@
       </span>
     
     <img v-else loading="eager" :class="[
-      'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow   w-full h-10 min-w-10',  
+      'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow   w-full h-10 min-w-10 max-md:w-20 max-md:h-20',  
       { 
         
         'rounded-full' : rectangle != true,
@@ -57,7 +57,8 @@
       ]"   
       :src="image" 
       :alt="title" >
-    <div v-if=" showTooltip" :class="[
+     
+    <div v-show=" showTooltip " :class="[
         'absolute hidden group-hover:block left-1/2   transform -translate-x-1/2 text-xs bottom-[1em] -translate-y-[2em]  z-30',
       {
         'bottom-[4.5em] -translate-y-[2em]': size === 'big',
@@ -68,7 +69,7 @@
       }
 
       ]" >
-        <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 ', {}]">
+        <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 max-md:hidden', {}]">
           <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>
           <div class="bg-red" v-if="ispatreon">Patreon Subscriber</div>
           <slot></slot>
@@ -77,8 +78,15 @@
         </div>
 
 
-      <div class="popup-arrow"></div>
+      <div class="popup-arrow max-md:hidden"></div>
     </div>
+    <div v-if="!excludehover" :class="[' md:hidden block    text-s p-1    drop-shadow-md  rounded-md px-2 text-center   mb-4', {}]">
+          <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>
+          <div class="bg-red" v-if="ispatreon">Patreon Subscriber</div>
+          <slot></slot>
+          <div class="bg-teal" v-if="award">{{award.title}}</div>
+
+        </div>
 
    
   </div>
@@ -118,6 +126,9 @@ export default {
   watch: {
   },
   methods: {
+     isSmallScreen() {
+      return window.innerWidth <= 768; // You can adjust the threshold as needed
+    }
   }
 }
 </script>
