@@ -31,7 +31,7 @@
   <div id="app" class="flex flex-col align-stretch" style="min-height:100vh;">
    <div class="bg-red text-sm text-center p-1">
       Site has not been styled for mobile yet.<br/>
-      Patreon subscribers please log in and link you Patreon account as we migrate to new site flair and ad-free infrastructure.
+      Patreon subscribers please log in and link your Patreon account as we migrate to new site flair and ad-free infrastructure.
       {{ session('headeralert') }}
     </div>
 
