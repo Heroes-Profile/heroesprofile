@@ -141,7 +141,7 @@
     </nav>
     
 </div>
-<nav class="flex justify-end md:mr-8 alt-acct-nav max-md:mt-4">
+<nav class="flex justify-end md:mr-8 alt-acct-nav ">
         @foreach($altSearchAccounts as $index => $account)
             @if($account)
                 <div class="relative group inline-block  md:p-4 mx-4 text-sm  ">

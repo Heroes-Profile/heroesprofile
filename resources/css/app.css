@@ -79,6 +79,7 @@ body{
 }
 
 @media (max-width:768px){
+    
  
     .main-navigation-wrapper{
       @apply min-h-[100vh] absolute w-full hidden ;
@@ -97,6 +98,9 @@ body{
     }
     .alt-acct-nav .nav-dropdown-inner-wrapper{
         @apply rounded-none;
+    }
+    .alt-acct-nav  a{
+      @apply p-4 block;
     }
   }
 

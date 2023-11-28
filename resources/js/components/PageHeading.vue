@@ -1,5 +1,5 @@
 <template>
-  <div  class="flex py-0 px-10 md:px-20 items-center md:gap-20 text-center md:text-left bg-teal flex-col md:flex-row max-md:pb-4 max-md:mt-2">
+  <div  class="flex py-0 px-10 md:px-20 items-center md:gap-20  md:text-left bg-teal flex-row max-md:py-2 max-md:mt-2 max-md:flex-wrap">
      <slot>
     </slot>
 
@@ -10,7 +10,7 @@
 
    
 
-    <h1 v-else class="text-xl md:text-3xl">
+    <h1 v-else class="text-xl md:text-3xl max-md:w-full">
       <div class="flex items-center">
         <div class="" v-if="isPatreon">
          <!-- Patreon Subscriber -->
@@ -23,8 +23,8 @@
       <infobox :input="infoText1"></infobox>
       <infobox :input="infoText2"></infobox>
     </div>
-    <div v-else>
-      <custom-button @click="hideText = !hideText" text="Show Header Information" alt="Show Header Information" size="small" :ignoreclick="true">Show Header Information</custom-button>
+    <div class="ml-auto" v-else>
+      <custom-button @click="hideText = !hideText" text="Read more" alt="Show Header Information" size="small" :ignoreclick="true"></custom-button>
     </div>
   </div>
 </template>

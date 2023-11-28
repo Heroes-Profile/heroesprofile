@@ -192,7 +192,7 @@ export default {
   data(){
     return {
       isLoading: false,
-    	infoText: "Hero win rates based on differing increments, stat types, game type, or Rank. Click on a Hero to see detailed information. On the chart, bubble size is a combination of Win Rate, Pick Rate, and Ban Rate",
+    	infoText: "Hero win rates based on differing increments, stat types, game type, or rank. Click on a Hero to see detailed information. On the chart, bubble size is a combination of Win Rate, Pick Rate, and Ban Rate",
       sortKey: '',
       sortDir: 'desc',
       data: [],

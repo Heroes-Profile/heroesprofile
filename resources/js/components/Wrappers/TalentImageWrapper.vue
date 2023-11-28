@@ -18,6 +18,7 @@ export default {
   props: {
     talent: Object,
     size: String,
+    mobileClick: true
   },
   data(){
     return {
