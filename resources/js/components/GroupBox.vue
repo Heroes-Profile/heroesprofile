@@ -5,7 +5,7 @@
       <template v-for="(item, index) in data" :key="index">
 
         <!-- Hero Section -->
-        <a v-if="!esport && match && playerlink && item.hero && !item.check" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name">
+        <span v-if="!esport && match && playerlink && item.hero && !item.check" @click="this.$redirectToProfile(item.battletag, item.blizz_id, item.region)" class="link cursor-pointer">
           <hero-image-wrapper :size="'big'" :hero="item.hero" :award="item.match_award" :winner="winner" :hpowner="item.hp_owner" :party="item.party" :ispatreon="item.patreon_subscriber" popupsize="large">
             <image-hover-box 
               :title="item.hero.name" 
@@ -18,7 +18,7 @@
               :hpOwner="item.hp_owner ? 'Heroes Profile Owner' : null"
             ></image-hover-box>
           </hero-image-wrapper>
-        </a>
+        </span>
 
         <div v-else-if="!esport && match && playerlink && item.hero && item.check">
           <hero-image-wrapper :size="'big'" :hero="item.hero">

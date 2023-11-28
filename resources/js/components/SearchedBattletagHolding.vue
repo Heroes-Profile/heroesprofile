@@ -40,7 +40,6 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie';
 
 export default {
   name: 'SearchedBattletagHolding',
@@ -54,17 +53,11 @@ export default {
   data(){
     return {
       battletagresponse: null,
-      alt_search_account1_exists: false,
-      alt_search_account2_exists: false,
-      alt_search_account3_exists: false,
       cancelTokenSource: null,
       isLoading: true,
     }
   },
   created(){
-    this.alt_search_account1_exists = !!Cookies.get('alt_search_account1');
-    this.alt_search_account2_exists = !!Cookies.get('alt_search_account2');
-    this.alt_search_account3_exists = !!Cookies.get('alt_search_account3');
   },
   mounted() {
     this.getData();
@@ -103,72 +96,18 @@ export default {
       }catch(error){
         this.battletagresponse = "Invalid input: '%', '?' and ' ' are invalid inputs";
       }finally {
-        this.cancelTokenSource = null; // Reset cancel token source
+        this.cancelTokenSource = null;
         this.isLoading = false;
       }
     },
     cancelAxiosRequest() {
-      // Cancel the request if it's in progress
       if (this.cancelTokenSource) {
         this.cancelTokenSource.cancel('Request canceled by user');
       }
     },
     redirectToProfile(battletag, blizz_id, region) {
       this.isLoading = true;
-      let data = {
-        battletag: battletag.split('#')[0],
-        blizz_id: blizz_id,
-        region: region,
-        date: new Date().toISOString(),
-      };
-
-      const existingAccounts = [
-        JSON.parse(Cookies.get('alt_search_account1') || 'null'),
-        JSON.parse(Cookies.get('alt_search_account2') || 'null'),
-        JSON.parse(Cookies.get('alt_search_account3') || 'null'),
-      ];
-
-      const accountIndex = existingAccounts.findIndex((account) => {
-        return account && account.battletag === data.battletag && account.blizz_id === data.blizz_id;
-      });
-
-      if (this.type == "main") {
-        Cookies.set('main_search_account', JSON.stringify(data), { sameSite: 'Strict', path: '/', expires: 90 });
-      } else if (this.type == "alt") {
-        if (accountIndex >= 0) {
-          existingAccounts[accountIndex].region = region;
-          existingAccounts[accountIndex].date = data.date;
-        } else {
-          // Find the oldest account or use the first available slot
-          const oldestAccountIndex = existingAccounts.findIndex((account) => {
-            return !account;
-          });
-
-          if (oldestAccountIndex >= 0) {
-            // Use the first available slot
-            existingAccounts[oldestAccountIndex] = data;
-          } else {
-            // Find the oldest account and overwrite it
-            const oldestAccount = existingAccounts.reduce((oldest, current) => {
-              if (!oldest || new Date(current.date) < new Date(oldest.date)) {
-                return current;
-              }
-              return oldest;
-            }, null);
-
-            if (oldestAccount) {
-              Object.assign(oldestAccount, data);
-            }
-          }
-        }
-        existingAccounts.forEach((account, index) => {
-          if (account) {
-            Cookies.set('alt_search_account' + (index + 1), JSON.stringify(account), { sameSite: 'Strict', path: '/', expires: 90 });
-          }
-        });
-      }
-      this.isLoading = false;
-      window.location.href = '/Player/' + battletag.split('#')[0] + "/" + blizz_id + "/" + region;
+      this.$redirectToProfile(battletag.split('#')[0], blizz_id, region);
     }
   }
 }
