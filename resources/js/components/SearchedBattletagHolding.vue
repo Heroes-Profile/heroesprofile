@@ -21,8 +21,7 @@
       </div>
 
       <div v-else-if="battletagresponse.length == 1">
-        Loading Profile...
-        <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+        Account found, loading Profile...
       </div>
 
         <div class="flex justify-center items-center flex-col" v-else>
@@ -32,7 +31,7 @@
         </div>
       </div>
     </div>
-    <div v-else>
+    <div v-else-if="isLoading">
       <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
     </div>
   </div>
@@ -59,6 +58,7 @@ export default {
       alt_search_account2_exists: false,
       alt_search_account3_exists: false,
       cancelTokenSource: null,
+      isLoading: true,
     }
   },
   created(){
@@ -114,6 +114,7 @@ export default {
       }
     },
     redirectToProfile(battletag, blizz_id, region) {
+      this.isLoading = true;
       let data = {
         battletag: battletag.split('#')[0],
         blizz_id: blizz_id,
@@ -166,7 +167,7 @@ export default {
           }
         });
       }
-
+      this.isLoading = false;
       window.location.href = '/Player/' + battletag.split('#')[0] + "/" + blizz_id + "/" + region;
     }
   }
