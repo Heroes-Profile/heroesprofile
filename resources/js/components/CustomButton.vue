@@ -44,7 +44,7 @@
       disabled: Boolean,
       targetblank: Boolean,
       ignoreclick: Boolean,
-      loading: false,
+      loading: Boolean,
     },
     data(){
       return {

@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <page-heading :infoText1="infoText" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon">
+    <page-heading :infoText1="infoText" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner">
     </page-heading>
     <div class="flex justify-center max-w-[1500px] mx-auto">
       <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
@@ -246,6 +246,12 @@
         updatedList.unshift(newValue);
         return updatedList;
       },
+      isOwner(){
+        if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
+          return true;
+        }
+        return false;
+      }
     },
     watch: {
     },

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="hero + ' stats for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon">
+    <page-heading :infoText1="hero + ' stats for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner">
       <hero-image-wrapper :hero="heroobject" :size="'big'"></hero-image-wrapper>
     </page-heading>
 
@@ -296,6 +296,12 @@
         const updatedList = [...this.filters.seasons];
         updatedList.unshift(newValue);
         return updatedList;
+      },
+      isOwner(){
+        if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
+          return true;
+        }
+        return false;
       },
     },
     watch: {

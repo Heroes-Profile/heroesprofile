@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon"></page-heading>
+    <page-heading :infoText1="infoText" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
@@ -174,6 +174,12 @@ export default {
           return valA > valB ? -1 : 1;
         }
       });
+    },
+    isOwner(){
+      if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
+        return true;
+      }
+      return false;
     },
   },
   watch: {

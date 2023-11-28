@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="selectedHero ? selectedHero.name + ' talent stats and builds player by ' + battletag : ' talent stats and builds player by ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon">
+    <page-heading :infoText1="selectedHero ? selectedHero.name + ' talent stats and builds player by ' + battletag : ' talent stats and builds player by ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner">
       <hero-image-wrapper v-if="selectedHero" :hero="selectedHero" :size="'big'"></hero-image-wrapper>
     </page-heading>
 
@@ -86,6 +86,12 @@ export default {
     }
   },
   computed: {
+    isOwner(){
+      if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
+        return true;
+      }
+      return false;
+    }
   },
   watch: {
   },

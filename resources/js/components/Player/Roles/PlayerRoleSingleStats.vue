@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="'Role data for ' + battletag + ' on ' + role" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon">
+    <page-heading :infoText1="'Role data for ' + battletag + ' on ' + role" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner">
       <slot>
         <round-image :image="`/images/roles/${role}.png`" :excludehover="true"></round-image>
       </slot>
@@ -168,6 +168,12 @@
         const updatedList = [...this.filters.seasons];
         updatedList.unshift(newValue);
         return updatedList;
+      },
+      isOwner(){
+        if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
+          return true;
+        }
+        return false;
       },
     },
     watch: {

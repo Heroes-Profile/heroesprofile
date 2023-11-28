@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :heading="'Matchups'" :infoText1="infotext" :isPatreon="isPatreon"></page-heading>
+    <page-heading :heading="'Matchups'" :infoText1="infotext" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
     
     <filters 
     :onFilter="filterData" 
@@ -114,6 +114,12 @@
             return valA > valB ? -1 : 1;
           }
         });
+      },
+      isOwner(){
+        if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
+          return true;
+        }
+        return false;
       },
     },
     watch: {

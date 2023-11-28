@@ -1,6 +1,6 @@
 /PlayerMapsAllStats.vue<template>
   <div>
-    <page-heading :infoText1="'All Map data for ' + battletag + '. Click a map to see individual map statistics'" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon"></page-heading>
+    <page-heading :infoText1="'All Map data for ' + battletag + '. Click a map to see individual map statistics'" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
     
     <filters 
       :onFilter="filterData" 
@@ -237,6 +237,12 @@ export default {
           return valA > valB ? -1 : 1;
         }
       });
+    },
+    isOwner(){
+      if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
+        return true;
+      }
+      return false;
     },
   },
   watch: {
