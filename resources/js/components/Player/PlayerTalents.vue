@@ -20,6 +20,8 @@
         :includegamedate="true"
         >
       </filters>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
+
       <div  v-if="talentdetaildata" class="container mx-auto px-4">
         <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Talent Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
         <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
@@ -27,6 +29,9 @@
       <div v-else-if="isLoading">
         <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
       </div>
+
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="2"></dynamic-banner-ad>
+
       <div  v-if="talentbuilddata" class="cmx-auto px-4 w-auto flex flex-col items-center">
         {{ this.selectedHero.name }} {{ "Talent Builds"}}
         <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="'Popular'" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
@@ -56,6 +61,7 @@ export default {
     talentimages: Object,
     regionsmap: Object,
     isPatreon: Boolean,
+    patreonUser: Boolean,
   },
   data(){
     return {

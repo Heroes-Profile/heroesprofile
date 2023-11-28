@@ -19,6 +19,7 @@
     :defaulttimeframetype="{{ json_encode($defaulttimeframetype) }}" 
     :talentimages="{{ json_encode($talentimages) }}" 
     :advancedfiltering="{{ json_encode($advancedfiltering) }}"
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
   >
   </global-talents-stats>
 @endsection

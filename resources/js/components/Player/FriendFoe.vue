@@ -108,6 +108,7 @@ export default {
     gametypedefault: Array,
     regionsmap: Object,
     isPatreon: Boolean,
+    patreonUser: Boolean,
   },
   data(){
     return {

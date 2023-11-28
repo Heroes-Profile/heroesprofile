@@ -13,6 +13,8 @@
     :hideadvancedfilteringbutton="true"
     >
   </filters>
+  <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
+
   <div v-if="data">
     <div  class="relative max-w-[1500px] mx-auto">
       <custom-button class="ml-auto" @click="showOptions = !showOptions" :text="showOptions ? 'Hide Column Selection' : 'Show Column Selection'" :ignoreclick="true"></custom-button>
@@ -70,23 +72,19 @@
           
           <template v-for="stat in stats" >
             <td 
-            v-if="stat.selected" 
-            :class="{ flash: stat.flash }"
-            class="py-2 px-3 ">
-            {{ showStatValue(row[stat.value]) }}
-          </td>
-        </template>
-
-        
-      </tr>
-    </tbody>
-  </table>
-
-</div>
-<div v-else-if="isLoading">
-  <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true" :timer="true" :starttime="timertime">Large amount of data.<br/>Please be patient.<br/></loading-component>
-</div>
-
+              v-if="stat.selected" 
+              :class="{ flash: stat.flash }"
+              class="py-2 px-3 ">
+              {{ showStatValue(row[stat.value]) }}
+            </td>
+          </template>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div v-else-if="isLoading">
+    <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true" :timer="true" :starttime="timertime">Large amount of data.<br/>Please be patient.<br/></loading-component>
+  </div>
 </div>
 </template>
 
@@ -106,6 +104,7 @@
       regionsmap: Object,
       accountlevel: Number,
       isPatreon: Boolean,
+      patreonUser: Boolean,
     },
     data(){
       return {

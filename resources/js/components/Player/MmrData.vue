@@ -19,6 +19,8 @@
       <div class="max-w-[1500px] mx-auto mt-2">
         {{ this.gametype.toUpperCase() }} - League Tier Breakdowns | Player MMR: {{ data[0].mmr }}
       </div>
+
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
       <table class="">
         <thead>
           <tr>
@@ -75,29 +77,36 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(row, index) in sortedData" :key="index">
-            <td>
-              <a class="link" :href="'/Match/Single/' + row.replayID">{{ row.replayID }}</a>
-            </td>
-            <td>
-              {{ formatDate(row.game_date) }}
-            </td>
-            <td>
-              {{ formatDate(row.mmr_date_parsed) }}
-            </td>
-            <td class="py-2 px-3  flex items-center gap-1">
-              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}
-            </td>
-            <td>
-              {{ row.mmr.toLocaleString() }}
-            </td>
-            <td>
-              {{ row.mmr_change.toFixed(2) }}
-            </td>
-            <td>
-              {{ row.winner }}
-            </td>
-          </tr>
+          <template v-for="(row, index) in sortedData">
+            <tr v-if="!patreonUser && index != 0 && index % 50 === 0">
+              <td colspan="7" class="align-content-center">
+                <dynamic-banner-ad :patreon-user="patreonUser" :index="index + 3"></dynamic-banner-ad>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <a class="link" :href="'/Match/Single/' + row.replayID">{{ row.replayID }}</a>
+              </td>
+              <td>
+                {{ formatDate(row.game_date) }}
+              </td>
+              <td>
+                {{ formatDate(row.mmr_date_parsed) }}
+              </td>
+              <td class="py-2 px-3  flex items-center gap-1">
+                <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}
+              </td>
+              <td>
+                {{ row.mmr.toLocaleString() }}
+              </td>
+              <td>
+                {{ row.mmr_change.toFixed(2) }}
+              </td>
+              <td>
+                {{ row.winner }}
+              </td>
+            </tr>
+          </template>
         </tbody>
       </table>
     </div>
@@ -106,6 +115,7 @@
     </div>
 
   </div>
+
 </template>
 
 <script>
@@ -127,6 +137,7 @@ export default {
     },
     regionsmap: Object,
     isPatreon: Boolean,
+    patreonUser: Boolean,
   },
   data(){
     return {

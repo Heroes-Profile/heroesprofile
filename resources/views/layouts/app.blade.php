@@ -35,20 +35,23 @@
       {{ session('headeralert') }}
     </div>
 
+
     @include('nav', [
     'isAuthenticated' => Auth::check(),
     'mainSearchAccount' => $main_search_account,
     'altSearchAccounts' => [$alt_search_account1, $alt_search_account2, $alt_search_account3],
     'regions' => session('regions'),
     ])
-
+    
     <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></horizontal-banner-ad>
-    <rich-media-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></rich-media-ad>
-    <takeover-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></takeover-ad>
 
+    <rich-media-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></rich-media-ad>
+
+    <!-- Not sure if working -->
+    <takeover-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></takeover-ad>
     @yield('content')
- 
-    <dynamic-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></dynamic-banner-ad>
+
+    <dynamic-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}" :index="100"></dynamic-banner-ad>
 
     <div class="mt-auto">
       <div class="footer-wrapper text-center mx-auto bg-lighten border-t-4 border-teal mt-[2em] w-full px-4">

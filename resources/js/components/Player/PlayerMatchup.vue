@@ -12,6 +12,7 @@
     :hideadvancedfilteringbutton="true"
     >
   </filters>
+  <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
 
   <div v-if="data">
     <div class="flex flex-wrap justify-center">
@@ -81,6 +82,7 @@
       blizzid: String, 
       region: String,
       isPatreon: Boolean,
+      patreonUser: Boolean,
     },
     data(){
       return {

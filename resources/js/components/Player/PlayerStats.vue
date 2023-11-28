@@ -52,8 +52,8 @@
         <stat-box :title="'MVP%'" :value="data.mvp_rate.toFixed(2)"></stat-box>  <stat-box :title="'Total Time Played'" :value="data.total_time_played"></stat-box>  <stat-box :title="'AVG. Time on Fire'" :value="data.average_time_on_fire"></stat-box>      
       </div>
       <div class="max-w-[1500px] mx-auto text-right mb-2">
-      <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Role'" class="flex-1 " text="View all Roles"></custom-button>
-       </div>
+        <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Role'" class="flex-1 " text="View all Roles"></custom-button>
+      </div>
 
       <div class="bg-lighten p-10 ">
         <div class=" max-w-[90em] ml-auto mr-auto">
@@ -113,9 +113,12 @@
         <stat-box title="Rank Tier" :value="data.ar_mmr_data ? data.ar_mmr_data.rank_tier : ''"></stat-box>
         <stat-box :title="'MMR'" :value="data.ar_mmr_data ? data.ar_mmr_data.mmr.toLocaleString() : 0 "></stat-box>
       </div>
+
+      <dynamic-square-ad :patreon-user="patreonUser" :index="1"></dynamic-square-ad>
+
       <div class="max-w-[1500px] mx-auto text-right my-2">
-      <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/MMR'" class=" " text="View MMR Breakdown"></custom-button>
-    </div>
+        <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/MMR'" class=" " text="View MMR Breakdown"></custom-button>
+      </div>
     </div>
 
 
@@ -131,6 +134,7 @@
         <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Map'" class=" " text="View All Maps"></custom-button>
       </div>
       </div>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
     </div>
 
 
@@ -157,8 +161,7 @@
         <div class="flex gap-10 text-s"><span>Five Stack</span><span>Total Games: {{ (data.stack_five_wins + data.stack_five_losses).toLocaleString() }} </span></div>
         <stat-bar-box size="big" :value="data.stack_five_win_rate.toFixed(2) "></stat-bar-box>     
       </div>
-      
-      
+      <dynamic-square-ad :patreon-user="patreonUser" :index="2"></dynamic-square-ad>
 
     </div>
 
@@ -174,12 +177,13 @@
       </div>
     </div>
 
-  </div>
-  <div v-else-if="isLoading">
-    <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+    </div>
+    <div v-else-if="isLoading">
+      <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+    </div>
+
   </div>
 
-</div>
 </template>
 
 <script>
@@ -198,6 +202,7 @@
       gametype: Array,
       regionsmap: Object,
       isPatreon: Boolean,
+      patreonUser: Boolean,
     },
     data(){
       return {

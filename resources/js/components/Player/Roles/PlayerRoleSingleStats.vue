@@ -55,6 +55,7 @@
 
 
       <line-chart v-if="seasonWinRateDataArray" class="max-w-[1500px] mx-auto" :data="seasonWinRateDataArray" :dataAttribute="'win_rate'" :title="`${battletag} Win Rate Data Per Season with ${role}`"></line-chart>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
 
       <div class="bg-lighten p-10 ">
         <div class=" max-w-[90em] ml-auto mr-auto">
@@ -72,6 +73,7 @@
             </a>
           </div>
         </div>
+        <dynamic-banner-ad :patreon-user="patreonUser" :index="2"></dynamic-banner-ad>
       </div>
 
 
@@ -98,6 +100,7 @@
           <div class="flex gap-10 text-s"><span>Five Stack</span><span>Total Games: {{ (data.stack_size_five_wins + data.stack_size_five_losses).toLocaleString() }} </span></div>
           <stat-bar-box size="big" :value="data.stack_size_five_win_rate.toFixed(2) "></stat-bar-box>     
         </div>
+        <dynamic-square-ad :patreon-user="patreonUser" :index="1"></dynamic-square-ad>
       </div>
 
       <div class="bg-lighten">
@@ -132,6 +135,7 @@
       region: Number,
       regionsmap: Object,
       isPatreon: Boolean,
+      patreonUser: Boolean,
     },
     data(){
       return {

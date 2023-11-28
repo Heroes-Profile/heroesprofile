@@ -51,6 +51,7 @@
       </div>
 
       <line-chart v-if="seasonWinRateDataArray" class="max-w-[1500px] mx-auto" :data="seasonWinRateDataArray" :dataAttribute="'win_rate'" :title="`${battletag} Win Rate Data Per Season on ${map}`"></line-chart>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
 
       <div class="bg-lighten">
         <div class="p-10 max-w-[90em] ml-auto mr-auto">
@@ -76,7 +77,7 @@
             <stat-bar-box size="big" :value="data.stack_size_five_win_rate.toFixed(2) "></stat-bar-box>     
           </div>
         </div>
-
+        <dynamic-square-ad :patreon-user="patreonUser" :index="1"></dynamic-square-ad>
       </div>
 
         <div class="">
@@ -114,6 +115,7 @@ export default {
     regionsmap: Object,
     mapobject: Object,
     isPatreon: Boolean,
+    patreonUser: Boolean,
   },
   data(){
     return {

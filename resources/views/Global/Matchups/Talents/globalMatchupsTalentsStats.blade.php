@@ -14,5 +14,7 @@
     :inputhero="{{ json_encode($inputhero) }}"
     :inputenemyally="{{ json_encode($inputenemyally) }}"
     :advancedfiltering="{{ json_encode($advancedfiltering) }}"
-  ></global-matchups-talents-stats>
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+  >
+  </global-matchups-talents-stats>
 @endsection

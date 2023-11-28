@@ -1,4 +1,5 @@
 <template>
+  <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
   <div>
     <div class="max-w-[1500px] mx-auto mt-10 w-full" v-if="battletagresponse">
       <div class="flex flex-col items-center justify-center " v-if="battletagresponse.length > 1">
@@ -25,18 +26,18 @@
       </div>
 
         <div class="flex justify-center items-center flex-col" v-else>
-        <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'"></search-component>
-<div class="rounded bg-red text-white p-4 mb-4">No battletag found for {{ userinput }}
-
-        Try Again?</div>
+          <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'"></search-component>
+        <div class="rounded bg-red text-white p-4 mb-4">No battletag found for {{ userinput }}
+          Try Again?
+        </div>
       </div>
     </div>
     <div v-else>
       <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
     </div>
-
-
   </div>
+  <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
+
 </template>
 
 <script>
@@ -49,6 +50,7 @@ export default {
   props: {
     userinput: String,
     type: String,
+    patreonUser: Boolean,
   },
   data(){
     return {

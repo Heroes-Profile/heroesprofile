@@ -9,5 +9,7 @@
     :heroes="{{ json_encode(session('heroes')) }}" 
     :inputhero="{{ json_encode($userinput)}}" 
     :gametypedefault="{{ json_encode($gametypedefault) }}" 
-    ></compare>
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+  >
+  </compare>
 @endsection

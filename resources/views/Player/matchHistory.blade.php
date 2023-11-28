@@ -11,6 +11,7 @@
     :gametypedefault="{{ json_encode($gametypedefault) }}" 
     :regionsmap="{{ json_encode(session('regions')) }}"
     :is-patreon="{{ json_encode($patreon) }}"
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
   >  
   </player-match-history>
 @endsection
