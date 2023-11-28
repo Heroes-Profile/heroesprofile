@@ -128,7 +128,7 @@
                         <div class="" v-else-if="row.patreon">
                           <i class="fas fa-star" style="color:gold"></i>
                         </div>
-                        <a class="link" :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`">{{ row.split_battletag }}</a>
+                        <span class="link" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id)">{{ row.split_battletag }}</span>
                       </div>
                     </td>
                     <td>{{ row.region }}</td>
