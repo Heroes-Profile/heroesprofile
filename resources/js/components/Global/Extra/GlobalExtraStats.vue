@@ -34,6 +34,7 @@ export default {
       type: Object,
       required: true
     },
+    patreonUser: Boolean,
   },
   data(){
     return {

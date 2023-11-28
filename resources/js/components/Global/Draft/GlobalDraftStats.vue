@@ -94,6 +94,7 @@
       defaulttimeframe: Array,
       defaultbuildtype: String,
       advancedfiltering: Boolean,
+      patreonUser: Boolean,
     },
     data(){
       return {

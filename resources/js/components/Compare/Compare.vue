@@ -115,6 +115,7 @@
       gametypedefault: Array,
       inputhero: Object,
       gametypedefault: Array,
+      patreonUser: Boolean,
     },
     data(){
       return {

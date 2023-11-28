@@ -103,6 +103,7 @@
       inputhero: Object,
       inputenemyally: Object,
       advancedfiltering: Boolean,
+      patreonUser: Boolean,
     },
     data(){
       return {

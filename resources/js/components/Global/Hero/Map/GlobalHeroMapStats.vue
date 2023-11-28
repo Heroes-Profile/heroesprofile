@@ -97,6 +97,7 @@
       defaulttimeframe: Array,
       defaulttimeframetype: String,
       advancedfiltering: Boolean,
+      patreonUser: Boolean,
     },
     data(){
       return {

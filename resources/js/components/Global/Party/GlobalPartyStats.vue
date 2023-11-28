@@ -537,6 +537,7 @@ export default {
     defaulttimeframetype: String,
     defaulttimeframe: Array,
     advancedfiltering: Boolean,
+    patreonUser: Boolean,
   },
   data(){
     return {

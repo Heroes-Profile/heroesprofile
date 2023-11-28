@@ -164,6 +164,7 @@
       defaultbuildtype: String,
       talentimages: Object,
       advancedfiltering: Boolean,
+      patreonUser: Boolean,
     },
     data(){
       return {
