@@ -53,6 +53,9 @@ class BattleNetController extends Controller
     public function logout()
     {
         Auth::logout();
+        session()->forget('patreonSubscriberSiteFlair'); 
+        session()->forget('patreonSubscriberAdFree'); 
+
 
         return redirect('/');
     }

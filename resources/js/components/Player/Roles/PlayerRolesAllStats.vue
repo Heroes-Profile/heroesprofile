@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="'All Role data for ' + battletag + '. Click a role to see individual role statistics'" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon"></page-heading>
+    <page-heading :infoText1="'All Role data for ' + battletag + '. Click a role to see individual role statistics'" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
 
     <filters 
     :onFilter="filterData" 
@@ -233,6 +233,12 @@ computed: {
         return valA > valB ? -1 : 1;
       }
     });
+  },
+  isOwner(){
+    if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
+      return true;
+    }
+    return false;
   },
 },
 watch: {

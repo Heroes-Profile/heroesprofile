@@ -12,7 +12,11 @@
 
     <h1 v-else class="text-xl md:text-3xl max-md:w-full">
       <div class="flex items-center">
-        <div class="" v-if="isPatreon">
+        <div v-if="isOwner">
+          <!-- Owner -->
+          <i class="fas fa-crown text" style="color:gold;"></i>
+        </div>
+        <div v-else-if="isPatreon" class="">
          <!-- Patreon Subscriber -->
           <i class="fas fa-star" style="color:gold"></i>
         </div>
@@ -40,7 +44,8 @@ export default {
     headingImageUrl: String,
     infoText1: String,
     infoText2: String,
-    isPatreon: false,
+    isPatreon: Boolean,
+    isOwner: Boolean,
   },
   data(){
     return {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="'Map data for ' + battletag + ' on ' + map" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon">
+    <page-heading :infoText1="'Map data for ' + battletag + ' on ' + map" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner">
             <map-image-wrapper :map="mapobject" :size="'big'"></map-image-wrapper>
     </page-heading>
 
@@ -148,6 +148,12 @@ export default {
       const updatedList = [...this.filters.seasons];
       updatedList.unshift(newValue);
       return updatedList;
+    },
+    isOwner(){
+      if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
+        return true;
+      }
+      return false;
     },
   },
   watch: {
