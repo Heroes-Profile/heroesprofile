@@ -37,7 +37,28 @@
 
           <tbody>
             <tr v-for="row in sortedDataFriends" :key="row.blizz_id">
-              <td class="py-2 px-3 "><span class="link" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region)">{{ row.battletag }}</span></td>
+              <td class="py-2 px-3 ">
+
+                      <div class="flex items-center">
+                        <div class="" v-if="row.hp_owner">
+                          <i class="fas fa-crown text" style="color:gold;"></i>
+                        </div>
+                        <div class="" v-else-if="row.patreon">
+                          <i class="fas fa-star" style="color:gold"></i>
+                        </div>
+                        <span class="link" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region)">{{ row.battletag }}</span>
+                      </div>
+
+
+
+
+
+
+
+
+
+
+              </td>
               <td class="py-2 px-3 flex items-center gap-1">
                 <hero-image-wrapper :hero="row.heroData.hero">
                   <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.total_games_played.toLocaleString()"></image-hover-box>

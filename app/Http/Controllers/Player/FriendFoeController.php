@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Player;
 use App\Http\Controllers\Controller;
 use App\Models\GameType;
 use App\Models\Map;
+use App\Models\BattlenetAccount;
 use App\Models\SeasonDate;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
@@ -204,7 +205,10 @@ class FriendFoeController extends Controller
             });
         });
 
-        $finalResults = $checkedData->map(function ($data, $blizz_id) use ($heroDataByID, $region) {
+        $patreonAccounts = BattlenetAccount::has('patreonAccount')->get();
+
+
+        $finalResults = $checkedData->map(function ($data, $blizz_id) use ($heroDataByID, $region, $patreonAccounts) {
             $totalWins = $data->where('winner', 1)->sum('total');
             $totalLosses = $data->where('winner', 0)->sum('total');
 
@@ -220,11 +224,14 @@ class FriendFoeController extends Controller
                 ];
             })->sortByDesc('total_games_played')->first();
             $gamesPlayed = $totalWins + $totalLosses;
+            $patreonAccount = $patreonAccounts->where("blizz_id", $blizz_id)->where("region", $region);
 
             return [
                 'blizz_id' => $blizz_id,
                 'hero' => $heroData['hero']['name'],
                 'region' => $region,
+                'hp_owner' => ($blizz_id == 67280 && $region = 1) ? true : false,
+                'patreon' => is_null($patreonAccount) || empty($patreonAccount) || count($patreonAccount) == 0 ? false : true,
                 'battletag' => explode('#', $data->first()->battletag)[0],
                 'total_wins' => $totalWins,
                 'total_losses' => $totalLosses,
