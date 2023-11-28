@@ -6,6 +6,12 @@ use App\Models\HeroesDataTalent;
 use App\Models\MasterGamesPlayedData;
 use App\Models\MasterGamesPlayedDataGroups;
 use App\Models\Leaderboard;
+use App\Models\MasterMMRDataQM;
+use App\Models\MasterMMRDataUD;
+use App\Models\MasterMMRDataHL;
+use App\Models\MasterMMRDataSL;
+use App\Models\MasterMMRDataTL;
+use App\Models\MasterMMRDataAR;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
 use App\Rules\RegionInputValidation;
@@ -15,6 +21,9 @@ use App\Rules\StackSizeInputValidation;
 use App\Models\BattlenetAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+
+
+
 
 class GlobalLeaderboardController extends GlobalsInputValidationController
 {
@@ -151,7 +160,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             'type' => 'required|in:player,hero,role',
             'groupsize' => ['required', new StackSizeInputValidation()],
             'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation()],
-            'region' => ['sometimes', 'nullable', new RegionInputValidation()],
+            'region' => 'required|integer',
             'role' => ['sometimes', 'nullable', new RoleInputValidation()],
             'blizz_id' => 'required|integer',
         ];
@@ -164,13 +173,13 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                 'status' => 'failure to validate inputs',
             ];
         }
-
+        $blizz_id = $request["blizz_id"];
         $hero = $request['hero'];
         $role = $this->getMMRTypeValue($request['role']);
 
         $gameType = $this->getGameTypeFilterValues($request['game_type']);
         $season = $request['season'];
-        $region = $this->getRegionFilterValues($request['region']);
+        $region = $request['region'];
 
         $type = $request['type'];
         $typeNumber = 0;
@@ -184,38 +193,24 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         }
 
         $groupsize = -1;
-        if ($season < 20) {
+        if ($request['groupsize'] == 'Solo') {
             $groupsize = 0;
-        } else {
-            if ($request['groupsize'] == 'Solo') {
-                $groupsize = 1;
-            } elseif ($request['groupsize'] == 'Duo') {
-                $groupsize = 2;
-            } elseif ($request['groupsize'] == '3 Players') {
-                $groupsize = 3;
-            } elseif ($request['groupsize'] == '4 Players') {
-                $groupsize = 4;
-            } elseif ($request['groupsize'] == '5 Players') {
-                $groupsize = 5;
-            } elseif ($request['groupsize'] == 'All') {
-                $groupsize = 0;
-            }
+        } elseif ($request['groupsize'] == 'Duo') {
+            $groupsize = 2;
+        } elseif ($request['groupsize'] == '3 Players') {
+            $groupsize = 3;
+        } elseif ($request['groupsize'] == '4 Players') {
+            $groupsize = 4;
+        } elseif ($request['groupsize'] == '5 Players') {
+            $groupsize = 5;
+        } elseif ($request['groupsize'] == 'All') {
+            $groupsize = 0;
         }
 
         $table = MasterGamesPlayedData::class;
-        if($groupsize != 0){
+        if($request['groupsize'] != 'All'){
             $table = MasterGamesPlayedDataGroups::class;
         }
-
-        $weeksSinceStart = $this->globalDataService->getWeeksSinceSeasonStart();
-        $maxGamesPlayed = $table::select("games_played_leaderboard")
-            ->where("type_value", $typeNumber)
-            ->where("stack_size", $groupsize)
-            ->where("season", $this->globalDataService->getDefaultSeason())
-            ->where("game_type", $gameType)
-            ->orderByDesc("games_played_leaderboard")
-            ->limit($weeksSinceStart)
-            ->avg();
 
         $playerData =  $table::select("win_leaderboard", "loss_leaderboard", "games_played_leaderboard")
             ->where("type_value", $typeNumber)
@@ -225,6 +220,23 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             ->where("blizz_id", $blizz_id)
             ->where("region", $region)
             ->first();
+
+        if(!$playerData || empty($playerData)){
+            return ["rating" => 0, "games_played" => 0];
+        }
+
+
+        $weeksSinceStart = $this->globalDataService->getWeeksSinceSeasonStart();
+        $maxGamesPlayed = $table::select("games_played_leaderboard")
+            ->where("type_value", $typeNumber)
+            ->where("stack_size", $groupsize)
+            ->where("season", $this->globalDataService->getDefaultSeason())
+            ->where("game_type", $gameType)
+            ->orderByDesc("games_played_leaderboard")
+            ->limit($weeksSinceStart)
+            ->get() 
+            ->avg("games_played_leaderboard");
+
 
         $gamesPlayedForFormula = $playerData->games_played_leaderboard;
 
@@ -256,6 +268,6 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
         $winRate = $playerData->games_played_leaderboard > 0 ? ($playerData->win_leaderboard / $playerData->games_played_leaderboard) * 100 : 0;
         $rating = (50 + ($winRate - 50) * ($gamesPlayedForFormula / $maxGamesPlayed)) + ($playerMMR->conservative_rating / 10);
-        return $rating;
+        return ["rating" => round($rating, 2), "games_played" => $playerData->games_played_leaderboard];
     }
 }

@@ -39,25 +39,31 @@
       <div v-if="data">
         <div class="flex">
           <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
-            <div class="mb-4">
-              <label for="search" class="sr-only">Search Battletag:</label>
-              <input
-                v-model="searchTerm"
-                @input="performSearch"
-                id="search"
-                type="text"
-                placeholder="Search Battletag"
-                class="p-2 border border-gray-300 rounded-md  text-black"
-              />
+
+            <div class="flex flex-wrap">
+              <div class="mb-4">
+                <label for="search" class="sr-only form-control text-black rounded-l p-2">Search Battletag:</label>
+                <input
+                  v-model="searchTerm"
+                  @input="performSearch"
+                  id="search"
+                  type="text"
+                  placeholder="Search Battletag"
+                  class="p-2 border border-gray-300 rounded-md  text-black"
+                />
+              </div>
+
+              <div v-if="season == defaultseason" class="max-w-[1500px] mx-auto flex justify-end mb-2">
+                <div v-if="!patreonUser">
+                  <a class="link" href="/Authenticate/Battlenet" target="_blank">Log in</a> and subscribe to <a class="link" href="https://www.patreon.com/heroesprofile" target="_blank">Patreon</a> to use
+                </div>
+                <custom-button @click="calculateHPRating(user)" text="Calculate my HP Rating" alt="Calculate my HP Rating" size="small" :ignoreclick="true" :disabled="!patreonUser" :loading="ratingLoading"></custom-button>
+                <span v-if="playerRating">
+                  {{ ratingText(playerRating, playerRatingGamesPlayed) }}
+                </span>
+              </div>
             </div>
 
-            <div v-if="season == defaultseason" class="">
-              <div v-if="!patreonUser">
-                <a class="link" href="https://www.patreon.com/heroesprofile" target="_blank">Subscribe to Patreon to use</a>
-              </div>
-              <custom-button @click="calculateHPRating(user)" text="Calculate my HP Rating" alt="Calculate my HP Rating" size="large" :ignoreclick="true" :disabled="!patreonUser" :loading="ratingLoading"></custom-button>
-              RATING = {{ playerRating }}
-            </div>
 
             <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
               <thead class=" top-0 w-full sticky z-40">
@@ -229,6 +235,7 @@ export default {
       searchTerm: '',
       playerRating: null,
       ratingLoading: false,
+      playerRatingGamesPlayed: null,
     }
   },
   created(){
@@ -324,6 +331,8 @@ export default {
 
       this.sortKey = '';
       this.sortDir = 'desc';
+      this.playerRating = null;
+      this.playerRatingGamesPlayed = null;
       this.data = null;
       this.getData();
     },
@@ -352,6 +361,15 @@ export default {
       }).catch(function(err) {
       });
     },
+    ratingText(playerRating, playerRatingGamesPlayed){
+      let scalar = this.weekssincestart * this.weeksSinceStartScalar;
+      if(playerRatingGamesPlayed < scalar){
+        let gameDifference = scalar - playerRatingGamesPlayed;
+
+        return `Rating of ${playerRating} over ${playerRatingGamesPlayed} games.  ${gameDifference} more games to rank.`;
+      }
+      return `Rating of ${playerRating} over ${playerRatingGamesPlayed} games`;
+    },
     async calculateHPRating(user){
       this.playerRating = null;
       this.ratingLoading = true;
@@ -369,14 +387,15 @@ export default {
           groupsize: this.groupsize,
           hero: this.hero,
           role: this.role,
-          region: this.region,
+          region: user.region,
           blizz_id: user.blizz_id
         }, 
         {
           cancelToken: this.cancelTokenSource.token,
         });
 
-        this.playerRating = response.data;
+        this.playerRating = response.data.rating;
+        this.playerRatingGamesPlayed = response.data.games_played;
       }catch(error){
         //Do something here
       }finally {
