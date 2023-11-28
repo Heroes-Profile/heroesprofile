@@ -109,7 +109,8 @@ export default {
     party: String,
     hpowner: Boolean,
     ispatreon: Boolean,
-    icon: String
+    icon: String,
+    mobileClick: false
   },
   data(){
     return {
