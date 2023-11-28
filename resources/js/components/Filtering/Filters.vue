@@ -1,10 +1,10 @@
 <template>
   <div>
     <button  class="md:hidden p-2 bg-blue w-full" @click="showMobile">Show Filters</button>
-    <div v-show="showNav" class="bg-gray-dark py-2 md:px-20 mb-[2em] max-md:fixed max-md:top-0 max-md:z-50 max-md:h-[100vh] max-md:flex max-md:flex-wrap max-md:px-4 max-md:flex-col">
-      <button class="md:hidden ml-auto" @click="showMobile">x</button>
-      <div class="flex  items-center justify-center max-md:flex-wrap">
-        <div class="flex flex-wrap items-center justify-center">
+    <div v-show="showNav" class="bg-gray-dark py-2 md:px-20 mb-[2em] max-md:fixed max-md:top-0 max-md:z-50 max-md:h-[100vh] max-md:flex max-md:flex-wrap max-md:px-4 max-md:flex-col ">
+      <button class="md:hidden ml-auto text-2xl" @click="showMobile">x</button>
+      <div class="flex  items-center justify-center max-md:flex-wrap max-md:flex-1 max-md:mb-auto">
+        <div class="flex flex-wrap items-center justify-center max-md:mb-auto">
           <!--Hero or Role -->
           <single-select-filter v-if="includeherorole" 
           :values="filters.hero_role" 
@@ -232,13 +232,13 @@
             </div>
           </div>
         </div>
-        <button :disabled="disabledFilter" @click="applyFilter"  :class="{'bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal': !disabledFilter, 'bg-gray-400 text-gray-700': disabledFilter}">
+        <button :disabled="disabledFilter" @click="applyFilter"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal max-md:mt-auto max-md:w-full': !disabledFilter, 'bg-gray-400 text-gray-700': disabledFilter}">
           Filter
         </button>
 
         
       </div>
-      <div class="flex justify-end">
+      <div class="flex justify-end ">
         <button class="m-l-auto underline" v-if="!hideadvancedfilteringbutton" @click="toggleExtraFilters = !toggleExtraFilters" >{{toggleButtonText}}</button>
 
       </div>
