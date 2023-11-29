@@ -26,7 +26,7 @@
       :advancedfiltering="advancedfiltering"
       >
     </filters>
-    <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
+    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
     
     <div v-if="this.data.data">
       <div class="max-w-[1500px] mx-auto flex justify-end mb-2">

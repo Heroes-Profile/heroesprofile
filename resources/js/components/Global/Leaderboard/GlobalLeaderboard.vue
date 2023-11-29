@@ -35,7 +35,7 @@
         :advancedfiltering="advancedfiltering"
       >
       </filters>
-      <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
+      <takeover-ad :patreon-user="patreonUser"></takeover-ad>
       <div v-if="data">
         <div class="flex">
           <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
@@ -115,7 +115,7 @@
                 <template v-for="(row, index) in filteredData">
                   <tr v-if="!patreonUser && index != 0 && index % 50 === 0">
                     <td colspan="10" class="align-content-center">
-                      <dynamic-banner-ad :patreon-user="patreonUser" :index="index + 3"></dynamic-banner-ad>
+                      <dynamic-banner-ad :patreon-user="patreonUser" :index="index + 3" :mobile-override="true"></dynamic-banner-ad>
                     </td>
                   </tr>
                   <tr>

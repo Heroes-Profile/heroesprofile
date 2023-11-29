@@ -3,7 +3,7 @@
     <page-heading :infoText1="selectedHero ? selectedHero.name + ' talent stats and builds player by ' + battletag : ' talent stats and builds player by ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner">
       <hero-image-wrapper v-if="selectedHero" :hero="selectedHero" :size="'big'"></hero-image-wrapper>
     </page-heading>
-
+    
     <div v-if="!selectedHero">
       <hero-selection :heroes="heroes"></hero-selection>
     </div>
@@ -20,7 +20,7 @@
         :includegamedate="true"
         >
       </filters>
-      <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
+      <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
       <div  v-if="talentdetaildata" class="container mx-auto px-4">
         <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Talent Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
@@ -30,7 +30,7 @@
         <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
       </div>
 
-      <dynamic-banner-ad :patreon-user="patreonUser" :index="2"></dynamic-banner-ad>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
 
       <div  v-if="talentbuilddata" class="cmx-auto px-4 w-auto flex flex-col items-center">
         {{ this.selectedHero.name }} {{ "Talent Builds"}}

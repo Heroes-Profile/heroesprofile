@@ -14,6 +14,8 @@
       :hideadvancedfilteringbutton="true"
       >
     </filters>
+    
+    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
     <div v-if="frienddata && enemydata" class="gap-1 mx-auto  flex justify-center max-w-[1500px]">
       <div>

@@ -11,6 +11,8 @@
       :hideadvancedfilteringbutton="true"
       >
     </filters>
+    
+    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
     <div v-if="data">
 
@@ -20,7 +22,7 @@
         {{ this.gametype.toUpperCase() }} - League Tier Breakdowns | Player MMR: {{ data[0].mmr }}
       </div>
 
-      <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
       <table class="">
         <thead>
           <tr>
@@ -80,7 +82,7 @@
           <template v-for="(row, index) in sortedData">
             <tr v-if="!patreonUser && index != 0 && index % 50 === 0">
               <td colspan="7" class="align-content-center">
-                <dynamic-banner-ad :patreon-user="patreonUser" :index="index + 3"></dynamic-banner-ad>
+                <dynamic-banner-ad :patreon-user="patreonUser" :index="index + 3" :mobile-override="false"></dynamic-banner-ad>
               </td>
             </tr>
             <tr>

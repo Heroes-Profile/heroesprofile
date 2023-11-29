@@ -14,7 +14,7 @@
     :advancedfiltering="advancedfiltering"
     >
   </filters>
-  <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
+  <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
   <div class="flex justify-center items-center gap-10">
     <div class="">

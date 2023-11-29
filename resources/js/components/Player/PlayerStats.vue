@@ -7,6 +7,8 @@
       <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
     </div>
 
+    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+    
     <div v-if="data == ''" class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
       <div class="flex items-center">
         <span>No data for this player and filters</span>
@@ -134,7 +136,7 @@
         <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Map'" class=" " text="View All Maps"></custom-button>
       </div>
       </div>
-      <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
     </div>
 
 

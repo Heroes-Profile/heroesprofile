@@ -12,7 +12,7 @@
     :hideadvancedfilteringbutton="true"
     >
   </filters>
-  <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
+  <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
   <div v-if="data">
     <div class="flex flex-wrap justify-center">

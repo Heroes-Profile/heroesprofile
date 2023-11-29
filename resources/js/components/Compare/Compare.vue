@@ -22,7 +22,7 @@
         :defaultSeason="season"
         >
       </filters>
-      <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
+      <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
       <div class="flex justify-center gap-2  mx-auto  ">
         <div class="border  rounded-md compare-selection-box"  v-for="index in range" :key="index">
@@ -66,7 +66,7 @@
             </div>
           </div>
         </div>
-        <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
+        <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
         <table v-for="(section, sectionIndex) in sections" :key="sectionIndex" class="table-fixed">
           <thead>

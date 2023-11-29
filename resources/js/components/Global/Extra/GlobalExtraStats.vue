@@ -13,7 +13,7 @@
       :includexaxisincrements="true"
       >
     </filters>
-    <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
+    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
     <div v-if="data">
       Got Data
       <bar-chart :data="data"></bar-chart>

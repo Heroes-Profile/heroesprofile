@@ -27,7 +27,7 @@
       :advancedfiltering="advancedfiltering"
       >
     </filters>
-    <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
+    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
     <div v-if="allyenemydata" class="flex flex-wrap gap-4 justify-center items-center">
       <group-box :text="'TOP 5 ALLIES ON HEROS TEAM'" :data="allyenemydata.ally.slice(0, 5)" :type="'Matchups'" color="blue"></group-box>

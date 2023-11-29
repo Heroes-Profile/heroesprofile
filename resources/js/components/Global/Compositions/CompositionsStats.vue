@@ -22,7 +22,7 @@
       :advancedfiltering="advancedfiltering"
       >
     </filters>
-    <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
+    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
     <div v-if="compositiondata">
       <table class=" max-w-[1500px]">
         <thead>

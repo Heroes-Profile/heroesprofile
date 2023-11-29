@@ -10,6 +10,7 @@ export default {
   props: {
     patreonUser: Boolean,
     index: Number,
+    mobileOverride: Boolean,
   },
   data(){
     return {
@@ -19,6 +20,8 @@ export default {
   },
   mounted() {
     let htmlComponent = `#dynamic-banner-ad-container-${this.index}`;
+    let mobileoverride = this.mobileOverride;
+
     if(!this.patreonUser){
       window.top.__vm_add = window.top.__vm_add || [];
 
@@ -35,7 +38,7 @@ export default {
       })(function () {
           var placement = document.createElement("div");
           placement.setAttribute("class", "vm-placement");
-          if (window.innerWidth > 1000) {
+          if (window.innerWidth > 1000 || mobileoverride) {
               //load desktop placement
               placement.setAttribute("data-id", "60f593ac46e4640fd9497d39");
           } else {

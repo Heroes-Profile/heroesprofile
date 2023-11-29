@@ -1,5 +1,5 @@
 <template>
-  <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
+  <takeover-ad :patreon-user="patreonUser"></takeover-ad>
   <div>
     <div class="max-w-[1500px] mx-auto mt-10 w-full" v-if="battletagresponse">
       <div class="flex flex-col items-center justify-center " v-if="battletagresponse.length > 1">
@@ -35,8 +35,6 @@
       <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
     </div>
   </div>
-  <dynamic-banner-ad :patreon-user="patreonUser" :index="1"></dynamic-banner-ad>
-
 </template>
 
 <script>
