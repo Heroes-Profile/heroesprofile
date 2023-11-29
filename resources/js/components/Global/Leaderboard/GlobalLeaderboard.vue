@@ -61,6 +61,9 @@
                 <span v-if="playerRating">
                   {{ ratingText(playerRating, playerRatingGamesPlayed) }}
                 </span>
+                <span v-else-if="playerRating == 0">
+                 No data for the selected filters
+                </span>
               </div>
             </div>
 
