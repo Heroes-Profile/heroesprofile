@@ -40,7 +40,7 @@
         <div class="flex">
           <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
 
-            <div class="flex flex-wrap">
+            <div class="flex flex-wrap justify-between">
               <div class="mb-4">
                 <label for="search" class="sr-only form-control text-black rounded-l p-2">Search Battletag:</label>
                 <input
@@ -53,13 +53,16 @@
                 />
               </div>
 
-              <div v-if="season == defaultseason" class="max-w-[1500px] mx-auto flex justify-end mb-2">
+              <div v-if="season == defaultseason" class="max-w-[1500px] flex justify-end mb-2 items-center gap-4 ml-auto">
                 <div v-if="!patreonUser">
-                  <a class="link" href="/Authenticate/Battlenet" target="_blank">Log in</a> and subscribe to <a class="link" href="https://www.patreon.com/heroesprofile" target="_blank">Patreon</a> to use
+                  <a class="link" href="/Authenticate/Battlenet" target="_blank">Log in</a> and subscribe to <a class="link" href="https://www.patreon.com/heroesprofile" target="_blank">Patreon</a> to use 
                 </div>
                 <custom-button @click="calculateHPRating(user)" text="Calculate my HP Rating" alt="Calculate my HP Rating" size="small" :ignoreclick="true" :disabled="!patreonUser" :loading="ratingLoading"></custom-button>
                 <span v-if="playerRating">
                   {{ ratingText(playerRating, playerRatingGamesPlayed) }}
+                </span>
+                <span v-else-if="playerRating == 0">
+                 No data for the selected filters
                 </span>
               </div>
             </div>
