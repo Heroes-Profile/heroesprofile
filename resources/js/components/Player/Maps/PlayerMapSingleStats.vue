@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="'Map data for ' + battletag + ' on ' + map" :heading="battletag +`(`+ regionsmap[region] + `)`">
+    <page-heading :infoText1="'Map data for ' + battletag + ' on ' + map" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner">
             <map-image-wrapper :map="mapobject" :size="'big'"></map-image-wrapper>
     </page-heading>
 
@@ -9,6 +9,8 @@
       <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
       <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
     </div>
+
+    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
     <div v-if="data">
       <div class="flex md:p-20 gap-10 mx-auto justify-center items-center ">
@@ -23,12 +25,12 @@
           {{ "This is where the map image goes, should we do that?" }}
         </div>
 
-        <div class="flex flex-col max-w-[450px] text-left w-full items-between h-full justify-center">
+        <div class="flex flex-wrap max-w-[450px] text-left w-full items-between h-full justify-center mt-[1em]">
           <stat-box class="w-[48%]" :title="'Takedowns'" :value="data.sum_takedowns.toLocaleString()"></stat-box>
           <stat-box class="w-[48%]" :title="'Kills'" :value="data.sum_kills.toLocaleString()"></stat-box>
-          <stat-box class="w-[48%]" :title="'Assists'" :value="data.sum_assists.toLocaleString()"></stat-box>
-          <stat-box class="w-[48%]" :title="'# Games'" :value="data.games_played.toLocaleString()"></stat-box>
-          <stat-box class="w-[48%]" :title="'Deaths'" :value="data.sum_deaths.toLocaleString()"></stat-box>
+          <stat-box class="w-[48%] mt-4 mb-4" :title="'Assists'" color="teal" :value="data.sum_assists.toLocaleString()"></stat-box>          
+          <stat-box class="w-[48%] mt-4 mb-4" :title="'Deaths'" color="teal" :value="data.sum_deaths.toLocaleString()"></stat-box>
+          <stat-box class="w-[100%]" :title="'# Games'" color="red" :value="data.games_played.toLocaleString()"></stat-box>
         </div>
       </div>
 
@@ -42,8 +44,8 @@
           </div>
           <div class="flex flex-wrap mx-auto gap-2 pt-5">
             <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" v-for="(item, index) in data.hero_data_all_heroes">
-              <hero-image-wrapper :hero="item.hero">
-                <image-hover-box :title="item.hero.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
+              <hero-image-wrapper :hero="item.hero" size="big">
+                <image-hover-box :title="item.hero.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + item.games_played" ></image-hover-box>
               </hero-image-wrapper>
             </a>
           </div>
@@ -51,32 +53,35 @@
       </div>
 
       <line-chart v-if="seasonWinRateDataArray" class="max-w-[1500px] mx-auto" :data="seasonWinRateDataArray" :dataAttribute="'win_rate'" :title="`${battletag} Win Rate Data Per Season on ${map}`"></line-chart>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
       <div class="bg-lighten">
-        <div class="p-10 max-w-[90em] ml-auto mr-auto">
-          <h2 class="text-3xl font-bold py-5">Party Size Win Rates</h2>
-          <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-            <div class="flex gap-10 text-s"><span>Solo</span><span>Total Games: {{ (data.stack_size_one_wins + data.stack_size_one_losses).toLocaleString() }} </span></div>
-            <stat-bar-box size="big" :value="data.stack_size_one_win_rate.toFixed(2) "></stat-bar-box>     
+        <div class="flex justify-center max-w-[1500px] mx-auto items-center">
+          <div class="p-10 max-w-[90em] ml-auto mr-auto">
+            <h2 class="text-3xl font-bold py-5">Party Size Win Rates</h2>
+            <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
+              <div class="flex gap-10 text-s"><span>Solo</span><span>Total Games: {{ (data.stack_size_one_wins + data.stack_size_one_losses).toLocaleString() }} </span></div>
+              <stat-bar-box size="big" :value="data.stack_size_one_win_rate.toFixed(2) "></stat-bar-box>     
+            </div>
+            <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
+              <div class="flex gap-10 text-s"><span>Two Stack</span><span>Total Games: {{ (data.stack_size_two_wins + data.stack_size_two_losses).toLocaleString() }} </span></div>
+              <stat-bar-box size="big" :value="data.stack_size_two_win_rate.toFixed(2) " color="teal"></stat-bar-box>     
+            </div>
+            <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
+              <div class="flex gap-10 text-s"><span>Three Stack</span><span>Total Games: {{ (data.stack_size_three_wins + data.stack_size_three_losses).toLocaleString() }} </span></div>
+              <stat-bar-box size="big" :value="data.stack_size_three_win_rate.toFixed(2) " color="red"></stat-bar-box>     
+            </div>
+            <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
+              <div class="flex gap-10 text-s"><span>Four Stack</span><span>Total Games: {{ (data.stack_size_four_wins + data.stack_size_four_losses).toLocaleString() }} </span></div>
+              <stat-bar-box size="big" :value="data.stack_size_four_win_rate.toFixed(2) " color="yellow"></stat-bar-box>     
+            </div>
+            <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
+              <div class="flex gap-10 text-s"><span>Five Stack</span><span>Total Games: {{ (data.stack_size_five_wins + data.stack_size_five_losses).toLocaleString() }} </span></div>
+              <stat-bar-box size="big" :value="data.stack_size_five_win_rate.toFixed(2) "></stat-bar-box>     
+            </div>
           </div>
-          <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-            <div class="flex gap-10 text-s"><span>Two Stack</span><span>Total Games: {{ (data.stack_size_two_wins + data.stack_size_two_losses).toLocaleString() }} </span></div>
-            <stat-bar-box size="big" :value="data.stack_size_two_win_rate.toFixed(2) " color="teal"></stat-bar-box>     
-          </div>
-          <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-            <div class="flex gap-10 text-s"><span>Three Stack</span><span>Total Games: {{ (data.stack_size_three_wins + data.stack_size_three_losses).toLocaleString() }} </span></div>
-            <stat-bar-box size="big" :value="data.stack_size_three_win_rate.toFixed(2) " color="red"></stat-bar-box>     
-          </div>
-          <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-            <div class="flex gap-10 text-s"><span>Four Stack</span><span>Total Games: {{ (data.stack_size_four_wins + data.stack_size_four_losses).toLocaleString() }} </span></div>
-            <stat-bar-box size="big" :value="data.stack_size_four_win_rate.toFixed(2) " color="yellow"></stat-bar-box>     
-          </div>
-          <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-            <div class="flex gap-10 text-s"><span>Five Stack</span><span>Total Games: {{ (data.stack_size_five_wins + data.stack_size_five_losses).toLocaleString() }} </span></div>
-            <stat-bar-box size="big" :value="data.stack_size_five_win_rate.toFixed(2) "></stat-bar-box>     
-          </div>
+          <dynamic-square-ad :patreon-user="patreonUser" :index="1"></dynamic-square-ad>
         </div>
-
       </div>
 
         <div class="">
@@ -113,6 +118,8 @@ export default {
     map: String,
     regionsmap: Object,
     mapobject: Object,
+    isPatreon: Boolean,
+    patreonUser: Boolean,
   },
   data(){
     return {
@@ -145,6 +152,12 @@ export default {
       const updatedList = [...this.filters.seasons];
       updatedList.unshift(newValue);
       return updatedList;
+    },
+    isOwner(){
+      if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
+        return true;
+      }
+      return false;
     },
   },
   watch: {

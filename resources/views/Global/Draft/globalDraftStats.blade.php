@@ -10,5 +10,15 @@
 @section('meta_description', 'Explore global draft stats. Analyze hero bans, picks, draft order, and drafting data to strategize your games effectively. Filter and analyze hero data to make informed decisions.')
 
 @section('content')
-  <global-draft-stats :heroes="{{ json_encode(session('heroes')) }}" :inputhero="{{ json_encode($userinput)}}" :filters="{{ json_encode($filters) }}" :defaulttimeframe="{{ json_encode($defaulttimeframe) }}" :gametypedefault="{{ json_encode($gametypedefault) }}" :defaulttimeframetype="{{ json_encode($defaulttimeframetype) }}" :advancedfiltering="{{ json_encode($advancedfiltering) }}"></global-draft-stats>
+  <global-draft-stats 
+    :heroes="{{ json_encode(session('heroes')) }}" 
+    :inputhero="{{ json_encode($userinput)}}" 
+    :filters="{{ json_encode($filters) }}" 
+    :defaulttimeframe="{{ json_encode($defaulttimeframe) }}" 
+    :gametypedefault="{{ json_encode($gametypedefault) }}" 
+    :defaulttimeframetype="{{ json_encode($defaulttimeframetype) }}" 
+    :advancedfiltering="{{ json_encode($advancedfiltering) }}"
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+  >
+  </global-draft-stats>
 @endsection

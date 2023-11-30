@@ -12,5 +12,7 @@
     :season="{{ json_encode($season) }}"
     :gametype="{{ json_encode($game_type) }}"
     :regionsmap="{{ json_encode(session('regions')) }}"
+    :is-patreon="{{ json_encode($patreon) }}"
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
   ></player-stats>
 @endsection

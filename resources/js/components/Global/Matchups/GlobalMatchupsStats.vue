@@ -25,9 +25,10 @@
       :includerolerank="true"
       :includemirror="true"
       :advancedfiltering="advancedfiltering"
-
       >
     </filters>
+    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+
     <div v-if="allyenemydata" class="flex flex-wrap gap-4 justify-center items-center">
       <group-box :text="'TOP 5 ALLIES ON HEROS TEAM'" :data="allyenemydata.ally.slice(0, 5)" :type="'Matchups'" color="blue"></group-box>
       <group-box :text="'TOP 5 THREATS ON ENEMIES TEAM'" :data="allyenemydata.enemy.slice(0, 5)" :type="'Matchups'" color="red"></group-box>
@@ -103,6 +104,7 @@
       defaulttimeframetype: String,
       defaulttimeframe: Array,
       advancedfiltering: Boolean,
+      patreonUser: Boolean,
     },
     data(){
       return {

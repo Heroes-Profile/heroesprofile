@@ -22,7 +22,8 @@ s<template>
       :advancedfiltering="advancedfiltering"
       >
     </filters>
-    
+    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+
     <div v-if="partydata" class="max-w-[1500px] mx-auto">
       <div class="flex">
         <div class="w-auto inline-block m-1 ml-auto">
@@ -536,6 +537,7 @@ export default {
     defaulttimeframetype: String,
     defaulttimeframe: Array,
     advancedfiltering: Boolean,
+    patreonUser: Boolean,
   },
   data(){
     return {

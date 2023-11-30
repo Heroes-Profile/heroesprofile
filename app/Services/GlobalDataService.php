@@ -714,4 +714,25 @@ class GlobalDataService
 
         return $heroData->pluck('short_name')->toArray();
     }
+
+    public function checkIfSiteFlair($blizz_id, $region){
+        $data = BattlenetAccount::where('blizz_id', $blizz_id)->where('region', $region)->first();
+
+        if (!$data || empty($data)) {
+            return false;
+        }
+
+        $data = $data->patreonAccount;
+
+
+        if (!$data || empty($data)) {
+            return false;
+        }
+
+        if ($data->site_flair == 1) {
+            return true;
+        }
+
+        return false;
+    }
 }

@@ -1,6 +1,6 @@
 /PlayerMapsAllStats.vue<template>
   <div>
-    <page-heading :infoText1="'All Map data for ' + battletag + '. Click a map to see individual map statistics'" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
+    <page-heading :infoText1="'All Map data for ' + battletag + '. Click a map to see individual map statistics'" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
     
     <filters 
       :onFilter="filterData" 
@@ -13,6 +13,8 @@
       :hideadvancedfilteringbutton="true"
       >
     </filters>
+    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+
     <div v-if="data">
       <div  class="relative max-w-[1500px] mx-auto">
         <custom-button class="ml-auto" @click="showOptions = !showOptions" :text="showOptions ? 'Hide Column Selection' : 'Show Column Selection'" :ignoreclick="true"></custom-button>
@@ -105,6 +107,8 @@ export default {
     region: String,
     regionsmap: Object,
     accountlevel: Number,
+    isPatreon: Boolean,
+    patreonUser: Boolean,
   },
   data(){
     return {
@@ -233,6 +237,12 @@ export default {
           return valA > valB ? -1 : 1;
         }
       });
+    },
+    isOwner(){
+      if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
+        return true;
+      }
+      return false;
     },
   },
   watch: {

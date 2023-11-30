@@ -14,6 +14,8 @@
     :advancedfiltering="advancedfiltering"
     >
   </filters>
+  <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+
   <div class="flex justify-center items-center gap-10">
     <div class="">
       <single-select-filter :values="firstHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="herochanged" :defaultValue="hero.id"></single-select-filter>
@@ -84,6 +86,7 @@
   </div>
 
 </div>
+
 </template>
 
 <script>
@@ -100,6 +103,7 @@
       inputhero: Object,
       inputenemyally: Object,
       advancedfiltering: Boolean,
+      patreonUser: Boolean,
     },
     data(){
       return {

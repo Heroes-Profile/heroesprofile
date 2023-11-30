@@ -1,11 +1,14 @@
 <template>
   <div class="">
-    <page-heading :infoText1="infoText" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
+    <page-heading :infoText1="infoText" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner">
+    </page-heading>
     <div class="flex justify-center max-w-[1500px] mx-auto">
       <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
       <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
     </div>
 
+    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+    
     <div v-if="data == ''" class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
       <div class="flex items-center">
         <span>No data for this player and filters</span>
@@ -51,8 +54,8 @@
         <stat-box :title="'MVP%'" :value="data.mvp_rate.toFixed(2)"></stat-box>  <stat-box :title="'Total Time Played'" :value="data.total_time_played"></stat-box>  <stat-box :title="'AVG. Time on Fire'" :value="data.average_time_on_fire"></stat-box>      
       </div>
       <div class="max-w-[1500px] mx-auto text-right mb-2">
-      <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Role'" class="flex-1 " text="View all Roles"></custom-button>
-       </div>
+        <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Role'" class="flex-1 " text="View all Roles"></custom-button>
+      </div>
 
       <div class="bg-lighten p-10 ">
         <div class=" max-w-[90em] ml-auto mr-auto">
@@ -68,7 +71,7 @@
           <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Hero'" class=" " text="View All Heroes"></custom-button>
         </div>
       </div>
-
+      <div class="flex justify-center max-w-[1500px] mx-auto items-center">
       <div class="max-w-[1000px] mx-auto">
         <div class="grid grid-cols-4 items-center gap-10 md:px-20 py-5 justify-center" >
           <h4 class="text-right">Quick Match</h4>
@@ -112,9 +115,14 @@
         <stat-box title="Rank Tier" :value="data.ar_mmr_data ? data.ar_mmr_data.rank_tier : ''"></stat-box>
         <stat-box :title="'MMR'" :value="data.ar_mmr_data ? data.ar_mmr_data.mmr.toLocaleString() : 0 "></stat-box>
       </div>
+
+     
+
       <div class="max-w-[1500px] mx-auto text-right my-2">
-      <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/MMR'" class=" " text="View MMR Breakdown"></custom-button>
-    </div>
+        <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/MMR'" class=" " text="View MMR Breakdown"></custom-button>
+      </div>
+      </div>
+      <dynamic-square-ad :patreon-user="patreonUser" :index="1"></dynamic-square-ad>
     </div>
 
 
@@ -130,9 +138,10 @@
         <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Map'" class=" " text="View All Maps"></custom-button>
       </div>
       </div>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
     </div>
 
-
+    <div class="flex justify-center max-w-[1500px] mx-auto items-center">
     <div class="p-10 max-w-[90em] ml-auto mr-auto">
       <h2 class="text-3xl font-bold py-5">Party Size Win Rates</h2>
 
@@ -156,9 +165,10 @@
         <div class="flex gap-10 text-s"><span>Five Stack</span><span>Total Games: {{ (data.stack_five_wins + data.stack_five_losses).toLocaleString() }} </span></div>
         <stat-bar-box size="big" :value="data.stack_five_win_rate.toFixed(2) "></stat-bar-box>     
       </div>
-      
-      
+     
 
+    </div>
+    <dynamic-square-ad :patreon-user="patreonUser" :index="2"></dynamic-square-ad>
     </div>
 
     <div class="bg-lighten">
@@ -173,12 +183,13 @@
       </div>
     </div>
 
-  </div>
-  <div v-else-if="isLoading">
-    <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+    </div>
+    <div v-else-if="isLoading">
+      <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+    </div>
+
   </div>
 
-</div>
 </template>
 
 <script>
@@ -196,6 +207,8 @@
       season: Number,
       gametype: Array,
       regionsmap: Object,
+      isPatreon: Boolean,
+      patreonUser: Boolean,
     },
     data(){
       return {
@@ -239,6 +252,12 @@
         updatedList.unshift(newValue);
         return updatedList;
       },
+      isOwner(){
+        if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
+          return true;
+        }
+        return false;
+      }
     },
     watch: {
     },

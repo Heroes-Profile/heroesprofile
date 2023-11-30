@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="hero + ' stats for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`">
+    <page-heading :infoText1="hero + ' stats for ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner">
       <hero-image-wrapper :hero="heroobject" :size="'big'"></hero-image-wrapper>
     </page-heading>
 
@@ -9,6 +9,8 @@
       <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
     </div>
 
+    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+    
     <div v-if="data">
       <div class="flex md:p-20 gap-10 mx-auto justify-center items-center ">
         <div class="flex-1 flex flex-wrap justify-between max-w-[450px] w-full items-between mt-[1em]">
@@ -22,12 +24,13 @@
           <hero-image-wrapper :rectangle="true" :hero="heroobject" :title="heroobject.name" size="large"></hero-image-wrapper>
         </div>
 
-        <div class="flex flex-col max-w-[450px] text-left w-full items-between h-full justify-center">
-          <stat-box class="w-[48%]" :title="'Takedowns'" :value="data.sum_takedowns.toLocaleString()"></stat-box>
-          <stat-box class="w-[48%]" :title="'Kills'" :value="data.sum_kills.toLocaleString()"></stat-box>
-          <stat-box class="w-[48%]" :title="'Assists'" :value="data.sum_assists.toLocaleString()"></stat-box>
-          <stat-box class="w-[48%]" :title="'# Games'" :value="data.games_played.toLocaleString()"></stat-box>
-          <stat-box class="w-[48%]" :title="'Deaths'" :value="data.sum_deaths.toLocaleString()"></stat-box>
+        <div class="flex flex-wrap max-w-[450px] text-left w-full items-between h-full justify-center mt-[1em]">
+          <stat-box class="w-[48%] flex-1" :title="'Takedowns'" :value="data.sum_takedowns.toLocaleString()"></stat-box>
+          <stat-box class="w-[48%] " :title="'Kills'" :value="data.sum_kills.toLocaleString()"></stat-box>
+          <stat-box class="w-[48%] mt-4 mb-4" :title="'Assists'" color="teal" :value="data.sum_assists.toLocaleString()"></stat-box>
+          
+          <stat-box class="w-[48%] mt-4 mb-4" :title="'Deaths'" color="teal" :value="data.sum_deaths.toLocaleString()"></stat-box>
+          <stat-box class="w-[100%]" :title="'# Games'" color="red" :value="data.games_played.toLocaleString()"></stat-box>
         </div>
 
       </div>
@@ -45,7 +48,7 @@
             <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.map_data_top_win_rate.slice(0, 3)" color="teal"></group-box>
             <group-box :playerlink="true" :text="'Latest Played'" :data="data.map_data_top_latest_played.slice(0, 3)" color="yellow"></group-box>
           </div>
-          <div class="flex flex-wrap mx-auto gap-2 pt-5">
+          <div class="flex flex-wrap mx-auto gap-2 pt-5 justify-center">
             <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" v-for="(item, index) in data.map_data" :key="index">
               <map-image-wrapper :map="item.game_map" size="big">
                 <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
@@ -56,8 +59,10 @@
       </div>
 
       <line-chart v-if="seasonWinRateDataArray" class="max-w-[1500px] mx-auto" :data="seasonWinRateDataArray" :dataAttribute="'win_rate'" :title="`${battletag} Win Rate Data Per Season with ${heroobject.name}`"></line-chart>
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
       <div class="bg-lighten">
+        <div class="flex justify-center max-w-[1500px] mx-auto items-center">
         <div class="max-w-[1000px] mx-auto">
           <div class="grid grid-cols-4 items-center gap-10 md:px-20 py-5 justify-center" >
             <h4 class="text-right">Quick Match</h4>
@@ -104,8 +109,11 @@
           <div class="max-w-[1500px] mx-auto text-right my-2 pb-2">
             <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/MMR/Hero/' + heroobject.name" class=" " text="View MMR Breakdown"></custom-button>
           </div>
-        </div>        
+        </div>   
+        <dynamic-square-ad :patreon-user="patreonUser" :index="1"></dynamic-square-ad>
+        </div>
       </div>
+      <div class="flex justify-center max-w-[1500px] mx-auto items-center">
       <div class="p-10 max-w-[90em] ml-auto mr-auto">
         <h2 class="text-3xl font-bold py-5">Party Size Win Rates</h2>
         <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
@@ -128,6 +136,9 @@
           <div class="flex gap-10 text-s"><span>Five Stack</span><span>Total Games: {{ (data.stack_size_five_wins + data.stack_size_five_losses).toLocaleString() }} </span></div>
           <stat-bar-box size="big" :value="data.stack_size_five_win_rate.toFixed(2) "></stat-bar-box>     
         </div>
+        
+        </div>
+        <dynamic-square-ad :patreon-user="patreonUser" :index="2"></dynamic-square-ad>
       </div>
 
       <div class="bg-lighten">
@@ -184,6 +195,8 @@
       },
       region: Number,
       regionsmap: Object,
+      isPatreon: Boolean,
+      patreonUser: Boolean,
     },
     data(){
       return {
@@ -289,6 +302,12 @@
         const updatedList = [...this.filters.seasons];
         updatedList.unshift(newValue);
         return updatedList;
+      },
+      isOwner(){
+        if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
+          return true;
+        }
+        return false;
       },
     },
     watch: {

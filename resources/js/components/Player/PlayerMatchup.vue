@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :heading="'Matchups'" :infoText1="infotext"></page-heading>
+    <page-heading :heading="'Matchups'" :infoText1="infotext" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
     
     <filters 
     :onFilter="filterData" 
@@ -12,6 +12,7 @@
     :hideadvancedfilteringbutton="true"
     >
   </filters>
+  <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
   <div v-if="data">
     <div class="flex flex-wrap justify-center">
@@ -80,6 +81,8 @@
       battletag: String,
       blizzid: String, 
       region: String,
+      isPatreon: Boolean,
+      patreonUser: Boolean,
     },
     data(){
       return {
@@ -111,6 +114,12 @@
             return valA > valB ? -1 : 1;
           }
         });
+      },
+      isOwner(){
+        if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
+          return true;
+        }
+        return false;
       },
     },
     watch: {

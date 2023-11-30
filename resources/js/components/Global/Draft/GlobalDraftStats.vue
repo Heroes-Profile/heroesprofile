@@ -25,59 +25,59 @@
         :includeherorank="true"
         :includerolerank="true"
         :advancedfiltering="advancedfiltering"
-
         >
       </filters>
+        <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
-      <div class="max-w-[1500px] mx-auto flex justify-start mb-2"> 
-        <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Draft Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
-      </div>
-      <div v-if="draftdata">
-        <table class="">
-          <thead>
-            <tr>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-                Pick Order
-              </th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-                Pick/Ban Rate % at position
-              </th>            
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-                Team Wins
-              </th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-                Team Losses
-              </th>
-              <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-                Team Win Rate %
-              </th>                 
+        <div class="max-w-[1500px] mx-auto flex justify-start mb-2"> 
+          <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Draft Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
+        </div>
+        <div v-if="draftdata">
+          <table class="">
+            <thead>
+              <tr>
+                <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                  Pick Order
+                </th>
+                <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                  Pick/Ban Rate % at position
+                </th>            
+                <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                  Team Wins
+                </th>
+                <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                  Team Losses
+                </th>
+                <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                  Team Win Rate %
+                </th>                 
+              </tr>
+            </thead>
+            <tbody>
+              <!-- ChatGPT code. this isnt working 100% colors seem messed up-->
+              <tr 
+              v-for="row in draftdata" 
+              :key="row.pick_number"
+              :class="determinePickOrBan(row.pick_number).includes('Ban') ? 'bg-hred border-b border-gray-light' : ''"
+              >
+              <td class="py-2 px-3 ">
+                {{ determinePickOrBan(row.pick_number) }}
+              </td>
+              <td class="py-2 px-3 ">{{ row.popularity.toFixed(2) }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
             </tr>
-          </thead>
-          <tbody>
-            <!-- ChatGPT code. this isnt working 100% colors seem messed up-->
-            <tr 
-            v-for="row in draftdata" 
-            :key="row.pick_number"
-            :class="determinePickOrBan(row.pick_number).includes('Ban') ? 'bg-hred border-b border-gray-light' : ''"
-            >
-            <td class="py-2 px-3 ">
-              {{ determinePickOrBan(row.pick_number) }}
-            </td>
-            <td class="py-2 px-3 ">{{ row.popularity.toFixed(2) }}</td>
-            <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
-            <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
-            <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-          </tr>
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
+      <div v-else-if="isLoading">
+        <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+      </div>
     </div>
-    <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
-    </div>
-  </div>
 
-</div>
-</div>
+  </div>
+  </div>
 </template>
 
 <script>
@@ -94,6 +94,7 @@
       defaulttimeframe: Array,
       defaultbuildtype: String,
       advancedfiltering: Boolean,
+      patreonUser: Boolean,
     },
     data(){
       return {

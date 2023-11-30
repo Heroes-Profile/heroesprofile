@@ -1,9 +1,9 @@
 <template>
   <div>
-    <page-heading :infoText1="selectedHero ? selectedHero.name + ' talent stats and builds player by ' + battletag : ' talent stats and builds player by ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`">
+    <page-heading :infoText1="selectedHero ? selectedHero.name + ' talent stats and builds player by ' + battletag : ' talent stats and builds player by ' + battletag" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner">
       <hero-image-wrapper v-if="selectedHero" :hero="selectedHero" :size="'big'"></hero-image-wrapper>
     </page-heading>
-
+    
     <div v-if="!selectedHero">
       <hero-selection :heroes="heroes"></hero-selection>
     </div>
@@ -20,6 +20,8 @@
         :includegamedate="true"
         >
       </filters>
+      <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+
       <div  v-if="talentdetaildata" class="container mx-auto px-4">
         <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Talent Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
         <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
@@ -27,6 +29,9 @@
       <div v-else-if="isLoading">
         <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
       </div>
+
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
+
       <div  v-if="talentbuilddata" class="cmx-auto px-4 w-auto flex flex-col items-center">
         {{ this.selectedHero.name }} {{ "Talent Builds"}}
         <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="'Popular'" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
@@ -55,6 +60,8 @@ export default {
     heroes: Array,
     talentimages: Object,
     regionsmap: Object,
+    isPatreon: Boolean,
+    patreonUser: Boolean,
   },
   data(){
     return {
@@ -79,6 +86,12 @@ export default {
     }
   },
   computed: {
+    isOwner(){
+      if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
+        return true;
+      }
+      return false;
+    }
   },
   watch: {
   },

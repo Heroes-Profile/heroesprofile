@@ -13,6 +13,7 @@
       :includexaxisincrements="true"
       >
     </filters>
+    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
     <div v-if="data">
       Got Data
       <bar-chart :data="data"></bar-chart>
@@ -33,6 +34,7 @@ export default {
       type: Object,
       required: true
     },
+    patreonUser: Boolean,
   },
   data(){
     return {

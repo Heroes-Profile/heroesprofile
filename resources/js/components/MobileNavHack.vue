@@ -26,14 +26,15 @@ export default {
 
 // Get all elements with the class "mobile-secondary-nav-open"
 const openButtons = document.querySelectorAll('.mobile-secondary-nav-open');
+const mobileNavButtons = document.querySelectorAll('.nav-item');
+const dropdowns = document.querySelectorAll('nav-dropdown');
 
 
 // Add a click event listener to each button
 
 openButtons.forEach(function(button) {
-  button.addEventListener('click', function() {
+  button.addEventListener('click', function(event) {
     if(isSmallScreen()){
-    console.log('testing?');
     // Get the data-battletag value from the clicked link
     var battletag = button.getAttribute('data-battletag');
     
@@ -44,6 +45,31 @@ openButtons.forEach(function(button) {
       navDropdown.style.display = 'block';
     }
   });
+});
+
+
+mobileNavButtons.forEach(function(button){
+    button.addEventListener('click', function(){
+        if(isSmallScreen()){
+            dropdowns.forEach(function(secondaryNav) {
+                  dropdowns.style.display = 'none'; // or any other method to hide it
+              });
+
+                
+        // Find the ".dropdown" element within the clicked ".click-me" container
+        var dropdown = event.currentTarget.querySelector('.nav-dropdown');
+            if(dropdown){
+        // Toggle the visibility of the found ".dropdown"
+        if (dropdown.style.display === 'block') {
+          dropdown.style.display = 'none';
+        } else {
+          dropdown.style.display = 'block';
+        }
+            }
+      
+        }
+    })
+
 });
 
 
@@ -81,7 +107,6 @@ openButtons.forEach(function(button) {
   },
   mounted() {
     const openButtons = document.querySelectorAll('.mobile-secondary-nav-open');
-    console.log(openButtons);
   },
   computed: {
   },

@@ -12,5 +12,7 @@
     :heroes="{{ json_encode(session('heroes')) }}"
     :talentimages="{{ json_encode($talentimages) }}"  
     :regionsmap="{{ json_encode(session('regions')) }}"
+    :is-patreon="{{ json_encode($patreon) }}"
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
   ></player-talents>
 @endsection

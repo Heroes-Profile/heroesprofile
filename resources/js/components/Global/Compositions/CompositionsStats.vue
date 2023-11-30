@@ -22,6 +22,7 @@
       :advancedfiltering="advancedfiltering"
       >
     </filters>
+    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
     <div v-if="compositiondata">
       <table class=" max-w-[1500px]">
         <thead>
@@ -142,6 +143,7 @@ export default {
     defaulttimeframetype: String,
     defaulttimeframe: Array,
     advancedfiltering: Boolean,
+    patreonUser: Boolean,
   },
   data(){
     return {

@@ -10,5 +10,7 @@
     :accountlevel="{{ json_encode($account_level) }}" 
     :region="{{ json_encode($region) }}"
     :regionsmap="{{ json_encode(session('regions')) }}"
+    :is-patreon="{{ json_encode($patreon) }}"
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
   ></player-roles-all-stats>
 @endsection

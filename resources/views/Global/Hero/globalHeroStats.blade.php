@@ -12,6 +12,7 @@
     :defaulttimeframe="{{ json_encode($defaulttimeframe) }}" 
     :defaulttimeframetype="{{ json_encode($defaulttimeframetype) }}" 
     :advancedfiltering="{{ json_encode($advancedfiltering) }}"
-    >
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+  >
   </global-hero-stats>
 @endsection

@@ -26,7 +26,7 @@
       :advancedfiltering="advancedfiltering"
       >
     </filters>
-
+    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
     
     <div v-if="this.data.data">
       <div class="max-w-[1500px] mx-auto flex justify-end mb-2">
@@ -99,7 +99,18 @@
               Ban Rate %
             </th>    
             <th @click="sortTable('influence')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Influence
+              <div class="flex items-center">
+                <div class="">
+                  Influence
+                </div>
+                <round-image class="" size="small" icon="fas fa-info" title="info" popupsize="large">
+                  <slot>
+                    <div>
+                      <p>Influence is an integer scaled from -1000 to 1000 that combines Win Rate, Games Played, Pick Rate, and Ban Rate to determine the impact a hero will have on a particular team.</p>
+                    </div>
+                  </slot>
+                </round-image>
+              </div>
             </th>                  
             <th @click="sortTable('games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games Played
@@ -113,14 +124,12 @@
         </thead>
         <tbody>
           <template v-for="(row, index) in sortedData">
-            <tr >
-              
-                <td class="py-2 px-3 flex items-center gap-1">
-                  <a class="flex w-full items-center" :href="'/Global/Talents/' + row.name" >
-                  <hero-image-wrapper class="mr-2" :hero="row" :includehover="false"></hero-image-wrapper>{{ row.name }}
-                  </a>
-                </td>
-              
+            <tr>
+              <td class="py-2 px-3 flex items-center gap-1">
+                <a class="flex w-full items-center" :href="'/Global/Talents/' + row.name" >
+                <hero-image-wrapper class="mr-2" :hero="row" :includehover="false"></hero-image-wrapper>{{ row.name }}
+                </a>
+              </td>
               <td class="  ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3 "><span v-html="'&#177;'"></span>{{ row.confidence_interval.toFixed(2) }}</td>
               <td v-if="row.win_rate_change < 0" class="py-2 px-3 ">{{ row.win_rate_change.toFixed(2) }}</td>
@@ -179,11 +188,12 @@ export default {
     defaulttimeframetype: String,
     defaulttimeframe: Array,
     advancedfiltering: Boolean,
+    patreonUser: Boolean,
   },
   data(){
     return {
       isLoading: false,
-    	infoText: "Hero win rates based on differing increments, stat types, game type, or Rank. Click on a Hero to see detailed information. On the chart, bubble size is a combination of Win Rate, Pick Rate, and Ban Rate",
+    	infoText: "Hero win rates based on differing increments, stat types, game type, or rank. Click on a Hero to see detailed information. On the chart, bubble size is a combination of Win Rate, Pick Rate, and Ban Rate",
       sortKey: '',
       sortDir: 'desc',
       data: [],

@@ -1,6 +1,6 @@
 <template>
 
-  <div class="loading-container z-40">
+  <div class="loading-container z-40 w-full min-h-[50vh] ">
     <img v-if="overrideimage" loading="eager" :src="overrideimage" alt="loading" />
     <img v-else loading="eager" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
     <div class="loading-text">
@@ -77,7 +77,7 @@
   background-color: rgba(0, 0, 0, 0.95); /* Translucent black background */
   width: 100%; /* Take full width of the parent container */
   height: 100%; /* Take full height of the parent container */
-  position: absolute; /* Positioning relative to the nearest positioned ancestor */
+  
 }
 
 .loading-text {

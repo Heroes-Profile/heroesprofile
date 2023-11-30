@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="'Match History'" :heading="battletag +`(`+ regionsmap[region] + `)`"></page-heading>
+    <page-heading :infoText1="'Match History'" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
 
     <filters 
       :onFilter="filterData" 
@@ -16,6 +16,7 @@
       :hideadvancedfilteringbutton="true"
       >
     </filters>
+    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
     <div v-if="data">
       <div>
@@ -115,6 +116,8 @@ export default {
     blizzid: String, 
     region: String,
     regionsmap: Object,
+    isPatreon: Boolean,
+    patreonUser: Boolean,
   },
   data(){
     return {
@@ -148,6 +151,12 @@ export default {
           return valA > valB ? -1 : 1;
         }
       });
+    },
+    isOwner(){
+      if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
+        return true;
+      }
+      return false;
     },
   },
   watch: {

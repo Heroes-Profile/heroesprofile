@@ -39,6 +39,7 @@ class PlayerHeroesController extends Controller
             'blizz_id' => $blizz_id,
             'region' => $region,
             'filters' => $this->globalDataService->getFilterData(),
+            'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);
 
     }
@@ -69,6 +70,7 @@ class PlayerHeroesController extends Controller
             'heroObject' => $this->globalDataService->getHeroModel($hero),
             'filters' => $this->globalDataService->getFilterData(),
             'regions' => $this->globalDataService->getRegionIDtoString(),
+            'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);
     }
 }

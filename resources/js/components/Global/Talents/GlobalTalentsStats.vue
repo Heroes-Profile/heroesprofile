@@ -33,6 +33,7 @@
 
           >
         </filters>
+        <takeover-ad :patreon-user="patreonUser" ref="takeoverAddPlacement"></takeover-ad>
 
         
         <div  v-if="talentdetaildata" class="mx-auto  px-4">
@@ -51,6 +52,8 @@
           <loading-component v-else @cancel-request="cancelAxiosRequest"></loading-component>
         </div>
 
+
+        <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
         <div  v-if="talentbuilddata" class="mx-auto px-4 w-auto flex flex-col items-center">
           <div id="builds" class="">
@@ -84,6 +87,7 @@
       defaultbuildtype: String,
       talentimages: Object,
       advancedfiltering: Boolean,
+      patreonUser: Boolean,
     },
     data(){
       return {
@@ -153,6 +157,17 @@
         this.selectedHero = hero;
         this.preloadTalentImages(hero);
 
+        //This isnt working
+        if(!this.patreonUser){
+          this.$nextTick(() => {
+            (window.top).__vm_add = (window.top).__vm_add || [];
+            (window.top).__vm_add.push(this.$refs.takeoverAddPlacement);
+            //(window.top).__vm_add.push(this.$refs.dynamicAddPlacement);
+          });
+        }
+   
+
+
         let currentPath = window.location.pathname;
         history.pushState(null, null, `${currentPath}/${this.selectedHero.name}`);
         Promise.allSettled([
@@ -160,6 +175,8 @@
           this.getTalentBuildData(),
           ]).then(results => {
         });
+
+   
       },
       async getTalentData(){
         this.isTalentsLoading = true;

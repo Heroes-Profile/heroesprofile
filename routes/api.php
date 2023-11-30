@@ -58,6 +58,7 @@ Route::prefix('v1')->group(function () {
     Route::post('global/talents/build', [GlobalTalentStatsController::class, 'getGlobalHeroTalentBuildData']);
 
     Route::post('global/leaderboard', [GlobalLeaderboardController::class, 'getLeaderboardData']);
+    Route::post('global/leaderboard/calculate/rating', [GlobalLeaderboardController::class, 'getLeaderboardRating']);
 
     Route::post('global/hero/map', [GlobalHeroMapStatsController::class, 'getHeroStatMapData']);
 

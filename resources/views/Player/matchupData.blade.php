@@ -8,5 +8,7 @@
     :battletag="{{ json_encode($battletag) }}" 
     :blizzid="{{ json_encode($blizz_id) }}" 
     :region="{{ json_encode($region) }}"
+    :is-patreon="{{ json_encode($patreon) }}"
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
   ></player-matchup>
 @endsection

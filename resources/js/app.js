@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 // Create a fresh Vue app instance
 const app = createApp({});
@@ -13,6 +14,10 @@ import MobileNavHack from './components/MobileNavHack.vue';
 
 // Ads
 import RichMediaAd from './components/Ads/RichMediaAd.vue';
+import TakeoverAd from './components/Ads/TakeoverAd.vue';
+import DynamicBannerAd from './components/Ads/DynamicBannerAd.vue';
+import HorizontalBannerAd from './components/Ads/HorizontalBannerAd.vue';
+import DynamicSquareAd from './components/Ads/DynamicSquareAd.vue';
 
 
 //Compare Page
@@ -150,6 +155,59 @@ Object.entries(components).forEach(([path, definition]) => {
 // Set up axios on Vue's prototype
 app.config.globalProperties.$axios = axios;
 
+app.config.globalProperties.$redirectToProfile = function (battletag, blizz_id, region) {
+  let data = {
+    battletag: battletag,
+    blizz_id: blizz_id,
+    region: region,
+    date: new Date().toISOString(),
+  };
+  if(battletag && blizz_id && region){
+   const existingAccounts = [
+      JSON.parse(Cookies.get('alt_search_account1') || 'null'),
+      JSON.parse(Cookies.get('alt_search_account2') || 'null'),
+      JSON.parse(Cookies.get('alt_search_account3') || 'null'),
+    ];
+
+    const accountIndex = existingAccounts.findIndex((account) => {
+      return account && account.battletag === data.battletag && account.blizz_id === data.blizz_id;
+    });
+
+      if (accountIndex >= 0) {
+        existingAccounts[accountIndex].region = region;
+        existingAccounts[accountIndex].date = data.date;
+      } else {
+        // Find the oldest account or use the first available slot
+        const oldestAccountIndex = existingAccounts.findIndex((account) => {
+          return !account;
+        });
+
+        if (oldestAccountIndex >= 0) {
+          // Use the first available slot
+          existingAccounts[oldestAccountIndex] = data;
+        } else {
+          // Find the oldest account and overwrite it
+          const oldestAccount = existingAccounts.reduce((oldest, current) => {
+            if (!oldest || new Date(current.date) < new Date(oldest.date)) {
+              return current;
+            }
+            return oldest;
+          }, null);
+
+          if (oldestAccount) {
+            Object.assign(oldestAccount, data);
+          }
+        }
+      }
+      existingAccounts.forEach((account, index) => {
+        if (account) {
+          Cookies.set('alt_search_account' + (index + 1), JSON.stringify(account), { sameSite: 'Strict', path: '/', expires: 90 });
+        }
+      });
+  }
+ 
+    window.location.href = '/Player/' + battletag + "/" + blizz_id + "/" + region;
+};
 
 // Attach the application instance to an HTML element with id "app"
 app.mount('#app');

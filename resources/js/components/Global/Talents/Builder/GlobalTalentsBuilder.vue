@@ -25,6 +25,8 @@
       :advancedfiltering="advancedfiltering"
       >
     </filters>
+    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+
   </div>
 
 
@@ -162,6 +164,7 @@
       defaultbuildtype: String,
       talentimages: Object,
       advancedfiltering: Boolean,
+      patreonUser: Boolean,
     },
     data(){
       return {

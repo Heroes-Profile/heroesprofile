@@ -12,6 +12,7 @@
     :defaultseason="{{ json_encode($defaultseason) }}" 
     :advancedfiltering="{{ json_encode($advancedfiltering) }}"
     :weekssincestart="{{ json_encode($weekssincestart) }}"
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
   >
   </global-leaderboard>
 @endsection
