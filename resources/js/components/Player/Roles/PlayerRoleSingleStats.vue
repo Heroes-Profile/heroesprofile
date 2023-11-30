@@ -23,15 +23,16 @@
           <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="red"></stat-box>                  
         </div>
         <div class="my-auto">
-          {{ "This is where the role image goes, should we do that?" }}
+          {{ "This is where the role image goes, should we do that? : yes" }}
         </div>
 
-        <div class="flex flex-col max-w-[450px] text-left w-full items-between h-full justify-center">
+        <div class="flex flex-wrap max-w-[450px] text-left w-full items-between h-full justify-center mt-[1em]">
           <stat-box class="w-[48%]" :title="'Takedowns'" :value="data.sum_takedowns.toLocaleString()"></stat-box>
           <stat-box class="w-[48%]" :title="'Kills'" :value="data.sum_kills.toLocaleString()"></stat-box>
-          <stat-box class="w-[48%]" :title="'Assists'" :value="data.sum_assists.toLocaleString()"></stat-box>
-          <stat-box class="w-[48%]" :title="'# Games'" :value="data.games_played.toLocaleString()"></stat-box>
-          <stat-box class="w-[48%]" :title="'Deaths'" :value="data.sum_deaths.toLocaleString()"></stat-box>
+          <stat-box class="w-[48%] mt-4 mb-4" :title="'Assists'" color="teal" :value="data.sum_assists.toLocaleString()"></stat-box>
+          
+          <stat-box class="w-[48%] mt-4 mb-4" :title="'Deaths'" color="teal" :value="data.sum_deaths.toLocaleString()"></stat-box>
+          <stat-box class="w-[100%]" :title="'# Games'" color="red" :value="data.games_played.toLocaleString()"></stat-box>
         </div>
 
       </div>
