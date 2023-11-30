@@ -71,7 +71,7 @@
           <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/Hero'" class=" " text="View All Heroes"></custom-button>
         </div>
       </div>
-
+      <div class="flex justify-center max-w-[1500px] mx-auto items-center">
       <div class="max-w-[1000px] mx-auto">
         <div class="grid grid-cols-4 items-center gap-10 md:px-20 py-5 justify-center" >
           <h4 class="text-right">Quick Match</h4>
@@ -116,11 +116,13 @@
         <stat-box :title="'MMR'" :value="data.ar_mmr_data ? data.ar_mmr_data.mmr.toLocaleString() : 0 "></stat-box>
       </div>
 
-      <dynamic-square-ad :patreon-user="patreonUser" :index="1"></dynamic-square-ad>
+     
 
       <div class="max-w-[1500px] mx-auto text-right my-2">
         <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/MMR'" class=" " text="View MMR Breakdown"></custom-button>
       </div>
+      </div>
+      <dynamic-square-ad :patreon-user="patreonUser" :index="1"></dynamic-square-ad>
     </div>
 
 
@@ -139,7 +141,7 @@
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
     </div>
 
-
+    <div class="flex justify-center max-w-[1500px] mx-auto items-center">
     <div class="p-10 max-w-[90em] ml-auto mr-auto">
       <h2 class="text-3xl font-bold py-5">Party Size Win Rates</h2>
 
@@ -163,8 +165,10 @@
         <div class="flex gap-10 text-s"><span>Five Stack</span><span>Total Games: {{ (data.stack_five_wins + data.stack_five_losses).toLocaleString() }} </span></div>
         <stat-bar-box size="big" :value="data.stack_five_win_rate.toFixed(2) "></stat-bar-box>     
       </div>
-      <dynamic-square-ad :patreon-user="patreonUser" :index="2"></dynamic-square-ad>
+     
 
+    </div>
+    <dynamic-square-ad :patreon-user="patreonUser" :index="2"></dynamic-square-ad>
     </div>
 
     <div class="bg-lighten">

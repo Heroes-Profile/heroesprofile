@@ -1,5 +1,5 @@
 <template v-if="!patreonUser">
-  <div id="takeover-ad-container"></div>
+  <div id="takeover-ad-container" class="pb-2"></div>
 </template>
 
 <script>
@@ -39,7 +39,7 @@ export default {
               placement.setAttribute("data-display-type", "hybrid-banner");
           } else {
               //load mobile placement
-              placement.setAttribute("data-id", "60f593ac46e4640fd9497d39");
+              placement.setAttribute("data-id", "60f593cedd63d722e7e57bc8");
           }
           document.querySelector("#takeover-ad-container").appendChild(placement);
           window.top.__vm_add.push(placement);
