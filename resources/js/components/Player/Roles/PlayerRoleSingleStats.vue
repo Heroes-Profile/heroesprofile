@@ -45,9 +45,9 @@
             <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.hero_data_top_win_rate.slice(0, 3)" color="teal"></group-box>
             <group-box :playerlink="true" :text="'Latest Played'" :data="data.hero_data_top_latest_played.slice(0, 3)" color="yellow"></group-box>
           </div>
-          <div class="flex flex-wrap mx-auto gap-2 pt-5">
+          <div class="flex flex-wrap mx-auto gap-2 pt-5 justify-center">
             <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Hero/' + item.hero.name" v-for="(item, index) in data.hero_data_all_heroes">
-              <hero-image-wrapper :hero="item.hero">
+              <hero-image-wrapper :hero="item.hero" size="big">
                 <image-hover-box :title="item.hero.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
               </hero-image-wrapper>
             </a>
@@ -67,7 +67,7 @@
             <group-box :playerlink="true" :text="'Highest Win Rate'" :data="data.map_data_top_win_rate.slice(0, 3)" color="teal"></group-box>
             <group-box :playerlink="true" :text="'Latest Played'" :data="data.map_data_top_latest_played.slice(0, 3)" color="yellow"></group-box>
           </div>
-          <div class="flex flex-wrap mx-auto gap-2 pt-5">
+          <div class="flex flex-wrap mx-auto gap-2 pt-5 justify-center">
             <a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + item.region + '/Map/' + item.game_map.name" v-for="(item, index) in data.map_data" :key="index">
               <map-image-wrapper :map="item.game_map" size="big">
                 <image-hover-box :title="item.game_map.name" :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + item.games_played"></image-hover-box>
@@ -79,28 +79,30 @@
       </div>
 
 
-
-      <div class="p-10 max-w-[90em] ml-auto mr-auto">
-        <h2 class="text-3xl font-bold py-5">Party Size Win Rates</h2>
-        <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-          <div class="flex gap-10 text-s"><span>Solo</span><span>Total Games: {{ (data.stack_size_one_wins + data.stack_size_one_losses).toLocaleString() }} </span></div>
-          <stat-bar-box size="big" :value="data.stack_size_one_win_rate.toFixed(2) "></stat-bar-box>     
-        </div>
-        <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-          <div class="flex gap-10 text-s"><span>Two Stack</span><span>Total Games: {{ (data.stack_size_two_wins + data.stack_size_two_losses).toLocaleString() }} </span></div>
-          <stat-bar-box size="big" :value="data.stack_size_two_win_rate.toFixed(2) " color="teal"></stat-bar-box>     
-        </div>
-        <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-          <div class="flex gap-10 text-s"><span>Three Stack</span><span>Total Games: {{ (data.stack_size_three_wins + data.stack_size_three_losses).toLocaleString() }} </span></div>
-          <stat-bar-box size="big" :value="data.stack_size_three_win_rate.toFixed(2) " color="red"></stat-bar-box>     
-        </div>
-        <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-          <div class="flex gap-10 text-s"><span>Four Stack</span><span>Total Games: {{ (data.stack_size_four_wins + data.stack_size_four_losses).toLocaleString() }} </span></div>
-          <stat-bar-box size="big" :value="data.stack_size_four_win_rate.toFixed(2) " color="yellow"></stat-bar-box>     
-        </div>
-        <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-          <div class="flex gap-10 text-s"><span>Five Stack</span><span>Total Games: {{ (data.stack_size_five_wins + data.stack_size_five_losses).toLocaleString() }} </span></div>
-          <stat-bar-box size="big" :value="data.stack_size_five_win_rate.toFixed(2) "></stat-bar-box>     
+      <div class="flex justify-center max-w-[1500px] mx-auto items-center">
+        <div class="p-10 max-w-[90em] ml-auto mr-auto">
+          <h2 class="text-3xl font-bold py-5">Party Size Win Rates</h2>
+          <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
+            <div class="flex gap-10 text-s"><span>Solo</span><span>Total Games: {{ (data.stack_size_one_wins + data.stack_size_one_losses).toLocaleString() }} </span></div>
+            <stat-bar-box size="big" :value="data.stack_size_one_win_rate.toFixed(2) "></stat-bar-box>     
+          </div>
+          <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
+            <div class="flex gap-10 text-s"><span>Two Stack</span><span>Total Games: {{ (data.stack_size_two_wins + data.stack_size_two_losses).toLocaleString() }} </span></div>
+            <stat-bar-box size="big" :value="data.stack_size_two_win_rate.toFixed(2) " color="teal"></stat-bar-box>     
+          </div>
+          <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
+            <div class="flex gap-10 text-s"><span>Three Stack</span><span>Total Games: {{ (data.stack_size_three_wins + data.stack_size_three_losses).toLocaleString() }} </span></div>
+            <stat-bar-box size="big" :value="data.stack_size_three_win_rate.toFixed(2) " color="red"></stat-bar-box>     
+          </div>
+          <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
+            <div class="flex gap-10 text-s"><span>Four Stack</span><span>Total Games: {{ (data.stack_size_four_wins + data.stack_size_four_losses).toLocaleString() }} </span></div>
+            <stat-bar-box size="big" :value="data.stack_size_four_win_rate.toFixed(2) " color="yellow"></stat-bar-box>     
+          </div>
+          <div class="w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
+            <div class="flex gap-10 text-s"><span>Five Stack</span><span>Total Games: {{ (data.stack_size_five_wins + data.stack_size_five_losses).toLocaleString() }} </span></div>
+            <stat-bar-box size="big" :value="data.stack_size_five_win_rate.toFixed(2) "></stat-bar-box>     
+          </div>
+          
         </div>
         <dynamic-square-ad :patreon-user="patreonUser" :index="1"></dynamic-square-ad>
       </div>
