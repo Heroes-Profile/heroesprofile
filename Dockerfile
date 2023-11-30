@@ -1,10 +1,10 @@
 FROM php:8.1-apache
 
+# Open port 8000
+EXPOSE 8000
+
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    zip \
-    unzip
+RUN apt-get update && apt-get install -y git zip unzip nodejs npm
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql
@@ -29,14 +29,6 @@ COPY public/.htaccess /var/www/html/.htaccess
 # Install Laravel dependencies
 RUN composer install
 
-#This is deprecated, need to update to the new/correct way to do this at some point
-# Install Node.js and npm
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get update -y \
-    && apt-get install -y nodejs \
-    && node -v \
-    && npm -v
-
 # Install Vite
 RUN npm install --global vite 
 
@@ -46,16 +38,9 @@ RUN npm install
 # Build the Vue 3 project
 RUN npm run build
 
-COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
-COPY ports.conf /etc/apache2/ports.conf
-RUN a2ensite 000-default
+COPY os-conf /
 
-# Open port 8000
-EXPOSE 8000
-
-RUN a2enmod rewrite
+RUN a2ensite 000-default && a2enmod rewrite
 
 # Start Apache
-
 CMD ["apache2-foreground"]
-
