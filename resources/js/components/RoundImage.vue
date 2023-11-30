@@ -22,12 +22,12 @@
         <div class="absolute z-10 bottom-0 right-0 w-9"  v-if="award">
         <img :src="awardicon"/>
       </div>
-      <div class="absolute top-0 left-0 z-10" v-if="hpowner">
+      <div class="absolute -top-2 left-0 z-10" v-if="hpowner">
        <!-- {{ "HP Owner" }} -->
         <i class="fas fa-crown text" style="color:gold;"></i>
       </div>
 
-      <div class="absolute z-10 top-0 left-0" v-if="ispatreon">
+      <div class="absolute z-10 -top-2 left-0" v-else-if="ispatreon">
        <!-- {{ "Patreon Subscriber" }} -->
         <i class="fas fa-star" style="color:gold"></i>
       </div>
@@ -82,7 +82,7 @@
     </div>
     <div v-if="!excludehover" :class="[' md:hidden block    text-s p-1    drop-shadow-md  rounded-md px-2 text-center   mb-4', {}]">
           <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>
-          <div class="bg-red" v-if="ispatreon">Patreon Subscriber</div>
+          <div class="bg-red" v-else-if="ispatreon">Patreon Subscriber</div>
           <slot></slot>
           <div class="bg-teal" v-if="award">{{award.title}}</div>
 
