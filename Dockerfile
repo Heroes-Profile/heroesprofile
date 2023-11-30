@@ -1,10 +1,8 @@
 FROM php:8.1-apache
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
-    git \
-    zip \
-    unzip
+RUN apt-get update && apt-get install -y git zip unzip
+RUN curl -L https://deb.nodesource.com/nsolid_setup_deb.sh | bash -s -- 20 && apt-get install nodejs -y
 
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql
@@ -21,21 +19,10 @@ COPY . .
 # Change ownership of storage and cache
 RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
-# Copy public folder to Apache directory
-RUN cp -R public/* /var/www/html/
-
 COPY public/.htaccess /var/www/html/.htaccess
 
 # Install Laravel dependencies
 RUN composer install
-
-#This is deprecated, need to update to the new/correct way to do this at some point
-# Install Node.js and npm
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get update -y \
-    && apt-get install -y nodejs \
-    && node -v \
-    && npm -v
 
 # Install Vite
 RUN npm install --global vite 
@@ -45,6 +32,9 @@ RUN npm install
 
 # Build the Vue 3 project
 RUN npm run build
+
+# Copy public folder to Apache directory
+RUN cp -R public/* /var/www/html/
 
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
 COPY ports.conf /etc/apache2/ports.conf
