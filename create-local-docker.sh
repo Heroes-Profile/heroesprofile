@@ -9,6 +9,7 @@ fi
 docker-compose up -d --build
 
 # Run a few commands to setup the application
+docker compose exec heroesprofile bash -c 'php --version && node --version && npm --version'
 docker compose exec heroesprofile bash -c 'composer install'
 docker compose exec heroesprofile bash -c 'php artisan key:generate'
 docker compose exec heroesprofile bash -c 'npm install'
