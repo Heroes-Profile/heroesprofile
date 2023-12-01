@@ -36,9 +36,15 @@ RUN npm run build
 # Copy public folder to Apache directory
 RUN cp -R public/* /var/www/html/
 
+# Copy Apache configuration files
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
 COPY ports.conf /etc/apache2/ports.conf
-RUN a2ensite 000-default
+
+# Add ServerName directive to Apache configuration
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
+# Enable site and Apache modules
+RUN a2ensite 000-default && a2enmod rewrite
 
 # Open port 8000
 EXPOSE 8000
