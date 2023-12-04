@@ -35,6 +35,7 @@ class PlayerMatchHistory extends Controller
         }
 
         return view('Player.matchHistory')->with([
+            'regions' => $this->globalDataService->getRegionIDtoString(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,

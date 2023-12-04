@@ -14,6 +14,7 @@ class BattleNetController extends Controller
     {
         return view('Battlenet.authenticate')
             ->with([
+                'regions' => $this->globalDataService->getRegionIDtoString(),
                 'filters' => $this->globalDataService->getFilterData(),
             ]);
     }
@@ -53,9 +54,8 @@ class BattleNetController extends Controller
     public function logout()
     {
         Auth::logout();
-        session()->forget('patreonSubscriberSiteFlair'); 
-        session()->forget('patreonSubscriberAdFree'); 
-
+        session()->forget('patreonSubscriberSiteFlair');
+        session()->forget('patreonSubscriberAdFree');
 
         return redirect('/');
     }

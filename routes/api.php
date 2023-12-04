@@ -22,11 +22,12 @@ use App\Http\Controllers\Global\GlobalLeaderboardController;
 use App\Http\Controllers\Global\GlobalPartyStatsController;
 use App\Http\Controllers\Global\GlobalTalentBuilderController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
+use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\Player\FriendFoeController;
-use App\Http\Controllers\Player\PlayerController;
 //Profile
-use App\Http\Controllers\Player\PlayerHeroesMapsRolesController;
+use App\Http\Controllers\Player\PlayerController;
 //Esports
+use App\Http\Controllers\Player\PlayerHeroesMapsRolesController;
 use App\Http\Controllers\Player\PlayerMatchHistory;
 use App\Http\Controllers\Player\PlayerMatchupsController;
 use App\Http\Controllers\Player\PlayerMMRController;
@@ -47,6 +48,10 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('v1')->group(function () {
+    Route::post('main/footer/data', [MainPageController::class, 'getFooterData']);
+
+    Route::post('main/header/data', [MainPageController::class, 'getHeaderAlertData']);
+
     Route::post('battletag/search', [BattletagSearchController::class, 'battletagSearch']);
 
     Route::post('global/hero/', [GlobalHeroStatsController::class, 'getGlobalHeroData']);

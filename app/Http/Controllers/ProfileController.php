@@ -18,6 +18,7 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         return view('Profile.profileSettings')->with([
+            'regions' => $this->globalDataService->getRegionIDtoString(),
             'user' => $user,
             'filters' => $this->globalDataService->getFilterData(),
         ]);

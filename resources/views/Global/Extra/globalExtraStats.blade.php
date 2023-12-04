@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', $regions)  
 @section('title', 'Heroes Profile')
 @section('meta_keywords', '')
 @section('meta_description', '')

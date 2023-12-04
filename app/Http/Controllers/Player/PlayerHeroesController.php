@@ -34,6 +34,7 @@ class PlayerHeroesController extends Controller
             ->first()->account_level;
 
         return view('Player.Heroes.allHeroesData')->with([
+            'regions' => $this->globalDataService->getRegionIDtoString(),
             'battletag' => $battletag,
             'account_level' => $account_level,
             'blizz_id' => $blizz_id,
@@ -63,6 +64,7 @@ class PlayerHeroesController extends Controller
         }
 
         return view('Player.Heroes.singleHeroData')->with([
+            'regions' => $this->globalDataService->getRegionIDtoString(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,

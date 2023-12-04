@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', $regions)  
 
 @section('title', 'Global Talent Matchup Stats')
 @section('meta_keywords', 'Talent Matchup Stats, Hero Talents, Hero Matchups, Talent Performance')
@@ -6,7 +6,7 @@
 
 @section('content')
   <global-matchups-talents-stats
-    :heroes="{{ json_encode(session('heroes')) }}"
+    :heroes="{{ json_encode($heroes) }}"
     :filters="{{ json_encode($filters) }}"
     :defaulttimeframe="{{ json_encode($defaulttimeframe) }}"
     :gametypedefault="{{ json_encode($gametypedefault) }}"

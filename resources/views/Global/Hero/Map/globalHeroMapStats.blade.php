@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', $regions)  
 
 @if ($userinput)
   @section('title', $userinput["name"] . ' Global Hero Map Stats')
@@ -13,7 +13,7 @@
 
 @section('content')
   <global-hero-map-stats 
-    :heroes="{{ json_encode(session('heroes')) }}"  
+    :heroes="{{ json_encode($heroes) }}"  
     :filters="{{ json_encode($filters) }}" 
     :gametypedefault="{{ json_encode($gametypedefault) }}" 
     :inputhero="{{ json_encode($userinput)}}" 

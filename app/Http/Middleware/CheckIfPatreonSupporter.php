@@ -2,11 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\PatreonAccount;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\PatreonAccount;
 
 class CheckIfPatreonSupporter
 {
@@ -18,11 +18,11 @@ class CheckIfPatreonSupporter
     public function handle(Request $request, Closure $next): Response
     {
 
-        if (Auth::check()) {            
+        if (Auth::check()) {
             $user = Auth::user();
-            $patreonUser = PatreonAccount::where("battlenet_accounts_id", $user->battlenet_accounts_id)->first();
+            $patreonUser = PatreonAccount::where('battlenet_accounts_id', $user->battlenet_accounts_id)->first();
 
-            if($patreonUser){
+            if ($patreonUser) {
                 if ($patreonUser->site_flair == 1) {
                     session(['patreonSubscriberSiteFlair' => true]);
                 }
@@ -31,7 +31,7 @@ class CheckIfPatreonSupporter
                     session(['patreonSubscriberAdFree' => true]);
                 }
             }
-       
+
         }
 
         return $next($request);

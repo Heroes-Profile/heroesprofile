@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Award;
-use App\Models\BattlenetAccount;
 use App\Models\HeroesDataTalent;
 use App\Models\Map;
 use App\Models\ReplayExperienceBreakdownBlob;
@@ -34,6 +33,7 @@ class SingleMatchController extends Controller
         }
 
         return view('singleMatch')->with([
+            'regions' => $this->globalDataService->getRegionIDtoString(),
             'esport' => null,
             'replayID' => $replayID,
         ]);
@@ -56,6 +56,7 @@ class SingleMatchController extends Controller
         }
 
         return view('singleMatch')->with([
+            'regions' => $this->globalDataService->getRegionIDtoString(),
             'esport' => $esport,
             'replayID' => $replayID,
         ]);

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', $regions)  
 
 @if ($userinput)
   @section('title', $userinput["name"] . ' Talent Stats & Builds')
@@ -10,7 +10,7 @@
 @section('meta_description', 'Explore talent stats for heroes, including talent win rates and talent builds. Analyze which talents perform well and customize your hero builds for success.')
 @section('content')
   <global-talents-stats 
-    :heroes="{{ json_encode(session('heroes')) }}" 
+    :heroes="{{ json_encode($heroes) }}" 
     :inputhero="{{ json_encode($userinput)}}" 
     :filters="{{ json_encode($filters) }}" 
     :defaulttimeframe="{{ json_encode($defaulttimeframe) }}" 

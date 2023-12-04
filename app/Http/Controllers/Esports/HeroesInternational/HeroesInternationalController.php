@@ -34,6 +34,8 @@ class HeroesInternationalController extends Controller
         if ($tournament == 'main') {
             return view('Esports.HeroesInternational.heroesInternationalMain')
                 ->with([
+                    'regions' => $this->globalDataService->getRegionIDtoString(),
+                    'heroes' => $this->globalDataService->getHeroes(),
                     'defaultseason' => 1,
                     'filters' => $this->globalDataService->getFilterData(),
                     'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
@@ -41,12 +43,17 @@ class HeroesInternationalController extends Controller
         } elseif ($tournament == 'nationscup') {
             return view('Esports.HeroesInternational.heroesInternationalNationsCup')
                 ->with([
+                    'regions' => $this->globalDataService->getRegionIDtoString(),
+                    'heroes' => $this->globalDataService->getHeroes(),
                     'defaultseason' => 1,
                     'filters' => $this->globalDataService->getFilterData(),
                     'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
                 ]);
         } else {
-            return view('Esports.HeroesInternational.heroesInternationalEntry');
+            return view('Esports.HeroesInternational.heroesInternationalEntry')->with([
+                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'heroes' => $this->globalDataService->getHeroes(),
+            ]);
         }
     }
 

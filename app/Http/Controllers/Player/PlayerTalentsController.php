@@ -43,6 +43,7 @@ class PlayerTalentsController extends Controller
         $userinput = $this->globalDataService->getHeroModel($request['hero']);
 
         return view('Player.talentData')->with([
+            'regions' => $this->globalDataService->getRegionIDtoString(),
             'userinput' => $userinput,
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
@@ -50,6 +51,7 @@ class PlayerTalentsController extends Controller
             'filters' => $this->globalDataService->getFilterData(),
             'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
+            'heroes' => $this->globalDataService->getHeroes(),
         ]);
     }
 
@@ -81,7 +83,7 @@ class PlayerTalentsController extends Controller
         $blizz_id = $request['blizz_id'];
         $region = $request['region'];
         $gameType = GameType::whereIn('short_name', $request['game_type'])->pluck('type_id')->toArray();
-        $hero = session('heroes')->keyBy('name')[$request['hero']]->id;
+        $hero = $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id;
         $season = $request['season'];
         $game_map = $request['game_map'] ? Map::whereIn('name', $request['game_map'])->pluck('map_id')->toArray() : null;
         $fromdate = $request['fromdate'];

@@ -13,7 +13,7 @@ class BattletagSearchController extends Controller
     public function show(Request $request)
     {
 
-        return view('searchedBattletagHolding')->with(['userinput' => $request['userinput'], 'type' => $request['type']]);
+        return view('searchedBattletagHolding')->with(['userinput' => $request['userinput'], 'type' => $request['type'], 'regions' => $this->globalDataService->getRegionIDtoString()]);
     }
 
     public function battletagSearch(Request $request)
