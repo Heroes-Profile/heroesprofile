@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', $regions)  
 
 @section('content')
     <div class="error-page">

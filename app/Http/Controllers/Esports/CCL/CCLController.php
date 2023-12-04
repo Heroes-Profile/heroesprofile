@@ -17,6 +17,8 @@ class CCLController extends Controller
 
         return view('Esports.CCL.cclMain')
             ->with([
+                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'heroes' => $this->globalDataService->getHeroes(),
                 'defaultseason' => $defaultseason,
                 'filters' => $this->globalDataService->getFilterData(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),

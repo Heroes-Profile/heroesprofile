@@ -29,6 +29,8 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
         $userinput = $this->globalDataService->getHeroModel($request['hero']);
 
         return view('Global.Matchups.globalMatchupsStats')->with([
+            'heroes' => $this->globalDataService->getHeroes(),
+            'regions' => $this->globalDataService->getRegionIDtoString(),
             'userinput' => $userinput,
             'filters' => $this->globalDataService->getFilterData(),
             'gametypedefault' => $this->globalDataService->getGameTypeDefault(),

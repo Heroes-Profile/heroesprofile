@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', $regions)  
 
 @section('title', 'Global Leaderboards')
 @section('meta_keywords', 'Hero Leaderboards, Player Leaderboards, Role Leaderboards, Stack Size Leaderboards')

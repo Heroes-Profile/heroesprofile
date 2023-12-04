@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', $regions)  
 
 @section('title', 'NGS Esports')
 @section('meta_keywords', 'NGS league, Nexus Gaming Series, Heroes of the Storm, NGS esports, competitive gaming, Heroes of the Storm league')
@@ -6,7 +6,7 @@
 
 @section('content')
   <ngs-main 
-    :heroes="{{ json_encode(session('heroes')) }}" 
+    :heroes="{{ json_encode($heroes) }}" 
     :defaultseason="{{ json_encode($defaultseason) }}" 
     :filters="{{ json_encode($filters) }}"
     :talentimages="{{ json_encode($talentimages) }}" 

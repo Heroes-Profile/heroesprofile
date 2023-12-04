@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', $regions)  
 
 @section('title', 'Heroes International Esports')
 @section('meta_keywords', 'Heroes International league, Heroes International, Heroes of the Storm, Heroes International esports, competitive gaming, Heroes of the Storm league')
@@ -6,7 +6,7 @@
 
 @section('content')
   <heroes-international-main
-    :heroes="{{ json_encode(session('heroes')) }}" 
+    :heroes="{{ json_encode($heroes) }}" 
     :defaultseason="{{ json_encode($defaultseason) }}" 
     :filters="{{ json_encode($filters) }}"
     :talentimages="{{ json_encode($talentimages) }}" 

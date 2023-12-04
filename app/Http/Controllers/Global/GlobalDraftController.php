@@ -27,6 +27,8 @@ class GlobalDraftController extends GlobalsInputValidationController
 
         return view('Global.Draft.globalDraftStats')
             ->with([
+                'heroes' => $this->globalDataService->getHeroes(),
+                'regions' => $this->globalDataService->getRegionIDtoString(),
                 'userinput' => $userinput,
                 'filters' => $this->globalDataService->getFilterData(),
                 'gametypedefault' => $this->globalDataService->getGameTypeDefault(),

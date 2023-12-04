@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', $regions)  
 @section('title', $battletag . "'s Main Player Stats")
 @section('meta_keywords', 'Player Stats, Hero Statistics, Player Profile, Player Performance')
 @section('meta_description', 'Explore the main player stats of ' . $battletag . ', including hero statistics, player profile, and performance metrics.')
@@ -11,7 +11,7 @@
     :filters="{{ json_encode($filters) }}"
     :season="{{ json_encode($season) }}"
     :gametype="{{ json_encode($game_type) }}"
-    :regionsmap="{{ json_encode(session('regions')) }}"
+    :regionsmap="{{ json_encode($regions) }}"
     :is-patreon="{{ json_encode($patreon) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
   ></player-stats>

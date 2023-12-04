@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', $regions)  
 
 @section('title', 'CCL Esports')
 @section('meta_keywords', 'CCL esports, Heroes of the Storm, CCL league, competitive gaming, Heroes of the Storm league')
@@ -6,7 +6,7 @@
 
 @section('content')
   <ccl-main 
-    :heroes="{{ json_encode(session('heroes')) }}" 
+    :heroes="{{ json_encode($heroes) }}" 
     :defaultseason="{{ json_encode($defaultseason) }}" 
     :filters="{{ json_encode($filters) }}"
     :talentimages="{{ json_encode($talentimages) }}" 

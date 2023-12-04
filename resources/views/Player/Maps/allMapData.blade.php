@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', $regions)  
 @section('title', 'Player Map Stats')
 @section('title', $battletag . " All Map Stats")
 @section('meta_keywords', 'Player Map Stats, Map Statistics, Player Stats')
@@ -10,7 +10,7 @@
     :blizzid="{{ json_encode($blizz_id) }}" 
     :region="{{ json_encode($region) }}"
     :accountlevel="{{ json_encode($account_level) }}" 
-    :regionsmap="{{ json_encode(session('regions')) }}"
+    :regionsmap="{{ json_encode($regions) }}"
     :is-patreon="{{ json_encode($patreon) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
   ></player-maps-all-stats>

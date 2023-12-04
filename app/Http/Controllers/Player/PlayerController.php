@@ -65,8 +65,9 @@ class PlayerController extends Controller
 
         $season = $request['season'];
         $game_type = $request['game_type'];
-        
+
         return view('Player.player')->with([
+            'regions' => $this->globalDataService->getRegionIDtoString(),
             'settingHero' => $heroUserSettings,
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,

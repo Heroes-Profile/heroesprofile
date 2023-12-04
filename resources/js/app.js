@@ -25,7 +25,7 @@ import Compare from './components/Compare/Compare.vue';
 import HeroOrLeagueChoiceBox from './components/Compare/HeroOrLeagueChoiceBox.vue';
 
 
-//Random Pieces - rename later to what you want and place in folder
+//Random Pieces
 import PageHeading from './components/PageHeading.vue';
 import Infobox from './components/Infobox.vue';
 import RoundImage from './components/RoundImage.vue';
@@ -40,9 +40,6 @@ import ImageHoverBox from './components/ImageHoverBox.vue';
 import FormatDate from './components/FormatDate.vue';
 import NewUserPopup from './components/NewUserPopup.vue';
 import ContactForm from './components/ContactForm.vue';
-
-
-
 
 //Match Page
 import SingleMatch from './components/SingleMatch.vue';

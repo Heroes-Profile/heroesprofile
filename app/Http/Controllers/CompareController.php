@@ -31,6 +31,8 @@ class CompareController extends Controller
 
         return view('compare')
             ->with([
+                'heroes' => $this->globalDataService->getHeroes(),
+                'regions' => $this->globalDataService->getRegionIDtoString(),
                 'userinput' => $userinput,
                 'filters' => $this->globalDataService->getFilterData(),
                 'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
@@ -68,7 +70,7 @@ class CompareController extends Controller
             ];
         }
 
-        $hero = session('heroes')->keyBy('name')[$request['hero']]->id;
+        $hero = $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id;
         $game_type = GameType::where('short_name', $request['game_type'])->pluck('type_id')->first();
 
         $season = $request['season'];

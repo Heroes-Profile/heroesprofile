@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', $regions)  
 @section('title', $battletag . " Friend and Foe Data")
 @section('meta_keywords', 'Friend and Foe Data, Player Connections, Player Statistics')
 @section('meta_description', 'Explore the connections and statistics for ' . $battletag . ', including friends and foes. Analyze the players ' . $battletag . ' frequently plays with and against.')
@@ -12,7 +12,7 @@
     :season="{{ json_encode($season) }}"
     :gametype="{{ json_encode($game_type) }}"
     :gamemap="{{ json_encode($game_map) }}"
-    :regionsmap="{{ json_encode(session('regions')) }}"
+    :regionsmap="{{ json_encode($regions) }}"
     :is-patreon="{{ json_encode($patreon) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
   ></friend-foe>

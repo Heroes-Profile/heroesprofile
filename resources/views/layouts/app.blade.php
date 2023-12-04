@@ -40,7 +40,7 @@
     'isAuthenticated' => Auth::check(),
     'mainSearchAccount' => $main_search_account,
     'altSearchAccounts' => [$alt_search_account1, $alt_search_account2, $alt_search_account3],
-    'regions' => session('regions'),
+    'regions' => $regions,
     ])
     
     <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></horizontal-banner-ad>
@@ -65,7 +65,6 @@
             <div class="content ">
               <div class="footer-nav">
               </div>
-
               <div>{{ session('maxReplayID') }} replays | Patch {{ session('latestPatch') }} | Up to date as of: <format-date :input="'{{ session('latestGameDate') }}'"></format-date></div>
               <div class="copyright">Skill Tree Development, LLC | <a href="https://heroesprofile.com">Heroes Profile</a></div>
             </div>

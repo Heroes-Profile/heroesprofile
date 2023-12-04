@@ -29,6 +29,8 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
 
         return view('Global.Talents.globalTalentBuilder')
             ->with([
+                'heroes' => $this->globalDataService->getHeroes(),
+                'regions' => $this->globalDataService->getRegionIDtoString(),
                 'userinput' => $userinput,
                 'filters' => $this->globalDataService->getFilterData(),
                 'gametypedefault' => $this->globalDataService->getGameTypeDefault(),

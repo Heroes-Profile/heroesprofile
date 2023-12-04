@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
+use App\Models\BattlenetAccount;
 use App\Models\GameType;
 use App\Models\Map;
-use App\Models\BattlenetAccount;
 use App\Models\SeasonDate;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
@@ -50,6 +50,7 @@ class FriendFoeController extends Controller
         $game_map = $request['game_map'];
 
         return view('Player.friendfoe')->with([
+            'regions' => $this->globalDataService->getRegionIDtoString(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,
@@ -207,7 +208,6 @@ class FriendFoeController extends Controller
 
         $patreonAccounts = BattlenetAccount::has('patreonAccount')->get();
 
-
         $finalResults = $checkedData->map(function ($data, $blizz_id) use ($heroDataByID, $region, $patreonAccounts) {
             $totalWins = $data->where('winner', 1)->sum('total');
             $totalLosses = $data->where('winner', 0)->sum('total');
@@ -224,7 +224,7 @@ class FriendFoeController extends Controller
                 ];
             })->sortByDesc('total_games_played')->first();
             $gamesPlayed = $totalWins + $totalLosses;
-            $patreonAccount = $patreonAccounts->where("blizz_id", $blizz_id)->where("region", $region);
+            $patreonAccount = $patreonAccounts->where('blizz_id', $blizz_id)->where('region', $region);
 
             return [
                 'blizz_id' => $blizz_id,

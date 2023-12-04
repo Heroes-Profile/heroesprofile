@@ -15,6 +15,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
     {
         return view('Global.Party.globalPartyStats')
             ->with([
+                'regions' => $this->globalDataService->getRegionIDtoString(),
                 'filters' => $this->globalDataService->getFilterData(),
                 'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),

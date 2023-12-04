@@ -35,6 +35,7 @@ class PlayerMapsController extends Controller
             ->first()->account_level;
 
         return view('Player.Maps.allMapData')->with([
+            'regions' => $this->globalDataService->getRegionIDtoString(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'account_level' => $account_level,
@@ -66,6 +67,7 @@ class PlayerMapsController extends Controller
         $mapobject = Map::where('name', $map)->first();
 
         return view('Player.Maps.singleMapData')->with([
+            'regions' => $this->globalDataService->getRegionIDtoString(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,

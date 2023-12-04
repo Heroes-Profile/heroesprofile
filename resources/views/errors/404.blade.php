@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', $regions)  
 
 @section('title', 'Error')
 @section('meta_keywords', '404 error, page not found, not found error, website error, error page, site not found')

@@ -127,7 +127,7 @@
 
     </div>
     <div v-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="'/images/MCL/no-image.png'"></loading-component>
+      <loading-component @cancel-request="cancelAxiosRequest" :overrideimage="'/images/HI/heroes_international.png'"></loading-component>
     </div>
   </div>
 </template>

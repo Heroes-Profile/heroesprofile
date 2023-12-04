@@ -77,11 +77,7 @@ class GlobalDataService
 
     public function getDefaultTimeframe()
     {
-        if (! session()->has('defaulttimeframe')) {
-            session(['defaulttimeframe' => SeasonGameVersion::select('game_version')->orderBy('game_version', 'DESC')->first()->game_version]);
-        }
-
-        return session('defaulttimeframe');
+        return SeasonGameVersion::select('game_version')->orderBy('game_version', 'DESC')->first()->game_version;
     }
 
     public function getDefaultBuildType()
@@ -89,21 +85,15 @@ class GlobalDataService
         if (Auth::check()) {
             $user = Auth::user();
         }
-        if (! session()->has('defaultbuildtype')) {
-            session(['defaultbuildtype' => 'Popular']);
-        }
 
-        return session('defaultbuildtype');
+        return 'Popular';
     }
 
     public function getLatestPatch()
     {
-        if (! session()->has('latestPatch')) {
-            session(['latestPatch' => SeasonGameVersion::orderBy('id', 'desc')->limit(1)->value('game_version')]);
-        }
-
-        return session('latestPatch');
+        return SeasonGameVersion::orderBy('id', 'desc')->limit(1)->value('game_version');
     }
+
 
     public function getLatestGameDate()
     {
@@ -119,45 +109,32 @@ class GlobalDataService
 
     public function getRegionIDtoString()
     {
-        if (! session()->has('regions')) {
-            $regions = [
-                1 => 'NA',
-                2 => 'EU',
-                3 => 'KR',
-                /*  4 => "UNK",*/
-                5 => 'CN',
-            ];
-            session(['regions' => $regions]);
-        }
-
-        return session('regions');
+        return $regions = [
+            1 => 'NA',
+            2 => 'EU',
+            3 => 'KR',
+            /*  4 => "UNK",*/
+            5 => 'CN',
+        ];
     }
 
     public function getRegionStringToID()
     {
-        if (! session()->has('regions_string')) {
-            $regions = [
-                'NA' => 1,
-                'EU' => 2,
-                'KR' => 3,
-                /*  4 => "UNK",*/
-                'CN' => 5,
-            ];
-            session(['regions_string' => $regions]);
-        }
-
-        return session('regions_string');
+        return $regions = [
+            'NA' => 1,
+            'EU' => 2,
+            'KR' => 3,
+            /*  4 => "UNK",*/
+            'CN' => 5,
+        ];
     }
 
     public function getGameTypeIDtoString()
     {
-        if (! session()->has('game_types')) {
-            $game_types = GameType::all();
-            $game_types = $game_types->keyBy('type_id');
-            session(['game_types' => $game_types]);
-        }
+        $game_types = GameType::all();
+        $game_types = $game_types->keyBy('type_id');
 
-        return session('game_types');
+        return $game_types;
     }
 
     public function getWeeksSinceSeasonStart()
@@ -186,7 +163,7 @@ class GlobalDataService
     public function calculateCacheTimeInMinutes($timeframe)
     {
         if (app()->environment('production')) {
-            if (count($timeframe) == 1 && $timeframe[0] == session('latestPatch')) {
+            if (count($timeframe) == 1 && $timeframe[0] == $this->getLatestPatch()) {
                 $date = SeasonGameVersion::where('game_version', min($timeframe))->value('date_added');
                 $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
 
@@ -214,20 +191,12 @@ class GlobalDataService
 
     public function getGameTypes()
     {
-        if (! session()->has('game_types')) {
-            session(['game_types' => GameType::orderBy('type_id', 'ASC')->get()]);
-        }
-
-        return session('game_types');
+        return GameType::orderBy('type_id', 'ASC')->get();
     }
 
     public function getHeroes()
     {
-        if (! session()->has('heroes')) {
-            session(['heroes' => Hero::orderBy('name', 'ASC')->get()]);
-        }
-
-        return session('heroes');
+        return Hero::orderBy('name', 'ASC')->get();
     }
 
     public function getHeroesByID()
@@ -240,21 +209,12 @@ class GlobalDataService
 
     public function getHeroModel($heroName)
     {
-        if (! session()->has('heroes')) {
-            session(['heroes' => Hero::all()]);
-        }
-        $heroModel = session('heroes')->firstWhere('name', $heroName);
-
-        return $heroModel;
+        return Hero::all()->firstWhere('name', $heroName);
     }
 
     public function getSeasonsData()
     {
-        if (! session()->has('seasonData')) {
-            session(['seasonData' => SeasonDate::orderBy('id', 'desc')->get()]);
-        }
-
-        return session('seasonData');
+        return SeasonDate::orderBy('id', 'desc')->get();
     }
 
     public function getSeasonFromDate($date)
@@ -715,17 +675,17 @@ class GlobalDataService
         return $heroData->pluck('short_name')->toArray();
     }
 
-    public function checkIfSiteFlair($blizz_id, $region){
+    public function checkIfSiteFlair($blizz_id, $region)
+    {
         $data = BattlenetAccount::where('blizz_id', $blizz_id)->where('region', $region)->first();
 
-        if (!$data || empty($data)) {
+        if (! $data || empty($data)) {
             return false;
         }
 
         $data = $data->patreonAccount;
 
-
-        if (!$data || empty($data)) {
+        if (! $data || empty($data)) {
             return false;
         }
 

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', $regions)  
 @section('title', 'Global Party Stats')
 @section('meta_keywords', 'Party Stats, Hero Stacks, Stack Size, Stack Performance')
 @section('meta_description', 'Explore party stats, including stack size and performance. Analyze how different stack sizes fare against others.')

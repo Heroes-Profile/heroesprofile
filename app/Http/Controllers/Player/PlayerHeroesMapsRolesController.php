@@ -65,7 +65,7 @@ class PlayerHeroesMapsRolesController extends Controller
             $game_type = $request['game_type'] ? GameType::where('short_name', $request['game_type'])->pluck('type_id')->first() : null;
         }
 
-        $hero = $request['hero'] ? session('heroes')->keyBy('name')[$request['hero']]->id : null;
+        $hero = $request['hero'] ? $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id : null;
         $minimum_games = $request['minimumgames'];
         $page = $request['page'];
         $role = $request['role'];
@@ -714,7 +714,7 @@ class PlayerHeroesMapsRolesController extends Controller
             $game_type = $request['game_type'] ? GameType::where('short_name', $request['game_type'])->pluck('type_id')->first() : null;
         }
 
-        $hero = $request['hero'] ? session('heroes')->keyBy('name')[$request['hero']]->id : null;
+        $hero = $request['hero'] ? $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id : null;
         $minimum_games = $request['minimumgames'];
         $page = $request['page'];
         $role = $request['role'];

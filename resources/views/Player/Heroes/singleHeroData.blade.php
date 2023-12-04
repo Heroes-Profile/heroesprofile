@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', $regions)  
 @section('title', $battletag . " " . $hero . " Stats")
 @section('meta_keywords', 'Player Hero Stats, Hero Statistics, Player Stats')
 @section('meta_description', 'Explore the statistics and data for a specific hero played by a player. Analyze player performance and stats for a particular hero.')
@@ -9,7 +9,7 @@
     :blizzid="{{ json_encode($blizz_id) }}" 
     :region="{{ $region }}" 
     :hero="{{ json_encode($hero) }}" 
-    :regionsmap="{{ json_encode(session('regions')) }}"
+    :regionsmap="{{ json_encode($regions) }}"
     :heroobject="{{ json_encode($heroObject) }}"
     :is-patreon="{{ json_encode($patreon) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
