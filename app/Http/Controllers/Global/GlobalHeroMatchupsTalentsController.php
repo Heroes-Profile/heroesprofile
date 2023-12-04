@@ -59,6 +59,8 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
         }
 
         return view('Global.Matchups.Talents.globalMatchupsTalentsStats')->with([
+            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'heroes' => $this->globalDataService->getHeroes(),
             'filters' => $this->globalDataService->getFilterData(),
             'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
             'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
@@ -91,7 +93,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
             ];
         }
         $hero = $this->getHeroFilterValue($request['hero']);
-        $allyEnemy = session('heroes')->keyBy('name')[$request['ally_enemy']]->id;
+        $allyEnemy = $this->globalDataService->getHeroes()->keyBy('name')[$request['ally_enemy']]->id;
         $gameType = $this->getGameTypeFilterValues($request['game_type']);
         $leagueTier = $request['league_tier'];
         $gameMap = $this->getGameMapFilterValues($request['game_map']);

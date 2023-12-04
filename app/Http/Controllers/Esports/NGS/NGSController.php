@@ -22,6 +22,8 @@ class NGSController extends Controller
 
         return view('Esports.NGS.ngsMain')
             ->with([
+                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'heroes' => $this->globalDataService->getHeroes(),
                 'defaultseason' => $defaultseason,
                 'filters' => $this->globalDataService->getFilterData(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),

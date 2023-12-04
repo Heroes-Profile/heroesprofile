@@ -84,8 +84,8 @@ Route::get('/Global/Draft', [GlobalDraftController::class, 'show']);
 Route::get('/Global/Draft/{hero}', [GlobalDraftController::class, 'show']);
 
 Route::get('/Global/Talents/', [GlobalTalentStatsController::class, 'show']);
-Route::get('/Global/Talents/Build', [GlobalTalentBuilderController::class, 'show']);
-Route::get('/Global/Talents/Build/{hero}', [GlobalTalentBuilderController::class, 'show']);
+Route::get('/Global/Talents/Builder', [GlobalTalentBuilderController::class, 'show']);
+Route::get('/Global/Talents/Builder/{hero}', [GlobalTalentBuilderController::class, 'show']);
 Route::get('/Global/Talents/{hero}', [GlobalTalentStatsController::class, 'show']);
 
 Route::get('/Global/Leaderboard', [GlobalLeaderboardController::class, 'show']);

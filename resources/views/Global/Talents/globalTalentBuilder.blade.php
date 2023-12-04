@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', $regions)  
 
 @if ($userinput)
   @section('title', $userinput["name"] . ' Global Talent Builder')
@@ -11,7 +11,7 @@
 @section('meta_description', 'Build and customize your own hero talent builds. Analyze talent performance with real data to optimize your hero builds for success.')
 @section('content')
   <global-talents-builder 
-    :heroes="{{ json_encode(session('heroes')) }}" 
+    :heroes="{{ json_encode($heroes) }}" 
     :inputhero="{{ json_encode($userinput)}}" 
     :filters="{{ json_encode($filters) }}" 
     :defaulttimeframe="{{ json_encode($defaulttimeframe) }}" 

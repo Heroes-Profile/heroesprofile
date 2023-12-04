@@ -17,6 +17,7 @@ class GlobalExtraStats extends Controller
     {
         return view('Global.Extra.globalExtraStats')
             ->with([
+                'regions' => $this->globalDataService->getRegionIDtoString(),
                 'filters' => $this->globalDataService->getFilterData(),
             ]);
     }

@@ -81,7 +81,7 @@ class GlobalsInputValidationController extends Controller
             return null;
         }
 
-        return session('heroes')->keyBy('name')[$hero]->id;
+        return $this->globalDataService->getHeroes()->keyBy('name')[$hero]->id;
     }
 
     public function getGameTypeFilterValues($game_type)

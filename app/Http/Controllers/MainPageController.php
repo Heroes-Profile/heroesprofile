@@ -8,6 +8,22 @@ class MainPageController extends Controller
 {
     public function show(Request $request)
     {
-        return view('mainPage');
+        return view('mainPage')->with([
+            'regions' => $this->globalDataService->getRegionIDtoString(),
+        ]);
+    }
+
+    public function getFooterData()
+    {
+        return [
+            'maxReplayID' => $this->globalDataService->calculateMaxReplayNumber(),
+            'latestPatch' => $this->globalDataService->getLatestPatch(),
+            'latestGameDate' => $this->globalDataService->getLatestGameDate(),
+        ];
+    }
+
+    public function getHeaderAlertData()
+    {
+        return $this->globalDataService->getHeaderAlert();
     }
 }

@@ -33,6 +33,8 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
         return view('Global.Talents.globalTalentStats')
             ->with([
+                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'heroes' => $this->globalDataService->getHeroes(),
                 'userinput' => $userinput,
                 'filters' => $this->globalDataService->getFilterData(),
                 'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
@@ -179,7 +181,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ];
         }
 
-        $hero = session('heroes')->keyBy('name')[$request['hero']]->id;
+        $hero = $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id;
         $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
 
         $gameTypeRecords = GameType::whereIn('short_name', $request['game_type'])->get();

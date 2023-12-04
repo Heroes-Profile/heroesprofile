@@ -44,6 +44,7 @@ class EsportsController extends Controller
     {
         return view('Esports.esportsMain')
             ->with([
+                'regions' => $this->globalDataService->getRegionIDtoString(),
                 //'filters' => $this->globalDataService->getFilterData(),
                 //'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
                 //'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
@@ -77,6 +78,7 @@ class EsportsController extends Controller
         }
 
         return view('Esports.singlePlayerMatchHistory')->with([
+            'regions' => $this->globalDataService->getRegionIDtoString(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'esport' => $esport,
@@ -117,6 +119,7 @@ class EsportsController extends Controller
 
         return view('Esports.team')
             ->with([
+                'regions' => $this->globalDataService->getRegionIDtoString(),
                 'esport' => $esport,
                 'team' => $team,
                 'season' => $request['season'],
@@ -153,6 +156,7 @@ class EsportsController extends Controller
 
         return view('Esports.singlePlayer')
             ->with([
+                'regions' => $this->globalDataService->getRegionIDtoString(),
                 'esport' => $esport,
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
@@ -192,6 +196,7 @@ class EsportsController extends Controller
 
         return view('Esports.singlePlayerHero')
             ->with([
+                'regions' => $this->globalDataService->getRegionIDtoString(),
                 'esport' => $esport,
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
@@ -231,6 +236,7 @@ class EsportsController extends Controller
 
         return view('Esports.singlePlayerMap')
             ->with([
+                'regions' => $this->globalDataService->getRegionIDtoString(),
                 'esport' => $esport,
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
@@ -417,7 +423,7 @@ class EsportsController extends Controller
 
         $this->division = $request['division'];
         $this->season = $request['season'];
-        $this->hero = $request['hero'] ? session('heroes')->keyBy('name')[$request['hero']]->id : null;
+        $this->hero = $request['hero'] ? $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id : null;
         $this->game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->toArray() : null;
 
         if ($this->esport == 'MastersClash') {
@@ -609,7 +615,7 @@ class EsportsController extends Controller
 
         $this->season = $request['season'];
         $this->division = $request['division'];
-        $hero = session('heroes')->keyBy('name')[$request['hero']]->id;
+        $hero = $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id;
 
         $this->esport = $request['esport'];
         $this->schema = 'heroesprofile';
@@ -851,7 +857,7 @@ class EsportsController extends Controller
         $this->season = $request['season'];
         $this->tournament = $request['tournament'];
 
-        $this->hero = $request['hero'] ? session('heroes')->keyBy('name')[$request['hero']]->id : null;
+        $this->hero = $request['hero'] ? $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id : null;
         $this->game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->toArray() : null;
 
         if ($this->esport == 'CCL') {

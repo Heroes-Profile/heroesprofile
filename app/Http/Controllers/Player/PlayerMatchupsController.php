@@ -33,6 +33,7 @@ class PlayerMatchupsController extends Controller
         }
 
         return view('Player.matchupData')->with([
+            'regions' => $this->globalDataService->getRegionIDtoString(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,

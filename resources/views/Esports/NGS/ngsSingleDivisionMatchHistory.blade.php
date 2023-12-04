@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', $regions)  
 @section('title', "Match History")
 @section('meta_keywords', 'Match History, Player Matches, Game Results, Match Stats')
 @section('content')

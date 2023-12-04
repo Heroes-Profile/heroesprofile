@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.app', $regions)  
 
 @if ($userinput)
   @section('title', $userinput["name"] . ' Global Draft Stats')
@@ -11,7 +11,7 @@
 
 @section('content')
   <global-draft-stats 
-    :heroes="{{ json_encode(session('heroes')) }}" 
+    :heroes="{{ json_encode($heroes) }}" 
     :inputhero="{{ json_encode($userinput)}}" 
     :filters="{{ json_encode($filters) }}" 
     :defaulttimeframe="{{ json_encode($defaulttimeframe) }}" 

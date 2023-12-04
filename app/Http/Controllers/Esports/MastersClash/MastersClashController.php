@@ -17,6 +17,8 @@ class MastersClashController extends Controller
 
         return view('Esports.MastersClash.mastersClashMain')
             ->with([
+                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'heroes' => $this->globalDataService->getHeroes(),
                 'defaultseason' => $defaultseason,
                 'filters' => $this->globalDataService->getFilterData(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),

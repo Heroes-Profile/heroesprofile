@@ -29,6 +29,7 @@ class PlayerRolesController extends Controller
             ->first()->account_level;
 
         return view('Player.Roles.allRoleData')->with([
+            'regions' => $this->globalDataService->getRegionIDtoString(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'account_level' => $account_level,
@@ -57,6 +58,7 @@ class PlayerRolesController extends Controller
         }
 
         return view('Player.Roles.singleRoleData')->with([
+            'regions' => $this->globalDataService->getRegionIDtoString(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,
