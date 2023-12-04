@@ -40,10 +40,6 @@ import ImageHoverBox from './components/ImageHoverBox.vue';
 import FormatDate from './components/FormatDate.vue';
 import NewUserPopup from './components/NewUserPopup.vue';
 import ContactForm from './components/ContactForm.vue';
-import headerAlert from './components/headerAlert.vue';
-
-
-
 
 //Match Page
 import SingleMatch from './components/SingleMatch.vue';
