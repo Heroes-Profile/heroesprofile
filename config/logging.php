@@ -54,7 +54,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single', 'google'],
+            'channels' => ['single', 'flare'],
             'ignore_exceptions' => false,
         ],
 
@@ -126,12 +126,8 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
-        'google' => [
-            'driver' => 'custom',
-            'via' => \App\Logging\CreateStackdriverLogger::class,
-            'projectId' => env('GOOGLE_CLOUD_PROJECT_ID'),
-            'logName' => 'laravel',
-            'level' => 'debug',
+        'flare' => [
+            'driver' => 'flare',
         ],
     ],
 

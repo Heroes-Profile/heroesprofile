@@ -120,7 +120,7 @@
 
     </div>
     <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
   </div>
 </template>
