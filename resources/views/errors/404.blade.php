@@ -1,4 +1,11 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', ['regions' => [
+    1 => 'NA',
+    2 => 'EU',
+    3 => 'KR',
+    /* 4 => 'UNK', */
+    5 => 'CN',
+]])
+
 
 @section('title', 'Error')
 @section('meta_keywords', '404 error, page not found, not found error, website error, error page, site not found')
