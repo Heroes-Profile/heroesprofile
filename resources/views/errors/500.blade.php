@@ -1,4 +1,10 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', ['regions' => [
+    1 => 'NA',
+    2 => 'EU',
+    3 => 'KR',
+    /* 4 => 'UNK', */
+    5 => 'CN',
+]])
 
 @section('content')
     <div class="error-page">
