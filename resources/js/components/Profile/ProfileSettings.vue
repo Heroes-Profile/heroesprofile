@@ -1,38 +1,69 @@
 <template>
   <div class=" mx-auto max-w-[700px]  bg-lighten rounded-lg mt-[10vh]">
-    <!-- Other content -->
-
     <h1 class="mb-4 bg-teal p-4 rounded-t-lg">Site Settings</h1>
     <div class="flex items-center flex-wrap justify-start p-4">
-
-      <!-- Removing for now as I am not sure if this functionality is all that useful
-     <div>
-        Profile Hero/Favorite Hero: <single-select-filter :values="this.filters.heroes" :text="'Heroes'" @input-changed="handleInputChange" :defaultValue="defaultHero"></single-select-filter>
-      </div>
-    -->
       <div class="flex flex-wrap justify-center">
-        <div class="border-r-[1px] px-4  border-white">
-          <h3>Default Game Type:</h3> <multi-select-filter :values="this.filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="defaultGameType"></multi-select-filter>
+        <div class="border-r-[1px] px-4 border-white">
+          <h3>Default Multi-Select Game Type:</h3> 
+          <multi-select-filter
+            :values="this.filters.game_types_full" 
+            :text="'Game Type'" 
+            @dropdown-closed="saveSettings()" 
+            @input-changed="handleInputChange" 
+            :defaultValue="defaultGameType"
+            :trackclosure="true"
+          >
+          </multi-select-filter>
         </div>
 
 
         <div class="px-4">
-          <h3>Show Advanced Filtering options:</h3> <single-select-filter :values="advancedfilteringoptions" :text="'Advanced Filtering'" @input-changed="handleInputChange" :defaultValue="defaultAdvancedFiltering"></single-select-filter>
+          <h3>Default Game Type:</h3> 
+          <multi-select-filter
+            :values="this.filters.game_types_full" 
+            :text="'Game Type'" 
+            @dropdown-closed="saveSettings()" 
+            @input-changed="handleInputChange" 
+            :defaultValue="defaultGameType"
+            :trackclosure="true"
+          >
+          </multi-select-filter>
         </div>
+
+
+        <div class="border-r-[1px] px-4 border-white">
+          <h3>Show Advanced Filtering options:</h3> 
+          <single-select-filter 
+            :values="advancedfilteringoptions" 
+            :text="'Advanced Filtering'" 
+            @dropdown-closed="saveSettings()" 
+            @input-changed="handleInputChange" 
+            :defaultValue="defaultAdvancedFiltering"
+            :trackclosure="true"
+
+          >
+          </single-select-filter>
+        </div>
+
+
+        <div class="px-4">
+          <h3>Default Build Type</h3> 
+
+          <!-- Talent build Type -->
+          <single-select-filter 
+            :values="filters.talent_build_types" 
+            :text="'Talent Build Type'" 
+            @dropdown-closed="saveSettings()" 
+            @input-changed="handleInputChange" 
+            :defaultValue="defaultBuildType"
+            :trackclosure="true"
+          >
+          </single-select-filter>
+        </div>
+
+        
       </div>
-
-
-
-     
-
-
     </div>
- 
-
-
-
-
-
     <h1 class="mb-4 bg-teal p-4 ">Profile Settings</h1>
 
     <div class="flex items-stretch gap-10 p-4">
@@ -49,19 +80,12 @@
         </single-select-filter>
       </div>
       <div>
-      <h3 class="mb-auto">Link Patreon: <span class="bg-teal px-2"  v-if="this.user.patreon_account">Connected</span></h3>
-      <custom-button class="ml-auto mt-4" v-if="!this.user.patreon_account" :href="'/authenticate/patreon'" :text="'Login with Patreon'" :alt="'Login with Patreon'"  :size="'medium'" :color="'blue'"></custom-button>
+        <h3 class="mb-auto">Link Patreon: <span class="bg-teal px-2"  v-if="this.user.patreon_account">Connected</span></h3>
+        <custom-button class="ml-auto mt-4" v-if="!this.user.patreon_account" :href="'/authenticate/patreon'" :text="'Login with Patreon'" :alt="'Login with Patreon'"  :size="'medium'" :color="'blue'"></custom-button>
 
-      <custom-button class="ml-auto text-sm mt-4"  v-if="this.user.patreon_account" :ignoreclick="true" :text="'Remove Patreon'" :alt="'Remove Patreon'"  :size="'medium'" :color="'red'" @click="removePatreon()"></custom-button>
+        <custom-button class="ml-auto text-sm mt-4"  v-if="this.user.patreon_account" :ignoreclick="true" :text="'Remove Patreon'" :alt="'Remove Patreon'"  :size="'medium'" :color="'red'" @click="removePatreon()"></custom-button>
+      </div>
     </div>
-    </div>
-
-
-
-
-
-
-
   </div>
 </template>
 
@@ -88,6 +112,7 @@ export default {
       ],
       advancedfiltering: null,
       accountVisibility: 'false',
+      talentBuildType: null,
     }
   },
   created(){
@@ -96,6 +121,10 @@ export default {
     }else{
       this.accountVisibility = "false";
     }
+
+    console.log(this.defaultBuiltType);
+    
+
   },
   mounted() {
     this.advancedfiltering = this.defaultAdvancedFiltering;
@@ -108,12 +137,24 @@ export default {
       }
       return null;
     },
-    defaultGameType(){
-      if (this.user.user_settings.length > 0){
+    defaultGameType() {
+      if (this.user.user_settings.length > 0) {
         let gameType = this.user.user_settings.find(item => item.setting === 'game_type').value;
-        return gameType ? [gameType] : null;
+        
+        // Check if gameType is truthy and not an empty string
+        if (gameType && gameType.trim() !== '') {
+          // Split the comma-separated values into an array
+          return gameType.split(',').map(value => value.trim());
+        }
       }
       return null;
+    },
+    defaultBuildType(){
+      if (this.user.user_settings.length > 0){
+        let buildtype = this.user.user_settings.find(item => item.setting === 'talentbuildtype').value;
+        return buildtype ? buildtype : null;
+      }
+      return this.filters.talent_build_types[0].code;
     },
     defaultAdvancedFiltering(){
       if (this.user.user_settings.length > 0){
@@ -133,6 +174,7 @@ export default {
           userhero: this.userhero,
           usergametype: this.usergametype,
           advancedfiltering: this.advancedfiltering,
+          talentbuildtype: this.talentBuildType,
         });
         //window.location.href = "/Profile/Settings";
       }catch(error){
@@ -157,6 +199,8 @@ export default {
           this.advancedfiltering = eventPayload.value;
         }else if(eventPayload.field == "Account Visibility"){
           this.accountVisibility = eventPayload.value;
+        }else if(eventPayload.field == "Talent Build Type"){
+          this.talentBuildType = eventPayload.value;
         }
 
       } else if(eventPayload.type === 'multi') {

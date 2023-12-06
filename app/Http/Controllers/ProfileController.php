@@ -7,6 +7,8 @@ use App\Models\GameType;
 use App\Models\Hero;
 use App\Models\PatreonAccount;
 use App\Rules\GameTypeInputValidation;
+use App\Rules\TalentBuildTypeInputValidation;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -31,6 +33,7 @@ class ProfileController extends Controller
         $validationRules = [
             'userhero' => 'nullable|numeric',
             'usergametype' => ['sometimes', 'nullable', new GameTypeInputValidation()],
+            'talentbuildtype' => ['sometimes', 'nullable', new TalentBuildTypeInputValidation()],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -88,6 +91,16 @@ class ProfileController extends Controller
             );
         }
 
+        if (! is_null($request['talentbuildtype'])) {
+            $user = BattlenetAccount::find($request['userid']);
+
+            $talentbuildtype = $request['talentbuildtype'];
+
+            $user->userSettings()->updateOrCreate(
+                ['setting' => 'talentbuildtype'],
+                ['value' => $talentbuildtype]
+            );
+        }
         return ['success' => true];
     }
 

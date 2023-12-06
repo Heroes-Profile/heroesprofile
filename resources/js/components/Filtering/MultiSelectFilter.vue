@@ -46,6 +46,7 @@
       values: Array,
       text: String,
       defaultValue: Array,
+      trackclosure: Boolean,
     },
     data(){
       return {
@@ -89,7 +90,12 @@
       },
       selectedOptions: function (newVal) {
         this.$emit('input-changed', { field: this.text, value: newVal, type: 'multi' });
-      }
+      },
+      showOptions: function (newVal) {
+      if(this.trackclosure && !newVal){
+          this.$emit('dropdown-closed', newVal);
+        }
+      },
     },
     methods: {
       handleClickOutside(event) {
