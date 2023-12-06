@@ -54,6 +54,7 @@ Route::fallback(function () {
 });
 
 Route::get('/', [MainPageController::class, 'show']);
+Route::get('/test', [MainPageController::class, 'test']);
 Route::get('/Contact', [ContactController::class, 'show']);
 Route::get('/battletag/searched/{userinput}/{type}', [BattletagSearchController::class, 'show']);
 

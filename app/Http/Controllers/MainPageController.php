@@ -26,4 +26,9 @@ class MainPageController extends Controller
     {
         return $this->globalDataService->getHeaderAlert();
     }
+
+    public function test()
+    {
+        $exception = 1/0;
+    }
 }
