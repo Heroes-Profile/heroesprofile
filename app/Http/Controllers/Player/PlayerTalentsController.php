@@ -52,6 +52,7 @@ class PlayerTalentsController extends Controller
             'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
             'heroes' => $this->globalDataService->getHeroes(),
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
         ]);
     }
 

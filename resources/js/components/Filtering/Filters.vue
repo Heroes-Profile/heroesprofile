@@ -181,7 +181,7 @@
           :values="filters.talent_build_types" 
           :text="'Talent Build Type'" 
           @input-changed="handleInputChange" 
-          :defaultValue="filters.talent_build_types[0].code"
+          :defaultValue="buildtypedefault"
           ></single-select-filter>
 
           <!-- Minimum Games -->
@@ -302,6 +302,7 @@
       advancedfiltering: Boolean,
       defaultHero: Number,
       defaultRole: String,
+      buildtypedefault: String,
       
     },
     data(){

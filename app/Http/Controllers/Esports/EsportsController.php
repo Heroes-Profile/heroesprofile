@@ -45,11 +45,6 @@ class EsportsController extends Controller
         return view('Esports.esportsMain')
             ->with([
                 'regions' => $this->globalDataService->getRegionIDtoString(),
-                //'filters' => $this->globalDataService->getFilterData(),
-                //'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
-                //'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
-                //'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
-                //'defaultbuildtype' => $this->globalDataService->getDefaultBuildType()
             ]);
     }
 

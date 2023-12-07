@@ -34,9 +34,6 @@ class PlayerController extends Controller
             'region' => 'required|integer',
         ];
 
-        if (request()->has('game_type')) {
-            $validationRules['game_type'] = ['sometimes', 'nullable', new GameTypeInputValidation()];
-        }
         if (request()->has('season')) {
             $validationRules['season'] = ['sometimes', 'nullable', new SeasonInputValidation()];
         }
@@ -64,7 +61,6 @@ class PlayerController extends Controller
         }
 
         $season = $request['season'];
-        $game_type = $request['game_type'];
 
         return view('Player.player')->with([
             'regions' => $this->globalDataService->getRegionIDtoString(),
@@ -73,7 +69,7 @@ class PlayerController extends Controller
             'blizz_id' => $blizz_id,
             'region' => $region,
             'season' => $season,
-            'game_type' => $game_type,
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault("single"),
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);

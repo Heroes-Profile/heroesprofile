@@ -83,13 +83,15 @@
       region: String,
       isPatreon: Boolean,
       patreonUser: Boolean,
+      gametypedefault: Array,
+
     },
     data(){
       return {
         cancelTokenSource: null,
         isLoading: false,
         infotext: "Hero Matchups provide information on which heroes " + this.battletag + " is good with and against",
-        gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
+        gametype: null,
         data: null,
         sortKey: '',
         sortDir: 'desc',
@@ -98,6 +100,8 @@
       }
     },
     created(){
+      this.gametype = this.gametypedefault;
+
     },
     mounted() {
       this.getData();

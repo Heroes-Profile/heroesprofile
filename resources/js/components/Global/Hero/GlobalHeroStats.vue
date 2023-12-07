@@ -24,6 +24,7 @@
       :includemirror="true"
       :includetalentbuildtype="true"
       :advancedfiltering="advancedfiltering"
+      :buildtypedefault="defaultbuildtype"
       >
     </filters>
     <takeover-ad :patreon-user="patreonUser"></takeover-ad>
@@ -86,7 +87,7 @@
             <th @click="sortTable('confidence_interval')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Win Rate Confidence
             </th>
-            <th @click="sortTable('win_rate_change')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th v-if="showWinRateChange" @click="sortTable('win_rate_change')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Win Rate Change
             </th>
             <th @click="sortTable('popularity')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -132,8 +133,8 @@
               </td>
               <td class="  ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3 "><span v-html="'&#177;'"></span>{{ row.confidence_interval.toFixed(2) }}</td>
-              <td v-if="row.win_rate_change < 0" class="py-2 px-3 ">{{ row.win_rate_change.toFixed(2) }}</td>
-              <td v-else-if="row.win_rate_change >= 0" class="py-2 px-3 "><span v-html="'&plus;'"></span>{{ row.win_rate_change.toFixed(2) }}</td>
+              <td v-if="showWinRateChange && row.win_rate_change < 0" class="py-2 px-3 ">{{ row.win_rate_change.toFixed(2) }}</td>
+              <td v-else-if="showWinRateChange && row.win_rate_change >= 0" class="py-2 px-3 "><span v-html="'&plus;'"></span>{{ row.win_rate_change.toFixed(2) }}</td>
               <td class="py-2 px-3">{{ row.popularity.toFixed(2) }}</td>
               <td class="py-2 px-3">{{ row.pick_rate.toFixed(2) }}</td>
               <td class="py-2 px-3">{{ row.ban_rate.toFixed(2) }}</td>
@@ -184,11 +185,11 @@ export default {
       required: true
     },
     gametypedefault: Array,
-    defaultbuildtype: String,
     defaulttimeframetype: String,
     defaulttimeframe: Array,
     advancedfiltering: Boolean,
     patreonUser: Boolean,
+    defaultbuildtype: String,
   },
   data(){
     return {
@@ -200,7 +201,7 @@ export default {
       togglechart: false,
       toggletalentbuilds: {},
       talentbuilddata: {},
-      selectedbuildtype: "Popular",
+      selectedbuildtype: null,
       cancelTokenSource: null,
 
 
@@ -227,6 +228,7 @@ export default {
     this.timeframe = this.defaulttimeframe;
     this.talentbuildtype = this.defaultbuildtype;
     this.timeframetype = this.defaulttimeframetype;
+
   	this.getData();
   },
   mounted() {
@@ -237,6 +239,23 @@ export default {
         return true;      
       }
       return false;
+    },
+    showWinRateChange(){
+      return (
+        this.timeframe.length === 1 &&
+        !this.region &&
+        this.gametype.length === 1 &&
+        this.gametype[0] !== 'br' &&
+        this.gametype[0] !== 'cu' &&
+        !this.gamemap &&
+        !this.playerrank &&
+        !this.herorank &&
+        !this.rolerank &&
+        !this.herolevel &&
+        this.statfilter === 'win_rate' &&
+        this.mirrormatch === 0
+      );
+
     },
     sortedData() {
       if (!this.sortKey) return this.data.data;
