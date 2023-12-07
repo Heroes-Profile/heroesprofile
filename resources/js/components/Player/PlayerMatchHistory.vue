@@ -118,6 +118,7 @@ export default {
     regionsmap: Object,
     isPatreon: Boolean,
     patreonUser: Boolean,
+    gametypedefault: Array,
   },
   data(){
     return {
@@ -131,10 +132,11 @@ export default {
       season: null,
       sortKey: '',
       sortDir: 'desc',
-      gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
+      gametype: null,
     }
   },
   created(){
+    this.gametype = this.gametypedefault;
   },
   mounted() {
     this.getData(1);

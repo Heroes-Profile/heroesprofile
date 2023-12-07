@@ -42,6 +42,8 @@ class PlayerMapsController extends Controller
             'region' => $region,
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
+
         ]);
     }
 
@@ -76,6 +78,8 @@ class PlayerMapsController extends Controller
             'filters' => $this->globalDataService->getFilterData(),
             'regions' => $this->globalDataService->getRegionIDtoString(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault("single"),
+
         ]);
     }
 }

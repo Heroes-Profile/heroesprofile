@@ -22,12 +22,9 @@ use Illuminate\Support\Facades\DB;
 
 class GlobalDataService
 {
-    private $filtersMinimumPatch;
-
     public function __construct()
     {
-        //can add modifier here for patreons to reduce what they can filter on
-        $this->filtersMinimumPatch = '2.53.0.83004';
+
     }
 
     public function getHeaderAlert()
@@ -84,6 +81,12 @@ class GlobalDataService
     {
         if (Auth::check()) {
             $user = Auth::user();
+
+                
+            $talentbuildtype = $user->userSettings->firstWhere('setting', 'talentbuildtype');
+    
+            return $talentbuildtype ? $talentbuildtype->value : 'Popular';
+
         }
 
         return 'Popular';
@@ -226,30 +229,38 @@ class GlobalDataService
     {
         if (Auth::check()) {
             $user = Auth::user();
-
-            $advancedfiltering = $user->userSettings->firstWhere('setting', 'advancedfiltering')->value;
-
-            return $advancedfiltering === 'true';
+    
+            $advancedfiltering = $user->userSettings->firstWhere('setting', 'advancedfiltering');
+    
+            return $advancedfiltering && $advancedfiltering->value;
         }
-
+    
         return false;
     }
+    
 
-    public function getGameTypeDefault()
+    public function getGameTypeDefault($type)
     {
 
         if (Auth::check()) {
             $user = Auth::user();
 
-            $gameTypeSetting = $user->userSettings->firstWhere('setting', 'game_type');
-
-            if ($gameTypeSetting) {
-                $gameTypeValue = $gameTypeSetting->value;
-
-                return explode(',', $gameTypeSetting->value);
+            if($type == "single"){
+                $gameTypeSetting = $user->userSettings->firstWhere('setting', 'game_type');
+                if ($gameTypeSetting) {
+                    return [$gameTypeSetting->value];
+                }
+            }else{
+                $gameTypeSetting = $user->userSettings->firstWhere('setting', 'multi_game_type');
+                if ($gameTypeSetting) {
+                    $gameTypeValue = $gameTypeSetting->value;
+    
+                    return explode(',', $gameTypeSetting->value);
+                }
             }
-        }
 
+    
+        }
         return ['sl'];
     }
 
@@ -260,6 +271,15 @@ class GlobalDataService
 
     public function getFilterData()
     {
+        $filtersMinimumPatch = '2.53.0.83004';
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            if($this->checkIfSiteFlair($user->blizz_id, $user->region) || $this->isOwner($user->blizz_id, $user->region)){
+                $filtersMinimumPatch = '2.52.0.81700';
+            }
+        }
+
         $filterData = new \stdClass;
 
         $filterData->timeframe_type = [
@@ -268,7 +288,7 @@ class GlobalDataService
         ];
 
         $filterData->timeframes = SeasonGameVersion::select('game_version')
-            ->where('game_version', '>=', $this->filtersMinimumPatch)
+            ->where('game_version', '>=', $filtersMinimumPatch)
             ->orderBy('game_version', 'DESC')
             ->get()
             ->map(function ($item) {
@@ -276,7 +296,7 @@ class GlobalDataService
             });
 
         $filterData->timeframes_grouped = SeasonGameVersion::select('game_version')
-            ->where('game_version', '>=', $this->filtersMinimumPatch)
+            ->where('game_version', '>=', $filtersMinimumPatch)
             ->orderBy('game_version', 'DESC')
             ->get()
             ->groupBy(function ($date) {
@@ -694,5 +714,9 @@ class GlobalDataService
         }
 
         return false;
+    }
+
+    public function isOwner($blizz_id, $region){
+        return ($blizz_id == 67280 and $region == 1) ? true : false;
     }
 }

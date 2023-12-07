@@ -105,6 +105,8 @@
       accountlevel: Number,
       isPatreon: Boolean,
       patreonUser: Boolean,
+      gametypedefault: Array,
+
     },
     data(){
       return {
@@ -112,7 +114,7 @@
         showOptions: false,
         isLoading: false,
         infoText: "Select a hero below to view detailed stats for that hero. Use the search box above to filter the list of heroes. Or scroll down to the advanced section for table view.",
-        gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
+        gametype: null,
         data: null,
         sortKey: '',
         sortDir: 'desc',
@@ -208,6 +210,7 @@
 }
 },
 created(){
+  this.gametype = this.gametypedefault;
 },
 mounted() {
   this.getData();

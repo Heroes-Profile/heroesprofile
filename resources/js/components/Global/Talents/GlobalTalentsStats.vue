@@ -129,7 +129,6 @@
      }
    },
    created(){
-    
     this.preloadTalentImages(this.inputhero);
    },
    mounted() {

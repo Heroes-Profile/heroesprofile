@@ -62,12 +62,14 @@ export default {
     regionsmap: Object,
     isPatreon: Boolean,
     patreonUser: Boolean,
+    gametypedefault: Array,
+
   },
   data(){
     return {
       cancelTokenSource: null,
       isLoading: false,
-      gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
+      gametype: null,
       selectedHero: null,
       data: null,
       talentdetaildata: null,
@@ -78,6 +80,7 @@ export default {
     }
   },
   created(){
+    this.gametype = this.gametypedefault;
   },
   mounted() {
     if(this.inputhero){

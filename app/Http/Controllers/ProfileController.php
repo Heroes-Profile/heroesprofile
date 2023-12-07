@@ -7,6 +7,8 @@ use App\Models\GameType;
 use App\Models\Hero;
 use App\Models\PatreonAccount;
 use App\Rules\GameTypeInputValidation;
+use App\Rules\TalentBuildTypeInputValidation;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -31,6 +33,7 @@ class ProfileController extends Controller
         $validationRules = [
             'userhero' => 'nullable|numeric',
             'usergametype' => ['sometimes', 'nullable', new GameTypeInputValidation()],
+            'talentbuildtype' => ['sometimes', 'nullable', new TalentBuildTypeInputValidation()],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -59,21 +62,33 @@ class ProfileController extends Controller
                 ['value' => $userhero]
             );
         }
-
+        
         if (! is_null($request['usergametype'])) {
             $user = BattlenetAccount::find($request['userid']);
 
-            $userGameTypes = $request['usergametype'];
+            $usergametype = $request['usergametype'];
+
+            $user->userSettings()->updateOrCreate(
+                ['setting' => 'game_type'],
+                ['value' => $usergametype]
+            );
+        }
+
+
+        if (! is_null($request['usermultigametype'])) {
+            $user = BattlenetAccount::find($request['userid']);
+
+            $userGameTypes = $request['usermultigametype'];
             $existingGameTypes = GameType::whereIn('short_name', $userGameTypes)->pluck('short_name')->all();
             if (count($existingGameTypes) === count($userGameTypes)) {
-                $usergametype = $request['usergametype'];
+                $usergametype = $request['usermultigametype'];
             } else {
                 return ['success' => false];
             }
 
             $user->userSettings()->updateOrCreate(
-                ['setting' => 'game_type'],
-                ['value' => implode(',', $usergametype)]
+                ['setting' => 'multi_game_type'],
+                ['value' => implode(',', $userGameTypes)]
             );
         }
 
@@ -88,6 +103,16 @@ class ProfileController extends Controller
             );
         }
 
+        if (! is_null($request['talentbuildtype'])) {
+            $user = BattlenetAccount::find($request['userid']);
+
+            $talentbuildtype = $request['talentbuildtype'];
+
+            $user->userSettings()->updateOrCreate(
+                ['setting' => 'talentbuildtype'],
+                ['value' => $talentbuildtype]
+            );
+        }
         return ['success' => true];
     }
 

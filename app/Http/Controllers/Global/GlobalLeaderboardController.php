@@ -29,7 +29,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         return view('Global.Leaderboard.globalLeaderboard')->with([
             'regions' => $this->globalDataService->getRegionIDtoString(),
             'filters' => $this->globalDataService->getFilterData(),
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault("single"),
             'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
             'defaultseason' => (string) $this->globalDataService->getDefaultSeason(),
             'weekssincestart' => $this->globalDataService->getWeeksSinceSeasonStart(),
