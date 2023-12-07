@@ -24,6 +24,7 @@
       :includemirror="true"
       :includetalentbuildtype="true"
       :advancedfiltering="advancedfiltering"
+      :buildtypedefault="defaultbuildtype"
       >
     </filters>
     <takeover-ad :patreon-user="patreonUser"></takeover-ad>
@@ -184,11 +185,11 @@ export default {
       required: true
     },
     gametypedefault: Array,
-    defaultbuildtype: String,
     defaulttimeframetype: String,
     defaulttimeframe: Array,
     advancedfiltering: Boolean,
     patreonUser: Boolean,
+    defaultbuildtype: String,
   },
   data(){
     return {
@@ -200,7 +201,7 @@ export default {
       togglechart: false,
       toggletalentbuilds: {},
       talentbuilddata: {},
-      selectedbuildtype: "Popular",
+      selectedbuildtype: null,
       cancelTokenSource: null,
 
 
@@ -227,6 +228,7 @@ export default {
     this.timeframe = this.defaulttimeframe;
     this.talentbuildtype = this.defaultbuildtype;
     this.timeframetype = this.defaulttimeframetype;
+
   	this.getData();
   },
   mounted() {

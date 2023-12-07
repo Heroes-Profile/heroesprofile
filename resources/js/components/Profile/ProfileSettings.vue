@@ -10,7 +10,7 @@
             :text="'Game Type'" 
             @dropdown-closed="saveSettings()" 
             @input-changed="handleInputChange" 
-            :defaultValue="defaultGameType"
+            :defaultValue="defaultMultiGameType"
             :trackclosure="true"
           >
           </multi-select-filter>
@@ -19,7 +19,7 @@
 
         <div class="px-4">
           <h3>Default Game Type:</h3> 
-          <multi-select-filter
+          <single-select-filter
             :values="this.filters.game_types_full" 
             :text="'Game Type'" 
             @dropdown-closed="saveSettings()" 
@@ -27,7 +27,7 @@
             :defaultValue="defaultGameType"
             :trackclosure="true"
           >
-          </multi-select-filter>
+          </single-select-filter>
         </div>
 
 
@@ -102,6 +102,7 @@ export default {
     return {
       userhero: null,
       usergametype: null,
+      usermultigametype: null,
       advancedfilteringoptions: [
         { code: 'true', name: 'Show' },
         { code: 'false', name: "Don't Show" }
@@ -122,9 +123,7 @@ export default {
       this.accountVisibility = "false";
     }
 
-    console.log(this.defaultBuiltType);
-    
-
+    console.log(this.user.user_settings);
   },
   mounted() {
     this.advancedfiltering = this.defaultAdvancedFiltering;
@@ -132,34 +131,40 @@ export default {
   computed: {
     defaultHero(){
       if (this.user.user_settings.length > 0){
-        let hero = this.user.user_settings.find(item => item.setting === 'hero').value;
-        return hero ? hero : null;
+        let hero = this.user.user_settings.find(item => item.setting === 'hero');
+        return hero ? hero.value : null;
       }
       return null;
+    },
+    defaultMultiGameType() {
+      if (this.user.user_settings.length > 0) {
+        let multiGameTypes = this.user.user_settings.find(item => item.setting === 'multi_game_type');
+        let gameTypes = multiGameTypes ? multiGameTypes.value : null;
+
+        if (gameTypes && gameTypes.trim() !== '') {
+          return gameTypes.split(',').map(value => value.trim());
+        }
+      }
+      return ["sl"];
     },
     defaultGameType() {
       if (this.user.user_settings.length > 0) {
-        let gameType = this.user.user_settings.find(item => item.setting === 'game_type').value;
-        
-        // Check if gameType is truthy and not an empty string
-        if (gameType && gameType.trim() !== '') {
-          // Split the comma-separated values into an array
-          return gameType.split(',').map(value => value.trim());
-        }
+        let gameTypeSetting = this.user.user_settings.find(item => item.setting === 'game_type');
+        return gameTypeSetting ? gameTypeSetting.value : null;
       }
-      return null;
+      return "sl";
     },
     defaultBuildType(){
       if (this.user.user_settings.length > 0){
-        let buildtype = this.user.user_settings.find(item => item.setting === 'talentbuildtype').value;
-        return buildtype ? buildtype : null;
+        let buildtype = this.user.user_settings.find(item => item.setting === 'talentbuildtype');
+        return buildtype ? buildtype.value : null;
       }
       return this.filters.talent_build_types[0].code;
     },
     defaultAdvancedFiltering(){
       if (this.user.user_settings.length > 0){
-        let advancedfiltering = this.user.user_settings.find(item => item.setting === 'advancedfiltering').value;
-        return advancedfiltering ? advancedfiltering : 'false';
+        let advancedfiltering = this.user.user_settings.find(item => item.setting === 'advancedfiltering');
+        return advancedfiltering ? advancedfiltering.value : 'false';
       }
       return "false";
     },
@@ -173,6 +178,7 @@ export default {
           userid: this.user.battlenet_accounts_id,
           userhero: this.userhero,
           usergametype: this.usergametype,
+          usermultigametype: this.usermultigametype,
           advancedfiltering: this.advancedfiltering,
           talentbuildtype: this.talentBuildType,
         });
@@ -180,6 +186,7 @@ export default {
       }catch(error){
         //Do something here
       }
+      
     },
     async setAccountVisbility(){
       try{
@@ -201,11 +208,13 @@ export default {
           this.accountVisibility = eventPayload.value;
         }else if(eventPayload.field == "Talent Build Type"){
           this.talentBuildType = eventPayload.value;
+        }else if(eventPayload.field == "Game Type"){
+          this.usergametype = eventPayload.value;
         }
 
       } else if(eventPayload.type === 'multi') {
         if(eventPayload.field == "Game Type"){
-          this.usergametype = eventPayload.value;
+          this.usermultigametype = eventPayload.value;
         }
       }
     },

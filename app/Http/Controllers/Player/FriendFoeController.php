@@ -57,7 +57,7 @@ class FriendFoeController extends Controller
             'season' => $season,
             'game_type' => $game_type,
             'game_map' => $game_map,
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);

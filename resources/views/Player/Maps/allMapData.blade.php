@@ -13,5 +13,7 @@
     :regionsmap="{{ json_encode($regions) }}"
     :is-patreon="{{ json_encode($patreon) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+    :gametypedefault="{{ json_encode($gametypedefault) }}" 
+
   ></player-maps-all-stats>
 @endsection

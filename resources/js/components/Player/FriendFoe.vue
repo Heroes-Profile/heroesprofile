@@ -40,26 +40,15 @@
           <tbody>
             <tr v-for="row in sortedDataFriends" :key="row.blizz_id">
               <td class="py-2 px-3 ">
-
-                      <div class="flex items-center">
-                        <div class="" v-if="row.hp_owner">
-                          <i class="fas fa-crown text" style="color:gold;"></i>
-                        </div>
-                        <div class="" v-else-if="row.patreon">
-                          <i class="fas fa-star" style="color:gold"></i>
-                        </div>
-                        <span class="link" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region)">{{ row.battletag }}</span>
-                      </div>
-
-
-
-
-
-
-
-
-
-
+                <div class="flex items-center">
+                  <div class="" v-if="row.hp_owner">
+                    <i class="fas fa-crown text" style="color:gold;"></i>
+                  </div>
+                  <div class="" v-else-if="row.patreon">
+                    <i class="fas fa-star" style="color:gold"></i>
+                  </div>
+                  <span class="link" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region)">{{ row.battletag }}</span>
+                </div>
               </td>
               <td class="py-2 px-3 flex items-center gap-1">
                 <hero-image-wrapper :hero="row.heroData.hero">
@@ -146,7 +135,7 @@ export default {
       enemySortKey: '',
       enemySortDir: 'desc',
 
-      gametype: ["qm", "ud", "hl", "tl", "sl", "ar"],
+      gametype: null,
       gamemap: null,
       season: null,
       friendCancelTokenSource: null,
@@ -154,6 +143,7 @@ export default {
     }
   },
   created(){
+    this.gametype = this.gametypedefault;
   },
   mounted() {
     Promise.allSettled([

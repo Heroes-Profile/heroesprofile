@@ -62,21 +62,33 @@ class ProfileController extends Controller
                 ['value' => $userhero]
             );
         }
-
+        
         if (! is_null($request['usergametype'])) {
             $user = BattlenetAccount::find($request['userid']);
 
-            $userGameTypes = $request['usergametype'];
+            $usergametype = $request['usergametype'];
+
+            $user->userSettings()->updateOrCreate(
+                ['setting' => 'game_type'],
+                ['value' => $usergametype]
+            );
+        }
+
+
+        if (! is_null($request['usermultigametype'])) {
+            $user = BattlenetAccount::find($request['userid']);
+
+            $userGameTypes = $request['usermultigametype'];
             $existingGameTypes = GameType::whereIn('short_name', $userGameTypes)->pluck('short_name')->all();
             if (count($existingGameTypes) === count($userGameTypes)) {
-                $usergametype = $request['usergametype'];
+                $usergametype = $request['usermultigametype'];
             } else {
                 return ['success' => false];
             }
 
             $user->userSettings()->updateOrCreate(
-                ['setting' => 'game_type'],
-                ['value' => implode(',', $usergametype)]
+                ['setting' => 'multi_game_type'],
+                ['value' => implode(',', $userGameTypes)]
             );
         }
 

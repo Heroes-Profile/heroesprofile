@@ -62,7 +62,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
             'regions' => $this->globalDataService->getRegionIDtoString(),
             'heroes' => $this->globalDataService->getHeroes(),
             'filters' => $this->globalDataService->getFilterData(),
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
             'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
             'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
             'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],

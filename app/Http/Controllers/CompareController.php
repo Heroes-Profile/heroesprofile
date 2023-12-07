@@ -35,7 +35,7 @@ class CompareController extends Controller
                 'regions' => $this->globalDataService->getRegionIDtoString(),
                 'userinput' => $userinput,
                 'filters' => $this->globalDataService->getFilterData(),
-                'gametypedefault' => $this->globalDataService->getGameTypeDefault(),
+                'gametypedefault' => $this->globalDataService->getGameTypeDefault("single"),
             ]);
     }
 
