@@ -49,7 +49,7 @@
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ "&#177;" }}{{ this.data.average_confidence_interval.toFixed(2) }}
           </th>
-          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th v-if="showWinRateChange" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ this.data.average_positive_win_rate_change.toFixed(2) }}{{ "|" }}{{ this.data.average_negative_win_rate_change.toFixed(2) }}
           </th>
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">

@@ -217,7 +217,12 @@
           </thead>
           <tbody>
             <tr v-for="(row, index) in data.draft_order" :key="index" class="">      
-              <td width="25%"><div class="flex gap-4 items-center"><hero-image-wrapper :size="'medium'" :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}</div></td>
+              <td width="25%">
+                <div v-if="row.hero != 'No Pick'" class="flex gap-4 items-center">
+                  <hero-image-wrapper :size="'medium'" :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}
+                </div>
+                <span v-else>No Pick</span>
+              </td>
               <td width="25%">{{ row.pick_number + 1 }}</td>
               <td width="25%">{{ row.type == 0 ? "Ban" : "Pick" }}</td>
             </tr>
