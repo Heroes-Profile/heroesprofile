@@ -33,12 +33,12 @@
           </div>
 
           <div v-if="!esport && esport != true" class="flex w-full hover:backdrop-brightness-125 max-md:flex-col">
-            <div class="flex w-full ml-10 max-md:flex-col">
+            <div class="flex w-full md:ml-10 max-md:flex-col">
               <stat-box :title="'Player MMR'" :value="data.player_mmr.toLocaleString()" :secondstat="data.player_change.toFixed(2)" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
               <stat-box :title="'Hero MMR'" :value="data.hero_mmr.toLocaleString()" :secondstat="data.hero_change.toFixed(2)" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
               <stat-box :title="'Role MMR'" :value="data.role_mmr.toLocaleString()" :secondstat="data.role_change.toFixed(2)" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
             </div>
-            <div class="flex gap-x-1 mx-2 items-center justify-start md:w-[450px] pl-2 max-md:flex-col">
+            <div class="flex gap-x-1 mx-2 items-center justify-start md:w-[450px] pl-2">
               <div class="flex-1"><talent-image-wrapper :talent="data.level_one" :size="'medium'"></talent-image-wrapper></div>
               <div class="flex-1"><talent-image-wrapper :talent="data.level_four" :size="'medium'"></talent-image-wrapper></div>
               <div class="flex-1"><talent-image-wrapper :talent="data.level_seven" :size="'medium'"></talent-image-wrapper></div>
