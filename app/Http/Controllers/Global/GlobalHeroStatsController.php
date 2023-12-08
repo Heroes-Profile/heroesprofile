@@ -246,7 +246,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         $averageNegativeInfluence = $negativeInfluenceCollection->avg('influence');
         $averagePositiveWinRateChange = $positiveWinRateChangeCollection->avg('win_rate_change');
         $averageNegativeWinRateChange = $negativeWinRateChangeCollection->avg('win_rate_change');
-        $averageGamesPlayed = $combinedCollection->sum('games_played') / count($combinedCollection);
+        $averageGamesPlayed = count($combinedCollection) > 0 ? $combinedCollection->sum('games_played') / count($combinedCollection) : 0;
         $averageTotalFilterType = $combinedCollection->avg('total_filter_type');
 
         return [
