@@ -17,9 +17,9 @@
     
     <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
-    <div v-if="frienddata && enemydata" class="gap-1 mx-auto  flex justify-center max-w-[1500px]">
+    <div v-if="frienddata && enemydata" class="gap-1 mx-auto  flex justify-center max-w-[1500px] max-md:flex-col max-md:text-sm max-md:max-w-[100vw]">
       <div>
-        <table class="min-w-0 max-w-[750px]">
+        <table class="min-w-0 max-w-[750px] max-md:max-w-[100vw]">
           <thead >
             <tr >
               <th  @click="sortTableFriend('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%]">
@@ -54,7 +54,7 @@
                 <hero-image-wrapper :hero="row.heroData.hero">
                   <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.total_games_played.toLocaleString()"></image-hover-box>
                 </hero-image-wrapper>
-                {{ row.heroData.hero.name }}
+               <span class="max-md:hidden"> {{ row.heroData.hero.name }} </span>
               </td>
               <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString() }}</td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
@@ -63,7 +63,7 @@
         </table>
       </div>
       <div>
-        <table class="min-w-0 max-w-[750px]">
+        <table class="min-w-0 max-w-[750px] max-md:max-w-[100vw]">
           <thead class="bg-red">
             <tr>
               <th @click="sortTableEnemy('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%]">
@@ -89,7 +89,7 @@
                   <h2>{{ row.heroData.hero.name }}</h2>
                   <p>Games Played: {{ row.total_games_played.toLocaleString() }}</p>
                 </hero-image-wrapper>
-                {{ row.heroData.hero.name }}
+                <span class="max-md:hidden">{{ row.heroData.hero.name }} </span>
               </td>
               <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString() }}</td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>

@@ -41,11 +41,12 @@
       </span>
     
     <img v-else loading="eager" :class="[
-      'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow   w-full h-10 min-w-10 max-md:w-20 max-md:h-20',  
+      'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow   w-full h-10 min-w-10 max-md:h-10 max-md:w-10 ',  
       { 
         
         'rounded-full' : rectangle != true,
-        'h-full': size === 'large',
+        'max-md:w-20 max-md:h-20' : size != 'large',
+        'h-full max-md:max-w-[70%]': size === 'large',
         'w-auto': size === 'large',
         'w-20': size === 'big', 
         'h-20': size === 'big',
@@ -69,7 +70,9 @@
       }
 
       ]" >
-        <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 max-md:hidden', {}]">
+        <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 max-md:hidden', {
+          
+        }]">
           <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>
           <div class="bg-red" v-if="ispatreon">Patreon Subscriber</div>
           <slot></slot>
@@ -80,7 +83,7 @@
 
       <div class="popup-arrow max-md:hidden"></div>
     </div>
-    <div v-if="!excludehover" :class="[' md:hidden block    text-s p-1    drop-shadow-md  rounded-md px-2 text-center   mb-4', {}]">
+    <div v-if="!excludehover && !mobileClick" :class="[' md:hidden     text-s p-1    drop-shadow-md  rounded-md px-2 text-center   mb-4', {}]">
           <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>
           <div class="bg-red" v-else-if="ispatreon">Patreon Subscriber</div>
           <slot></slot>
@@ -111,10 +114,12 @@ export default {
     ispatreon: Boolean,
     icon: String,
     mobileClick: false
+    
   },
   data(){
     return {
       showTooltip: false,
+      
     }
   },
   created(){
