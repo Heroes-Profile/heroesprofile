@@ -34,8 +34,10 @@
             <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
               {{ esport ? this.data.team_names.team_one.team_name : "Team 1" }} Bans
               <div class="flex gap-2 justify-center mt-4">
-              <hero-image-wrapper v-for="(item, index) in data.replay_bans[0]" :key="index" :hero="item.hero" :size="'big'"></hero-image-wrapper>
-            </div>
+                <template v-for="(item, index) in data.replay_bans[0]" :key="index">
+                  <hero-image-wrapper v-if="item.hero !== 0" :hero="item.hero" :size="'big'"></hero-image-wrapper>
+                </template>
+              </div>
             </div>
 
             <div class="flex flex-wrap justify-center mb-4">
@@ -71,7 +73,9 @@
             <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
               {{ esport ? this.data.team_names.team_two.team_name : "Team 2" }} Bans
               <div class="flex gap-2 justify-center mt-4">
-               <hero-image-wrapper v-for="(item, index) in data.replay_bans[1]" :key="index" :hero="item.hero" :size="'big'"></hero-image-wrapper>
+                <template v-for="(item, index) in data.replay_bans[1]" :key="index">
+                  <hero-image-wrapper v-if="item.hero !== 0" :hero="item.hero" :size="'big'"></hero-image-wrapper>
+                </template>              
               </div>
             </div>
             <div class="flex flex-wrap justify-center mb-4">
