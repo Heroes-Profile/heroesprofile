@@ -21,13 +21,16 @@ class PlayerRolesController extends Controller
         if ($validator->fails()) {
             return redirect('/');
         }
-
-        $account_level = $result = Battletag::where('blizz_id', $blizz_id)
+        $account_level = 0;
+        $account_level_data = $result = Battletag::where('blizz_id', $blizz_id)
             ->where('region', $region)
             ->select('account_level')
             ->orderByDesc('account_level')
-            ->first()->account_level;
+            ->first();
 
+        if($account_level_data && !empty(account_level_data)){
+            $account_level = $account_level_data->account_level;
+        }
         return view('Player.Roles.allRoleData')->with([
             'regions' => $this->globalDataService->getRegionIDtoString(),
             'battletag' => $battletag,
