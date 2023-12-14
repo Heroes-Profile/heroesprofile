@@ -28,7 +28,7 @@ class PlayerRolesController extends Controller
             ->orderByDesc('account_level')
             ->first();
 
-        if($account_level_data && !empty(account_level_data)){
+        if($account_level_data && !empty($account_level_data)){
             $account_level = $account_level_data->account_level;
         }
         return view('Player.Roles.allRoleData')->with([
