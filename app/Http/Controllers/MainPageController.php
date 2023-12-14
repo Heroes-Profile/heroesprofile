@@ -31,4 +31,11 @@ class MainPageController extends Controller
     {
         $exception = 1/0;
     }
+
+    public function testJS()
+    {
+        return view('jsException')->with([
+            'regions' => $this->globalDataService->getRegionIDtoString(),
+        ]);
+    }
 }

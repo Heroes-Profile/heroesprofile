@@ -1,9 +1,17 @@
 import { createApp } from 'vue';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { flare } from "@flareapp/flare-client";
+import { flareVue } from "@flareapp/flare-vue";
+
+if (process.env.NODE_ENV === 'production') {
+  flare.light();
+}
 
 // Create a fresh Vue app instance
 const app = createApp({});
+
+
 
 import '@fortawesome/fontawesome-free/css/all.css'
 
@@ -40,6 +48,7 @@ import ImageHoverBox from './components/ImageHoverBox.vue';
 import FormatDate from './components/FormatDate.vue';
 import NewUserPopup from './components/NewUserPopup.vue';
 import ContactForm from './components/ContactForm.vue';
+import JsException from './components/JsException.vue';
 
 //Match Page
 import SingleMatch from './components/SingleMatch.vue';
@@ -206,6 +215,7 @@ app.config.globalProperties.$redirectToProfile = function (battletag, blizz_id, 
     window.location.href = '/Player/' + battletag + "/" + blizz_id + "/" + region;
 };
 
+app.use(flareVue);
 // Attach the application instance to an HTML element with id "app"
 app.mount('#app');
 
@@ -216,4 +226,3 @@ if (token) {
 } else {
     console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
-
