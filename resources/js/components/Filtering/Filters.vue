@@ -114,7 +114,7 @@
           <single-select-filter v-if="modifiedincludeheroes" 
           :values="filters.heroes" 
           :text="'Heroes'" 
-          :defaultValue="defaultHero"
+          :defaultValue="defaultHeroModified"
           @input-changed="handleInputChange"
           ></single-select-filter>
 
@@ -122,7 +122,7 @@
           <single-select-filter v-if="modifiedincluderole" 
           :values="filters.role" 
           :text="'Role'" 
-          :defaultValue="defaultRole"
+          :defaultValue="defaultRoleModified"
           @input-changed="handleInputChange"
           ></single-select-filter>
 
@@ -307,6 +307,7 @@
     },
     data(){
       return {
+
         selectedSingleFilters: {},
         selectedMultiFilters: {},
         defaultTimeframeType: this.filters.timeframe_type[1].code,
@@ -322,10 +323,15 @@
         toggleExtraFilters: null,
         modifiedincluderole: null,
         modifiedincludegroupsize: null,
-        showNav: true
+        showNav: true,
+        defaultHeroModified: null,
+        defaultRoleModified: null,
       }
     },
     created(){
+      this.defaultHeroModified = this.defaultHero;
+      this.defaultRoleModified = this.defaultRole;
+
       this.defaultGameType = this.gametypedefault;
       this.selectedSingleFilters = {
       };
@@ -459,8 +465,10 @@
             delete this.selectedSingleFilters['Role'];
           }else if(eventPayload.value == "Hero"){
             delete this.selectedSingleFilters['Role'];
+            this.defaultHeroModified = 1;
           }else if(eventPayload.value == "Role"){
             delete this.selectedSingleFilters['Heroes'];
+            this.defaultRoleModified = "Support";
           }
         }
 
