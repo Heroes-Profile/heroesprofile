@@ -210,13 +210,14 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         if ($hero) {
             $combinedData = collect($combinedData)->filter(function ($item) use ($hero) {
                 return $item['hero_id'] == $hero;
-            });
+            })->values();
         }
+        
 
         if ($role) {
             $combinedData = collect($combinedData)->filter(function ($item) use ($role) {
                 return $item['role'] == $role;
-            });
+            })->values();
         }
 
         $combinedCollection = collect($combinedData);
