@@ -44,22 +44,22 @@
             Avg
           </th>
           <th class="py-2 px-3  border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_win_rate.toFixed(2) }}
+            {{ getHeaderValueFixed(data.average_win_rate) }}
           </th>
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ "&#177;" }}{{ this.data.average_confidence_interval.toFixed(2) }}
+            {{ "&#177;" }}{{ getHeaderValueFixed(data.average_confidence_interval)}}
           </th>
           <th v-if="showWinRateChange" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_positive_win_rate_change.toFixed(2) }}{{ "|" }}{{ this.data.average_negative_win_rate_change.toFixed(2) }}
+            {{ getHeaderValueFixed(data.average_positive_win_rate_change) }}{{ "|" }}{{ getHeaderValueFixed(data.average_negative_win_rate_change) }}
           </th>
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_popularity.toFixed(2) }}
+            {{ getHeaderValueFixed(data.average_popularity) }}
           </th>
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_pick_rate.toFixed(2) }}
+            {{ getHeaderValueFixed(data.average_pick_rate) }}
           </th>
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_ban_rate.toFixed(2) }}
+            {{ getHeaderValueFixed(data.average_ban_rate) }}
           </th>
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ this.data.average_positive_influence.toLocaleString() }}{{ "|" }}{{ this.data.average_negative_influence.toLocaleString() }}
@@ -69,7 +69,7 @@
           </th>
 
           <th  v-if="this.showStatTypeColumn"  class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ data.averaege_total_filter_type.toFixed(2).toLocaleString() }}
+            {{ getHeaderValueFixed(data.averaege_total_filter_type).toLocaleString() }}
           </th>
 
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
@@ -451,6 +451,10 @@ export default {
         return  true;
       }
       return false;
+    },
+
+    getHeaderValueFixed(value){
+      return value ? value.toFixed(2) : "";
     },
   }
 }
