@@ -26,7 +26,7 @@
           :values="filters.group_size" 
           :text="'Group Size'" 
           @input-changed="handleInputChange" 
-          :defaultValue="'Solo'"
+          :defaultValue="modifiedGroupSizeDefaultValue"
           ></single-select-filter>
 
           <!--<single-select-filter v-if="includecharttype" :values="filters.chart_type" :text="'Chart Type'" @input-changed="handleInputChange" :defaultValue="'Account Level'"></single-select-filter>-->
@@ -303,7 +303,7 @@
       defaultHero: Number,
       defaultRole: String,
       buildtypedefault: String,
-      
+      groupSizeDefaultValue: String,
     },
     data(){
       return {
@@ -326,6 +326,7 @@
         showNav: true,
         defaultHeroModified: null,
         defaultRoleModified: null,
+        modifiedGroupSizeDefaultValue: null,
       }
     },
     created(){
@@ -357,6 +358,12 @@
 
       this.modifiedincluderole = this.includerole
       this.modifiedincludegroupsize = this.includegroupsize;
+
+      
+      if(!this.groupSizeDefaultValue){
+        this.modifiedGroupSizeDefaultValue = "Solo";
+      }
+
       this.checkScreenWidth();
 
       // Add a window resize event listener to recheck the screen width
