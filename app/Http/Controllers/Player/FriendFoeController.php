@@ -14,6 +14,7 @@ use App\Rules\SeasonInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Rules\StackSizeInputValidation;
 
 class FriendFoeController extends Controller
 {
@@ -76,6 +77,7 @@ class FriendFoeController extends Controller
             'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
             'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation()],
             'type' => 'sometimes|in:friend,enemy',
+            'groupsize' => ['sometimes', 'nullable', new StackSizeInputValidation()],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -95,6 +97,20 @@ class FriendFoeController extends Controller
         $teamValue = $type == 'friend' ? 0 : 1;
         $gameMap = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id') : null;
         $hero = $request['hero'];
+        $groupSize = $request["groupsize"];
+
+        if($groupSize == "Solo"){
+            $groupSize = 0;
+        }else if($groupSize == "Duo"){
+            $groupSize = 2;
+        }else if($groupSize == "3 Players"){
+            $groupSize = 3;
+        }else if($groupSize == "4 Players"){
+            $groupSize = 4;
+        }else if($groupSize == "5 Players"){
+            $groupSize = 5;
+        }
+
 
         $innerQuery = DB::table('replay')
             ->select('replay.replayID')
@@ -116,6 +132,9 @@ class FriendFoeController extends Controller
             })
             ->when(! is_null($hero), function ($query) use ($hero) {
                 return $query->where('hero', $hero);
+            })
+            ->when(! is_null($groupSize), function ($query) use ($groupSize) {
+                return $query->where('stack_size', $groupSize);
             })
             ->where('team', $teamValue);
 
@@ -140,6 +159,7 @@ class FriendFoeController extends Controller
             ->whereIn('replay.replayID', $innerQuery)
             ->where('team', 0)
             ->groupBy('hero', 'team', 'winner', 'player.blizz_id', 'battletag')
+            //->toSql();
             ->get();
 
         $teamValue = $type == 'friend' ? 1 : 0;
@@ -164,6 +184,9 @@ class FriendFoeController extends Controller
             })
             ->when(! is_null($hero), function ($query) use ($hero) {
                 return $query->where('hero', $hero);
+            })
+            ->when(! is_null($groupSize), function ($query) use ($groupSize) {
+                return $query->where('stack_size', $groupSize);
             })
             ->where('team', $teamValue);
 
