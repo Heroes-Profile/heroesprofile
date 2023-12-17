@@ -113,7 +113,7 @@ class FriendFoeController extends Controller
 
 
         $innerQuery = DB::table('replay')
-            ->select('replay.replayID')
+            ->select('replay.replayID', 'player.party')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
             ->where('player.blizz_id', $blizz_id)
             ->where('replay.region', $region)
@@ -136,7 +136,10 @@ class FriendFoeController extends Controller
             ->when(! is_null($groupSize), function ($query) use ($groupSize) {
                 return $query->where('stack_size', $groupSize);
             })
-            ->where('team', $teamValue);
+            ->where('team', $teamValue)
+            ->get();
+
+
 
         $result_team_zero = DB::table('replay')
             ->select(
@@ -156,7 +159,10 @@ class FriendFoeController extends Controller
             )
             ->join('player', 'player.replayID', '=', 'replay.replayID')
             ->join('battletags', 'battletags.player_id', '=', 'player.battletag')
-            ->whereIn('replay.replayID', $innerQuery)
+            ->whereIn('replay.replayID', $innerQuery->pluck('replayID')->toArray())
+            ->when(! is_null($groupSize) && $type == 'friend', function ($query) use ($innerQuery) {
+                return $query->whereIn('party', $innerQuery->pluck('party')->toArray());
+            })
             ->where('team', 0)
             ->groupBy('hero', 'team', 'winner', 'player.blizz_id', 'battletag')
             //->toSql();
@@ -165,7 +171,7 @@ class FriendFoeController extends Controller
         $teamValue = $type == 'friend' ? 1 : 0;
 
         $innerQuery = DB::table('replay')
-            ->select('replay.replayID')
+            ->select('replay.replayID', 'player.party')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
             ->where('player.blizz_id', $blizz_id)
             ->where('replay.region', $region)
@@ -208,7 +214,10 @@ class FriendFoeController extends Controller
             )
             ->join('player', 'player.replayID', '=', 'replay.replayID')
             ->join('battletags', 'battletags.player_id', '=', 'player.battletag')
-            ->whereIn('replay.replayID', $innerQuery)
+            ->whereIn('replay.replayID', $innerQuery->pluck('replayID')->toArray())
+            ->when(! is_null($groupSize) && $type == 'friend', function ($query) use ($innerQuery) {
+                return $query->whereIn('party', $innerQuery->pluck('party')->toArray());
+            })
             ->where('team', 1)
             ->groupBy('hero', 'team', 'winner', 'player.blizz_id', 'battletag')
             ->get();
@@ -222,7 +231,7 @@ class FriendFoeController extends Controller
 
         $privateAccounts = $this->globalDataService->getPrivateAccounts();
         $checkedData = $groupedResultsByBlizzId->reject(function ($group) use ($privateAccounts, $region) {
-            $blizzId = $group->first()->blizz_id; // Accessing the blizz_id property from the first item in the group
+            $blizzId = $group->first()->blizz_id;
 
             return $privateAccounts->contains(function ($account) use ($blizzId, $region) {
                 return $account['blizz_id'] == $blizzId && $account['region'] == $region;

@@ -10,7 +10,7 @@
       :includehero="true"
       :includegamemap="true"
       :includegametypefull="true"
-      :includeseason="true"
+      :includeseasonwithall="true"
       :includegroupsize="true"
       :hideadvancedfilteringbutton="true"
       :groupSizeDefaultValue="'All'"
