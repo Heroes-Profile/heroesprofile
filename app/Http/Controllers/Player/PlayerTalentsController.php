@@ -174,7 +174,7 @@ class PlayerTalentsController extends Controller
             }
             $levelTotals[$data['talent']['level']] += $data['wins'] + $data['losses'];
         }
-
+        $counter = 0;
         foreach ($returnData as $data) {
             $level = $data['talent']['level'];
             $sort = ($data['talent']['sort'] - 1);
@@ -184,10 +184,11 @@ class PlayerTalentsController extends Controller
             }
 
             if (! array_key_exists($sort, $formattedData[$level])) {
-                $formattedData[$level][$sort] = [];
+                $counter = 0;
+                $formattedData[$level][$counter] = [];
             }
 
-            $formattedData[$level][$sort] = [
+            $formattedData[$level][$counter] = [
                 'win_rate' => ($data['wins'] + $data['losses']) > 0 ? round(($data['wins'] / ($data['wins'] + $data['losses'])) * 100, 2) : 0,
                 'wins' => $data['wins'],
                 'losses' => $data['losses'],
@@ -196,7 +197,7 @@ class PlayerTalentsController extends Controller
                 'games_played' => $data['wins'] + $data['losses'],
                 'talentInfo' => $data['talent'],
             ];
-
+            $counter++;
         }
 
         return $formattedData;
