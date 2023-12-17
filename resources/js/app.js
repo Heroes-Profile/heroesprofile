@@ -15,6 +15,7 @@ const app = createApp({});
 
 import '@fortawesome/fontawesome-free/css/all.css'
 
+/*
 // Register components
 import ExampleComponent from './components/ExampleComponent.vue';
 import MainPage from './components/MainPage.vue';
@@ -149,7 +150,7 @@ import MastersClashMain from './components/Esports/MastersClash/MastersClashMain
 import HeroesInternationalEntry from './components/Esports/HeroesInternational/HeroesInternationalEntry.vue';
 import HeroesInternationalMain from './components/Esports/HeroesInternational/HeroesInternationalMain.vue';
 import HeroesInternationalNationsCup from './components/Esports/HeroesInternational/HeroesInternationalNationsCup.vue';
-
+*/
 
 
 // Automatically register Vue components
