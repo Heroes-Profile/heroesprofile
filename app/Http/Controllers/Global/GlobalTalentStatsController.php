@@ -82,6 +82,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
         //return $cacheKey;
 
+        
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
             $hero,
             $gameVersion,
@@ -138,19 +139,22 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
                     $statFilterTotal = $talentGroup->sum('total_filter_type');
 
-                    return [
-                        'name' => $firstItem['name'],
-                        'hero_id' => $firstItem['id'],
-                        'wins' => $wins,
-                        'losses' => $losses,
-                        'games_played' => $gamesPlayed,
-                        'popularity' => $popularity,
-                        'win_rate' => $winRate,
-                        'level' => $firstItem['level'],
-                        'sort' => isset($talentInfo['sort']) ? $talentInfo['sort'] : null,
-                        'talentInfo' => $talentInfo,
-                        'total_filter_type' => $gamesPlayed > 0 ? round($statFilterTotal / $gamesPlayed, 2) : 0,
-                    ];
+                    if(isset($talentInfo["hero_name"]) && $talentInfo["hero_name"] == $firstItem['name']){
+                        return [
+                            'name' => $firstItem['name'],
+                            'hero_id' => $firstItem['id'],
+                            'wins' => $wins,
+                            'losses' => $losses,
+                            'games_played' => $gamesPlayed,
+                            'popularity' => $popularity,
+                            'win_rate' => $winRate,
+                            'level' => $firstItem['level'],
+                            'sort' => isset($talentInfo['sort']) ? $talentInfo['sort'] : null,
+                            'talentInfo' => $talentInfo,
+                            'total_filter_type' => $gamesPlayed > 0 ? round($statFilterTotal / $gamesPlayed, 2) : 0,
+                        ];
+                    }
+  
                 })->sortBy('sort')->values()->toArray();
             });
 

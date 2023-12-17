@@ -110,9 +110,7 @@ export default {
           this.buildCopyColor[i] = "blue";
         }
       }
-
-      console.log(this.buildCopyText);
-
+      
       const textToCopy = this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, row.hero);
       navigator.clipboard.writeText(textToCopy).then(function() {
       }).catch(function(err) {
