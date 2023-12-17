@@ -44,32 +44,32 @@
             Avg
           </th>
           <th class="py-2 px-3  border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ getHeaderValueFixed(data.average_win_rate) }}
+            {{ getValueFixed(data.average_win_rate) }}
           </th>
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ "&#177;" }}{{ getHeaderValueFixed(data.average_confidence_interval)}}
+            {{ "&#177;" }}{{ getValueFixed(data.average_confidence_interval)}}
           </th>
           <th v-if="showWinRateChange" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ getHeaderValueFixed(data.average_positive_win_rate_change) }}{{ "|" }}{{ getHeaderValueFixed(data.average_negative_win_rate_change) }}
+            {{ getValueFixed(data.average_positive_win_rate_change) }}{{ "|" }}{{ getValueFixed(data.average_negative_win_rate_change) }}
           </th>
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ getHeaderValueFixed(data.average_popularity) }}
+            {{ getValueFixed(data.average_popularity) }}
           </th>
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ getHeaderValueFixed(data.average_pick_rate) }}
+            {{ getValueFixed(data.average_pick_rate) }}
           </th>
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ getHeaderValueFixed(data.average_ban_rate) }}
+            {{ getValueFixed(data.average_ban_rate) }}
           </th>
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_positive_influence.toLocaleString() }}{{ "|" }}{{ this.data.average_negative_influence.toLocaleString() }}
+            {{ getValueLocal(data.average_positive_influence) }}{{ "|" }}{{ getValueLocal(data.average_negative_influence) }}
           </th>
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_games_played.toLocaleString() }}
+            {{ getValueLocal(data.average_games_played) }}
           </th>
 
           <th  v-if="this.showStatTypeColumn"  class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ getHeaderValueFixed(data.averaege_total_filter_type).toLocaleString() }}
+            {{ getValueLocal(getValueFixed(data.averaege_total_filter_type)) }}
           </th>
 
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
@@ -131,16 +131,16 @@
                 <hero-image-wrapper class="mr-2" :hero="row" :includehover="false"></hero-image-wrapper>{{ row.name }}
                 </a>
               </td>
-              <td class="  ">{{ row.win_rate.toFixed(2) }}</td>
-              <td class="py-2 px-3 "><span v-html="'&#177;'"></span>{{ row.confidence_interval.toFixed(2) }}</td>
-              <td v-if="showWinRateChange && row.win_rate_change < 0" class="py-2 px-3 ">{{ row.win_rate_change.toFixed(2) }}</td>
-              <td v-else-if="showWinRateChange && row.win_rate_change >= 0" class="py-2 px-3 "><span v-html="'&plus;'"></span>{{ row.win_rate_change.toFixed(2) }}</td>
-              <td class="py-2 px-3">{{ row.popularity.toFixed(2) }}</td>
-              <td class="py-2 px-3">{{ row.pick_rate.toFixed(2) }}</td>
-              <td class="py-2 px-3">{{ row.ban_rate.toFixed(2) }}</td>
-              <td class="py-2 px-3">{{ row.influence.toLocaleString() }}</td>
-              <td class="py-2 px-3 ">{{ row.games_played.toLocaleString() }}</td>
-              <td v-if="this.showStatTypeColumn" class="py-2 px-3 ">{{ row.total_filter_type.toFixed(2).toLocaleString() }}</td>
+              <td class="  ">{{ getValueFixed(row.win_rate) }}</td>
+              <td class="py-2 px-3 "><span v-html="'&#177;'"></span>{{ getValueFixed(row.confidence_interval) }}</td>
+              <td v-if="showWinRateChange && row.win_rate_change < 0" class="py-2 px-3 ">{{ getValueFixed(row.win_rate_change) }}</td>
+              <td v-else-if="showWinRateChange && row.win_rate_change >= 0" class="py-2 px-3 "><span v-html="'&plus;'"></span>{{ getValueFixed(row.win_rate_change) }}</td>
+              <td class="py-2 px-3">{{ getValueFixed(row.popularity) }}</td>
+              <td class="py-2 px-3">{{ getValueFixed(row.pick_rate) }}</td>
+              <td class="py-2 px-3">{{ getValueFixed(row.ban_rate) }}</td>
+              <td class="py-2 px-3">{{ getValueLocal(row.influence) }}</td>
+              <td class="py-2 px-3 ">{{ getValueLocal(row.games_played) }}</td>
+              <td v-if="this.showStatTypeColumn" class="py-2 px-3 ">{{ getValueLocal(getValueFixed(row.total_filter_type)) }}</td>
               <td class="py-2 px-3 ">
                 <custom-button
                   @click="viewtalentbuilds(row.name, index)"
@@ -453,8 +453,11 @@ export default {
       return false;
     },
 
-    getHeaderValueFixed(value){
+    getValueFixed(value){
       return value ? value.toFixed(2) : "";
+    },
+    getValueLocal(value){
+      return value ? value.toLocaleString() : "";
     },
   }
 }

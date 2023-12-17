@@ -372,7 +372,7 @@ class GlobalDataService
             ['code' => 'Bruiser', 'name' => 'Bruiser'],
             ['code' => 'Healer', 'name' => 'Healer'],
             ['code' => 'Melee Assassin', 'name' => 'Melee Assassin'],
-            ['code' => 'Ranged Assassi', 'name' => 'Ranged Assassi'],
+            ['code' => 'Ranged Assassin', 'name' => 'Ranged Assassin'],
             ['code' => 'Support', 'name' => 'Support'],
             ['code' => 'Tank', 'name' => 'Tank'],
         ];
