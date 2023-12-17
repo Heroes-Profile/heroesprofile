@@ -147,7 +147,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                         'popularity' => $popularity,
                         'win_rate' => $winRate,
                         'level' => $firstItem['level'],
-                        'sort' => $talentInfo['sort'],
+                        'sort' => isset($talentInfo['sort']) ? $talentInfo['sort'] : null,
                         'talentInfo' => $talentInfo,
                         'total_filter_type' => $gamesPlayed > 0 ? round($statFilterTotal / $gamesPlayed, 2) : 0,
                     ];
