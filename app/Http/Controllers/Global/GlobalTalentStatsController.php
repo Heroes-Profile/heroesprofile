@@ -155,7 +155,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                         ];
                     }
   
-                })->sortBy('sort')->values()->toArray();
+                })->sortBy('sort')->filter()->values()->toArray();
             });
 
             return $data;
