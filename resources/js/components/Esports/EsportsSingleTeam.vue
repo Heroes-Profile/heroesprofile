@@ -202,7 +202,7 @@
             :data="item"
           ></game-summary-box>
           <div class="flex justify-end mt-4">
-          <custom-button :href="`/Esports/${esport}/Team/${team}/Match/History`" class=" ml-auto" text="View Match History"></custom-button>
+          <custom-button :href="`/Esports/${esport}/Team/${team}/Match/History?season=${season}` + (esport == 'NGS' ? `&division=${division}`: '') + (esport == 'HeroesInternational' ? `&tournament=${tournament}`: '')" class=" ml-auto" text="View Match History"></custom-button>
         </div>
         </div>
       </div>
