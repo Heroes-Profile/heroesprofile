@@ -328,10 +328,14 @@ export default {
       }
       return "blue";
     },
-    showStatValue(value){
-      if(value < 1000){
+    showStatValue(value) {
+      if (!value || isNaN(value)) {
+        return 0;
+      }
+
+      if (value < 1000) {
         return value.toFixed(2);
-      }else{
+      } else {
         return Math.round(value).toLocaleString();
       }
     },

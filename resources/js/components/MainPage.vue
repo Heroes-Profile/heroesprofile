@@ -99,7 +99,11 @@
       }
     },
     created(){
-      if (localStorage.getItem('newUserPopup')) {
+      if (typeof localStorage !== 'undefined' && localStorage !== null) {
+        if (localStorage.getItem('newUserPopup')) {
+          this.showPopup = false;
+        }
+      } else {
         this.showPopup = false;
       }
     },

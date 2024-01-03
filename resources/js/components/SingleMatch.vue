@@ -413,13 +413,9 @@
     <thead>
       <tr>
         <td >{{ section.title }}</td>
-        <td 
-        v-for="(player, playerIndex) in data.players[0]"
-        :key="playerIndex"
-        
-        >
-        <a :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`">{{ player.battletag }}</a>
-      </td>
+        <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">
+          <a :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`">{{ player.battletag }}</a>
+        </td>
     </tr>
   </thead>
   <tbody>
@@ -450,7 +446,7 @@
   <tbody>
     <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
       <td class="bg-blue text-white border-white border">{{ row.label }}</td>
-      <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">{{ formatValue(player.score[row.key]) }}</td>
+      <td v-for="(player, playerIndex) in data.players[1]" :key="playerIndex">{{ formatValue(player.score[row.key]) }}</td>
     </tr>
   </tbody>
 </table>

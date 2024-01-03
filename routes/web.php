@@ -71,6 +71,10 @@ Route::get('/Battlenet/Logout', [BattleNetController::class, 'logout']);
 
 Route::get('/redirect/authenticate/battlenet', [BattleNetController::class, 'redirectToProvider']);
 Route::get('/authenticate/battlenet/success', [BattleNetController::class, 'handleProviderCallback']);
+Route::get('/Authenticate/Battlenet/Failed', [BattleNetController::class, 'handleProviderCallbackFailed']);
+
+
+
 
 Route::get('/authenticate/patreon', [PatreonController::class, 'redirectToProvider']);
 Route::get('/authenticate/patreon/success', [PatreonController::class, 'handleProviderCallback']);

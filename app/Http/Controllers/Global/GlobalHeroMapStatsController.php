@@ -69,7 +69,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
         $region = $this->getRegionFilterValues($request['region']);
         $mirror = $request['mirror'];
 
-        $cacheKey = 'GlobalHeroMapStats|'.'GlobalHeroTalentStats|'.json_encode($request->all());
+        $cacheKey = 'GlobalHeroMapStats|' . implode(",", \App\Models\SeasonGameVersion::select("id")->whereIn("game_version", $gameVersion)->pluck("id")->toArray()) . '|' .hash('sha256', json_encode($request->all()));
 
         //return $cacheKey;
 

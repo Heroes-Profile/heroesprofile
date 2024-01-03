@@ -9,6 +9,8 @@
       :includesinglegametypefull="true"
       :playerheroroletype="true"
       :hideadvancedfilteringbutton="true"
+      :rolerequired="true"
+      :herorequired="true"
       >
     </filters>
     
@@ -229,10 +231,12 @@ export default {
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
       this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
       this.type = filteredData.single["Type"] ? filteredData.single["Type"] : "Player";
+
       this.data = null;
       this.sortKey = '';
       this.sortDir ='asc';
       this.getData();
+
     },
     sortTable(key) {
       if (key === this.sortKey) {
