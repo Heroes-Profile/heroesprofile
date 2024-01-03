@@ -165,7 +165,7 @@ class GlobalDataService
 
     public function calculateCacheTimeInMinutes($timeframe)
     {
-      return 300;
+      //return 300;
 
         if (app()->environment('production')) {
             if (count($timeframe) == 1 && $timeframe[0] == $this->getLatestPatch()) {
