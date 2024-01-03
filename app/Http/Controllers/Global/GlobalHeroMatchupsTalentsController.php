@@ -103,7 +103,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
         $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
 
-        $cacheKey = 'GlobalHeroMatchupsTalents|'.json_encode($request->all());
+        $cacheKey = 'GlobalHeroMatchupsTalents|' . implode(",", $gameVersionIDs) . '|' .hash('sha256', json_encode($request->all()));
 
         //return $cacheKey;
 

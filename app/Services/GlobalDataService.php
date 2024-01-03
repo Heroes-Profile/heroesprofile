@@ -165,6 +165,8 @@ class GlobalDataService
 
     public function calculateCacheTimeInMinutes($timeframe)
     {
+      return 300;
+
         if (app()->environment('production')) {
             if (count($timeframe) == 1 && $timeframe[0] == $this->getLatestPatch()) {
                 $date = SeasonGameVersion::where('game_version', min($timeframe))->value('date_added');

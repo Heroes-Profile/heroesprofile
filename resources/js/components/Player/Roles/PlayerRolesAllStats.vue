@@ -325,13 +325,17 @@ methods: {
     }
     return "blue";
   },
-  showStatValue(value){
-    if(value < 1000){
-      return value.toFixed(2);
-    }else{
-      return Math.round(value).toLocaleString();
-    }
-  },
-}
+  showStatValue(value) {
+      if (!value || isNaN(value)) {
+        return 0;
+      }
+
+      if (value < 1000) {
+        return value.toFixed(2);
+      } else {
+        return Math.round(value).toLocaleString();
+      }
+    },
+  }
 }
 </script>

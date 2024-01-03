@@ -78,7 +78,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $statFilter = $request['statfilter'];
         $mirror = $request['mirror'];
 
-        $cacheKey = 'GlobalHeroTalentStats|'.json_encode($request->all());
+        $cacheKey = 'GlobalHeroTalentStats|' . implode(",", \App\Models\SeasonGameVersion::select("id")->whereIn("game_version", $gameVersion)->pluck("id")->toArray()) . '|' .hash('sha256', json_encode($request->all()));
 
         //return $cacheKey;
 
@@ -201,7 +201,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $mirror = $request['mirror'];
         $talentbuildType = $request['talentbuildtype'];
 
-        $cacheKey = 'GlobalHeroTalentStats|'.json_encode($request->all());
+        $cacheKey = 'GlobalHeroTalentStatsBuilds|' . implode(",", \App\Models\SeasonGameVersion::select("id")->whereIn("game_version", $gameVersion)->pluck("id")->toArray()) . '|' .hash('sha256', json_encode($request->all()));
         //return $cacheKey;
 
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (

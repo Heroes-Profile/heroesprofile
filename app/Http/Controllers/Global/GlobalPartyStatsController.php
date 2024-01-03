@@ -61,7 +61,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
         $teamoneparty = $request['teamoneparty'];
         $teamtwoparty = $request['teamtwoparty'];
 
-        $cacheKey = 'GlobalPartyStats|'.json_encode($request->all());
+        $cacheKey = 'GlobalPartyStats|' . implode(",", \App\Models\SeasonGameVersion::select("id")->whereIn("game_version", $gameVersion)->pluck("id")->toArray()) . '|' .hash('sha256', json_encode($request->all()));
 
         //return $cacheKey;
 
