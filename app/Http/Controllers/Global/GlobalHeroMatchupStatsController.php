@@ -72,7 +72,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
         $statFilter = $request['statfilter'];
         $mirror = $request['mirror'];
 
-        $cacheKey = 'GlobalMatchupStats|'.json_encode($request->all());
+        $cacheKey = 'GlobalMatchupStats|' . implode(",", \App\Models\SeasonGameVersion::select("id")->whereIn("game_version", $gameVersion)->pluck("id")->toArray()) . '|' .hash('sha256', json_encode($request->all()));
 
         //return $gameMap;
 

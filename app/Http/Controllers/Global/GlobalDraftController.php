@@ -67,7 +67,7 @@ class GlobalDraftController extends GlobalsInputValidationController
         $heroLevel = $request['hero_level'];
         $region = $this->getRegionFilterValues($request['region']);
 
-        $cacheKey = 'GlobalDraftStats|'.json_encode($request->all());
+        $cacheKey = 'GlobalDraftStats|' . implode(",", \App\Models\SeasonGameVersion::select("id")->whereIn("game_version", $gameVersion)->pluck("id")->toArray()) . '|' .hash('sha256', json_encode($request->all()));
 
         //return $cacheKey;
 
