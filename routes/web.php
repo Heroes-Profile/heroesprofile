@@ -37,6 +37,7 @@ use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\GithubChangeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -60,6 +61,9 @@ Route::get('/testJS', [MainPageController::class, 'testJS']);
 
 
 Route::get('/Contact', [ContactController::class, 'show']);
+Route::get('/Github/Change/Log', [GithubChangeController::class, 'show']);
+
+
 Route::get('/battletag/searched/{userinput}/{type}', [BattletagSearchController::class, 'show']);
 
 Route::get('/Compare', [CompareController::class, 'show']);
@@ -160,6 +164,9 @@ Route::get('Esports/NutCup', [NutCupController::class, 'show']);
 Route::get('Esports/MastersClash', [MastersClashController::class, 'show']);
 
 Route::get('Esports/HeroesInternational', [HeroesInternationalController::class, 'show']);
+
+
+
 
 //Rewrite game data later
 Route::get('/Gamedata', [GamedataController::class, 'heroes']);
