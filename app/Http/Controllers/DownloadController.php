@@ -29,7 +29,7 @@ class DownloadController extends Controller
     $replayID = $request["replayID"];
     $bucket = 'heroesprofile-ccl';
 
-    return Storage::disk('gcs')->download("https://storage.googleapis.com/$bucket/{$replayID}.StormReplay");
+    return Storage::disk('gcs')->download("754.StormReplay");
 
   }
 }
