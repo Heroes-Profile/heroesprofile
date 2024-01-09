@@ -19,7 +19,12 @@
 
         <div class="w-full max-w-[1000px] bg-blue rounded flex justify-between gap-2 mx-auto p-4 mb-4">
           <span>{{ data.game_map.name }}</span>
-          <span>{{ data.game_type }}</span>
+          <span v-if="!esport">
+            {{ data.game_type }}
+          </span>
+          <span v-else-if="esport && esport == 'CCL'" class="link" @click="downloadReplay(replayid)">
+            Download Replay
+          </span>
           <span>{{ data.game_length }}</span>
         </div>
       </div>
@@ -126,7 +131,9 @@
           </thead>
           <tbody>
             <tr v-for="(row, index) in data.match_games" :key="index">
-              <td width="25%">{{ row.replayID }}</td>
+              <td width="25%">
+                <a class="link" :href="`/Esports/${esport}/Match/Single/${row.replayID}`">{{ row.replayID }}</a>
+              </td>
               <td width="25%">{{ row.round }}</td>
               <td width="25%">{{ row.game }}</td>
               <td width="25%">
@@ -742,6 +749,11 @@
         return "/images/NGS/no-image-clipped.png"
       }else if(this.esport == "CCL"){
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
+      }
+    },
+    async downloadReplay(replayID){
+      if(this.esport && this.esport == "CCL"){
+        window.location = `https://storage.googleapis.com/heroesprofile-ccl/${replayID}.StormReplay`;
       }
     },
   }
