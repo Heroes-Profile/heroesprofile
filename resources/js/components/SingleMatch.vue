@@ -19,7 +19,12 @@
 
         <div class="w-full max-w-[1000px] bg-blue rounded flex justify-between gap-2 mx-auto p-4 mb-4">
           <span>{{ data.game_map.name }}</span>
-          <span>{{ data.game_type }}</span>
+          <span v-if="!esport">
+            {{ data.game_type }}
+          </span>
+          <span v-else-if="esport && esport == 'CCL'" class="link" @click="downloadReplay(replayid)">
+            Download Replay
+          </span>
           <span>{{ data.game_length }}</span>
         </div>
       </div>
@@ -742,6 +747,28 @@
         return "/images/NGS/no-image-clipped.png"
       }else if(this.esport == "CCL"){
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
+      }
+    },
+    async downloadReplay(replayID){
+      console.log("downloading " +  replayID)
+      this.isLoading = true;
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+      try{
+        const response = await this.$axios.post("/api/v1/download/replay", {
+          esport: this.esport,
+          replayID: this.replayid
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
+        });
+      }catch(error){
+      //Do something here
+      }finally {
+        this.cancelTokenSource = null; // Reset cancel token source
+        this.isLoading = false;
       }
     },
   }
