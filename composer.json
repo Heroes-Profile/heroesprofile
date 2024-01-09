@@ -12,10 +12,8 @@
         "laravel/socialite": "^5.8",
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.2",
-        "league/flysystem-google-cloud-storage": "^3.22",
         "socialiteproviders/battlenet": "^4.1",
         "socialiteproviders/patreon": "^5.0",
-        "spatie/laravel-google-cloud-storage": "^2.2",
         "spatie/laravel-ignition": "^2.3"
     },
     "require-dev": {

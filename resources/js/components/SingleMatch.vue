@@ -131,7 +131,9 @@
           </thead>
           <tbody>
             <tr v-for="(row, index) in data.match_games" :key="index">
-              <td width="25%">{{ row.replayID }}</td>
+              <td width="25%">
+                <a class="link" :href="`/Esports/${esport}/Match/Single/${row.replayID}`">{{ row.replayID }}</a>
+              </td>
               <td width="25%">{{ row.round }}</td>
               <td width="25%">{{ row.game }}</td>
               <td width="25%">
@@ -750,25 +752,8 @@
       }
     },
     async downloadReplay(replayID){
-      console.log("downloading " +  replayID)
-      this.isLoading = true;
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled');
-      }
-      this.cancelTokenSource = this.$axios.CancelToken.source();
-      try{
-        const response = await this.$axios.post("/api/v1/download/replay", {
-          esport: this.esport,
-          replayID: this.replayid
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
-        });
-      }catch(error){
-      //Do something here
-      }finally {
-        this.cancelTokenSource = null; // Reset cancel token source
-        this.isLoading = false;
+      if(this.esport && this.esport == "CCL"){
+        window.location = `https://storage.googleapis.com/heroesprofile-ccl/${replayID}.StormReplay`;
       }
     },
   }

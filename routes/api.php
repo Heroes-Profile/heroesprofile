@@ -31,7 +31,6 @@ use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DownloadController;
 
 
 
@@ -164,8 +163,4 @@ Route::prefix('v1')->group(function () {
     Route::post('compare', [CompareController::class, 'getData']);
 
     Route::post('contact', [ContactController::class, 'submitMessage']);
-
-    Route::post('download/replay', [DownloadController::class, 'downloadReplay']);
-
-    
 });
