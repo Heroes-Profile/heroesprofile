@@ -37,9 +37,10 @@
       <div v-if="togglechart">
         <bubble-chart :heroData="this.data.data"></bubble-chart>
       </div>
-      <div class="min-w-[1500px] px-20">
-     <table class="">
-        <thead>
+      <div >
+        <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
+      <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
+        <thead class=" top-0 w-full sticky z-40">
           <th class="py-2 px-3  border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
             Avg
           </th>
@@ -104,7 +105,7 @@
                 <div class="">
                   Influence
                 </div>
-                <round-image class="" size="small" icon="fas fa-info" title="info" popupsize="large">
+                <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
                   <slot>
                     <div>
                       <p>Influence is an integer scaled from -1000 to 1000 that combines Win Rate, Games Played, Pick Rate, and Ban Rate to determine the impact a hero will have on a particular team.</p>
@@ -126,9 +127,9 @@
         <tbody>
           <template v-for="(row, index) in sortedData">
             <tr>
-              <td class="py-2 px-3 flex items-center gap-1">
+              <td class="py-2 px-3 flex items-center gap-1 max-md:w-[150px]">
                 <a class="flex w-full items-center" :href="'/Global/Talents/' + row.name" >
-                <hero-image-wrapper class="mr-2" :hero="row" :includehover="false"></hero-image-wrapper>{{ row.name }}
+                <hero-image-wrapper class="mr-2" mobileClick="true" :hero="row" :includehover="false"></hero-image-wrapper><span class="hidden md:block">{{ row.name }}</span>
                 </a>
               </td>
               <td class="  ">{{ getValueFixed(row.win_rate) }}</td>
@@ -162,7 +163,7 @@
           </template>
         </tbody>
       </table>
-
+    </div>
     </div>
     </div>
     <div v-else-if="isLoading">
@@ -193,6 +194,7 @@ export default {
   },
   data(){
     return {
+      windowWidth: window.innerWidth,
       isLoading: false,
     	infoText: "Hero win rates based on differing increments, stat types, game type, or rank. Click on a Hero to see detailed information. On the chart, bubble size is a combination of Win Rate, Pick Rate, and Ban Rate",
       sortKey: '',
@@ -310,6 +312,16 @@ export default {
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
+        this.$nextTick(() => {
+        const responsivetable = this.$refs.responsivetable;
+          if (responsivetable && this.windowWidth < 1500) {
+            const newTableWidth = this.windowWidth /responsivetable.clientWidth;
+            responsivetable.style.transformOrigin = 'top left';
+            responsivetable.style.transform = `scale(${newTableWidth})`;
+            const container = this.$refs.tablecontainer;
+            container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+          }
+        });
       }
     },
     async getTalentBuildData(hero, index){

@@ -41,7 +41,7 @@
       </span>
     
     <img v-else loading="eager" :class="[
-      'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow   w-full h-10 min-w-10 max-md:h-10 max-md:w-10 ',  
+      'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow   w-full h-10 min-w-10 max-md:h-10 max-md:w-10 max-w-none mr-auto  ',  
       { 
         
         'rounded-full' : rectangle != true,
@@ -83,7 +83,7 @@
 
       <div class="popup-arrow max-md:hidden"></div>
     </div>
-    <div v-if="!excludehover && !mobileClick" :class="[' md:hidden     text-s p-1    drop-shadow-md  rounded-md px-2 text-center   mb-4', {}]">
+    <div v-if="!excludehover && !mobileClick" :class="[' md:hidden     text-s p-1    drop-shadow-md  rounded-md px-2 text-center  max-md:block mb-4', {}]">
           <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>
           <div class="bg-red" v-else-if="ispatreon">Patreon Subscriber</div>
           <slot></slot>
