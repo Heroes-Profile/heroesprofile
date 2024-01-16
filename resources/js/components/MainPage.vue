@@ -70,7 +70,7 @@
         <h3 class="text-2xl mb-10 mt-2">Player profile</h3>
         <p>See all player stats in one place.  See data for individual maps or heroes played, match history and comparisons all from within a streamlined profile.</p>
         <div class="flex mt-auto justify-center">
-          <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'"></search-component>
+          <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'" class="mt-auto"></search-component>
         </div>
       </div>
     </div>
