@@ -1,5 +1,5 @@
-<template v-if="!patreonUser">
-  <div class="my-2" :id="`dynamic-banner-ad-container-${index}`"></div>
+<template v-if="!patreonUser" >
+  <div class="my-20" :id="`dynamic-banner-ad-container-${index}`"></div>
 </template>
 
 <script>

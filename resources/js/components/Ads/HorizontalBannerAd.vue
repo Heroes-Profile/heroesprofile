@@ -1,8 +1,13 @@
 <template v-if="!patreonUser">
-  <div id="horizontal-banner-ad-container"></div>
+  <div v-if="adBlocker">
+    Heroes Profile uses ads to help fund site running costs.  Please consider allowing ads or support us through patreon at <a class="link" href="https://www.patreon.com/heroesprofile">https://www.patreon.com/heroesprofile</a>
+  </div>
+  <div class="mb-2" id="horizontal-banner-ad-container"></div>
+
 </template>
 
 <script>
+import Cookies from 'js-cookie';
 
 export default {
   name: 'HorizontalBannerAd',
@@ -47,6 +52,9 @@ export default {
     }
   },
   computed: {
+    adBlocker() {
+      return Cookies.get('ad-blocker') == "true";
+    },
   },
   watch: {
   },

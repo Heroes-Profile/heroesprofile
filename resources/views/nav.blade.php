@@ -109,7 +109,7 @@
                 <div class="flex space-x-5 bg-lighten p-3 mx-2 max-md:order-1 max-md:mt-auto">
                     <custom-button :href="'https://api.heroesprofile.com/Api'" :targetblank="true" :text="'API'" :alt="'API'"  :size="'small'" :color="'teal'"></custom-button>
                     <custom-button :href="'https://api.heroesprofile.com/upload'" :targetblank="true" :text="'Replay Uploader'" :alt="'Replay Uploader'"  :size="'small'" :color="'blue'"></custom-button>
-                    <custom-button :href="'https://www.patreon.com/heroesprofile'" :targetblank="true" :text="'Patreon'" :alt="'Patreon'"  :size="'small'" :color="'red'"></custom-button>
+                    <custom-button :href="'https://www.patreon.com/heroesprofile'" :targetblank="true" :text="'Remove Ads / Patreon'" :alt="'Patreon'"  :size="'small'" :color="'red'"></custom-button>
                 </div>
 
 
