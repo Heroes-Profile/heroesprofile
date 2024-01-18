@@ -29,7 +29,7 @@ class MainPageController extends Controller
 
     public function test()
     {
-        $exception = 1/0;
+        $exception = 1 / 0;
     }
 
     public function testJS()

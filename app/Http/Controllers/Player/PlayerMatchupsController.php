@@ -39,7 +39,7 @@ class PlayerMatchupsController extends Controller
             'region' => $region,
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
 
         ]);
     }

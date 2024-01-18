@@ -35,7 +35,7 @@ class PlayerMapsController extends Controller
             ->orderByDesc('account_level')
             ->first();
 
-        if($account_level_data && !empty($account_level_data)){
+        if ($account_level_data && ! empty($account_level_data)) {
             $account_level = $account_level_data->account_level;
         }
 
@@ -47,7 +47,7 @@ class PlayerMapsController extends Controller
             'region' => $region,
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
 
         ]);
     }
@@ -83,7 +83,7 @@ class PlayerMapsController extends Controller
             'filters' => $this->globalDataService->getFilterData(),
             'regions' => $this->globalDataService->getRegionIDtoString(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault("single"),
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault('single'),
 
         ]);
     }

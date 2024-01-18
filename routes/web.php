@@ -13,6 +13,7 @@ use App\Http\Controllers\Esports\NGS\NGSController;
 use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
 use App\Http\Controllers\Esports\NutCup\NutCupController;
 use App\Http\Controllers\GamedataController;
+use App\Http\Controllers\GithubChangeController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
 use App\Http\Controllers\Global\GlobalExtraStats;
@@ -34,11 +35,10 @@ use App\Http\Controllers\Player\PlayerMatchupsController;
 use App\Http\Controllers\Player\PlayerMMRController;
 use App\Http\Controllers\Player\PlayerRolesController;
 use App\Http\Controllers\Player\PlayerTalentsController;
+use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\GithubChangeController;
-use App\Http\Controllers\PrivacyPolicyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -59,14 +59,11 @@ Route::get('/', [MainPageController::class, 'show']);
 Route::get('/test', [MainPageController::class, 'test']);
 Route::get('/testJS', [MainPageController::class, 'testJS']);
 
-
-
 Route::get('/Contact', [ContactController::class, 'show']);
 
 Route::get('/Privacy/Policy', [PrivacyPolicyController::class, 'show']);
 
 Route::get('/Github/Change/Log', [GithubChangeController::class, 'show']);
-
 
 Route::get('/battletag/searched/{userinput}/{type}', [BattletagSearchController::class, 'show']);
 
@@ -80,9 +77,6 @@ Route::get('/Battlenet/Logout', [BattleNetController::class, 'logout']);
 Route::get('/redirect/authenticate/battlenet', [BattleNetController::class, 'redirectToProvider']);
 Route::get('/authenticate/battlenet/success', [BattleNetController::class, 'handleProviderCallback']);
 Route::get('/Authenticate/Battlenet/Failed', [BattleNetController::class, 'handleProviderCallbackFailed']);
-
-
-
 
 Route::get('/authenticate/patreon', [PatreonController::class, 'redirectToProvider']);
 Route::get('/authenticate/patreon/success', [PatreonController::class, 'handleProviderCallback']);
@@ -169,9 +163,6 @@ Route::get('Esports/MastersClash', [MastersClashController::class, 'show']);
 
 Route::get('Esports/HeroesInternational', [HeroesInternationalController::class, 'show']);
 
-
-
-
 //Rewrite game data later
 Route::get('/Gamedata', [GamedataController::class, 'heroes']);
 Route::get('/Gamedata/Heroes', [GamedataController::class, 'heroes']);
@@ -189,5 +180,3 @@ Route::redirect('https://www.{any}/ads.txt', 'https://adstxt.venatusmedia.com/60
 
 Route::redirect('https://{any}/ads.txt', 'https://adstxt.venatusmedia.com/60f587eddd63d722e7e57bc1_ads.txt');
 Route::redirect('https://{any}/ads.txt', 'https://adstxt.venatusmedia.com/60f587eddd63d722e7e57bc1_ads.txt')->name('https.ads.txt');
-
-

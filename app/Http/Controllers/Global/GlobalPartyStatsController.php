@@ -17,7 +17,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
             ->with([
                 'regions' => $this->globalDataService->getRegionIDtoString(),
                 'filters' => $this->globalDataService->getFilterData(),
-                'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
+                'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
                 'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
@@ -61,7 +61,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
         $teamoneparty = $request['teamoneparty'];
         $teamtwoparty = $request['teamtwoparty'];
 
-        $cacheKey = 'GlobalPartyStats|' . implode(",", \App\Models\SeasonGameVersion::select("id")->whereIn("game_version", $gameVersion)->pluck("id")->toArray()) . '|' .hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalPartyStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
         //return $cacheKey;
 

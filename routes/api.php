@@ -32,8 +32,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
 use Illuminate\Support\Facades\Route;
 
-
-
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -134,9 +132,6 @@ Route::prefix('v1')->group(function () {
 
     Route::post('esports/single/player/match/history', [EsportsController::class, 'getDataSinglePlayerMatchHistory']);
     Route::post('esports/team/match/history', [EsportsController::class, 'getTeamMatchHistoryData']);
-
-
-    
 
     Route::post('esports/single/player/hero', [EsportsController::class, 'getData']);
     Route::post('esports/single/player/map', [EsportsController::class, 'getData']);

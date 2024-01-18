@@ -69,7 +69,7 @@ class PlayerController extends Controller
             'blizz_id' => $blizz_id,
             'region' => $region,
             'season' => $season,
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault("single"),
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault('single'),
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);

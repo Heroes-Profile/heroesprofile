@@ -33,7 +33,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
                 'regions' => $this->globalDataService->getRegionIDtoString(),
                 'userinput' => $userinput,
                 'filters' => $this->globalDataService->getFilterData(),
-                'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
+                'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
                 'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
@@ -93,7 +93,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         $heroLevel = $request['hero_level'];
         $region = $this->getRegionFilterValues($request['region']);
         $mirror = $request['mirror'];
-        $cacheKey = 'GlobalTalentsBuilder|' . implode(",", \App\Models\SeasonGameVersion::select("id")->whereIn("game_version", $gameVersion)->pluck("id")->toArray()) . '|' .hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalTalentsBuilder|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
         $talentData = HeroesDataTalent::all();
         $talentData = $talentData->keyBy('talent_id');

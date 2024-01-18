@@ -19,7 +19,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
             ->with([
                 'regions' => $this->globalDataService->getRegionIDtoString(),
                 'filters' => $this->globalDataService->getFilterData(),
-                'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
+                'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
                 'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
@@ -61,7 +61,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         $talentbuildType = $request['talentbuildtype'];
         $minimumGames = $request['minimum_games'];
 
-        $cacheKey = 'GlobalCompositionStats|' . implode(",", \App\Models\SeasonGameVersion::select("id")->whereIn("game_version", $gameVersion)->pluck("id")->toArray()) . '|' .hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalCompositionStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
         $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
             $gameType,
@@ -186,7 +186,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 
         $compositionID = $request['composition_id'];
 
-        $cacheKey = 'GlobalCompositionTopHeroes|' . implode(",", \App\Models\SeasonGameVersion::select("id")->whereIn("game_version", $gameVersion)->pluck("id")->toArray()) . '|' .hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalCompositionTopHeroes|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
         //return $cacheKey;
 
         $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
