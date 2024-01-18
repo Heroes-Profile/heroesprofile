@@ -9,8 +9,29 @@
 
       gtag('config', 'G-2T71M0W00N');
     </script>
-    <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript" data-site-id="60f587eddd63d722e7e57bc1" data-mode="scan" async></script>
+    <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript" data-site-id="60f587eddd63d722e7e57bc1" data-mode="scan" async onerror="handleAdBlocker()"></script>
 
+    <script>
+      function handleAdBlocker() {
+        console.error('Error loading ad-manager.min.js');
+        // Additional error handling or logging can be added here
+        setCookie('ad-blocker', 'true', 1); // Set the cookie to expire after 1 day
+      }
+
+      function setCookie(name, value) {
+        var expires = '';
+        var minutes = 5; // Set the desired expiration time in minutes
+
+        if (minutes) {
+          var date = new Date();
+          date.setTime(date.getTime() + (minutes * 60 * 1000)); // Convert minutes to milliseconds
+          expires = '; expires=' + date.toUTCString();
+        }
+
+        document.cookie = name + '=' + value + expires + '; path=/';
+      }
+
+    </script>
 
 
     <meta charset="utf-8">
@@ -29,6 +50,9 @@
 </head>
 <body class="bg-black text-white">
   <div id="app" class="flex flex-col align-stretch" style="min-height:100vh;">
+    <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></horizontal-banner-ad>
+
+
    <div class="bg-red text-sm text-center p-1">
       Site has not been styled for mobile yet.<br/>
       Patreon subscribers please log in and link your Patreon account as we migrate to new site flair and ad-free infrastructure.
@@ -43,7 +67,6 @@
     'regions' => $regions,
     ])
     
-    <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></horizontal-banner-ad>
 
     <rich-media-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></rich-media-ad>
 

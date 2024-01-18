@@ -1,5 +1,5 @@
 <template v-if="!patreonUser">
-  <div id="takeover-ad-container" class="pb-2"></div>
+  <div id="takeover-ad-container" class="my-20"></div>
 </template>
 
 <script>
