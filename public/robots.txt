@@ -9,3 +9,5 @@ Disallow: /
 
 User-agent: YandexBot
 Disallow: /
+
+Sitemap: https://rewrite.heroesprofile.com/sitemap.xml
