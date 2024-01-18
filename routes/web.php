@@ -38,6 +38,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GithubChangeController;
+use App\Http\Controllers\PrivacyPolicyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,6 +62,9 @@ Route::get('/testJS', [MainPageController::class, 'testJS']);
 
 
 Route::get('/Contact', [ContactController::class, 'show']);
+
+Route::get('/Privacy/Policy', [PrivacyPolicyController::class, 'show']);
+
 Route::get('/Github/Change/Log', [GithubChangeController::class, 'show']);
 
 
@@ -185,3 +189,5 @@ Route::redirect('https://www.{any}/ads.txt', 'https://adstxt.venatusmedia.com/60
 
 Route::redirect('https://{any}/ads.txt', 'https://adstxt.venatusmedia.com/60f587eddd63d722e7e57bc1_ads.txt');
 Route::redirect('https://{any}/ads.txt', 'https://adstxt.venatusmedia.com/60f587eddd63d722e7e57bc1_ads.txt')->name('https.ads.txt');
+
+
