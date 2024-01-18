@@ -62,7 +62,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
             'regions' => $this->globalDataService->getRegionIDtoString(),
             'heroes' => $this->globalDataService->getHeroes(),
             'filters' => $this->globalDataService->getFilterData(),
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
             'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
             'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
             'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
@@ -103,7 +103,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
         $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
 
-        $cacheKey = 'GlobalHeroMatchupsTalents|' . implode(",", $gameVersionIDs) . '|' .hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalHeroMatchupsTalents|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
 
         //return $cacheKey;
 

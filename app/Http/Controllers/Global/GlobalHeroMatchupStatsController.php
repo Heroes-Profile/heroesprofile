@@ -33,7 +33,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
             'regions' => $this->globalDataService->getRegionIDtoString(),
             'userinput' => $userinput,
             'filters' => $this->globalDataService->getFilterData(),
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
             'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
             'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
             'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
@@ -72,7 +72,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
         $statFilter = $request['statfilter'];
         $mirror = $request['mirror'];
 
-        $cacheKey = 'GlobalMatchupStats|' . implode(",", \App\Models\SeasonGameVersion::select("id")->whereIn("game_version", $gameVersion)->pluck("id")->toArray()) . '|' .hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalMatchupStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
         //return $gameMap;
 

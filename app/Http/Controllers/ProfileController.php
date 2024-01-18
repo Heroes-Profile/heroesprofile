@@ -8,7 +8,6 @@ use App\Models\Hero;
 use App\Models\PatreonAccount;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -62,7 +61,7 @@ class ProfileController extends Controller
                 ['value' => $userhero]
             );
         }
-        
+
         if (! is_null($request['usergametype'])) {
             $user = BattlenetAccount::find($request['userid']);
 
@@ -73,7 +72,6 @@ class ProfileController extends Controller
                 ['value' => $usergametype]
             );
         }
-
 
         if (! is_null($request['usermultigametype'])) {
             $user = BattlenetAccount::find($request['userid']);
@@ -113,6 +111,7 @@ class ProfileController extends Controller
                 ['value' => $talentbuildtype]
             );
         }
+
         return ['success' => true];
     }
 
