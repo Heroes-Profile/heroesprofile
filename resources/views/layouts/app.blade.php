@@ -18,13 +18,16 @@
         setCookie('ad-blocker', 'true', 1); // Set the cookie to expire after 1 day
       }
 
-      function setCookie(name, value, days) {
+      function setCookie(name, value) {
         var expires = '';
-        if (days) {
+        var minutes = 5; // Set the desired expiration time in minutes
+
+        if (minutes) {
           var date = new Date();
-          date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+          date.setTime(date.getTime() + (minutes * 60 * 1000)); // Convert minutes to milliseconds
           expires = '; expires=' + date.toUTCString();
         }
+
         document.cookie = name + '=' + value + expires + '; path=/';
       }
 
