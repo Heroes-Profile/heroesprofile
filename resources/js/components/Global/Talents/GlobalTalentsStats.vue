@@ -44,7 +44,11 @@
             </span>
             <span><custom-button @click="scrollToBuilds" :text="'Scroll To Builds'" :alt="'Scroll To Builds'" size="small" :ignoreclick="true"></custom-button></span>
           </div>
-          <global-talent-details-section class="mx-auto" :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
+          
+            
+              <global-talent-details-section class="mx-auto" :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
+           
+         
         </div>
 
         <div v-else-if="isTalentsLoading">
@@ -55,7 +59,7 @@
 
         <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
-        <div  v-if="talentbuilddata" class="mx-auto px-4 w-auto flex flex-col items-center">
+        <div  v-if="talentbuilddata" class="flex justify-between max-w-[1500px] mx-auto px-4">
           <div id="builds" class="">
             <single-select-filter :values="buildtypes" :text="'Talent Build Type'" :defaultValue="this.talentbuildtype" @input-changed="buildtypechange"></single-select-filter>
             {{ this.selectedHero.name }} {{ "Talent Builds"}}
@@ -91,6 +95,7 @@
     },
     data(){
       return {
+       windowWidth: window.innerWidth,
        isTalentsLoading: false,
        isBuildsLoading: false,
        cancelTalentsTokenSource: null,
@@ -126,6 +131,7 @@
        rolerank: null,
        mirrormatch: 0,
        talentbuildtype: "Popular",
+       tablewidth: null
      }
    },
    created(){
@@ -209,6 +215,7 @@
         }finally {
           this.cancelTalentsTokenSource = null;
           this.isTalentsLoading = false;
+          
         }
       },
       
@@ -245,6 +252,8 @@
         }finally {
           this.cancelBuildsTokenSource = null;
           this.isBuildsLoading = false;
+         
+          
         }
       },
       cancelAxiosRequest() {
