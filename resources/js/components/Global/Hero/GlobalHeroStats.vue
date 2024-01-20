@@ -223,6 +223,7 @@ export default {
       mirrormatch: 0,
       talentbuildtype: null,
       loadingStates: {},
+      tablewidth: null
     }
   },
   created(){
@@ -319,6 +320,7 @@ export default {
             responsivetable.style.transformOrigin = 'top left';
             responsivetable.style.transform = `scale(${newTableWidth})`;
             const container = this.$refs.tablecontainer;
+            this.tablewidth = newTableWidth;
             container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
           }
         });
@@ -363,6 +365,17 @@ export default {
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
+        this.$nextTick(() => {
+        const responsivetable = this.$refs.responsivetable;
+          if (responsivetable && this.windowWidth < 1500) {
+            const newTableWidth = this.windowWidth /responsivetable.clientWidth;
+            responsivetable.style.transformOrigin = 'top left';
+            responsivetable.style.transform = `scale(${newTableWidth})`;
+            const container = this.$refs.tablecontainer;
+            this.tablewidth = newTableWidth;
+            container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+          }
+        });
       }
     },
     cancelAxiosRequest() {

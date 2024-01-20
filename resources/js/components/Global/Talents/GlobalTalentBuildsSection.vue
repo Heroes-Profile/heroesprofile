@@ -41,8 +41,10 @@
             </div>
           </td>
           <td class="py-2 px-3 ">
-            {{ this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, row.hero) }}
+            <div class="flex flex-wrap flex-col md:flex-row">
+           <span> {{ this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, row.hero) }}</span>
             <custom-button @click="copyToClipboard(index, row)" :text="buildCopyText[index]" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true" :color="buildCopyColor[index]">{{ buildCopyText[index] }}</custom-button>
+            </div>
           </td>
           <td class="py-2 px-3 ">{{ row.games_played.toLocaleString() }}</td>
           <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
