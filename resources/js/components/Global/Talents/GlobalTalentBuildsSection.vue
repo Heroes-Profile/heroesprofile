@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div id="table-container2" ref="tablecontainer2" class=" overflow-hidden w-[100vw] min-w-0   2xl:mx-auto " style=" ">
-      <table class="min-w-0 ml-0" ref="responsivetable2">
+    <div id="table-container2" ref="tablecontainer2" class=" overflow-hidden w-[100vw] min-w-0 max-sm:text-xs  2xl:mx-auto " style=" ">
+      <table class="min-w-0 ml-0 max-sm:text-xs w-full max-w-[1500px]" ref="responsivetable2">
           <thead>
             <tr>
               <th :colspan="statfilter ? 5 : 4" class="text-center py-2 px-3 ">
@@ -44,7 +44,7 @@
             <td class="py-2 px-3 ">
               <div class="flex flex-wrap flex-col md:flex-row">
             <span> {{ this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, row.hero) }}</span>
-              <custom-button @click="copyToClipboard(index, row)" :text="buildCopyText[index]" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true" :color="buildCopyColor[index]">{{ buildCopyText[index] }}</custom-button>
+              <custom-button class="max-sm:text-xs max-sm:p-0" @click="copyToClipboard(index, row)" :text="buildCopyText[index]" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true" :color="buildCopyColor[index]">{{ buildCopyText[index] }}</custom-button>
               </div>
             </td>
             <td class="py-2 px-3 ">{{ row.games_played.toLocaleString() }}</td>
@@ -88,7 +88,7 @@ export default {
 
   mounted() {
     
-    var responsivetable = this.$refs.responsivetable2;
+   /* var responsivetable = this.$refs.responsivetable2;
     console.log(this.windowWidth);
     if (responsivetable && this.windowWidth < 1500) {
             var newTableWidth = this.windowWidth /responsivetable.clientWidth;
@@ -99,7 +99,7 @@ export default {
             container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
             //container.style.width = this.windowWidth;
           }
-         
+         */
   },
   computed: {
   },

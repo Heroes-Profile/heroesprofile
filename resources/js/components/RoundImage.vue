@@ -1,7 +1,7 @@
 <template>
   <div
   :class="[
-      'relative group items-center md:w-10 md:h-10',  
+      'relative group items-center md:w-10 md:h-10 ',  
       { 
         block: size === 'big', 
         'md:w-20': size === 'big', 
@@ -14,7 +14,8 @@
         'inline-block' : icon,
         'flex flex-col': !icon,
         'md:w-[1.7em]': icon,
-        'md:h-[1.7em]': icon
+        'md:h-[1.7em]': icon,
+        
         
       }
       ]"
@@ -41,7 +42,7 @@
       </span>
     
     <img v-else loading="eager" :class="[
-      'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow   w-full h-10 min-w-10 max-md:h-10 max-md:w-10 max-w-none md:mr-auto  max-md: m-0',  
+      'card-img-top object-cover relative hover:brightness-125 hover:drop-shadow max-sm:w-[2.5em] max-sm:h-[2.5em]  w-full h-10 min-w-10 max-md:h-10 max-md:w-10 max-w-none md:mr-auto  max-md: m-0',  
       { 
         
         'rounded-full' : rectangle != true,

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
+    <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw] max-sm:text-xs  2xl:mx-auto  " style=" ">
     <div id="resizeTable" ref="resizeTable" >
     <div v-for="level in talentlevels" ref="resizeTable">
       <table :id="'responsivetable'+level" class="responsive-table  relative " :ref="'responsivetable'+level">
@@ -74,7 +74,7 @@ export default {
   },
   mounted() {
    
-    var responsivetable = this.$refs.responsivetable1[0];
+   /* var responsivetable = this.$refs.responsivetable1[0];
    
               if (responsivetable && this.windowWidth < 1500) {
                 var newTableWidth = this.windowWidth /responsivetable.clientWidth;
@@ -87,7 +87,7 @@ export default {
                 
                 container.style.height = (resizeTable.clientHeight * newTableWidth) + 'px';
                
-              }
+              }*/
   },
   computed: {
   },
