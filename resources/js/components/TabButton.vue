@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="flex flex-col md:flex-row">
     <a 
     :class="[
       staticClasses, ' rounded-l ', 

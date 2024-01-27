@@ -24,7 +24,10 @@
     </filters>
     <takeover-ad :patreon-user="patreonUser"></takeover-ad>
     <div v-if="compositiondata">
-      <table class=" max-w-[1500px]">
+      <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
+      <table id="responsive-table" class="responsive-table  relative max-w-[1500px]" ref="responsivetable">
+     
+    
         <thead>
           <tr>
             <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
@@ -46,7 +49,7 @@
           <template v-for="(row, index) in sortedData">
             <tr>
               <td >
-                <div class="flex flex-wrap gap-1 justify-center w-auto ">
+                <div class="flex flex-wrap gap-1 justify-center w-auto max-md:flex-col ">
                 <role-box :role="row.role_one.name"></role-box>
                 <role-box :role="row.role_two.name"></role-box>
                 <role-box :role="row.role_three.name"></role-box>
@@ -71,7 +74,7 @@
             </tr>
             <tr v-if="row.compositionheroes">
               <td colspan=5>
-                <table class="min-w-0 ml-0 ">
+                <table class="min-w-0 ml-0 max-md:text-[.5em]  ">
                   <thead>
                     <tr>
                       <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
@@ -93,21 +96,21 @@
    
                   </thead>
                   <tbody>
-                    <tr v-for="index in range">
+                    <tr v-for="index in range" class="mr-2">
                       <td>
-                        <hero-image-wrapper :hero="getHeroData(1, row, row.compositionheroes[row.role_one.name], index)"></hero-image-wrapper>{{ getHeroData(1, row, row.compositionheroes[row.role_one.name], index).name }}
+                        <hero-image-wrapper :hero="getHeroData(1, row, row.compositionheroes[row.role_one.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(1, row, row.compositionheroes[row.role_one.name], index).name }}</span>
                       </td>
                       <td>
-                        <hero-image-wrapper :hero="getHeroData(2, row, row.compositionheroes[row.role_two.name], index)"></hero-image-wrapper>{{ getHeroData(2, row, row.compositionheroes[row.role_two.name], index).name }}
+                        <hero-image-wrapper :hero="getHeroData(2, row, row.compositionheroes[row.role_two.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(2, row, row.compositionheroes[row.role_two.name], index).name }}</span>
                       </td>
                       <td>
-                        <hero-image-wrapper :hero="getHeroData(3, row, row.compositionheroes[row.role_three.name], index)"></hero-image-wrapper>{{ getHeroData(3, row, row.compositionheroes[row.role_three.name], index).name }}
+                        <hero-image-wrapper :hero="getHeroData(3, row, row.compositionheroes[row.role_three.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(3, row, row.compositionheroes[row.role_three.name], index).name }}</span>
                       </td>
                       <td>
-                        <hero-image-wrapper :hero="getHeroData(4, row, row.compositionheroes[row.role_four.name], index)"></hero-image-wrapper>{{ getHeroData(4, row, row.compositionheroes[row.role_four.name], index).name }}
+                        <hero-image-wrapper :hero="getHeroData(4, row, row.compositionheroes[row.role_four.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(4, row, row.compositionheroes[row.role_four.name], index).name }}</span>
                       </td>
                       <td>
-                        <hero-image-wrapper :hero="getHeroData(5, row, row.compositionheroes[row.role_five.name], index)"></hero-image-wrapper>{{ getHeroData(5, row, row.compositionheroes[row.role_five.name], index).name }}
+                        <hero-image-wrapper :hero="getHeroData(5, row, row.compositionheroes[row.role_five.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(5, row, row.compositionheroes[row.role_five.name], index).name }}</span>
                       </td>
                     </tr>
                   </tbody>
@@ -117,7 +120,7 @@
           </template>
         </tbody>
       </table>
-
+      </div>
     </div>
     <div v-else-if="isLoading">
       <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
@@ -147,6 +150,7 @@ export default {
   },
   data(){
     return {
+      windowWidth: window.innerWidth,
       infoText: "Composition stats based on differing increments, stat types, game type, or Rank. Click on a Composition to see detailed composition information.",
       sortKey: '',
       sortDir: 'desc',
@@ -230,6 +234,17 @@ export default {
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
+        this.$nextTick(() => {
+        const responsivetable = this.$refs.responsivetable;
+          if (responsivetable && this.windowWidth < 1500) {
+            const newTableWidth = this.windowWidth /responsivetable.clientWidth;
+            responsivetable.style.transformOrigin = 'top left';
+            responsivetable.style.transform = `scale(${newTableWidth})`;
+            const container = this.$refs.tablecontainer;
+            this.tablewidth = newTableWidth;
+            container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+          }
+        });
       }
     },
     async getTopHeroesData(compositionid, index){

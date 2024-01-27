@@ -30,10 +30,12 @@
         <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
         <div class="max-w-[1500px] mx-auto flex justify-start mb-2"> 
-          <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Draft Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
+          <span class="flex gap-4 mb-2 mx-2"> {{ this.selectedHero.name }} {{ "Draft Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
         </div>
         <div v-if="draftdata">
-          <table class="">
+          <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]  max-sm:text-xs 2xl:mx-auto  " style=" ">
+      <table id="responsive-table" class="responsive-table  relative max-sm:text-xs" ref="responsivetable">
+      
             <thead>
               <tr>
                 <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
@@ -70,6 +72,7 @@
             </tr>
           </tbody>
         </table>
+        </div>
       </div>
       <div v-else-if="isLoading">
         <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
@@ -98,6 +101,7 @@
     },
     data(){
       return {
+        windowWidth: window.innerWidth,
         isLoading: null,
         cancelTokenSource: null,
         infoText1: "Storm League Hero pick rates, ban rates, and pick order rate.",
@@ -165,6 +169,7 @@
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
+          
         }
       },
       cancelAxiosRequest() {

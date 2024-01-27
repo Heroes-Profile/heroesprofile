@@ -29,14 +29,16 @@
     </filters>
     <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
-    <div v-if="allyenemydata" class="flex flex-wrap gap-4 justify-center items-center">
+    <div v-if="allyenemydata" class="flex flex-wrap gap-4  ">
       <group-box :text="'TOP 5 ALLIES ON HEROS TEAM'" :data="allyenemydata.ally.slice(0, 5)" :type="'Matchups'" color="blue"></group-box>
       <group-box :text="'TOP 5 THREATS ON ENEMIES TEAM'" :data="allyenemydata.enemy.slice(0, 5)" :type="'Matchups'" color="red"></group-box>
 
-      <div class="min-w-[1500px] px-20">
+      <div class="md:min-w-[1500px] md:px-20">
 
       <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Talent Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
-      <table class="">
+      <div id="table-container" ref="tablecontainer" class="  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
+      <table id="responsive-table" class="responsive-table  relative max-sm:text-xs" ref="responsivetable">
+      
         <thead>
           <tr>
             <th @click="sortTable('hero_name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -59,9 +61,9 @@
         <tbody>
           <tr v-for="(row, index) in sortedData" :key="index">
             <td class="py-2 px-3 ">
-              <div class="flex items-center">
-                <hero-image-wrapper :hero="row.ally ? row.ally.hero : row.enemy.hero "></hero-image-wrapper>
-                <span class="ml-left px-3">{{ row.ally && row.ally.hero ? row.ally.hero.name : row.enemy.hero.name }}</span>
+              <div class="flex items-center ">
+                <hero-image-wrapper :hero="row.ally ? row.ally.hero : row.enemy.hero " ></hero-image-wrapper>
+                <span class="ml-left px-3 hidden md:block">{{ row.ally && row.ally.hero ? row.ally.hero.name : row.enemy.hero.name }}</span>
               </div>
             </td>
             <td class="py-2 px-3 ">
@@ -80,6 +82,7 @@
           </tr>
         </tbody>
       </table>
+      </div>
     </div>
     </div>
     <div v-else-if="isLoading">
@@ -108,6 +111,7 @@
     },
     data(){
       return {
+        windowWidth: window.innerWidth,
         isLoading: false,
         infoText: "Hero Matchups provide information on which heroes are good with and against for a particular hero",
         selectedHero: null,
@@ -218,6 +222,17 @@
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
+         /* this.$nextTick(() => {
+        const responsivetable = this.$refs.responsivetable;
+          if (responsivetable && this.windowWidth < 1500) {
+            const newTableWidth = this.windowWidth /responsivetable.clientWidth;
+            responsivetable.style.transformOrigin = 'top left';
+            responsivetable.style.transform = `scale(${newTableWidth})`;
+            const container = this.$refs.tablecontainer;
+            this.tablewidth = newTableWidth;
+            container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+          }
+        });*/
         }
       },
       cancelAxiosRequest() {

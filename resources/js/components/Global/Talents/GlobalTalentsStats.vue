@@ -36,7 +36,7 @@
         <takeover-ad :patreon-user="patreonUser" ref="takeoverAddPlacement"></takeover-ad>
 
         
-        <div  v-if="talentdetaildata" class="mx-auto  px-4">
+        <div  v-if="talentdetaildata" class="mx-auto  md:px-4">
           <div class="flex justify-between max-w-[1500px] mx-auto">
             
             <span class="flex gap-4 mb-2"> 
@@ -59,7 +59,7 @@
 
         <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
-        <div  v-if="talentbuilddata" class="flex justify-between max-w-[1500px] mx-auto px-4">
+        <div  v-if="talentbuilddata" class="flex justify-between max-w-[1500px] mx-auto md:px-4">
           <div id="builds" class="">
             <single-select-filter :values="buildtypes" :text="'Talent Build Type'" :defaultValue="this.talentbuildtype" @input-changed="buildtypechange"></single-select-filter>
             {{ this.selectedHero.name }} {{ "Talent Builds"}}

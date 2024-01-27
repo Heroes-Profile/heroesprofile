@@ -41,7 +41,7 @@
           <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
 
             <div class="flex flex-wrap justify-between">
-              <div class="mb-4">
+              <div class="mb-4 mx-4">
                 <label for="search" class="sr-only form-control text-black rounded-l p-2">Search Battletag:</label>
                 <input
                   v-model="searchTerm"
@@ -53,7 +53,7 @@
                 />
               </div>
 
-              <div v-if="season == defaultseason" class="max-w-[1500px] flex justify-end mb-2 items-center gap-4 ml-auto">
+              <div v-if="season == defaultseason" class="max-w-[1500px] max-md:mx-4 flex justify-end mb-2 items-center gap-4 ml-auto">
                 <div v-if="!patreonUser">
                   <a class="link" href="/Authenticate/Battlenet" target="_blank">Log in</a> and subscribe to <a class="link" href="https://www.patreon.com/heroesprofile" target="_blank">Patreon</a> to use 
                 </div>
@@ -146,7 +146,7 @@
                         <hero-image-wrapper :hero="row.most_played_hero">
                           <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Games Played:' + row.hero_build_games_played"></image-hover-box>
                         </hero-image-wrapper>
-                        {{ row.most_played_hero.name }}
+                       <span class="max-md:hidden"> {{ row.most_played_hero.name }}</span>
                       </template>
                     </td>
 

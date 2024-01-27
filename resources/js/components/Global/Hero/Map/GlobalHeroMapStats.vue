@@ -30,11 +30,12 @@
     <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
     <div v-if="data">
-      <div class="max-w-[1500px] mx-auto"><span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Map Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span></div>
+      <div class="max-w-[1500px] mx-auto"><span class="flex gap-4 mb-2 mx-4"> {{ this.selectedHero.name }} {{ "Map Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span></div>
 
 
-      <div class="max-w-full  md:px-20 overflow-scroll md:overflow-auto max-w-full h-[50vh] md:h-auto">
-        <table >
+      <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw] max-sm:text-xs   2xl:mx-auto  " style=" ">
+       <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
+      
           <thead>
             <tr>
               <th 
@@ -67,6 +68,7 @@
             </tr>
           </tbody>
         </table>
+        
       </div>
 
     </div>
@@ -101,6 +103,7 @@
     },
     data(){
       return {
+        windowWidth: window.innerWidth,
         isLoading: false,
         infoText: "Hero Maps provide information on which maps are good for each hero",
         selectedHero: null,
@@ -200,6 +203,17 @@
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
+          this.$nextTick(() => {
+        const responsivetable = this.$refs.responsivetable;
+          if (responsivetable && this.windowWidth < 1500) {
+            const newTableWidth = this.windowWidth /responsivetable.clientWidth;
+            responsivetable.style.transformOrigin = 'top left';
+            responsivetable.style.transform = `scale(${newTableWidth})`;
+            const container = this.$refs.tablecontainer;
+            this.tablewidth = newTableWidth;
+            container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+          }
+        });
         }
 
         this.isLoading = false;
