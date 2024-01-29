@@ -2,7 +2,7 @@
   <div class="match-page">
     <div v-if="data" class=" mx-auto">
       
-<div class="" :style="`background-size: cover; background-image: url('/images/maps/background/header-${data.game_map.sanitized_map_name}.jpg')`">
+<div class="" :style="`background-size: cover; background-position:center; background-image: url('/images/maps/background/header-${data.game_map.sanitized_map_name}.jpg')`">
 <div class="text-center pt-4">
        <!-- <div>
           <span>Match Scores</span>
@@ -31,9 +31,9 @@
 
 
       <div class=" p-10 text-center ">
-        <div class="flex  justify-center max-w-[1500px] mx-auto gap-10">
+        <div class="flex  justify-center max-w-[1500px] mx-auto gap-2 md:gap-10">
           <div class="max-w-[600px]">
-            <group-box class="w-full" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(0, data.winner)" popupsize="large" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
+            <group-box class="w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(0, data.winner)" popupsize="large" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
 
 
             <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">

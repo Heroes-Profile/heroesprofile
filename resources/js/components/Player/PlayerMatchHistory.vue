@@ -34,8 +34,8 @@
         </ul>
       </div>
 
-
-      <table class="">
+      <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
+      <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
         <thead>
           <tr>
             <th @click="sortTable('replayID')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -76,7 +76,7 @@
               {{ row.game_map }}
             </td>
             <td class="py-2 px-3  flex items-center gap-1">
-              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}
+              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
             </td>
             <td>
               {{ row.winner }}
@@ -96,6 +96,7 @@
           </tr>
         </tbody>
       </table>
+      </div>
     </div>
     <div v-else-if="isLoading">
       <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
@@ -122,6 +123,7 @@ export default {
   },
   data(){
     return {
+      windowWidth: window.innerWidth,
       cancelTokenSource: null,
       userTimezone: moment.tz.guess(),
       isLoading: false,
@@ -196,6 +198,16 @@ export default {
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
+        this.$nextTick(() => {
+        const responsivetable = this.$refs.responsivetable;
+          if (responsivetable && this.windowWidth < 1500) {
+            const newTableWidth = this.windowWidth /responsivetable.clientWidth;
+            responsivetable.style.transformOrigin = 'top left';
+            responsivetable.style.transform = `scale(${newTableWidth})`;
+            const container = this.$refs.tablecontainer;
+            container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+          }
+        });
       }
     },
     cancelAxiosRequest() {
