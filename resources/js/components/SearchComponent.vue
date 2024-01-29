@@ -1,7 +1,7 @@
 <template>
   
   <div class="flex items-stretch mt-auto py-4">
-    <input type="text" class="form-control text-black rounded-l p-2" :placeholder="labelText" :aria-label="labelText" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="clickedButton">
+    <input type="text" class="form-control variable-text rounded-l p-2" :placeholder="labelText" :aria-label="labelText" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="clickedButton">
     <button v-if="buttonText" class="btn btn-outline-secondary bg-teal hover:bg-lteal rounded-r p-2" type="button" @click="clickedButton">{{ buttonText }}</button>
   </div>
   

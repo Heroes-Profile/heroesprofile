@@ -18,7 +18,7 @@
           @click="toggleAll"
           class="form-checkbox h-5 w-5 text-indigo-600"
           >
-          <label for="select-all" class="ml-2 text-sm text-black">Select All</label>
+          <label for="select-all" class="ml-2 text-sm variable-text">Select All</label>
         </div>
         <div class="max-h-80 overflow-y-auto"> 
           <div v-for="value in values" :key="value.code">
@@ -29,7 +29,7 @@
             v-model="selectedOptions"
             class="form-checkbox h-5 w-5 text-indigo-600"
             >
-            <label :for="value.code" class="ml-2 text-sm text-black">{{ value.name }}</label>
+            <label :for="value.code" class="ml-2 text-sm variable-text">{{ value.name }}</label>
           </div>
         </div>
       </div>

@@ -12,11 +12,30 @@ html{background-color:lightgrey; font-family: 'Open Sans', sans-serif; box-sizin
   min-width: 150px;  /* Adjust based on your needs */
   width: auto;
 }
+.dark-mode .expandable-dropdown{
+  @apply  bg-gray-dark text-white;
+  
+}
 
 .filter-label{
   color:black;
 }
+.variable-text{
+  @apply text-black;
+}
+.dark-mode .variable-text{
+  @apply text-white;
+}
+.dark-mode input{
+  @apply text-white bg-gray-dark;
+}
 
+.variable-hover{
+  @apply  hover:bg-gray-light hover:text-black;
+}
+.dark-mode .variable-hover{
+  @apply hover:bg-darken hover:text-white;
+}
 body{
   font-size:18px;
   letter-spacing: .14em;
@@ -104,7 +123,20 @@ body{
     }
   }
 
+.variable-background{
+  @apply bg-gray-light;
+}
+.dark-mode .variable-background{
+  @apply bg-gray-dark text-white;
 
+}
+
+.variable-ring{
+  @apply ring-gray-medium;
+}
+.dark-mode variable-ring{
+  @apply ring-black;
+}
 
 /*  end navigation */
 .search-input{
@@ -120,6 +152,13 @@ table{
   td{flex:1;}
  
 }
+
+.dark-mode table{
+  @apply bg-gray-dark text-white;
+}
+.dark-mode tr{
+  @apply even:bg-darken text-white;
+}
 @media (min-width:1500px){
   table{
   width:auto ;
@@ -127,6 +166,8 @@ table{
 min-width:1500px;
   }
 }
+
+
 
 tr{
 @apply even:bg-gray-xlight ;
