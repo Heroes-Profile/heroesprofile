@@ -8,9 +8,9 @@ class MainPageController extends Controller
 {
     public function show(Request $request)
     {
-      return view('mainPage')->with([
-          'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
-      ]);
+        return view('mainPage')->with([
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+        ]);
     }
 
     public function getFooterData()
