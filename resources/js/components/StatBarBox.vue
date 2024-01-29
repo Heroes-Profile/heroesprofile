@@ -10,7 +10,7 @@
   ]">
        <h2 class="rounded  px-2 py-1 text-sm  uppercase "> {{ title }}</h2>
     
-    <div :class=" ['bg-gray-light  rounded rounded-l-lg ring-inset ring-[1px] ring-gray-medium ',
+    <div :class=" [' variable-background  rounded rounded-l-lg ring-inset ring-[1px]  variable-ring',
      {
       'w-full': size === 'big',
       'w-[10em]': size != 'big',
