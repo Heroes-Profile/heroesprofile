@@ -9,7 +9,7 @@
     :region="{{ json_encode($region) }}" 
     :filters="{{ json_encode($filters) }}" 
     :gametypedefault="{{ json_encode($gametypedefault) }}"
-    :regionsmap="{{ json_encode($regions) }}"
+    :regionsmap="{{ json_encode($bladeGlobals['regions']) }}"
     :is-patreon="{{ json_encode($patreon) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
   ></mmr-data>

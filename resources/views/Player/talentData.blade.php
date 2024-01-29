@@ -11,7 +11,7 @@
     :filters="{{ json_encode($filters) }}"
     :heroes="{{ json_encode($heroes) }}"
     :talentimages="{{ json_encode($talentimages) }}"  
-    :regionsmap="{{ json_encode($regions) }}"
+    :regionsmap="{{ json_encode($bladeGlobals['regions']) }}"
     :is-patreon="{{ json_encode($patreon) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
     :gametypedefault="{{ json_encode($gametypedefault) }}" 

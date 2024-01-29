@@ -9,7 +9,7 @@
     :blizzid="{{ json_encode($blizz_id) }}" 
     :region="{{ $region }}" 
     :hero="{{ json_encode($hero) }}" 
-    :regionsmap="{{ json_encode($regions) }}"
+    :regionsmap="{{ json_encode($bladeGlobals['regions']) }}"
     :heroobject="{{ json_encode($heroObject) }}"
     :is-patreon="{{ json_encode($patreon) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
