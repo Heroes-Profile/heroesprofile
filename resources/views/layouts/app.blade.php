@@ -48,7 +48,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
 </head>
-<body class="bg-black text-white {{ $bladeGlobals['darkmode'] ? 'dark-mode' : 'light-mode' }}">
+<body class="bg-black text-white {{ $bladeGlobals ? $bladeGlobals['darkmode'] ? 'dark-mode' : 'light-mode' : 'light-mode' }}">
   <div id="app" class="flex flex-col align-stretch" style="min-height:100vh;">
     <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></horizontal-banner-ad>
 
