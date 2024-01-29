@@ -149,10 +149,10 @@ table{
  width:100%;
   margin-left:auto;
   margin-right:auto;
-  td{flex:1;}
+  
  
 }
-
+table td{flex:1;}
 .dark-mode table{
   @apply bg-gray-dark text-white;
 }
