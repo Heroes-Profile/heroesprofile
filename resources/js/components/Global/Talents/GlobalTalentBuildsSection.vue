@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="table-container2" ref="tablecontainer2" class=" overflow-hidden w-[100vw] min-w-0 max-sm:text-xs  2xl:mx-auto " style=" ">
+    <div id="table-container2" ref="tablecontainer2" class=" max-md:overflow-hidden max-md:w-full min-w-0 max-sm:text-xs  2xl:mx-auto " style=" ">
       <table class="min-w-0 ml-0 max-sm:text-xs w-full max-w-[1500px]" ref="responsivetable2">
           <thead>
             <tr>

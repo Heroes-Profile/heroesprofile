@@ -159,6 +159,9 @@ table td{flex:1;}
 .dark-mode tr{
   @apply even:bg-darken text-white;
 }
+.dark-mode tr.bg-hred {
+  background-color: rgba(214, 142, 124, 0.5);
+}
 @media (min-width:1500px){
   table{
   width:auto ;
@@ -407,6 +410,12 @@ h1{
   @apply bg-red;
 }
 .match-page table.winner thead td:not(.color-cell){
+  @apply bg-teal;
+}
+.dark-mode .match-page table.loser thead td:not(.color-cell){
+  @apply bg-red;
+}
+.dark-mode .match-page table.winner thead td:not(.color-cell){
   @apply bg-teal;
 }
 
