@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 
 @section('title', 'Player Map Stats Esports')
 @section('meta_keywords', 'Heroes Profile, player map stats, player performance, Heroes of the Storm, specific maps')

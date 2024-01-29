@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 @section('title', 'Player Map Stats')
 @section('title', $battletag . " All Map Stats")
 @section('meta_keywords', 'Player Map Stats, Map Statistics, Player Stats')

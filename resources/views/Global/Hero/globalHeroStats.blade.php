@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 
 @section('title', 'Global Hero Stats')
 @section('meta_keywords', 'Hero Win Rates, Pick Rate, Ban Rate, Hero Influence, Win Rate Confidence, Hero Performance')

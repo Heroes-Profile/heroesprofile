@@ -51,7 +51,7 @@ class FriendFoeController extends Controller
         $game_map = $request['game_map'];
 
         return view('Player.friendfoe')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,

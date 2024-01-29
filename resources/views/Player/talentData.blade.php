@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 @section('title', $battletag . "'s Talent Stats")
 @section('meta_keywords', 'Player Talents, Talent Statistics, Talent Performance, Talent Builds, Talent Win Rate')
 @section('meta_description', 'Explore the talent stats of ' . $battletag . ', including talent performance, talent builds, and win rate statistics.')

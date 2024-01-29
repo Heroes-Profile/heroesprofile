@@ -15,7 +15,7 @@ class BattleNetController extends Controller
     {
         return view('Battlenet.authenticate')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'filters' => $this->globalDataService->getFilterData(),
             ]);
     }
@@ -64,7 +64,7 @@ class BattleNetController extends Controller
     {
         return view('Battlenet.authenticationFailed')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             ]);
     }
 

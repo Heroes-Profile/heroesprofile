@@ -39,7 +39,7 @@ class PlayerHeroesController extends Controller
         }
 
         return view('Player.Heroes.allHeroesData')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'battletag' => $battletag,
             'account_level' => $account_level,
             'blizz_id' => $blizz_id,
@@ -70,14 +70,14 @@ class PlayerHeroesController extends Controller
         }
 
         return view('Player.Heroes.singleHeroData')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,
             'hero' => $hero,
             'heroObject' => $this->globalDataService->getHeroModel($hero),
             'filters' => $this->globalDataService->getFilterData(),
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
             'gametypedefault' => $this->globalDataService->getGameTypeDefault('single'),
         ]);

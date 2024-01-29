@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 @section('title', 'Compare Players and Leagues')
 @section('meta_keywords', 'compare players, compare leagues, player comparison, league comparison')
 @section('meta_description', 'Compare one or more players and/or leagues to analyze their performance, statistics, and achievements on Heroes Profile.')

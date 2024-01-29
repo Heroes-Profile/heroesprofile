@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 
 @if ($userinput)
   @section('title', $userinput["name"] . ' Global Draft Stats')

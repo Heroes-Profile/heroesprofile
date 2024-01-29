@@ -33,7 +33,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
         return view('Global.Talents.globalTalentStats')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'heroes' => $this->globalDataService->getHeroes(),
                 'userinput' => $userinput,
                 'filters' => $this->globalDataService->getFilterData(),

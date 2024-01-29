@@ -32,7 +32,7 @@ class CompareController extends Controller
         return view('compare')
             ->with([
                 'heroes' => $this->globalDataService->getHeroes(),
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'userinput' => $userinput,
                 'filters' => $this->globalDataService->getFilterData(),
                 'gametypedefault' => $this->globalDataService->getGameTypeDefault('single'),

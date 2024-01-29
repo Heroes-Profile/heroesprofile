@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 
 @section('title', 'Heroes International Nations Cup Esports')
 @section('meta_keywords', 'Heroes International Nations Cup league, Heroes International Nations Cup, Heroes of the Storm, Heroes International Nations Cup esports, competitive gaming, Heroes of the Storm league')
