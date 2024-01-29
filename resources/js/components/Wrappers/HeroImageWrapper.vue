@@ -15,7 +15,7 @@
     >
       <slot>
         <div v-if="!hasSlotContent">
-          <h2>{{ hero.name }}</h2>
+          <h2 class="max-sm:text-xs">{{ hero.name }}</h2>
         </div>
       </slot>
     </round-image>

@@ -399,7 +399,7 @@ h1{
 
 
 .match-page table{
-  @apply table-fixed;
+  @apply md:table-fixed;
   width:100%;
 
 }
