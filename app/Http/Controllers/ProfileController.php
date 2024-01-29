@@ -114,16 +114,15 @@ class ProfileController extends Controller
         }
 
         if (! is_null($request['darkmode'])) {
-          $user = BattlenetAccount::find($request['userid']);
+            $user = BattlenetAccount::find($request['userid']);
 
-          $darkmode = $request['darkmode'];
+            $darkmode = $request['darkmode'];
 
-          $user->userSettings()->updateOrCreate(
-              ['setting' => 'darkmode'],
-              ['value' => $darkmode]
-          );
+            $user->userSettings()->updateOrCreate(
+                ['setting' => 'darkmode'],
+                ['value' => $darkmode]
+            );
         }
-
 
         return ['success' => true];
     }
