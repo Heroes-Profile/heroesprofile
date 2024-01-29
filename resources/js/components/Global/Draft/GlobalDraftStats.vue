@@ -256,7 +256,7 @@
        return mapping[pick_number];
      },
      redirectChangeHero(){
-      window.location.href = "/Global/Draft/General";
+      window.location.href = "/Global/Draft/";
     },
 
   }
