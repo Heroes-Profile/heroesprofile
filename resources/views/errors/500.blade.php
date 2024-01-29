@@ -1,10 +1,17 @@
-@extends('layouts.app', ['regions' => [
-    1 => 'NA',
-    2 => 'EU',
-    3 => 'KR',
-    /* 4 => 'UNK', */
-    5 => 'CN',
-]])
+@php
+    $bladeGlobals = [
+        'regions' => [
+            1 => 'NA',
+            2 => 'EU',
+            3 => 'KR',
+            /* 4 => 'UNK', */
+            5 => 'CN',
+        ],
+        'darkmode' => 0, // Set your default dark mode value here
+    ];
+@endphp
+
+@extends('layouts.app', $bladeGlobals)
 
 @section('content')
     <div class="error-page">
