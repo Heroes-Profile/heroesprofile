@@ -108,6 +108,26 @@ class GlobalDataService
         return session('latestGameDate');
     }
 
+    public function getBladeGlobals(){
+      $darkModeValue = null;
+      
+      if (Auth::check()) {
+        $user = Auth::user();
+
+        $darkmode = $user->userSettings->firstWhere('setting', 'darkmode');
+
+        $darkModeValue =  $darkmode ? $darkmode->value : '0';
+      }
+
+      $regions = $this->getRegionIDtoString();
+
+      return [
+        "regions" => $regions,
+        "darkmode" => $darkModeValue,
+      ];
+
+    }
+
     public function getRegionIDtoString()
     {
         return $regions = [

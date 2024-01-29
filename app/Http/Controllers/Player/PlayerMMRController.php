@@ -34,7 +34,7 @@ class PlayerMMRController extends Controller
         }
 
         return view('Player.mmrData')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,

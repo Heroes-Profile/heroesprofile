@@ -45,7 +45,7 @@ class EsportsController extends Controller
     {
         return view('Esports.esportsMain')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             ]);
     }
 
@@ -74,7 +74,7 @@ class EsportsController extends Controller
         }
 
         return view('Esports.singlePlayerMatchHistory')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'esport' => $esport,
@@ -115,7 +115,7 @@ class EsportsController extends Controller
 
         return view('Esports.team')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => $esport,
                 'team' => $team,
                 'season' => $request['season'],
@@ -152,7 +152,7 @@ class EsportsController extends Controller
 
         return view('Esports.singlePlayer')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => $esport,
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
@@ -192,7 +192,7 @@ class EsportsController extends Controller
 
         return view('Esports.singlePlayerHero')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => $esport,
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
@@ -232,7 +232,7 @@ class EsportsController extends Controller
 
         return view('Esports.singlePlayerMap')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => $esport,
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
@@ -267,7 +267,7 @@ class EsportsController extends Controller
 
         return view('Esports.teamMatchHistory')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => $esport,
                 'team' => $team,
                 'season' => $request['season'],

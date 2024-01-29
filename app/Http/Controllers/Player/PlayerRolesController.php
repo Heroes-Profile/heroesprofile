@@ -33,7 +33,7 @@ class PlayerRolesController extends Controller
         }
 
         return view('Player.Roles.allRoleData')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'account_level' => $account_level,
@@ -64,13 +64,13 @@ class PlayerRolesController extends Controller
         }
 
         return view('Player.Roles.singleRoleData')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,
             'role' => $role,
             'filters' => $this->globalDataService->getFilterData(),
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
             'gametypedefault' => $this->globalDataService->getGameTypeDefault('single'),
 

@@ -43,7 +43,7 @@ class PlayerTalentsController extends Controller
         $userinput = $this->globalDataService->getHeroModel($request['hero']);
 
         return view('Player.talentData')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'userinput' => $userinput,
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,

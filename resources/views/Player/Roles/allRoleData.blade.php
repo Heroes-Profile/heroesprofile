@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 @section('title', $battletag . " All Role Stats")
 @section('meta_keywords', 'Player Role Stats, Role Statistics, Player Stats')
 @section('meta_description', 'Explore the statistics and data for all roles played by ' . $battletag . '. Analyze player performance and stats for different roles.')

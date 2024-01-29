@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 @section('title', "Match History")
 @section('meta_keywords', 'Match History, Player Matches, Game Results, Match Stats')
 @section('content')

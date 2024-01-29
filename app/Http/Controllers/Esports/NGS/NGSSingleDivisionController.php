@@ -33,7 +33,7 @@ class NGSSingleDivisionController extends Controller
 
         return view('Esports.NGS.singleDivision')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'defaultseason' => $defaultseason,
                 'filters' => $this->globalDataService->getFilterData(),
                 'division' => $division,
@@ -61,7 +61,7 @@ class NGSSingleDivisionController extends Controller
 
         return view('Esports.ngs.ngsSingleDivisionMatchHistory')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'defaultseason' => $defaultseason,
                 'filters' => $this->globalDataService->getFilterData(),
                 'division' => $division,

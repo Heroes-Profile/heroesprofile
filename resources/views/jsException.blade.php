@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 @section('title', '')
 @section('meta_keywords', '')
 @section('meta_description', '')

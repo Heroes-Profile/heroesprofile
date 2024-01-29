@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 
 @section('title', 'Masters Clash Esports')
 @section('meta_keywords', 'Masters Clash league, Masters Clash, Heroes of the Storm, Masters Clash esports, competitive gaming, Heroes of the Storm league')
