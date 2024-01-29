@@ -20,10 +20,10 @@
         <custom-button class="ml-auto" @click="showOptions = !showOptions" :text="showOptions ? 'Hide Column Selection' : 'Show Column Selection'" :ignoreclick="true"></custom-button>
           
         <div v-if="showOptions">
-          <div class="absolute left-0 mt-2 w-full bg-gray-light border border-gray-300 rounded shadow-lg text-black z-50 flex flex-wrap  p-2 ">
+          <div class="absolute left-0 mt-2 w-full variable-background border border-gray-300 rounded shadow-lg variable-text z-50 flex flex-wrap  p-2 ">
             <input class="w-full p-2" type="text" v-model="searchQuery" placeholder="Search..." />
               <div v-for="(stat, index) in filteredStats" :class="[
-              'flex-1 min-w-[24%] border-gray border p-1 cursor-pointer hover:bg-gray-light hover:text-black',
+              'flex-1 min-w-[24%] border-gray border p-1 cursor-pointer variable-hover',
               {
                 'bg-teal text-white' : stat.selected
               } ]
