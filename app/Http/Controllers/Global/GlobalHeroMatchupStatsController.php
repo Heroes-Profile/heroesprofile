@@ -30,7 +30,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
 
         return view('Global.Matchups.globalMatchupsStats')->with([
             'heroes' => $this->globalDataService->getHeroes(),
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'userinput' => $userinput,
             'filters' => $this->globalDataService->getFilterData(),
             'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),

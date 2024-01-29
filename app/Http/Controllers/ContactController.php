@@ -10,7 +10,7 @@ class ContactController extends Controller
 {
     public function show(Request $request)
     {
-        return view('contact')->with(['regions' => $this->globalDataService->getRegionIDtoString()]);
+        return view('contact')->with(['bladeGlobals' => $this->globalDataService->getBladeGlobals()]);
     }
 
     public function submitMessage(Request $request)

@@ -8,9 +8,9 @@ class MainPageController extends Controller
 {
     public function show(Request $request)
     {
-        return view('mainPage')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
-        ]);
+      return view('mainPage')->with([
+          'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+      ]);
     }
 
     public function getFooterData()
@@ -35,7 +35,7 @@ class MainPageController extends Controller
     public function testJS()
     {
         return view('jsException')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
         ]);
     }
 }

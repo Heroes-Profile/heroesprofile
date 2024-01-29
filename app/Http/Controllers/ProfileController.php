@@ -19,7 +19,7 @@ class ProfileController extends Controller
         $user = Auth::user();
 
         return view('Profile.profileSettings')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'user' => $user,
             'filters' => $this->globalDataService->getFilterData(),
         ]);
@@ -33,6 +33,7 @@ class ProfileController extends Controller
             'userhero' => 'nullable|numeric',
             'usergametype' => ['sometimes', 'nullable', new GameTypeInputValidation()],
             'talentbuildtype' => ['sometimes', 'nullable', new TalentBuildTypeInputValidation()],
+            'darkmode' => 'nullable|boolean',
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -111,6 +112,18 @@ class ProfileController extends Controller
                 ['value' => $talentbuildtype]
             );
         }
+
+        if (! is_null($request['darkmode'])) {
+          $user = BattlenetAccount::find($request['userid']);
+
+          $darkmode = $request['darkmode'];
+
+          $user->userSettings()->updateOrCreate(
+              ['setting' => 'darkmode'],
+              ['value' => $darkmode]
+          );
+        }
+
 
         return ['success' => true];
     }

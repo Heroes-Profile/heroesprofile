@@ -4,7 +4,7 @@
       <h2>Master Branch Commits</h2>
       <ul>
         <li v-for="commit in masterCommits" :key="commit.sha" class="commit-item">
-          <a class="link" :href="`https://github.com/${commit.commit.author.name}`" target="_blank">{{ commit.commit.author.name }}</a> committed <a class="link" :href="`https://github.com/Heroes-Profile/heroesprofile/commit/${commit.sha}`" target="_blank">{{ truncateSha(commit.sha) }}</a> on {{ formatDate(commit.commit.author.date) }}: {{ commit.commit.message }} 
+          <a class="link" :href="`https://github.com/${commit.author.login}`" target="_blank">{{ commit.author.login }}</a> committed <a class="link" :href="`https://github.com/Heroes-Profile/heroesprofile/commit/${commit.sha}`" target="_blank">{{ truncateSha(commit.sha) }}</a> on {{ formatDate(commit.commit.author.date) }}: {{ commit.commit.message }} 
         </li>
       </ul>
     </div>
@@ -12,7 +12,7 @@
       <h2>Develop Branch Commits</h2>
       <ul>
         <li v-for="commit in developerCommits" :key="commit.sha" class="commit-item">
-          <a class="link" :href="`https://github.com/${commit.commit.author.name}`" target="_blank">{{ commit.commit.author.name }}</a> committed <a class="link" :href="`https://github.com/Heroes-Profile/heroesprofile/commit/${commit.sha}`" target="_blank">{{ truncateSha(commit.sha) }}</a> on {{ formatDate(commit.commit.author.date) }}: {{ commit.commit.message }} 
+          <a class="link" :href="`https://github.com/${commit.author.login}`" target="_blank">{{ commit.author.login }}</a> committed <a class="link" :href="`https://github.com/Heroes-Profile/heroesprofile/commit/${commit.sha}`" target="_blank">{{ truncateSha(commit.sha) }}</a> on {{ formatDate(commit.commit.author.date) }}: {{ commit.commit.message }} 
         </li>
       </ul>
     </div>
@@ -50,7 +50,6 @@ export default {
     this.fetchCommits(owner, repo, 'master', this.access_token)
       .then(response => {
         this.masterCommits = response.data;
-        console.log(this.masterCommits);
       })
       .catch(error => {
         console.error('Error fetching GitHub commits for the master branch:', error);
@@ -60,6 +59,8 @@ export default {
     this.fetchCommits(owner, repo, 'develop', this.access_token)
       .then(response => {
         this.developerCommits = response.data;
+        console.log(this.developerCommits);
+
       })
       .catch(error => {
         console.error('Error fetching GitHub commits for the developer branch:', error);

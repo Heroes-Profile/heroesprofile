@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 @section('title', 'Github Changes')
 @section('meta_keywords', 'Github Changes')
 @section('meta_description', 'Github Changes')

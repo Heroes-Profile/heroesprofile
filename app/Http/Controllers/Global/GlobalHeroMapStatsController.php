@@ -30,7 +30,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
         return view('Global.Hero.Map.globalHeroMapStats')
             ->with([
                 'heroes' => $this->globalDataService->getHeroes(),
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'userinput' => $userinput,
                 'filters' => $this->globalDataService->getFilterData(),
                 'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),

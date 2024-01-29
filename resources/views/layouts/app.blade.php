@@ -48,7 +48,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
 </head>
-<body class="bg-black text-white">
+<body class="bg-black text-white {{ $bladeGlobals['darkmode'] ? 'dark-mode' : 'light-mode' }}">
+  dark mode = {{ $bladeGlobals["darkmode"] }}
+      If dark mode is set, this value will be equal to 1
+
   <div id="app" class="flex flex-col align-stretch" style="min-height:100vh;">
     <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></horizontal-banner-ad>
 
@@ -64,7 +67,7 @@
     'isAuthenticated' => Auth::check(),
     'mainSearchAccount' => $main_search_account,
     'altSearchAccounts' => [$alt_search_account1, $alt_search_account2, $alt_search_account3],
-    'regions' => $regions,
+    'regions' => $bladeGlobals["regions"],
     ])
     
 

@@ -33,7 +33,7 @@ class SingleMatchController extends Controller
         }
 
         return view('singleMatch')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'esport' => null,
             'replayID' => $replayID,
         ]);
@@ -56,7 +56,7 @@ class SingleMatchController extends Controller
         }
 
         return view('singleMatch')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'esport' => $esport,
             'replayID' => $replayID,
         ]);
