@@ -35,7 +35,9 @@
           </div>
         </div>
       </div>
-      <table class="">
+      <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
+
+        <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
         <thead>
           <tr>
             <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -72,7 +74,7 @@
         </thead>
         <tbody>
           <tr v-for="row in sortedData" :key="row.id">
-            <td class="py-2 px-3 "><a :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.name }}</a></td>
+            <td class="py-2 px-3 "><a :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.name }}</span></a></td>
             <td class="py-2 px-3 "><stat-bar-box :title="'Win Rate'" :value="row.win_rate" :color="getWinRateColor(row.win_rate)"></stat-bar-box>{{ (row.wins + row.losses) }}</td>
             <td class="py-2 px-3 ">{{ row.kda }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}/{{ row.avg_assists }}</td>
             <td class="py-2 px-3 ">{{ row.kdr }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}</td>
@@ -95,7 +97,7 @@
           </tr>
         </tbody>
       </table>
-
+      </div>
     </div>
     <div v-if="isLoading">
         <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true" :timer="true" :starttime="timertime">Large amount of data.<br/>Please be patient.<br/></loading-component>
@@ -127,6 +129,7 @@ export default {
   },
   data(){
     return {
+      windowWidth: window.innerWidth,
       showOptions: false,
       isLoading: false,
       matchIsLoading: false,
@@ -275,6 +278,7 @@ export default {
   },
   methods: {
     async getData(type){
+      
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -297,13 +301,26 @@ export default {
         {
           cancelToken: this.cancelTokenSource.token,
         });
-
+        console.log('testing');
         this.data = response.data;
       }catch(error){
         //Do something here
+        
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
+        console.log('testing this');
+        this.$nextTick(() => {
+        const responsivetable = this.$refs.responsivetable;
+          if (responsivetable && this.windowWidth < 1500) {
+            const newTableWidth = this.windowWidth /responsivetable.clientWidth;
+            responsivetable.style.transformOrigin = 'top left';
+            responsivetable.style.transform = `scale(${newTableWidth})`;
+            const container = this.$refs.tablecontainer;
+            console.log(newTableWidth);
+            container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+          }
+        });
       }
     },
     cancelAxiosRequest() {

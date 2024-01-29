@@ -34,7 +34,9 @@
         </div>
       </div>
     </div>
-    <table class="">
+    <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
+
+<table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
       <thead>
         <tr>
           <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -81,6 +83,7 @@
         </tr>
       </tbody>
     </table>
+    </div>
   </div>
   <div v-else-if="isLoading">
     <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true" :timer="true" :starttime="timertime">Large amount of data.<br/>Please be patient.<br/></loading-component>
@@ -110,6 +113,7 @@
     },
     data(){
       return {
+        windowWidth: window.innerWidth,
         cancelTokenSource: null,
         showOptions: false,
         isLoading: false,
@@ -277,6 +281,17 @@ methods: {
     }finally {
       this.cancelTokenSource = null;
       this.isLoading = false;
+      this.$nextTick(() => {
+        const responsivetable = this.$refs.responsivetable;
+          if (responsivetable && this.windowWidth < 1500) {
+            const newTableWidth = this.windowWidth /responsivetable.clientWidth;
+            responsivetable.style.transformOrigin = 'top left';
+            responsivetable.style.transform = `scale(${newTableWidth})`;
+            const container = this.$refs.tablecontainer;
+            console.log(newTableWidth);
+            container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+          }
+        });
     }
   },
   cancelAxiosRequest() {
