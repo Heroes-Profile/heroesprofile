@@ -7,6 +7,8 @@
 @section('content')
   <global-hero-stats 
     :filters="{{ json_encode($filters) }}" 
+    :heroes="{{ json_encode($heroes) }}" 
+    :urlparameters="{{ json_encode($urlparameters) }}"
     :gametypedefault="{{ json_encode($gametypedefault) }}" 
     :defaultbuildtype="{{ json_encode($defaultbuildtype) }}" 
     :defaulttimeframe="{{ json_encode($defaulttimeframe) }}" 

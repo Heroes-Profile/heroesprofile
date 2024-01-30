@@ -15,6 +15,14 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 {
     public function show(Request $request)
     {
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+          return Redirect::to('/Global/Compositions')->withErrors($validator)->withInput();
+        }
+
         return view('Global.Compositions.compositionsStats')
             ->with([
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
@@ -24,6 +32,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
                 'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
+                'urlparameters' => $request->all(),
             ]);
 
     }

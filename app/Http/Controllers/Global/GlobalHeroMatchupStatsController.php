@@ -13,6 +13,14 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
 {
     public function show(Request $request, $hero = null, $allyenemy = null)
     {
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+          return Redirect::to('/Global/Matchups')->withErrors($validator)->withInput();
+        }
+
         if (! is_null($hero) && ! is_null($allyenemy)) {
             $validationRules = [
                 'hero' => ['required', new HeroInputValidation()],
@@ -38,6 +46,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
             'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
             'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
             'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
+            'urlparameters' => $request->all(),
         ]);
     }
 

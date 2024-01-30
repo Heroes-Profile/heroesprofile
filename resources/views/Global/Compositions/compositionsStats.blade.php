@@ -13,6 +13,8 @@
     :defaulttimeframe="{{ json_encode($defaulttimeframe) }}" 
     :advancedfiltering="{{ json_encode($advancedfiltering) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+    :urlparameters="{{ json_encode($urlparameters) }}"
+
   >
   </compositions-stats>
 @endsection

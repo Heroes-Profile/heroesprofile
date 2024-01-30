@@ -11,7 +11,7 @@ class GameTypeInputValidation implements Rule
     {
         // Convert single game type to an array
         if (! is_array($value)) {
-            $value = [$value];
+          $value = explode(',', $value);
         }
 
         $existingGameTypes = GameType::pluck('short_name')->toArray();

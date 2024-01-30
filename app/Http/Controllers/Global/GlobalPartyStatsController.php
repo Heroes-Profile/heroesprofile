@@ -13,6 +13,14 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
 {
     public function show(Request $request)
     {
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+          return Redirect::to('/Global/Party')->withErrors($validator)->withInput();
+        }
+
         return view('Global.Party.globalPartyStats')
             ->with([
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),

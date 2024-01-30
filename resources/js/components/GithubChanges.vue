@@ -59,8 +59,6 @@ export default {
     this.fetchCommits(owner, repo, 'develop', this.access_token)
       .then(response => {
         this.developerCommits = response.data;
-        console.log(this.developerCommits);
-
       })
       .catch(error => {
         console.error('Error fetching GitHub commits for the developer branch:', error);

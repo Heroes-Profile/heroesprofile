@@ -35,7 +35,7 @@
           <single-select-filter v-if="includetimeframetype" 
             :values="filters.timeframe_type" 
             :text="'Timeframe Type'" 
-            :defaultValue="defaultTimeframeType" 
+            :defaultValue="timeframetype" 
             @input-changed="handleInputChange"
           ></single-select-filter>
 
@@ -43,7 +43,7 @@
           <multi-select-filter v-if="includetimeframe" 
             :values="timeframes" 
             :text="'Timeframes'" 
-            :defaultValue="defaultMinor" 
+            :defaultValue="timeframe" 
             @input-changed="handleInputChange"
           ></multi-select-filter>
 
@@ -52,7 +52,7 @@
             :values="filters.game_types" 
             :text="'Game Type'" 
             @input-changed="handleInputChange" 
-            :defaultValue="defaultGameType"
+            :defaultValue="gametype"
           ></multi-select-filter>
 
           <!-- All Game Types Multiselect -->
@@ -60,7 +60,7 @@
             :values="filters.game_types_full" 
             :text="'Game Type'" 
             @input-changed="handleInputChange" 
-            :defaultValue="defaultGameType"
+            :defaultValue="gametype"
           ></multi-select-filter>
 
           <!-- Current Game Type Single -->
@@ -68,7 +68,7 @@
             :values="filters.game_types" 
             :text="'Game Type'" 
             @input-changed="handleInputChange" 
-            :defaultValue="defaultGameType[0]"
+            :defaultValue="gametype[0]"
           ></single-select-filter>
 
 
@@ -77,13 +77,14 @@
             :values="filters.game_types_full" 
             :text="'Game Type'" 
             @input-changed="handleInputChange" 
-            :defaultValue="defaultGameType[0]"
+            :defaultValue="gametype[0]"
           ></single-select-filter>
           
           <!-- Regions Multiselect-->
           <multi-select-filter v-if="includeregion" 
             :values="filters.regions" 
             :text="'Regions'" 
+            :defaultValue="region"
             @input-changed="handleInputChange"
           ></multi-select-filter>
 
@@ -91,15 +92,15 @@
           <single-select-filter v-if="includesingleregion" 
             :values="filters.regions" 
             :text="'Regions'" 
+            :defaultValue="region[0]"
             @input-changed="handleInputChange"
           ></single-select-filter>
-
 
           <!-- Stat Type Filter -->
           <single-select-filter v-if="includestatfilter && toggleExtraFilters" 
             :values="filters.stat_filter" 
             :text="'Stat Filter'" 
-            :defaultValue="defaultStatType" 
+            :defaultValue="statfilter" 
             @input-changed="handleInputChange"
           ></single-select-filter>
 
@@ -107,6 +108,7 @@
           <multi-select-filter v-if="includeherolevel && toggleExtraFilters" 
             :values="filters.hero_level" 
             :text="'Hero Level'" 
+            :defaultValue="herolevel"
             @input-changed="handleInputChange"
           ></multi-select-filter>
 
@@ -114,7 +116,7 @@
           <single-select-filter v-if="modifiedincludeheroes" 
             :values="filters.heroes" 
             :text="'Heroes'" 
-            :defaultValue="defaultHeroModified"
+            :defaultValue="heroinput"
             @input-changed="handleInputChange"
           ></single-select-filter>
 
@@ -122,7 +124,7 @@
           <single-select-filter v-if="modifiedincluderole" 
             :values="filters.role" 
             :text="'Role'" 
-            :defaultValue="defaultRoleModified"
+            :defaultValue="role"
             @input-changed="handleInputChange"
           ></single-select-filter>
 
@@ -146,6 +148,7 @@
           <multi-select-filter v-if="includegamemap" 
             :values="filters.game_maps" 
             :text="'Map'" 
+            :defaultValue="gamemap"
             @input-changed="handleInputChange"
           ></multi-select-filter>
 
@@ -153,6 +156,7 @@
           <single-select-filter v-if="includesinglegamemap" 
             :values="filters.game_maps" 
             :text="'Map'" 
+            :defaultValue="gamemap[0]"
             @input-changed="handleInputChange"
           ></single-select-filter>
 
@@ -160,6 +164,7 @@
           <multi-select-filter v-if="includeplayerrank" 
             :values="filters.rank_tiers" 
             :text="'Player Rank'"
+            :defaultValue="playerrank"
             @input-changed="handleInputChange"
           ></multi-select-filter>
 
@@ -167,12 +172,14 @@
           <multi-select-filter v-if="includeherorank && toggleExtraFilters" 
             :values="filters.rank_tiers" 
             :text="'Hero Rank'" 
+            :defaultValue="herorank"
             @input-changed="handleInputChange"
           ></multi-select-filter>
 
           <multi-select-filter v-if="includerolerank && toggleExtraFilters" 
             :values="filters.rank_tiers" 
             :text="'Role Rank'" 
+            :defaultValue="rolerank"
             @input-changed="handleInputChange"
           ></multi-select-filter>
 
@@ -181,7 +188,7 @@
             :values="filters.talent_build_types" 
             :text="'Talent Build Type'" 
             @input-changed="handleInputChange" 
-            :defaultValue="buildtypedefault"
+            :defaultValue="talentbuildtype"
           ></single-select-filter>
 
           <!-- Minimum Games -->
@@ -215,7 +222,7 @@
             :values="filters.mirror" 
             :text="'Mirror Matches'" 
             @input-changed="handleInputChange" 
-            :defaultValue="filters.mirror[0].code"
+            :defaultValue="mirrormatch"
           ></single-select-filter>
 
           <!-- Game Date -->
@@ -253,6 +260,24 @@
     },
     props: {
       isLoading: Boolean,
+
+      timeframetypeinput: String,
+      timeframeinput: Array,
+      gametypeinput: Array,
+      regioninput: Array,
+      statfilterinput: String,
+      herolevelinput: Array,
+      heroinput: Number,
+      roleinput: String,
+      gamemapinput: Array,
+      playerrankinput: Array,
+      herorankinput: Array,
+      rolerankinput: Array,
+      talentbuildtypeinput: String,
+      mirrormatchinput: {
+        type: [String, Number]
+      },
+
 
       includesingleregion: Boolean,
       includeherorole: Boolean,
@@ -299,17 +324,29 @@
       minimumgamesdefault: String,
       defaultSeason: String,
       advancedfiltering: Boolean,
-      defaultHero: Number,
-      defaultRole: String,
-      buildtypedefault: String,
       groupSizeDefaultValue: String,
       rolerequired: Boolean,
     },
     data(){
       return {
+        timeframetype: String,
+        timeframe: Array,
+        gametype: Array,
+        region: Array,
+        herolevel: Array,
+        hero: Number,
+        role: String,
+        gamemap: Array,
+        playerrank: Array,
+        herorank: Array,
+        rolerank: Array,
+        talentbuildtype: String,
+        mirrormatch: {
+          type: [String, Number]
+        },
+
         selectedSingleFilters: {},
         selectedMultiFilters: {},
-        defaultTimeframeType: this.filters.timeframe_type[1].code,
         defaultGameType: [],
 
         modifiedincluderegion: null,
@@ -323,16 +360,29 @@
         modifiedincluderole: null,
         modifiedincludegroupsize: null,
         showNav: true,
-        defaultHeroModified: null,
         defaultRoleModified: null,
         modifiedGroupSizeDefaultValue: null,
       }
     },
     created(){
-      this.defaultHeroModified = this.defaultHero;
-      this.defaultRoleModified = this.defaultRole;
+      this.timeframetype = this.timeframetypeinput ? this.timeframetypeinput : this.defaultTimeFrameType;
+      this.timeframe = this.timeframeinput ? this.timeframeinput : this.getDefaultMinorBasedOnTimeframeType();
+      this.gametype = this.gametypeinput ? this.gametypeinput : this.gametypedefault;
+      this.region = this.regioninput ? this.regioninput : null;
+      this.statfilter = this.statfilterinput ? this.statfilterinput : this.defaultStatType;
+      this.herolevel = this.herolevelinput ? this.herolevelinput : null;
+      this.hero = this.heroinput ? this.heroinput : null;
+      this.role = this.roleinput ? this.roleinput : null;
+      this.gamemap = this.gamemapinput ? this.gamemapinput : null;
+      this.playerrank = this.playerrankinput ? this.playerrankinput : null;
+      this.herorank = this.herorankinput ? this.herorankinput : null;
+      this.rolerank = this.rolerankinput ? this.rolerankinput : null;
+      this.talentbuildtype = this.talentbuildtypeinput ? this.talentbuildtypeinput : "Popular";
+      this.mirrormatch = this.mirrormatchinput ? this.mirrormatchinput : this.filters.mirror[0].code;
 
-      this.defaultGameType = this.gametypedefault;
+
+      console.log(this.playerrank);
+
       this.selectedSingleFilters = {
       };
 
@@ -348,9 +398,9 @@
 
 
 
-      this.selectedSingleFilters["Timeframe Type"] = this.defaultTimeframeType;
-      this.selectedMultiFilters["Game Type"] = this.gametypedefault;
-      this.selectedMultiFilters["Timeframes"] = this.defaultMinor;
+      this.selectedSingleFilters["Timeframe Type"] = this.timeframetype;
+      this.selectedMultiFilters["Game Type"] = this.gametype;
+      this.selectedMultiFilters["Timeframes"] = this.getDefaultMinorBasedOnTimeframeType();
       this.selectedSingleFilters["Stat Filter"] = this.defaultStatType;
 
       this.toggleExtraFilters = this.advancedfiltering;
@@ -370,30 +420,22 @@
     mounted() {
     },
     computed: {
+      defaultTimeFrameType(){
+        return this.filters.timeframe_type[1].code;
+      },
       disabledFilter(){
         if(this.isLoading || !this.selectedMultiFilters.hasOwnProperty('Timeframes') || !this.selectedMultiFilters.hasOwnProperty('Game Type')){
           return true;
         }
-
-
-        /*
-        if(this.rolerequired && (this.selectedSingleFilters["Type"] == "Role") && !this.selectedSingleFilters.hasOwnProperty('Role')){
-          //return true;
-          return false;
-        }
-        */
         return false;
-      },
-      defaultMinor() {
-        return this.getDefaultMinorBasedOnTimeframeType();
       },
       defaultStatType(){
         return this.filters.stat_filter[0].code;
       },
       timeframes(){
-        if(this.defaultTimeframeType == "minor"){
+        if(this.timeframetype == "minor"){
           return this.filters.timeframes;
-        }else if(this.defaultTimeframeType == "major"){
+        }else if(this.timeframetype == "major"){
           return this.filters.timeframes_grouped;
         }
       },
@@ -433,10 +475,9 @@
     },
     methods: {
       handleInputChange(eventPayload) {
-        if(eventPayload.field == "Timeframe Type" && eventPayload.value == "minor"){
-          this.defaultTimeframeType = eventPayload.value;
-        }else if(eventPayload.field == "Timeframe Type" && eventPayload.value == "major"){
-          this.defaultTimeframeType = eventPayload.value;
+        if(eventPayload.field == "Timeframe Type" ){
+          this.timeframetype = eventPayload.value;
+          this.timeframe = this.getDefaultMinorBasedOnTimeframeType();
         }
 
         if(eventPayload.type === 'single') {
@@ -477,11 +518,11 @@
             delete this.selectedSingleFilters['Role'];
           }else if(eventPayload.value == "Hero"){
             delete this.selectedSingleFilters['Role'];
-            this.defaultHeroModified = 1;
+            this.hero = 1;
             this.selectedSingleFilters.Heroes = 1;
           }else if(eventPayload.value == "Role"){
             delete this.selectedSingleFilters['Heroes'];
-            this.defaultRoleModified = "Support";
+            this.role = "Support";
             this.selectedSingleFilters["Role"] = "Support";
           }
         }
@@ -506,9 +547,9 @@
         delete this.selectedSingleFilters["From Date"];
       },
       getDefaultMinorBasedOnTimeframeType() {
-        if(this.defaultTimeframeType == "minor"){
+        if(this.timeframetype == "minor"){
           return [this.filters.timeframes[0]?.code || ''];
-        } else if(this.defaultTimeframeType == "major"){
+        } else if(this.timeframetype == "major"){
           return [this.filters.timeframes_grouped[0]?.code || ''];
         }
         return '';

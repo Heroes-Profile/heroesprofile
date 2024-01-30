@@ -17,6 +17,14 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
 {
     public function show(Request $request, $hero = null, $allyenemy = null)
     {
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+          return Redirect::to('/Global/Matchups/Talents')->withErrors($validator)->withInput();
+        }
+
         if (! is_null($hero) && $hero !== 'Auto Select') {
             $validationRules = [
                 'hero' => ['required', new HeroInputValidation()],
@@ -68,6 +76,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
             'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
             'inputhero' => $inputhero,
             'inputenemyally' => $inputenemyally,
+            'urlparameters' => $request->all(),
         ]);
     }
 

@@ -301,7 +301,6 @@ export default {
         {
           cancelToken: this.cancelTokenSource.token,
         });
-        console.log('testing');
         this.data = response.data;
       }catch(error){
         //Do something here
@@ -309,7 +308,6 @@ export default {
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
-        console.log('testing this');
         this.$nextTick(() => {
         const responsivetable = this.$refs.responsivetable;
           if (responsivetable && this.windowWidth < 1500) {
@@ -317,7 +315,6 @@ export default {
             responsivetable.style.transformOrigin = 'top left';
             responsivetable.style.transform = `scale(${newTableWidth})`;
             const container = this.$refs.tablecontainer;
-            console.log(newTableWidth);
             container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
           }
         });

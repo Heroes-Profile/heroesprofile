@@ -11,24 +11,48 @@ use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroLevelInputValidation;
 use App\Rules\RegionInputValidation;
-use App\Rules\TierByIDInputValidation;
+use App\Rules\TierInputValidation;
 use App\Rules\TimeframeMinorInputValidation;
+use App\Rules\StatFilterInputValidation;
+use App\Rules\HeroInputValidation;
+use App\Rules\RoleInputValidation;
 
 class GlobalsInputValidationController extends Controller
 {
+    public function globalValidationRulesURLParam($timeframeType){
+      return [
+        'timeframe_type' => 'sometimes|in:minor,major',
+        'timeframe' => ['sometimes', 'nullable', new TimeframeMinorInputValidation($timeframeType)],
+        'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation()],
+        'region' => ['sometimes', 'nullable', new RegionInputValidation()],
+        'statfilter' => ['sometimes', 'nullable', new StatFilterInputValidation()],
+        'hero_level' => ['sometimes', 'nullable', new HeroLevelInputValidation()],
+        'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
+        'role' => ['sometimes', 'nullable', new RoleInputValidation()],
+        'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
+        'league_tier' => ['sometimes', 'nullable', new TierInputValidation()],
+        'hero_league_tier' => ['sometimes', 'nullable', new TierInputValidation()],
+        'role_league_tier' => ['sometimes', 'nullable', new TierInputValidation()],
+        'mirror' => 'sometimes|in:null,0,1',
+      ];
+    }
+
     public function globalsValidationRules($timeframeType)
     {
         return [
             'timeframe_type' => 'required|in:minor,major',
             'timeframe' => ['required', new TimeframeMinorInputValidation($timeframeType)],
             'game_type' => ['required', new GameTypeInputValidation()],
-            'league_tier' => ['sometimes', 'nullable', new TierByIDInputValidation()],
-            'hero_league_tier' => ['sometimes', 'nullable', new TierByIDInputValidation()],
-            'role_league_tier' => ['sometimes', 'nullable', new TierByIDInputValidation()],
-            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
-            'hero_level' => ['sometimes', 'nullable', new HeroLevelInputValidation()],
-            'mirror' => 'sometimes|in:null,0,1',
             'region' => ['sometimes', 'nullable', new RegionInputValidation()],
+            'statfilter' => ['sometimes', 'nullable', new StatFilterInputValidation()],
+            'hero_level' => ['sometimes', 'nullable', new HeroLevelInputValidation()],
+            'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
+            'role' => ['sometimes', 'nullable', new RoleInputValidation()],
+            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
+            'league_tier' => ['sometimes', 'nullable', new TierInputValidation()],
+            'hero_league_tier' => ['sometimes', 'nullable', new TierInputValidation()],
+            'role_league_tier' => ['sometimes', 'nullable', new TierInputValidation()],
+            'mirror' => 'sometimes|in:null,0,1',
         ];
     }
 
