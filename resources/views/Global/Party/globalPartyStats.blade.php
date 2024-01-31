@@ -6,6 +6,7 @@
 @section('content')
   <global-party-stats 
     :filters="{{ json_encode($filters) }}" 
+    :heroes="{{ json_encode($heroes) }}" 
     :gametypedefault="{{ json_encode($gametypedefault) }}" 
     :defaulttimeframetype="{{ json_encode($defaulttimeframetype) }}" 
     :defaulttimeframe="{{ json_encode($defaulttimeframe) }}" 

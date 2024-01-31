@@ -16,8 +16,8 @@ s<template>
       :gamemapinput="gamemap"
       :playerrankinput="playerrank"
       :herorankinput="herorank"
-      :rolerankinput="rolerank"
-
+      :teamonepartyinput="teamoneparty"      
+      :teamtwopartyinput="teamtwoparty"      
 
       :gametypedefault="gametypedefault"
       :includetimeframetype="true"
@@ -552,6 +552,7 @@ export default {
     advancedfiltering: Boolean,
     patreonUser: Boolean,
     urlparameters: Object,
+    heroes: Object,
 
   },
   data(){
@@ -644,6 +645,8 @@ export default {
       this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : null;
       this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : null;
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
+      this.hero = this.hero ? this.heroes.find(hero => hero.id === this.hero).name : null;
+
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : null;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
       this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : null;
@@ -732,10 +735,6 @@ export default {
       if(this.urlparameters["region"]){
         this.region = this.urlparameters["region"].split(',');
       }
-
-      if(this.urlparameters["statfilter"]){
-        this.statfilter = this.urlparameters["statfilter"];
-      }
       
       if(this.urlparameters["hero_level"]){
         this.herolevel = this.urlparameters["hero_level"].split(',');
@@ -743,10 +742,6 @@ export default {
 
       if(this.urlparameters["hero"]){
         this.hero = this.urlparameters["hero"];
-      }
-
-      if(this.urlparameters["role"]){
-        this.role = this.urlparameters["role"];
       }
 
       if(this.urlparameters["game_map"]){
@@ -765,14 +760,14 @@ export default {
         this.rolerank = this.urlparameters["role_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
       }
 
-
-      if (this.urlparameters["build_type"]) {
-        this.talentbuildtype = this.urlparameters["build_type"];
+      if(this.urlparameters["teamoneparty"]){
+        this.teamoneparty = this.urlparameters["teamoneparty"];
       }
 
-      if (this.urlparameters["mirror"]) {
-        this.mirrormatch = this.urlparameters["mirror"];
+      if(this.urlparameters["teamtwoparty"]){
+        this.teamtwoparty = this.urlparameters["teamtwoparty"];
       }
+
     },
   }
 }

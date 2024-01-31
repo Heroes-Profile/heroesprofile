@@ -220,6 +220,7 @@
           <single-select-filter v-if="includeteamoneparty" 
             :values="filters.party_combinations" 
             :text="'Team One Party'" 
+            :defaultValue="teamonepartyinput"
             @input-changed="handleInputChange"
           ></single-select-filter>
 
@@ -227,6 +228,7 @@
           <single-select-filter v-if="includeteamtwoparty" 
             :values="filters.party_combinations" 
             :text="'Team Two Party'" 
+            :defaultValue="teamtwopartyinput"
             @input-changed="handleInputChange"
           ></single-select-filter>
 
@@ -294,7 +296,8 @@
       mirrormatchinput: {
         type: [String, Number]
       },
-
+      teamonepartyinput: String,
+      teamtwopartyinput: String,
 
       includesingleregion: Boolean,
       includeherorole: Boolean,
