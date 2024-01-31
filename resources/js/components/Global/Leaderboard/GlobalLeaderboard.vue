@@ -19,6 +19,12 @@
         :onFilter="filterData" 
         :filters="filters" 
         :isLoading="isLoading"
+
+        :gametypeinput="[gametype]"
+        :regioninput="region"
+        
+
+
         :gametypedefault="gametypedefault"
         :defaultSeason="defaultseason"
         :playerheroroletype="true"

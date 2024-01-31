@@ -21,6 +21,22 @@
             :defaultValue="'Player'"
           ></single-select-filter>
 
+          <!-- Heroes Swap -->
+          <single-select-filter v-if="modifiedincludeheroes && swapHeroesFilter" 
+            :values="filters.heroes" 
+            :text="'Heroes'" 
+            :defaultValue="heroinput"
+            @input-changed="handleInputChange"
+          ></single-select-filter>
+
+          <!-- Role Swap -->
+          <single-select-filter v-if="modifiedincluderole && swapRolesFilter" 
+            :values="filters.role" 
+            :text="'Role'" 
+            :defaultValue="role"
+            @input-changed="handleInputChange"
+          ></single-select-filter>
+
           <!-- Group Size -->
           <single-select-filter v-if="modifiedincludegroupsize" 
             :values="filters.group_size" 
@@ -92,7 +108,7 @@
           <single-select-filter v-if="includesingleregion" 
             :values="filters.regions" 
             :text="'Regions'" 
-            :defaultValue="region[0]"
+            :defaultValue="region"
             @input-changed="handleInputChange"
           ></single-select-filter>
 
@@ -113,7 +129,7 @@
           ></multi-select-filter>
 
           <!-- Heroes -->
-          <single-select-filter v-if="modifiedincludeheroes" 
+          <single-select-filter v-if="modifiedincludeheroes && !swapHeroesFilter" 
             :values="filters.heroes" 
             :text="'Heroes'" 
             :defaultValue="heroinput"
@@ -121,7 +137,7 @@
           ></single-select-filter>
 
           <!-- Role -->
-          <single-select-filter v-if="modifiedincluderole" 
+          <single-select-filter v-if="modifiedincluderole && !swapRolesFilter" 
             :values="filters.role" 
             :text="'Role'" 
             :defaultValue="role"
@@ -176,6 +192,7 @@
             @input-changed="handleInputChange"
           ></multi-select-filter>
 
+          <!-- Role Rank -->
           <multi-select-filter v-if="includerolerank && toggleExtraFilters" 
             :values="filters.rank_tiers" 
             :text="'Role Rank'" 
@@ -362,6 +379,8 @@
         showNav: true,
         defaultRoleModified: null,
         modifiedGroupSizeDefaultValue: null,
+        swapHeroesFilter: false,
+        swapRolesFilter: false,
       }
     },
     created(){
@@ -379,9 +398,6 @@
       this.rolerank = this.rolerankinput ? this.rolerankinput : null;
       this.talentbuildtype = this.talentbuildtypeinput ? this.talentbuildtypeinput : "Popular";
       this.mirrormatch = this.mirrormatchinput ? this.mirrormatchinput : this.filters.mirror[0].code;
-
-
-      console.log(this.playerrank);
 
       this.selectedSingleFilters = {
       };
@@ -516,14 +532,20 @@
           if(eventPayload.value == "Player"){
             delete this.selectedSingleFilters['Heroes'];
             delete this.selectedSingleFilters['Role'];
+            this.swapHeroesFilter = false;
+            this.swapRolesFilter = false;
           }else if(eventPayload.value == "Hero"){
             delete this.selectedSingleFilters['Role'];
             this.hero = 1;
             this.selectedSingleFilters.Heroes = 1;
+            this.swapHeroesFilter = true;
+            this.swapRolesFilter = false;
           }else if(eventPayload.value == "Role"){
             delete this.selectedSingleFilters['Heroes'];
             this.role = "Support";
             this.selectedSingleFilters["Role"] = "Support";
+            this.swapRolesFilter = true;
+            this.swapHeroesFilter = false;
           }
         }
 

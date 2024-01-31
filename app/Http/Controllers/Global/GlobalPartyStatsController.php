@@ -30,6 +30,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
                 'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
                 'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
+                'urlparameters' => $request->all(),
             ]);
     }
 

@@ -5,6 +5,13 @@
     :onFilter="filterData" 
     :filters="filters" 
     :isLoading="isLoading"
+
+    :timeframetypeinput="timeframetype"
+    :timeframeinput="timeframe"
+    :gametypeinput="gametype"
+    :gamemapinput="gamemap"
+    :playerrankinput="playerrank"
+
     :gametypedefault="gametypedefault"
     :includetimeframetype="true"
     :includetimeframe="true"
@@ -104,6 +111,8 @@
       inputenemyally: Object,
       advancedfiltering: Boolean,
       patreonUser: Boolean,
+      urlparameters: Object,
+
     },
     data(){
       return {
@@ -134,15 +143,20 @@
     created(){
       this.hero = this.inputhero;
       this.enemyally = this.inputenemyally;
-    },
-    mounted() {
+
       this.timeframe = this.defaulttimeframe;
       this.gametype = this.gametypedefault;
       this.timeframetype = this.defaulttimeframetype;
 
+      if(this.urlparameters){
+        this.setURLParameters();
+      }
       if(this.shouldFilterData){
         this.getData();
       }
+    },
+    mounted() {
+     
     },
     computed: {
       showTalentHeroToggle(){
@@ -261,7 +275,7 @@
         }
 
         if(this.playerrank){
-          queryString += `&league_tier=${this.playerrank}`;
+          queryString += `&league_tier=${this.convertRankIDtoName(this.playerrank)}`;
         }
 
         const currentUrl = window.location.href;
@@ -301,6 +315,30 @@
         if(this.shouldFilterData){
           this.talentdetaildata = null;
           this.getData();
+        }
+      },
+      convertRankIDtoName(rankIDs) {
+        return rankIDs.map(rankID => this.filters.rank_tiers.find(tier => tier.code == rankID).name);
+      },
+      setURLParameters(){
+        if(this.urlparameters["timeframe_type"]){
+          this.timeframetype = this.urlparameters["timeframe_type"];
+        }
+        
+        if(this.urlparameters["timeframe"]){
+          this.timeframe = this.urlparameters["timeframe"].split(',');
+        }
+
+        if(this.urlparameters["game_type"]){
+          this.gametype = this.urlparameters["game_type"].split(',');
+        }
+
+        if(this.urlparameters["game_map"]){
+          this.gamemap = this.urlparameters["game_map"].split(',');
+        }
+
+        if (this.urlparameters["league_tier"]) {
+          this.playerrank = this.urlparameters["league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
         }
       },
     }

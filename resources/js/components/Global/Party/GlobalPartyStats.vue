@@ -6,6 +6,19 @@ s<template>
       :onFilter="filterData" 
       :filters="filters" 
       :isLoading="isLoading"
+
+      :timeframetypeinput="timeframetype"
+      :timeframeinput="timeframe"
+      :gametypeinput="gametype"
+      :regioninput="region"
+      :herolevelinput="herolevel"
+      :heroinput="getHeroID()"
+      :gamemapinput="gamemap"
+      :playerrankinput="playerrank"
+      :herorankinput="herorank"
+      :rolerankinput="rolerank"
+
+
       :gametypedefault="gametypedefault"
       :includetimeframetype="true"
       :includetimeframe="true"
@@ -538,6 +551,8 @@ export default {
     defaulttimeframe: Array,
     advancedfiltering: Boolean,
     patreonUser: Boolean,
+    urlparameters: Object,
+
   },
   data(){
     return {
@@ -568,6 +583,11 @@ export default {
     this.gametype = this.gametypedefault;
     this.timeframe = this.defaulttimeframe;
     this.timeframetype = this.defaulttimeframetype;
+
+    if(this.urlparameters){
+      this.setURLParameters();
+    }
+
     this.getData();
   },
   mounted() {
@@ -658,15 +678,15 @@ export default {
       }
 
       if(this.playerrank){
-        queryString += `&league_tier=${this.playerrank}`;
+        queryString += `&league_tier=${this.convertRankIDtoName(this.playerrank)}`;
       }
 
       if(this.herorank){
-        queryString += `&hero_league_tier=${this.herorank}`;
+        queryString += `&hero_league_tier=${this.convertRankIDtoName(this.herorank)}`;
       }
 
       if(this.rolerank){
-        queryString += `&role_league_tier=${this.rolerank}`;
+        queryString += `&role_league_tier=${this.convertRankIDtoName(this.rolerank)}`;
       }
 
       if(this.teamoneparty){
@@ -686,7 +706,74 @@ export default {
     },
     getStackName(ally_combo, enemy_combo){
       return "temp";
-    }
+    },
+    getHeroID(){
+      if(this.hero){
+        return this.heroes.find(hero => hero.name === this.hero).id
+      }
+      return null;
+    },
+    convertRankIDtoName(rankIDs) {
+      return rankIDs.map(rankID => this.filters.rank_tiers.find(tier => tier.code == rankID).name);
+    },
+    setURLParameters(){
+      if(this.urlparameters["timeframe_type"]){
+        this.timeframetype = this.urlparameters["timeframe_type"];
+      }
+      
+      if(this.urlparameters["timeframe"]){
+        this.timeframe = this.urlparameters["timeframe"].split(',');
+      }
+
+      if(this.urlparameters["game_type"]){
+        this.gametype = this.urlparameters["game_type"].split(',');
+      }
+
+      if(this.urlparameters["region"]){
+        this.region = this.urlparameters["region"].split(',');
+      }
+
+      if(this.urlparameters["statfilter"]){
+        this.statfilter = this.urlparameters["statfilter"];
+      }
+      
+      if(this.urlparameters["hero_level"]){
+        this.herolevel = this.urlparameters["hero_level"].split(',');
+      }
+
+      if(this.urlparameters["hero"]){
+        this.hero = this.urlparameters["hero"];
+      }
+
+      if(this.urlparameters["role"]){
+        this.role = this.urlparameters["role"];
+      }
+
+      if(this.urlparameters["game_map"]){
+        this.gamemap = this.urlparameters["game_map"].split(',');
+      }
+
+      if (this.urlparameters["league_tier"]) {
+        this.playerrank = this.urlparameters["league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+      }
+
+      if (this.urlparameters["hero_league_tier"]) {
+        this.herorank = this.urlparameters["hero_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+      }
+
+      if (this.urlparameters["role_league_tier"]) {
+        this.rolerank = this.urlparameters["role_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+      }
+
+
+      if (this.urlparameters["build_type"]) {
+        this.talentbuildtype = this.urlparameters["build_type"];
+      }
+
+      if (this.urlparameters["mirror"]) {
+        this.mirrormatch = this.urlparameters["mirror"];
+      }
+    },
   }
 }
 </script>
