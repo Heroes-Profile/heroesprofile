@@ -21,7 +21,7 @@
         :isLoading="isLoading"
 
         :gametypeinput="[gametype]"
-        :regioninput="region"
+        :regioninput="[region]"
         
 
 
