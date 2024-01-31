@@ -2,7 +2,7 @@
 
   <div class="modal-mask ">
       <div class="modal-wrapper ">
-        <div class="modal-container bg-blue rounded-lg p-10 max-w-[750px] w-[90%] max-md:text-sm">
+        <div class="modal-container bg-blue rounded-lg p-10 max-w-[450px] w-[90%] text-sm">
 
           <div class="modal-header">
             <slot name="header">
