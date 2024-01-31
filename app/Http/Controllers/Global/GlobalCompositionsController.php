@@ -34,6 +34,8 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
                 'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
                 'urlparameters' => $request->all(),
+                'heroes' => $this->globalDataService->getHeroes(),
+
             ]);
 
     }

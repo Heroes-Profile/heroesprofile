@@ -19,81 +19,64 @@
     :includegamemap="true"
     :includeplayerrank="true"
     :advancedfiltering="advancedfiltering"
+    :advancedfilteringtexthide="true"
     >
   </filters>
   <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
-  <div class="flex justify-center items-center md:gap-10">
-    <div class="">
-      <single-select-filter :values="firstHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="herochanged" :defaultValue="hero.id"></single-select-filter>
-
-    </div>
-    <div class="">
-      {{ vsorwith }}
-    </div>
-    <div class="">
-      <single-select-filter :values="secondHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="allyenemychanged" :defaultValue="enemyally.id"></single-select-filter>
-    </div>
-  </div>
-  <div class="flex justify-center relative gap-10">
-    <div 
-    :class="[
-      'absolute z-20 font-logo text-[1.5em] md:text-[5em] text-red drop-shadow-lg rotate-12 md:mt-[1em]', 
-      fightoralliance == 'FIGHT' ? 'text-red' : 'text-teal', 
-      
-      ]"
-      style="-webkit-text-stroke-width: 1px; -webkit-text-stroke-color: white;">
-      {{ fightoralliance }}!!
-    </div>
-    <div class="">  
-
-      <hero-image-wrapper class="" :rectangle="true" :size="'large'" :hero="hero"></hero-image-wrapper>
-
-      <div v-if="this.firstwinratedata">
-        {{ this.firstwinratedata }}{{"%"}}
-      </div>
-    </div>
-
-
-
-
-    <div class="">
-
-      <hero-image-wrapper class="" :rectangle="true" :size="'large'" :hero="enemyally"></hero-image-wrapper>
-
-      <div v-if="this.secondwinratedata">
-        {{ this.secondwinratedata }}{{"%"}}
-      </div>
-    </div>
-  </div>
-
-  <div class="flex max-w-[1500px] mx-auto mb-2">
-    <div v-if="showTalentHeroToggle" class="text-center flex items-center justify-stretch gap-2 mx-2">
-      Talents:    
-
-      <tab-button  :tab1text="this.hero.name" :ignoreclick="true" :tab2text="this.enemyally.name" @tab-click="talentHeroOrEnemySideSelected" > </tab-button>
-
-
-    </div>
-
-    <div class="text-center mt-auto">
-      <tab-button :tab1text="'Enemy'" :ignoreclick="true" :tab2text="'Ally'" @tab-click="heroOrEnemySideSelected" > </tab-button>
-    </div>
-  </div>
-
-
-
-  <div class=" mx-auto px-4">
-    <global-talent-details-section v-if="talentdetaildata" :talentdetaildata="talentdetaildata" :statfilter="null"></global-talent-details-section>
-
-  </div>
-
   <div v-if="isLoading">
     <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
   </div>
+  <div v-else>
+    <div class="flex justify-center items-center md:gap-10">
+      <div class="">
+        <single-select-filter :values="firstHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="herochanged" :defaultValue="hero.id"></single-select-filter>
+      </div>
+      <div class="">
+        {{ vsorwith }}
+      </div>
+      <div class="">
+        <single-select-filter :values="secondHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="allyenemychanged" :defaultValue="enemyally.id"></single-select-filter>
+      </div>
+    </div>
+    <div class="flex justify-center relative gap-10">
+      <div 
+      :class="[
+        'absolute z-20 font-logo text-[1.5em] md:text-[5em] text-red drop-shadow-lg rotate-12 md:mt-[1em]', 
+        fightoralliance == 'FIGHT' ? 'text-red' : 'text-teal', 
+        
+        ]"
+        style="-webkit-text-stroke-width: 1px; -webkit-text-stroke-color: white;">
+        {{ fightoralliance }}!!
+      </div>
+      <div>  
+        <hero-image-wrapper class="" :rectangle="true" :size="'large'" :hero="hero"></hero-image-wrapper>
+        <div v-if="this.firstwinratedata">
+          {{ this.firstwinratedata }}{{"%"}}
+        </div>
+      </div>
+      <div>
+        <hero-image-wrapper class="" :rectangle="true" :size="'large'" :hero="enemyally"></hero-image-wrapper>
+        <div v-if="this.secondwinratedata">
+          {{ this.secondwinratedata }}{{"%"}}
+        </div>
+      </div>
+    </div>
 
+    <div class="flex max-w-[1500px] mx-auto mb-2">
+      <div v-if="showTalentHeroToggle" class="text-center flex items-center justify-stretch gap-2 mx-2">
+        Talents:    
+        <tab-button  :tab1text="this.hero.name" :ignoreclick="true" :tab2text="this.enemyally.name" @tab-click="talentHeroOrEnemySideSelected" > </tab-button>
+      </div>
+      <div class="text-center mt-auto">
+        <tab-button :tab1text="'Enemy'" :ignoreclick="true" :tab2text="'Ally'" @tab-click="heroOrEnemySideSelected" > </tab-button>
+      </div>
+    </div>
+    <div class=" mx-auto px-4">
+      <global-talent-details-section v-if="talentdetaildata" :talentdetaildata="talentdetaildata" :statfilter="null"></global-talent-details-section>
+    </div>
+  </div>
 </div>
-
 </template>
 
 <script>

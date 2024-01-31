@@ -262,7 +262,7 @@
 
         
       </div>
-      <div class="flex justify-end ">
+      <div v-if="!advancedfilteringtexthide" class="flex justify-end ">
         <button class="m-l-auto underline" v-if="!hideadvancedfilteringbutton" @click="toggleExtraFilters = !toggleExtraFilters" >{{toggleButtonText}}</button>
       </div>
     </div>
@@ -277,7 +277,7 @@
     },
     props: {
       isLoading: Boolean,
-
+      advancedfilteringtexthide: Boolean,
       timeframetypeinput: String,
       timeframeinput: Array,
       gametypeinput: Array,

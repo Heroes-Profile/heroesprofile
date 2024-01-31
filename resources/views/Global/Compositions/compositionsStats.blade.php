@@ -8,6 +8,7 @@
   <compositions-stats 
     :filters="{{ json_encode($filters) }}" 
     :gametypedefault="{{ json_encode($gametypedefault) }}" 
+    :heroes="{{ json_encode($heroes) }}" 
     :defaultbuildtype="{{ json_encode($defaultbuildtype) }}" 
     :defaulttimeframetype="{{ json_encode($defaulttimeframetype) }}" 
     :defaulttimeframe="{{ json_encode($defaulttimeframe) }}" 

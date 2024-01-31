@@ -162,6 +162,7 @@ export default {
     advancedfiltering: Boolean,
     patreonUser: Boolean,
     urlparameters: Object,
+    heroes: Object,
 
   },
   data(){
