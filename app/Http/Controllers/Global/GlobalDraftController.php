@@ -109,7 +109,7 @@ class GlobalDraftController extends GlobalsInputValidationController
                 ->orderBy('pick_number')
                 ->orderBy('win_loss')
                 //->toSql();
-                //return $data;
+                // $data;
                 ->get();
 
             $totalGamesPlayed = $data->sum('games_played');

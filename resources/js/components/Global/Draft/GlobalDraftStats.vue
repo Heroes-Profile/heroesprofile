@@ -5,91 +5,89 @@
         <hero-image-wrapper v-if="selectedHero" :hero="selectedHero" :size="'big'"></hero-image-wrapper>
       </page-heading>
 
-
       <div v-if="!selectedHero">
         <hero-selection :heroes="heroes"></hero-selection>
       </div>
 
       <div v-else>
         <filters 
-        :onFilter="filterData" 
-        :filters="filters" 
-        :isLoading="isLoading"
+          :onFilter="filterData" 
+          :filters="filters" 
+          :isLoading="isLoading"
 
-        :timeframetypeinput="timeframetype"
-        :timeframeinput="timeframe"
-        :regioninput="region"
-        :herolevelinput="herolevel"
-        :gamemapinput="gamemap"
-        :playerrankinput="playerrank"
-        :herorankinput="herorank"
-        :rolerankinput="rolerank"
+          :timeframetypeinput="timeframetype"
+          :timeframeinput="timeframe"
+          :regioninput="region"
+          :herolevelinput="herolevel"
+          :gamemapinput="gamemap"
+          :playerrankinput="playerrank"
+          :herorankinput="herorank"
+          :rolerankinput="rolerank"
 
-        :gametypedefault="gametypedefault"
-        :includetimeframetype="true"
-        :includetimeframe="true"
-        :includeregion="true"
-        :includeherolevel="true"
-        :includegamemap="true"
-        :includeplayerrank="true"
-        :includeherorank="true"
-        :includerolerank="true"
-        :advancedfiltering="advancedfiltering"
-        >
-      </filters>
+          :gametypedefault="gametypedefault"
+          :includetimeframetype="true"
+          :includetimeframe="true"
+          :includeregion="true"
+          :includeherolevel="true"
+          :includegamemap="true"
+          :includeplayerrank="true"
+          :includeherorank="true"
+          :includerolerank="true"
+          :advancedfiltering="advancedfiltering"
+          >
+        </filters>
         <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
-        <div class="max-w-[1500px] mx-auto flex justify-start mb-2"> 
-          <span class="flex gap-4 mb-2 mx-2"> {{ this.selectedHero.name }} {{ "Draft Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
-        </div>
+   
         <div v-if="draftdata">
+          <div class="max-w-[1500px] mx-auto flex justify-start mb-2"> 
+            <span class="flex gap-4 mb-2 mx-2"> {{ this.selectedHero.name }} {{ "Draft Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
+          </div>
           <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]  max-sm:text-xs 2xl:mx-auto  " style=" ">
-      <table id="responsive-table" class="responsive-table  relative max-sm:text-xs" ref="responsivetable">
-      
-            <thead>
-              <tr>
-                <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-                  Pick Order
-                </th>
-                <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-                  Pick/Ban Rate % at position
-                </th>            
-                <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-                  Team Wins
-                </th>
-                <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-                  Team Losses
-                </th>
-                <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-                  Team Win Rate %
-                </th>                 
-              </tr>
-            </thead>
-            <tbody>
-              <!-- ChatGPT code. this isnt working 100% colors seem messed up-->
-              <tr 
-              v-for="row in draftdata" 
-              :key="row.pick_number"
-              :class="determinePickOrBan(row.pick_number).includes('Ban') ? 'bg-hred border-b border-gray-light' : ''"
-              >
-              <td class="py-2 px-3 ">
-                {{ determinePickOrBan(row.pick_number) }}
-              </td>
-              <td class="py-2 px-3 ">{{ row.popularity.toFixed(2) }}</td>
-              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
-              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
-              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-            </tr>
-          </tbody>
-        </table>
+            <table id="responsive-table" class="responsive-table  relative max-sm:text-xs" ref="responsivetable">
+              <thead>
+                <tr>
+                  <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                    Pick Order
+                  </th>
+                  <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                    Pick/Ban Rate % at position
+                  </th>            
+                  <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                    Team Wins
+                  </th>
+                  <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                    Team Losses
+                  </th>
+                  <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                    Team Win Rate %
+                  </th>                 
+                </tr>
+              </thead>
+              <tbody>
+                <tr 
+                  v-for="row in draftdata" 
+                  :key="row.pick_number"
+                  :class="determinePickOrBan(row.pick_number).includes('Ban') ? 'bg-hred border-b border-gray-light' : ''"
+                  >
+                  <td class="py-2 px-3 ">
+                    {{ determinePickOrBan(row.pick_number) }}
+                  </td>
+                  <td class="py-2 px-3 ">{{ row.popularity.toFixed(2) }}</td>
+                  <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
+                  <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
+                  <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div v-else-if="isLoading">
+          <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
         </div>
       </div>
-      <div v-else-if="isLoading">
-        <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
-      </div>
-    </div>
 
-  </div>
+    </div>
   </div>
 </template>
 
