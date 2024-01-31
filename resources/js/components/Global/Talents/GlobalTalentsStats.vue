@@ -300,7 +300,21 @@
         this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
         this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : this.defaultbuildtype;
 
+        this.talentdetaildata = null;
+        this.talentbuilddata  = null;
 
+        this.updateQueryString();
+        this.getTalentData();
+        this.getTalentBuildData();
+      },
+      buildtypechange(eventPayload){
+        this.talentbuildtype = eventPayload.value;
+        this.talentbuilddata  = null;
+
+        this.updateQueryString();
+        this.getTalentBuildData();
+      },
+      updateQueryString(){
         let queryString = `?timeframe_type=${this.timeframetype}`;
         queryString += `&timeframe=${this.timeframe}`;
         queryString += `&game_type=${this.gametype}`;
@@ -336,17 +350,6 @@
         const currentUrl = window.location.href;
         let currentPath = window.location.pathname;
         history.pushState(null, null, `${currentPath}${queryString}`);
-
-        this.talentdetaildata = null;
-        this.talentbuilddata  = null;
-
-        this.getTalentData();
-        this.getTalentBuildData();
-      },
-      buildtypechange(eventPayload){
-        this.talentbuildtype = eventPayload.value;
-        this.talentbuilddata  = null;
-        this.getTalentBuildData();
       },
       preloadTalentImages(hero) {
         if(hero){

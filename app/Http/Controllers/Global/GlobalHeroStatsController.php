@@ -23,9 +23,25 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
 
       $validator = Validator::make($request->all(), $validationRules);
 
+      /*
+      if ($validator->fails()) {
+        $failedFields = $validator->failed();
+    
+        // Extract the first failed field
+        $firstFailedField = key($failedFields);
+    
+        return [
+            'data' => $request->all(),
+            'status' => 'failure to validate inputs',
+            'failed_field' => $firstFailedField,
+        ];
+      }
+      */
+    
       if ($validator->fails()) {
         return Redirect::to('/Global/Hero')->withErrors($validator)->withInput();
       }
+    
 
       return view('Global.Hero.globalHeroStats')
           ->with([
@@ -52,10 +68,16 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-            ];
+          $failedFields = $validator->failed();
+      
+          // Extract the first failed field
+          $firstFailedField = key($failedFields);
+      
+          return [
+              'data' => $request->all(),
+              'status' => 'failure to validate inputs',
+              'failed_field' => $firstFailedField,
+          ];
         }
 
         $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
@@ -85,7 +107,8 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
             $region,
             $statFilter,
             $hero,
-            $role
+            $role,
+            $mirror
         ) {
             $data = GlobalHeroStats::query()
                 ->join('heroes', 'heroes.id', '=', 'global_hero_stats.hero')
@@ -101,7 +124,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
                 ->filterByRoleLeagueTier($roleLeagueTier)
                 ->filterByGameMap($gameMap)
                 ->filterByHeroLevel($heroLevel)
-                ->excludeMirror(1)
+                ->excludeMirror($mirror)
                 ->filterByRegion($region)
                 ->groupBy('global_hero_stats.hero', 'global_hero_stats.win_loss')
                 ->orderBy('heroes.name', 'asc')

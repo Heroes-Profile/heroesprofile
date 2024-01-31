@@ -11,27 +11,25 @@ class TierInputValidation implements Rule
     {
         // Ensure $value is an array
         if (! is_array($value)) {
-            return false;
+          $value = explode(',', $value);
         }
 
-        // Fetch valid tiers from the database and convert both tier_id and name to lowercase
-        $validTiers = LeagueTier::select('tier_id', 'name')
-            ->get()
-            ->map(function ($tier) {
-                return [
-                    'tier_id' => $tier->tier_id,
-                    'name' => strtolower($tier->name),
-                ];
-            })
-            ->toArray();
+        $validTier = LeagueTier::pluck('tier_id')->toArray();
+        $filteredTiers = array_intersect($value, $validTier);
 
-        // Convert incoming values to lowercase
-        $value = array_map('strtolower', $value);
+        if (empty($filteredTiers)) {
 
-        // Check for intersection after converting to lowercase
-        $filteredTiers = array_intersect($value, array_column($validTiers, 'tier_id'), array_column($validTiers, 'name'));
 
-        return !empty($filteredTiers);
+          $value = array_map('strtolower', $value);
+          $validTiers = LeagueTier::pluck('name')->map('strtolower')->toArray();
+          $filteredTiers = array_intersect($value, $validTiers);
+          
+          if (empty($filteredTiers)) {
+            return false;
+          }
+        }
+
+        return true;
     }
 
     public function message()
