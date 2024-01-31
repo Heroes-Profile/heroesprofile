@@ -75,6 +75,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 
         $cacheKey = 'GlobalCompositionStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
+
         $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
             $gameType,
             $leagueTier,
@@ -111,11 +112,14 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 
             $filteredData = collect($data)
                 ->groupBy('composition_id')
-                ->map(function ($group) use ($totalGamesPlayed, $roleData) {
+                ->map(function ($group) use ($totalGamesPlayed, $roleData, $minimumGames) {
                     $wins = $group->where('win_loss', 1)->sum('games_played');
                     $losses = $group->where('win_loss', 0)->sum('games_played');
                     $gamesPlayed = ($wins + $losses) / 5;
 
+                    if($gamesPlayed <= $minimumGames){
+                      return null;
+                    }
                     $winRate = 0;
                     if ($gamesPlayed > 0) {
                         $winRate = (($wins / 5) / $gamesPlayed) * 100;
@@ -145,9 +149,10 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                         'role_five' => $role_five,
                     ];
                 })
-                ->filter(function ($item) use ($minimumGames) {
-                    return $item['games_played'] >= $minimumGames;
-                })
+                //->filter(function ($item) use ($minimumGames) {
+                //    return $item['games_played'] >= $minimumGames;
+                //})
+                ->filter()
                 ->sortByDesc('win_rate')
                 ->values()
                 ->toArray();
