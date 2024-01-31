@@ -72,6 +72,7 @@
                             <div class="nav-dropdown-inner-wrapper ">
                                  <a href="https://github.com/Heroes-Profile/heroesprofile/issues/new?assignees=&labels=&projects=&template=bug_report.md" target="_blank" >Submit an Issue</a>
                                  <a href="https://github.com/Heroes-Profile/heroesprofile/discussions/new?category=ideas" target="_blank" >Submit a Request</a>
+                                 <a href="https://github.com/Heroes-Profile/heroesprofile/discussions" target="_blank" >Discussions</a>
                                  <a href="/Github/Change/Log">Change Log</a>
                                 <a href="/Contact" >Contact Us</a>
                             </div>
