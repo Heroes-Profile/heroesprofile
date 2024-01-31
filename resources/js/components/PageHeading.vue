@@ -31,7 +31,7 @@
                     <p class="max-sm:text-xs">Patreon Subscriber</p>
                   </div>
                 </slot>
-              </icon-with-hover>
+          </icon-with-hover>
           
         </div>
         {{ heading }}
