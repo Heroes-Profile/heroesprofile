@@ -43,9 +43,11 @@
     </filters>
     <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
-    <div v-if="allyenemydata" class="flex flex-wrap gap-4  ">
+    <div v-if="allyenemydata" class="flex flex-wrap gap-4">
+
       <group-box :text="'TOP 5 ALLIES ON HEROS TEAM'" :data="allyenemydata.ally.slice(0, 5)" :type="'Matchups'" color="blue"></group-box>
       <group-box :text="'TOP 5 THREATS ON ENEMIES TEAM'" :data="allyenemydata.enemy.slice(0, 5)" :type="'Matchups'" color="red"></group-box>
+
 
       <div class="md:min-w-[1500px] md:px-20">
 
@@ -149,7 +151,6 @@
         herorank: null,
         rolerank: null,
         mirrormatch: 0,
-        role: null,
       }
     },
     created(){
@@ -217,6 +218,7 @@
           this.cancelTokenSource.cancel('Request canceled');
         }
         this.cancelTokenSource = this.$axios.CancelToken.source();
+
         try{
           const response = await this.$axios.post("/api/v1/global/matchups", {
             hero: this.selectedHero.name,
@@ -271,6 +273,7 @@
         this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) :null;
         this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : null;
         this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
+        this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
 
         let queryString = `?timeframe_type=${this.timeframetype}`;
         queryString += `&timeframe=${this.timeframe}`;
@@ -282,6 +285,10 @@
 
         if(this.herolevel){
           queryString += `&hero_level=${this.herolevel}`;
+        }
+
+        if(this.role){
+          queryString += `&role=${this.role}`;
         }
 
         if(this.gamemap){

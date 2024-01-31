@@ -8,6 +8,7 @@ use App\Rules\PartyCombinationRule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Redirect;
 
 class GlobalPartyStatsController extends GlobalsInputValidationController
 {
