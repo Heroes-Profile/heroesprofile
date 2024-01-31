@@ -12,13 +12,27 @@
 
     <h1 v-else class="text-xl md:text-3xl max-md:w-full">
       <div class="flex items-center">
-        <div v-if="isOwner">
+        <div v-if="isOwner" class="text-[20px] mt-2">
           <!-- Owner -->
-          <i class="fas fa-crown text" style="color:gold;"></i>
+          <icon-with-hover class="mt-2"  size="small"    icon="fas fa-crown"   title="info"  popupsize="small" style="color:gold">
+                <slot>
+                  <div>
+                    <p class="max-sm:text-xs">Site Owner</p>
+                  </div>
+                </slot>
+              </icon-with-hover>
+         
         </div>
-        <div v-else-if="isPatreon" class="">
+        <div v-else-if="isPatreon" class="text-md">
          <!-- Patreon Subscriber -->
-          <i class="fas fa-star" style="color:gold"></i>
+         <icon-with-hover class="mt-2"  size="small"    icon="fas fa-star"   title="info"  popupsize="small" style="color:gold">
+                <slot>
+                  <div>
+                    <p class="max-sm:text-xs">Patreon Subscriber</p>
+                  </div>
+                </slot>
+              </icon-with-hover>
+          
         </div>
         {{ heading }}
       </div>
