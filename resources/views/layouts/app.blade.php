@@ -87,6 +87,7 @@
               <div class="footer-nav">
               </div>
               <div>{{ session('maxReplayID') }} replays | Patch {{ session('latestPatch') }} | Up to date as of: <format-date :input="'{{ session('latestGameDate') }}'"></format-date></div>
+              <p><a href="/Privacy/Policy" class="underline text-xs">Privacy Policy</a></p>
               <div class="copyright">Skill Tree Development, LLC | <a href="https://heroesprofile.com">Heroes Profile</a></div>
             </div>
           </div>

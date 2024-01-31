@@ -1,18 +1,18 @@
 <template>
-  <div class="grid grid-cols-2 gap-4">
+  <div class="grid grid-cols-2 gap-4 max-w-[1500px] mx-auto">
     <div class="col-span-1">
-      <h2>Master Branch Commits</h2>
+      <h2 class="text-2xl">Master Branch Commits</h2>
       <ul>
-        <li v-for="commit in masterCommits" :key="commit.sha" class="commit-item">
-          <a class="link" :href="`https://github.com/${commit.author.login}`" target="_blank">{{ commit.author.login }}</a> committed <a class="link" :href="`https://github.com/Heroes-Profile/heroesprofile/commit/${commit.sha}`" target="_blank">{{ truncateSha(commit.sha) }}</a> on {{ formatDate(commit.commit.author.date) }}: {{ commit.commit.message }} 
+        <li v-for="commit in masterCommits" :key="commit.sha" class="commit-item ">
+          <span class="text-xs block"><a class="link" :href="`https://github.com/${commit.author.login}`" target="_blank">{{ commit.author.login }}</a> committed <a class="link" :href="`https://github.com/Heroes-Profile/heroesprofile/commit/${commit.sha}`" target="_blank">{{ truncateSha(commit.sha) }}</a> on {{ formatDate(commit.commit.author.date) }}: </span><span class="border p-1 block bg-blue">{{ commit.commit.message }} </span>
         </li>
       </ul>
     </div>
     <div class="col-span-1">
-      <h2>Develop Branch Commits</h2>
+      <h2 class="text-2xl">Develop Branch Commits</h2>
       <ul>
         <li v-for="commit in developerCommits" :key="commit.sha" class="commit-item">
-          <a class="link" :href="`https://github.com/${commit.author.login}`" target="_blank">{{ commit.author.login }}</a> committed <a class="link" :href="`https://github.com/Heroes-Profile/heroesprofile/commit/${commit.sha}`" target="_blank">{{ truncateSha(commit.sha) }}</a> on {{ formatDate(commit.commit.author.date) }}: {{ commit.commit.message }} 
+          <span class="text-xs block"><a class="link" :href="`https://github.com/${commit.author.login}`" target="_blank">{{ commit.author.login }}</a> committed <a class="link" :href="`https://github.com/Heroes-Profile/heroesprofile/commit/${commit.sha}`" target="_blank">{{ truncateSha(commit.sha) }}</a> on {{ formatDate(commit.commit.author.date) }}: </span><span class="border p-1 block bg-gray-dark">{{ commit.commit.message }} </span>
         </li>
       </ul>
     </div>
