@@ -112,20 +112,25 @@
                   <tbody>
                     <tr v-for="index in range" class="mr-2">
                       <td>
-                        <hero-image-wrapper :hero="getHeroData(1, row, row.compositionheroes[row.role_one.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(1, row, row.compositionheroes[row.role_one.name], index).name }}</span>
+                        <hero-image-wrapper v-if="getHeroData(1, row, row.compositionheroes[row.role_one.name], index)" :hero="getHeroData(1, row, row.compositionheroes[row.role_one.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(1, row, row.compositionheroes[row.role_one.name], index) ? getHeroData(1, row, row.compositionheroes[row.role_one.name], index).name : "" }}</span>
                       </td>
+
                       <td>
-                        <hero-image-wrapper :hero="getHeroData(2, row, row.compositionheroes[row.role_two.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(2, row, row.compositionheroes[row.role_two.name], index).name }}</span>
+                        <hero-image-wrapper v-if="getHeroData(2, row, row.compositionheroes[row.role_two.name], index)" :hero="getHeroData(2, row, row.compositionheroes[row.role_two.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(2, row, row.compositionheroes[row.role_two.name], index) ? getHeroData(2, row, row.compositionheroes[row.role_two.name], index).name : "" }}</span>
                       </td>
+
                       <td>
-                        <hero-image-wrapper :hero="getHeroData(3, row, row.compositionheroes[row.role_three.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(3, row, row.compositionheroes[row.role_three.name], index).name }}</span>
+                        <hero-image-wrapper v-if="getHeroData(3, row, row.compositionheroes[row.role_three.name], index)" :hero="getHeroData(3, row, row.compositionheroes[row.role_three.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(3, row, row.compositionheroes[row.role_three.name], index) ? getHeroData(3, row, row.compositionheroes[row.role_three.name], index).name : "" }}</span>
                       </td>
+
                       <td>
-                        <hero-image-wrapper :hero="getHeroData(4, row, row.compositionheroes[row.role_four.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(4, row, row.compositionheroes[row.role_four.name], index).name }}</span>
+                        <hero-image-wrapper v-if="getHeroData(4, row, row.compositionheroes[row.role_four.name], index)" :hero="getHeroData(4, row, row.compositionheroes[row.role_four.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(4, row, row.compositionheroes[row.role_four.name], index) ? getHeroData(4, row, row.compositionheroes[row.role_four.name], index).name : "" }}</span>
                       </td>
+
                       <td>
-                        <hero-image-wrapper :hero="getHeroData(5, row, row.compositionheroes[row.role_five.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(5, row, row.compositionheroes[row.role_five.name], index).name }}</span>
+                        <hero-image-wrapper v-if="getHeroData(5, row, row.compositionheroes[row.role_five.name], index)" :hero="getHeroData(5, row, row.compositionheroes[row.role_five.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(5, row, row.compositionheroes[row.role_five.name], index) ? getHeroData(5, row, row.compositionheroes[row.role_five.name], index).name : "" }}</span>
                       </td>
+
                     </tr>
                   </tbody>
                 </table>
@@ -163,7 +168,6 @@ export default {
     patreonUser: Boolean,
     urlparameters: Object,
     heroes: Object,
-
   },
   data(){
     return {
@@ -200,7 +204,6 @@ export default {
     this.getData();
   },
   mounted() {
-    
   },
   computed: {
     sortedData() {
@@ -320,6 +323,8 @@ export default {
       this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : null;
       this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : null;
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
+      this.hero = this.hero ? this.heroes.find(hero => hero.id === this.hero).name : null;
+
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : null;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
       this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : null;
@@ -418,10 +423,10 @@ export default {
           newindex += 5;
         }
       }
-
-      if (newindex >= data.length || typeof data[newindex] === 'undefined') {
+      if (newindex > data.length || typeof data[newindex] === 'undefined') {
         return null;
       }
+
       return data[newindex].herodata;
     },
     getHeroID(){

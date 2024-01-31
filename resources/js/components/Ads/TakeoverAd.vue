@@ -1,5 +1,7 @@
-<template v-if="!patreonUser">
-  <div v-if="!adBlocker" id="takeover-ad-container" class="my-20"></div>
+<template>
+  <div v-if="!patreonUser">
+    <div v-if="!adBlocker" id="takeover-ad-container" class="my-20"></div>
+  </div>
 </template>
 
 <script>

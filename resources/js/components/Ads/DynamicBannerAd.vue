@@ -1,5 +1,7 @@
-<template v-if="!patreonUser" >
-  <div v-if="!adBlocker" class="my-20" :id="`dynamic-banner-ad-container-${index}`"></div>
+<template>
+  <div v-if="!patreonUser">
+    <div v-if="!adBlocker" class="my-20" :id="`dynamic-banner-ad-container-${index}`"></div>
+  </div>
 </template>
 
 <script>

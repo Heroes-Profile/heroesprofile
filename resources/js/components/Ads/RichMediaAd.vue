@@ -1,5 +1,7 @@
-<template v-if="!patreonUser">
-  <div v-if="!adBlocker" id="rich-media-placement"></div>
+<template>
+  <div v-if="!patreonUser">
+    <div v-if="!adBlocker" id="rich-media-placement"></div>
+  </div>
 </template>
 
 <script>  

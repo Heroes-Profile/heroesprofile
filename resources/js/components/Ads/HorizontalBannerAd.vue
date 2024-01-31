@@ -1,9 +1,10 @@
-<template v-if="!patreonUser">
-  <div v-if="adBlocker" class="bg-teal px-20 py-4 text-sm text-center">
-    Heroes Profile uses ads to help fund site running costs.  Please consider allowing ads or support us through patreon at <a class="link" href="https://www.patreon.com/heroesprofile">https://www.patreon.com/heroesprofile</a>
+<template >
+  <div v-if="!patreonUser">
+    <div v-if="adBlocker" class="bg-teal px-20 py-4 text-sm text-center">
+      Heroes Profile uses ads to help fund site running costs.  Please consider allowing ads or support us through patreon at <a class="link" href="https://www.patreon.com/heroesprofile">https://www.patreon.com/heroesprofile</a>
+    </div>
+    <div v-else class="mb-2" id="horizontal-banner-ad-container"></div>
   </div>
-  <div v-else class="mb-2" id="horizontal-banner-ad-container"></div>
-
 </template>
 
 <script>
