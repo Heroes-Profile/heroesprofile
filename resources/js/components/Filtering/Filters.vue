@@ -264,7 +264,7 @@
 
         
       </div>
-      <div v-if="!advancedfilteringtexthide" class="flex justify-end ">
+      <div class="flex justify-end ">
         <button class="m-l-auto underline" v-if="!hideadvancedfilteringbutton" @click="toggleExtraFilters = !toggleExtraFilters" >{{toggleButtonText}}</button>
       </div>
     </div>
@@ -279,7 +279,6 @@
     },
     props: {
       isLoading: Boolean,
-      advancedfilteringtexthide: Boolean,
       timeframetypeinput: String,
       timeframeinput: Array,
       gametypeinput: Array,
@@ -332,6 +331,7 @@
       includegamedate: Boolean,
       hideadvancedfilteringbutton: Boolean,
       includeseasonwithall: Boolean,
+      overrideGroupSizeRemoval: Boolean,
       filters: {
         type: Object,
         required: true
@@ -553,7 +553,9 @@
         }
 
         if(eventPayload.field == "Season" && this.includegroupsize){
-          this.modifiedincludegroupsize = (eventPayload.value >= 20);
+          if(!this.overrideGroupSizeRemoval){
+            this.modifiedincludegroupsize = (eventPayload.value >= 20);
+          }
         }
 
 

@@ -83,7 +83,7 @@ class PlayerMapsController extends Controller
             'filters' => $this->globalDataService->getFilterData(),
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault('single'),
+            'gametypedefault' => null,//$this->globalDataService->getGameTypeDefault('single'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
 
         ]);
     }

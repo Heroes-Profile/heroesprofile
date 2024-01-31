@@ -19,7 +19,7 @@
     :includegamemap="true"
     :includeplayerrank="true"
     :advancedfiltering="advancedfiltering"
-    :advancedfilteringtexthide="true"
+    :hideadvancedfilteringbutton="true"
     >
   </filters>
   <takeover-ad :patreon-user="patreonUser"></takeover-ad>
