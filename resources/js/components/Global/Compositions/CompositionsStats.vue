@@ -18,7 +18,6 @@
       :rolerankinput="rolerank"
       :mirrormatchinput="mirrormatch"
 
-
       :gametypedefault="gametypedefault"
       :includetimeframetype="true"
       :includetimeframe="true"
@@ -32,7 +31,7 @@
       :includerolerank="true"
       :includemirror="true"
       :includeminimumgames="true"
-      :minimumgamesdefault="'100'"
+      :minimumgamesdefault="minimumgames"
       :advancedfiltering="advancedfiltering"
       >
     </filters>
@@ -477,6 +476,10 @@ export default {
 
       if (this.urlparameters["role_league_tier"]) {
         this.rolerank = this.urlparameters["role_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+      }
+
+      if(this.urlparameters["minimum_games"]){
+        this.minimumgames = this.urlparameters["minimum_games"];
       }
 
       if (this.urlparameters["mirror"]) {

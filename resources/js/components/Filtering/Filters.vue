@@ -338,7 +338,9 @@
         required: true,
       },
       gametypedefault: Array,
-      minimumgamesdefault: String,
+      minimumgamesdefault: {
+        tpye: [String, Number]
+      },
       defaultSeason: String,
       advancedfiltering: Boolean,
       groupSizeDefaultValue: String,
@@ -411,8 +413,6 @@
       this.modifiedincludeheroes = this.includehero;
 
       this.modifiedminimumgamedefault = this.minimumgamesdefault ? this.minimumgamesdefault : 0;
-
-
 
       this.selectedSingleFilters["Timeframe Type"] = this.timeframetype;
       this.selectedMultiFilters["Game Type"] = this.gametype;

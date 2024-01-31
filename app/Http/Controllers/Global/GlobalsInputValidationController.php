@@ -34,6 +34,7 @@ class GlobalsInputValidationController extends Controller
         'hero_league_tier' => ['sometimes', 'nullable', new TierInputValidation()],
         'role_league_tier' => ['sometimes', 'nullable', new TierInputValidation()],
         'mirror' => 'sometimes|in:null,0,1',
+        'minimum_games' => 'sometimes|nullable|integer',
       ];
     }
 
