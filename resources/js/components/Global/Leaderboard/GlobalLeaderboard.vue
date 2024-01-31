@@ -69,7 +69,7 @@
 
 
             <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
-              <thead class=" top-0 w-full sticky z-40">
+              <thead class=" top-0 w-full  z-40">
                 <tr class="">
                   <th @click="sortTable('rank')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                     Rank
@@ -126,10 +126,23 @@
                     <td>
                       <div class="flex items-center">
                         <div class="" v-if="row.hp_owner">
-                          <i class="fas fa-crown text" style="color:gold;"></i>
+                          <icon-with-hover class="mt-2"  size="small"    icon="fas fa-crown"   title="info"  popupsize="small" style="color:rgba(216, 184, 0, 0.719);">
+                            <slot>
+                              <div>
+                                <p class="max-sm:text-xs">Site Owner</p>
+                              </div>
+                            </slot>
+                          </icon-with-hover>
+         
                         </div>
-                        <div class="" v-else-if="row.patreon">
-                          <i class="fas fa-star" style="color:gold"></i>
+                        <div class="" v-else-if="row.patreonUser">
+                          <icon-with-hover class="mt-2"  size="small"    icon="fas fa-star"   title="info"  popupsize="small" style="color:rgba(216, 184, 0, 0.719);">
+                              <slot>
+                                <div>
+                                  <p class="max-sm:text-xs">Patreon Subscriber</p>
+                                </div>
+                              </slot>
+                        </icon-with-hover>
                         </div>
                         <span class="link" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id)">{{ row.split_battletag }}</span>
                       </div>
