@@ -8,7 +8,7 @@
     <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg expandable-dropdown z-50">
       <div>
         <!-- Search Input -->
-        <input v-model="searchQuery" type="text" placeholder="Search" class="w-full p-2 text-black"/>
+        <input v-model="searchQuery" type="text" placeholder="Search" class="w-full p-2 variable-text"/>
       </div>
       <div class="max-h-80 overflow-y-auto"> 
         <div class="space-y-2 p-2">
@@ -21,7 +21,7 @@
               @click="toggleSelectedOptions(value.code)"
               class="form-checkbox h-5 w-5 text-indigo-600"
             >
-            <label :for="value.code" class="ml-2 text-sm text-black">{{ value.name }}</label>
+            <label :for="value.code" class="ml-2 text-sm variable-text">{{ value.name }}</label>
           </div>
         </div>
       </div>

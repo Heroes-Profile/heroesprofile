@@ -10,20 +10,32 @@ use App\Rules\HeroInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Redirect;
 
 class GlobalCompositionsController extends GlobalsInputValidationController
 {
     public function show(Request $request)
     {
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+          return Redirect::to('/Global/Compositions')->withErrors($validator)->withInput();
+        }
+
         return view('Global.Compositions.compositionsStats')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'filters' => $this->globalDataService->getFilterData(),
-                'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
+                'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
                 'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
                 'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
+                'urlparameters' => $request->all(),
+                'heroes' => $this->globalDataService->getHeroes(),
+
             ]);
 
     }
@@ -40,6 +52,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 
         $validator = Validator::make($request->all(), $validationRules);
 
+        
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
@@ -61,7 +74,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         $talentbuildType = $request['talentbuildtype'];
         $minimumGames = $request['minimum_games'];
 
-        $cacheKey = 'GlobalCompositionStats|' . implode(",", \App\Models\SeasonGameVersion::select("id")->whereIn("game_version", $gameVersion)->pluck("id")->toArray()) . '|' .hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalCompositionStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
         $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
             $gameType,
@@ -70,6 +83,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
             $roleLeagueTier,
             $gameMap,
             $heroLevel,
+            $hero,
             $mirror,
             $region,
             $minimumGames
@@ -85,6 +99,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                 ->filterByRoleLeagueTier($roleLeagueTier)
                 ->filterByGameMap($gameMap)
                 ->filterByHeroLevel($heroLevel)
+                ->filterByHero($hero)
                 ->excludeMirror($mirror)
                 ->filterByRegion($region)
                 ->groupBy('composition_id', 'win_loss')
@@ -99,11 +114,14 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 
             $filteredData = collect($data)
                 ->groupBy('composition_id')
-                ->map(function ($group) use ($totalGamesPlayed, $roleData) {
+                ->map(function ($group) use ($totalGamesPlayed, $roleData, $minimumGames) {
                     $wins = $group->where('win_loss', 1)->sum('games_played');
                     $losses = $group->where('win_loss', 0)->sum('games_played');
                     $gamesPlayed = ($wins + $losses) / 5;
 
+                    if($gamesPlayed <= $minimumGames){
+                      return null;
+                    }
                     $winRate = 0;
                     if ($gamesPlayed > 0) {
                         $winRate = (($wins / 5) / $gamesPlayed) * 100;
@@ -133,9 +151,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                         'role_five' => $role_five,
                     ];
                 })
-                ->filter(function ($item) use ($minimumGames) {
-                    return $item['games_played'] >= $minimumGames;
-                })
+                ->filter()
                 ->sortByDesc('win_rate')
                 ->values()
                 ->toArray();
@@ -186,7 +202,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 
         $compositionID = $request['composition_id'];
 
-        $cacheKey = 'GlobalCompositionTopHeroes|' . implode(",", \App\Models\SeasonGameVersion::select("id")->whereIn("game_version", $gameVersion)->pluck("id")->toArray()) . '|' .hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalCompositionTopHeroes|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
         //return $cacheKey;
 
         $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
@@ -198,7 +214,8 @@ class GlobalCompositionsController extends GlobalsInputValidationController
             $heroLevel,
             $mirror,
             $region,
-            $compositionID
+            $compositionID,
+            $hero
         ) {
 
             $data = GlobalCompositions::query()
@@ -211,6 +228,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                 ->filterByRoleLeagueTier($roleLeagueTier)
                 ->filterByGameMap($gameMap)
                 ->filterByHeroLevel($heroLevel)
+                //->filterByHero($hero)
                 ->filterByCompositionID($compositionID)
                 ->excludeMirror($mirror)
                 ->filterByRegion($region)
@@ -222,36 +240,24 @@ class GlobalCompositionsController extends GlobalsInputValidationController
             $heroData = $heroData->keyBy('id');
 
             $data = $data->map(function ($item) use ($heroData) {
-                // You can access the existing fields like $item->games_played, $item->hero, etc.
-                // Perform your calculations and add new fields.
-
-                $item['role'] = $heroData[$item->hero]['new_role'];
-                $item['name'] = $heroData[$item->hero]['name'];
-                $item['herodata'] = $heroData[$item->hero];
-
-                return $item;
+              $item['role'] = $heroData[$item->hero]['new_role'];
+              $item['name'] = $heroData[$item->hero]['name'];
+              $item['herodata'] = $heroData[$item->hero];
+          
+              return $item;
             });
-
-            return [
-                'Bruiser' => $data->filter(function ($item) {
-                    return $item['role'] === 'Bruiser';
-                })->sortByDesc('games_played')->values(),
-                'Healer' => $data->filter(function ($item) {
-                    return $item['role'] === 'Healer';
-                })->sortByDesc('games_played')->values(),
-                'Melee Assassin' => $data->filter(function ($item) {
-                    return $item['role'] === 'Melee Assassin';
-                })->sortByDesc('games_played')->values(),
-                'Ranged Assassin' => $data->filter(function ($item) {
-                    return $item['role'] === 'Ranged Assassin';
-                })->sortByDesc('games_played')->values(),
-                'Support' => $data->filter(function ($item) {
-                    return $item['role'] === 'Support';
-                })->sortByDesc('games_played')->values(),
-                'Tank' => $data->filter(function ($item) {
-                    return $item['role'] === 'Tank';
-                })->sortByDesc('games_played')->values(),
-            ];
+            
+            // Group the data by role
+            $groupedData = $data->groupBy('role');
+            
+            // Filter and sort each group, then exclude empty groups
+            $result = $groupedData->map(function ($group, $role) {
+                return $group->sortByDesc('games_played')->values();
+            })->reject(function ($group) {
+                return $group->isEmpty();
+            })->toArray();
+            
+            return $result;
 
         });
 

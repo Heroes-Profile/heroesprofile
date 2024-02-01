@@ -12,11 +12,20 @@ use App\Rules\HeroInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Redirect;
 
 class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationController
 {
     public function show(Request $request, $hero = null, $allyenemy = null)
     {
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+          return Redirect::to('/Global/Matchups/Talents')->withErrors($validator)->withInput();
+        }
+
         if (! is_null($hero) && $hero !== 'Auto Select') {
             $validationRules = [
                 'hero' => ['required', new HeroInputValidation()],
@@ -59,15 +68,16 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
         }
 
         return view('Global.Matchups.Talents.globalMatchupsTalentsStats')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'heroes' => $this->globalDataService->getHeroes(),
             'filters' => $this->globalDataService->getFilterData(),
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
             'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
             'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
             'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
             'inputhero' => $inputhero,
             'inputenemyally' => $inputenemyally,
+            'urlparameters' => $request->all(),
         ]);
     }
 
@@ -103,7 +113,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
         $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
 
-        $cacheKey = 'GlobalHeroMatchupsTalents|' . implode(",", $gameVersionIDs) . '|' .hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalHeroMatchupsTalents|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
 
         //return $cacheKey;
 

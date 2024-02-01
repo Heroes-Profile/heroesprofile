@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 @section('title', 'Profile Settings')
 @section('meta_keywords', 'profile settings, Patreon, site settings, user preferences')
 @section('meta_description', 'Customize your profile settings, including Patreon authentication, site preferences, and user options.')

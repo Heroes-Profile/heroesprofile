@@ -33,7 +33,7 @@ class SingleMatchController extends Controller
         }
 
         return view('singleMatch')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'esport' => null,
             'replayID' => $replayID,
         ]);
@@ -56,7 +56,7 @@ class SingleMatchController extends Controller
         }
 
         return view('singleMatch')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'esport' => $esport,
             'replayID' => $replayID,
         ]);
@@ -648,10 +648,10 @@ class SingleMatchController extends Controller
         $replayBans = DB::table($this->schema.'.replay_draft_order')->where('replayID', $replayID)->orderBy('pick_number')->get();
         $modifiedData = $replayBans->map(function ($item) use ($heroData) {
 
-            if($item->hero != 0){
+            if ($item->hero != 0) {
                 $item->hero = $heroData[$item->hero];
-            }else{
-                $item->hero = "No Pick";
+            } else {
+                $item->hero = 'No Pick';
             }
 
             return $item;

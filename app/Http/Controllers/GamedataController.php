@@ -43,7 +43,7 @@ class GamedataController extends Controller
     /**
      * Displays the table of Hero data.
      *
-     * @param  string  $id ID of the requested Hero
+     * @param  string  $id  ID of the requested Hero
      * @return View|RedirectResponse
      */
     protected function hero(Request $request, string $id)

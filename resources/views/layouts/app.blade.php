@@ -13,8 +13,6 @@
 
     <script>
       function handleAdBlocker() {
-        console.error('Error loading ad-manager.min.js');
-        // Additional error handling or logging can be added here
         setCookie('ad-blocker', 'true', 1); // Set the cookie to expire after 1 day
       }
 
@@ -28,7 +26,7 @@
           expires = '; expires=' + date.toUTCString();
         }
 
-        document.cookie = name + '=' + value + expires + '; path=/';
+        document.cookie = name + '=' + value + expires + '; path=/; SameSite=None; Secure';
       }
 
     </script>
@@ -48,7 +46,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
 </head>
-<body class="bg-black text-white">
+<body class="bg-black text-white {{ $bladeGlobals ? $bladeGlobals['darkmode'] ? 'dark-mode' : 'light-mode' : 'light-mode' }}">
   <div id="app" class="flex flex-col align-stretch" style="min-height:100vh;">
     <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></horizontal-banner-ad>
 
@@ -64,7 +62,7 @@
     'isAuthenticated' => Auth::check(),
     'mainSearchAccount' => $main_search_account,
     'altSearchAccounts' => [$alt_search_account1, $alt_search_account2, $alt_search_account3],
-    'regions' => $regions,
+    'regions' => $bladeGlobals["regions"],
     ])
     
 
@@ -89,6 +87,7 @@
               <div class="footer-nav">
               </div>
               <div>{{ session('maxReplayID') }} replays | Patch {{ session('latestPatch') }} | Up to date as of: <format-date :input="'{{ session('latestGameDate') }}'"></format-date></div>
+              <p><a href="/Privacy/Policy" class="underline text-xs">Privacy Policy</a></p>
               <div class="copyright">Skill Tree Development, LLC | <a href="https://heroesprofile.com">Heroes Profile</a></div>
             </div>
           </div>

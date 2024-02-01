@@ -81,7 +81,9 @@ class GlobalCompositions extends Model
 
     public function scopeFilterByHero($query, $hero)
     {
-        return $query->where('hero', $hero);
+        return $query->when(! is_null($hero), function ($query) use ($hero) {
+          return $query->where('hero', $hero);
+        });
     }
 
     public function scopeExcludeMirror($query, $mirror)

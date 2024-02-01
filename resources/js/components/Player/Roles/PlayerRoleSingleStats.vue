@@ -23,7 +23,7 @@
           <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="red"></stat-box>                  
         </div>
         <div class="my-auto">
-          {{ "This is where the role image goes, should we do that? : yes" }}
+          <round-image :image="`/images/roles/${role}.png`" :excludehover="true" size="large"></round-image>
         </div>
 
         <div class="flex flex-wrap max-w-[450px] text-left w-full items-between h-full justify-center mt-[1em]">

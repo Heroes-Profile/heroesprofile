@@ -1,7 +1,8 @@
 <template>
-  <div>
-    <h2>Privacy Policy</h2>
-
+  <div >
+    <page-heading  :heading="'Privacy Policy'"></page-heading>
+   
+    <div class="max-w-[1500px] mx-auto mt-10">
     <p>
       This site uses cookies to enhance your experience and provide personalized features.
       By using our site, you consent to the use of cookies in accordance with this policy.
@@ -46,6 +47,7 @@
       the use of bots or scripts. Any misuse or abuse of the site may result in a ban.
     </p>
   </div>
+</div>
 </template>
 
 

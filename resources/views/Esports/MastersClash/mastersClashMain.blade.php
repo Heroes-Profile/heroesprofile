@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 
 @section('title', 'Masters Clash Esports')
 @section('meta_keywords', 'Masters Clash league, Masters Clash, Heroes of the Storm, Masters Clash esports, competitive gaming, Heroes of the Storm league')
@@ -10,6 +10,8 @@
     :defaultseason="{{ json_encode($defaultseason) }}" 
     :filters="{{ json_encode($filters) }}"
     :talentimages="{{ json_encode($talentimages) }}" 
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+
   >
   </maters-clash-main>
 @endsection

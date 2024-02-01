@@ -19,6 +19,12 @@
         :onFilter="filterData" 
         :filters="filters" 
         :isLoading="isLoading"
+
+        :gametypeinput="[gametype]"
+        :regioninput="[region]"
+        
+
+
         :gametypedefault="gametypedefault"
         :defaultSeason="defaultseason"
         :playerheroroletype="true"
@@ -41,7 +47,7 @@
           <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
 
             <div class="flex flex-wrap justify-between">
-              <div class="mb-4">
+              <div class="mb-4 mx-4">
                 <label for="search" class="sr-only form-control text-black rounded-l p-2">Search Battletag:</label>
                 <input
                   v-model="searchTerm"
@@ -53,7 +59,7 @@
                 />
               </div>
 
-              <div v-if="season == defaultseason" class="max-w-[1500px] flex justify-end mb-2 items-center gap-4 ml-auto">
+              <div v-if="season == defaultseason" class="max-w-[1500px] max-md:mx-4 flex justify-end mb-2 items-center gap-4 ml-auto">
                 <div v-if="!patreonUser">
                   <a class="link" href="/Authenticate/Battlenet" target="_blank">Log in</a> and subscribe to <a class="link" href="https://www.patreon.com/heroesprofile" target="_blank">Patreon</a> to use 
                 </div>
@@ -69,7 +75,7 @@
 
 
             <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
-              <thead class=" top-0 w-full sticky z-40">
+              <thead class=" top-0 w-full  z-40">
                 <tr class="">
                   <th @click="sortTable('rank')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                     Rank
@@ -126,10 +132,23 @@
                     <td>
                       <div class="flex items-center">
                         <div class="" v-if="row.hp_owner">
-                          <i class="fas fa-crown text" style="color:gold;"></i>
+                          <icon-with-hover class="mt-2"  size="small"    icon="fas fa-crown"   title="info"  popupsize="small" style="color:rgba(216, 184, 0, 0.719);">
+                            <slot>
+                              <div>
+                                <p class="max-sm:text-xs">Site Owner</p>
+                              </div>
+                            </slot>
+                          </icon-with-hover>
+         
                         </div>
-                        <div class="" v-else-if="row.patreon">
-                          <i class="fas fa-star" style="color:gold"></i>
+                        <div class="" v-else-if="row.patreonUser">
+                          <icon-with-hover class="mt-2"  size="small"    icon="fas fa-star"   title="info"  popupsize="small" style="color:rgba(216, 184, 0, 0.719);">
+                              <slot>
+                                <div>
+                                  <p class="max-sm:text-xs">Patreon Subscriber</p>
+                                </div>
+                              </slot>
+                        </icon-with-hover>
                         </div>
                         <span class="link" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id)">{{ row.split_battletag }}</span>
                       </div>
@@ -146,7 +165,7 @@
                         <hero-image-wrapper :hero="row.most_played_hero">
                           <image-hover-box :title="row.most_played_hero.name" :paragraph-one="'Games Played:' + row.hero_build_games_played"></image-hover-box>
                         </hero-image-wrapper>
-                        {{ row.most_played_hero.name }}
+                       <span class="max-md:hidden"> {{ row.most_played_hero.name }}</span>
                       </template>
                     </td>
 

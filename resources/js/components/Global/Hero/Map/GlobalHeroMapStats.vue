@@ -14,6 +14,18 @@
       :onFilter="filterData" 
       :filters="filters"
       :isLoading="isLoading" 
+
+      :timeframetypeinput="timeframetype"
+      :timeframeinput="timeframe"
+      :gametypeinput="gametype"
+      :regioninput="region"
+      :herolevelinput="herolevel"
+      :playerrankinput="playerrank"
+      :herorankinput="herorank"
+      :rolerankinput="rolerank"
+      :mirrormatchinput="mirrormatch"
+
+
       :gametypedefault="gametypedefault"
       :includetimeframetype="true"
       :includetimeframe="true"
@@ -30,11 +42,12 @@
     <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
     <div v-if="data">
-      <div class="max-w-[1500px] mx-auto"><span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Map Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span></div>
+      <div class="max-w-[1500px] mx-auto"><span class="flex gap-4 mb-2 mx-4"> {{ this.selectedHero.name }} {{ "Map Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span></div>
 
 
-      <div class="max-w-full  md:px-20 overflow-scroll md:overflow-auto max-w-full h-[50vh] md:h-auto">
-        <table >
+      <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw] max-sm:text-xs   2xl:mx-auto  " style=" ">
+       <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
+      
           <thead>
             <tr>
               <th 
@@ -67,6 +80,7 @@
             </tr>
           </tbody>
         </table>
+        
       </div>
 
     </div>
@@ -98,9 +112,12 @@
       defaulttimeframetype: String,
       advancedfiltering: Boolean,
       patreonUser: Boolean,
+      urlparameters: Object,
+
     },
     data(){
       return {
+        windowWidth: window.innerWidth,
         isLoading: false,
         infoText: "Hero Maps provide information on which maps are good for each hero",
         selectedHero: null,
@@ -124,6 +141,10 @@
       this.timeframe = this.defaulttimeframe;
       this.timeframetype = this.defaulttimeframetype;
 
+      if(this.urlparameters){
+        this.setURLParameters();
+      }
+      
       if(this.inputhero){
         this.selectedHero = this.inputhero;
         this.getData();
@@ -200,6 +221,17 @@
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
+          this.$nextTick(() => {
+        const responsivetable = this.$refs.responsivetable;
+          if (responsivetable && this.windowWidth < 1500) {
+            const newTableWidth = this.windowWidth /responsivetable.clientWidth;
+            responsivetable.style.transformOrigin = 'top left';
+            responsivetable.style.transform = `scale(${newTableWidth})`;
+            const container = this.$refs.tablecontainer;
+            this.tablewidth = newTableWidth;
+            container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+          }
+        });
         }
 
         this.isLoading = false;
@@ -233,15 +265,15 @@
         }
 
         if(this.playerrank){
-          queryString += `&league_tier=${this.playerrank}`;
+          queryString += `&league_tier=${this.convertRankIDtoName(this.playerrank)}`;
         }
 
         if(this.herorank){
-          queryString += `&hero_league_tier=${this.herorank}`;
+          queryString += `&hero_league_tier=${this.convertRankIDtoName(this.herorank)}`;
         }
 
         if(this.rolerank){
-          queryString += `&role_league_tier=${this.rolerank}`;
+          queryString += `&role_league_tier=${this.convertRankIDtoName(this.rolerank)}`;
         }
 
         queryString += `&mirror=${this.mirrormatch}`;
@@ -269,6 +301,46 @@
           this.sortDir = 'desc';
         }
         this.sortKey = key;
+      },
+      convertRankIDtoName(rankIDs) {
+        return rankIDs.map(rankID => this.filters.rank_tiers.find(tier => tier.code == rankID).name);
+      },
+      setURLParameters(){
+        if(this.urlparameters["timeframe_type"]){
+          this.timeframetype = this.urlparameters["timeframe_type"];
+        }
+        
+        if(this.urlparameters["timeframe"]){
+          this.timeframe = this.urlparameters["timeframe"].split(',');
+        }
+
+        if(this.urlparameters["game_type"]){
+          this.gametype = this.urlparameters["game_type"].split(',');
+        }
+
+        if(this.urlparameters["region"]){
+          this.region = this.urlparameters["region"].split(',');
+        }
+        
+        if(this.urlparameters["hero_level"]){
+          this.herolevel = this.urlparameters["hero_level"].split(',');
+        }
+
+        if (this.urlparameters["league_tier"]) {
+          this.playerrank = this.urlparameters["league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+        }
+
+        if (this.urlparameters["hero_league_tier"]) {
+          this.herorank = this.urlparameters["hero_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+        }
+
+        if (this.urlparameters["role_league_tier"]) {
+          this.rolerank = this.urlparameters["role_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+        }
+
+        if (this.urlparameters["mirror"]) {
+          this.mirrormatch = this.urlparameters["mirror"];
+        }
       },
     }
   }

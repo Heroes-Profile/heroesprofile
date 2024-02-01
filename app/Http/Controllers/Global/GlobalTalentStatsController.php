@@ -12,11 +12,20 @@ use App\Rules\TalentBuildTypeInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Redirect;
 
 class GlobalTalentStatsController extends GlobalsInputValidationController
 {
     public function show(Request $request, $hero = null)
     {
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+          return Redirect::to('/Global/Talents')->withErrors($validator)->withInput();
+        }
+
         if (! is_null($hero)) {
             $validationRules = [
                 'hero' => ['required', new HeroInputValidation()],
@@ -33,16 +42,17 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
         return view('Global.Talents.globalTalentStats')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'heroes' => $this->globalDataService->getHeroes(),
                 'userinput' => $userinput,
                 'filters' => $this->globalDataService->getFilterData(),
-                'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
+                'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
                 'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
                 'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
+                'urlparameters' => $request->all(),
             ]);
     }
 
@@ -78,11 +88,10 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $statFilter = $request['statfilter'];
         $mirror = $request['mirror'];
 
-        $cacheKey = 'GlobalHeroTalentStats|' . implode(",", \App\Models\SeasonGameVersion::select("id")->whereIn("game_version", $gameVersion)->pluck("id")->toArray()) . '|' .hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalHeroTalentStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
         //return $cacheKey;
 
-        
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
             $hero,
             $gameVersion,
@@ -139,7 +148,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
                     $statFilterTotal = $talentGroup->sum('total_filter_type');
 
-                    if(isset($talentInfo["hero_name"]) && $talentInfo["hero_name"] == $firstItem['name']){
+                    if (isset($talentInfo['hero_name']) && $talentInfo['hero_name'] == $firstItem['name']) {
                         return [
                             'name' => $firstItem['name'],
                             'hero_id' => $firstItem['id'],
@@ -154,7 +163,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                             'total_filter_type' => $gamesPlayed > 0 ? round($statFilterTotal / $gamesPlayed, 2) : 0,
                         ];
                     }
-  
+
                 })->sortBy('sort')->filter()->values()->toArray();
             });
 
@@ -201,7 +210,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $mirror = $request['mirror'];
         $talentbuildType = $request['talentbuildtype'];
 
-        $cacheKey = 'GlobalHeroTalentStatsBuilds|' . implode(",", \App\Models\SeasonGameVersion::select("id")->whereIn("game_version", $gameVersion)->pluck("id")->toArray()) . '|' .hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalHeroTalentStatsBuilds|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
         //return $cacheKey;
 
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (

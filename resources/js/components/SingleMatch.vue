@@ -2,7 +2,7 @@
   <div class="match-page">
     <div v-if="data" class=" mx-auto">
       
-<div class="" :style="`background-size: cover; background-image: url('/images/maps/background/header-${data.game_map.sanitized_map_name}.jpg')`">
+<div class="" :style="`background-size: cover; background-position:center; background-image: url('/images/maps/background/header-${data.game_map.sanitized_map_name}.jpg')`">
 <div class="text-center pt-4">
        <!-- <div>
           <span>Match Scores</span>
@@ -14,7 +14,7 @@
 
 
         <div class="mb-4">
-          <h1>{{ formatDate(data.game_date) }}</h1>
+          <h1 class="max-md:text-[1.5em]">{{ formatDate(data.game_date) }}</h1>
         </div>
 
         <div class="w-full max-w-[1000px] bg-blue rounded flex justify-between gap-2 mx-auto p-4 mb-4">
@@ -30,10 +30,10 @@
       </div>
 
 
-      <div class=" p-10 text-center ">
-        <div class="flex  justify-center max-w-[1500px] mx-auto gap-10">
-          <div class="max-w-[600px]">
-            <group-box class="w-full" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(0, data.winner)" popupsize="large" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
+      <div class=" mdp-10 text-center ">
+        <div class="flex  justify-center max-w-[1500px] mx-auto  md:gap-10">
+          <div class=" max-w-[50%]  md:max-w-[600px]">
+            <group-box class="md:w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(0, data.winner)" popupsize="large" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
 
 
             <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
@@ -72,8 +72,8 @@
           </div>
 
 
-          <div class="max-w-[600px]">
-            <group-box class="w-full" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(1, data.winner)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'" :winner="data.winner == 1 ? true : false"></group-box>
+          <div class=" max-w-[50%]  md:max-w-[600px]">
+            <group-box class="md:w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(1, data.winner)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'" :winner="data.winner == 1 ? true : false"></group-box>
 
             <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
               {{ esport ? this.data.team_names.team_two.team_name : "Team 2" }} Bans
@@ -165,7 +165,7 @@
               <round-image class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large">
                 <slot>
                   <div>
-                    <p>Heroes Profile Score is a match based analysis ranking showing how a player performed in the match compared to other players in the same match.  100 would be a perfect match with most MVPs hovering between 70-75.</p>
+                    <p class="max-sm:text-xs">Heroes Profile Score is a match based analysis ranking showing how a player performed in the match compared to other players in the same match.  100 would be a perfect match with most MVPs hovering between 70-75.</p>
                   </div>
                 </slot>
               </round-image>
@@ -177,14 +177,14 @@
           <template v-for="(item, index) in combinedPlayers" :key="index">
             
             <div>
-              <a class="flex items-end my-5 w-full justify-evenly"  :href="item.check ? 'javascript:void(0)' : esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
+              <a class="flex flex-wrap items-end my-5 w-full justify-evenly"  :href="item.check ? 'javascript:void(0)' : esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
                 <hero-image-wrapper :size="'big'" :hero="item.hero" class="mr-2"></hero-image-wrapper>
                 <div>
-                  <div class="flex justify-between flex-1">
+                  <div class="flex flex-wrap justify-between flex-1">
                     <span> {{ item.battletag }}</span> 
                     <span>Heroes Profile Rating: {{ item.total_rank }}</span>
                   </div>
-                  <div class="flex space-x-9 items-between w-full flex-1 ">
+                  <div class="flex flex-wrap md:space-x-9 items-between w-full flex-1 ">
                     <div class="flex flex-1">
                       <stat-box class="min-w-[8em]" :title="'Kills'" :value="item.score.kills" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
                       <stat-box class="min-w-[8em]" :title="'Takedowns'" :value="item.score.takedowns" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
@@ -209,10 +209,10 @@
       </div>
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
-      <div v-if="data.draft_order && data.draft_order.length > 0" class="p-10 text-center max-w-[2000px] mx-auto">
+      <div v-if="data.draft_order && data.draft_order.length > 0" class="md:p-10 text-center max-w-[2000px] mx-auto max-sm:text-xs">
         Draft Order
 
-        <table class="min-w-[600px] max-w-[600px] mt-2">
+        <table class="md:min-w-[600px] max-w-[600px] mt-2">
           <thead>
             <tr>
               <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
@@ -230,7 +230,7 @@
             <tr v-for="(row, index) in data.draft_order" :key="index" class="">      
               <td width="25%">
                 <div v-if="row.hero != 'No Pick'" class="flex gap-4 items-center">
-                  <hero-image-wrapper :size="'medium'" :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}
+                  <hero-image-wrapper :size="'medium'" :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
                 </div>
                 <span v-else>No Pick</span>
               </td>
@@ -246,7 +246,7 @@
       <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
       <div class="p-10  max-w-[1500px] mx-auto">
        <h2 class="text-3xl font-bold py-5">Talents</h2>
-       <div class="flex gap-20 justify-around">
+       <div class="flex flex-wrap gap-20 justify-around">
         <div class="">
           <div class="w-full  mb-10" v-for="(item, index) in data.players[0]" :key="index">
             
@@ -319,10 +319,14 @@
 </div>
 
 
-<div v-if="!esport" class=" overflow-scroll md:overflow-auto  h-[50vh] md:h-auto max-w-[1500px] mx-auto my-5">
+<div v-if="!esport" class=" max-sm:text-sm max-w-[1500px] mx-auto my-5">
 
   Team 1 Advanced MMR data
-  <table :class="{ winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }">
+
+  <div  ref="tablecontainer" class="table-container w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" " >
+
+
+  <table :class="['responsive-table', 'relative', { winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }]">
     <thead>
       <tr >
         <td class="color-cell bg-black " colspan="2"></td>
@@ -364,12 +368,17 @@
     </tbody>
   </table>
 </div>
+</div>
 
 
-<div  v-if="!esport" class="   overflow-scroll md:overflow-auto  h-[50vh] md:h-auto max-w-[1500px] mx-auto my-5">
+<div  v-if="!esport" class="  max-sm:text-sm max-w-[1500px] mx-auto my-5">
 
   Team 2 Advanced MMR data
-  <table :class="{ winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }">
+
+  <div  ref="tablecontainer" class="table-container w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" " >
+
+
+  <table :class="['responsive-table', 'relative', { winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }]">
     <thead>
       <tr>
        <td class="color-cell bg-black " colspan="2"></td>
@@ -411,12 +420,17 @@
     </tbody>
   </table>
 </div>
+</div>
 
 <dynamic-banner-ad :patreon-user="patreonUser" :index="5" :mobile-override="false"></dynamic-banner-ad>
 
-<div class="max-w-[1500px] mx-auto my-5">
+<div class="max-sm:text-sm max-w-[1500px] mx-auto my-5">
   Team 1 Advanced Stats
-  <table :class="{ winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
+
+  <div  ref="tablecontainer" class="table-container w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" " v-for="(section, sectionIndex) in sections" :key="sectionIndex">
+
+ 
+  <table :class="['responsive-table', 'relative', { winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }]" >
     <thead>
       <tr>
         <td >{{ section.title }}</td>
@@ -433,11 +447,13 @@
   </tbody>
 </table>
 </div>
+</div>
 
 <dynamic-banner-ad :patreon-user="patreonUser" :index="6" :mobile-override="false"></dynamic-banner-ad>
-<div class="max-w-[1500px] mx-auto">
+ 
   Team 2 Advanced Stats
-  <table :class="{ winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
+  <div  ref="tablecontainer" class="table-container w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" " v-for="(section, sectionIndex) in sections" :key="sectionIndex">
+  <table :id="'responsive-table-' +sectionIndex" :ref="'responsivetable'+sectionIndex" :class="['responsive-table', 'relative', { winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }]" >
     <thead>
       <tr>
         <td class="bg-blue text-white border-white border">{{ section.title }}</td>
@@ -484,6 +500,7 @@
     },
     data(){
       return {
+        windowWidth: window.innerWidth,
         cancelTokenSource: null,
         isLoading: false,
         userTimezone: moment.tz.guess(),
@@ -580,6 +597,21 @@
       }
     },
     methods: {
+      resizeTables(){
+        const tables = this.$el.querySelectorAll('table');
+        tables.forEach(table => {
+          var newTableWidth = this.windowWidth /table.clientWidth;
+          var tablewrapper = table.closest('.table-container');
+          if(tablewrapper){
+          table.style.transformOrigin = 'top left';
+            table.style.transform = `scale(${newTableWidth})`;
+            tablewrapper.style.height = (table.clientHeight * newTableWidth) + 'px';
+
+          }
+        
+          
+        })
+      },
      async getData(){
       this.isLoading = true;
       if (this.cancelTokenSource) {
@@ -601,6 +633,12 @@
       }finally {
         this.cancelTokenSource = null; // Reset cancel token source
         this.isLoading = false;
+        this.$nextTick(() => {
+          if(this.windowWidth < 1500){
+            this.resizeTables();
+          }
+        
+        });
       }
     },
     cancelAxiosRequest() {

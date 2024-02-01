@@ -40,5 +40,6 @@ export default {
 </script>
 <style scoped>
   img{filter: brightness(0);}
+  .dark-mode img{filter:brightness(100);}
 
   </style>

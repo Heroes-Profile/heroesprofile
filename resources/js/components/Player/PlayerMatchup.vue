@@ -19,7 +19,7 @@
       <group-box :text="'Top 5 Allies with more than 5 games'" :data="topfiveheroes"></group-box>
       <group-box :text="'Top 5 Enemies with more than 5 games'" :data="topfiveenemies"></group-box>
     </div>
-    <table class="">
+    <table class="max-md:text-xs">
       <thead>
         <tr>
           <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -43,7 +43,7 @@
         <tr v-for="(row, index) in sortedData" :key="index">
           <td class="py-2 px-3 flex items-center gap-1">
             <a class="link" :href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Hero/Single/' + row.hero.name">
-              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}
+              <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
             </a>
           </td>
            <td class="py-2 px-3 ">

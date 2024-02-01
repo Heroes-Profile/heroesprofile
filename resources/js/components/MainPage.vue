@@ -81,6 +81,7 @@
         Currently, Heroes Profile has pulled 49,812,486 replays up to and including data from patch
       2.55.3.90670 and date/time 2023-09-06 18:20:21  and incorporated them into our dataset.</p>
       <p>For more information on Heroes Profile API navigate to <a class="link" href="https://api.heroesprofile.com/">https://api.heroesprofile.com/</a></p>
+      
     </div>
   </div>
 </template>

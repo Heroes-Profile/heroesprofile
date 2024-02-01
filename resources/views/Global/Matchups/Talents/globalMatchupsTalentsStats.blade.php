@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 
 @section('title', 'Global Talent Matchup Stats')
 @section('meta_keywords', 'Talent Matchup Stats, Hero Talents, Hero Matchups, Talent Performance')
@@ -15,6 +15,8 @@
     :inputenemyally="{{ json_encode($inputenemyally) }}"
     :advancedfiltering="{{ json_encode($advancedfiltering) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+    :urlparameters="{{ json_encode($urlparameters) }}"
+
   >
   </global-matchups-talents-stats>
 @endsection

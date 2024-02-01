@@ -14,6 +14,7 @@
       :includegroupsize="true"
       :hideadvancedfilteringbutton="true"
       :groupSizeDefaultValue="'All'"
+      :overrideGroupSizeRemoval="true"
       >
     </filters>
     

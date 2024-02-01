@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Esports;
 
 use App\Http\Controllers\Controller;
 use App\Models\CCL\CCLTeam;
+use App\Models\HeroesDataTalent;
 use App\Models\HeroesInternational\HeroesInternationalMainTeam;
 use App\Models\HeroesInternational\HeroesInternationalNationsCupTeam;
-use App\Models\HeroesDataTalent;
 use App\Models\Map;
+use App\Models\MastersClashTeam;
 use App\Models\NGS\NGSTeam;
 use App\Rules\GameMapInputValidation;
 use App\Rules\HeroInputValidation;
@@ -15,7 +16,6 @@ use App\Rules\NGSDivisionInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use App\Models\MastersClashTeam;
 
 class EsportsController extends Controller
 {
@@ -45,7 +45,7 @@ class EsportsController extends Controller
     {
         return view('Esports.esportsMain')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             ]);
     }
 
@@ -74,7 +74,7 @@ class EsportsController extends Controller
         }
 
         return view('Esports.singlePlayerMatchHistory')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'esport' => $esport,
@@ -115,7 +115,7 @@ class EsportsController extends Controller
 
         return view('Esports.team')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => $esport,
                 'team' => $team,
                 'season' => $request['season'],
@@ -152,7 +152,7 @@ class EsportsController extends Controller
 
         return view('Esports.singlePlayer')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => $esport,
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
@@ -192,7 +192,7 @@ class EsportsController extends Controller
 
         return view('Esports.singlePlayerHero')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => $esport,
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
@@ -232,7 +232,7 @@ class EsportsController extends Controller
 
         return view('Esports.singlePlayerMap')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => $esport,
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
@@ -243,11 +243,10 @@ class EsportsController extends Controller
             ]);
     }
 
-
-    public function showTeamMatchHistory (Request $request, $esport, $team)
+    public function showTeamMatchHistory(Request $request, $esport, $team)
     {
         $validationRules = [
-            'esport' => 'required|in:NGS,CCL,MastersClash,HeroesInternational'
+            'esport' => 'required|in:NGS,CCL,MastersClash,HeroesInternational',
         ];
 
         $otherValidationRules = [
@@ -266,10 +265,9 @@ class EsportsController extends Controller
             ];
         }
 
-        
         return view('Esports.teamMatchHistory')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => $esport,
                 'team' => $team,
                 'season' => $request['season'],
@@ -420,8 +418,9 @@ class EsportsController extends Controller
         return $result;
     }
 
-    public function getTeamMatchHistoryData(Request $request){
-        
+    public function getTeamMatchHistoryData(Request $request)
+    {
+
         //return response()->json($request->all());
 
         $validationRules = [
@@ -446,8 +445,8 @@ class EsportsController extends Controller
         $this->schema = 'heroesprofile';
 
         $this->season = $request['season'];
-        
-        $tournament = $request["tournament"];
+
+        $tournament = $request['tournament'];
 
         if ($this->esport == 'MastersClash') {
             $this->schema .= '_mcl';
@@ -461,10 +460,9 @@ class EsportsController extends Controller
             $this->schema = 'heroesprofile_hi_nc';
         }
 
-
-        $team = $request["team"];
+        $team = $request['team'];
         $team_id = null;
-        $division = $request["division"];
+        $division = $request['division'];
 
         /*
         if($this->esport == "NGS"){
@@ -497,7 +495,7 @@ class EsportsController extends Controller
                     ->where("season", $this->season)
                     ->where("team_name", $team)
                     ->first()->team_id;
-                
+
             }
         }
         */
@@ -513,13 +511,13 @@ class EsportsController extends Controller
                         ->orWhere('division_1', $division);
                 });
             })
-            ->where(function ($query) use ($team){
-                if($this->esport === 'NGS' || $this->esport === 'MastersClash'){
+            ->where(function ($query) use ($team) {
+                if ($this->esport === 'NGS' || $this->esport === 'MastersClash') {
                     $query->where('team_0_name', $team)
-                    ->orWhere('team_1_name', $team);
-                }else if($this->esport === 'CCL' || $this->esport === 'HeroesInternational'){
+                        ->orWhere('team_1_name', $team);
+                } elseif ($this->esport === 'CCL' || $this->esport === 'HeroesInternational') {
                     $query->where('team_0_id', $team)
-                    ->orWhere('team_1_id', $team);
+                        ->orWhere('team_1_id', $team);
                 }
 
             })
@@ -532,16 +530,15 @@ class EsportsController extends Controller
         $modifiedResult = $result->map(function ($item) use ($maps, $team) {
 
             $item->game_map = $maps[$item->game_map]['name'];
-            if($this->esport === 'NGS' || $this->esport === 'MastersClash'){
+            if ($this->esport === 'NGS' || $this->esport === 'MastersClash') {
                 $item->enemy = $team == $item->team_0_name ? $item->team_1_name : $item->team_0_name;
-            }else if($this->esport === 'CCL' || $this->esport === 'HeroesInternational'){
+            } elseif ($this->esport === 'CCL' || $this->esport === 'HeroesInternational') {
                 $item->enemy = $team == $item->team_0_id ? $item->team_1_id : $item->team_0_id;
             }
+
             return $item;
         });
 
-
-        
         return $result;
     }
 
@@ -704,7 +701,7 @@ class EsportsController extends Controller
             ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
             ->where('replay.season', $this->season)
             ->when(! is_null($this->division), function ($query) {
-                return $query->where($this->schema.'.teams.division', $this->division);
+                return $query->where($this->schema.'.replay.division_0', $this->division)->orWhere($this->schema.'.replay.division_1', $this->division);
             })
             ->get();
 
@@ -802,7 +799,7 @@ class EsportsController extends Controller
             ])
             ->where('season', $this->season)
             ->when(! is_null($this->division), function ($query) {
-                return $query->where($this->schema.'.teams.division', $this->division);
+              return $query->where($this->schema.'.replay.division_0', $this->division)->orWhere($this->schema.'.replay.division_1', $this->division);
             })
             ->where('hero', $hero)
             //->toSql();
@@ -1017,7 +1014,6 @@ class EsportsController extends Controller
         $this->hero = $request['hero'] ? $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id : null;
         $this->game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->toArray() : null;
 
-
         if ($this->esport == 'CCL') {
             $this->team = $request['team'] ? CCLTeam::where('season', $this->season)->where('team_name', $request['team'])->first()->team_id : null;
             $this->team_name = $request['team'];
@@ -1028,7 +1024,6 @@ class EsportsController extends Controller
             $this->team = $request['team'] ? HeroesInternationalNationsCupTeam::where('season', $this->season)->where('team_name', $request['team'])->first()->team_id : null;
             $this->team_name = $request['team'];
         }
-
 
         if ($this->esport == 'MastersClash') {
             $this->schema .= '_mcl';

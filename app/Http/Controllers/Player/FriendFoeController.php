@@ -11,10 +11,10 @@ use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
 use App\Rules\SeasonInputValidation;
+use App\Rules\StackSizeInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use App\Rules\StackSizeInputValidation;
 
 class FriendFoeController extends Controller
 {
@@ -51,14 +51,14 @@ class FriendFoeController extends Controller
         $game_map = $request['game_map'];
 
         return view('Player.friendfoe')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,
             'season' => $season,
             'game_type' => $game_type,
             'game_map' => $game_map,
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
+            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'],//$this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);
@@ -97,20 +97,19 @@ class FriendFoeController extends Controller
         $teamValue = $type == 'friend' ? 0 : 1;
         $gameMap = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id') : null;
         $hero = $request['hero'];
-        $groupSize = $request["groupsize"];
+        $groupSize = $request['groupsize'];
 
-        if($groupSize == "Solo"){
+        if ($groupSize == 'Solo') {
             $groupSize = 0;
-        }else if($groupSize == "Duo"){
+        } elseif ($groupSize == 'Duo') {
             $groupSize = 2;
-        }else if($groupSize == "3 Players"){
+        } elseif ($groupSize == '3 Players') {
             $groupSize = 3;
-        }else if($groupSize == "4 Players"){
+        } elseif ($groupSize == '4 Players') {
             $groupSize = 4;
-        }else if($groupSize == "5 Players"){
+        } elseif ($groupSize == '5 Players') {
             $groupSize = 5;
         }
-
 
         $innerQuery = DB::table('replay')
             ->select('replay.replayID', 'player.party')
@@ -138,8 +137,6 @@ class FriendFoeController extends Controller
             })
             ->where('team', $teamValue)
             ->get();
-
-
 
         $result_team_zero = DB::table('replay')
             ->select(

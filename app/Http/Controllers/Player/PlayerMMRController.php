@@ -34,12 +34,12 @@ class PlayerMMRController extends Controller
         }
 
         return view('Player.mmrData')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,
             'filters' => $this->globalDataService->getFilterData(),
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault("single"),
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault('single'), //This is the only one that makes sense to continue to use a single value
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);
     }

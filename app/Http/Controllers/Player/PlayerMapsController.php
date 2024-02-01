@@ -35,19 +35,19 @@ class PlayerMapsController extends Controller
             ->orderByDesc('account_level')
             ->first();
 
-        if($account_level_data && !empty($account_level_data)){
+        if ($account_level_data && ! empty($account_level_data)) {
             $account_level = $account_level_data->account_level;
         }
 
         return view('Player.Maps.allMapData')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'account_level' => $account_level,
             'region' => $region,
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
+            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'],//$this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
 
         ]);
     }
@@ -74,16 +74,16 @@ class PlayerMapsController extends Controller
         $mapobject = Map::where('name', $map)->first();
 
         return view('Player.Maps.singleMapData')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,
             'map' => $map,
             'mapobject' => $mapobject,
             'filters' => $this->globalDataService->getFilterData(),
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault("single"),
+            'gametypedefault' => null,//$this->globalDataService->getGameTypeDefault('single'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
 
         ]);
     }

@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 
 @section('title', 'Global Composition Stats')
 @section('meta_keywords', 'Heroes Profile, Composition Stats, Hero Roles, Hero Compositions, Win Rates, Compositions Data')
@@ -8,11 +8,14 @@
   <compositions-stats 
     :filters="{{ json_encode($filters) }}" 
     :gametypedefault="{{ json_encode($gametypedefault) }}" 
+    :heroes="{{ json_encode($heroes) }}" 
     :defaultbuildtype="{{ json_encode($defaultbuildtype) }}" 
     :defaulttimeframetype="{{ json_encode($defaulttimeframetype) }}" 
     :defaulttimeframe="{{ json_encode($defaulttimeframe) }}" 
     :advancedfiltering="{{ json_encode($advancedfiltering) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+    :urlparameters="{{ json_encode($urlparameters) }}"
+
   >
   </compositions-stats>
 @endsection

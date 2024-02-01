@@ -27,9 +27,9 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
     public function show(Request $request)
     {
         return view('Global.Leaderboard.globalLeaderboard')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'filters' => $this->globalDataService->getFilterData(),
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault("single"),
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault('single'),
             'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
             'defaultseason' => (string) $this->globalDataService->getDefaultSeason(),
             'weekssincestart' => $this->globalDataService->getWeeksSinceSeasonStart(),

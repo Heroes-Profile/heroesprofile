@@ -17,7 +17,7 @@ class TimeframeMinorInputValidation implements Rule
     public function passes($attribute, $value)
     {
         if (! is_array($value)) {
-            return false;
+          $value = explode(',', $value);
         }
 
         if ($this->timeframeType === 'minor') {
