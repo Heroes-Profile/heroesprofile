@@ -55,37 +55,37 @@
       </div>
       <div >
         <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
-      <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
-        <thead class=" top-0 w-full sticky z-40">
-          <th class="py-2 px-3  border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+      <table id="responsive-table" class="responsive-table  relative" ref="responsivetable">
+        <thead class="top-0 w-full sticky z-40">
+          <th class="py-2 px-3 border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
             Avg
           </th>
-          <th class="py-2 px-3  border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th class="py-2 px-3 border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ getValueFixed(data.average_win_rate) }}
           </th>
-          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ "&#177;" }}{{ getValueFixed(data.average_confidence_interval)}}
           </th>
           <th v-if="showWinRateChange" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ getValueFixed(data.average_positive_win_rate_change) }}{{ "|" }}{{ getValueFixed(data.average_negative_win_rate_change) }}
           </th>
-          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ getValueFixed(data.average_popularity) }}
           </th>
-          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ getValueFixed(data.average_pick_rate) }}
           </th>
-          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th v-if="this.gametype.includes('sl')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ getValueFixed(data.average_ban_rate) }}
           </th>
-          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ getValueLocal(data.average_positive_influence) }}{{ "|" }}{{ getValueLocal(data.average_negative_influence) }}
           </th>
-          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ getValueLocal(data.average_games_played) }}
           </th>
 
-          <th  v-if="this.showStatTypeColumn"  class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+          <th  v-if="this.showStatTypeColumn"  class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
             {{ getValueLocal(getValueFixed(data.averaege_total_filter_type)) }}
           </th>
 
@@ -113,7 +113,7 @@
             <th @click="sortTable('pick_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Pick Rate %
             </th>   
-            <th @click="sortTable('ban_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th v-if="this.gametype.includes('sl')" @click="sortTable('ban_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Ban Rate %
             </th>    
             <th @click="sortTable('influence')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -154,7 +154,7 @@
               <td v-else-if="showWinRateChange && row.win_rate_change >= 0" class="py-2 px-3 "><span v-html="'&plus;'"></span>{{ getValueFixed(row.win_rate_change) }}</td>
               <td class="py-2 px-3">{{ getValueFixed(row.popularity) }}</td>
               <td class="py-2 px-3">{{ getValueFixed(row.pick_rate) }}</td>
-              <td class="py-2 px-3">{{ getValueFixed(row.ban_rate) }}</td>
+              <td  v-if="this.gametype.includes('sl')" class="py-2 px-3">{{ getValueFixed(row.ban_rate) }}</td>
               <td class="py-2 px-3">{{ getValueLocal(row.influence) }}</td>
               <td class="py-2 px-3 ">{{ getValueLocal(row.games_played) }}</td>
               <td v-if="this.showStatTypeColumn" class="py-2 px-3 ">{{ getValueLocal(getValueFixed(row.total_filter_type)) }}</td>
