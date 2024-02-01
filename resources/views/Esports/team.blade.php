@@ -12,5 +12,7 @@
     :season="{{ json_encode($season) }}" 
     :tournament="{{ json_encode($tournament) }}" 
     :image="{{ json_encode($image) }}" 
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+
   ></esports-single-team>
 @endsection

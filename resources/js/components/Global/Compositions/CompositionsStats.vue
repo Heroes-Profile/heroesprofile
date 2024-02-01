@@ -5,6 +5,19 @@
       :onFilter="filterData" 
       :filters="filters" 
       :isLoading="isLoading"
+
+      :timeframetypeinput="timeframetype"
+      :timeframeinput="timeframe"
+      :gametypeinput="gametype"
+      :regioninput="region"
+      :herolevelinput="herolevel"
+      :heroinput="getHeroID()"
+      :gamemapinput="gamemap"
+      :playerrankinput="playerrank"
+      :herorankinput="herorank"
+      :rolerankinput="rolerank"
+      :mirrormatchinput="mirrormatch"
+
       :gametypedefault="gametypedefault"
       :includetimeframetype="true"
       :includetimeframe="true"
@@ -18,7 +31,7 @@
       :includerolerank="true"
       :includemirror="true"
       :includeminimumgames="true"
-      :minimumgamesdefault="'100'"
+      :minimumgamesdefault="minimumgames"
       :advancedfiltering="advancedfiltering"
       >
     </filters>
@@ -98,20 +111,25 @@
                   <tbody>
                     <tr v-for="index in range" class="mr-2">
                       <td>
-                        <hero-image-wrapper :hero="getHeroData(1, row, row.compositionheroes[row.role_one.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(1, row, row.compositionheroes[row.role_one.name], index).name }}</span>
+                        <hero-image-wrapper v-if="getHeroData(1, row, row.compositionheroes[row.role_one.name], index)" :hero="getHeroData(1, row, row.compositionheroes[row.role_one.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(1, row, row.compositionheroes[row.role_one.name], index) ? getHeroData(1, row, row.compositionheroes[row.role_one.name], index).name : "" }}</span>
                       </td>
+
                       <td>
-                        <hero-image-wrapper :hero="getHeroData(2, row, row.compositionheroes[row.role_two.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(2, row, row.compositionheroes[row.role_two.name], index).name }}</span>
+                        <hero-image-wrapper v-if="getHeroData(2, row, row.compositionheroes[row.role_two.name], index)" :hero="getHeroData(2, row, row.compositionheroes[row.role_two.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(2, row, row.compositionheroes[row.role_two.name], index) ? getHeroData(2, row, row.compositionheroes[row.role_two.name], index).name : "" }}</span>
                       </td>
+
                       <td>
-                        <hero-image-wrapper :hero="getHeroData(3, row, row.compositionheroes[row.role_three.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(3, row, row.compositionheroes[row.role_three.name], index).name }}</span>
+                        <hero-image-wrapper v-if="getHeroData(3, row, row.compositionheroes[row.role_three.name], index)" :hero="getHeroData(3, row, row.compositionheroes[row.role_three.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(3, row, row.compositionheroes[row.role_three.name], index) ? getHeroData(3, row, row.compositionheroes[row.role_three.name], index).name : "" }}</span>
                       </td>
+
                       <td>
-                        <hero-image-wrapper :hero="getHeroData(4, row, row.compositionheroes[row.role_four.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(4, row, row.compositionheroes[row.role_four.name], index).name }}</span>
+                        <hero-image-wrapper v-if="getHeroData(4, row, row.compositionheroes[row.role_four.name], index)" :hero="getHeroData(4, row, row.compositionheroes[row.role_four.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(4, row, row.compositionheroes[row.role_four.name], index) ? getHeroData(4, row, row.compositionheroes[row.role_four.name], index).name : "" }}</span>
                       </td>
+
                       <td>
-                        <hero-image-wrapper :hero="getHeroData(5, row, row.compositionheroes[row.role_five.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(5, row, row.compositionheroes[row.role_five.name], index).name }}</span>
+                        <hero-image-wrapper v-if="getHeroData(5, row, row.compositionheroes[row.role_five.name], index)" :hero="getHeroData(5, row, row.compositionheroes[row.role_five.name], index)"></hero-image-wrapper><span class="max-md:hidden">{{ getHeroData(5, row, row.compositionheroes[row.role_five.name], index) ? getHeroData(5, row, row.compositionheroes[row.role_five.name], index).name : "" }}</span>
                       </td>
+
                     </tr>
                   </tbody>
                 </table>
@@ -147,6 +165,8 @@ export default {
     defaulttimeframe: Array,
     advancedfiltering: Boolean,
     patreonUser: Boolean,
+    urlparameters: Object,
+    heroes: Object,
   },
   data(){
     return {
@@ -166,7 +186,7 @@ export default {
       playerrank: null,
       herorank: null,
       rolerank: null,
-      mirrormatch: "Exclude",
+      mirrormatch: 0,
       minimumgames: 100,
       isLoading: false,
       loadingStates: {},
@@ -176,7 +196,11 @@ export default {
     this.gametype = this.gametypedefault;
     this.timeframe = this.defaulttimeframe;
     this.timeframetype = this.defaulttimeframetype;
-  	this.getData();
+
+    if(this.urlparameters){
+      this.setURLParameters();
+    }
+    this.getData();
   },
   mounted() {
   },
@@ -298,12 +322,14 @@ export default {
       this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : null;
       this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : null;
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
+      this.hero = this.hero ? this.heroes.find(hero => hero.id === this.hero).name : null;
+
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : null;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
       this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : null;
       this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : null;
       this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : null;
-      this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : null;
+      this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
       this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : this.minimumgames;
       this.loadingStates = {};
 
@@ -326,17 +352,17 @@ export default {
       if(this.hero){
         queryString += `&hero=${this.hero}`;
       }
-
+      
       if(this.playerrank){
-        queryString += `&league_tier=${this.playerrank}`;
+        queryString += `&league_tier=${this.convertRankIDtoName(this.playerrank)}`;
       }
 
       if(this.herorank){
-        queryString += `&hero_league_tier=${this.herorank}`;
+        queryString += `&hero_league_tier=${this.convertRankIDtoName(this.herorank)}`;
       }
 
       if(this.rolerank){
-        queryString += `&role_league_tier=${this.rolerank}`;
+        queryString += `&role_league_tier=${this.convertRankIDtoName(this.rolerank)}`;
       }
 
       if(this.minimumgames){
@@ -396,15 +422,70 @@ export default {
           newindex += 5;
         }
       }
-
-      if (newindex >= data.length || typeof data[newindex] === 'undefined') {
+      if (newindex > data.length || typeof data[newindex] === 'undefined') {
         return null;
       }
+
       return data[newindex].herodata;
     },
-    countSameRoles(row, current_row_name) {
+    getHeroID(){
+      if(this.hero){
+        return this.heroes.find(hero => hero.name === this.hero).id
+      }
+      return null;
+    },
+    convertRankIDtoName(rankIDs) {
+      return rankIDs.map(rankID => this.filters.rank_tiers.find(tier => tier.code == rankID).name);
+    },
+    setURLParameters(){
+      if(this.urlparameters["timeframe_type"]){
+        this.timeframetype = this.urlparameters["timeframe_type"];
+      }
+      
+      if(this.urlparameters["timeframe"]){
+        this.timeframe = this.urlparameters["timeframe"].split(',');
+      }
 
-    }
+      if(this.urlparameters["game_type"]){
+        this.gametype = this.urlparameters["game_type"].split(',');
+      }
+
+      if(this.urlparameters["region"]){
+        this.region = this.urlparameters["region"].split(',');
+      }
+      
+      if(this.urlparameters["hero_level"]){
+        this.herolevel = this.urlparameters["hero_level"].split(',');
+      }
+
+      if(this.urlparameters["hero"]){
+        this.hero = this.urlparameters["hero"];
+      }
+
+      if(this.urlparameters["game_map"]){
+        this.gamemap = this.urlparameters["game_map"].split(',');
+      }
+
+      if (this.urlparameters["league_tier"]) {
+        this.playerrank = this.urlparameters["league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+      }
+
+      if (this.urlparameters["hero_league_tier"]) {
+        this.herorank = this.urlparameters["hero_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+      }
+
+      if (this.urlparameters["role_league_tier"]) {
+        this.rolerank = this.urlparameters["role_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+      }
+
+      if(this.urlparameters["minimum_games"]){
+        this.minimumgames = this.urlparameters["minimum_games"];
+      }
+
+      if (this.urlparameters["mirror"]) {
+        this.mirrormatch = this.urlparameters["mirror"];
+      }
+    },
   }
 }
 </script>

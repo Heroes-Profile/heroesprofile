@@ -8,6 +8,21 @@
       :isLoading="isLoading"
       :onFilter="filterData" 
       :filters="filters" 
+      :timeframetypeinput="timeframetype"
+      :timeframeinput="timeframe"
+      :gametypeinput="gametype"
+      :regioninput="region"
+      :statfilterinput="statfilter"
+      :herolevelinput="herolevel"
+      :heroinput="getHeroID()"
+      :roleinput="role"
+      :gamemapinput="gamemap"
+      :playerrankinput="playerrank"
+      :herorankinput="herorank"
+      :rolerankinput="rolerank"
+      :talentbuildtypeinput="talentbuildtype"
+      :mirrormatchinput="mirrormatch"
+
       :gametypedefault="gametypedefault"
       :includetimeframetype="true"
       :includetimeframe="true"
@@ -25,6 +40,7 @@
       :includetalentbuildtype="true"
       :advancedfiltering="advancedfiltering"
       :buildtypedefault="defaultbuildtype"
+  
       >
     </filters>
     <takeover-ad :patreon-user="patreonUser"></takeover-ad>
@@ -174,7 +190,6 @@
 </template>
 
 <script>
-import GlobalTalentBuildsSection from '../Talents/GlobalTalentBuildsSection.vue';
 
 export default {
   name: 'GlobalHeroStats',
@@ -191,6 +206,8 @@ export default {
     advancedfiltering: Boolean,
     patreonUser: Boolean,
     defaultbuildtype: String,
+    heroes: Object,
+    urlparameters: Object,
   },
   data(){
     return {
@@ -229,8 +246,12 @@ export default {
   created(){
     this.gametype = this.gametypedefault;
     this.timeframe = this.defaulttimeframe;
-    this.talentbuildtype = this.defaultbuildtype;
     this.timeframetype = this.defaulttimeframetype;
+    this.talentbuildtype = this.defaultbuildtype;
+
+    if(this.urlparameters){
+      this.setURLParameters();
+    }
 
   	this.getData();
   },
@@ -391,6 +412,8 @@ export default {
       this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : null;
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
+      this.hero = this.hero ? this.heroes.find(hero => hero.id === this.hero).name : null;
+
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
       this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : null;
@@ -405,9 +428,9 @@ export default {
       this.sortKey = '';
       this.sortDir = 'desc';
 
-
       let queryString = `?timeframe_type=${this.timeframetype}`;
       queryString += `&timeframe=${this.timeframe}`;
+
       queryString += `&game_type=${this.gametype}`;
 
       if(this.region){
@@ -430,16 +453,17 @@ export default {
         queryString += `&role=${this.role}`;
       }
 
+    
       if(this.playerrank){
-        queryString += `&league_tier=${this.playerrank}`;
+        queryString += `&league_tier=${this.convertRankIDtoName(this.playerrank)}`;
       }
 
       if(this.herorank){
-        queryString += `&hero_league_tier=${this.herorank}`;
+        queryString += `&hero_league_tier=${this.convertRankIDtoName(this.herorank)}`;
       }
 
       if(this.rolerank){
-        queryString += `&role_league_tier=${this.rolerank}`;
+        queryString += `&role_league_tier=${this.convertRankIDtoName(this.rolerank)}`;
       }
 
       queryString += `&statfilter=${this.statfilter}`;
@@ -451,6 +475,7 @@ export default {
       history.pushState(null, null, `${currentPath}${queryString}`);
    
       this.data = null;
+
       this.getData();
     },
     sortTable(key) {
@@ -483,6 +508,73 @@ export default {
     },
     getValueLocal(value){
       return value ? value.toLocaleString() : "";
+    },
+    getHeroID(){
+      if(this.hero){
+        return this.heroes.find(hero => hero.name === this.hero).id
+      }
+      return null;
+    },
+    convertRankIDtoName(rankIDs) {
+      return rankIDs.map(rankID => this.filters.rank_tiers.find(tier => tier.code == rankID).name);
+    },
+    setURLParameters(){
+      if(this.urlparameters["timeframe_type"]){
+        this.timeframetype = this.urlparameters["timeframe_type"];
+      }
+      
+      if(this.urlparameters["timeframe"]){
+        this.timeframe = this.urlparameters["timeframe"].split(',');
+      }
+
+      if(this.urlparameters["game_type"]){
+        this.gametype = this.urlparameters["game_type"].split(',');
+      }
+
+      if(this.urlparameters["region"]){
+        this.region = this.urlparameters["region"].split(',');
+      }
+
+      if(this.urlparameters["statfilter"]){
+        this.statfilter = this.urlparameters["statfilter"];
+      }
+      
+      if(this.urlparameters["hero_level"]){
+        this.herolevel = this.urlparameters["hero_level"].split(',');
+      }
+
+      if(this.urlparameters["hero"]){
+        this.hero = this.urlparameters["hero"];
+      }
+
+      if(this.urlparameters["role"]){
+        this.role = this.urlparameters["role"];
+      }
+
+      if(this.urlparameters["game_map"]){
+        this.gamemap = this.urlparameters["game_map"].split(',');
+      }
+
+      if (this.urlparameters["league_tier"]) {
+        this.playerrank = this.urlparameters["league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+      }
+
+      if (this.urlparameters["hero_league_tier"]) {
+        this.herorank = this.urlparameters["hero_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+      }
+
+      if (this.urlparameters["role_league_tier"]) {
+        this.rolerank = this.urlparameters["role_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+      }
+
+
+      if (this.urlparameters["build_type"]) {
+        this.talentbuildtype = this.urlparameters["build_type"];
+      }
+
+      if (this.urlparameters["mirror"]) {
+        this.mirrormatch = this.urlparameters["mirror"];
+      }
     },
   }
 }

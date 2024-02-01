@@ -89,7 +89,10 @@
 
       </div>
 
-      <div class="">
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
+
+
+      <div>
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Maps played by {{ battletag }}</h2>
           <div class="flex flex-wrap justify-center">

@@ -89,7 +89,6 @@ export default {
   mounted() {
     
    /* var responsivetable = this.$refs.responsivetable2;
-    console.log(this.windowWidth);
     if (responsivetable && this.windowWidth < 1500) {
             var newTableWidth = this.windowWidth /responsivetable.clientWidth;
             responsivetable.style.transformOrigin = 'top left';

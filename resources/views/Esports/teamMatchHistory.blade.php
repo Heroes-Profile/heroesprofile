@@ -11,5 +11,7 @@
     :season="{{ json_encode($season) }}" 
     :tournament="{{ json_encode($tournament) }}" 
     :type="{{ json_encode($type) }}" 
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+
   ></esports-match-history>
 @endsection

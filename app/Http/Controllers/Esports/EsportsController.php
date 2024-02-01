@@ -701,7 +701,7 @@ class EsportsController extends Controller
             ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
             ->where('replay.season', $this->season)
             ->when(! is_null($this->division), function ($query) {
-                return $query->where($this->schema.'.teams.division', $this->division);
+                return $query->where($this->schema.'.replay.division_0', $this->division)->orWhere($this->schema.'.replay.division_1', $this->division);
             })
             ->get();
 
@@ -799,7 +799,7 @@ class EsportsController extends Controller
             ])
             ->where('season', $this->season)
             ->when(! is_null($this->division), function ($query) {
-                return $query->where($this->schema.'.teams.division', $this->division);
+              return $query->where($this->schema.'.replay.division_0', $this->division)->orWhere($this->schema.'.replay.division_1', $this->division);
             })
             ->where('hero', $hero)
             //->toSql();

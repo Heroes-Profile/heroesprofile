@@ -7,6 +7,8 @@
     :filters="{{ json_encode($filters) }}"
     :division="{{ json_encode($division) }}"
     :esport="{{ json_encode($esport) }}"
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+
   >
   </ngs-single-division-match-history>
 @endsection

@@ -12,5 +12,7 @@
     :blizz_id="{{ json_encode($blizz_id) }}" 
     :season="{{ json_encode($season) }}" 
     :tournament="{{ json_encode($tournament) }}" 
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+
   ></esports-player-stats>
 @endsection
