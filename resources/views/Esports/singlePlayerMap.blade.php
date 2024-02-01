@@ -13,5 +13,7 @@
     :season="{{ json_encode($season) }}" 
     :game_map="{{ json_encode($game_map) }}" 
     :tournament="{{ json_encode($tournament) }}" 
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+
   ></esports-player-map-stats>
 @endsection

@@ -25,7 +25,7 @@ export default {
     let htmlComponent = `#dynamic-square-ad-container-${this.index}`;
 
     if(!this.patreonUser){
-      if(!adBlocker){
+      if(!this.adBlocker){
         window.top.__vm_add = window.top.__vm_add || [];
         (function (success) {
             if (window.document.readyState !== "loading") {

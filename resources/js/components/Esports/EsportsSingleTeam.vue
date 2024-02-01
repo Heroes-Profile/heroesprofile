@@ -77,6 +77,8 @@
 
       </div>
 
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
+
       <div class="bg-lighten p-10 ">
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Hero Enemies and Allies</h2>
@@ -151,6 +153,7 @@
         </table>
 
       
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
       <div class=" p-10 mt-10">
         <div class=" max-w-[90em] ml-auto mr-auto">
