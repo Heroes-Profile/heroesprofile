@@ -201,12 +201,13 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         }
 
         $hero = $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id;
+
         if($request['timeframe_type'] == "last_update"){
           $gameVersion = $this->getTimeFrameFilterValuesLastUpdate($hero);
         }else{
           $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         }
-        
+
         $gameTypeRecords = GameType::whereIn('short_name', $request['game_type'])->get();
         $gameType = $gameTypeRecords->pluck('type_id')->toArray();
 
