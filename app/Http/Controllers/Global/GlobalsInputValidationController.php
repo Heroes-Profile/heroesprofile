@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Global;
 
 use App\Http\Controllers\Controller;
 use App\Models\GameType;
+use App\Models\Hero;
 use App\Models\Map;
 use App\Models\MMRTypeID;
 use App\Models\SeasonGameVersion;
@@ -21,7 +22,7 @@ class GlobalsInputValidationController extends Controller
 {
     public function globalValidationRulesURLParam($timeframeType){
       return [
-        'timeframe_type' => 'sometimes|in:minor,major',
+        'timeframe_type' => 'sometimes|in:minor,major,last_update',
         'timeframe' => ['sometimes', 'nullable', new TimeframeMinorInputValidation($timeframeType)],
         'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation()],
         'region' => ['sometimes', 'nullable', new RegionInputValidation()],
@@ -41,8 +42,8 @@ class GlobalsInputValidationController extends Controller
     public function globalsValidationRules($timeframeType)
     {
         return [
-            'timeframe_type' => 'required|in:minor,major',
-            'timeframe' => ['required', new TimeframeMinorInputValidation($timeframeType)],
+            'timeframe_type' => 'required|in:minor,major,last_update',
+            'timeframe' => $timeframeType !== "last_update" ? ['required', new TimeframeMinorInputValidation($timeframeType)] : 'nullable',
             'game_type' => ['required', new GameTypeInputValidation()],
             'region' => ['sometimes', 'nullable', new RegionInputValidation()],
             'statfilter' => ['sometimes', 'nullable', new StatFilterInputValidation()],
@@ -73,6 +74,14 @@ class GlobalsInputValidationController extends Controller
         }
 
         return $timeframes;
+    }
+
+    public function getTimeFrameFilterValuesLastUpdate($hero){
+      $game_version = Hero::select("last_change_patch_version")->where("id", $hero)->first()->last_change_patch_version;
+
+      $gameVersion = SeasonGameVersion::select('game_version')->where('game_version', '>=', $game_version)->get()->pluck('game_version')->toArray();
+    
+      return $gameVersion;
     }
 
     public function getRegionFilterValues($regions)

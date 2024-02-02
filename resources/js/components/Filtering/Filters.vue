@@ -55,8 +55,16 @@
             @input-changed="handleInputChange"
           ></single-select-filter>
 
+          <!-- Timeframe Type -->
+          <single-select-filter v-if="includetimeframetypewithlastupdate" 
+            :values="timeframeTypeWithLastUpdate" 
+            :text="'Timeframe Type'" 
+            :defaultValue="timeframetype" 
+            @input-changed="handleInputChange"
+          ></single-select-filter>
+
           <!-- Timeframes -->
-          <multi-select-filter v-if="includetimeframe" 
+          <multi-select-filter v-if="includetimeframemodified" 
             :values="timeframes" 
             :text="'Timeframes'" 
             :defaultValue="timeframe" 
@@ -332,6 +340,7 @@
       hideadvancedfilteringbutton: Boolean,
       includeseasonwithall: Boolean,
       overrideGroupSizeRemoval: Boolean,
+      includetimeframetypewithlastupdate: Boolean,
       filters: {
         type: Object,
         required: true
@@ -386,10 +395,18 @@
         modifiedGroupSizeDefaultValue: null,
         swapHeroesFilter: false,
         swapRolesFilter: false,
+        includetimeframemodified: null,
       }
     },
     created(){
       this.timeframetype = this.timeframetypeinput ? this.timeframetypeinput : this.defaultTimeFrameType;
+
+      if(this.timeframetype == "last_update"){
+        this.includetimeframemodified = false;
+      }else{
+        this.includetimeframemodified = this.includetimeframe;
+      }
+
       this.timeframe = this.timeframeinput ? this.timeframeinput : this.getDefaultMinorBasedOnTimeframeType();
       this.gametype = this.gametypeinput ? this.gametypeinput : this.gametypedefault;
       this.region = this.regioninput ? this.regioninput : null;
@@ -439,11 +456,16 @@
     mounted() {
     },
     computed: {
+      timeframeTypeWithLastUpdate(){
+        const updatedTimeframeTypes = [...this.filters.timeframe_type];
+        updatedTimeframeTypes.push({ code: 'last_update', name: 'Last Update' });
+        return updatedTimeframeTypes;
+      },
       defaultTimeFrameType(){
         return this.filters.timeframe_type[1].code;
       },
       disabledFilter(){
-        if(this.isLoading || !this.selectedMultiFilters.hasOwnProperty('Timeframes') || !this.selectedMultiFilters.hasOwnProperty('Game Type')){
+        if(this.isLoading || (!this.selectedMultiFilters.hasOwnProperty('Timeframes') && this.selectedSingleFilters["Timeframe Type"] != "last_update") || !this.selectedMultiFilters.hasOwnProperty('Game Type')){
           return true;
         }
         return false;
@@ -452,7 +474,7 @@
         return this.filters.stat_filter[0].code;
       },
       timeframes(){
-        if(this.timeframetype == "minor"){
+        if(this.timeframetype == "minor" || this.timeframetype == "last_update"){
           return this.filters.timeframes;
         }else if(this.timeframetype == "major"){
           return this.filters.timeframes_grouped;
@@ -494,9 +516,15 @@
     },
     methods: {
       handleInputChange(eventPayload) {
-        if(eventPayload.field == "Timeframe Type" ){
-          this.timeframetype = eventPayload.value;
-          this.timeframe = this.getDefaultMinorBasedOnTimeframeType();
+        if(eventPayload.field == "Timeframe Type"){
+          if(eventPayload.value == 'last_update'){
+            this.includetimeframemodified = false;
+            delete this.selectedMultiFilters["Timeframes"];
+          }else{
+            this.timeframetype = eventPayload.value;
+            this.timeframe = this.getDefaultMinorBasedOnTimeframeType();
+            this.includetimeframemodified = true;
+          }
         }
 
         if(eventPayload.type === 'single') {
@@ -582,7 +610,7 @@
         return '';
       },
       applyFilter() {
-        if (this.selectedMultiFilters.hasOwnProperty('Timeframes') && this.selectedMultiFilters.hasOwnProperty('Game Type')) {
+        if ((this.selectedMultiFilters.hasOwnProperty('Timeframes') || this.selectedSingleFilters["Timeframe Type"] == "last_update") && this.selectedMultiFilters.hasOwnProperty('Game Type')) {
           if(window.innerWidth < 768){
             this.showNav = false;
           }
