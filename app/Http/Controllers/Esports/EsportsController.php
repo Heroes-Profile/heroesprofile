@@ -1252,13 +1252,10 @@ class EsportsController extends Controller
                     0 => $group[0] && $group[0]->hero ? ['hero' => $heroData[$group[0]->hero]] : null,
                 ];
             } else {
-                $heroes = [
-                    0 => $group[0] && $group[0]->hero ? ['hero' => $heroData[$group[0]->hero]] : null,
-                    1 => $group[1] && $group[1]->hero ? ['hero' => $heroData[$group[1]->hero]] : null,
-                    2 => $group[2] && $group[2]->hero ? ['hero' => $heroData[$group[2]->hero]] : null,
-                    3 => $group[3] && $group[3]->hero ? ['hero' => $heroData[$group[3]->hero]] : null,
-                    4 => $group[4] && $group[4]->hero ? ['hero' => $heroData[$group[4]->hero]] : null,
-                ];
+              $heroes = [];
+              for ($i = 0; $i < 5; $i++) {
+                  $heroes[$i] = isset($group[$i]) && $group[$i]->hero ? ['hero' => $heroData[$group[$i]->hero]] : null;
+              }
             }
 
             $team_0_name = null;

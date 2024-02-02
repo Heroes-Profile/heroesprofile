@@ -92,6 +92,7 @@
             </div>
           </div>
           <div class="disclaimer">
+            <footer-popup-disclaimer></footer-popup-disclaimer>
           </div>
         </div>
       </div>

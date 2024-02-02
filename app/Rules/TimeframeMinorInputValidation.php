@@ -16,26 +16,26 @@ class TimeframeMinorInputValidation implements Rule
 
     public function passes($attribute, $value)
     {
-        if (! is_array($value)) {
-          $value = explode(',', $value);
-        }
+      if (! is_array($value)) {
+        $value = explode(',', $value);
+      }
 
-        if ($this->timeframeType === 'minor') {
-            $existingVersions = SeasonGameVersion::pluck('game_version')->toArray();
-            $invalidVersions = array_diff($value, $existingVersions);
-            if (! empty($invalidVersions)) {
-                return false;
-            }
-        } elseif ($this->timeframeType === 'major') {
-            foreach ($value as $timeframeValue) {
-                $matchingVersions = SeasonGameVersion::where('game_version', 'like', trim($timeframeValue).'%')->count();
-                if ($matchingVersions === 0) {
-                    return false;
-                }
-            }
-        }
+      if ($this->timeframeType === 'minor') {
+          $existingVersions = SeasonGameVersion::pluck('game_version')->toArray();
+          $invalidVersions = array_diff($value, $existingVersions);
+          if (! empty($invalidVersions)) {
+              return false;
+          }
+      } elseif ($this->timeframeType === 'major') {
+          foreach ($value as $timeframeValue) {
+              $matchingVersions = SeasonGameVersion::where('game_version', 'like', trim($timeframeValue).'%')->count();
+              if ($matchingVersions === 0) {
+                  return false;
+              }
+          }
+      }
 
-        return true;
+      return true;
     }
 
     public function message()

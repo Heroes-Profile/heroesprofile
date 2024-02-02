@@ -34,7 +34,7 @@
 
 
           :gametypedefault="gametypedefault"
-          :includetimeframetype="true"
+          :includetimeframetypewithlastupdate="true"
           :includetimeframe="true"
           :includeregion="true"
           :includestatfilter="true"
@@ -288,7 +288,7 @@
       },
       filterData(filteredData){
         this.timeframetype = filteredData.single["Timeframe Type"] ? filteredData.single["Timeframe Type"] : this.timeframetype;
-        this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaulttimeframe;
+        this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): (this.timeframetype == "last_update" ? null : this.defaulttimeframe);
         this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : null;
         this.statfilter = filteredData.single["Stat Filter"] ? filteredData.single["Stat Filter"] : "win_rate";
         this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : null;
@@ -316,7 +316,10 @@
       },
       updateQueryString(){
         let queryString = `?timeframe_type=${this.timeframetype}`;
-        queryString += `&timeframe=${this.timeframe}`;
+
+        if(this.timeframe){
+          queryString += `&timeframe=${this.timeframe}`;
+        }
         queryString += `&game_type=${this.gametype}`;
 
         if(this.region){
@@ -360,7 +363,7 @@
         }
       },
       determineIfLargeData(){
-        if(this.timeframetype == "major" || this.timeframe.length >= 3 || this.statfilter != "win_rate"){
+        if(this.timeframetype == "major" || (this.timeframetype == "last_update" || this.timeframe.length >= 3) || this.statfilter != "win_rate"){
           return  true;
         }
         return false;
