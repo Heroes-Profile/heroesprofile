@@ -77,7 +77,13 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         }
 
         $hero = $this->getHeroFilterValue($request['hero']);
-        $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+
+        if($request['timeframe_type'] == "last_update"){
+          $gameVersion = $this->getTimeFrameFilterValuesLastUpdate($hero);
+        }else{
+          $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        }
+
         $gameType = $this->getGameTypeFilterValues($request['game_type']);
         $leagueTier = $request['league_tier'];
         $heroLeagueTier = $request['hero_league_tier'];
