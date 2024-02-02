@@ -201,7 +201,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         }
 
         $hero = $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id;
-        
+
         if($request['timeframe_type'] == "last_update"){
           $gameVersion = $this->getTimeFrameFilterValuesLastUpdate($hero);
         }else{
