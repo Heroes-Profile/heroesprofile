@@ -22,7 +22,7 @@
           <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="red"></stat-box>                  
         </div>
         <div class="my-auto">
-          {{ "This is where the map image goes, should we do that?" }}
+          <round-image :image="`/images/maps/icon/${formatMapName(map)}`" :excludehover="true" size="large"></round-image>
         </div>
 
         <div class="flex flex-wrap max-w-[450px] text-left w-full items-between h-full justify-center mt-[1em]">
@@ -227,6 +227,9 @@ export default {
     handleDropdownClosed(){
       this.data = null;
       this.getData();
+    },
+    formatMapName(map) {
+      return `bg_${map.toLowerCase().replace(/\s+/g, '_')}.jpg`;
     },
   }
 }

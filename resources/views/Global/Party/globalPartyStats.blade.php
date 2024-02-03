@@ -6,11 +6,14 @@
 @section('content')
   <global-party-stats 
     :filters="{{ json_encode($filters) }}" 
+    :heroes="{{ json_encode($heroes) }}" 
     :gametypedefault="{{ json_encode($gametypedefault) }}" 
     :defaulttimeframetype="{{ json_encode($defaulttimeframetype) }}" 
     :defaulttimeframe="{{ json_encode($defaulttimeframe) }}" 
     :advancedfiltering="{{ json_encode($advancedfiltering) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+    :urlparameters="{{ json_encode($urlparameters) }}"
+
   >
   </global-party-stats>
 @endsection

@@ -15,6 +15,8 @@
     :inputenemyally="{{ json_encode($inputenemyally) }}"
     :advancedfiltering="{{ json_encode($advancedfiltering) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+    :urlparameters="{{ json_encode($urlparameters) }}"
+
   >
   </global-matchups-talents-stats>
 @endsection

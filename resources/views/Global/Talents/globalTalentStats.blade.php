@@ -20,6 +20,8 @@
     :talentimages="{{ json_encode($talentimages) }}" 
     :advancedfiltering="{{ json_encode($advancedfiltering) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+    :urlparameters="{{ json_encode($urlparameters) }}"
+
   >
   </global-talents-stats>
 @endsection

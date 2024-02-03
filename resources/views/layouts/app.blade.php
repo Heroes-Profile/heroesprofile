@@ -13,8 +13,6 @@
 
     <script>
       function handleAdBlocker() {
-        console.error('Error loading ad-manager.min.js');
-        // Additional error handling or logging can be added here
         setCookie('ad-blocker', 'true', 1); // Set the cookie to expire after 1 day
       }
 
@@ -28,7 +26,7 @@
           expires = '; expires=' + date.toUTCString();
         }
 
-        document.cookie = name + '=' + value + expires + '; path=/';
+        document.cookie = name + '=' + value + expires + '; path=/; SameSite=None; Secure';
       }
 
     </script>
@@ -94,6 +92,7 @@
             </div>
           </div>
           <div class="disclaimer">
+            <footer-popup-disclaimer></footer-popup-disclaimer>
           </div>
         </div>
       </div>

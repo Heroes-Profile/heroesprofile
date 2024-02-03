@@ -9,6 +9,8 @@
     :blizzid="{{ json_encode($blizz_id) }}" 
     :esport="{{ json_encode($esport) }}" 
     :season="{{ json_encode($season) }}" 
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+
   >  
   </esports-player-match-history>
 @endsection

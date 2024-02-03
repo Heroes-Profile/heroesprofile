@@ -10,11 +10,20 @@ use App\Rules\SelectedTalentInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Redirect;
 
 class GlobalTalentBuilderController extends GlobalsInputValidationController
 {
     public function show(Request $request, $hero = null)
     {
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+          return Redirect::to('/Global/Talents/Builder')->withErrors($validator)->withInput();
+        }
+
         $validationRules = [
             'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
         ];
@@ -39,6 +48,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
                 'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
+                'urlparameters' => $request->all(),
             ]);
     }
 

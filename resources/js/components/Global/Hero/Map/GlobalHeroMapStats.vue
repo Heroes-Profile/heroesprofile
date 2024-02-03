@@ -14,6 +14,18 @@
       :onFilter="filterData" 
       :filters="filters"
       :isLoading="isLoading" 
+
+      :timeframetypeinput="timeframetype"
+      :timeframeinput="timeframe"
+      :gametypeinput="gametype"
+      :regioninput="region"
+      :herolevelinput="herolevel"
+      :playerrankinput="playerrank"
+      :herorankinput="herorank"
+      :rolerankinput="rolerank"
+      :mirrormatchinput="mirrormatch"
+
+
       :gametypedefault="gametypedefault"
       :includetimeframetype="true"
       :includetimeframe="true"
@@ -100,6 +112,8 @@
       defaulttimeframetype: String,
       advancedfiltering: Boolean,
       patreonUser: Boolean,
+      urlparameters: Object,
+
     },
     data(){
       return {
@@ -127,6 +141,10 @@
       this.timeframe = this.defaulttimeframe;
       this.timeframetype = this.defaulttimeframetype;
 
+      if(this.urlparameters){
+        this.setURLParameters();
+      }
+      
       if(this.inputhero){
         this.selectedHero = this.inputhero;
         this.getData();
@@ -247,15 +265,15 @@
         }
 
         if(this.playerrank){
-          queryString += `&league_tier=${this.playerrank}`;
+          queryString += `&league_tier=${this.convertRankIDtoName(this.playerrank)}`;
         }
 
         if(this.herorank){
-          queryString += `&hero_league_tier=${this.herorank}`;
+          queryString += `&hero_league_tier=${this.convertRankIDtoName(this.herorank)}`;
         }
 
         if(this.rolerank){
-          queryString += `&role_league_tier=${this.rolerank}`;
+          queryString += `&role_league_tier=${this.convertRankIDtoName(this.rolerank)}`;
         }
 
         queryString += `&mirror=${this.mirrormatch}`;
@@ -283,6 +301,46 @@
           this.sortDir = 'desc';
         }
         this.sortKey = key;
+      },
+      convertRankIDtoName(rankIDs) {
+        return rankIDs.map(rankID => this.filters.rank_tiers.find(tier => tier.code == rankID).name);
+      },
+      setURLParameters(){
+        if(this.urlparameters["timeframe_type"]){
+          this.timeframetype = this.urlparameters["timeframe_type"];
+        }
+        
+        if(this.urlparameters["timeframe"]){
+          this.timeframe = this.urlparameters["timeframe"].split(',');
+        }
+
+        if(this.urlparameters["game_type"]){
+          this.gametype = this.urlparameters["game_type"].split(',');
+        }
+
+        if(this.urlparameters["region"]){
+          this.region = this.urlparameters["region"].split(',');
+        }
+        
+        if(this.urlparameters["hero_level"]){
+          this.herolevel = this.urlparameters["hero_level"].split(',');
+        }
+
+        if (this.urlparameters["league_tier"]) {
+          this.playerrank = this.urlparameters["league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+        }
+
+        if (this.urlparameters["hero_league_tier"]) {
+          this.herorank = this.urlparameters["hero_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+        }
+
+        if (this.urlparameters["role_league_tier"]) {
+          this.rolerank = this.urlparameters["role_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+        }
+
+        if (this.urlparameters["mirror"]) {
+          this.mirrormatch = this.urlparameters["mirror"];
+        }
       },
     }
   }

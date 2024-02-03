@@ -10,6 +10,8 @@
     :filters="{{ json_encode($filters) }}"
     :division="{{ json_encode($division) }}"
     :season="{{ json_encode($season) }}"
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+
   >
   </ngs-single-division>
 @endsection

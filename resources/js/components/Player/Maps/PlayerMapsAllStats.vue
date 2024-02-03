@@ -290,7 +290,6 @@ export default {
             responsivetable.style.transformOrigin = 'top left';
             responsivetable.style.transform = `scale(${newTableWidth})`;
             const container = this.$refs.tablecontainer;
-            console.log(newTableWidth);
             container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
           }
         });
