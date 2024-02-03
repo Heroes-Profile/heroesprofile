@@ -30,10 +30,13 @@
     <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
     <div v-if="allyenemydata" class="flex flex-wrap gap-4  ">
-      <group-box :text="'TOP 5 ALLIES ON HEROS TEAM'" :data="allyenemydata.ally.slice(0, 5)" :type="'Matchups'" color="blue"></group-box>
-      <group-box :text="'TOP 5 THREATS ON ENEMIES TEAM'" :data="allyenemydata.enemy.slice(0, 5)" :type="'Matchups'" color="red"></group-box>
+      
 
       <div class="md:min-w-[1500px] md:px-20">
+        <div class="flex justify-center">
+        <group-box :text="'TOP 5 ALLIES ON HEROS TEAM'" :data="allyenemydata.ally.slice(0, 5)" :type="'Matchups'" color="blue"></group-box>
+      <group-box :text="'TOP 5 THREATS ON ENEMIES TEAM'" :data="allyenemydata.enemy.slice(0, 5)" :type="'Matchups'" color="red"></group-box>
+      </div>
 
       <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Talent Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
       <div id="table-container" ref="tablecontainer" class="  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
