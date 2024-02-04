@@ -235,6 +235,9 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
         $gamesPlayedForFormula = $playerData->games_played_leaderboard;
 
+        if(!$maxGamesPlayed){
+          $maxGamesPlayed = 0;
+        }
         if ($maxGamesPlayed < $playerData->games_played_leaderboard) {
             $gamesPlayedForFormula = $maxGamesPlayed;
         }
@@ -260,9 +263,9 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             ->where('blizz_id', $blizz_id)
             ->where('region', $region)
             ->first();
-
+        
         $winRate = $playerData->games_played_leaderboard > 0 ? ($playerData->win_leaderboard / $playerData->games_played_leaderboard) * 100 : 0;
-        $rating = (50 + ($winRate - 50) * ($gamesPlayedForFormula / $maxGamesPlayed)) + ($playerMMR->conservative_rating / 10);
+        $rating = $maxGamesPlayed > 0 ? (50 + ($winRate - 50) * ($gamesPlayedForFormula / $maxGamesPlayed)) + ($playerMMR->conservative_rating / 10) : (50 + ($winRate - 50) * ($gamesPlayedForFormula)) + ($playerMMR->conservative_rating / 10);
 
         return ['rating' => round($rating, 2), 'games_played' => $playerData->games_played_leaderboard];
     }
