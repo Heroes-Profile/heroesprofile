@@ -60,7 +60,7 @@ body{
   @apply max-md:w-full text-center;
 }
 .nav-dropdown-inner-wrapper{
-  @apply bg-blue   text-sm drop-shadow ;
+  @apply bg-blue   text-sm drop-shadow text-left;
 }
 
 @media (min-width:768px){
