@@ -157,7 +157,10 @@ class PlayerMMRController extends Controller
         $leagueBreakdownArray = $leagueBreakdown->toArray();
         $fullBreakdownForTierArray = $fullBreakdownForTier;
 
-        $smallestMmr = min($fullBreakdownForTierArray);
+        $smallestMmr = 0;
+        if(count($fullBreakdownForTierArray) > 0){
+          $smallestMmr = min($fullBreakdownForTierArray);
+        }
 
         if ($rankTier != 'Master') {
             foreach ($leagueBreakdownArray as $key => $data) {
