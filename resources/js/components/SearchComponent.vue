@@ -24,8 +24,6 @@
       }
     },
     created(){
-      console.log('button created');
-      console.log(this.buttonText);
     },
     mounted() {
     },

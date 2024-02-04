@@ -266,7 +266,7 @@
             </div>
           </div>
         </div>
-        <button disabled="disabledFilter" @click="applyFilter"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal max-md:mt-auto max-md:w-full': !disabledFilter, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disabledFilter}">
+        <button :disabled="disabledFilter" @click="applyFilter"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal max-md:mt-auto max-md:w-full': !disabledFilter, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disabledFilter}">
           Filter
         </button>
 
@@ -357,6 +357,7 @@
       advancedfiltering: Boolean,
       groupSizeDefaultValue: String,
       rolerequired: Boolean,
+      excludetimeframes: Boolean,
     },
     data(){
       return {
@@ -465,9 +466,28 @@
         return this.filters.timeframe_type[1].code;
       },
       disabledFilter(){
-        if(this.isLoading || (!this.selectedMultiFilters.hasOwnProperty('Timeframes') && this.selectedSingleFilters["Timeframe Type"] != "last_update") || !this.selectedMultiFilters.hasOwnProperty('Game Type')){
+        if(this.isLoading){
+          (1);
           return true;
         }
+
+        if(!this.selectedMultiFilters.hasOwnProperty('Game Type')){
+          (2);
+
+          return true;
+        }
+
+        if(!this.excludetimeframes){
+          (3);
+
+          if(!this.selectedMultiFilters.hasOwnProperty('Timeframes') && this.selectedSingleFilters["Timeframe Type"] != "last_update"){
+            (4);
+
+            return true;
+          }
+        }
+        (5);
+
         return false;
       },
       defaultStatType(){
