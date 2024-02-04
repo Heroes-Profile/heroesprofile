@@ -2,7 +2,7 @@
   <div>
     <page-heading :infoText1="infoText1" :heading="'Leaderboard'">
       <template #extraInfo>
-        <p>
+        <p class="text-sm max-md:text-sm">
           Only users who upload replays through an approved automatic uploader will be able to rank on the leaderboards.
           The main uploader can be found at
           <a class="link" href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases" target="_blank" rel="noopener noreferrer">Heroes Profile Uploader</a>

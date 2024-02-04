@@ -1,6 +1,7 @@
 <template>
   <div>
-    <page-heading :heading="'Matchups'" :infoText1="infotext" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+    
+    <page-heading :heading="'Matchups'" :battletag="battletag +`(`+ region + `)`" :infoText1="infotext" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
     
     <filters 
     :onFilter="filterData" 
