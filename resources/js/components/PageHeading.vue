@@ -11,8 +11,9 @@
    
 
     <h1 v-else class="text-xl md:text-3xl max-md:w-full">
-      <div class="flex items-center">
-        <div v-if="isOwner" class="text-[20px] mt-2">
+      <div>
+      <div class="flex items-center max-md:flex-col text-sm">
+        <div v-if="isOwner" class="text-[20px] height-auto">
           <!-- Owner -->
           <icon-with-hover class="mt-2"  size="small"    icon="fas fa-crown"   title="info"  popupsize="small" style="color:gold">
                 <slot>
@@ -23,9 +24,9 @@
               </icon-with-hover>
          
         </div>
-        <div v-else-if="isPatreon" class="text-md">
+        <div v-else-if="isPatreon" class="text-[20px] height-auto">
          <!-- Patreon Subscriber -->
-         <icon-with-hover class="mt-2"  size="small"    icon="fas fa-star"   title="info"  popupsize="small" style="color:gold">
+         <icon-with-hover class="md:mt-2"  size="small"    icon="fas fa-star"   title="info"  popupsize="small" style="color:gold">
                 <slot>
                   <div>
                     <p class="max-sm:text-xs">Patreon Subscriber</p>
@@ -34,12 +35,16 @@
           </icon-with-hover>
           
         </div>
+
+        <a v-if="battletag" href="#" class="text-lg link ">{{ battletag }} </a>
+        </div>
         {{ heading }}
       </div>
     </h1>
-    <div v-if="!hideText">
+    <div v-if="!hideText" class=" ">
       <infobox :input="infoText1"></infobox>
       <infobox :input="infoText2"></infobox>
+      <slot name="extraInfo"></slot>
     </div>
     <div class="ml-auto" v-else>
       <custom-button @click="hideText = !hideText" text="Read more" alt="Show Header Information" size="small" :ignoreclick="true"></custom-button>
@@ -60,6 +65,7 @@ export default {
     infoText2: String,
     isPatreon: Boolean,
     isOwner: Boolean,
+    battletag: String
   },
   data(){
     return {

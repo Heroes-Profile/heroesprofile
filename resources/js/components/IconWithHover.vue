@@ -54,7 +54,7 @@
 
       <div class="popup-arrow max-md:hidden"></div>
     </div>
-    <div v-if="!excludehover && !mobileClick" :class="[' md:hidden     text-s p-1    drop-shadow-md  rounded-md px-2 text-center   mb-4', {}]">
+    <div v-if="!excludehover && !mobileClick" :class="[' md:hidden     text-s p-1    drop-shadow-md  rounded-md px-2 text-center   md:mb-4', {}]">
           
           <slot></slot>
           
