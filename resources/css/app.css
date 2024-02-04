@@ -181,6 +181,12 @@ tr.bg-hred{
 tr.bg-yellow{
   background-color: #d98c40;
 }
+.dark-mode tr.bg-hred{
+  background-color: rgba(214, 142, 124, 0.5);
+}
+.dark-mode tr.bg-yellow{
+  background-color: #d98c40;
+}
 
 
 th{
