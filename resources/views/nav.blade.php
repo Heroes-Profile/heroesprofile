@@ -83,7 +83,7 @@
 
                     
                         @if(isset($mainSearchAccount))
-                        <div class="relative group inline-block nav-item max-md:hidden">
+                        <div class="relative group inline-block nav-item ">
                             <a class="cursor-pointer">
                             {{ $mainSearchAccount['battletag'] }} ({{ $regions[$mainSearchAccount['region']] }})
                             </a>
@@ -105,7 +105,7 @@
                         @endif
                     
                 </div>
-
+                <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'" class="mt-auto md:hidden"></search-component>
                 {{-- Distinct white or grey line show the seperation here  --}}
                 <div class="flex space-x-5 bg-lighten p-3 mx-2 max-md:order-1 max-md:mt-auto">
                     <custom-button :href="'https://api.heroesprofile.com/Api'" :targetblank="true" :text="'API'" :alt="'API'"  :size="'small'" :color="'teal'"></custom-button>
@@ -143,14 +143,14 @@
     </nav>
     
 </div>
-<nav class="flex justify-end md:mr-8 alt-acct-nav ">
+<nav class="flex justify-end md:mr-8 alt-acct-nav max-md:flex-wrap  ">
         @foreach($altSearchAccounts as $index => $account)
             @if($account)
-                <div class="relative group inline-block  md:p-4 mx-4 text-sm  ">
+                <div class="relative group inline-block  md:p-4 md:mx-4 text-sm  ">
                     <a data-battletag="{{ $account['battletag'] }}" class="mobile-secondary-nav-open cursor-pointer">{{ $account['battletag'] }} ({{ $regions[$account['region']] }})</a>
                     <div data-battletag="{{ $account['battletag'] }}" class="nav-dropdown absolute  hidden z-50 md:pt-3 absolute md:right-0 md:min-w-[200px] max-md:top-0 max-md:fixed max-md:w-full nav-dropdown-secondary-nav max-md:bg-gray-dark max-md:h-full">
                         <div class="nav-dropdown-inner-wrapper rounded-none">
-                            <div  class="mobile-secondary-nav-name flex justify-between md:hidden  p-3 bg-teal">{{ $account['battletag'] }} ({{ $regions[$account['region']] }}) <button class="close-secondary-nav">x</button></div>
+                            <div  class="mobile-secondary-nav-name flex justify-between md:hidden max-md:text-xs md:p-3 bg-teal">{{ $account['battletag'] }} ({{ $regions[$account['region']] }}) <button class="close-secondary-nav">x</button></div>
                         <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" >Profile</a>
                         <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/FriendFoe" >Friends and Foes</a>
                         <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Hero" >Heroes</a>
@@ -165,6 +165,7 @@
                 </div>
             @endif
         @endforeach
+        <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'" class="max-md:hidden mt-auto"></search-component>
     </nav>
 <mobile-nav-hack></mobile-nav-hack>
 
