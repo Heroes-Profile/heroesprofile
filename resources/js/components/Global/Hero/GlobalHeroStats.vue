@@ -144,7 +144,7 @@
           <template v-for="(row, index) in sortedData">
             <tr>
               <td class="py-2 px-3 flex items-center gap-1 max-md:w-[150px]">
-                <a class="flex w-full items-center" :href="'/Global/Talents/' + row.name ? row.name : ''" >
+                <a class="flex w-full items-center" :href="getGlobalTalentsURL(row)" >
                   <hero-image-wrapper class="mr-2" mobileClick="true" :hero="row" :includehover="false"></hero-image-wrapper><span class="hidden md:block">{{ row.name }}</span>
                 </a>
               </td>
@@ -502,7 +502,13 @@ export default {
       }
       return false;
     },
-
+    getGlobalTalentsURL(hero){
+      var url = "";
+      if(hero){
+        url = '/Global/Talents/' + hero.name;
+      }
+      return url;
+    },
     getValueFixed(value){
       return value ? value.toFixed(2) : "";
     },
