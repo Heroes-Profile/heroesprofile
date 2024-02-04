@@ -266,7 +266,7 @@
             </div>
           </div>
         </div>
-        <button :disabled="disabledFilter" @click="applyFilter"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal max-md:mt-auto max-md:w-full': !disabledFilter, 'bg-gray-400 text-gray-700': disabledFilter}">
+        <button disabled="disabledFilter" @click="applyFilter"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal max-md:mt-auto max-md:w-full': !disabledFilter, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disabledFilter}">
           Filter
         </button>
 
