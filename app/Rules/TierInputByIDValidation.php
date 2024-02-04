@@ -5,7 +5,7 @@ namespace App\Rules;
 use App\Models\LeagueTier;
 use Illuminate\Contracts\Validation\Rule;
 
-class TierInputValidation implements Rule
+class TierInputByIDValidation implements Rule
 {
     public function passes($attribute, $value)
     {
@@ -18,15 +18,7 @@ class TierInputValidation implements Rule
         $filteredTiers = array_intersect($value, $validTier);
 
         if (empty($filteredTiers)) {
-
-
-          $value = array_map('strtolower', $value);
-          $validTiers = LeagueTier::pluck('name')->map('strtolower')->toArray();
-          $filteredTiers = array_intersect($value, $validTiers);
-          
-          if (empty($filteredTiers)) {
-            return false;
-          }
+          return false;
         }
 
         return true;

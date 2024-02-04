@@ -1,6 +1,17 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" :infoText2="infoText2" :heading="'Leaderboard'"></page-heading>
+    <page-heading :infoText1="infoText1" :heading="'Leaderboard'">
+      <template #extraInfo>
+        <p>
+          Only users who upload replays through an approved automatic uploader will be able to rank on the leaderboards.
+          The main uploader can be found at
+          <a class="link" href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases" target="_blank" rel="noopener noreferrer">Heroes Profile Uploader</a>
+          while the secondary uploader that works on platforms other than Windows can be found at
+          <a class="link" href="https://github.com/Heroes-Profile/heroesprofile-electron-uploader/releases" target="_blank" rel="noopener noreferrer">Heroes Profile Electron Uploader</a>.
+          For any questions, please contact zemill@heroesprofile.com.
+        </p>
+      </template>
+    </page-heading>
     <div class="max-w-[1500px] mx-auto my-2 text-right">
       <custom-button @click="showLeaderboardRequirements = !showLeaderboardRequirements" :text="'Show Leaderboard Requirements'" :alt="'Show Leaderboard Requirements'" size="small" :ignoreclick="true"></custom-button></div>
       <div v-if="showLeaderboardRequirements" class="flex flex-col items-center p-[2em] border w-auto ml-auto mr-auto max-w-[1500px] bg-teal mb-2">
@@ -21,7 +32,7 @@
         :isLoading="isLoading"
 
         :gametypeinput="[gametype]"
-        :regioninput="[region]"
+        :regioninput="region"
         
 
 
@@ -39,6 +50,7 @@
         :minimumseason="13"
         :hideadvancedfilteringbutton="true"
         :advancedfiltering="advancedfiltering"
+        :excludetimeframes="true"
       >
       </filters>
       <takeover-ad :patreon-user="patreonUser"></takeover-ad>
@@ -231,7 +243,6 @@ export default {
       isLoading: false,
       cancelTokenSource: null,
       infoText1: "Leaderboards are a reflection of user uploaded data. Due to replay file corruption or other issues, the data is not always reflective of real player stats. Please keep that in mind when reviewing leaderboards.",
-      infoText2: " Only users who upload replays through an approved automatic uploader will be able to rank on the leaderboards. The main uploader can be found at Heroes Profile Uploader while the secondary uploader that works on platforms other than windows can be found at Heroes Profile Electron Uploader. For any questions, please contact zemill@heroesprofile.com ",
       columns: [
         { text: 'Rank', value: 'rank', sortable: true },
         { text: 'Battletag', value: 'battletag', sortable: true },
