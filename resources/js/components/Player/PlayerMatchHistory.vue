@@ -20,13 +20,13 @@
 
     <div v-if="data">
       <div>
-        <ul class="pagination flex max-w-[1500px] mx-auto justify-between mb-2">
-          <li v-if="data.current_page != 1" class="page-item underline underline-offset-4" :class="{ disabled: !data.prev_page_url }">
+        <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
+          <li v-if="data.current_page != 1" class="page-item underline underline-offset-4 mr-auto" :class="{ disabled: !data.prev_page_url }">
             <a class="page-link" @click.prevent="getData(data.current_page - 1)" href="#">
               Previous
             </a>
           </li>
-          <li v-if="data.current_page != data.last_page" class="page-item underline underline-offset-4" :class="{ disabled: !data.next_page_url }">
+          <li v-if="data.current_page != data.last_page" class="page-item underline underline-offset-4 ml-auto" :class="{ disabled: !data.next_page_url }">
             <a class="page-link" @click.prevent="getData(data.current_page + 1)" href="#">
               Next
             </a>
@@ -96,6 +96,20 @@
           </tr>
         </tbody>
       </table>
+      </div>
+      <div>
+        <ul class="pagination flex max-w-[1500px] mx-auto px-2 pt-2 justify-between mb-2 text-sm">
+          <li v-if="data.current_page != 1" class="page-item underline underline-offset-4 mr-auto" :class="{ disabled: !data.prev_page_url }">
+            <a class="page-link" @click.prevent="getData(data.current_page - 1)" href="#">
+              Previous
+            </a>
+          </li>
+          <li v-if="data.current_page != data.last_page" class="page-item underline underline-offset-4 ml-auto" :class="{ disabled: !data.next_page_url }">
+            <a class="page-link" @click.prevent="getData(data.current_page + 1)" href="#">
+              Next
+            </a>
+          </li>
+        </ul>
       </div>
     </div>
     <div v-else-if="isLoading">
