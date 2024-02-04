@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" :infoText2="infoText2" :heading="'Leaderboard'">
+    <page-heading :infoText1="infoText1" :heading="'Leaderboard'">
       <template #extraInfo>
         <p>
           Only users who upload replays through an approved automatic uploader will be able to rank on the leaderboards.
@@ -32,7 +32,7 @@
         :isLoading="isLoading"
 
         :gametypeinput="[gametype]"
-        :regioninput="[region]"
+        :regioninput="region"
         
 
 
@@ -50,6 +50,7 @@
         :minimumseason="13"
         :hideadvancedfilteringbutton="true"
         :advancedfiltering="advancedfiltering"
+        :excludetimeframes="true"
       >
       </filters>
       <takeover-ad :patreon-user="patreonUser"></takeover-ad>
