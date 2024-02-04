@@ -60,7 +60,7 @@ body{
   @apply max-md:w-full text-center;
 }
 .nav-dropdown-inner-wrapper{
-  @apply bg-blue   text-sm drop-shadow text-left;
+  @apply bg-blue   text-sm drop-shadow text-left max-md:flex-wrap;
 }
 
 @media (min-width:768px){
@@ -91,7 +91,12 @@ body{
 }
 
 }
-
+nav .search-component{
+  @apply text-xs py-2;
+}
+.dark-mode nav .search-component input{
+  border:1px solid gray;
+}
 
 .nav-dropdown a{
   @apply block px-4 py-2 md:border-b md:border-darken hover:bg-lighten;
