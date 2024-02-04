@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+    <page-heading :infoText1="infoText" :heading="'MMR Data'" :battletag="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
@@ -156,7 +156,7 @@ export default {
       sortDir: 'desc',
       leaguedata: null,
       type: "Player",
-      infoText: "MMR Data",
+      infoText: "",
     }
   },
   created(){
