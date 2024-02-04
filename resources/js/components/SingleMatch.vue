@@ -448,7 +448,7 @@
 </table>
 </div>
 </div>
-
+<div class="max-sm:text-sm max-w-[1500px] mx-auto my-5">
 <dynamic-banner-ad :patreon-user="patreonUser" :index="6" :mobile-override="false"></dynamic-banner-ad>
  
   Team 2 Advanced Stats
@@ -473,6 +473,7 @@
     </tr>
   </tbody>
 </table>
+</div>
 </div>
 
 
