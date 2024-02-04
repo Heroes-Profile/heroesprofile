@@ -40,6 +40,7 @@
     <div v-if="!hideText">
       <infobox :input="infoText1"></infobox>
       <infobox :input="infoText2"></infobox>
+      <slot name="extraInfo"></slot>
     </div>
     <div class="ml-auto" v-else>
       <custom-button @click="hideText = !hideText" text="Read more" alt="Show Header Information" size="small" :ignoreclick="true"></custom-button>

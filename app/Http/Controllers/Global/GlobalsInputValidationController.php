@@ -12,7 +12,8 @@ use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroLevelInputValidation;
 use App\Rules\RegionInputValidation;
-use App\Rules\TierInputValidation;
+use App\Rules\TierInputByIDValidation;
+use App\Rules\TierInputByNameValidation;
 use App\Rules\TimeframeMinorInputValidation;
 use App\Rules\StatFilterInputValidation;
 use App\Rules\HeroInputValidation;
@@ -31,9 +32,9 @@ class GlobalsInputValidationController extends Controller
         'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
         'role' => ['sometimes', 'nullable', new RoleInputValidation()],
         'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
-        'league_tier' => ['sometimes', 'nullable', new TierInputValidation()],
-        'hero_league_tier' => ['sometimes', 'nullable', new TierInputValidation()],
-        'role_league_tier' => ['sometimes', 'nullable', new TierInputValidation()],
+        'league_tier' => ['sometimes', 'nullable', new TierInputByNameValidation()],
+        'hero_league_tier' => ['sometimes', 'nullable', new TierInputByNameValidation()],
+        'role_league_tier' => ['sometimes', 'nullable', new TierInputByNameValidation()],
         'mirror' => 'sometimes|in:null,0,1',
         'minimum_games' => 'sometimes|nullable|integer',
       ];
@@ -51,9 +52,9 @@ class GlobalsInputValidationController extends Controller
             'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
             'role' => ['sometimes', 'nullable', new RoleInputValidation()],
             'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
-            'league_tier' => ['sometimes', 'nullable', new TierInputValidation()],
-            'hero_league_tier' => ['sometimes', 'nullable', new TierInputValidation()],
-            'role_league_tier' => ['sometimes', 'nullable', new TierInputValidation()],
+            'league_tier' => ['sometimes', 'nullable', new TierInputByIDValidation()],
+            'hero_league_tier' => ['sometimes', 'nullable', new TierInputByIDValidation()],
+            'role_league_tier' => ['sometimes', 'nullable', new TierInputByIDValidation()],
             'mirror' => 'sometimes|in:null,0,1',
         ];
     }
