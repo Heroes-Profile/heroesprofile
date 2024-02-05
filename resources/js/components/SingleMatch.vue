@@ -197,7 +197,7 @@
                     </div>
                     <div class="flex flex-1">
                       <stat-box class="min-w-[8em]" :title="'Dmg. Taken'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-                      <stat-box class="min-w-[8em]" :title="'Exp. Con.'" :value="item.score.damage_taken" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                      <stat-box class="min-w-[8em]" :title="'Exp. Con.'" :value="item.score.experience_contribution" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
                     </div>
                   </div>
 
