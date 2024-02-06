@@ -1,6 +1,6 @@
 /PlayerMapsAllStats.vue<template>
   <div>
-    <page-heading :infoText1="'All Map data for ' + battletag + '. Click a map to see individual map statistics'" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+    <page-heading :infoText1="'All Map data for ' + battletag + '. Click a map to see individual map statistics'" :heading="'Map Stats'" :battletag="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
     
     <filters 
       :onFilter="filterData" 
@@ -20,10 +20,10 @@
         <custom-button class="ml-auto" @click="showOptions = !showOptions" :text="showOptions ? 'Hide Column Selection' : 'Show Column Selection'" :ignoreclick="true"></custom-button>
           
         <div v-if="showOptions">
-          <div class="absolute left-0 mt-2 w-full bg-gray-light border border-gray-300 rounded shadow-lg text-black z-50 flex flex-wrap  p-2 ">
+          <div class="absolute left-0 mt-2 w-full variable-background border border-gray-300 rounded shadow-lg variable-text z-50 flex flex-wrap  p-2 ">
             <input class="w-full p-2" type="text" v-model="searchQuery" placeholder="Search..." />
               <div v-for="(stat, index) in filteredStats" :class="[
-              'flex-1 min-w-[24%] border-gray border p-1 cursor-pointer hover:bg-gray-light hover:text-black',
+              'flex-1 min-w-[24%] border-gray border p-1 cursor-pointer variable-hover',
               {
                 'bg-teal text-white' : stat.selected
               } ]
@@ -34,7 +34,8 @@
           </div>
         </div>
       </div>
-      <table class="">
+      <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
+      <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
         <thead>
           <tr>
             <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -83,7 +84,7 @@
           </tr>
         </tbody>
       </table>
-
+</div>
     </div>
     <div v-else-if="isLoading">
       <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true" :timer="true" :starttime="timertime">Large amount of data.<br/>Please be patient.<br/></loading-component>
@@ -114,6 +115,7 @@ export default {
   },
   data(){
     return {
+      windowWidth: window.innerWidth,
       cancelTokenSource: null,
       showOptions: false,
       isLoading: false,
@@ -281,6 +283,16 @@ export default {
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
+        this.$nextTick(() => {
+        const responsivetable = this.$refs.responsivetable;
+          if (responsivetable && this.windowWidth < 1500) {
+            const newTableWidth = this.windowWidth /responsivetable.clientWidth;
+            responsivetable.style.transformOrigin = 'top left';
+            responsivetable.style.transform = `scale(${newTableWidth})`;
+            const container = this.$refs.tablecontainer;
+            container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+          }
+        });
       }
     },
     cancelAxiosRequest() {
@@ -328,10 +340,14 @@ export default {
       }
       return "blue";
     },
-    showStatValue(value){
-      if(value < 1000){
+    showStatValue(value) {
+      if (!value || isNaN(value)) {
+        return 0;
+      }
+
+      if (value < 1000) {
         return value.toFixed(2);
-      }else{
+      } else {
         return Math.round(value).toLocaleString();
       }
     },

@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 
 @section('title', 'Player Map Stats Esports')
 @section('meta_keywords', 'Heroes Profile, player map stats, player performance, Heroes of the Storm, specific maps')
@@ -13,5 +13,7 @@
     :season="{{ json_encode($season) }}" 
     :game_map="{{ json_encode($game_map) }}" 
     :tournament="{{ json_encode($tournament) }}" 
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+
   ></esports-player-map-stats>
 @endsection

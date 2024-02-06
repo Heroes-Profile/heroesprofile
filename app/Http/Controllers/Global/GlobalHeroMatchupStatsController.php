@@ -8,11 +8,36 @@ use App\Rules\HeroInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Redirect;
 
 class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
 {
     public function show(Request $request, $hero = null, $allyenemy = null)
     {
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+
+        if ($validator->fails()) {
+          $failedFields = $validator->failed();
+      
+          // Extract the first failed field
+          $firstFailedField = key($failedFields);
+      
+          return [
+              'data' => $request->all(),
+              'status' => 'failure to validate inputs',
+              'failed_field' => $firstFailedField,
+          ];
+        }
+
+        /*
+        if ($validator->fails()) {
+          return Redirect::to('/Global/Matchups')->withErrors($validator)->withInput();
+        }
+        */
+
         if (! is_null($hero) && ! is_null($allyenemy)) {
             $validationRules = [
                 'hero' => ['required', new HeroInputValidation()],
@@ -30,14 +55,15 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
 
         return view('Global.Matchups.globalMatchupsStats')->with([
             'heroes' => $this->globalDataService->getHeroes(),
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'userinput' => $userinput,
             'filters' => $this->globalDataService->getFilterData(),
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
             'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
             'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
             'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
             'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
+            'urlparameters' => $request->all(),
         ]);
     }
 
@@ -72,7 +98,9 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
         $statFilter = $request['statfilter'];
         $mirror = $request['mirror'];
 
-        $cacheKey = 'GlobalMatchupStats|'.json_encode($request->all());
+        $role = $request["role"];
+
+        $cacheKey = 'GlobalMatchupStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
         //return $gameMap;
 
@@ -86,28 +114,29 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
             $gameMap,
             $heroLevel,
             $mirror,
-            $region
+            $region,
+            $role
         ) {
 
             $allyData = GlobalHeromatchupsAlly::query()
-                ->select('ally', 'win_loss')
-                ->selectRaw('SUM(games_played) as games_played')
-                ->filterByGameVersion($gameVersion)
-                ->filterByGameType($gameType)
-                ->filterByHero($hero)
-                ->filterByLeagueTier($leagueTier)
-                ->filterByHeroLeagueTier($heroLeagueTier)
-                ->filterByRoleLeagueTier($roleLeagueTier)
-                ->filterByGameMap($gameMap)
-                ->filterByHeroLevel($heroLevel)
-                ->excludeMirror($mirror)
-                ->filterByRegion($region)
-                ->groupBy('ally')
-                ->groupBy('win_loss')
-                ->orderBy('ally')
-                //->toSql();
-                ->get();
-            $allyData = $this->combineData($allyData, 'ally', $hero);
+              ->select('ally', 'win_loss')
+              ->selectRaw('SUM(games_played) as games_played')
+              ->filterByGameVersion($gameVersion)
+              ->filterByGameType($gameType)
+              ->filterByHero($hero)
+              ->filterByLeagueTier($leagueTier)
+              ->filterByHeroLeagueTier($heroLeagueTier)
+              ->filterByRoleLeagueTier($roleLeagueTier)
+              ->filterByGameMap($gameMap)
+              ->filterByHeroLevel($heroLevel)
+              ->excludeMirror($mirror)
+              ->filterByRegion($region)
+              ->groupBy('ally')
+              ->groupBy('win_loss')
+              ->orderBy('ally')
+              //->toSql();
+              ->get();
+            $allyData = $this->combineData($allyData, 'ally', $hero, $role);
 
             $enemyData = GlobalHeromatchupsEnemy::query()
                 ->select('enemy', 'win_loss')
@@ -126,7 +155,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                 ->groupBy('win_loss')
                 //->toSql();
                 ->get();
-            $enemyData = $this->combineData($enemyData, 'enemy', $hero);
+            $enemyData = $this->combineData($enemyData, 'enemy', $hero, $role);
 
             $allyDataKeyed = collect($allyData)->keyBy(function ($item) {
                 return $item['hero']['name'];
@@ -155,16 +184,19 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
             return ['ally' => $allyData, 'enemy' => $enemyData, 'combined' => $combinedData];
         });
 
+
+
+
         return $data;
     }
 
-    private function combineData($data, $type, $heroID)
+    private function combineData($data, $type, $heroID, $role)
     {
 
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
-        $combinedData = collect($data)->groupBy($type)->map(function ($group) use ($type, $heroData) {
+        $combinedData = collect($data)->groupBy($type)->map(function ($group) use ($type, $heroData, $role) {
             $firstItem = $group->first();
             $wins = $group->where('win_loss', 1)->sum('games_played');
             $losses = $group->where('win_loss', 0)->sum('games_played');
@@ -173,15 +205,20 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
             $winRate = $gamesPlayed != 0 ? ($wins / $gamesPlayed) * 100 : 0;
             $winRate = $type == 'ally' ? $winRate : 100 - $winRate;
 
+            if($role && ($heroData[$firstItem[$type]]["new_role"] != $role)){
+              return null;
+            }
+
             return [
                 'hero' => $heroData[$firstItem[$type]],
+                'role' => $heroData[$firstItem[$type]]["new_role"],
                 'wins' => $wins,
                 'losses' => $losses,
                 'games_played' => $gamesPlayed,
                 'win_rate' => round($winRate, 2),
                 'hovertext' => $type == 'ally' ? 'Won while on a team with '.$heroData[$firstItem[$type]]['name'].' '.round($winRate, 2).'%'.' of the time.' : 'Lost against a team with '.$heroData[$firstItem[$type]]['name'].' '.round($winRate, 2).'%'.' of games.',
             ];
-        })->sortByDesc('win_rate')->values()->toArray();
+        })->filter()->sortByDesc('win_rate')->values()->toArray();
 
         $found = false;
         $notFound = [];
@@ -189,10 +226,15 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
         foreach ($heroData as $hero) {
             $found = false;
             foreach ($combinedData as $data) {
-                if ($data['hero']['id'] == $hero->id) {
-                    $found = true;
-                    break;
-                }
+
+              if($role && ($hero["new_role"] != $role)){
+                $found = true;
+                break;
+              }
+              if ($data['hero']['id'] == $hero->id) {
+                  $found = true;
+                  break;
+              }
             }
 
             if (! $found && $heroID != $hero->id) {

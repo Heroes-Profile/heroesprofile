@@ -3,7 +3,6 @@
 use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\CompareController;
 use App\Http\Controllers\ContactController;
-//Global
 use App\Http\Controllers\Esports\CCL\CCLController;
 use App\Http\Controllers\Esports\EsportsController;
 use App\Http\Controllers\Esports\HeroesInternational\HeroesInternationalController;
@@ -16,7 +15,6 @@ use App\Http\Controllers\Global\GlobalExtraStats;
 use App\Http\Controllers\Global\GlobalHeroMapStatsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupsTalentsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupStatsController;
-//Player
 use App\Http\Controllers\Global\GlobalHeroStatsController;
 use App\Http\Controllers\Global\GlobalLeaderboardController;
 use App\Http\Controllers\Global\GlobalPartyStatsController;
@@ -24,9 +22,7 @@ use App\Http\Controllers\Global\GlobalTalentBuilderController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\Player\FriendFoeController;
-//Profile
 use App\Http\Controllers\Player\PlayerController;
-//Esports
 use App\Http\Controllers\Player\PlayerHeroesMapsRolesController;
 use App\Http\Controllers\Player\PlayerMatchHistory;
 use App\Http\Controllers\Player\PlayerMatchupsController;
@@ -135,6 +131,7 @@ Route::prefix('v1')->group(function () {
     Route::post('esports/single/player', [EsportsController::class, 'getData']);
 
     Route::post('esports/single/player/match/history', [EsportsController::class, 'getDataSinglePlayerMatchHistory']);
+    Route::post('esports/team/match/history', [EsportsController::class, 'getTeamMatchHistoryData']);
 
     Route::post('esports/single/player/hero', [EsportsController::class, 'getData']);
     Route::post('esports/single/player/map', [EsportsController::class, 'getData']);
@@ -161,5 +158,4 @@ Route::prefix('v1')->group(function () {
     Route::post('compare', [CompareController::class, 'getData']);
 
     Route::post('contact', [ContactController::class, 'submitMessage']);
-
 });

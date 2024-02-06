@@ -3,25 +3,36 @@
 namespace App\Http\Controllers\Global;
 
 use App\Models\GlobalHeroStackSize;
-use App\Rules\HeroInputByIDValidation;
+use App\Rules\HeroInputValidation;
 use App\Rules\PartyCombinationRule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Redirect;
 
 class GlobalPartyStatsController extends GlobalsInputValidationController
 {
     public function show(Request $request)
     {
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+          return Redirect::to('/Global/Party')->withErrors($validator)->withInput();
+        }
+
         return view('Global.Party.globalPartyStats')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'filters' => $this->globalDataService->getFilterData(),
-                'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
+                'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
                 'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
                 'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
+                'heroes' => $this->globalDataService->getHeroes(),
+                'urlparameters' => $request->all(),
             ]);
     }
 
@@ -32,7 +43,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
         //return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type']), [
-            'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation()],
+            'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
             'teamoneparty' => ['sometimes', 'nullable', new PartyCombinationRule()],
             'teamtwoparty' => ['sometimes', 'nullable', new PartyCombinationRule()],
         ]);
@@ -46,7 +57,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
             ];
         }
 
-        $hero = $request['hero'];
+        $hero = $this->getHeroFilterValue($request['hero']);
         $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameType = $this->getGameTypeFilterValues($request['game_type']);
         $leagueTier = $request['league_tier'];
@@ -61,7 +72,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
         $teamoneparty = $request['teamoneparty'];
         $teamtwoparty = $request['teamtwoparty'];
 
-        $cacheKey = 'GlobalPartyStats|'.json_encode($request->all());
+        $cacheKey = 'GlobalPartyStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
         //return $cacheKey;
 

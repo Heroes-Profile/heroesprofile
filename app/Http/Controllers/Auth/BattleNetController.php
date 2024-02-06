@@ -7,6 +7,8 @@ use App\Models\BattlenetAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\InvalidStateException;
+use Illuminate\Support\Facades\Log;
 
 class BattleNetController extends Controller
 {
@@ -14,7 +16,7 @@ class BattleNetController extends Controller
     {
         return view('Battlenet.authenticate')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'filters' => $this->globalDataService->getFilterData(),
             ]);
     }
@@ -26,13 +28,21 @@ class BattleNetController extends Controller
 
     public function handleProviderCallback(Request $request)
     {
-        $clientId = env('BATTLENET_KEY', false);
-        $clientSecret = env('BATTLENET_SECRET', false);
-        $redirectUrl = env('BATTLENET_REDIRECT_URI', false);
-        $additionalProviderConfig = ['region' => 'us'];
-        $config = new \SocialiteProviders\Manager\Config($clientId, $clientSecret, $redirectUrl, $additionalProviderConfig);
+        try {
+            $clientId = env('BATTLENET_KEY', false);
+            $clientSecret = env('BATTLENET_SECRET', false);
+            $redirectUrl = env('BATTLENET_REDIRECT_URI', false);
+            $additionalProviderConfig = ['region' => 'us'];
+            $config = new \SocialiteProviders\Manager\Config($clientId, $clientSecret, $redirectUrl, $additionalProviderConfig);
 
-        $user = Socialite::driver('battlenet')->setConfig($config)->user();
+            $user = Socialite::driver('battlenet')->setConfig($config)->user();
+        } catch (InvalidStateException $e) {
+            // Log the exception for debugging (optional)
+            Log::error('InvalidStateException in BattleNetController: '.$e->getMessage());
+
+            // Redirect the user to a custom login failed page
+            return redirect('/Authenticate/Battlenet/Failed');
+        }
 
         $battlenetAccount = BattlenetAccount::updateOrCreate(
             ['battlenet_id' => $user->id],
@@ -49,6 +59,14 @@ class BattleNetController extends Controller
         Auth::login($battlenetAccount, true);
 
         return redirect('/Profile/Settings'); // Redirect to desired location
+    }
+
+    public function handleProviderCallbackFailed(Request $request)
+    {
+        return view('Battlenet.authenticationFailed')
+            ->with([
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+            ]);
     }
 
     public function logout()

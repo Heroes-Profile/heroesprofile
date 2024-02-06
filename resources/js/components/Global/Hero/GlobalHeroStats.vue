@@ -8,6 +8,21 @@
       :isLoading="isLoading"
       :onFilter="filterData" 
       :filters="filters" 
+      :timeframetypeinput="timeframetype"
+      :timeframeinput="timeframe"
+      :gametypeinput="gametype"
+      :regioninput="region"
+      :statfilterinput="statfilter"
+      :herolevelinput="herolevel"
+      :heroinput="getHeroID()"
+      :roleinput="role"
+      :gamemapinput="gamemap"
+      :playerrankinput="playerrank"
+      :herorankinput="herorank"
+      :rolerankinput="rolerank"
+      :talentbuildtypeinput="talentbuildtype"
+      :mirrormatchinput="mirrormatch"
+
       :gametypedefault="gametypedefault"
       :includetimeframetype="true"
       :includetimeframe="true"
@@ -25,6 +40,7 @@
       :includetalentbuildtype="true"
       :advancedfiltering="advancedfiltering"
       :buildtypedefault="defaultbuildtype"
+  
       >
     </filters>
     <takeover-ad :patreon-user="patreonUser"></takeover-ad>
@@ -37,39 +53,40 @@
       <div v-if="togglechart">
         <bubble-chart :heroData="this.data.data"></bubble-chart>
       </div>
-      <div class="min-w-[1500px] px-20">
-     <table class="">
-        <thead>
-          <th class="py-2 px-3  border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+      <div >
+        <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
+      <table id="responsive-table" class="responsive-table  relative" ref="responsivetable">
+        <thead class="top-0 w-full sticky z-40">
+          <th class="py-2 px-3 border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
             Avg
           </th>
-          <th class="py-2 px-3  border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_win_rate.toFixed(2) }}
+          <th class="py-2 px-3 border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            {{ getValueFixed(data.average_win_rate) }}
           </th>
-          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ "&#177;" }}{{ this.data.average_confidence_interval.toFixed(2) }}
+          <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            {{ "&#177;" }}{{ getValueFixed(data.average_confidence_interval)}}
           </th>
           <th v-if="showWinRateChange" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_positive_win_rate_change.toFixed(2) }}{{ "|" }}{{ this.data.average_negative_win_rate_change.toFixed(2) }}
+            {{ getValueFixed(data.average_positive_win_rate_change) }}{{ "|" }}{{ getValueFixed(data.average_negative_win_rate_change) }}
           </th>
-          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_popularity.toFixed(2) }}
+          <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            {{ getValueFixed(data.average_popularity) }}
           </th>
-          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_pick_rate.toFixed(2) }}
+          <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            {{ getValueFixed(data.average_pick_rate) }}
           </th>
-          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_ban_rate.toFixed(2) }}
+          <th v-if="this.gametype.includes('sl')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+            {{ getValueFixed(data.average_ban_rate) }}
           </th>
-          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_positive_influence.toLocaleString() }}{{ "|" }}{{ this.data.average_negative_influence.toLocaleString() }}
+          <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            {{ getValueLocal(data.average_positive_influence) }}{{ "|" }}{{ getValueLocal(data.average_negative_influence) }}
           </th>
-          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ this.data.average_games_played.toLocaleString() }}
+          <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            {{ getValueLocal(data.average_games_played) }}
           </th>
 
-          <th  v-if="this.showStatTypeColumn"  class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ data.averaege_total_filter_type.toFixed(2).toLocaleString() }}
+          <th  v-if="this.showStatTypeColumn"  class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            {{ getValueLocal(getValueFixed(data.averaege_total_filter_type)) }}
           </th>
 
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
@@ -96,7 +113,7 @@
             <th @click="sortTable('pick_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Pick Rate %
             </th>   
-            <th @click="sortTable('ban_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th v-if="this.gametype.includes('sl')" @click="sortTable('ban_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Ban Rate %
             </th>    
             <th @click="sortTable('influence')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -104,7 +121,7 @@
                 <div class="">
                   Influence
                 </div>
-                <round-image class="" size="small" icon="fas fa-info" title="info" popupsize="large">
+                <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
                   <slot>
                     <div>
                       <p>Influence is an integer scaled from -1000 to 1000 that combines Win Rate, Games Played, Pick Rate, and Ban Rate to determine the impact a hero will have on a particular team.</p>
@@ -126,21 +143,21 @@
         <tbody>
           <template v-for="(row, index) in sortedData">
             <tr>
-              <td class="py-2 px-3 flex items-center gap-1">
-                <a class="flex w-full items-center" :href="'/Global/Talents/' + row.name" >
-                <hero-image-wrapper class="mr-2" :hero="row" :includehover="false"></hero-image-wrapper>{{ row.name }}
+              <td class="py-2 px-3 flex items-center gap-1 max-md:w-[150px]">
+                <a class="flex w-full items-center" :href="getGlobalTalentsURL(row)" >
+                  <hero-image-wrapper class="mr-2" mobileClick="true" :hero="row" :includehover="false"></hero-image-wrapper><span class="hidden md:block">{{ row.name }}</span>
                 </a>
               </td>
-              <td class="  ">{{ row.win_rate.toFixed(2) }}</td>
-              <td class="py-2 px-3 "><span v-html="'&#177;'"></span>{{ row.confidence_interval.toFixed(2) }}</td>
-              <td v-if="showWinRateChange && row.win_rate_change < 0" class="py-2 px-3 ">{{ row.win_rate_change.toFixed(2) }}</td>
-              <td v-else-if="showWinRateChange && row.win_rate_change >= 0" class="py-2 px-3 "><span v-html="'&plus;'"></span>{{ row.win_rate_change.toFixed(2) }}</td>
-              <td class="py-2 px-3">{{ row.popularity.toFixed(2) }}</td>
-              <td class="py-2 px-3">{{ row.pick_rate.toFixed(2) }}</td>
-              <td class="py-2 px-3">{{ row.ban_rate.toFixed(2) }}</td>
-              <td class="py-2 px-3">{{ row.influence.toLocaleString() }}</td>
-              <td class="py-2 px-3 ">{{ row.games_played.toLocaleString() }}</td>
-              <td v-if="this.showStatTypeColumn" class="py-2 px-3 ">{{ row.total_filter_type.toFixed(2).toLocaleString() }}</td>
+              <td class="  ">{{ getValueFixed(row.win_rate) }}</td>
+              <td class="py-2 px-3 "><span v-html="'&#177;'"></span>{{ getValueFixed(row.confidence_interval) }}</td>
+              <td v-if="showWinRateChange && row.win_rate_change < 0" class="py-2 px-3 ">{{ getValueFixed(row.win_rate_change) }}</td>
+              <td v-else-if="showWinRateChange && row.win_rate_change >= 0" class="py-2 px-3 "><span v-html="'&plus;'"></span>{{ getValueFixed(row.win_rate_change) }}</td>
+              <td class="py-2 px-3">{{ getValueFixed(row.popularity) }}</td>
+              <td class="py-2 px-3">{{ getValueFixed(row.pick_rate) }}</td>
+              <td  v-if="this.gametype.includes('sl')" class="py-2 px-3">{{ getValueFixed(row.ban_rate) }}</td>
+              <td class="py-2 px-3">{{ getValueLocal(row.influence) }}</td>
+              <td class="py-2 px-3 ">{{ getValueLocal(row.games_played) }}</td>
+              <td v-if="this.showStatTypeColumn" class="py-2 px-3 ">{{ getValueLocal(getValueFixed(row.total_filter_type)) }}</td>
               <td class="py-2 px-3 ">
                 <custom-button
                   @click="viewtalentbuilds(row.name, index)"
@@ -162,7 +179,7 @@
           </template>
         </tbody>
       </table>
-
+    </div>
     </div>
     </div>
     <div v-else-if="isLoading">
@@ -173,7 +190,6 @@
 </template>
 
 <script>
-import GlobalTalentBuildsSection from '../Talents/GlobalTalentBuildsSection.vue';
 
 export default {
   name: 'GlobalHeroStats',
@@ -190,9 +206,12 @@ export default {
     advancedfiltering: Boolean,
     patreonUser: Boolean,
     defaultbuildtype: String,
+    heroes: Object,
+    urlparameters: Object,
   },
   data(){
     return {
+      windowWidth: window.innerWidth,
       isLoading: false,
     	infoText: "Hero win rates based on differing increments, stat types, game type, or rank. Click on a Hero to see detailed information. On the chart, bubble size is a combination of Win Rate, Pick Rate, and Ban Rate",
       sortKey: '',
@@ -221,13 +240,18 @@ export default {
       mirrormatch: 0,
       talentbuildtype: null,
       loadingStates: {},
+      tablewidth: null
     }
   },
   created(){
     this.gametype = this.gametypedefault;
     this.timeframe = this.defaulttimeframe;
-    this.talentbuildtype = this.defaultbuildtype;
     this.timeframetype = this.defaulttimeframetype;
+    this.talentbuildtype = this.defaultbuildtype;
+
+    if(this.urlparameters){
+      this.setURLParameters();
+    }
 
   	this.getData();
   },
@@ -310,6 +334,17 @@ export default {
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
+        this.$nextTick(() => {
+        const responsivetable = this.$refs.responsivetable;
+          if (responsivetable && this.windowWidth < 1500) {
+            const newTableWidth = this.windowWidth /responsivetable.clientWidth;
+            responsivetable.style.transformOrigin = 'top left';
+            responsivetable.style.transform = `scale(${newTableWidth})`;
+            const container = this.$refs.tablecontainer;
+            this.tablewidth = newTableWidth;
+            container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+          }
+        });
       }
     },
     async getTalentBuildData(hero, index){
@@ -351,6 +386,17 @@ export default {
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
+        this.$nextTick(() => {
+        const responsivetable = this.$refs.responsivetable;
+          if (responsivetable && this.windowWidth < 1500) {
+            const newTableWidth = this.windowWidth /responsivetable.clientWidth;
+            responsivetable.style.transformOrigin = 'top left';
+            responsivetable.style.transform = `scale(${newTableWidth})`;
+            const container = this.$refs.tablecontainer;
+            this.tablewidth = newTableWidth;
+            container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+          }
+        });
       }
     },
     cancelAxiosRequest() {
@@ -366,6 +412,8 @@ export default {
       this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : null;
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
+      this.hero = this.hero ? this.heroes.find(hero => hero.id === this.hero).name : null;
+
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
       this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : null;
@@ -380,9 +428,9 @@ export default {
       this.sortKey = '';
       this.sortDir = 'desc';
 
-
       let queryString = `?timeframe_type=${this.timeframetype}`;
       queryString += `&timeframe=${this.timeframe}`;
+
       queryString += `&game_type=${this.gametype}`;
 
       if(this.region){
@@ -405,16 +453,17 @@ export default {
         queryString += `&role=${this.role}`;
       }
 
+    
       if(this.playerrank){
-        queryString += `&league_tier=${this.playerrank}`;
+        queryString += `&league_tier=${this.convertRankIDtoName(this.playerrank)}`;
       }
 
       if(this.herorank){
-        queryString += `&hero_league_tier=${this.herorank}`;
+        queryString += `&hero_league_tier=${this.convertRankIDtoName(this.herorank)}`;
       }
 
       if(this.rolerank){
-        queryString += `&role_league_tier=${this.rolerank}`;
+        queryString += `&role_league_tier=${this.convertRankIDtoName(this.rolerank)}`;
       }
 
       queryString += `&statfilter=${this.statfilter}`;
@@ -426,6 +475,7 @@ export default {
       history.pushState(null, null, `${currentPath}${queryString}`);
    
       this.data = null;
+
       this.getData();
     },
     sortTable(key) {
@@ -451,6 +501,86 @@ export default {
         return  true;
       }
       return false;
+    },
+    getGlobalTalentsURL(hero){
+      var url = "";
+      if(hero){
+        url = '/Global/Talents/' + hero.name;
+      }
+      return url;
+    },
+    getValueFixed(value){
+      return value ? value.toFixed(2) : "";
+    },
+    getValueLocal(value){
+      return value ? value.toLocaleString() : "";
+    },
+    getHeroID(){
+      if(this.hero){
+        return this.heroes.find(hero => hero.name === this.hero).id
+      }
+      return null;
+    },
+    convertRankIDtoName(rankIDs) {
+      return rankIDs.map(rankID => this.filters.rank_tiers.find(tier => tier.code == rankID).name);
+    },
+    setURLParameters(){
+      if(this.urlparameters["timeframe_type"]){
+        this.timeframetype = this.urlparameters["timeframe_type"];
+      }
+      
+      if(this.urlparameters["timeframe"]){
+        this.timeframe = this.urlparameters["timeframe"].split(',');
+      }
+
+      if(this.urlparameters["game_type"]){
+        this.gametype = this.urlparameters["game_type"].split(',');
+      }
+
+      if(this.urlparameters["region"]){
+        this.region = this.urlparameters["region"].split(',');
+      }
+
+      if(this.urlparameters["statfilter"]){
+        this.statfilter = this.urlparameters["statfilter"];
+      }
+      
+      if(this.urlparameters["hero_level"]){
+        this.herolevel = this.urlparameters["hero_level"].split(',');
+      }
+
+      if(this.urlparameters["hero"]){
+        this.hero = this.urlparameters["hero"];
+      }
+
+      if(this.urlparameters["role"]){
+        this.role = this.urlparameters["role"];
+      }
+
+      if(this.urlparameters["game_map"]){
+        this.gamemap = this.urlparameters["game_map"].split(',');
+      }
+
+      if (this.urlparameters["league_tier"]) {
+        this.playerrank = this.urlparameters["league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+      }
+
+      if (this.urlparameters["hero_league_tier"]) {
+        this.herorank = this.urlparameters["hero_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+      }
+
+      if (this.urlparameters["role_league_tier"]) {
+        this.rolerank = this.urlparameters["role_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+      }
+
+
+      if (this.urlparameters["build_type"]) {
+        this.talentbuildtype = this.urlparameters["build_type"];
+      }
+
+      if (this.urlparameters["mirror"]) {
+        this.mirrormatch = this.urlparameters["mirror"];
+      }
     },
   }
 }

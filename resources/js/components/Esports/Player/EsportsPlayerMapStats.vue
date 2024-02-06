@@ -38,6 +38,7 @@ EsportsPlayerHeroStats<template>
         </div>
       </div>
 
+      <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
       <div class="bg-lighten p-10 ">
         <div class=" max-w-[90em] ml-auto mr-auto">

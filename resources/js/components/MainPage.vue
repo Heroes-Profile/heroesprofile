@@ -70,7 +70,7 @@
         <h3 class="text-2xl mb-10 mt-2">Player profile</h3>
         <p>See all player stats in one place.  See data for individual maps or heroes played, match history and comparisons all from within a streamlined profile.</p>
         <div class="flex mt-auto justify-center">
-          <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'"></search-component>
+          <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'" class="mt-auto"></search-component>
         </div>
       </div>
     </div>
@@ -81,6 +81,7 @@
         Currently, Heroes Profile has pulled 49,812,486 replays up to and including data from patch
       2.55.3.90670 and date/time 2023-09-06 18:20:21  and incorporated them into our dataset.</p>
       <p>For more information on Heroes Profile API navigate to <a class="link" href="https://api.heroesprofile.com/">https://api.heroesprofile.com/</a></p>
+      
     </div>
   </div>
 </template>
@@ -99,7 +100,11 @@
       }
     },
     created(){
-      if (localStorage.getItem('newUserPopup')) {
+      if (typeof localStorage !== 'undefined' && localStorage !== null) {
+        if (localStorage.getItem('newUserPopup')) {
+          this.showPopup = false;
+        }
+      } else {
         this.showPopup = false;
       }
     },

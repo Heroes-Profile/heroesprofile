@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 
 @section('title', 'NGS Divisions Esport')
 @section('meta_keywords', 'Heroes Profile, NGS, Divisions, Heroes of the Storm, NGS divisions, competitive gaming, esports, division performance')
@@ -10,6 +10,8 @@
     :filters="{{ json_encode($filters) }}"
     :division="{{ json_encode($division) }}"
     :season="{{ json_encode($season) }}"
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+
   >
   </ngs-single-division>
 @endsection

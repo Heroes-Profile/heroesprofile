@@ -10,11 +10,20 @@ use App\Rules\SelectedTalentInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Redirect;
 
 class GlobalTalentBuilderController extends GlobalsInputValidationController
 {
     public function show(Request $request, $hero = null)
     {
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+          return Redirect::to('/Global/Talents/Builder')->withErrors($validator)->withInput();
+        }
+
         $validationRules = [
             'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
         ];
@@ -30,15 +39,16 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         return view('Global.Talents.globalTalentBuilder')
             ->with([
                 'heroes' => $this->globalDataService->getHeroes(),
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'userinput' => $userinput,
                 'filters' => $this->globalDataService->getFilterData(),
-                'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
+                'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
                 'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
                 'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
+                'urlparameters' => $request->all(),
             ]);
     }
 
@@ -93,7 +103,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         $heroLevel = $request['hero_level'];
         $region = $this->getRegionFilterValues($request['region']);
         $mirror = $request['mirror'];
-        $cacheKey = 'GlobalTalentsBuilder|'.json_encode($request->all());
+        $cacheKey = 'GlobalTalentsBuilder|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
         $talentData = HeroesDataTalent::all();
         $talentData = $talentData->keyBy('talent_id');

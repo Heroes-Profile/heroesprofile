@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="flex flex-col md:flex-row">
     <a 
     :class="[
       staticClasses, ' rounded-l ', 
@@ -53,22 +53,23 @@
       
       ignoreclick: Boolean,
       loading: false,
+      overridedefaultside: String,
     },
     data(){
       return {
         staticClasses: 'transition-colors text-white  py-2 px-4 text-lg inline-block',
         selectedSide: 'left'
-
       }
     },
     created(){
-
+      if(this.overridedefaultside){
+        this.selectedSide = this.overridedefaultside;
+      }
     },
     mounted() {
     },
     computed: {
-      
-      
+    
     },
     watch: {
     },

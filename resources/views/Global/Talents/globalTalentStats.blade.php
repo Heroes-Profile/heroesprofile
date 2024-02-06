@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 
 @if ($userinput)
   @section('title', $userinput["name"] . ' Talent Stats & Builds')
@@ -20,6 +20,8 @@
     :talentimages="{{ json_encode($talentimages) }}" 
     :advancedfiltering="{{ json_encode($advancedfiltering) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+    :urlparameters="{{ json_encode($urlparameters) }}"
+
   >
   </global-talents-stats>
 @endsection

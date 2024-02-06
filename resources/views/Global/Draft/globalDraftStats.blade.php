@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 
 @if ($userinput)
   @section('title', $userinput["name"] . ' Global Draft Stats')
@@ -19,6 +19,8 @@
     :defaulttimeframetype="{{ json_encode($defaulttimeframetype) }}" 
     :advancedfiltering="{{ json_encode($advancedfiltering) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+    :urlparameters="{{ json_encode($urlparameters) }}"
+
   >
   </global-draft-stats>
 @endsection

@@ -22,7 +22,6 @@
       this.chartRef = this.$refs.chartRef;
       const ctx = this.chartRef.getContext('2d');
       let images = {};
-
     // Preload images
       Promise.all(
         this.heroData.map((hero) => {
@@ -117,9 +116,12 @@
           if(hero.ban_rate > 0){
             radius = (((hero.win_rate + hero.pick_rate + hero.ban_rate) / 300) * 200) * scaleFactor;
           }else{
-            radius = ((hero.win_rate + (hero.pick_rate / 200)) * 200) * scaleFactor;
-          }
 
+
+            radius = (((hero.win_rate + hero.pick_rate) / 250) * 200) * scaleFactor;
+
+
+          }
           return parseFloat(radius.toFixed(2));
         }
 

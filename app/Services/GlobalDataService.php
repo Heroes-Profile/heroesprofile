@@ -82,9 +82,8 @@ class GlobalDataService
         if (Auth::check()) {
             $user = Auth::user();
 
-                
             $talentbuildtype = $user->userSettings->firstWhere('setting', 'talentbuildtype');
-    
+
             return $talentbuildtype ? $talentbuildtype->value : 'Popular';
 
         }
@@ -97,7 +96,6 @@ class GlobalDataService
         return SeasonGameVersion::orderBy('id', 'desc')->limit(1)->value('game_version');
     }
 
-
     public function getLatestGameDate()
     {
         if (! session()->has('latestGameDate')) {
@@ -108,6 +106,27 @@ class GlobalDataService
         }
 
         return session('latestGameDate');
+    }
+
+    public function getBladeGlobals()
+    {
+        $darkModeValue = null;
+
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            $darkmode = $user->userSettings->firstWhere('setting', 'darkmode');
+
+            $darkModeValue = $darkmode ? $darkmode->value : '0';
+        }
+
+        $regions = $this->getRegionIDtoString();
+
+        return [
+            'regions' => $regions,
+            'darkmode' => $darkModeValue,
+        ];
+
     }
 
     public function getRegionIDtoString()
@@ -165,6 +184,8 @@ class GlobalDataService
 
     public function calculateCacheTimeInMinutes($timeframe)
     {
+        //return 300;
+
         if (app()->environment('production')) {
             if (count($timeframe) == 1 && $timeframe[0] == $this->getLatestPatch()) {
                 $date = SeasonGameVersion::where('game_version', min($timeframe))->value('date_added');
@@ -229,15 +250,14 @@ class GlobalDataService
     {
         if (Auth::check()) {
             $user = Auth::user();
-    
+
             $advancedfiltering = $user->userSettings->firstWhere('setting', 'advancedfiltering');
-    
+
             return $advancedfiltering && $advancedfiltering->value;
         }
-    
+
         return false;
     }
-    
 
     public function getGameTypeDefault($type)
     {
@@ -245,22 +265,22 @@ class GlobalDataService
         if (Auth::check()) {
             $user = Auth::user();
 
-            if($type == "single"){
+            if ($type == 'single') {
                 $gameTypeSetting = $user->userSettings->firstWhere('setting', 'game_type');
                 if ($gameTypeSetting) {
                     return [$gameTypeSetting->value];
                 }
-            }else{
+            } else {
                 $gameTypeSetting = $user->userSettings->firstWhere('setting', 'multi_game_type');
                 if ($gameTypeSetting) {
                     $gameTypeValue = $gameTypeSetting->value;
-    
+
                     return explode(',', $gameTypeSetting->value);
                 }
             }
 
-    
         }
+
         return ['sl'];
     }
 
@@ -275,7 +295,7 @@ class GlobalDataService
         if (Auth::check()) {
             $user = Auth::user();
 
-            if($this->checkIfSiteFlair($user->blizz_id, $user->region) || $this->isOwner($user->blizz_id, $user->region)){
+            if ($this->checkIfSiteFlair($user->blizz_id, $user->region) || $this->isOwner($user->blizz_id, $user->region)) {
                 $filtersMinimumPatch = '2.52.0.81700';
             }
         }
@@ -372,7 +392,7 @@ class GlobalDataService
             ['code' => 'Bruiser', 'name' => 'Bruiser'],
             ['code' => 'Healer', 'name' => 'Healer'],
             ['code' => 'Melee Assassin', 'name' => 'Melee Assassin'],
-            ['code' => 'Ranged Assassi', 'name' => 'Ranged Assassi'],
+            ['code' => 'Ranged Assassin', 'name' => 'Ranged Assassin'],
             ['code' => 'Support', 'name' => 'Support'],
             ['code' => 'Tank', 'name' => 'Tank'],
         ];
@@ -716,7 +736,8 @@ class GlobalDataService
         return false;
     }
 
-    public function isOwner($blizz_id, $region){
+    public function isOwner($blizz_id, $region)
+    {
         return ($blizz_id == 67280 and $region == 1) ? true : false;
     }
 }

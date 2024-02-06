@@ -668,7 +668,7 @@ class PlayerHeroesMapsRolesController extends Controller
         })->values()->sortBy('name')->values()->all();
 
         if ($minimum_games && $minimum_games > 0) {
-            $filteredData = array_filter($returnData, function ($item) use ($minimum_games){
+            $filteredData = array_filter($returnData, function ($item) use ($minimum_games) {
                 return $item['games_played'] > $minimum_games;
             });
 

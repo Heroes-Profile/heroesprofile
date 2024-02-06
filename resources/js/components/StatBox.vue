@@ -7,7 +7,7 @@
   ]">
     <div class="w-full" > 
       <h2 :class="[
-        'bg-gray-light rounded-tl-xl text-blue px-2 py-1 text-xs text-center uppercase',
+      ' variable-background rounded-tl-xl text-blue px-2 py-1 text-xs text-center uppercase',
         {
           'rounded-tr-xl' : !secondstat
         }
@@ -26,7 +26,7 @@
       </div>
     </div>
      <div v-if="secondstat" class="border-l-2 border-gray-light w-full"> 
-      <h2 class="bg-gray-light rounded-tr-xl text-blue px-2 py-1 text-xs text-center uppercase"> 
+      <h2 class="variable-background rounded-tr-xl text-blue px-2 py-1 text-xs text-center uppercase"> 
         {{secondcaption}}
       </h2>
 

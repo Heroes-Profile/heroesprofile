@@ -7,11 +7,20 @@ use App\Rules\HeroInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Redirect;
 
 class GlobalDraftController extends GlobalsInputValidationController
 {
     public function show(Request $request, $hero = null)
     {
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+          return Redirect::to('/Global/Draft')->withErrors($validator)->withInput();
+        }
+
         if (! is_null($hero)) {
             $validationRules = [
                 'hero' => ['required', new HeroInputValidation()],
@@ -28,13 +37,14 @@ class GlobalDraftController extends GlobalsInputValidationController
         return view('Global.Draft.globalDraftStats')
             ->with([
                 'heroes' => $this->globalDataService->getHeroes(),
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'userinput' => $userinput,
                 'filters' => $this->globalDataService->getFilterData(),
-                'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
+                'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
                 'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
+                'urlparameters' => $request->all(),
             ]);
     }
 
@@ -67,7 +77,7 @@ class GlobalDraftController extends GlobalsInputValidationController
         $heroLevel = $request['hero_level'];
         $region = $this->getRegionFilterValues($request['region']);
 
-        $cacheKey = 'GlobalDraftStats|'.json_encode($request->all());
+        $cacheKey = 'GlobalDraftStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
         //return $cacheKey;
 
@@ -99,7 +109,7 @@ class GlobalDraftController extends GlobalsInputValidationController
                 ->orderBy('pick_number')
                 ->orderBy('win_loss')
                 //->toSql();
-                //return $data;
+                // $data;
                 ->get();
 
             $totalGamesPlayed = $data->sum('games_played');

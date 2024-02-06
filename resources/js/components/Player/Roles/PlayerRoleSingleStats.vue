@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="'Role data for ' + battletag + ' on ' + role" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner">
+    <page-heading :infoText1="'Role data for ' + battletag + ' on ' + role" :heading="'Role Stats: '+ role" :battletag="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner">
       <slot>
         <round-image :image="`/images/roles/${role}.png`" :excludehover="true"></round-image>
       </slot>
@@ -23,7 +23,7 @@
           <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="red"></stat-box>                  
         </div>
         <div class="my-auto">
-          {{ "This is where the role image goes, should we do that? : yes" }}
+          <round-image :image="`/images/roles/${role}.png`" :excludehover="true" size="large"></round-image>
         </div>
 
         <div class="flex flex-wrap max-w-[450px] text-left w-full items-between h-full justify-center mt-[1em]">

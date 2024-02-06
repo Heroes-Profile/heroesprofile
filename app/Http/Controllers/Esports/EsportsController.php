@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Esports;
 
 use App\Http\Controllers\Controller;
 use App\Models\CCL\CCLTeam;
-use App\Models\CCL\HeroesInternationalMainTeam;
-use App\Models\CCL\HeroesInternationalNationsCupTeam;
 use App\Models\HeroesDataTalent;
+use App\Models\HeroesInternational\HeroesInternationalMainTeam;
+use App\Models\HeroesInternational\HeroesInternationalNationsCupTeam;
 use App\Models\Map;
+use App\Models\MastersClashTeam;
 use App\Models\NGS\NGSTeam;
 use App\Rules\GameMapInputValidation;
 use App\Rules\HeroInputValidation;
@@ -44,7 +45,7 @@ class EsportsController extends Controller
     {
         return view('Esports.esportsMain')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             ]);
     }
 
@@ -73,7 +74,7 @@ class EsportsController extends Controller
         }
 
         return view('Esports.singlePlayerMatchHistory')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'esport' => $esport,
@@ -114,7 +115,7 @@ class EsportsController extends Controller
 
         return view('Esports.team')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => $esport,
                 'team' => $team,
                 'season' => $request['season'],
@@ -151,7 +152,7 @@ class EsportsController extends Controller
 
         return view('Esports.singlePlayer')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => $esport,
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
@@ -191,7 +192,7 @@ class EsportsController extends Controller
 
         return view('Esports.singlePlayerHero')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => $esport,
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
@@ -231,7 +232,7 @@ class EsportsController extends Controller
 
         return view('Esports.singlePlayerMap')
             ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => $esport,
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
@@ -239,6 +240,40 @@ class EsportsController extends Controller
                 'division' => $request['division'],
                 'game_map' => $mapobject,
                 'tournament' => $request['tournament'],
+            ]);
+    }
+
+    public function showTeamMatchHistory(Request $request, $esport, $team)
+    {
+        $validationRules = [
+            'esport' => 'required|in:NGS,CCL,MastersClash,HeroesInternational',
+        ];
+
+        $otherValidationRules = [
+            'division' => 'nullable|string',
+            'season' => 'nullable|numeric',
+            'tournament' => 'nullable|in:main,nationscup',
+        ];
+
+        $validator = Validator::make(compact('esport', 'team'), $validationRules);
+        $otherValidator = Validator::make($request->all(), $otherValidationRules);
+
+        if ($validator->fails() || $otherValidator->fails()) {
+            return [
+                'data' => [$request->input('division'), $request->input('season'), $esport, $team],
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        return view('Esports.teamMatchHistory')
+            ->with([
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+                'esport' => $esport,
+                'team' => $team,
+                'season' => $request['season'],
+                'division' => $request['division'],
+                'tournament' => $request['tournament'],
+                'type' => 'team',
             ]);
     }
 
@@ -376,6 +411,130 @@ class EsportsController extends Controller
             }
 
             $item->winner = $item->winner == 1 ? 'True' : 'False';
+
+            return $item;
+        });
+
+        return $result;
+    }
+
+    public function getTeamMatchHistoryData(Request $request)
+    {
+
+        //return response()->json($request->all());
+
+        $validationRules = [
+            'esport' => 'required|in:NGS,CCL,MastersClash,HeroesInternational',
+            'team' => 'nullable|string',
+            'division' => 'nullable|string',
+            'season' => 'nullable|numeric',
+            'pagination_page' => 'required:integer',
+            'tournament' => 'nullable|in:main,nationscup',
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                'data' => [$request->all()],
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        $this->esport = $request['esport'];
+        $this->schema = 'heroesprofile';
+
+        $this->season = $request['season'];
+
+        $tournament = $request['tournament'];
+
+        if ($this->esport == 'MastersClash') {
+            $this->schema .= '_mcl';
+        } elseif ($this->esport) {
+            $this->schema .= '_'.strtolower($this->esport);
+        }
+
+        if ($request['tournament'] == 'main') {
+            $this->schema = 'heroesprofile_hi';
+        } elseif ($request['tournament'] == 'nationscup') {
+            $this->schema = 'heroesprofile_hi_nc';
+        }
+
+        $team = $request['team'];
+        $team_id = null;
+        $division = $request['division'];
+
+        /*
+        if($this->esport == "NGS"){
+            $team_id = NGSTeam::select("team_id")
+                ->where("season", $this->season)
+                ->where("division", $division)
+                ->where("team_name", $team)
+                ->first()->team_id;
+
+        }else if($this->esport == "CCL"){
+            $team_id = CCLTeam::select("team_id")
+                ->where("season", $this->season)
+                ->where("team_name", $team)
+                ->first()->team_id;
+        }else if($this->esport == "MastersClash"){
+            $team_id = MastersClashTeam::select("team_id")
+                ->where("season", $this->season)
+                ->where("team_name", $team)
+                ->first()->team_id;
+        }else if($this->esport == "HeroesInternational"){
+
+            if($tournament == "main"){
+                $team_id = HeroesInternationalMainTeam::select("team_id")
+                    ->where("season", $this->season)
+                    ->where("team_name", $team)
+                    ->first()->team_id;
+
+            }else{
+                $team_id = HeroesInternationalNationsCupTeam::select("team_id")
+                    ->where("season", $this->season)
+                    ->where("team_name", $team)
+                    ->first()->team_id;
+
+            }
+        }
+        */
+
+        $pagination_page = $request['pagination_page'];
+        $perPage = 100;
+
+        $result = DB::table($this->schema.'.replay')
+            ->where('season', $this->season)
+            ->when($this->esport === 'NGS', function ($query) use ($division) {
+                $query->where(function ($query) use ($division) {
+                    $query->where('division_0', $division)
+                        ->orWhere('division_1', $division);
+                });
+            })
+            ->where(function ($query) use ($team) {
+                if ($this->esport === 'NGS' || $this->esport === 'MastersClash') {
+                    $query->where('team_0_name', $team)
+                        ->orWhere('team_1_name', $team);
+                } elseif ($this->esport === 'CCL' || $this->esport === 'HeroesInternational') {
+                    $query->where('team_0_id', $team)
+                        ->orWhere('team_1_id', $team);
+                }
+
+            })
+            ->orderByDesc('game_date')
+            ->paginate($perPage, ['*'], 'page', $pagination_page);
+
+        $maps = Map::all();
+        $maps = $maps->keyBy('map_id');
+
+        $modifiedResult = $result->map(function ($item) use ($maps, $team) {
+
+            $item->game_map = $maps[$item->game_map]['name'];
+            if ($this->esport === 'NGS' || $this->esport === 'MastersClash') {
+                $item->enemy = $team == $item->team_0_name ? $item->team_1_name : $item->team_0_name;
+            } elseif ($this->esport === 'CCL' || $this->esport === 'HeroesInternational') {
+                $item->enemy = $team == $item->team_0_id ? $item->team_1_id : $item->team_0_id;
+            }
 
             return $item;
         });
@@ -542,7 +701,7 @@ class EsportsController extends Controller
             ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
             ->where('replay.season', $this->season)
             ->when(! is_null($this->division), function ($query) {
-                return $query->where($this->schema.'.teams.division', $this->division);
+                return $query->where($this->schema.'.replay.division_0', $this->division)->orWhere($this->schema.'.replay.division_1', $this->division);
             })
             ->get();
 
@@ -640,7 +799,7 @@ class EsportsController extends Controller
             ])
             ->where('season', $this->season)
             ->when(! is_null($this->division), function ($query) {
-                return $query->where($this->schema.'.teams.division', $this->division);
+              return $query->where($this->schema.'.replay.division_0', $this->division)->orWhere($this->schema.'.replay.division_1', $this->division);
             })
             ->where('hero', $hero)
             //->toSql();
@@ -858,10 +1017,10 @@ class EsportsController extends Controller
         if ($this->esport == 'CCL') {
             $this->team = $request['team'] ? CCLTeam::where('season', $this->season)->where('team_name', $request['team'])->first()->team_id : null;
             $this->team_name = $request['team'];
-        } elseif ($this->esport == 'HeroesInternational' && $this->tournament == 'main') {
+        } elseif ($this->esport == 'hi' && $this->tournament == 'main') {
             $this->team = $request['team'] ? HeroesInternationalMainTeam::where('season', $this->season)->where('team_name', $request['team'])->first()->team_id : null;
             $this->team_name = $request['team'];
-        } elseif ($this->esport == 'HeroesInternational' && $this->tournament == 'nationscup') {
+        } elseif ($this->esport == 'hi_nc' && $this->tournament == 'nationscup') {
             $this->team = $request['team'] ? HeroesInternationalNationsCupTeam::where('season', $this->season)->where('team_name', $request['team'])->first()->team_id : null;
             $this->team_name = $request['team'];
         }
@@ -965,6 +1124,8 @@ class EsportsController extends Controller
             })
         //->toSql();
             ->get();
+
+        //return $results;
 
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
@@ -1091,13 +1252,10 @@ class EsportsController extends Controller
                     0 => $group[0] && $group[0]->hero ? ['hero' => $heroData[$group[0]->hero]] : null,
                 ];
             } else {
-                $heroes = [
-                    0 => $group[0] && $group[0]->hero ? ['hero' => $heroData[$group[0]->hero]] : null,
-                    1 => $group[1] && $group[1]->hero ? ['hero' => $heroData[$group[1]->hero]] : null,
-                    2 => $group[2] && $group[2]->hero ? ['hero' => $heroData[$group[2]->hero]] : null,
-                    3 => $group[3] && $group[3]->hero ? ['hero' => $heroData[$group[3]->hero]] : null,
-                    4 => $group[4] && $group[4]->hero ? ['hero' => $heroData[$group[4]->hero]] : null,
-                ];
+              $heroes = [];
+              for ($i = 0; $i < 5; $i++) {
+                  $heroes[$i] = isset($group[$i]) && $group[$i]->hero ? ['hero' => $heroData[$group[$i]->hero]] : null;
+              }
             }
 
             $team_0_name = null;

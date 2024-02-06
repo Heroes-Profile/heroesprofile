@@ -9,7 +9,7 @@ class MainPageController extends Controller
     public function show(Request $request)
     {
         return view('mainPage')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
         ]);
     }
 
@@ -29,13 +29,13 @@ class MainPageController extends Controller
 
     public function test()
     {
-        $exception = 1/0;
+        $exception = 1 / 0;
     }
 
     public function testJS()
     {
         return view('jsException')->with([
-            'regions' => $this->globalDataService->getRegionIDtoString(),
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
         ]);
     }
 }

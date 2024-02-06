@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="'All Heroes data for ' + battletag + '. Click a hero to see individual hero statistics'" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+    <page-heading :infoText1="'All Heroes data for ' + battletag + '. Click a hero to see individual hero statistics'" :heading="'Hero Stats'" :battletag="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
 
     <filters 
       :onFilter="filterData" 
@@ -21,10 +21,10 @@
           <custom-button class="ml-auto" @click="showOptions = !showOptions" :text="showOptions ? 'Hide Column Selection' : 'Show Column Selection'" :ignoreclick="true"></custom-button>
           
         <div v-if="showOptions">
-          <div class="absolute left-0 mt-2 w-full bg-gray-light border border-gray-300 rounded shadow-lg text-black z-50 flex flex-wrap  p-2 ">
+          <div class="absolute left-0 mt-2 w-full variable-background border border-gray-300 rounded shadow-lg text-black z-50 flex flex-wrap  p-2 ">
             <input class="w-full p-2" type="text" v-model="searchQuery" placeholder="Search..." />
               <div v-for="(stat, index) in filteredStats" :class="[
-              'flex-1 min-w-[24%] border-gray border p-1 cursor-pointer hover:bg-gray-light hover:text-black',
+              'flex-1 min-w-[24%] border-gray border p-1 cursor-pointer variable-hover',
               {
                 'bg-teal text-white' : stat.selected
               } ]
@@ -35,7 +35,9 @@
           </div>
         </div>
       </div>
-      <table class="">
+      <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
+
+        <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
         <thead>
           <tr>
             <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -72,7 +74,7 @@
         </thead>
         <tbody>
           <tr v-for="row in sortedData" :key="row.id">
-            <td class="py-2 px-3 "><a :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.name }}</a></td>
+            <td class="py-2 px-3 "><a :href="getPlayerHeroPageUrl(row.name)"><hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.name }}</span></a></td>
             <td class="py-2 px-3 "><stat-bar-box :title="'Win Rate'" :value="row.win_rate" :color="getWinRateColor(row.win_rate)"></stat-bar-box>{{ (row.wins + row.losses) }}</td>
             <td class="py-2 px-3 ">{{ row.kda }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}/{{ row.avg_assists }}</td>
             <td class="py-2 px-3 ">{{ row.kdr }} <br>{{ row.avg_kills }}/{{ row.avg_deaths }}</td>
@@ -95,7 +97,7 @@
           </tr>
         </tbody>
       </table>
-
+      </div>
     </div>
     <div v-if="isLoading">
         <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true" :timer="true" :starttime="timertime">Large amount of data.<br/>Please be patient.<br/></loading-component>
@@ -127,6 +129,7 @@ export default {
   },
   data(){
     return {
+      windowWidth: window.innerWidth,
       showOptions: false,
       isLoading: false,
       matchIsLoading: false,
@@ -275,6 +278,7 @@ export default {
   },
   methods: {
     async getData(type){
+      
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -297,13 +301,23 @@ export default {
         {
           cancelToken: this.cancelTokenSource.token,
         });
-
         this.data = response.data;
       }catch(error){
         //Do something here
+        
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
+        this.$nextTick(() => {
+        const responsivetable = this.$refs.responsivetable;
+          if (responsivetable && this.windowWidth < 1500) {
+            const newTableWidth = this.windowWidth /responsivetable.clientWidth;
+            responsivetable.style.transformOrigin = 'top left';
+            responsivetable.style.transform = `scale(${newTableWidth})`;
+            const container = this.$refs.tablecontainer;
+            container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+          }
+        });
       }
     },
     cancelAxiosRequest() {
@@ -368,10 +382,14 @@ export default {
       }
       this.matchIsLoading = false;
     },
-    showStatValue(value){
-      if(value < 1000){
+    showStatValue(value) {
+      if (!value || isNaN(value)) {
+        return 0;
+      }
+
+      if (value < 1000) {
         return value.toFixed(2);
-      }else{
+      } else {
         return Math.round(value).toLocaleString();
       }
     },

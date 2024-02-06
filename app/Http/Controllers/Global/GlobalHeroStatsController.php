@@ -12,21 +12,49 @@ use App\Rules\StatFilterInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Redirect;
 
 class GlobalHeroStatsController extends GlobalsInputValidationController
 {
     public function show(Request $request)
     {
-        return view('Global.Hero.globalHeroStats')
-            ->with([
-                'regions' => $this->globalDataService->getRegionIDtoString(),
-                'filters' => $this->globalDataService->getFilterData(),
-                'gametypedefault' => $this->globalDataService->getGameTypeDefault("multi"),
-                'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
-                'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
-                'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
-                'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
-            ]);
+
+      $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+
+      $validator = Validator::make($request->all(), $validationRules);
+
+      /*
+      if ($validator->fails()) {
+        $failedFields = $validator->failed();
+    
+        // Extract the first failed field
+        $firstFailedField = key($failedFields);
+    
+        return [
+            'data' => $request->all(),
+            'status' => 'failure to validate inputs',
+            'failed_field' => $firstFailedField,
+        ];
+      }
+      */
+    
+      if ($validator->fails()) {
+        return Redirect::to('/Global/Hero')->withErrors($validator)->withInput();
+      }
+    
+
+      return view('Global.Hero.globalHeroStats')
+          ->with([
+              'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+              'filters' => $this->globalDataService->getFilterData(),
+              'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
+              'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
+              'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
+              'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
+              'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
+              'heroes' => $this->globalDataService->getHeroes(),
+              'urlparameters' => $request->all(),
+          ]);
     }
 
     public function getGlobalHeroData(Request $request)
@@ -35,19 +63,21 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
 
         //return response()->json($request->all());
 
-        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type']), [
-            'statfilter' => ['required', new StatFilterInputValidation()],
-            'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation()],
-            'role' => ['sometimes', 'nullable', new RoleInputValidation()],
-        ]);
+        $validationRules = $this->globalsValidationRules($request['timeframe_type']);
 
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-            ];
+          $failedFields = $validator->failed();
+      
+          // Extract the first failed field
+          $firstFailedField = key($failedFields);
+      
+          return [
+              'data' => $request->all(),
+              'status' => 'failure to validate inputs',
+              'failed_field' => $firstFailedField,
+          ];
         }
 
         $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
@@ -62,12 +92,10 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         $region = $this->getRegionFilterValues($request['region']);
 
         $statFilter = $request['statfilter'];
-        $hero = $request['hero'];
+        $hero = $this->getHeroFilterValue($request['hero']);
         $role = $request['role'];
 
-        $cacheKey = 'GlobalHeroStats|'.json_encode($request->all());
-
-        //return  $cacheKey;
+        $cacheKey = 'GlobalHeroStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
         $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
             $gameType,
@@ -79,7 +107,8 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
             $region,
             $statFilter,
             $hero,
-            $role
+            $role,
+            $mirror
         ) {
             $data = GlobalHeroStats::query()
                 ->join('heroes', 'heroes.id', '=', 'global_hero_stats.hero')
@@ -95,7 +124,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
                 ->filterByRoleLeagueTier($roleLeagueTier)
                 ->filterByGameMap($gameMap)
                 ->filterByHeroLevel($heroLevel)
-                ->excludeMirror(1)
+                ->excludeMirror($mirror)
                 ->filterByRegion($region)
                 ->groupBy('global_hero_stats.hero', 'global_hero_stats.win_loss')
                 ->orderBy('heroes.name', 'asc')
@@ -210,13 +239,13 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         if ($hero) {
             $combinedData = collect($combinedData)->filter(function ($item) use ($hero) {
                 return $item['hero_id'] == $hero;
-            });
+            })->values();
         }
 
         if ($role) {
             $combinedData = collect($combinedData)->filter(function ($item) use ($role) {
                 return $item['role'] == $role;
-            });
+            })->values();
         }
 
         $combinedCollection = collect($combinedData);

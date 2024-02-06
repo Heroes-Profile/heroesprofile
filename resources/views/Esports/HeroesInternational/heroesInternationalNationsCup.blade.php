@@ -1,4 +1,4 @@
-@extends('layouts.app', $regions)  
+@extends('layouts.app', $bladeGlobals)    
 
 @section('title', 'Heroes International Nations Cup Esports')
 @section('meta_keywords', 'Heroes International Nations Cup league, Heroes International Nations Cup, Heroes of the Storm, Heroes International Nations Cup esports, competitive gaming, Heroes of the Storm league')
@@ -10,5 +10,7 @@
     :defaultseason="{{ json_encode($defaultseason) }}" 
     :filters="{{ json_encode($filters) }}"
     :talentimages="{{ json_encode($talentimages) }}" 
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+
   ></heroes-international-nations-cup>
 @endsection

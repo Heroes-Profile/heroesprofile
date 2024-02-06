@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText" :heading="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+    <page-heading :infoText1="infoText" :heading="'Friend vs Foe'"  :battletag="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
 
     <filters 
       :onFilter="filterData" 
@@ -10,8 +10,11 @@
       :includehero="true"
       :includegamemap="true"
       :includegametypefull="true"
-      :includeseason="true"
+      :includeseasonwithall="true"
+      :includegroupsize="true"
       :hideadvancedfilteringbutton="true"
+      :groupSizeDefaultValue="'All'"
+      :overrideGroupSizeRemoval="true"
       >
     </filters>
     
@@ -140,6 +143,7 @@ export default {
       season: null,
       friendCancelTokenSource: null,
       enemyCancelTokenSource: null,
+      groupsize: null,
     }
   },
   created(){
@@ -228,6 +232,7 @@ export default {
           season: this.season,
           hero: this.hero,
           game_map: this.gamemap,
+          groupsize: this.groupsize,
         }, 
         {
           cancelToken: cancelTokenSource.token,
@@ -257,6 +262,7 @@ export default {
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametypedefault;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
       this.season = filteredData.single["Season"] ? filteredData.single["Season"] : null;
+      this.groupsize = filteredData.single["Group Size"] && (filteredData.single["Group Size"] != 'All') ? filteredData.single["Group Size"] : null;
 
       this.frienddata = null;
       this.enemydata = null;
