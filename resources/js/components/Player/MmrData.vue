@@ -45,10 +45,10 @@
               {{ printLeagueName(row.tier, row.league_tier) }}
             </td>
             <td>
-              {{ row.min_mmr.toLocaleString() }}
+              {{ row.min_mmr.toLocaleString('en-US') }}
             </td>
             <td>
-              {{ row.max_mmr ? row.max_mmr.toLocaleString() : "" }}
+              {{ row.max_mmr ? row.max_mmr.toLocaleString('en-US') : "" }}
             </td>
           </tr>
         </tbody>
@@ -101,7 +101,7 @@
                 <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
               </td>
               <td>
-                {{ row.mmr.toLocaleString() }}
+                {{ row.mmr.toLocaleString('en-US') }}
               </td>
               <td>
                 {{ row.mmr_change.toFixed(2) }}

@@ -781,7 +781,7 @@
       return localDate.format('MM/DD/YYYY h:mm:ss a');
     },
     formatValue(value){
-      return value ? value.toLocaleString() : 0;
+      return value ? value.toLocaleString('en-US') : 0;
     },
     getLoadingImage(){
       if(this.esport == "NGS"){

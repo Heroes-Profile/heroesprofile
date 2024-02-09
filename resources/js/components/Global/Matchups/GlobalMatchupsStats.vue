@@ -91,11 +91,11 @@
               {{ row.enemy && row.enemy.win_rate.toFixed(2) ? row.enemy.win_rate.toFixed(2) : 0 }}
             </td>
             <td class="py-2 px-3 ">
-              {{ row.ally && row.ally.games_played.toLocaleString() ? row.ally.games_played.toLocaleString() : 0 }}
+              {{ row.ally && row.ally.games_played.toLocaleString('en-US') ? row.ally.games_played.toLocaleString('en-US') : 0 }}
             </td>
 
             <td class="py-2 px-3 ">
-              {{ row.enemy && row.enemy.games_played.toLocaleString() ? row.enemy.games_played.toLocaleString() : 0 }}
+              {{ row.enemy && row.enemy.games_played.toLocaleString('en-US') ? row.enemy.games_played.toLocaleString('en-US') : 0 }}
             </td>
           </tr>
         </tbody>
