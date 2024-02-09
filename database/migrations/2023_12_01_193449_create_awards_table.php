@@ -18,7 +18,6 @@ class CreateAwardsTable extends Migration
             $table->integer('award_id');
             $table->string('title');
             $table->string('icon');
-            $table->primary('award_table_id');
             $table->unique(['award_id', 'title', 'icon'], 'UNIQUE');
         });
     }

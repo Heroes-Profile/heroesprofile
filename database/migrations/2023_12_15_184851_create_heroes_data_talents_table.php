@@ -15,7 +15,7 @@ class CreateHeroesDataTalentsTable extends Migration
             $table->string('attribute_id');
             $table->string('title');
             $table->string('talent_name');
-            $table->string('description');
+            $table->string('description', 500);
             $table->string('status')->default('playable');
             $table->string('hotkey');
             $table->string('cooldown');

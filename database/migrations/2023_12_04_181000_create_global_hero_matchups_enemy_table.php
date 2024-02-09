@@ -24,8 +24,8 @@ class CreateGlobalHeroMatchupsEnemyTable extends Migration
             $table->tinyInteger('win_loss');
             $table->unsignedInteger('games_played')->default(0);
 
-            $table->unique(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'enemy', 'mirror', 'region', 'win_loss']);
-            $table->index(['game_version', 'game_type', 'hero', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'enemy', 'mirror', 'region', 'win_loss', 'games_played']);
+            $table->unique(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'enemy', 'mirror', 'region', 'win_loss'], 'Unique');
+            $table->index(['game_version', 'game_type', 'hero', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'enemy', 'mirror', 'region', 'win_loss', 'games_played'], 'index_WithHero');
 
         });
     }

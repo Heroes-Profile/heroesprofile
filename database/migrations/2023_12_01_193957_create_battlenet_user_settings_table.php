@@ -20,10 +20,7 @@ class CreateBattlenetUserSettingsTable extends Migration
             $table->string('value')->nullable();
 
             // Indexes
-            $table->index(['battlenet_accounts_id', 'setting', 'value']);
-
-            // Foreign key
-            $table->foreign('battlenet_accounts_id')->references('battlenet_accounts_id')->on('battlenet_accounts')->onDelete('cascade');
+            $table->index(['battlenet_accounts_id', 'setting', 'value'], 'battlenet_user_settings_index');        
         });
     }
 

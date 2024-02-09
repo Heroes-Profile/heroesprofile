@@ -27,7 +27,6 @@ class CreateGlobalCompositionsTable extends Migration
             $table->integer('region');
             $table->tinyInteger('win_loss');
             $table->unsignedInteger('games_played')->default(0);
-            $table->primary('global_compositions_id');
             $table->unique(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'composition_id', 'hero', 'mirror', 'region', 'win_loss'], 'unique');
             $table->index(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'composition_id', 'hero', 'mirror', 'region', 'win_loss', 'games_played'], 'primary_gamesPlayed');
         });

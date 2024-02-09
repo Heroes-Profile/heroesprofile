@@ -12,7 +12,7 @@ class CreateHeroesDataAbilitiesTable extends Migration
             $table->string('short_name');
             $table->string('attribute_id');
             $table->string('title');
-            $table->string('description');
+            $table->string('description', 500);
             $table->string('mana_cost');
             $table->string('cooldown');
             $table->string('trait');
