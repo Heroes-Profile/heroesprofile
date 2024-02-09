@@ -101,7 +101,7 @@
             <custom-button @click="copyToClipboard(builddata)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
           </td>
           <td>
-            {{ builddata.games_played.toLocaleString() }}
+            {{ builddata.games_played.toLocaleString('en-US') }}
           </td>
           <td>
             {{ builddata.win_rate.toFixed(2) }}

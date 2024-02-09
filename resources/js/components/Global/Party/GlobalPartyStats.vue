@@ -110,8 +110,8 @@ s<template>
                 </div>
               </td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
-              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString('en-US') }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
             </tr>
             <tr v-else>
               <td colspan="4" class="text-center">No Data</td>
@@ -178,8 +178,8 @@ s<template>
 
                 </div>
               </td>              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
-              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString('en-US') }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
             </tr>
             <tr v-else>
               <td colspan="4" class="text-center">No Data</td>
@@ -246,8 +246,8 @@ s<template>
 
                 </div>
               </td>              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
-              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString('en-US') }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
             </tr>
             <tr v-else>
               <td colspan="4" class="text-center">No Data</td>
@@ -314,8 +314,8 @@ s<template>
 
                 </div>
               </td>              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
-              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString('en-US') }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
             </tr>
             <tr v-else>
               <td colspan="4" class="text-center">No Data</td>
@@ -382,8 +382,8 @@ s<template>
 
                 </div>
               </td>              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
-              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString('en-US') }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
             </tr>
             <tr v-else>
               <td colspan="4" class="text-center">No Data</td>
@@ -450,8 +450,8 @@ s<template>
 
                 </div>
               </td>              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
-              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString('en-US') }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
             </tr>
             <tr v-else>
               <td colspan="4" class="text-center">No Data</td>
@@ -519,8 +519,8 @@ s<template>
 
                 </div>
               </td>              <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-              <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
-              <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.wins.toLocaleString('en-US') }}</td>
+              <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
             </tr>
             <tr v-else>
               <td colspan="4" class="text-center">No Data</td>
