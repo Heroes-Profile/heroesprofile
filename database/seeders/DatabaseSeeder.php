@@ -37,7 +37,7 @@ class DatabaseSeeder extends Seeder
         //LeagueTiersSeeder::class,
         //MapsSeeder::class,
         //MapsTranslationsSeeder::class,
-     
+        MasterGamesPlayedDataSeeder::class,
       ]);
     }
 }
