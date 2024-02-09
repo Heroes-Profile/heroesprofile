@@ -74,8 +74,8 @@
                     {{ determinePickOrBan(row.pick_number) }}
                   </td>
                   <td class="py-2 px-3 ">{{ row.popularity.toFixed(2) }}</td>
-                  <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
-                  <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
+                  <td class="py-2 px-3 ">{{ row.wins.toLocaleString('en-US') }}</td>
+                  <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
                   <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
                 </tr>
               </tbody>

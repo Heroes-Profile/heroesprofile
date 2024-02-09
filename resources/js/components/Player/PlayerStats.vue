@@ -19,8 +19,8 @@
 
       <div class="flex md:p-20 gap-10 mx-auto justify-center items-between  max-md:flex-col max-md:items-center">
         <div class="flex-1 flex flex-wrap justify-between max-w-[400px] w-full items-between mt-[1em] max-md:order-1">
-          <stat-box class="w-[48%]" :title="'Wins'" :value="data.wins.toLocaleString()"></stat-box>
-          <stat-box class="w-[48%]" :title="'Losses'" :value="data.losses.toLocaleString()"></stat-box>
+          <stat-box class="w-[48%]" :title="'Wins'" :value="data.wins.toLocaleString('en-US')"></stat-box>
+          <stat-box class="w-[48%]" :title="'Losses'" :value="data.losses.toLocaleString('en-US')"></stat-box>
 
           
           <div class="w-full mx-auto text-center">
@@ -33,7 +33,7 @@
           <stat-box class="w-[48%]" :title="'KDR'" :value="data.kdr" color="yellow"></stat-box>          
           <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="yellow"></stat-box>          
 
-          <stat-box class="w-full" :title="'Account Level'" :value="data.account_level.toLocaleString()"></stat-box>          
+          <stat-box class="w-full" :title="'Account Level'" :value="data.account_level.toLocaleString('en-US')"></stat-box>          
         </div>
         <div class="my-auto">
           <hero-image-wrapper :rectangle="true" :hero="inputHero" :title="inputHero.name" size="large"></hero-image-wrapper>
@@ -77,21 +77,21 @@
           <h4 class="text-right">Quick Match</h4>
           <stat-bar-box :title="'Win Rate'" :value=" data.qm_mmr_data ? data.qm_mmr_data.win_rate.toFixed(2) : 0 "></stat-bar-box>
           <stat-box title="Rank Tier" :value="data.qm_mmr_data ? data.qm_mmr_data.rank_tier : ''"></stat-box>
-          <stat-box :title="'MMR'" :value="data.qm_mmr_data ? data.qm_mmr_data.mmr.toLocaleString() : 0 "></stat-box>
+          <stat-box :title="'MMR'" :value="data.qm_mmr_data ? data.qm_mmr_data.mmr.toLocaleString('en-US') : 0 "></stat-box>
         </div>
 
         <div class="grid grid-cols-4 max-md:grid-cols-2   items-center gap-10 md:px-20 py-5 justify-center" >
           <h4 class="text-right">Unranked Draft</h4>
           <stat-bar-box :title="'Win Rate'" :value=" data.ud_mmr_data ? data.ud_mmr_data.win_rate.toFixed(2) : 0 " color="teal"></stat-bar-box>
           <stat-box title="Rank Tier" :value="data.ud_mmr_data ? data.ud_mmr_data.rank_tier : ''" color="teal"></stat-box>
-          <stat-box :title="'MMR'" :value="data.ud_mmr_data ? data.ud_mmr_data.mmr.toLocaleString() : 0 " color="teal"></stat-box>
+          <stat-box :title="'MMR'" :value="data.ud_mmr_data ? data.ud_mmr_data.mmr.toLocaleString('en-US') : 0 " color="teal"></stat-box>
         </div>
 
         <div class=" grid grid-cols-4 max-md:grid-cols-2  items-center gap-10 md:px-20 py-5 justify-center" >
           <h4 class="text-right">Hero league</h4>
           <stat-bar-box :title="'Win Rate'" :value=" data.hl_mmr_data ? data.hl_mmr_data.win_rate.toFixed(2) : 0 " color="red"></stat-bar-box>
           <stat-box title="Rank Tier" :value="data.hl_mmr_data ? data.hl_mmr_data.rank_tier : ''" color="red"></stat-box>
-          <stat-box :title="'MMR'" :value="data.hl_mmr_data ? data.hl_mmr_data.mmr.toLocaleString() : 0 " color="red"></stat-box>
+          <stat-box :title="'MMR'" :value="data.hl_mmr_data ? data.hl_mmr_data.mmr.toLocaleString('en-US') : 0 " color="red"></stat-box>
         </div>
 
 
@@ -99,21 +99,21 @@
           <h4 class="text-right">Team league</h4>
           <stat-bar-box :title="'Win Rate'" :value=" data.tl_mmr_data ? data.tl_mmr_data.win_rate.toFixed(2) : 0 " color="yellow"></stat-bar-box>
           <stat-box title="Rank Tier" :value="data.tl_mmr_data ? data.tl_mmr_data.rank_tier : ''" color="yellow"></stat-box>
-          <stat-box :title="'MMR'" :value="data.tl_mmr_data ? data.tl_mmr_data.mmr.toLocaleString() : 0 " color="yellow"></stat-box>
+          <stat-box :title="'MMR'" :value="data.tl_mmr_data ? data.tl_mmr_data.mmr.toLocaleString('en-US') : 0 " color="yellow"></stat-box>
         </div>
 
         <div class="grid grid-cols-4  max-md:grid-cols-2  items-center gap-10 md:px-20 py-5 justify-center" >
          <h4 class="text-right"> Storm league</h4>
          <stat-bar-box :title="'Win Rate'" :value=" data.sl_mmr_data ? data.sl_mmr_data.win_rate.toFixed(2) : 0 " color="gray-dark"></stat-bar-box>
          <stat-box title="Rank Tier" :value="data.sl_mmr_data ? data.sl_mmr_data.rank_tier : ''" color="gray-dark"></stat-box>
-         <stat-box :title="'MMR'" :value="data.sl_mmr_data ? data.sl_mmr_data.mmr.toLocaleString() : 0 " color="gray-dark"></stat-box>
+         <stat-box :title="'MMR'" :value="data.sl_mmr_data ? data.sl_mmr_data.mmr.toLocaleString('en-US') : 0 " color="gray-dark"></stat-box>
        </div>
 
        <div class="grid grid-cols-4 max-md:grid-cols-2  items-center gap-10 md:px-20 py-5 justify-center" >
         <h4 class="text-right">ARAM</h4>
         <stat-bar-box :title="'Win Rate'" :value=" data.ar_mmr_data ? data.ar_mmr_data.win_rate.toFixed(2) : 0 "></stat-bar-box>
         <stat-box title="Rank Tier" :value="data.ar_mmr_data ? data.ar_mmr_data.rank_tier : ''"></stat-box>
-        <stat-box :title="'MMR'" :value="data.ar_mmr_data ? data.ar_mmr_data.mmr.toLocaleString() : 0 "></stat-box>
+        <stat-box :title="'MMR'" :value="data.ar_mmr_data ? data.ar_mmr_data.mmr.toLocaleString('en-US') : 0 "></stat-box>
       </div>
 
      
@@ -146,23 +146,23 @@
       <h2 class="text-3xl font-bold py-5">Party Size Win Rates</h2>
 
       <div class="md:w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-        <div class="flex gap-10 text-s"><span>Solo</span><span>Total Games: {{ (data.stack_one_wins + data.stack_one_losses).toLocaleString() }} </span></div>
+        <div class="flex gap-10 text-s"><span>Solo</span><span>Total Games: {{ (data.stack_one_wins + data.stack_one_losses).toLocaleString('en-US') }} </span></div>
         <stat-bar-box size="big" :value="data.stack_one_win_rate.toFixed(2) "></stat-bar-box>     
       </div>
       <div class="md:w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-        <div class="flex gap-10 text-s"><span>Two Stack</span><span>Total Games: {{ (data.stack_two_wins + data.stack_two_losses).toLocaleString() }} </span></div>
+        <div class="flex gap-10 text-s"><span>Two Stack</span><span>Total Games: {{ (data.stack_two_wins + data.stack_two_losses).toLocaleString('en-US') }} </span></div>
         <stat-bar-box size="big" :value="data.stack_two_win_rate.toFixed(2) " color="teal"></stat-bar-box>     
       </div>
       <div class="md:w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-        <div class="flex gap-10 text-s"><span>Three Stack</span><span>Total Games: {{ (data.stack_three_wins + data.stack_three_losses).toLocaleString() }} </span></div>
+        <div class="flex gap-10 text-s"><span>Three Stack</span><span>Total Games: {{ (data.stack_three_wins + data.stack_three_losses).toLocaleString('en-US') }} </span></div>
         <stat-bar-box size="big" :value="data.stack_three_win_rate.toFixed(2) " color="red"></stat-bar-box>     
       </div>
       <div class="md:w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-        <div class="flex gap-10 text-s"><span>Four Stack</span><span>Total Games: {{ (data.stack_four_wins + data.stack_four_losses).toLocaleString() }} </span></div>
+        <div class="flex gap-10 text-s"><span>Four Stack</span><span>Total Games: {{ (data.stack_four_wins + data.stack_four_losses).toLocaleString('en-US') }} </span></div>
         <stat-bar-box size="big" :value="data.stack_four_win_rate.toFixed(2) " color="yellow"></stat-bar-box>     
       </div>
       <div class="md:w-[1000px] items-center gap-10 md:px-20 py-5 justify-center" >
-        <div class="flex gap-10 text-s"><span>Five Stack</span><span>Total Games: {{ (data.stack_five_wins + data.stack_five_losses).toLocaleString() }} </span></div>
+        <div class="flex gap-10 text-s"><span>Five Stack</span><span>Total Games: {{ (data.stack_five_wins + data.stack_five_losses).toLocaleString('en-US') }} </span></div>
         <stat-bar-box size="big" :value="data.stack_five_win_rate.toFixed(2) "></stat-bar-box>     
       </div>
      

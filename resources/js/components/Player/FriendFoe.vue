@@ -55,11 +55,11 @@
               </td>
               <td class="py-2 px-3 flex items-center gap-1">
                 <hero-image-wrapper :hero="row.heroData.hero">
-                  <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.total_games_played.toLocaleString()"></image-hover-box>
+                  <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.total_games_played.toLocaleString('en-US')"></image-hover-box>
                 </hero-image-wrapper>
                <span class="max-md:hidden"> {{ row.heroData.hero.name }} </span>
               </td>
-              <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString('en-US') }}</td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
             </tr>
           </tbody>
@@ -90,11 +90,11 @@
               <td class="py-2 px-3 flex items-center gap-1">
                 <hero-image-wrapper :hero="row.heroData.hero">
                   <h2>{{ row.heroData.hero.name }}</h2>
-                  <p>Games Played: {{ row.total_games_played.toLocaleString() }}</p>
+                  <p>Games Played: {{ row.total_games_played.toLocaleString('en-US') }}</p>
                 </hero-image-wrapper>
                 <span class="max-md:hidden">{{ row.heroData.hero.name }} </span>
               </td>
-              <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString('en-US') }}</td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
             </tr>
           </tbody>
