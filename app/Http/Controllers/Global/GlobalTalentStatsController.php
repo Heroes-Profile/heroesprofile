@@ -11,8 +11,8 @@ use App\Rules\StatFilterInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 
 class GlobalTalentStatsController extends GlobalsInputValidationController
 {
@@ -23,7 +23,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-          return Redirect::to('/Global/Talents')->withErrors($validator)->withInput();
+            return Redirect::to('/Global/Talents')->withErrors($validator)->withInput();
         }
 
         if (! is_null($hero)) {
@@ -78,10 +78,10 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
         $hero = $this->getHeroFilterValue($request['hero']);
 
-        if($request['timeframe_type'] == "last_update"){
-          $gameVersion = $this->getTimeFrameFilterValuesLastUpdate($hero);
-        }else{
-          $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        if ($request['timeframe_type'] == 'last_update') {
+            $gameVersion = $this->getTimeFrameFilterValuesLastUpdate($hero);
+        } else {
+            $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         }
 
         $gameType = $this->getGameTypeFilterValues($request['game_type']);
@@ -202,10 +202,10 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
         $hero = $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id;
 
-        if($request['timeframe_type'] == "last_update"){
-          $gameVersion = $this->getTimeFrameFilterValuesLastUpdate($hero);
-        }else{
-          $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        if ($request['timeframe_type'] == 'last_update') {
+            $gameVersion = $this->getTimeFrameFilterValuesLastUpdate($hero);
+        } else {
+            $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         }
 
         $gameTypeRecords = GameType::whereIn('short_name', $request['game_type'])->get();

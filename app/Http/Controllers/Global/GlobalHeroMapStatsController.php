@@ -9,7 +9,6 @@ use App\Rules\HeroInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Redirect;
 
 class GlobalHeroMapStatsController extends GlobalsInputValidationController
 {
@@ -20,7 +19,14 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-          return Redirect::to('/Global/Hero/Maps')->withErrors($validator)->withInput();
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         if (! is_null($hero)) {
@@ -31,7 +37,14 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
             $validator = Validator::make(['hero' => $hero], $validationRules);
 
             if ($validator->fails()) {
-                return back();
+                if (env('Production')) {
+                    return \Redirect::to('/');
+                } else {
+                    return [
+                        'data' => $request->all(),
+                        'status' => 'failure to validate inputs',
+                    ];
+                }
             }
         }
         $userinput = $this->globalDataService->getHeroModel($request['hero']);

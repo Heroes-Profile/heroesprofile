@@ -50,7 +50,8 @@
                   <div class="" v-else-if="row.patreon">
                     <i class="fas fa-star" style="color:gold"></i>
                   </div>
-                  <span class="link" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region)">{{ row.battletag }}</span>
+                  <a class="link" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
+
                 </div>
               </td>
               <td class="py-2 px-3 flex items-center gap-1">
@@ -86,7 +87,8 @@
 
           <tbody>
             <tr v-for="row in sortedDataEnemies" :key="row.blizz_id">
-              <td class="py-2 px-3 "><span class="link" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region)">{{ row.battletag }}</span></td>
+              <a class="link" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
+
               <td class="py-2 px-3 flex items-center gap-1">
                 <hero-image-wrapper :hero="row.heroData.hero">
                   <h2>{{ row.heroData.hero.name }}</h2>

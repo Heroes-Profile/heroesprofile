@@ -9,8 +9,8 @@ use App\Rules\HeroInputValidation;
 use App\Rules\SelectedTalentInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 
 class GlobalTalentBuilderController extends GlobalsInputValidationController
 {
@@ -21,7 +21,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-          return Redirect::to('/Global/Talents/Builder')->withErrors($validator)->withInput();
+            return Redirect::to('/Global/Talents/Builder')->withErrors($validator)->withInput();
         }
 
         $validationRules = [
