@@ -87,7 +87,19 @@
 
           <tbody>
             <tr v-for="row in sortedDataEnemies" :key="row.blizz_id">
-              <a class="link" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
+              <td class="py-2 px-3 ">
+
+                <div class="flex items-center">
+                  <div class="" v-if="row.hp_owner">
+                    <i class="fas fa-crown text" style="color:gold;"></i>
+                  </div>
+                  <div class="" v-else-if="row.patreon">
+                    <i class="fas fa-star" style="color:gold"></i>
+                  </div>
+                  <a class="link" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
+
+                </div>
+              </td>
 
               <td class="py-2 px-3 flex items-center gap-1">
                 <hero-image-wrapper :hero="row.heroData.hero">
