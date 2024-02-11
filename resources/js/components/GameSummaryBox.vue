@@ -27,9 +27,9 @@
             <hero-image-wrapper size="xl" :hero="data.hero" :excludehover="true"></hero-image-wrapper>
           </div>
 
-          <div v-else-if="esport && esport == true" class="flex flex-wrap justify-between gap-2 w-full hover:backdrop-brightness-125 py-1">
+          <div v-else-if="esport && esport == true" class="flex flex-wrap justify-between gap-2 w-full hover:backdrop-brightness-125 py-1 max-md:p-2">
             <hero-image-wrapper v-for="(item, index) in data.heroes" size="big" :hero="item.hero" :excludehover="true"></hero-image-wrapper>
-            <stat-box class="ml-auto w-[30%] mr-10" :title="'Teams'" :value="data.team_0_name + ' vs ' + data.team_1_name"></stat-box>
+            <stat-box class="ml-auto md:w-[30%] md:mr-10" :title="'Teams'" :value="data.team_0_name + ' vs ' + data.team_1_name"></stat-box>
           </div>
 
           <div v-if="!esport && esport != true" class="flex w-full hover:backdrop-brightness-125 max-md:flex-col">
