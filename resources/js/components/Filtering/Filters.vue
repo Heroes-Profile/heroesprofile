@@ -121,7 +121,7 @@
           ></single-select-filter>
 
           <!-- Stat Type Filter -->
-          <single-select-filter v-if="includestatfilter && toggleExtraFilters && selectedMultiFilters['timeframes'].length <= 5" 
+          <single-select-filter v-if="includestatfilter && toggleExtraFilters && selectedMultiFilters['Timeframes'].length <= 5" 
             :values="filters.stat_filter" 
             :text="'Stat Filter'" 
             :defaultValue="statfilter" 
