@@ -162,9 +162,6 @@
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Match/History">Match History</a>
               <a href="#" class="remove-account">
                 <remove-battletag-nav     
-                  :battletag="{{ json_encode($account['battletag']) }}" 
-                  :blizz_id="{{ json_encode($account['blizz_id']) }}" 
-                  :region="{{ json_encode($account['region']) }}" 
                   :index="{{ $index }}"
                 >
                 </remove-battletag-nav>

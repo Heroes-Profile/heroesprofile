@@ -8,9 +8,6 @@ export default {
   components: {
   },
   props: {
-    battletag: String,
-    blizz_id: Number,
-    region: Number,
     index: Number,
   },
   data(){
