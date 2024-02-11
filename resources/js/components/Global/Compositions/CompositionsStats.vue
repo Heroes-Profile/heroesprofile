@@ -72,7 +72,7 @@
               </td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3 ">{{ row.popularity.toFixed(2) }}</td>
-              <td class="py-2 px-3 ">{{ row.games_played.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.games_played.toLocaleString('en-US') }}</td>
               <td>
                 <custom-button 
                   @click="viewTopHeroes(row.composition_id, index)" 

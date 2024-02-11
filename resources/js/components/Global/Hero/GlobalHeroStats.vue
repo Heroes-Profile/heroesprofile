@@ -513,7 +513,7 @@ export default {
       return value ? value.toFixed(2) : "";
     },
     getValueLocal(value){
-      return value ? value.toLocaleString() : "";
+      return value ? value.toLocaleString('en-US') : "";
     },
     getHeroID(){
       if(this.hero){

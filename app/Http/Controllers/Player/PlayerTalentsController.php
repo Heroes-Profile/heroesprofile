@@ -34,10 +34,14 @@ class PlayerTalentsController extends Controller
         $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => compact('battletag', 'blizz_id', 'region'),
-                'status' => 'failure to validate inputs',
-            ];
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         $userinput = $this->globalDataService->getHeroModel($request['hero']);
@@ -52,7 +56,7 @@ class PlayerTalentsController extends Controller
             'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
             'heroes' => $this->globalDataService->getHeroes(),
-            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'],//$this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'], //$this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
         ]);
     }
 

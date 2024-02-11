@@ -11,8 +11,8 @@
 
       <div class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
         <div class="flex-1 flex flex-wrap justify-between max-w-[400px] w-full items-between mt-[1em]">
-          <stat-box class="w-[48%]" :title="'Vengeances'" :value="data.vengeances.toLocaleString()"></stat-box>
-          <stat-box class="w-[48%]" :title="'Escapes'" :value="data.escapes.toLocaleString()"></stat-box>
+          <stat-box class="w-[48%]" :title="'Vengeances'" :value="data.vengeances.toLocaleString('en-US')"></stat-box>
+          <stat-box class="w-[48%]" :title="'Escapes'" :value="data.escapes.toLocaleString('en-US')"></stat-box>
           <stat-bar-box class="w-full" size="full" :title="'Avg. Game Length to 30min'" :value="data.length_to_30"></stat-bar-box>
           <stat-box class="w-[48%]" :title="'Avg. Hero Damage'" :value="data.hero_damage" color="yellow"></stat-box>          
           <stat-box class="w-[48%]" :title="'Avg. Siege Damage'" :value="data.siege_damage" color="yellow"></stat-box>          
@@ -22,8 +22,8 @@
           <img :src="'/images/NGS/Divisions/Division ' + division + '.png'"/>
         </div>
         <div class="flex-1 flex flex-wrap justify-between max-w-[400px] w-full items-between mt-[1em]">
-          <stat-box class="w-[48%]" :title="'Takedowns'" :value="data.takedowns.toLocaleString()"></stat-box>
-          <stat-box class="w-[48%]" :title="'Kills'" :value="data.kills.toLocaleString()"></stat-box>
+          <stat-box class="w-[48%]" :title="'Takedowns'" :value="data.takedowns.toLocaleString('en-US')"></stat-box>
+          <stat-box class="w-[48%]" :title="'Kills'" :value="data.kills.toLocaleString('en-US')"></stat-box>
           <stat-box :title="'Total Time spent dead'" :value="data.time_spent_dead"></stat-box>
           <stat-box class="w-[48%]" :title="'Assists'" :value="data.assists" color="teal"></stat-box>          
           <stat-box class="w-[48%]" :title="'Healing'" :value="data.healing" color="teal"></stat-box>          

@@ -50,16 +50,17 @@
                   <div class="" v-else-if="row.patreon">
                     <i class="fas fa-star" style="color:gold"></i>
                   </div>
-                  <span class="link" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region)">{{ row.battletag }}</span>
+                  <a class="link" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
+
                 </div>
               </td>
               <td class="py-2 px-3 flex items-center gap-1">
                 <hero-image-wrapper :hero="row.heroData.hero">
-                  <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.total_games_played.toLocaleString()"></image-hover-box>
+                  <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.total_games_played.toLocaleString('en-US')"></image-hover-box>
                 </hero-image-wrapper>
                <span class="max-md:hidden"> {{ row.heroData.hero.name }} </span>
               </td>
-              <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString('en-US') }}</td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
             </tr>
           </tbody>
@@ -86,15 +87,28 @@
 
           <tbody>
             <tr v-for="row in sortedDataEnemies" :key="row.blizz_id">
-              <td class="py-2 px-3 "><span class="link" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region)">{{ row.battletag }}</span></td>
+              <td class="py-2 px-3 ">
+
+                <div class="flex items-center">
+                  <div class="" v-if="row.hp_owner">
+                    <i class="fas fa-crown text" style="color:gold;"></i>
+                  </div>
+                  <div class="" v-else-if="row.patreon">
+                    <i class="fas fa-star" style="color:gold"></i>
+                  </div>
+                  <a class="link" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
+
+                </div>
+              </td>
+
               <td class="py-2 px-3 flex items-center gap-1">
                 <hero-image-wrapper :hero="row.heroData.hero">
                   <h2>{{ row.heroData.hero.name }}</h2>
-                  <p>Games Played: {{ row.total_games_played.toLocaleString() }}</p>
+                  <p>Games Played: {{ row.total_games_played.toLocaleString('en-US') }}</p>
                 </hero-image-wrapper>
                 <span class="max-md:hidden">{{ row.heroData.hero.name }} </span>
               </td>
-              <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString('en-US') }}</td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
             </tr>
           </tbody>

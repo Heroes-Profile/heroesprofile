@@ -26,7 +26,7 @@
           <td>{{ row.win_rate.toFixed(2) }}</td>
           <td>{{ row.popularity.toFixed(2) }}</td>
           <td>{{ row.ban_rate.toFixed(2) }}</td>
-          <td>{{ row.games_played.toLocaleString() }}</td>
+          <td>{{ row.games_played.toLocaleString('en-US') }}</td>
         </tr>
       </tbody>
     </table>

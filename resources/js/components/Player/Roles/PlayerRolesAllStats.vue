@@ -347,7 +347,7 @@ methods: {
       if (value < 1000) {
         return value.toFixed(2);
       } else {
-        return Math.round(value).toLocaleString();
+        return Math.round(value).toLocaleString('en-US');
       }
     },
   }

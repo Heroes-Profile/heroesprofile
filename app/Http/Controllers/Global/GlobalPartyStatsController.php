@@ -7,8 +7,8 @@ use App\Rules\HeroInputValidation;
 use App\Rules\PartyCombinationRule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Validator;
 
 class GlobalPartyStatsController extends GlobalsInputValidationController
 {
@@ -19,7 +19,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-          return Redirect::to('/Global/Party')->withErrors($validator)->withInput();
+            return Redirect::to('/Global/Party')->withErrors($validator)->withInput();
         }
 
         return view('Global.Party.globalPartyStats')

@@ -158,8 +158,8 @@ class PlayerMMRController extends Controller
         $fullBreakdownForTierArray = $fullBreakdownForTier;
 
         $smallestMmr = 0;
-        if(count($fullBreakdownForTierArray) > 0){
-          $smallestMmr = min($fullBreakdownForTierArray);
+        if (count($fullBreakdownForTierArray) > 0) {
+            $smallestMmr = min($fullBreakdownForTierArray);
         }
 
         if ($rankTier != 'Master') {

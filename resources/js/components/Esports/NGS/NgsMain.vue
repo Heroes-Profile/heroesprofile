@@ -126,7 +126,6 @@
               class="bg-blue p-4 rounded mb-4 w-[500px] flex flex-col items-center cursor-pointer" 
               v-for="(item, index) in battletagresponse" 
               :key="index" 
-              @click="redirectToProfile(item.battletag, item.blizz_id, item.region)"
             >
               <div>{{ item.battletagShort }} ({{ item.regionName }})</div>
               <div>{{ item.latest_game }}</div>

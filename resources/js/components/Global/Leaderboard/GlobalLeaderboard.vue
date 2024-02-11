@@ -162,15 +162,15 @@
                               </slot>
                         </icon-with-hover>
                         </div>
-                        <span class="link" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id)">{{ row.split_battletag }}</span>
+                        <a class="link" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id, false)" :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`" >{{ row.split_battletag }}</a>
                       </div>
                     </td>
                     <td>{{ row.region }}</td>
                     <td>{{ row.win_rate.toFixed(2) }}</td>
                     <td>{{ row.rating.toFixed(2) }}</td>
-                    <td>{{ row.mmr.toLocaleString() }}</td>
+                    <td>{{ row.mmr.toLocaleString('en-US') }}</td>
                     <td>{{ row.tier }}</td>
-                    <td>{{ row.games_played.toLocaleString() }}</td>
+                    <td>{{ row.games_played.toLocaleString('en-US') }}</td>
 
                     <td class="py-2 px-3 flex items-center gap-1" v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role')">
                       <template v-if="row.most_played_hero">
@@ -203,7 +203,7 @@
                       </td>
                       <td>
                         <div v-if="row.level_one">
-                          {{ row.hero_build_games_played.toLocaleString() }}
+                          {{ row.hero_build_games_played.toLocaleString('en-US') }}
                         </div>
                       </td>
                     </template>

@@ -11,15 +11,15 @@ class TierInputByNameValidation implements Rule
     {
         // Ensure $value is an array
         if (! is_array($value)) {
-          $value = explode(',', $value);
+            $value = explode(',', $value);
         }
 
         $value = array_map('strtolower', $value);
         $validTiers = LeagueTier::pluck('name')->map('strtolower')->toArray();
         $filteredTiers = array_intersect($value, $validTiers);
-        
+
         if (empty($filteredTiers)) {
-          return false;
+            return false;
         }
 
         return true;
