@@ -162,7 +162,7 @@
                               </slot>
                         </icon-with-hover>
                         </div>
-                        <span class="link" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id)">{{ row.split_battletag }}</span>
+                        <a class="link" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id, false)" :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`" >{{ row.split_battletag }}</a>
                       </div>
                     </td>
                     <td>{{ row.region }}</td>

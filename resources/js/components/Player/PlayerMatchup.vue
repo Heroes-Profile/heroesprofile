@@ -1,7 +1,7 @@
 <template>
   <div>
     
-    <page-heading :heading="'Matchups'" :battletag="battletag +`(`+ region + `)`" :infoText1="infotext" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+    <page-heading :heading="'Matchups'" :battletag="battletag +`(`+ regionsmap[region] + `)`" :infoText1="infotext" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
     
     <filters 
     :onFilter="filterData" 
@@ -85,7 +85,7 @@
       isPatreon: Boolean,
       patreonUser: Boolean,
       gametypedefault: Array,
-
+      regionsmap: Object,
     },
     data(){
       return {

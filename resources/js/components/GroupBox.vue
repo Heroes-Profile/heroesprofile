@@ -5,21 +5,22 @@
       <template v-for="(item, index) in data" :key="index">
 
         <!-- Hero Section -->
-        <span v-if="!esport && match && playerlink && item.hero && !item.check" @click="this.$redirectToProfile(item.battletag, item.blizz_id, item.region)" class="link cursor-pointer">
-          <hero-image-wrapper :size="'big'" :hero="item.hero" :award="item.match_award" :winner="winner" :hpowner="item.hp_owner" :party="item.party" :ispatreon="item.patreon_subscriber" popupsize="large">
-            <image-hover-box 
-              :title="item.hero.name" 
-              :paragraph-one="`Played by : <b>${item.battletag}</b>`" 
-              :paragraph-two="`Account Level: ${item.account_level}`"
-              :paragraph-three="`Player MMR: ${item.player_mmr}`"
-              :paragraph-four="`Hero MMR: ${item.hero_mmr}`"
-              :paragraph-five="`Role MMR: ${item.role_mmr}`"
-              :paragraph-six="`Hero Level: ${item.hero_level}`"
-              :hpOwner="item.hp_owner ? 'Heroes Profile Owner' : null"
-            ></image-hover-box>
-          </hero-image-wrapper>
-        </span>
-
+        <a v-if="!esport && match && playerlink && item.hero && !item.check" class="link cursor-pointer" @click="this.$redirectToProfile(item.battletag, item.blizz_id, item.region, false)" :href="`/Player/${item.battletag}/${item.blizz_id}/${item.region}`">
+          <span>
+            <hero-image-wrapper :size="'big'" :hero="item.hero" :award="item.match_award" :winner="winner" :hpowner="item.hp_owner" :party="item.party" :ispatreon="item.patreon_subscriber" popupsize="large">
+              <image-hover-box 
+                :title="item.hero.name" 
+                :paragraph-one="`Played by : <b>${item.battletag}</b>`" 
+                :paragraph-two="`Account Level: ${item.account_level}`"
+                :paragraph-three="`Player MMR: ${item.player_mmr}`"
+                :paragraph-four="`Hero MMR: ${item.hero_mmr}`"
+                :paragraph-five="`Role MMR: ${item.role_mmr}`"
+                :paragraph-six="`Hero Level: ${item.hero_level}`"
+                :hpOwner="item.hp_owner ? 'Heroes Profile Owner' : null"
+              ></image-hover-box>
+            </hero-image-wrapper>
+          </span>
+        </a>
         <div v-else-if="!esport && match && playerlink && item.hero && item.check">
           <hero-image-wrapper :size="'big'" :hero="item.hero">
             <image-hover-box 

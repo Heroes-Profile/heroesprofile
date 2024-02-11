@@ -16,7 +16,7 @@ class RegionInputValidation implements Rule
     public function passes($attribute, $value)
     {
         if (! is_array($value)) {
-          $value = explode(',', $value);
+            $value = explode(',', $value);
         }
 
         $filteredRegions = array_intersect($value, array_keys($this->validRegions));

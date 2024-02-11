@@ -10,7 +10,7 @@ class GameMapInputValidation implements Rule
     public function passes($attribute, $value)
     {
         if (! is_array($value)) {
-          $value = explode(',', $value);
+            $value = explode(',', $value);
         }
 
         $validMaps = Map::where('playable', '<>', 0)
