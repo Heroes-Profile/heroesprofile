@@ -24,12 +24,15 @@ class SingleMatchController extends Controller
         ];
 
         $validator = Validator::make(compact('replayID'), $validationRules);
-
         if ($validator->fails()) {
-            return [
-                'data' => compact('replayID'),
-                'status' => 'failure to validate inputs',
-            ];
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         return view('singleMatch')->with([

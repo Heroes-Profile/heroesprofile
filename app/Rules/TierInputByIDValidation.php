@@ -11,14 +11,14 @@ class TierInputByIDValidation implements Rule
     {
         // Ensure $value is an array
         if (! is_array($value)) {
-          $value = explode(',', $value);
+            $value = explode(',', $value);
         }
 
         $validTier = LeagueTier::pluck('tier_id')->toArray();
         $filteredTiers = array_intersect($value, $validTier);
 
         if (empty($filteredTiers)) {
-          return false;
+            return false;
         }
 
         return true;
