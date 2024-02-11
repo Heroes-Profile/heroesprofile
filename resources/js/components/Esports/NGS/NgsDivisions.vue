@@ -1,6 +1,6 @@
 <template>
   <div>
-    <table class="max-w-[800px] min-w-[800px]">
+    <table class="max-w-[800px] mmd:min-w-[800px] max-md:text-sm">
       <thead>
         <tr>
           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">

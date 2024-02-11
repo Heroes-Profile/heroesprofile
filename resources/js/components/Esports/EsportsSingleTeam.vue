@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+    <page-heading :infoText1="infoText1" :battletag="team" :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div v-if="data">
       <div class="flex justify-center max-w-[1500px] mx-auto">
@@ -9,10 +9,11 @@
       </div>
 
 
-      <div class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
-        <div class="flex-1 flex flex-wrap justify-between max-w-[400px] w-full items-between mt-[1em]">
+      <div class="flex md:p-20 gap-10 mx-auto justify-center items-between  max-md:flex-col max-md:items-center  ">
+        <div class="flex-1 flex flex-wrap justify-between max-w-[400px] w-full items-between mt-[1em] max-md:order-1">
           <stat-box class="w-[48%]" :title="'Wins'" :value="data.wins.toLocaleString('en-US')"></stat-box>
           <stat-box class="w-[48%]" :title="'Losses'" :value="data.losses.toLocaleString('en-US')"></stat-box>
+
           <stat-bar-box class="w-full" size="full" :title="'Win Rate'" :value="data.win_rate.toFixed(2)"></stat-bar-box>
           <stat-box class="w-[48%]" :title="'KDR'" :value="data.kdr" color="yellow"></stat-box>          
           <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="yellow"></stat-box>          
@@ -20,9 +21,11 @@
         <div class="my-auto">
           <round-image :title="team" :image="image" size="large" :rectangle="true"></round-image>
         </div>
-        <div class="flex-1 flex flex-wrap justify-between max-w-[400px] w-full items-between mt-[1em]">
+
+        <div class="flex-1 flex flex-wrap max-w-[400px] text-left w-full items-between max-md:order-2">
           <stat-box class="w-[48%]" :title="'Takedowns'" :value="data.takedowns.toLocaleString('en-US')"></stat-box>
           <stat-box class="w-[48%]" :title="'Kills'" :value="data.kills.toLocaleString('en-US')"></stat-box>
+
           <stat-box class="w-full" :title="'Total Time spent dead'" :value="data.time_spent_dead"></stat-box>
           <stat-box class="w-[48%]" :title="'Assists'" :value="data.assists" color="teal"></stat-box>          
           <stat-box class="w-[48%]" :title="'Deaths'" :value="data.deaths" color="teal"></stat-box>          
@@ -31,7 +34,7 @@
 
       <div>
 
-        <table class="mb-10">
+        <table class="mb-10 max-md:text-xs">
           <thead>
             <tr>
               <th>
@@ -123,7 +126,7 @@
 
       </div>
 
-        <table class="max-w-[800px] min-w-[800px] mt-10">
+        <table class="max-w-[800px] md:min-w-[800px] mt-10 max-md:text-xs">
           <thead>
             <tr >
               <th @click="sortTable('hero_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -140,7 +143,7 @@
           <tbody>
             <tr class="@apply even:bg-gray-xlight" v-for="(row, index) in sortedData" :key="index">
               <td>
-                <hero-image-wrapper :hero="row.hero"></hero-image-wrapper>{{ row.hero.name }}
+                <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
               </td>
               <td>
                 {{ row.win_rate }}
@@ -244,11 +247,13 @@ export default {
       modifiedseason: null,
       modifieddivision: null,
       cancelTokenSource: null,
+      teach: null
     }
   },
   created(){
     this.modifiedseason = this.season;
     this.modifieddivision = this.division;
+   
   },
   mounted() {
     this.getData();

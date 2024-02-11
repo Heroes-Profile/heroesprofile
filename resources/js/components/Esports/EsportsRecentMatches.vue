@@ -1,12 +1,12 @@
 <template>
-  <div>
-    <table class="">
+  <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
+    <table id="responsive-table" class="responsive-table  relative  " ref="responsivetable">
       <thead>
         <tr>
           <th @click="sortTable('replayID')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             Game ID
           </th>
-          <th @click="sortTable('team_0_name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+          <th @click="sortTable('team_0_name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer ">
             Team 1
           </th>
           <th @click="sortTable('team_1_name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -31,7 +31,7 @@
             <td>
               <a class="link" :href="`/Esports/${esport}/Match/Single/${row.replayID}`">{{ row.replayID }}</a>
             </td>
-            <td>
+            <td class="">
               {{ row.team_0_name ? row.team_0_name : row.team_0_id }}
             </td>
             <td>
@@ -46,9 +46,9 @@
             <td>
               {{ row.game_map.name }}
             </td>
-            <td class="py-2 px-3  flex items-center gap-1">
+            <td class="py-2 px-3  flex items-center gap-1 max-md:flex-wrap max-md:w-[300px] max-md:justify-around">
               <template v-for="(hero, heroIndex) in row.heroes">
-                <hero-image-wrapper v-if="hero" :hero="hero" :key="heroIndex"></hero-image-wrapper>
+                <hero-image-wrapper v-if="hero" :hero="hero" :key="heroIndex" class="max-md:w-[45%]"></hero-image-wrapper>
               </template>
             </td>
           </tr>
@@ -70,12 +70,23 @@ export default {
   },
   data(){
     return {
+      windowWidth: window.innerWidth,
       userTimezone: moment.tz.guess(),
       sortKey: '',
       sortDir: 'desc',
     }
   },
   created(){
+    this.$nextTick(() => {
+        const responsivetable = this.$refs.responsivetable;
+          if (responsivetable && this.windowWidth < 1500) {
+            const newTableWidth = this.windowWidth /responsivetable.clientWidth;
+            responsivetable.style.transformOrigin = 'top left';
+            responsivetable.style.transform = `scale(${newTableWidth})`;
+            const container = this.$refs.tablecontainer;
+            container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
+          }
+        });
   },
   mounted() {
   },
