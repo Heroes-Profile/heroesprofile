@@ -16,27 +16,20 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
     public function show(Request $request)
     {
 
-        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
 
         $validator = Validator::make($request->all(), $validationRules);
 
-        /*
-        if ($validator->fails()) {
-          $failedFields = $validator->failed();
-
-          // Extract the first failed field
-          $firstFailedField = key($failedFields);
-
-          return [
-              'data' => $request->all(),
-              'status' => 'failure to validate inputs',
-              'failed_field' => $firstFailedField,
-          ];
-        }
-        */
 
         if ($validator->fails()) {
-            return Redirect::to('/Global/Hero')->withErrors($validator)->withInput();
+          if (env('Production')) {
+              return \Redirect::to('/');
+          } else {
+              return [
+                  'data' => $request->all(),
+                  'status' => 'failure to validate inputs',
+              ];
+          }
         }
 
         return view('Global.Hero.globalHeroStats')
@@ -59,21 +52,19 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
 
         //return response()->json($request->all());
 
-        $validationRules = $this->globalsValidationRules($request['timeframe_type']);
+        $validationRules = $this->globalsValidationRules($request['timeframe_type'], $request['timeframe']);
 
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            $failedFields = $validator->failed();
-
-            // Extract the first failed field
-            $firstFailedField = key($failedFields);
-
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-                'failed_field' => $firstFailedField,
-            ];
+          if (env('Production')) {
+              return \Redirect::to('/');
+          } else {
+              return [
+                  'data' => $request->all(),
+                  'status' => 'failure to validate inputs',
+              ];
+          }
         }
 
         $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
