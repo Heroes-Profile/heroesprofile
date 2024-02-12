@@ -63,7 +63,6 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         //return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
-            'statfilter' => ['required', new StatFilterInputValidation()],
             'hero' => ['required', new HeroInputValidation()],
         ]);
 
@@ -186,7 +185,6 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         //return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
-            'statfilter' => ['required', new StatFilterInputValidation()],
             'hero' => ['required', new HeroInputValidation()],
             'talentbuildtype' => ['required', new TalentBuildTypeInputValidation()],
         ]);

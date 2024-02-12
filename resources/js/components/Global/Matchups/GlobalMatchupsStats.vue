@@ -106,6 +106,9 @@
     <div v-else-if="isLoading">
       <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
+    <div v-else-if="dataError" class="flex items-center justify-center">
+      Error: Reload page/filter
+    </div>
   </div>
 
 
@@ -131,6 +134,7 @@
     },
     data(){
       return {
+        dataError: false,
         windowWidth: window.innerWidth,
         isLoading: false,
         infoText: "Hero Matchups provide information on which heroes are good with and against for a particular hero",
@@ -214,6 +218,7 @@
         this.getData();
       },
       async getData(){
+        this.dataError = false;
         this.isLoading = true;
 
         if (this.cancelTokenSource) {
@@ -242,21 +247,10 @@
           this.allyenemydata = response.data;
           this.combineddata = response.data.combined;
         }catch(error){
-          //Do something here
+          this.dataError = true;
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
-         /* this.$nextTick(() => {
-        const responsivetable = this.$refs.responsivetable;
-          if (responsivetable && this.windowWidth < 1500) {
-            const newTableWidth = this.windowWidth /responsivetable.clientWidth;
-            responsivetable.style.transformOrigin = 'top left';
-            responsivetable.style.transform = `scale(${newTableWidth})`;
-            const container = this.$refs.tablecontainer;
-            this.tablewidth = newTableWidth;
-            container.style.height = (responsivetable.clientHeight * newTableWidth) + 'px';
-          }
-        });*/
         }
       },
       cancelAxiosRequest() {
