@@ -50,7 +50,7 @@
                         <div class="nav-dropdown ">
                             <div class=" nav-dropdown-inner-wrapper ">
                                 <a href="/Global/Talents/Builder" >Talent Builder</a>
-                                <a href="/Compare" >Compare</a>
+                                <!--<a href="/Compare" >Compare</a>-->
                                 <a href="https://drafter.heroesprofile.com/Drafter" target="_blank" >Drafter</a>
                                 <a href="https://dev.heroesprofile.com/" target="_blank" >Game Data</a>
                                 <a href="https://api.heroesprofile.com/upload" target="_blank" >Replay Uploader</a>
