@@ -138,6 +138,8 @@ class PlayerTalentsController extends Controller
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
+
+        
         return [
             'talentData' => $this->getHeroTalentData($result, $talentData),
             'buildData' => $this->getHeroTalentBuildData($result, $heroData[$hero], $talentData),
@@ -167,9 +169,8 @@ class PlayerTalentsController extends Controller
                 $returnData[$key]['talent'] = $talentData[$data->$levelKey];
             }
         });
-
+        
         $formattedData = [];
-
         $levelTotals = [];
 
         foreach ($returnData as $data) {
@@ -179,19 +180,17 @@ class PlayerTalentsController extends Controller
             $levelTotals[$data['talent']['level']] += $data['wins'] + $data['losses'];
         }
         $counter = 0;
+
+
         foreach ($returnData as $data) {
             $level = $data['talent']['level'];
-            $sort = ($data['talent']['sort'] - 1);
+            $sort = (int) $data['talent']['sort'] - 1;
 
+     
             if (! array_key_exists($level, $formattedData)) {
-                $formattedData[$level] = [];
+              $counter = 0;
+              $formattedData[$level] = [];
             }
-
-            if (! array_key_exists($sort, $formattedData[$level])) {
-                $counter = 0;
-                $formattedData[$level][$counter] = [];
-            }
-
             $formattedData[$level][$counter] = [
                 'win_rate' => ($data['wins'] + $data['losses']) > 0 ? round(($data['wins'] / ($data['wins'] + $data['losses'])) * 100, 2) : 0,
                 'wins' => $data['wins'],
@@ -255,30 +254,7 @@ class PlayerTalentsController extends Controller
         });
 
         $returnData = array_slice($returnData, 0, 7);
-
-        foreach ($returnData as &$data) {
-            foreach ($result as $replay) {
-                $level_one = $replay->level_one;
-                $level_four = $replay->level_four;
-                $level_seven = $replay->level_seven;
-                $level_ten = $replay->level_ten;
-                $level_thirteen = $replay->level_thirteen;
-                $level_sixteen = $replay->level_sixteen;
-                $level_twenty = $replay->level_twenty;
-
-                if ($data['level_one'] != $level_one || $data['level_four'] != $level_four || $data['level_seven'] != $level_seven || $data['level_ten'] != $level_ten || $level_twenty != 0) {
-                    continue;
-                }
-
-                if ($replay->winner == 1) {
-                    $data['wins']++;
-
-                } else {
-                    $data['losses']++;
-                }
-                $data['games_played']++;
-            }
-        }
+        
         foreach ($returnData as &$data) {
             $data['level_one'] = $talentData[$data['level_one']];
             $data['level_four'] = $talentData[$data['level_four']];
