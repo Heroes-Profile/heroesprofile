@@ -46,7 +46,9 @@
     <loading-component @cancel-request="cancelAxiosRequest" v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
     <loading-component @cancel-request="cancelAxiosRequest" v-else></loading-component>
   </div>
-
+  <div v-else-if="dataError" class="flex items-center justify-center">
+      Error: Reload page/filter
+  </div>
   <div v-if="data">
 
     <div class="flex px-3 gap-5 mx-auto justify-center">
@@ -182,6 +184,7 @@
     },
     data(){
       return {
+        dataError: false,
         cancelTokenSource: null,
         isLoading: false,
         selectedHero: null,
@@ -238,6 +241,7 @@
     },
     methods: {
       async getData(){
+        this.dataError = false;
         this.isLoading = true;
 
         if (this.cancelTokenSource) {
@@ -270,7 +274,7 @@
           this.replays = response.data.replays;
           this.builddata = response.data.buildData;
         }catch(error){
-        //Do something here
+          this.dataError = true;
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;

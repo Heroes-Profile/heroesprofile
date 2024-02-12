@@ -14,7 +14,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
 {
     public function show(Request $request)
     {
-        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
 
         $validator = Validator::make($request->all(), $validationRules);
 
@@ -42,7 +42,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
 
         //return response()->json($request->all());
 
-        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type']), [
+        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
             'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
             'teamoneparty' => ['sometimes', 'nullable', new PartyCombinationRule()],
             'teamtwoparty' => ['sometimes', 'nullable', new PartyCombinationRule()],

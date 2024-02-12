@@ -52,41 +52,41 @@
         <takeover-ad :patreon-user="patreonUser" ref="takeoverAddPlacement"></takeover-ad>
 
         
-        <div  v-if="talentdetaildata" class="mx-auto  md:px-4">
+        <div v-if="talentdetaildata" class="mx-auto  md:px-4">
           <div class="flex justify-between max-w-[1500px] mx-auto">
-            
             <span class="flex gap-4 mb-2"> 
               {{ this.selectedHero.name }} {{ "Talent Stats"}} <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
             </span>
             <span><custom-button @click="scrollToBuilds" :text="'Scroll To Builds'" :alt="'Scroll To Builds'" size="small" :ignoreclick="true"></custom-button></span>
           </div>
-          
-            
-              <global-talent-details-section class="mx-auto" :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
-           
-         
+          <global-talent-details-section class="mx-auto" :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
         </div>
-
         <div v-else-if="isTalentsLoading">
           <loading-component v-if="determineIfLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
           <loading-component v-else @cancel-request="cancelAxiosRequest"></loading-component>
+        </div>
+        <div v-else-if="dataError" class="flex items-center justify-center">
+          Error: Reload page/filter
         </div>
 
 
         <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
-        <div  v-if="talentbuilddata" class="flex justify-between max-w-[1500px] mx-auto md:px-4">
+        <div v-if="talentbuilddata" class="flex justify-between max-w-[1500px] mx-auto md:px-4">
           <div id="builds" class="">
             <single-select-filter :values="buildtypes" :text="'Talent Build Type'" :defaultValue="this.talentbuildtype" @input-changed="buildtypechange"></single-select-filter>
             {{ this.selectedHero.name }} {{ "Talent Builds"}}
             <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
           </div>
         </div>
+        <div v-else-if="!isTalentsLoading && dataError" class="flex items-center justify-center">
+          Error: Reload page/filter
+        </div>
+
         <div v-else-if="isBuildsLoading">
           <loading-component v-if="determineIfLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
           <loading-component v-else @cancel-request="cancelAxiosRequest"></loading-component>
         </div>
-      
       </div>
   </div>
 </div>
@@ -113,6 +113,7 @@
     },
     data(){
       return {
+        dataError: false,
        windowWidth: window.innerWidth,
        isTalentsLoading: false,
        isBuildsLoading: false,
@@ -208,6 +209,7 @@
    
       },
       async getTalentData(){
+        this.dataError = false;
         this.isTalentsLoading = true;
 
         if (this.cancelTalentsTokenSource) {
@@ -235,7 +237,7 @@
           });
           this.talentdetaildata = response.data;
         }catch(error){
-          //Do something here
+          this.dataError = true;
         }finally {
           this.cancelTalentsTokenSource = null;
           this.isTalentsLoading = false;
@@ -244,6 +246,7 @@
       },
       
       async getTalentBuildData(){
+        this.dataError = false;
         this.isBuildsLoading = true;
 
         if (this.cancelBuildsTokenSource) {
@@ -272,7 +275,7 @@
           });
           this.talentbuilddata = response.data;
         }catch(error){
-          //Do something here
+          this.dataError = true;
         }finally {
           this.cancelBuildsTokenSource = null;
           this.isBuildsLoading = false;
