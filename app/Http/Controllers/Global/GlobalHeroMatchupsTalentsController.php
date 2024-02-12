@@ -17,7 +17,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
 {
     public function show(Request $request, $hero = null, $allyenemy = null)
     {
-        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
 
         $validator = Validator::make($request->all(), $validationRules);
 
@@ -107,7 +107,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
 
         //return response()->json($request->all());
 
-        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type']), [
+        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
             'hero' => ['required', new HeroInputValidation()],
             'ally_enemy' => ['required', new HeroInputValidation()],
             'type' => 'required|in:Enemy,Ally',

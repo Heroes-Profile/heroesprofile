@@ -27,6 +27,9 @@
   <div v-if="isLoading">
     <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
   </div>
+  <div v-else-if="dataError" class="flex items-center justify-center">
+      Error: Reload page/filter
+  </div>
   <div v-else>
     <div class="flex justify-center items-center md:gap-10">
       <div class="">
@@ -99,6 +102,7 @@
     },
     data(){
       return {
+        dataError: false,
         isLoading: false,
         infoText1: 'This page allows you to look at talent win rates and popularity, for a hero against, or with another hero. If you click on the "enemy" button, you will see talent data for games where those two heroes played against each other. If you click on the "ally" button, you will see talent data for games where those two heroes were on the same team.',
         infoText2: "NOTICE: This page may take longer to load data than our normal pages.",
@@ -171,6 +175,7 @@
     },
     methods: {
       async getData(){
+        this.dataError = false;
         this.isLoading = true;
 
         if (this.cancelTokenSource) {
@@ -197,7 +202,7 @@
           this.firstwinratedata = response.data.first_win_rate;
           this.secondwinratedata = response.data.second_win_rate;
         }catch(error){
-        //Do something here
+          this.dataError = true;
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;

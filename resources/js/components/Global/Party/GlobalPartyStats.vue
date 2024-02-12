@@ -533,6 +533,9 @@ s<template>
     <div v-else-if="isLoading">
       <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
+    <div v-else-if="dataError" class="flex items-center justify-center">
+      Error: Reload page/filter
+    </div>
   </div>
 </template>
 
@@ -557,6 +560,7 @@ export default {
   },
   data(){
     return {
+      dataError: false,
       isLoading: false,
       infoText: "Party win rates based on differing increments, stat types, game type, rank, and more. The hero filter allows you to see party data for games that only contained that hero.",
       partydata: null,
@@ -599,6 +603,7 @@ export default {
   },
   methods: {
     async getData(){
+      this.dataError = false;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -628,7 +633,7 @@ export default {
 
         this.partydata = response.data;
       }catch(error){
-        //Do something here
+        this.dataError = true;
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;

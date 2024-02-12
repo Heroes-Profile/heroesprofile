@@ -21,14 +21,14 @@ use App\Rules\TimeframeMinorInputValidation;
 
 class GlobalsInputValidationController extends Controller
 {
-    public function globalValidationRulesURLParam($timeframeType)
+    public function globalValidationRulesURLParam($timeframeType, $timeframe)
     {
         return [
             'timeframe_type' => 'sometimes|in:minor,major,last_update',
             'timeframe' => ['sometimes', 'nullable', new TimeframeMinorInputValidation($timeframeType)],
             'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation()],
             'region' => ['sometimes', 'nullable', new RegionInputValidation()],
-            'statfilter' => ['sometimes', 'nullable', new StatFilterInputValidation()],
+            'statfilter' => ['sometimes', 'nullable', new StatFilterInputValidation($timeframeType, $timeframe)],
             'hero_level' => ['sometimes', 'nullable', new HeroLevelInputValidation()],
             'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
             'role' => ['sometimes', 'nullable', new RoleInputValidation()],
@@ -41,14 +41,14 @@ class GlobalsInputValidationController extends Controller
         ];
     }
 
-    public function globalsValidationRules($timeframeType)
+    public function globalsValidationRules($timeframeType, $timeframe)
     {
         return [
             'timeframe_type' => 'required|in:minor,major,last_update',
             'timeframe' => $timeframeType !== 'last_update' ? ['required', new TimeframeMinorInputValidation($timeframeType)] : 'nullable',
             'game_type' => ['required', new GameTypeInputValidation()],
             'region' => ['sometimes', 'nullable', new RegionInputValidation()],
-            'statfilter' => ['sometimes', 'nullable', new StatFilterInputValidation()],
+            'statfilter' => ['sometimes', 'nullable', new StatFilterInputValidation($timeframeType, $timeframe)],
             'hero_level' => ['sometimes', 'nullable', new HeroLevelInputValidation()],
             'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
             'role' => ['sometimes', 'nullable', new RoleInputValidation()],
