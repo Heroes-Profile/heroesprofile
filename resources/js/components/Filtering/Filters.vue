@@ -121,7 +121,7 @@
           ></single-select-filter>
 
           <!-- Stat Type Filter -->
-          <single-select-filter v-if="includestatfilter && toggleExtraFilters && selectedMultiFilters['Timeframes'].length <= 5 && selectedSingleFilters['Timeframe Type'] != 'major'" 
+          <single-select-filter v-if="showStatTypeFilter" 
             :values="filters.stat_filter" 
             :text="'Stat Filter'" 
             :defaultValue="statfilter" 
@@ -457,6 +457,21 @@
     mounted() {
     },
     computed: {
+      showStatTypeFilter(){
+
+        if(this.includestatfilter && this.toggleExtraFilters){
+          if(this.selectedMultiFilters.hasOwnProperty('Timeframes')){
+            if(this.selectedSingleFilters['Timeframe Type'] == 'major' || this.selectedMultiFilters['Timeframes'].length > 5){
+              return false;
+            }
+          }
+          return true;
+        }
+         
+
+
+        return false;
+      },
       timeframeTypeWithLastUpdate(){
         const updatedTimeframeTypes = [...this.filters.timeframe_type];
         updatedTimeframeTypes.push({ code: 'last_update', name: 'Last Update' });
@@ -467,13 +482,10 @@
       },
       disabledFilter(){
         if(this.isLoading){
-          (1);
           return true;
         }
 
         if(!this.selectedMultiFilters.hasOwnProperty('Game Type')){
-          (2);
-
           return true;
         }
 
@@ -481,13 +493,9 @@
           (3);
 
           if(!this.selectedMultiFilters.hasOwnProperty('Timeframes') && this.selectedSingleFilters["Timeframe Type"] != "last_update"){
-            (4);
-
             return true;
           }
         }
-        (5);
-
         return false;
       },
       defaultStatType(){
