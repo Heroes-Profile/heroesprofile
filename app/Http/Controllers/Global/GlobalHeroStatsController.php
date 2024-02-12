@@ -8,7 +8,6 @@ use App\Models\GlobalHeroStatsBans;
 use App\Models\SeasonGameVersion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalHeroStatsController extends GlobalsInputValidationController
@@ -20,16 +19,15 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
 
         $validator = Validator::make($request->all(), $validationRules);
 
-
         if ($validator->fails()) {
-          if (env('Production')) {
-              return \Redirect::to('/');
-          } else {
-              return [
-                  'data' => $request->all(),
-                  'status' => 'failure to validate inputs',
-              ];
-          }
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         return view('Global.Hero.globalHeroStats')
@@ -57,14 +55,14 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-          if (env('Production')) {
-              return \Redirect::to('/');
-          } else {
-              return [
-                  'data' => $request->all(),
-                  'status' => 'failure to validate inputs',
-              ];
-          }
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);

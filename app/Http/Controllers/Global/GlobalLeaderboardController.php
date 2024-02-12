@@ -120,12 +120,12 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
         $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber, $patreonAccounts, &$blizzIDRegionMapping) {
 
-            if(array_key_exists($item->blizz_id . "|" . $item->region, $blizzIDRegionMapping)){
-              return null;
-            }else{
-              $blizzIDRegionMapping[$item->blizz_id . "|" . $item->region] = "found";
+            if (array_key_exists($item->blizz_id.'|'.$item->region, $blizzIDRegionMapping)) {
+                return null;
+            } else {
+                $blizzIDRegionMapping[$item->blizz_id.'|'.$item->region] = 'found';
             }
-        
+
             $patreonAccount = $patreonAccounts->where('blizz_id', $item->blizz_id)->where('region', $item->region);
 
             $item->patreon = is_null($patreonAccount) || empty($patreonAccount) || count($patreonAccount) == 0 ? false : true;

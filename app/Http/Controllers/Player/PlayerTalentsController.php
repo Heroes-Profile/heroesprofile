@@ -138,8 +138,6 @@ class PlayerTalentsController extends Controller
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
-
-        
         return [
             'talentData' => $this->getHeroTalentData($result, $talentData),
             'buildData' => $this->getHeroTalentBuildData($result, $heroData[$hero], $talentData),
@@ -169,7 +167,7 @@ class PlayerTalentsController extends Controller
                 $returnData[$key]['talent'] = $talentData[$data->$levelKey];
             }
         });
-        
+
         $formattedData = [];
         $levelTotals = [];
 
@@ -181,15 +179,13 @@ class PlayerTalentsController extends Controller
         }
         $counter = 0;
 
-
         foreach ($returnData as $data) {
             $level = $data['talent']['level'];
             $sort = (int) $data['talent']['sort'] - 1;
 
-     
             if (! array_key_exists($level, $formattedData)) {
-              $counter = 0;
-              $formattedData[$level] = [];
+                $counter = 0;
+                $formattedData[$level] = [];
             }
             $formattedData[$level][$counter] = [
                 'win_rate' => ($data['wins'] + $data['losses']) > 0 ? round(($data['wins'] / ($data['wins'] + $data['losses'])) * 100, 2) : 0,
@@ -254,7 +250,7 @@ class PlayerTalentsController extends Controller
         });
 
         $returnData = array_slice($returnData, 0, 7);
-        
+
         foreach ($returnData as &$data) {
             $data['level_one'] = $talentData[$data['level_one']];
             $data['level_four'] = $talentData[$data['level_four']];

@@ -7,7 +7,6 @@ use App\Models\GlobalHeroTalentDetails;
 use App\Models\GlobalHeroTalents;
 use App\Models\HeroesDataTalent;
 use App\Rules\HeroInputValidation;
-use App\Rules\StatFilterInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
