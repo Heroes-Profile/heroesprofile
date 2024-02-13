@@ -88,11 +88,11 @@ class FriendFoeController extends Controller
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-          return [
-              'data' => $request->all(),
-              'errors' => $validator->errors()->all(),
-              'status' => 'failure to validate inputs',
-          ];
+            return [
+                'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
+                'status' => 'failure to validate inputs',
+            ];
         }
 
         $blizz_id = $request['blizz_id'];
@@ -264,6 +264,7 @@ class FriendFoeController extends Controller
             return [
                 'blizz_id' => $blizz_id,
                 'hero' => $heroData['hero']['name'],
+                'hero_games' => $heroData['total_games_played'],
                 'region' => $region,
                 'hp_owner' => ($blizz_id == 67280 && $region = 1) ? true : false,
                 'patreon' => is_null($patreonAccount) || empty($patreonAccount) || count($patreonAccount) == 0 ? false : true,

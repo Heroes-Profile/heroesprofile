@@ -14,7 +14,7 @@
             :text="'Game Type'" 
             @dropdown-closed="saveSettings()" 
             @input-changed="handleInputChange" 
-            :defaultValue="defaultMultiGameType"
+            :defaultValue="usermultigametype"
             :trackclosure="true"
           >
           </multi-select-filter>
@@ -28,7 +28,7 @@
             :text="'Talent Build Type'" 
             @dropdown-closed="saveSettings()" 
             @input-changed="handleInputChange" 
-            :defaultValue="defaultBuildType"
+            :defaultValue="talentBuildType"
             :trackclosure="true"
           >
           </single-select-filter>
@@ -45,7 +45,7 @@
             :text="'Advanced Filtering'" 
             @dropdown-closed="saveSettings()" 
             @input-changed="handleInputChange" 
-            :defaultValue="defaultAdvancedFiltering"
+            :defaultValue="advancedfiltering"
             :trackclosure="true"
 
           >
@@ -58,7 +58,7 @@
             :text="'Game Type'" 
             @dropdown-closed="saveSettings()" 
             @input-changed="handleInputChange" 
-            :defaultValue="defaultGameType"
+            :defaultValue="usergametype"
             :trackclosure="true"
           >
           </single-select-filter>
@@ -69,7 +69,7 @@
        <div class="px-4">
         <h3>Table Style:</h3>
 
-        <tab-button tab1text="Light" :ignoreclick="true" tab2text="Dark" @tab-click="darkmodesetting" :overridedefaultside="defaultDarkMode"> </tab-button>
+        <tab-button tab1text="Light" :ignoreclick="true" tab2text="Dark" @tab-click="darkmodesetting" :overridedefaultside="darkmode"> </tab-button>
       </div>
     </div>
     <h1 class="mb-4 bg-teal p-4 ">Profile Settings</h1>
@@ -129,6 +129,9 @@ export default {
       settingsSaved: false,
       darkmode: false,
       overridedefaultside: null,
+
+
+      defaultMultiGameTypeOverride: null,
     }
   },
   created(){
@@ -137,9 +140,14 @@ export default {
     }else{
       this.accountVisibility = "false";
     }
+
+    this.usergametype = this.defaultGameType;
+    this.usermultigametype = this.defaultMultiGameType;
+    this.advancedfiltering = this.defaultAdvancedFiltering;
+    this.talentBuildType = this.defaultBuildType;
+    this.darkmode = this.defaultDarkMode;
   },
   mounted() {
-    this.advancedfiltering = this.defaultAdvancedFiltering;
   },
   computed: {
     defaultHero(){

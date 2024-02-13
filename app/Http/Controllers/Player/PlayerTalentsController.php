@@ -78,11 +78,11 @@ class PlayerTalentsController extends Controller
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-          return [
-              'data' => $request->all(),
-              'errors' => $validator->errors()->all(),
-              'status' => 'failure to validate inputs',
-          ];
+            return [
+                'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
+                'status' => 'failure to validate inputs',
+            ];
         }
 
         $battletag = $request['battletag'];
@@ -178,7 +178,6 @@ class PlayerTalentsController extends Controller
             }
             $levelTotals[$data['talent']['level']] += $data['wins'] + $data['losses'];
         }
-        $counter = 0;
 
         foreach ($returnData as $data) {
             $level = $data['talent']['level'];
@@ -188,7 +187,7 @@ class PlayerTalentsController extends Controller
                 $counter = 0;
                 $formattedData[$level] = [];
             }
-            $formattedData[$level][$counter] = [
+            $formattedData[$level][] = [
                 'win_rate' => ($data['wins'] + $data['losses']) > 0 ? round(($data['wins'] / ($data['wins'] + $data['losses'])) * 100, 2) : 0,
                 'wins' => $data['wins'],
                 'losses' => $data['losses'],
@@ -197,7 +196,6 @@ class PlayerTalentsController extends Controller
                 'games_played' => $data['wins'] + $data['losses'],
                 'talentInfo' => $data['talent'],
             ];
-            $counter++;
         }
 
         return $formattedData;
