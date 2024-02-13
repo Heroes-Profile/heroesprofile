@@ -103,7 +103,6 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
 
     public function getHeroMatchupsTalentsData(Request $request)
     {
-        
 
         //return response()->json($request->all());
 

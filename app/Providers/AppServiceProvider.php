@@ -11,7 +11,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-      $maxExecutionTime = env('PHP_MAX_EXECUTION_TIME', 300);
+        $maxExecutionTime = env('PHP_MAX_EXECUTION_TIME', 300);
         $this->app->bind(GlobalDataService::class, function ($app) {
             return new GlobalDataService();
         });

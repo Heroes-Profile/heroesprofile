@@ -78,7 +78,6 @@ class PlayerController extends Controller
 
     public function getPlayerData(Request $request)
     {
-      
 
         //return response()->json($request->all());
 
@@ -160,7 +159,6 @@ class PlayerController extends Controller
 
     private function calculateProfile($blizz_id, $region, $game_type, $season, $cachedData = null)
     {
-        
 
         $result = DB::table('replay')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
@@ -465,7 +463,7 @@ class PlayerController extends Controller
 
     private function formatCache($data, $blizz_id, $region, $battletag)
     {
-        
+
         $returnData = new \stdClass;
         $returnData->wins = $data->wins;
         $returnData->losses = $data->losses;

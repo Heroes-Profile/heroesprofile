@@ -46,7 +46,6 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
 
     public function getGlobalHeroData(Request $request)
     {
-        
 
         //return response()->json($request->all());
 

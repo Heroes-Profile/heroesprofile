@@ -67,7 +67,6 @@ class FriendFoeController extends Controller
 
     public function getFriendFoeData(Request $request)
     {
-      
 
         //return response()->json($request->all());
 

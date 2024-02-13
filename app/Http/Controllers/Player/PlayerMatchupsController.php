@@ -46,7 +46,6 @@ class PlayerMatchupsController extends Controller
 
     public function getMatchupData(Request $request)
     {
-      
 
         //return response()->json($request->all());
 

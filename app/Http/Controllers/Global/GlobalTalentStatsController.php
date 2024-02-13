@@ -57,7 +57,6 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
     public function getGlobalHeroTalentData(Request $request)
     {
-        
 
         //return response()->json($request->all());
 
@@ -179,7 +178,6 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
     public function getGlobalHeroTalentBuildData(Request $request)
     {
-        
 
         //return response()->json($request->all());
 

@@ -47,7 +47,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 
     public function getCompositionsData(Request $request)
     {
-        
+
         //return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [

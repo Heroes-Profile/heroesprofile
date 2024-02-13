@@ -63,7 +63,6 @@ class GlobalDraftController extends GlobalsInputValidationController
 
     public function getDraftData(Request $request)
     {
-        
 
         //return response()->json($request->all());
 

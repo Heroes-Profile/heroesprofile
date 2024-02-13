@@ -56,8 +56,6 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
     {
         //return response()->json($request->all());
 
-        
-
         $validationRules = [
             'hero' => ['required', new HeroInputValidation()],
         ];

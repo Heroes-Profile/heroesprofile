@@ -66,7 +66,6 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
 
     public function getHeroMatchupData(Request $request)
     {
-        
 
         //return response()->json($request->all());
 

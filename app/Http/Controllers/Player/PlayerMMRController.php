@@ -46,7 +46,6 @@ class PlayerMMRController extends Controller
 
     public function getData(Request $request)
     {
-      
 
         //return response()->json($request->all());
 
