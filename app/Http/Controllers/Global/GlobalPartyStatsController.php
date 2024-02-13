@@ -19,7 +19,14 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return Redirect::to('/Global/Party')->withErrors($validator)->withInput();
+          if (env('Production')) {
+              return \Redirect::to('/');
+          } else {
+              return [
+                  'data' => $request->all(),
+                  'status' => 'failure to validate inputs',
+              ];
+          }
         }
 
         return view('Global.Party.globalPartyStats')
@@ -51,10 +58,11 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-            ];
+          return [
+              'data' => $request->all(),
+              'errors' => $validator->errors()->all(),
+              'status' => 'failure to validate inputs',
+          ];
         }
 
         $hero = $this->getHeroFilterValue($request['hero']);

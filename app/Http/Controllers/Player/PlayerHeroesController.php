@@ -69,6 +69,7 @@ class PlayerHeroesController extends Controller
         if ($validator->fails()) {
             return [
                 'data' => compact('battletag', 'blizz_id', 'region', 'hero'),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }
