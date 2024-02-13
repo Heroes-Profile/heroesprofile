@@ -7,8 +7,8 @@
     </page-heading>
 
     <div class="flex justify-center max-w-[1500px] mx-auto">
-      <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="!modifiedgametype ? 'All' : modifiedgametype"></single-select-filter>
-      <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
+      <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="!modifiedgametype ? 'All' : modifiedgametype" :disabled="disableFilterInput"></single-select-filter>
+      <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'" :disabled="disableFilterInput"></single-select-filter>
     </div>
 
     <takeover-ad :patreon-user="patreonUser"></takeover-ad>
@@ -119,6 +119,9 @@
       </div>
 
     </div>
+    <div v-else-if="typeof data === 'undefined'"  class="flex items-center justify-center">
+      No data 
+    </div>
     <div v-else-if="isLoading">
       <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
@@ -152,6 +155,7 @@
         data: null,
         modifiedgametype: null,
         modifiedseason: null,
+        disableFilterInput: null,
       }
     },
     created(){
@@ -189,8 +193,8 @@
     watch: {
     },
     methods: {
-      async getData(type){
-
+      async getData(){
+        this.disableFilterInput = true;
         this.isLoading = true;
 
         if (this.cancelTokenSource) {
@@ -219,6 +223,7 @@
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
+          this.disableFilterInput = false;
         }
       },
       cancelAxiosRequest() {
@@ -244,8 +249,10 @@
         }
       },
       handleDropdownClosed(){
-        this.data = null;
-        this.getData();
+        if(!this.isLoading){
+          this.data = null;
+          this.getData();
+        }
       },
     }
   }

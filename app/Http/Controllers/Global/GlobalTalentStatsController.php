@@ -10,7 +10,6 @@ use App\Rules\HeroInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalTalentStatsController extends GlobalsInputValidationController
@@ -22,15 +21,15 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-          if (env('Production')) {
-              return \Redirect::to('/');
-          } else {
-              return [
-                  'data' => $request->all(),
-                  'errors' => $validator->errors()->all(),
-                  'status' => 'failure to validate inputs',
-              ];
-          }
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'errors' => $validator->errors()->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         if (! is_null($hero)) {
@@ -41,15 +40,15 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             $validator = Validator::make(['hero' => $hero], $validationRules);
 
             if ($validator->fails()) {
-              if (env('Production')) {
-                  return \Redirect::to('/');
-              } else {
-                  return [
-                      'data' => $request->all(),
-                      'errors' => $validator->errors()->all(),
-                      'status' => 'failure to validate inputs',
-                  ];
-              }
+                if (env('Production')) {
+                    return \Redirect::to('/');
+                } else {
+                    return [
+                        'data' => $request->all(),
+                        'errors' => $validator->errors()->all(),
+                        'status' => 'failure to validate inputs',
+                    ];
+                }
             }
         }
 
@@ -83,11 +82,11 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-          return [
-              'data' => $request->all(),
-              'errors' => $validator->errors()->all(),
-              'status' => 'failure to validate inputs',
-          ];
+            return [
+                'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
+                'status' => 'failure to validate inputs',
+            ];
         }
 
         $hero = $this->getHeroFilterValue($request['hero']);
@@ -206,11 +205,11 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-          return [
-              'data' => $request->all(),
-              'errors' => $validator->errors()->all(),
-              'status' => 'failure to validate inputs',
-          ];
+            return [
+                'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
+                'status' => 'failure to validate inputs',
+            ];
         }
 
         $hero = $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id;

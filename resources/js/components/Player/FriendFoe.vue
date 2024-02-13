@@ -56,7 +56,7 @@
               </td>
               <td class="py-2 px-3 flex items-center gap-1">
                 <hero-image-wrapper :hero="row.heroData.hero">
-                  <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.total_games_played.toLocaleString('en-US')"></image-hover-box>
+                  <image-hover-box :title="row.heroData.hero.name" :paragraph-one="'Games Played:' + row.hero_games.toLocaleString('en-US')"></image-hover-box>
                 </hero-image-wrapper>
                <span class="max-md:hidden"> {{ row.heroData.hero.name }} </span>
               </td>
@@ -104,7 +104,7 @@
               <td class="py-2 px-3 flex items-center gap-1">
                 <hero-image-wrapper :hero="row.heroData.hero">
                   <h2>{{ row.heroData.hero.name }}</h2>
-                  <p>Games Played: {{ row.total_games_played.toLocaleString('en-US') }}</p>
+                  <p>Games Played: {{ row.hero_games.toLocaleString('en-US') }}</p>
                 </hero-image-wrapper>
                 <span class="max-md:hidden">{{ row.heroData.hero.name }} </span>
               </td>

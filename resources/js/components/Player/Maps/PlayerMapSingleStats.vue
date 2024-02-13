@@ -6,8 +6,8 @@
 
 
     <div class="flex justify-center max-w-[1500px] mx-auto">
-      <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="!modifiedgametype ? 'All' : modifiedgametype"></single-select-filter>
-      <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'"></single-select-filter>
+      <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="!modifiedgametype ? 'All' : modifiedgametype" :disabled="disableFilterInput"></single-select-filter>
+      <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'" :disabled="disableFilterInput"></single-select-filter>
     </div>
 
     <takeover-ad :patreon-user="patreonUser"></takeover-ad>
@@ -95,6 +95,9 @@
         </div>
 
       </div>
+      <div v-else-if="typeof data === 'undefined'"  class="flex items-center justify-center">
+        No data 
+      </div>
       <div v-else-if="isLoading">
         <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
       </div>
@@ -131,6 +134,7 @@ export default {
       modifiedgametype: null,
       modifiedseason: null,
       data: null,
+      disableFilterInput: null,
     }
   },
   created(){
@@ -168,7 +172,8 @@ export default {
   watch: {
   },
   methods: {
-    async getData(type){
+    async getData(){
+      this.disableFilterInput = true;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -197,6 +202,7 @@ export default {
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
+        this.disableFilterInput = false;
       }
     },
     cancelAxiosRequest() {
@@ -225,8 +231,10 @@ export default {
       }
     },
     handleDropdownClosed(){
-      this.data = null;
-      this.getData();
+      if(!this.isLoading){
+        this.data = null;
+        this.getData();
+      }
     },
     formatMapName(map) {
       return `bg_${map.toLowerCase().replace(/\s+/g, '_')}.jpg`;

@@ -22,11 +22,11 @@ class BattletagSearchController extends Controller
         $validator = Validator::make($request->only('userinput'), ['userinput' => ['required', 'string', new BattletagInputProhibitCharacters]]);
 
         if ($validator->fails()) {
-          return [
-              'data' => $request->all(),
-              'errors' => $validator->errors()->all(),
-              'status' => 'failure to validate inputs',
-          ];
+            return [
+                'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
+                'status' => 'failure to validate inputs',
+            ];
         }
 
         $data = $this->searchForBattletag($request['userinput']);
