@@ -19,8 +19,16 @@ class PlayerRolesController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect('/');
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
+
         $account_level = 0;
         $account_level_data = $result = Battletag::where('blizz_id', $blizz_id)
             ->where('region', $region)

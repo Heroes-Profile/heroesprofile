@@ -47,10 +47,14 @@ class PlayerHeroesMapsRolesController extends Controller
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-            ];
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         $battletag = $request['battletag'];

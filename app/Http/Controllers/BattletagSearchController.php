@@ -7,6 +7,7 @@ use App\Models\Map;
 use App\Models\Replay;
 use App\Rules\BattletagInputProhibitCharacters;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class BattletagSearchController extends Controller
 {
@@ -18,7 +19,15 @@ class BattletagSearchController extends Controller
 
     public function battletagSearch(Request $request)
     {
-        $request->validate(['userinput' => ['required', 'string', new BattletagInputProhibitCharacters]]);
+        $validator = Validator::make($request->only('userinput'), ['userinput' => ['required', 'string', new BattletagInputProhibitCharacters]]);
+
+        if ($validator->fails()) {
+            return [
+                'data' => $request->all(),
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
         $data = $this->searchForBattletag($request['userinput']);
 
         return $data;
