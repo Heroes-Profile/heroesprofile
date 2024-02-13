@@ -24,6 +24,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
             } else {
                 return [
                     'data' => $request->all(),
+                    'errors' => $validator->errors()->all(),
                     'status' => 'failure to validate inputs',
                 ];
             }

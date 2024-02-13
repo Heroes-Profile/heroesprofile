@@ -27,6 +27,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
             } else {
                 return [
                     'data' => $request->all(),
+                    'errors' => $validator->errors()->all(),
                     'status' => 'failure to validate inputs',
                 ];
             }
