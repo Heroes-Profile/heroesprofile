@@ -151,7 +151,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             $item->hero = $type == 'hero' ? $heroData[$typeNumber] : null;
 
             return $item;
-        })->filter();
+        })->filter()->values();
 
         return $data;
     }
