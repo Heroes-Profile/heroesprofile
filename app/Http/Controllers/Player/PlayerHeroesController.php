@@ -21,10 +21,14 @@ class PlayerHeroesController extends Controller
         $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => compact('battletag', 'blizz_id', 'region'),
-                'status' => 'failure to validate inputs',
-            ];
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         $account_level = 0;
@@ -65,6 +69,7 @@ class PlayerHeroesController extends Controller
         if ($validator->fails()) {
             return [
                 'data' => compact('battletag', 'blizz_id', 'region', 'hero'),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }

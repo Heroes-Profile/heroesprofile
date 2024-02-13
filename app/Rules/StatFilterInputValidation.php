@@ -63,7 +63,7 @@ class StatFilterInputValidation implements Rule
 
     public function passes($attribute, $value)
     {
-        if ($this->timeframeType == 'major' || count($this->timeframe) > 5) {
+        if ($value != "win_rate" && ($this->timeframeType == 'major' || count($this->timeframe) > 5)) {
             return false;
         }
         if (! in_array($value, $this->validStats)) {

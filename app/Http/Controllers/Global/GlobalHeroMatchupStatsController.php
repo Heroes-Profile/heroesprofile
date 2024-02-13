@@ -23,6 +23,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
             } else {
                 return [
                     'data' => $request->all(),
+                    'errors' => $validator->errors()->all(),
                     'status' => 'failure to validate inputs',
                 ];
             }
@@ -42,6 +43,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                 } else {
                     return [
                         'data' => $request->all(),
+                        'errors' => $validator->errors()->all(),
                         'status' => 'failure to validate inputs',
                     ];
                 }
@@ -66,7 +68,6 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
 
     public function getHeroMatchupData(Request $request)
     {
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 
         //return response()->json($request->all());
 
@@ -77,10 +78,11 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-            ];
+          return [
+              'data' => $request->all(),
+              'errors' => $validator->errors()->all(),
+              'status' => 'failure to validate inputs',
+          ];
         }
 
         $hero = $this->getHeroFilterValue($request['hero']);

@@ -22,7 +22,15 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return Redirect::to('/Global/Talents')->withErrors($validator)->withInput();
+          if (env('Production')) {
+              return \Redirect::to('/');
+          } else {
+              return [
+                  'data' => $request->all(),
+                  'errors' => $validator->errors()->all(),
+                  'status' => 'failure to validate inputs',
+              ];
+          }
         }
 
         if (! is_null($hero)) {
@@ -33,7 +41,15 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             $validator = Validator::make(['hero' => $hero], $validationRules);
 
             if ($validator->fails()) {
-                return back();
+              if (env('Production')) {
+                  return \Redirect::to('/');
+              } else {
+                  return [
+                      'data' => $request->all(),
+                      'errors' => $validator->errors()->all(),
+                      'status' => 'failure to validate inputs',
+                  ];
+              }
             }
         }
 
@@ -57,7 +73,6 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
     public function getGlobalHeroTalentData(Request $request)
     {
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 
         //return response()->json($request->all());
 
@@ -68,10 +83,11 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-            ];
+          return [
+              'data' => $request->all(),
+              'errors' => $validator->errors()->all(),
+              'status' => 'failure to validate inputs',
+          ];
         }
 
         $hero = $this->getHeroFilterValue($request['hero']);
@@ -179,7 +195,6 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
     public function getGlobalHeroTalentBuildData(Request $request)
     {
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 
         //return response()->json($request->all());
 
@@ -191,10 +206,11 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-            ];
+          return [
+              'data' => $request->all(),
+              'errors' => $validator->errors()->all(),
+              'status' => 'failure to validate inputs',
+          ];
         }
 
         $hero = $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id;

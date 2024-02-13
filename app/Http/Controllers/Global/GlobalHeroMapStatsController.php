@@ -24,6 +24,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
             } else {
                 return [
                     'data' => $request->all(),
+                    'errors' => $validator->errors()->all(),
                     'status' => 'failure to validate inputs',
                 ];
             }
@@ -65,7 +66,6 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
 
     public function getHeroStatMapData(Request $request)
     {
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 
         //return response()->json($request->all());
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
@@ -75,10 +75,11 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-            ];
+          return [
+              'data' => $request->all(),
+              'errors' => $validator->errors()->all(),
+              'status' => 'failure to validate inputs',
+          ];
         }
 
         $hero = $this->getHeroFilterValue($request['hero']);
