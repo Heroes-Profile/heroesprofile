@@ -20,6 +20,7 @@
               :checked="isChecked(value.code)"
               @click="toggleSelectedOptions(value.code)"
               class="form-checkbox h-5 w-5 text-indigo-600"
+              :disabled="disabled"
             >
             <label :for="value.code" class="ml-2 text-sm variable-text">{{ value.name }}</label>
           </div>
@@ -42,12 +43,13 @@ export default {
       type: [String, Number, Boolean ]
     },
     trackclosure: Boolean,
+    disabled: Boolean,
   },
   data(){
     return {
       showOptions: false,
       selectedOptions: this.defaultValue || '',
-      searchQuery: ''
+      searchQuery: '',
     }
   },
   created(){
