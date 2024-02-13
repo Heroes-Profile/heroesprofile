@@ -57,7 +57,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
     public function getGlobalHeroTalentData(Request $request)
     {
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+        
 
         //return response()->json($request->all());
 
@@ -179,7 +179,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
     public function getGlobalHeroTalentBuildData(Request $request)
     {
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+        
 
         //return response()->json($request->all());
 

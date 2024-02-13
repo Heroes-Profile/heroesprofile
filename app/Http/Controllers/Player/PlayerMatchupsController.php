@@ -46,6 +46,8 @@ class PlayerMatchupsController extends Controller
 
     public function getMatchupData(Request $request)
     {
+      
+
         //return response()->json($request->all());
 
         $validator = \Validator::make($request->only(['blizz_id', 'region', 'battletag']), [

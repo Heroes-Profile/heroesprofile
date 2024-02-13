@@ -56,7 +56,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
     {
         //return response()->json($request->all());
 
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+        
 
         $validationRules = [
             'hero' => ['required', new HeroInputValidation()],
