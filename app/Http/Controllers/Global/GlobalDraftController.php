@@ -22,6 +22,7 @@ class GlobalDraftController extends GlobalsInputValidationController
             } else {
                 return [
                     'data' => $request->all(),
+                    'errors' => $validator->errors()->all(),
                     'status' => 'failure to validate inputs',
                 ];
             }
@@ -40,6 +41,7 @@ class GlobalDraftController extends GlobalsInputValidationController
                 } else {
                     return [
                         'data' => $request->all(),
+                        'errors' => $validator->errors()->all(),
                         'status' => 'failure to validate inputs',
                     ];
                 }
@@ -63,7 +65,6 @@ class GlobalDraftController extends GlobalsInputValidationController
 
     public function getDraftData(Request $request)
     {
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 
         //return response()->json($request->all());
 
@@ -74,10 +75,11 @@ class GlobalDraftController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-            ];
+          return [
+              'data' => $request->all(),
+              'errors' => $validator->errors()->all(),
+              'status' => 'failure to validate inputs',
+          ];
         }
 
         $hero = $this->getHeroFilterValue($request['hero']);

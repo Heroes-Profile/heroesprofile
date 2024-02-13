@@ -27,10 +27,14 @@ class PlayerMMRController extends Controller
         $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => compact('battletag', 'blizz_id', 'region'),
-                'status' => 'failure to validate inputs',
-            ];
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         return view('Player.mmrData')->with([
@@ -46,6 +50,7 @@ class PlayerMMRController extends Controller
 
     public function getData(Request $request)
     {
+
         //return response()->json($request->all());
 
         $validationRules = [
@@ -61,10 +66,11 @@ class PlayerMMRController extends Controller
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-            ];
+          return [
+              'data' => $request->all(),
+              'errors' => $validator->errors()->all(),
+              'status' => 'failure to validate inputs',
+          ];
         }
 
         $blizz_id = $request['blizz_id'];

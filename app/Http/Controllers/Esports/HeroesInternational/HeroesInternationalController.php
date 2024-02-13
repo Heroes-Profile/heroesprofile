@@ -73,10 +73,11 @@ class HeroesInternationalController extends Controller
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-            ];
+          return [
+              'data' => $request->all(),
+              'errors' => $validator->errors()->all(),
+              'status' => 'failure to validate inputs',
+          ];
         }
 
         $season = $request['season'];
@@ -103,10 +104,11 @@ class HeroesInternationalController extends Controller
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-            ];
+          return [
+              'data' => $request->all(),
+              'errors' => $validator->errors()->all(),
+              'status' => 'failure to validate inputs',
+          ];
         }
 
         $season = $request['season'];

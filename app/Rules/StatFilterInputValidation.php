@@ -45,27 +45,27 @@ class StatFilterInputValidation implements Rule
         'spell_damage',
         'regen_globes',
     ];
-    
-    protected $timeframeType;
-    protected $timeframe;
 
+    protected $timeframeType;
+
+    protected $timeframe;
 
     public function __construct($timeframeType, $timeframe)
     {
-      $this->timeframeType = $timeframeType;
-      $this->timeframe = $timeframe;
+        $this->timeframeType = $timeframeType;
+        $this->timeframe = $timeframe;
 
-      if (! is_array($this->timeframe)) {
-        $this->timeframe = explode(',', $this->timeframe);
-      }
+        if (! is_array($this->timeframe)) {
+            $this->timeframe = explode(',', $this->timeframe);
+        }
 
     }
 
     public function passes($attribute, $value)
     {
-      if($this->timeframeType == "major" || count($this->timeframe) > 5){
-        return false;
-      }
+        if ($value != "win_rate" && ($this->timeframeType == 'major' || count($this->timeframe) > 5)) {
+            return false;
+        }
         if (! in_array($value, $this->validStats)) {
             return false;
         }

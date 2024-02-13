@@ -27,6 +27,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
             } else {
                 return [
                     'data' => $request->all(),
+                    'errors' => $validator->errors()->all(),
                     'status' => 'failure to validate inputs',
                 ];
             }
@@ -103,7 +104,6 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
 
     public function getHeroMatchupsTalentsData(Request $request)
     {
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 
         //return response()->json($request->all());
 
@@ -117,10 +117,11 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-            ];
+          return [
+              'data' => $request->all(),
+              'errors' => $validator->errors()->all(),
+              'status' => 'failure to validate inputs',
+          ];
         }
         $hero = $this->getHeroFilterValue($request['hero']);
         $allyEnemy = $this->globalDataService->getHeroes()->keyBy('name')[$request['ally_enemy']]->id;

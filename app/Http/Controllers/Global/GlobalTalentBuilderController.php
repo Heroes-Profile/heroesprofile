@@ -21,7 +21,15 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return Redirect::to('/Global/Talents/Builder')->withErrors($validator)->withInput();
+          if (env('Production')) {
+              return \Redirect::to('/');
+          } else {
+              return [
+                  'data' => $request->all(),
+                  'errors' => $validator->errors()->all(),
+                  'status' => 'failure to validate inputs',
+              ];
+          }
         }
 
         $validationRules = [
@@ -31,7 +39,15 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         $validator = Validator::make(['hero' => $hero], $validationRules);
 
         if ($validator->fails()) {
-            return back();
+          if (env('Production')) {
+              return \Redirect::to('/');
+          } else {
+              return [
+                  'data' => $request->all(),
+                  'errors' => $validator->errors()->all(),
+                  'status' => 'failure to validate inputs',
+              ];
+          }
         }
 
         $userinput = $this->globalDataService->getHeroModel($request['hero']);
@@ -56,8 +72,6 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
     {
         //return response()->json($request->all());
 
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
-
         $validationRules = [
             'hero' => ['required', new HeroInputValidation()],
         ];
@@ -70,10 +84,11 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-            ];
+          return [
+              'data' => $request->all(),
+              'errors' => $validator->errors()->all(),
+              'status' => 'failure to validate inputs',
+          ];
         }
 
         $hero_name = $request['hero'];

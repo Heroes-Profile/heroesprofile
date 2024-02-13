@@ -24,6 +24,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
             } else {
                 return [
                     'data' => $request->all(),
+                    'errors' => $validator->errors()->all(),
                     'status' => 'failure to validate inputs',
                 ];
             }
@@ -47,7 +48,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 
     public function getCompositionsData(Request $request)
     {
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+
         //return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
@@ -58,10 +59,11 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-            ];
+          return [
+              'data' => $request->all(),
+              'errors' => $validator->errors()->all(),
+              'status' => 'failure to validate inputs',
+          ];
         }
 
         $hero = $this->getHeroFilterValue($request['hero']);
@@ -180,10 +182,11 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-            ];
+          return [
+              'data' => $request->all(),
+              'errors' => $validator->errors()->all(),
+              'status' => 'failure to validate inputs',
+          ];
         }
 
         $hero = $this->getHeroFilterValue($request['hero']);
