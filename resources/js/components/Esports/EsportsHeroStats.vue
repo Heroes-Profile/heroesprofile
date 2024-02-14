@@ -1,6 +1,6 @@
 <template>
   <div>
-    <table class="max-w-[1000px] min-w-[1000px]">
+    <table class="max-w-[1000px] md:min-w-[1000px] max-md:text-xs">
       <thead>
         <tr>
           <th @click="sortTable('hero_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -22,11 +22,11 @@
       </thead>
       <tbody>
         <tr v-for="(row, index) in sortedData" :key="index">
-          <td class="py-2 px-3 flex items-center gap-1"><hero-image-wrapper :hero="row.hero" :includehover="false"></hero-image-wrapper>{{ row.hero.name }}</td>
+          <td class="py-2 px-3 flex items-center  max-md:justify-center gap-1"><hero-image-wrapper :hero="row.hero" :includehover="false"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span></td>
           <td>{{ row.win_rate.toFixed(2) }}</td>
           <td>{{ row.popularity.toFixed(2) }}</td>
           <td>{{ row.ban_rate.toFixed(2) }}</td>
-          <td>{{ row.games_played.toLocaleString() }}</td>
+          <td>{{ row.games_played.toLocaleString('en-US') }}</td>
         </tr>
       </tbody>
     </table>

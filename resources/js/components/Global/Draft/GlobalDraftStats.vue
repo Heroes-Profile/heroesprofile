@@ -74,8 +74,8 @@
                     {{ determinePickOrBan(row.pick_number) }}
                   </td>
                   <td class="py-2 px-3 ">{{ row.popularity.toFixed(2) }}</td>
-                  <td class="py-2 px-3 ">{{ row.wins.toLocaleString() }}</td>
-                  <td class="py-2 px-3 ">{{ row.losses.toLocaleString() }}</td>
+                  <td class="py-2 px-3 ">{{ row.wins.toLocaleString('en-US') }}</td>
+                  <td class="py-2 px-3 ">{{ row.losses.toLocaleString('en-US') }}</td>
                   <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
                 </tr>
               </tbody>
@@ -84,6 +84,9 @@
         </div>
         <div v-else-if="isLoading">
           <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+        </div>
+        <div v-else-if="dataError" class="flex items-center justify-center">
+          Error: Reload page/filter
         </div>
       </div>
 
@@ -111,6 +114,7 @@
     },
     data(){
       return {
+        dataError: false,
         windowWidth: window.innerWidth,
         isLoading: null,
         cancelTokenSource: null,
@@ -152,6 +156,7 @@
     },
     methods: {
       async getData(){
+        this.dataError = false;
         this.isLoading = true;
 
         if (this.cancelTokenSource) {
@@ -178,7 +183,7 @@
 
           this.draftdata = response.data;
         }catch(error){
-          //Do something here
+          this.dataError = true;
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;

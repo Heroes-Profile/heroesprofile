@@ -1,7 +1,7 @@
 <template>
   <div>
     
-    <page-heading :heading="'Matchups'" :battletag="battletag +`(`+ region + `)`" :infoText1="infotext" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+    <page-heading :heading="'Matchups'" :battletag="battletag +`(`+ regionsmap[region] + `)`" :infoText1="infotext" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
     
     <filters 
     :onFilter="filterData" 
@@ -54,10 +54,10 @@
             {{ row.enemy_win_rate ? row.enemy_win_rate.toFixed(2) : "No data" }}
           </td>
           <td class="py-2 px-3 ">
-            {{ row.ally_games_played ? row.ally_games_played.toLocaleString() : "No data" }}
+            {{ row.ally_games_played ? row.ally_games_played.toLocaleString('en-US') : "No data" }}
           </td>
           <td class="py-2 px-3 ">
-            {{ row.enemy_games_played ? row.enemy_games_played.toLocaleString() : "No data" }}
+            {{ row.enemy_games_played ? row.enemy_games_played.toLocaleString('en-US') : "No data" }}
           </td>
         </tr>
       </tbody>
@@ -85,7 +85,7 @@
       isPatreon: Boolean,
       patreonUser: Boolean,
       gametypedefault: Array,
-
+      regionsmap: Object,
     },
     data(){
       return {

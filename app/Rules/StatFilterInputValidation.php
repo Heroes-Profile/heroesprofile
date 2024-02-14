@@ -46,8 +46,26 @@ class StatFilterInputValidation implements Rule
         'regen_globes',
     ];
 
+    protected $timeframeType;
+
+    protected $timeframe;
+
+    public function __construct($timeframeType, $timeframe)
+    {
+        $this->timeframeType = $timeframeType;
+        $this->timeframe = $timeframe;
+
+        if (! is_array($this->timeframe)) {
+            $this->timeframe = explode(',', $this->timeframe);
+        }
+
+    }
+
     public function passes($attribute, $value)
     {
+        if ($value != 'win_rate' && ($this->timeframeType == 'major' || count($this->timeframe) > 5)) {
+            return false;
+        }
         if (! in_array($value, $this->validStats)) {
             return false;
         }

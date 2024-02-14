@@ -25,10 +25,14 @@ class NGSSingleDivisionController extends Controller
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-            ];
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         return view('Esports.NGS.singleDivision')
@@ -53,10 +57,14 @@ class NGSSingleDivisionController extends Controller
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-            ];
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         return view('Esports.ngs.ngsSingleDivisionMatchHistory')
@@ -84,6 +92,7 @@ class NGSSingleDivisionController extends Controller
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }
@@ -171,6 +180,7 @@ class NGSSingleDivisionController extends Controller
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }

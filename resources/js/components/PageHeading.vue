@@ -6,7 +6,8 @@
     
     <a v-if="headingImage" :href="headingImageUrl" target="_blank">
       <img :src="headingImage" alt="" class="w-33 h-20"/>
-    </a>
+      
+    </a><span v-if="battletag"  class="text-lg uppercase ">{{ battletag }} </span>
 
    
 

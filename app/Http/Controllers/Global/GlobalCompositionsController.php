@@ -4,24 +4,30 @@ namespace App\Http\Controllers\Global;
 
 use App\Models\GameType;
 use App\Models\GlobalCompositions;
-use App\Models\Hero;
 use App\Models\MMRTypeID;
 use App\Rules\HeroInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Redirect;
 
 class GlobalCompositionsController extends GlobalsInputValidationController
 {
     public function show(Request $request)
     {
-        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
 
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-          return Redirect::to('/Global/Compositions')->withErrors($validator)->withInput();
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'errors' => $validator->errors()->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         return view('Global.Compositions.compositionsStats')
@@ -42,20 +48,20 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 
     public function getCompositionsData(Request $request)
     {
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+
         //return response()->json($request->all());
 
-        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type']), [
+        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
             'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
             'minimum_games' => 'required|integer',
         ]);
 
         $validator = Validator::make($request->all(), $validationRules);
 
-        
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }
@@ -119,8 +125,8 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                     $losses = $group->where('win_loss', 0)->sum('games_played');
                     $gamesPlayed = ($wins + $losses) / 5;
 
-                    if($gamesPlayed <= $minimumGames){
-                      return null;
+                    if ($gamesPlayed <= $minimumGames) {
+                        return null;
                     }
                     $winRate = 0;
                     if ($gamesPlayed > 0) {
@@ -167,7 +173,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
     {
         //return response()->json($request->all());
 
-        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type']), [
+        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
             'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
             'minimum_games' => 'required|integer',
             'composition_id' => 'required|integer',
@@ -178,6 +184,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }
@@ -214,8 +221,8 @@ class GlobalCompositionsController extends GlobalsInputValidationController
             $heroLevel,
             $mirror,
             $region,
-            $compositionID,
-            $hero
+            $compositionID
+
         ) {
 
             $data = GlobalCompositions::query()
@@ -240,23 +247,23 @@ class GlobalCompositionsController extends GlobalsInputValidationController
             $heroData = $heroData->keyBy('id');
 
             $data = $data->map(function ($item) use ($heroData) {
-              $item['role'] = $heroData[$item->hero]['new_role'];
-              $item['name'] = $heroData[$item->hero]['name'];
-              $item['herodata'] = $heroData[$item->hero];
-          
-              return $item;
+                $item['role'] = $heroData[$item->hero]['new_role'];
+                $item['name'] = $heroData[$item->hero]['name'];
+                $item['herodata'] = $heroData[$item->hero];
+
+                return $item;
             });
-            
+
             // Group the data by role
             $groupedData = $data->groupBy('role');
-            
+
             // Filter and sort each group, then exclude empty groups
             $result = $groupedData->map(function ($group, $role) {
                 return $group->sortByDesc('games_played')->values();
             })->reject(function ($group) {
                 return $group->isEmpty();
             })->toArray();
-            
+
             return $result;
 
         });

@@ -19,8 +19,16 @@ class PlayerRolesController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect('/');
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
+
         $account_level = 0;
         $account_level_data = $result = Battletag::where('blizz_id', $blizz_id)
             ->where('region', $region)
@@ -40,7 +48,7 @@ class PlayerRolesController extends Controller
             'region' => $region,
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
-            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'],//$this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'], //$this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
 
         ]);
     }

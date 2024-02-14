@@ -34,10 +34,14 @@ class CCLController extends Controller
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-            ];
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         return CCLTeam::where('season', $request['season'])->get();
@@ -57,6 +61,7 @@ class CCLController extends Controller
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }

@@ -40,10 +40,14 @@ class FriendFoeController extends Controller
         $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => compact('battletag', 'blizz_id', 'region'),
-                'status' => 'failure to validate inputs',
-            ];
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         $season = $request['season'];
@@ -58,7 +62,7 @@ class FriendFoeController extends Controller
             'season' => $season,
             'game_type' => $game_type,
             'game_map' => $game_map,
-            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'],//$this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'], //$this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);
@@ -67,6 +71,7 @@ class FriendFoeController extends Controller
 
     public function getFriendFoeData(Request $request)
     {
+
         //return response()->json($request->all());
 
         $validationRules = [
@@ -85,6 +90,7 @@ class FriendFoeController extends Controller
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }
@@ -258,6 +264,7 @@ class FriendFoeController extends Controller
             return [
                 'blizz_id' => $blizz_id,
                 'hero' => $heroData['hero']['name'],
+                'hero_games' => $heroData['total_games_played'],
                 'region' => $region,
                 'hp_owner' => ($blizz_id == 67280 && $region = 1) ? true : false,
                 'patreon' => is_null($patreonAccount) || empty($patreonAccount) || count($patreonAccount) == 0 ? false : true,

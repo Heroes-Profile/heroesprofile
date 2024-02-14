@@ -27,10 +27,14 @@ class PlayerMMRController extends Controller
         $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => compact('battletag', 'blizz_id', 'region'),
-                'status' => 'failure to validate inputs',
-            ];
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         return view('Player.mmrData')->with([
@@ -46,6 +50,7 @@ class PlayerMMRController extends Controller
 
     public function getData(Request $request)
     {
+
         //return response()->json($request->all());
 
         $validationRules = [
@@ -63,6 +68,7 @@ class PlayerMMRController extends Controller
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }
@@ -158,8 +164,8 @@ class PlayerMMRController extends Controller
         $fullBreakdownForTierArray = $fullBreakdownForTier;
 
         $smallestMmr = 0;
-        if(count($fullBreakdownForTierArray) > 0){
-          $smallestMmr = min($fullBreakdownForTierArray);
+        if (count($fullBreakdownForTierArray) > 0) {
+            $smallestMmr = min($fullBreakdownForTierArray);
         }
 
         if ($rankTier != 'Master') {

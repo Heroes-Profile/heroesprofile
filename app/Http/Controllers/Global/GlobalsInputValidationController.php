@@ -10,44 +10,45 @@ use App\Models\MMRTypeID;
 use App\Models\SeasonGameVersion;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
+use App\Rules\HeroInputValidation;
 use App\Rules\HeroLevelInputValidation;
 use App\Rules\RegionInputValidation;
+use App\Rules\RoleInputValidation;
+use App\Rules\StatFilterInputValidation;
 use App\Rules\TierInputByIDValidation;
 use App\Rules\TierInputByNameValidation;
 use App\Rules\TimeframeMinorInputValidation;
-use App\Rules\StatFilterInputValidation;
-use App\Rules\HeroInputValidation;
-use App\Rules\RoleInputValidation;
 
 class GlobalsInputValidationController extends Controller
 {
-    public function globalValidationRulesURLParam($timeframeType){
-      return [
-        'timeframe_type' => 'sometimes|in:minor,major,last_update',
-        'timeframe' => ['sometimes', 'nullable', new TimeframeMinorInputValidation($timeframeType)],
-        'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation()],
-        'region' => ['sometimes', 'nullable', new RegionInputValidation()],
-        'statfilter' => ['sometimes', 'nullable', new StatFilterInputValidation()],
-        'hero_level' => ['sometimes', 'nullable', new HeroLevelInputValidation()],
-        'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
-        'role' => ['sometimes', 'nullable', new RoleInputValidation()],
-        'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
-        'league_tier' => ['sometimes', 'nullable', new TierInputByNameValidation()],
-        'hero_league_tier' => ['sometimes', 'nullable', new TierInputByNameValidation()],
-        'role_league_tier' => ['sometimes', 'nullable', new TierInputByNameValidation()],
-        'mirror' => 'sometimes|in:null,0,1',
-        'minimum_games' => 'sometimes|nullable|integer',
-      ];
+    public function globalValidationRulesURLParam($timeframeType, $timeframe)
+    {
+        return [
+            'timeframe_type' => 'sometimes|in:minor,major,last_update',
+            'timeframe' => ['sometimes', 'nullable', new TimeframeMinorInputValidation($timeframeType)],
+            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation()],
+            'region' => ['sometimes', 'nullable', new RegionInputValidation()],
+            'statfilter' => ['sometimes', 'nullable', new StatFilterInputValidation($timeframeType, $timeframe)],
+            'hero_level' => ['sometimes', 'nullable', new HeroLevelInputValidation()],
+            'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
+            'role' => ['sometimes', 'nullable', new RoleInputValidation()],
+            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
+            'league_tier' => ['sometimes', 'nullable', new TierInputByNameValidation()],
+            'hero_league_tier' => ['sometimes', 'nullable', new TierInputByNameValidation()],
+            'role_league_tier' => ['sometimes', 'nullable', new TierInputByNameValidation()],
+            'mirror' => 'sometimes|in:null,0,1',
+            'minimum_games' => 'sometimes|nullable|integer',
+        ];
     }
 
-    public function globalsValidationRules($timeframeType)
+    public function globalsValidationRules($timeframeType, $timeframe)
     {
         return [
             'timeframe_type' => 'required|in:minor,major,last_update',
-            'timeframe' => $timeframeType !== "last_update" ? ['required', new TimeframeMinorInputValidation($timeframeType)] : 'nullable',
+            'timeframe' => $timeframeType !== 'last_update' ? ['required', new TimeframeMinorInputValidation($timeframeType)] : 'nullable',
             'game_type' => ['required', new GameTypeInputValidation()],
             'region' => ['sometimes', 'nullable', new RegionInputValidation()],
-            'statfilter' => ['sometimes', 'nullable', new StatFilterInputValidation()],
+            'statfilter' => ['sometimes', 'nullable', new StatFilterInputValidation($timeframeType, $timeframe)],
             'hero_level' => ['sometimes', 'nullable', new HeroLevelInputValidation()],
             'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
             'role' => ['sometimes', 'nullable', new RoleInputValidation()],
@@ -77,12 +78,13 @@ class GlobalsInputValidationController extends Controller
         return $timeframes;
     }
 
-    public function getTimeFrameFilterValuesLastUpdate($hero){
-      $game_version = Hero::select("last_change_patch_version")->where("id", $hero)->first()->last_change_patch_version;
+    public function getTimeFrameFilterValuesLastUpdate($hero)
+    {
+        $game_version = Hero::select('last_change_patch_version')->where('id', $hero)->first()->last_change_patch_version;
 
-      $gameVersion = SeasonGameVersion::select('game_version')->where('game_version', '>=', $game_version)->get()->pluck('game_version')->toArray();
-    
-      return $gameVersion;
+        $gameVersion = SeasonGameVersion::select('game_version')->where('game_version', '>=', $game_version)->get()->pluck('game_version')->toArray();
+
+        return $gameVersion;
     }
 
     public function getRegionFilterValues($regions)

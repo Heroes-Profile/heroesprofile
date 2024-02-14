@@ -12,18 +12,25 @@ use App\Rules\HeroInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Redirect;
 
 class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationController
 {
     public function show(Request $request, $hero = null, $allyenemy = null)
     {
-        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
 
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-          return Redirect::to('/Global/Matchups/Talents')->withErrors($validator)->withInput();
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'errors' => $validator->errors()->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         if (! is_null($hero) && $hero !== 'Auto Select') {
@@ -34,7 +41,14 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
             $validator = Validator::make(['hero' => $hero], $validationRules);
 
             if ($validator->fails()) {
-                return back();
+                if (env('Production')) {
+                    return \Redirect::to('/');
+                } else {
+                    return [
+                        'data' => $request->all(),
+                        'status' => 'failure to validate inputs',
+                    ];
+                }
             }
         }
 
@@ -46,7 +60,14 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
             $validator = Validator::make(['allyenemy' => $allyenemy], $validationRules);
 
             if ($validator->fails()) {
-                return back();
+                if (env('Production')) {
+                    return \Redirect::to('/');
+                } else {
+                    return [
+                        'data' => $request->all(),
+                        'status' => 'failure to validate inputs',
+                    ];
+                }
             }
         }
 
@@ -83,11 +104,10 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
 
     public function getHeroMatchupsTalentsData(Request $request)
     {
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 
         //return response()->json($request->all());
 
-        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type']), [
+        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
             'hero' => ['required', new HeroInputValidation()],
             'ally_enemy' => ['required', new HeroInputValidation()],
             'type' => 'required|in:Enemy,Ally',
@@ -99,6 +119,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }

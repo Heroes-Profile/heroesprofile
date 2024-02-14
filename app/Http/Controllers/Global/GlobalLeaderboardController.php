@@ -55,6 +55,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }
@@ -116,7 +117,16 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
         $patreonAccounts = BattlenetAccount::has('patreonAccount')->get();
 
-        $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber, $patreonAccounts) {
+        $blizzIDRegionMapping = [];
+
+        $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber, $patreonAccounts, &$blizzIDRegionMapping) {
+
+            if (array_key_exists($item->blizz_id.'|'.$item->region, $blizzIDRegionMapping)) {
+                return null;
+            } else {
+                $blizzIDRegionMapping[$item->blizz_id.'|'.$item->region] = 'found';
+            }
+
             $patreonAccount = $patreonAccounts->where('blizz_id', $item->blizz_id)->where('region', $item->region);
 
             $item->patreon = is_null($patreonAccount) || empty($patreonAccount) || count($patreonAccount) == 0 ? false : true;
@@ -142,7 +152,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             $item->hero = $type == 'hero' ? $heroData[$typeNumber] : null;
 
             return $item;
-        });
+        })->filter()->values();
 
         return $data;
     }
@@ -167,6 +177,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }
@@ -235,8 +246,8 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
         $gamesPlayedForFormula = $playerData->games_played_leaderboard;
 
-        if(!$maxGamesPlayed){
-          $maxGamesPlayed = 0;
+        if (! $maxGamesPlayed) {
+            $maxGamesPlayed = 0;
         }
         if ($maxGamesPlayed < $playerData->games_played_leaderboard) {
             $gamesPlayedForFormula = $maxGamesPlayed;
@@ -263,7 +274,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             ->where('blizz_id', $blizz_id)
             ->where('region', $region)
             ->first();
-        
+
         $winRate = $playerData->games_played_leaderboard > 0 ? ($playerData->win_leaderboard / $playerData->games_played_leaderboard) * 100 : 0;
         $rating = $maxGamesPlayed > 0 ? (50 + ($winRate - 50) * ($gamesPlayedForFormula / $maxGamesPlayed)) + ($playerMMR->conservative_rating / 10) : (50 + ($winRate - 50) * ($gamesPlayedForFormula)) + ($playerMMR->conservative_rating / 10);
 

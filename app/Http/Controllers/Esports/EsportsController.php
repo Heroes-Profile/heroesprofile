@@ -66,11 +66,15 @@ class EsportsController extends Controller
         $validator = Validator::make(compact('esport', 'battletag', 'blizz_id'), $validationRules);
         $otherValidator = Validator::make($request->all(), $otherValidationRules);
 
-        if ($validator->fails() || $otherValidator->fails()) {
-            return [
-                'data' => compact('esport', 'battletag', 'blizz_id'),
-                'status' => 'failure to validate inputs',
-            ];
+        if ($validator->fails()) {
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         return view('Esports.singlePlayerMatchHistory')->with([
@@ -101,11 +105,15 @@ class EsportsController extends Controller
 
         $otherValidator = Validator::make($request->all(), $otherValidationRules);
 
-        if ($validator->fails() || $otherValidator->fails()) {
-            return [
-                'data' => [$request->input('division'), $request->input('season'), $team, $esport],
-                'status' => 'failure to validate inputs',
-            ];
+        if ($validator->fails()) {
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         $image = '';
@@ -143,11 +151,15 @@ class EsportsController extends Controller
 
         $otherValidator = Validator::make($request->all(), $otherValidationRules);
 
-        if ($validator->fails() || $otherValidator->fails()) {
-            return [
-                'data' => [$request->input('division'), $request->input('season'), $battletag, $esport, $blizz_id],
-                'status' => 'failure to validate inputs',
-            ];
+        if ($validator->fails()) {
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         return view('Esports.singlePlayer')
@@ -181,11 +193,15 @@ class EsportsController extends Controller
 
         $otherValidator = Validator::make($request->all(), $otherValidationRules);
 
-        if ($validator->fails() || $otherValidator->fails()) {
-            return [
-                'data' => [$request->input('division'), $request->input('season'), $battletag, $esport, $blizz_id, $hero],
-                'status' => 'failure to validate inputs',
-            ];
+        if ($validator->fails()) {
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         $hero = $this->globalDataService->getHeroModel($request['hero']);
@@ -222,11 +238,15 @@ class EsportsController extends Controller
 
         $otherValidator = Validator::make($request->all(), $otherValidationRules);
 
-        if ($validator->fails() || $otherValidator->fails()) {
-            return [
-                'data' => [$request->input('division'), $request->input('season'), $battletag, $esport, $blizz_id, $game_map],
-                'status' => 'failure to validate inputs',
-            ];
+        if ($validator->fails()) {
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
         $mapobject = Map::where('name', $request['game_map'])->first();
 
@@ -258,11 +278,15 @@ class EsportsController extends Controller
         $validator = Validator::make(compact('esport', 'team'), $validationRules);
         $otherValidator = Validator::make($request->all(), $otherValidationRules);
 
-        if ($validator->fails() || $otherValidator->fails()) {
-            return [
-                'data' => [$request->input('division'), $request->input('season'), $esport, $team],
-                'status' => 'failure to validate inputs',
-            ];
+        if ($validator->fails()) {
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         return view('Esports.teamMatchHistory')
@@ -681,6 +705,7 @@ class EsportsController extends Controller
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }
@@ -763,6 +788,7 @@ class EsportsController extends Controller
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }
@@ -799,7 +825,7 @@ class EsportsController extends Controller
             ])
             ->where('season', $this->season)
             ->when(! is_null($this->division), function ($query) {
-              return $query->where($this->schema.'.replay.division_0', $this->division)->orWhere($this->schema.'.replay.division_1', $this->division);
+                return $query->where($this->schema.'.replay.division_0', $this->division)->orWhere($this->schema.'.replay.division_1', $this->division);
             })
             ->where('hero', $hero)
             //->toSql();
@@ -1252,10 +1278,10 @@ class EsportsController extends Controller
                     0 => $group[0] && $group[0]->hero ? ['hero' => $heroData[$group[0]->hero]] : null,
                 ];
             } else {
-              $heroes = [];
-              for ($i = 0; $i < 5; $i++) {
-                  $heroes[$i] = isset($group[$i]) && $group[$i]->hero ? ['hero' => $heroData[$group[$i]->hero]] : null;
-              }
+                $heroes = [];
+                for ($i = 0; $i < 5; $i++) {
+                    $heroes[$i] = isset($group[$i]) && $group[$i]->hero ? ['hero' => $heroData[$group[$i]->hero]] : null;
+                }
             }
 
             $team_0_name = null;

@@ -23,7 +23,14 @@ class CompareController extends Controller
             $validator = Validator::make(['hero' => $hero], $validationRules);
 
             if ($validator->fails()) {
-                return back();
+                if (env('Production')) {
+                    return \Redirect::to('/');
+                } else {
+                    return [
+                        'data' => $request->all(),
+                        'status' => 'failure to validate inputs',
+                    ];
+                }
             }
         }
 
@@ -66,6 +73,7 @@ class CompareController extends Controller
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }

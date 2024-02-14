@@ -47,9 +47,9 @@
               <custom-button class="max-sm:text-xs max-sm:p-0" @click="copyToClipboard(index, row)" :text="buildCopyText[index]" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true" :color="buildCopyColor[index]">{{ buildCopyText[index] }}</custom-button>
               </div>
             </td>
-            <td class="py-2 px-3 ">{{ row.games_played ? row.games_played.toLocaleString() : 0 }}</td>
-            <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
-            <td v-if="statfilter && statfilter != 'win_rate'" class="py-2 px-3 ">{{ row.total_filter_type.toLocaleString() }}</td>
+            <td class="py-2 px-3 ">{{ row.games_played ? row.games_played.toLocaleString('en-US') : 0 }}</td>
+            <td class="py-2 px-3 ">{{ row.win_rate ? row.win_rate.toFixed(2) : 0 }}</td>
+            <td v-if="statfilter && statfilter != 'win_rate'" class="py-2 px-3 ">{{ row.total_filter_type.toLocaleString('en-US') }}</td>
           </tr>
         </tbody>
       </table>

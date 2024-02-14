@@ -186,6 +186,9 @@
       <loading-component @cancel-request="cancelAxiosRequest" v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
       <loading-component @cancel-request="cancelAxiosRequest" v-else></loading-component>
     </div>
+    <div v-else-if="dataError" class="flex items-center justify-center">
+      Error: Reload page/filter
+    </div>
   </div>
 </template>
 
@@ -211,6 +214,7 @@ export default {
   },
   data(){
     return {
+      dataError: false,
       windowWidth: window.innerWidth,
       isLoading: false,
     	infoText: "Hero win rates based on differing increments, stat types, game type, or rank. Click on a Hero to see detailed information. On the chart, bubble size is a combination of Win Rate, Pick Rate, and Ban Rate",
@@ -298,6 +302,7 @@ export default {
   },
   methods: {
   	async getData(){
+      this.dataError = false;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -330,7 +335,7 @@ export default {
         this.data = response.data;
         this.loadingStates = this.sortedData.map(() => false);
       }catch(error){
-        //Do something here
+        this.dataError = true;
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
@@ -513,7 +518,7 @@ export default {
       return value ? value.toFixed(2) : "";
     },
     getValueLocal(value){
-      return value ? value.toLocaleString() : "";
+      return value ? value.toLocaleString('en-US') : "";
     },
     getHeroID(){
       if(this.hero){

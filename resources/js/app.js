@@ -22,7 +22,7 @@ Object.entries(components).forEach(([path, definition]) => {
 // Set up axios on Vue's prototype
 app.config.globalProperties.$axios = axios;
 
-app.config.globalProperties.$redirectToProfile = function (battletag, blizz_id, region) {
+app.config.globalProperties.$redirectToProfile = function (battletag, blizz_id, region, redirect = true) {
   let data = {
     battletag: battletag,
     blizz_id: blizz_id,
@@ -72,8 +72,9 @@ app.config.globalProperties.$redirectToProfile = function (battletag, blizz_id, 
         }
       });
   }
- 
-    window.location.href = '/Player/' + battletag + "/" + blizz_id + "/" + region;
+    if(redirect){
+      window.location.href = '/Player/' + battletag + "/" + blizz_id + "/" + region;
+    }
 };
 
 app.use(flareVue);

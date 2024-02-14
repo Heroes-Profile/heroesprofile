@@ -7,23 +7,29 @@ use App\Models\GlobalHeroTalentDetails;
 use App\Models\GlobalHeroTalents;
 use App\Models\HeroesDataTalent;
 use App\Rules\HeroInputValidation;
-use App\Rules\StatFilterInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Redirect;
 
 class GlobalTalentStatsController extends GlobalsInputValidationController
 {
     public function show(Request $request, $hero = null)
     {
-        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
 
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-          return Redirect::to('/Global/Talents')->withErrors($validator)->withInput();
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'errors' => $validator->errors()->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         if (! is_null($hero)) {
@@ -34,7 +40,15 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             $validator = Validator::make(['hero' => $hero], $validationRules);
 
             if ($validator->fails()) {
-                return back();
+                if (env('Production')) {
+                    return \Redirect::to('/');
+                } else {
+                    return [
+                        'data' => $request->all(),
+                        'errors' => $validator->errors()->all(),
+                        'status' => 'failure to validate inputs',
+                    ];
+                }
             }
         }
 
@@ -58,12 +72,10 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
     public function getGlobalHeroTalentData(Request $request)
     {
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 
         //return response()->json($request->all());
 
-        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type']), [
-            'statfilter' => ['required', new StatFilterInputValidation()],
+        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
             'hero' => ['required', new HeroInputValidation()],
         ]);
 
@@ -72,16 +84,17 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }
 
         $hero = $this->getHeroFilterValue($request['hero']);
 
-        if($request['timeframe_type'] == "last_update"){
-          $gameVersion = $this->getTimeFrameFilterValuesLastUpdate($hero);
-        }else{
-          $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        if ($request['timeframe_type'] == 'last_update') {
+            $gameVersion = $this->getTimeFrameFilterValuesLastUpdate($hero);
+        } else {
+            $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         }
 
         $gameType = $this->getGameTypeFilterValues($request['game_type']);
@@ -181,12 +194,10 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
     public function getGlobalHeroTalentBuildData(Request $request)
     {
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 
         //return response()->json($request->all());
 
-        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type']), [
-            'statfilter' => ['required', new StatFilterInputValidation()],
+        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
             'hero' => ['required', new HeroInputValidation()],
             'talentbuildtype' => ['required', new TalentBuildTypeInputValidation()],
         ]);
@@ -196,16 +207,17 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }
 
         $hero = $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id;
 
-        if($request['timeframe_type'] == "last_update"){
-          $gameVersion = $this->getTimeFrameFilterValuesLastUpdate($hero);
-        }else{
-          $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        if ($request['timeframe_type'] == 'last_update') {
+            $gameVersion = $this->getTimeFrameFilterValuesLastUpdate($hero);
+        } else {
+            $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         }
 
         $gameTypeRecords = GameType::whereIn('short_name', $request['game_type'])->get();

@@ -10,18 +10,25 @@ use App\Rules\SelectedTalentInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Redirect;
 
 class GlobalTalentBuilderController extends GlobalsInputValidationController
 {
     public function show(Request $request, $hero = null)
     {
-        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
 
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-          return Redirect::to('/Global/Talents/Builder')->withErrors($validator)->withInput();
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'errors' => $validator->errors()->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         $validationRules = [
@@ -31,7 +38,15 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         $validator = Validator::make(['hero' => $hero], $validationRules);
 
         if ($validator->fails()) {
-            return back();
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'errors' => $validator->errors()->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         $userinput = $this->globalDataService->getHeroModel($request['hero']);
@@ -56,13 +71,11 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
     {
         //return response()->json($request->all());
 
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
-
         $validationRules = [
             'hero' => ['required', new HeroInputValidation()],
         ];
 
-        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type']), [
+        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
             'hero' => ['required', new HeroInputValidation()],
             'selectedtalents' => ['sometimes', 'nullable', new SelectedTalentInputValidation()],
         ]);
@@ -72,6 +85,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }

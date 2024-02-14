@@ -72,7 +72,7 @@
               </td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
               <td class="py-2 px-3 ">{{ row.popularity.toFixed(2) }}</td>
-              <td class="py-2 px-3 ">{{ row.games_played.toLocaleString() }}</td>
+              <td class="py-2 px-3 ">{{ row.games_played.toLocaleString('en-US') }}</td>
               <td>
                 <custom-button 
                   @click="viewTopHeroes(row.composition_id, index)" 
@@ -143,7 +143,9 @@
     <div v-else-if="isLoading">
       <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
-
+    <div v-else-if="dataError" class="flex items-center justify-center">
+      Error: Reload page/filter
+    </div>
 
 
   </div>
@@ -170,6 +172,7 @@ export default {
   },
   data(){
     return {
+      dataError: false,
       windowWidth: window.innerWidth,
       infoText: "Composition stats based on differing increments, stat types, game type, or Rank. Click on a Composition to see detailed composition information.",
       sortKey: '',
@@ -225,6 +228,7 @@ export default {
   },
   methods: {
     async getData(){
+      this.dataError = false;
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -254,7 +258,7 @@ export default {
         this.compositiondata = response.data;
         this.loadingStates = this.sortedData.map(() => false);
       }catch(error){
-        //Do something here
+        this.dataError = true;
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;

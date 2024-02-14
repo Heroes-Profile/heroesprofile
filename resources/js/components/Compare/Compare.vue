@@ -307,10 +307,10 @@
         if (typeof statValue === "undefined") {
           return 0;
         }
-        return this.data[battletag].averages[stat].avg_value.toFixed(2).toLocaleString();
+        return this.data[battletag].averages[stat].avg_value.toFixed(2).toLocaleString('en-US');
       },
       formatValue(value){
-        return value ? value.toLocaleString() : 0;
+        return value ? value.toLocaleString('en-US') : 0;
       }
     }
   }

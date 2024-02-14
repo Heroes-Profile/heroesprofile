@@ -27,16 +27,16 @@
             <hero-image-wrapper size="xl" :hero="data.hero" :excludehover="true"></hero-image-wrapper>
           </div>
 
-          <div v-else-if="esport && esport == true" class="flex flex-wrap justify-between gap-2 w-full hover:backdrop-brightness-125 py-1">
+          <div v-else-if="esport && esport == true" class="flex flex-wrap justify-between gap-2 w-full hover:backdrop-brightness-125 py-1 max-md:p-2">
             <hero-image-wrapper v-for="(item, index) in data.heroes" size="big" :hero="item.hero" :excludehover="true"></hero-image-wrapper>
-            <stat-box class="ml-auto w-[30%] mr-10" :title="'Teams'" :value="data.team_0_name + ' vs ' + data.team_1_name"></stat-box>
+            <stat-box class="ml-auto md:w-[30%] md:mr-10" :title="'Teams'" :value="data.team_0_name + ' vs ' + data.team_1_name"></stat-box>
           </div>
 
           <div v-if="!esport && esport != true" class="flex w-full hover:backdrop-brightness-125 max-md:flex-col">
             <div class="flex w-full md:ml-10 max-md:flex-col">
-              <stat-box :title="'Player MMR'" :value="data.player_mmr.toLocaleString()" :secondstat="data.player_change.toFixed(2)" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
-              <stat-box :title="'Hero MMR'" :value="data.hero_mmr.toLocaleString()" :secondstat="data.hero_change.toFixed(2)" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
-              <stat-box :title="'Role MMR'" :value="data.role_mmr.toLocaleString()" :secondstat="data.role_change.toFixed(2)" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
+              <stat-box :title="'Player MMR'" :value="data.player_mmr.toLocaleString('en-US')" :secondstat="data.player_change.toFixed(2)" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
+              <stat-box :title="'Hero MMR'" :value="data.hero_mmr.toLocaleString('en-US')" :secondstat="data.hero_change.toFixed(2)" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
+              <stat-box :title="'Role MMR'" :value="data.role_mmr.toLocaleString('en-US')" :secondstat="data.role_change.toFixed(2)" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
             </div>
             <div class="flex gap-x-1 mx-2 items-center justify-start md:w-[450px] pl-2">
               <div class="flex-1"><talent-image-wrapper :talent="data.level_one" :size="'medium'"></talent-image-wrapper></div>

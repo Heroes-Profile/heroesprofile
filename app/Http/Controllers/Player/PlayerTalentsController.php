@@ -34,10 +34,14 @@ class PlayerTalentsController extends Controller
         $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => compact('battletag', 'blizz_id', 'region'),
-                'status' => 'failure to validate inputs',
-            ];
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         $userinput = $this->globalDataService->getHeroModel($request['hero']);
@@ -52,7 +56,7 @@ class PlayerTalentsController extends Controller
             'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
             'heroes' => $this->globalDataService->getHeroes(),
-            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'],//$this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'], //$this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
         ]);
     }
 
@@ -76,6 +80,7 @@ class PlayerTalentsController extends Controller
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }
@@ -165,7 +170,6 @@ class PlayerTalentsController extends Controller
         });
 
         $formattedData = [];
-
         $levelTotals = [];
 
         foreach ($returnData as $data) {
@@ -174,21 +178,16 @@ class PlayerTalentsController extends Controller
             }
             $levelTotals[$data['talent']['level']] += $data['wins'] + $data['losses'];
         }
-        $counter = 0;
+
         foreach ($returnData as $data) {
             $level = $data['talent']['level'];
-            $sort = ($data['talent']['sort'] - 1);
+            $sort = (int) $data['talent']['sort'] - 1;
 
             if (! array_key_exists($level, $formattedData)) {
+                $counter = 0;
                 $formattedData[$level] = [];
             }
-
-            if (! array_key_exists($sort, $formattedData[$level])) {
-                $counter = 0;
-                $formattedData[$level][$counter] = [];
-            }
-
-            $formattedData[$level][$counter] = [
+            $formattedData[$level][] = [
                 'win_rate' => ($data['wins'] + $data['losses']) > 0 ? round(($data['wins'] / ($data['wins'] + $data['losses'])) * 100, 2) : 0,
                 'wins' => $data['wins'],
                 'losses' => $data['losses'],
@@ -197,7 +196,6 @@ class PlayerTalentsController extends Controller
                 'games_played' => $data['wins'] + $data['losses'],
                 'talentInfo' => $data['talent'],
             ];
-            $counter++;
         }
 
         return $formattedData;
@@ -252,29 +250,6 @@ class PlayerTalentsController extends Controller
 
         $returnData = array_slice($returnData, 0, 7);
 
-        foreach ($returnData as &$data) {
-            foreach ($result as $replay) {
-                $level_one = $replay->level_one;
-                $level_four = $replay->level_four;
-                $level_seven = $replay->level_seven;
-                $level_ten = $replay->level_ten;
-                $level_thirteen = $replay->level_thirteen;
-                $level_sixteen = $replay->level_sixteen;
-                $level_twenty = $replay->level_twenty;
-
-                if ($data['level_one'] != $level_one || $data['level_four'] != $level_four || $data['level_seven'] != $level_seven || $data['level_ten'] != $level_ten || $level_twenty != 0) {
-                    continue;
-                }
-
-                if ($replay->winner == 1) {
-                    $data['wins']++;
-
-                } else {
-                    $data['losses']++;
-                }
-                $data['games_played']++;
-            }
-        }
         foreach ($returnData as &$data) {
             $data['level_one'] = $talentData[$data['level_one']];
             $data['level_four'] = $talentData[$data['level_four']];

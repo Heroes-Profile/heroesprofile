@@ -6,78 +6,59 @@ use App\Models\GlobalHeroChange;
 use App\Models\GlobalHeroStats;
 use App\Models\GlobalHeroStatsBans;
 use App\Models\SeasonGameVersion;
-use App\Rules\HeroInputByIDValidation;
-use App\Rules\RoleInputValidation;
-use App\Rules\StatFilterInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Redirect;
 
 class GlobalHeroStatsController extends GlobalsInputValidationController
 {
     public function show(Request $request)
     {
 
-      $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
-
-      $validator = Validator::make($request->all(), $validationRules);
-
-      /*
-      if ($validator->fails()) {
-        $failedFields = $validator->failed();
-    
-        // Extract the first failed field
-        $firstFailedField = key($failedFields);
-    
-        return [
-            'data' => $request->all(),
-            'status' => 'failure to validate inputs',
-            'failed_field' => $firstFailedField,
-        ];
-      }
-      */
-    
-      if ($validator->fails()) {
-        return Redirect::to('/Global/Hero')->withErrors($validator)->withInput();
-      }
-    
-
-      return view('Global.Hero.globalHeroStats')
-          ->with([
-              'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
-              'filters' => $this->globalDataService->getFilterData(),
-              'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
-              'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
-              'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
-              'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
-              'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
-              'heroes' => $this->globalDataService->getHeroes(),
-              'urlparameters' => $request->all(),
-          ]);
-    }
-
-    public function getGlobalHeroData(Request $request)
-    {
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
-
-        //return response()->json($request->all());
-
-        $validationRules = $this->globalsValidationRules($request['timeframe_type']);
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
 
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-          $failedFields = $validator->failed();
-      
-          // Extract the first failed field
-          $firstFailedField = key($failedFields);
-      
-          return [
-              'data' => $request->all(),
-              'status' => 'failure to validate inputs',
-              'failed_field' => $firstFailedField,
-          ];
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'errors' => $validator->errors()->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
+        }
+
+        return view('Global.Hero.globalHeroStats')
+            ->with([
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+                'filters' => $this->globalDataService->getFilterData(),
+                'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
+                'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
+                'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
+                'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
+                'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
+                'heroes' => $this->globalDataService->getHeroes(),
+                'urlparameters' => $request->all(),
+            ]);
+    }
+
+    public function getGlobalHeroData(Request $request)
+    {
+
+        //return response()->json($request->all());
+
+        $validationRules = $this->globalsValidationRules($request['timeframe_type'], $request['timeframe']);
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                'data' => $request->all(),
+                'status' => 'failure to validate inputs',
+            ];
         }
 
         $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);

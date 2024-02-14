@@ -10,6 +10,7 @@
     :region="{{ json_encode($region) }}"
     :is-patreon="{{ json_encode($patreon) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+    :regionsmap="{{ json_encode($bladeGlobals['regions']) }}"
     :gametypedefault="{{ json_encode($gametypedefault) }}" 
 
   ></player-matchup>

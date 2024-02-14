@@ -41,10 +41,14 @@ class PlayerController extends Controller
         $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => compact('battletag', 'blizz_id', 'region'),
-                'status' => 'failure to validate inputs',
-            ];
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         $heroUserSettings = null;
@@ -69,7 +73,7 @@ class PlayerController extends Controller
             'blizz_id' => $blizz_id,
             'region' => $region,
             'season' => $season,
-            'gametypedefault' => null,//$this->globalDataService->getGameTypeDefault('single'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'gametypedefault' => null, //$this->globalDataService->getGameTypeDefault('single'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
 
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
@@ -78,6 +82,7 @@ class PlayerController extends Controller
 
     public function getPlayerData(Request $request)
     {
+
         //return response()->json($request->all());
 
         $validationRules = [
@@ -93,6 +98,7 @@ class PlayerController extends Controller
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }
@@ -158,7 +164,6 @@ class PlayerController extends Controller
 
     private function calculateProfile($blizz_id, $region, $game_type, $season, $cachedData = null)
     {
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 
         $result = DB::table('replay')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
@@ -463,7 +468,7 @@ class PlayerController extends Controller
 
     private function formatCache($data, $blizz_id, $region, $battletag)
     {
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+
         $returnData = new \stdClass;
         $returnData->wins = $data->wins;
         $returnData->losses = $data->losses;

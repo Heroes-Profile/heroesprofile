@@ -26,10 +26,14 @@ class PlayerMatchupsController extends Controller
         $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => compact('battletag', 'blizz_id', 'region'),
-                'status' => 'failure to validate inputs',
-            ];
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         return view('Player.matchupData')->with([
@@ -39,13 +43,14 @@ class PlayerMatchupsController extends Controller
             'region' => $region,
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
-            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'],//$this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'], //$this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
 
         ]);
     }
 
     public function getMatchupData(Request $request)
     {
+
         //return response()->json($request->all());
 
         $validator = \Validator::make($request->only(['blizz_id', 'region', 'battletag']), [
@@ -69,6 +74,7 @@ class PlayerMatchupsController extends Controller
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }

@@ -8,18 +8,25 @@ use App\Rules\PartyCombinationRule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Redirect;
 
 class GlobalPartyStatsController extends GlobalsInputValidationController
 {
     public function show(Request $request)
     {
-        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type']);
+        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
 
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-          return Redirect::to('/Global/Party')->withErrors($validator)->withInput();
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'errors' => $validator->errors()->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         return view('Global.Party.globalPartyStats')
@@ -42,7 +49,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
 
         //return response()->json($request->all());
 
-        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type']), [
+        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
             'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
             'teamoneparty' => ['sometimes', 'nullable', new PartyCombinationRule()],
             'teamtwoparty' => ['sometimes', 'nullable', new PartyCombinationRule()],
@@ -53,6 +60,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
         if ($validator->fails()) {
             return [
                 'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
         }

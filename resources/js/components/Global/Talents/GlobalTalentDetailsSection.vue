@@ -40,7 +40,7 @@
             </td>
             <td class="py-2 px-3  ">{{ row.win_rate.toFixed(2) }}</td>
             <td class="py-2 px-3  ">{{ row.popularity.toFixed(2) }}</td>
-            <td class="py-2 px-3  ">{{ row.games_played.toLocaleString() }}</td>
+            <td class="py-2 px-3  ">{{ row.games_played.toLocaleString('en-US') }}</td>
             <td v-if="statfilter && statfilter != 'win_rate'" class="py-2 px-3 ">{{ row.total_filter_type }}</td>
           </tr>
         </tbody>

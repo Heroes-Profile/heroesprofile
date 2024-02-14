@@ -13,7 +13,7 @@ class HeroLevelInputValidation implements Rule
     public function passes($attribute, $value)
     {
         if (! is_array($value)) {
-          $value = explode(',', $value);
+            $value = explode(',', $value);
         }
 
         $filteredLevels = array_intersect($value, $this->validLevels);

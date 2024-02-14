@@ -88,6 +88,9 @@
       <loading-component @cancel-request="cancelAxiosRequest" v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
       <loading-component @cancel-request="cancelAxiosRequest" v-else></loading-component>
     </div>
+    <div v-else-if="dataError" class="flex items-center justify-center">
+      Error: Reload page/filter
+    </div>
   </div>
 
 
@@ -117,6 +120,7 @@
     },
     data(){
       return {
+        dataError: false,
         windowWidth: window.innerWidth,
         isLoading: false,
         infoText: "Hero Maps provide information on which maps are good for each hero",
@@ -192,6 +196,7 @@
         this.getData();
       },
       async getData(){
+        this.dataError = false;
         this.isLoading = true;
 
         if (this.cancelTokenSource) {
@@ -217,7 +222,7 @@
           });
           this.data = response.data;
         }catch(error){
-          //Do something here
+          this.dataError = true;
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;

@@ -22,10 +22,14 @@ class PlayerMapsController extends Controller
         $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => compact('battletag', 'blizz_id', 'region'),
-                'status' => 'failure to validate inputs',
-            ];
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         $account_level = 0;
@@ -47,7 +51,7 @@ class PlayerMapsController extends Controller
             'region' => $region,
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
-            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'],//$this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'], //$this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
 
         ]);
     }
@@ -64,10 +68,14 @@ class PlayerMapsController extends Controller
         $validator = Validator::make(compact('battletag', 'blizz_id', 'region', 'map'), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => compact('battletag', 'blizz_id', 'region', 'map'),
-                'status' => 'failure to validate inputs',
-            ];
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         $map = $request['map'];
@@ -83,7 +91,7 @@ class PlayerMapsController extends Controller
             'filters' => $this->globalDataService->getFilterData(),
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
-            'gametypedefault' => null,//$this->globalDataService->getGameTypeDefault('single'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'gametypedefault' => null, //$this->globalDataService->getGameTypeDefault('single'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
 
         ]);
     }

@@ -2,86 +2,82 @@
   <div>
     <page-heading :infoText1="infoText1" :heading="'NGS'" :heading-image="'/images/NGS/600-600-ngs_large_header.png'" :heading-image-url="'/Esports/NGS'"></page-heading>
 
-      <!---You are going to have to design this better, I am going to use buttons for now -->
-      <div class="flex flex-1 mx-auto justify-center mb-4 w-full bg-blue">
-        <div class="border-r border-white">
-          <custom-button  @click="setButtonActive('standings')" :text="'Standings'" :size="'big'" class="rounded-none " :color="activeButton === 'standings' ? 'lblue' : ''" :active="standingsClicked" :ignoreclick="true"></custom-button>
+      
+      <div class="flex flex-1 mx-auto justify-center mb-4 w-full bg-blue flex-wrap max-md:text-xs">
+        <div class="md:border-r border-white max-md:border max-md:border-lighten">
+          <custom-button   @click="setButtonActive('standings')" :text="'Standings'" :size="'big'" class="rounded-none max-md:text-xs" :color="activeButton === 'standings' ? 'lblue' : ''" :active="standingsClicked" :ignoreclick="true"></custom-button>
         </div>
-        <div class="border-r border-white">
-          <custom-button @click="setButtonActive('divisions')" :text="'Divisions'" :size="'big'" class=" rounded-none" :color="activeButton === 'divisions' ? 'lblue' : ''" :active="divisionsClicked" :ignoreclick="true"></custom-button>
+        <div class="md:border-r border-white max-md:border max-md:border-lighten">
+          <custom-button @click="setButtonActive('divisions')" :text="'Divisions'" :size="'big'" class=" rounded-none max-md:text-xs" :color="activeButton === 'divisions' ? 'lblue' : ''" :active="divisionsClicked" :ignoreclick="true"></custom-button>
         </div>
-        <div class="border-r border-white">
-          <custom-button @click="setButtonActive('teams')" :text="'Teams'" :size="'big'" class="rounded-none" :color="activeButton === 'teams' ? 'lblue' : ''" :active="teamsClicked" :ignoreclick="true"></custom-button>
-        </div>
-
-        <div class="border-r border-white">
-          <custom-button @click="setButtonActive('playerSearch')" :text="'Player Search'" :size="'big'" class="rounded-none" :color="activeButton === 'playerSearch' ? 'lblue' : ''" :active="playerSearchClicked" :ignoreclick="true"></custom-button>
+        <div class="md:border-r border-white max-md:border max-md:border-lighten">
+          <custom-button @click="setButtonActive('teams')" :text="'Teams'" :size="'big'" class="rounded-none max-md:text-xs" :color="activeButton === 'teams' ? 'lblue' : ''" :active="teamsClicked" :ignoreclick="true"></custom-button>
         </div>
 
-        <div class="border-r border-white">
-          <custom-button @click="setButtonActive('recentMatches')" :text="'Recent Matches'" :size="'big'" class="rounded-none" :color="activeButton === 'recentMatches' ? 'lblue' : ''" :active="recentMatchesClicked" :ignoreclick="true"></custom-button>
+        <div class="md:border-r border-white max-md:border max-md:border-lighten">
+          <custom-button @click="setButtonActive('playerSearch')" :text="'Player Search'" :size="'big'" class="rounded-none max-md:text-xs" :color="activeButton === 'playerSearch' ? 'lblue' : ''" :active="playerSearchClicked" :ignoreclick="true"></custom-button>
         </div>
 
-        <div class="border-r border-white">
-          <custom-button @click="setButtonActive('overallHeroStats')" :text="'Overall Hero Stats'" :size="'big'" class="rounded-none" :color="activeButton === 'overallHeroStats' ? 'lblue' : ''" :active="overallHeroStatsClicked" :ignoreclick="true"></custom-button>
+        <div class="md:border-r border-white max-md:border max-md:border-lighten">
+          <custom-button @click="setButtonActive('recentMatches')" :text="'Recent Matches'" :size="'big'" class="rounded-none max-md:text-xs" :color="activeButton === 'recentMatches' ? 'lblue' : ''" :active="recentMatchesClicked" :ignoreclick="true"></custom-button>
         </div>
 
-      <div class="">
-          <custom-button @click="setButtonActive('overallTalentStats')" :text="'Overall Talent Stats'" :size="'big'" class="rounded-none" :color="activeButton === 'overallTalentStats' ? 'lblue' : ''" :active="overallTalentStatsClicked" :ignoreclick="true"></custom-button>
+        <div class="md:border-r border-white max-md:border max-md:border-lighten">
+          <custom-button @click="setButtonActive('overallHeroStats')" :text="'Overall Hero Stats'" :size="'big'" class="rounded-none max-md:text-xs" :color="activeButton === 'overallHeroStats' ? 'lblue' : ''" :active="overallHeroStatsClicked" :ignoreclick="true"></custom-button>
+        </div>
+
+      <div class=" border-white max-md:border max-md:border-lighten">
+          <custom-button @click="setButtonActive('overallTalentStats')" :text="'Overall Talent Stats'" :size="'big'" class="rounded-none max-md:text-xs" :color="activeButton === 'overallTalentStats' ? 'lblue' : ''" :active="overallTalentStatsClicked" :ignoreclick="true"></custom-button>
         </div>
       </div>
 
 
-    <div v-if="!activeButton">
-      <div class="flex   p-20 bg-lighten flex-wrap justify-center">
+    <div class=" bg-lighten" v-if="!activeButton">
+      <div class="flex mx-auto max-w-[1500px]  md:p-20 flex-wrap justify-center max-md:pt-4 gap-10">
         
-        <div class="text-center md:w-[15%] mb-15 mx-5">
-          <i class="fas fa-list-ol" style="font-size: 100px"></i>
-          <h3>Standings</h3>
-          <custom-button @click="setButtonActive('standings')" :text="'Standings'" :size="'big'" class="mt-10" :active="standingsClicked" :ignoreclick="true"></custom-button>
+        <div class="text-center md:w-[15em] mb-15  max-md:mb-10 ">
+          <i class="fas fa-list-ol text-[50px] md:text-[100px]" ></i>
+          
+          <custom-button @click="setButtonActive('standings')" :text="'Standings'" :size="'big'" class="mt-10 max-md:text-xs" :active="standingsClicked" :ignoreclick="true"></custom-button>
         </div>
 
-        <div class="text-center md:w-[15%] mb-15 mx-5">
-          <i class="fas fa-boxes" style="font-size: 100px"></i>
-          <h3>Divisions</h3>
-          <custom-button @click="setButtonActive('divisions')" :text="'Divisions'" :size="'big'" class="mt-10" :active="divisionsClicked" :ignoreclick="true"></custom-button>
+        <div class="text-center md:w-[15em] mb-15   max-md:mb-10">
+          <i class="fas fa-boxes text-[50px] md:text-[100px] " ></i>
+          
+          <custom-button @click="setButtonActive('divisions')" :text="'Divisions'" :size="'big'" class="mt-10 max-md:text-xs" :active="divisionsClicked" :ignoreclick="true"></custom-button>
         </div>
 
-        <div class="text-center md:w-[15%] mb-15 mx-5">
-          <i class="fas fa-users" style="font-size: 100px"></i>
-          <h3>Teams</h3>
-          <custom-button @click="setButtonActive('teams')" :text="'Teams'" :size="'big'" class="mt-10" :active="teamsClicked" :ignoreclick="true"></custom-button>
+        <div class="text-center md:w-[15em] mb-15  max-md:mb-10">
+          <i class="fas fa-users text-[50px] md:text-[100px]" ></i>
+          
+          <custom-button @click="setButtonActive('teams')" :text="'Teams'" :size="'big'" class="mt-10 max-md:text-xs" :active="teamsClicked" :ignoreclick="true"></custom-button>
         </div>
 
-        <div class="text-center md:w-[15%] mb-15 mx-5">
-          <i class="fas fa-address-card" style="font-size: 100px"></i>
-          <h3>Player Search</h3>
-          <custom-button @click="setButtonActive('playerSearch')" :text="'Player Search'" :size="'big'" class="mt-10" :active="playerSearchClicked" :ignoreclick="true"></custom-button>
+        <div class="text-center md:w-[15em] mb-15 max-md:mb-10">
+          <i class="fas fa-address-card text-[50px] md:text-[100px]" ></i>
+          
+          <custom-button @click="setButtonActive('playerSearch')" :text="'Player Search'" :size="'big'" class="mt-10 max-md:text-xs" :active="playerSearchClicked" :ignoreclick="true"></custom-button>
         </div>
 
 
 
 
-      </div>
-
-
-      <div class="flex   p-20 bg-lighten flex-wrap justify-center">
-        <div class="text-center md:w-[15%] mb-15 mx-5">
-          <i class="fas fa-list" style="font-size: 100px"></i>
-          <h3>Recent Matches</h3>
-          <custom-button @click="setButtonActive('recentMatches')" :text="'Recent Matches'" :size="'big'" class="mt-10" :active="recentMatchesClicked" :ignoreclick="true"></custom-button>
+        <div class="text-center md:w-[15em] mb-15  max-md:mb-10">
+          <i class="fas fa-list text-[50px] md:text-[100px]" ></i>
+          
+          <custom-button @click="setButtonActive('recentMatches')" :text="'Recent Matches'" :size="'big'" class="mt-10 max-md:text-xs" :active="recentMatchesClicked" :ignoreclick="true"></custom-button>
         </div>
         
-          <div class="text-center md:w-[15%] mb-15 mx-5">
-          <i class="fa-solid fa-chart-bar" style="font-size: 100px"></i>
-          <h3>Overall Hero Stats</h3>
-          <custom-button @click="setButtonActive('overallHeroStats')" :text="'Overall Hero Stats'" :size="'big'" class="mt-10" :active="overallHeroStatsClicked" :ignoreclick="true"></custom-button>
+          <div class="text-center md:w-[15em] mb-15  max-md:mb-10">
+          <i class="fa-solid fa-chart-bar text-[50px] md:text-[100px]" ></i>
+          
+          <custom-button @click="setButtonActive('overallHeroStats')" :text="'Overall Hero Stats'" :size="'big'" class="mt-10 max-md:text-xs" :active="overallHeroStatsClicked" :ignoreclick="true"></custom-button>
         </div>
 
-        <div class="text-center md:w-[15%] mb-15 mx-5">
-          <i class="fas fa-chart-line" style="font-size: 100px"></i>
-          <h3>Overall Talent Stats</h3>
-          <custom-button @click="setButtonActive('overallTalentStats')" :text="'Overall Talent Stats'" :size="'big'" class="mt-10" :active="overallTalentStatsClicked" :ignoreclick="true"></custom-button>
+        <div class="text-center md:w-[15em] mb-15  max-md:mb-10">
+          <i class="fas fa-chart-line text-[50px] md:text-[100px]" ></i>
+         
+          <custom-button @click="setButtonActive('overallTalentStats')" :text="'Overall Talent Stats'" :size="'big'" class="mt-10 max-md:text-xs" :active="overallTalentStatsClicked" :ignoreclick="true"></custom-button>
         </div>
 
       </div>
@@ -130,7 +126,6 @@
               class="bg-blue p-4 rounded mb-4 w-[500px] flex flex-col items-center cursor-pointer" 
               v-for="(item, index) in battletagresponse" 
               :key="index" 
-              @click="redirectToProfile(item.battletag, item.blizz_id, item.region)"
             >
               <div>{{ item.battletagShort }} ({{ item.regionName }})</div>
               <div>{{ item.latest_game }}</div>
