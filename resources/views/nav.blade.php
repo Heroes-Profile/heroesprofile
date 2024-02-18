@@ -160,7 +160,7 @@
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Talents" >Talents</a>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/MMR">MMR Breakdown</a>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Match/History">Match History</a>
-              <a href="#" class="remove-account">
+              <a href="#" class="remove-account text-right bg-gray-dark hover:bg-gray-md">
                 <remove-battletag-nav     
                   :index="{{ $index }}"
                 >
