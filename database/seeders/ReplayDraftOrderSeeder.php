@@ -420,11 +420,12 @@ class ReplayDraftOrderSeeder extends Seeder
 
         foreach ($data as $row) {
             DB::table('replay_draft_order')->insert([
-                'replayID' => $row[0],
-                'pick_number' => $row[1],
-                'type' => $row[2],
-                'player_slot' => $row[3],
-                'hero' => $row[4],
+              'replay_draft_order_id' => $row[0],
+              'replayID' => $row[1],
+              'pick_number' => $row[2],
+              'type' => $row[3],
+              'player_slot' => $row[4],
+              'hero' => $row[5],
             ]);
         }
     }

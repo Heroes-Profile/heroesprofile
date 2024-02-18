@@ -18801,9 +18801,10 @@ class ReplayBansSeeder extends Seeder
 
         foreach ($data as $row) {
             DB::table('replay_bans')->insert([
-                'replayID' => $row[0],
-                'team' => $row[1],
-                'hero' => $row[2],
+              'ban_id' => $row[0],
+              'replayID' => $row[1],
+              'team' => $row[2],
+              'hero' => $row[3],
             ]);
         }
     }

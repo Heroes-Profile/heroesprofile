@@ -47,22 +47,22 @@ class DatabaseSeeder extends Seeder
         //MasterMmrDataTlSeeder::class,
         //MasterMmrDataUdSeeder::class,
         //MmrTypeIdsSeeder::class,
-        
-        PlayerSeeder::class,
-        ReplaySeeder::class,
+        //PlayerSeeder::class,
+        //ReplaySeeder::class,
 
 
 
-        ReplayBansSeeder::class,
-        ReplayDraftOrderSeeder::class,
-        ReplayExperienceBreakdownBlobSeeder::class,
-        ScoresSeeder::class,
-        SeasonDatesSeeder::class,
-        SeasonGameVersionsSeeder::class,
-        TalentCombinationsSeeder::class,
+        //ReplayBansSeeder::class,
+        //ReplayDraftOrderSeeder::class,
+        //ReplayExperienceBreakdownBlobSeeder::class,
+        //ScoresSeeder::class,
+        //SeasonDatesSeeder::class,
+        //SeasonGameVersionsSeeder::class,
+        //TalentCombinationsSeeder::class,
         TalentsSeeder::class,
         BattletagsCCLSeeder::class,
         PlayerCCLSeeder::class,
+        ReplayCCLSeeder::class,
       ]);
     }
 }

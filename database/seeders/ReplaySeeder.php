@@ -6295,9 +6295,9 @@ class ReplaySeeder extends Seeder
                 'date_added' => \DateTime::createFromFormat('m/d/Y h:i:s A', $row[7])->format('Y-m-d H:i:s')  ,
                 'mmr_ran' => $row[8],
                 'globals_ran' => $row[9],
-                'player_match_quality' => $row[10],
-                'hero_match_quality' => $row[11],
-                'role_match_quality' => $row[12],
+                'player_match_quality' => $row[10] == '' ? 0 : $row[10],
+                'hero_match_quality' => $row[11] == '' ? 0 : $row[11],
+                'role_match_quality' => $row[12] == '' ? 0 : $row[12],
             ]);
         }
     }

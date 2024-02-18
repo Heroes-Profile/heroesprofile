@@ -252,10 +252,11 @@ class SeasonGameVersionsSeeder extends Seeder
 
         foreach ($data as $row) {
             DB::table('season_game_versions')->insert([
-                'season' => $row[0],
-                'game_version' => $row[1],
-                'date_added' => $row[2],
-                'updated_globals' => $row[3],
+              'id' => $row[0],
+              'season' => $row[1],
+              'game_version' => $row[2],
+              'date_added' => $row[3] == '' ? null : \DateTime::createFromFormat('m/d/Y h:i:s A', $row[3])->format('Y-m-d H:i:s'),
+              'updated_globals' => $row[4],
             ]);
         }
     }

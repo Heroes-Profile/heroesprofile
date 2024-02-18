@@ -46,10 +46,11 @@ class SeasonDatesSeeder extends Seeder
 
         foreach ($data as $row) {
             DB::table('season_dates')->insert([
-                'year' => $row[0],
-                'season' => $row[1],
-                'start_date' => $row[2],
-                'end_date' => $row[3],
+              'id' => $row[0],
+              'year' => $row[1],
+              'season' => $row[2],
+              'start_date' => \DateTime::createFromFormat('m/d/Y h:i:s A', $row[3])->format('Y-m-d H:i:s'),
+              'end_date' =>\DateTime::createFromFormat('m/d/Y h:i:s A', $row[4])->format('Y-m-d H:i:s'),
             ]);
         }
     }
