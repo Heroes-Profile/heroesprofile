@@ -47,8 +47,9 @@
     
 </head>
 <body class="bg-black text-white {{ $bladeGlobals ? $bladeGlobals['darkmode'] ? 'dark-mode' : 'light-mode' : 'light-mode' }}">
-  <div id="app" class="flex flex-col align-stretch" style="min-height:100vh;">
-    <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></horizontal-banner-ad>
+  <div id="app" class="flex flex-col align-stretch " style="min-height:100vh; ">
+  <div class="max-md:h-[75px]"></div>
+    <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}" ></horizontal-banner-ad>
 
 
    <div class="bg-red text-sm text-center p-1">

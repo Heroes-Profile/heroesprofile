@@ -54,7 +54,7 @@
         <bubble-chart :heroData="this.data.data"></bubble-chart>
       </div>
       <div >
-        <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
+        <div id="table-container" ref="tablecontainer" class="w-auto   w-[100vw]   2xl:mx-auto  " style=" ">
       <table id="responsive-table" class="responsive-table  relative" ref="responsivetable">
         <thead class="top-0 w-full sticky z-40">
           <th class="py-2 px-3 border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
@@ -144,7 +144,7 @@
           <template v-for="(row, index) in sortedData">
             <tr>
               <td class="py-2 px-3 flex items-center gap-1 max-md:w-[150px]">
-                <a class="flex w-full items-center" :href="getGlobalTalentsURL(row)" >
+                <a class="flex w-full items-center max-md:justify-center" :href="getGlobalTalentsURL(row)" >
                   <hero-image-wrapper class="mr-2" mobileClick="true" :hero="row" :includehover="false"></hero-image-wrapper><span class="hidden md:block">{{ row.name }}</span>
                 </a>
               </td>

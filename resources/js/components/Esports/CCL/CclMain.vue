@@ -72,7 +72,7 @@
 
 
         <div v-if="recentMatchesData">
-          <ul class="pagination flex max-w-[1500px] mx-auto justify-between mb-2">
+          <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
             <li v-if="recentMatchesData.pagination.current_page != 1" class="page-item underline underline-offset-4 mr-auto" :class="{ disabled: !recentMatchesData.pagination.prev_page_url }">
               <a class="page-link mr-auto" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page - 1)" href="#">
                 Previous
@@ -88,6 +88,18 @@
 
 
         <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'CCL'"></esports-recent-matches>
+        <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
+            <li v-if="recentMatchesData.pagination.current_page != 1" class="page-item underline underline-offset-4 mr-auto" :class="{ disabled: !recentMatchesData.pagination.prev_page_url }">
+              <a class="page-link mr-auto" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page - 1)" href="#">
+                Previous
+              </a>
+            </li>
+            <li v-if="recentMatchesData.pagination.current_page != recentMatchesData.pagination.last_page" class="page-item underline underline-offset-4 ml-auto" :class="{ disabled: !recentMatchesData.pagination.next_page_url }">
+              <a class="page-link ml-auto" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page + 1)" href="#">
+                Next
+              </a>
+            </li>
+          </ul>
       </div>
 
 

@@ -76,7 +76,7 @@
 
 
         <div v-if="recentMatchesData">
-          <ul class="pagination flex max-w-[1500px] mx-auto justify-between mb-2">
+          <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
             <li class="page-item mr-auto" :class="{ disabled: !recentMatchesData.pagination.prev_page_url }">
               <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page - 1)" href="#">
                 Previous
@@ -92,6 +92,18 @@
 
 
         <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'hi_nc'"></esports-recent-matches>
+        <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
+            <li class="page-item mr-auto" :class="{ disabled: !recentMatchesData.pagination.prev_page_url }">
+              <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page - 1)" href="#">
+                Previous
+              </a>
+            </li>
+            <li class="page-item ml-auto" :class="{ disabled: !recentMatchesData.pagination.next_page_url }">
+              <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page + 1)" href="#">
+                Next
+              </a>
+            </li>
+          </ul>
       </div>
 
 

@@ -6,8 +6,8 @@
     
     <a v-if="headingImage" :href="headingImageUrl" target="_blank">
       <img :src="headingImage" alt="" class="w-33 h-20"/>
-      
-    </a><span v-if="battletag"  class="text-lg uppercase ">{{ battletag }} </span>
+      <span v-if="battletag"  class="text-lg uppercase ">{{ battletag }}  </span> {{ heading }}
+    </a>
 
    
 
@@ -39,7 +39,7 @@
 
         <a v-if="battletag" href="#" class="text-lg link ">{{ battletag }} </a>
         </div>
-        {{ heading }}
+        <div class="heading">{{ heading }}</div>
       </div>
     </h1>
     <div v-if="!hideText" class=" ">

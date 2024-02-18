@@ -1,4 +1,4 @@
-<div class="max-md:bg-gray-dark">
+<div class="max-md:bg-gray-dark max-md:fixed max-md:z-40 max-md:w-full">
     <div class="flex p-2 px-4 justify-between">
 <a class=" flex items-center font-logo text-2xl md:hidden" href="/">
                 Heroes
@@ -160,7 +160,7 @@
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Talents" >Talents</a>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/MMR">MMR Breakdown</a>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Match/History">Match History</a>
-              <a href="#" class="remove-account">
+              <a href="#" class="remove-account text-right bg-gray-dark hover:bg-gray-md">
                 <remove-battletag-nav     
                   :index="{{ $index }}"
                 >
