@@ -49,9 +49,9 @@
 
           >
         </filters>
-        <takeover-ad :patreon-user="patreonUser" ref="takeoverAddPlacement"></takeover-ad>
+        <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
-        
+  
         <div v-if="talentdetaildata" class="mx-auto  md:px-4">
           <div class="flex justify-between max-w-[1500px] mx-auto">
             <span class="flex gap-4 mb-2"> 
@@ -69,8 +69,8 @@
           Error: Reload page/filter
         </div>
 
+        <dynamic-banner-ad :patreon-user="patreonUser" :index="4" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
-        <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
         <div v-if="talentbuilddata" class="flex justify-between max-w-[1500px] mx-auto md:px-4">
           <div id="builds" class="">
