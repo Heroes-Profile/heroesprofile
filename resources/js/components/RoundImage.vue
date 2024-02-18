@@ -80,7 +80,7 @@
         <div class="bg-teal" v-if="award">{{award.title}}</div>
         <slot></slot>
       </div>
-      <div class="popup-arrow max-md:hidden"></div>
+      <div v-if="!excludehover" class="popup-arrow max-md:hidden"></div>
     </div>
     <div v-if="!excludehover && !mobileClick" :class="[' md:hidden     text-s p-1    drop-shadow-md  rounded-md px-2 text-center   md:mb-4', {}]">
       <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>
