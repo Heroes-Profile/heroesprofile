@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw] max-sm:text-xs  2xl:mx-auto  " style=" ">
+    <div id="table-container" ref="tablecontainer" class="w-auto  max-md:overflow-hidden w-[100vw] max-sm:text-xs  2xl:mx-auto  " style=" ">
     <div id="resizeTable" ref="resizeTable" >
     <div v-for="level in talentlevels" ref="resizeTable">
       <table :id="'responsivetable'+level" class="responsive-table  relative " :ref="'responsivetable'+level">
