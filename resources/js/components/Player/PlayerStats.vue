@@ -72,7 +72,7 @@
         </div>
       </div>
       <div class="flex justify-center max-w-[1500px] mx-auto items-center max-md:flex-col">
-      <div class="max-w-[1000px] mx-auto">
+      <div class="max-w-[1500px] mx-auto">
         <div class="grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 md:px-20 py-5 justify-center" >
           <h4 class="text-right">Quick Match</h4>
           <stat-bar-box :title="'Win Rate'" :value=" data.qm_mmr_data ? data.qm_mmr_data.win_rate.toFixed(2) : 0 "></stat-bar-box>
@@ -118,12 +118,13 @@
 
      
 
-      <div class="max-w-[1500px] mx-auto text-right my-2">
+     
+      </div>
+    
+      <dynamic-square-ad :patreon-user="patreonUser" :index="1"></dynamic-square-ad>
+    </div>  <div class="max-w-[1500px] mx-auto  text-right my-2">
         <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/MMR'" class=" " text="View MMR Breakdown"></custom-button>
       </div>
-      </div>
-      <dynamic-square-ad :patreon-user="patreonUser" :index="1"></dynamic-square-ad>
-    </div>
 
 
     <div class="bg-lighten p-10 ">
