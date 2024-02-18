@@ -62,7 +62,7 @@
       :alt="title">
     
     <div v-show="showTooltip" :class="[
-        'absolute hidden group-hover:block left-1/2   transform -translate-x-1/2 text-xs bottom-[1em] -translate-y-[2em]  z-30',
+        'absolute hidden group-hover:block left-1/2   transform -translate-x-1/2 text-xs bottom-[1em] -translate-y-[2em]  z-40',
       {
         'bottom-[4.5em] -translate-y-[2em]': size === 'big',
         'text-xs' : size === 'big',
