@@ -72,7 +72,7 @@
       }
 
       ]" >
-      <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 max-md:hidden', {
+      <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 ', {
         
       }]">
         <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>
