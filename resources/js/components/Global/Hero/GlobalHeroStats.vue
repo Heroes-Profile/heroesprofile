@@ -144,7 +144,7 @@
           <template v-for="(row, index) in sortedData">
             <tr>
               <td class="py-2 px-3 flex items-center gap-1 max-md:w-[150px]">
-                <a class="flex w-full items-center" :href="getGlobalTalentsURL(row)" >
+                <a class="flex w-full items-center max-md:justify-center" :href="getGlobalTalentsURL(row)" >
                   <hero-image-wrapper class="mr-2" mobileClick="true" :hero="row" :includehover="false"></hero-image-wrapper><span class="hidden md:block">{{ row.name }}</span>
                 </a>
               </td>
