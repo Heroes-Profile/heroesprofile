@@ -1,4 +1,4 @@
-<div class="max-md:bg-gray-dark">
+<div class="max-md:bg-gray-dark max-md:fixed max-md:z-40 max-md:w-full">
     <div class="flex p-2 px-4 justify-between">
 <a class=" flex items-center font-logo text-2xl md:hidden" href="/">
                 Heroes
