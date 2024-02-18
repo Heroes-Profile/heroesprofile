@@ -36,7 +36,7 @@
           :advancedfiltering="advancedfiltering"
           >
         </filters>
-        <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+        <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
    
         <div v-if="draftdata">
