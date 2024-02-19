@@ -220,7 +220,7 @@ created(){
   this.gametype = this.gametypedefault;
 },
 mounted() {
-  if(!this.playerloadsetting || this.playerloadsetting == true){
+  if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
       this.getData();
     }
 },

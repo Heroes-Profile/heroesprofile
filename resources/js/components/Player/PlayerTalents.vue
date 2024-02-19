@@ -88,7 +88,7 @@ export default {
   mounted() {
     if(this.inputhero){
       this.selectedHero = this.inputhero;
-      if(!this.playerloadsetting || this.playerloadsetting == true){
+      if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
         this.getData();
       }
     }

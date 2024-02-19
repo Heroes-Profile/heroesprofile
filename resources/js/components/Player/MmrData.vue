@@ -166,7 +166,7 @@ export default {
     this.gametype = this.gametypedefault[0];
   },
   mounted() {
-    if(!this.playerloadsetting || this.playerloadsetting == true){
+    if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
       this.getData();
     }
   },

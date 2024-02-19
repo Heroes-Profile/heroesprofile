@@ -244,9 +244,12 @@
         };
       }
 
-      if(!this.playerloadsetting || this.playerloadsetting == true){
+      console.log(this.playerloadsetting);
+      if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
         this.getData();
       }
+
+
     },
     computed: {
      gameTypesWithAll() {
