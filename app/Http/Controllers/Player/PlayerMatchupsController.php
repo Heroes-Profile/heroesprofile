@@ -38,6 +38,8 @@ class PlayerMatchupsController extends Controller
 
         return view('Player.matchupData')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+            'playerloadsetting' => $this->globalDataService->getPlayerLoadSettings(),
+
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,

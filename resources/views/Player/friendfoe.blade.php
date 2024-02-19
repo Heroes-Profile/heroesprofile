@@ -5,6 +5,7 @@
 @section('content')
   <friend-foe  
     :filters="{{ json_encode($filters) }}" 
+    :playerloadsetting="{{ json_encode($playerloadsetting) }}" 
     :gametypedefault="{{ json_encode($gametypedefault) }}" 
     :battletag="{{ json_encode($battletag) }}" 
     :blizzid="{{ json_encode($blizz_id) }}" 

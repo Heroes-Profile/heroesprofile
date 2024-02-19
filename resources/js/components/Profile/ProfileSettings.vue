@@ -1,78 +1,93 @@
 <template>
   <div v-if="!isLoading" class=" mx-auto max-w-[700px]  bg-lighten rounded-lg mt-[10vh]">
-
     <h1 v-if="settingsSaved" class="text-center text">Settings Saved</h1>
-
     <h1 class="mb-4 bg-teal p-4 rounded-t-lg">Site Settings</h1>
     <div class="flex items-center flex-wrap justify-start p-4">
       <div class="flex  justify-center">
+
         <div class="flex-col  border-white border-r-[1px] px-4">
-        <div class=" ">
-          <h3>Default Multi-Select Game Type:</h3> 
-          <multi-select-filter
-            :values="this.filters.game_types_full" 
-            :text="'Game Type'" 
-            @dropdown-closed="saveSettings()" 
-            @input-changed="handleInputChange" 
-            :defaultValue="usermultigametype"
-            :trackclosure="true"
-          >
-          </multi-select-filter>
+          <div class=" ">
+            <h3>Default Multi-Select Game Type:</h3> 
+            <multi-select-filter
+              :values="this.filters.game_types_full" 
+              :text="'Game Type'" 
+              @dropdown-closed="saveSettings()" 
+              @input-changed="handleInputChange" 
+              :defaultValue="usermultigametype"
+              :trackclosure="true"
+            >
+            </multi-select-filter>
+          </div>
+          <div class="">
+            <h3>Default Build Type</h3> 
+            <!-- Talent build Type -->
+            <single-select-filter 
+              :values="filters.talent_build_types" 
+              :text="'Talent Build Type'" 
+              @dropdown-closed="saveSettings()" 
+              @input-changed="handleInputChange" 
+              :defaultValue="talentBuildType"
+              :trackclosure="true"
+            >
+            </single-select-filter>
+          </div>
         </div>
-        <div class="">
-          <h3>Default Build Type</h3> 
 
-          <!-- Talent build Type -->
-          <single-select-filter 
-            :values="filters.talent_build_types" 
-            :text="'Talent Build Type'" 
-            @dropdown-closed="saveSettings()" 
-            @input-changed="handleInputChange" 
-            :defaultValue="talentBuildType"
-            :trackclosure="true"
-          >
-          </single-select-filter>
-        </div>
-
-
-       
-        </div>
         <div class="px-4">
-        <div class="">
-          <h3>Show Advanced Filtering options:</h3> 
+          <div class="">
+            <h3>Show Advanced Filtering options:</h3> 
+            <single-select-filter 
+              :values="advancedfilteringoptions" 
+              :text="'Advanced Filtering'" 
+              @dropdown-closed="saveSettings()" 
+              @input-changed="handleInputChange" 
+              :defaultValue="advancedfiltering"
+              :trackclosure="true"
+
+            >
+            </single-select-filter>
+          </div>
+          <div class="">
+            <h3>Default Game Type:</h3> 
+            <single-select-filter
+              :values="this.filters.game_types_full" 
+              :text="'Game Type'" 
+              @dropdown-closed="saveSettings()" 
+              @input-changed="handleInputChange" 
+              :defaultValue="usergametype"
+              :trackclosure="true"
+            >
+            </single-select-filter>
+          </div>
+        </div>
+      </div>
+
+
+     
+
+        <div class="max-w-[50%] border-r-[1px] px-4 border-white">
+          <h3 class="mb-auto">Player data initial load style</h3>
           <single-select-filter 
-            :values="advancedfilteringoptions" 
-            :text="'Advanced Filtering'" 
+            :values="playerdataloadstyles" 
+            :text="'Player Load'" 
             @dropdown-closed="saveSettings()" 
             @input-changed="handleInputChange" 
-            :defaultValue="advancedfiltering"
+            :defaultValue="playerload"
             :trackclosure="true"
-
-          >
+            >
           </single-select-filter>
         </div>
-        <div class="">
-          <h3>Default Game Type:</h3> 
-          <single-select-filter
-            :values="this.filters.game_types_full" 
-            :text="'Game Type'" 
-            @dropdown-closed="saveSettings()" 
-            @input-changed="handleInputChange" 
-            :defaultValue="usergametype"
-            :trackclosure="true"
-          >
-          </single-select-filter>
+
+        <div class="px-4 mt-4">
+          <h3>Table Style:</h3>
+          <tab-button tab1text="Light" :ignoreclick="true" tab2text="Dark" @tab-click="darkmodesetting" :overridedefaultside="darkmode"> </tab-button>
         </div>
-      </div>
-    </div>
 
-       <div class="px-4">
-        <h3>Table Style:</h3>
 
-        <tab-button tab1text="Light" :ignoreclick="true" tab2text="Dark" @tab-click="darkmodesetting" :overridedefaultside="darkmode"> </tab-button>
-      </div>
+  
+
     </div>
-    <h1 class="mb-4 bg-teal p-4 ">Profile Settings</h1>
+    <h1 class="mb-4 bg-teal p-4">Profile Settings</h1>
 
     <div class="flex items-stretch gap-10 p-4">
       <div class="max-w-[50%] border-r-[1px] px-4 border-white">
@@ -123,6 +138,10 @@ export default {
         { code: 'true', name: 'Private' },
         { code: 'false', name: "Not Private" }
       ],
+      playerdataloadstyles: [
+        { code: 'true', name: 'Standard' },
+        { code: 'false', name: "No load" }
+      ],
       advancedfiltering: null,
       accountVisibility: 'false',
       talentBuildType: null,
@@ -132,6 +151,7 @@ export default {
 
 
       defaultMultiGameTypeOverride: null,
+      playerload: 'true',
     }
   },
   created(){
@@ -206,6 +226,13 @@ export default {
   methods: {
     async saveSettings(){
       this.isLoading = true;
+
+      let darkmodeinput = this.darkmode;
+      if(darkmodeinput == "right"){
+        darkmodeinput = true;
+      }else if(darkmodeinput == "left"){
+        darkmodeinput = false;
+      }
       try{
         const response = await this.$axios.post("/api/v1/profile/save/settings", {
           userid: this.user.battlenet_accounts_id,
@@ -214,7 +241,8 @@ export default {
           usermultigametype: this.usermultigametype,
           advancedfiltering: this.advancedfiltering,
           talentbuildtype: this.talentBuildType,
-          darkmode: this.darkmode,
+          darkmode: darkmodeinput,
+          playerload: this.playerload,
         });
         //window.location.href = "/Profile/Settings";
         this.settingsSaved = true;
@@ -237,6 +265,8 @@ export default {
       }
     },
     handleInputChange(eventPayload) {
+
+
       if(eventPayload.type === 'single') {
         if(eventPayload.field == "Heroes"){
           this.userhero = this.filters.heroes.find(hero => hero.code === eventPayload.value).name;
@@ -248,6 +278,8 @@ export default {
           this.talentBuildType = eventPayload.value;
         }else if(eventPayload.field == "Game Type"){
           this.usergametype = eventPayload.value;
+        }else if(eventPayload.field == "Player Load"){
+          this.playerload = eventPayload.value;
         }
 
       } else if(eventPayload.type === 'multi') {
@@ -273,6 +305,10 @@ export default {
       }catch(error){
         //Do something here
       }
+    },
+
+    setplayerloadstyle(){
+
     },
   }
 }

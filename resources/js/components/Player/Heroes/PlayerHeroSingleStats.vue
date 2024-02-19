@@ -190,6 +190,9 @@
     },
     props: {
       filters: Object,
+      playerloadsetting: {
+        type: [String, Boolean]
+      },
       hero: String,
       heroobject: Object,
       battletag: String,
@@ -293,7 +296,9 @@
       }
     },
     mounted() {
-      this.getData();
+      if(!this.playerloadsetting || this.playerloadsetting == true){
+        this.getData();
+      }
     },
     computed: {
       seasonWinRateDataArray() {

@@ -51,32 +51,19 @@ class PlayerController extends Controller
             }
         }
 
-        $heroUserSettings = null;
-        $checkedUser = BattlenetAccount::where('battletag', 'like', $battletag.'%')
-            ->where('blizz_id', $blizz_id)
-            ->where('region', $region)
-            ->first();
-
-        if ($checkedUser) {
-            $heroUserSettings = $checkedUser->userSettings->where('setting', 'hero')->first();
-            if (! is_null($heroUserSettings)) {
-                $heroUserSettings = $this->globalDataService->getHeroesByID()[$heroUserSettings['value']];
-            }
-        }
-
         $season = $request['season'];
 
         return view('Player.player')->with([
-            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
-            'settingHero' => $heroUserSettings,
-            'battletag' => $battletag,
-            'blizz_id' => $blizz_id,
-            'region' => $region,
-            'season' => $season,
-            'gametypedefault' => null, //$this->globalDataService->getGameTypeDefault('single'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+          'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+          'playerloadsetting' => $this->globalDataService->getPlayerLoadSettings(),
+          'battletag' => $battletag,
+          'blizz_id' => $blizz_id,
+          'region' => $region,
+          'season' => $season,
+          'gametypedefault' => null, //$this->globalDataService->getGameTypeDefault('single'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
 
-            'filters' => $this->globalDataService->getFilterData(),
-            'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
+          'filters' => $this->globalDataService->getFilterData(),
+          'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);
     }
 

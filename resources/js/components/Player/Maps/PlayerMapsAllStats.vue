@@ -103,6 +103,9 @@ export default {
       type: Object,
       required: true
     },
+    playerloadsetting: {
+      type: [String, Boolean]
+    },
     battletag: String,
     blizzid: String, 
     region: String,
@@ -219,7 +222,9 @@ export default {
     this.gametype = this.gametypedefault;
   },
   mounted() {
-    this.getData();
+    if(!this.playerloadsetting || this.playerloadsetting == true){
+        this.getData();
+      }
   },
   computed: {
     timertime(){

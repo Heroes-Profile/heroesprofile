@@ -131,6 +131,9 @@ export default {
       type: Object,
       required: true
     },
+    playerloadsetting: {
+      type: [String, Boolean]
+    },
     battletag: String,
     blizzid: String, 
     region: String,
@@ -164,7 +167,8 @@ export default {
     this.gametype = this.gametypedefault;
   },
   mounted() {
-    Promise.allSettled([
+    if(!this.playerloadsetting || this.playerloadsetting == true){
+      Promise.allSettled([
       this.getData("friend"),
       this.getData("enemy"),
     ]).then(results => {
@@ -178,6 +182,9 @@ export default {
       } else {
       }
     });
+  }
+
+
 
   },
   computed: {
