@@ -6,6 +6,7 @@
 @section('content')
   <player-maps-all-stats 
     :filters="{{ json_encode($filters) }}" 
+    :playerloadsetting="{{ json_encode($playerloadsetting) }}" 
     :battletag="{{ json_encode($battletag) }}" 
     :blizzid="{{ json_encode($blizz_id) }}" 
     :region="{{ json_encode($region) }}"

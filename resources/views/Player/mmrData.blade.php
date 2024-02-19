@@ -5,6 +5,7 @@
 @section('content')
   <mmr-data 
     :battletag="{{ json_encode($battletag) }}" 
+    :playerloadsetting="{{ json_encode($playerloadsetting) }}" 
     :blizzid="{{ json_encode($blizz_id) }}" 
     :region="{{ json_encode($region) }}" 
     :filters="{{ json_encode($filters) }}" 

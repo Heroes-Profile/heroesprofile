@@ -132,6 +132,9 @@ export default {
   },
   props: {
     filters: Object,
+    playerloadsetting: {
+      type: [String, Boolean]
+    },
     gametypedefault: Array,
     battletag: String,
     blizzid: {
@@ -163,7 +166,9 @@ export default {
     this.gametype = this.gametypedefault[0];
   },
   mounted() {
-    this.getData();
+    if(!this.playerloadsetting || this.playerloadsetting == true){
+      this.getData();
+    }
   },
   computed: {
     reversedData() {

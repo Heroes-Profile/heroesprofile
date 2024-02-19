@@ -5,6 +5,7 @@
 @section('content')
   <player-heroes-all-stats 
     :filters="{{ json_encode($filters) }}" 
+    :playerloadsetting="{{ json_encode($playerloadsetting) }}" 
     :battletag="{{ json_encode($battletag) }}" 
     :blizzid="{{ json_encode($blizz_id) }}" 
     :accountlevel="{{ json_encode($account_level) }}" 
