@@ -512,7 +512,7 @@ export default {
       var url = "";
       if(hero){
         if(this.queryString){
-          url = '/Global/Talents/' + hero.name + "/?" + this.queryString;
+          url = '/Global/Talents/' + hero.name + this.queryString;
         }else{
           url = '/Global/Talents/' + hero.name;
         }
