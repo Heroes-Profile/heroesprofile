@@ -41,7 +41,14 @@
    
         <div v-if="draftdata">
           <div class="max-w-[1500px] mx-auto flex justify-start mb-2"> 
-            <span class="flex gap-4 mb-2 mx-2"> {{ this.selectedHero.name }} {{ "Draft Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
+            <span class="flex gap-4 mb-2 mx-2">
+              <single-select-filter
+                :values="filters.heroes" 
+                :text="'Change Hero'" 
+                :defaultValue="selectedHero.id"
+                @input-changed="handleInputChange"
+              ></single-select-filter>
+            </span>
           </div>
           <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]  max-sm:text-xs 2xl:mx-auto  " style=" ">
             <table id="responsive-table" class="responsive-table  relative max-sm:text-xs" ref="responsivetable">
@@ -213,7 +220,11 @@
         this.herorank = filteredData.multi["Hero Rank"] ? Array.from(filteredData.multi["Hero Rank"]) : null;
         this.rolerank = filteredData.multi["Role Rank"] ? Array.from(filteredData.multi["Role Rank"]) : null;
 
-
+        this.updateQueryString();
+        this.draftdata = null;
+        this.getData();
+      },
+      updateQueryString(){
         let queryString = `?timeframe_type=${this.timeframetype}`;
         queryString += `&timeframe=${this.timeframe}`;
         queryString += `&game_type=${this.gametype}`;
@@ -245,11 +256,6 @@
         const currentUrl = window.location.href;
         let currentPath = window.location.pathname;
         history.pushState(null, null, `${currentPath}${queryString}`);
-
-
-
-        this.draftdata = null;
-        this.getData();
       },
       determinePickOrBan(pick_number) {
         const mapping = {
@@ -316,6 +322,21 @@
         this.rolerank = this.urlparameters["role_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
       }
     },
+    handleInputChange(eventPayload){
+        this.selectedHero = this.heroes.find(hero => hero.id === eventPayload.value);
+        let currentPath = window.location.pathname;
+        let newPath = currentPath.replace(/\/[^/]*$/, `/${this.selectedHero.name}`);
+        history.pushState(null, null, newPath);
+        this.updateQueryString();
+
+        this.draftdata = null;
+
+        //Have to use setTimeout to make this occur on next tic to allow header info/text to update properly.  
+        setTimeout(() => {
+          this.getData();
+        }, .25);
+
+      },
   }
 }
 </script>
