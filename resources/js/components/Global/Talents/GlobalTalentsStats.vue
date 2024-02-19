@@ -55,7 +55,12 @@
         <div v-if="talentdetaildata" class="mx-auto  md:px-4">
           <div class="flex justify-between max-w-[1500px] mx-auto">
             <span class="flex gap-4 mb-2"> 
-              {{ this.selectedHero.name }} {{ "Talent Stats"}} <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
+              <single-select-filter
+                :values="filters.heroes" 
+                :text="'Change Hero'" 
+                :defaultValue="selectedHero.id"
+                @input-changed="handleInputChange"
+              ></single-select-filter>
             </span>
             <span><custom-button @click="scrollToBuilds" :text="'Scroll To Builds'" :alt="'Scroll To Builds'" size="small" :ignoreclick="true"></custom-button></span>
           </div>
@@ -186,17 +191,6 @@
       clickedHero(hero) {
         this.selectedHero = hero;
         this.preloadTalentImages(hero);
-
-        //This isnt working
-        if(!this.patreonUser){
-          this.$nextTick(() => {
-            (window.top).__vm_add = (window.top).__vm_add || [];
-            (window.top).__vm_add.push(this.$refs.takeoverAddPlacement);
-            //(window.top).__vm_add.push(this.$refs.dynamicAddPlacement);
-          });
-        }
-   
-
 
         let currentPath = window.location.pathname;
         history.pushState(null, null, `${currentPath}/${this.selectedHero.name}`);
@@ -432,6 +426,28 @@
         if (this.urlparameters["mirror"]) {
           this.mirrormatch = this.urlparameters["mirror"];
         }
+      },
+      handleInputChange(eventPayload){
+        this.selectedHero = this.heroes.find(hero => hero.id === eventPayload.value);
+        this.preloadTalentImages(this.selectedHero);
+
+        let currentPath = window.location.pathname;
+        let newPath = currentPath.replace(/\/[^/]*$/, `/${this.selectedHero.name}`);
+        history.pushState(null, null, newPath);
+        this.updateQueryString();
+
+        this.talentdetaildata = null;
+        this.talentbuilddata = null;
+
+        //Have to use setTimeout to make this occur on next tic to allow header info/text to update properly.  
+        setTimeout(() => {
+            Promise.allSettled([
+                this.getTalentData(),
+                this.getTalentBuildData(),
+            ]).then(results => {
+            });
+        }, 0);
+
       },
     }
   }
