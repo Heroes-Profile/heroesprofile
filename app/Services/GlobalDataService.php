@@ -130,8 +130,8 @@ class GlobalDataService
     }
 
     public function getPlayerLoadSettings(){
-        $user = BattlenetAccount::find(1);
-        Auth::login($user);
+        //$user = BattlenetAccount::find(1);
+        //Auth::login($user);
 
       if (Auth::check()) {
           $user = Auth::user();
