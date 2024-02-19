@@ -116,6 +116,9 @@ export default {
     blizzid: {
       type: [String, Number]
     },
+    playerloadsetting: {
+      type: [String, Boolean]
+    },
     region: Number,
     regions: Object,
     map: String,
@@ -144,7 +147,9 @@ export default {
     }
   },
   mounted() {
-    this.getData();
+    if(!this.playerloadsetting || this.playerloadsetting == true){
+      this.getData();
+    }
   },
   computed: {
     seasonWinRateDataArray() {

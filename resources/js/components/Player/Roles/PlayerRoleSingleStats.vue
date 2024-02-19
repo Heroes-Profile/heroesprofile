@@ -140,6 +140,9 @@
       blizzid: {
         type: [String, Number]
       },
+      playerloadsetting: {
+        type: [String, Boolean]
+      },
       region: Number,
       regionsmap: Object,
       isPatreon: Boolean,
@@ -165,7 +168,9 @@
       }
     },
     mounted() {
-      this.getData();
+      if(!this.playerloadsetting || this.playerloadsetting == true){
+        this.getData();
+      }
     },
     computed: {
       seasonWinRateDataArray() {

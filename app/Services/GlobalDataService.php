@@ -129,6 +129,23 @@ class GlobalDataService
 
     }
 
+    public function getPlayerLoadSettings(){
+        $user = BattlenetAccount::find(1);
+        Auth::login($user);
+
+      if (Auth::check()) {
+          $user = Auth::user();
+
+          $playerload = $user->userSettings->firstWhere('setting', 'playerload');
+
+          $playerload = $playerload ? $playerload->value : true;
+
+          return $playerload;
+      }
+
+      return true;
+    }
+
     public function getRegionIDtoString()
     {
         return $regions = [

@@ -125,6 +125,19 @@ class ProfileController extends Controller
             );
         }
 
+
+        if (! is_null($request['playerload'])) {
+          $user = BattlenetAccount::find($request['userid']);
+
+          $playerload = $request['playerload'];
+
+          $user->userSettings()->updateOrCreate(
+              ['setting' => 'playerload'],
+              ['value' => $playerload]
+          );
+        }
+
+
         return ['success' => true];
     }
 

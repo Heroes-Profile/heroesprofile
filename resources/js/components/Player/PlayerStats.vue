@@ -200,7 +200,9 @@
     components: {
     },
     props: {
-      settinghero: Object,
+      playerloadsetting: {
+        type: [String, Boolean]
+      },
       filters: Object,
       battletag: String,
       blizzid: String, 
@@ -242,7 +244,9 @@
         };
       }
 
-      this.getData();
+      if(!this.playerloadsetting || this.playerloadsetting == true){
+        this.getData();
+      }
     },
     computed: {
      gameTypesWithAll() {

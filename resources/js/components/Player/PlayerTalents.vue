@@ -53,6 +53,9 @@ export default {
       type: Object,
       required: true
     },
+    playerloadsetting: {
+      type: [String, Boolean]
+    },
     battletag: String,
     blizzid: String, 
     region: String,
@@ -85,7 +88,9 @@ export default {
   mounted() {
     if(this.inputhero){
       this.selectedHero = this.inputhero;
-      this.getData();
+      if(!this.playerloadsetting || this.playerloadsetting == true){
+        this.getData();
+      }
     }
   },
   computed: {

@@ -48,6 +48,8 @@ class PlayerTalentsController extends Controller
 
         return view('Player.talentData')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+            'playerloadsetting' => $this->globalDataService->getPlayerLoadSettings(),
+
             'userinput' => $userinput,
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,

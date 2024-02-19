@@ -45,6 +45,8 @@ class PlayerMapsController extends Controller
 
         return view('Player.Maps.allMapData')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+            'playerloadsetting' => $this->globalDataService->getPlayerLoadSettings(),
+
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'account_level' => $account_level,
@@ -83,6 +85,8 @@ class PlayerMapsController extends Controller
 
         return view('Player.Maps.singleMapData')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+            'playerloadsetting' => $this->globalDataService->getPlayerLoadSettings(),
+
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,

@@ -244,7 +244,8 @@ export default {
       mirrormatch: 0,
       talentbuildtype: null,
       loadingStates: {},
-      tablewidth: null
+      tablewidth: null,
+      queryString: null,
     }
   },
   created(){
@@ -433,51 +434,51 @@ export default {
       this.sortKey = '';
       this.sortDir = 'desc';
 
-      let queryString = `?timeframe_type=${this.timeframetype}`;
-      queryString += `&timeframe=${this.timeframe}`;
+      this.queryString  = `?timeframe_type=${this.timeframetype}`;
+      this.queryString += `&timeframe=${this.timeframe}`;
 
-      queryString += `&game_type=${this.gametype}`;
+      this.queryString += `&game_type=${this.gametype}`;
 
       if(this.region){
-        queryString += `&region=${this.region}`;
+        this.queryString += `&region=${this.region}`;
       }
 
       if(this.herolevel){
-        queryString += `&hero_level=${this.herolevel}`;
+        this.queryString += `&hero_level=${this.herolevel}`;
       }
 
       if(this.gamemap){
-        queryString += `&game_map=${this.gamemap}`;
+        this.queryString += `&game_map=${this.gamemap}`;
       }
 
       if(this.hero){
-        queryString += `&hero=${this.hero}`;
+        this.queryString += `&hero=${this.hero}`;
       }
 
       if(this.role){
-        queryString += `&role=${this.role}`;
+        this.queryString += `&role=${this.role}`;
       }
 
     
       if(this.playerrank){
-        queryString += `&league_tier=${this.convertRankIDtoName(this.playerrank)}`;
+        this.queryString += `&league_tier=${this.convertRankIDtoName(this.playerrank)}`;
       }
 
       if(this.herorank){
-        queryString += `&hero_league_tier=${this.convertRankIDtoName(this.herorank)}`;
+        this.queryString += `&hero_league_tier=${this.convertRankIDtoName(this.herorank)}`;
       }
 
       if(this.rolerank){
-        queryString += `&role_league_tier=${this.convertRankIDtoName(this.rolerank)}`;
+        this.queryString += `&role_league_tier=${this.convertRankIDtoName(this.rolerank)}`;
       }
 
-      queryString += `&statfilter=${this.statfilter}`;
-      queryString += `&build_type=${this.talentbuildtype}`;
-      queryString += `&mirror=${this.mirrormatch}`;
+      this.queryString += `&statfilter=${this.statfilter}`;
+      this.queryString += `&build_type=${this.talentbuildtype}`;
+      this.queryString += `&mirror=${this.mirrormatch}`;
 
       const currentUrl = window.location.href;
       let currentPath = window.location.pathname;
-      history.pushState(null, null, `${currentPath}${queryString}`);
+      history.pushState(null, null, `${currentPath}${this.queryString}`);
    
       this.data = null;
 
@@ -510,7 +511,11 @@ export default {
     getGlobalTalentsURL(hero){
       var url = "";
       if(hero){
-        url = '/Global/Talents/' + hero.name;
+        if(this.queryString){
+          url = '/Global/Talents/' + hero.name + "/?" + this.queryString;
+        }else{
+          url = '/Global/Talents/' + hero.name;
+        }
       }
       return url;
     },

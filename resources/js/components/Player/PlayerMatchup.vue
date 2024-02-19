@@ -79,6 +79,9 @@
     },
     props: {
       filters: Object,
+      playerloadsetting: {
+        type: [String, Boolean]
+      },
       battletag: String,
       blizzid: String, 
       region: String,
@@ -105,7 +108,9 @@
 
     },
     mounted() {
-      this.getData();
+      if(!this.playerloadsetting || this.playerloadsetting == true){
+        this.getData();
+      }
     },
     computed: {
       sortedData() {

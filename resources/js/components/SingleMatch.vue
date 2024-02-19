@@ -346,7 +346,7 @@
     </thead>
     <tbody>
       <tr v-for="(item, index) in data.players[0]" :key="index">
-        <td class="bg-blue text-white border-white border"><a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR/' + item.hero.name + '/' + data.game_type">{{ item.battletag }}</a></td>
+        <td class="bg-blue text-white border-white border"><a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR/'">{{ item.battletag }}</a></td>
         <td>{{ item.hero.name }}</td>
         <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
         <td>{{ Math.round(item.hero_mmr - item.hero_change) }}</td>
@@ -398,7 +398,7 @@
     </thead>
     <tbody>
       <tr v-for="(item, index) in data.players[1]" :key="index">
-        <td class="bg-blue text-white border-white border"><a :href="`/Player/${item.battletag}/${item.blizz_id}/${item.region}`">{{ item.battletag }}</a></td>
+        <td class="bg-blue text-white border-white border"><a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR/'">{{ item.battletag }}</a></td>
         <td>{{ item.hero.name }}</td>
         <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
         <td>{{ Math.round(item.hero_mmr - item.hero_change) }}</td>
