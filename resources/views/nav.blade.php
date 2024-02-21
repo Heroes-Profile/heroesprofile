@@ -124,6 +124,12 @@
                             </div>
                             <div class="md:absolute right-0 md:hidden md:group-hover:block z-50  ">
                                 <div class="md:bg-blue  rounded-b-lg rounded-tl-lg text-sm drop-shadow max-md:flex">
+                                  
+                                <span class="block px-4 py-2 border-b border-darken bg-gray-dark">
+                                {{ $mainSearchAccount['battletag_full'] }}
+
+                                </span>
+
                                     <a href="/Profile/Settings" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Settings</a>
                                     <a href="/Battlenet/Logout" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Logout</a>
                                 </div>
