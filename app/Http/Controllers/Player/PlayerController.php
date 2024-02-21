@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
-use App\Models\BattlenetAccount;
 use App\Models\Battletag;
 use App\Models\GameType;
 use App\Models\HeroesDataTalent;
@@ -54,16 +53,16 @@ class PlayerController extends Controller
         $season = $request['season'];
 
         return view('Player.player')->with([
-          'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
-          'playerloadsetting' => $this->globalDataService->getPlayerLoadSettings(),
-          'battletag' => $battletag,
-          'blizz_id' => $blizz_id,
-          'region' => $region,
-          'season' => $season,
-          'gametypedefault' => null, //$this->globalDataService->getGameTypeDefault('single'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+            'playerloadsetting' => $this->globalDataService->getPlayerLoadSettings(),
+            'battletag' => $battletag,
+            'blizz_id' => $blizz_id,
+            'region' => $region,
+            'season' => $season,
+            'gametypedefault' => null, //$this->globalDataService->getGameTypeDefault('single'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
 
-          'filters' => $this->globalDataService->getFilterData(),
-          'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
+            'filters' => $this->globalDataService->getFilterData(),
+            'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);
     }
 
