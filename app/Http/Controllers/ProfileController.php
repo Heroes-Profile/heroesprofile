@@ -16,8 +16,8 @@ class ProfileController extends Controller
 {
     public function showSettings(Request $request)
     {
-        $user = Auth::user();
-
+        $user = Auth::user();        
+        
         return view('Profile.profileSettings')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'user' => $user,
