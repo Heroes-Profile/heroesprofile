@@ -414,19 +414,19 @@ class SingleMatchController extends Controller
         $colorCounter = 0;
 
         foreach ($playerArray[0] as &$playerData) {
-            if ($playerData['party'] != 0 && ! array_key_exists($playerData['party'], $partyArray)) {
+            if ($playerData['party'] != '' && $playerData['party'] != 0 && ! array_key_exists($playerData['party'], $partyArray)) {
                 $partyArray[$playerData['party']] = $partColorArray[$colorCounter];
                 $colorCounter++;
             }
-            $playerData['party'] = $playerData['party'] != 0 ? $partyArray[$playerData['party']] : null;
+            $playerData['party'] = ($playerData['party'] != '' && $playerData['party'] != 0) ? $partyArray[$playerData['party']] : null;
         }
 
         foreach ($playerArray[1] as &$playerData) {
-            if ($playerData['party'] != 0 && ! array_key_exists($playerData['party'], $partyArray)) {
+            if ($playerData['party'] != '' && $playerData['party'] != 0 && ! array_key_exists($playerData['party'], $partyArray)) {
                 $partyArray[$playerData['party']] = $partColorArray[$colorCounter];
                 $colorCounter++;
             }
-            $playerData['party'] = $playerData['party'] != 0 ? $partyArray[$playerData['party']] : null;
+            $playerData['party'] = ($playerData['party'] != '' && $playerData['party'] != 0) ? $partyArray[$playerData['party']] : null;
         }
 
         // Unset the references to avoid potential issues
