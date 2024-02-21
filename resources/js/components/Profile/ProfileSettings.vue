@@ -152,6 +152,7 @@ export default {
 
       defaultMultiGameTypeOverride: null,
       playerload: 'true',
+      savemultigametype: null,
     }
   },
   created(){
@@ -163,6 +164,7 @@ export default {
 
     this.usergametype = this.defaultGameType;
     this.usermultigametype = this.defaultMultiGameType;
+    this.savemultigametype = this.usermultigametype;
     this.advancedfiltering = this.defaultAdvancedFiltering;
     this.talentBuildType = this.defaultBuildType;
     this.darkmode = this.defaultDarkMode;
@@ -238,7 +240,7 @@ export default {
           userid: this.user.battlenet_accounts_id,
           userhero: this.userhero,
           usergametype: this.usergametype,
-          usermultigametype: this.usermultigametype,
+          usermultigametype: this.savemultigametype,
           advancedfiltering: this.advancedfiltering,
           talentbuildtype: this.talentBuildType,
           darkmode: darkmodeinput,
@@ -249,6 +251,8 @@ export default {
         setTimeout(() => {
           this.settingsSaved = false;
         }, 5000);
+        this.usermultigametype = this.savemultigametype;
+        
       }catch(error){
         //Do something here
       }
@@ -265,8 +269,6 @@ export default {
       }
     },
     handleInputChange(eventPayload) {
-
-
       if(eventPayload.type === 'single') {
         if(eventPayload.field == "Heroes"){
           this.userhero = this.filters.heroes.find(hero => hero.code === eventPayload.value).name;
@@ -284,9 +286,10 @@ export default {
 
       } else if(eventPayload.type === 'multi') {
         if(eventPayload.field == "Game Type"){
-          this.usermultigametype = eventPayload.value;
+          this.savemultigametype = eventPayload.value;
         }
       }
+   
     },
     darkmodesetting(side){
       if(side == "right"){
@@ -305,10 +308,6 @@ export default {
       }catch(error){
         //Do something here
       }
-    },
-
-    setplayerloadstyle(){
-
     },
   }
 }
