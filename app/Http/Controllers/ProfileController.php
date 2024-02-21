@@ -16,8 +16,8 @@ class ProfileController extends Controller
 {
     public function showSettings(Request $request)
     {
-        $user = Auth::user();        
-        
+        $user = Auth::user();
+
         return view('Profile.profileSettings')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'user' => $user,
@@ -125,18 +125,16 @@ class ProfileController extends Controller
             );
         }
 
-
         if (! is_null($request['playerload'])) {
-          $user = BattlenetAccount::find($request['userid']);
+            $user = BattlenetAccount::find($request['userid']);
 
-          $playerload = $request['playerload'];
+            $playerload = $request['playerload'];
 
-          $user->userSettings()->updateOrCreate(
-              ['setting' => 'playerload'],
-              ['value' => $playerload]
-          );
+            $user->userSettings()->updateOrCreate(
+                ['setting' => 'playerload'],
+                ['value' => $playerload]
+            );
         }
-
 
         return ['success' => true];
     }
