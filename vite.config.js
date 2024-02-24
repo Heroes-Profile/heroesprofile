@@ -5,7 +5,6 @@ import tailwindcss from 'tailwindcss'
 import flareSourcemapUploader from '@flareapp/vite-plugin-sourcemap-uploader';
 
 export default defineConfig({
-    //base: process.env.NODE_ENV === 'production' ? 'https://rewrite.heroesprofile.com/public' : '/',
     plugins: [
         laravel({
             input: [
