@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Battletag;
 use App\Models\GameType;
 use App\Models\HeroesDataTalent;
-use App\Models\LaravelProfilePage;
+use App\Models\ProfilePage;
 use App\Models\Map;
 use App\Models\MasterMMRDataAR;
 use App\Models\MasterMMRDataHL;
@@ -95,7 +95,7 @@ class PlayerController extends Controller
         $game_type = $request['game_type'] ? GameType::where('short_name', $request['game_type'])->pluck('type_id')->first() : null;
         $season = $request['season'];
 
-        $cachedData = LaravelProfilePage::filterByBlizzID($blizz_id)
+        $cachedData = ProfilePage::filterByBlizzID($blizz_id)
             ->filterByRegion($region)
             ->where('game_type', $game_type)
             ->where('season', $season)
@@ -104,7 +104,7 @@ class PlayerController extends Controller
         if (! $cachedData) {
             $this->calculateProfile($blizz_id, $region, $game_type, $season);
 
-            $cachedData = LaravelProfilePage::filterByBlizzID($blizz_id)
+            $cachedData = ProfilePage::filterByBlizzID($blizz_id)
                 ->filterByRegion($region)
                 ->where('game_type', $game_type)
                 ->where('season', $season)
@@ -134,7 +134,7 @@ class PlayerController extends Controller
 
         if ($latestReplayID && $cachedData->latest_replayID < $latestReplayID) {
             $this->calculateProfile($blizz_id, $region, $game_type, $season, $cachedData);
-            $cachedData = LaravelProfilePage::filterByBlizzID($blizz_id)
+            $cachedData = ProfilePage::filterByBlizzID($blizz_id)
                 ->filterByRegion($region)
                 ->where('game_type', $game_type)
                 ->where('season', $season)
@@ -392,7 +392,7 @@ class PlayerController extends Controller
         }
 
         if (! $cachedData) {
-            $dataToSave = new LaravelProfilePage;
+            $dataToSave = new ProfilePage;
             $dataToSave->blizz_id = $blizz_id;
             $dataToSave->region = $region;
             $dataToSave->game_type = $game_type;
