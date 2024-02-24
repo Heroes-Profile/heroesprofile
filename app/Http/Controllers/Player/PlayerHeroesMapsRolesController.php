@@ -568,7 +568,7 @@ class PlayerHeroesMapsRolesController extends Controller
             $groupBy = 'new_role';
         }
 
-        $returnData = $result->groupBy($groupBy)->map(function ($heroStats, $index) use ($battletag, $blizz_id, $region, $heroData, $qm_mmr_data, $ud_mmr_data, $hl_mmr_data, $tl_mmr_data, $sl_mmr_data, $ar_mmr_data, $newSeasonData, $mapData, $mapWinRateFiltered, $latestGames, $page, $heroWinRateFiltered, $heroDataStats, $maps) {
+        $returnData = $result->groupBy($groupBy)->map(function ($heroStats, $index) use ($type, $battletag, $blizz_id, $region, $heroData, $qm_mmr_data, $ud_mmr_data, $hl_mmr_data, $tl_mmr_data, $sl_mmr_data, $ar_mmr_data, $newSeasonData, $mapData, $mapWinRateFiltered, $latestGames, $page, $heroWinRateFiltered, $heroDataStats, $maps) {
             $deaths = $heroStats->sum('deaths');
             $avg_kills = $heroStats->avg('kills');
             $avg_takedowns = $heroStats->avg('takedowns');
