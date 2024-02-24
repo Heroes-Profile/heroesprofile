@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProfilePage extends Model
 {
-    protected $table = 'laravel_profile_page';
+    protected $table = 'profile_page';
 
     protected $primaryKey = 'profile_page_id';
 
