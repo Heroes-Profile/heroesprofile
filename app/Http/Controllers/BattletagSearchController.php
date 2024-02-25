@@ -105,6 +105,11 @@ class BattletagSearchController extends Controller
             $item->regionName = $regionName;
 
         }
+
+        $returnData = array_filter($returnData, function ($item) {
+          return $item->totalGamesPlayed > 0;
+        });
+
         usort($returnData, function ($a, $b) {
             return $b->totalGamesPlayed - $a->totalGamesPlayed;
         });
