@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\BattlenetAccount;
 use App\Models\PatreonAccount;
+use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
@@ -20,6 +21,8 @@ class PatreonController extends Controller
 
     public function handleProviderCallback()
     {
+
+      try {
         $user = Socialite::driver('patreon')->user();
         $patreonData = [
             'patreon_id' => $user->id,
@@ -43,8 +46,23 @@ class PatreonController extends Controller
             $battlenetAccount->patreon = 1;
             $battlenetAccount->save();
         }
-
         return redirect('/Profile/Settings');
+
+      } catch (InvalidStateException $e) {
+          // Log the exception for debugging (optional)
+          Log::error('InvalidStateException in PatreonController: '.$e->getMessage());
+
+          // Redirect the user to a custom login failed page
+          return redirect('/Authenticate/Patreon/Failed');
+      }
+    }
+
+    public function handleProviderCallbackFailed(Request $request)
+    {
+        return view('Patreon.authenticationFailed')
+            ->with([
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+            ]);
     }
 
     private function getUserDataCheckIfSubscribed($accessToken)
