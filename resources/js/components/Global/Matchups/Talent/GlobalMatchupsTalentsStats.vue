@@ -32,13 +32,13 @@
   </div>
   <div v-else>
     <div class="flex justify-center items-center md:gap-10">
-      <div class="">
+      <div v-if="hero" class="">
         <single-select-filter :values="firstHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="herochanged" :defaultValue="hero.id"></single-select-filter>
       </div>
       <div class="">
         {{ vsorwith }}
       </div>
-      <div class="">
+      <div v-if="enemyally" class="">
         <single-select-filter :values="secondHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="allyenemychanged" :defaultValue="enemyally.id"></single-select-filter>
       </div>
     </div>
