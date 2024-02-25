@@ -16,6 +16,7 @@ use App\Models\MasterMMRDataTL;
 use App\Models\MasterMMRDataUD;
 use App\Models\MMRTypeID;
 use App\Models\Replay;
+use App\Models\Player;
 use App\Models\SeasonDate;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\SeasonInputValidation;
@@ -725,7 +726,7 @@ class PlayerController extends Controller
             $matches = $data->matches;
         }
 
-        $returnData->matchData = collect($matches)->sortByDesc('game_date')->map(function ($match) use ($maps, $heroData, $talentData) {
+        $returnData->matchData = collect($matches)->sortByDesc('game_date')->map(function ($match) use ($maps, $heroData, $talentData, $blizz_id) {
             $match['game_type'] = $this->globalDataService->getGameTypeIDtoString()[$match['game_type']];
             $match['game_map'] = $maps[$match['game_map']];
             $match['hero'] = $heroData[$match['hero']];
@@ -777,21 +778,35 @@ class PlayerController extends Controller
                 }
             }
 
-            $match['player_conservative_rating'] = round($match['player_conservative_rating'], 2);
-            $match['player_mmr'] = round(1800 + 40 * $match['player_conservative_rating']);
-            $match['player_change'] = round($match['player_change'], 2);
+            $updatedMMRValuesChecker = false;
+            $updatedMMRValues = null;
+            if(round(1800 + 40 * $match['player_conservative_rating']) == 1800){
+              $updatedMMRValuesChecker = true;
+              $updatedMMRValues = $this->getUpdatedMMRValues($match['replayID'], $blizz_id);
+            }
 
-            $match['hero_conservative_rating'] = round($match['hero_conservative_rating'], 2);
-            $match['hero_mmr'] = round(1800 + 40 * $match['hero_conservative_rating']);
-            $match['hero_change'] = round($match['hero_change'], 2);
+            $match['player_conservative_rating'] = $updatedMMRValuesChecker ?  round($updatedMMRValues['player_conservative_rating'], 2) : round($match['player_conservative_rating'], 2);
+            $match['player_mmr'] = $updatedMMRValuesChecker ? round(1800 + 40 * $updatedMMRValues['player_conservative_rating']) : round(1800 + 40 * $match['player_conservative_rating']);
+            $match['player_change'] = $updatedMMRValuesChecker ? round($updatedMMRValues['player_change'], 2) : round($match['player_change'], 2);
 
-            $match['role_conservative_rating'] = round($match['role_conservative_rating'], 2);
-            $match['role_mmr'] = round(1800 + 40 * $match['role_conservative_rating']);
-            $match['role_change'] = round($match['role_change'], 2);
+            $match['hero_conservative_rating'] = $updatedMMRValuesChecker ? round($updatedMMRValues['hero_conservative_rating'], 2) : round($match['hero_conservative_rating'], 2);
+            $match['hero_mmr'] = $updatedMMRValuesChecker ? round(1800 + 40 * $updatedMMRValues['hero_conservative_rating']) : round(1800 + 40 * $match['hero_conservative_rating']);
+            $match['hero_change'] = $updatedMMRValuesChecker ? round($updatedMMRValues['hero_change'], 2) : round($match['hero_change'], 2);
+
+            $match['role_conservative_rating'] = $updatedMMRValuesChecker ? round($updatedMMRValues['role_conservative_rating'], 2) : round($match['role_conservative_rating'], 2);
+            $match['role_mmr'] = $updatedMMRValuesChecker ? round(1800 + 40 * $updatedMMRValues['role_conservative_rating']) : round(1800 + 40 * $match['role_conservative_rating']);
+            $match['role_change'] = $updatedMMRValuesChecker ? round($updatedMMRValues['role_change'], 2) : round($match['role_change'], 2);
 
             return $match;
         })->values();
 
         return $returnData;
     }
+
+    private function getUpdatedMMRValues($replayID, $blizz_id){
+      return Player::select("player_conservative_rating", "player_change", "hero_conservative_rating", "hero_change", "role_conservative_rating", "role_change")
+        ->where("replayID", $replayID)
+        ->where("blizz_id", $blizz_id)
+        ->first();
+      }
 }

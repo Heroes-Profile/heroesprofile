@@ -118,7 +118,11 @@ class EsportsController extends Controller
 
         $image = '';
         if ($esport == 'NGS') {
-            $image = NGSTeam::select('image')->where('team_name', $team)->first()->image;
+            $image = NGSTeam::select('image')->where('team_name', $team)->first();
+
+            if($image){
+              $image = $image->image;
+            }
         }
 
         return view('Esports.team')

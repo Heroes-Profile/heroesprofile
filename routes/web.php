@@ -78,8 +78,11 @@ Route::get('/redirect/authenticate/battlenet', [BattleNetController::class, 'red
 Route::get('/authenticate/battlenet/success', [BattleNetController::class, 'handleProviderCallback']);
 Route::get('/Authenticate/Battlenet/Failed', [BattleNetController::class, 'handleProviderCallbackFailed']);
 
+
+
 Route::get('/authenticate/patreon', [PatreonController::class, 'redirectToProvider']);
 Route::get('/authenticate/patreon/success', [PatreonController::class, 'handleProviderCallback']);
+Route::get('/Authenticate/Patreon/Failed', [PatreonController::class, 'handleProviderCallbackFailed']);
 
 Route::get('/Global/Hero/Maps/', [GlobalHeroMapStatsController::class, 'show']);
 Route::get('/Global/Hero/Maps/{hero}', [GlobalHeroMapStatsController::class, 'show']);
