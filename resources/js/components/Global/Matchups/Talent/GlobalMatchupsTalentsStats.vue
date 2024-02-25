@@ -326,8 +326,15 @@
         }
 
         if (this.urlparameters["league_tier"]) {
-          this.playerrank = this.urlparameters["league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+          this.playerrank = this.urlparameters["league_tier"]
+            .split(',')
+            .map(tierName => {
+                const capitalizedTierName = tierName.charAt(0).toUpperCase() + tierName.slice(1);
+                const tier = this.filters.rank_tiers.find(tier => tier.name === capitalizedTierName);
+                return tier?.code;
+            });
         }
+
       },
     }
   }
