@@ -1,5 +1,5 @@
 # Heroes Profile
-[Master Heroes Profile](https://rewrite.heroesprofile.com/)(master branch)
+[Master Heroes Profile](https://www.heroesprofile.com/)(master branch)
 
 This public repository is the site re-write for [Heroes Profile](https://www.heroesprofile.com/) and is not currently in production.
 
