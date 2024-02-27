@@ -1,8 +1,10 @@
 <template>
   <div>
     
-    <page-heading :heading="'Matchups'" :battletag="battletag +`(`+ regionsmap[region] + `)`" :infoText1="infotext" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+    <page-heading :heading="'Matchups'" :infoText1="infotext" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
     
+    
+
     <filters 
     :onFilter="filterData" 
     :filters="filters" 

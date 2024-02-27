@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="hero + ' stats for ' + battletag" :heading="'Hero Stats: '+hero" :battletag="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner">
+    <page-heading :infoText1="hero + ' stats for ' + battletag" :heading="'Hero Stats: '+hero" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
       <hero-image-wrapper :hero="heroobject" :size="'big'"></hero-image-wrapper>
     </page-heading>
 

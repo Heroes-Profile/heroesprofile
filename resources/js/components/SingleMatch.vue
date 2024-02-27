@@ -16,16 +16,15 @@
         <div class="mb-4">
           <h1 class="max-md:text-[1.5em]">{{ formatDate(data.game_date) }}</h1>
         </div>
-
         <div class="w-full max-w-[1000px] bg-blue rounded flex justify-between gap-2 mx-auto p-4 mb-4">
           <span>{{ data.game_map.name }}</span>
           <span v-if="!esport">
             {{ data.game_type }}
           </span>
-          <span v-else-if="esport && esport == 'CCL'" class="link" @click="downloadReplay(replayid)">
+          <span>{{ data.game_length }}</span>
+          <span v-if="data.downloadable || (esport && esport == 'CCL')" class="link" @click="downloadReplay(data, replayid)">
             Download Replay
           </span>
-          <span>{{ data.game_length }}</span>
         </div>
       </div>
 
@@ -652,21 +651,26 @@
         return 0;
       }
 
+      const filteredData = data.filter(obj => obj.blizz_id !== null);
+
       let sum;
       if (type === "prev_player_mmr") {
-        sum = data.reduce((acc, curr) => acc + (curr.player_mmr - curr.player_change || 0), 0);
+        sum = filteredData.reduce((acc, curr) => acc + (curr.player_mmr - curr.player_change || 0), 0);
       } else if (type === "prev_hero_mmr") {
-        sum = data.reduce((acc, curr) => acc + (curr.hero_mmr - curr.hero_change || 0), 0);
+        sum = filteredData.reduce((acc, curr) => acc + (curr.hero_mmr - curr.hero_change || 0), 0);
       } else if (type === "prev_role_mmr") {
-        sum = data.reduce((acc, curr) => acc + (curr.role_mmr - curr.role_change || 0), 0);
+        sum = filteredData.reduce((acc, curr) => acc + (curr.role_mmr - curr.role_change || 0), 0);
       } else {
-        sum = data.reduce((acc, curr) => acc + (curr[type] || 0), 0);
+        sum = filteredData.reduce((acc, curr) => acc + (curr[type] || 0), 0);
       }
 
-      const average = sum / data.length;
+      const length = filteredData.length;
       
-      return average.toFixed(0); // adjust the number of decimal places as needed
+      const average = sum / length;
+      
+      return average.toFixed(0);
     },
+
 
     getTeamText(team, winner){
 
@@ -790,9 +794,11 @@
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
       }
     },
-    async downloadReplay(replayID){
+    async downloadReplay(data, replayID){
       if(this.esport && this.esport == "CCL"){
         window.location = `https://storage.googleapis.com/heroesprofile-ccl/${replayID}.StormReplay`;
+      }else{
+        window.location = `https://api.heroesprofile.com/openApi/Replay/Download?replayID=${replayID}`;
       }
     },
   }

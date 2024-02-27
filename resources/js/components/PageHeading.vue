@@ -6,7 +6,7 @@
     
     <a v-if="headingImage" :href="headingImageUrl" target="_blank">
       <img :src="headingImage" alt="" class="w-33 h-20"/>
-      <span v-if="battletag"  class="text-lg uppercase ">{{ battletag }}  </span> {{ heading }}
+      <span v-if="battletag"  class="text-lg uppercase ">{{ battletag }}({{ regionstring  }}) </span> {{ heading }}
     </a>
 
    
@@ -37,7 +37,7 @@
           
         </div>
 
-        <a v-if="battletag" href="#" class="text-lg link ">{{ battletag }} </a>
+        <a v-if="battletag" :href="`/Player/${battletag}/${blizzid}/${region}`" class="text-lg link ">{{ battletag }}({{ regionstring  }}) </a>
         </div>
         <div class="heading">{{ heading }}</div>
       </div>
@@ -54,6 +54,8 @@
 </template>
 
 <script>
+import { stringify } from 'postcss';
+
 export default {
   name: 'PageHeading',
   components: {
@@ -66,7 +68,12 @@ export default {
     infoText2: String,
     isPatreon: Boolean,
     isOwner: Boolean,
-    battletag: String
+    battletag: String,
+    region: String,
+    regionstring: String,
+    blizzid: {
+        type: [String, Number]
+      },
   },
   data(){
     return {
