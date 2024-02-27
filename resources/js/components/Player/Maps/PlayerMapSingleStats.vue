@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="'Map data for ' + battletag + ' on ' + map" :heading="'Map Stats: '+  map" :battletag="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner">
+    <page-heading :infoText1="'Map data for ' + battletag + ' on ' + map" :heading="'Map Stats: '+  map" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
             <map-image-wrapper :map="mapobject" :size="'big'"></map-image-wrapper>
     </page-heading>
 
