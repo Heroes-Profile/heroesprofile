@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="'All Heroes data for ' + battletag + '. Click a hero to see individual hero statistics'" :heading="'Hero Stats'" :battletag="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+    <page-heading :infoText1="'All Heroes data for ' + battletag + '. Click a hero to see individual hero statistics'" :heading="'Hero Stats'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
 
     <filters 
       :onFilter="filterData" 

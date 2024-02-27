@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <page-heading :infoText1="infoText" :heading="'Profile'" :battletag="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner">
+    <page-heading :infoText1="infoText" :heading="'Profile'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
     </page-heading>
     <div class="flex justify-center max-w-[1500px] mx-auto">
       <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="!modifiedgametype ? 'All' : modifiedgametype" :disabled="disableFilterInput"></single-select-filter>
