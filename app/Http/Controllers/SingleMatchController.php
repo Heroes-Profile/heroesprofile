@@ -168,8 +168,9 @@ class SingleMatchController extends Controller
             ])
             ->when(! $this->esport, function ($query) {
                 return $query->addSelect([
-                    $this->schema.'.replay.game_type',
-                    $this->schema.'.player.player_conservative_rating',
+                  $this->schema.'.replay.game_type',
+                  $this->schema.'.replay.date_added',
+                  $this->schema.'.player.player_conservative_rating',
                     $this->schema.'.player.player_change',
                     $this->schema.'.player.hero_conservative_rating',
                     $this->schema.'.player.hero_change',
@@ -223,8 +224,12 @@ class SingleMatchController extends Controller
 
             $team_names = $this->esport ? $this->getTeamNames($result) : null;
 
+
+            
+
             $replayDetails = [
                 'region' => $replayGroup[0]->region,
+                'downloadable' => ! $this->esport ? $replayGroup[0]->date_added > now()->subWeeks(4) : null,
                 'game_type' => ! $this->esport ? $this->globalDataService->getGameTypeIDtoString()[$replayGroup[0]->game_type]['name'] : null,
                 'game_date' => $replayGroup[0]->game_date,
                 'game_map' => $maps[$replayGroup[0]->game_map],
@@ -429,7 +434,6 @@ class SingleMatchController extends Controller
             $playerData['party'] = ($playerData['party'] != '' && $playerData['party'] != 0) ? $partyArray[$playerData['party']] : null;
         }
 
-        // Unset the references to avoid potential issues
         unset($playerData);
 
         return $playerArray;

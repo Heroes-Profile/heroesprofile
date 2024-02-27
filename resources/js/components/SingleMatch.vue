@@ -16,16 +16,15 @@
         <div class="mb-4">
           <h1 class="max-md:text-[1.5em]">{{ formatDate(data.game_date) }}</h1>
         </div>
-
         <div class="w-full max-w-[1000px] bg-blue rounded flex justify-between gap-2 mx-auto p-4 mb-4">
           <span>{{ data.game_map.name }}</span>
           <span v-if="!esport">
             {{ data.game_type }}
           </span>
-          <span v-else-if="esport && esport == 'CCL'" class="link" @click="downloadReplay(replayid)">
+          <span>{{ data.game_length }}</span>
+          <span v-if="data.downloadable || (esport && esport == 'CCL')" class="link" @click="downloadReplay(data, replayid)">
             Download Replay
           </span>
-          <span>{{ data.game_length }}</span>
         </div>
       </div>
 
@@ -790,9 +789,11 @@
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
       }
     },
-    async downloadReplay(replayID){
+    async downloadReplay(data, replayID){
       if(this.esport && this.esport == "CCL"){
         window.location = `https://storage.googleapis.com/heroesprofile-ccl/${replayID}.StormReplay`;
+      }else{
+        window.location = `https://api.heroesprofile.com/openApi/Replay/Download?replayID=${replayID}`;
       }
     },
   }
