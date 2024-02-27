@@ -651,21 +651,26 @@
         return 0;
       }
 
+      const filteredData = data.filter(obj => obj.blizz_id !== null);
+
       let sum;
       if (type === "prev_player_mmr") {
-        sum = data.reduce((acc, curr) => acc + (curr.player_mmr - curr.player_change || 0), 0);
+        sum = filteredData.reduce((acc, curr) => acc + (curr.player_mmr - curr.player_change || 0), 0);
       } else if (type === "prev_hero_mmr") {
-        sum = data.reduce((acc, curr) => acc + (curr.hero_mmr - curr.hero_change || 0), 0);
+        sum = filteredData.reduce((acc, curr) => acc + (curr.hero_mmr - curr.hero_change || 0), 0);
       } else if (type === "prev_role_mmr") {
-        sum = data.reduce((acc, curr) => acc + (curr.role_mmr - curr.role_change || 0), 0);
+        sum = filteredData.reduce((acc, curr) => acc + (curr.role_mmr - curr.role_change || 0), 0);
       } else {
-        sum = data.reduce((acc, curr) => acc + (curr[type] || 0), 0);
+        sum = filteredData.reduce((acc, curr) => acc + (curr[type] || 0), 0);
       }
 
-      const average = sum / data.length;
+      const length = filteredData.length;
       
-      return average.toFixed(0); // adjust the number of decimal places as needed
+      const average = sum / length;
+      
+      return average.toFixed(0);
     },
+
 
     getTeamText(team, winner){
 
