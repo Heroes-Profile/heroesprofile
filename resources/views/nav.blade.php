@@ -52,7 +52,6 @@
                                 <a href="/Global/Talents/Builder" >Talent Builder</a>
                                 <!--<a href="/Compare" >Compare</a>-->
                                 <a href="https://drafter.heroesprofile.com/Drafter" target="_blank" >Drafter</a>
-                                <a href="https://dev.heroesprofile.com/" target="_blank" >Game Data</a>
                                 <a href="https://api.heroesprofile.com/upload" target="_blank" >Replay Uploader</a>
                                 {{--<a href="/" class="block px-4 py-2 border-b border-darken hover:bg-lighten cursor-not-allowed pointer-events-none">Activity Graphs</a>--}}
                                 <a href="https://autobattler.setup.heroesprofile.com/" target="_blank" >Auto Battler</a>
