@@ -1476,8 +1476,9 @@ class EsportsController extends Controller
 
         $mapBanReturn = [];
         $counter = 0;
+
         foreach ($mapBanDataTransformed as $mapValue => $value) {
-            if ($mapValue == 0) {
+            if ($mapValue == 0 || $mapValue == '') {
                 continue;
             }
             $mapBanReturn[$counter]['game_map'] = $maps[$mapValue];
@@ -1584,6 +1585,7 @@ class EsportsController extends Controller
             'takedowns' => $results->sum('takedowns'),
             'kills' => $results->sum('kills'),
             'assists' => $results->sum('assists'),
+            'icon_url' => $result->image,
             'time_spent_dead' => $time_spent_dead,
             'deaths' => $totalDeaths,
             'total_games' => $gamesPlayed,

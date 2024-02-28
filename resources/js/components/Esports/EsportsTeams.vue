@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div class="mb-4 max-w-[1500px] mx-auto text-center">
       <input type="text" v-model="filterText" class="border p-2 rounded-md text-black" placeholder="Filter by team name">
     </div>

@@ -304,7 +304,9 @@ export default {
           cancelToken: this.cancelTokenSource.token,
         });
 
-
+        if(response.data.status == "failure to validate inputs"){
+          throw new Error("Failure to validate inputs");
+        }
         this.sortedData[index].compositionheroes = response.data;
         this.loadingStates[index] = false;
 

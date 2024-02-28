@@ -279,7 +279,10 @@
             cancelToken: this.cancelTokenSource.token,
           });
 
-
+          if(response.data.status == "failure to validate inputs"){
+            throw new Error("Failure to validate inputs");
+          }
+          
           this.data = response.data.talentData;
           this.replays = response.data.replays;
           this.builddata = response.data.buildData;

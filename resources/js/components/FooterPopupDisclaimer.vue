@@ -21,13 +21,18 @@ export default {
     }
   },
   created(){
-    if (typeof localStorage !== 'undefined' && localStorage !== null) {
-      if (localStorage.getItem('popupDisclaimer')) {
+    try {
+      if (typeof localStorage !== 'undefined' && localStorage !== null) {
+        if (localStorage.getItem('popupDisclaimer')) {
+            this.popUpVar = false;
+        }
+      } else {
         this.popUpVar = false;
       }
-    } else {
+    } catch (error) {
       this.popUpVar = false;
     }
+
       
   },
   mounted() {
