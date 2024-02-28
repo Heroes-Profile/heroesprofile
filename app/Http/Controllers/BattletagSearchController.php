@@ -147,22 +147,17 @@ class BattletagSearchController extends Controller
 
     private function getLatestHeroPlayedForPlayer($blizzId, $region, $gameType = null)
     {
-        $latestHero = Replay::whereHas('players', function ($query) use ($blizzId, $region) {
-            $query->where('blizz_id', $blizzId)
-                ->where('region', $region)
-                ->orderBy('game_date', 'desc');
-        })
-            ->with('players') // Load the players relationship
-            ->orderBy('game_date', 'desc')
-            ->limit(1)
-            ->get();
+      $latestHero = Replay::select("hero")
+        ->join('player', 'player.replayID', '=', 'replay.replayID')
+        ->where('blizz_id', $blizzId)
+        ->where('region', $region)
+        ->orderBy('game_date', 'desc')
+        ->first();
 
-        if ($latestHero->count() > 0) {
-            $latestHeroValue = $latestHero[0]->players[0]->hero;
-        } else {
-            $latestHeroValue = null;
+        if($latestHero){
+          return $latestHero->hero;
         }
 
-        return $latestHeroValue;
+        return $null;
     }
 }
