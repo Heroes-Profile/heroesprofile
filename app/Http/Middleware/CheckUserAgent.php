@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Middleware;
-use App\Models\IpLogging;
 
 use Closure;
 
@@ -9,11 +8,6 @@ class CheckUserAgent
 {
     public function handle($request, Closure $next)
     {
-        try{
-          $this->logIPAddress($request);
-        } catch (Exception $e) {
-        }
-        
         $userAgent = $request->header('User-Agent');
         $blockedUserAgents = [
             'Baiduspider',
@@ -55,18 +49,5 @@ class CheckUserAgent
         }
 
         return $next($request);
-    }
-
-    private function logIPAddress($request)
-    {
-        $ip = $request->ip();
-        $page = $request->path();
-        $userAgent = $request->header('User-Agent');
-
-        IpLogging::create([
-            'ip' => $ip,
-            'page' => $page,
-            'user_agent' => $userAgent,
-        ]);
     }
 }
