@@ -103,9 +103,6 @@
       }
     },
     created(){
-      console.log(this.maxreplayID);
-
-
       if (typeof localStorage !== 'undefined' && localStorage !== null) {
         if (localStorage.getItem('newUserPopup')) {
           this.showPopup = false;
