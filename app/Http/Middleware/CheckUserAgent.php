@@ -25,6 +25,16 @@ class CheckUserAgent
             'PetalBot',
             'Amazonbot/0.1',
             // Add more user agents if necessary.
+            // Block Googlebot
+            'Googlebot',
+            'Googlebot-Mobile',
+            'Googlebot-Image',
+            'Googlebot-Video',
+            'Mediapartners-Google',
+            'AdsBot-Google',
+            'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.139 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+            'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.139 Mobile Safari/537.36 (compatible; GoogleOther)',
+            'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.6261.94 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
         ];
 
         foreach ($blockedUserAgents as $blockedAgent) {
@@ -42,8 +52,6 @@ class CheckUserAgent
             'Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)',
             'Mozilla/5.0 (compatible; Adsbot/3.1)',
             // Add more specific user agents if necessary.
-            'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.139 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
-            'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.6167.139 Mobile Safari/537.36 (compatible; GoogleOther)',
         ];
 
         if (in_array($userAgent, $specificUserAgents)) {
