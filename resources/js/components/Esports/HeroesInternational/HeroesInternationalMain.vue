@@ -88,11 +88,8 @@
               </a>
             </li>
           </ul>
-        </div>
-
-
-        <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'hi'"></esports-recent-matches>
-        <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
+          <esports-recent-matches :data="recentMatchesData.data" :esport="'hi'"></esports-recent-matches>
+          <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
             <li class="page-item mr-auto" :class="{ disabled: !recentMatchesData.pagination.prev_page_url }">
               <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page - 1)" href="#">
                 Previous
@@ -104,6 +101,10 @@
               </a>
             </li>
           </ul>
+        </div>
+
+
+   
       </div>
 
 
