@@ -446,25 +446,28 @@
         }
       },
       handleInputChange(eventPayload){
-        this.selectedHero = this.heroes.find(hero => hero.id === eventPayload.value);
-        this.preloadTalentImages(this.selectedHero);
+        if(eventPayload.value != ""){
+          this.selectedHero = this.heroes.find(hero => hero.id === eventPayload.value);
+          this.preloadTalentImages(this.selectedHero);
 
-        let currentPath = window.location.pathname;
-        let newPath = currentPath.replace(/\/[^/]*$/, `/${this.selectedHero.name}`);
-        history.pushState(null, null, newPath);
-        this.updateQueryString();
+          let currentPath = window.location.pathname;
+          let newPath = currentPath.replace(/\/[^/]*$/, `/${this.selectedHero.name}`);
+          history.pushState(null, null, newPath);
+          this.updateQueryString();
 
-        this.talentdetaildata = null;
-        this.talentbuilddata = null;
+          this.talentdetaildata = null;
+          this.talentbuilddata = null;
 
-        //Have to use setTimeout to make this occur on next tic to allow header info/text to update properly.  
-        setTimeout(() => {
-            Promise.allSettled([
-                this.getTalentData(),
-                this.getTalentBuildData(),
-            ]).then(results => {
-            });
-        }, 0);
+          //Have to use setTimeout to make this occur on next tic to allow header info/text to update properly.  
+          setTimeout(() => {
+              Promise.allSettled([
+                  this.getTalentData(),
+                  this.getTalentBuildData(),
+              ]).then(results => {
+              });
+          }, 0);
+
+        }
 
       },
     }

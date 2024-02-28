@@ -50,6 +50,16 @@
       Error: Reload page/filter
   </div>
   <div v-if="data">
+    <div class="max-w-[1500px] mx-auto">
+        <span class="flex gap-4 mb-2 mx-4"> 
+          <single-select-filter
+            :values="filters.heroes" 
+            :text="'Change Hero'" 
+            :defaultValue="selectedHero.id"
+            @input-changed="handleInputChange"
+          ></single-select-filter>
+        </span>
+      </div>
 
     <div class="flex px-3 gap-5 mx-auto justify-center">
       <talent-builder-column :data="data['1']" :level="1" :clickedData="clickedData"></talent-builder-column>
@@ -320,40 +330,9 @@
         this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
         this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : this.defaultbuildtype;
 
+        this.updateQueryString();
 
-        let queryString = `?timeframe_type=${this.timeframetype}`;
-        queryString += `&timeframe=${this.timeframe}`;
-        queryString += `&game_type=${this.gametype}`;
 
-        if(this.region){
-          queryString += `&region=${this.region}`;
-        }
-
-        if(this.herolevel){
-          queryString += `&hero_level=${this.herolevel}`;
-        }
-
-        if(this.gamemap){
-          queryString += `&game_map=${this.gamemap}`;
-        }
-
-        if(this.playerrank){
-          queryString += `&league_tier=${this.convertRankIDtoName(this.playerrank)}`;
-        }
-
-        if(this.herorank){
-          queryString += `&hero_league_tier=${this.convertRankIDtoName(this.herorank)}`;
-        }
-
-        if(this.rolerank){
-          queryString += `&role_league_tier=${this.convertRankIDtoName(this.rolerank)}`;
-        }
-
-        queryString += `&mirror=${this.mirrormatch}`;
-
-        const currentUrl = window.location.href;
-        let currentPath = window.location.pathname;
-        history.pushState(null, null, `${currentPath}${queryString}`);
 
 
         this.data = null;
@@ -471,6 +450,57 @@
         if (this.urlparameters["mirror"]) {
           this.mirrormatch = this.urlparameters["mirror"];
         }
+      },
+      handleInputChange(eventPayload){
+        if(eventPayload.value != ""){
+          this.selectedHero = this.heroes.find(hero => hero.id === eventPayload.value);
+          let currentPath = window.location.pathname;
+          let newPath = currentPath.replace(/\/[^/]*$/, `/${this.selectedHero.name}`);
+          history.pushState(null, null, newPath);
+          this.updateQueryString();
+
+          this.data = null;
+
+          //Have to use setTimeout to make this occur on next tic to allow header info/text to update properly.  
+          setTimeout(() => {
+            this.getData();
+          }, .25);
+        }
+      },
+      updateQueryString(){
+        let queryString = `?timeframe_type=${this.timeframetype}`;
+        queryString += `&timeframe=${this.timeframe}`;
+        queryString += `&game_type=${this.gametype}`;
+
+        if(this.region){
+          queryString += `&region=${this.region}`;
+        }
+
+        if(this.herolevel){
+          queryString += `&hero_level=${this.herolevel}`;
+        }
+
+        if(this.gamemap){
+          queryString += `&game_map=${this.gamemap}`;
+        }
+
+        if(this.playerrank){
+          queryString += `&league_tier=${this.convertRankIDtoName(this.playerrank)}`;
+        }
+
+        if(this.herorank){
+          queryString += `&hero_league_tier=${this.convertRankIDtoName(this.herorank)}`;
+        }
+
+        if(this.rolerank){
+          queryString += `&role_league_tier=${this.convertRankIDtoName(this.rolerank)}`;
+        }
+
+        queryString += `&mirror=${this.mirrormatch}`;
+
+        const currentUrl = window.location.href;
+        let currentPath = window.location.pathname;
+        history.pushState(null, null, `${currentPath}${queryString}`);
       },
     }
   }

@@ -401,19 +401,22 @@
         }
       },
       handleInputChange(eventPayload){
-        this.selectedHero = this.heroes.find(hero => hero.id === eventPayload.value);
-        let currentPath = window.location.pathname;
-        let newPath = currentPath.replace(/\/[^/]*$/, `/${this.selectedHero.name}`);
-        history.pushState(null, null, newPath);
-        this.updateQueryString();
+        if(eventPayload.value != ""){
+          this.selectedHero = this.heroes.find(hero => hero.id === eventPayload.value);
+          let currentPath = window.location.pathname;
+          let newPath = currentPath.replace(/\/[^/]*$/, `/${this.selectedHero.name}`);
+          history.pushState(null, null, newPath);
+          this.updateQueryString();
 
-        this.allyenemydata = null;
-        this.combineddata = null;
+          this.allyenemydata = null;
+          this.combineddata = null;
 
-        //Have to use setTimeout to make this occur on next tic to allow header info/text to update properly.  
-        setTimeout(() => {
-          this.getData();
-        }, .25);
+          //Have to use setTimeout to make this occur on next tic to allow header info/text to update properly.  
+          setTimeout(() => {
+            this.getData();
+          }, .25);
+        }
+
 
       },
     }

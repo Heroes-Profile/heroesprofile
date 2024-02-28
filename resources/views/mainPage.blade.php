@@ -6,6 +6,9 @@
   <main-page 
     :user="{{ json_encode(Auth::user()) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+    :maxreplayid="{{ json_encode($maxReplayID) }}"
+    :latestpatch="{{ json_encode($latestPatch) }}"
+    :latestgamedate="{{ json_encode($latestGameDate) }}"
   >
   </main-page>
 @endsection
