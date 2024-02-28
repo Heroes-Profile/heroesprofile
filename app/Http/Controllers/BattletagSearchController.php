@@ -158,6 +158,6 @@ class BattletagSearchController extends Controller
           return $latestHero->hero;
         }
 
-        return $null;
+        return null;
     }
 }
