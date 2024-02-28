@@ -45,10 +45,10 @@
             </div>
 
             <div class="flex flex-wrap justify-center mb-4">
-              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Account Level'" :value="getAverageValue('account_level', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Avg. Account Level'" :value="getAverageValue('account_level', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" :title="'Team Level'" :value="data.players[0][0].score.level" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="esport" :title="'Avg. Hero Level'" :value="getAverageValue('avg_hero_level', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" :title="'Takedowns'" :value="data.players[0][0].score.takedowns" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" :title="'Takedowns'" :value="getTakedownsValue(data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average MMR'" :value="getAverageValue('player_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average Hero MMR'" :value="getAverageValue('hero_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average Role MMR'" :value="getAverageValue('role_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
@@ -84,10 +84,10 @@
             </div>
             <div class="flex flex-wrap justify-center mb-4">
 
-              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Account Level'" :value="getAverageValue('account_level', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Avg. Account Level'" :value="getAverageValue('account_level', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" :title="'Team Level'" :value="data.players[1][0].score.level" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="esport" :title="'Avg. Hero Level'" :value="getAverageValue('avg_hero_level', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" :title="'Takedowns'" :value="data.players[1][0].score.takedowns" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" :title="'Takedowns'" :value="getTakedownsValue(data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average MMR'" :value="getAverageValue('player_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average Hero MMR'" :value="getAverageValue('hero_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average Role MMR'" :value="getAverageValue('role_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
@@ -598,19 +598,19 @@
     },
     methods: {
       resizeTables(){
-        const tables = this.$el.querySelectorAll('table');
-        tables.forEach(table => {
-          var newTableWidth = this.windowWidth /table.clientWidth;
-          var tablewrapper = table.closest('.table-container');
-          if(tablewrapper){
-          table.style.transformOrigin = 'top left';
-            table.style.transform = `scale(${newTableWidth})`;
-            tablewrapper.style.height = (table.clientHeight * newTableWidth) + 'px';
+        if(this.$el && this.$el.querySelectorAll('table')){
+          const tables = this.$el.querySelectorAll('table');
+          tables.forEach(table => {
+            var newTableWidth = this.windowWidth /table.clientWidth;
+            var tablewrapper = table.closest('.table-container');
+            if(tablewrapper){
+            table.style.transformOrigin = 'top left';
+              table.style.transform = `scale(${newTableWidth})`;
+              tablewrapper.style.height = (table.clientHeight * newTableWidth) + 'px';
 
-          }
-        
-          
-        })
+            }
+          })
+        }
       },
      async getData(){
       this.isLoading = true;
@@ -800,6 +800,15 @@
       }else{
         window.location = `https://api.heroesprofile.com/openApi/Replay/Download?replayID=${replayID}`;
       }
+    },
+    getTakedownsValue(data){
+      let totalKills = 0;
+
+      for (let i = 0; i < data.length; i++) {
+          totalKills += data[i].score.kills;
+      }
+
+      return totalKills;
     },
   }
 }

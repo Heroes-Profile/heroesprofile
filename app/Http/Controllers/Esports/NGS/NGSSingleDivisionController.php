@@ -67,7 +67,7 @@ class NGSSingleDivisionController extends Controller
             }
         }
 
-        return view('Esports.ngs.ngsSingleDivisionMatchHistory')
+        return view('Esports.NGS.ngsSingleDivisionMatchHistory')
             ->with([
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'defaultseason' => $defaultseason,

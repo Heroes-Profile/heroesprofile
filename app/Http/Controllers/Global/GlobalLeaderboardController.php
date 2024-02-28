@@ -141,13 +141,16 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             $item->region_id = $item->region;
             $item->region = $this->globalDataService->getRegionIDtoString()[$item->region];
 
-            $item->level_one = $item->level_one && $item->level_one != 0 ? $talentData[$item->level_one] : null;
-            $item->level_four = $item->level_four && $item->level_four != 0 ? $talentData[$item->level_four] : null;
-            $item->level_seven = $item->level_seven && $item->level_seven != 0 ? $talentData[$item->level_seven] : null;
-            $item->level_ten = $item->level_ten && $item->level_ten != 0 ? $talentData[$item->level_ten] : null;
-            $item->level_thirteen = $item->level_thirteen && $item->level_thirteen != 0 ? $talentData[$item->level_thirteen] : null;
-            $item->level_sixteen = $item->level_sixteen && $item->level_sixteen != 0 ? $talentData[$item->level_sixteen] : null;
-            $item->level_twenty = $item->level_twenty && $item->level_twenty != 0 ? $talentData[$item->level_twenty] : null;
+            $item->level_one = $item->level_one && $item->level_one != 0 ? isset($talentData[$item->level_one]) ? $talentData[$item->level_one] : null : null;
+            $item->level_four = $item->level_four && $item->level_four != 0 ? isset($talentData[$item->level_four]) ? $talentData[$item->level_four] : null : null;
+            $item->level_seven = $item->level_seven && $item->level_seven != 0 ? isset($talentData[$item->level_seven]) ? $talentData[$item->level_seven] : null : null;
+            $item->level_ten = $item->level_ten && $item->level_ten != 0 ? isset($talentData[$item->level_ten]) ? $talentData[$item->level_ten] : null : null;
+            $item->level_thirteen = $item->level_thirteen && $item->level_thirteen != 0 ? isset($talentData[$item->level_thirteen]) ? $talentData[$item->level_thirteen] : null : null;
+            $item->level_sixteen = $item->level_sixteen && $item->level_sixteen != 0 ? isset($talentData[$item->level_sixteen]) ? $talentData[$item->level_sixteen] : null : null;
+            $item->level_twenty = $item->level_twenty && $item->level_twenty != 0 ? isset($talentData[$item->level_twenty]) ? $talentData[$item->level_twenty] : null : null;
+
+
+
 
             $item->hero = $type == 'hero' ? $heroData[$typeNumber] : null;
 
