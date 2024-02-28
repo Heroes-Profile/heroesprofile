@@ -1585,7 +1585,7 @@ class EsportsController extends Controller
             'takedowns' => $results->sum('takedowns'),
             'kills' => $results->sum('kills'),
             'assists' => $results->sum('assists'),
-            'icon_url' => $result->image,
+            'icon_url' => $results->image,
             'time_spent_dead' => $time_spent_dead,
             'deaths' => $totalDeaths,
             'total_games' => $gamesPlayed,
