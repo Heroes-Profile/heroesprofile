@@ -207,6 +207,7 @@ export default {
           hero: this.hero,
           game_map: this.gamemap,
           pagination_page: page,
+          season: this.season,
         }, 
         {
           cancelToken: this.cancelTokenSource.token,
