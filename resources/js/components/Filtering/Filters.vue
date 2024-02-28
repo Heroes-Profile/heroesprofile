@@ -358,6 +358,7 @@
       groupSizeDefaultValue: String,
       rolerequired: Boolean,
       excludetimeframes: Boolean,
+      shouldfilterdata: Boolean,
     },
     data(){
       return {
@@ -495,6 +496,10 @@
           if(!this.selectedMultiFilters.hasOwnProperty('Timeframes') && this.selectedSingleFilters["Timeframe Type"] != "last_update"){
             return true;
           }
+        }
+
+        if(this.disablefilter == true){
+          return true;
         }
         return false;
       },

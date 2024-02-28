@@ -20,6 +20,7 @@
     :includeplayerrank="true"
     :advancedfiltering="advancedfiltering"
     :hideadvancedfilteringbutton="true"
+    :disablefilter="!shouldFilterData"
     >
   </filters>
   <takeover-ad :patreon-user="patreonUser"></takeover-ad>
