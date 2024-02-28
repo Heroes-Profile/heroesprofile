@@ -198,6 +198,10 @@
           {
             cancelToken: this.cancelTokenSource.token,
           });
+
+          if(response.data.status == "failure to validate inputs"){
+            throw new Error("Failure to validate inputs");
+          }
           this.talentdetaildata = response.data.data;
           this.firstwinratedata = response.data.first_win_rate;
           this.secondwinratedata = response.data.second_win_rate;

@@ -251,6 +251,9 @@
           {
             cancelToken: this.cancelTokenSource.token,
           });
+          if(response.data.status == "failure to validate inputs"){
+            throw new Error("Failure to validate inputs");
+          }
           this.allyenemydata = response.data;
           this.combineddata = response.data.combined;
         }catch(error){

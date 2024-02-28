@@ -229,7 +229,11 @@
           {
             cancelToken: this.cancelTalentsTokenSource.token,
           });
+          if(response.data.status == "failure to validate inputs"){
+            throw new Error("Failure to validate inputs");
+          }
           this.talentdetaildata = response.data;
+
         }catch(error){
           this.dataError = true;
         }finally {
@@ -267,14 +271,19 @@
           {
             cancelToken: this.cancelBuildsTokenSource.token,
           });
+
+          
+          if(response.data.status == "failure to validate inputs"){
+            throw new Error("Failure to validate inputs");
+          }
+          
           this.talentbuilddata = response.data;
+
         }catch(error){
           this.dataError = true;
         }finally {
           this.cancelBuildsTokenSource = null;
           this.isBuildsLoading = false;
-         
-          
         }
       },
       cancelAxiosRequest() {
