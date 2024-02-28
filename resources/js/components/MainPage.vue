@@ -87,6 +87,9 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
+
+
   export default {
     name: 'MainPage',
     components: {
@@ -103,6 +106,8 @@
       }
     },
     created(){
+      Cookies.remove('additional-battletags');
+
       if (typeof localStorage !== 'undefined' && localStorage !== null) {
         if (localStorage.getItem('newUserPopup')) {
           this.showPopup = false;
