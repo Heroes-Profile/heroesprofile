@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\IpLogging;
+use Illuminate\Support\Facades\Cookie;
 
 class LogIPAndUserAgent
 {
@@ -17,7 +18,8 @@ class LogIPAndUserAgent
     public function handle(Request $request, Closure $next): Response
     {
         try {
-            $ip = "";
+          Cookie::queue(Cookie::forget('additional-battletags'));
+          $ip = "";
             if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER) && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                 if (strpos($_SERVER['HTTP_X_FORWARDED_FOR'], ',') !== false) {
                     $addr = explode(",", $_SERVER['HTTP_X_FORWARDED_FOR']);
