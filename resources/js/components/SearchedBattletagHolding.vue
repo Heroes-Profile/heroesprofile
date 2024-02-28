@@ -61,8 +61,12 @@ export default {
     this.getData();
   },
   computed: {
-    isBattletagReponseValid(){
-      return this.battletagresponse[0] && this.battletagresponse[0].battletag && this.battletagresponse[0].blizz_id !== undefined && this.battletagresponse[0].region !== undefined;
+    isBattletagReponseValid() {
+      return this.battletagresponse[0] && 
+            this.battletagresponse[0].battletag && 
+            this.battletagresponse[0].battletag.includes('#') &&
+            this.battletagresponse[0].blizz_id !== undefined && 
+            this.battletagresponse[0].region !== undefined;
     }
   },
   watch: {
