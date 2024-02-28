@@ -125,6 +125,9 @@ class GlobalDataService
         return [
             'regions' => $regions,
             'darkmode' => $darkModeValue,
+            'maxReplayID' => $this->calculateMaxReplayNumber(),
+            'latestPatch' => $this->getLatestPatch(),
+            'latestGameDate' => $this->getLatestGameDate(),
         ];
 
     }
