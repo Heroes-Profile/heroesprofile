@@ -598,19 +598,19 @@
     },
     methods: {
       resizeTables(){
-        const tables = this.$el.querySelectorAll('table');
-        tables.forEach(table => {
-          var newTableWidth = this.windowWidth /table.clientWidth;
-          var tablewrapper = table.closest('.table-container');
-          if(tablewrapper){
-          table.style.transformOrigin = 'top left';
-            table.style.transform = `scale(${newTableWidth})`;
-            tablewrapper.style.height = (table.clientHeight * newTableWidth) + 'px';
+        if(this.$el && this.$el.querySelectorAll('table')){
+          const tables = this.$el.querySelectorAll('table');
+          tables.forEach(table => {
+            var newTableWidth = this.windowWidth /table.clientWidth;
+            var tablewrapper = table.closest('.table-container');
+            if(tablewrapper){
+            table.style.transformOrigin = 'top left';
+              table.style.transform = `scale(${newTableWidth})`;
+              tablewrapper.style.height = (table.clientHeight * newTableWidth) + 'px';
 
-          }
-        
-          
-        })
+            }
+          })
+        }
       },
      async getData(){
       this.isLoading = true;
