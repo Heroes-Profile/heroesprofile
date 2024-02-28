@@ -1,13 +1,2 @@
-User-agent: AhrefsBot
+User-agent: *
 Disallow: /
-
-User-agent: Ezooms
-Disallow: /
-
-User-agent: MJ12bot
-Disallow: /
-
-User-agent: YandexBot
-Disallow: /
-
-Sitemap: https://www.heroesprofile.com/sitemap.xml
