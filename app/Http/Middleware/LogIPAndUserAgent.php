@@ -16,30 +16,30 @@ class LogIPAndUserAgent
      */
     public function handle(Request $request, Closure $next): Response
     {
-        try{
-          $ip = "";
-          if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER) && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-              if (strpos($_SERVER['HTTP_X_FORWARDED_FOR'], ',') > 0) {
-                  $addr = explode(",", $_SERVER['HTTP_X_FORWARDED_FOR']);
-                  return trim($addr[0]);
-              } else {
-                  $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-              }
-          } else {
-              $ip = $_SERVER['REMOTE_ADDR'];
-          }
+        try {
+            $ip = "";
+            if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER) && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+                if (strpos($_SERVER['HTTP_X_FORWARDED_FOR'], ',') !== false) {
+                    $addr = explode(",", $_SERVER['HTTP_X_FORWARDED_FOR']);
+                    $ip = trim($addr[0]);
+                } else {
+                    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+                }
+            } else {
+                $ip = $_SERVER['REMOTE_ADDR'];
+            }
 
-          $page = $request->path();
-          $userAgent = $request->header('User-Agent');
+            $page = $request->path();
+            $userAgent = $request->header('User-Agent');
 
-          IpLogging::create([
-              'ip' => $ip,
-              'page' => $page,
-              'user_agent' => $userAgent,
-          ]);
+            IpLogging::create([
+                'ip' => $ip,
+                'page' => $page,
+                'user_agent' => $userAgent,
+            ]);
         } catch (Exception $e) {
+            // Handle any exceptions if necessary
         }
-
 
         return $next($request);
     }
