@@ -1155,7 +1155,7 @@ class EsportsController extends Controller
         //->toSql();
             ->get();
 
-        //return $results;
+         //return $results;
 
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
@@ -1576,6 +1576,29 @@ class EsportsController extends Controller
         $banned_data = $this->getBanData($results, 0, 1, $heroData);
         $enemy_banned_data = $this->getBanData($results, 1, 0, $heroData);
 
+        $image = optional($results->first())->image;
+        if ($this->esport == 'NGS') {
+          if (strpos($image, 'https://s3.amazonaws.com/ngs-image-storage/') !== false) {
+              $image = explode('https://s3.amazonaws.com/ngs-image-storage/', $image);
+              $image = 'https://s3.amazonaws.com/ngs-image-storage/'.urlencode($image[1]);
+
+              if (strpos($image, 'undefined') !== false) {
+                  $image = '/images/NGS/no-image-clipped.png';
+              }
+          } else {
+              $image = $image;
+          }
+        } elseif ($this->esport == 'CCL') {
+            $image = '/images/CCL/Organizations/Logos/'.$image;
+        } elseif ($this->esport == 'MastersClash') {
+            $image = '/images/MCL/'.$image;
+        } elseif ($this->esport == 'hi') {
+            $image = '/images/HI/Team/Logos/'.$image.'.png';
+        } elseif ($this->esport == 'hi_nc') {
+            $image = '/images/HI/Flags/'.$image.'.png';
+        }
+
+
         return [
             'wins' => $wins,
             'losses' => $losses,
@@ -1585,7 +1608,7 @@ class EsportsController extends Controller
             'takedowns' => $results->sum('takedowns'),
             'kills' => $results->sum('kills'),
             'assists' => $results->sum('assists'),
-            'icon_url' => $results->image,
+            'icon_url' => $image,
             'time_spent_dead' => $time_spent_dead,
             'deaths' => $totalDeaths,
             'total_games' => $gamesPlayed,
