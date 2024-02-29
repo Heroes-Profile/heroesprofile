@@ -122,7 +122,7 @@
       </tbody>
     </table>
 
-
+<!--
     <div class=" my-5 bg-teal py-5 px-2"><infobox class="max-w-[1500px] mx-auto " :input="'Possible Replays do not take into account Hero Level, Player Rank, Hero Rank, Role Rank, or Mirror Match Filter options'"></infobox></div>
 
     <table class="">
@@ -167,6 +167,8 @@
         </tr>
       </tbody>
     </table>
+
+  -->
   </div>
 
 
