@@ -377,7 +377,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         return [
             'talentData' => $data['data'],
             'buildData' => $data['buildReturnData'],
-            'replays' => $replays,
+            'replays' => null,/*$replays,*/
         ];
     }
 
