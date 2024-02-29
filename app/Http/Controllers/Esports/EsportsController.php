@@ -492,48 +492,16 @@ class EsportsController extends Controller
         $team_id = null;
         $division = $request['division'];
 
-        /*
-        if($this->esport == "NGS"){
-            $team_id = NGSTeam::select("team_id")
-                ->where("season", $this->season)
-                ->where("division", $division)
-                ->where("team_name", $team)
-                ->first()->team_id;
-
-        }else if($this->esport == "CCL"){
-            $team_id = CCLTeam::select("team_id")
-                ->where("season", $this->season)
-                ->where("team_name", $team)
-                ->first()->team_id;
-        }else if($this->esport == "MastersClash"){
-            $team_id = MastersClashTeam::select("team_id")
-                ->where("season", $this->season)
-                ->where("team_name", $team)
-                ->first()->team_id;
-        }else if($this->esport == "HeroesInternational"){
-
-            if($tournament == "main"){
-                $team_id = HeroesInternationalMainTeam::select("team_id")
-                    ->where("season", $this->season)
-                    ->where("team_name", $team)
-                    ->first()->team_id;
-
-            }else{
-                $team_id = HeroesInternationalNationsCupTeam::select("team_id")
-                    ->where("season", $this->season)
-                    ->where("team_name", $team)
-                    ->first()->team_id;
-
-            }
-        }
-        */
-
         $pagination_page = $request['pagination_page'];
         $perPage = 100;
 
         $result = DB::table($this->schema.'.replay')
-            ->where('season', $this->season)
-            ->when($this->esport === 'NGS', function ($query) use ($division) {
+            ->when($this->season, function ($query) {
+              $query->where(function ($query) use ($division) {
+                  $query->where('season', $this->season);
+              });
+            })
+            ->when($this->esport === 'NGS' && $division, function ($query) use ($division) {
                 $query->where(function ($query) use ($division) {
                     $query->where('division_0', $division)
                         ->orWhere('division_1', $division);
