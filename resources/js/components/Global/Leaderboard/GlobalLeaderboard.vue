@@ -360,9 +360,9 @@ export default {
       this.groupsize = filteredData.single["Group Size"] ? filteredData.single["Group Size"] : this.groupsize;
       this.gametype = filteredData.single["Game Type"] ? filteredData.single["Game Type"] : this.gametype;
       this.season = filteredData.single["Season"] ? filteredData.single["Season"] : this.season;
-      this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : this.hero;
-      this.role = filteredData.single["Role"] ? filteredData.single["Role"] : this.role;
-      this.region = filteredData.single["Regions"] ? filteredData.single["Regions"] : this.region;
+      this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
+      this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
+      this.region = filteredData.single["Regions"] ? filteredData.single["Regions"] : null;
 
 
       this.sortKey = '';
