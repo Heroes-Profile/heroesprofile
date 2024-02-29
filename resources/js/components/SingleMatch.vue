@@ -434,7 +434,7 @@
       <tr>
         <td >{{ section.title }}</td>
         <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">
-          <a :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`">{{ player.battletag }}</a>
+          <a :href="esport ? '/Esports/' + esport + '/Player/' + player.battletag + '/' + player.blizz_id + '/Hero/' + player.hero.name : '/Player/' + player.battletag + '/' + player.blizz_id + '/' + player.region + '/Hero/' + player.hero.name">{{ player.battletag }}</a>
         </td>
     </tr>
   </thead>
@@ -461,7 +461,7 @@
         :key="playerIndex"
         
         >
-        <a :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`">{{ player.battletag }}</a>
+        <a :href="esport ? '/Esports/' + esport + '/Player/' + player.battletag + '/' + player.blizz_id + '/Hero/' + player.hero.name : '/Player/' + player.battletag + '/' + player.blizz_id + '/' + player.region + '/Hero/' + player.hero.name">{{ player.battletag }}</a>
       </td>
     </tr>
   </thead>
