@@ -49,7 +49,7 @@
   <div v-else-if="dataError" class="flex items-center justify-center">
       Error: Reload page/filter
   </div>
-  <div v-if="data">
+  <div v-if="data && !isLoading">
     <div class="max-w-[1500px] mx-auto">
         <span class="flex gap-4 mb-2 mx-4"> 
           <single-select-filter
