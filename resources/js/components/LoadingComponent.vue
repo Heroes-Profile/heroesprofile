@@ -97,7 +97,7 @@
 }
 
 .loading-container img {
-  animation: spin 2.5s linear infinite;
+  animation: spin 2.25s linear infinite;
   width: 121.5;
   height: 108px;
 }
