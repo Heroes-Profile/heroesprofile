@@ -645,6 +645,7 @@ class SingleMatchController extends Controller
         $replayBans = DB::table($this->schema.'.replay_bans')
             ->select('team', 'hero')
             ->where('replayID', $replayID)
+            ->orderBy('ban_id')
             ->get()
             ->groupBy('team')
             ->map(function ($teamGroup) use ($heroData) {
