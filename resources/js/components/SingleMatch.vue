@@ -32,7 +32,7 @@
       <div class=" mdp-10 text-center ">
         <div class="flex  justify-center max-w-[1500px] mx-auto  md:gap-10">
           <div class=" max-w-[50%]  md:max-w-[600px]">
-            <group-box class="md:w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(0, data.winner)" popupsize="large" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
+            <group-box class="md:w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :winnerloser="getWinnerLoser(0, data.winner)" :esportteamname="getEsportTeamName(0)" popupsize="large" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
 
 
             <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
@@ -72,7 +72,7 @@
 
 
           <div class=" max-w-[50%]  md:max-w-[600px]">
-            <group-box class="md:w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(1, data.winner)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'" :winner="data.winner == 1 ? true : false"></group-box>
+            <group-box class="md:w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :winnerloser="getWinnerLoser(1, data.winner)" :esportteamname="getEsportTeamName(1)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'" :winner="data.winner == 1 ? true : false"></group-box>
 
             <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
               {{ esport ? this.data.team_names.team_two.team_name : "Team 2" }} Bans
@@ -671,44 +671,48 @@
       return average.toFixed(0);
     },
 
+    getEsportTeamName(team){
+      if(!this.esport){
+        return null;
+      }
+      let teamName = "";
+        if(team == 0){
+          teamName = this.data.team_names.team_one.team_name;
+        }else{
+          teamName = this.data.team_names.team_two.team_name;
+        }
+      return teamName;
+    },
 
-    getTeamText(team, winner){
+    getWinnerLoser(team, winner){
 
 
       if(this.esport){
         let first_pick = this.data.first_pick;
 
-        let teamName = "";
-        if(team == 0){
-
-          teamName = this.data.team_names.team_one.team_name;
-        }else{
-          teamName = this.data.team_names.team_two.team_name;
-        }
-
         if(winner == 0 && team == 0){
           if(first_pick == team){
-            return teamName + " - First Pick - Winner";
+            return "First Pick - Winner";
           }else{
-            return teamName + " - Map Pick - Winner";
+            return "Map Pick - Winner";
           }
         }else if(winner == 1 && team == 0){
           if(first_pick == team){
-            return teamName + " - First Pick - Loser";
+            return "First Pick - Loser";
           }else{
-            return teamName + " - Map Pick - Loser";
+            return "Map Pick - Loser";
           }
         }else if(winner == 0 && team == 1){
           if(first_pick == team){
-            return teamName + " - First Pick - Loser";
+            return "First Pick - Loser";
           }else{
-            return teamName + " - Map Pick - Loser";
+            return "Map Pick - Loser";
           }
         }else if(winner == 1 && team == 1){
           if(first_pick == team){
-            return teamName + " - First Pick - Winner";
+            return "First Pick - Winner";
           }else{
-            return teamName + " - Map Pick - Winner";
+            return "Map Pick - Winner";
           }
         }
       }

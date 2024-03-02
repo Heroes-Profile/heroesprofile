@@ -29,7 +29,7 @@
         <tbody>
           <tr v-for="(row, index) in sortedData" :key="index">
             <td>
-              <a class="link" :href="`/Esports/${esport}/Match/Single/${row.replayID}`">{{ row.replayID }}</a>
+              <a class="link" :href="`/Esports/${getUrlValue(esport)}/Match/Single/${row.replayID}`">{{ row.replayID }}</a>
             </td>
             <td class="">
               {{ row.team_0_name ? row.team_0_name : row.team_0_id }}
@@ -121,6 +121,15 @@ export default {
 
       return localDate.format('MM/DD/YYYY h:mm:ss a');
     },
+    getUrlValue(esport){
+      if(esport == "hi" || esport == "hi_nc"){
+        return "HeroesInternational";
+      }else if(esport == "hi_nc"){
+        return "HeroesInternational";
+      }
+
+      return esport;
+    }
   }
 }
 </script>

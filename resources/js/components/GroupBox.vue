@@ -1,7 +1,12 @@
 <template>
   <div class=" w-auto inline-block m-1">
-    <h2 :class="['bg-' + color, 'rounded-t', 'p-2', 'text-sm', 'text-center', 'uppercase']">{{ text }}</h2>
-      <div class=" bg-black rounded-b  p-5 flex flex-wrap gap-5 justify-center max-md:gap-2 max-md:p-2">
+    <h2 :class="['bg-' + color, 'rounded-t', 'p-2', 'text-sm', 'text-center', 'uppercase']">
+      <a v-if="esport" class="link" :href="`/Esports/${esport}/Team/${esportteamname}`">{{  esportteamname  }}</a>
+      <span v-if="esport"> - </span>
+      <span>{{ winnerloser }}</span>
+    </h2>
+
+    <div class=" bg-black rounded-b  p-5 flex flex-wrap gap-5 justify-center max-md:gap-2 max-md:p-2">
       <template v-for="(item, index) in data" :key="index">
 
         <!-- Hero Section -->
@@ -93,7 +98,8 @@
     components: {
     },
     props: {
-      text: String,
+      winnerloser: String,
+      esportteamname: String,
       data: Array,
       playerlink: Boolean,
       type: String,
