@@ -31,7 +31,7 @@ class LogIPAndUserAgent
                 $ip = $_SERVER['REMOTE_ADDR'];
             }
 
-            $page = $request->path();
+            $page = substr($request->path(), 0, 500);
             $userAgent = $request->header('User-Agent');
 
             IpLogging::create([
