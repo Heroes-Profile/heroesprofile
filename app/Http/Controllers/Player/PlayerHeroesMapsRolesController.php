@@ -27,7 +27,7 @@ class PlayerHeroesMapsRolesController extends Controller
 {
     public function getData(Request $request)
     {
-      ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 
         //return response()->json($request->all());
 
@@ -205,9 +205,6 @@ class PlayerHeroesMapsRolesController extends Controller
 
         $mapData = null;
         $heroDataStats = null;
-
-
-
 
         if ($type == 'single') {
             $mapData = $result->groupBy('game_map');
@@ -445,120 +442,115 @@ class PlayerHeroesMapsRolesController extends Controller
                 });
             }
 
-        }else{
+        } else {
 
-          if (in_array(1, $game_type)) {
-            $qm_mmr_data = MasterMMRDataQM::select('name', 'conservative_rating', 'win', 'loss')
-            ->join("mmr_type_ids", "mmr_type_ids.mmr_type_id", "=", "master_mmr_data_qm.type_value")
-            ->whereIn("type_value", function ($query) {
-              $query->select('mmr_type_id')
-                  ->from('heroesprofile.mmr_type_ids')
-                  ->whereIn('name', function ($subQuery) {
-                      $subQuery->select('name')
-                          ->from('heroesprofile.heroes');
-                  });
-            })
-            ->filterByGametype(1)
-            ->filterByBlizzID($blizz_id)
-            ->filterByRegion($region)
-            ->get();
-          }
-     
+            if (in_array(1, $game_type)) {
+                $qm_mmr_data = MasterMMRDataQM::select('name', 'conservative_rating', 'win', 'loss')
+                    ->join('mmr_type_ids', 'mmr_type_ids.mmr_type_id', '=', 'master_mmr_data_qm.type_value')
+                    ->whereIn('type_value', function ($query) {
+                        $query->select('mmr_type_id')
+                            ->from('heroesprofile.mmr_type_ids')
+                            ->whereIn('name', function ($subQuery) {
+                                $subQuery->select('name')
+                                    ->from('heroesprofile.heroes');
+                            });
+                    })
+                    ->filterByGametype(1)
+                    ->filterByBlizzID($blizz_id)
+                    ->filterByRegion($region)
+                    ->get();
+            }
 
+            if (in_array(2, $game_type)) {
 
-          if (in_array(2, $game_type)) {
+                $ud_mmr_data = MasterMMRDataUD::select('name', 'conservative_rating', 'win', 'loss')
+                    ->join('mmr_type_ids', 'mmr_type_ids.mmr_type_id', '=', 'master_mmr_data_ud.type_value')
+                    ->whereIn('type_value', function ($query) {
+                        $query->select('mmr_type_id')
+                            ->from('heroesprofile.mmr_type_ids')
+                            ->whereIn('name', function ($subQuery) {
+                                $subQuery->select('name')
+                                    ->from('heroesprofile.heroes');
+                            });
+                    })
+                    ->filterByGametype(2)
+                    ->filterByBlizzID($blizz_id)
+                    ->filterByRegion($region)
+                    ->get();
+            }
 
-            $ud_mmr_data = MasterMMRDataUD::select('name', 'conservative_rating', 'win', 'loss')
-            ->join("mmr_type_ids", "mmr_type_ids.mmr_type_id", "=", "master_mmr_data_ud.type_value")
-            ->whereIn("type_value", function ($query) {
-              $query->select('mmr_type_id')
-                  ->from('heroesprofile.mmr_type_ids')
-                  ->whereIn('name', function ($subQuery) {
-                      $subQuery->select('name')
-                          ->from('heroesprofile.heroes');
-                  });
-            })
-            ->filterByGametype(2)
-            ->filterByBlizzID($blizz_id)
-            ->filterByRegion($region)
-            ->get();
-          }
+            if (in_array(3, $game_type)) {
 
-          if (in_array(3, $game_type)) {
+                $hl_mmr_data = MasterMMRDataHL::select('name', 'conservative_rating', 'win', 'loss')
+                    ->join('mmr_type_ids', 'mmr_type_ids.mmr_type_id', '=', 'master_mmr_data_hl.type_value')
+                    ->whereIn('type_value', function ($query) {
+                        $query->select('mmr_type_id')
+                            ->from('heroesprofile.mmr_type_ids')
+                            ->whereIn('name', function ($subQuery) {
+                                $subQuery->select('name')
+                                    ->from('heroesprofile.heroes');
+                            });
+                    })
+                    ->filterByGametype(3)
+                    ->filterByBlizzID($blizz_id)
+                    ->filterByRegion($region)
+                    ->get();
+            }
 
-            $hl_mmr_data = MasterMMRDataHL::select('name', 'conservative_rating', 'win', 'loss')
-            ->join("mmr_type_ids", "mmr_type_ids.mmr_type_id", "=", "master_mmr_data_hl.type_value")
-            ->whereIn("type_value", function ($query) {
-              $query->select('mmr_type_id')
-                  ->from('heroesprofile.mmr_type_ids')
-                  ->whereIn('name', function ($subQuery) {
-                      $subQuery->select('name')
-                          ->from('heroesprofile.heroes');
-                  });
-            })
-            ->filterByGametype(3)
-            ->filterByBlizzID($blizz_id)
-            ->filterByRegion($region)
-            ->get();
-          }
+            if (in_array(4, $game_type)) {
 
-          if (in_array(4, $game_type)) {
+                $tl_mmr_data = MasterMMRDataTL::select('name', 'conservative_rating', 'win', 'loss')
+                    ->join('mmr_type_ids', 'mmr_type_ids.mmr_type_id', '=', 'master_mmr_data_tl.type_value')
+                    ->whereIn('type_value', function ($query) {
+                        $query->select('mmr_type_id')
+                            ->from('heroesprofile.mmr_type_ids')
+                            ->whereIn('name', function ($subQuery) {
+                                $subQuery->select('name')
+                                    ->from('heroesprofile.heroes');
+                            });
+                    })
+                    ->filterByGametype(4)
+                    ->filterByBlizzID($blizz_id)
+                    ->filterByRegion($region)
+                    ->get();
+            }
 
-            $tl_mmr_data = MasterMMRDataTL::select('name', 'conservative_rating', 'win', 'loss')
-            ->join("mmr_type_ids", "mmr_type_ids.mmr_type_id", "=", "master_mmr_data_tl.type_value")
-            ->whereIn("type_value", function ($query) {
-              $query->select('mmr_type_id')
-                  ->from('heroesprofile.mmr_type_ids')
-                  ->whereIn('name', function ($subQuery) {
-                      $subQuery->select('name')
-                          ->from('heroesprofile.heroes');
-                  });
-            })
-            ->filterByGametype(4)
-            ->filterByBlizzID($blizz_id)
-            ->filterByRegion($region)
-            ->get();
-          }
+            if (in_array(5, $game_type)) {
 
-          if (in_array(5, $game_type)) {
+                $sl_mmr_data = MasterMMRDataSL::select('name', 'conservative_rating', 'win', 'loss')
+                    ->join('mmr_type_ids', 'mmr_type_ids.mmr_type_id', '=', 'master_mmr_data_sl.type_value')
+                    ->whereIn('type_value', function ($query) {
+                        $query->select('mmr_type_id')
+                            ->from('heroesprofile.mmr_type_ids')
+                            ->whereIn('name', function ($subQuery) {
+                                $subQuery->select('name')
+                                    ->from('heroesprofile.heroes');
+                            });
+                    })
+                    ->filterByGametype(5)
+                    ->filterByBlizzID($blizz_id)
+                    ->filterByRegion($region)
+                    ->get();
+            }
 
-            $sl_mmr_data = MasterMMRDataSL::select('name', 'conservative_rating', 'win', 'loss')
-            ->join("mmr_type_ids", "mmr_type_ids.mmr_type_id", "=", "master_mmr_data_sl.type_value")
-            ->whereIn("type_value", function ($query) {
-              $query->select('mmr_type_id')
-                  ->from('heroesprofile.mmr_type_ids')
-                  ->whereIn('name', function ($subQuery) {
-                      $subQuery->select('name')
-                          ->from('heroesprofile.heroes');
-                  });
-            })
-            ->filterByGametype(5)
-            ->filterByBlizzID($blizz_id)
-            ->filterByRegion($region)
-            ->get();
-          }
+            if (in_array(6, $game_type)) {
 
-          if (in_array(6, $game_type)) {
-
-            $ar_mmr_data = MasterMMRDataAR::select('name', 'conservative_rating', 'win', 'loss')
-            ->join("mmr_type_ids", "mmr_type_ids.mmr_type_id", "=", "master_mmr_data_ar.type_value")
-            ->whereIn("type_value", function ($query) {
-              $query->select('mmr_type_id')
-                  ->from('heroesprofile.mmr_type_ids')
-                  ->whereIn('name', function ($subQuery) {
-                      $subQuery->select('name')
-                          ->from('heroesprofile.heroes');
-                  });
-            })
-            ->filterByGametype(6)
-            ->filterByBlizzID($blizz_id)
-            ->filterByRegion($region)
-            ->get();
-          }
+                $ar_mmr_data = MasterMMRDataAR::select('name', 'conservative_rating', 'win', 'loss')
+                    ->join('mmr_type_ids', 'mmr_type_ids.mmr_type_id', '=', 'master_mmr_data_ar.type_value')
+                    ->whereIn('type_value', function ($query) {
+                        $query->select('mmr_type_id')
+                            ->from('heroesprofile.mmr_type_ids')
+                            ->whereIn('name', function ($subQuery) {
+                                $subQuery->select('name')
+                                    ->from('heroesprofile.heroes');
+                            });
+                    })
+                    ->filterByGametype(6)
+                    ->filterByBlizzID($blizz_id)
+                    ->filterByRegion($region)
+                    ->get();
+            }
         }
-
-
-
 
         $groupBy = '';
         if ($page == 'hero') {
@@ -798,14 +790,17 @@ class PlayerHeroesMapsRolesController extends Controller
 
         return $returnData;
     }
-    public function getHeroDataForAll($hero, $data){
-      if(!is_null($data)){
-        $mmrDataset = $data->where("name", $hero->name)->first();
-        if(!is_null($mmrDataset)){
-          return $data->where("name", $hero->name)->first()->mmr;
+
+    public function getHeroDataForAll($hero, $data)
+    {
+        if (! is_null($data)) {
+            $mmrDataset = $data->where('name', $hero->name)->first();
+            if (! is_null($mmrDataset)) {
+                return $data->where('name', $hero->name)->first()->mmr;
+            }
         }
-      }
-      return null;
+
+        return null;
     }
 
     public function findMatch(Request $request)

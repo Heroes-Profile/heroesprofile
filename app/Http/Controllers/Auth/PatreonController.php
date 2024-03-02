@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\BattlenetAccount;
 use App\Models\PatreonAccount;
-use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -22,39 +22,40 @@ class PatreonController extends Controller
     public function handleProviderCallback()
     {
 
-      try {
-        $user = Socialite::driver('patreon')->user();
-        $patreonData = [
-            'patreon_id' => $user->id,
-            'name' => $user->name,
-            'email' => $user->email,
-            'access_token' => $user->token,
-            'remember_token' => $user->refreshToken,
-            'expires_in' => $user->expiresIn,
-        ];
-        $currentBattlenetId = Auth::id();
+        try {
+            $user = Socialite::driver('patreon')->user();
+            $patreonData = [
+                'patreon_id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'access_token' => $user->token,
+                'remember_token' => $user->refreshToken,
+                'expires_in' => $user->expiresIn,
+            ];
+            $currentBattlenetId = Auth::id();
 
-        $patreonAccount = PatreonAccount::updateOrCreate(
-            ['email' => $user->email],
-            array_merge($patreonData, ['battlenet_accounts_id' => $currentBattlenetId])
-        );
+            $patreonAccount = PatreonAccount::updateOrCreate(
+                ['email' => $user->email],
+                array_merge($patreonData, ['battlenet_accounts_id' => $currentBattlenetId])
+            );
 
-        $battlenetAccount = BattlenetAccount::find($currentBattlenetId);
-        $data = $battlenetAccount->patreonAccount;
+            $battlenetAccount = BattlenetAccount::find($currentBattlenetId);
+            $data = $battlenetAccount->patreonAccount;
 
-        if ($this->getUserDataCheckIfSubscribed($user->token)) {
-            $battlenetAccount->patreon = 1;
-            $battlenetAccount->save();
+            if ($this->getUserDataCheckIfSubscribed($user->token)) {
+                $battlenetAccount->patreon = 1;
+                $battlenetAccount->save();
+            }
+
+            return redirect('/Profile/Settings');
+
+        } catch (InvalidStateException $e) {
+            // Log the exception for debugging (optional)
+            Log::error('InvalidStateException in PatreonController: '.$e->getMessage());
+
+            // Redirect the user to a custom login failed page
+            return redirect('/Authenticate/Patreon/Failed');
         }
-        return redirect('/Profile/Settings');
-
-      } catch (InvalidStateException $e) {
-          // Log the exception for debugging (optional)
-          Log::error('InvalidStateException in PatreonController: '.$e->getMessage());
-
-          // Redirect the user to a custom login failed page
-          return redirect('/Authenticate/Patreon/Failed');
-      }
     }
 
     public function handleProviderCallbackFailed(Request $request)

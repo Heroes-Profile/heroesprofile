@@ -2,11 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\IpLogging;
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-use App\Models\IpLogging;
 use Illuminate\Support\Facades\Cookie;
+use Symfony\Component\HttpFoundation\Response;
 
 class LogIPAndUserAgent
 {
@@ -18,11 +18,11 @@ class LogIPAndUserAgent
     public function handle(Request $request, Closure $next): Response
     {
         try {
-          Cookie::queue(Cookie::forget('additional-battletags'));
-          $ip = "";
-            if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER) && !empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            Cookie::queue(Cookie::forget('additional-battletags'));
+            $ip = '';
+            if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER) && ! empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
                 if (strpos($_SERVER['HTTP_X_FORWARDED_FOR'], ',') !== false) {
-                    $addr = explode(",", $_SERVER['HTTP_X_FORWARDED_FOR']);
+                    $addr = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
                     $ip = trim($addr[0]);
                 } else {
                     $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
@@ -31,7 +31,7 @@ class LogIPAndUserAgent
                 $ip = $_SERVER['REMOTE_ADDR'];
             }
 
-            $page = $request->path();
+            $page = substr($request->path(), 0, 500);
             $userAgent = $request->header('User-Agent');
 
             IpLogging::create([

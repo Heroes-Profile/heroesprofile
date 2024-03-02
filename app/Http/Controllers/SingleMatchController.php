@@ -6,6 +6,7 @@ use App\Models\Award;
 use App\Models\HeroesDataTalent;
 use App\Models\Map;
 use App\Models\ReplayExperienceBreakdownBlob;
+use App\Rules\ReplayIDValidation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +21,7 @@ class SingleMatchController extends Controller
     public function showWithoutEsport(Request $request, $replayID)
     {
         $validationRules = [
-            'replayID' => 'required|integer',
+            'replayID' => ['required', 'integer', new ReplayIDValidation],
         ];
 
         $validator = Validator::make(compact('replayID'), $validationRules);
@@ -69,7 +70,19 @@ class SingleMatchController extends Controller
     {
         $validationRules = [
             'esport' => 'nullable|in:NGS,CCL,MastersClash',
-            'replayID' => 'required|integer',
+            'replayID' => [
+                'required',
+                'integer',
+                function ($attribute, $value, $fail) use ($request) {
+
+                    if (is_null($request->input('esport'))) {
+                        $validator = new ReplayIDValidation;
+                        if (! $validator->passes($attribute, $value)) {
+                            $fail($validator->message());
+                        }
+                    }
+                },
+            ],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -80,10 +93,6 @@ class SingleMatchController extends Controller
                 'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
-        }
-
-        if ($validator->fails()) {
-            return redirect('/')->withErrors($validator);
         }
 
         $this->esport = $request['esport'];
@@ -168,9 +177,9 @@ class SingleMatchController extends Controller
             ])
             ->when(! $this->esport, function ($query) {
                 return $query->addSelect([
-                  $this->schema.'.replay.game_type',
-                  $this->schema.'.replay.date_added',
-                  $this->schema.'.player.player_conservative_rating',
+                    $this->schema.'.replay.game_type',
+                    $this->schema.'.replay.date_added',
+                    $this->schema.'.player.player_conservative_rating',
                     $this->schema.'.player.player_change',
                     $this->schema.'.player.hero_conservative_rating',
                     $this->schema.'.player.hero_change',
@@ -223,9 +232,6 @@ class SingleMatchController extends Controller
             $region = $replayGroup[0]->region;
 
             $team_names = $this->esport ? $this->getTeamNames($result) : null;
-
-
-            
 
             $replayDetails = [
                 'region' => $replayGroup[0]->region,
@@ -636,6 +642,7 @@ class SingleMatchController extends Controller
         $replayBans = DB::table($this->schema.'.replay_bans')
             ->select('team', 'hero')
             ->where('replayID', $replayID)
+            ->orderBy('ban_id')
             ->get()
             ->groupBy('team')
             ->map(function ($teamGroup) use ($heroData) {

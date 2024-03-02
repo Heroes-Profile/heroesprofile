@@ -8,7 +8,6 @@ use App\Models\HeroesDataTalent;
 use App\Models\HeroesInternational\HeroesInternationalMainTeam;
 use App\Models\HeroesInternational\HeroesInternationalNationsCupTeam;
 use App\Models\Map;
-use App\Models\MastersClashTeam;
 use App\Models\NGS\NGSTeam;
 use App\Rules\GameMapInputValidation;
 use App\Rules\HeroInputValidation;
@@ -120,8 +119,8 @@ class EsportsController extends Controller
         if ($esport == 'NGS') {
             $image = NGSTeam::select('image')->where('team_name', $team)->first();
 
-            if($image){
-              $image = $image->image;
+            if ($image) {
+                $image = $image->image;
             }
         }
 
@@ -497,9 +496,9 @@ class EsportsController extends Controller
 
         $result = DB::table($this->schema.'.replay')
             ->when($this->season, function ($query) {
-              $query->where(function ($query) use ($division) {
-                  $query->where('season', $this->season);
-              });
+                $query->where(function ($query) {
+                    $query->where('season', $this->season);
+                });
             })
             ->when($this->esport === 'NGS' && $division, function ($query) use ($division) {
                 $query->where(function ($query) use ($division) {
@@ -1013,7 +1012,11 @@ class EsportsController extends Controller
         $this->game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->toArray() : null;
 
         if ($this->esport == 'CCL') {
-            $this->team = $request['team'] ? CCLTeam::where('season', $this->season)->where('team_name', $request['team'])->first()->team_id : null;
+            $this->team = $request['team'] ? CCLTeam::when(! is_null($this->season), function ($query) {
+                return $query->where('season', $this->season);
+            })->where('team_name', $request['team'])->first()->team_id
+            : null;
+
             $this->team_name = $request['team'];
         } elseif ($this->esport == 'hi' && $this->tournament == 'main') {
             $this->team = $request['team'] ? HeroesInternationalMainTeam::where('season', $this->season)->where('team_name', $request['team'])->first()->team_id : null;
@@ -1123,7 +1126,7 @@ class EsportsController extends Controller
         //->toSql();
             ->get();
 
-         //return $results;
+        //return $results;
 
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
@@ -1546,16 +1549,16 @@ class EsportsController extends Controller
 
         $image = optional($results->first())->image;
         if ($this->esport == 'NGS') {
-          if (strpos($image, 'https://s3.amazonaws.com/ngs-image-storage/') !== false) {
-              $image = explode('https://s3.amazonaws.com/ngs-image-storage/', $image);
-              $image = 'https://s3.amazonaws.com/ngs-image-storage/'.urlencode($image[1]);
+            if (strpos($image, 'https://s3.amazonaws.com/ngs-image-storage/') !== false) {
+                $image = explode('https://s3.amazonaws.com/ngs-image-storage/', $image);
+                $image = 'https://s3.amazonaws.com/ngs-image-storage/'.urlencode($image[1]);
 
-              if (strpos($image, 'undefined') !== false) {
-                  $image = '/images/NGS/no-image-clipped.png';
-              }
-          } else {
-              $image = $image;
-          }
+                if (strpos($image, 'undefined') !== false) {
+                    $image = '/images/NGS/no-image-clipped.png';
+                }
+            } else {
+                $image = $image;
+            }
         } elseif ($this->esport == 'CCL') {
             $image = '/images/CCL/Organizations/Logos/'.$image;
         } elseif ($this->esport == 'MastersClash') {
@@ -1565,7 +1568,6 @@ class EsportsController extends Controller
         } elseif ($this->esport == 'hi_nc') {
             $image = '/images/HI/Flags/'.$image.'.png';
         }
-
 
         return [
             'wins' => $wins,
