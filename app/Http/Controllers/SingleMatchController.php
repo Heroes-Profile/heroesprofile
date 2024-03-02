@@ -95,10 +95,6 @@ class SingleMatchController extends Controller
             ];
         }
 
-        if ($validator->fails()) {
-            return redirect('/')->withErrors($validator);
-        }
-
         $this->esport = $request['esport'];
         $replayID = $request['replayID'];
 
