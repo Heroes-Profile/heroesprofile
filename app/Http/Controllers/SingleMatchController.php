@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Rules\ReplayIDValidation;
 
 class SingleMatchController extends Controller
 {
@@ -20,7 +21,7 @@ class SingleMatchController extends Controller
     public function showWithoutEsport(Request $request, $replayID)
     {
         $validationRules = [
-            'replayID' => 'required|integer',
+          'replayID' => ['required', 'integer', new ReplayIDValidation],
         ];
 
         $validator = Validator::make(compact('replayID'), $validationRules);
@@ -67,9 +68,21 @@ class SingleMatchController extends Controller
 
     public function getData(Request $request)
     {
-        $validationRules = [
+          $validationRules = [
             'esport' => 'nullable|in:NGS,CCL,MastersClash',
-            'replayID' => 'required|integer',
+            'replayID' => [
+                'required',
+                'integer',
+                function ($attribute, $value, $fail) use ($request) {
+
+                  if (is_null($request->input('esport'))) {
+                        $validator = new ReplayIDValidation;
+                        if (!$validator->passes($attribute, $value)) {
+                            $fail($validator->message());
+                        }
+                    }
+                },
+            ],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -80,10 +93,6 @@ class SingleMatchController extends Controller
                 'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
-        }
-
-        if ($validator->fails()) {
-            return redirect('/')->withErrors($validator);
         }
 
         $this->esport = $request['esport'];
@@ -636,6 +645,7 @@ class SingleMatchController extends Controller
         $replayBans = DB::table($this->schema.'.replay_bans')
             ->select('team', 'hero')
             ->where('replayID', $replayID)
+            ->orderBy('ban_id')
             ->get()
             ->groupBy('team')
             ->map(function ($teamGroup) use ($heroData) {

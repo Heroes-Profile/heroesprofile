@@ -1013,8 +1013,12 @@ class EsportsController extends Controller
         $this->game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->toArray() : null;
 
         if ($this->esport == 'CCL') {
-            $this->team = $request['team'] ? CCLTeam::where('season', $this->season)->where('team_name', $request['team'])->first()->team_id : null;
-            $this->team_name = $request['team'];
+          $this->team = $request['team'] ? CCLTeam::when(!is_null($this->season), function ($query) {
+              return $query->where('season', $this->season);
+          })->where('team_name', $request['team'])->first()->team_id
+          : null;
+      
+          $this->team_name = $request['team'];
         } elseif ($this->esport == 'hi' && $this->tournament == 'main') {
             $this->team = $request['team'] ? HeroesInternationalMainTeam::where('season', $this->season)->where('team_name', $request['team'])->first()->team_id : null;
             $this->team_name = $request['team'];

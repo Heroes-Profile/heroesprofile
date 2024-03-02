@@ -286,13 +286,16 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             $item['games_played'] = $gamesPlayed;
             $item['win_rate'] = round($winRate * 100, 2);
             $item['hero'] = $heroData[$item['hero']];
-            $item['level_one'] = $talentData[$item['level_one']];
-            $item['level_four'] = $talentData[$item['level_four']];
-            $item['level_seven'] = $talentData[$item['level_seven']];
-            $item['level_ten'] = $talentData[$item['level_ten']];
-            $item['level_thirteen'] = $talentData[$item['level_thirteen']];
-            $item['level_sixteen'] = $talentData[$item['level_sixteen']];
-            $item['level_twenty'] = $talentData[$item['level_twenty']];
+            $item['level_one'] = isset($talentData[$item['level_one']]) ? $talentData[$item['level_one']] : null;
+            $item['level_four'] = isset($talentData[$item['level_four']]) ? $talentData[$item['level_four']] : null;
+            $item['level_seven'] = isset($talentData[$item['level_seven']]) ? $talentData[$item['level_seven']] : null;
+            $item['level_ten'] = isset($talentData[$item['level_ten']]) ? $talentData[$item['level_ten']] : null;
+            $item['level_thirteen'] = isset($talentData[$item['level_thirteen']]) ? $talentData[$item['level_thirteen']] : null;
+            $item['level_sixteen'] = isset($talentData[$item['level_sixteen']]) ? $talentData[$item['level_sixteen']] : null;
+            $item['level_twenty'] = isset($talentData[$item['level_twenty']]) ? $talentData[$item['level_twenty']] : null;
+            
+
+
             $item['total_filter_type'] = ($gamesPlayed > 0 ? round($item['buildData']['total_filter_type'] / $gamesPlayed, 2) : 0);
 
             return $item;
