@@ -13,6 +13,7 @@
     :includegamemap="true"
     :includegametypefull="true"
     :hideadvancedfilteringbutton="true"
+    :includehero="true"
     >
   </filters>
   <takeover-ad :patreon-user="patreonUser"></takeover-ad>
