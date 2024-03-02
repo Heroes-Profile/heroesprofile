@@ -29,15 +29,7 @@ class GlobalDataService
 
     public function getHeaderAlert()
     {
-        if (! session()->has('headeralert')) {
-            $alert = HeaderAlert::select('text')->where('valid', 1)->first();
-
-            if (! empty($alert)) {
-                session(['headeralert' => $alert->text]);
-            }
-        }
-
-        return session('headeralert');
+        return HeaderAlert::select('text')->where('valid', 1)->first();
     }
 
     public function getPrivateAccounts()
@@ -56,11 +48,7 @@ class GlobalDataService
 
     public function calculateMaxReplayNumber()
     {
-        if (! session()->has('maxReplayID')) {
-            session(['maxReplayID' => Replay::max('replayID')]);
-        }
-
-        return session('maxReplayID');
+        return Replay::max('replayID');
     }
 
     public function getDefaultTimeframeType()
@@ -98,14 +86,9 @@ class GlobalDataService
 
     public function getLatestGameDate()
     {
-        if (! session()->has('latestGameDate')) {
-            session(['latestGameDate' => Replay::where('game_date', '<=', now())
-                ->orderByDesc('game_date')
-                ->value('game_date'),
-            ]);
-        }
-
-        return session('latestGameDate');
+        return Replay::where('game_date', '<=', now())
+        ->orderByDesc('game_date')
+        ->value('game_date');
     }
 
     public function getBladeGlobals()
