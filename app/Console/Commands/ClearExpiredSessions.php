@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 class ClearExpiredSessions extends Command
 {
     protected $signature = 'sessions:clear';
+
     protected $description = 'Clear expired sessions';
 
     public function handle()

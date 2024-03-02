@@ -87,8 +87,8 @@ class GlobalDataService
     public function getLatestGameDate()
     {
         return Replay::where('game_date', '<=', now())
-        ->orderByDesc('game_date')
-        ->value('game_date');
+            ->orderByDesc('game_date')
+            ->value('game_date');
     }
 
     public function getBladeGlobals()

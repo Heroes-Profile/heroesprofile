@@ -149,9 +149,6 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             $item->level_sixteen = $item->level_sixteen && $item->level_sixteen != 0 ? isset($talentData[$item->level_sixteen]) ? $talentData[$item->level_sixteen] : null : null;
             $item->level_twenty = $item->level_twenty && $item->level_twenty != 0 ? isset($talentData[$item->level_twenty]) ? $talentData[$item->level_twenty] : null : null;
 
-
-
-
             $item->hero = $type == 'hero' ? $heroData[$typeNumber] : null;
 
             return $item;

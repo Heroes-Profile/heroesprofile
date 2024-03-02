@@ -293,8 +293,6 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             $item['level_thirteen'] = isset($talentData[$item['level_thirteen']]) ? $talentData[$item['level_thirteen']] : null;
             $item['level_sixteen'] = isset($talentData[$item['level_sixteen']]) ? $talentData[$item['level_sixteen']] : null;
             $item['level_twenty'] = isset($talentData[$item['level_twenty']]) ? $talentData[$item['level_twenty']] : null;
-            
-
 
             $item['total_filter_type'] = ($gamesPlayed > 0 ? round($item['buildData']['total_filter_type'] / $gamesPlayed, 2) : 0);
 

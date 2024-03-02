@@ -317,6 +317,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
                 'buildReturnData' => $buildReturnData,
             ];
         });
+
         /*
         $replays = Replay::query()
             ->join('player', 'player.replayID', '=', 'replay.replayID')
@@ -377,7 +378,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         return [
             'talentData' => $data['data'],
             'buildData' => $data['buildReturnData'],
-            'replays' => null,/*$replays,*/
+            'replays' => null, /*$replays,*/
         ];
     }
 

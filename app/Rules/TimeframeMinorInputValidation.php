@@ -21,22 +21,21 @@ class TimeframeMinorInputValidation implements Rule
         }
 
         if ($this->timeframeType === 'minor') {
-          $existingVersions = SeasonGameVersion::where('valid_globals', 1)->pluck('game_version')->toArray();
-          $invalidVersions = array_diff($value, $existingVersions);
-          if (!empty($invalidVersions)) {
-              return false;
-          }
+            $existingVersions = SeasonGameVersion::where('valid_globals', 1)->pluck('game_version')->toArray();
+            $invalidVersions = array_diff($value, $existingVersions);
+            if (! empty($invalidVersions)) {
+                return false;
+            }
         } elseif ($this->timeframeType === 'major') {
             foreach ($value as $timeframeValue) {
-                $matchingVersions = SeasonGameVersion::where('game_version', 'like', trim($timeframeValue) . '%')
-                                                    ->where('valid_globals', 1)
-                                                    ->count();
+                $matchingVersions = SeasonGameVersion::where('game_version', 'like', trim($timeframeValue).'%')
+                    ->where('valid_globals', 1)
+                    ->count();
                 if ($matchingVersions === 0) {
                     return false;
                 }
             }
         }
-      
 
         return true;
     }

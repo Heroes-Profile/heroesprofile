@@ -107,7 +107,7 @@ class BattletagSearchController extends Controller
         }
 
         $returnData = array_filter($returnData, function ($item) {
-          return $item->totalGamesPlayed > 0;
+            return $item->totalGamesPlayed > 0;
         });
 
         usort($returnData, function ($a, $b) {
@@ -147,15 +147,15 @@ class BattletagSearchController extends Controller
 
     private function getLatestHeroPlayedForPlayer($blizzId, $region, $gameType = null)
     {
-      $latestHero = Replay::select("hero")
-        ->join('player', 'player.replayID', '=', 'replay.replayID')
-        ->where('blizz_id', $blizzId)
-        ->where('region', $region)
-        ->orderBy('game_date', 'desc')
-        ->first();
+        $latestHero = Replay::select('hero')
+            ->join('player', 'player.replayID', '=', 'replay.replayID')
+            ->where('blizz_id', $blizzId)
+            ->where('region', $region)
+            ->orderBy('game_date', 'desc')
+            ->first();
 
-        if($latestHero){
-          return $latestHero->hero;
+        if ($latestHero) {
+            return $latestHero->hero;
         }
 
         return null;

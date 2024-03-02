@@ -10,7 +10,7 @@ class ReplayIDValidation implements Rule
     public function passes($attribute, $value)
     {
         // Check if the value is an integer
-        if (!is_numeric($value)) {
+        if (! is_numeric($value)) {
             return false;
         }
 
