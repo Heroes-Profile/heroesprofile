@@ -1,6 +1,7 @@
 <template>
   <div class=" w-auto inline-block m-1">
-    <h2 :class="['bg-' + color, 'rounded-t', 'p-2', 'text-sm', 'text-center', 'uppercase']">
+    <h2 v-if="text" :class="['bg-' + color, 'rounded-t', 'p-2', 'text-sm', 'text-center', 'uppercase']">{{ text }}</h2>
+    <h2 v-else :class="['bg-' + color, 'rounded-t', 'p-2', 'text-sm', 'text-center', 'uppercase']">
       <a v-if="esport" class="link" :href="`/Esports/${esport}/Team/${esportteamname}`">{{  esportteamname  }}</a>
       <span v-if="esport"> - </span>
       <span>{{ winnerloser }}</span>
@@ -98,6 +99,7 @@
     components: {
     },
     props: {
+      text: String,
       winnerloser: String,
       esportteamname: String,
       data: Array,
