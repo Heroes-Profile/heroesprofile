@@ -21,6 +21,7 @@ use App\Rules\SeasonInputValidation;
 use App\Rules\StackSizeInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Rules\TierInputByIDValidation;
 
 class GlobalLeaderboardController extends GlobalsInputValidationController
 {
@@ -48,8 +49,9 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation()],
             'region' => ['sometimes', 'nullable', new RegionInputValidation()],
             'role' => ['sometimes', 'nullable', new RoleInputValidation()],
+            'tierrank' => ['sometimes', 'nullable', new TierInputByIDValidation()],
         ];
-
+        
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
@@ -66,7 +68,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         $gameType = $this->getGameTypeFilterValues($request['game_type']);
         $season = $request['season'];
         $region = $this->getRegionFilterValues($request['region']);
-
+        $tierrank = $request["tierrank"];
         $type = $request['type'];
         $typeNumber = 0;
 
@@ -119,7 +121,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
         $blizzIDRegionMapping = [];
 
-        $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber, $patreonAccounts, &$blizzIDRegionMapping) {
+        $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber, $patreonAccounts, &$blizzIDRegionMapping, $tierrank) {
 
             if (array_key_exists($item->blizz_id.'|'.$item->region, $blizzIDRegionMapping)) {
                 return null;
@@ -137,6 +139,11 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             $item->most_played_hero = $item->most_played_hero ? $heroData[$item->most_played_hero] : null;
             $item->tier = $this->globalDataService->calculateSubTier($rankTiers, $item->mmr);
             $item->tier_id = $this->globalDataService->calculateTierID($item->tier);
+
+
+            if ($tierrank && $tierrank != intval($item->tier_id)) {
+              return null;
+            }
 
             $item->region_id = $item->region;
             $item->region = $this->globalDataService->getRegionIDtoString()[$item->region];

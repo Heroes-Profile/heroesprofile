@@ -20,7 +20,7 @@
     :includeplayerrank="true"
     :advancedfiltering="advancedfiltering"
     :hideadvancedfilteringbutton="true"
-    :disablefilter="!shouldFilterData"
+    :disablefilter="!this.shouldFilterData"
     >
   </filters>
   <takeover-ad :patreon-user="patreonUser"></takeover-ad>
@@ -166,7 +166,7 @@
         return this.filters.heroes;
       },
       shouldFilterData(){
-        if(this.hero.name != "Auto Select" && this.enemyally.name != "Auto Select"){
+        if((this.hero && this.hero.name != "Auto Select") && (this.enemyally && this.enemyally.name != "Auto Select")){
           return true;
         }
         return false;
