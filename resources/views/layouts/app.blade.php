@@ -53,11 +53,12 @@
     <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}" ></horizontal-banner-ad>
 
 
-    @if($headeralert !== null)
+    @if(isset($headeralert) && $headeralert !== null)
       <div class="bg-red text-sm text-center p-1">
           {{ $headeralert }}
       </div>
     @endif
+
 
 
 
