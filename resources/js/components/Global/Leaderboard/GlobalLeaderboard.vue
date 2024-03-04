@@ -51,6 +51,9 @@
         :hideadvancedfilteringbutton="true"
         :advancedfiltering="advancedfiltering"
         :excludetimeframes="true"
+
+        :includetier="true"
+        :tierrank="''"
       >
       </filters>
       <takeover-ad :patreon-user="patreonUser"></takeover-ad>
@@ -269,6 +272,7 @@ export default {
       playerRating: null,
       ratingLoading: false,
       playerRatingGamesPlayed: null,
+      tierrank: null,
     }
   },
   created(){
@@ -324,6 +328,7 @@ export default {
           hero: this.hero,
           role: this.role,
           region: this.region,
+          tierrank: this.tierrank,
         }, 
         {
           cancelToken: this.cancelTokenSource.token,
@@ -332,7 +337,9 @@ export default {
         if(response.data.status == "failure to validate inputs"){
           throw new Error("Failure to validate inputs");
         }
+        
         this.data = response.data;
+        
       }catch(error){
         //Do something here
       }finally {
@@ -364,6 +371,7 @@ export default {
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
       this.region = filteredData.single["Regions"] ? filteredData.single["Regions"] : null;
 
+      this.tierrank = filteredData.single.Rank ? filteredData.single.Rank : null;
 
       this.sortKey = '';
       this.sortDir = 'desc';

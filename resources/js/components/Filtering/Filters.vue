@@ -184,6 +184,15 @@
             @input-changed="handleInputChange"
           ></single-select-filter>
 
+
+          <!-- Tier Single -->
+          <single-select-filter v-if="includetier" 
+            :values="filters.rank_tiers" 
+            :text="'Rank'" 
+            :defaultValue="tierrank"
+            @input-changed="handleInputChange"
+          ></single-select-filter>
+
           <!-- Player Rank -->
           <multi-select-filter v-if="includeplayerrank" 
             :values="filters.rank_tiers" 
@@ -191,6 +200,8 @@
             :defaultValue="playerrank"
             @input-changed="handleInputChange"
           ></multi-select-filter>
+          
+
 
           <!-- Hero Rank -->
           <multi-select-filter v-if="includeherorank && toggleExtraFilters" 
@@ -341,6 +352,7 @@
       includeseasonwithall: Boolean,
       overrideGroupSizeRemoval: Boolean,
       includetimeframetypewithlastupdate: Boolean,
+      includetier: Boolean,
       filters: {
         type: Object,
         required: true
@@ -371,6 +383,7 @@
         role: String,
         gamemap: Array,
         playerrank: Array,
+        tierrank: String,
         herorank: Array,
         rolerank: Array,
         talentbuildtype: String,
