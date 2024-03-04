@@ -358,7 +358,7 @@
       groupSizeDefaultValue: String,
       rolerequired: Boolean,
       excludetimeframes: Boolean,
-      shouldfilterdata: Boolean,
+      disablefilter: Boolean,
     },
     data(){
       return {
