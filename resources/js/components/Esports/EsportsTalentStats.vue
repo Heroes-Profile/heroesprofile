@@ -1,7 +1,7 @@
 <template>
   <div class="mx-auto px-4 w-auto flex flex-col items-center">
-    <global-talent-details-section :talentdetaildata="talentdetaildata" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
-    <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="'Popular'" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
+    <global-talent-details-section :talentdetaildata="talentdetaildata" :esport="'true'" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
+    <global-talent-builds-section :talentbuilddata="talentbuilddata" :esport="'true'" :buildtype="'Popular'" :statfilter="'win_rate'" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
   </div>
 </template>
 

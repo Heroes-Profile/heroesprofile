@@ -29,7 +29,8 @@ class GlobalDataService
 
     public function getHeaderAlert()
     {
-        return HeaderAlert::select('text')->where('valid', 1)->first();
+      $text = HeaderAlert::where('valid', 1)->value('text');
+      return $text ?? null;
     }
 
     public function getPrivateAccounts()
@@ -111,6 +112,7 @@ class GlobalDataService
             'maxReplayID' => $this->calculateMaxReplayNumber(),
             'latestPatch' => $this->getLatestPatch(),
             'latestGameDate' => $this->getLatestGameDate(),
+            'headeralert' => $this->getHeaderAlert(),
         ];
 
     }

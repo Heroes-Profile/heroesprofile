@@ -57,6 +57,7 @@ export default {
   components: {
   },
   props: {
+    esport: String,
     talentdetaildata: Object,
     statfilter: String,
     talentimages: Array,
@@ -73,21 +74,6 @@ export default {
    
   },
   mounted() {
-   
-   /* var responsivetable = this.$refs.responsivetable1[0];
-   
-              if (responsivetable && this.windowWidth < 1500) {
-                var newTableWidth = this.windowWidth /responsivetable.clientWidth;
-                var resizeTable = this.$refs.resizeTable;
-               
-                resizeTable.style.transformOrigin = 'top left';
-                resizeTable.style.transform = `scale(${newTableWidth})`;
-                var container = this.$refs.tablecontainer;
-                this.tablewidth = newTableWidth;
-                
-                container.style.height = (resizeTable.clientHeight * newTableWidth) + 'px';
-               
-              }*/
   },
   computed: {
   },
@@ -95,17 +81,20 @@ export default {
   },
   methods: {
     sortTable(columnKey, level) {
-      if (!this.sortOrders[level]) {
-        this.sortOrders = { ...this.sortOrders, [level]: {} };
+      if(!this.esport){
+        if (!this.sortOrders[level]) {
+          this.sortOrders = { ...this.sortOrders, [level]: {} };
+        }
+        const currentOrder = this.sortOrders[level][columnKey] || 'asc';
+        const newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
+        this.sortOrders[level][columnKey] = newOrder;
+        this.talentdetaildata[level].sort((a, b) => {
+          if (a[columnKey] < b[columnKey]) return newOrder === 'asc' ? -1 : 1;
+          if (a[columnKey] > b[columnKey]) return newOrder === 'asc' ? 1 : -1;
+          return 0;
+        });
       }
-      const currentOrder = this.sortOrders[level][columnKey] || 'asc';
-      const newOrder = currentOrder === 'asc' ? 'desc' : 'asc';
-      this.sortOrders[level][columnKey] = newOrder;
-      this.talentdetaildata[level].sort((a, b) => {
-        if (a[columnKey] < b[columnKey]) return newOrder === 'asc' ? -1 : 1;
-        if (a[columnKey] > b[columnKey]) return newOrder === 'asc' ? 1 : -1;
-        return 0;
-      });
+
     },
   }
 }
