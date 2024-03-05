@@ -129,13 +129,13 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('Match/Single/{replayID}', [SingleMatchController::class, 'showWithoutEsport']);
 
     Route::get('/Match/Single/', function (Illuminate\Http\Request $request) {
-        $replayID = $request->query('replayID');
-
-        if ($replayID) {
-            return redirect("/Match/Single/$replayID");
-        }
-
-        return redirect('/');
+      $replayID = $request->query('replayID');
+  
+      if ($replayID) {
+          return redirect("/Match/Single/$replayID", 301);
+      }
+  
+      return redirect('/');
     });
 
     Route::get('Esports/{esport}/Match/Single/{replayID}', [SingleMatchController::class, 'showWithEsport']);
