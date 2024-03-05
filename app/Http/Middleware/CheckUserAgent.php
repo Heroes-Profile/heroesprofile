@@ -52,6 +52,8 @@ class CheckUserAgent
             'axios/0.19.2',
             'Mozilla/5.0 (compatible; Discordbot/2.0; +https://discordapp.com)',
             'Mozilla/5.0 (compatible; Adsbot/3.1)',
+            'Verity/1.1 (https://gumgum.com/verity; verity-support@gumgum.com)',
+            'ias-va/3.3 (former https://www.admantx.com + https://integralads.com/about-ias/)',
         ];
 
         if (in_array($userAgent, $specificUserAgents)) {
