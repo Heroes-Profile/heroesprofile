@@ -51,7 +51,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::fallback(function () {
-    return view('errors.404');
+  return response()->view('errors.404', [], 404);
 });
 
 Route::middleware(['logIpAndUserAgent'])->group(function () {

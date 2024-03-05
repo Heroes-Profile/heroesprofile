@@ -41,7 +41,7 @@ class CheckUserAgent
 
         foreach ($blockedUserAgents as $blockedAgent) {
             if (stripos($userAgent, $blockedAgent) !== false) {
-                return response()->json(['message' => 'Access denied for Chinese bot/scraping tool.'], 403);
+                return response()->json(['message' => 'Access denied for bot/scraping tool.'], 403);
             }
         }
 
@@ -55,6 +55,7 @@ class CheckUserAgent
             'Mozilla/5.0 (compatible; Adsbot/3.1)',
             'Verity/1.1 (https://gumgum.com/verity; verity-support@gumgum.com)',
             'ias-va/3.3 (former https://www.admantx.com + https://integralads.com/about-ias/)',
+            'ias-or/3.3 (former https://www.admantx.com + https://integralads.com/about-ias/)',
         ];
 
         if (in_array($userAgent, $specificUserAgents)) {
