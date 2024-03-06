@@ -77,7 +77,47 @@ app.config.globalProperties.$redirectToProfile = function (battletag, blizz_id, 
     }
 };
 
-app.use(flareVue);
+// Custom error handler to filter out specific errors
+const customErrorHandler = function (error) {
+  // Check if the error message contains the specific errors you want to ignore
+  if (
+    error.message.includes("The play() request was interrupted because the media was removed from the document") ||
+    error.message.includes("Label 'https' has already been declared") ||
+    error.message.includes("Somehow the event source is null") ||
+    error.message.includes("Failed to fetch") ||
+    error.message.includes("Load failed") ||
+    error.message.includes("The play() request was interrupted by a call to pause(). https://goo.gl/LdLk22") ||
+    error.message.includes("The operation was aborted.") ||
+    error.message.includes("The operation was aborted.") ||
+    error.message.includes("Node.removeChild: The node to be removed is not a child of this node") ||
+    error.message.includes("The play() request was interrupted because video-only background media was paused to save power. https://goo.gl/LdLk22") ||
+    error.message.includes("Cannot read properties of undefined (reading 'getReadyAds')") ||
+    error.message.includes("Cannot redefine property: websredir") ||
+    error.message.includes("Cannot read property 'getReadyAds' of undefined") ||
+    error.message.includes("obtainVideoInfos is not defined") ||
+    error.message.includes("The play() request was interrupted because the media was removed from the document.") ||
+    error.message.includes("Cannot redefine property: googletag") ||
+    error.message.includes("Cannot read properties of undefined (reading 'nativeBack')") ||
+    error.message.includes('can\'t redefine non-configurable property "solana"') ||
+    error.message.includes("Failed to load because no supported source was found.") ||
+    error.message.includes("The fetching process for the media resource was aborted by the user agent at the user's request.") ||
+    error.message.includes("The operation was aborted.") ||
+    error.message.includes("The operation was aborted.") ||
+    error.message.includes("The operation was aborted.") ||
+    error.message.includes("The operation was aborted.") ||
+    error.message.includes("Unexpected end of input")
+    
+  ) {
+    return false; 
+  }
+  return true;
+};
+
+
+app.use(flareVue, {
+  errorHandler: customErrorHandler
+});
+
 // Attach the application instance to an HTML element with id "app"
 app.mount('#app');
 
