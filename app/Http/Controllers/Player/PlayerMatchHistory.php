@@ -51,6 +51,39 @@ class PlayerMatchHistory extends Controller
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);
     }
+    public function showLatest(Request $request, $battletag, $blizz_id, $region){
+      $validationRules = [
+        'battletag' => 'required|string',
+        'blizz_id' => 'required|integer',
+        'region' => 'required|integer',
+      ];
+      $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
+
+      if ($validator->fails()) {
+        if (env('Production')) {
+            return \Redirect::to('/');
+        } else {
+            return [
+                'data' => $request->all(),
+                'status' => 'failure to validate inputs',
+            ];
+        }
+      }
+
+      $latest_replay = DB::table('replay')
+        ->join('player', 'player.replayID', '=', 'replay.replayID')
+        ->select([
+            'replay.replayID AS replayID',
+        ])
+        ->where('blizz_id', $blizz_id)
+        ->where('region', $region)
+        ->orderBy("replayID", "DESC")
+        ->first();
+        
+      return \Redirect::to("/Match/Single/" . $latest_replay->replayID);
+    }
+
+    
 
     public function getData(Request $request)
     {

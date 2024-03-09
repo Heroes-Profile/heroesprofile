@@ -125,7 +125,10 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('Player/{battletag}/{blizz_id}/{region}/Talents/{hero}', [PlayerTalentsController::class, 'show'])->middleware('checkIfPrivateProfilePage');
     Route::get('Player/{battletag}/{blizz_id}/{region}/MMR', [PlayerMMRController::class, 'show'])->middleware('checkIfPrivateProfilePage');
     Route::get('Player/{battletag}/{blizz_id}/{region}/Match/History', [PlayerMatchHistory::class, 'show'])->middleware('checkIfPrivateProfilePage');
+    Route::get('Player/{battletag}/{blizz_id}/{region}/Match/Latest', [PlayerMatchHistory::class, 'showLatest'])->middleware('checkIfPrivateProfilePage');
 
+
+    
     Route::get('Match/Single/{replayID}', [SingleMatchController::class, 'showWithoutEsport']);
 
     Route::get('/Match/Single/', function (Illuminate\Http\Request $request) {
