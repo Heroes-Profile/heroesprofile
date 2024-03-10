@@ -604,27 +604,31 @@ class GlobalDataService
 
         $result = '';
 
-        $counter = 5;
+        $counter = 4;
         $multiply = 1;
+
         foreach ($rankTiers as $key => $tierInfo) {
             $minMmr = $tierInfo['min_mmr'];
             $maxMmr = $tierInfo['max_mmr'];
             $split = $tierInfo['split'];
 
+            if($maxMmr == ""){
+              $maxMmr = $minMmr + $split;
+            }
             if ($mmr >= $minMmr && $mmr < $maxMmr) {
-                for ($i = $minMmr; $i < $maxMmr; $i += $split) {
+                for ($i = ($minMmr + $split); $i < $maxMmr ; $i += $split) {
+
                     if ($mmr >= $i) {
                         $result = $tierNames[$key].' '.$counter;
                         $counter--;
                     }
                 }
             } else {
-                if ($mmr >= $minMmr && $maxMmr == '') {
+                if ($mmr >= $minMmr && $mmr >= $maxMmr) {
                     $result = 'Master';
                 }
             }
         }
-
         return $result;
     }
 
@@ -651,39 +655,26 @@ class GlobalDataService
         }
     }
 
-    public function getSubTiers($rankTiers, $mmr)
+    public function getSubTiers($tier, $rankTierName)
     {
-        $tierNames = [
-            'bronze' => 'Bronze',
-            'silver' => 'Silver',
-            'gold' => 'Gold',
-            'platinum' => 'Platinum',
-            'diamond' => 'Diamond',
-            'master' => 'Master',
-        ];
+      $result = [];
 
-        $result = [];
+      $counter = 5;
 
-        $counter = 5;
-        $multiply = 1;
-        foreach ($rankTiers as $key => $tierInfo) {
-            $minMmr = $tierInfo['min_mmr'];
-            $maxMmr = $tierInfo['max_mmr'];
-            $split = $tierInfo['split'];
+      $minMmr = $tier['min_mmr'];
+      $maxMmr = $tier['max_mmr'];
+      $split = $tier['split'];
 
-            if ($mmr >= $minMmr && $mmr < $maxMmr) {
-                for ($i = $minMmr; $i < $maxMmr; $i += $split) {
-                    $result[$tierNames[$key].' '.$counter] = $i;
-                    $counter--;
-                }
-            } else {
-                if ($mmr >= $minMmr && $maxMmr == '') {
-                    $result['Master'] = $minMmr;
-                }
-            }
-        }
+      if($maxMmr == ""){
+        $maxMmr = $minMmr + $split;
+      }
 
-        return $result;
+      for ($i = ($minMmr + $split); $i <= $maxMmr; $i += $split) {
+        $result[ucfirst($rankTierName) . ' ' . $counter] = $i;
+        $counter--;
+      }
+      
+      return $result;
     }
 
     public function getBattletagShort($blizz_id, $region)
