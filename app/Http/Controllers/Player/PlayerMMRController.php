@@ -159,15 +159,22 @@ class PlayerMMRController extends Controller
                 }
             }
         }
-        $fullBreakdownForTier = $this->globalDataService->getSubTiers($this->globalDataService->getRankTiers($game_type, $mmrType), $modifiedResult[0]->mmr);
-        $rankTier = $this->globalDataService->calculateSubTier($this->globalDataService->getRankTiers($game_type, $mmrType), $modifiedResult[0]->mmr);
+        $rankTiers = $this->globalDataService->getRankTiers($game_type, $mmrType);
+        $rankTier = $this->globalDataService->calculateSubTier($rankTiers, $modifiedResult[0]->mmr);
+
+        $rankTierName = str_replace(' ', '', strtolower(preg_replace('/\d/', '', $rankTier)));
+
 
         $leagueBreakdownArray = $leagueBreakdown->toArray();
-        $fullBreakdownForTierArray = $fullBreakdownForTier;
+        $fullBreakdownForTierArray = $this->globalDataService->getSubTiers($rankTiers[$rankTierName], $rankTierName);
 
         $smallestMmr = 0;
-        if (count($fullBreakdownForTierArray) > 0) {
-            $smallestMmr = min($fullBreakdownForTierArray);
+
+
+        foreach($rankTiers as $key => $data){
+          if($rankTierName == $key){
+            $smallestMmr = $data["min_mmr"];
+          }
         }
 
         if ($rankTier != 'Master') {
@@ -181,9 +188,8 @@ class PlayerMMRController extends Controller
                             'game_type' => $data['game_type'],
                             'league_tier' => $data['league_tier'],
                             'min_mmr' => $data['min_mmr'],
-                            'max_mmr' => $data['max_mmr'],
+                            'max_mmr' => $mmr, 
                             'tier' => $tier,
-                            'mmr' => $mmr,
                             'tierFound' => $rankTier == $tier ? true : false,
                         ];
                         array_splice($leagueBreakdownArray, $key, 0, [$newData]);
