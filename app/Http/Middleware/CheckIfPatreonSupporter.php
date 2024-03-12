@@ -7,6 +7,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\BattlenetAccount;
 
 class CheckIfPatreonSupporter
 {
@@ -17,6 +18,8 @@ class CheckIfPatreonSupporter
      */
     public function handle(Request $request, Closure $next): Response
     {
+        //$user = BattlenetAccount::find(1);
+        //Auth::login($user);
 
         if (Auth::check()) {
             $user = Auth::user();

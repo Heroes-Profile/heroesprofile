@@ -119,9 +119,6 @@ class GlobalDataService
 
     public function getPlayerLoadSettings()
     {
-        //$user = BattlenetAccount::find(1);
-        //Auth::login($user);
-
         if (Auth::check()) {
             $user = Auth::user();
 
@@ -134,6 +131,21 @@ class GlobalDataService
 
         return true;
     }
+    public function getPlayerMatchStyle()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            $playerhistorytable = $user->userSettings->firstWhere('setting', 'playerhistorytable');
+
+            $playerhistorytable = $playerhistorytable ? $playerhistorytable->value : true;
+
+            return $playerhistorytable;
+        }
+
+        return false;
+    }
+    
 
     public function getRegionIDtoString()
     {

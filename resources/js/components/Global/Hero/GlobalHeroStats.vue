@@ -245,7 +245,6 @@ export default {
       talentbuildtype: null,
       loadingStates: {},
       tablewidth: null,
-      queryString: null,
     }
   },
   created(){
@@ -253,6 +252,7 @@ export default {
     this.timeframe = this.defaulttimeframe;
     this.timeframetype = this.defaulttimeframetype;
     this.talentbuildtype = this.defaultbuildtype;
+
 
     if(this.urlparameters){
       this.setURLParameters();
@@ -297,6 +297,51 @@ export default {
           return valA > valB ? -1 : 1;
         }
       });
+    },
+    queryString(){      
+      let queryString  = `?timeframe_type=${this.timeframetype}`;
+      queryString += `&timeframe=${this.timeframe}`;
+
+      queryString += `&game_type=${this.gametype}`;
+
+      if(this.region){
+        queryString += `&region=${this.region}`;
+      }
+
+      if(this.herolevel){
+        queryString += `&hero_level=${this.herolevel}`;
+      }
+
+      if(this.gamemap){
+        queryString += `&game_map=${this.gamemap}`;
+      }
+
+      if(this.hero){
+        queryString += `&hero=${this.hero}`;
+      }
+
+      if(this.role){
+        queryString += `&role=${this.role}`;
+      }
+
+    
+      if(this.playerrank){
+        queryString += `&league_tier=${this.convertRankIDtoName(this.playerrank)}`;
+      }
+
+      if(this.herorank){
+        queryString += `&hero_league_tier=${this.convertRankIDtoName(this.herorank)}`;
+      }
+
+      if(this.rolerank){
+        queryString += `&role_league_tier=${this.convertRankIDtoName(this.rolerank)}`;
+      }
+
+      queryString += `&statfilter=${this.statfilter}`;
+      queryString += `&build_type=${this.talentbuildtype}`;
+      queryString += `&mirror=${this.mirrormatch}`;
+
+      return queryString;
     },
   },
   watch: {

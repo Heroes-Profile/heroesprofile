@@ -238,7 +238,6 @@ export default {
     defaultseason: String,
     advancedfiltering: Boolean,
     weekssincestart: Number,
-    patreonUser: Boolean,
   },
   data(){
     return {
@@ -279,8 +278,6 @@ export default {
     this.gametype = this.gametypedefault[0];
     this.season = this.defaultseason;
     this.getData();
-
-
   },
   mounted() {
   },
@@ -307,6 +304,12 @@ export default {
       const searchTerm = this.searchTerm.toLowerCase();
       return this.sortedData.filter(row => row.battletag.toLowerCase().includes(searchTerm));
     },
+    patreonUser(){
+      if(this.user && this.user.patreon == 1){
+        return true;
+      }
+      return false;
+    }
   },
   watch: {
   },
@@ -415,37 +418,40 @@ export default {
       return `Rating of ${playerRating} over ${playerRatingGamesPlayed} games`;
     },
     async calculateHPRating(user){
-      this.playerRating = null;
-      this.ratingLoading = true;
+      if(this.patreonUser){
+        this.playerRating = null;
+        this.ratingLoading = true;
 
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled');
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled');
+        }
+        this.cancelTokenSource = this.$axios.CancelToken.source();
+
+        try{
+          const response = await this.$axios.post("/api/v1/global/leaderboard/calculate/rating", {
+            season: this.season, 
+            game_type: this.gametype,
+            type: this.leaderboardtype.toLowerCase(),
+            groupsize: this.groupsize,
+            hero: this.hero,
+            role: this.role,
+            region: user.region,
+            blizz_id: user.blizz_id
+          }, 
+          {
+            cancelToken: this.cancelTokenSource.token,
+          });
+
+          this.playerRating = response.data.rating;
+          this.playerRatingGamesPlayed = response.data.games_played;
+        }catch(error){
+          //Do something here
+        }finally {
+          this.cancelTokenSource = null;
+          this.ratingLoading = false;
+        }
       }
-      this.cancelTokenSource = this.$axios.CancelToken.source();
 
-      try{
-        const response = await this.$axios.post("/api/v1/global/leaderboard/calculate/rating", {
-          season: this.season, 
-          game_type: this.gametype,
-          type: this.leaderboardtype.toLowerCase(),
-          groupsize: this.groupsize,
-          hero: this.hero,
-          role: this.role,
-          region: user.region,
-          blizz_id: user.blizz_id
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
-        });
-
-        this.playerRating = response.data.rating;
-        this.playerRatingGamesPlayed = response.data.games_played;
-      }catch(error){
-        //Do something here
-      }finally {
-        this.cancelTokenSource = null;
-        this.ratingLoading = false;
-      }
     }
   }
 }
