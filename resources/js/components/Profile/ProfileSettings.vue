@@ -84,6 +84,12 @@
         </div>
 
 
+
+        <div class="">
+          <h3>Player Match History Style</h3> 
+          <tab-button tab1text="Table" :ignoreclick="true" tab2text="Compact" @tab-click="playermatchhistorystylesetting" :overridedefaultside="playerhistorytable"> </tab-button>
+        </div>
+
   
 
     </div>
@@ -147,6 +153,7 @@ export default {
       talentBuildType: null,
       settingsSaved: false,
       darkmode: false,
+      playerhistorytable: true,
       overridedefaultside: null,
 
 
@@ -168,6 +175,7 @@ export default {
     this.advancedfiltering = this.defaultAdvancedFiltering;
     this.talentBuildType = this.defaultBuildType;
     this.darkmode = this.defaultDarkMode;
+    this.playerhistorytable = this.defaultPlayerhistorytable;
   },
   mounted() {
   },
@@ -222,6 +230,17 @@ export default {
       }
       return "left";
     },
+    defaultPlayerhistorytable(){
+      if (this.user.user_settings.length > 0){
+        let playerhistorytable = this.user.user_settings.find(item => item.setting === 'playerhistorytable');
+        if(playerhistorytable && playerhistorytable.value == 1){
+          return "right";
+        }else{
+          return "left";
+        }
+      }
+      return "left";
+    },
   },
   watch: {
   },
@@ -235,6 +254,13 @@ export default {
       }else if(darkmodeinput == "left"){
         darkmodeinput = false;
       }
+
+      let playerhistorytableinput = this.playerhistorytable;
+      if(playerhistorytableinput == "right"){
+        playerhistorytableinput = true;
+      }else if(playerhistorytableinput == "left"){
+        playerhistorytableinput = false;
+      }
       try{
         const response = await this.$axios.post("/api/v1/profile/save/settings", {
           userid: this.user.battlenet_accounts_id,
@@ -245,6 +271,7 @@ export default {
           talentbuildtype: this.talentBuildType,
           darkmode: darkmodeinput,
           playerload: this.playerload,
+          playerhistorytable: playerhistorytableinput,
         });
         //window.location.href = "/Profile/Settings";
         this.settingsSaved = true;
@@ -299,6 +326,15 @@ export default {
       }
       this.saveSettings();
     },
+    playermatchhistorystylesetting(side){
+      if(side == "right"){
+        this.playerhistorytable = true;
+      }else{
+        this.playerhistorytable = false;
+      }
+      this.saveSettings();
+    },
+
     async removePatreon(){
       try{
         const response = await this.$axios.post("/api/v1/profile/remove/patreon", {

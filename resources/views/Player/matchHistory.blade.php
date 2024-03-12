@@ -5,6 +5,7 @@
 @section('content')
   <player-match-history 
     :filters="{{ json_encode($filters) }}" 
+    :playermatchtablestyle="{{ json_encode($playermatchtablestyle) }}" 
     :playerloadsetting="{{ json_encode($playerloadsetting) }}" 
     :battletag="{{ json_encode($battletag) }}" 
     :blizzid="{{ json_encode($blizz_id) }}" 
