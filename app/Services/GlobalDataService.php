@@ -29,8 +29,9 @@ class GlobalDataService
 
     public function getHeaderAlert()
     {
-      $text = HeaderAlert::where('valid', 1)->value('text');
-      return $text ?? null;
+        $text = HeaderAlert::where('valid', 1)->value('text');
+
+        return $text ?? null;
     }
 
     public function getPrivateAccounts()
@@ -131,6 +132,7 @@ class GlobalDataService
 
         return true;
     }
+
     public function getPlayerMatchStyle()
     {
         if (Auth::check()) {
@@ -145,7 +147,6 @@ class GlobalDataService
 
         return false;
     }
-    
 
     public function getRegionIDtoString()
     {
@@ -624,11 +625,11 @@ class GlobalDataService
             $maxMmr = $tierInfo['max_mmr'];
             $split = $tierInfo['split'];
 
-            if($maxMmr == ""){
-              $maxMmr = $minMmr + $split;
+            if ($maxMmr == '') {
+                $maxMmr = $minMmr + $split;
             }
             if ($mmr >= $minMmr && $mmr < $maxMmr) {
-                for ($i = ($minMmr + $split); $i < $maxMmr ; $i += $split) {
+                for ($i = ($minMmr + $split); $i < $maxMmr; $i += $split) {
 
                     if ($mmr >= $i) {
                         $result = $tierNames[$key].' '.$counter;
@@ -641,6 +642,7 @@ class GlobalDataService
                 }
             }
         }
+
         return $result;
     }
 
@@ -669,24 +671,24 @@ class GlobalDataService
 
     public function getSubTiers($tier, $rankTierName)
     {
-      $result = [];
+        $result = [];
 
-      $counter = 5;
+        $counter = 5;
 
-      $minMmr = $tier['min_mmr'];
-      $maxMmr = $tier['max_mmr'];
-      $split = $tier['split'];
+        $minMmr = $tier['min_mmr'];
+        $maxMmr = $tier['max_mmr'];
+        $split = $tier['split'];
 
-      if($maxMmr == ""){
-        $maxMmr = $minMmr + $split;
-      }
+        if ($maxMmr == '') {
+            $maxMmr = $minMmr + $split;
+        }
 
-      for ($i = ($minMmr + $split); $i <= $maxMmr; $i += $split) {
-        $result[ucfirst($rankTierName) . ' ' . $counter] = $i;
-        $counter--;
-      }
-      
-      return $result;
+        for ($i = ($minMmr + $split); $i <= $maxMmr; $i += $split) {
+            $result[ucfirst($rankTierName).' '.$counter] = $i;
+            $counter--;
+        }
+
+        return $result;
     }
 
     public function getBattletagShort($blizz_id, $region)

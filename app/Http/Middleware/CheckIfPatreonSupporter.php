@@ -2,12 +2,12 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\BattlenetAccount;
 use App\Models\PatreonAccount;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\BattlenetAccount;
 
 class CheckIfPatreonSupporter
 {

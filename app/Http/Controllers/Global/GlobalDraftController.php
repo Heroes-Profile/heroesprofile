@@ -55,7 +55,7 @@ class GlobalDraftController extends GlobalsInputValidationController
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'userinput' => $userinput,
                 'filters' => $this->globalDataService->getFilterData(),
-                'gametypedefault' => ['sl'],//$this->globalDataService->getGameTypeDefault('multi'),
+                'gametypedefault' => ['sl'], //$this->globalDataService->getGameTypeDefault('multi'),
                 'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],

@@ -126,18 +126,17 @@ class ProfileController extends Controller
                 ['value' => $darkmode]
             );
         }
-        
+
         if (! is_null($request['playerhistorytable'])) {
-          $user = BattlenetAccount::find($request['userid']);
+            $user = BattlenetAccount::find($request['userid']);
 
-          $playerhistorytable = $request['playerhistorytable'];
+            $playerhistorytable = $request['playerhistorytable'];
 
-          $user->userSettings()->updateOrCreate(
-              ['setting' => 'playerhistorytable'],
-              ['value' => $playerhistorytable]
-          );
-      }
-
+            $user->userSettings()->updateOrCreate(
+                ['setting' => 'playerhistorytable'],
+                ['value' => $playerhistorytable]
+            );
+        }
 
         if (! is_null($request['playerload'])) {
             $user = BattlenetAccount::find($request['userid']);

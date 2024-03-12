@@ -23,10 +23,11 @@ class Handler extends ExceptionHandler
      */
     public function register(): void
     {
-      $this->reportable(function (Throwable $e) {
-        return $this->shouldReport($e);
-      });
+        $this->reportable(function (Throwable $e) {
+            return $this->shouldReport($e);
+        });
     }
+
     public function shouldReport(Throwable $e)
     {
         // Customize this logic to exclude specific types of exceptions
