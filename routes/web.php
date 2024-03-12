@@ -51,7 +51,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::fallback(function () {
-  return response()->view('errors.404', [], 404);
+    return response()->view('errors.404', [], 404);
 });
 
 Route::middleware(['logIpAndUserAgent'])->group(function () {
@@ -127,18 +127,16 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('Player/{battletag}/{blizz_id}/{region}/Match/History', [PlayerMatchHistory::class, 'show'])->middleware('checkIfPrivateProfilePage');
     Route::get('Player/{battletag}/{blizz_id}/{region}/Match/Latest', [PlayerMatchHistory::class, 'showLatest'])->middleware('checkIfPrivateProfilePage');
 
-
-    
     Route::get('Match/Single/{replayID}', [SingleMatchController::class, 'showWithoutEsport']);
 
     Route::get('/Match/Single/', function (Illuminate\Http\Request $request) {
-      $replayID = $request->query('replayID');
-  
-      if ($replayID) {
-          return redirect("/Match/Single/$replayID", 301);
-      }
-  
-      return redirect('/');
+        $replayID = $request->query('replayID');
+
+        if ($replayID) {
+            return redirect("/Match/Single/$replayID", 301);
+        }
+
+        return redirect('/');
     });
 
     Route::get('Esports/{esport}/Match/Single/{replayID}', [SingleMatchController::class, 'showWithEsport']);

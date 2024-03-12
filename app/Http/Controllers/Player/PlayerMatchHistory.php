@@ -42,7 +42,7 @@ class PlayerMatchHistory extends Controller
         return view('Player.matchHistory')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'playerloadsetting' => $this->globalDataService->getPlayerLoadSettings(),
-
+            'playermatchtablestyle' => $this->globalDataService->getPlayerMatchStyle(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,
@@ -51,39 +51,39 @@ class PlayerMatchHistory extends Controller
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);
     }
-    public function showLatest(Request $request, $battletag, $blizz_id, $region){
-      $validationRules = [
-        'battletag' => 'required|string',
-        'blizz_id' => 'required|integer',
-        'region' => 'required|integer',
-      ];
-      $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
 
-      if ($validator->fails()) {
-        if (env('Production')) {
-            return \Redirect::to('/');
-        } else {
-            return [
-                'data' => $request->all(),
-                'status' => 'failure to validate inputs',
-            ];
+    public function showLatest(Request $request, $battletag, $blizz_id, $region)
+    {
+        $validationRules = [
+            'battletag' => 'required|string',
+            'blizz_id' => 'required|integer',
+            'region' => 'required|integer',
+        ];
+        $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
+
+        if ($validator->fails()) {
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
-      }
 
-      $latest_replay = DB::table('replay')
-        ->join('player', 'player.replayID', '=', 'replay.replayID')
-        ->select([
-            'replay.replayID AS replayID',
-        ])
-        ->where('blizz_id', $blizz_id)
-        ->where('region', $region)
-        ->orderBy("replayID", "DESC")
-        ->first();
-        
-      return \Redirect::to("/Match/Single/" . $latest_replay->replayID);
+        $latest_replay = DB::table('replay')
+            ->join('player', 'player.replayID', '=', 'replay.replayID')
+            ->select([
+                'replay.replayID AS replayID',
+            ])
+            ->where('blizz_id', $blizz_id)
+            ->where('region', $region)
+            ->orderBy('replayID', 'DESC')
+            ->first();
+
+        return \Redirect::to('/Match/Single/'.$latest_replay->replayID);
     }
-
-    
 
     public function getData(Request $request)
     {
@@ -145,6 +145,12 @@ class PlayerMatchHistory extends Controller
                 'replay.game_map AS game_map',
                 'player.winner AS winner',
                 'player.hero AS hero',
+                'player_conservative_rating',
+                'player_change',
+                'hero_conservative_rating',
+                'hero_change',
+                'role_conservative_rating',
+                'role_change',
                 'heroes.new_role as role',
                 'talents.level_one AS level_one',
                 'talents.level_four AS level_four',
@@ -194,7 +200,14 @@ class PlayerMatchHistory extends Controller
             $item->game_type_id = $item->game_type;
             $item->game_type = $this->globalDataService->getGameTypeIDtoString()[$item->game_type];
 
-            $item->game_map = $maps[$item->game_map]['name'];
+            $item->game_map = $maps[$item->game_map];
+
+            $item->player_mmr = round(1800 + (40 * $item->player_conservative_rating));
+            $item->player_change = $item->player_change;
+            $item->hero_mmr = round(1800 + (40 * $item->hero_conservative_rating));
+            $item->hero_change = $item->hero_change;
+            $item->role_mmr = round(1800 + (40 * $item->role_conservative_rating));
+            $item->role_change = $item->role_change;
 
             if ($item->level_one) {
                 if ($item->level_one != 0) {
@@ -238,7 +251,7 @@ class PlayerMatchHistory extends Controller
                 }
             }
 
-            $item->winner = $item->winner == 1 ? 'True' : 'False';
+            $item->winner = $item->winner;
 
             return $item;
         });

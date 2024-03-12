@@ -45,7 +45,7 @@ class PlayerMMRController extends Controller
             'blizz_id' => $blizz_id,
             'region' => $region,
             'filters' => $this->globalDataService->getFilterData(),
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault('single'), //This is the only one that makes sense to continue to use a single value
+            'gametypedefault' => ['sl'],
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);
     }
@@ -164,17 +164,15 @@ class PlayerMMRController extends Controller
 
         $rankTierName = str_replace(' ', '', strtolower(preg_replace('/\d/', '', $rankTier)));
 
-
         $leagueBreakdownArray = $leagueBreakdown->toArray();
         $fullBreakdownForTierArray = $this->globalDataService->getSubTiers($rankTiers[$rankTierName], $rankTierName);
 
         $smallestMmr = 0;
 
-
-        foreach($rankTiers as $key => $data){
-          if($rankTierName == $key){
-            $smallestMmr = $data["min_mmr"];
-          }
+        foreach ($rankTiers as $key => $data) {
+            if ($rankTierName == $key) {
+                $smallestMmr = $data['min_mmr'];
+            }
         }
 
         if ($rankTier != 'Master') {
@@ -188,7 +186,7 @@ class PlayerMMRController extends Controller
                             'game_type' => $data['game_type'],
                             'league_tier' => $data['league_tier'],
                             'min_mmr' => $data['min_mmr'],
-                            'max_mmr' => $mmr, 
+                            'max_mmr' => $mmr,
                             'tier' => $tier,
                             'tierFound' => $rankTier == $tier ? true : false,
                         ];

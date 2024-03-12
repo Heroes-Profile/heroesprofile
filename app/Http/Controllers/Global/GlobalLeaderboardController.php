@@ -19,9 +19,9 @@ use App\Rules\RegionInputValidation;
 use App\Rules\RoleInputValidation;
 use App\Rules\SeasonInputValidation;
 use App\Rules\StackSizeInputValidation;
+use App\Rules\TierInputByIDValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Rules\TierInputByIDValidation;
 
 class GlobalLeaderboardController extends GlobalsInputValidationController
 {
@@ -51,7 +51,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             'role' => ['sometimes', 'nullable', new RoleInputValidation()],
             'tierrank' => ['sometimes', 'nullable', new TierInputByIDValidation()],
         ];
-        
+
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
@@ -68,7 +68,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         $gameType = $this->getGameTypeFilterValues($request['game_type']);
         $season = $request['season'];
         $region = $this->getRegionFilterValues($request['region']);
-        $tierrank = $request["tierrank"];
+        $tierrank = $request['tierrank'];
         $type = $request['type'];
         $typeNumber = 0;
 
@@ -140,9 +140,8 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             $item->tier = $this->globalDataService->calculateSubTier($rankTiers, $item->mmr);
             $item->tier_id = $this->globalDataService->calculateTierID($item->tier);
 
-
             if ($tierrank && $tierrank != intval($item->tier_id)) {
-              return null;
+                return null;
             }
 
             $item->region_id = $item->region;
