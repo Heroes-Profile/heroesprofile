@@ -6,7 +6,6 @@
     </div>
 
 
-
     <div class="text-center py-10">
       <img class="block m-4 md:w-2/5 md:max-w-6xl mr-auto ml-auto pl-25 max-md:px-4" src="/images/logo/full_deathwing.png"/>
 
@@ -18,6 +17,7 @@
 
 
     <div class="flex   md:p-20 bg-lighten flex-wrap justify-center items-between max-md:py-4">
+      <!--
       <a href="/Compare" class="text-center md:w-[30%] mb-20 mx-5 flex flex-col justify-stretch">
 
         <i class="fas fa-users" style="font-size: 100px;"></i>
@@ -27,6 +27,9 @@
         
         <custom-button  :href="'/Compare'" :text="'Compare'" :alt="'Compare players'" :size="'big'" class="mt-auto"></custom-button>
       </a>
+
+      -->
+
 
 
         <div class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
