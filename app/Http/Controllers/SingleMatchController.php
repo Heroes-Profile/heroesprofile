@@ -247,8 +247,8 @@ class SingleMatchController extends Controller
                 'experience_breakdown' => $this->getExperienceBreakdown($replayID),
                 'team_names' => $team_names,
                 'map_bans' => $this->esport ? $this->getMapBans($replayID, $maps, $team_names) : null,
-                'first_pick' => $this->esport ? $replayGroup[0]->first_pick : null,
-                'match_games' => $this->esport ? $this->getMatchGames($replayID, $maps) : null,
+                //'first_pick' => $this->esport ? $replayGroup[0]->first_pick : null,
+                //'match_games' => $this->esport ? $this->getMatchGames($replayID, $maps) : null,
             ];
 
             $replayDetails['players'] = $replayGroup->groupBy('team')->map(function ($teamGroup) use ($privateAccounts, $heroData, $talentData, $region) {
@@ -790,7 +790,7 @@ class SingleMatchController extends Controller
             })
             ->where('replayID', $replayID)
             ->first();
-
+           
         $team_name_0 = null;
         $team_name_1 = null;
 
@@ -801,7 +801,7 @@ class SingleMatchController extends Controller
             $team_name_0 = $result->team_0_id;
             $team_name_1 = $result->team_1_id;
         }
-
+ 
         $team_zero_data = DB::table($this->schema.'.teams')
             ->where('season', $result->season)
             ->when($this->esport == 'NGS', function ($query) use ($result) {
@@ -822,33 +822,36 @@ class SingleMatchController extends Controller
             $team_zero_ban_data = [
                 'team_data' => $team_zero_data,
                 'name' => $team_zero_data->team_name,
-                'map_ban_one' => $maps[$result->team_0_map_ban],
+                'map_ban_one' => $result->team_0_map_ban != 0 ? $maps[$result->team_0_map_ban] : null,
                 'map_ban_two' => $result->team_0_map_ban_2 != 0 ? $maps[$result->team_0_map_ban_2] : null,
             ];
         } else {
             $team_zero_ban_data = [
                 'team_data' => $team_one_data,
                 'name' => $team_one_data->team_name,
-                'map_ban_one' => $maps[$result->team_1_map_ban],
+                'map_ban_one' => $result->team_1_map_ban != 0 ? $maps[$result->team_1_map_ban] : null,
                 'map_ban_two' => $result->team_1_map_ban_2 != 0 ? $maps[$result->team_1_map_ban_2] : 0,
             ];
         }
 
+      
+        
         if ($team_names['team_two']->team_name == $team_one_data->team_name) {
             $team_one_ban_data = [
                 'team_data' => $team_one_data,
                 'name' => $team_one_data->team_name,
-                'map_ban_one' => $maps[$result->team_1_map_ban],
+                'map_ban_one' => $result->team_1_map_ban != 0 ? $maps[$result->team_1_map_ban] : null,
                 'map_ban_two' => $result->team_1_map_ban_2 != 0 ? $maps[$result->team_1_map_ban_2] : null,
             ];
         } else {
             $team_one_ban_data = [
                 'team_data' => $team_zero_data,
                 'name' => $team_zero_data->team_name,
-                'map_ban_one' => $maps[$result->team_0_map_ban],
+                'map_ban_one' => $result->team_0_map_ban != 0 ? $maps[$result->team_0_map_ban] : null,
                 'map_ban_two' => $result->team_0_map_ban_2 != 0 ? $maps[$result->team_0_map_ban_2] : null,
             ];
         }
+       
 
         return [
             'team_zero_ban_data' => $team_zero_ban_data,
