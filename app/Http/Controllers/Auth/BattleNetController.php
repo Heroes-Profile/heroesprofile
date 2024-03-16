@@ -37,9 +37,6 @@ class BattleNetController extends Controller
 
             $user = Socialite::driver('battlenet')->setConfig($config)->user();
         } catch (InvalidStateException $e) {
-            // Log the exception for debugging (optional)
-            Log::error('InvalidStateException in BattleNetController: '.$e->getMessage());
-
             // Redirect the user to a custom login failed page
             return redirect('/Authenticate/Battlenet/Failed');
         }
