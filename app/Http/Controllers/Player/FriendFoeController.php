@@ -100,6 +100,7 @@ class FriendFoeController extends Controller
         $blizz_id = $request['blizz_id'];
         $region = $request['region'];
         $gameType = GameType::whereIn('short_name', $request['game_type'])->pluck('type_id')->toArray();
+
         $season = $request['season'];
         $type = $request['type'];
         $teamValue = $type == 'friend' ? 0 : 1;
