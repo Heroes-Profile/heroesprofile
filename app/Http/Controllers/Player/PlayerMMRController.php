@@ -119,6 +119,9 @@ class PlayerMMRController extends Controller
         $heroData = $heroData->keyBy('id');
 
         $modifiedResult = $result->map(function ($item) use ($heroData, $type) {
+            if($item->mmr_ran == -1){
+              return null;
+            }
             $item->hero_id = $item->hero;
             $item->hero = $heroData[$item->hero];
 
@@ -136,9 +139,7 @@ class PlayerMMRController extends Controller
             $item->winner = $item->winner == 1 ? 'True' : 'False';
             $item->x_label = $item->game_date;
 
-            if($item->mmr_ran == -1){
-              return null;
-            }
+           
             return $item;
         })->filter();
 
