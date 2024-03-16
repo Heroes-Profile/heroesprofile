@@ -9,7 +9,7 @@
       :gametypedefault="gametype"
       :includehero="true"
       :includegamemap="true"
-      :includegametypefull="true"
+      :includesinglegametype="true"
       :includeseasonwithall="true"
       :includegroupsize="true"
       :hideadvancedfilteringbutton="true"
@@ -280,7 +280,8 @@ export default {
     },
     filterData(filteredData){
       this.hero = filteredData.single["Heroes"] ? filteredData.single["Heroes"] : null;
-      this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametypedefault;
+      //this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametypedefault;
+      this.gametype = filteredData.single["Game Type"] ? [filteredData.single["Game Type"]] : this.gametype;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
       this.season = filteredData.single["Season"] ? filteredData.single["Season"] : null;
       this.groupsize = filteredData.single["Group Size"] && (filteredData.single["Group Size"] != 'All') ? filteredData.single["Group Size"] : null;

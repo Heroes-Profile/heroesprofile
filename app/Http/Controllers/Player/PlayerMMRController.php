@@ -88,6 +88,7 @@ class PlayerMMRController extends Controller
                 'replay.replayID AS replayID',
                 'replay.game_date as game_date',
                 'replay.game_map AS game_map',
+                'replay.mmr_ran AS mmr_ran',
                 'player.winner AS winner',
                 'player.hero AS hero',
                 'player.player_conservative_rating AS player_conservative_rating',
@@ -118,6 +119,9 @@ class PlayerMMRController extends Controller
         $heroData = $heroData->keyBy('id');
 
         $modifiedResult = $result->map(function ($item) use ($heroData, $type) {
+            if($item->mmr_ran == -1){
+              return null;
+            }
             $item->hero_id = $item->hero;
             $item->hero = $heroData[$item->hero];
 
@@ -135,8 +139,9 @@ class PlayerMMRController extends Controller
             $item->winner = $item->winner == 1 ? 'True' : 'False';
             $item->x_label = $item->game_date;
 
+           
             return $item;
-        });
+        })->filter();
 
         $mmrType = 0;
         if ($type == 'Player') {
