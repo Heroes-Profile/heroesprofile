@@ -172,6 +172,10 @@ export default {
   },
   computed: {
     reversedData() {
+      if (!Array.isArray(this.data)) {
+        console.error("this.data is not an array.");
+        return [];
+      }
       return [...this.data].reverse();
     },
     sortedData() {
