@@ -628,14 +628,19 @@ class GlobalDataService
             if ($maxMmr == '') {
                 $maxMmr = $minMmr + $split;
             }
-            if ($mmr >= $minMmr && $mmr < $maxMmr) {
-                for ($i = ($minMmr + $split); $i < $maxMmr; $i += $split) {
 
-                    if ($mmr >= $i) {
-                        $result = $tierNames[$key].' '.$counter;
-                        $counter--;
-                    }
+            if ($mmr >= $minMmr && $mmr < $maxMmr) {
+                if($mmr < ($minMmr + $split)){
+                  $result = $tierNames[$key].' '.$counter;
+                }else{
+                  for ($i = ($minMmr + $split); $i < $maxMmr; $i += $split) {
+                      if ($mmr >= $i) {
+                          $result = $tierNames[$key].' '.$counter;
+                          $counter--;
+                      }
+                  }
                 }
+      
             } else {
                 if ($mmr >= $minMmr && $mmr >= $maxMmr) {
                     $result = 'Master';
