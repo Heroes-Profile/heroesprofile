@@ -71,39 +71,8 @@
           <single-select-filter :values="filters.mcl_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
           <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" color="teal" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal"  :ignoreclick="true"></custom-button>
         </div>
-
-
-
-
-        <div v-if="recentMatchesData">
-          <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
-            <li class="page-item mr-auto" :class="{ disabled: !recentMatchesData.pagination.prev_page_url }">
-              <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page - 1)" href="#">
-                Previous
-              </a>
-            </li>
-            <li class="page-item ml-auto" :class="{ disabled: !recentMatchesData.pagination.next_page_url }">
-              <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page + 1)" href="#">
-                Next
-              </a>
-            </li>
-          </ul>
-        </div>
-
-
+        
         <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'hi_nc'"></esports-recent-matches>
-        <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
-            <li class="page-item mr-auto" :class="{ disabled: !recentMatchesData.pagination.prev_page_url }">
-              <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page - 1)" href="#">
-                Previous
-              </a>
-            </li>
-            <li class="page-item ml-auto" :class="{ disabled: !recentMatchesData.pagination.next_page_url }">
-              <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page + 1)" href="#">
-                Next
-              </a>
-            </li>
-          </ul>
       </div>
 
 
