@@ -247,8 +247,8 @@ class SingleMatchController extends Controller
                 'experience_breakdown' => $this->getExperienceBreakdown($replayID),
                 'team_names' => $team_names,
                 'map_bans' => $this->esport ? $this->getMapBans($replayID, $maps, $team_names) : null,
-                //'first_pick' => $this->esport ? $replayGroup[0]->first_pick : null,
-                //'match_games' => $this->esport ? $this->getMatchGames($replayID, $maps) : null,
+                'first_pick' => $this->esport ? $replayGroup[0]->first_pick : null,
+                'match_games' => $this->esport ? $this->getMatchGames($replayID, $maps) : null,
             ];
 
             $replayDetails['players'] = $replayGroup->groupBy('team')->map(function ($teamGroup) use ($privateAccounts, $heroData, $talentData, $region) {
