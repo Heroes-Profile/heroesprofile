@@ -170,7 +170,12 @@ class PlayerMMRController extends Controller
         $rankTierName = str_replace(' ', '', strtolower(preg_replace('/\d/', '', $rankTier)));
 
         $leagueBreakdownArray = $leagueBreakdown->toArray();
-        $fullBreakdownForTierArray = $this->globalDataService->getSubTiers($rankTiers[$rankTierName], $rankTierName);
+        
+        if (isset($rankTierName) && isset($rankTiers[$rankTierName])) {
+          $fullBreakdownForTierArray = $this->globalDataService->getSubTiers($rankTiers[$rankTierName], $rankTierName);
+        } else {
+            $fullBreakdownForTierArray = []; 
+        }
 
         $smallestMmr = 0;
 
