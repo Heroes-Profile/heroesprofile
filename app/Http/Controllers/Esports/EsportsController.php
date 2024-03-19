@@ -1703,7 +1703,7 @@ class EsportsController extends Controller
 
             $returnData[$counter]['icon_url'] = $image;
 
-            $returnData[$counter]['inputhover'] = 'Lost agains team '.$enemyteam.' '.$count.' times ('.round((($count / (count($replayIDs))) * 100) * 5, 2).'% of all games lost as '.$team.')';
+            $returnData[$counter]['inputhover'] = 'Lost against team '.$enemyteam.' '.$count.' times ('.round((($count / (count($replayIDs))) * 100) * 5, 2).'% of all games lost as '.$team.')';
 
             if ($this->esport == 'hi' || $this->esport == 'hi_nc') {
                 $enemy_link = "/Esports/HeroesInternational/Team/{$enemyteam}";
