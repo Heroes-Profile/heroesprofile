@@ -16,7 +16,7 @@
       }
     },
     created(){
-      if(exception == 5){
+      if(round == 5){
         let Show = "exception";
       }
     },

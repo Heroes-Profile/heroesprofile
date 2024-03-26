@@ -56,7 +56,7 @@
       <div >
         <div id="table-container" ref="tablecontainer" class="w-auto   w-[100vw]   2xl:mx-auto  " style=" ">
       <table id="responsive-table" class="responsive-table  relative" ref="responsivetable">
-        <thead class="top-0 w-full sticky z-40">
+        <thead>
           <th class="py-2 px-3 border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
             Avg
           </th>
@@ -93,7 +93,7 @@
           </th>
 
         </thead>
-        <thead>
+        <thead class="top-0 w-full sticky z-40">
           <tr>
             <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Hero
