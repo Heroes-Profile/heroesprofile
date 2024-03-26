@@ -77,46 +77,37 @@ app.config.globalProperties.$redirectToProfile = function (battletag, blizz_id, 
     }
 };
 
-// Custom error handler to filter out specific errors
-const customErrorHandler = function (error) {
-  // Check if the error message contains the specific errors you want to ignore
+
+app.use(flareVue);
+flare.beforeEvaluate = error => {
   if (
-    error.message.includes("The play() request was interrupted because the media was removed from the document") ||
-    error.message.includes("Label 'https' has already been declared") ||
-    error.message.includes("Somehow the event source is null") ||
     error.message.includes("Failed to fetch") ||
+    error.message.includes("Label 'https' has already been declared") ||
+    error.message.includes("NetworkError when attempting to fetch resource.") ||
+    error.message.includes("The operation was aborted.") ||
+    error.message.includes("The play() request was interrupted") ||
+    error.message.includes("Unexpected end of input") ||
     error.message.includes("Load failed") ||
-    error.message.includes("The play() request was interrupted by a call to pause(). https://goo.gl/LdLk22") ||
-    error.message.includes("The operation was aborted.") ||
-    error.message.includes("The operation was aborted.") ||
-    error.message.includes("Node.removeChild: The node to be removed is not a child of this node") ||
-    error.message.includes("The play() request was interrupted because video-only background media was paused to save power. https://goo.gl/LdLk22") ||
-    error.message.includes("Cannot read properties of undefined (reading 'getReadyAds')") ||
+    error.message.includes("The request is not allowed by the user agent") ||
+    error.message.includes("The media resource indicated by the src attribute or assigned media provider object was not suitable.") ||
     error.message.includes("Cannot redefine property: websredir") ||
-    error.message.includes("Cannot read property 'getReadyAds' of undefined") ||
-    error.message.includes("obtainVideoInfos is not defined") ||
-    error.message.includes("The play() request was interrupted because the media was removed from the document.") ||
+    error.message.includes("Cannot redefine property: ethereum") ||
+    error.message.includes("The fetching process for the media resource") ||
+    error.message.includes("Failed to execute 'whenDefined'") ||
+    error.message.includes("Node.removeChild: The node to be removed is not a child of this node") ||
+    error.message.includes("Cannot read properties of undefined (reading 'push')") ||
     error.message.includes("Cannot redefine property: googletag") ||
-    error.message.includes("Cannot read properties of undefined (reading 'nativeBack')") ||
-    error.message.includes('can\'t redefine non-configurable property "solana"') ||
+    error.message.includes("Somehow the event source is null") ||
     error.message.includes("Failed to load because no supported source was found.") ||
-    error.message.includes("The fetching process for the media resource was aborted by the user agent at the user's request.") ||
-    error.message.includes("The operation was aborted.") ||
-    error.message.includes("The operation was aborted.") ||
-    error.message.includes("The operation was aborted.") ||
-    error.message.includes("The operation was aborted.") ||
-    error.message.includes("Unexpected end of input")
-    
-  ) {
+    error.message.includes("Cannot read properties of undefined (reading 'nativeBack')") ||
+    error.message.includes("null is not an object (evaluating 'e.source.postMessage')") ||
+    error.message.includes('Permission denied to access property "then"')
+  )
+  { 
     return false; 
-  }
-  return true;
-};
+  } 
+}; 
 
-
-app.use(flareVue, {
-  errorHandler: customErrorHandler
-});
 
 // Attach the application instance to an HTML element with id "app"
 app.mount('#app');
