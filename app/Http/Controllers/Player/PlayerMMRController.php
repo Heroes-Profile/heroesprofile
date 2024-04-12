@@ -40,12 +40,11 @@ class PlayerMMRController extends Controller
         return view('Player.mmrData')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'playerloadsetting' => $this->globalDataService->getPlayerLoadSettings(),
-
+            'gametypedefault' => $this->globalDataService->getMMRGameTypeDefault(), 
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,
             'filters' => $this->globalDataService->getFilterData(),
-            'gametypedefault' => ['sl'],
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);
     }

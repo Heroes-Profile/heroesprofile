@@ -1,7 +1,7 @@
 <template>
   <div v-if="!isLoading" class=" mx-auto max-w-[700px]  bg-lighten rounded-lg mt-[10vh]">
     <h1 v-if="settingsSaved" class="text-center text">Settings Saved</h1>
-    <h1 class="mb-4 bg-teal p-4 rounded-t-lg">Site Settings</h1>
+    <h1 class="mb-4 bg-teal p-4 rounded-t-lg">Global Page Settings</h1>
     <div class="flex items-center flex-wrap justify-start p-4">
       <div class="flex  justify-center">
 
@@ -85,14 +85,50 @@
 
 
 
-        <div class="">
-          <h3>Player Match History Style</h3> 
-          <tab-button tab1text="Table" :ignoreclick="true" tab2text="Compact" @tab-click="playermatchhistorystylesetting" :overridedefaultside="playerhistorytable"> </tab-button>
-        </div>
+    
 
   
 
     </div>
+    <h1 class="mb-4 bg-teal p-4">Player Stat Settings</h1>
+
+    <div class="flex items-stretch gap-10 p-4">
+      <div class="flex-col  border-white border-r-[1px] px-4">
+              
+        <div class="">
+          <h3>Player Match History Style</h3> 
+          <tab-button tab1text="Table" :ignoreclick="true" tab2text="Compact" @tab-click="playermatchhistorystylesetting" :overridedefaultside="playerhistorytable"> </tab-button>
+        </div>
+      </div>
+
+      <div class="flex-col  border-white px-4">
+              
+        <div class="">
+            <h3>Default MMR Breakdown Game Type:</h3> 
+            <single-select-filter
+              :values="this.filters.game_types_full" 
+              :text="'MMR Game Type'" 
+              @dropdown-closed="saveSettings()" 
+              @input-changed="handleInputChange" 
+              :defaultValue="mmrplayerusergametype"
+              :trackclosure="true"
+            >
+            </single-select-filter>
+          </div>
+      </div>
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
     <h1 class="mb-4 bg-teal p-4">Profile Settings</h1>
 
     <div class="flex items-stretch gap-10 p-4">
@@ -108,13 +144,20 @@
           >
         </single-select-filter>
       </div>
+
+
+
       <div>
         <h3 class="mb-auto">Link Patreon: <span class="bg-teal px-2"  v-if="this.user.patreon_account">Connected</span></h3>
         <custom-button class="ml-auto mt-4" v-if="!this.user.patreon_account" :href="'/authenticate/patreon'" :text="'Login with Patreon'" :alt="'Login with Patreon'"  :size="'medium'" :color="'blue'"></custom-button>
 
         <custom-button class="ml-auto text-sm mt-4"  v-if="this.user.patreon_account" :ignoreclick="true" :text="'Remove Patreon'" :alt="'Remove Patreon'"  :size="'medium'" :color="'red'" @click="removePatreon()"></custom-button>
       </div>
+
+
     </div>
+
+    
   </div>
   <div v-else>
     <loading-component></loading-component>
@@ -135,6 +178,7 @@ export default {
       isLoading: false,
       userhero: null,
       usergametype: null,
+      mmrplayerusergametype: null,
       usermultigametype: null,
       advancedfilteringoptions: [
         { code: 'true', name: 'Show' },
@@ -170,6 +214,7 @@ export default {
     }
 
     this.usergametype = this.defaultGameType;
+    this.mmrplayerusergametype = this.defaultMMRPlayerGameType;
     this.usermultigametype = this.defaultMultiGameType;
     this.savemultigametype = this.usermultigametype;
     this.advancedfiltering = this.defaultAdvancedFiltering;
@@ -202,6 +247,13 @@ export default {
       if (this.user.user_settings.length > 0) {
         let gameTypeSetting = this.user.user_settings.find(item => item.setting === 'game_type');
         return gameTypeSetting ? gameTypeSetting.value : null;
+      }
+      return "sl";
+    },
+    defaultMMRPlayerGameType() {
+      if (this.user.user_settings.length > 0) {
+        let gameTypeSetting = this.user.user_settings.find(item => item.setting === 'mmr_player_game_type');
+        return gameTypeSetting ? gameTypeSetting.value : "sl";
       }
       return "sl";
     },
@@ -266,6 +318,7 @@ export default {
           userid: this.user.battlenet_accounts_id,
           userhero: this.userhero,
           usergametype: this.usergametype,
+          mmrplayerusergametype: this.mmrplayerusergametype,
           usermultigametype: this.savemultigametype,
           advancedfiltering: this.advancedfiltering,
           talentbuildtype: this.talentBuildType,
@@ -307,6 +360,8 @@ export default {
           this.talentBuildType = eventPayload.value;
         }else if(eventPayload.field == "Game Type"){
           this.usergametype = eventPayload.value;
+        }else if(eventPayload.field == "MMR Game Type"){
+          this.mmrplayerusergametype = eventPayload.value;
         }else if(eventPayload.field == "Player Load"){
           this.playerload = eventPayload.value;
         }
