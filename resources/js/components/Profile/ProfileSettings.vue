@@ -62,22 +62,6 @@
         </div>
       </div>
 
-
-     
-
-        <div class="max-w-[50%] border-r-[1px] px-4 border-white">
-          <h3 class="mb-auto">Player data initial load style</h3>
-          <single-select-filter 
-            :values="playerdataloadstyles" 
-            :text="'Player Load'" 
-            @dropdown-closed="saveSettings()" 
-            @input-changed="handleInputChange" 
-            :defaultValue="playerload"
-            :trackclosure="true"
-            >
-          </single-select-filter>
-        </div>
-
         <div class="px-4 mt-4">
           <h3>Table Style:</h3>
           <tab-button tab1text="Light" :ignoreclick="true" tab2text="Dark" @tab-click="darkmodesetting" :overridedefaultside="darkmode"> </tab-button>
@@ -119,7 +103,20 @@
 
 
     </div>
+     
 
+        <div class="max-w-[50%] border-r-[1px] px-4 border-white">
+          <h3 class="mb-auto">Player data initial load style</h3>
+          <single-select-filter 
+            :values="playerdataloadstyles" 
+            :text="'Player Load'" 
+            @dropdown-closed="saveSettings()" 
+            @input-changed="handleInputChange" 
+            :defaultValue="playerload"
+            :trackclosure="true"
+            >
+          </single-select-filter>
+        </div>
 
 
 
