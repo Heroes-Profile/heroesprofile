@@ -77,6 +77,22 @@ class ProfileController extends Controller
             );
         }
 
+
+
+        if (! is_null($request['mmrplayerusergametype'])) {
+          $user = BattlenetAccount::find($request['userid']);
+
+          $usergametype = $request['mmrplayerusergametype'];
+
+          $user->userSettings()->updateOrCreate(
+              ['setting' => 'mmr_player_game_type'],
+              ['value' => $usergametype]
+          );
+      }
+
+
+
+
         if (! is_null($request['usermultigametype'])) {
             $user = BattlenetAccount::find($request['userid']);
 
