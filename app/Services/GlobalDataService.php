@@ -303,6 +303,20 @@ class GlobalDataService
         return ['sl'];
     }
 
+    public function getMMRGameTypeDefault()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+            $gameTypeSetting = $user->userSettings->firstWhere('setting', 'mmr_player_game_type');
+            if ($gameTypeSetting) {
+                return [$gameTypeSetting->value];
+            }
+          
+        }
+
+        return ['sl'];
+    }
+
     public function getDefaultSeason()
     {
         return SeasonDate::select('id')->orderBy('id', 'DESC')->first()->id;
