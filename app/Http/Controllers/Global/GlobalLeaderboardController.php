@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Global;
 
 use App\Models\BattlenetAccount;
+use App\Models\BannedAccountsNote;
 use App\Models\HeroesDataTalent;
 use App\Models\Leaderboard;
 use App\Models\MasterGamesPlayedData;
@@ -25,6 +26,7 @@ use Illuminate\Support\Facades\Validator;
 
 class GlobalLeaderboardController extends GlobalsInputValidationController
 {
+    private $rankModifier = 0;
     public function show(Request $request)
     {
         return view('Global.Leaderboard.globalLeaderboard')->with([
@@ -118,10 +120,10 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         $talentData = $talentData->keyBy('talent_id');
 
         $patreonAccounts = BattlenetAccount::has('patreonAccount')->get();
+        $bannedAccounts = BannedAccountsNote::get();
 
         $blizzIDRegionMapping = [];
-
-        $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber, $patreonAccounts, &$blizzIDRegionMapping, $tierrank) {
+        $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber, $patreonAccounts, &$blizzIDRegionMapping, $tierrank, $bannedAccounts) {
 
             if (array_key_exists($item->blizz_id.'|'.$item->region, $blizzIDRegionMapping)) {
                 return null;
@@ -130,6 +132,14 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             }
 
             $patreonAccount = $patreonAccounts->where('blizz_id', $item->blizz_id)->where('region', $item->region);
+
+            $existingBan = $bannedAccounts->first(function ($ban) use ($item) {
+              return $ban->blizz_id === $item->blizz_id && $ban->region === $item->region;
+            });
+            if ($existingBan) {
+              $this->rankModifier++;
+              return null;
+            }
 
             $item->patreon = is_null($patreonAccount) || empty($patreonAccount) || count($patreonAccount) == 0 ? false : true;
             $item->hp_owner = ($item->blizz_id == 67280 && $item->region == 1) ? true : false;
@@ -146,6 +156,8 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
             $item->region_id = $item->region;
             $item->region = $this->globalDataService->getRegionIDtoString()[$item->region];
+
+            $item->rank = $item->rank - $this->rankModifier;
 
             $item->level_one = $item->level_one && $item->level_one != 0 ? isset($talentData[$item->level_one]) ? $talentData[$item->level_one] : null : null;
             $item->level_four = $item->level_four && $item->level_four != 0 ? isset($talentData[$item->level_four]) ? $talentData[$item->level_four] : null : null;

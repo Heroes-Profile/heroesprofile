@@ -7,6 +7,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\BannedAccountsNote;
 
 class CheckIfPrivateProfilePage
 {
@@ -22,7 +23,12 @@ class CheckIfPrivateProfilePage
             return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
         });
 
-        if ($containsAccount) {
+        $bannedAccounts = BannedAccountsNote::get();
+        $existingBan = $bannedAccounts->contains(function ($account) use ($blizz_id, $region) {
+          return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
+        });
+
+        if ($containsAccount || $existingBan) {
             if (! Auth::check()) {
                 return redirect('/');
             } elseif ($user->blizz_id != $blizz_id && $user->region != $region) {
