@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Battletag;
+use App\Models\BannedAccountsNote;
 use App\Models\Map;
 use App\Models\Replay;
 use App\Rules\BattletagInputProhibitCharacters;
@@ -51,6 +52,8 @@ class BattletagSearchController extends Controller
         $uniqueBlizzIDRegion = [];
 
         $privateAccounts = $this->globalDataService->getPrivateAccounts();
+        $bannedAccounts = BannedAccountsNote::get();
+
         foreach ($data as $row) {
             $blizz_id = $row['blizz_id'];
             $region = $row['region'];
@@ -58,8 +61,11 @@ class BattletagSearchController extends Controller
             $containsAccount = $privateAccounts->contains(function ($account) use ($blizz_id, $region) {
                 return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
             });
+            $existingBan = $bannedAccounts->contains(function ($account) use ($blizz_id, $region) {
+              return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
+            });
 
-            if (! $containsAccount) {
+            if (! $containsAccount && ! $existingBan) {
 
                 if (array_key_exists($row['blizz_id'].'|'.$row['region'], $uniqueBlizzIDRegion)) {
                     if ($row['latest_game'] > $uniqueBlizzIDRegion[$row['blizz_id'].'|'.$row['region']]) {
