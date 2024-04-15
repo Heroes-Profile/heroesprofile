@@ -28,7 +28,10 @@ class CheckIfPrivateProfilePage
           return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
         });
 
-        if ($containsAccount || $existingBan) {
+        if($existingBan){
+          return redirect('/');
+        }
+        if ($containsAccount) {
             if (! Auth::check()) {
                 return redirect('/');
             } elseif ($user->blizz_id != $blizz_id && $user->region != $region) {
