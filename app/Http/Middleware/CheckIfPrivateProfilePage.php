@@ -39,7 +39,6 @@ class CheckIfPrivateProfilePage
           
         if ($containsAccount) {
             if (! Auth::check()) {
-              dd("hi1");
                 return redirect('/');
             } elseif (($user->blizz_id . "|" . $user->region) != ($blizz_id . "|" . $region)) {
                 return redirect('/');
