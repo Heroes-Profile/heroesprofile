@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\BannedAccountsNote;
+use App\Models\BattlenetAccount;
 
 class CheckIfPrivateProfilePage
 {
@@ -31,10 +32,16 @@ class CheckIfPrivateProfilePage
         if($existingBan){
           return redirect('/');
         }
+
+
+        //$user = BattlenetAccount::find(1);
+        //Auth::login($user);     
+          
         if ($containsAccount) {
             if (! Auth::check()) {
+              dd("hi1");
                 return redirect('/');
-            } elseif ($user->blizz_id != $blizz_id && $user->region != $region) {
+            } elseif (($user->blizz_id . "|" . $user->region) != ($blizz_id . "|" . $region)) {
                 return redirect('/');
             }
         }
