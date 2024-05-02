@@ -93,7 +93,7 @@
               <thead class=" top-0 w-full  z-40">
                 <tr class="">
                   <th @click="sortTable('rank')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                    Rank
+                    {{ getHeaderRankText("rank") }}
                   </th>
                   <th @click="sortTable('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                     Battletag
@@ -143,7 +143,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>{{ row.rank }}</td>
+                    <td>{{ getRowRank(index, row.rank) }}</td>
                     <td>
                       <div class="flex items-center">
                         <div class="" v-if="row.hp_owner">
@@ -272,6 +272,8 @@ export default {
       ratingLoading: false,
       playerRatingGamesPlayed: null,
       tierrank: null,
+      rankchange: false,
+      isfiltered: false,
     }
   },
   created(){
@@ -381,6 +383,12 @@ export default {
       this.playerRating = null;
       this.playerRatingGamesPlayed = null;
       this.data = null;
+
+      if(this.hero != null || this.role != null || this.region != null || this.tierrank != null){
+        this.rankchange = true;
+        this.isfiltered = true;
+      }
+
       this.getData();
     },
     sortTable(key) {
@@ -389,6 +397,13 @@ export default {
       } else {
         this.sortDir = 'desc';
       }
+
+      this.rankchange = true;
+
+      if((key == 'rank' || key == 'rating') && !this.isfiltered){
+        this.rankchange = false;
+      }
+
       this.sortKey = key;
     },
     getCopyBuildToGame(level_one, level_four, level_seven, level_ten, level_thirteen, level_sixteen, level_twenty, hero) {
@@ -452,6 +467,19 @@ export default {
         }
       }
 
+    },
+    getRowRank(index, rank){
+      if(this.rankchange){
+        return (index + 1) + "|(" + rank + ")"; 
+      }
+
+      return rank;
+    },
+    getHeaderRankText(){
+      if(this.rankchange){
+        return "Sorted Rank|(Rank)"; 
+      }
+      return "Rank"
     }
   }
 }
