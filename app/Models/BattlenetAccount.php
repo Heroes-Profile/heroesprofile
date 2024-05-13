@@ -28,6 +28,7 @@ class BattlenetAccount extends Authenticatable
         'updated_at',
         'created_at',
         'private',
+        'flair_adfree_override',
     ];
 
     public function patreonAccount()
