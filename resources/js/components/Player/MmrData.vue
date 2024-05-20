@@ -163,7 +163,6 @@ export default {
     }
   },
   created(){
-    console.log(this.gametypedefault[0]);
     this.gametype = this.gametypedefault[0];
   },
   mounted() {

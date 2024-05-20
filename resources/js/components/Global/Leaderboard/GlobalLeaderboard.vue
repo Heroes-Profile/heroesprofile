@@ -43,7 +43,7 @@
         :defaultHero="hero"
         :defaultRole="role"
         :includegroupsize="true"
-        :includesinglegametype="true"
+        :includesinglegametypeleaderboard="true"
         :includeseason="true"
         :includesingleleaguetier="true"
         :includesingleregion="true"
