@@ -1,5 +1,5 @@
 <template>
-  <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+  <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
   <div>
     <div class="max-w-[1500px] mx-auto mt-10 w-full" v-if="battletagresponse">
       <div class="flex flex-col items-center justify-center " v-if="battletagresponse.length > 1">

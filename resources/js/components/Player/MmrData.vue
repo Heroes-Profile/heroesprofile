@@ -14,7 +14,7 @@
       >
     </filters>
     
-    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+    <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
     <div v-if="data">
 

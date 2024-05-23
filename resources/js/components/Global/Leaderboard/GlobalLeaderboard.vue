@@ -56,7 +56,7 @@
         :tierrank="''"
       >
       </filters>
-      <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+      <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
       <div v-if="data">
         <div class="flex">
           <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">

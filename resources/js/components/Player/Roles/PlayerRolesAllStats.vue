@@ -13,7 +13,7 @@
     :hideadvancedfilteringbutton="true"
     >
   </filters>
-  <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+  <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
   <div v-if="data">
     <div  class="relative max-w-[1500px] mx-auto">

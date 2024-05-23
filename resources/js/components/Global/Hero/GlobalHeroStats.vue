@@ -43,7 +43,7 @@
   
       >
     </filters>
-    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+    <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     
     <div v-if="this.data.data">
       <div class="max-w-[1500px] mx-auto flex justify-end mb-2">
@@ -53,7 +53,7 @@
       <div v-if="togglechart">
         <bubble-chart :heroData="this.data.data"></bubble-chart>
       </div>
-      <div >
+      <div>
         <div id="table-container" ref="tablecontainer" class="w-auto   w-[100vw]   2xl:mx-auto  " style=" ">
       <table id="responsive-table" class="responsive-table  relative" ref="responsivetable">
         <thead>
