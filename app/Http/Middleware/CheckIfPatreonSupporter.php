@@ -35,9 +35,9 @@ class CheckIfPatreonSupporter
                 }
             }
 
-            if($user->flair_adfree_override == 1){
-              session(['patreonSubscriberAdFree' => true]);
-              session(['patreonSubscriberSiteFlair' => true]);
+            if ($user->flair_adfree_override == 1) {
+                session(['patreonSubscriberAdFree' => true]);
+                session(['patreonSubscriberSiteFlair' => true]);
             }
         }
 

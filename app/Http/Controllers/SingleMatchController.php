@@ -790,7 +790,7 @@ class SingleMatchController extends Controller
             })
             ->where('replayID', $replayID)
             ->first();
-           
+
         $team_name_0 = null;
         $team_name_1 = null;
 
@@ -801,7 +801,7 @@ class SingleMatchController extends Controller
             $team_name_0 = $result->team_0_id;
             $team_name_1 = $result->team_1_id;
         }
- 
+
         $team_zero_data = DB::table($this->schema.'.teams')
             ->where('season', $result->season)
             ->when($this->esport == 'NGS', function ($query) use ($result) {
@@ -834,8 +834,6 @@ class SingleMatchController extends Controller
             ];
         }
 
-      
-        
         if ($team_names['team_two']->team_name == $team_one_data->team_name) {
             $team_one_ban_data = [
                 'team_data' => $team_one_data,
@@ -851,7 +849,6 @@ class SingleMatchController extends Controller
                 'map_ban_two' => $result->team_0_map_ban_2 != 0 ? $maps[$result->team_0_map_ban_2] : null,
             ];
         }
-       
 
         return [
             'team_zero_ban_data' => $team_zero_ban_data,

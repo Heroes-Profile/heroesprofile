@@ -2,13 +2,13 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\BannedAccountsNote;
+use App\Models\BattlenetAccount;
 use App\Services\GlobalDataService;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
-use App\Models\BannedAccountsNote;
-use App\Models\BattlenetAccount;
 
 class CheckIfPrivateProfilePage
 {
@@ -26,21 +26,20 @@ class CheckIfPrivateProfilePage
 
         $bannedAccounts = BannedAccountsNote::get();
         $existingBan = $bannedAccounts->contains(function ($account) use ($blizz_id, $region) {
-          return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
+            return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
         });
 
-        if($existingBan){
-          return redirect('/');
+        if ($existingBan) {
+            return redirect('/');
         }
 
-
         //$user = BattlenetAccount::find(1);
-        //Auth::login($user);     
-          
+        //Auth::login($user);
+
         if ($containsAccount) {
             if (! Auth::check()) {
                 return redirect('/');
-            } elseif (($user->blizz_id . "|" . $user->region) != ($blizz_id . "|" . $region)) {
+            } elseif (($user->blizz_id.'|'.$user->region) != ($blizz_id.'|'.$region)) {
                 return redirect('/');
             }
         }
