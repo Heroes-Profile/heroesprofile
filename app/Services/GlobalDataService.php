@@ -311,7 +311,7 @@ class GlobalDataService
             if ($gameTypeSetting) {
                 return [$gameTypeSetting->value];
             }
-          
+
         }
 
         return ['sl'];
@@ -644,17 +644,17 @@ class GlobalDataService
             }
 
             if ($mmr >= $minMmr && $mmr < $maxMmr) {
-                if($mmr < ($minMmr + $split)){
-                  $result = $tierNames[$key].' '.$counter;
-                }else{
-                  for ($i = ($minMmr + $split); $i < $maxMmr; $i += $split) {
-                      if ($mmr >= $i) {
-                          $result = $tierNames[$key].' '.$counter;
-                          $counter--;
-                      }
-                  }
+                if ($mmr < ($minMmr + $split)) {
+                    $result = $tierNames[$key].' '.$counter;
+                } else {
+                    for ($i = ($minMmr + $split); $i < $maxMmr; $i += $split) {
+                        if ($mmr >= $i) {
+                            $result = $tierNames[$key].' '.$counter;
+                            $counter--;
+                        }
+                    }
                 }
-      
+
             } else {
                 if ($mmr >= $minMmr && $mmr >= $maxMmr) {
                     $result = 'Master';

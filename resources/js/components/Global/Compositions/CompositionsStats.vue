@@ -35,7 +35,7 @@
       :advancedfiltering="advancedfiltering"
       >
     </filters>
-    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+    <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     <div v-if="compositiondata">
       <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
       <table id="responsive-table" class="responsive-table  relative max-w-[1500px]" ref="responsivetable">
