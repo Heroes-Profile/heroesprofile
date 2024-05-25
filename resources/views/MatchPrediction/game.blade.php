@@ -1,6 +1,6 @@
 @extends('layouts.app', $bladeGlobals)    
 
-@section('title', '')
+@section('title', 'Match Prediction')
 @section('meta_keywords', '')
 @section('meta_description', '')
 
