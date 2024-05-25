@@ -45,7 +45,7 @@
         </div>
         <div class="px-2" v-if="data.draftData">
           <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 1 Bans</h2>
-          <div class="flex justify-center gap-5 p-4">
+          <div class="flex justify-center gap-5 p-4 max-md:flex-col">
             <template v-for="(item, index) in data.draftData[0].bans" :key="index">
               
               <hero-image-wrapper :hero="item.hero" size="big" ></hero-image-wrapper >
@@ -56,7 +56,7 @@
         </div>
         <div class="px-2">
           <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 1 Picks</h2>
-          <div class="flex justify-center gap-5 p-4">
+          <div class="flex justify-center gap-5 p-4 max-md:flex-col">
             
             <template v-for="(item, index) in teamZeroPicks" :key="index">
               
@@ -78,7 +78,7 @@
         </div>
         <div class="px-2" v-if="data.draftData">
           <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 2 Bans</h2>
-          <div class="flex justify-center gap-5 p-4">
+          <div class="flex justify-center gap-5 p-4 max-md:flex-col">
             <template v-for="(item, index) in data.draftData[1].bans" :key="index">
               
               <hero-image-wrapper :hero="item.hero" size="big" ></hero-image-wrapper >
@@ -88,7 +88,7 @@
         </div>
         <div class="px-2">
           <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 2 Picks</h2>
-          <div class="flex justify-center gap-5 p-4">
+          <div class="flex justify-center gap-5 p-4 max-md:flex-col">
             
             <template v-for="(item, index) in teamOnePicks" :key="index">
               
