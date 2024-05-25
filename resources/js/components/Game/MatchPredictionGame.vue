@@ -1,5 +1,12 @@
 <template>
   <div>
+    <page-heading :infoText1="infoText1" :heading="'Match Prediction Game'">
+      <template #extraInfo>
+        <p class="text-sm max-md:text-sm">
+          How good are you at predicting the winner of a game based on the team picks? Select your game mode, then select which team you believe won. Results are based off actual game data. 
+        </p>
+      </template>
+    </page-heading>
     <div class="flex justify-center max-w-[1500px] mx-auto">
      
 
@@ -23,42 +30,80 @@
     <div v-if="data">
 
 
-
+<p class="mx-auto text-center max-w-[1500px] py-2">Who won the match?</p>
 
 <div class="flex max-w-[1000px] mx-auto justify-center gap-10">
 
       <div class="flex flex-col align-center border-2 rounded-md border-white " >
-        <button v-if="!disableWinnerSelect" :disabled="disableWinnerSelect" @click="chooseWinner(0)"  :class="{'bg-teal rounded text-white  px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
-          {{ "Team 1 Winner" }}
-        </button>
+        <div class="min-h-[4em] ">
+
+          <div class="rounded-md bg-teal w-full text-center px-4 py-2" v-if="userchoiceteam == 0 && userchoiceresult.data == 1">CORRECT!</div>
+          <div class="rounded-md bg-red w-full text-center px-4 py-2" v-if="userchoiceteam == 0 && userchoiceresult.data == 0">WRONG</div>
+          <button v-if="!disableWinnerSelect" :disabled="disableWinnerSelect" @click="chooseWinner(0)"  :class="{'bg-blue rounded text-white  px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto w-full max-md:mt-10 mx-auto': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
+            {{ "Select Team 1 Winner" }}
+          </button>
+        </div>
         <div class="px-2" v-if="data.draftData">
-          <group-box class="w-full" :playerlink="true" :text="'Team 1 Bans'" :data="data.draftData[0].bans" color="teal"></group-box>
+          <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 1 Bans</h2>
+          <div class="flex justify-center gap-5 p-4">
+            <template v-for="(item, index) in data.draftData[0].bans" :key="index">
+              
+              <hero-image-wrapper :hero="item.hero" size="big" ></hero-image-wrapper >
+            </template>
+          </div>
+          
+          
         </div>
         <div class="px-2">
-          <group-box class="min-w-[30em]" :playerlink="true" :text="'Team 1 Picks'" :data="teamZeroPicks" color="teal"></group-box>
+          <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 1 Picks</h2>
+          <div class="flex justify-center gap-5 p-4">
+            
+            <template v-for="(item, index) in teamZeroPicks" :key="index">
+              
+              <hero-image-wrapper :hero="item.hero" size="big" ></hero-image-wrapper >
+            </template>
+          </div>
         </div>
         
 
       </div>
 
       <div class="flex flex-col align-center justify-center  border-2 rounded-md border-white ">
-        <button v-if="!disableWinnerSelect" :disabled="disableWinnerSelect" @click="chooseWinner(1)"  :class="{'bg-teal rounded text-white px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
-          {{ "Team 2 Winner" }}
-        </button>
+        <div class="min-h-[4em]">
+              <div class="rounded-md bg-teal w-full text-center px-4 py-2" v-if="userchoiceteam == 1 && userchoiceresult.data == 1">CHECK!</div>
+            <div class="rounded-md bg-red w-full text-center px-4 py-2" v-if="userchoiceteam == 1 && userchoiceresult.data == 0">WRONG</div>
+            <button v-if="!disableWinnerSelect" :disabled="disableWinnerSelect" @click="chooseWinner(1)"  :class="{'bg-blue rounded text-white px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
+              {{ "Select Team 2 Winner" }}
+            </button>
+        </div>
         <div class="px-2" v-if="data.draftData">
-          <group-box class="w-full" :playerlink="true" :text="'Team 2 Bans'" :data="data.draftData[1].bans" color="teal"></group-box>
+          <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 2 Bans</h2>
+          <div class="flex justify-center gap-5 p-4">
+            <template v-for="(item, index) in data.draftData[1].bans" :key="index">
+              
+              <hero-image-wrapper :hero="item.hero" size="big" ></hero-image-wrapper >
+            </template>
+          </div>
+          
         </div>
         <div class="px-2">
-          <group-box class="min-w-[30em]" :playerlink="true" :text="'Team 2 Picks'" :data="teamOnePicks"  color="teal"></group-box>
-        </div>
+          <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 2 Picks</h2>
+          <div class="flex justify-center gap-5 p-4">
+            
+            <template v-for="(item, index) in teamOnePicks" :key="index">
+              
+              <hero-image-wrapper :hero="item.hero" size="big" ></hero-image-wrapper >
+            </template>
+          </div>
+          </div>
         
       </div>
   
 </div>
 
-      <div v-if="userchoiceresult">
+      <div v-if="userchoiceresult" class="max-w-[1500px] text-center w-full mx-auto mt-2">
 
-        {{ userchoiceresult.data }}
+        
         See replay <a target="_blank" class="link" :href="'/Match/Single/' + userchoiceresult.replayID">{{ userchoiceresult.replayID }}</a> for more information
 
       </div>
@@ -92,6 +137,7 @@ export default {
       fingerprint: null,
       userchoiceresult: null,
       disableWinnerSelect: false,
+      userchoiceteam: null
     }
   },
   created(){
@@ -149,7 +195,8 @@ export default {
     handleInputChange(eventPayload) {
       this.gametype = eventPayload.value;
     },
-    async chooseWinner(team){      
+    async chooseWinner(team){   
+      this.userchoiceteam = team;   
       this.isLoading = true;
       this.disableWinnerSelect = true;
       try{

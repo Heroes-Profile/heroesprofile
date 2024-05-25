@@ -188,7 +188,7 @@ class MatchPredictionGameController extends Controller
       
     
     
-    return ["replayID" => $replayID, "data" => $data->winner == 1 ? "You made the correct choice, congratulations" : "You made the incorrect choice"];
+    return ["replayID" => $replayID, "data" => $data->winner ];
   }
 
   private function determineFirstPick($replayBans, $draftData){
