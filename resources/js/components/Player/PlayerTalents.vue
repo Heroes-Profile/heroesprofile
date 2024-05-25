@@ -20,7 +20,7 @@
         :includegamedate="true"
         >
       </filters>
-      <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+      <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
       <div  v-if="talentdetaildata" class="container mx-auto md:px-4">
         <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Talent Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>

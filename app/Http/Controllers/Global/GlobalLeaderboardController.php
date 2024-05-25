@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Global;
 
-use App\Models\BattlenetAccount;
 use App\Models\BannedAccountsNote;
+use App\Models\BattlenetAccount;
 use App\Models\HeroesDataTalent;
 use App\Models\Leaderboard;
 use App\Models\MasterGamesPlayedData;
@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\Validator;
 class GlobalLeaderboardController extends GlobalsInputValidationController
 {
     private $rankModifier = 0;
+
     public function show(Request $request)
     {
         return view('Global.Leaderboard.globalLeaderboard')->with([
@@ -134,11 +135,12 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             $patreonAccount = $patreonAccounts->where('blizz_id', $item->blizz_id)->where('region', $item->region);
 
             $existingBan = $bannedAccounts->first(function ($ban) use ($item) {
-              return $ban->blizz_id === $item->blizz_id && $ban->region === $item->region;
+                return $ban->blizz_id === $item->blizz_id && $ban->region === $item->region;
             });
             if ($existingBan) {
-              $this->rankModifier++;
-              return null;
+                $this->rankModifier++;
+
+                return null;
             }
 
             $item->patreon = is_null($patreonAccount) || empty($patreonAccount) || count($patreonAccount) == 0 ? false : true;

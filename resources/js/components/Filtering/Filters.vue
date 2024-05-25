@@ -87,6 +87,14 @@
             :defaultValue="gametype"
           ></multi-select-filter>
 
+          <!-- Leaderboard Game Type Excluding UD -->
+          <single-select-filter v-if="includesinglegametypeleaderboard" 
+            :values="leaderboardGameTypes" 
+            :text="'Game Type'" 
+            @input-changed="handleInputChange" 
+            :defaultValue="gametype[0]"
+          ></single-select-filter>
+
           <!-- Current Game Type Single -->
           <single-select-filter v-if="includesinglegametype" 
             :values="filters.game_types" 
@@ -333,6 +341,7 @@
       includegametype: Boolean,
       includegametypefull: Boolean,
       includesinglegametype: Boolean,
+      includesinglegametypeleaderboard: Boolean,
       includegamemap: Boolean,
       includesinglegamemap: Boolean,
       includeplayerrank: Boolean,
@@ -411,6 +420,7 @@
         swapHeroesFilter: false,
         swapRolesFilter: false,
         includetimeframemodified: null,
+        seasonvalue: null,
       }
     },
     created(){
@@ -544,6 +554,12 @@
         updatedList.unshift(newValue);
         return updatedList;
       },
+      leaderboardGameTypes(){
+        if(!this.seasonvalue || this.seasonvalue >= 26){
+          return this.filters.game_types.filter(gameType => gameType.code !== 'ud');
+        }
+        return this.filters.game_types;
+      }
     },
     watch: {
       toggleExtraFilters(value){
@@ -630,6 +646,10 @@
           if(!this.overrideGroupSizeRemoval){
             this.modifiedincludegroupsize = (eventPayload.value >= 20);
           }
+        }
+        
+        if(eventPayload.field == "Season"){
+          this.seasonvalue = eventPayload.value;
         }
 
 

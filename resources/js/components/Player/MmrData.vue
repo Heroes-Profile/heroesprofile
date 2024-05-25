@@ -14,7 +14,7 @@
       >
     </filters>
     
-    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+    <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
     <div v-if="data">
 
@@ -163,7 +163,6 @@ export default {
     }
   },
   created(){
-    console.log(this.gametypedefault[0]);
     this.gametype = this.gametypedefault[0];
   },
   mounted() {

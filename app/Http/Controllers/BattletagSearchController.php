@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Battletag;
 use App\Models\BannedAccountsNote;
+use App\Models\Battletag;
 use App\Models\Map;
 use App\Models\Replay;
 use App\Rules\BattletagInputProhibitCharacters;
@@ -62,7 +62,7 @@ class BattletagSearchController extends Controller
                 return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
             });
             $existingBan = $bannedAccounts->contains(function ($account) use ($blizz_id, $region) {
-              return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
+                return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
             });
 
             if (! $containsAccount && ! $existingBan) {

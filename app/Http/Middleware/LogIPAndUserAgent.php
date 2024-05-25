@@ -2,9 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\BattlenetAccount;
 use App\Models\IpLogging;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cookie;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,6 +19,10 @@ class LogIPAndUserAgent
      */
     public function handle(Request $request, Closure $next): Response
     {
+
+        //$user = BattlenetAccount::find(1);
+        //Auth::login($user);
+
         try {
             Cookie::queue(Cookie::forget('additional-battletags'));
             $ip = '';

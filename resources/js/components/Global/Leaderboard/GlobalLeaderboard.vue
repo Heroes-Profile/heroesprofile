@@ -43,7 +43,7 @@
         :defaultHero="hero"
         :defaultRole="role"
         :includegroupsize="true"
-        :includesinglegametype="true"
+        :includesinglegametypeleaderboard="true"
         :includeseason="true"
         :includesingleleaguetier="true"
         :includesingleregion="true"
@@ -56,7 +56,7 @@
         :tierrank="''"
       >
       </filters>
-      <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+      <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
       <div v-if="data">
         <div class="flex">
           <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
@@ -93,27 +93,27 @@
               <thead class=" top-0 w-full  z-40">
                 <tr class="">
                   <th @click="sortTable('rank')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                    Rank
+                    {{ getHeaderRankText("rank") }}
                   </th>
-                  <th @click="sortTable('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('battletag')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'battletag'}]">
                     Battletag
                   </th>            
-                  <th @click="sortTable('region_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('region_id')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'region_id'}]">
                     Region
                   </th>
-                  <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('win_rate')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'win_rate'}]">
                     Win Rate %
                   </th>
-                  <th @click="sortTable('rating')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('rating')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'rating'}]">
                     Heroes Profile Rating
                   </th>      
-                  <th @click="sortTable('mmr')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('mmr')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'mmr'}]">
                     {{ leaderboardtype }} MMR
                   </th> 
-                  <th @click="sortTable('tier_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('tier_id')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'tier_id'}]">
                     Tier
                   </th>    
-                  <th @click="sortTable('games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('games_played')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'games_played'}]">
                     Games Played
                   </th>     
 
@@ -143,7 +143,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>{{ row.rank }}</td>
+                    <td><div class="flex gap-1"><div v-if="rankchange" class="bg-blue text-white min-w-[2em] p-1 rounded-md text-center"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  500-index }}</span></div><span class="p-1">{{ row.rank }}</span></div></td>
                     <td>
                       <div class="flex items-center">
                         <div class="" v-if="row.hp_owner">
@@ -272,11 +272,19 @@ export default {
       ratingLoading: false,
       playerRatingGamesPlayed: null,
       tierrank: null,
+      rankchange: false,
+      isfiltered: false,
     }
   },
   created(){
     this.gametype = this.gametypedefault[0];
     this.season = this.defaultseason;
+
+    if(this.region != null || this.tierrank != null){
+      this.rankchange = true;
+      this.isfiltered = true;
+    }
+
     this.getData();
   },
   mounted() {
@@ -389,6 +397,11 @@ export default {
       } else {
         this.sortDir = 'desc';
       }
+
+      this.rankchange = true;
+      if((key == 'rank' || key == 'rating') && !this.isfiltered){
+        this.rankchange = false;
+      }
       this.sortKey = key;
     },
     getCopyBuildToGame(level_one, level_four, level_seven, level_ten, level_thirteen, level_sixteen, level_twenty, hero) {
@@ -452,6 +465,12 @@ export default {
         }
       }
 
+    },
+    getHeaderRankText(){
+      if(this.rankchange){
+        return "Sorted Rank|(Rank)"; 
+      }
+      return "Rank"
     }
   }
 }

@@ -16,7 +16,7 @@
       :hideadvancedfilteringbutton="true"
       >
     </filters>
-    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+    <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     <div v-if="data">
       <div>
         <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">

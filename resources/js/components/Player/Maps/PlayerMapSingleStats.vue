@@ -13,7 +13,7 @@
       </button>
     </div>
 
-    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+    <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
     <div v-if="data">
       <div class="flex md:p-20 gap-10 mx-auto justify-center items-center ">

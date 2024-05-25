@@ -22,7 +22,7 @@
         :defaultSeason="season"
         >
       </filters>
-      <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+      <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
       <div class="flex justify-center gap-2  mx-auto  ">
         <div class="border  rounded-md compare-selection-box"  v-for="index in range" :key="index">
