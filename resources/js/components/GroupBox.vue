@@ -110,7 +110,8 @@
       esport: String,
       color: String,
       winner: Boolean,
-      popupsize: String
+      popupsize: String,
+      showpopup: true
     },
     data(){
       return {
