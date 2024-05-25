@@ -23,39 +23,38 @@
     <div v-if="data">
 
 
-      <div v-if="!disableWinnerSelect">
-        <button :disabled="disableWinnerSelect" @click="chooseWinner(0)"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
+
+
+<div class="flex max-w-[1000px] mx-auto justify-center gap-10">
+
+      <div class="flex flex-col align-center border-2 rounded-md border-white " >
+        <button v-if="!disableWinnerSelect" :disabled="disableWinnerSelect" @click="chooseWinner(0)"  :class="{'bg-teal rounded text-white  px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
           {{ "Team 1 Winner" }}
         </button>
+        <div class="px-2" v-if="data.draftData">
+          <group-box class="w-full" :playerlink="true" :text="'Team 1 Bans'" :data="data.draftData[0].bans" color="teal"></group-box>
+        </div>
+        <div class="px-2">
+          <group-box class="min-w-[30em]" :playerlink="true" :text="'Team 1 Picks'" :data="teamZeroPicks" color="teal"></group-box>
+        </div>
+        
 
-        <button :disabled="disableWinnerSelect" @click="chooseWinner(1)"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
+      </div>
+
+      <div class="flex flex-col align-center justify-center  border-2 rounded-md border-white ">
+        <button v-if="!disableWinnerSelect" :disabled="disableWinnerSelect" @click="chooseWinner(1)"  :class="{'bg-teal rounded text-white px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
           {{ "Team 2 Winner" }}
         </button>
-      </div>
-      
-
-
-
-
-
-      <div>
-        <group-box :playerlink="true" :text="'Team 1 Picks'" :data="teamZeroPicks" color="teal"></group-box>
-      </div>
-      <div v-if="data.draftData">
-        <group-box :playerlink="true" :text="'Team 1 Bans'" :data="data.draftData[0].bans" color="teal"></group-box>
-      </div>
-
-
-
-
-      <div>
-        <group-box :playerlink="true" :text="'Team 2 Picks'" :data="teamOnePicks" color="teal"></group-box>
-      </div>
-      <div v-if="data.draftData">
-        <group-box :playerlink="true" :text="'Team 2 Bans'" :data="data.draftData[1].bans" color="teal"></group-box>
+        <div class="px-2" v-if="data.draftData">
+          <group-box class="w-full" :playerlink="true" :text="'Team 2 Bans'" :data="data.draftData[1].bans" color="teal"></group-box>
+        </div>
+        <div class="px-2">
+          <group-box class="min-w-[30em]" :playerlink="true" :text="'Team 2 Picks'" :data="teamOnePicks"  color="teal"></group-box>
+        </div>
+        
       </div>
   
-
+</div>
 
       <div v-if="userchoiceresult">
 
