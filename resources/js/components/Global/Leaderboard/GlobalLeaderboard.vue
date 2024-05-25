@@ -95,25 +95,25 @@
                   <th @click="sortTable('rank')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
                     {{ getHeaderRankText("rank") }}
                   </th>
-                  <th @click="sortTable('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('battletag')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'battletag'}]">
                     Battletag
                   </th>            
-                  <th @click="sortTable('region_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('region_id')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'region_id'}]">
                     Region
                   </th>
-                  <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('win_rate')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'win_rate'}]">
                     Win Rate %
                   </th>
-                  <th @click="sortTable('rating')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('rating')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'rating'}]">
                     Heroes Profile Rating
                   </th>      
-                  <th @click="sortTable('mmr')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('mmr')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'mmr'}]">
                     {{ leaderboardtype }} MMR
                   </th> 
-                  <th @click="sortTable('tier_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('tier_id')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'tier_id'}]">
                     Tier
                   </th>    
-                  <th @click="sortTable('games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('games_played')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'games_played'}]">
                     Games Played
                   </th>     
 
@@ -143,7 +143,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>{{ getRowRank(index, row.rank) }}</td>
+                    <td><div class="flex gap-1"><div v-if="rankchange" class="bg-blue text-white min-w-[2em] p-1 rounded-md text-center"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  500-index }}</span></div><span class="p-1">{{ getRowRank(index, row.rank) }}</span></div></td>
                     <td>
                       <div class="flex items-center">
                         <div class="" v-if="row.hp_owner">
@@ -469,9 +469,7 @@ export default {
 
     },
     getRowRank(index, rank){
-      if(this.rankchange){
-        return (index + 1) + "|(" + rank + ")"; 
-      }
+   
 
       return rank;
     },
