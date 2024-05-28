@@ -106,6 +106,10 @@
     </div>
 
    
+    <div v-if="userchoiceresult" class="max-w-[1500px] text-center w-full mx-auto mt-2">
+      See replay <a target="_blank" class="link" :href="'/Match/Single/' + userchoiceresult.replayID">{{ userchoiceresult.replayID }}</a> for more information
+    </div>
+    
     <div class="p-10  max-w-[1500px] mx-auto">
       <h2 class="text-3xl font-bold py-5">Talents to Level 10</h2>
       <div class="flex flex-wrap gap-20 justify-around">
@@ -139,14 +143,6 @@
         </div>
     </div>
   </div>
-
-
-
-    <div v-if="userchoiceresult" class="max-w-[1500px] text-center w-full mx-auto mt-2">
-      See replay <a target="_blank" class="link" :href="'/Match/Single/' + userchoiceresult.replayID">{{ userchoiceresult.replayID }}</a> for more information
-    </div>
-
-
   </div>
 
 
