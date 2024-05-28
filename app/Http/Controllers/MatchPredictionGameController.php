@@ -10,7 +10,9 @@ use App\Models\Player;
 use App\Models\ReplayDraftOrder;
 use App\Models\ReplayBan;
 use App\Models\Map;
+use App\Models\Talent;
 use App\Models\ReplayFingerprint;
+use App\Models\HeroesDataTalent;
 use Illuminate\Support\Facades\Crypt;
 
 use Illuminate\Http\Request;
@@ -79,9 +81,27 @@ class MatchPredictionGameController extends Controller
     
     $replayID = $replayData->replayID;
     
-    $playerData = Player::select("hero", "team")
+    $playerData = Player::select("battletag", "hero", "team", "player_conservative_rating")
       ->where("replayID", $replayID)
       ->get();
+
+    $talents = Talent::select("battletag", "level_one", "level_four", "level_seven", "level_ten")
+    ->where("replayID", $replayID)
+    ->get();
+
+    
+    $talentData = HeroesDataTalent::all();
+    $talentData = $talentData->keyBy('talent_id');
+
+    $indexedTalents = $talents->mapWithKeys(function ($item) use ($talentData) {
+      return [$item->battletag => [
+          'level_one' => $talentData[$item->level_one],
+          'level_four' => $talentData[$item->level_four],
+          'level_seven' => $talentData[$item->level_seven],
+          'level_ten' => $talentData[$item->level_ten],
+      ]];
+    });
+
 
     $replayBans = ReplayBan::select("team", "hero")
       ->where("replayID", $replayID)
@@ -122,11 +142,31 @@ class MatchPredictionGameController extends Controller
     $heroData = $this->globalDataService->getHeroes();
     $heroData = $heroData->keyBy('id');
 
-    $playerData = $playerData->map(function ($player) use ($heroData) {  
+    $averageMMR = [];
+
+    $playerData = $playerData->map(function ($player) use ($heroData, &$averageMMR, $indexedTalents) {  
       $player->hero = $heroData[$player->hero];
+      $averageMMR[] = 1800 + ($player->player_conservative_rating * 40);
+      $player->talent = $indexedTalents[$player->battletag];
+
+      unset($player->battletag);
+      unset($player->player_conservative_rating);
 
       return $player;
     });
+
+    sort($averageMMR);
+    array_shift($averageMMR);
+    array_pop($averageMMR);
+    $averageValue = round(array_sum($averageMMR) / count($averageMMR));
+
+
+
+    $rankTiers = $this->globalDataService->getRankTiers($gameType, 10000);
+    $rankTier = $this->globalDataService->calculateSubTier($rankTiers, $averageValue);
+
+    $rankTierName = str_replace(' ', '', strtolower(preg_replace('/\d/', '', $rankTier)));
+
 
     $groupedDraftData = null;
     if ($draftData && !$draftData->isEmpty()) {
@@ -157,7 +197,8 @@ class MatchPredictionGameController extends Controller
       "replayData" => $replayData, 
       "playerData" => $groupedPlayerData,
       "draftData" => $groupedDraftData && !$groupedDraftData->isEmpty() ? $groupedDraftData : null, 
-      "firstPick" => $firstPick
+      "firstPick" => $firstPick,
+      "rank" => ucfirst($rankTierName),
     ];
   }
 
