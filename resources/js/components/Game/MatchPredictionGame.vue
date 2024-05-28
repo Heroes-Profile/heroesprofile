@@ -38,6 +38,7 @@
       <div class="w-full max-w-[1000px] bg-blue rounded flex justify-between gap-2 mx-auto p-4 mb-4">
         <span>{{ data.replayData.game_map.name }}</span>
         <span>HP Rank: {{ data.rank }}</span>
+        <span>Region: {{ data.replayData.regionString }}</span>
         <span>{{ data.replayData.timeFormat }}</span>
       </div>
 
@@ -106,11 +107,11 @@
     </div>
 
    
-    <div v-if="userchoiceresult" class="max-w-[1500px] text-center w-full mx-auto mt-2">
+    <div v-if="userchoiceresult" class="max-w-[1000px] text-center w-full mx-auto mt-2 bg-teal rounded-md p-4">
       See replay <a target="_blank" class="link" :href="'/Match/Single/' + userchoiceresult.replayID">{{ userchoiceresult.replayID }}</a> for more information
     </div>
-    
-    <div class="p-10  max-w-[1500px] mx-auto">
+
+    <div class="p-10  max-w-[1000px] mx-auto">
       <h2 class="text-3xl font-bold py-5">Talents to Level 10</h2>
       <div class="flex flex-wrap gap-20 justify-around">
         <div class="">
@@ -218,7 +219,6 @@ export default {
         }
         
         this.data = response.data;
-        console.log(this.data);
         this.isLoading = false;
       }catch(error){
         //Do something here
