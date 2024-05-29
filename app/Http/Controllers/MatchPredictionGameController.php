@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\GameType;
 use App\Rules\GameTypeInputValidation;
 use Illuminate\Support\Facades\Validator;
+use App\Rules\UserAccountValidation;
 
 use App\Models\Replay;
 use App\Models\Player;
@@ -11,10 +12,11 @@ use App\Models\ReplayDraftOrder;
 use App\Models\ReplayBan;
 use App\Models\Map;
 use App\Models\Talent;
+use App\Models\MatchPredictionPlayerStat;
 use App\Models\ReplayFingerprint;
 use App\Models\HeroesDataTalent;
 use Illuminate\Support\Facades\Crypt;
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class MatchPredictionGameController extends Controller
@@ -28,10 +30,19 @@ class MatchPredictionGameController extends Controller
           return ['code' => $gameType->short_name, 'name' => $gameType->name];
       });
 
+      $predicitionStats = null;
+
+      $user = Auth::user();
+      if($user){
+        $predicitionStats = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
+        ->where('season', 1)
+        ->get();
+      }
       return view('MatchPrediction.game')->with([
           'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
           'filters' => $this->globalDataService->getFilterData(),
           'gametypes' => $gametypes,
+          'predictionstats' => $predicitionStats,
       ]);
 
   }
@@ -204,10 +215,20 @@ class MatchPredictionGameController extends Controller
 
   public function chooseWinner(Request $request){
 
+
     $validationRules = [
       'team' => 'required|integer',
       'fingerprint' => 'required|string',
+      'gametype' => ['required', new GameTypeInputValidation()],
+      'practicemode' => 'required|boolean',
     ];
+
+    if ($request->has('user') && !is_null($request->input('user'))) {
+      $validationRules['user'] = ['sometimes', new UserAccountValidation()];
+    } else {
+      $validationRules['user'] = 'nullable'; 
+    }
+
 
     $validator = Validator::make($request->all(), $validationRules);
 
@@ -218,6 +239,9 @@ class MatchPredictionGameController extends Controller
             'status' => 'failure to validate inputs',
         ];
     }
+    $user = $request["user"];
+    $game_type = GameType::where('short_name', $request['gametype'])->pluck('type_id')->first();
+
 
     $replayID = ReplayFingerprint::where("fingerprint", Crypt::decryptString($request["fingerprint"]))->value("replayID");
 
@@ -226,10 +250,39 @@ class MatchPredictionGameController extends Controller
       ->where("replayID", $replayID)
       ->where("team", $request["team"])
       ->first();
-      
+
+
+    if($user && !$request["practicemode"]){
+      $existingRecord = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user['battlenet_accounts_id'])
+        ->where('season', 1)
+        ->where('game_type', $game_type)
+        ->first();
+
+      if ($existingRecord) {
+        if($data->winner == 1){
+          $existingRecord->increment('win');
+        }else{
+          $existingRecord->increment('loss');
+        }
+      } else {
+          MatchPredictionPlayerStat::insert([
+            'battlenet_accounts_id' => $user['battlenet_accounts_id'],
+            'season' => 1,
+            'game_type' => $game_type,
+            'win' => ($data->winner == 1 ? 1 : 0),
+            'loss' => ($data->winner == 0 ? 1 : 0)
+          ]);
+      }
+    }
+
+    $predicitionStats = null;
+    if($user){
+      $predicitionStats = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user["battlenet_accounts_id"])
+      ->where('season', 1)
+      ->get();
+    }
     
-    
-    return ["replayID" => $replayID, "data" => $data->winner ];
+    return ["replayID" => $replayID, "data" => $data->winner, "predictionstats" => $predicitionStats ];
   }
 
   private function determineFirstPick($replayBans, $draftData){
