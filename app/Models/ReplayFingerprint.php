@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class ReplayFingerprint extends Model
 {
-  protected $table = 'replay_fingerprints';
+    protected $table = 'replay_fingerprints';
 
-  protected $primaryKey = 'replayID';
+    protected $primaryKey = 'replayID';
 
-  protected $connection = 'heroesprofile';
+    protected $connection = 'heroesprofile';
 
-  public $timestamps = false;
+    public $timestamps = false;
 }

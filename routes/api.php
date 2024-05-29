@@ -21,6 +21,7 @@ use App\Http\Controllers\Global\GlobalPartyStatsController;
 use App\Http\Controllers\Global\GlobalTalentBuilderController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
 use App\Http\Controllers\MainPageController;
+use App\Http\Controllers\MatchPredictionGameController;
 use App\Http\Controllers\Player\FriendFoeController;
 use App\Http\Controllers\Player\PlayerController;
 use App\Http\Controllers\Player\PlayerHeroesMapsRolesController;
@@ -31,7 +32,6 @@ use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MatchPredictionGameController;
 
 /*
 |--------------------------------------------------------------------------
@@ -162,6 +162,5 @@ Route::prefix('v1')->group(function () {
 
     Route::post('match/prediction/game', [MatchPredictionGameController::class, 'getReplayData']);
     Route::post('match/prediction/game/choose/winner', [MatchPredictionGameController::class, 'chooseWinner']);
-
 
 });
