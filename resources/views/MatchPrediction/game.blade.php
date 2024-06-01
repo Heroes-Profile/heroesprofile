@@ -9,6 +9,8 @@
     :filters="{{ json_encode($filters) }}" 
     :gametypes="{{ json_encode($gametypes) }}" 
     :user="{{ json_encode(Auth::user()) }}" 
+    :predictionstats=" {{ json_encode($predictionstats) }} "
+    :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
 
   >
   </match-prediction-game>

@@ -9,6 +9,27 @@
     </page-heading>
 
 
+    <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
+
+
+    <div v-if="!user">
+      Log in to track your prediction stats and rank on the leaderboard
+    </div>
+    <div v-else>
+      {{ truncatedBattletag }}
+
+      <br><span v-if="getPredictionRate(1)">Quick Match Prediction Rate: {{ getPredictionRate(1) }}% out of {{ getPredictionGames(1) }} attempts</span>
+      <br><span v-if="getPredictionRate(5)">Storm League Prediction Rate: {{ getPredictionRate(5) }}% out of {{ getPredictionGames(5) }} attempts</span>
+      <br><span v-if="getPredictionRate(6)">ARAM Prediction Rate: {{ getPredictionRate(6) }}% out of {{ getPredictionGames(6) }} attempts</span>
+
+      <div class="px-4 mt-4">
+        <h3>Practice Mode</h3>
+        <tab-button tab1text="On" :ignoreclick="true" tab2text="Off" @tab-click="practicemodechange" :overridedefaultside="practicemode"> </tab-button>
+      </div>
+
+    </div>
+
+
     <div class="flex justify-center max-w-[1500px] mx-auto">
      
 
@@ -22,7 +43,7 @@
 
 
       <button :disabled="disableFilterInput" @click="applyFilter"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
-          Start
+          Next Match
       </button>
 
     </div>
@@ -144,14 +165,8 @@
         </div>
     </div>
   </div>
+
   </div>
-
-
-
- 
-
-
-
   </div>
 </template>
 
@@ -167,6 +182,8 @@ export default {
     },
     gametypes: Array,
     user: Object,
+    predictionstats: Object,
+    patreonUser: Boolean,
   },
   data(){
     return {
@@ -176,10 +193,14 @@ export default {
       fingerprint: null,
       userchoiceresult: null,
       disableWinnerSelect: false,
-      userchoiceteam: null
+      userchoiceteam: null,
+      predictionstatsupdated: null,
+      practicemode: "left",
     }
   },
   created(){
+    console.log(this.predictionstats);
+    this.predictionstatsupdated = this.predictionstats;
   },
   mounted() {
   },
@@ -202,6 +223,9 @@ export default {
       }
       return this.data.playerData[1];
     },
+    truncatedBattletag(){
+      return this.user.battletag.split('#')[0];
+    },
   },
   watch: {
   },
@@ -219,6 +243,8 @@ export default {
         }
         
         this.data = response.data;
+        console.log(this.data);
+
         this.isLoading = false;
       }catch(error){
         //Do something here
@@ -243,6 +269,9 @@ export default {
         const response = await this.$axios.post("/api/v1/match/prediction/game/choose/winner", {
           team: team, 
           fingerprint: this.data.fingerprint, 
+          gametype: this.gametype,
+          user: this.user,
+          practicemode: this.practicemode == "left" ? true : false,
         });
 
         if(response.data.status == "failure to validate inputs"){
@@ -250,13 +279,25 @@ export default {
         }
         
         this.userchoiceresult = response.data;
+        this.predictionstatsupdated = response.data.predictionstats;
         this.isLoading = false;
       }catch(error){
         //Do something here
       }finally {
         this.isLoading = false;
       }
-    }
+    },
+    getPredictionRate(gameType) {
+      const stat = this.predictionstatsupdated.find(stat => stat.game_type === gameType);
+      return stat ? stat.win_rate.toFixed(2) : null; 
+    },
+    getPredictionGames(gameType){
+      const stat = this.predictionstatsupdated.find(stat => stat.game_type === gameType);
+      return stat ? stat.games_played : null; 
+    },
+    practicemodechange(side){
+      this.practicemode = side;
+    },
   }
 }
 </script>
