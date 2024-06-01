@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Award;
 
 class MainPageController extends Controller
 {
@@ -33,7 +32,7 @@ class MainPageController extends Controller
 
     public function test()
     {
-        return Award::all();
+      $exception = 1 / 0;
     }
 
     public function testJS()
