@@ -54,15 +54,12 @@ class DatabaseSeeder extends Seeder
 
         //ReplayBansSeeder::class,
         //ReplayDraftOrderSeeder::class,
-        //ReplayExperienceBreakdownBlobSeeder::class,
-        //ScoresSeeder::class,
-        //SeasonDatesSeeder::class,
-        //SeasonGameVersionsSeeder::class,
-        //TalentCombinationsSeeder::class,
-        TalentsSeeder::class,
-        BattletagsCCLSeeder::class,
-        PlayerCCLSeeder::class,
-        ReplayCCLSeeder::class,
+        ReplayExperienceBreakdownBlobSeeder::class,
+        ScoresSeeder::class,
+        SeasonDatesSeeder::class,
+        SeasonGameVersionsSeeder::class,
+        TalentCombinationsSeeder::class,
+        //TalentsSeeder::class,
       ]);
     }
 }
