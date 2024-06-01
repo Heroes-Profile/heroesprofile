@@ -21,11 +21,6 @@ In addition to creating the environment yourself, there are also a lot of differ
 
 For windows users, Wampserver64 is a useful tool as it installs the MySql server and php at the same time. https://sourceforge.net/projects/wampserver/
 
-## Database setup (TBD)
-
--   Create the following schemas in your MySql database. `heroesprofile`, `heroesprofile_cache`, `heroesprofile_hi`, `heroesprofile_hi_nc`, `heroesprofile_mcl`, `heroesprofile_ml`, `heroesprofile_ngs`, `heroesprofile_nutcup`
--   Table structure and table data will be provided on an as-needed basis.  If you are wanting to make a change and need to know this information, please log a ticket or contact us directly explaining what you are doing and what data you need.
-
 ## Project Setup
 
 -   From the command line, navigate to the heroesprofile repository.
@@ -33,6 +28,12 @@ For windows users, Wampserver64 is a useful tool as it installs the MySql server
 -   Run `npm install`
 -   Run `composer install`
 -   Run `php artisan key:generate` make sure the APP_KEY has this value in the .env file
+
+## Database setup
+
+-   Create the following schemas in your MySql database. `heroesprofile`, `heroesprofile_cache`, `heroesprofile_logs`, 
+
+-   Base site table migrations and seeders have been provided.  Run `php artisan migrate` to run migrations and `php artisan db:seed`.  It seems the seeders stop early sometimes, or error out on memory issues.  If that occurs, just comment out the seeders that have already ran in `database\seeders\DatabaseSeeder.php` and then run `php artisan db:seed` again.  NOTE:  The data provided in the seeders is not complete.  A lot of player data maps to battletag ZEMILL#1940 and global data based on patch `2.55.4.91418`
 
 ## Running the project
 
