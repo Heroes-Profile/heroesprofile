@@ -13,13 +13,12 @@ class CreateIpLoggingTable extends Migration
      */
     public function up()
     {
-        Schema::create('ip_logging', function (Blueprint $table) {
-            $table->increments('ip_logging_id');
+        Schema::create('heroesprofile_logs.ip_logging', function (Blueprint $table) {
+            $table->id('ip_logging_id');
             $table->string('ip', 45)->nullable();
             $table->string('page', 500)->nullable();
             $table->longText('user_agent')->nullable();
             $table->timestamp('date_time')->useCurrent()->nullable();
-            $table->primary('ip_logging_id');
             $table->index(['ip', 'page'], 'INDEX');
             $table->index('date_time', 'dateTime');
         });
