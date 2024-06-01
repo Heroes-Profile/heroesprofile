@@ -49,13 +49,18 @@
 
           >
         </filters>
-        <takeover-ad :patreon-user="patreonUser" ref="takeoverAddPlacement"></takeover-ad>
+        <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
-        
+  
         <div v-if="talentdetaildata" class="mx-auto  md:px-4">
           <div class="flex justify-between max-w-[1500px] mx-auto">
             <span class="flex gap-4 mb-2"> 
-              {{ this.selectedHero.name }} {{ "Talent Stats"}} <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button>
+              <single-select-filter
+                :values="filters.heroes" 
+                :text="'Change Hero'" 
+                :defaultValue="selectedHero.id"
+                @input-changed="handleInputChange"
+              ></single-select-filter>
             </span>
             <span><custom-button @click="scrollToBuilds" :text="'Scroll To Builds'" :alt="'Scroll To Builds'" size="small" :ignoreclick="true"></custom-button></span>
           </div>
@@ -69,8 +74,8 @@
           Error: Reload page/filter
         </div>
 
+        <dynamic-banner-ad :patreon-user="patreonUser" :index="4" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
-        <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
         <div v-if="talentbuilddata" class="flex justify-between max-w-[1500px] mx-auto md:px-4">
           <div id="builds" class="">
@@ -187,17 +192,6 @@
         this.selectedHero = hero;
         this.preloadTalentImages(hero);
 
-        //This isnt working
-        if(!this.patreonUser){
-          this.$nextTick(() => {
-            (window.top).__vm_add = (window.top).__vm_add || [];
-            (window.top).__vm_add.push(this.$refs.takeoverAddPlacement);
-            //(window.top).__vm_add.push(this.$refs.dynamicAddPlacement);
-          });
-        }
-   
-
-
         let currentPath = window.location.pathname;
         history.pushState(null, null, `${currentPath}/${this.selectedHero.name}`);
         Promise.allSettled([
@@ -235,7 +229,11 @@
           {
             cancelToken: this.cancelTalentsTokenSource.token,
           });
+          if(response.data.status == "failure to validate inputs"){
+            throw new Error("Failure to validate inputs");
+          }
           this.talentdetaildata = response.data;
+
         }catch(error){
           this.dataError = true;
         }finally {
@@ -273,14 +271,19 @@
           {
             cancelToken: this.cancelBuildsTokenSource.token,
           });
+
+          
+          if(response.data.status == "failure to validate inputs"){
+            throw new Error("Failure to validate inputs");
+          }
+          
           this.talentbuilddata = response.data;
+
         }catch(error){
           this.dataError = true;
         }finally {
           this.cancelBuildsTokenSource = null;
           this.isBuildsLoading = false;
-         
-          
         }
       },
       cancelAxiosRequest() {
@@ -413,15 +416,33 @@
         }
 
         if (this.urlparameters["league_tier"]) {
-          this.playerrank = this.urlparameters["league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+          this.playerrank = this.urlparameters["league_tier"]
+            .split(',')
+            .map(tierName => {
+                const capitalizedTierName = tierName.charAt(0).toUpperCase() + tierName.slice(1);
+                const tier = this.filters.rank_tiers.find(tier => tier.name === capitalizedTierName);
+                return tier?.code;
+            });
         }
 
         if (this.urlparameters["hero_league_tier"]) {
-          this.herorank = this.urlparameters["hero_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+          this.herorank = this.urlparameters["hero_league_tier"]
+          .split(',')
+          .map(tierName => {
+              const capitalizedTierName = tierName.charAt(0).toUpperCase() + tierName.slice(1);
+              const tier = this.filters.rank_tiers.find(tier => tier.name === capitalizedTierName);
+              return tier?.code;
+          });
         }
 
         if (this.urlparameters["role_league_tier"]) {
-          this.rolerank = this.urlparameters["role_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+          this.rolerank = this.urlparameters["role_league_tier"]
+          .split(',')
+          .map(tierName => {
+              const capitalizedTierName = tierName.charAt(0).toUpperCase() + tierName.slice(1);
+              const tier = this.filters.rank_tiers.find(tier => tier.name === capitalizedTierName);
+              return tier?.code;
+          });
         }
 
 
@@ -432,6 +453,31 @@
         if (this.urlparameters["mirror"]) {
           this.mirrormatch = this.urlparameters["mirror"];
         }
+      },
+      handleInputChange(eventPayload){
+        if(eventPayload.value != ""){
+          this.selectedHero = this.heroes.find(hero => hero.id === eventPayload.value);
+          this.preloadTalentImages(this.selectedHero);
+
+          let currentPath = window.location.pathname;
+          let newPath = currentPath.replace(/\/[^/]*$/, `/${this.selectedHero.name}`);
+          history.pushState(null, null, newPath);
+          this.updateQueryString();
+
+          this.talentdetaildata = null;
+          this.talentbuilddata = null;
+
+          //Have to use setTimeout to make this occur on next tic to allow header info/text to update properly.  
+          setTimeout(() => {
+              Promise.allSettled([
+                  this.getTalentData(),
+                  this.getTalentBuildData(),
+              ]).then(results => {
+              });
+          }, 0);
+
+        }
+
       },
     }
   }

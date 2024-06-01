@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText" :heading="'MMR Data'" :battletag="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+    <page-heading :infoText1="infoText" :heading="'MMR Data'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
@@ -14,7 +14,7 @@
       >
     </filters>
     
-    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+    <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
     <div v-if="data">
 
@@ -132,6 +132,9 @@ export default {
   },
   props: {
     filters: Object,
+    playerloadsetting: {
+      type: [String, Boolean]
+    },
     gametypedefault: Array,
     battletag: String,
     blizzid: {
@@ -163,10 +166,16 @@ export default {
     this.gametype = this.gametypedefault[0];
   },
   mounted() {
-    this.getData();
+    if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
+      this.getData();
+    }
   },
   computed: {
     reversedData() {
+      if (!Array.isArray(this.data)) {
+        console.error("this.data is not an array.");
+        return [];
+      }
       return [...this.data].reverse();
     },
     sortedData() {

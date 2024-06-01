@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
-use App\Models\BattlenetAccount;
 use App\Models\Battletag;
 use App\Models\GameType;
 use App\Models\HeroesDataTalent;
-use App\Models\LaravelProfilePage;
 use App\Models\Map;
 use App\Models\MasterMMRDataAR;
 use App\Models\MasterMMRDataHL;
@@ -16,6 +14,8 @@ use App\Models\MasterMMRDataSL;
 use App\Models\MasterMMRDataTL;
 use App\Models\MasterMMRDataUD;
 use App\Models\MMRTypeID;
+use App\Models\Player;
+use App\Models\ProfilePage;
 use App\Models\Replay;
 use App\Models\SeasonDate;
 use App\Rules\GameTypeInputValidation;
@@ -51,24 +51,11 @@ class PlayerController extends Controller
             }
         }
 
-        $heroUserSettings = null;
-        $checkedUser = BattlenetAccount::where('battletag', 'like', $battletag.'%')
-            ->where('blizz_id', $blizz_id)
-            ->where('region', $region)
-            ->first();
-
-        if ($checkedUser) {
-            $heroUserSettings = $checkedUser->userSettings->where('setting', 'hero')->first();
-            if (! is_null($heroUserSettings)) {
-                $heroUserSettings = $this->globalDataService->getHeroesByID()[$heroUserSettings['value']];
-            }
-        }
-
         $season = $request['season'];
 
         return view('Player.player')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
-            'settingHero' => $heroUserSettings,
+            'playerloadsetting' => $this->globalDataService->getPlayerLoadSettings(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,
@@ -109,7 +96,7 @@ class PlayerController extends Controller
         $game_type = $request['game_type'] ? GameType::where('short_name', $request['game_type'])->pluck('type_id')->first() : null;
         $season = $request['season'];
 
-        $cachedData = LaravelProfilePage::filterByBlizzID($blizz_id)
+        $cachedData = ProfilePage::filterByBlizzID($blizz_id)
             ->filterByRegion($region)
             ->where('game_type', $game_type)
             ->where('season', $season)
@@ -118,7 +105,7 @@ class PlayerController extends Controller
         if (! $cachedData) {
             $this->calculateProfile($blizz_id, $region, $game_type, $season);
 
-            $cachedData = LaravelProfilePage::filterByBlizzID($blizz_id)
+            $cachedData = ProfilePage::filterByBlizzID($blizz_id)
                 ->filterByRegion($region)
                 ->where('game_type', $game_type)
                 ->where('season', $season)
@@ -148,7 +135,7 @@ class PlayerController extends Controller
 
         if ($latestReplayID && $cachedData->latest_replayID < $latestReplayID) {
             $this->calculateProfile($blizz_id, $region, $game_type, $season, $cachedData);
-            $cachedData = LaravelProfilePage::filterByBlizzID($blizz_id)
+            $cachedData = ProfilePage::filterByBlizzID($blizz_id)
                 ->filterByRegion($region)
                 ->where('game_type', $game_type)
                 ->where('season', $season)
@@ -406,7 +393,7 @@ class PlayerController extends Controller
         }
 
         if (! $cachedData) {
-            $dataToSave = new LaravelProfilePage;
+            $dataToSave = new ProfilePage;
             $dataToSave->blizz_id = $blizz_id;
             $dataToSave->region = $region;
             $dataToSave->game_type = $game_type;
@@ -739,7 +726,7 @@ class PlayerController extends Controller
             $matches = $data->matches;
         }
 
-        $returnData->matchData = collect($matches)->sortByDesc('game_date')->map(function ($match) use ($maps, $heroData, $talentData) {
+        $returnData->matchData = collect($matches)->sortByDesc('game_date')->map(function ($match) use ($maps, $heroData, $talentData, $blizz_id) {
             $match['game_type'] = $this->globalDataService->getGameTypeIDtoString()[$match['game_type']];
             $match['game_map'] = $maps[$match['game_map']];
             $match['hero'] = $heroData[$match['hero']];
@@ -791,21 +778,36 @@ class PlayerController extends Controller
                 }
             }
 
-            $match['player_conservative_rating'] = round($match['player_conservative_rating'], 2);
-            $match['player_mmr'] = round(1800 + 40 * $match['player_conservative_rating']);
-            $match['player_change'] = round($match['player_change'], 2);
+            $updatedMMRValuesChecker = false;
+            $updatedMMRValues = null;
+            if (round(1800 + 40 * $match['player_conservative_rating']) == 1800) {
+                $updatedMMRValuesChecker = true;
+                $updatedMMRValues = $this->getUpdatedMMRValues($match['replayID'], $blizz_id);
+            }
 
-            $match['hero_conservative_rating'] = round($match['hero_conservative_rating'], 2);
-            $match['hero_mmr'] = round(1800 + 40 * $match['hero_conservative_rating']);
-            $match['hero_change'] = round($match['hero_change'], 2);
+            $match['player_conservative_rating'] = $updatedMMRValuesChecker ? round($updatedMMRValues['player_conservative_rating'], 2) : round($match['player_conservative_rating'], 2);
+            $match['player_mmr'] = $updatedMMRValuesChecker ? round(1800 + 40 * $updatedMMRValues['player_conservative_rating']) : round(1800 + 40 * $match['player_conservative_rating']);
+            $match['player_change'] = $updatedMMRValuesChecker ? round($updatedMMRValues['player_change'], 2) : round($match['player_change'], 2);
 
-            $match['role_conservative_rating'] = round($match['role_conservative_rating'], 2);
-            $match['role_mmr'] = round(1800 + 40 * $match['role_conservative_rating']);
-            $match['role_change'] = round($match['role_change'], 2);
+            $match['hero_conservative_rating'] = $updatedMMRValuesChecker ? round($updatedMMRValues['hero_conservative_rating'], 2) : round($match['hero_conservative_rating'], 2);
+            $match['hero_mmr'] = $updatedMMRValuesChecker ? round(1800 + 40 * $updatedMMRValues['hero_conservative_rating']) : round(1800 + 40 * $match['hero_conservative_rating']);
+            $match['hero_change'] = $updatedMMRValuesChecker ? round($updatedMMRValues['hero_change'], 2) : round($match['hero_change'], 2);
+
+            $match['role_conservative_rating'] = $updatedMMRValuesChecker ? round($updatedMMRValues['role_conservative_rating'], 2) : round($match['role_conservative_rating'], 2);
+            $match['role_mmr'] = $updatedMMRValuesChecker ? round(1800 + 40 * $updatedMMRValues['role_conservative_rating']) : round(1800 + 40 * $match['role_conservative_rating']);
+            $match['role_change'] = $updatedMMRValuesChecker ? round($updatedMMRValues['role_change'], 2) : round($match['role_change'], 2);
 
             return $match;
         })->values();
 
         return $returnData;
+    }
+
+    private function getUpdatedMMRValues($replayID, $blizz_id)
+    {
+        return Player::select('player_conservative_rating', 'player_change', 'hero_conservative_rating', 'hero_change', 'role_conservative_rating', 'role_change')
+            ->where('replayID', $replayID)
+            ->where('blizz_id', $blizz_id)
+            ->first();
     }
 }

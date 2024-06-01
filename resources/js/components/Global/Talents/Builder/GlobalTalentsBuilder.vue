@@ -37,7 +37,7 @@
       :advancedfiltering="advancedfiltering"
       >
     </filters>
-    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+    <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
   </div>
 
@@ -49,7 +49,17 @@
   <div v-else-if="dataError" class="flex items-center justify-center">
       Error: Reload page/filter
   </div>
-  <div v-if="data">
+  <div v-if="data && !isLoading">
+    <div class="max-w-[1500px] mx-auto">
+        <span class="flex gap-4 mb-2 mx-4"> 
+          <single-select-filter
+            :values="filters.heroes" 
+            :text="'Change Hero'" 
+            :defaultValue="selectedHero.id"
+            @input-changed="handleInputChange"
+          ></single-select-filter>
+        </span>
+      </div>
 
     <div class="flex px-3 gap-5 mx-auto justify-center">
       <talent-builder-column :data="data['1']" :level="1" :clickedData="clickedData"></talent-builder-column>
@@ -112,8 +122,8 @@
       </tbody>
     </table>
 
-
-    <div class=" my-5 bg-teal py-5 px-2"><infobox class="max-w-[1500px] mx-auto " :input="'Possible Replays do not take into account Hero Level, Hero Rank, Role Rank, or Mirror Match Filter options'"></infobox></div>
+<!--
+    <div class=" my-5 bg-teal py-5 px-2"><infobox class="max-w-[1500px] mx-auto " :input="'Possible Replays do not take into account Hero Level, Player Rank, Hero Rank, Role Rank, or Mirror Match Filter options'"></infobox></div>
 
     <table class="">
       <thead>
@@ -157,6 +167,8 @@
         </tr>
       </tbody>
     </table>
+
+  -->
   </div>
 
 
@@ -269,7 +281,10 @@
             cancelToken: this.cancelTokenSource.token,
           });
 
-
+          if(response.data.status == "failure to validate inputs"){
+            throw new Error("Failure to validate inputs");
+          }
+          
           this.data = response.data.talentData;
           this.replays = response.data.replays;
           this.builddata = response.data.buildData;
@@ -320,40 +335,9 @@
         this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
         this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : this.defaultbuildtype;
 
+        this.updateQueryString();
 
-        let queryString = `?timeframe_type=${this.timeframetype}`;
-        queryString += `&timeframe=${this.timeframe}`;
-        queryString += `&game_type=${this.gametype}`;
 
-        if(this.region){
-          queryString += `&region=${this.region}`;
-        }
-
-        if(this.herolevel){
-          queryString += `&hero_level=${this.herolevel}`;
-        }
-
-        if(this.gamemap){
-          queryString += `&game_map=${this.gamemap}`;
-        }
-
-        if(this.playerrank){
-          queryString += `&league_tier=${this.convertRankIDtoName(this.playerrank)}`;
-        }
-
-        if(this.herorank){
-          queryString += `&hero_league_tier=${this.convertRankIDtoName(this.herorank)}`;
-        }
-
-        if(this.rolerank){
-          queryString += `&role_league_tier=${this.convertRankIDtoName(this.rolerank)}`;
-        }
-
-        queryString += `&mirror=${this.mirrormatch}`;
-
-        const currentUrl = window.location.href;
-        let currentPath = window.location.pathname;
-        history.pushState(null, null, `${currentPath}${queryString}`);
 
 
         this.data = null;
@@ -434,15 +418,33 @@
         }
 
         if (this.urlparameters["league_tier"]) {
-          this.playerrank = this.urlparameters["league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+          this.playerrank = this.urlparameters["league_tier"]
+            .split(',')
+            .map(tierName => {
+                const capitalizedTierName = tierName.charAt(0).toUpperCase() + tierName.slice(1);
+                const tier = this.filters.rank_tiers.find(tier => tier.name === capitalizedTierName);
+                return tier?.code;
+            });
         }
 
         if (this.urlparameters["hero_league_tier"]) {
-          this.herorank = this.urlparameters["hero_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+          this.herorank = this.urlparameters["hero_league_tier"]
+          .split(',')
+          .map(tierName => {
+              const capitalizedTierName = tierName.charAt(0).toUpperCase() + tierName.slice(1);
+              const tier = this.filters.rank_tiers.find(tier => tier.name === capitalizedTierName);
+              return tier?.code;
+          });
         }
 
         if (this.urlparameters["role_league_tier"]) {
-          this.rolerank = this.urlparameters["role_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+          this.rolerank = this.urlparameters["role_league_tier"]
+          .split(',')
+          .map(tierName => {
+              const capitalizedTierName = tierName.charAt(0).toUpperCase() + tierName.slice(1);
+              const tier = this.filters.rank_tiers.find(tier => tier.name === capitalizedTierName);
+              return tier?.code;
+          });
         }
 
 
@@ -453,6 +455,57 @@
         if (this.urlparameters["mirror"]) {
           this.mirrormatch = this.urlparameters["mirror"];
         }
+      },
+      handleInputChange(eventPayload){
+        if(eventPayload.value != ""){
+          this.selectedHero = this.heroes.find(hero => hero.id === eventPayload.value);
+          let currentPath = window.location.pathname;
+          let newPath = currentPath.replace(/\/[^/]*$/, `/${this.selectedHero.name}`);
+          history.pushState(null, null, newPath);
+          this.updateQueryString();
+
+          this.data = null;
+
+          //Have to use setTimeout to make this occur on next tic to allow header info/text to update properly.  
+          setTimeout(() => {
+            this.getData();
+          }, .25);
+        }
+      },
+      updateQueryString(){
+        let queryString = `?timeframe_type=${this.timeframetype}`;
+        queryString += `&timeframe=${this.timeframe}`;
+        queryString += `&game_type=${this.gametype}`;
+
+        if(this.region){
+          queryString += `&region=${this.region}`;
+        }
+
+        if(this.herolevel){
+          queryString += `&hero_level=${this.herolevel}`;
+        }
+
+        if(this.gamemap){
+          queryString += `&game_map=${this.gamemap}`;
+        }
+
+        if(this.playerrank){
+          queryString += `&league_tier=${this.convertRankIDtoName(this.playerrank)}`;
+        }
+
+        if(this.herorank){
+          queryString += `&hero_league_tier=${this.convertRankIDtoName(this.herorank)}`;
+        }
+
+        if(this.rolerank){
+          queryString += `&role_league_tier=${this.convertRankIDtoName(this.rolerank)}`;
+        }
+
+        queryString += `&mirror=${this.mirrormatch}`;
+
+        const currentUrl = window.location.href;
+        let currentPath = window.location.pathname;
+        history.pushState(null, null, `${currentPath}${queryString}`);
       },
     }
   }

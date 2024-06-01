@@ -16,16 +16,15 @@
         <div class="mb-4">
           <h1 class="max-md:text-[1.5em]">{{ formatDate(data.game_date) }}</h1>
         </div>
-
         <div class="w-full max-w-[1000px] bg-blue rounded flex justify-between gap-2 mx-auto p-4 mb-4">
           <span>{{ data.game_map.name }}</span>
           <span v-if="!esport">
             {{ data.game_type }}
           </span>
-          <span v-else-if="esport && esport == 'CCL'" class="link" @click="downloadReplay(replayid)">
+          <span>{{ data.game_length }}</span>
+          <span v-if="data.downloadable || (esport && esport == 'CCL')" class="link" @click="downloadReplay(data, replayid)">
             Download Replay
           </span>
-          <span>{{ data.game_length }}</span>
         </div>
       </div>
 
@@ -33,7 +32,7 @@
       <div class=" mdp-10 text-center ">
         <div class="flex  justify-center max-w-[1500px] mx-auto  md:gap-10">
           <div class=" max-w-[50%]  md:max-w-[600px]">
-            <group-box class="md:w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(0, data.winner)" popupsize="large" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
+            <group-box class="md:w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :winnerloser="getWinnerLoser(0, data.winner)" :esportteamname="getEsportTeamName(0)" popupsize="large" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
 
 
             <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
@@ -46,10 +45,10 @@
             </div>
 
             <div class="flex flex-wrap justify-center mb-4">
-              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Account Level'" :value="getAverageValue('account_level', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Avg. Account Level'" :value="getAverageValue('account_level', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" :title="'Team Level'" :value="data.players[0][0].score.level" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="esport" :title="'Avg. Hero Level'" :value="getAverageValue('avg_hero_level', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" :title="'Takedowns'" :value="data.players[0][0].score.takedowns" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" :title="'Takedowns'" :value="getTakedownsValue(data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average MMR'" :value="getAverageValue('player_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average Hero MMR'" :value="getAverageValue('hero_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average Role MMR'" :value="getAverageValue('role_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
@@ -73,7 +72,7 @@
 
 
           <div class=" max-w-[50%]  md:max-w-[600px]">
-            <group-box class="md:w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :text="getTeamText(1, data.winner)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'" :winner="data.winner == 1 ? true : false"></group-box>
+            <group-box class="md:w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :winnerloser="getWinnerLoser(1, data.winner)" :esportteamname="getEsportTeamName(1)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'" :winner="data.winner == 1 ? true : false"></group-box>
 
             <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
               {{ esport ? this.data.team_names.team_two.team_name : "Team 2" }} Bans
@@ -85,10 +84,10 @@
             </div>
             <div class="flex flex-wrap justify-center mb-4">
 
-              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Account Level'" :value="getAverageValue('account_level', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Avg. Account Level'" :value="getAverageValue('account_level', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" :title="'Team Level'" :value="data.players[1][0].score.level" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="esport" :title="'Avg. Hero Level'" :value="getAverageValue('avg_hero_level', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" :title="'Takedowns'" :value="data.players[1][0].score.takedowns" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" :title="'Takedowns'" :value="getTakedownsValue(data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average MMR'" :value="getAverageValue('player_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average Hero MMR'" :value="getAverageValue('hero_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average Role MMR'" :value="getAverageValue('role_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
@@ -147,7 +146,7 @@
 
       </div>
 
-      <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+      <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
       <div class="bg-lighten">
         <div class="p-10  max-w-[1500px] mx-auto  ">
@@ -346,7 +345,7 @@
     </thead>
     <tbody>
       <tr v-for="(item, index) in data.players[0]" :key="index">
-        <td class="bg-blue text-white border-white border"><a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR/' + item.hero.name + '/' + data.game_type">{{ item.battletag }}</a></td>
+        <td class="bg-blue text-white border-white border"><a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'">{{ item.battletag }}</a></td>
         <td>{{ item.hero.name }}</td>
         <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
         <td>{{ Math.round(item.hero_mmr - item.hero_change) }}</td>
@@ -398,7 +397,7 @@
     </thead>
     <tbody>
       <tr v-for="(item, index) in data.players[1]" :key="index">
-        <td class="bg-blue text-white border-white border"><a :href="`/Player/${item.battletag}/${item.blizz_id}/${item.region}`">{{ item.battletag }}</a></td>
+        <td class="bg-blue text-white border-white border"><a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'">{{ item.battletag }}</a></td>
         <td>{{ item.hero.name }}</td>
         <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
         <td>{{ Math.round(item.hero_mmr - item.hero_change) }}</td>
@@ -435,7 +434,7 @@
       <tr>
         <td >{{ section.title }}</td>
         <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">
-          <a :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`">{{ player.battletag }}</a>
+          <a :href="esport ? '/Esports/' + esport + '/Player/' + player.battletag + '/' + player.blizz_id + '/Hero/' + player.hero.name : '/Player/' + player.battletag + '/' + player.blizz_id + '/' + player.region + '/Hero/' + player.hero.name">{{ player.battletag }}</a>
         </td>
     </tr>
   </thead>
@@ -462,7 +461,7 @@
         :key="playerIndex"
         
         >
-        <a :href="`/Player/${player.battletag}/${player.blizz_id}/${player.region}`">{{ player.battletag }}</a>
+        <a :href="esport ? '/Esports/' + esport + '/Player/' + player.battletag + '/' + player.blizz_id + '/Hero/' + player.hero.name : '/Player/' + player.battletag + '/' + player.blizz_id + '/' + player.region + '/Hero/' + player.hero.name">{{ player.battletag }}</a>
       </td>
     </tr>
   </thead>
@@ -599,19 +598,19 @@
     },
     methods: {
       resizeTables(){
-        const tables = this.$el.querySelectorAll('table');
-        tables.forEach(table => {
-          var newTableWidth = this.windowWidth /table.clientWidth;
-          var tablewrapper = table.closest('.table-container');
-          if(tablewrapper){
-          table.style.transformOrigin = 'top left';
-            table.style.transform = `scale(${newTableWidth})`;
-            tablewrapper.style.height = (table.clientHeight * newTableWidth) + 'px';
+        if(this.$el && this.$el.querySelectorAll('table')){
+          const tables = this.$el.querySelectorAll('table');
+          tables.forEach(table => {
+            var newTableWidth = this.windowWidth /table.clientWidth;
+            var tablewrapper = table.closest('.table-container');
+            if(tablewrapper){
+            table.style.transformOrigin = 'top left';
+              table.style.transform = `scale(${newTableWidth})`;
+              tablewrapper.style.height = (table.clientHeight * newTableWidth) + 'px';
 
-          }
-        
-          
-        })
+            }
+          })
+        }
       },
      async getData(){
       this.isLoading = true;
@@ -652,59 +651,68 @@
         return 0;
       }
 
+      const filteredData = data.filter(obj => obj.blizz_id !== null);
+
       let sum;
       if (type === "prev_player_mmr") {
-        sum = data.reduce((acc, curr) => acc + (curr.player_mmr - curr.player_change || 0), 0);
+        sum = filteredData.reduce((acc, curr) => acc + (curr.player_mmr - curr.player_change || 0), 0);
       } else if (type === "prev_hero_mmr") {
-        sum = data.reduce((acc, curr) => acc + (curr.hero_mmr - curr.hero_change || 0), 0);
+        sum = filteredData.reduce((acc, curr) => acc + (curr.hero_mmr - curr.hero_change || 0), 0);
       } else if (type === "prev_role_mmr") {
-        sum = data.reduce((acc, curr) => acc + (curr.role_mmr - curr.role_change || 0), 0);
+        sum = filteredData.reduce((acc, curr) => acc + (curr.role_mmr - curr.role_change || 0), 0);
       } else {
-        sum = data.reduce((acc, curr) => acc + (curr[type] || 0), 0);
+        sum = filteredData.reduce((acc, curr) => acc + (curr[type] || 0), 0);
       }
 
-      const average = sum / data.length;
+      const length = filteredData.length;
       
-      return average.toFixed(0); // adjust the number of decimal places as needed
+      const average = sum / length;
+      
+      return average.toFixed(0);
     },
 
-    getTeamText(team, winner){
+    getEsportTeamName(team){
+      if(!this.esport){
+        return null;
+      }
+      let teamName = "";
+        if(team == 0){
+          teamName = this.data.team_names.team_one.team_name;
+        }else{
+          teamName = this.data.team_names.team_two.team_name;
+        }
+      return teamName;
+    },
+
+    getWinnerLoser(team, winner){
 
 
       if(this.esport){
         let first_pick = this.data.first_pick;
 
-        let teamName = "";
-        if(team == 0){
-
-          teamName = this.data.team_names.team_one.team_name;
-        }else{
-          teamName = this.data.team_names.team_two.team_name;
-        }
-
         if(winner == 0 && team == 0){
           if(first_pick == team){
-            return teamName + " - First Pick - Winner";
+            return "First Pick - Winner";
           }else{
-            return teamName + " - Map Pick - Winner";
+            return "Map Pick - Winner";
           }
         }else if(winner == 1 && team == 0){
           if(first_pick == team){
-            return teamName + " - First Pick - Loser";
+            return "First Pick - Loser";
           }else{
-            return teamName + " - Map Pick - Loser";
+            return "Map Pick - Loser";
           }
         }else if(winner == 0 && team == 1){
           if(first_pick == team){
-            return teamName + " - First Pick - Loser";
+            return "First Pick - Loser";
           }else{
-            return teamName + " - Map Pick - Loser";
+            return "Map Pick - Loser";
           }
         }else if(winner == 1 && team == 1){
           if(first_pick == team){
-            return teamName + " - First Pick - Winner";
+            return "First Pick - Winner";
           }else{
-            return teamName + " - Map Pick - Winner";
+            return "Map Pick - Winner";
           }
         }
       }
@@ -790,10 +798,21 @@
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
       }
     },
-    async downloadReplay(replayID){
+    async downloadReplay(data, replayID){
       if(this.esport && this.esport == "CCL"){
         window.location = `https://storage.googleapis.com/heroesprofile-ccl/${replayID}.StormReplay`;
+      }else{
+        window.location = `https://api.heroesprofile.com/openApi/Replay/Download?replayID=${replayID}`;
       }
+    },
+    getTakedownsValue(data){
+      let totalKills = 0;
+
+      for (let i = 0; i < data.length; i++) {
+          totalKills += data[i].score.kills;
+      }
+
+      return totalKills;
     },
   }
 }

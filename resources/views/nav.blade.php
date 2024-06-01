@@ -1,4 +1,4 @@
-<div class="max-md:bg-gray-dark">
+<div class="max-md:bg-gray-dark max-md:fixed max-md:z-40 max-md:w-full">
     <div class="flex p-2 px-4 justify-between">
 <a class=" flex items-center font-logo text-2xl md:hidden" href="/">
                 Heroes
@@ -52,10 +52,10 @@
                                 <a href="/Global/Talents/Builder" >Talent Builder</a>
                                 <!--<a href="/Compare" >Compare</a>-->
                                 <a href="https://drafter.heroesprofile.com/Drafter" target="_blank" >Drafter</a>
-                                <a href="https://dev.heroesprofile.com/" target="_blank" >Game Data</a>
                                 <a href="https://api.heroesprofile.com/upload" target="_blank" >Replay Uploader</a>
                                 {{--<a href="/" class="block px-4 py-2 border-b border-darken hover:bg-lighten cursor-not-allowed pointer-events-none">Activity Graphs</a>--}}
                                 <a href="https://autobattler.setup.heroesprofile.com/" target="_blank" >Auto Battler</a>
+                                <a href="/Match/Prediction/Game" >Match Prediction Game</a>
                                 <a href="/" >Find a Player</a>
 
 
@@ -99,6 +99,7 @@
                                     <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Talents" >Talents</a>
                                     <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/MMR" >MMR Breakdown</a>
                                     <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Match/History" >Match History</a>
+                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Match/Latest" >Latest Match</a>
                                 </div>
                             </div>
                         </div>
@@ -124,6 +125,12 @@
                             </div>
                             <div class="md:absolute right-0 md:hidden md:group-hover:block z-50  ">
                                 <div class="md:bg-blue  rounded-b-lg rounded-tl-lg text-sm drop-shadow max-md:flex">
+                                  
+                                <span class="block px-4 py-2 border-b border-darken bg-gray-dark">
+                                {{ $mainSearchAccount['battletag_full'] }}
+
+                                </span>
+
                                     <a href="/Profile/Settings" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Settings</a>
                                     <a href="/Battlenet/Logout" class="block px-4 py-2 border-b border-darken hover:bg-lighten">Logout</a>
                                 </div>
@@ -160,7 +167,8 @@
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Talents" >Talents</a>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/MMR">MMR Breakdown</a>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Match/History">Match History</a>
-              <a href="#" class="remove-account">
+              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Match/Latest">Latest Match</a>
+              <a href="#" class="remove-account text-right bg-gray-dark hover:bg-gray-md">
                 <remove-battletag-nav     
                   :index="{{ $index }}"
                 >

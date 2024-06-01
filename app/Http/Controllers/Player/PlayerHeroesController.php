@@ -44,6 +44,7 @@ class PlayerHeroesController extends Controller
 
         return view('Player.Heroes.allHeroesData')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+            'playerloadsetting' => $this->globalDataService->getPlayerLoadSettings(),
             'battletag' => $battletag,
             'account_level' => $account_level,
             'blizz_id' => $blizz_id,
@@ -76,6 +77,8 @@ class PlayerHeroesController extends Controller
 
         return view('Player.Heroes.singleHeroData')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+            'playerloadsetting' => $this->globalDataService->getPlayerLoadSettings(),
+
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,

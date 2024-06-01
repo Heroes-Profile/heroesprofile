@@ -39,11 +39,12 @@ class PlayerMMRController extends Controller
 
         return view('Player.mmrData')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+            'playerloadsetting' => $this->globalDataService->getPlayerLoadSettings(),
+            'gametypedefault' => $this->globalDataService->getMMRGameTypeDefault(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,
             'filters' => $this->globalDataService->getFilterData(),
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault('single'), //This is the only one that makes sense to continue to use a single value
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);
     }
@@ -86,6 +87,7 @@ class PlayerMMRController extends Controller
                 'replay.replayID AS replayID',
                 'replay.game_date as game_date',
                 'replay.game_map AS game_map',
+                'replay.mmr_ran AS mmr_ran',
                 'player.winner AS winner',
                 'player.hero AS hero',
                 'player.player_conservative_rating AS player_conservative_rating',
@@ -116,6 +118,9 @@ class PlayerMMRController extends Controller
         $heroData = $heroData->keyBy('id');
 
         $modifiedResult = $result->map(function ($item) use ($heroData, $type) {
+            if ($item->mmr_ran == -1) {
+                return null;
+            }
             $item->hero_id = $item->hero;
             $item->hero = $heroData[$item->hero];
 
@@ -134,7 +139,7 @@ class PlayerMMRController extends Controller
             $item->x_label = $item->game_date;
 
             return $item;
-        });
+        })->filter();
 
         $mmrType = 0;
         if ($type == 'Player') {
@@ -157,15 +162,25 @@ class PlayerMMRController extends Controller
                 }
             }
         }
-        $fullBreakdownForTier = $this->globalDataService->getSubTiers($this->globalDataService->getRankTiers($game_type, $mmrType), $modifiedResult[0]->mmr);
-        $rankTier = $this->globalDataService->calculateSubTier($this->globalDataService->getRankTiers($game_type, $mmrType), $modifiedResult[0]->mmr);
+        $rankTiers = $this->globalDataService->getRankTiers($game_type, $mmrType);
+        $rankTier = $this->globalDataService->calculateSubTier($rankTiers, $modifiedResult[0]->mmr);
+
+        $rankTierName = str_replace(' ', '', strtolower(preg_replace('/\d/', '', $rankTier)));
 
         $leagueBreakdownArray = $leagueBreakdown->toArray();
-        $fullBreakdownForTierArray = $fullBreakdownForTier;
+
+        if (isset($rankTierName) && isset($rankTiers[$rankTierName])) {
+            $fullBreakdownForTierArray = $this->globalDataService->getSubTiers($rankTiers[$rankTierName], $rankTierName);
+        } else {
+            $fullBreakdownForTierArray = [];
+        }
 
         $smallestMmr = 0;
-        if (count($fullBreakdownForTierArray) > 0) {
-            $smallestMmr = min($fullBreakdownForTierArray);
+
+        foreach ($rankTiers as $key => $data) {
+            if ($rankTierName == $key) {
+                $smallestMmr = $data['min_mmr'];
+            }
         }
 
         if ($rankTier != 'Master') {
@@ -179,9 +194,8 @@ class PlayerMMRController extends Controller
                             'game_type' => $data['game_type'],
                             'league_tier' => $data['league_tier'],
                             'min_mmr' => $data['min_mmr'],
-                            'max_mmr' => $data['max_mmr'],
+                            'max_mmr' => $mmr,
                             'tier' => $tier,
-                            'mmr' => $mmr,
                             'tierFound' => $rankTier == $tier ? true : false,
                         ];
                         array_splice($leagueBreakdownArray, $key, 0, [$newData]);

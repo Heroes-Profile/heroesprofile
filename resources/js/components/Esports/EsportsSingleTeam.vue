@@ -1,13 +1,12 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" :battletag="team" :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+    <page-heading :infoText1="infoText1" :battletag="team" :esport="esport" :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div v-if="data">
       <div class="flex justify-center max-w-[1500px] mx-auto">
         <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifiedseason"></single-select-filter>
         <single-select-filter v-if="esport == 'NGS'" :values="data.divisions" :text="'Divisions'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifieddivision"></single-select-filter>
       </div>
-
 
       <div class="flex md:p-20 gap-10 mx-auto justify-center items-between  max-md:flex-col max-md:items-center  ">
         <div class="flex-1 flex flex-wrap justify-between max-w-[400px] w-full items-between mt-[1em] max-md:order-1">
@@ -19,9 +18,8 @@
           <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="yellow"></stat-box>          
         </div>
         <div class="my-auto">
-          <round-image :title="team" :image="image" size="large" :rectangle="true"></round-image>
+          <round-image :title="team" :image="data.icon_url" size="large" :rectangle="true"></round-image>
         </div>
-
         <div class="flex-1 flex flex-wrap max-w-[400px] text-left w-full items-between max-md:order-2">
           <stat-box class="w-[48%]" :title="'Takedowns'" :value="data.takedowns.toLocaleString('en-US')"></stat-box>
           <stat-box class="w-[48%]" :title="'Kills'" :value="data.kills.toLocaleString('en-US')"></stat-box>
@@ -158,15 +156,42 @@
       
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
 
-      <div class=" p-10 mt-10">
+      <div class="bg-lighten p-10 mt-10">
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">{{ team }} Hero Ban Data</h2>
           <div class="flex flex-wrap justify-center">
             <group-box :useinputforhover="true" :text="`Most Banned by ${team}`" :data="data.team_ban_date.slice(0,5)" color="blue"></group-box>
+          </div>
+        </div>
+
+
+
+        <div class="flex flex-wrap gap-2 max-w-[1500px] mx-auto mb-10">
+          <hero-image-wrapper v-for="(item, index) in data.team_ban_date" :size="'big'" :hero="item.hero">
+            <image-hover-box :title="item.name" :paragraph-one="item.inputhover"></image-hover-box>
+          </hero-image-wrapper>
+        </div>
+
+      </div>
+
+
+      <div class=" p-10 mt-10">
+        <div class=" max-w-[90em] ml-auto mr-auto">
+          <div class="flex flex-wrap justify-center">
             <group-box :useinputforhover="true" :text="`Most Banned Against ${team}`" :data="data.enemy_ban_date.slice(0,5)" color="red"></group-box>
           </div>
         </div>
+
+
+
+        <div class="flex flex-wrap gap-2 max-w-[1500px] mx-auto mb-10">
+          <hero-image-wrapper v-for="(item, index) in data.enemy_ban_date" :size="'big'" :hero="item.hero">
+            <image-hover-box :title="item.name" :paragraph-one="item.inputhover"></image-hover-box>
+          </hero-image-wrapper>
+        </div>
+
       </div>
+
 
 
 
@@ -179,10 +204,17 @@
             <group-box :text="'Highest Win Rate'" :data="data.map_top_three_highest_win_rate" color="teal"></group-box>
           </div>
         </div>
+
+        <div class="flex flex-wrap gap-2 max-w-[1500px] mx-auto mb-10 pt-10 justify-center">
+          <map-image-wrapper v-for="(item, index) in data.maps" :size="'big'" :map="item.game_map">
+            <image-hover-box :title="item.game_map.name"  :paragraph-one="'Win Rate: ' + item.win_rate" :paragraph-two="'Games Played: ' + (item.wins + item.losses)"></image-hover-box>
+          </map-image-wrapper>
+        </div>
+
       </div>
 
 
-      <div class="bg-lighten p-10">
+      <div class="p-10">
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Maps banned by {{ team }}</h2>
           <div class="flex flex-wrap justify-center">
@@ -197,7 +229,7 @@
 
 
       </div>
-      <div class="">
+      <div class="bg-lighten ">
 
         <div class="p-10 max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5">Most Recent matches</h2>
@@ -208,7 +240,7 @@
             :data="item"
           ></game-summary-box>
           <div class="flex justify-end mt-4">
-          <custom-button :href="`/Esports/${esport}/Team/${team}/Match/History?season=${season}` + (esport == 'NGS' ? `&division=${division}`: '') + (esport == 'HeroesInternational' ? `&tournament=${tournament}`: '')" class=" ml-auto" text="View Match History"></custom-button>
+          <custom-button :href="`/Esports/${esport}/Team/${team}/Match/History${season ? `?season=${season}` : ''}` + (esport == 'NGS' ? division ? `&division=${division}`: '' : '') + (esport == 'HeroesInternational' ? `&tournament=${tournament}`: '')" class=" ml-auto" text="View Match History"></custom-button>
         </div>
         </div>
       </div>

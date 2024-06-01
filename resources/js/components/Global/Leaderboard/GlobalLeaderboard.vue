@@ -43,7 +43,7 @@
         :defaultHero="hero"
         :defaultRole="role"
         :includegroupsize="true"
-        :includesinglegametype="true"
+        :includesinglegametypeleaderboard="true"
         :includeseason="true"
         :includesingleleaguetier="true"
         :includesingleregion="true"
@@ -51,9 +51,12 @@
         :hideadvancedfilteringbutton="true"
         :advancedfiltering="advancedfiltering"
         :excludetimeframes="true"
+
+        :includetier="true"
+        :tierrank="''"
       >
       </filters>
-      <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+      <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
       <div v-if="data">
         <div class="flex">
           <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
@@ -90,27 +93,27 @@
               <thead class=" top-0 w-full  z-40">
                 <tr class="">
                   <th @click="sortTable('rank')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-                    Rank
+                    {{ getHeaderRankText("rank") }}
                   </th>
-                  <th @click="sortTable('battletag')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('battletag')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'battletag'}]">
                     Battletag
                   </th>            
-                  <th @click="sortTable('region_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('region_id')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'region_id'}]">
                     Region
                   </th>
-                  <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('win_rate')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'win_rate'}]">
                     Win Rate %
                   </th>
-                  <th @click="sortTable('rating')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('rating')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'rating'}]">
                     Heroes Profile Rating
                   </th>      
-                  <th @click="sortTable('mmr')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('mmr')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'mmr'}]">
                     {{ leaderboardtype }} MMR
                   </th> 
-                  <th @click="sortTable('tier_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('tier_id')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'tier_id'}]">
                     Tier
                   </th>    
-                  <th @click="sortTable('games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  <th @click="sortTable('games_played')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'games_played'}]">
                     Games Played
                   </th>     
 
@@ -140,7 +143,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td>{{ row.rank }}</td>
+                    <td><div class="flex gap-1"><div v-if="rankchange" class="bg-blue text-white min-w-[2em] p-1 rounded-md text-center"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  500-index }}</span></div><span class="p-1">{{ row.rank }}</span></div></td>
                     <td>
                       <div class="flex items-center">
                         <div class="" v-if="row.hp_owner">
@@ -235,7 +238,6 @@ export default {
     defaultseason: String,
     advancedfiltering: Boolean,
     weekssincestart: Number,
-    patreonUser: Boolean,
   },
   data(){
     return {
@@ -269,14 +271,21 @@ export default {
       playerRating: null,
       ratingLoading: false,
       playerRatingGamesPlayed: null,
+      tierrank: null,
+      rankchange: false,
+      isfiltered: false,
     }
   },
   created(){
     this.gametype = this.gametypedefault[0];
     this.season = this.defaultseason;
+
+    if(this.region != null || this.tierrank != null){
+      this.rankchange = true;
+      this.isfiltered = true;
+    }
+
     this.getData();
-
-
   },
   mounted() {
   },
@@ -303,6 +312,12 @@ export default {
       const searchTerm = this.searchTerm.toLowerCase();
       return this.sortedData.filter(row => row.battletag.toLowerCase().includes(searchTerm));
     },
+    patreonUser(){
+      if(this.user && this.user.patreon == 1){
+        return true;
+      }
+      return false;
+    }
   },
   watch: {
   },
@@ -324,12 +339,18 @@ export default {
           hero: this.hero,
           role: this.role,
           region: this.region,
+          tierrank: this.tierrank,
         }, 
         {
           cancelToken: this.cancelTokenSource.token,
         });
 
+        if(response.data.status == "failure to validate inputs"){
+          throw new Error("Failure to validate inputs");
+        }
+        
         this.data = response.data;
+        
       }catch(error){
         //Do something here
       }finally {
@@ -357,10 +378,11 @@ export default {
       this.groupsize = filteredData.single["Group Size"] ? filteredData.single["Group Size"] : this.groupsize;
       this.gametype = filteredData.single["Game Type"] ? filteredData.single["Game Type"] : this.gametype;
       this.season = filteredData.single["Season"] ? filteredData.single["Season"] : this.season;
-      this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : this.hero;
-      this.role = filteredData.single["Role"] ? filteredData.single["Role"] : this.role;
-      this.region = filteredData.single["Regions"] ? filteredData.single["Regions"] : this.region;
+      this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
+      this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
+      this.region = filteredData.single["Regions"] ? filteredData.single["Regions"] : null;
 
+      this.tierrank = filteredData.single.Rank ? filteredData.single.Rank : null;
 
       this.sortKey = '';
       this.sortDir = 'desc';
@@ -374,6 +396,11 @@ export default {
         this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
       } else {
         this.sortDir = 'desc';
+      }
+
+      this.rankchange = true;
+      if((key == 'rank' || key == 'rating') && !this.isfiltered){
+        this.rankchange = false;
       }
       this.sortKey = key;
     },
@@ -404,37 +431,46 @@ export default {
       return `Rating of ${playerRating} over ${playerRatingGamesPlayed} games`;
     },
     async calculateHPRating(user){
-      this.playerRating = null;
-      this.ratingLoading = true;
+      if(this.patreonUser){
+        this.playerRating = null;
+        this.ratingLoading = true;
 
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled');
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled');
+        }
+        this.cancelTokenSource = this.$axios.CancelToken.source();
+
+        try{
+          const response = await this.$axios.post("/api/v1/global/leaderboard/calculate/rating", {
+            season: this.season, 
+            game_type: this.gametype,
+            type: this.leaderboardtype.toLowerCase(),
+            groupsize: this.groupsize,
+            hero: this.hero,
+            role: this.role,
+            region: user.region,
+            blizz_id: user.blizz_id
+          }, 
+          {
+            cancelToken: this.cancelTokenSource.token,
+          });
+
+          this.playerRating = response.data.rating;
+          this.playerRatingGamesPlayed = response.data.games_played;
+        }catch(error){
+          //Do something here
+        }finally {
+          this.cancelTokenSource = null;
+          this.ratingLoading = false;
+        }
       }
-      this.cancelTokenSource = this.$axios.CancelToken.source();
 
-      try{
-        const response = await this.$axios.post("/api/v1/global/leaderboard/calculate/rating", {
-          season: this.season, 
-          game_type: this.gametype,
-          type: this.leaderboardtype.toLowerCase(),
-          groupsize: this.groupsize,
-          hero: this.hero,
-          role: this.role,
-          region: user.region,
-          blizz_id: user.blizz_id
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
-        });
-
-        this.playerRating = response.data.rating;
-        this.playerRatingGamesPlayed = response.data.games_played;
-      }catch(error){
-        //Do something here
-      }finally {
-        this.cancelTokenSource = null;
-        this.ratingLoading = false;
+    },
+    getHeaderRankText(){
+      if(this.rankchange){
+        return "Sorted Rank|(Rank)"; 
       }
+      return "Rank"
     }
   }
 }

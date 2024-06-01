@@ -6,7 +6,6 @@
     </div>
 
 
-
     <div class="text-center py-10">
       <img class="block m-4 md:w-2/5 md:max-w-6xl mr-auto ml-auto pl-25 max-md:px-4" src="/images/logo/full_deathwing.png"/>
 
@@ -18,6 +17,7 @@
 
 
     <div class="flex   md:p-20 bg-lighten flex-wrap justify-center items-between max-md:py-4">
+      <!--
       <a href="/Compare" class="text-center md:w-[30%] mb-20 mx-5 flex flex-col justify-stretch">
 
         <i class="fas fa-users" style="font-size: 100px;"></i>
@@ -27,6 +27,9 @@
         
         <custom-button  :href="'/Compare'" :text="'Compare'" :alt="'Compare players'" :size="'big'" class="mt-auto"></custom-button>
       </a>
+
+      -->
+
 
 
         <div class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
@@ -78,8 +81,8 @@
 
     <div class="bg-teal p-5">
       <p c>Heroes Profile uses data from Heroes Profile API.  Heroes Profile API uploads are in open Heroes of the Storm replay database with user uploaded replay data.
-        Currently, Heroes Profile has pulled 49,812,486 replays up to and including data from patch
-      2.55.3.90670 and date/time 2023-09-06 18:20:21  and incorporated them into our dataset.</p>
+        Currently, Heroes Profile has pulled {{ getValueLocal(maxreplayid) }} replays up to and including data from patch
+      {{ latestpatch }} and date/time <format-date :input="latestgamedate"></format-date> and incorporated them into our dataset.</p>
       <p>For more information on Heroes Profile API navigate to <a class="link" href="https://api.heroesprofile.com/">https://api.heroesprofile.com/</a></p>
       
     </div>
@@ -87,12 +90,18 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
+
+
   export default {
     name: 'MainPage',
     components: {
     },
     props: {
       user: Object,
+      maxreplayid: Number,
+      latestpatch: String,
+      latestgamedate: String,
     },
     data(){
       return {
@@ -100,6 +109,8 @@
       }
     },
     created(){
+      Cookies.remove('additional-battletags');
+
       if (typeof localStorage !== 'undefined' && localStorage !== null) {
         if (localStorage.getItem('newUserPopup')) {
           this.showPopup = false;
@@ -116,6 +127,9 @@
     watch: {
     },
     methods: {
+      getValueLocal(value){
+        return value ? value.toLocaleString('en-US') : "";
+      },
     }
   }
 </script>

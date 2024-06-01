@@ -43,7 +43,7 @@
   
       >
     </filters>
-    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+    <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     
     <div v-if="this.data.data">
       <div class="max-w-[1500px] mx-auto flex justify-end mb-2">
@@ -53,10 +53,10 @@
       <div v-if="togglechart">
         <bubble-chart :heroData="this.data.data"></bubble-chart>
       </div>
-      <div >
-        <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
+      <div>
+        <div id="table-container" ref="tablecontainer" class="w-auto   w-[100vw]   2xl:mx-auto  " style=" ">
       <table id="responsive-table" class="responsive-table  relative" ref="responsivetable">
-        <thead class="top-0 w-full sticky z-40">
+        <thead>
           <th class="py-2 px-3 border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
             Avg
           </th>
@@ -93,7 +93,7 @@
           </th>
 
         </thead>
-        <thead>
+        <thead class="top-0 w-full sticky z-40">
           <tr>
             <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Hero
@@ -144,7 +144,7 @@
           <template v-for="(row, index) in sortedData">
             <tr>
               <td class="py-2 px-3 flex items-center gap-1 max-md:w-[150px]">
-                <a class="flex w-full items-center" :href="getGlobalTalentsURL(row)" >
+                <a class="flex w-full items-center max-md:justify-center" :href="getGlobalTalentsURL(row)" >
                   <hero-image-wrapper class="mr-2" mobileClick="true" :hero="row" :includehover="false"></hero-image-wrapper><span class="hidden md:block">{{ row.name }}</span>
                 </a>
               </td>
@@ -244,7 +244,7 @@ export default {
       mirrormatch: 0,
       talentbuildtype: null,
       loadingStates: {},
-      tablewidth: null
+      tablewidth: null,
     }
   },
   created(){
@@ -252,6 +252,7 @@ export default {
     this.timeframe = this.defaulttimeframe;
     this.timeframetype = this.defaulttimeframetype;
     this.talentbuildtype = this.defaultbuildtype;
+
 
     if(this.urlparameters){
       this.setURLParameters();
@@ -296,6 +297,51 @@ export default {
           return valA > valB ? -1 : 1;
         }
       });
+    },
+    queryString(){      
+      let queryString  = `?timeframe_type=${this.timeframetype}`;
+      queryString += `&timeframe=${this.timeframe}`;
+
+      queryString += `&game_type=${this.gametype}`;
+
+      if(this.region){
+        queryString += `&region=${this.region}`;
+      }
+
+      if(this.herolevel){
+        queryString += `&hero_level=${this.herolevel}`;
+      }
+
+      if(this.gamemap){
+        queryString += `&game_map=${this.gamemap}`;
+      }
+
+      if(this.hero){
+        queryString += `&hero=${this.hero}`;
+      }
+
+      if(this.role){
+        queryString += `&role=${this.role}`;
+      }
+
+    
+      if(this.playerrank){
+        queryString += `&league_tier=${this.convertRankIDtoName(this.playerrank)}`;
+      }
+
+      if(this.herorank){
+        queryString += `&hero_league_tier=${this.convertRankIDtoName(this.herorank)}`;
+      }
+
+      if(this.rolerank){
+        queryString += `&role_league_tier=${this.convertRankIDtoName(this.rolerank)}`;
+      }
+
+      queryString += `&statfilter=${this.statfilter}`;
+      queryString += `&build_type=${this.talentbuildtype}`;
+      queryString += `&mirror=${this.mirrormatch}`;
+
+      return queryString;
     },
   },
   watch: {
@@ -381,8 +427,10 @@ export default {
           cancelToken: this.cancelTokenSource.token,
         });
 
+        if(response.data.status == "failure to validate inputs"){
+          throw new Error("Failure to validate inputs");
+        }
         this.sortedData[index].talentbuilddata = response.data;
-
         this.talentbuilddata[hero] = response.data;
         this.loadingStates[hero] = false;
 
@@ -433,51 +481,51 @@ export default {
       this.sortKey = '';
       this.sortDir = 'desc';
 
-      let queryString = `?timeframe_type=${this.timeframetype}`;
-      queryString += `&timeframe=${this.timeframe}`;
+      this.queryString  = `?timeframe_type=${this.timeframetype}`;
+      this.queryString += `&timeframe=${this.timeframe}`;
 
-      queryString += `&game_type=${this.gametype}`;
+      this.queryString += `&game_type=${this.gametype}`;
 
       if(this.region){
-        queryString += `&region=${this.region}`;
+        this.queryString += `&region=${this.region}`;
       }
 
       if(this.herolevel){
-        queryString += `&hero_level=${this.herolevel}`;
+        this.queryString += `&hero_level=${this.herolevel}`;
       }
 
       if(this.gamemap){
-        queryString += `&game_map=${this.gamemap}`;
+        this.queryString += `&game_map=${this.gamemap}`;
       }
 
       if(this.hero){
-        queryString += `&hero=${this.hero}`;
+        this.queryString += `&hero=${this.hero}`;
       }
 
       if(this.role){
-        queryString += `&role=${this.role}`;
+        this.queryString += `&role=${this.role}`;
       }
 
     
       if(this.playerrank){
-        queryString += `&league_tier=${this.convertRankIDtoName(this.playerrank)}`;
+        this.queryString += `&league_tier=${this.convertRankIDtoName(this.playerrank)}`;
       }
 
       if(this.herorank){
-        queryString += `&hero_league_tier=${this.convertRankIDtoName(this.herorank)}`;
+        this.queryString += `&hero_league_tier=${this.convertRankIDtoName(this.herorank)}`;
       }
 
       if(this.rolerank){
-        queryString += `&role_league_tier=${this.convertRankIDtoName(this.rolerank)}`;
+        this.queryString += `&role_league_tier=${this.convertRankIDtoName(this.rolerank)}`;
       }
 
-      queryString += `&statfilter=${this.statfilter}`;
-      queryString += `&build_type=${this.talentbuildtype}`;
-      queryString += `&mirror=${this.mirrormatch}`;
+      this.queryString += `&statfilter=${this.statfilter}`;
+      this.queryString += `&build_type=${this.talentbuildtype}`;
+      this.queryString += `&mirror=${this.mirrormatch}`;
 
       const currentUrl = window.location.href;
       let currentPath = window.location.pathname;
-      history.pushState(null, null, `${currentPath}${queryString}`);
+      history.pushState(null, null, `${currentPath}${this.queryString}`);
    
       this.data = null;
 
@@ -510,7 +558,11 @@ export default {
     getGlobalTalentsURL(hero){
       var url = "";
       if(hero){
-        url = '/Global/Talents/' + hero.name;
+        if(this.queryString){
+          url = '/Global/Talents/' + hero.name + this.queryString;
+        }else{
+          url = '/Global/Talents/' + hero.name;
+        }
       }
       return url;
     },
@@ -567,15 +619,33 @@ export default {
       }
 
       if (this.urlparameters["league_tier"]) {
-        this.playerrank = this.urlparameters["league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+        this.playerrank = this.urlparameters["league_tier"]
+          .split(',')
+          .map(tierName => {
+              const capitalizedTierName = tierName.charAt(0).toUpperCase() + tierName.slice(1);
+              const tier = this.filters.rank_tiers.find(tier => tier.name === capitalizedTierName);
+              return tier?.code;
+          });
       }
 
       if (this.urlparameters["hero_league_tier"]) {
-        this.herorank = this.urlparameters["hero_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+        this.herorank = this.urlparameters["hero_league_tier"]
+        .split(',')
+        .map(tierName => {
+            const capitalizedTierName = tierName.charAt(0).toUpperCase() + tierName.slice(1);
+            const tier = this.filters.rank_tiers.find(tier => tier.name === capitalizedTierName);
+            return tier?.code;
+        });
       }
 
       if (this.urlparameters["role_league_tier"]) {
-        this.rolerank = this.urlparameters["role_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+        this.rolerank = this.urlparameters["role_league_tier"]
+        .split(',')
+        .map(tierName => {
+            const capitalizedTierName = tierName.charAt(0).toUpperCase() + tierName.slice(1);
+            const tier = this.filters.rank_tiers.find(tier => tier.name === capitalizedTierName);
+            return tier?.code;
+        });
       }
 
 

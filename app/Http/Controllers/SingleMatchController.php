@@ -6,6 +6,7 @@ use App\Models\Award;
 use App\Models\HeroesDataTalent;
 use App\Models\Map;
 use App\Models\ReplayExperienceBreakdownBlob;
+use App\Rules\ReplayIDValidation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -20,7 +21,7 @@ class SingleMatchController extends Controller
     public function showWithoutEsport(Request $request, $replayID)
     {
         $validationRules = [
-            'replayID' => 'required|integer',
+            'replayID' => ['required', 'integer', new ReplayIDValidation],
         ];
 
         $validator = Validator::make(compact('replayID'), $validationRules);
@@ -69,7 +70,19 @@ class SingleMatchController extends Controller
     {
         $validationRules = [
             'esport' => 'nullable|in:NGS,CCL,MastersClash',
-            'replayID' => 'required|integer',
+            'replayID' => [
+                'required',
+                'integer',
+                function ($attribute, $value, $fail) use ($request) {
+
+                    if (is_null($request->input('esport'))) {
+                        $validator = new ReplayIDValidation;
+                        if (! $validator->passes($attribute, $value)) {
+                            $fail($validator->message());
+                        }
+                    }
+                },
+            ],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -80,10 +93,6 @@ class SingleMatchController extends Controller
                 'errors' => $validator->errors()->all(),
                 'status' => 'failure to validate inputs',
             ];
-        }
-
-        if ($validator->fails()) {
-            return redirect('/')->withErrors($validator);
         }
 
         $this->esport = $request['esport'];
@@ -169,6 +178,7 @@ class SingleMatchController extends Controller
             ->when(! $this->esport, function ($query) {
                 return $query->addSelect([
                     $this->schema.'.replay.game_type',
+                    $this->schema.'.replay.date_added',
                     $this->schema.'.player.player_conservative_rating',
                     $this->schema.'.player.player_change',
                     $this->schema.'.player.hero_conservative_rating',
@@ -225,6 +235,7 @@ class SingleMatchController extends Controller
 
             $replayDetails = [
                 'region' => $replayGroup[0]->region,
+                'downloadable' => ! $this->esport ? $replayGroup[0]->date_added > now()->subWeeks(4) : null,
                 'game_type' => ! $this->esport ? $this->globalDataService->getGameTypeIDtoString()[$replayGroup[0]->game_type]['name'] : null,
                 'game_date' => $replayGroup[0]->game_date,
                 'game_map' => $maps[$replayGroup[0]->game_map],
@@ -414,22 +425,21 @@ class SingleMatchController extends Controller
         $colorCounter = 0;
 
         foreach ($playerArray[0] as &$playerData) {
-            if ($playerData['party'] != 0 && ! array_key_exists($playerData['party'], $partyArray)) {
+            if ($playerData['party'] != '' && $playerData['party'] != 0 && ! array_key_exists($playerData['party'], $partyArray)) {
                 $partyArray[$playerData['party']] = $partColorArray[$colorCounter];
                 $colorCounter++;
             }
-            $playerData['party'] = $playerData['party'] != 0 ? $partyArray[$playerData['party']] : null;
+            $playerData['party'] = ($playerData['party'] != '' && $playerData['party'] != 0) ? $partyArray[$playerData['party']] : null;
         }
 
         foreach ($playerArray[1] as &$playerData) {
-            if ($playerData['party'] != 0 && ! array_key_exists($playerData['party'], $partyArray)) {
+            if ($playerData['party'] != '' && $playerData['party'] != 0 && ! array_key_exists($playerData['party'], $partyArray)) {
                 $partyArray[$playerData['party']] = $partColorArray[$colorCounter];
                 $colorCounter++;
             }
-            $playerData['party'] = $playerData['party'] != 0 ? $partyArray[$playerData['party']] : null;
+            $playerData['party'] = ($playerData['party'] != '' && $playerData['party'] != 0) ? $partyArray[$playerData['party']] : null;
         }
 
-        // Unset the references to avoid potential issues
         unset($playerData);
 
         return $playerArray;
@@ -632,6 +642,7 @@ class SingleMatchController extends Controller
         $replayBans = DB::table($this->schema.'.replay_bans')
             ->select('team', 'hero')
             ->where('replayID', $replayID)
+            ->orderBy('ban_id')
             ->get()
             ->groupBy('team')
             ->map(function ($teamGroup) use ($heroData) {
@@ -811,14 +822,14 @@ class SingleMatchController extends Controller
             $team_zero_ban_data = [
                 'team_data' => $team_zero_data,
                 'name' => $team_zero_data->team_name,
-                'map_ban_one' => $maps[$result->team_0_map_ban],
+                'map_ban_one' => $result->team_0_map_ban != 0 ? $maps[$result->team_0_map_ban] : null,
                 'map_ban_two' => $result->team_0_map_ban_2 != 0 ? $maps[$result->team_0_map_ban_2] : null,
             ];
         } else {
             $team_zero_ban_data = [
                 'team_data' => $team_one_data,
                 'name' => $team_one_data->team_name,
-                'map_ban_one' => $maps[$result->team_1_map_ban],
+                'map_ban_one' => $result->team_1_map_ban != 0 ? $maps[$result->team_1_map_ban] : null,
                 'map_ban_two' => $result->team_1_map_ban_2 != 0 ? $maps[$result->team_1_map_ban_2] : 0,
             ];
         }
@@ -827,14 +838,14 @@ class SingleMatchController extends Controller
             $team_one_ban_data = [
                 'team_data' => $team_one_data,
                 'name' => $team_one_data->team_name,
-                'map_ban_one' => $maps[$result->team_1_map_ban],
+                'map_ban_one' => $result->team_1_map_ban != 0 ? $maps[$result->team_1_map_ban] : null,
                 'map_ban_two' => $result->team_1_map_ban_2 != 0 ? $maps[$result->team_1_map_ban_2] : null,
             ];
         } else {
             $team_one_ban_data = [
                 'team_data' => $team_zero_data,
                 'name' => $team_zero_data->team_name,
-                'map_ban_one' => $maps[$result->team_0_map_ban],
+                'map_ban_one' => $result->team_0_map_ban != 0 ? $maps[$result->team_0_map_ban] : null,
                 'map_ban_two' => $result->team_0_map_ban_2 != 0 ? $maps[$result->team_0_map_ban_2] : null,
             ];
         }

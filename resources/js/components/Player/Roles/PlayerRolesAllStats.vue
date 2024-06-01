@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="'All Role data for ' + battletag + '. Click a role to see individual role statistics'" :heading="'Role Stats'" :battletag="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+    <page-heading :infoText1="'All Role data for ' + battletag + '. Click a role to see individual role statistics'" :heading="'Role Stats'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
 
     <filters 
     :onFilter="filterData" 
@@ -13,7 +13,7 @@
     :hideadvancedfilteringbutton="true"
     >
   </filters>
-  <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+  <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
   <div v-if="data">
     <div  class="relative max-w-[1500px] mx-auto">
@@ -100,6 +100,9 @@
       filters: {
         type: Object,
         required: true
+      },
+      playerloadsetting: {
+        type: [String, Boolean]
       },
       battletag: String,
       blizzid: String, 
@@ -217,7 +220,9 @@ created(){
   this.gametype = this.gametypedefault;
 },
 mounted() {
-  this.getData();
+  if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
+      this.getData();
+    }
 },
 computed: {
   timertime(){

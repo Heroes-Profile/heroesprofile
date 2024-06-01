@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="'All Heroes data for ' + battletag + '. Click a hero to see individual hero statistics'" :heading="'Hero Stats'" :battletag="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+    <page-heading :infoText1="'All Heroes data for ' + battletag + '. Click a hero to see individual hero statistics'" :heading="'Hero Stats'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
 
     <filters 
       :onFilter="filterData" 
@@ -13,7 +13,7 @@
       :hideadvancedfilteringbutton="true"
       >
     </filters>
-    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+    <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     
     <div v-if="data">
       <div  class="relative max-w-[1500px] mx-auto">
@@ -117,6 +117,9 @@ export default {
     filters: {
       type: Object,
       required: true
+    },
+    playerloadsetting: {
+      type: [String, Boolean]
     },
     battletag: String,
     blizzid: String, 
@@ -226,6 +229,12 @@ export default {
         { name: "Max Town Kills", value: 'max_town_kills', selected: false, flash: false},
         { name: "Max Vengeance", value: 'max_vengeance', selected: false, flash: false},
         { name: "Max Watch Tower Captures", value: 'max_watch_tower_captures', selected: false, flash: false},
+        { name: "MMR Quick Match", value: 'qm_mmr_data', selected: false, flash: false},
+        { name: "MMR Unranked Draft", value: 'ud_mmr_data', selected: false, flash: false},
+        { name: "MMR Hero League", value: 'hl_mmr_data', selected: false, flash: false},
+        { name: "MMR Team League", value: 'tl_mmr_data', selected: false, flash: false},
+        { name: "MMR Storm League", value: 'sl_mmr_data', selected: false, flash: false},
+        { name: "MMR ARAM", value: 'ar_mmr_data', selected: false, flash: false},
         { name: "Wins", value: 'wins', selected: false, flash: false},
 
       ],
@@ -235,7 +244,9 @@ export default {
     this.gametype = this.gametypedefault;
   },
   mounted() {
-    this.getData();
+    if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
+      this.getData();
+    }
   },
   beforeDestroy() {
     this.cancelAxiosRequest();

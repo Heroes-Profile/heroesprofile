@@ -4,7 +4,7 @@
 @section('meta_description', 'Explore the main player stats of ' . $battletag . ', including hero statistics, player profile, and performance metrics.')
 @section('content')
   <player-stats 
-    :settinghero="{{ json_encode($settingHero) }}" 
+    :playerloadsetting="{{ json_encode($playerloadsetting) }}" 
     :battletag="{{ json_encode($battletag) }}" 
     :blizzid="{{ json_encode($blizz_id) }}" 
     :region="{{ json_encode($region) }}" 

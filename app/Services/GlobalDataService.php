@@ -29,15 +29,9 @@ class GlobalDataService
 
     public function getHeaderAlert()
     {
-        if (! session()->has('headeralert')) {
-            $alert = HeaderAlert::select('text')->where('valid', 1)->first();
+        $text = HeaderAlert::where('valid', 1)->value('text');
 
-            if (! empty($alert)) {
-                session(['headeralert' => $alert->text]);
-            }
-        }
-
-        return session('headeralert');
+        return $text ?? null;
     }
 
     public function getPrivateAccounts()
@@ -56,11 +50,7 @@ class GlobalDataService
 
     public function calculateMaxReplayNumber()
     {
-        if (! session()->has('maxReplayID')) {
-            session(['maxReplayID' => Replay::max('replayID')]);
-        }
-
-        return session('maxReplayID');
+        return Replay::max('replayID');
     }
 
     public function getDefaultTimeframeType()
@@ -98,14 +88,9 @@ class GlobalDataService
 
     public function getLatestGameDate()
     {
-        if (! session()->has('latestGameDate')) {
-            session(['latestGameDate' => Replay::where('game_date', '<=', now())
-                ->orderByDesc('game_date')
-                ->value('game_date'),
-            ]);
-        }
-
-        return session('latestGameDate');
+        return Replay::where('game_date', '<=', now())
+            ->orderByDesc('game_date')
+            ->value('game_date');
     }
 
     public function getBladeGlobals()
@@ -125,8 +110,42 @@ class GlobalDataService
         return [
             'regions' => $regions,
             'darkmode' => $darkModeValue,
+            'maxReplayID' => $this->calculateMaxReplayNumber(),
+            'latestPatch' => $this->getLatestPatch(),
+            'latestGameDate' => $this->getLatestGameDate(),
+            'headeralert' => $this->getHeaderAlert(),
         ];
 
+    }
+
+    public function getPlayerLoadSettings()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            $playerload = $user->userSettings->firstWhere('setting', 'playerload');
+
+            $playerload = $playerload ? $playerload->value : true;
+
+            return $playerload;
+        }
+
+        return true;
+    }
+
+    public function getPlayerMatchStyle()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+
+            $playerhistorytable = $user->userSettings->firstWhere('setting', 'playerhistorytable');
+
+            $playerhistorytable = $playerhistorytable ? $playerhistorytable->value : true;
+
+            return $playerhistorytable;
+        }
+
+        return false;
     }
 
     public function getRegionIDtoString()
@@ -277,6 +296,20 @@ class GlobalDataService
 
                     return explode(',', $gameTypeSetting->value);
                 }
+            }
+
+        }
+
+        return ['sl'];
+    }
+
+    public function getMMRGameTypeDefault()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+            $gameTypeSetting = $user->userSettings->firstWhere('setting', 'mmr_player_game_type');
+            if ($gameTypeSetting) {
+                return [$gameTypeSetting->value];
             }
 
         }
@@ -598,22 +631,32 @@ class GlobalDataService
 
         $result = '';
 
-        $counter = 5;
+        $counter = 4;
         $multiply = 1;
+
         foreach ($rankTiers as $key => $tierInfo) {
             $minMmr = $tierInfo['min_mmr'];
             $maxMmr = $tierInfo['max_mmr'];
             $split = $tierInfo['split'];
 
+            if ($maxMmr == '') {
+                $maxMmr = $minMmr + $split;
+            }
+
             if ($mmr >= $minMmr && $mmr < $maxMmr) {
-                for ($i = $minMmr; $i < $maxMmr; $i += $split) {
-                    if ($mmr >= $i) {
-                        $result = $tierNames[$key].' '.$counter;
-                        $counter--;
+                if ($mmr < ($minMmr + $split)) {
+                    $result = $tierNames[$key].' '.$counter;
+                } else {
+                    for ($i = ($minMmr + $split); $i < $maxMmr; $i += $split) {
+                        if ($mmr >= $i) {
+                            $result = $tierNames[$key].' '.$counter;
+                            $counter--;
+                        }
                     }
                 }
+
             } else {
-                if ($mmr >= $minMmr && $maxMmr == '') {
+                if ($mmr >= $minMmr && $mmr >= $maxMmr) {
                     $result = 'Master';
                 }
             }
@@ -645,36 +688,23 @@ class GlobalDataService
         }
     }
 
-    public function getSubTiers($rankTiers, $mmr)
+    public function getSubTiers($tier, $rankTierName)
     {
-        $tierNames = [
-            'bronze' => 'Bronze',
-            'silver' => 'Silver',
-            'gold' => 'Gold',
-            'platinum' => 'Platinum',
-            'diamond' => 'Diamond',
-            'master' => 'Master',
-        ];
-
         $result = [];
 
         $counter = 5;
-        $multiply = 1;
-        foreach ($rankTiers as $key => $tierInfo) {
-            $minMmr = $tierInfo['min_mmr'];
-            $maxMmr = $tierInfo['max_mmr'];
-            $split = $tierInfo['split'];
 
-            if ($mmr >= $minMmr && $mmr < $maxMmr) {
-                for ($i = $minMmr; $i < $maxMmr; $i += $split) {
-                    $result[$tierNames[$key].' '.$counter] = $i;
-                    $counter--;
-                }
-            } else {
-                if ($mmr >= $minMmr && $maxMmr == '') {
-                    $result['Master'] = $minMmr;
-                }
-            }
+        $minMmr = $tier['min_mmr'];
+        $maxMmr = $tier['max_mmr'];
+        $split = $tier['split'];
+
+        if ($maxMmr == '') {
+            $maxMmr = $minMmr + $split;
+        }
+
+        for ($i = ($minMmr + $split); $i <= $maxMmr; $i += $split) {
+            $result[ucfirst($rankTierName).' '.$counter] = $i;
+            $counter--;
         }
 
         return $result;

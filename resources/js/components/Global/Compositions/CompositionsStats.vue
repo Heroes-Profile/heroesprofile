@@ -35,7 +35,7 @@
       :advancedfiltering="advancedfiltering"
       >
     </filters>
-    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+    <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     <div v-if="compositiondata">
       <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
       <table id="responsive-table" class="responsive-table  relative max-w-[1500px]" ref="responsivetable">
@@ -304,7 +304,9 @@ export default {
           cancelToken: this.cancelTokenSource.token,
         });
 
-
+        if(response.data.status == "failure to validate inputs"){
+          throw new Error("Failure to validate inputs");
+        }
         this.sortedData[index].compositionheroes = response.data;
         this.loadingStates[index] = false;
 
@@ -471,15 +473,33 @@ export default {
       }
 
       if (this.urlparameters["league_tier"]) {
-        this.playerrank = this.urlparameters["league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+        this.playerrank = this.urlparameters["league_tier"]
+          .split(',')
+          .map(tierName => {
+              const capitalizedTierName = tierName.charAt(0).toUpperCase() + tierName.slice(1);
+              const tier = this.filters.rank_tiers.find(tier => tier.name === capitalizedTierName);
+              return tier?.code;
+          });
       }
 
       if (this.urlparameters["hero_league_tier"]) {
-        this.herorank = this.urlparameters["hero_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+        this.herorank = this.urlparameters["hero_league_tier"]
+        .split(',')
+        .map(tierName => {
+            const capitalizedTierName = tierName.charAt(0).toUpperCase() + tierName.slice(1);
+            const tier = this.filters.rank_tiers.find(tier => tier.name === capitalizedTierName);
+            return tier?.code;
+        });
       }
 
       if (this.urlparameters["role_league_tier"]) {
-        this.rolerank = this.urlparameters["role_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+        this.rolerank = this.urlparameters["role_league_tier"]
+        .split(',')
+        .map(tierName => {
+            const capitalizedTierName = tierName.charAt(0).toUpperCase() + tierName.slice(1);
+            const tier = this.filters.rank_tiers.find(tier => tier.name === capitalizedTierName);
+            return tier?.code;
+        });
       }
 
       if(this.urlparameters["minimum_games"]){

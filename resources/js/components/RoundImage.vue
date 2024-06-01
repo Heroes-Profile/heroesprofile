@@ -62,7 +62,7 @@
       :alt="title">
     
     <div v-show="showTooltip" :class="[
-        'absolute hidden group-hover:block left-1/2   transform -translate-x-1/2 text-xs bottom-[1em] -translate-y-[2em]  z-30',
+        'absolute hidden group-hover:block left-1/2   transform -translate-x-1/2 text-xs bottom-[1em] -translate-y-[2em]  z-40',
       {
         'bottom-[4.5em] -translate-y-[2em]': size === 'big',
         'text-xs' : size === 'big',
@@ -72,7 +72,7 @@
       }
 
       ]" >
-      <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 max-md:hidden', {
+      <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 ', {
         
       }]">
         <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>
@@ -80,7 +80,7 @@
         <div class="bg-teal" v-if="award">{{award.title}}</div>
         <slot></slot>
       </div>
-      <div class="popup-arrow max-md:hidden"></div>
+      <div v-if="!excludehover" class="popup-arrow max-md:hidden"></div>
     </div>
     <div v-if="!excludehover && !mobileClick" :class="[' md:hidden     text-s p-1    drop-shadow-md  rounded-md px-2 text-center   md:mb-4', {}]">
       <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>

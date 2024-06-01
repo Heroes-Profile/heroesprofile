@@ -56,13 +56,14 @@ class FriendFoeController extends Controller
 
         return view('Player.friendfoe')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+            'playerloadsetting' => $this->globalDataService->getPlayerLoadSettings(),
             'battletag' => $battletag,
             'blizz_id' => $blizz_id,
             'region' => $region,
             'season' => $season,
             'game_type' => $game_type,
             'game_map' => $game_map,
-            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'], //$this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault('single'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);
@@ -71,6 +72,7 @@ class FriendFoeController extends Controller
 
     public function getFriendFoeData(Request $request)
     {
+        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 
         //return response()->json($request->all());
 
@@ -98,6 +100,7 @@ class FriendFoeController extends Controller
         $blizz_id = $request['blizz_id'];
         $region = $request['region'];
         $gameType = GameType::whereIn('short_name', $request['game_type'])->pluck('type_id')->toArray();
+
         $season = $request['season'];
         $type = $request['type'];
         $teamValue = $type == 'friend' ? 0 : 1;

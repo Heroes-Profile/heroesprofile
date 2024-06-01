@@ -1,13 +1,16 @@
 <template>
   <div class="">
-    <page-heading :infoText1="infoText" :heading="'Profile'" :battletag="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner">
+    <page-heading :infoText1="infoText" :heading="'Profile'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
     </page-heading>
     <div class="flex justify-center max-w-[1500px] mx-auto">
-      <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="!modifiedgametype ? 'All' : modifiedgametype" :disabled="disableFilterInput"></single-select-filter>
-      <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'" :disabled="disableFilterInput"></single-select-filter>
+      <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="!modifiedgametype ? 'All' : modifiedgametype" :disabled="disableFilterInput"></single-select-filter>
+      <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" :defaultValue="'All'" :disabled="disableFilterInput"></single-select-filter>
+      <button :disabled="disableFilterInput" @click="applyFilter"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
+          Filter
+      </button>
     </div>
 
-    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+    <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     
     <div v-if="data == ''" class="flex md:p-20 gap-10 mx-auto justify-center items-between ">
       <div class="flex items-center">
@@ -72,7 +75,7 @@
         </div>
       </div>
       <div class="flex justify-center max-w-[1500px] mx-auto items-center max-md:flex-col">
-      <div class="max-w-[1000px] mx-auto">
+      <div class="max-w-[1500px] mx-auto">
         <div class="grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 md:px-20 py-5 justify-center" >
           <h4 class="text-right">Quick Match</h4>
           <stat-bar-box :title="'Win Rate'" :value=" data.qm_mmr_data ? data.qm_mmr_data.win_rate.toFixed(2) : 0 "></stat-bar-box>
@@ -118,12 +121,13 @@
 
      
 
-      <div class="max-w-[1500px] mx-auto text-right my-2">
+     
+      </div>
+    
+      <dynamic-square-ad :patreon-user="patreonUser" :index="1"></dynamic-square-ad>
+    </div>  <div class="max-w-[1500px] mx-auto  text-right my-2">
         <custom-button :href="'/Player/' + this.battletag + '/' + this.blizzid + '/' + this.region + '/MMR'" class=" " text="View MMR Breakdown"></custom-button>
       </div>
-      </div>
-      <dynamic-square-ad :patreon-user="patreonUser" :index="1"></dynamic-square-ad>
-    </div>
 
 
     <div class="bg-lighten p-10 ">
@@ -199,7 +203,9 @@
     components: {
     },
     props: {
-      settinghero: Object,
+      playerloadsetting: {
+        type: [String, Boolean]
+      },
       filters: Object,
       battletag: String,
       blizzid: String, 
@@ -240,8 +246,9 @@
           icon: "autoselect3.jpg",
         };
       }
-
-      this.getData();
+      if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
+        this.getData();
+      }
     },
     computed: {
      gameTypesWithAll() {
@@ -317,7 +324,7 @@
           }
         }
       },
-      handleDropdownClosed(){
+      applyFilter(){
         if(!this.isLoading){
           this.data = null;
           this.getData();

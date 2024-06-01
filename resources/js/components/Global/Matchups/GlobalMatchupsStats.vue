@@ -41,19 +41,26 @@
       :advancedfiltering="advancedfiltering"
       >
     </filters>
-    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+    <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
     <div v-if="allyenemydata" class="flex flex-wrap gap-4  ">
 
 
 
-      <div class="md:min-w-[1500px] md:px-20">
+      <div class=" md:px-20">
         <div class="flex justify-center">
         <group-box :text="'TOP 5 ALLIES ON HEROS TEAM'" :data="allyenemydata.ally.slice(0, 5)" :type="'Matchups'" color="blue"></group-box>
-      <group-box :text="'TOP 5 THREATS ON ENEMIES TEAM'" :data="allyenemydata.enemy.slice(0, 5)" :type="'Matchups'" color="red"></group-box>
+        <group-box :text="'TOP 5 THREATS ON ENEMIES TEAM'" :data="allyenemydata.enemy.slice(0, 5)" :type="'Matchups'" color="red"></group-box>
       </div>
 
-      <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Talent Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
+      <span class="flex gap-4 mb-2 max-w-[1500px] mx-auto"> 
+        <single-select-filter
+          :values="filters.heroes" 
+          :text="'Change Hero'" 
+          :defaultValue="selectedHero.id"
+          @input-changed="handleInputChange"
+        ></single-select-filter>
+      </span>
       <div id="table-container" ref="tablecontainer" class="  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
       <table id="responsive-table" class="responsive-table  relative max-sm:text-xs" ref="responsivetable">
       
@@ -244,6 +251,9 @@
           {
             cancelToken: this.cancelTokenSource.token,
           });
+          if(response.data.status == "failure to validate inputs"){
+            throw new Error("Failure to validate inputs");
+          }
           this.allyenemydata = response.data;
           this.combineddata = response.data.combined;
         }catch(error){
@@ -271,6 +281,13 @@
         this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
         this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
 
+
+        this.updateQueryString();
+        this.allyenemydata = null;
+        this.combineddata = null;
+        this.getData();
+      },
+      updateQueryString(){
         let queryString = `?timeframe_type=${this.timeframetype}`;
         queryString += `&timeframe=${this.timeframe}`;
         queryString += `&game_type=${this.gametype}`;
@@ -308,10 +325,6 @@
         const currentUrl = window.location.href;
         let currentPath = window.location.pathname;
         history.pushState(null, null, `${currentPath}${queryString}`);
-
-        this.allyenemydata = null;
-        this.combineddata = null;
-        this.getData();
       },
       sortTable(key) {
         if (key === this.sortKey) {
@@ -357,20 +370,57 @@
         }
 
         if (this.urlparameters["league_tier"]) {
-          this.playerrank = this.urlparameters["league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+          this.playerrank = this.urlparameters["league_tier"]
+            .split(',')
+            .map(tierName => {
+                const capitalizedTierName = tierName.charAt(0).toUpperCase() + tierName.slice(1);
+                const tier = this.filters.rank_tiers.find(tier => tier.name === capitalizedTierName);
+                return tier?.code;
+            });
         }
 
         if (this.urlparameters["hero_league_tier"]) {
-          this.herorank = this.urlparameters["hero_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+          this.herorank = this.urlparameters["hero_league_tier"]
+          .split(',')
+          .map(tierName => {
+              const capitalizedTierName = tierName.charAt(0).toUpperCase() + tierName.slice(1);
+              const tier = this.filters.rank_tiers.find(tier => tier.name === capitalizedTierName);
+              return tier?.code;
+          });
         }
 
         if (this.urlparameters["role_league_tier"]) {
-          this.rolerank = this.urlparameters["role_league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+          this.rolerank = this.urlparameters["role_league_tier"]
+          .split(',')
+          .map(tierName => {
+              const capitalizedTierName = tierName.charAt(0).toUpperCase() + tierName.slice(1);
+              const tier = this.filters.rank_tiers.find(tier => tier.name === capitalizedTierName);
+              return tier?.code;
+          });
         }
 
         if (this.urlparameters["mirror"]) {
           this.mirrormatch = this.urlparameters["mirror"];
         }
+      },
+      handleInputChange(eventPayload){
+        if(eventPayload.value != ""){
+          this.selectedHero = this.heroes.find(hero => hero.id === eventPayload.value);
+          let currentPath = window.location.pathname;
+          let newPath = currentPath.replace(/\/[^/]*$/, `/${this.selectedHero.name}`);
+          history.pushState(null, null, newPath);
+          this.updateQueryString();
+
+          this.allyenemydata = null;
+          this.combineddata = null;
+
+          //Have to use setTimeout to make this occur on next tic to allow header info/text to update properly.  
+          setTimeout(() => {
+            this.getData();
+          }, .25);
+        }
+
+
       },
     }
   }

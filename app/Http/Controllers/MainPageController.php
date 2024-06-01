@@ -11,6 +11,9 @@ class MainPageController extends Controller
     {
         return view('mainPage')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+            'maxReplayID' => $this->globalDataService->calculateMaxReplayNumber(),
+            'latestPatch' => $this->globalDataService->getLatestPatch(),
+            'latestGameDate' => $this->globalDataService->getLatestGameDate(),
         ]);
     }
 

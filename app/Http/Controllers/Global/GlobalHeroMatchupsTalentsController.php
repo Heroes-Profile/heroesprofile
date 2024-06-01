@@ -169,6 +169,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
                 ->filterByHero($hero)
                 ->filterByAllyEnemy($allyEnemy)
                 ->filterByLeagueTier($leagueTier)
+                ->filterByGameMap($gameMap)
                 ->groupBy('win_loss', 'level', 'talent')
                 ->orderBy('level')
                 ->orderBy('win_loss')

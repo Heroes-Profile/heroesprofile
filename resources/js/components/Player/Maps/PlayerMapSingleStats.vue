@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="'Map data for ' + battletag + ' on ' + map" :heading="'Map Stats: '+  map" :battletag="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner">
+    <page-heading :infoText1="'Map data for ' + battletag + ' on ' + map" :heading="'Map Stats: '+  map" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
             <map-image-wrapper :map="mapobject" :size="'big'"></map-image-wrapper>
     </page-heading>
 
@@ -8,9 +8,12 @@
     <div class="flex justify-center max-w-[1500px] mx-auto">
       <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="!modifiedgametype ? 'All' : modifiedgametype" :disabled="disableFilterInput"></single-select-filter>
       <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'" :disabled="disableFilterInput"></single-select-filter>
+      <button :disabled="disableFilterInput" @click="applyFilter"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
+          Filter
+      </button>
     </div>
 
-    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+    <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
     <div v-if="data">
       <div class="flex md:p-20 gap-10 mx-auto justify-center items-center ">
@@ -116,6 +119,9 @@ export default {
     blizzid: {
       type: [String, Number]
     },
+    playerloadsetting: {
+      type: [String, Boolean]
+    },
     region: Number,
     regions: Object,
     map: String,
@@ -144,7 +150,9 @@ export default {
     }
   },
   mounted() {
-    this.getData();
+    if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
+      this.getData();
+    }
   },
   computed: {
     seasonWinRateDataArray() {
@@ -230,7 +238,7 @@ export default {
         }
       }
     },
-    handleDropdownClosed(){
+    applyFilter(){
       if(!this.isLoading){
         this.data = null;
         this.getData();

@@ -77,7 +77,38 @@ app.config.globalProperties.$redirectToProfile = function (battletag, blizz_id, 
     }
 };
 
+
 app.use(flareVue);
+flare.beforeEvaluate = error => {
+  if (
+    error.message.includes("Failed to fetch") ||
+    error.message.includes("Label 'https' has already been declared") ||
+    error.message.includes("NetworkError when attempting to fetch resource.") ||
+    error.message.includes("The operation was aborted.") ||
+    error.message.includes("The play() request was interrupted") ||
+    error.message.includes("Unexpected end of input") ||
+    error.message.includes("Load failed") ||
+    error.message.includes("The request is not allowed by the user agent") ||
+    error.message.includes("The media resource indicated by the src attribute or assigned media provider object was not suitable.") ||
+    error.message.includes("Cannot redefine property: websredir") ||
+    error.message.includes("Cannot redefine property: ethereum") ||
+    error.message.includes("The fetching process for the media resource") ||
+    error.message.includes("Failed to execute 'whenDefined'") ||
+    error.message.includes("Node.removeChild: The node to be removed is not a child of this node") ||
+    error.message.includes("Cannot read properties of undefined (reading 'push')") ||
+    error.message.includes("Cannot redefine property: googletag") ||
+    error.message.includes("Somehow the event source is null") ||
+    error.message.includes("Failed to load because no supported source was found.") ||
+    error.message.includes("Cannot read properties of undefined (reading 'nativeBack')") ||
+    error.message.includes("null is not an object (evaluating 'e.source.postMessage')") ||
+    error.message.includes('Permission denied to access property "then"')
+  )
+  { 
+    return false; 
+  } 
+}; 
+
+
 // Attach the application instance to an HTML element with id "app"
 app.mount('#app');
 

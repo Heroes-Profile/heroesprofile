@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading  :heading="'Match History'" :battletag="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+    <page-heading  :heading="'Match History'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
 
     <filters 
       :onFilter="filterData" 
@@ -16,8 +16,7 @@
       :hideadvancedfilteringbutton="true"
       >
     </filters>
-    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
-
+    <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     <div v-if="data">
       <div>
         <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
@@ -33,8 +32,13 @@
           </li>
         </ul>
       </div>
-
-      <div id="table-container" ref="tablecontainer" class="w-auto   w-[100vw]   2xl:mx-auto  " style=" ">
+      <div v-if="playermatchtablestyle == 1">
+        <div class="p-10 max-w-[90em] ml-auto mr-auto">
+          <game-summary-box v-for="(item, index) in data.data" :data="item"></game-summary-box>
+        </div>
+      </div>
+      <div v-else>
+        <div id="table-container" ref="tablecontainer" class="w-auto   w-[100vw]   2xl:mx-auto  " style=" ">
       <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
         <thead>
           <tr>
@@ -73,13 +77,13 @@
               {{ row.game_type.name }}
             </td>
             <td>
-              {{ row.game_map }}
+              {{ row.game_map.name }}
             </td>
             <td class="py-2 px-3  flex items-center gap-1">
               <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
             </td>
             <td>
-              {{ row.winner }}
+              {{ row.winner == 1 ? 'True' : 'False' }}
             </td>
             <td>
 
@@ -96,6 +100,7 @@
           </tr>
         </tbody>
       </table>
+      </div>
       </div>
       <div>
         <ul class="pagination flex max-w-[1500px] mx-auto px-2 pt-2 justify-between mb-2 text-sm">
@@ -127,6 +132,9 @@ export default {
   },
   props: {
     filters: Object,
+    playerloadsetting: {
+      type: [String, Boolean]
+    },
     battletag: String,
     blizzid: String, 
     region: String,
@@ -134,6 +142,9 @@ export default {
     isPatreon: Boolean,
     patreonUser: Boolean,
     gametypedefault: Array,
+    playermatchtablestyle: {
+      type: [String, Boolean]
+    },
   },
   data(){
     return {
@@ -155,7 +166,9 @@ export default {
     this.gametype = this.gametypedefault;
   },
   mounted() {
-    this.getData(1);
+    if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
+      this.getData(1);
+    }
   },
   computed: {
     sortedData() {
@@ -202,6 +215,7 @@ export default {
           hero: this.hero,
           game_map: this.gamemap,
           pagination_page: page,
+          season: this.season,
         }, 
         {
           cancelToken: this.cancelTokenSource.token,

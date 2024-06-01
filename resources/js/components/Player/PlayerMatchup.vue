@@ -1,8 +1,10 @@
 <template>
   <div>
     
-    <page-heading :heading="'Matchups'" :battletag="battletag +`(`+ regionsmap[region] + `)`" :infoText1="infotext" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+    <page-heading :heading="'Matchups'" :infoText1="infotext" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
     
+    
+
     <filters 
     :onFilter="filterData" 
     :filters="filters" 
@@ -11,9 +13,10 @@
     :includegamemap="true"
     :includegametypefull="true"
     :hideadvancedfilteringbutton="true"
+    :includehero="true"
     >
   </filters>
-  <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+  <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
   <div v-if="data">
     <div class="flex flex-wrap justify-center">
@@ -79,6 +82,9 @@
     },
     props: {
       filters: Object,
+      playerloadsetting: {
+        type: [String, Boolean]
+      },
       battletag: String,
       blizzid: String, 
       region: String,
@@ -105,7 +111,9 @@
 
     },
     mounted() {
-      this.getData();
+      if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
+        this.getData();
+      }
     },
     computed: {
       sortedData() {

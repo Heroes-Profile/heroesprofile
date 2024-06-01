@@ -20,6 +20,7 @@
     :includeplayerrank="true"
     :advancedfiltering="advancedfiltering"
     :hideadvancedfilteringbutton="true"
+    :disablefilter="!this.shouldFilterData"
     >
   </filters>
   <takeover-ad :patreon-user="patreonUser"></takeover-ad>
@@ -32,13 +33,13 @@
   </div>
   <div v-else>
     <div class="flex justify-center items-center md:gap-10">
-      <div class="">
+      <div v-if="hero" class="">
         <single-select-filter :values="firstHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="herochanged" :defaultValue="hero.id"></single-select-filter>
       </div>
       <div class="">
         {{ vsorwith }}
       </div>
-      <div class="">
+      <div v-if="enemyally" class="">
         <single-select-filter :values="secondHeroInputs" :text="'Choose Hero'" :trackclosure="true"  @dropdown-closed="dropdownClosed" @input-changed="allyenemychanged" :defaultValue="enemyally.id"></single-select-filter>
       </div>
     </div>
@@ -165,7 +166,7 @@
         return this.filters.heroes;
       },
       shouldFilterData(){
-        if(this.hero.name != "Auto Select" && this.enemyally.name != "Auto Select"){
+        if((this.hero && this.hero.name != "Auto Select") && (this.enemyally && this.enemyally.name != "Auto Select")){
           return true;
         }
         return false;
@@ -198,6 +199,10 @@
           {
             cancelToken: this.cancelTokenSource.token,
           });
+
+          if(response.data.status == "failure to validate inputs"){
+            throw new Error("Failure to validate inputs");
+          }
           this.talentdetaildata = response.data.data;
           this.firstwinratedata = response.data.first_win_rate;
           this.secondwinratedata = response.data.second_win_rate;
@@ -326,8 +331,15 @@
         }
 
         if (this.urlparameters["league_tier"]) {
-          this.playerrank = this.urlparameters["league_tier"].split(',').map(tierName => this.filters.rank_tiers.find(tier => tier.name === tierName)?.code);
+          this.playerrank = this.urlparameters["league_tier"]
+            .split(',')
+            .map(tierName => {
+                const capitalizedTierName = tierName.charAt(0).toUpperCase() + tierName.slice(1);
+                const tier = this.filters.rank_tiers.find(tier => tier.name === capitalizedTierName);
+                return tier?.code;
+            });
         }
+
       },
     }
   }

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\BattlenetAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
 
@@ -37,9 +36,6 @@ class BattleNetController extends Controller
 
             $user = Socialite::driver('battlenet')->setConfig($config)->user();
         } catch (InvalidStateException $e) {
-            // Log the exception for debugging (optional)
-            Log::error('InvalidStateException in BattleNetController: '.$e->getMessage());
-
             // Redirect the user to a custom login failed page
             return redirect('/Authenticate/Battlenet/Failed');
         }

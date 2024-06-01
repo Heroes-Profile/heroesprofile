@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading heading="Talent Statistics" :infoText1="selectedHero ? selectedHero.name + ' talent stats and builds player by ' + battletag : ' talent stats and builds player by ' + battletag" :battletag="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner">
+    <page-heading heading="Talent Statistics" :infoText1="selectedHero ? selectedHero.name + ' talent stats and builds player by ' + battletag : ' talent stats and builds player by ' + battletag" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
       <hero-image-wrapper v-if="selectedHero" :hero="selectedHero" :size="'big'"></hero-image-wrapper>
     </page-heading>
     
@@ -20,7 +20,7 @@
         :includegamedate="true"
         >
       </filters>
-      <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+      <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
       <div  v-if="talentdetaildata" class="container mx-auto md:px-4">
         <span class="flex gap-4 mb-2"> {{ this.selectedHero.name }} {{ "Talent Stats"}}  <custom-button @click="redirectChangeHero" :text="'Change Hero'" :alt="'Change Hero'" size="small" :ignoreclick="true"></custom-button></span>
@@ -52,6 +52,9 @@ export default {
     filters: {
       type: Object,
       required: true
+    },
+    playerloadsetting: {
+      type: [String, Boolean]
     },
     battletag: String,
     blizzid: String, 
@@ -85,7 +88,9 @@ export default {
   mounted() {
     if(this.inputhero){
       this.selectedHero = this.inputhero;
-      this.getData();
+      if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
+        this.getData();
+      }
     }
   },
   computed: {

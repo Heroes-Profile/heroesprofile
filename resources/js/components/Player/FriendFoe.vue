@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText" :heading="'Friend vs Foe'"  :battletag="battletag +`(`+ regionsmap[region] + `)`" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+    <page-heading :infoText1="infoText" :heading="'Friend vs Foe'"  :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
 
     <filters 
       :onFilter="filterData" 
@@ -9,7 +9,7 @@
       :gametypedefault="gametype"
       :includehero="true"
       :includegamemap="true"
-      :includegametypefull="true"
+      :includesinglegametype="true"
       :includeseasonwithall="true"
       :includegroupsize="true"
       :hideadvancedfilteringbutton="true"
@@ -18,7 +18,7 @@
       >
     </filters>
     
-    <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+    <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
     <div v-if="frienddata && enemydata" class="gap-1 mx-auto  flex justify-center max-w-[1500px] max-md:flex-col max-md:text-sm max-md:max-w-[100vw]">
       <div>
@@ -131,6 +131,9 @@ export default {
       type: Object,
       required: true
     },
+    playerloadsetting: {
+      type: [String, Boolean]
+    },
     battletag: String,
     blizzid: String, 
     region: String,
@@ -164,7 +167,8 @@ export default {
     this.gametype = this.gametypedefault;
   },
   mounted() {
-    Promise.allSettled([
+    if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
+      Promise.allSettled([
       this.getData("friend"),
       this.getData("enemy"),
     ]).then(results => {
@@ -178,6 +182,9 @@ export default {
       } else {
       }
     });
+  }
+
+
 
   },
   computed: {
@@ -273,7 +280,8 @@ export default {
     },
     filterData(filteredData){
       this.hero = filteredData.single["Heroes"] ? filteredData.single["Heroes"] : null;
-      this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametypedefault;
+      //this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametypedefault;
+      this.gametype = filteredData.single["Game Type"] ? [filteredData.single["Game Type"]] : this.gametype;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
       this.season = filteredData.single["Season"] ? filteredData.single["Season"] : null;
       this.groupsize = filteredData.single["Group Size"] && (filteredData.single["Group Size"] != 'All') ? filteredData.single["Group Size"] : null;

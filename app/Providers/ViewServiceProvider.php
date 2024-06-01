@@ -46,6 +46,7 @@ class ViewServiceProvider extends ServiceProvider
             if (Auth::check()) {
                 $user = Auth::user();
                 $main_search_account['battletag'] = explode('#', $user['battletag'])[0];
+                $main_search_account['battletag_full'] = $user['battletag'];
                 $main_search_account['blizz_id'] = $user['blizz_id'];
                 $main_search_account['region'] = $user['region'];
             }

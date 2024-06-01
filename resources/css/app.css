@@ -101,6 +101,9 @@ nav .search-component{
 .nav-dropdown a{
   @apply block px-4 py-2 md:border-b md:border-darken hover:bg-lighten;
 }
+.nav-dropdown a.remove-account {
+  @apply hover:bg-gray-dark/80;
+}
 
 @media (max-width:768px){
     

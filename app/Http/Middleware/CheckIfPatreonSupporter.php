@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\BattlenetAccount;
 use App\Models\PatreonAccount;
 use Closure;
 use Illuminate\Http\Request;
@@ -17,6 +18,8 @@ class CheckIfPatreonSupporter
      */
     public function handle(Request $request, Closure $next): Response
     {
+        //$user = BattlenetAccount::find(1);
+        //Auth::login($user);
 
         if (Auth::check()) {
             $user = Auth::user();
@@ -32,6 +35,10 @@ class CheckIfPatreonSupporter
                 }
             }
 
+            if ($user->flair_adfree_override == 1) {
+                session(['patreonSubscriberAdFree' => true]);
+                session(['patreonSubscriberSiteFlair' => true]);
+            }
         }
 
         return $next($request);

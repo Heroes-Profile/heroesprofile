@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Global;
 
+use App\Models\BannedAccountsNote;
 use App\Models\BattlenetAccount;
 use App\Models\HeroesDataTalent;
 use App\Models\Leaderboard;
@@ -19,11 +20,14 @@ use App\Rules\RegionInputValidation;
 use App\Rules\RoleInputValidation;
 use App\Rules\SeasonInputValidation;
 use App\Rules\StackSizeInputValidation;
+use App\Rules\TierInputByIDValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalLeaderboardController extends GlobalsInputValidationController
 {
+    private $rankModifier = 0;
+
     public function show(Request $request)
     {
         return view('Global.Leaderboard.globalLeaderboard')->with([
@@ -48,6 +52,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation()],
             'region' => ['sometimes', 'nullable', new RegionInputValidation()],
             'role' => ['sometimes', 'nullable', new RoleInputValidation()],
+            'tierrank' => ['sometimes', 'nullable', new TierInputByIDValidation()],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -66,7 +71,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         $gameType = $this->getGameTypeFilterValues($request['game_type']);
         $season = $request['season'];
         $region = $this->getRegionFilterValues($request['region']);
-
+        $tierrank = $request['tierrank'];
         $type = $request['type'];
         $typeNumber = 0;
 
@@ -116,10 +121,10 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         $talentData = $talentData->keyBy('talent_id');
 
         $patreonAccounts = BattlenetAccount::has('patreonAccount')->get();
+        $bannedAccounts = BannedAccountsNote::get();
 
         $blizzIDRegionMapping = [];
-
-        $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber, $patreonAccounts, &$blizzIDRegionMapping) {
+        $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber, $patreonAccounts, &$blizzIDRegionMapping, $tierrank, $bannedAccounts) {
 
             if (array_key_exists($item->blizz_id.'|'.$item->region, $blizzIDRegionMapping)) {
                 return null;
@@ -128,6 +133,15 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             }
 
             $patreonAccount = $patreonAccounts->where('blizz_id', $item->blizz_id)->where('region', $item->region);
+
+            $existingBan = $bannedAccounts->first(function ($ban) use ($item) {
+                return $ban->blizz_id === $item->blizz_id && $ban->region === $item->region;
+            });
+            if ($existingBan) {
+                $this->rankModifier++;
+
+                return null;
+            }
 
             $item->patreon = is_null($patreonAccount) || empty($patreonAccount) || count($patreonAccount) == 0 ? false : true;
             $item->hp_owner = ($item->blizz_id == 67280 && $item->region == 1) ? true : false;
@@ -138,16 +152,22 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             $item->tier = $this->globalDataService->calculateSubTier($rankTiers, $item->mmr);
             $item->tier_id = $this->globalDataService->calculateTierID($item->tier);
 
+            if ($tierrank && $tierrank != intval($item->tier_id)) {
+                return null;
+            }
+
             $item->region_id = $item->region;
             $item->region = $this->globalDataService->getRegionIDtoString()[$item->region];
 
-            $item->level_one = $item->level_one && $item->level_one != 0 ? $talentData[$item->level_one] : null;
-            $item->level_four = $item->level_four && $item->level_four != 0 ? $talentData[$item->level_four] : null;
-            $item->level_seven = $item->level_seven && $item->level_seven != 0 ? $talentData[$item->level_seven] : null;
-            $item->level_ten = $item->level_ten && $item->level_ten != 0 ? $talentData[$item->level_ten] : null;
-            $item->level_thirteen = $item->level_thirteen && $item->level_thirteen != 0 ? $talentData[$item->level_thirteen] : null;
-            $item->level_sixteen = $item->level_sixteen && $item->level_sixteen != 0 ? $talentData[$item->level_sixteen] : null;
-            $item->level_twenty = $item->level_twenty && $item->level_twenty != 0 ? $talentData[$item->level_twenty] : null;
+            $item->rank = $item->rank - $this->rankModifier;
+
+            $item->level_one = $item->level_one && $item->level_one != 0 ? isset($talentData[$item->level_one]) ? $talentData[$item->level_one] : null : null;
+            $item->level_four = $item->level_four && $item->level_four != 0 ? isset($talentData[$item->level_four]) ? $talentData[$item->level_four] : null : null;
+            $item->level_seven = $item->level_seven && $item->level_seven != 0 ? isset($talentData[$item->level_seven]) ? $talentData[$item->level_seven] : null : null;
+            $item->level_ten = $item->level_ten && $item->level_ten != 0 ? isset($talentData[$item->level_ten]) ? $talentData[$item->level_ten] : null : null;
+            $item->level_thirteen = $item->level_thirteen && $item->level_thirteen != 0 ? isset($talentData[$item->level_thirteen]) ? $talentData[$item->level_thirteen] : null : null;
+            $item->level_sixteen = $item->level_sixteen && $item->level_sixteen != 0 ? isset($talentData[$item->level_sixteen]) ? $talentData[$item->level_sixteen] : null : null;
+            $item->level_twenty = $item->level_twenty && $item->level_twenty != 0 ? isset($talentData[$item->level_twenty]) ? $talentData[$item->level_twenty] : null : null;
 
             $item->hero = $type == 'hero' ? $heroData[$typeNumber] : null;
 

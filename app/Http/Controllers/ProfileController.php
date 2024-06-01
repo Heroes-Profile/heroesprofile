@@ -34,6 +34,8 @@ class ProfileController extends Controller
             'usergametype' => ['sometimes', 'nullable', new GameTypeInputValidation()],
             'talentbuildtype' => ['sometimes', 'nullable', new TalentBuildTypeInputValidation()],
             'darkmode' => 'nullable|boolean',
+            'darkmode' => 'nullable|boolean',
+            'playerhistorytable' => 'nullable|boolean',
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -71,6 +73,17 @@ class ProfileController extends Controller
 
             $user->userSettings()->updateOrCreate(
                 ['setting' => 'game_type'],
+                ['value' => $usergametype]
+            );
+        }
+
+        if (! is_null($request['mmrplayerusergametype'])) {
+            $user = BattlenetAccount::find($request['userid']);
+
+            $usergametype = $request['mmrplayerusergametype'];
+
+            $user->userSettings()->updateOrCreate(
+                ['setting' => 'mmr_player_game_type'],
                 ['value' => $usergametype]
             );
         }
@@ -122,6 +135,28 @@ class ProfileController extends Controller
             $user->userSettings()->updateOrCreate(
                 ['setting' => 'darkmode'],
                 ['value' => $darkmode]
+            );
+        }
+
+        if (! is_null($request['playerhistorytable'])) {
+            $user = BattlenetAccount::find($request['userid']);
+
+            $playerhistorytable = $request['playerhistorytable'];
+
+            $user->userSettings()->updateOrCreate(
+                ['setting' => 'playerhistorytable'],
+                ['value' => $playerhistorytable]
+            );
+        }
+
+        if (! is_null($request['playerload'])) {
+            $user = BattlenetAccount::find($request['userid']);
+
+            $playerload = $request['playerload'];
+
+            $user->userSettings()->updateOrCreate(
+                ['setting' => 'playerload'],
+                ['value' => $playerload]
             );
         }
 

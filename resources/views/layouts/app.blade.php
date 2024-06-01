@@ -1,13 +1,14 @@
 <!doctype html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" >
   <head>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2T71M0W00N"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XTN5LVP358"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
 
-      gtag('config', 'G-2T71M0W00N');
+    gtag('config', 'G-XTN5LVP358');
     </script>
     <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript" data-site-id="60f587eddd63d722e7e57bc1" data-mode="scan" async onerror="handleAdBlocker()"></script>
 
@@ -47,15 +48,18 @@
     
 </head>
 <body class="bg-black text-white {{ $bladeGlobals ? $bladeGlobals['darkmode'] ? 'dark-mode' : 'light-mode' : 'light-mode' }}">
-  <div id="app" class="flex flex-col align-stretch" style="min-height:100vh;">
-    <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"></horizontal-banner-ad>
+  <div id="app" class="flex flex-col align-stretch " style="min-height:100vh; ">
+  <div class="max-md:h-[75px]"></div>
+    <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}" ></horizontal-banner-ad>
 
 
-   <div class="bg-red text-sm text-center p-1">
-      Site has not been styled for mobile yet.<br/>
-      Patreon subscribers please log in and link your Patreon account as we migrate to new site flair and ad-free infrastructure.
-      <!-- temp removal {{ session('headeralert') }}-->
-    </div>
+    @if(isset($headeralert) && $headeralert !== null)
+      <div class="bg-red text-sm text-center p-1">
+          {{ $headeralert }}
+      </div>
+    @endif
+
+
 
 
     @include('nav', [
@@ -86,7 +90,12 @@
             <div class="content ">
               <div class="footer-nav">
               </div>
-              <div>{{ session('maxReplayID') }} replays | Patch {{ session('latestPatch') }} | Up to date as of: <format-date :input="'{{ session('latestGameDate') }}'"></format-date></div>
+              
+              @if(isset($maxReplayID))
+                  <div>{{ $maxReplayID }} replays | Patch {{ $latestPatch }} | Up to date as of: <format-date :input="'{{ $latestGameDate }}'"></format-date></div>
+              @endif
+
+              
               <p><a href="/Privacy/Policy" class="underline text-xs">Privacy Policy</a></p>
               <div class="copyright">Skill Tree Development, LLC | <a href="https://heroesprofile.com">Heroes Profile</a></div>
             </div>

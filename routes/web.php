@@ -12,7 +12,6 @@ use App\Http\Controllers\Esports\MastersClash\MastersClashController;
 use App\Http\Controllers\Esports\NGS\NGSController;
 use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
 use App\Http\Controllers\Esports\NutCup\NutCupController;
-use App\Http\Controllers\GamedataController;
 use App\Http\Controllers\GithubChangeController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
@@ -38,6 +37,7 @@ use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
+use App\Http\Controllers\MatchPredictionGameController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -52,121 +52,125 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::fallback(function () {
-    return view('errors.404');
+    return response()->view('errors.404', [], 404);
 });
 
-Route::get('/', [MainPageController::class, 'show']);
-Route::get('/test', [MainPageController::class, 'test']);
-Route::get('/testJS', [MainPageController::class, 'testJS']);
+Route::middleware(['logIpAndUserAgent'])->group(function () {
+    Route::get('/', [MainPageController::class, 'show']);
+    Route::get('/test', [MainPageController::class, 'test']);
+    Route::get('/testJS', [MainPageController::class, 'testJS']);
 
-Route::get('/Contact', [ContactController::class, 'show']);
+    Route::get('/Contact', [ContactController::class, 'show']);
 
-Route::get('/Privacy/Policy', [PrivacyPolicyController::class, 'show']);
+    Route::get('/Privacy/Policy', [PrivacyPolicyController::class, 'show']);
 
-Route::get('/Github/Change/Log', [GithubChangeController::class, 'show']);
+    Route::get('/Github/Change/Log', [GithubChangeController::class, 'show']);
 
-Route::get('/battletag/searched/{userinput}/{type}', [BattletagSearchController::class, 'show']);
+    Route::get('/battletag/searched/{userinput}/{type}', [BattletagSearchController::class, 'show']);
 
-//Route::get('/Compare', [CompareController::class, 'show']);
-//Route::get('/Compare/{hero}', [CompareController::class, 'show']);
+    //Route::get('/Compare', [CompareController::class, 'show']);
+    //Route::get('/Compare/{hero}', [CompareController::class, 'show']);
 
-//Login
-Route::get('/Authenticate/Battlenet', [BattleNetController::class, 'show']);
-Route::get('/Battlenet/Logout', [BattleNetController::class, 'logout']);
+    //Login
+    Route::get('/Authenticate/Battlenet', [BattleNetController::class, 'show']);
+    Route::get('/Battlenet/Logout', [BattleNetController::class, 'logout']);
 
-Route::get('/redirect/authenticate/battlenet', [BattleNetController::class, 'redirectToProvider']);
-Route::get('/authenticate/battlenet/success', [BattleNetController::class, 'handleProviderCallback']);
-Route::get('/Authenticate/Battlenet/Failed', [BattleNetController::class, 'handleProviderCallbackFailed']);
+    Route::get('/redirect/authenticate/battlenet', [BattleNetController::class, 'redirectToProvider']);
+    Route::get('/authenticate/battlenet/success', [BattleNetController::class, 'handleProviderCallback']);
+    Route::get('/Authenticate/Battlenet/Failed', [BattleNetController::class, 'handleProviderCallbackFailed']);
 
-Route::get('/authenticate/patreon', [PatreonController::class, 'redirectToProvider']);
-Route::get('/authenticate/patreon/success', [PatreonController::class, 'handleProviderCallback']);
+    Route::get('/authenticate/patreon', [PatreonController::class, 'redirectToProvider']);
+    Route::get('/authenticate/patreon/success', [PatreonController::class, 'handleProviderCallback']);
+    Route::get('/Authenticate/Patreon/Failed', [PatreonController::class, 'handleProviderCallbackFailed']);
 
-Route::get('/Global/Hero/Maps/', [GlobalHeroMapStatsController::class, 'show']);
-Route::get('/Global/Hero/Maps/{hero}', [GlobalHeroMapStatsController::class, 'show']);
-Route::get('/Global/Hero', [GlobalHeroStatsController::class, 'show']);
+    Route::get('/Global/Hero/Maps/', [GlobalHeroMapStatsController::class, 'show']);
+    Route::get('/Global/Hero/Maps/{hero}', [GlobalHeroMapStatsController::class, 'show']);
+    Route::get('/Global/Hero', [GlobalHeroStatsController::class, 'show']);
 
-Route::get('/Global/Matchups/Talents', [GlobalHeroMatchupsTalentsController::class, 'show']);
-Route::get('/Global/Matchups/Talents/{hero}/{allyenemy}', [GlobalHeroMatchupsTalentsController::class, 'show']);
+    Route::get('/Global/Matchups/Talents', [GlobalHeroMatchupsTalentsController::class, 'show']);
+    Route::get('/Global/Matchups/Talents/{hero}/{allyenemy}', [GlobalHeroMatchupsTalentsController::class, 'show']);
 
-Route::get('/Global/Matchups', [GlobalHeroMatchupStatsController::class, 'show']);
-Route::get('/Global/Matchups/{hero}', [GlobalHeroMatchupStatsController::class, 'show']);
+    Route::get('/Global/Matchups', [GlobalHeroMatchupStatsController::class, 'show']);
+    Route::get('/Global/Matchups/{hero}', [GlobalHeroMatchupStatsController::class, 'show']);
 
-Route::get('/Global/Draft', [GlobalDraftController::class, 'show']);
-Route::get('/Global/Draft/{hero}', [GlobalDraftController::class, 'show']);
+    Route::get('/Global/Draft', [GlobalDraftController::class, 'show']);
+    Route::get('/Global/Draft/{hero}', [GlobalDraftController::class, 'show']);
 
-Route::get('/Global/Talents/', [GlobalTalentStatsController::class, 'show']);
-Route::get('/Global/Talents/Builder', [GlobalTalentBuilderController::class, 'show']);
-Route::get('/Global/Talents/Builder/{hero}', [GlobalTalentBuilderController::class, 'show']);
-Route::get('/Global/Talents/{hero}', [GlobalTalentStatsController::class, 'show']);
+    Route::get('/Global/Talents/', [GlobalTalentStatsController::class, 'show']);
+    Route::get('/Global/Talents/Builder', [GlobalTalentBuilderController::class, 'show']);
+    Route::get('/Global/Talents/Builder/{hero}', [GlobalTalentBuilderController::class, 'show']);
+    Route::get('/Global/Talents/{hero}', [GlobalTalentStatsController::class, 'show']);
 
-Route::get('/Global/Leaderboard', [GlobalLeaderboardController::class, 'show']);
+    Route::get('/Global/Leaderboard', [GlobalLeaderboardController::class, 'show']);
 
-Route::get('/Global/Compositions', [GlobalCompositionsController::class, 'show']);
+    Route::get('/Global/Compositions', [GlobalCompositionsController::class, 'show']);
 
-Route::get('/Global/Party', [GlobalPartyStatsController::class, 'show']);
+    Route::get('/Global/Party', [GlobalPartyStatsController::class, 'show']);
 
-//Route::get('/Global/Extra', [GlobalExtraStats::class, 'show']); //Not sure if I want to keep this for rewrite.  Taking it out for now
+    //Route::get('/Global/Extra', [GlobalExtraStats::class, 'show']); //Not sure if I want to keep this for rewrite.  Taking it out for now
 
-//Logged in User Settings
-Route::get('Profile/Settings', [ProfileController::class, 'showSettings'])->middleware('ensureBattlenetAuth');
+    //Logged in User Settings
+    Route::get('Profile/Settings', [ProfileController::class, 'showSettings'])->middleware('ensureBattlenetAuth');
 
-//Player data
-Route::get('Player/{battletag}/{blizz_id}/{region}', [PlayerController::class, 'show'])->middleware('checkIfPrivateProfilePage');
-Route::get('Player/{battletag}/{blizz_id}/{region}/FriendFoe', [FriendFoeController::class, 'show'])->middleware('checkIfPrivateProfilePage');
-Route::get('Player/{battletag}/{blizz_id}/{region}/Hero', [PlayerHeroesController::class, 'showAll'])->middleware('checkIfPrivateProfilePage');
-Route::get('Player/{battletag}/{blizz_id}/{region}/Hero/{hero}', [PlayerHeroesController::class, 'showSingle'])->middleware('checkIfPrivateProfilePage');
-Route::get('Player/{battletag}/{blizz_id}/{region}/Matchups', [PlayerMatchupsController::class, 'show'])->middleware('checkIfPrivateProfilePage');
-Route::get('Player/{battletag}/{blizz_id}/{region}/Role', [PlayerRolesController::class, 'showAll'])->middleware('checkIfPrivateProfilePage');
-Route::get('Player/{battletag}/{blizz_id}/{region}/Role/{role}', [PlayerRolesController::class, 'showSingle'])->middleware('checkIfPrivateProfilePage');
-Route::get('Player/{battletag}/{blizz_id}/{region}/Map', [PlayerMapsController::class, 'showAll'])->middleware('checkIfPrivateProfilePage');
-Route::get('Player/{battletag}/{blizz_id}/{region}/Map/{map}', [PlayerMapsController::class, 'showSingle'])->middleware('checkIfPrivateProfilePage');
-Route::get('Player/{battletag}/{blizz_id}/{region}/Talents', [PlayerTalentsController::class, 'show'])->middleware('checkIfPrivateProfilePage');
-Route::get('Player/{battletag}/{blizz_id}/{region}/Talents/{hero}', [PlayerTalentsController::class, 'show'])->middleware('checkIfPrivateProfilePage');
-Route::get('Player/{battletag}/{blizz_id}/{region}/MMR', [PlayerMMRController::class, 'show'])->middleware('checkIfPrivateProfilePage');
-Route::get('Player/{battletag}/{blizz_id}/{region}/Match/History', [PlayerMatchHistory::class, 'show'])->middleware('checkIfPrivateProfilePage');
+    //Player data
+    Route::get('Player/{battletag}/{blizz_id}/{region}', [PlayerController::class, 'show'])->middleware('checkIfPrivateProfilePage');
+    Route::get('Player/{battletag}/{blizz_id}/{region}/FriendFoe', [FriendFoeController::class, 'show'])->middleware('checkIfPrivateProfilePage');
+    Route::get('Player/{battletag}/{blizz_id}/{region}/Hero', [PlayerHeroesController::class, 'showAll'])->middleware('checkIfPrivateProfilePage');
+    Route::get('Player/{battletag}/{blizz_id}/{region}/Hero/{hero}', [PlayerHeroesController::class, 'showSingle'])->middleware('checkIfPrivateProfilePage');
+    Route::get('Player/{battletag}/{blizz_id}/{region}/Matchups', [PlayerMatchupsController::class, 'show'])->middleware('checkIfPrivateProfilePage');
+    Route::get('Player/{battletag}/{blizz_id}/{region}/Role', [PlayerRolesController::class, 'showAll'])->middleware('checkIfPrivateProfilePage');
+    Route::get('Player/{battletag}/{blizz_id}/{region}/Role/{role}', [PlayerRolesController::class, 'showSingle'])->middleware('checkIfPrivateProfilePage');
+    Route::get('Player/{battletag}/{blizz_id}/{region}/Map', [PlayerMapsController::class, 'showAll'])->middleware('checkIfPrivateProfilePage');
+    Route::get('Player/{battletag}/{blizz_id}/{region}/Map/{map}', [PlayerMapsController::class, 'showSingle'])->middleware('checkIfPrivateProfilePage');
+    Route::get('Player/{battletag}/{blizz_id}/{region}/Talents', [PlayerTalentsController::class, 'show'])->middleware('checkIfPrivateProfilePage');
+    Route::get('Player/{battletag}/{blizz_id}/{region}/Talents/{hero}', [PlayerTalentsController::class, 'show'])->middleware('checkIfPrivateProfilePage');
+    Route::get('Player/{battletag}/{blizz_id}/{region}/MMR', [PlayerMMRController::class, 'show'])->middleware('checkIfPrivateProfilePage');
+    Route::get('Player/{battletag}/{blizz_id}/{region}/Match/History', [PlayerMatchHistory::class, 'show'])->middleware('checkIfPrivateProfilePage');
+    Route::get('Player/{battletag}/{blizz_id}/{region}/Match/Latest', [PlayerMatchHistory::class, 'showLatest'])->middleware('checkIfPrivateProfilePage');
 
-Route::get('Match/Single/{replayID}', [SingleMatchController::class, 'showWithoutEsport']);
+    Route::get('Match/Single/{replayID}', [SingleMatchController::class, 'showWithoutEsport']);
 
-Route::get('/Match/Single/', function (Illuminate\Http\Request $request) {
-    $replayID = $request->query('replayID');
+    Route::get('/Match/Single/', function (Illuminate\Http\Request $request) {
+        $replayID = $request->query('replayID');
 
-    if ($replayID) {
-        return redirect("/Match/Single/$replayID");
-    }
+        if ($replayID) {
+            return redirect("/Match/Single/$replayID", 301);
+        }
 
-    return redirect('/');
+        return redirect('/');
+    });
+
+    Route::get('Esports/{esport}/Match/Single/{replayID}', [SingleMatchController::class, 'showWithEsport']);
+
+    Route::get('Esports', [EsportsController::class, 'show']);
+    Route::get('ESports', [EsportsController::class, 'show']);
+
+    Route::get('Esports/NGS', [NGSController::class, 'show']);
+    Route::get('Esports/NGS/Division/{division}', [NGSSingleDivisionController::class, 'show']);
+
+    Route::get('Esports/CCL', [CCLController::class, 'show']);
+    Route::get('Esports/{esport}/Organization/{team}', [EsportsController::class, 'showSingleTeam']);
+
+    Route::get('Esports/{esport}/Team/{team}', [EsportsController::class, 'showSingleTeam']);
+    Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}', [EsportsController::class, 'showPlayer']);
+    Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Hero/{hero}', [EsportsController::class, 'showPlayerHero']);
+    Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Map/{game_map}', [EsportsController::class, 'showPlayerMap']);
+
+    Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Match/History', [EsportsController::class, 'showPlayerMatchHistory']);
+    Route::get('Esports/{esport}/Team/{team}/Match/History', [EsportsController::class, 'showTeamMatchHistory']);
+    Route::get('Esports/NGS/Division/{division}/Match/History', [NGSSingleDivisionController::class, 'showDivisionMatchHistory']);
+
+    Route::get('Esports/NutCup', [NutCupController::class, 'show']);
+
+    Route::get('Esports/MastersClash', [MastersClashController::class, 'show']);
+
+    Route::get('Esports/HeroesInternational', [HeroesInternationalController::class, 'show']);
+
+
+
+    Route::get('Match/Prediction/Game', [MatchPredictionGameController::class, 'show']);
+
 });
-
-Route::get('Esports/{esport}/Match/Single/{replayID}', [SingleMatchController::class, 'showWithEsport']);
-
-Route::get('Esports', [EsportsController::class, 'show']);
-Route::get('ESports', [EsportsController::class, 'show']);
-
-Route::get('Esports/NGS', [NGSController::class, 'show']);
-Route::get('Esports/NGS/Division/{division}', [NGSSingleDivisionController::class, 'show']);
-
-Route::get('Esports/CCL', [CCLController::class, 'show']);
-Route::get('Esports/{esport}/Organization/{team}', [EsportsController::class, 'showSingleTeam']);
-
-Route::get('Esports/{esport}/Team/{team}', [EsportsController::class, 'showSingleTeam']);
-Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}', [EsportsController::class, 'showPlayer']);
-Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Hero/{hero}', [EsportsController::class, 'showPlayerHero']);
-Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Map/{game_map}', [EsportsController::class, 'showPlayerMap']);
-
-Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Match/History', [EsportsController::class, 'showPlayerMatchHistory']);
-Route::get('Esports/{esport}/Team/{team}/Match/History', [EsportsController::class, 'showTeamMatchHistory']);
-Route::get('Esports/NGS/Division/{division}/Match/History', [NGSSingleDivisionController::class, 'showDivisionMatchHistory']);
-
-Route::get('Esports/NutCup', [NutCupController::class, 'show']);
-
-Route::get('Esports/MastersClash', [MastersClashController::class, 'show']);
-
-Route::get('Esports/HeroesInternational', [HeroesInternationalController::class, 'show']);
-
-//Rewrite game data later
-Route::get('/Gamedata', [GamedataController::class, 'heroes']);
-Route::get('/Gamedata/Heroes', [GamedataController::class, 'heroes']);
-Route::get('/Gamedata/Heroes/{id}', [GamedataController::class, 'hero']);
 
 //Ads.txt redirects
 Route::redirect('/ads.txt', 'https://adstxt.venatusmedia.com/60f587eddd63d722e7e57bc1_ads.txt');

@@ -10,4 +10,10 @@ Disallow: /
 User-agent: YandexBot
 Disallow: /
 
-Sitemap: https://rewrite.heroesprofile.com/sitemap.xml
+User-agent: *
+Disallow: /
+
+Allow: /$
+Allow: /Global/
+
+Sitemap: https://www.heroesprofile.com/sitemap.xml

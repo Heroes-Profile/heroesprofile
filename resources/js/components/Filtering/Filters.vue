@@ -3,8 +3,8 @@
     <button  class="md:hidden p-2 bg-blue w-full" @click="showMobile">Show Filters</button>
     <div v-show="showNav" class="bg-gray-dark py-2 md:px-20 mb-[2em] max-md:fixed max-md:top-0 max-md:z-50 max-md:h-[100vh] max-md:flex max-md:flex-wrap max-md:px-4 max-md:flex-col ">
       <button class="md:hidden ml-auto text-2xl" @click="showMobile">x</button>
-      <div class="flex  items-center justify-center max-md:flex-wrap max-md:flex-1 max-md:mb-auto">
-        <div class="flex flex-wrap items-center justify-center max-md:mb-auto">
+      <div class="flex  items-center justify-center max-md:flex-wrap max-md:flex-1  max-md:items-start max-md:justify-start max-md:flex-col">
+        <div class="flex flex-wrap items-center justify-center ">
           <!--Hero or Role -->
           <single-select-filter v-if="includeherorole" 
             :values="filters.hero_role" 
@@ -86,6 +86,14 @@
             @input-changed="handleInputChange" 
             :defaultValue="gametype"
           ></multi-select-filter>
+
+          <!-- Leaderboard Game Type Excluding UD -->
+          <single-select-filter v-if="includesinglegametypeleaderboard" 
+            :values="leaderboardGameTypes" 
+            :text="'Game Type'" 
+            @input-changed="handleInputChange" 
+            :defaultValue="gametype[0]"
+          ></single-select-filter>
 
           <!-- Current Game Type Single -->
           <single-select-filter v-if="includesinglegametype" 
@@ -184,6 +192,15 @@
             @input-changed="handleInputChange"
           ></single-select-filter>
 
+
+          <!-- Tier Single -->
+          <single-select-filter v-if="includetier" 
+            :values="filters.rank_tiers" 
+            :text="'Rank'" 
+            :defaultValue="tierrank"
+            @input-changed="handleInputChange"
+          ></single-select-filter>
+
           <!-- Player Rank -->
           <multi-select-filter v-if="includeplayerrank" 
             :values="filters.rank_tiers" 
@@ -191,6 +208,8 @@
             :defaultValue="playerrank"
             @input-changed="handleInputChange"
           ></multi-select-filter>
+          
+
 
           <!-- Hero Rank -->
           <multi-select-filter v-if="includeherorank && toggleExtraFilters" 
@@ -262,17 +281,17 @@
                 @blur="handleDateInputBlur"
                 class="w-[200px] h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2 text-white"
               ></div>
-              <button class="h-[40px] bg-blue m-t-auto  p-2 border-r-[1px] border-t-[1px] border-b-[1px] hover:bg-teal" @click="resetGameDate()">X</button>
+              <button class="h-[40px] bg-blue md:m-t-auto  p-2 border-r-[1px] border-t-[1px] border-b-[1px] hover:bg-teal" @click="resetGameDate()">X</button>
             </div>
           </div>
         </div>
-        <button :disabled="disabledFilter" @click="applyFilter"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal max-md:mt-auto max-md:w-full': !disabledFilter, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disabledFilter}">
+        <button :disabled="disabledFilter" @click="applyFilter"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disabledFilter, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disabledFilter}">
           Filter
         </button>
 
         
       </div>
-      <div class="flex justify-end ">
+      <div class="flex justify-end max-md:mb-auto">
         <button class="m-l-auto underline" v-if="!hideadvancedfilteringbutton" @click="toggleExtraFilters = !toggleExtraFilters" >{{toggleButtonText}}</button>
       </div>
     </div>
@@ -322,6 +341,7 @@
       includegametype: Boolean,
       includegametypefull: Boolean,
       includesinglegametype: Boolean,
+      includesinglegametypeleaderboard: Boolean,
       includegamemap: Boolean,
       includesinglegamemap: Boolean,
       includeplayerrank: Boolean,
@@ -341,6 +361,7 @@
       includeseasonwithall: Boolean,
       overrideGroupSizeRemoval: Boolean,
       includetimeframetypewithlastupdate: Boolean,
+      includetier: Boolean,
       filters: {
         type: Object,
         required: true
@@ -358,6 +379,7 @@
       groupSizeDefaultValue: String,
       rolerequired: Boolean,
       excludetimeframes: Boolean,
+      disablefilter: Boolean,
     },
     data(){
       return {
@@ -370,6 +392,7 @@
         role: String,
         gamemap: Array,
         playerrank: Array,
+        tierrank: String,
         herorank: Array,
         rolerank: Array,
         talentbuildtype: String,
@@ -397,6 +420,7 @@
         swapHeroesFilter: false,
         swapRolesFilter: false,
         includetimeframemodified: null,
+        seasonvalue: null,
       }
     },
     created(){
@@ -496,6 +520,10 @@
             return true;
           }
         }
+
+        if(this.disablefilter == true){
+          return true;
+        }
         return false;
       },
       defaultStatType(){
@@ -526,6 +554,12 @@
         updatedList.unshift(newValue);
         return updatedList;
       },
+      leaderboardGameTypes(){
+        if(!this.seasonvalue || this.seasonvalue >= 26){
+          return this.filters.game_types.filter(gameType => gameType.code !== 'ud');
+        }
+        return this.filters.game_types;
+      }
     },
     watch: {
       toggleExtraFilters(value){
@@ -612,6 +646,10 @@
           if(!this.overrideGroupSizeRemoval){
             this.modifiedincludegroupsize = (eventPayload.value >= 20);
           }
+        }
+        
+        if(eventPayload.field == "Season"){
+          this.seasonvalue = eventPayload.value;
         }
 
 

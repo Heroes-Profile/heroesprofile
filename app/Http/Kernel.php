@@ -21,7 +21,8 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        //\App\Http\Middleware\SetGlobalDataValues::class,
+        \App\Http\Middleware\SetGlobalDataValues::class,
+        \App\Http\Middleware\CheckUserAgent::class,
     ];
 
     /**
@@ -68,5 +69,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'ensureBattlenetAuth' => \App\Http\Middleware\EnsureBattlenetAuthenticated::class,
         'checkIfPrivateProfilePage' => \App\Http\Middleware\CheckIfPrivateProfilePage::class,
+        'logIpAndUserAgent' => \App\Http\Middleware\LogIPAndUserAgent::class,
     ];
 }

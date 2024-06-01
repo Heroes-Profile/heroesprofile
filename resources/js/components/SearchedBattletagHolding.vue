@@ -1,14 +1,15 @@
 <template>
-  <takeover-ad :patreon-user="patreonUser"></takeover-ad>
+  <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
   <div>
     <div class="max-w-[1500px] mx-auto mt-10 w-full" v-if="battletagresponse">
       <div class="flex flex-col items-center justify-center " v-if="battletagresponse.length > 1">
         <h2 class="text-xl mb-4 ">Results</h2>
-        <div 
+        <a 
           class="bg-blue hover:bg-lblue p-4 rounded mb-4 w-[500px] flex flex-col items-center cursor-pointer" 
           v-for="(item, index) in battletagresponse" 
           :key="index" 
-          @click="redirectToProfile(item.battletag, item.blizz_id, item.region)"
+          @click="redirectToProfile(item.battletag, item.blizz_id, item.region, false)"
+          :href="`/Player/${item.battletagShort}/${item.blizz_id}/${item.region}`"
         >
           <div>{{ item.battletagShort }} ({{ item.regionName }})</div>
           <div>{{ item.latest_game }}</div>
@@ -17,7 +18,7 @@
           <div v-if="item.latestHero">
             <hero-image-wrapper :hero="item.latestHero"></hero-image-wrapper>
           </div>
-        </div>
+        </a>
       </div>
 
       <div v-else-if="battletagresponse.length == 1">
@@ -61,8 +62,12 @@ export default {
     this.getData();
   },
   computed: {
-    isBattletagReponseValid(){
-      return this.battletagresponse[0] && this.battletagresponse[0].battletag && this.battletagresponse[0].blizz_id !== undefined && this.battletagresponse[0].region !== undefined;
+    isBattletagReponseValid() {
+      return this.battletagresponse[0] && 
+            this.battletagresponse[0].battletag && 
+            this.battletagresponse[0].battletag.includes('#') &&
+            this.battletagresponse[0].blizz_id !== undefined && 
+            this.battletagresponse[0].region !== undefined;
     }
   },
   watch: {

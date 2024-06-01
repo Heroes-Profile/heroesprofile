@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BannedAccountsNote;
 use App\Models\Battletag;
 use App\Models\Map;
 use App\Models\Replay;
@@ -51,6 +52,8 @@ class BattletagSearchController extends Controller
         $uniqueBlizzIDRegion = [];
 
         $privateAccounts = $this->globalDataService->getPrivateAccounts();
+        $bannedAccounts = BannedAccountsNote::get();
+
         foreach ($data as $row) {
             $blizz_id = $row['blizz_id'];
             $region = $row['region'];
@@ -58,8 +61,11 @@ class BattletagSearchController extends Controller
             $containsAccount = $privateAccounts->contains(function ($account) use ($blizz_id, $region) {
                 return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
             });
+            $existingBan = $bannedAccounts->contains(function ($account) use ($blizz_id, $region) {
+                return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
+            });
 
-            if (! $containsAccount) {
+            if (! $containsAccount && ! $existingBan) {
 
                 if (array_key_exists($row['blizz_id'].'|'.$row['region'], $uniqueBlizzIDRegion)) {
                     if ($row['latest_game'] > $uniqueBlizzIDRegion[$row['blizz_id'].'|'.$row['region']]) {
@@ -105,6 +111,11 @@ class BattletagSearchController extends Controller
             $item->regionName = $regionName;
 
         }
+
+        $returnData = array_filter($returnData, function ($item) {
+            return $item->totalGamesPlayed > 0;
+        });
+
         usort($returnData, function ($a, $b) {
             return $b->totalGamesPlayed - $a->totalGamesPlayed;
         });
@@ -142,22 +153,17 @@ class BattletagSearchController extends Controller
 
     private function getLatestHeroPlayedForPlayer($blizzId, $region, $gameType = null)
     {
-        $latestHero = Replay::whereHas('players', function ($query) use ($blizzId, $region) {
-            $query->where('blizz_id', $blizzId)
-                ->where('region', $region)
-                ->orderBy('game_date', 'desc');
-        })
-            ->with('players') // Load the players relationship
+        $latestHero = Replay::select('hero')
+            ->join('player', 'player.replayID', '=', 'replay.replayID')
+            ->where('blizz_id', $blizzId)
+            ->where('region', $region)
             ->orderBy('game_date', 'desc')
-            ->limit(1)
-            ->get();
+            ->first();
 
-        if ($latestHero->count() > 0) {
-            $latestHeroValue = $latestHero[0]->players[0]->hero;
-        } else {
-            $latestHeroValue = null;
+        if ($latestHero) {
+            return $latestHero->hero;
         }
 
-        return $latestHeroValue;
+        return null;
     }
 }

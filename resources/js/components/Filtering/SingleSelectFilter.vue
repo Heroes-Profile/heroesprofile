@@ -65,17 +65,27 @@ export default {
       const selected = this.values.find(value => value.code == this.selectedOptions);
       return selected ? selected.name : '';
     },
-    filteredValues() {  
+    filteredValues() {
       return this.values.filter(value => {
         if (value.name && typeof value.name === 'string') {
-          return value.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
-            .includes(
-              this.searchQuery.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
-            );
+          let normalizedValue = value.name;
+          // Check if normalize method is available and ICU support is present
+          if (String.prototype.normalize && typeof String.prototype.normalize === 'function') {
+            try {
+              normalizedValue = value.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+            } catch (error) {
+              normalizedValue = value.name.toLowerCase();
+            }
+          } else {
+            normalizedValue = value.name.toLowerCase();
+          }
+          
+          return normalizedValue.includes(this.searchQuery.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase());
         }
-        return false; // Skip objects without a valid name property
+        return false;
       });
     },
+
   },
   watch: {
     selectedOptions: function (newVal) {
