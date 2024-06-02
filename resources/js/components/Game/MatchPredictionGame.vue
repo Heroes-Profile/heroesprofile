@@ -12,20 +12,20 @@
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
 
-    <div v-if="!user">
+    <div v-if="!user" class="max-w-[1500px] mx-auto text-center">
       Log in to track your prediction stats and rank on the leaderboard
     </div>
-    <div v-else>
-      {{ truncatedBattletag }}
-
-      <br><span v-if="getPredictionRate(1)">Quick Match Prediction Rate: {{ getPredictionRate(1) }}% out of {{ getPredictionGames(1) }} attempts</span>
-      <br><span v-if="getPredictionRate(5)">Storm League Prediction Rate: {{ getPredictionRate(5) }}% out of {{ getPredictionGames(5) }} attempts</span>
-      <br><span v-if="getPredictionRate(6)">ARAM Prediction Rate: {{ getPredictionRate(6) }}% out of {{ getPredictionGames(6) }} attempts</span>
-
-      <div class="px-4 mt-4">
-        <h3>Practice Mode</h3>
-        <tab-button tab1text="On" :ignoreclick="true" tab2text="Off" @tab-click="practicemodechange" :overridedefaultside="practicemode"> </tab-button>
-      </div>
+    <div v-else class="max-w-[1000px] mx-auto">
+      
+      <div v-if="practicemode==left" class="bg-red p-4" >PRACTICE MODE (5 practices left)</div>
+      <div v-else>
+        <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase"> {{ truncatedBattletag }}</h2>
+        <div class="bg-gray-dark p-4">
+          <span ><stat-bar-box class="w-full" size="full" :title="'Quick Match Prediction Rate (Out of '+getPredictionGames(1)+' Games)'" :value="getPredictionRate(1)"></stat-bar-box> </span>
+          <span ><stat-bar-box color="teal" class="w-full" size="full" :title="'Storm League Prediction Rate (Out of '+getPredictionGames(5)+' Games)'" :value="getPredictionRate(5)"></stat-bar-box> </span>
+          <span ><stat-bar-box color="red" class="w-full" size="full" :title="'ARAM Prediction Rate (Out of '+getPredictionGames(6)+' Games)'" :value="getPredictionRate(6)"></stat-bar-box></span>
+          </div>
+        </div>
 
     </div>
 
@@ -195,7 +195,7 @@ export default {
       disableWinnerSelect: false,
       userchoiceteam: null,
       predictionstatsupdated: null,
-      practicemode: "left",
+      practicemode: "right",
     }
   },
   created(){
@@ -289,11 +289,11 @@ export default {
     },
     getPredictionRate(gameType) {
       const stat = this.predictionstatsupdated.find(stat => stat.game_type === gameType);
-      return stat ? stat.win_rate.toFixed(2) : null; 
+      return stat ? stat.win_rate.toFixed(2) : 0; 
     },
     getPredictionGames(gameType){
       const stat = this.predictionstatsupdated.find(stat => stat.game_type === gameType);
-      return stat ? stat.games_played : null; 
+      return stat ? stat.games_played : 0; 
     },
     practicemodechange(side){
       this.practicemode = side;
