@@ -30,15 +30,12 @@
         :onFilter="filterData" 
         :filters="filters" 
         :isLoading="isLoading"
-
         :gametypeinput="[gametype]"
         :regioninput="region"
-        
-
-
         :gametypedefault="gametypedefault"
         :defaultSeason="defaultseason"
-        :playerheroroletype="true"
+        :defaultpredictionseason="defaultpredictionseason"
+        :leaderboardfiltertype="true"
         :includehero="false"
         :defaultHero="hero"
         :defaultRole="role"
@@ -236,6 +233,7 @@ export default {
     },
     gametypedefault: Array,
     defaultseason: String,
+    defaultpredictionseason: String,
     advancedfiltering: Boolean,
     weekssincestart: Number,
   },

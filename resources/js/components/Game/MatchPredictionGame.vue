@@ -17,7 +17,7 @@
     </div>
     <div v-else class="max-w-[1000px] mx-auto">
       
-      <div v-if="practicemode==left" class="bg-red p-4" >PRACTICE MODE (5 practices left)</div>
+      <div v-if="practicemode" class="bg-red p-4" >PRACTICE MODE ({{ 10 - totalGamesPlayedPractice }} practices left)</div>
       <div v-else>
         <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase"> {{ truncatedBattletag }}</h2>
         <div class="bg-gray-dark p-4">
@@ -82,7 +82,7 @@
             <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 1 Bans</h2>
             <div class="flex justify-center gap-5 p-4 max-md:flex-col">
               <template v-for="(item, index) in data.draftData[0].bans" :key="index">
-                <hero-image-wrapper :hero="item.hero" size="big" ></hero-image-wrapper >
+                <hero-image-wrapper v-if="item.hero" :hero="item.hero" size="big" ></hero-image-wrapper >
               </template>
             </div>
           </div>
@@ -90,7 +90,7 @@
             <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 1 Picks</h2>
             <div class="flex justify-center gap-5 p-4 max-md:flex-col">
               <template v-for="(item, index) in teamZeroPicks" :key="index">
-                <hero-image-wrapper :hero="item.hero" size="big" ></hero-image-wrapper >
+                <hero-image-wrapper v-if="item.hero" :hero="item.hero" size="big" ></hero-image-wrapper >
               </template>
             </div>
           </div>
@@ -183,7 +183,9 @@ export default {
     gametypes: Array,
     user: Object,
     predictionstats: Object,
+    predictionstatspractice: Object,
     patreonUser: Boolean,
+    season: Number,
   },
   data(){
     return {
@@ -195,12 +197,14 @@ export default {
       disableWinnerSelect: false,
       userchoiceteam: null,
       predictionstatsupdated: null,
-      practicemode: "right",
+      totalGamesPlayedPractice: null,
+      practicemode: null,
     }
   },
   created(){
-    console.log(this.predictionstats);
     this.predictionstatsupdated = this.predictionstats;
+    this.totalGamesPlayedPractice = this.predictionstatspractice.reduce((total, stat) => total + stat.games_played, 0);
+    this.practicemode = this.predictionstatspractice.reduce((total, stat) => total + stat.games_played, 0) >= 10 ? false : true;
   },
   mounted() {
   },
@@ -243,7 +247,6 @@ export default {
         }
         
         this.data = response.data;
-        console.log(this.data);
 
         this.isLoading = false;
       }catch(error){
@@ -271,7 +274,9 @@ export default {
           fingerprint: this.data.fingerprint, 
           gametype: this.gametype,
           user: this.user,
-          practicemode: this.practicemode == "left" ? true : false,
+          practicemode: this.practicemode,
+          practicemodegamesplayed: this.totalGamesPlayedPractice,
+          season: this.season,
         });
 
         if(response.data.status == "failure to validate inputs"){
@@ -279,7 +284,14 @@ export default {
         }
         
         this.userchoiceresult = response.data;
-        this.predictionstatsupdated = response.data.predictionstats;
+
+        
+        if(this.practicemode){
+          this.practicemode = response.data.predictionstats.reduce((total, stat) => total + stat.games_played, 0) >= 9 || response.data.predictionstats.length == 0 ? false : true;
+          this.totalGamesPlayedPractice = response.data.predictionstats.reduce((total, stat) => total + stat.games_played, 0);
+        }else{
+          this.predictionstatsupdated = response.data.predictionstats;
+        }
         this.isLoading = false;
       }catch(error){
         //Do something here
@@ -294,9 +306,6 @@ export default {
     getPredictionGames(gameType){
       const stat = this.predictionstatsupdated.find(stat => stat.game_type === gameType);
       return stat ? stat.games_played : 0; 
-    },
-    practicemodechange(side){
-      this.practicemode = side;
     },
   }
 }

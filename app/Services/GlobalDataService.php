@@ -17,6 +17,7 @@ use App\Models\Replay;
 use App\Models\SeasonDate;
 use App\Models\SeasonGameVersion;
 use Carbon\Carbon;
+use App\Models\MatchPredictionSeason;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -322,6 +323,11 @@ class GlobalDataService
         return SeasonDate::select('id')->orderBy('id', 'DESC')->first()->id;
     }
 
+    public function getDefaultMatchPredictionSeason()
+    {
+      return MatchPredictionSeason::select('match_prediction_season_id')->orderBy('match_prediction_season_id', 'DESC')->first()->match_prediction_season_id;
+    }
+
     public function getFilterData()
     {
         $filtersMinimumPatch = '2.53.0.83004';
@@ -527,6 +533,13 @@ class GlobalDataService
             ['code' => 'Role', 'name' => 'Role'],
         ];
 
+        $filterData->leaderboard_type = [
+          ['code' => 'Player', 'name' => 'Player'],
+          ['code' => 'Hero', 'name' => 'Hero'],
+          ['code' => 'Role', 'name' => 'Role'],
+          ['code' => 'Match Prediction', 'name' => 'Match Prediction'],
+        ];
+
         $filterData->group_size = [
             ['code' => 'All', 'name' => 'All'],
             ['code' => 'Solo', 'name' => 'Solo'],
@@ -538,6 +551,10 @@ class GlobalDataService
 
         $filterData->seasons = SeasonDate::select('id', 'year', 'season')->orderBy('id', 'DESC')->get()->map(function ($data) {
             return ['code' => $data->id, 'name' => $data->year.' Season '.$data->season];
+        });
+
+        $filterData->match_prediction_seasons = MatchPredictionSeason::select('match_prediction_season_id', 'season', 'start_date')->orderBy('match_prediction_season_id', 'DESC')->get()->map(function ($data) {
+          return ['code' => $data->match_prediction_season_id, 'name' => 'Season '.$data->season];
         });
 
         $filterData->hero_role = [

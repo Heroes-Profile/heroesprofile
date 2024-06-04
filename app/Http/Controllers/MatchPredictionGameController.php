@@ -33,17 +33,26 @@ class MatchPredictionGameController extends Controller
         $predicitionStats = null;
 
         $user = Auth::user();
+
+        $season = 1;
+
         if ($user) {
-            $predicitionStats = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
-                ->where('season', 1)
-                ->get();
+          $predicitionStats = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
+            ->where('season', $season)
+            ->get();
+
+          $predicitionStatsPractice = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
+            ->where('season', 0)
+            ->get();
         }
 
         return view('MatchPrediction.game')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'filters' => $this->globalDataService->getFilterData(),
             'gametypes' => $gametypes,
+            'season' => $season,
             'predictionstats' => $predicitionStats,
+            'predictionstatspractice' => $predicitionStatsPractice,
         ]);
 
     }
@@ -105,10 +114,10 @@ class MatchPredictionGameController extends Controller
 
         $indexedTalents = $talents->mapWithKeys(function ($item) use ($talentData) {
             return [$item->battletag => [
-                'level_one' => $talentData[$item->level_one],
-                'level_four' => $talentData[$item->level_four],
-                'level_seven' => $talentData[$item->level_seven],
-                'level_ten' => $talentData[$item->level_ten],
+                'level_one' => $item->level_one ? $talentData[$item->level_one] : null,
+                'level_four' => $item->level_four ? $talentData[$item->level_four] : null,
+                'level_seven' => $item->level_seven ? $talentData[$item->level_seven] : null,
+                'level_ten' => $item->level_ten ? $talentData[$item->level_ten] : null,
             ]];
         });
 
@@ -214,6 +223,8 @@ class MatchPredictionGameController extends Controller
             'fingerprint' => 'required|string',
             'gametype' => ['required', new GameTypeInputValidation()],
             'practicemode' => 'required|boolean',
+            'season' => 'required|integer',
+            'practicemodegamesplayed' => 'required|integer',
         ];
 
         if ($request->has('user') && ! is_null($request->input('user'))) {
@@ -233,17 +244,20 @@ class MatchPredictionGameController extends Controller
         }
         $user = $request['user'];
         $game_type = GameType::where('short_name', $request['gametype'])->pluck('type_id')->first();
+        $practiceMode = $request['practicemode'];
+        $practiceModeGamesPlayed = $request['practicemodegamesplayed'];
 
         $replayID = ReplayFingerprint::where('fingerprint', Crypt::decryptString($request['fingerprint']))->value('replayID');
+        $season = $request["season"];
 
         $data = Player::select('winner')
             ->where('replayID', $replayID)
             ->where('team', $request['team'])
             ->first();
 
-        if ($user && ! $request['practicemode']) {
+        if ($user) {
             $existingRecord = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user['battlenet_accounts_id'])
-                ->where('season', 1)
+                ->where('season', $practiceMode ? 0 : $season)
                 ->where('game_type', $game_type)
                 ->first();
 
@@ -256,7 +270,7 @@ class MatchPredictionGameController extends Controller
             } else {
                 MatchPredictionPlayerStat::insert([
                     'battlenet_accounts_id' => $user['battlenet_accounts_id'],
-                    'season' => 1,
+                    'season' => $practiceMode ? 0 : $season,
                     'game_type' => $game_type,
                     'win' => ($data->winner == 1 ? 1 : 0),
                     'loss' => ($data->winner == 0 ? 1 : 0),
@@ -265,9 +279,14 @@ class MatchPredictionGameController extends Controller
         }
 
         $predicitionStats = null;
+
+        if($practiceMode && $practiceModeGamesPlayed == 9){
+          $practiceMode = false;
+        }
+
         if ($user) {
             $predicitionStats = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user['battlenet_accounts_id'])
-                ->where('season', 1)
+                ->where('season', $practiceMode ? 0 : $season)
                 ->get();
         }
 

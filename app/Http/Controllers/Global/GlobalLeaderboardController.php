@@ -36,6 +36,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             'gametypedefault' => $this->globalDataService->getGameTypeDefault('single'),
             'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
             'defaultseason' => (string) $this->globalDataService->getDefaultSeason(),
+            'defaultpredictionseason' => (string) $this->globalDataService->getDefaultMatchPredictionSeason(),
             'weekssincestart' => $this->globalDataService->getWeeksSinceSeasonStart(),
         ]);
     }

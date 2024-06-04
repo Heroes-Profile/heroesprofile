@@ -21,6 +21,14 @@
             :defaultValue="'Player'"
           ></single-select-filter>
 
+          <!-- Leaderboard -->
+          <single-select-filter v-if="leaderboardfiltertype" 
+            :values="filters.leaderboard_type" 
+            :text="'Leaderboard Type'"
+            @input-changed="handleInputChange" 
+            :defaultValue="'Player'"
+          ></single-select-filter>
+
           <!-- Heroes Swap -->
           <single-select-filter v-if="modifiedincludeheroes && swapHeroesFilter" 
             :values="filters.heroes" 
@@ -161,12 +169,21 @@
           ></single-select-filter>
 
           <!-- Season -->
-          <single-select-filter v-if="includeseason" 
+          <single-select-filter v-if="modifiedincludeseason" 
             :values="seasons" 
             :text="'Season'" 
             @input-changed="handleInputChange" 
             :defaultValue="defaultSeason"
           ></single-select-filter>
+
+          <!-- Match Prediction Seasons -->
+          <single-select-filter v-if="modifiedincludematchpredictionseason" 
+            :values="this.filters.match_prediction_seasons" 
+            :text="'Match Prediction Season'" 
+            @input-changed="handleInputChange" 
+            :defaultValue="defaultpredictionseason"
+          ></single-select-filter>
+
 
           <!-- All Seasons -->
           <single-select-filter v-if="includeseasonwithall" 
@@ -194,7 +211,7 @@
 
 
           <!-- Tier Single -->
-          <single-select-filter v-if="includetier" 
+          <single-select-filter v-if="modifiedincludetier" 
             :values="filters.rank_tiers" 
             :text="'Rank'" 
             :defaultValue="tierrank"
@@ -324,10 +341,10 @@
       },
       teamonepartyinput: String,
       teamtwopartyinput: String,
-
       includesingleregion: Boolean,
       includeherorole: Boolean,
       playerheroroletype: Boolean,
+      leaderboardfiltertype: Boolean,
       includegroupsize: Boolean,
       includecharttype: Boolean,
       includetimeframetype: Boolean,
@@ -375,6 +392,8 @@
         tpye: [String, Number]
       },
       defaultSeason: String,
+      defaultpredictionseason: String,
+      defaultPredictionSeason: String,
       advancedfiltering: Boolean,
       groupSizeDefaultValue: String,
       rolerequired: Boolean,
@@ -421,6 +440,8 @@
         swapRolesFilter: false,
         includetimeframemodified: null,
         seasonvalue: null,
+        modifiedincludetier: null,
+        modifiedincludeseason: null,
       }
     },
     created(){
@@ -468,8 +489,9 @@
 
       this.modifiedincluderole = this.includerole
       this.modifiedincludegroupsize = this.includegroupsize;
+      this.modifiedincludetier = this.includetier;
+      this.modifiedincludeseason = this.includeseason;
 
-      
       if(!this.groupSizeDefaultValue){
         this.modifiedGroupSizeDefaultValue = "Solo";
       }
@@ -609,6 +631,7 @@
           this.modifiedincludexaxisincrements = false;
           this.modifiedincludegametype = true;
           this.modifiedincludeheroes = true;
+          
 
         }else if(eventPayload.field == "Chart Type" && eventPayload.value == "Account Level"){
           this.modifiedincludeminimumaccountlevel = true;
@@ -618,9 +641,17 @@
         }
 
 
-        if(eventPayload.field == "Type"){
+        if(eventPayload.field == "Type" || eventPayload.field == "Leaderboard Type"){
           this.modifiedincludeheroes = (eventPayload.value == "Hero");
           this.modifiedincluderole = (eventPayload.value == "Role");
+
+          if(eventPayload.field == "Leaderboard Type"){
+            this.modifiedincludeseason = true;
+            this.modifiedincludematchpredictionseason = false;
+            this.modifiedincludegroupsize = true;
+            this.modifiedincludetier = true;
+          }
+   
 
           if(eventPayload.value == "Player"){
             delete this.selectedSingleFilters['Heroes'];
@@ -639,6 +670,11 @@
             this.selectedSingleFilters["Role"] = "Support";
             this.swapRolesFilter = true;
             this.swapHeroesFilter = false;
+          }else if(eventPayload.value == "Match Prediction"){
+            this.modifiedincludegroupsize = false;
+            this.modifiedincludetier = false;
+            this.modifiedincludeseason = false;
+            this.modifiedincludematchpredictionseason = true;
           }
         }
 

@@ -10,6 +10,7 @@
     :filters="{{ json_encode($filters) }}" 
     :gametypedefault="{{ json_encode($gametypedefault) }}" 
     :defaultseason="{{ json_encode($defaultseason) }}" 
+    :defaultpredictionseason="{{ json_encode($defaultpredictionseason) }}" 
     :advancedfiltering="{{ json_encode($advancedfiltering) }}"
     :weekssincestart="{{ json_encode($weekssincestart) }}"
   >
