@@ -13,6 +13,7 @@
     :defaultpredictionseason="{{ json_encode($defaultpredictionseason) }}" 
     :advancedfiltering="{{ json_encode($advancedfiltering) }}"
     :weekssincestart="{{ json_encode($weekssincestart) }}"
+    :matchpredictionweekssincestart="{{ json_encode($matchpredictionweekssincestart) }}"
   >
   </global-leaderboard>
 @endsection

@@ -31,6 +31,7 @@ class MatchPredictionGameController extends Controller
             });
 
         $predicitionStats = null;
+        $predicitionStatsPractice = null;
 
         $user = Auth::user();
 

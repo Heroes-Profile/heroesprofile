@@ -188,6 +188,15 @@ class GlobalDataService
         return $startDate->diffInWeeks($currentDate);
     }
 
+    public function matchPredictionGetWeeksSinceSeasonStart()
+    {
+      $startDate = MatchPredictionSeason::orderBy('match_prediction_season_id', 'desc')->limit(1)->value('start_date');
+      $startDateCarbon = Carbon::parse($startDate);
+      $currentDate = Carbon::now();
+      return $startDateCarbon->diffInWeeks($currentDate);
+    }
+    
+
     public function getBlizzIDGivenFullBattletag($battletag, $region)
     {
         $blizzID = Battletag::where('battletag', $battletag)

@@ -12,9 +12,13 @@
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
 
-    <div v-if="!user" class="max-w-[1500px] mx-auto text-center">
-      Log in to track your prediction stats and rank on the leaderboard
+
+    <div v-if="!user"  class="max-w-[1000px] mx-auto">
+      <div class="bg-gray-dark p-4">
+        Log in to track your prediction stats and rank on the leaderboard
+      </div>
     </div>
+    
     <div v-else class="max-w-[1000px] mx-auto">
       
       <div v-if="practicemode" class="bg-red p-4" >PRACTICE MODE ({{ 10 - totalGamesPlayedPractice }} practices left)</div>
@@ -27,6 +31,12 @@
           </div>
         </div>
 
+    </div>
+
+    <div class="max-w-[1000px] mx-auto">
+      <div class="bg-gray-dark p-4">
+        Leaderboards can be found at <a class="link" href="/Global/Leaderboard" target="_blank">Leaderboards</a>
+      </div>
     </div>
 
 
@@ -203,8 +213,8 @@ export default {
   },
   created(){
     this.predictionstatsupdated = this.predictionstats;
-    this.totalGamesPlayedPractice = this.predictionstatspractice.reduce((total, stat) => total + stat.games_played, 0);
-    this.practicemode = this.predictionstatspractice.reduce((total, stat) => total + stat.games_played, 0) >= 10 ? false : true;
+    this.totalGamesPlayedPractice = this.predictionstatspractice ? this.predictionstatspractice.reduce((total, stat) => total + stat.games_played, 0): 0;
+    this.practicemode = this.predictionstatspractice ? this.predictionstatspractice.reduce((total, stat) => total + stat.games_played, 0) >= 10 ? false : true : true;
   },
   mounted() {
   },

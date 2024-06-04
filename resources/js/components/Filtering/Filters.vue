@@ -675,9 +675,15 @@
             this.modifiedincludetier = false;
             this.modifiedincludeseason = false;
             this.modifiedincludematchpredictionseason = true;
+
+            delete this.selectedSingleFilters['Group Size'];
+            delete this.selectedSingleFilters['Rank'];
+            delete this.selectedSingleFilters['Season'];
+            delete this.selectedSingleFilters['Heroes'];
+            delete this.selectedSingleFilters['Role'];
+
           }
         }
-
         if(eventPayload.field == "Season" && this.includegroupsize){
           if(!this.overrideGroupSizeRemoval){
             this.modifiedincludegroupsize = (eventPayload.value >= 20);

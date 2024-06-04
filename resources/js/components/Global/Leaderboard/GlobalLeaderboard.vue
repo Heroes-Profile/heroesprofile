@@ -15,16 +15,20 @@
     <div class="max-w-[1500px] mx-auto my-2 text-right">
       <custom-button @click="showLeaderboardRequirements = !showLeaderboardRequirements" :text="'Show Leaderboard Requirements'" :alt="'Show Leaderboard Requirements'" size="small" :ignoreclick="true"></custom-button></div>
       <div v-if="showLeaderboardRequirements" class="flex flex-col items-center p-[2em] border w-auto ml-auto mr-auto max-w-[1500px] bg-teal mb-2">
-        <h3 class="font-bold md:text-2xl max-md:text-base uppercase">To be eligible for leaderboards, the following conditions must be met:</h3>
+        <h3 class="font-bold md:text-2xl max-md:text-base uppercase">To be eligible for <span v-if="leaderboardtype == 'Match Prediction'">Match Prediction</span> leaderboards, the following conditions must be met:</h3>
         <div class="bg-teal p-[1em] pl-[2em] ">
-          <ol class="list-disc max-md:text-sm">
+          <ol v-if="leaderboardtype != 'Match Prediction'" class="list-disc max-md:text-sm">
             <li>Account level must be greater than or equal to 250.</li>
             <li> Must have played at least {{ weeksSinceStartScalar }} times the number of weeks since the season started. (Currently that is {{ weekssincestart * weeksSinceStartScalar }} games).  Note:  If there are less than 10 players meeting these requirements, then the number of games required are reduced until 10 players are found.</li>
             <li>Must have a win rate greater than or equal to 50%.</li>
           </ol>
+          <ol v-else>
+            <!--<li> Must have predicted at least {{ matchPredictionWeeksSinceStartScalar }} times the number of weeks since the season started. (Currently that is {{ weekssincestart * matchPredictionWeeksSinceStartScalar }} games)</li>-->
+            <li>Must have predicted 20 games in the game type and season</li>
+          </ol>
         </div>
-        <h3 class="font-bold text-2xl uppercase pb-2 max-md:text-base">Heroes Profile Rating formula</h3>
-        <img class="max-w-[1000px] w-full" :src="'/images/miscellaneous/mmr_calculation.png'"/>
+        <h3 v-if="leaderboardtype != 'Match Prediction'" class="font-bold text-2xl uppercase pb-2 max-md:text-base">Heroes Profile Rating formula</h3>
+        <img v-if="leaderboardtype != 'Match Prediction'" class="max-w-[1000px] w-full" :src="'/images/miscellaneous/mmr_calculation.png'"/>
       </div>
       <filters 
         :onFilter="filterData" 
@@ -56,7 +60,11 @@
       <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
       <div v-if="data">
         <div class="flex">
+ 
           <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
+            <div v-if="leaderboardtype == 'Match Prediction'">
+              Match Prediction leaderboard data is based on users making predictions about match outcomes through <a class="link" href="/Match/Prediction/Game" target="_blank">Match Prediction</a>
+            </div>
 
             <div class="flex flex-wrap justify-between">
               <div class="mb-4 mx-4">
@@ -98,16 +106,19 @@
                   <th @click="sortTable('region_id')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'region_id'}]">
                     Region
                   </th>
-                  <th @click="sortTable('win_rate')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'win_rate'}]">
+                  <th v-if="leaderboardtype != 'Match Prediction'" @click="sortTable('win_rate')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'win_rate'}]">
                     Win Rate %
                   </th>
-                  <th @click="sortTable('rating')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'rating'}]">
+                  <th v-if="leaderboardtype == 'Match Prediction'" @click="sortTable('win_rate')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'win_rate'}]">
+                    Prediction Rate %
+                  </th>
+                  <th v-if="leaderboardtype != 'Match Prediction'" @click="sortTable('rating')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'rating'}]">
                     Heroes Profile Rating
                   </th>      
-                  <th @click="sortTable('mmr')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'mmr'}]">
+                  <th v-if="leaderboardtype != 'Match Prediction'" @click="sortTable('mmr')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'mmr'}]">
                     {{ leaderboardtype }} MMR
                   </th> 
-                  <th @click="sortTable('tier_id')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'tier_id'}]">
+                  <th v-if="leaderboardtype != 'Match Prediction'" @click="sortTable('tier_id')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'tier_id'}]">
                     Tier
                   </th>    
                   <th @click="sortTable('games_played')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'games_played'}]">
@@ -167,9 +178,9 @@
                     </td>
                     <td>{{ row.region }}</td>
                     <td>{{ row.win_rate.toFixed(2) }}</td>
-                    <td>{{ row.rating.toFixed(2) }}</td>
-                    <td>{{ row.mmr.toLocaleString('en-US') }}</td>
-                    <td>{{ row.tier }}</td>
+                    <td v-if="leaderboardtype != 'Match Prediction'">{{ row.rating.toFixed(2) }}</td>
+                    <td v-if="leaderboardtype != 'Match Prediction'">{{ row.mmr.toLocaleString('en-US') }}</td>
+                    <td v-if="leaderboardtype != 'Match Prediction'">{{ row.tier }}</td>
                     <td>{{ row.games_played.toLocaleString('en-US') }}</td>
 
                     <td class="py-2 px-3 flex items-center gap-1" v-if="(leaderboardtype === 'Player' || leaderboardtype === 'Role')">
@@ -236,6 +247,7 @@ export default {
     defaultpredictionseason: String,
     advancedfiltering: Boolean,
     weekssincestart: Number,
+    matchpredictionweekssincestart: Number,
   },
   data(){
     return {
@@ -258,6 +270,7 @@ export default {
       groupsize: "Solo",
       gametype: null,
       season: null,
+      matchpredictionseason: null,
       region: null,
       data: null,
       hero: 1,
@@ -277,6 +290,7 @@ export default {
   created(){
     this.gametype = this.gametypedefault[0];
     this.season = this.defaultseason;
+    this.matchpredictionseason = this.defaultpredictionseason;
 
     if(this.region != null || this.tierrank != null){
       this.rankchange = true;
@@ -306,6 +320,9 @@ export default {
       }
       return 5;
     },
+    matchPredictionWeeksSinceStartScalar(){
+      return 10;
+    },
     filteredData() {
       const searchTerm = this.searchTerm.toLowerCase();
       return this.sortedData.filter(row => row.battletag.toLowerCase().includes(searchTerm));
@@ -327,9 +344,9 @@ export default {
         this.cancelTokenSource.cancel('Request canceled');
       }
       this.cancelTokenSource = this.$axios.CancelToken.source();
-
       try{
         const response = await this.$axios.post("/api/v1/global/leaderboard", {
+
           season: this.season, 
           game_type: this.gametype,
           type: this.leaderboardtype.toLowerCase(),
@@ -373,13 +390,21 @@ export default {
     },
     filterData(filteredData){
       this.leaderboardtype = filteredData.single["Type"] ? filteredData.single["Type"] : this.leaderboardtype;
+      this.leaderboardtype = filteredData.single["Leaderboard Type"] ? filteredData.single["Leaderboard Type"] : this.leaderboardtype;
+
       this.groupsize = filteredData.single["Group Size"] ? filteredData.single["Group Size"] : this.groupsize;
-      this.gametype = filteredData.single["Game Type"] ? filteredData.single["Game Type"] : this.gametype;
-      this.season = filteredData.single["Season"] ? filteredData.single["Season"] : this.season;
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
-      this.region = filteredData.single["Regions"] ? filteredData.single["Regions"] : null;
+      
+      this.gametype = filteredData.single["Game Type"] ? filteredData.single["Game Type"] : this.gametype;
 
+      if(this.leaderboardtype == "Match Prediction"){
+        this.season = filteredData.single["Match Prediction Season"] ? filteredData.single["Match Prediction Season"] : this.matchpredictionseason;
+      }else{
+        this.season = filteredData.single["Season"] ? filteredData.single["Season"] : this.season;
+      }
+
+      this.region = filteredData.single["Regions"] ? filteredData.single["Regions"] : null;
       this.tierrank = filteredData.single.Rank ? filteredData.single.Rank : null;
 
       this.sortKey = '';
