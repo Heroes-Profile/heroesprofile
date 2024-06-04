@@ -61,8 +61,9 @@
       <div v-if="data">
         <div class="flex">
  
-          <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
-            <div v-if="leaderboardtype == 'Match Prediction'">
+          <div id="table-container" ref="tablecontainer" class="w-auto overflow-hidden w-[100vw] 2xl:mx-auto">
+
+            <div v-if="leaderboardtype == 'Match Prediction'" class="bg-gray-dark p-4 mb-4">
               Match Prediction leaderboard data is based on users making predictions about match outcomes through <a class="link" href="/Match/Prediction/Game" target="_blank">Match Prediction</a>
             </div>
 
