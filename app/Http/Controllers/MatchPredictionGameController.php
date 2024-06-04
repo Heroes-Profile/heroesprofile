@@ -281,7 +281,7 @@ class MatchPredictionGameController extends Controller
 
         $predicitionStats = null;
 
-        if ($practiceMode && $practiceModeGamesPlayed == 9) {
+        if ($practiceMode && $practiceModeGamesPlayed == 10) {
             $practiceMode = false;
         }
 
