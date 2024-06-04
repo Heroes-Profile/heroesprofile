@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-      Schema::create('heroes_translations', function (Blueprint $table) {
-        $table->increments('heroes_translations_id');
-        $table->string('name', 45);
-        $table->string('short_name', 45);
-        $table->string('translation', 45);
-        $table->string('attribute_id', 45);
-        
-        // Adding index
-        $table->index(['name', 'short_name', 'translation', 'attribute_id'], 'INDEX');
-      });
+        Schema::create('heroes_translations', function (Blueprint $table) {
+            $table->increments('heroes_translations_id');
+            $table->string('name', 45);
+            $table->string('short_name', 45);
+            $table->string('translation', 45);
+            $table->string('attribute_id', 45);
+
+            // Adding index
+            $table->index(['name', 'short_name', 'translation', 'attribute_id'], 'INDEX');
+        });
     }
 
     /**

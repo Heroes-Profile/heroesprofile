@@ -12,21 +12,31 @@
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
 
-    <div v-if="!user">
-      Log in to track your prediction stats and rank on the leaderboard
-    </div>
-    <div v-else>
-      {{ truncatedBattletag }}
 
-      <br><span v-if="getPredictionRate(1)">Quick Match Prediction Rate: {{ getPredictionRate(1) }}% out of {{ getPredictionGames(1) }} attempts</span>
-      <br><span v-if="getPredictionRate(5)">Storm League Prediction Rate: {{ getPredictionRate(5) }}% out of {{ getPredictionGames(5) }} attempts</span>
-      <br><span v-if="getPredictionRate(6)">ARAM Prediction Rate: {{ getPredictionRate(6) }}% out of {{ getPredictionGames(6) }} attempts</span>
-
-      <div class="px-4 mt-4">
-        <h3>Practice Mode</h3>
-        <tab-button tab1text="On" :ignoreclick="true" tab2text="Off" @tab-click="practicemodechange" :overridedefaultside="practicemode"> </tab-button>
+    <div v-if="!user"  class="max-w-[1000px] mx-auto">
+      <div class="bg-gray-dark p-4">
+        Log in to track your prediction stats and rank on the leaderboard
       </div>
+    </div>
+    
+    <div v-else class="max-w-[1000px] mx-auto">
+      
+      <div v-if="practicemode" class="bg-red p-4" >PRACTICE MODE ({{ 10 - totalGamesPlayedPractice }} practices left)</div>
+      <div v-else>
+        <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase"> {{ truncatedBattletag }}</h2>
+        <div class="bg-gray-dark p-4">
+          <span ><stat-bar-box class="w-full" size="full" :title="'Quick Match Prediction Rate (Out of '+getPredictionGames(1)+' Games)'" :value="getPredictionRate(1)"></stat-bar-box> </span>
+          <span ><stat-bar-box color="teal" class="w-full" size="full" :title="'Storm League Prediction Rate (Out of '+getPredictionGames(5)+' Games)'" :value="getPredictionRate(5)"></stat-bar-box> </span>
+          <span ><stat-bar-box color="red" class="w-full" size="full" :title="'ARAM Prediction Rate (Out of '+getPredictionGames(6)+' Games)'" :value="getPredictionRate(6)"></stat-bar-box></span>
+          </div>
+        </div>
 
+    </div>
+
+    <div class="max-w-[1000px] mx-auto">
+      <div class="bg-gray-dark p-4">
+        Leaderboards can be found at <a class="link" href="/Global/Leaderboard" target="_blank">Leaderboards</a>
+      </div>
     </div>
 
 
@@ -82,7 +92,7 @@
             <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 1 Bans</h2>
             <div class="flex justify-center gap-5 p-4 max-md:flex-col">
               <template v-for="(item, index) in data.draftData[0].bans" :key="index">
-                <hero-image-wrapper :hero="item.hero" size="big" ></hero-image-wrapper >
+                <hero-image-wrapper v-if="item.hero" :hero="item.hero" size="big" ></hero-image-wrapper >
               </template>
             </div>
           </div>
@@ -90,7 +100,7 @@
             <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 1 Picks</h2>
             <div class="flex justify-center gap-5 p-4 max-md:flex-col">
               <template v-for="(item, index) in teamZeroPicks" :key="index">
-                <hero-image-wrapper :hero="item.hero" size="big" ></hero-image-wrapper >
+                <hero-image-wrapper v-if="item.hero" :hero="item.hero" size="big" ></hero-image-wrapper >
               </template>
             </div>
           </div>
@@ -183,7 +193,9 @@ export default {
     gametypes: Array,
     user: Object,
     predictionstats: Object,
+    predictionstatspractice: Object,
     patreonUser: Boolean,
+    season: Number,
   },
   data(){
     return {
@@ -195,12 +207,14 @@ export default {
       disableWinnerSelect: false,
       userchoiceteam: null,
       predictionstatsupdated: null,
-      practicemode: "left",
+      totalGamesPlayedPractice: null,
+      practicemode: null,
     }
   },
   created(){
-    console.log(this.predictionstats);
     this.predictionstatsupdated = this.predictionstats;
+    this.totalGamesPlayedPractice = this.predictionstatspractice ? this.predictionstatspractice.reduce((total, stat) => total + stat.games_played, 0): 0;
+    this.practicemode = this.predictionstatspractice ? this.predictionstatspractice.reduce((total, stat) => total + stat.games_played, 0) >= 10 ? false : true : true;
   },
   mounted() {
   },
@@ -243,7 +257,6 @@ export default {
         }
         
         this.data = response.data;
-        console.log(this.data);
 
         this.isLoading = false;
       }catch(error){
@@ -271,7 +284,9 @@ export default {
           fingerprint: this.data.fingerprint, 
           gametype: this.gametype,
           user: this.user,
-          practicemode: this.practicemode == "left" ? true : false,
+          practicemode: this.practicemode,
+          practicemodegamesplayed: this.totalGamesPlayedPractice,
+          season: this.season,
         });
 
         if(response.data.status == "failure to validate inputs"){
@@ -279,7 +294,14 @@ export default {
         }
         
         this.userchoiceresult = response.data;
-        this.predictionstatsupdated = response.data.predictionstats;
+
+        
+        if(this.practicemode){
+          this.practicemode = response.data.predictionstats.reduce((total, stat) => total + stat.games_played, 0) >= 9 || response.data.predictionstats.length == 0 ? false : true;
+          this.totalGamesPlayedPractice = response.data.predictionstats.reduce((total, stat) => total + stat.games_played, 0);
+        }else{
+          this.predictionstatsupdated = response.data.predictionstats;
+        }
         this.isLoading = false;
       }catch(error){
         //Do something here
@@ -289,14 +311,11 @@ export default {
     },
     getPredictionRate(gameType) {
       const stat = this.predictionstatsupdated.find(stat => stat.game_type === gameType);
-      return stat ? stat.win_rate.toFixed(2) : null; 
+      return stat ? stat.win_rate.toFixed(2) : 0; 
     },
     getPredictionGames(gameType){
       const stat = this.predictionstatsupdated.find(stat => stat.game_type === gameType);
-      return stat ? stat.games_played : null; 
-    },
-    practicemodechange(side){
-      this.practicemode = side;
+      return stat ? stat.games_played : 0; 
     },
   }
 }
