@@ -297,7 +297,7 @@ export default {
 
         
         if(this.practicemode){
-          this.practicemode = response.data.predictionstats.reduce((total, stat) => total + stat.games_played, 0) >= 9 || response.data.predictionstats.length == 0 ? false : true;
+          this.practicemode = response.data.predictionstats.reduce((total, stat) => total + stat.games_played, 0) >= 10 || response.data.predictionstats.length == 0 ? false : true;
           this.totalGamesPlayedPractice = response.data.predictionstats.reduce((total, stat) => total + stat.games_played, 0);
         }else{
           this.predictionstatsupdated = response.data.predictionstats;
