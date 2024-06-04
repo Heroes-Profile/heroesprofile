@@ -40,7 +40,7 @@ class CreateGlobalHeroStackSizeTable extends Migration
                 'hero',
                 'hero_stack_size',
                 'team_ally_stack_value',
-                'team_enemy_stack_value'
+                'team_enemy_stack_value',
             ], 'unique');
 
             $table->index([
@@ -56,7 +56,7 @@ class CreateGlobalHeroStackSizeTable extends Migration
                 'win_loss',
                 'team_ally_stack_value',
                 'hero',
-                'games_played'
+                'games_played',
             ], 'primary_gamesPlayed');
         });
     }

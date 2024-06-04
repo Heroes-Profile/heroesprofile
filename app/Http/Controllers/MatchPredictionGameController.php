@@ -38,13 +38,13 @@ class MatchPredictionGameController extends Controller
         $season = 1;
 
         if ($user) {
-          $predicitionStats = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
-            ->where('season', $season)
-            ->get();
+            $predicitionStats = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
+                ->where('season', $season)
+                ->get();
 
-          $predicitionStatsPractice = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
-            ->where('season', 0)
-            ->get();
+            $predicitionStatsPractice = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
+                ->where('season', 0)
+                ->get();
         }
 
         return view('MatchPrediction.game')->with([
@@ -249,7 +249,7 @@ class MatchPredictionGameController extends Controller
         $practiceModeGamesPlayed = $request['practicemodegamesplayed'];
 
         $replayID = ReplayFingerprint::where('fingerprint', Crypt::decryptString($request['fingerprint']))->value('replayID');
-        $season = $request["season"];
+        $season = $request['season'];
 
         $data = Player::select('winner')
             ->where('replayID', $replayID)
@@ -281,8 +281,8 @@ class MatchPredictionGameController extends Controller
 
         $predicitionStats = null;
 
-        if($practiceMode && $practiceModeGamesPlayed == 9){
-          $practiceMode = false;
+        if ($practiceMode && $practiceModeGamesPlayed == 9) {
+            $practiceMode = false;
         }
 
         if ($user) {

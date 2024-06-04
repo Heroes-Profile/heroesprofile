@@ -20,7 +20,7 @@ class CreateSessionsTable extends Migration
             $table->text('user_agent')->nullable()->collation('utf8mb4_0900_ai_ci');
             $table->longText('payload')->collation('utf8mb4_0900_ai_ci');
             $table->integer('last_activity');
-            
+
             // Unique constraint
             $table->unique('id', 'sessions_id_unique');
 

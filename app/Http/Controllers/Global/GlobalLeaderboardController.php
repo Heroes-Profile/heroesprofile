@@ -14,6 +14,7 @@ use App\Models\MasterMMRDataQM;
 use App\Models\MasterMMRDataSL;
 use App\Models\MasterMMRDataTL;
 use App\Models\MasterMMRDataUD;
+use App\Models\MatchPredictionPlayerStat;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
 use App\Rules\RegionInputValidation;
@@ -23,8 +24,6 @@ use App\Rules\StackSizeInputValidation;
 use App\Rules\TierInputByIDValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Models\MatchPredictionPlayerStat;
-use Carbon\Carbon;
 
 class GlobalLeaderboardController extends GlobalsInputValidationController
 {
@@ -41,7 +40,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             'defaultpredictionseason' => (string) $this->globalDataService->getDefaultMatchPredictionSeason(),
             'weekssincestart' => $this->globalDataService->getWeeksSinceSeasonStart(),
             'matchpredictionweekssincestart' => $this->globalDataService->matchPredictionGetWeeksSinceSeasonStart(),
-            
+
         ]);
     }
 
@@ -70,7 +69,6 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             ];
         }
 
-   
         $hero = $request['hero'];
         $role = $this->getMMRTypeValue($request['role']);
 
@@ -81,142 +79,136 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         $type = $request['type'];
         $typeNumber = 0;
 
-        if($type != "match prediction"){
-          if ($type == 'player') {
-            $typeNumber = $this->getMMRTypeValue($request['type']);
-          } elseif ($type == 'hero') {
-              $typeNumber = $hero;
-          } elseif ($type == 'role') {
-              $typeNumber = $role;
-          }
+        if ($type != 'match prediction') {
+            if ($type == 'player') {
+                $typeNumber = $this->getMMRTypeValue($request['type']);
+            } elseif ($type == 'hero') {
+                $typeNumber = $hero;
+            } elseif ($type == 'role') {
+                $typeNumber = $role;
+            }
 
-          $groupsize = -1;
-          if ($season < 20) {
-              $groupsize = 0;
-          } else {
-              if ($request['groupsize'] == 'Solo') {
-                  $groupsize = 1;
-              } elseif ($request['groupsize'] == 'Duo') {
-                  $groupsize = 2;
-              } elseif ($request['groupsize'] == '3 Players') {
-                  $groupsize = 3;
-              } elseif ($request['groupsize'] == '4 Players') {
-                  $groupsize = 4;
-              } elseif ($request['groupsize'] == '5 Players') {
-                  $groupsize = 5;
-              } elseif ($request['groupsize'] == 'All') {
-                  $groupsize = 0;
-              }
-          }
-
-          $data = Leaderboard::query()
-              ->select('rank', 'battletag', 'split_battletag', 'blizz_id', 'region', 'win_rate', 'games_played', 'conservative_rating', 'rating', 'normalized_rating', 'most_played_hero', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty', 'hero_build_games_played')
-              ->filterByGameType($gameType)
-              ->filterBySeason($season)
-              ->filterByType($typeNumber)
-              ->filterByStackSize($groupsize)
-              ->filterByRegion($region)
-              //->toSql();
-              ->get();
-
-          $heroData = $this->globalDataService->getHeroes();
-          $heroData = $heroData->keyBy('id');
-
-          $rankTiers = $this->globalDataService->getRankTiers($gameType, $typeNumber);
-
-          $talentData = HeroesDataTalent::all();
-          $talentData = $talentData->keyBy('talent_id');
-
-          $patreonAccounts = BattlenetAccount::has('patreonAccount')->get();
-          $bannedAccounts = BannedAccountsNote::get();
-
-          $blizzIDRegionMapping = [];
-          $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber, $patreonAccounts, &$blizzIDRegionMapping, $tierrank, $bannedAccounts) {
-
-            if (array_key_exists($item->blizz_id.'|'.$item->region, $blizzIDRegionMapping)) {
-                return null;
+            $groupsize = -1;
+            if ($season < 20) {
+                $groupsize = 0;
             } else {
-                $blizzIDRegionMapping[$item->blizz_id.'|'.$item->region] = 'found';
+                if ($request['groupsize'] == 'Solo') {
+                    $groupsize = 1;
+                } elseif ($request['groupsize'] == 'Duo') {
+                    $groupsize = 2;
+                } elseif ($request['groupsize'] == '3 Players') {
+                    $groupsize = 3;
+                } elseif ($request['groupsize'] == '4 Players') {
+                    $groupsize = 4;
+                } elseif ($request['groupsize'] == '5 Players') {
+                    $groupsize = 5;
+                } elseif ($request['groupsize'] == 'All') {
+                    $groupsize = 0;
+                }
             }
 
-            $patreonAccount = $patreonAccounts->where('blizz_id', $item->blizz_id)->where('region', $item->region);
+            $data = Leaderboard::query()
+                ->select('rank', 'battletag', 'split_battletag', 'blizz_id', 'region', 'win_rate', 'games_played', 'conservative_rating', 'rating', 'normalized_rating', 'most_played_hero', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty', 'hero_build_games_played')
+                ->filterByGameType($gameType)
+                ->filterBySeason($season)
+                ->filterByType($typeNumber)
+                ->filterByStackSize($groupsize)
+                ->filterByRegion($region)
+                //->toSql();
+                ->get();
 
-            $existingBan = $bannedAccounts->first(function ($ban) use ($item) {
-                return $ban->blizz_id === $item->blizz_id && $ban->region === $item->region;
+            $heroData = $this->globalDataService->getHeroes();
+            $heroData = $heroData->keyBy('id');
+
+            $rankTiers = $this->globalDataService->getRankTiers($gameType, $typeNumber);
+
+            $talentData = HeroesDataTalent::all();
+            $talentData = $talentData->keyBy('talent_id');
+
+            $patreonAccounts = BattlenetAccount::has('patreonAccount')->get();
+            $bannedAccounts = BannedAccountsNote::get();
+
+            $blizzIDRegionMapping = [];
+            $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber, $patreonAccounts, &$blizzIDRegionMapping, $tierrank, $bannedAccounts) {
+
+                if (array_key_exists($item->blizz_id.'|'.$item->region, $blizzIDRegionMapping)) {
+                    return null;
+                } else {
+                    $blizzIDRegionMapping[$item->blizz_id.'|'.$item->region] = 'found';
+                }
+
+                $patreonAccount = $patreonAccounts->where('blizz_id', $item->blizz_id)->where('region', $item->region);
+
+                $existingBan = $bannedAccounts->first(function ($ban) use ($item) {
+                    return $ban->blizz_id === $item->blizz_id && $ban->region === $item->region;
+                });
+                if ($existingBan) {
+                    $this->rankModifier++;
+
+                    return null;
+                }
+
+                $item->patreon = is_null($patreonAccount) || empty($patreonAccount) || count($patreonAccount) == 0 ? false : true;
+                $item->hp_owner = ($item->blizz_id == 67280 && $item->region == 1) ? true : false;
+                $item->mmr = round(1800 + 40 * $item->conservative_rating);
+                $item->win_rate = round($item->win_rate, 2);
+                $item->rating = round($item->rating, 2);
+                $item->most_played_hero = $item->most_played_hero ? $heroData[$item->most_played_hero] : null;
+                $item->tier = $this->globalDataService->calculateSubTier($rankTiers, $item->mmr);
+                $item->tier_id = $this->globalDataService->calculateTierID($item->tier);
+
+                if ($tierrank && $tierrank != intval($item->tier_id)) {
+                    return null;
+                }
+
+                $item->region_id = $item->region;
+                $item->region = $this->globalDataService->getRegionIDtoString()[$item->region];
+
+                $item->rank = $item->rank - $this->rankModifier;
+
+                $item->level_one = $item->level_one && $item->level_one != 0 ? isset($talentData[$item->level_one]) ? $talentData[$item->level_one] : null : null;
+                $item->level_four = $item->level_four && $item->level_four != 0 ? isset($talentData[$item->level_four]) ? $talentData[$item->level_four] : null : null;
+                $item->level_seven = $item->level_seven && $item->level_seven != 0 ? isset($talentData[$item->level_seven]) ? $talentData[$item->level_seven] : null : null;
+                $item->level_ten = $item->level_ten && $item->level_ten != 0 ? isset($talentData[$item->level_ten]) ? $talentData[$item->level_ten] : null : null;
+                $item->level_thirteen = $item->level_thirteen && $item->level_thirteen != 0 ? isset($talentData[$item->level_thirteen]) ? $talentData[$item->level_thirteen] : null : null;
+                $item->level_sixteen = $item->level_sixteen && $item->level_sixteen != 0 ? isset($talentData[$item->level_sixteen]) ? $talentData[$item->level_sixteen] : null : null;
+                $item->level_twenty = $item->level_twenty && $item->level_twenty != 0 ? isset($talentData[$item->level_twenty]) ? $talentData[$item->level_twenty] : null : null;
+
+                $item->hero = $type == 'hero' ? $heroData[$typeNumber] : null;
+
+                return $item;
+            })->filter()->values();
+        } else {
+            $leaderboard = MatchPredictionPlayerStat::select('match_prediction_player_stats.battlenet_accounts_id', 'win', 'loss', 'games_played', 'win_rate', 'battletag', 'blizz_id', 'region')
+                ->join('battlenet_accounts', 'battlenet_accounts.battlenet_accounts_id', '=', 'match_prediction_player_stats.battlenet_accounts_id')
+                ->where('season', $season)
+                ->where('game_type', $gameType)
+                ->get();
+
+            $leaderboard->each(function ($item) {
+                $item->rating = $item->win_rate;
             });
-            if ($existingBan) {
-                $this->rankModifier++;
 
-                return null;
-            }
+            //$weeksDifference = $this->globalDataService->matchPredictionGetWeeksSinceSeasonStart();
 
-            $item->patreon = is_null($patreonAccount) || empty($patreonAccount) || count($patreonAccount) == 0 ? false : true;
-            $item->hp_owner = ($item->blizz_id == 67280 && $item->region == 1) ? true : false;
-            $item->mmr = round(1800 + 40 * $item->conservative_rating);
-            $item->win_rate = round($item->win_rate, 2);
-            $item->rating = round($item->rating, 2);
-            $item->most_played_hero = $item->most_played_hero ? $heroData[$item->most_played_hero] : null;
-            $item->tier = $this->globalDataService->calculateSubTier($rankTiers, $item->mmr);
-            $item->tier_id = $this->globalDataService->calculateTierID($item->tier);
+            $filteredLeaderboard = $leaderboard->filter(function ($item) {
+                return $item->games_played >= 20;
+            })->values();
 
-            if ($tierrank && $tierrank != intval($item->tier_id)) {
-                return null;
-            }
+            $sortedLeaderboard = $filteredLeaderboard->sortByDesc('rating');
+            $counter = 1;
 
-            $item->region_id = $item->region;
-            $item->region = $this->globalDataService->getRegionIDtoString()[$item->region];
+            $sortedLeaderboard->each(function ($item) use (&$counter) {
+                $item->rank = $counter;
+                $item->split_battletag = explode('#', $item->battletag)[0];
+                $item->region_id = $item->region;
+                $item->region = $this->globalDataService->getRegionIDtoString()[$item->region];
+                $counter++;
+                unset($item->battlenet_accounts_id);
+            });
 
-            $item->rank = $item->rank - $this->rankModifier;
-
-            $item->level_one = $item->level_one && $item->level_one != 0 ? isset($talentData[$item->level_one]) ? $talentData[$item->level_one] : null : null;
-            $item->level_four = $item->level_four && $item->level_four != 0 ? isset($talentData[$item->level_four]) ? $talentData[$item->level_four] : null : null;
-            $item->level_seven = $item->level_seven && $item->level_seven != 0 ? isset($talentData[$item->level_seven]) ? $talentData[$item->level_seven] : null : null;
-            $item->level_ten = $item->level_ten && $item->level_ten != 0 ? isset($talentData[$item->level_ten]) ? $talentData[$item->level_ten] : null : null;
-            $item->level_thirteen = $item->level_thirteen && $item->level_thirteen != 0 ? isset($talentData[$item->level_thirteen]) ? $talentData[$item->level_thirteen] : null : null;
-            $item->level_sixteen = $item->level_sixteen && $item->level_sixteen != 0 ? isset($talentData[$item->level_sixteen]) ? $talentData[$item->level_sixteen] : null : null;
-            $item->level_twenty = $item->level_twenty && $item->level_twenty != 0 ? isset($talentData[$item->level_twenty]) ? $talentData[$item->level_twenty] : null : null;
-
-            $item->hero = $type == 'hero' ? $heroData[$typeNumber] : null;
-
-            return $item;
-          })->filter()->values();
-        }else{
-          $leaderboard = MatchPredictionPlayerStat::select("match_prediction_player_stats.battlenet_accounts_id", "win", "loss", "games_played", "win_rate", "battletag", "blizz_id", "region")
-            ->join('battlenet_accounts', 'battlenet_accounts.battlenet_accounts_id', '=', 'match_prediction_player_stats.battlenet_accounts_id')
-            ->where("season", $season)
-            ->where("game_type", $gameType)
-            ->get();
-          
-          $leaderboard->each(function ($item) {
-            $item->rating = $item->win_rate;
-          });
-  
-          
-          //$weeksDifference = $this->globalDataService->matchPredictionGetWeeksSinceSeasonStart();
-
-          $filteredLeaderboard = $leaderboard->filter(function ($item){
-            return $item->games_played >= 20;
-          })->values();
-          
-
-
-          $sortedLeaderboard = $filteredLeaderboard->sortByDesc('rating');
-          $counter = 1;
-
-          $sortedLeaderboard->each(function ($item) use (&$counter){
-            $item->rank = $counter;
-            $item->split_battletag = explode('#', $item->battletag)[0];
-            $item->region_id = $item->region;
-            $item->region = $this->globalDataService->getRegionIDtoString()[$item->region];
-            $counter++;
-            unset($item->battlenet_accounts_id);
-          });
-
-
-          $data = $sortedLeaderboard->values();
+            $data = $sortedLeaderboard->values();
         }
-
-
 
         return $data;
     }

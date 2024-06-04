@@ -20,7 +20,7 @@ class CreateBattlenetUserSettingsTable extends Migration
             $table->string('value')->nullable();
 
             // Indexes
-            $table->index(['battlenet_accounts_id', 'setting', 'value'], 'battlenet_user_settings_index');        
+            $table->index(['battlenet_accounts_id', 'setting', 'value'], 'battlenet_user_settings_index');
         });
     }
 

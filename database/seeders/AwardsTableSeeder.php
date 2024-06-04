@@ -57,7 +57,6 @@ class AwardsTableSeeder extends Seeder
             ['award_id' => 40, 'title' => 'Seed Collector', 'icon' => 'storm_ui_mvp_gardenterror'],
         ];
 
-
         foreach ($data as $row) {
             DB::table('awards')->insert($row);
         }

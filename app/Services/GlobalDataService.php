@@ -12,12 +12,12 @@ use App\Models\HeroesDataTalent;
 use App\Models\LeagueTier;
 use App\Models\Map;
 use App\Models\MastersClash\MastersClashTeam;
+use App\Models\MatchPredictionSeason;
 use App\Models\NGS\NGSTeam;
 use App\Models\Replay;
 use App\Models\SeasonDate;
 use App\Models\SeasonGameVersion;
 use Carbon\Carbon;
-use App\Models\MatchPredictionSeason;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -190,12 +190,12 @@ class GlobalDataService
 
     public function matchPredictionGetWeeksSinceSeasonStart()
     {
-      $startDate = MatchPredictionSeason::orderBy('match_prediction_season_id', 'desc')->limit(1)->value('start_date');
-      $startDateCarbon = Carbon::parse($startDate);
-      $currentDate = Carbon::now();
-      return $startDateCarbon->diffInWeeks($currentDate);
+        $startDate = MatchPredictionSeason::orderBy('match_prediction_season_id', 'desc')->limit(1)->value('start_date');
+        $startDateCarbon = Carbon::parse($startDate);
+        $currentDate = Carbon::now();
+
+        return $startDateCarbon->diffInWeeks($currentDate);
     }
-    
 
     public function getBlizzIDGivenFullBattletag($battletag, $region)
     {
@@ -334,7 +334,7 @@ class GlobalDataService
 
     public function getDefaultMatchPredictionSeason()
     {
-      return MatchPredictionSeason::select('match_prediction_season_id')->orderBy('match_prediction_season_id', 'DESC')->first()->match_prediction_season_id;
+        return MatchPredictionSeason::select('match_prediction_season_id')->orderBy('match_prediction_season_id', 'DESC')->first()->match_prediction_season_id;
     }
 
     public function getFilterData()
@@ -543,10 +543,10 @@ class GlobalDataService
         ];
 
         $filterData->leaderboard_type = [
-          ['code' => 'Player', 'name' => 'Player'],
-          ['code' => 'Hero', 'name' => 'Hero'],
-          ['code' => 'Role', 'name' => 'Role'],
-          ['code' => 'Match Prediction', 'name' => 'Match Prediction'],
+            ['code' => 'Player', 'name' => 'Player'],
+            ['code' => 'Hero', 'name' => 'Hero'],
+            ['code' => 'Role', 'name' => 'Role'],
+            ['code' => 'Match Prediction', 'name' => 'Match Prediction'],
         ];
 
         $filterData->group_size = [
@@ -563,7 +563,7 @@ class GlobalDataService
         });
 
         $filterData->match_prediction_seasons = MatchPredictionSeason::select('match_prediction_season_id', 'season', 'start_date')->orderBy('match_prediction_season_id', 'DESC')->get()->map(function ($data) {
-          return ['code' => $data->match_prediction_season_id, 'name' => 'Season '.$data->season];
+            return ['code' => $data->match_prediction_season_id, 'name' => 'Season '.$data->season];
         });
 
         $filterData->hero_role = [

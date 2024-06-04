@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class MatchPredictionSeason extends Model
 {
-  protected $table = 'match_prediction_season';
+    protected $table = 'match_prediction_season';
 
-  protected $primaryKey = 'match_prediction_season_id';
+    protected $primaryKey = 'match_prediction_season_id';
 
-  protected $connection = 'heroesprofile';
+    protected $connection = 'heroesprofile';
 
-  public $timestamps = false;
+    public $timestamps = false;
 }
