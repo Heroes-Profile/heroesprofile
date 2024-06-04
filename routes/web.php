@@ -25,6 +25,7 @@ use App\Http\Controllers\Global\GlobalPartyStatsController;
 use App\Http\Controllers\Global\GlobalTalentBuilderController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
 use App\Http\Controllers\MainPageController;
+use App\Http\Controllers\MatchPredictionGameController;
 use App\Http\Controllers\Player\FriendFoeController;
 use App\Http\Controllers\Player\PlayerController;
 use App\Http\Controllers\Player\PlayerHeroesController;
@@ -164,6 +165,9 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('Esports/MastersClash', [MastersClashController::class, 'show']);
 
     Route::get('Esports/HeroesInternational', [HeroesInternationalController::class, 'show']);
+
+    Route::get('Match/Prediction/Game', [MatchPredictionGameController::class, 'show']);
+
 });
 
 //Ads.txt redirects

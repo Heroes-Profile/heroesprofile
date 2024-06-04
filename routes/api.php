@@ -21,6 +21,7 @@ use App\Http\Controllers\Global\GlobalPartyStatsController;
 use App\Http\Controllers\Global\GlobalTalentBuilderController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
 use App\Http\Controllers\MainPageController;
+use App\Http\Controllers\MatchPredictionGameController;
 use App\Http\Controllers\Player\FriendFoeController;
 use App\Http\Controllers\Player\PlayerController;
 use App\Http\Controllers\Player\PlayerHeroesMapsRolesController;
@@ -158,4 +159,8 @@ Route::prefix('v1')->group(function () {
     Route::post('compare', [CompareController::class, 'getData']);
 
     Route::post('contact', [ContactController::class, 'submitMessage']);
+
+    Route::post('match/prediction/game', [MatchPredictionGameController::class, 'getReplayData']);
+    Route::post('match/prediction/game/choose/winner', [MatchPredictionGameController::class, 'chooseWinner']);
+
 });

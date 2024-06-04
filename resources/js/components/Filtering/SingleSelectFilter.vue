@@ -2,7 +2,7 @@
   <div id="filter-label" class="relative">
     <div @click="showOptions = !showOptions" class="flex flex-col text-sm font-medium text-gray-700 cursor-pointer p-2  transition-colors">
       <span>{{ this.text }}</span> 
-      <span class="w-[200px] h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2" ><span class="uppercase font-bold bg-teal rounded px-1" v-if="selectedOptionsName !== ''">{{ selectedOptionsName }}</span></span>      
+      <span class="w-[200px] h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2" ><span class="uppercase font-bold bg-teal rounded px-1 text-nowrap" v-if="selectedOptionsName !== ''">{{ selectedOptionsName }}</span></span>      
     </div>
     <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->
     <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg expandable-dropdown z-50">
