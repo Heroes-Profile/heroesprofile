@@ -395,8 +395,6 @@
         return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region  + "/Talents/" + this.hero;
       },
       formatValue(key, value){
-        console.log(key);
-
         var returnValue = null;
 
         if(!value){
@@ -428,6 +426,8 @@
             returnValue += `${minutes} minutes, `;
           }
           returnValue += `${secs} seconds`;
+
+          return returnValue;
         }
         return returnValue;
       },
