@@ -22,6 +22,7 @@ use App\Rules\RoleInputValidation;
 use App\Rules\SeasonInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class PlayerHeroesMapsRolesController extends Controller
 {
@@ -124,6 +125,7 @@ class PlayerHeroesMapsRolesController extends Controller
                 'game_date',
                 'game_map',
                 'game_type',
+                 DB::raw('game_length - 70 as game_length'),
                 'stack_size',
                 'mastery_taunt',
                 'new_role',
@@ -684,6 +686,7 @@ class PlayerHeroesMapsRolesController extends Controller
                 'max_regen_globes' => $heroStats->max('regen_globes'),
                 'max_first_to_ten' => $heroStats->max('first_to_ten'),
                 'max_time_on_fire' => $heroStats->max('time_on_fire'),
+                'max_game_length' => $heroStats->max('game_length'),
 
                 'combined_healing' => round($combined_healing, 2),
                 'avg_assists' => round($avg_takedowns - $avg_kills, 2),
@@ -725,6 +728,7 @@ class PlayerHeroesMapsRolesController extends Controller
                 'avg_regen_globes' => round($heroStats->avg('regen_globes'), 2),
                 'avg_first_to_ten' => round($heroStats->avg('first_to_ten'), 2),
                 'avg_time_on_fire' => round($heroStats->avg('time_on_fire'), 2),
+                'avg_game_length' => round($heroStats->avg('game_length'), 2),
 
                 'sum_kills' => $heroStats->sum('kills'),
                 'sum_assists' => $heroStats->sum('assists'),
@@ -764,6 +768,7 @@ class PlayerHeroesMapsRolesController extends Controller
                 'sum_regen_globes' => $heroStats->sum('regen_globes'),
                 'sum_first_to_ten' => $heroStats->sum('first_to_ten'),
                 'sum_time_on_fire' => $heroStats->sum('time_on_fire'),
+                'sum_game_length' => $heroStats->sum('game_length'),
                 'season_win_rate_data' => $newSeasonData,
 
                 'map_data' => $mapData ? $mapData->sortBy('name')->values() : null,

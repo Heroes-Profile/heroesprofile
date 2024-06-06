@@ -85,10 +85,10 @@
                 :class="{ flash: stat.flash }"
                 class="py-2 px-3 text-right">
                 <div v-if="statContainsMax(stat)">
-                  <span class="link" @click="navigateToMaxStatMatch(row.hero, stat.value, row[stat.value])" title="Navigate to this match">{{ row[stat.value] }}</span>
+                  <span class="link" @click="navigateToMaxStatMatch(row.hero, stat.value, row[stat.value])" title="Navigate to this match">{{ showStatValue(stat.value, row[stat.value]) }}</span>
                 </div>
                 <div v-else>
-                  {{ showStatValue(row[stat.value]) }}
+                  {{ showStatValue(stat.value, row[stat.value]) }}
                 </div>
               </td>
             </template>
@@ -155,6 +155,7 @@ export default {
         { name: "Avg Escapes", value: 'avg_escapes', selected: false, flash: false},
         { name: "Avg Experience Contribution", value: 'avg_experience_contribution', selected: false, flash: false},
         { name: "Avg First to Ten", value: 'avg_first_to_ten', selected: false, flash: false},
+        { name: "Avg Game Length", value: 'avg_game_length', selected: false, flash: false},
         { name: "Avg Healing", value: 'avg_healing', selected: false, flash: false},
         { name: "Avg Hero Damage", value: 'avg_hero_damage', selected: true, flash: false},
         { name: "Avg Highest Kill Streak", value: 'avg_highest_kill_streak', selected: false, flash: false},
@@ -199,6 +200,7 @@ export default {
         { name: "Max Escapes", value: 'max_escapes', selected: false, flash: false},
         { name: "Max Experience Contribution", value: 'max_experience_contribution', selected: false, flash: false},
         { name: "Max First to Ten", value: 'max_first_to_ten', selected: false, flash: false},
+        { name: "Max Game Length", value: 'max_game_length', selected: false, flash: false},
         { name: "Max Healing", value: 'max_healing', selected: false, flash: false},
         { name: "Max Hero Damage", value: 'max_hero_damage', selected: false, flash: false},
         { name: "Max Highest Kill Streak", value: 'max_highest_kill_streak', selected: false, flash: false},
@@ -393,16 +395,43 @@ export default {
       }
       this.matchIsLoading = false;
     },
-    showStatValue(value) {
+    showStatValue(stat, value) {
+      var returnValue = null;
       if (!value || isNaN(value)) {
-        return 0;
+        returnValue = 0;
       }
 
       if (value < 1000) {
-        return value.toFixed(2);
+        returnValue = value.toFixed(2);
       } else {
-        return Math.round(value).toLocaleString('en-US');
+        returnValue = Math.round(value).toLocaleString('en-US');
       }
+      if(stat == "avg_game_length" || stat == "max_game_length"){
+        let valueInSeconds = value;
+        const days = Math.floor(valueInSeconds / (24 * 3600));
+        valueInSeconds %= 24 * 3600;
+        const hours = Math.floor(valueInSeconds / 3600);
+        valueInSeconds %= 3600;
+        const minutes = Math.floor(valueInSeconds / 60);
+        const secs = Math.floor(valueInSeconds % 60);
+
+        let returnValue = "";
+
+        if (days > 0) {
+          returnValue += `${days} days, `;
+        }
+        if (hours > 0) {
+          returnValue += `${hours} hours, `;
+        }
+        if (minutes > 0) {
+          returnValue += `${minutes} minutes, `;
+        }
+        returnValue += `${secs} seconds`;
+
+        return returnValue;
+
+      }
+      return returnValue;
     },
     getWinRateColor(win_rate){
       if(win_rate < 40){
