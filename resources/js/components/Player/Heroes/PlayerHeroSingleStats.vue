@@ -168,9 +168,9 @@
           <tbody>
             <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
               <td width="25%">{{ row.label }}</td>
-              <td width="25%">{{ formatValue(this.data["sum_" + row.key])}}</td>
-              <td width="25%">{{ formatValue(this.data["avg_" + row.key]) }}</td>
-              <td width="25%">{{ formatValue(this.data["max_" + row.key]) }}</td>
+              <td width="25%">{{ formatValue(row.key, this.data["sum_" + row.key])}}</td>
+              <td width="25%">{{ formatValue(row.key, this.data["avg_" + row.key]) }}</td>
+              <td width="25%">{{ formatValue(row.key, this.data["max_" + row.key]) }}</td>
             </tr>
           </tbody>
         </table>
@@ -260,6 +260,7 @@
               { label: 'Merc. Camp Captures', key: 'merc_camp_captures' },
               { label: 'Watch Tower Captures', key: 'watch_tower_captures' },
               { label: 'Team Exp.', key: 'meta_experience' },
+              { label: 'Game Length', key: 'game_length' },
             ],
           },
           {
@@ -393,14 +394,42 @@
       getTalentPageUrl(){
         return "/Player/" + this.battletag + "/" + this.blizzid + "/" + this.region  + "/Talents/" + this.hero;
       },
-      formatValue(value){
+      formatValue(key, value){
+        console.log(key);
+
+        var returnValue = null;
+
         if(!value){
-          return 0;
+          returnValue = 0;
         }else if(value < 1000){
-          return value.toFixed(2);
+          returnValue = value.toFixed(2);
         }else{
-          return Math.round(value).toLocaleString('en-US');
+          returnValue = Math.round(value).toLocaleString('en-US');
         }
+
+        if (key == "game_length") {
+          let valueInSeconds = value;
+          const days = Math.floor(valueInSeconds / (24 * 3600));
+          valueInSeconds %= 24 * 3600;
+          const hours = Math.floor(valueInSeconds / 3600);
+          valueInSeconds %= 3600;
+          const minutes = Math.floor(valueInSeconds / 60);
+          const secs = Math.floor(valueInSeconds % 60);
+
+          let returnValue = "";
+
+          if (days > 0) {
+            returnValue += `${days} days, `;
+          }
+          if (hours > 0) {
+            returnValue += `${hours} hours, `;
+          }
+          if (minutes > 0) {
+            returnValue += `${minutes} minutes, `;
+          }
+          returnValue += `${secs} seconds`;
+        }
+        return returnValue;
       },
     }
   }
