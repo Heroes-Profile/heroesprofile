@@ -88,8 +88,9 @@
                   <span class="link" @click="navigateToMaxStatMatch(row.hero, stat.value, row[stat.value])" title="Navigate to this match">{{ showStatValue(stat.value, row[stat.value]) }}</span>
                 </div>
                 <div v-else>
-                  {{ showStatValue(stat.value, row[stat.value]) }}
+                  {{ stat.value !== null ? showStatValue(stat.value, row[stat.value]) : '' }}
                 </div>
+
               </td>
             </template>
 
@@ -397,10 +398,10 @@ export default {
     },
     showStatValue(stat, value) {
       var returnValue = null;
-      if (!value || isNaN(value)) {
-        returnValue = 0;
+      if (value == null || value === undefined || isNaN(value)) {
+        return 0;
       }
-
+      
       if (value < 1000) {
         returnValue = value.toFixed(2);
       } else {
