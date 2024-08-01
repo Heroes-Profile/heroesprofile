@@ -234,6 +234,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $talentbuildType = $request['talentbuildtype'];
 
         $cacheKey = 'GlobalHeroTalentStatsBuilds|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+        
         //return $cacheKey;
 
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
@@ -474,8 +475,12 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ->get();
 
         $transformedData = [
+          /*
             'wins' => ($transformedData['wins'] + ($data->where('win_loss', 1)->sum('games_played') * 1.125)),
             'losses' => ($transformedData['losses'] + ($data->where('win_loss', 0)->sum('games_played') * 1.125)),
+          */
+            'wins' => ($transformedData['wins'] + ($data->where('win_loss', 1)->sum('games_played'))),
+            'losses' => ($transformedData['losses'] + ($data->where('win_loss', 0)->sum('games_played'))),
             'total_filter_type' => $statFilter !== 'win_rate' ? ($transformedData['total_filter_type'] + $data->sum('total_filter_type')) : 0,
         ];
 
@@ -507,8 +512,12 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ->get();
 
         $transformedData = [
+          /*
             'wins' => ($transformedData['wins'] + ($data->where('win_loss', 1)->sum('games_played') * 1.33)),
             'losses' => ($transformedData['losses'] + ($data->where('win_loss', 0)->sum('games_played') * 1.33)),
+          */
+            'wins' => ($transformedData['wins'] + ($data->where('win_loss', 1)->sum('games_played'))),
+            'losses' => ($transformedData['losses'] + ($data->where('win_loss', 0)->sum('games_played'))),
             'total_filter_type' => $statFilter !== 'win_rate' ? ($transformedData['total_filter_type'] + $data->sum('total_filter_type')) : 0,
         ];
 
@@ -540,8 +549,12 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ->get();
 
         $transformedData = [
+          /*
             'wins' => round($transformedData['wins'] + ($data->where('win_loss', 1)->sum('games_played') * 1.5)),
             'losses' => round($transformedData['losses'] + ($data->where('win_loss', 0)->sum('games_played') * 1.5)),
+          */
+            'wins' => round($transformedData['wins'] + ($data->where('win_loss', 1)->sum('games_played'))),
+            'losses' => round($transformedData['losses'] + ($data->where('win_loss', 0)->sum('games_played'))),
             'total_filter_type' => $statFilter !== 'win_rate' ? ($transformedData['total_filter_type'] + $data->sum('total_filter_type')) : 0,
         ];
 
