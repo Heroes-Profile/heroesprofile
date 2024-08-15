@@ -150,7 +150,8 @@
               </td>
               <td class="  ">{{ getValueFixed(row.win_rate) }}</td>
               <td class="py-2 px-3 "><span v-html="'&#177;'"></span>{{ getValueFixed(row.confidence_interval) }}</td>
-              <td v-if="showWinRateChange && row.win_rate_change < 0" class="py-2 px-3 ">{{ getValueFixed(row.win_rate_change) }}</td>
+              <td v-if="showWinRateChange && row.win_rate_change == 0" class="py-2 px-3 ">0.00</td>
+              <td v-else-if="showWinRateChange && row.win_rate_change < 0" class="py-2 px-3 ">{{ getValueFixed(row.win_rate_change) }}</td>
               <td v-else-if="showWinRateChange && row.win_rate_change >= 0" class="py-2 px-3 "><span v-html="'&plus;'"></span>{{ getValueFixed(row.win_rate_change) }}</td>
               <td class="py-2 px-3">{{ getValueFixed(row.popularity) }}</td>
               <td class="py-2 px-3">{{ getValueFixed(row.pick_rate) }}</td>
@@ -282,7 +283,7 @@ export default {
         !this.rolerank &&
         !this.herolevel &&
         this.statfilter === 'win_rate' &&
-        this.mirrormatch === 0
+        this.mirrormatch == 0
       );
 
     },
