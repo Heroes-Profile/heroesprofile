@@ -23,10 +23,7 @@ use Illuminate\Support\Facades\DB;
 
 class GlobalDataService
 {
-    public function __construct()
-    {
-
-    }
+    public function __construct() {}
 
     public function getHeaderAlert()
     {

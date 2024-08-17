@@ -496,6 +496,7 @@
     props: {
       esport: String,
       replayid: Number,
+      user: Object,
       patreonUser: Boolean,
     },
     data(){
@@ -621,7 +622,8 @@
       try{
         const response = await this.$axios.post("/api/v1/match/single", {
           esport: this.esport,
-          replayID: this.replayid
+          replayID: this.replayid,
+          user: this.user,
         }, 
         {
           cancelToken: this.cancelTokenSource.token,

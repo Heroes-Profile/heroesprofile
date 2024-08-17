@@ -70,6 +70,7 @@ class SingleMatchController extends Controller
     {
         $validationRules = [
             'esport' => 'nullable|in:NGS,CCL,MastersClash',
+            'user' => 'nullable',
             'replayID' => [
                 'required',
                 'integer',
@@ -223,6 +224,16 @@ class SingleMatchController extends Controller
         $maps = $maps->keyBy('map_id');
 
         $privateAccounts = $this->globalDataService->getPrivateAccounts();
+        $user = $request['user'];
+
+        if ($user) {
+            $userBlizzId = $user['blizz_id'];
+            $userRegion = $user['region'];
+
+            $privateAccounts = $privateAccounts->reject(function ($item) use ($userBlizzId, $userRegion) {
+                return $item['blizz_id'] === $userBlizzId && $item['region'] === $userRegion;
+            });
+        }
 
         $groupedData = $result->groupBy('replayID')->map(function ($replayGroup) use ($privateAccounts, $result, $talentData, $heroData, $maps, $replayID) {
             $totalSeconds = $replayGroup[0]->game_length - 70;

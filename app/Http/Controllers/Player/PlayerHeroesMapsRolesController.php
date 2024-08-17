@@ -21,8 +21,8 @@ use App\Rules\HeroInputValidation;
 use App\Rules\RoleInputValidation;
 use App\Rules\SeasonInputValidation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class PlayerHeroesMapsRolesController extends Controller
 {
@@ -39,11 +39,11 @@ class PlayerHeroesMapsRolesController extends Controller
             'minimumgames' => 'integer',
             'type' => 'required|in:all,single',
             'page' => 'required|in:hero,map,role',
-            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation()],
-            'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
-            'role' => ['sometimes', 'nullable', new RoleInputValidation()],
-            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
-            'season' => ['sometimes', 'nullable', new SeasonInputValidation()],
+            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation],
+            'hero' => ['sometimes', 'nullable', new HeroInputValidation],
+            'role' => ['sometimes', 'nullable', new RoleInputValidation],
+            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation],
+            'season' => ['sometimes', 'nullable', new SeasonInputValidation],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -125,7 +125,7 @@ class PlayerHeroesMapsRolesController extends Controller
                 'game_date',
                 'game_map',
                 'game_type',
-                 DB::raw('game_length - 70 as game_length'),
+                DB::raw('game_length - 70 as game_length'),
                 'stack_size',
                 'mastery_taunt',
                 'new_role',
@@ -816,10 +816,10 @@ class PlayerHeroesMapsRolesController extends Controller
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
-            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation()],
-            'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
-            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
-            'season' => ['sometimes', 'nullable', new SeasonInputValidation()],
+            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation],
+            'hero' => ['sometimes', 'nullable', new HeroInputValidation],
+            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation],
+            'season' => ['sometimes', 'nullable', new SeasonInputValidation],
             'stat' => 'required|string',
             'value' => 'required|integer',
         ];
