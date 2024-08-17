@@ -16,7 +16,7 @@ class SetGlobalDataValues
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $globalDataService = new GlobalDataService();
+        $globalDataService = new GlobalDataService;
         $globalDataService->calculateMaxReplayNumber();
         $globalDataService->getLatestPatch();
         $globalDataService->getLatestGameDate();
