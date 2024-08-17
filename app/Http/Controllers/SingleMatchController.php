@@ -11,13 +11,13 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Auth;
 
 class SingleMatchController extends Controller
 {
     private $esport;
+
     private $schema;
-    
+
     public function showWithoutEsport(Request $request, $replayID)
     {
         $validationRules = [
@@ -35,6 +35,7 @@ class SingleMatchController extends Controller
                 ];
             }
         }
+
         return view('singleMatch')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'esport' => null,
@@ -57,6 +58,7 @@ class SingleMatchController extends Controller
                 'status' => 'failure to validate inputs',
             ];
         }
+
         return view('singleMatch')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'esport' => $esport,
@@ -221,19 +223,17 @@ class SingleMatchController extends Controller
         $maps = Map::all();
         $maps = $maps->keyBy('map_id');
 
-        
         $privateAccounts = $this->globalDataService->getPrivateAccounts();
-        $user = $request["user"];
-        
-        if($user){
-          $userBlizzId = $user['blizz_id'];
-          $userRegion = $user['region'];
-          
-          $privateAccounts = $privateAccounts->reject(function ($item) use ($userBlizzId, $userRegion) {
-              return $item['blizz_id'] === $userBlizzId && $item['region'] === $userRegion;
-          });
-        }
+        $user = $request['user'];
 
+        if ($user) {
+            $userBlizzId = $user['blizz_id'];
+            $userRegion = $user['region'];
+
+            $privateAccounts = $privateAccounts->reject(function ($item) use ($userBlizzId, $userRegion) {
+                return $item['blizz_id'] === $userBlizzId && $item['region'] === $userRegion;
+            });
+        }
 
         $groupedData = $result->groupBy('replayID')->map(function ($replayGroup) use ($privateAccounts, $result, $talentData, $heroData, $maps, $replayID) {
             $totalSeconds = $replayGroup[0]->game_length - 70;
