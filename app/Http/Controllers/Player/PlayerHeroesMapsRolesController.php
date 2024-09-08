@@ -75,6 +75,7 @@ class PlayerHeroesMapsRolesController extends Controller
         $page = $request['page'];
         $role = $request['role'];
         $game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->first() : null;
+
         $season = $request['season'];
 
         $result = Replay::join('player', 'player.replayID', '=', 'replay.replayID')
@@ -106,7 +107,7 @@ class PlayerHeroesMapsRolesController extends Controller
             ->when($type == 'single' && $page == 'role', function ($query) use ($role) {
                 return $query->where('new_role', $role);
             })
-            ->when($type == 'single' && $page == 'map', function ($query) use ($game_map) {
+            ->when($game_map && $type == 'single' && ($page == 'map' || $page == 'hero'), function ($query) use ($game_map) {
                 return $query->where('game_map', $game_map);
             })
             ->when(! is_null($season), function ($query) use ($season) {
