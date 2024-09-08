@@ -7,6 +7,7 @@
     <div class="flex justify-center max-w-[1500px] mx-auto">
       <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" :trackclosure="true" :defaultValue="!modifiedgametype ? 'All' : modifiedgametype" :disabled="disableFilterInput"></single-select-filter>
       <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" :trackclosure="true" :defaultValue="'All'" :disabled="disableFilterInput"></single-select-filter>
+      <single-select-filter :values="gameMapWithAll" :text="'Game Map'" @input-changed="handleInputChange" :trackclosure="true" :defaultValue="'All'" :disabled="disableFilterInput"></single-select-filter>
       <button :disabled="disableFilterInput" @click="applyFilter"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
           Filter
       </button>
@@ -214,6 +215,7 @@
         isLoading: false,
         modifiedgametype: null,
         modifiedseason: null,
+        modifiedgamemap: null,
         data: null,
         disableFilterInput: null,
         sections: [
@@ -320,6 +322,12 @@
         updatedList.unshift(newValue);
         return updatedList;
       },
+      gameMapWithAll() {
+        const newValue = { code: 'All', name: 'All' };
+        const updatedList = [...this.filters.game_maps];
+        updatedList.unshift(newValue);
+        return updatedList;
+      },
       isOwner(){
         if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
           return true;
@@ -346,6 +354,7 @@
             region: this.region,
             game_type: this.modifiedgametype,
             season: this.modifiedseason,
+            game_map: this.modifiedgamemap,
             hero: this.hero,
             type: "single",
             page: "hero",
@@ -384,6 +393,15 @@
             this.modifiedseason = eventPayload.value;
           }
         }
+
+        if(eventPayload.field == "Game Map"){
+          if(eventPayload.value == "All"){
+            this.modifiedgamemap = null;
+          }else{
+            this.modifiedgamemap = eventPayload.value;
+          }
+        }
+
       },
       applyFilter(){
         if(!this.isLoading){
