@@ -107,7 +107,7 @@ class PlayerHeroesMapsRolesController extends Controller
             ->when($type == 'single' && $page == 'role', function ($query) use ($role) {
                 return $query->where('new_role', $role);
             })
-            ->when($type == 'single' && ($page == 'map' || $page == 'hero'), function ($query) use ($game_map) {
+            ->when($game_map && $type == 'single' && ($page == 'map' || $page == 'hero'), function ($query) use ($game_map) {
                 return $query->where('game_map', $game_map);
             })
             ->when(! is_null($season), function ($query) use ($season) {
