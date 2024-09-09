@@ -348,10 +348,6 @@ export default {
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
       this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
-
-      console.log(this.gamemap);
-
-
       this.data = null;
       this.sortKey = '';
       this.sortDir ='asc';
