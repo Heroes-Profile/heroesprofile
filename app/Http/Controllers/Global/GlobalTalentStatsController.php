@@ -34,7 +34,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
         if (! is_null($hero)) {
             $validationRules = [
-                'hero' => ['required', new HeroInputValidation],
+                'hero' => ['required', new HeroInputValidation()],
             ];
 
             $validator = Validator::make(['hero' => $hero], $validationRules);
@@ -76,7 +76,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         //return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
-            'hero' => ['required', new HeroInputValidation],
+            'hero' => ['required', new HeroInputValidation()],
         ]);
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -198,8 +198,8 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         //return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
-            'hero' => ['required', new HeroInputValidation],
-            'talentbuildtype' => ['required', new TalentBuildTypeInputValidation],
+            'hero' => ['required', new HeroInputValidation()],
+            'talentbuildtype' => ['required', new TalentBuildTypeInputValidation()],
         ]);
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -234,7 +234,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $talentbuildType = $request['talentbuildtype'];
 
         $cacheKey = 'GlobalHeroTalentStatsBuilds|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
-
+        
         //return $cacheKey;
 
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
@@ -475,7 +475,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ->get();
 
         $transformedData = [
-            /*
+          /*
             'wins' => ($transformedData['wins'] + ($data->where('win_loss', 1)->sum('games_played') * 1.125)),
             'losses' => ($transformedData['losses'] + ($data->where('win_loss', 0)->sum('games_played') * 1.125)),
           */
@@ -512,7 +512,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ->get();
 
         $transformedData = [
-            /*
+          /*
             'wins' => ($transformedData['wins'] + ($data->where('win_loss', 1)->sum('games_played') * 1.33)),
             'losses' => ($transformedData['losses'] + ($data->where('win_loss', 0)->sum('games_played') * 1.33)),
           */
@@ -549,7 +549,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ->get();
 
         $transformedData = [
-            /*
+          /*
             'wins' => round($transformedData['wins'] + ($data->where('win_loss', 1)->sum('games_played') * 1.5)),
             'losses' => round($transformedData['losses'] + ($data->where('win_loss', 0)->sum('games_played') * 1.5)),
           */

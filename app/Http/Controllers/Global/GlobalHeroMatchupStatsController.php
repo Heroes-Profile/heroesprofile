@@ -31,8 +31,8 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
 
         if (! is_null($hero) && ! is_null($allyenemy)) {
             $validationRules = [
-                'hero' => ['required', new HeroInputValidation],
-                'allyenemy' => ['required', new HeroInputValidation],
+                'hero' => ['required', new HeroInputValidation()],
+                'allyenemy' => ['required', new HeroInputValidation()],
             ];
 
             $validator = Validator::make(['hero' => $hero, 'allyenemy' => $allyenemy], $validationRules);
@@ -72,7 +72,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
         //return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
-            'hero' => ['required', new HeroInputValidation],
+            'hero' => ['required', new HeroInputValidation()],
         ]);
 
         $validator = Validator::make($request->all(), $validationRules);

@@ -32,7 +32,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         }
 
         $validationRules = [
-            'hero' => ['sometimes', 'nullable', new HeroInputValidation],
+            'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
         ];
 
         $validator = Validator::make(['hero' => $hero], $validationRules);
@@ -72,12 +72,12 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         //return response()->json($request->all());
 
         $validationRules = [
-            'hero' => ['required', new HeroInputValidation],
+            'hero' => ['required', new HeroInputValidation()],
         ];
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
-            'hero' => ['required', new HeroInputValidation],
-            'selectedtalents' => ['sometimes', 'nullable', new SelectedTalentInputValidation],
+            'hero' => ['required', new HeroInputValidation()],
+            'selectedtalents' => ['sometimes', 'nullable', new SelectedTalentInputValidation()],
         ]);
 
         $validator = Validator::make($request->all(), $validationRules);

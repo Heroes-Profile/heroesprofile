@@ -28,7 +28,7 @@ class PlayerTalentsController extends Controller
         ];
 
         if (request()->has('hero')) {
-            $validationRules['hero'] = ['sometimes', 'nullable', new HeroInputValidation];
+            $validationRules['hero'] = ['sometimes', 'nullable', new HeroInputValidation()];
         }
 
         $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
@@ -70,11 +70,11 @@ class PlayerTalentsController extends Controller
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
-            'game_type' => ['required', new GameTypeInputValidation],
-            'hero' => ['required', new HeroInputValidation],
-            'season' => ['sometimes', 'nullable', new SeasonInputValidation],
-            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation],
-            'fromdate' => ['sometimes', 'nullable', new DateInputValidation],
+            'game_type' => ['required', new GameTypeInputValidation()],
+            'hero' => ['required', new HeroInputValidation()],
+            'season' => ['sometimes', 'nullable', new SeasonInputValidation()],
+            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
+            'fromdate' => ['sometimes', 'nullable', new DateInputValidation()],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);

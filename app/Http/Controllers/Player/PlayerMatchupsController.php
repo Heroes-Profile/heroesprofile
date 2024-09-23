@@ -65,10 +65,10 @@ class PlayerMatchupsController extends Controller
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
-            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation],
-            'season' => ['sometimes', 'nullable', new SeasonInputValidation],
-            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation],
-            'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation],
+            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation()],
+            'season' => ['sometimes', 'nullable', new SeasonInputValidation()],
+            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
+            'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation()],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);

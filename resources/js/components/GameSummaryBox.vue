@@ -40,7 +40,7 @@
               <stat-box :title="'Hero MMR'" :value="data.hero_mmr.toLocaleString('en-US')" :secondstat="data.player_change !== null ? data.hero_change.toFixed(2): null" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
               <stat-box :title="'Role MMR'" :value="data.role_mmr.toLocaleString('en-US')" :secondstat="data.player_change !== null ? data.role_change.toFixed(2) : null" :secondcaption="'Change'" secondtype="mmrchange" :color="data.winner === 1 ? 'blue' : 'red'"></stat-box>
             </div>
-            <div class="flex gap-x-1 mx-2 items-center justify-start md:w-[450px] pl-2 max-md:flex-wrap">
+            <div class="flex gap-x-1 mx-2 items-center justify-start md:w-[450px] pl-2">
               <div class="flex-1"><talent-image-wrapper :talent="data.level_one" :size="'medium'"></talent-image-wrapper></div>
               <div class="flex-1"><talent-image-wrapper :talent="data.level_four" :size="'medium'"></talent-image-wrapper></div>
               <div class="flex-1"><talent-image-wrapper :talent="data.level_seven" :size="'medium'"></talent-image-wrapper></div>

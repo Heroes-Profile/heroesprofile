@@ -52,7 +52,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         //return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
-            'hero' => ['sometimes', 'nullable', new HeroInputValidation],
+            'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
             'minimum_games' => 'required|integer',
         ]);
 
@@ -174,7 +174,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         //return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
-            'hero' => ['sometimes', 'nullable', new HeroInputValidation],
+            'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
             'minimum_games' => 'required|integer',
             'composition_id' => 'required|integer',
         ]);

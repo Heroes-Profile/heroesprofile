@@ -94,11 +94,11 @@ class PlayerMatchHistory extends Controller
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
-            'game_type' => ['required', new GameTypeInputValidation],
-            'role' => ['sometimes', 'nullable', new RoleInputValidation],
-            'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation],
-            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation],
-            'season' => ['sometimes', 'nullable', new SeasonInputValidation],
+            'game_type' => ['required', new GameTypeInputValidation()],
+            'role' => ['sometimes', 'nullable', new RoleInputValidation()],
+            'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation()],
+            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
+            'season' => ['sometimes', 'nullable', new SeasonInputValidation()],
             'pagination_page' => 'required:integer',
         ];
 

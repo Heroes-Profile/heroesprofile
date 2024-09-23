@@ -21,8 +21,8 @@ use App\Rules\HeroInputValidation;
 use App\Rules\RoleInputValidation;
 use App\Rules\SeasonInputValidation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class PlayerHeroesMapsRolesController extends Controller
 {
@@ -39,11 +39,11 @@ class PlayerHeroesMapsRolesController extends Controller
             'minimumgames' => 'integer',
             'type' => 'required|in:all,single',
             'page' => 'required|in:hero,map,role',
-            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation],
-            'hero' => ['sometimes', 'nullable', new HeroInputValidation],
-            'role' => ['sometimes', 'nullable', new RoleInputValidation],
-            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation],
-            'season' => ['sometimes', 'nullable', new SeasonInputValidation],
+            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation()],
+            'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
+            'role' => ['sometimes', 'nullable', new RoleInputValidation()],
+            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
+            'season' => ['sometimes', 'nullable', new SeasonInputValidation()],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -74,13 +74,7 @@ class PlayerHeroesMapsRolesController extends Controller
         $minimum_games = $request['minimumgames'];
         $page = $request['page'];
         $role = $request['role'];
-
-        if ($type == 'all') {
-            $game_map = $this->getGameMapFilterValues($request['game_map']);
-        } else {
-            $game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->first() : null;
-        }
-
+        $game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->first() : null;
         $season = $request['season'];
 
         $result = Replay::join('player', 'player.replayID', '=', 'replay.replayID')
@@ -112,12 +106,8 @@ class PlayerHeroesMapsRolesController extends Controller
             ->when($type == 'single' && $page == 'role', function ($query) use ($role) {
                 return $query->where('new_role', $role);
             })
-            ->when($game_map, function ($query) use ($game_map, $type) {
-                if ($type == 'all') {
-                    $query->whereIn('game_map', $game_map);
-                } else {
-                    return $query->where('game_map', $game_map);
-                }
+            ->when($type == 'single' && $page == 'map', function ($query) use ($game_map) {
+                return $query->where('game_map', $game_map);
             })
             ->when(! is_null($season), function ($query) use ($season) {
                 $seasonDate = SeasonDate::find($season);
@@ -135,7 +125,7 @@ class PlayerHeroesMapsRolesController extends Controller
                 'game_date',
                 'game_map',
                 'game_type',
-                DB::raw('game_length - 70 as game_length'),
+                 DB::raw('game_length - 70 as game_length'),
                 'stack_size',
                 'mastery_taunt',
                 'new_role',
@@ -826,10 +816,10 @@ class PlayerHeroesMapsRolesController extends Controller
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
-            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation],
-            'hero' => ['sometimes', 'nullable', new HeroInputValidation],
-            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation],
-            'season' => ['sometimes', 'nullable', new SeasonInputValidation],
+            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation()],
+            'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
+            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
+            'season' => ['sometimes', 'nullable', new SeasonInputValidation()],
             'stat' => 'required|string',
             'value' => 'required|integer',
         ];
@@ -908,15 +898,5 @@ class PlayerHeroesMapsRolesController extends Controller
             ->first();
 
         return $result->replayID;
-    }
-
-    public function getGameMapFilterValues($game_maps)
-    {
-        if (is_null($game_maps)) {
-            return null;
-        }
-        $mapIds = Map::whereIn('name', $game_maps)->pluck('map_id')->toArray();
-
-        return $mapIds;
     }
 }

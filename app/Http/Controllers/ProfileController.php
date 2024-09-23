@@ -31,8 +31,8 @@ class ProfileController extends Controller
 
         $validationRules = [
             'userhero' => 'nullable|numeric',
-            'usergametype' => ['sometimes', 'nullable', new GameTypeInputValidation],
-            'talentbuildtype' => ['sometimes', 'nullable', new TalentBuildTypeInputValidation],
+            'usergametype' => ['sometimes', 'nullable', new GameTypeInputValidation()],
+            'talentbuildtype' => ['sometimes', 'nullable', new TalentBuildTypeInputValidation()],
             'darkmode' => 'nullable|boolean',
             'darkmode' => 'nullable|boolean',
             'playerhistorytable' => 'nullable|boolean',

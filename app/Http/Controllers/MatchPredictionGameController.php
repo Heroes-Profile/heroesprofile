@@ -61,7 +61,7 @@ class MatchPredictionGameController extends Controller
     public function getReplayData(Request $request)
     {
         $validationRules = [
-            'gametype' => ['required', new GameTypeInputValidation],
+            'gametype' => ['required', new GameTypeInputValidation()],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -222,14 +222,14 @@ class MatchPredictionGameController extends Controller
         $validationRules = [
             'team' => 'required|integer',
             'fingerprint' => 'required|string',
-            'gametype' => ['required', new GameTypeInputValidation],
+            'gametype' => ['required', new GameTypeInputValidation()],
             'practicemode' => 'required|boolean',
             'season' => 'required|integer',
             'practicemodegamesplayed' => 'required|integer',
         ];
 
         if ($request->has('user') && ! is_null($request->input('user'))) {
-            $validationRules['user'] = ['sometimes', new UserAccountValidation];
+            $validationRules['user'] = ['sometimes', new UserAccountValidation()];
         } else {
             $validationRules['user'] = 'nullable';
         }

@@ -32,7 +32,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
 
         if (! is_null($hero)) {
             $validationRules = [
-                'hero' => ['required', new HeroInputValidation],
+                'hero' => ['required', new HeroInputValidation()],
             ];
 
             $validator = Validator::make(['hero' => $hero], $validationRules);
@@ -69,7 +69,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
 
         //return response()->json($request->all());
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
-            'hero' => ['required', new HeroInputValidation],
+            'hero' => ['required', new HeroInputValidation()],
         ]);
 
         $validator = Validator::make($request->all(), $validationRules);

@@ -61,7 +61,7 @@ class PlayerRolesController extends Controller
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
-            'role' => ['required', new RoleInputValidation],
+            'role' => ['required', new RoleInputValidation()],
         ];
 
         $validator = Validator::make(compact('battletag', 'blizz_id', 'region', 'role'), $validationRules);

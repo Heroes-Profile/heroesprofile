@@ -58,10 +58,10 @@ class PlayerMMRController extends Controller
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
-            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation],
+            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation()],
             'type' => 'required|in:Player,Hero,Role',
-            'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation],
-            'role' => ['sometimes', 'nullable', new RoleInputValidation],
+            'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation()],
+            'role' => ['sometimes', 'nullable', new RoleInputValidation()],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);

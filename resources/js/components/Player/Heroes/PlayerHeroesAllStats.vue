@@ -11,7 +11,6 @@
       :includegametypefull="true"
       :includeminimumgames="true"
       :hideadvancedfilteringbutton="true"
-      :includegamemap="true"
       >
     </filters>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
@@ -148,7 +147,6 @@ export default {
       hero: null,
       minimumgames: 0,
       searchQuery: '',
-      gamemap: null,
       stats: [
         { name: "Avg Assists", value: 'avg_assists', selected: false, flash: false},
         { name: "Avg Clutch Heals", value: 'avg_clutch_heals', selected: false, flash: false},
@@ -310,7 +308,6 @@ export default {
           game_type: this.gametype,
           hero: this.hero,
           role: this.role,
-          game_map: this.gamemap,
           minimumgames: this.minimumgames,
           type: "all",
           page: "hero",
@@ -347,7 +344,6 @@ export default {
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
       this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
-      this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
       this.data = null;
       this.sortKey = '';
       this.sortDir ='asc';
