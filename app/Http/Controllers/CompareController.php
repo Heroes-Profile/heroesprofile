@@ -17,7 +17,7 @@ class CompareController extends Controller
     {
         if (! is_null($hero)) {
             $validationRules = [
-                'hero' => ['required', new HeroInputValidation()],
+                'hero' => ['required', new HeroInputValidation],
             ];
 
             $validator = Validator::make(['hero' => $hero], $validationRules);
@@ -51,9 +51,9 @@ class CompareController extends Controller
         //return response()->json($request->all());
 
         $validationRules = [
-            'hero' => ['required', new HeroInputValidation()],
-            'game_type' => ['required', new GameTypeInputValidation()],
-            'season' => ['required', new SeasonInputValidation()],
+            'hero' => ['required', new HeroInputValidation],
+            'game_type' => ['required', new GameTypeInputValidation],
+            'season' => ['required', new SeasonInputValidation],
         ];
 
         $players = [

@@ -27,14 +27,14 @@ class FriendFoeController extends Controller
         ];
 
         if (request()->has('game_type')) {
-            $validationRules['game_type'] = ['sometimes', 'nullable', new GameTypeInputValidation()];
+            $validationRules['game_type'] = ['sometimes', 'nullable', new GameTypeInputValidation];
         }
         if (request()->has('season')) {
-            $validationRules['season'] = ['sometimes', 'nullable', new SeasonInputValidation()];
+            $validationRules['season'] = ['sometimes', 'nullable', new SeasonInputValidation];
         }
 
         if (request()->has('game_map')) {
-            $validationRules['game_map'] = ['sometimes', 'nullable', new GameMapInputValidation()];
+            $validationRules['game_map'] = ['sometimes', 'nullable', new GameMapInputValidation];
         }
 
         $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
@@ -79,12 +79,12 @@ class FriendFoeController extends Controller
         $validationRules = [
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
-            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation()],
-            'season' => ['sometimes', 'nullable', new SeasonInputValidation()],
-            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation()],
-            'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation()],
+            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation],
+            'season' => ['sometimes', 'nullable', new SeasonInputValidation],
+            'game_map' => ['sometimes', 'nullable', new GameMapInputValidation],
+            'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation],
             'type' => 'sometimes|in:friend,enemy',
-            'groupsize' => ['sometimes', 'nullable', new StackSizeInputValidation()],
+            'groupsize' => ['sometimes', 'nullable', new StackSizeInputValidation],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);

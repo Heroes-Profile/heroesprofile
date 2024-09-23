@@ -50,9 +50,9 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
         //return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
-            'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
-            'teamoneparty' => ['sometimes', 'nullable', new PartyCombinationRule()],
-            'teamtwoparty' => ['sometimes', 'nullable', new PartyCombinationRule()],
+            'hero' => ['sometimes', 'nullable', new HeroInputValidation],
+            'teamoneparty' => ['sometimes', 'nullable', new PartyCombinationRule],
+            'teamtwoparty' => ['sometimes', 'nullable', new PartyCombinationRule],
         ]);
 
         $validator = Validator::make($request->all(), $validationRules);

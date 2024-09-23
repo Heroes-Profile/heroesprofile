@@ -68,7 +68,7 @@ class PatreonController extends Controller
 
     private function getUserDataCheckIfSubscribed($accessToken)
     {
-        $client = new Client();
+        $client = new Client;
         $response = $client->get('https://www.patreon.com/api/oauth2/v2/identity', [
             'headers' => [
                 'Authorization' => "Bearer {$accessToken}",

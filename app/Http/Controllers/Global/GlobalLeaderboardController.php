@@ -49,14 +49,14 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         //return response()->json($request->all());
 
         $validationRules = [
-            'season' => ['required', new SeasonInputValidation()],
-            'game_type' => ['required', new GameTypeInputValidation()],
+            'season' => ['required', new SeasonInputValidation],
+            'game_type' => ['required', new GameTypeInputValidation],
             'type' => 'required|in:match prediction,player,hero,role',
-            'groupsize' => ['required', new StackSizeInputValidation()],
-            'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation()],
-            'region' => ['sometimes', 'nullable', new RegionInputValidation()],
-            'role' => ['sometimes', 'nullable', new RoleInputValidation()],
-            'tierrank' => ['sometimes', 'nullable', new TierInputByIDValidation()],
+            'groupsize' => ['required', new StackSizeInputValidation],
+            'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation],
+            'region' => ['sometimes', 'nullable', new RegionInputValidation],
+            'role' => ['sometimes', 'nullable', new RoleInputValidation],
+            'tierrank' => ['sometimes', 'nullable', new TierInputByIDValidation],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -218,13 +218,13 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         //return response()->json($request->all());
 
         $validationRules = [
-            'season' => ['required', new SeasonInputValidation()],
-            'game_type' => ['required', new GameTypeInputValidation()],
+            'season' => ['required', new SeasonInputValidation],
+            'game_type' => ['required', new GameTypeInputValidation],
             'type' => 'required|in:player,hero,role',
-            'groupsize' => ['required', new StackSizeInputValidation()],
-            'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation()],
+            'groupsize' => ['required', new StackSizeInputValidation],
+            'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation],
             'region' => 'required|integer',
-            'role' => ['sometimes', 'nullable', new RoleInputValidation()],
+            'role' => ['sometimes', 'nullable', new RoleInputValidation],
             'blizz_id' => 'required|integer',
         ];
 

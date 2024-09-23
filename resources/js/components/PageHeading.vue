@@ -2,12 +2,11 @@
   <div  class="flex py-0 px-10 md:px-20 items-center md:gap-20  md:text-left bg-teal flex-row max-md:py-2 max-md:mt-2 max-md:flex-wrap">
      <slot>
     </slot>
-
     
     <a v-if="headingImage" :href="headingImageUrl" target="_blank">
       <img :src="headingImage" alt="" class="w-33 h-20"/>
-      <span v-if="battletag && !esport"  class="text-lg uppercase ">{{ battletag }}({{ regionstring  }}) </span> {{ heading }}
-      <span v-if="battletag && esport"  class="text-lg uppercase ">{{ battletag }} </span> {{ heading }}
+      <span v-if="battletag && !esport"  class="text-lg uppercase ">{{ battletag }}({{ regionstring  }}) {{ heading }}</span> 
+      <span v-if="battletag && esport"  class="text-lg uppercase ">{{ battletag }} {{ heading }}</span> 
     </a>
 
    

@@ -35,8 +35,8 @@ class NGSController extends Controller
         //return response()->json($request->all());
 
         $validationRules = [
-            'season' => ['required', new NGSSeasonInputValidation()],
-            'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation()],
+            'season' => ['required', new NGSSeasonInputValidation],
+            'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -70,7 +70,7 @@ class NGSController extends Controller
     public function getDivisionData(Request $request)
     {
         $validationRules = [
-            'season' => ['required', new NGSSeasonInputValidation()],
+            'season' => ['required', new NGSSeasonInputValidation],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -99,8 +99,8 @@ class NGSController extends Controller
         //return response()->json($request->all());
 
         $validationRules = [
-            'season' => ['required', new NGSSeasonInputValidation()],
-            'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation()],
+            'season' => ['required', new NGSSeasonInputValidation],
+            'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);

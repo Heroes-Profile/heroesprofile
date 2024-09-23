@@ -23,10 +23,7 @@ use Illuminate\Support\Facades\DB;
 
 class GlobalDataService
 {
-    public function __construct()
-    {
-
-    }
+    public function __construct() {}
 
     public function getHeaderAlert()
     {
@@ -670,17 +667,21 @@ class GlobalDataService
             }
 
             if ($mmr >= $minMmr && $mmr < $maxMmr) {
-                if ($mmr < ($minMmr + $split)) {
-                    $result = $tierNames[$key].' '.$counter;
-                } else {
-                    for ($i = ($minMmr + $split); $i < $maxMmr; $i += $split) {
-                        if ($mmr >= $i) {
-                            $result = $tierNames[$key].' '.$counter;
-                            $counter--;
+                if ($tierNames[$key] != 'Master') {
+                    if ($mmr < ($minMmr + $split)) {
+                        $result = $tierNames[$key].' '.$counter;
+                    } else {
+                        for ($i = ($minMmr + $split); $i < $maxMmr; $i += $split) {
+                            if ($mmr >= $i) {
+
+                                $result = $tierNames[$key].' '.$counter;
+                                $counter--;
+                            }
                         }
                     }
+                } else {
+                    $result = 'Master';
                 }
-
             } else {
                 if ($mmr >= $minMmr && $mmr >= $maxMmr) {
                     $result = 'Master';

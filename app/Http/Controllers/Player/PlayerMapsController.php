@@ -64,7 +64,7 @@ class PlayerMapsController extends Controller
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
-            'map' => ['required', new GameMapInputValidation()],
+            'map' => ['required', new GameMapInputValidation],
         ];
 
         $validator = Validator::make(compact('battletag', 'blizz_id', 'region', 'map'), $validationRules);
