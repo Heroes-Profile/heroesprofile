@@ -74,13 +74,11 @@ class PlayerHeroesMapsRolesController extends Controller
         $minimum_games = $request['minimumgames'];
         $page = $request['page'];
         $role = $request['role'];
-
         if ($type == 'all') {
             $game_map = $this->getGameMapFilterValues($request['game_map']);
         } else {
             $game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->first() : null;
         }
-
         $season = $request['season'];
 
         $result = Replay::join('player', 'player.replayID', '=', 'replay.replayID')
