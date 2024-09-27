@@ -75,7 +75,7 @@ class PlayerHeroesMapsRolesController extends Controller
         $page = $request['page'];
         $role = $request['role'];
         if ($type == 'all') {
-          $game_map = $this->getGameMapFilterValues($request['game_map']);
+            $game_map = $this->getGameMapFilterValues($request['game_map']);
         } else {
             $game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->first() : null;
         }
@@ -111,11 +111,11 @@ class PlayerHeroesMapsRolesController extends Controller
                 return $query->where('new_role', $role);
             })
             ->when($game_map, function ($query) use ($game_map, $type) {
-              if ($type == 'all') {
-                  $query->whereIn('game_map', $game_map);
-              } else {
-                  return $query->where('game_map', $game_map);
-              }
+                if ($type == 'all') {
+                    $query->whereIn('game_map', $game_map);
+                } else {
+                    return $query->where('game_map', $game_map);
+                }
             })
             ->when(! is_null($season), function ($query) use ($season) {
                 $seasonDate = SeasonDate::find($season);
@@ -907,6 +907,7 @@ class PlayerHeroesMapsRolesController extends Controller
 
         return $result->replayID;
     }
+
     public function getGameMapFilterValues($game_maps)
     {
         if (is_null($game_maps)) {

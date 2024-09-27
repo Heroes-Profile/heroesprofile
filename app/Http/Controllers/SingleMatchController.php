@@ -234,7 +234,7 @@ class SingleMatchController extends Controller
                 return $item['blizz_id'] === $userBlizzId && $item['region'] === $userRegion;
             });
         }
-        
+
         $groupedData = $result->groupBy('replayID')->map(function ($replayGroup) use ($privateAccounts, $result, $talentData, $heroData, $maps, $replayID) {
             $totalSeconds = $replayGroup[0]->game_length - 70;
             $minutes = floor($totalSeconds / 60);

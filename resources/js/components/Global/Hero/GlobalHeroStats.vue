@@ -283,7 +283,7 @@ export default {
         !this.rolerank &&
         !this.herolevel &&
         this.statfilter === 'win_rate' &&
-        this.mirrormatch === 0
+        this.mirrormatch == 0
       );
 
     },
