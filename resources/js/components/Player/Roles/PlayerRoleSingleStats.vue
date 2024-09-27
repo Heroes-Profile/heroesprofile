@@ -2,13 +2,14 @@
   <div>
     <page-heading :infoText1="'Role data for ' + battletag + ' on ' + role" :heading="'Role Stats: '+ role" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
       <slot>
-        <round-image :image="`/images/roles/${role}.png`" :excludehover="true"></round-image>
+        <round-image :image="`/images/roles/${role}.PNG`" :excludehover="true"></round-image>
       </slot>
     </page-heading>
 
-    <div class="flex justify-center max-w-[1500px] mx-auto">
-      <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="!modifiedgametype ? 'All' : modifiedgametype" :disabled="disableFilterInput"></single-select-filter>
-      <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'" :disabled="disableFilterInput"></single-select-filter>
+    <div class="flex justify-center max-w-[1500px] mx-auto flex-wrap max-md:flex-col max-md:items-center">
+      <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" :trackclosure="true" :defaultValue="!modifiedgametype ? 'All' : modifiedgametype" :disabled="disableFilterInput"></single-select-filter>
+      <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" :trackclosure="true" :defaultValue="'All'" :disabled="disableFilterInput"></single-select-filter>
+      <single-select-filter :values="gameMapWithAll" :text="'Game Map'" @input-changed="handleInputChange" :trackclosure="true" :defaultValue="'All'" :disabled="disableFilterInput"></single-select-filter>
       <button :disabled="disableFilterInput" @click="applyFilter"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
           Filter
       </button>
@@ -26,7 +27,7 @@
           <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="red"></stat-box>                  
         </div>
         <div class="my-auto">
-          <round-image :image="`/images/roles/${role}.png`" :excludehover="true" size="large"></round-image>
+          <round-image :image="`/images/roles/${role}.PNG`" :excludehover="true" size="large"></round-image>
         </div>
 
         <div class="flex flex-wrap max-w-[450px] text-left w-full items-between h-full justify-center mt-[1em]">
@@ -161,6 +162,7 @@
         data: null,
         modifiedgametype: null,
         modifiedseason: null,
+        modifiedgamemap: null,
         disableFilterInput: null,
       }
     },
@@ -191,6 +193,12 @@
         updatedList.unshift(newValue);
         return updatedList;
       },
+      gameMapWithAll() {
+        const newValue = { code: 'All', name: 'All' };
+        const updatedList = [...this.filters.game_maps];
+        updatedList.unshift(newValue);
+        return updatedList;
+      },
       isOwner(){
         if(this.battletag == "Zemill" && this.blizzid == 67280 && this.region == 1){
           return true;
@@ -217,6 +225,7 @@
             region: this.region,
             game_type: this.modifiedgametype,
             season: this.modifiedseason,
+            game_map: this.modifiedgamemap,
             type: "single",
             page: "role",
             role: this.role,
@@ -253,6 +262,14 @@
             this.modifiedseason = null;
           }else{
             this.modifiedseason = eventPayload.value;
+          }
+        }
+
+        if(eventPayload.field == "Game Map"){
+          if(eventPayload.value == "All"){
+            this.modifiedgamemap = null;
+          }else{
+            this.modifiedgamemap = eventPayload.value;
           }
         }
       },

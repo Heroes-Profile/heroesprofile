@@ -74,7 +74,11 @@ class PlayerHeroesMapsRolesController extends Controller
         $minimum_games = $request['minimumgames'];
         $page = $request['page'];
         $role = $request['role'];
-        $game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->first() : null;
+        if ($type == 'all') {
+          $game_map = $this->getGameMapFilterValues($request['game_map']);
+        } else {
+            $game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->first() : null;
+        }
         $season = $request['season'];
 
         $result = Replay::join('player', 'player.replayID', '=', 'replay.replayID')
@@ -106,8 +110,12 @@ class PlayerHeroesMapsRolesController extends Controller
             ->when($type == 'single' && $page == 'role', function ($query) use ($role) {
                 return $query->where('new_role', $role);
             })
-            ->when($type == 'single' && $page == 'map', function ($query) use ($game_map) {
-                return $query->where('game_map', $game_map);
+            ->when($game_map, function ($query) use ($game_map, $type) {
+              if ($type == 'all') {
+                  $query->whereIn('game_map', $game_map);
+              } else {
+                  return $query->where('game_map', $game_map);
+              }
             })
             ->when(! is_null($season), function ($query) use ($season) {
                 $seasonDate = SeasonDate::find($season);
@@ -898,5 +906,14 @@ class PlayerHeroesMapsRolesController extends Controller
             ->first();
 
         return $result->replayID;
+    }
+    public function getGameMapFilterValues($game_maps)
+    {
+        if (is_null($game_maps)) {
+            return null;
+        }
+        $mapIds = Map::whereIn('name', $game_maps)->pluck('map_id')->toArray();
+
+        return $mapIds;
     }
 }
