@@ -62,7 +62,7 @@ class PlayerHeroesController extends Controller
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
-            'hero' => ['required', new HeroInputValidation()],
+            'hero' => ['required', new HeroInputValidation],
         ];
 
         $validator = Validator::make(compact('battletag', 'blizz_id', 'region', 'hero'), $validationRules);

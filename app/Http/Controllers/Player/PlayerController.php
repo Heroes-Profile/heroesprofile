@@ -35,7 +35,7 @@ class PlayerController extends Controller
         ];
 
         if (request()->has('season')) {
-            $validationRules['season'] = ['sometimes', 'nullable', new SeasonInputValidation()];
+            $validationRules['season'] = ['sometimes', 'nullable', new SeasonInputValidation];
         }
 
         $validator = Validator::make(compact('battletag', 'blizz_id', 'region'), $validationRules);
@@ -76,8 +76,8 @@ class PlayerController extends Controller
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
-            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation()],
-            'season' => ['sometimes', 'nullable', new SeasonInputValidation()],
+            'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation],
+            'season' => ['sometimes', 'nullable', new SeasonInputValidation],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);

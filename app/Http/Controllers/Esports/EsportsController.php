@@ -183,7 +183,7 @@ class EsportsController extends Controller
             'esport' => 'required|in:NGS,CCL,MastersClash,HeroesInternational',
             'battletag' => 'required|string',
             'blizz_id' => 'required|numeric',
-            'hero' => ['required', new HeroInputValidation()],
+            'hero' => ['required', new HeroInputValidation],
         ];
 
         $otherValidationRules = [
@@ -228,7 +228,7 @@ class EsportsController extends Controller
             'esport' => 'required|in:NGS,CCL,MastersClash,HeroesInternational',
             'battletag' => 'required|string',
             'blizz_id' => 'required|numeric',
-            'game_map' => ['required', new GameMapInputValidation()],
+            'game_map' => ['required', new GameMapInputValidation],
         ];
 
         $otherValidationRules = [
@@ -548,8 +548,8 @@ class EsportsController extends Controller
             'blizz_id' => 'nullable|string',
             'division' => 'nullable|string',
             'season' => 'nullable|numeric',
-            'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
-            'game_map' => ['sometimes', 'nullable',  new GameMapInputValidation()],
+            'hero' => ['sometimes', 'nullable', new HeroInputValidation],
+            'game_map' => ['sometimes', 'nullable',  new GameMapInputValidation],
             'pagination_page' => 'required:integer',
             'tournament' => 'nullable|in:main,nationscup',
         ];
@@ -667,7 +667,7 @@ class EsportsController extends Controller
         $validationRules = [
             'esport' => 'required|in:NGS,CCL,MastersClash,NutCup,hi,hi_nc',
             'season' => 'required|numeric',
-            'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation()],
+            'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation],
             'tournament' => 'nullable|in:main,nationscup',
         ];
 
@@ -749,8 +749,8 @@ class EsportsController extends Controller
         $validationRules = [
             'esport' => 'required|in:NGS,CCL,MastersClash,NutCup,hi,hi_nc',
             'season' => 'required|numeric',
-            'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation()],
-            'hero' => ['required', new HeroInputValidation()],
+            'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation],
+            'hero' => ['required', new HeroInputValidation],
             'tournament' => 'nullable|in:main,nationscup',
         ];
 
@@ -975,8 +975,8 @@ class EsportsController extends Controller
             'blizz_id' => 'nullable|string',
             'division' => 'nullable|string',
             'season' => 'nullable|numeric',
-            'hero' => ['sometimes', 'nullable', new HeroInputValidation()],
-            'game_map' => ['sometimes', 'nullable',  new GameMapInputValidation()],
+            'hero' => ['sometimes', 'nullable', new HeroInputValidation],
+            'game_map' => ['sometimes', 'nullable',  new GameMapInputValidation],
             'tournament' => 'nullable|in:main,nationscup',
         ];
 

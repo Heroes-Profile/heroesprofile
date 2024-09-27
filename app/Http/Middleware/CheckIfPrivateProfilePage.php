@@ -14,7 +14,7 @@ class CheckIfPrivateProfilePage
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $globalDataService = new GlobalDataService();
+        $globalDataService = new GlobalDataService;
 
         $user = Auth::user();
         $blizz_id = $request['blizz_id'];
