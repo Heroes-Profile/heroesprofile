@@ -162,6 +162,30 @@ class PreMatchController extends Controller
                         ->take(3)
                         ->values();
 
+                    $combinedTopHeroes = collect([$qm_topHeroes, $sl_topHeroes, $ar_topHeroes])
+                      ->flatten(1) 
+                      ->groupBy('hero') 
+                      ->map(function ($heroGames, $hero) {
+                          return [
+                              'hero' => $hero,
+                              'count' => $heroGames->sum('count'), 
+                          ];
+                      })
+                      ->sortByDesc('count') 
+                      ->take(3) 
+                      ->values(); 
+
+                    $heroData = $this->globalDataService->getHeroes();
+                    $heroData = $heroData->keyBy('id');
+
+                    $combinedTopHeroes = $combinedTopHeroes->map(function ($data) use ($heroData) {
+                      return [
+                          'hero' => $heroData[$data['hero']],
+                          'count' => $data['count'],
+                      ];
+                    });
+                  
+
                     return [
                         'battletag' => explode('#', $player->battletag)[0],
                         'blizz_id' => $player->blizz_id,
@@ -177,19 +201,18 @@ class PreMatchController extends Controller
                         'qm_rank' => $qm_mmr == 1800 ? null : $this->globalDataService->calculateSubTier($rankTiersQM, $qm_mmr),
                         'qm_games_played' => $qm_games_played,
                         'qm_win_rate' => $qm_games_played > 0 ? round(($qm_wins / $qm_games_played) * 100, 2) : null,
-                        'qm_top_heroes' => $qm_topHeroes,
 
                         'sl_mmr' => $sl_mmr == 1800 ? null : $sl_mmr,
                         'sl_rank' => $sl_mmr == 1800 ? null : $this->globalDataService->calculateSubTier($rankTiersSL, $sl_mmr),
                         'sl_games_played' => $sl_games_played,
                         'sl_win_rate' => $sl_games_played > 0 ? round(($sl_wins / $sl_games_played) * 100, 2) : null,
-                        'sl_top_heroes' => $sl_topHeroes,
 
                         'ar_mmr' => $ar_mmr == 1800 ? null : $ar_mmr,
                         'ar_rank' => $ar_mmr == 1800 ? null : $this->globalDataService->calculateSubTier($rankTiersAR, $ar_mmr),
                         'ar_games_played' => $ar_games_played,
                         'ar_win_rate' => $ar_games_played > 0 ? round(($ar_wins / $ar_games_played) * 100, 2) : null,
-                        'ar_top_heroes' => $ar_topHeroes,
+
+                        'top_heroes' => $combinedTopHeroes,
                     ];
                 }),
             ];
