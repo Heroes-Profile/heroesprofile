@@ -1,6 +1,6 @@
 <template>
   <div id="filter-label" class="relative">
-    <div @click="showOptions = !showOptions" class="flex flex-col text-sm font-medium text-gray-700 cursor-pointer p-2  transition-colors">
+    <div @click="showOptions = !showOptions" class="flex flex-col text-sm font-medium text-gray-700 cursor-pointer p-2  transition-colors" @keydown="handleKeyPress" tabindex="0">
       <span>{{ this.text }}</span> 
       <span class="w-[200px] h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2" ><span class="uppercase font-bold bg-teal rounded px-1 text-nowrap" v-if="selectedOptionsName !== ''">{{ selectedOptionsName }}</span></span>      
     </div>
@@ -117,6 +117,12 @@ export default {
         this.selectedOptions = this.selectedOptions === value ? '' : value;
       } else {
         this.selectedOptions = value;
+      }
+    },
+    handleKeyPress(event) {
+      const char = event.key;
+      if (/^[a-z0-9]$/i.test(char)) {
+        this.searchQuery += char;
       }
     },
   }
