@@ -324,7 +324,6 @@
           }
           
           this.replays = response.data;
-          console.log(this.replays);
         }catch(error){
           this.dataError = true;
         }finally {
