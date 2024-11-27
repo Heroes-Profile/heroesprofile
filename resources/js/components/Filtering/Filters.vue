@@ -95,6 +95,16 @@
             :defaultValue="gametype"
           ></multi-select-filter>
 
+          <!-- All Game Types Multiselect -->
+          <multi-select-filter v-if="includegametypefullcustom" 
+            :values="filters.game_types_full_add_custom" 
+            :text="'Game Type'" 
+            @input-changed="handleInputChange" 
+            :defaultValue="gametype"
+          ></multi-select-filter>
+
+          
+
           <!-- Leaderboard Game Type Excluding UD -->
           <single-select-filter v-if="includesinglegametypeleaderboard" 
             :values="leaderboardGameTypes" 
@@ -357,6 +367,7 @@
       includehero: Boolean,
       includegametype: Boolean,
       includegametypefull: Boolean,
+      includegametypefullcustom: Boolean,
       includesinglegametype: Boolean,
       includesinglegametypeleaderboard: Boolean,
       includegamemap: Boolean,

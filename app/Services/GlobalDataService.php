@@ -115,6 +115,22 @@ class GlobalDataService
         ];
 
     }
+    public function showcustomgames(){
+      if (Auth::check()) {
+        $user = Auth::user();
+
+        $customgames = $user->userSettings->firstWhere('setting', 'customgames');
+
+        if($customgames){
+          $customgames = $customgames->value == 1 ? true : false ;
+
+        }
+
+        return $customgames;
+      }
+
+    return false;
+    }
 
     public function getPlayerLoadSettings()
     {
@@ -454,6 +470,13 @@ class GlobalDataService
             });
 
         $filterData->game_types_full = GameType::whereNotIn('type_id', [-1, 0])
+            ->orderBy('type_id', 'ASC')
+            ->get()
+            ->map(function ($gameType) {
+                return ['code' => $gameType->short_name, 'name' => $gameType->name];
+            });
+
+        $filterData->game_types_full_add_custom = GameType::whereNotIn('type_id', [-1])
             ->orderBy('type_id', 'ASC')
             ->get()
             ->map(function ($gameType) {
