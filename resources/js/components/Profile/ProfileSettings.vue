@@ -119,7 +119,18 @@
         </div>
 
 
-
+        <div class="max-w-[50%] border-r-[1px] px-4 border-white">
+          <h3 class="mb-auto">Show custom game.  Match History page only</h3>
+          <single-select-filter 
+            :values="showcustomgames" 
+            :text="'Show Custom Games'" 
+            @dropdown-closed="saveSettings()" 
+            @input-changed="handleInputChange" 
+            :defaultValue="customgames"
+            :trackclosure="true"
+            >
+          </single-select-filter>
+        </div>
 
 
 
@@ -189,6 +200,11 @@ export default {
         { code: 'true', name: 'Standard' },
         { code: 'false', name: "No load" }
       ],
+      showcustomgames: [
+        { code: false, name: "Don't Show" },
+        { code: true, name: 'Show' }
+
+      ],
       advancedfiltering: null,
       accountVisibility: 'false',
       talentBuildType: null,
@@ -200,6 +216,7 @@ export default {
 
       defaultMultiGameTypeOverride: null,
       playerload: 'true',
+      customgames: false,
       savemultigametype: null,
     }
   },
@@ -218,6 +235,7 @@ export default {
     this.talentBuildType = this.defaultBuildType;
     this.darkmode = this.defaultDarkMode;
     this.playerhistorytable = this.defaultPlayerhistorytable;
+    this.customgames = this.defaultCustomGames;
   },
   mounted() {
   },
@@ -290,6 +308,13 @@ export default {
       }
       return "left";
     },
+    defaultCustomGames(){
+      if (this.user.user_settings.length > 0){
+        let customgames = this.user.user_settings.find(item => item.setting === 'customgames');
+        return customgames ? customgames.value == 1 ? true : false : false;
+      }
+      return false;
+    },
   },
   watch: {
   },
@@ -321,6 +346,7 @@ export default {
           talentbuildtype: this.talentBuildType,
           darkmode: darkmodeinput,
           playerload: this.playerload,
+          customgames: this.customgames,
           playerhistorytable: playerhistorytableinput,
         });
         //window.location.href = "/Profile/Settings";
@@ -361,6 +387,8 @@ export default {
           this.mmrplayerusergametype = eventPayload.value;
         }else if(eventPayload.field == "Player Load"){
           this.playerload = eventPayload.value;
+        }else if(eventPayload.field == "Show Custom Games"){
+          this.customgames = eventPayload.value;
         }
 
       } else if(eventPayload.type === 'multi') {

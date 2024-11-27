@@ -34,8 +34,8 @@ class ProfileController extends Controller
             'usergametype' => ['sometimes', 'nullable', new GameTypeInputValidation],
             'talentbuildtype' => ['sometimes', 'nullable', new TalentBuildTypeInputValidation],
             'darkmode' => 'nullable|boolean',
-            'darkmode' => 'nullable|boolean',
             'playerhistorytable' => 'nullable|boolean',
+            'customgames' => 'nullable|boolean',
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -115,6 +115,17 @@ class ProfileController extends Controller
                 ['value' => $advancedfiltering]
             );
         }
+        
+        if (! is_null($request['customgames'])) {
+          $user = BattlenetAccount::find($request['userid']);
+
+          $customgames = $request['customgames'];
+
+          $user->userSettings()->updateOrCreate(
+              ['setting' => 'customgames'],
+              ['value' => $customgames]
+          );
+      }
 
         if (! is_null($request['talentbuildtype'])) {
             $user = BattlenetAccount::find($request['userid']);
