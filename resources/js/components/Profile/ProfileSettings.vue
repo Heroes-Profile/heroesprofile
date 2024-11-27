@@ -120,7 +120,7 @@
 
 
         <div class="max-w-[50%] border-r-[1px] px-4 border-white">
-          <h3 class="mb-auto">Show custom game.  Match History page only</h3>
+          <h3 class="mb-auto">Show custom games.  Match History page only</h3>
           <single-select-filter 
             :values="showcustomgames" 
             :text="'Show Custom Games'" 
