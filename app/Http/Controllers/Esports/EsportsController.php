@@ -1022,7 +1022,8 @@ class EsportsController extends Controller
             $this->team = $request['team'] ? HeroesInternationalMainTeam::where('season', $this->season)->where('team_name', $request['team'])->first()->team_id : null;
             $this->team_name = $request['team'];
         } elseif ($this->esport == 'hi_nc' && $this->tournament == 'nationscup') {
-            $this->team = $request['team'] ? HeroesInternationalNationsCupTeam::where('season', $this->season)->where('team_name', $request['team'])->first()->team_id : null;
+          
+            $this->team = $request['team'] ? HeroesInternationalNationsCupTeam::where('season', 1)->where('team_name', $request['team'])->first()->team_id : null;
             $this->team_name = $request['team'];
         }
 

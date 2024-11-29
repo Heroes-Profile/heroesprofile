@@ -133,7 +133,7 @@ class PlayerController extends Controller
             ->first()
             ->replayID ?? null;
 
-        if ($latestReplayID && $cachedData->latest_replayID < $latestReplayID) {
+        if (($latestReplayID && $cachedData) && $cachedData->latest_replayID < $latestReplayID) {
             $this->calculateProfile($blizz_id, $region, $game_type, $season, $cachedData);
             $cachedData = ProfilePage::filterByBlizzID($blizz_id)
                 ->filterByRegion($region)

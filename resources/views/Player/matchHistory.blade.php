@@ -11,6 +11,7 @@
     :blizzid="{{ json_encode($blizz_id) }}" 
     :region="{{ json_encode($region) }}" 
     :gametypedefault="{{ json_encode($gametypedefault) }}" 
+    :showcustomgames="{{ json_encode($showcustomgames) }}" 
     :regionsmap="{{ json_encode($bladeGlobals['regions']) }}"
     :is-patreon="{{ json_encode($patreon) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"

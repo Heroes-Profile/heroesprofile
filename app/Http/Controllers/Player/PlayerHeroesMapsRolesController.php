@@ -133,7 +133,7 @@ class PlayerHeroesMapsRolesController extends Controller
                 'game_date',
                 'game_map',
                 'game_type',
-                DB::raw('game_length - 70 as game_length'),
+                DB::raw('CAST(game_length AS SIGNED) - 70 as game_length'),
                 'stack_size',
                 'mastery_taunt',
                 'new_role',
@@ -904,8 +904,12 @@ class PlayerHeroesMapsRolesController extends Controller
             ->select('replay.replayID')
             //->toSql();
             ->first();
-
-        return $result->replayID;
+            
+        if($result){
+          return $result->replayID;
+        }else{
+          return null;
+        }
     }
 
     public function getGameMapFilterValues($game_maps)
