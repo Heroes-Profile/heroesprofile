@@ -19,6 +19,7 @@
       
     }
   ]"
+  
   @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
 
     <div class="absolute z-10 bottom-0 right-0 w-9"  v-if="award">

@@ -138,7 +138,7 @@
                     <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                       Copy Build to Game
                     </th>  
-                    <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+                    <th @click="sortTable('hero_build_games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                       Games Played With Build
                     </th>    
                   </template>
@@ -152,7 +152,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <td><div class="flex gap-1"><div v-if="rankchange" class="bg-blue text-white min-w-[2em] p-1 rounded-md text-center"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  500-index }}</span></div><span class="p-1">{{ row.rank }}</span></div></td>
+                    <td><div class="flex gap-1"><div v-if="rankchange" class="bg-blue text-white min-w-[2em] p-1 rounded-md text-center"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  data.length - index }}</span></div><span class="p-1">{{ row.rank }}</span></div></td>
                     <td>
                       <div class="flex items-center">
                         <div class="" v-if="row.hp_owner">
