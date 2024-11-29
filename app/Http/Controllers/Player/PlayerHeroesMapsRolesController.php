@@ -904,8 +904,12 @@ class PlayerHeroesMapsRolesController extends Controller
             ->select('replay.replayID')
             //->toSql();
             ->first();
-
-        return $result->replayID;
+            
+        if($result){
+          return $result->replayID;
+        }else{
+          return null;
+        }
     }
 
     public function getGameMapFilterValues($game_maps)
