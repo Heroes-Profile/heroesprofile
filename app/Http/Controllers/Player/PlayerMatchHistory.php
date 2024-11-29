@@ -89,8 +89,11 @@ class PlayerMatchHistory extends Controller
             ->where('region', $region)
             ->orderBy('replayID', 'DESC')
             ->first();
-
-        return \Redirect::to('/Match/Single/'.$latest_replay->replayID);
+        if($latest_replay){
+          return \Redirect::to('/Match/Single/'.$latest_replay->replayID);
+        }else{
+          return;
+        }
     }
 
     public function getData(Request $request)

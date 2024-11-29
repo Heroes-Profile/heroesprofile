@@ -81,6 +81,14 @@ class PlayerMMRController extends Controller
         $type = $request['type'];
         $role = $request['role'];
 
+        if($type == "Hero" && $hero == null){
+          return [
+            'data' => $request->all(),
+            'errors' => $validator->errors()->all(),
+            'status' => 'failure to validate inputs',
+          ];
+        }
+
         $result = DB::table('replay')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
             ->select([

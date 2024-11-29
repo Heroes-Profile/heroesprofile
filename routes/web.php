@@ -57,8 +57,8 @@ Route::fallback(function () {
 
 Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/', [MainPageController::class, 'show']);
-    Route::get('/test', [MainPageController::class, 'test']);
-    Route::get('/testJS', [MainPageController::class, 'testJS']);
+    //Route::get('/test', [MainPageController::class, 'test']);
+    //Route::get('/testJS', [MainPageController::class, 'testJS']);
 
     Route::get('/Contact', [ContactController::class, 'show']);
 
