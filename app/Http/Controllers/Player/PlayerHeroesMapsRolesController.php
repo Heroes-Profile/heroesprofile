@@ -71,6 +71,7 @@ class PlayerHeroesMapsRolesController extends Controller
         }
 
         $hero = $request['hero'] ? $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id : null;
+
         $minimum_games = $request['minimumgames'];
         $page = $request['page'];
         $role = $request['role'];
@@ -104,7 +105,7 @@ class PlayerHeroesMapsRolesController extends Controller
                 }
             })
             ->where('blizz_id', $blizz_id)
-            ->when($type == 'single' && $page == 'hero', function ($query) use ($hero) {
+            ->when(($type == 'single' && $page == 'hero') || ($type == 'all' && $hero), function ($query) use ($hero) {
                 return $query->where('hero', $hero);
             })
             ->when($type == 'single' && $page == 'role', function ($query) use ($role) {
@@ -187,8 +188,10 @@ class PlayerHeroesMapsRolesController extends Controller
                 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty',
             ])
                 //->toSql();
-            ->get();
+                //return $result;
 
+            ->get();
+              
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
