@@ -12,6 +12,7 @@ use App\Rules\SeasonInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use App\Models\SeasonDate;
 
 class PlayerMatchupsController extends Controller
 {
@@ -123,6 +124,15 @@ class PlayerMatchupsController extends Controller
                 })
                 ->when(! is_null($gameMap), function ($query) use ($gameMap) {
                     return $query->whereIn('game_map', $gameMap);
+                })
+                ->when(! is_null($season), function ($query) use ($season) {
+                  $seasonDate = SeasonDate::find($season);
+                  if ($seasonDate) {
+                      return $query->where('game_date', '>=', $seasonDate->start_date)
+                          ->where('game_date', '<', $seasonDate->end_date);
+                  }
+  
+                  return $query;
                 })
                 ->select('player.replayID');
 
