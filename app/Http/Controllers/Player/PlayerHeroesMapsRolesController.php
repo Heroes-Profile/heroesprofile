@@ -191,7 +191,7 @@ class PlayerHeroesMapsRolesController extends Controller
                 //return $result;
 
             ->get();
-              
+
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
@@ -907,11 +907,11 @@ class PlayerHeroesMapsRolesController extends Controller
             ->select('replay.replayID')
             //->toSql();
             ->first();
-            
-        if($result){
-          return $result->replayID;
-        }else{
-          return null;
+
+        if ($result) {
+            return $result->replayID;
+        } else {
+            return null;
         }
     }
 

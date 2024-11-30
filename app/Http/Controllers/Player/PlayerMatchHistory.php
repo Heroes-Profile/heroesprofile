@@ -41,9 +41,9 @@ class PlayerMatchHistory extends Controller
 
         $gametypedefault = ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'];
         $showcustomgames = false;
-        if($this->globalDataService->showcustomgames()){
-          array_push($gametypedefault, 'cu');
-          $showcustomgames = true;
+        if ($this->globalDataService->showcustomgames()) {
+            array_push($gametypedefault, 'cu');
+            $showcustomgames = true;
         }
 
         return view('Player.matchHistory')->with([
@@ -89,10 +89,10 @@ class PlayerMatchHistory extends Controller
             ->where('region', $region)
             ->orderBy('replayID', 'DESC')
             ->first();
-        if($latest_replay){
-          return \Redirect::to('/Match/Single/'.$latest_replay->replayID);
-        }else{
-          return;
+        if ($latest_replay) {
+            return \Redirect::to('/Match/Single/'.$latest_replay->replayID);
+        } else {
+            return;
         }
     }
 
