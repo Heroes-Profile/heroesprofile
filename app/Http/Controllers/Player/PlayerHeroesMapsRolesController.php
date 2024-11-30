@@ -28,7 +28,7 @@ class PlayerHeroesMapsRolesController extends Controller
 {
     public function getData(Request $request)
     {
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+        ini_set('max_execution_time', 600); //300 seconds = 5 minutes
 
         //return response()->json($request->all());
 
@@ -63,7 +63,7 @@ class PlayerHeroesMapsRolesController extends Controller
         $blizz_id = $request['blizz_id'];
         $region = $request['region'];
         $type = $request['type'];
-
+        $season = $request['season'];
         if ($type == 'all') {
             $game_type = $request['game_type'] ? GameType::whereIn('short_name', $request['game_type'])->pluck('type_id')->toArray() : null;
         } else {
