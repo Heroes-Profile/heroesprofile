@@ -115,12 +115,13 @@ class MatchPredictionGameController extends Controller
 
         $indexedTalents = $talents->mapWithKeys(function ($item) use ($talentData) {
           return [$item->battletag => [
-              'level_one' => $item->level_one && array_key_exists($item->level_one, $talentData) ? $talentData[$item->level_one] : null,
-              'level_four' => $item->level_four && array_key_exists($item->level_four, $talentData) ? $talentData[$item->level_four] : null,
-              'level_seven' => $item->level_seven && array_key_exists($item->level_seven, $talentData) ? $talentData[$item->level_seven] : null,
-              'level_ten' => $item->level_ten && array_key_exists($item->level_ten, $talentData) ? $talentData[$item->level_ten] : null,
+              'level_one' => $item->level_one && $talentData->has($item->level_one) ? $talentData->get($item->level_one) : null,
+              'level_four' => $item->level_four && $talentData->has($item->level_four) ? $talentData->get($item->level_four) : null,
+              'level_seven' => $item->level_seven && $talentData->has($item->level_seven) ? $talentData->get($item->level_seven) : null,
+              'level_ten' => $item->level_ten && $talentData->has($item->level_ten) ? $talentData->get($item->level_ten) : null,
           ]];
         });
+      
       
 
         $replayBans = ReplayBan::select('team', 'hero')
