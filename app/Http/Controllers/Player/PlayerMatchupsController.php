@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Player;
 use App\Http\Controllers\Controller;
 use App\Models\GameType;
 use App\Models\Map;
+use App\Models\SeasonDate;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
@@ -123,6 +124,15 @@ class PlayerMatchupsController extends Controller
                 })
                 ->when(! is_null($gameMap), function ($query) use ($gameMap) {
                     return $query->whereIn('game_map', $gameMap);
+                })
+                ->when(! is_null($season), function ($query) use ($season) {
+                    $seasonDate = SeasonDate::find($season);
+                    if ($seasonDate) {
+                        return $query->where('game_date', '>=', $seasonDate->start_date)
+                            ->where('game_date', '<', $seasonDate->end_date);
+                    }
+
+                    return $query;
                 })
                 ->select('player.replayID');
 

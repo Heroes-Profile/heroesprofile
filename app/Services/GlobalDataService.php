@@ -115,21 +115,23 @@ class GlobalDataService
         ];
 
     }
-    public function showcustomgames(){
-      if (Auth::check()) {
-        $user = Auth::user();
 
-        $customgames = $user->userSettings->firstWhere('setting', 'customgames');
+    public function showcustomgames()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
 
-        if($customgames){
-          $customgames = $customgames->value == 1 ? true : false ;
+            $customgames = $user->userSettings->firstWhere('setting', 'customgames');
 
+            if ($customgames) {
+                $customgames = $customgames->value == 1 ? true : false;
+
+            }
+
+            return $customgames;
         }
 
-        return $customgames;
-      }
-
-    return false;
+        return false;
     }
 
     public function getPlayerLoadSettings()

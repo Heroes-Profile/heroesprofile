@@ -12,6 +12,7 @@
       :includeminimumgames="true"
       :hideadvancedfilteringbutton="true"
       :includegamemap="true"
+      :includeseasonwithall="true"
       >
     </filters>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
@@ -149,6 +150,7 @@ export default {
       minimumgames: 0,
       searchQuery: '',
       gamemap: null,
+      season: Number,
       stats: [
         { name: "Avg Assists", value: 'avg_assists', selected: false, flash: false},
         { name: "Avg Clutch Heals", value: 'avg_clutch_heals', selected: false, flash: false},
@@ -294,7 +296,6 @@ export default {
   },
   methods: {
     async getData(type){
-      
       this.isLoading = true;
 
       if (this.cancelTokenSource) {
@@ -314,6 +315,7 @@ export default {
           minimumgames: this.minimumgames,
           type: "all",
           page: "hero",
+          season: this.season,
         }, 
         {
           cancelToken: this.cancelTokenSource.token,
@@ -348,6 +350,13 @@ export default {
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
       this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
+
+
+      this.season = filteredData.single.Season ? filteredData.single.Season : null;
+      if(this.season == "All"){
+        this.season = null;
+      }
+
       this.data = null;
       this.sortKey = '';
       this.sortDir ='asc';
