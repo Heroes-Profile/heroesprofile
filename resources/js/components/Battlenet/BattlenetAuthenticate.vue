@@ -44,7 +44,7 @@
     methods: {
       handleInputChange(value) {
         if (!value || !value.value) {
-          console.error('Invalid value');
+          this.selectedRegion = null;
           return;
         }
         this.selectedRegion = value.value;
