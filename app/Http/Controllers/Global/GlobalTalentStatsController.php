@@ -109,9 +109,11 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
         $cacheKey = 'GlobalHeroTalentStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
-        if (! env('Production')) {
+        /*
+if (! env('Production')) {
             Cache::store('database')->forget($cacheKey);
         }
+*/
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
             $hero,
             $gameVersion,
@@ -236,9 +238,12 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
         $cacheKey = 'GlobalHeroTalentStatsBuilds|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
+        /*
         if (! env('Production')) {
             Cache::store('database')->forget($cacheKey);
         }
+        */  
+        
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
             $hero,
             $gameVersion,

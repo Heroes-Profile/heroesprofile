@@ -84,9 +84,11 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
 
         //return $cacheKey;
 
+        /*
         if (! env('Production')) {
             Cache::store('database')->forget($cacheKey);
         }
+        */
 
         $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
             $gameType,

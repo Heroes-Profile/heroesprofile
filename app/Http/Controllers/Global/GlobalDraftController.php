@@ -96,9 +96,11 @@ class GlobalDraftController extends GlobalsInputValidationController
 
         //return $cacheKey;
 
+        /*
         if (! env('Production')) {
             Cache::store('database')->forget($cacheKey);
         }
+        */
 
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
             $hero,

@@ -138,9 +138,11 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
 
         //return $cacheKey;
 
+        /*
         if (! env('Production')) {
             Cache::store('database')->forget($cacheKey);
         }
+        */
 
         if ($talentView == 'ally_enemy') {
             $temp = $hero;
