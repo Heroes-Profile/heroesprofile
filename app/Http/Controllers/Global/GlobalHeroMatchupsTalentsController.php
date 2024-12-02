@@ -123,26 +123,31 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
                 'status' => 'failure to validate inputs',
             ];
         }
-        $hero = $this->getHeroFilterValue($request['hero']);
+        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
         $allyEnemy = $this->globalDataService->getHeroes()->keyBy('name')[$request['ally_enemy']]->id;
-        $gameType = $this->getGameTypeFilterValues($request['game_type']);
+        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
         $leagueTier = $request['league_tier'];
-        $gameMap = $this->getGameMapFilterValues($request['game_map']);
+        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
         $type = $request['type'];
         $talentView = $request['talent_view'];
 
-        $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
 
         $cacheKey = 'GlobalHeroMatchupsTalents|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
 
         //return $cacheKey;
 
+        if (! env('Production')) {
+            Cache::store('database')->forget($cacheKey);
+        }
+
         if ($talentView == 'ally_enemy') {
             $temp = $hero;
             $hero = $allyEnemy;
             $allyEnemy = $temp;
         }
+
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
             $hero,
             $allyEnemy,

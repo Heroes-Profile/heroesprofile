@@ -76,7 +76,7 @@ class PlayerHeroesMapsRolesController extends Controller
         $page = $request['page'];
         $role = $request['role'];
         if ($type == 'all') {
-            $game_map = $this->getGameMapFilterValues($request['game_map']);
+            $game_map = $this->globalDataService->getGameMapFilterValues($request['game_map']);
         } else {
             $game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->first() : null;
         }
@@ -913,15 +913,5 @@ class PlayerHeroesMapsRolesController extends Controller
         } else {
             return null;
         }
-    }
-
-    public function getGameMapFilterValues($game_maps)
-    {
-        if (is_null($game_maps)) {
-            return null;
-        }
-        $mapIds = Map::whereIn('name', $game_maps)->pluck('map_id')->toArray();
-
-        return $mapIds;
     }
 }
