@@ -66,21 +66,25 @@ class GlobalCompositionsController extends GlobalsInputValidationController
             ];
         }
 
-        $hero = $this->getHeroFilterValue($request['hero']);
-        $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
-        $gameType = $this->getGameTypeFilterValues($request['game_type']);
+        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
         $leagueTier = $request['league_tier'];
         $heroLeagueTier = $request['hero_league_tier'];
         $roleLeagueTier = $request['role_league_tier'];
-        $gameMap = $this->getGameMapFilterValues($request['game_map']);
+        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
         $heroLevel = $request['hero_level'];
-        $region = $this->getRegionFilterValues($request['region']);
+        $region = $this->globalDataService->getRegionFilterValues($request['region']);
         $statFilter = $request['statfilter'];
         $mirror = $request['mirror'];
         $talentbuildType = $request['talentbuildtype'];
         $minimumGames = $request['minimum_games'];
 
         $cacheKey = 'GlobalCompositionStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+
+        if (! env('Production')) {
+            Cache::store('database')->forget($cacheKey);
+        }
 
         $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
             $gameType,
@@ -189,9 +193,9 @@ class GlobalCompositionsController extends GlobalsInputValidationController
             ];
         }
 
-        $hero = $this->getHeroFilterValue($request['hero']);
+        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
 
-        $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
 
         $gameTypeRecords = GameType::whereIn('short_name', $request['game_type'])->get();
         $gameType = $gameTypeRecords->pluck('type_id')->toArray();
@@ -199,9 +203,9 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         $leagueTier = $request['league_tier'];
         $heroLeagueTier = $request['hero_league_tier'];
         $roleLeagueTier = $request['role_league_tier'];
-        $gameMap = $this->getGameMapFilterValues($request['game_map']);
+        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
         $heroLevel = $request['hero_level'];
-        $region = $this->getRegionFilterValues($request['region']);
+        $region = $this->globalDataService->getRegionFilterValues($request['region']);
         $statFilter = $request['statfilter'];
         $mirror = $request['mirror'];
         $talentbuildType = $request['talentbuildtype'];
