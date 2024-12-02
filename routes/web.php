@@ -38,6 +38,7 @@ use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
+use App\Http\Controllers\AnimationsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -182,3 +183,8 @@ Route::redirect('https://www.{any}/ads.txt', 'https://adstxt.venatusmedia.com/60
 
 Route::redirect('https://{any}/ads.txt', 'https://adstxt.venatusmedia.com/60f587eddd63d722e7e57bc1_ads.txt');
 Route::redirect('https://{any}/ads.txt', 'https://adstxt.venatusmedia.com/60f587eddd63d722e7e57bc1_ads.txt')->name('https.ads.txt');
+
+
+
+Route::get('/Animation/Deathwing', [AnimationsController::class, 'showDeathwing']);
+Route::get('/Animation/Tassadar', [AnimationsController::class, 'showTassadar']);
