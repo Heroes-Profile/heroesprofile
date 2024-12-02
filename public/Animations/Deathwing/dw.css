@@ -1,0 +1,76 @@
+
+@import url('https://fonts.googleapis.com/css?family=Knewave|VT323&display=swap');
+
+
+
+.dw-logo-wrapper a{
+  display:block;   max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+.dw-message {
+font-family: "VT323", sans-serif;
+font-size: 18px;
+
+    color:white;
+    text-transform: uppercase;
+    box-sizing:border-box;
+
+
+
+}
+
+#homepage .dw-message{
+  color:#333;
+  position:absolute;
+  top:0;
+  width: 100%;
+}
+
+
+.deathwing-stats{
+
+/* width: 400px; */
+/* height: 200px; */
+z-index: 1000;
+
+
+padding: 5px;
+}
+.deathwing-stats a{color:white;
+
+
+}
+#homepage .deathwing-stats a{color:black;  }
+.deathwing-stats{display:flex; justify-content:space-between; padding: 5px;}
+.deathwing-stats .scoreboard{
+  display: flex;
+  flex-wrap:wrap;
+    align-items: center;
+    justify-content: space-between;
+    justify-content: space-between;
+    /* width: 100%; */
+    /* flex-basis: 50%; */
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 40%;
+}
+.deathwing-stats .scoreboard-item{
+  text-align: center;
+  margin-left:20px; margin-right: 20px;
+}
+.sb-stat{color: #b33616; font-size: 1.5em;}
+.deathwing-icon{font-size: 2.3em; color: #b33616;
+    }
+    .dw-links{font-size: 18px; display:flex; align-items: center; justify-content: space-between;}
+    .dw-links a{margin:5px;}
+    .dw-links a:hover{color: #b33616;}
+
+@media only screen and (max-width: 1000px) {
+  .deathwing-stats {flex-direction:column;}
+  .dw-message{font-size:12px; margin-top: 50px;}
+  .deathwing-icon{font-size: 1em;}
+  .dw-links{font-size: 1em;}
+  .beta-message{margin-top:0;}
+  .deathwing-icon img{display:none;}
+}
