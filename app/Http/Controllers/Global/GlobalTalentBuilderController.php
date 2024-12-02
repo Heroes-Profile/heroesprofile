@@ -122,9 +122,11 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         $talentData = HeroesDataTalent::all();
         $talentData = $talentData->keyBy('talent_id');
 
+        /*
         if (! env('Production')) {
             Cache::store('database')->forget($cacheKey);
         }
+        */
 
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
             $talentData,
