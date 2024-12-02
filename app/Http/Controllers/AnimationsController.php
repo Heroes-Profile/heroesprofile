@@ -12,4 +12,11 @@ class AnimationsController extends Controller
       'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
     ]);
   }
+  public function showTassadar(Request $request)
+  {
+      return view('Animations.tassadar')->with([
+          'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+      ]);
+  }
+
 }
