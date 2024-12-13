@@ -1460,37 +1460,57 @@ class EsportsController extends Controller
         }
         $mapBanReturn = collect($mapBanReturn)->sortByDesc('value')->values()->all();
 
-        $seasons = DB::table($this->schema.'.teams')
-            ->join($this->schema.'.player', function ($join) {
-                if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
-                    $join->on($this->schema.'.player.team_name', '=', $this->schema.'.teams.team_id');
-                } elseif ($this->esport == 'CCL' || $this->esport == 'hi' || $this->esport == 'hi_nc') {
-                    $join->on($this->schema.'.player.team_id', '=', $this->schema.'.teams.team_id');
-                }
-            })
-            ->join($this->schema.'.battletags', $this->schema.'.battletags.player_id', '=', $this->schema.'.player.battletag')
-            ->select('season')
-            ->when(! is_null($this->team) && $this->esport == 'NGS' || $this->esport == 'MastersClash', function ($query) {
-                return $query->where($this->schema.'.teams.team_name', $this->team);
-            })
-            ->when(! is_null($this->team) && $this->esport == 'CCL' || $this->esport == 'hi' || $this->esport == 'hi_nc', function ($query) {
-                return $query->where($this->schema.'.teams.team_id', $this->team);
-            })
-            ->when(! is_null($this->blizz_id), function ($query) {
-                return $query->where($this->schema.'.player.blizz_id', $this->blizz_id);
-            })
-            ->when(! is_null($this->hero), function ($query) {
-                return $query->where($this->schema.'.player.hero', $this->hero);
-            })
-            ->distinct()
-            ->orderByDesc('season') // Order by season in descending order
-            ->pluck('season')
-            ->map(function ($season) {
-                return ['code' => strval($season), 'name' => strval($season)];
-            })
-            ->values()
-            ->all();
-
+        if($this->esport == 'NGS' || $this->esport == 'MastersClash'){
+          $seasons = DB::table($this->schema.'.teams')
+          ->join($this->schema.'.player', function ($join) {
+            $join->on($this->schema.'.player.team_name', '=', $this->schema.'.teams.team_id');
+          })
+          ->join($this->schema.'.battletags', $this->schema.'.battletags.player_id', '=', $this->schema.'.player.battletag')
+          ->select('season')
+          ->when(! is_null($this->team), function ($query) {
+              return $query->where($this->schema.'.teams.team_name', $this->team);
+          })
+          ->when(! is_null($this->blizz_id), function ($query) {
+              return $query->where($this->schema.'.player.blizz_id', $this->blizz_id);
+          })
+          ->when(! is_null($this->hero), function ($query) {
+              return $query->where($this->schema.'.player.hero', $this->hero);
+          })
+          ->distinct()
+          ->orderByDesc('season') 
+          ->pluck('season')
+          ->map(function ($season) {
+              return ['code' => strval($season), 'name' => strval($season)];
+          })
+          ->values()
+          ->all();
+        }else if($this->esport == 'CCL' || $this->esport == 'hi' || $this->esport == 'hi_nc'){
+          $teamName = DB::table($this->schema.'.teams')->where("team_id", $this->team)->value("team_name");
+          $seasons = DB::table($this->schema.'.teams')
+          ->join($this->schema.'.player', function ($join) {
+            $join->on($this->schema.'.player.team_id', '=', $this->schema.'.teams.team_id'); 
+          })
+          ->join($this->schema.'.battletags', $this->schema.'.battletags.player_id', '=', $this->schema.'.player.battletag')
+          ->select('season')
+          ->when(! is_null($this->team), function ($query) use ($teamName){
+              return $query->where($this->schema.'.teams.team_name', $teamName);
+          })
+          ->when(! is_null($this->blizz_id), function ($query) {
+              return $query->where($this->schema.'.player.blizz_id', $this->blizz_id);
+          })
+          ->when(! is_null($this->hero), function ($query) {
+              return $query->where($this->schema.'.player.hero', $this->hero);
+          })
+          ->distinct()
+          ->orderByDesc('season') // Order by season in descending order
+          ->pluck('season')
+          ->map(function ($season) {
+              return ['code' => strval($season), 'name' => strval($season)];
+          })
+          ->values()
+          ->all();
+        }
+        
         array_unshift($seasons, ['code' => null, 'name' => 'All']);
 
         $divisions = null;
