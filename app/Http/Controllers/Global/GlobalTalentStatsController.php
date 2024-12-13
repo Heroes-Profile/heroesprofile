@@ -242,8 +242,8 @@ if (! env('Production')) {
         if (! env('Production')) {
             Cache::store('database')->forget($cacheKey);
         }
-        */  
-        
+        */
+
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
             $hero,
             $gameVersion,
