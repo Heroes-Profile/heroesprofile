@@ -145,7 +145,6 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('Esports/{esport}/Match/Single/{replayID}', [SingleMatchController::class, 'showWithEsport']);
 
     Route::get('Esports', [EsportsController::class, 'show']);
-    Route::get('ESports', [EsportsController::class, 'show']);
 
     Route::get('Esports/NGS', [NGSController::class, 'show']);
     Route::get('Esports/NGS/Division/{division}', [NGSSingleDivisionController::class, 'show']);
@@ -154,6 +153,7 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('Esports/{esport}/Organization/{team}', [EsportsController::class, 'showSingleTeam']);
 
     Route::get('Esports/Other', [EsportOtherController::class, 'show']);
+    Route::get('Esports/Other/{series}', [EsportOtherController::class, 'showSeries']);
 
 
     Route::get('Esports/{esport}/Team/{team}', [EsportsController::class, 'showSingleTeam']);

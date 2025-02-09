@@ -32,6 +32,7 @@ use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Esports\Other\EsportOtherController;
 
 /*
 |--------------------------------------------------------------------------
@@ -155,6 +156,12 @@ Route::prefix('v1')->group(function () {
     Route::post('esports/heroesinternational/matches', [HeroesInternationalController::class, 'getRecentMatchData']);
     Route::post('esports/heroesinternational/hero/stats', [EsportsController::class, 'getOverallHeroStats']);
     Route::post('esports/heroesinternational/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
+
+
+    Route::post('esports/other/teams', [EsportOtherController::class, 'getTeamData']);
+
+    
+
 
     Route::post('compare', [CompareController::class, 'getData']);
 

@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Esports\Other;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Other\Series;
+use App\Models\Esports\Other\Series;
+use App\Models\Esports\Other\Replay;
+use App\Models\Esports\Other\Regions;
+use Illuminate\Support\Facades\Validator;
 
 class EsportOtherController extends Controller
 {
@@ -18,5 +21,116 @@ class EsportOtherController extends Controller
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
                 'series' => Series::whereNot('name', 'Nut Cup')->whereNot('name', 'Heroes Lounge')->get(),
             ]);
+    }
+
+    public function showSeries(Request $request, $series)
+    {
+        $validationRules = [
+            'series' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) {
+                    if (!Series::where('name', $value)->exists()) {
+                        $fail("The selected $attribute is invalid.");
+                    }
+                },
+            ],
+        ];
+        
+        $validator = Validator::make(compact('series'), $validationRules);
+        
+        if ($validator->fails()) {
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                    'errors' => $validator->errors(),
+                ];
+            }
+        }
+
+
+
+        $seasons = Replay::select('season')
+        ->where('series', $series)
+        ->distinct()
+        ->orderBy('season', 'desc')
+        ->get()
+        ->map(function ($season) {
+            return [
+                'code' => $season->season,  
+                'name' => $season->season,
+            ];
+        });
+
+        $regions = Replay::select('heroesprofile_ml.regions.name as name', 'heroesprofile_ml.regions.region_id as code')
+            ->distinct()
+            ->join('heroesprofile_ml.regions', 'heroesprofile_ml.regions.region_id', '=', 'heroesprofile_ml.replay.region')  
+            ->orderBy('code', 'asc')
+            ->where('series', $series) 
+            ->get();
+
+        $tournaments = Replay::select('tournament as name', 'tournament as code')
+            ->distinct()
+            ->orderBy('name', 'asc')
+            ->where('series', $series) 
+            ->get();
+
+
+        return view('Esports.Other.OtherSeries')
+            ->with([
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+                'heroes' => $this->globalDataService->getHeroes(),
+                'filters' => $this->globalDataService->getFilterData(),
+                'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
+                'series' => Series::where("name", $series)->first(),
+                'seasons' => $seasons,
+                'regions' => $regions,
+                'tournaments' => $tournaments,
+            ]);
+    }
+
+    public function getTeamData(Request $request){
+
+        $validationRules = [
+            'series' => [
+                'required',
+                'string',
+                function ($attribute, $value, $fail) {
+                    if (!Series::where('name', $value)->exists()) {
+                        $fail("The selected $attribute is invalid.");
+                    }
+                },
+            ],
+        ];
+        
+        $validator = Validator::make($request->all(), $validationRules);
+        
+        if ($validator->fails()) {
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return response()->json([
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                    'errors' => $validator->errors(),
+                ]);
+            }
+        }
+
+        $series = $request["series"];
+        $teams = Replay::selectRaw('team_0_name as team_name')
+        ->where("series", $series)
+        ->union(
+            Replay::selectRaw('team_1_name as team_name')
+            ->where("series", $series)
+        )
+        ->distinct()
+        ->orderBy('team_name', 'asc')
+        ->pluck('team_name');
+
+        return $teams;
     }
 }

@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Models\Other;
+namespace App\Models\Esports\Other;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Series extends Model
+class Replay extends Model
 {
-    protected $table = 'series';
+    protected $table = 'replay';
 
-    protected $primaryKey = 'series_id';
+    protected $primaryKey = 'replayID';
 
     protected $connection = 'heroesprofile_esports_other';
 

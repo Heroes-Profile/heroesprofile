@@ -23,7 +23,7 @@
           <img class="h-full"  :src="`/images/HI/Flags/${row.image}.png`" :alt="row.team_name"/>
           <h3>{{ row.team_name }}</h3>
         </a>
-        <a v-else-if="esport == 'HGCMore'" :href="`/Esports/Other/${row.name}`">
+        <a v-else-if="esport == 'Other'" :href="`/Esports/Other/${row.name}`">
           <img class="h-full"  :src="`/images/EsportOther/${row.icon}`" :alt="row.name"/>
           <h3>{{ row.name }}</h3>
         </a>

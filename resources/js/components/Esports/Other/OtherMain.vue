@@ -1,7 +1,7 @@
 <template>
   <div>
-    <esports-organizations :data="hgcSeries" :esport="'HGCMore'"></esports-organizations>
-    <esports-organizations :data="withoutHGCSeries" :esport="'HGCMore'"></esports-organizations>
+    <esports-organizations :data="hgcSeries" :esport="'Other'"></esports-organizations>
+    <esports-organizations :data="withoutHGCSeries" :esport="'Other'"></esports-organizations>
   </div>
 </template>
 
@@ -22,9 +22,6 @@ export default {
     },
   },
   mounted() {
-    console.log(this.series);
-    console.log("hi");
-    console.log("Filtered HGC Series:", this.hgcSeries);
   }
 }
 </script>
