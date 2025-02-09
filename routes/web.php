@@ -6,6 +6,7 @@ use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\CompareController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Esports\CCL\CCLController;
+use App\Http\Controllers\Esports\Other\EsportOtherController;
 use App\Http\Controllers\Esports\EsportsController;
 use App\Http\Controllers\Esports\HeroesInternational\HeroesInternationalController;
 use App\Http\Controllers\Esports\MastersClash\MastersClashController;
@@ -151,6 +152,9 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
 
     Route::get('Esports/CCL', [CCLController::class, 'show']);
     Route::get('Esports/{esport}/Organization/{team}', [EsportsController::class, 'showSingleTeam']);
+
+    Route::get('Esports/Other', [EsportOtherController::class, 'show']);
+
 
     Route::get('Esports/{esport}/Team/{team}', [EsportsController::class, 'showSingleTeam']);
     Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}', [EsportsController::class, 'showPlayer']);
