@@ -70,8 +70,12 @@
           <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
         </div>
 
+        <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
+          <input type="text" class="form-control search-input mr-3" :placeholder="'Search For Team'" :aria-label="'Search For Team'" v-model="userinput">
+        </div>
 
-        <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
+
+        <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[25vw]   2xl:mx-auto  " style=" ">
           <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
             <thead>
               <tr>
@@ -81,7 +85,7 @@
               </tr>
             </thead>
             <tbody>
-              <template v-for="(row, index) in teamsData">
+              <template v-for="(row, index) in filteredTeams">
                 <tr>
                   <td>
                     <a class="link" :href="'./' + series.name + '/' + row">{{ row }}</a>
@@ -121,7 +125,10 @@ export default {
       activeButton: null,
       teamsData: null,
       isLoading: false,
-
+      season: null,
+      region: null,
+      tournament: null,
+      userinput: '',
     }
   },
   created(){
@@ -129,6 +136,15 @@ export default {
   mounted() {
   },
   computed: {
+    filteredTeams() {
+      if(this.teamsData){
+        return this.teamsData.filter((team) => {
+          return team.toLowerCase().includes(this.userinput.toLowerCase());
+        });
+      }
+      return null;
+    },
+
     teamsClicked() {
       return this.activeButton === 'teams';
     },
@@ -153,6 +169,9 @@ export default {
       try{
         const response = await this.$axios.post("/api/v1/esports/other/teams", {
           series: this.series.name,
+          season: this.season,
+          region: this.region,
+          tournament: this.tournament,
         }, 
         {
         });
@@ -172,6 +191,38 @@ export default {
         this.teamsData = null;
         this.getTeamsData();
 
+      }else if(this.activeButton === 'recentMatches'){
+        this.recentMatchesData = null;
+        this.getRecentMatches(1);
+      }else if(this.activeButton === 'overallHeroStats'){
+        this.heroStatsData = null;
+        this.getHeroStats();
+      }else if(this.activeButton === 'overallTalentStats' && this.selectedHero){
+        this.talentStatsData = null;
+        this.getTalentStats();
+      }
+    },
+
+    handleInputChange(eventPayload) {
+      if(eventPayload.field == "Seasons"){
+        this.season = eventPayload.value;
+      }else if(eventPayload.field == "Regions"){
+        this.region = eventPayload.value;
+      }else if(eventPayload.field == "Tournaments"){
+        this.tournament = eventPayload.value;
+      }
+
+      console.log(this.season);
+      console.log(this.region);
+      console.log(this.tournament);
+
+
+    },
+
+    filter(){
+      if(this.activeButton === 'teams'){
+      this.teamsData = null;
+        this.getTeamsData();
       }else if(this.activeButton === 'recentMatches'){
         this.recentMatchesData = null;
         this.getRecentMatches(1);

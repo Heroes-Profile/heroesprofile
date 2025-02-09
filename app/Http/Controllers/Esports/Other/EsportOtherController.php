@@ -104,7 +104,11 @@ class EsportOtherController extends Controller
                     }
                 },
             ],
+            'season' => 'nullable|integer',
+            'region' => 'nullable|integer',
+            'tournament' => 'nullable|string',
         ];
+        
         
         $validator = Validator::make($request->all(), $validationRules);
         
@@ -121,15 +125,38 @@ class EsportOtherController extends Controller
         }
 
         $series = $request["series"];
+        $region = $request["region"];
+        $season = $request["season"];
+        $tournament = $request["tournament"];
+
         $teams = Replay::selectRaw('team_0_name as team_name')
         ->where("series", $series)
+        ->when($region, function ($query) use ($region) {
+            return $query->where('region', $region);  
+        })
+        ->when($tournament, function ($query) use ($tournament) {
+            return $query->where('tournament', $tournament);  
+        })
+        ->when($season, function ($query) use ($season) {
+            return $query->where('season', $season);  
+        })
         ->union(
             Replay::selectRaw('team_1_name as team_name')
-            ->where("series", $series)
+                ->where("series", $series)
+                ->when($region, function ($query) use ($region) {
+                    return $query->where('region', $region);  
+                })
+                ->when($tournament, function ($query) use ($tournament) {
+                    return $query->where('tournament', $tournament);  
+                })
+                ->when($season, function ($query) use ($season) {
+                    return $query->where('season', $season);  
+                })
         )
         ->distinct()
         ->orderBy('team_name', 'asc')
         ->pluck('team_name');
+    
 
         return $teams;
     }
