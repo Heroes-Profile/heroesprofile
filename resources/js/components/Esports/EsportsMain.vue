@@ -28,6 +28,14 @@
         <custom-button :href="'/Esports/HeroesInternational'" :text="'Heroes International'" :alt="'Heroes International'" :size="'big'" class="mt-10"></custom-button>
       </div>
 
+
+      
+      <div class="text-center md:w-[15%] mb-15 mx-5">
+        <a :href="'/Esports/Other'"><img src="/images/EsportOther/logo.png" alt="Other Esports"/></a>
+        <custom-button :href="'/Esports/Other'" :text="'Other Esports'" :alt="'Other Esports'" :size="'big'" class="mt-10"></custom-button>
+      </div>
+
+
     </div>
   </div>
 </template>

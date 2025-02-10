@@ -112,6 +112,7 @@
             v-for="(item, index) in data.matches" 
             :esport="true" 
             :esport-league="esport"
+            :esport-series="series"
             :data="item"
           ></game-summary-box>
           <div class="max-w-[1500px] mx-auto flex justify-end mt-4">
@@ -135,6 +136,7 @@ export default {
   },
   props: {
   	esport: String,
+    series: String,
     division: String, 
     battletag: String,
     blizz_id: {
@@ -176,6 +178,8 @@ export default {
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
       }else if(this.esport == "MastersClash"){
         return "/images/MCL/no-image.png"
+      }else if(this.esport == "Other"){
+        return "/images/EsportOther/" + this.seriesimage;
       }
     },
     headingImageUrl(){
@@ -185,6 +189,21 @@ export default {
         return "/Esports/CCL"
       }else if(this.esport == "MastersClash"){
         return "/Esports/MastersClash"
+      }else if(this.esport == "Other"){
+        return "/Esports/Other/" + this.series; 
+      }
+    },
+    isLoadingImageUrl(){
+     if(this.esport == "NGS"){
+        return "/images/NGS/no-image-clipped.png"
+      }else if(this.esport == "CCL"){
+        return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
+      }else if(this.esport == "MastersClash"){
+        return "/images/MCL/no-image.png"
+      }else if(this.esport == "HeroesInternational"){
+        return "/images/HI/heroes_international.png";
+      }else if(this.esport == "Other"){
+        return "/images/EsportOther/" + this.seriesimage;
       }
     },
     infoText1(){
@@ -194,6 +213,8 @@ export default {
         return `${this.battletag} during season ${this.modifiedseason}`;
       }else if(this.esport == "Masters Clash"){
         return `${this.battletag} during season ${this.modifiedseason}`;
+      }else if(this.esport == "Other"){
+        return `${this.team} in series ${this.series}`;
       }
     },
     sortedData() {
@@ -219,9 +240,18 @@ export default {
         this.cancelTokenSource.cancel('Request canceled');
       }
       this.cancelTokenSource = this.$axios.CancelToken.source();
+
+
+      var url = "/api/v1/esports/single/player";
+      
+      if(this.series){
+        url = "/api/v1/esports/other/single/player";
+      }
+
       try{
-        const response = await this.$axios.post("/api/v1/esports/single/player", {
+        const response = await this.$axios.post(url, {
           esport: this.esport,
+          series: this.series,
           division: this.modifieddivision,
           battletag: this.battletag,
           blizz_id: this.blizz_id,

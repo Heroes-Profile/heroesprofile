@@ -7,6 +7,7 @@
 @section('content')
   <esports-player-stats 
     :esport="{{ json_encode($esport) }}" 
+    :series="{{ isset($series) ? json_encode($series) : 'null' }}" 
     :division="{{ json_encode($division) }}" 
     :battletag="{{ json_encode($battletag) }}" 
     :blizz_id="{{ json_encode($blizz_id) }}" 

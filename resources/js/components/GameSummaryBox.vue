@@ -67,6 +67,7 @@
       data: Object,
       esport: Boolean,
       esportLeague: String,
+      esportSeries: String,
     },
     data(){
       return {
@@ -84,6 +85,9 @@
     methods: {
       getHref(){
         if(this.esport){
+          if(this.esportSeries){
+            return '/Esports/' + this.esportLeague + '/' + this.esportSeries + '/Match/Single/' + this.data.replayID;
+          }
           return '/Esports/' + this.esportLeague + '/Match/Single/' + this.data.replayID;
         }
         return '/Match/Single/' + this.data.replayID;

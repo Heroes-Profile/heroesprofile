@@ -2,7 +2,8 @@
   <div class=" w-auto inline-block m-1">
     <h2 v-if="text" :class="['bg-' + color, 'rounded-t', 'p-2', 'text-sm', 'text-center', 'uppercase']">{{ text }}</h2>
     <h2 v-else :class="['bg-' + color, 'rounded-t', 'p-2', 'text-sm', 'text-center', 'uppercase']">
-      <a v-if="esport" class="link" :href="`/Esports/${esport}/Team/${esportteamname}`">{{  esportteamname  }}</a>
+      <a v-if="esport && esport != 'Other'" class="link" :href="`/Esports/${esport}/Team/${esportteamname}`">{{  esportteamname  }}</a>
+      <a v-if="esport && esport == 'Other'" class="link" :href="`/Esports/${esport}/${series}/Team/${esportteamname}`">{{  esportteamname  }}</a>
       <span v-if="esport"> - </span>
       <span>{{ winnerloser }}</span>
     </h2>
@@ -35,7 +36,17 @@
           </hero-image-wrapper>
         </div>
 
-        <a v-else-if="esport && match && playerlink && item.hero" :href="'/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name">
+        <a v-else-if="esport && esport != 'Other' && match && playerlink && item.hero" :href="'/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name">
+          <hero-image-wrapper :size="'big'" :hero="item.hero">
+            <image-hover-box 
+              :title="item.hero.name" 
+              :paragraph-one="`Played by ${item.battletag}`" 
+              :paragraph-six="`Hero Level: ${item.hero_level}`"
+            ></image-hover-box>
+          </hero-image-wrapper>
+        </a>
+
+        <a v-else-if="esport && esport == 'Other' && match && playerlink && item.hero" :href="'/Esports/' + esport + '/' + series + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name">
           <hero-image-wrapper :size="'big'" :hero="item.hero">
             <image-hover-box 
               :title="item.hero.name" 
@@ -111,7 +122,8 @@
       color: String,
       winner: Boolean,
       popupsize: String,
-      showpopup: true
+      showpopup: true,
+      series: String,
     },
     data(){
       return {

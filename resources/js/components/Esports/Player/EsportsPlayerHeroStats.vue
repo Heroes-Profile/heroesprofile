@@ -85,6 +85,7 @@ export default {
   },
   props: {
   	esport: String,
+    series: String,
     division: String, 
     battletag: String,
     blizz_id: {
@@ -165,9 +166,17 @@ export default {
         this.cancelTokenSource.cancel('Request canceled');
       }
       this.cancelTokenSource = this.$axios.CancelToken.source();
+
+      var url = "/api/v1/esports/single/player/hero";
+      
+      if(this.series){
+        url = "/api/v1/esports/other/single/player/hero";
+      }
+
       try{
-        const response = await this.$axios.post("/api/v1/esports/single/player/hero", {
+        const response = await this.$axios.post(url, {
           esport: this.esport,
+          series: this.series,
           division: this.modifieddivision,
           battletag: this.battletag,
           blizz_id: this.blizz_id,

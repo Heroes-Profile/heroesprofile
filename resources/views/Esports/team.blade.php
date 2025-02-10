@@ -7,9 +7,12 @@
 @section('content')
   <esports-single-team 
     :esport="{{ json_encode($esport) }}" 
+    :series="{{ isset($series) ? json_encode($series) : 'null' }}" 
+    :seriesimage="{{ isset($seriesimage) ? json_encode($seriesimage) : 'null' }}" 
     :division="{{ json_encode($division) }}" 
     :team="{{ json_encode($team) }}" 
     :season="{{ json_encode($season) }}" 
+    :region="{{ isset($reghion) ? json_encode($region) : 'null' }}" 
     :tournament="{{ json_encode($tournament) }}" 
     :image="{{ json_encode($image) }}" 
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
