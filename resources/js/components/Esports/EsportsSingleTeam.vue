@@ -243,10 +243,15 @@
             v-for="(item, index) in data.matches" 
             :esport="true" 
             :esport-league="esport"
+            :esport-series="series"
             :data="item"
           ></game-summary-box>
           <div class="flex justify-end mt-4">
-          <custom-button :href="`/Esports/${esport}/Team/${team}/Match/History${season ? `?season=${season}` : ''}` + (esport == 'NGS' ? division ? `&division=${division}`: '' : '') + (esport == 'HeroesInternational' ? `&tournament=${tournament}`: '')" class=" ml-auto" text="View Match History"></custom-button>
+            <custom-button 
+              :href="`/Esports/${esport}${esport === 'Other' ? `/${series}` : ''}/Team/${team}/Match/History${season ? `?season=${season}` : ''}${esport === 'NGS' && division ? `&division=${division}` : ''}${esport === 'HeroesInternational' && tournament ? `&tournament=${tournament}` : ''}`" 
+              class="ml-auto" 
+              text="View Match History">
+            </custom-button>
         </div>
         </div>
       </div>
@@ -444,6 +449,9 @@ export default {
         this.sortDir = 'desc';
       }
       this.sortKey = key;
+    },
+    matchUrl(){
+
     },
   }
 }
