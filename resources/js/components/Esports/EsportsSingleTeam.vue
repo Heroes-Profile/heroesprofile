@@ -407,15 +407,21 @@ export default {
       }
     },
     handleInputChange(eventPayload){
-        if(eventPayload.field == "Seasons"){
-            this.modifiedseason = eventPayload.value;
-        }
+      if(eventPayload.field == "Seasons"){
+        this.modifiedseason = eventPayload.value;
+      }
 
-        if(eventPayload.field == "Divisions"){
-          this.modifieddivision = eventPayload.value;
-        }
+      if(eventPayload.field == "Divisions"){
+        this.modifieddivision = eventPayload.value;
+      }
 
-      let newURL = `/Esports/${this.esport}/Team/${this.team}`;
+      let newURL = `/Esports/${this.esport}/`;
+      if(this.esport != "Other"){
+        newURL += `Team/${this.team}`;
+      }else{
+        newURL += `${this.series}/Team/${this.team}`;
+      }
+
       if (this.modifiedseason && this.modifieddivision) {
         newURL += `?season=${this.modifiedseason}&division=${this.modifieddivision}`;
       } else if (this.modifiedseason) {
