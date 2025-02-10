@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" :battletag="team" :esport="esport" :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+    <page-heading :infoText1="infoText1" :battletag="team" :esport="esport" :heading="heading" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div v-if="data">
       <div class="flex justify-center max-w-[1500px] mx-auto">
@@ -220,7 +220,7 @@
       </div>
 
 
-      <div class="p-10">
+      <div v-if="esport != 'Other'" class="p-10">
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Maps banned by {{ team }}</h2>
           <div class="flex flex-wrap justify-center">
@@ -276,6 +276,7 @@ export default {
     tournament: String,
     image: String,
     series: String,
+    seriesimage: String,
   },
   data(){
     return {
@@ -307,6 +308,8 @@ export default {
         return "/images/MCL/no-image.png";
       }else if(this.esport == "HeroesInternational"){
         return "/images/HI/heroes_international.png";
+      }else if(this.esport == "Other"){
+        return "/images/EsportOther/" + this.seriesimage;
       }
     },
     headingImageUrl(){
@@ -318,6 +321,8 @@ export default {
         return "/Esports/MastersClash"
       }else if(this.esport == "HeroesInternational"){
         return "/Esports/HeroesInternational"
+      }else if(this.esport == "Other"){
+        return "/Esports/Other/" + this.series; 
       }
     },
     isLoadingImageUrl(){
@@ -329,6 +334,8 @@ export default {
         return "/images/MCL/no-image.png"
       }else if(this.esport == "HeroesInternational"){
         return "/images/HI/heroes_international.png";
+      }else if(this.esport == "Other"){
+        return "/images/EsportOther/" + this.seriesimage;
       }
     },
     infoText1(){
@@ -338,7 +345,18 @@ export default {
         return `${this.team} during season ${this.modifiedseason}`;
       }else if(this.esport == "MastersClash"){
         return `${this.team} during season ${this.modifiedseason}`;
+      }else if(this.esport == "Other"){
+        return `${this.team} in series ${this.series}`;
       }
+    },
+    heading(){
+      if(this.esport == 'HeroesInternational'){
+        return "Heroes International";
+      }else if(this.esport == "Other"){
+        return;
+      }
+
+      return this.esport;
     },
     sortedData() {
       if (!this.sortKey) return this.data.heroes;
@@ -363,9 +381,6 @@ export default {
         this.cancelTokenSource.cancel('Request canceled');
       }
       this.cancelTokenSource = this.$axios.CancelToken.source();
-
-      console.log(this.series);
-
       try{
         const response = await this.$axios.post("/api/v1/esports/single/team", {
           esport: this.esport,

@@ -133,6 +133,7 @@ class EsportsController extends Controller
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => $esport,
                 'series' => 'null',
+                'seriesimage' => 'null',
                 'region' => 'null',
                 'team' => $team,
                 'season' => $request['season'],
@@ -1145,9 +1146,14 @@ class EsportsController extends Controller
             ->when(! is_null($this->division), function ($query) {
                 return $query->where($this->schema.'.teams.division', $this->division);
             })
-            ->when(! is_null($this->season), function ($query) {
-                return $query->where($this->schema.'.teams.season', $this->season);
+            ->when(! is_null($this->season), function ($query){
+                if($this->esport != "Other"){
+                    return $query->where($this->schema.'.teams.season', $this->season);
+                }else{
+                    return $query->where($this->schema.'.replay.season', $this->season);
+                }
             })
+            
         //->toSql();
             ->get();
         //return $results;
@@ -1293,7 +1299,7 @@ class EsportsController extends Controller
             $team_0_name = null;
             $team_1_name = null;
 
-            if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
+            if ($this->esport == 'NGS' || $this->esport == 'MastersClash' || $this->esport == 'Other') {
                 $team_0_name = $group[0]->team_0_name;
                 $team_1_name = $group[0]->team_1_name;
             } elseif ($this->esport == 'CCL' || $this->esport == 'hi' || $this->esport == 'hi_nc') {
@@ -1521,7 +1527,7 @@ class EsportsController extends Controller
           })
           ->values()
           ->all();
-        }else if($this->esport == 'CCL' || $this->esport == 'hi' || $this->esport == 'hi_nc' || $this->esport == 'Other'){
+        }else if($this->esport == 'CCL' || $this->esport == 'hi' || $this->esport == 'hi_nc'){
           $teamName = DB::table($this->schema.'.teams')->where("team_id", $this->team)->value("team_name");
           $seasons = DB::table($this->schema.'.teams')
           ->join($this->schema.'.player', function ($join) {
@@ -1546,8 +1552,23 @@ class EsportsController extends Controller
           })
           ->values()
           ->all();
+        }else if($this->esport == 'Other'){
+            $seasons = DB::table($this->schema.'.replay')
+            ->select("season")
+            ->distinct()
+            ->where('series', $this->series)
+            ->where(function ($query) {
+                $query->where('team_0_name', $this->team_name)
+                      ->orWhere('team_1_name', $this->team_name);
+            })
+            ->orderBy('season', 'desc')
+            ->pluck('season')
+            ->map(function ($season) {
+                return ['code' => strval($season), 'name' => strval($season)];
+            })
+            ->values()->toArray();        
         }
-        
+
         array_unshift($seasons, ['code' => null, 'name' => 'All']);
 
         $divisions = null;

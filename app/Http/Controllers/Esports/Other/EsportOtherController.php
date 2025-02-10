@@ -194,6 +194,7 @@ class EsportOtherController extends Controller
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => 'Other',
                 'series' => $series,
+                'seriesimage' => Series::select("icon")->where("name", $series)->first()->icon,
                 'team' => $team,
                 'season' => $request['season'],
                 'region' => $request['region'],

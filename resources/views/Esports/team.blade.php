@@ -8,6 +8,7 @@
   <esports-single-team 
     :esport="{{ json_encode($esport) }}" 
     :series="{{ json_encode($series) }}" 
+    :seriesimage="{{ json_encode($seriesimage) }}" 
     :division="{{ json_encode($division) }}" 
     :team="{{ json_encode($team) }}" 
     :season="{{ json_encode($season) }}" 
