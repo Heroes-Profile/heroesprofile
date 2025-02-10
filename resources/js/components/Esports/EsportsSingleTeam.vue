@@ -18,6 +18,9 @@
           <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="yellow"></stat-box>          
         </div>
         <div class="my-auto">
+          <span v-if="esport == 'Other'">
+            {{ team }}
+          </span>
           <round-image :title="team" :image="data.icon_url" size="large" :rectangle="true"></round-image>
         </div>
         <div class="flex-1 flex flex-wrap max-w-[400px] text-left w-full items-between max-md:order-2">
@@ -95,6 +98,9 @@
           <h2 class="text-3xl font-bold py-5 text-center">Enemy Teams</h2>
           <div class="flex flex-wrap justify-center gap-4">
             <a :href="team.enemy_link"  v-for="(team, index) in data.enemy_teams" :key="index" >
+              <span v-if="esport == 'Other'">
+                {{ team.team }}
+              </span>
               <round-image :size="'big'" :title="team.team" :image="team.icon_url" :hovertextstyleoverride="true">
                 <image-hover-box :title="team.team_name" :paragraph-one="team.inputhover"></image-hover-box>
               </round-image>
@@ -269,6 +275,7 @@ export default {
     },
     tournament: String,
     image: String,
+    series: String,
   },
   data(){
     return {
@@ -357,9 +364,12 @@ export default {
       }
       this.cancelTokenSource = this.$axios.CancelToken.source();
 
+      console.log(this.series);
+
       try{
         const response = await this.$axios.post("/api/v1/esports/single/team", {
           esport: this.esport,
+          series: this.series,
           division: this.modifieddivision,
           team: this.team,
           season: this.modifiedseason,

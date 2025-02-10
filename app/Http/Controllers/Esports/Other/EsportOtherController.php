@@ -160,4 +160,47 @@ class EsportOtherController extends Controller
 
         return $teams;
     }
+
+    public function showSingleTeam(Request $request, $series, $team)
+    {
+        $validationRules = [
+            'series' => 'required',
+            'team' => 'required|string',
+        ];
+
+        $otherValidationRules = [
+            'season' => 'nullable|numeric',
+            'region' => 'nullable|numeric',
+            'tournament' => 'nullable|string',
+        ];
+
+        $validator = Validator::make(compact('series', 'team'), $validationRules);
+
+        $otherValidator = Validator::make($request->all(), $otherValidationRules);
+
+        if ($validator->fails()) {
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
+        }
+
+        return view('Esports.team')
+            ->with([
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+                'esport' => 'Other',
+                'series' => $series,
+                'team' => $team,
+                'season' => $request['season'],
+                'region' => $request['region'],
+                'tournament' => $request['tournament'],
+                'image' => 'logo.png',
+                'division' => null,
+            ]);
+    }
+
 }

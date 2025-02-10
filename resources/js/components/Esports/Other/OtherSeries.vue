@@ -88,7 +88,7 @@
               <template v-for="(row, index) in filteredTeams">
                 <tr>
                   <td>
-                    <a class="link" :href="'./' + series.name + '/' + row">{{ row }}</a>
+                    <a class="link" :href="'./' + series.name + '/Team/' + row">{{ row }}</a>
                   </td>
                 </tr>
               </template>
