@@ -408,7 +408,7 @@ class EsportOtherController extends Controller
                 ->get();
         } else {
             $data = Battletag::select('blizz_id', 'battletag', 'region')
-                ->where('battletag', 'LIKE', $input.'#%')
+                ->where('battletag', 'LIKE', '%' . $input.'#%')
                 ->get();
         }
 
