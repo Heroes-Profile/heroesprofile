@@ -69,7 +69,8 @@ class SingleMatchController extends Controller
     public function getData(Request $request)
     {
         $validationRules = [
-            'esport' => 'nullable|in:NGS,CCL,MastersClash',
+            'esport' => 'nullable|in:NGS,CCL,MastersClash,Other',
+            'series' => 'nullable|string',
             'user' => 'nullable',
             'replayID' => [
                 'required',
@@ -103,6 +104,9 @@ class SingleMatchController extends Controller
 
         if ($this->esport == 'MastersClash') {
             $this->schema .= '_mcl';
+        }elseif ($this->esport == 'Other') {
+            $this->schema .= '_ml';
+            
         } elseif ($this->esport) {
             $this->schema .= '_'.strtolower($this->esport);
         }
@@ -201,7 +205,7 @@ class SingleMatchController extends Controller
 
                 ]);
             })
-            ->when($this->esport == 'CCL', function ($query) {
+            ->when($this->esport == 'CCL' || $this->esport == 'Other', function ($query) {
                 return $query->addSelect([
                     $this->schema.'.player.mastery_tier as mastery_taunt',
                     $this->schema.'.player.team_id',
@@ -257,7 +261,7 @@ class SingleMatchController extends Controller
                 'draft_order' => $this->esport != 'CCL' && $this->esport != 'MastersClash' ? $this->getDraftOrder($replayID, $heroData) : null,
                 'experience_breakdown' => $this->getExperienceBreakdown($replayID),
                 'team_names' => $team_names,
-                'map_bans' => $this->esport ? $this->getMapBans($replayID, $maps, $team_names) : null,
+                'map_bans' => ($this->esport && $this->esport != "Other") ? $this->getMapBans($replayID, $maps, $team_names) : null,
                 'first_pick' => $this->esport ? $replayGroup[0]->first_pick : null,
                 'match_games' => $this->esport ? $this->getMatchGames($replayID, $maps) : null,
             ];
@@ -753,13 +757,13 @@ class SingleMatchController extends Controller
             if ($row->team == 0) {
                 if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
                     $team_zero_id = $row->team_name;
-                } elseif ($this->esport == 'CCL') {
+                } elseif ($this->esport == 'CCL' || $this->esport == 'Other') {
                     $team_zero_id = $row->team_id;
                 }
             } else {
                 if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
                     $team_one_id = $row->team_name;
-                } elseif ($this->esport == 'CCL') {
+                } elseif ($this->esport == 'CCL' || $this->esport == 'Other') {
                     $team_one_id = $row->team_id;
                 }
             }

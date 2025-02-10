@@ -155,6 +155,7 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('Esports/Other', [EsportOtherController::class, 'show']);
     Route::get('Esports/Other/{series}', [EsportOtherController::class, 'showSeries']);
     Route::get('Esports/Other/{series}/Team/{team}', [EsportOtherController::class, 'showSingleTeam']);
+    Route::get('Esports/Other/{series}/Match/Single/{replayID}', [EsportOtherController::class, 'showWithEsport']);
 
 
     Route::get('Esports/{esport}/Team/{team}', [EsportsController::class, 'showSingleTeam']);

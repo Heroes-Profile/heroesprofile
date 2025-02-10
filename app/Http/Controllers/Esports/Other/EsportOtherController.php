@@ -204,4 +204,27 @@ class EsportOtherController extends Controller
             ]);
     }
 
+    public function showWithEsport(Request $request, $series, $replayID)
+    {
+        $validationRules = [
+            'series' => 'required|string',
+            'replayID' => 'required|integer',
+        ];
+
+        $validator = Validator::make(compact('series', 'replayID'), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                'data' => compact('series', 'replayID'),
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        return view('singleMatch')->with([
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+            'esport' => 'Other',
+            'series' => $series,
+            'replayID' => $replayID,
+        ]);
+    }
 }
