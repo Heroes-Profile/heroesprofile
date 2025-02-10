@@ -211,12 +211,6 @@ export default {
       }else if(eventPayload.field == "Tournaments"){
         this.tournament = eventPayload.value;
       }
-
-      console.log(this.season);
-      console.log(this.region);
-      console.log(this.tournament);
-
-
     },
 
     filter(){

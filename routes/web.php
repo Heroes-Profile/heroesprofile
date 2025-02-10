@@ -156,7 +156,9 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('Esports/Other/{series}', [EsportOtherController::class, 'showSeries']);
     Route::get('Esports/Other/{series}/Team/{team}', [EsportOtherController::class, 'showSingleTeam']);
     Route::get('Esports/Other/{series}/Match/Single/{replayID}', [EsportOtherController::class, 'showWithEsport']);
-
+    Route::get('Esports/Other/{series}/Player/{battletag}/{blizz_id}', [EsportOtherController::class, 'showPlayer']);
+    Route::get('Esports/Other/{series}/Player/{battletag}/{blizz_id}/Hero/{hero}', [EsportOtherController::class, 'showPlayerHero']);
+    Route::get('Esports/Other/{series}/Player/{battletag}/{blizz_id}/Map/{game_map}', [EsportOtherController::class, 'showPlayerMap']);
 
     Route::get('Esports/{esport}/Team/{team}', [EsportsController::class, 'showSingleTeam']);
     Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}', [EsportsController::class, 'showPlayer']);

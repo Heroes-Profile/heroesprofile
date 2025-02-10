@@ -176,7 +176,7 @@
           <template v-for="(item, index) in combinedPlayers" :key="index">
             
             <div>
-              <a class="flex flex-wrap items-end my-5 w-full justify-evenly"  :href="item.check ? 'javascript:void(0)' : esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
+              <a class="flex flex-wrap items-end my-5 w-full justify-evenly"  :href="matchScorePlayerURL(item)">
                 <hero-image-wrapper :size="'big'" :hero="item.hero" class="mr-2"></hero-image-wrapper>
                 <div>
                   <div class="flex flex-wrap justify-between flex-1">
@@ -820,6 +820,18 @@
       }
 
       return totalKills;
+    },
+    matchScorePlayerURL(item){
+      if(item.check){
+        return 'javascript:void(0)';
+      }
+      if(this.esport){
+        if(this.series){
+          return'/Esports/' + this.esport + "/" + this.series + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name;
+        }
+        return '/Esports/' + this.esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name;
+      }
+      return '/Player/' + item.battletag + '/' + item.blizz_id + '/' + this.data.region + '/Hero/' + item.hero.name;
     },
   }
 }

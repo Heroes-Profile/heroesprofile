@@ -88,8 +88,6 @@ export default {
     }
   },
   mounted() {
-    console.log(this.headingImage);
-    console.log(this.headingImageUrl);
   },
   computed: {
     infoTextTotalCharacters() {

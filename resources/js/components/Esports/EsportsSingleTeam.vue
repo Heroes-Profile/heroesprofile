@@ -386,8 +386,14 @@ export default {
         this.cancelTokenSource.cancel('Request canceled');
       }
       this.cancelTokenSource = this.$axios.CancelToken.source();
+
+      var url = "/api/v1/esports/single/team";
+      
+      if(this.series){
+        url = "/api/v1/esports/other/single/team";
+      }
       try{
-        const response = await this.$axios.post("/api/v1/esports/single/team", {
+        const response = await this.$axios.post(url, {
           esport: this.esport,
           series: this.series,
           division: this.modifieddivision,

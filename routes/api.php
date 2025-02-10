@@ -129,14 +129,19 @@ Route::prefix('v1')->group(function () {
     Route::post('esport/division/match/history', [NGSSingleDivisionController::class, 'getSingleDivisionMatchHistory']);
 
     Route::post('esports/single/team', [EsportsController::class, 'getData']);
+    Route::post('esports/other/single/team', [EsportOtherController::class, 'getData']);
 
     Route::post('esports/single/player', [EsportsController::class, 'getData']);
+    Route::post('esports/other/single/player', [EsportOtherController::class, 'getData']);
 
     Route::post('esports/single/player/match/history', [EsportsController::class, 'getDataSinglePlayerMatchHistory']);
     Route::post('esports/team/match/history', [EsportsController::class, 'getTeamMatchHistoryData']);
 
     Route::post('esports/single/player/hero', [EsportsController::class, 'getData']);
     Route::post('esports/single/player/map', [EsportsController::class, 'getData']);
+
+    Route::post('esports/other/single/player/hero', [EsportOtherController::class, 'getData']);
+    Route::post('esports/other/single/player/map', [EsportOtherController::class, 'getData']);
 
     Route::post('esports/ccl/organizations', [CCLController::class, 'getOrganizationData']);
     Route::post('esports/ccl/matches', [EsportsController::class, 'getRecentMatchData']);
