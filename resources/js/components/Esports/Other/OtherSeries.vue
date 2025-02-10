@@ -8,10 +8,6 @@
       </div>
 
       <div class="border-r border-white">
-        <custom-button @click="setButtonActive('matches')" :text="'Matches'" :size="'big'" class="rounded-none" :color="activeButton === 'Matches' ? 'lblue' : ''" :active="matchesClicked" :ignoreclick="true"></custom-button>
-      </div>
-
-      <div class="border-r border-white">
         <custom-button @click="setButtonActive('players')" :text="'Players'" :size="'big'" class="rounded-none" :color="activeButton === 'Players' ? 'lblue' : ''" :active="playersClicked" :ignoreclick="true"></custom-button>
       </div>
 
@@ -32,12 +28,6 @@
           <i class="fas fa-users" style="font-size: 100px"></i>
           <h3>Teams</h3>
           <custom-button @click="setButtonActive('teams')" :text="'Teams'" :size="'big'" class="mt-10" :active="teamsClicked" :ignoreclick="true"></custom-button>
-        </div>
-
-        <div class="text-center md:w-[15%] mb-15 mx-5">
-          <i class="fas fa-list" style="font-size: 100px"></i>
-          <h3>Matches</h3>
-          <custom-button @click="setButtonActive('matches')" :text="'Matches'" :size="'big'" class="mt-10" :active="matchesClicked" :ignoreclick="true"></custom-button>
         </div>
 
 
@@ -96,6 +86,42 @@
           </table>
         </div>
       </div>
+
+      <div v-if="activeButton === 'players'">
+        <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
+          <input type="text" class="form-control search-input mr-3" :placeholder="'Search for a player'" :aria-label="'Search for a player'" v-model="userinput" @keyup.enter="filter()">
+          <custom-button @click="filter()" :text="'Search'" :size="'medium'" class="bg-teal rounded text-white ml-10 px-4 py-2  hover:bg-lteal" :ignoreclick="true"></custom-button>
+
+        </div>
+
+
+        <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[25vw]   2xl:mx-auto  " style=" ">
+          <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
+            <thead>
+              <tr>
+                <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+                  Player
+                </th>               
+              </tr>
+            </thead>
+            <tbody>
+              <template v-for="(row, index) in battletagresponse">
+                <tr>
+                  <td>
+                    <a class="link" :href="'./' + series.name + '/Player/' + row.battletag + '/' + row.blizz_id">{{ row.battletag }}</a>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+       
+      </div>
+      
+
+
+
+
     </div>
 
     <div v-if="isLoading">
@@ -129,6 +155,7 @@ export default {
       region: null,
       tournament: null,
       userinput: '',
+      battletagresponse: null,
     }
   },
   created(){
@@ -183,6 +210,33 @@ export default {
       }
     },
 
+    async searchedPlayer(){
+      this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+      
+
+
+      try{
+        const response = await this.$axios.post(`/api/v1/esports/other/${this.series}/player/search`, {
+          userinput: this.userinput
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
+        });
+        this.battletagresponse = response.data;
+
+        console.log(this.battletagresponse);
+      }catch(error){
+        //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
+      }
+    },
 
     setButtonActive(buttonName) {
       this.activeButton = buttonName;
@@ -220,6 +274,8 @@ export default {
       }else if(this.activeButton === 'recentMatches'){
         this.recentMatchesData = null;
         this.getRecentMatches(1);
+      }else if(this.activeButton === 'players'){
+        this.searchedPlayer();
       }else if(this.activeButton === 'overallHeroStats'){
         this.heroStatsData = null;
         this.getHeroStats();

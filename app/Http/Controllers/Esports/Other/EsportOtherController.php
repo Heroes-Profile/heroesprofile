@@ -13,6 +13,8 @@ use App\Rules\HeroInputValidation;
 use App\Rules\GameMapInputValidation;
 use Illuminate\Support\Facades\DB;
 use App\Models\Map;
+use App\Rules\BattletagInputProhibitCharacters;
+use App\Models\Esports\Other\Battletag;
 
 class EsportOtherController extends Controller
 {
@@ -380,7 +382,49 @@ class EsportOtherController extends Controller
             ]);
     }
 
+    public function playerSearch(Request $request)
+    {
+        $validationRules = [
+            'userinput' => ['required', 'string', new BattletagInputProhibitCharacters],
+        ];
 
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        $input = $request['userinput'];
+        $input = str_replace(' ', '', $input);
+
+        $data = null;
+        if (strpos($input, '#') !== false) {
+            $data = Battletag::select('blizz_id', 'battletag', 'region')
+                ->where('battletag', $input)
+                ->get();
+        } else {
+            $data = Battletag::select('blizz_id', 'battletag', 'region')
+                ->where('battletag', 'LIKE', $input.'#%')
+                ->get();
+        }
+
+
+        $firstBlizzId = collect($data)
+            ->groupBy(fn ($item) => explode('#', $item->battletag)[0]) 
+            ->map(fn ($group) => [
+                'blizz_id' => $group->first()->blizz_id,
+                'battletag' => explode('#', $group->first()->battletag)[0], 
+                'region' => $group->first()->region,
+            ])
+            ->values(); 
+
+    
+        return $firstBlizzId;
+    }
 
     public function getData(Request $request)
     {
