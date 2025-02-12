@@ -1406,7 +1406,7 @@ class EsportOtherController extends Controller
 
         $tournament = $request['tournament'];
 
-
+        $this->series = $request["series"];
 
 
         $team = $request['team'];
@@ -1421,6 +1421,7 @@ class EsportOtherController extends Controller
                     $query->where('season', $this->season);
                 });
             })
+            ->where("series", $this->series)
             ->when($this->team, function ($query) {
                 return $query->where(function ($query) {
                     $query->where('teams.team_name', $this->team_name);
