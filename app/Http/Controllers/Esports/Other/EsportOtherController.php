@@ -608,8 +608,7 @@ class EsportOtherController extends Controller
     
             ->when($this->team, function ($query) {
                 return $query->where(function ($query) {
-                    $query->where('team_0_name', $this->team_name)
-                        ->orWhere('team_1_name', $this->team_name);
+                    $query->where('teams.team_name', $this->team_name);
                 });
             })
             ->when(! is_null($this->blizz_id), function ($query) {
@@ -1422,9 +1421,10 @@ class EsportOtherController extends Controller
                     $query->where('season', $this->season);
                 });
             })
-            ->where(function ($query) use ($team) {
-                $query->where('team_0_name', $team)
-                ->orWhere('team_1_name', $team);
+            ->when($this->team, function ($query) {
+                return $query->where(function ($query) {
+                    $query->where('teams.team_name', $this->team_name);
+                });
             })
             ->orderByDesc('game_date')
             ->paginate($perPage, ['*'], 'page', $pagination_page);
