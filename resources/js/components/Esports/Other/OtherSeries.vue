@@ -337,7 +337,7 @@ export default {
 
     setButtonActive(buttonName) {
       this.activeButton = buttonName;
-
+      this.selectedHero = null;
       if(this.activeButton === 'teams'){
         this.teamsData = null;
         this.getTeamsData();
