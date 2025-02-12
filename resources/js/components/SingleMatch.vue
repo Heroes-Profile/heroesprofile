@@ -21,6 +21,9 @@
           <span v-if="!esport">
             {{ data.game_type }}
           </span>
+          <span v-else>
+            {{ series ? series : esport }}
+          </span>
           <span>{{ data.game_length }}</span>
           <span v-if="data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))" class="link" @click="downloadReplay(data, replayid)">
             Download Replay
@@ -249,7 +252,7 @@
         <div class="">
           <div class="w-full  mb-10" v-for="(item, index) in data.players[0]" :key="index">
             
-            <a class="flex  w-full"  :href="item.check ? 'javascript:void(0)' : esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
+            <a class="flex  w-full"  :href="getPlayerProfileLink(item, true)">
               <hero-image-wrapper class="mr-5" :size="'big'" :hero="item.hero"></hero-image-wrapper>
               <div>
                 {{ item.battletag }} - {{ item.hero.name }}
@@ -434,7 +437,7 @@
       <tr>
         <td >{{ section.title }}</td>
         <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">
-          <a :href="esport ? '/Esports/' + esport + '/Player/' + player.battletag + '/' + player.blizz_id + '/Hero/' + player.hero.name : '/Player/' + player.battletag + '/' + player.blizz_id + '/' + player.region + '/Hero/' + player.hero.name">{{ player.battletag }}</a>
+          <a :href="getPlayerProfileLink(player, true)">{{ player.battletag }}</a>
         </td>
     </tr>
   </thead>
@@ -461,7 +464,7 @@
         :key="playerIndex"
         
         >
-        <a :href="esport ? '/Esports/' + esport + '/Player/' + player.battletag + '/' + player.blizz_id + '/Hero/' + player.hero.name : '/Player/' + player.battletag + '/' + player.blizz_id + '/' + player.region + '/Hero/' + player.hero.name">{{ player.battletag }}</a>
+        <a :href="getPlayerProfileLink(player, true)">{{ player.battletag }}</a>
       </td>
     </tr>
   </thead>
@@ -832,6 +835,35 @@
         return '/Esports/' + this.esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name;
       }
       return '/Player/' + item.battletag + '/' + item.blizz_id + '/' + this.data.region + '/Hero/' + item.hero.name;
+    },
+
+    getPlayerProfileLink(item, heroPage){
+      if(item.check){
+        return 'javascript:void(0)';
+      }
+      var url = "";
+      if(this.esport){
+        if(this.esport == "Other"){
+          url = '/Esports/' + this.esport + '/' + this.series + '/Player/' + item.battletag + '/' + item.blizz_id;
+
+          if(heroPage){
+            url = url + '/Hero/' + item.hero.name;
+          }
+          return url;
+        }else{
+          url = '/Esports/' + this.esport + '/Player/' + item.battletag + '/' + item.blizz_id;
+
+          if(heroPage){
+            url = url + '/Hero/' + item.hero.name;
+          }
+          return url;
+        }
+      }
+      url = '/Player/' + item.battletag + '/' + item.blizz_id + '/' + this.data.region;
+      if(heroPage){
+        url = url + '/Hero/' + item.hero.name;
+      }
+      return url;
     },
   }
 }

@@ -1,5 +1,5 @@
 @extends('layouts.app', $bladeGlobals)    
-@section('title', $esport ? $esport . ' Match ' . $replayID : 'Match ' . $replayID)
+@section('title', $esport ? $esport == 'Other' ? $series . ' Match ' . $replayID : $esport . ' Match ' . $replayID : 'Match ' . $replayID)
 @section('meta_keywords', 'game ID, replay, single match, match details, replayID')
 @section('meta_description', 'View detailed information about match ID ' . $replayID . ' on Heroes Profile. Explore match details, player statistics, and more.')
 @section('content')
