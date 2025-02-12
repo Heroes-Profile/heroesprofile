@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" :battletag="team" :esport="esport" :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+    <page-heading :infoText1="infoText1" :battletag="team" :esport="esport" :heading="heading" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div v-if="data">
       <div class="flex justify-center max-w-[1500px] mx-auto">
@@ -18,6 +18,9 @@
           <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="yellow"></stat-box>          
         </div>
         <div class="my-auto">
+          <span v-if="esport == 'Other'">
+            {{ team }}
+          </span>
           <round-image :title="team" :image="data.icon_url" size="large" :rectangle="true"></round-image>
         </div>
         <div class="flex-1 flex flex-wrap max-w-[400px] text-left w-full items-between max-md:order-2">
@@ -95,6 +98,9 @@
           <h2 class="text-3xl font-bold py-5 text-center">Enemy Teams</h2>
           <div class="flex flex-wrap justify-center gap-4">
             <a :href="team.enemy_link"  v-for="(team, index) in data.enemy_teams" :key="index" >
+              <span v-if="esport == 'Other'">
+                {{ team.team }}
+              </span>
               <round-image :size="'big'" :title="team.team" :image="team.icon_url" :hovertextstyleoverride="true">
                 <image-hover-box :title="team.team_name" :paragraph-one="team.inputhover"></image-hover-box>
               </round-image>
@@ -214,7 +220,7 @@
       </div>
 
 
-      <div class="p-10">
+      <div v-if="esport != 'Other'" class="p-10">
         <div class=" max-w-[90em] ml-auto mr-auto">
           <h2 class="text-3xl font-bold py-5 text-center">Maps banned by {{ team }}</h2>
           <div class="flex flex-wrap justify-center">
@@ -237,10 +243,15 @@
             v-for="(item, index) in data.matches" 
             :esport="true" 
             :esport-league="esport"
+            :esport-series="series"
             :data="item"
           ></game-summary-box>
           <div class="flex justify-end mt-4">
-          <custom-button :href="`/Esports/${esport}/Team/${team}/Match/History${season ? `?season=${season}` : ''}` + (esport == 'NGS' ? division ? `&division=${division}`: '' : '') + (esport == 'HeroesInternational' ? `&tournament=${tournament}`: '')" class=" ml-auto" text="View Match History"></custom-button>
+            <custom-button 
+              :href="`/Esports/${esport}${esport === 'Other' ? `/${series}` : ''}/Team/${team}/Match/History${season ? `?season=${season}` : ''}${esport === 'NGS' && division ? `&division=${division}` : ''}${esport === 'HeroesInternational' && tournament ? `&tournament=${tournament}` : ''}`" 
+              class="ml-auto" 
+              text="View Match History">
+            </custom-button>
         </div>
         </div>
       </div>
@@ -269,6 +280,8 @@ export default {
     },
     tournament: String,
     image: String,
+    series: String,
+    seriesimage: String,
   },
   data(){
     return {
@@ -300,6 +313,8 @@ export default {
         return "/images/MCL/no-image.png";
       }else if(this.esport == "HeroesInternational"){
         return "/images/HI/heroes_international.png";
+      }else if(this.esport == "Other"){
+        return "/images/EsportOther/" + this.seriesimage;
       }
     },
     headingImageUrl(){
@@ -311,6 +326,8 @@ export default {
         return "/Esports/MastersClash"
       }else if(this.esport == "HeroesInternational"){
         return "/Esports/HeroesInternational"
+      }else if(this.esport == "Other"){
+        return "/Esports/Other/" + this.series; 
       }
     },
     isLoadingImageUrl(){
@@ -322,6 +339,8 @@ export default {
         return "/images/MCL/no-image.png"
       }else if(this.esport == "HeroesInternational"){
         return "/images/HI/heroes_international.png";
+      }else if(this.esport == "Other"){
+        return "/images/EsportOther/" + this.seriesimage;
       }
     },
     infoText1(){
@@ -331,7 +350,18 @@ export default {
         return `${this.team} during season ${this.modifiedseason}`;
       }else if(this.esport == "MastersClash"){
         return `${this.team} during season ${this.modifiedseason}`;
+      }else if(this.esport == "Other"){
+        return `${this.team} in series ${this.series}`;
       }
+    },
+    heading(){
+      if(this.esport == 'HeroesInternational'){
+        return "Heroes International";
+      }else if(this.esport == "Other"){
+        return;
+      }
+
+      return this.esport;
     },
     sortedData() {
       if (!this.sortKey) return this.data.heroes;
@@ -357,9 +387,15 @@ export default {
       }
       this.cancelTokenSource = this.$axios.CancelToken.source();
 
+      var url = "/api/v1/esports/single/team";
+      
+      if(this.series){
+        url = "/api/v1/esports/other/single/team";
+      }
       try{
-        const response = await this.$axios.post("/api/v1/esports/single/team", {
+        const response = await this.$axios.post(url, {
           esport: this.esport,
+          series: this.series,
           division: this.modifieddivision,
           team: this.team,
           season: this.modifiedseason,
@@ -382,15 +418,21 @@ export default {
       }
     },
     handleInputChange(eventPayload){
-        if(eventPayload.field == "Seasons"){
-            this.modifiedseason = eventPayload.value;
-        }
+      if(eventPayload.field == "Seasons"){
+        this.modifiedseason = eventPayload.value;
+      }
 
-        if(eventPayload.field == "Divisions"){
-          this.modifieddivision = eventPayload.value;
-        }
+      if(eventPayload.field == "Divisions"){
+        this.modifieddivision = eventPayload.value;
+      }
 
-      let newURL = `/Esports/${this.esport}/Team/${this.team}`;
+      let newURL = `/Esports/${this.esport}/`;
+      if(this.esport != "Other"){
+        newURL += `Team/${this.team}`;
+      }else{
+        newURL += `${this.series}/Team/${this.team}`;
+      }
+
       if (this.modifiedseason && this.modifieddivision) {
         newURL += `?season=${this.modifiedseason}&division=${this.modifieddivision}`;
       } else if (this.modifiedseason) {
@@ -413,6 +455,9 @@ export default {
         this.sortDir = 'desc';
       }
       this.sortKey = key;
+    },
+    matchUrl(){
+
     },
   }
 }
