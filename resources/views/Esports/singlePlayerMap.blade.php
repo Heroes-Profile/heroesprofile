@@ -8,6 +8,7 @@
   <esports-player-map-stats 
     :esport="{{ json_encode($esport) }}" 
     :series="{{ isset($series) ? json_encode($series) : 'null' }}" 
+    :seriesimage="{{ isset($seriesimage) ? json_encode($seriesimage) : 'null' }}" 
     :division="{{ json_encode($division) }}" 
     :battletag="{{ json_encode($battletag) }}" 
     :blizz_id="{{ json_encode($blizz_id) }}" 

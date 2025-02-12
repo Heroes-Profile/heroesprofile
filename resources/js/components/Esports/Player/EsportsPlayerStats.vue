@@ -218,6 +218,14 @@ export default {
         return `${this.battletag} in series ${this.series}`;
       }
     },
+    heading(){
+      if(this.esport == 'HeroesInternational'){
+        return "Heroes International";
+      }else if(this.esport == "Other"){
+        return;
+      }
+      return this.esport;
+    },
     sortedData() {
       if (!this.sortKey) return this.data.heroes;
       return this.data.heroes.slice().sort((a, b) => {
@@ -229,15 +237,6 @@ export default {
           return valA > valB ? -1 : 1;
         }
       });
-    },
-    heading(){
-      if(this.esport == 'HeroesInternational'){
-        return "Heroes International";
-      }else if(this.esport == "Other"){
-        return;
-      }
-
-      return this.esport;
     },
   },
   watch: {
@@ -322,6 +321,8 @@ export default {
         return "/images/NGS/no-image-clipped.png"
       }else if(this.esport == "CCL"){
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
+      }else if(this.esport == "Other"){
+        return "/images/EsportOther/" + this.seriesimage;
       }
     },
   }

@@ -6,6 +6,7 @@
 <single-match 
     :esport="{{ json_encode($esport) }}" 
     :series="{{ isset($series) ? json_encode($series) : 'null' }}" 
+    :seriesimage="{{ isset($seriesimage) ? json_encode($seriesimage) : 'null' }}" 
     :replayid="{{ $replayID }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
     :user="{{ json_encode(Auth::user()) }}"
