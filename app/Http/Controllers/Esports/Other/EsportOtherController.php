@@ -113,9 +113,208 @@ class EsportOtherController extends Controller
                 'filters' => $this->globalDataService->getFilterData(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
                 'series' => Series::where("name", $series)->first(),
+                'seriesimage' => Series::select("icon")->where("name", $series)->first()->icon,
                 'seasons' => $seasons,
                 'regions' => $regions,
                 'tournaments' => $tournaments,
+            ]);
+    }
+
+    public function showSingleTeam(Request $request, $series, $team)
+    {
+        $validationRules = [
+            'series' => 'required',
+            'team' => 'required|string',
+        ];
+
+        $otherValidationRules = [
+            'season' => 'nullable|numeric',
+            'region' => 'nullable|numeric',
+            'tournament' => 'nullable|string',
+        ];
+
+        $validator = Validator::make(compact('series', 'team'), $validationRules);
+
+        $otherValidator = Validator::make($request->all(), $otherValidationRules);
+
+        if ($validator->fails()) {
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
+        }
+
+        return view('Esports.team')
+            ->with([
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+                'esport' => 'Other',
+                'series' => $series,
+                'seriesimage' => Series::select("icon")->where("name", $series)->first()->icon,
+                'team' => $team,
+                'season' => $request['season'],
+                'region' => $request['region'],
+                'tournament' => $request['tournament'],
+                'image' => 'logo.png',
+                'division' => null,
+            ]);
+    }
+
+    public function showWithEsport(Request $request, $series, $replayID)
+    {
+        $validationRules = [
+            'series' => 'required|string',
+            'replayID' => 'required|integer',
+        ];
+
+        $validator = Validator::make(compact('series', 'replayID'), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                'data' => compact('series', 'replayID'),
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        return view('singleMatch')->with([
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+            'esport' => 'Other',
+            'series' => $series,
+            'seriesimage' => Series::select("icon")->where("name", $series)->first()->icon,
+            'replayID' => $replayID,
+        ]);
+    }
+
+    public function showPlayer(Request $request, $series, $battletag, $blizz_id)
+    {
+        $validationRules = [
+            'series' => 'required|string',
+            'battletag' => 'required|string',
+            'blizz_id' => 'required|numeric',
+        ];
+
+        $otherValidationRules = [
+            'season' => 'nullable|numeric',
+        ];
+
+        $validator = Validator::make(compact('series', 'battletag', 'blizz_id'), $validationRules);
+
+        $otherValidator = Validator::make($request->all(), $otherValidationRules);
+
+        if ($validator->fails()) {
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
+        }
+
+        return view('Esports.singlePlayer')
+            ->with([
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+                'esport' => "Other",
+                'series' => $series,
+                'seriesimage' => Series::select("icon")->where("name", $series)->first()->icon,
+                'battletag' => $battletag,
+                'blizz_id' => $blizz_id,
+                'season' => $request['season'],
+                'division' => $request['division'],
+                'tournament' => $request['tournament'],
+            ]);
+    }
+
+    public function showPlayerHero(Request $request, $series, $battletag, $blizz_id, $hero)
+    {
+        $validationRules = [
+            'series' => 'required|string',
+            'battletag' => 'required|string',
+            'blizz_id' => 'required|numeric',
+            'hero' => ['required', new HeroInputValidation],
+        ];
+
+        $otherValidationRules = [
+            'season' => 'nullable|numeric',
+        ];
+
+        $validator = Validator::make(compact('series', 'battletag', 'blizz_id', 'hero'), $validationRules);
+
+        $otherValidator = Validator::make($request->all(), $otherValidationRules);
+
+        if ($validator->fails()) {
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
+        }
+
+        $hero = $this->globalDataService->getHeroModel($request['hero']);
+
+        return view('Esports.singlePlayerHero')
+            ->with([
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+                'esport' => "Other",
+                'series' => $series,
+                'seriesimage' => Series::select("icon")->where("name", $series)->first()->icon,
+                'battletag' => $battletag,
+                'blizz_id' => $blizz_id,
+                'season' => $request['season'],
+                'division' => null,
+                'hero' => $hero,
+                'tournament' => null,
+            ]);
+    }
+
+    public function showPlayerMap(Request $request, $series, $battletag, $blizz_id, $game_map)
+    {
+        $validationRules = [
+            'series' => 'required|string',
+            'battletag' => 'required|string',
+            'blizz_id' => 'required|numeric',
+            'game_map' => ['required', new GameMapInputValidation],
+        ];
+
+        $otherValidationRules = [
+            'season' => 'nullable|numeric',
+        ];
+
+        $validator = Validator::make(compact('series', 'battletag', 'blizz_id', 'game_map'), $validationRules);
+
+        $otherValidator = Validator::make($request->all(), $otherValidationRules);
+
+        if ($validator->fails()) {
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
+        }
+        $mapobject = Map::where('name', $request['game_map'])->first();
+
+        return view('Esports.singlePlayerMap')
+            ->with([
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+                'esport' => "Other",
+                'series' => $series,
+                'seriesimage' => Series::select("icon")->where("name", $series)->first()->icon,
+                'battletag' => $battletag,
+                'blizz_id' => $blizz_id,
+                'season' => $request['season'],
+                'division' => null,
+                'game_map' => $mapobject,
+                'tournament' => null,
             ]);
     }
 
@@ -188,205 +387,12 @@ class EsportOtherController extends Controller
         return $teams;
     }
 
-    public function showSingleTeam(Request $request, $series, $team)
-    {
-        $validationRules = [
-            'series' => 'required',
-            'team' => 'required|string',
-        ];
-
-        $otherValidationRules = [
-            'season' => 'nullable|numeric',
-            'region' => 'nullable|numeric',
-            'tournament' => 'nullable|string',
-        ];
-
-        $validator = Validator::make(compact('series', 'team'), $validationRules);
-
-        $otherValidator = Validator::make($request->all(), $otherValidationRules);
-
-        if ($validator->fails()) {
-            if (env('Production')) {
-                return \Redirect::to('/');
-            } else {
-                return [
-                    'data' => $request->all(),
-                    'status' => 'failure to validate inputs',
-                ];
-            }
-        }
-
-        return view('Esports.team')
-            ->with([
-                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
-                'esport' => 'Other',
-                'series' => $series,
-                'seriesimage' => Series::select("icon")->where("name", $series)->first()->icon,
-                'team' => $team,
-                'season' => $request['season'],
-                'region' => $request['region'],
-                'tournament' => $request['tournament'],
-                'image' => 'logo.png',
-                'division' => null,
-            ]);
-    }
-
-    public function showWithEsport(Request $request, $series, $replayID)
-    {
-        $validationRules = [
-            'series' => 'required|string',
-            'replayID' => 'required|integer',
-        ];
-
-        $validator = Validator::make(compact('series', 'replayID'), $validationRules);
-
-        if ($validator->fails()) {
-            return [
-                'data' => compact('series', 'replayID'),
-                'status' => 'failure to validate inputs',
-            ];
-        }
-
-        return view('singleMatch')->with([
-            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
-            'esport' => 'Other',
-            'series' => $series,
-            'replayID' => $replayID,
-        ]);
-    }
-
-    public function showPlayer(Request $request, $series, $battletag, $blizz_id)
-    {
-        $validationRules = [
-            'series' => 'required|string',
-            'battletag' => 'required|string',
-            'blizz_id' => 'required|numeric',
-        ];
-
-        $otherValidationRules = [
-            'season' => 'nullable|numeric',
-        ];
-
-        $validator = Validator::make(compact('series', 'battletag', 'blizz_id'), $validationRules);
-
-        $otherValidator = Validator::make($request->all(), $otherValidationRules);
-
-        if ($validator->fails()) {
-            if (env('Production')) {
-                return \Redirect::to('/');
-            } else {
-                return [
-                    'data' => $request->all(),
-                    'status' => 'failure to validate inputs',
-                ];
-            }
-        }
-
-        return view('Esports.singlePlayer')
-            ->with([
-                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
-                'esport' => "Other",
-                'series' => $series,
-                'battletag' => $battletag,
-                'blizz_id' => $blizz_id,
-                'season' => $request['season'],
-                'division' => $request['division'],
-                'tournament' => $request['tournament'],
-            ]);
-    }
-
-
-    public function showPlayerHero(Request $request, $series, $battletag, $blizz_id, $hero)
-    {
-        $validationRules = [
-            'series' => 'required|string',
-            'battletag' => 'required|string',
-            'blizz_id' => 'required|numeric',
-            'hero' => ['required', new HeroInputValidation],
-        ];
-
-        $otherValidationRules = [
-            'season' => 'nullable|numeric',
-        ];
-
-        $validator = Validator::make(compact('series', 'battletag', 'blizz_id', 'hero'), $validationRules);
-
-        $otherValidator = Validator::make($request->all(), $otherValidationRules);
-
-        if ($validator->fails()) {
-            if (env('Production')) {
-                return \Redirect::to('/');
-            } else {
-                return [
-                    'data' => $request->all(),
-                    'status' => 'failure to validate inputs',
-                ];
-            }
-        }
-
-        $hero = $this->globalDataService->getHeroModel($request['hero']);
-
-        return view('Esports.singlePlayerHero')
-            ->with([
-                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
-                'esport' => "Other",
-                'series' => $series,
-                'battletag' => $battletag,
-                'blizz_id' => $blizz_id,
-                'season' => $request['season'],
-                'division' => null,
-                'hero' => $hero,
-                'tournament' => null,
-            ]);
-    }
-
-    public function showPlayerMap(Request $request, $series, $battletag, $blizz_id, $game_map)
-    {
-        $validationRules = [
-            'series' => 'required|string',
-            'battletag' => 'required|string',
-            'blizz_id' => 'required|numeric',
-            'game_map' => ['required', new GameMapInputValidation],
-        ];
-
-        $otherValidationRules = [
-            'season' => 'nullable|numeric',
-        ];
-
-        $validator = Validator::make(compact('series', 'battletag', 'blizz_id', 'game_map'), $validationRules);
-
-        $otherValidator = Validator::make($request->all(), $otherValidationRules);
-
-        if ($validator->fails()) {
-            if (env('Production')) {
-                return \Redirect::to('/');
-            } else {
-                return [
-                    'data' => $request->all(),
-                    'status' => 'failure to validate inputs',
-                ];
-            }
-        }
-        $mapobject = Map::where('name', $request['game_map'])->first();
-
-        return view('Esports.singlePlayerMap')
-            ->with([
-                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
-                'esport' => "Other",
-                'series' => $series,
-                'battletag' => $battletag,
-                'blizz_id' => $blizz_id,
-                'season' => $request['season'],
-                'division' => null,
-                'game_map' => $mapobject,
-                'tournament' => null,
-            ]);
-    }
 
     public function playerSearch(Request $request)
     {
         $validationRules = [
             'userinput' => ['required', 'string', new BattletagInputProhibitCharacters],
+            'series' => 'required|string',
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -402,26 +408,30 @@ class EsportOtherController extends Controller
         $input = $request['userinput'];
         $input = str_replace(' ', '', $input);
 
-        $data = null;
+        $data = Battletag::select('heroesprofile_ml.battletags.blizz_id', 'heroesprofile_ml.battletags.battletag', 'heroesprofile_ml.battletags.region')
+        ->join('heroesprofile_ml.player', 'heroesprofile_ml.player.battletag', '=', 'heroesprofile_ml.battletags.player_id')
+        ->join('heroesprofile_ml.replay', 'heroesprofile_ml.replay.replayID', '=', 'heroesprofile_ml.player.replayID')
+        ->where('heroesprofile_ml.replay.series', $request["series"]);
+    
         if (strpos($input, '#') !== false) {
-            $data = Battletag::select('blizz_id', 'battletag', 'region')
-                ->where('battletag', $input)
-                ->get();
+            $data->where('heroesprofile_ml.battletags.battletag', $input);
         } else {
-            $data = Battletag::select('blizz_id', 'battletag', 'region')
-                ->where('battletag', 'LIKE', '%' . $input.'#%')
-                ->get();
+            $data->where('heroesprofile_ml.battletags.battletag', 'LIKE', '%' . $input . '#%');
         }
+        
+        $data = $data->get();
+    
 
 
         $firstBlizzId = collect($data)
-            ->groupBy(fn ($item) => explode('#', $item->battletag)[0]) 
-            ->map(fn ($group) => [
-                'blizz_id' => $group->first()->blizz_id,
-                'battletag' => explode('#', $group->first()->battletag)[0], 
-                'region' => $group->first()->region,
-            ])
-            ->values(); 
+        ->groupBy(fn ($item) => strtolower(explode('#', $item->battletag)[0]))
+        ->map(fn ($group) => [
+            'blizz_id' => $group->first()->blizz_id,
+            'battletag' => explode('#', $group->first()->battletag)[0], 
+            'region' => $group->first()->region,
+        ])
+        ->values();
+
 
     
         return $firstBlizzId;
@@ -468,7 +478,7 @@ class EsportOtherController extends Controller
         $this->team_name = $request['team'];
 
         $this->schema .= '_ml';
-
+        
         $results = DB::table($this->schema.'.replay')
             ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
             ->join($this->schema.'.battletags', $this->schema.'.battletags.player_id', '=', $this->schema.'.player.battletag')
@@ -518,12 +528,13 @@ class EsportOtherController extends Controller
                 $this->schema.'.player.team_id',
                 $this->schema.'.replay.season',
             ])
-
-            ->when(! is_null($this->game_map), function ($query) {
-                return $query->where($this->schema.'.replay.game_map', $this->game_map);
-            })
-            ->when(! is_null($this->team), function ($query) {
-                return $query->where($this->schema.'.teams.team_id', $this->team);
+            ->where("series", $this->series)
+    
+            ->when($this->team, function ($query) {
+                return $query->where(function ($query) {
+                    $query->where('team_0_name', $this->team_name)
+                        ->orWhere('team_1_name', $this->team_name);
+                });
             })
             ->when(! is_null($this->blizz_id), function ($query) {
                 return $query->whereIn($this->schema.'.player.battletag', function($query) {
@@ -538,6 +549,9 @@ class EsportOtherController extends Controller
             })
             ->when(! is_null($this->season), function ($query){
                 return $query->where($this->schema.'.replay.season', $this->season);
+            })
+            ->when(! is_null($this->game_map), function ($query) {
+                return $query->where($this->schema.'.replay.game_map', $this->game_map);
             })
             
         //->toSql();

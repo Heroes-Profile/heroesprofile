@@ -262,7 +262,8 @@ export default {
 
       try{
         const response = await this.$axios.post(`/api/v1/esports/other/${this.series}/player/search`, {
-          userinput: this.userinput
+          userinput: this.userinput,
+          series: this.series.name
         }, 
         {
           cancelToken: this.cancelTokenSource.token,

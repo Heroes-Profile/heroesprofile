@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+    <page-heading :infoText1="infoText1" :heading="heading" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div v-if="data">
       <div class="flex justify-center max-w-[1500px] mx-auto">
@@ -146,6 +146,7 @@ export default {
       type: [Number, String]
     },
     tournament: String,
+    seriesimage: String,
   },
   data(){
     return {
@@ -214,7 +215,7 @@ export default {
       }else if(this.esport == "Masters Clash"){
         return `${this.battletag} during season ${this.modifiedseason}`;
       }else if(this.esport == "Other"){
-        return `${this.team} in series ${this.series}`;
+        return `${this.battletag} in series ${this.series}`;
       }
     },
     sortedData() {
@@ -228,6 +229,15 @@ export default {
           return valA > valB ? -1 : 1;
         }
       });
+    },
+    heading(){
+      if(this.esport == 'HeroesInternational'){
+        return "Heroes International";
+      }else if(this.esport == "Other"){
+        return;
+      }
+
+      return this.esport;
     },
   },
   watch: {
