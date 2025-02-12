@@ -65,7 +65,7 @@
             :data="item"
           ></game-summary-box>
           <div class="max-w-[1500px] mx-auto flex justify-end">
-          <custom-button :href="`/Esports/${esport}/Player/${battletag}/${blizz_id}/Match/History`" class="ml-auto mt-4" text="View Match History"></custom-button>
+          <custom-button :href="esport != 'Other' ? `/Esports/${esport}/Player/${battletag}/${blizz_id}/Match/History` : `/Esports/${esport}/${series}/Player/${battletag}/${blizz_id}/Match/History`" class="ml-auto mt-4" text="View Match History"></custom-button>
         </div>
         </div>
       </div>

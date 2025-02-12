@@ -8,6 +8,8 @@
     :battletag="{{ json_encode($battletag) }}" 
     :blizzid="{{ json_encode($blizz_id) }}" 
     :esport="{{ json_encode($esport) }}" 
+    :series="{{ isset($series) ? json_encode($series) : 'null' }}" 
+    :seriesimage="{{ isset($seriesimage) ? json_encode($seriesimage) : 'null' }}" 
     :season="{{ json_encode($season) }}" 
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
 

@@ -23,7 +23,7 @@
         <tbody>
           <tr v-for="(row, index) in sortedData" :key="index">
             <td>
-              <a class="link" :href="`/Esports/${esport}/Match/Single/` + row.replayID">{{ row.replayID }}</a>
+              <a class="link" :href="esport != 'Other' ? `/Esports/${esport}/Match/Single/` + row.replayID : `/Esports/${esport}/${series}/Match/Single/` + row.replayID">{{ row.replayID }}</a>
             </td>
             <td>
               {{ formatDate(row.game_date) }}
@@ -55,6 +55,7 @@ export default {
   props: {
     filters: Object,
     esport: String,
+    series: String,
     season: {
       type: [String, Number]
     },
@@ -62,6 +63,8 @@ export default {
     team: String,
     division: String,
     tournament: String,
+    seriesimage: String,
+
   },
   data(){
     return {
@@ -89,6 +92,8 @@ export default {
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
       }else if(this.esport == "MastersClash"){
         return "/images/MCL/no-image.png"
+      }else if(this.esport == "Other"){
+        return "/images/EsportOther/" + this.seriesimage;
       }
     },
     headingImageUrl(){
@@ -98,6 +103,8 @@ export default {
         return "/Esports/CCL"
       }else if(this.esport == "MastersClash"){
         return "/Esports/MastersClash"
+      }else if(this.esport == "Other"){
+        return "/Esports/Other/" + this.series; 
       }
     },
     sortedData() {
@@ -128,9 +135,20 @@ export default {
         this.cancelTokenSource.cancel('Request canceled');
       }
       this.cancelTokenSource = this.$axios.CancelToken.source();
+
+      var url = "";
+
+      var url = "/api/v1/esports/team/match/history";
+      
+      if(this.series){
+        url = "/api/v1/esports/other/team/match/history";
+      }
+
+
       try{
-        const response = await this.$axios.post("/api/v1/esports/team/match/history", {
+        const response = await this.$axios.post(url, {
           esport: this.esport,
+          series: this.series,
           season: this.modifiedSeason,
           division: this.division,
           tournament: this.tournament,
@@ -141,6 +159,9 @@ export default {
           cancelToken: this.cancelTokenSource.token,
         });
         this.data = response.data;
+
+        console.log(this.data);
+
       }catch(error){
         //Do something here
       }finally {
@@ -183,6 +204,8 @@ export default {
         return "/images/NGS/no-image-clipped.png"
       }else if(this.esport == "CCL"){
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
+      }else if(this.esport == "Other"){
+        return "/images/EsportOther/" + this.seriesimage;
       }
     },
   }

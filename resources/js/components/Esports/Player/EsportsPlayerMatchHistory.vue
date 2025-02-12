@@ -1,6 +1,6 @@
 <template>
   <div>    
-    <page-heading :infoText1="`${esport == 'HeroesInternational' ? 'Heroes International' : esport} ${battletag} Match History`" :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+    <page-heading :infoText1="infoText1" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div v-if="data">
       <table class="mt-10">
@@ -78,6 +78,8 @@ export default {
     blizzid: String, 
     esport: String,
     season: Number,
+    seriesimage: String,
+    series: String,
   },
   data(){
     return {
@@ -106,6 +108,8 @@ export default {
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
       }else if(this.esport == "MastersClash"){
         return "/images/MCL/no-image.png"
+      }else if(this.esport == "Other"){
+        return "/images/EsportOther/" + this.seriesimage;
       }
     },
     headingImageUrl(){
@@ -115,6 +119,8 @@ export default {
         return "/Esports/CCL"
       }else if(this.esport == "MastersClash"){
         return "/Esports/MastersClash"
+      }else if(this.esport == "Other"){
+        return "/Esports/Other/" + this.series; 
       }
     },
     sortedData() {
@@ -128,6 +134,17 @@ export default {
           return valA > valB ? -1 : 1;
         }
       });
+    },
+    infoText1(){
+      if(this.esport == "NGS"){
+        return `Match History for ${this.battletag} in division ${this.modifieddivision ? this.modifieddivision : " All "} during season ${this.modifiedseason ? this.modifiedseason : " All "}`
+      }else if(this.esport == "CCL"){
+        return `Match History for ${this.battletag} during season ${this.modifiedseason}`;
+      }else if(this.esport == "MastersClash"){
+        return `Match History for ${this.battletag} during season ${this.modifiedseason}`;
+      }else if(this.esport == "Other"){
+        return `Match History for ${this.battletag} in series ${this.series}`;
+      }
     },
   },
   watch: {
@@ -145,9 +162,18 @@ export default {
         this.cancelTokenSource.cancel('Request canceled');
       }
       this.cancelTokenSource = this.$axios.CancelToken.source();
+
+      
+      var url = "/api/v1/esports/single/player/match/history";
+      
+      if(this.series){
+        url = "/api/v1/esports/other/single/player/match/history";
+      }
+
       try{
-        const response = await this.$axios.post("/api/v1/esports/single/player/match/history", {
+        const response = await this.$axios.post(url, {
           esport: this.esport,
+          series: this.series,
           battletag: this.battletag,
           blizz_id: this.blizzid,
           pagination_page: page,
@@ -198,6 +224,8 @@ export default {
         return "/images/NGS/no-image-clipped.png"
       }else if(this.esport == "CCL"){
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
+      }else if(this.esport == "Other"){
+        return "/images/EsportOther/" + this.seriesimage;
       }else if(this.esport == "Other"){
         return "/images/EsportOther/" + this.seriesimage;
       }

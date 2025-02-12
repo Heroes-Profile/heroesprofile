@@ -143,9 +143,11 @@ Route::prefix('v1')->group(function () {
 
     Route::post('esports/single/player', [EsportsController::class, 'getData']);
     Route::post('esports/other/single/player', [EsportOtherController::class, 'getData']);
+    Route::post('esports/other/single/player/match/history', [EsportOtherController::class, 'getDataSinglePlayerMatchHistory']);
 
     Route::post('esports/single/player/match/history', [EsportsController::class, 'getDataSinglePlayerMatchHistory']);
     Route::post('esports/team/match/history', [EsportsController::class, 'getTeamMatchHistoryData']);
+    Route::post('esports/other/team/match/history', [EsportOtherController::class, 'getTeamMatchHistoryData']);
 
     Route::post('esports/single/player/hero', [EsportsController::class, 'getData']);
     Route::post('esports/single/player/map', [EsportsController::class, 'getData']);

@@ -318,6 +318,83 @@ class EsportOtherController extends Controller
             ]);
     }
 
+    public function showTeamMatchHistory(Request $request, $series, $team)
+    {
+        $validationRules = [
+            'team' => 'required|string',
+            'series' => 'required|string',
+        ];
+
+        $otherValidationRules = [
+            'season' => 'nullable|numeric',
+        ];
+
+        $validator = Validator::make(compact('series', 'team'), $validationRules);
+        $otherValidator = Validator::make($request->all(), $otherValidationRules);
+
+        if ($validator->fails()) {
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
+        }
+
+        return view('Esports.teamMatchHistory')
+            ->with([
+                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+                'esport' => "Other",
+                'series' => $series,
+                'seriesimage' => Series::select("icon")->where("name", $series)->first()->icon,
+                'team' => $team,
+                'season' => $request['season'],
+                'type' => 'team',
+                'division' => null,
+                'tournament' => null,
+            ]);
+    }
+
+    public function showPlayerMatchHistory(Request $request, $series, $battletag, $blizz_id)
+    {
+        $validationRules = [
+            'series' => 'required|string',
+            'battletag' => 'required|string',
+            'blizz_id' => 'required|integer',
+        ];
+
+        $otherValidationRules = [
+            'season' => 'nullable|numeric',
+        ];
+
+        $validator = Validator::make(compact('series', 'battletag', 'blizz_id'), $validationRules);
+        $otherValidator = Validator::make($request->all(), $otherValidationRules);
+
+        if ($validator->fails()) {
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => $request->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
+        }
+
+        return view('Esports.singlePlayerMatchHistory')->with([
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+            'battletag' => $battletag,
+            'blizz_id' => $blizz_id,
+            'esport' => "Other",
+            'series' => $series,
+            'seriesimage' => Series::select("icon")->where("name", $series)->first()->icon,
+            'filters' => $this->globalDataService->getFilterData(),
+            'season' => $request['season'],
+        ]);
+    }
+
     public function getTeamData(Request $request){
 
         $validationRules = [
@@ -386,7 +463,6 @@ class EsportOtherController extends Controller
 
         return $teams;
     }
-
 
     public function playerSearch(Request $request)
     {
@@ -1152,7 +1228,6 @@ class EsportOtherController extends Controller
 
     }
 
-    
     private function getHeroTalentData($result, $talentData)
     {
         $returnData = [];
@@ -1302,5 +1377,210 @@ class EsportOtherController extends Controller
         return $returnData;
     }
 
+
+    public function getTeamMatchHistoryData(Request $request)
+    {
+
+        //return response()->json($request->all());
+
+        $validationRules = [
+            'esport' => 'required|in:Other',
+            'series' => 'required|string',
+            'team' => 'nullable|string',
+            'season' => 'nullable|numeric',
+            'pagination_page' => 'required:integer',
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                'data' => [$request->all()],
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        $this->esport = $request['esport'];
+        $this->schema = 'heroesprofile_ml';
+
+        $this->season = $request['season'];
+
+        $tournament = $request['tournament'];
+
+
+
+
+        $team = $request['team'];
+        $team_id = null;
+
+        $pagination_page = $request['pagination_page'];
+        $perPage = 10000;
+
+        $result = DB::table($this->schema.'.replay')
+            ->when($this->season, function ($query) {
+                $query->where(function ($query) {
+                    $query->where('season', $this->season);
+                });
+            })
+            ->where(function ($query) use ($team) {
+                $query->where('team_0_name', $team)
+                ->orWhere('team_1_name', $team);
+            })
+            ->orderByDesc('game_date')
+            ->paginate($perPage, ['*'], 'page', $pagination_page);
+
+        $maps = Map::all();
+        $maps = $maps->keyBy('map_id');
+
+        $modifiedResult = $result->map(function ($item) use ($maps, $team) {
+
+            $item->game_map = $maps[$item->game_map]['name'];
+
+            $temp_team = strtolower($team);
+            $team_team_one = strtolower($item->team_0_name);
+
+            $item->enemy = $temp_team == $team_team_one ? $item->team_1_name : $item->team_0_name;
+
+
+            return $item;
+        });
+
+        return $result;
+    }
+
+    public function getDataSinglePlayerMatchHistory(Request $request)
+    {
+        //return response()->json($request->all());
+
+        $validationRules = [
+            'esport' => 'required|in:Other',
+            'series' => 'required|string',
+            'team' => 'nullable|string',
+            'battletag' => 'nullable|string',
+            'blizz_id' => 'nullable|string',
+            'season' => 'nullable|numeric',
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                'data' => [$request->all()],
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        $this->esport = $request['esport'];
+        $this->series = $request["series"];
+        $this->schema = 'heroesprofile_ml';
+
+        $this->blizz_id = $request['blizz_id'];
+        $this->battletag = $request['battletag'];
+
+        $this->season = $request['season'];
+
+
+        $pagination_page = $request['pagination_page'];
+        $perPage = 10000;
+
+        $result = DB::table($this->schema.'.replay')
+            ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
+            ->join($this->schema.'.talents', function ($join) {
+                $join->on($this->schema.'.talents.replayID', '=', $this->schema.'.replay.replayID')
+                    ->on($this->schema.'.talents.battletag', '=', $this->schema.'.player.battletag');
+            })
+            ->join('heroes', 'heroes.id', '=', 'player.hero')
+            ->select([
+                'replay.replayID AS replayID',
+                'replay.game_date as game_date',
+                'replay.game_map AS game_map',
+                'player.winner AS winner',
+                'player.hero AS hero',
+                'heroes.new_role as role',
+                'talents.level_one AS level_one',
+                'talents.level_four AS level_four',
+                'talents.level_seven AS level_seven',
+                'talents.level_ten AS level_ten',
+                'talents.level_thirteen AS level_thirteen',
+                'talents.level_sixteen AS level_sixteen',
+                'talents.level_twenty AS level_twenty',
+            ])
+            ->where('blizz_id', $this->blizz_id)
+            ->when(! is_null($this->season), function ($query) {
+                $seasonDate = SeasonDate::find($this->season);
+                if ($seasonDate) {
+                    return $query->where('game_date', '>=', $seasonDate->start_date)
+                        ->where('game_date', '<', $seasonDate->end_date);
+                }
+
+                return $query;
+            })
+            ->orderByDesc('game_date')
+            ->paginate($perPage, ['*'], 'page', $pagination_page);
+
+        $heroData = $this->globalDataService->getHeroes();
+        $heroData = $heroData->keyBy('id');
+
+        $talentData = HeroesDataTalent::all();
+        $talentData = $talentData->keyBy('talent_id');
+
+        $maps = Map::all();
+        $maps = $maps->keyBy('map_id');
+
+        $modifiedResult = $result->map(function ($item) use ($heroData, $talentData, $maps) {
+            $item->hero_id = $item->hero;
+            $item->hero = $heroData[$item->hero];
+
+            $item->game_map = $maps[$item->game_map]['name'];
+
+            if ($item->level_one) {
+                if ($item->level_one != 0) {
+                    $item->level_one = $talentData->has($item->level_one) ? $talentData[$item->level_one] : null;
+                }
+            }
+
+            if ($item->level_four) {
+                if ($item->level_four != 0) {
+                    $item->level_four = $talentData->has($item->level_four) ? $talentData[$item->level_four] : null;
+                }
+            }
+
+            if ($item->level_seven) {
+                if ($item->level_seven != 0) {
+                    $item->level_seven = $talentData->has($item->level_seven) ? $talentData[$item->level_seven] : null;
+                }
+            }
+
+            if ($item->level_ten) {
+                if ($item->level_ten != 0) {
+                    $item->level_ten = $talentData->has($item->level_ten) ? $talentData[$item->level_ten] : null;
+                }
+            }
+
+            if ($item->level_thirteen) {
+                if ($item->level_thirteen != 0) {
+                    $item->level_thirteen = $talentData->has($item->level_thirteen) ? $talentData[$item->level_thirteen] : null;
+                }
+            }
+
+            if ($item->level_sixteen) {
+                if ($item->level_sixteen != 0) {
+                    $item->level_sixteen = $talentData->has($item->level_sixteen) ? $talentData[$item->level_sixteen] : null;
+                }
+            }
+
+            if ($item->level_twenty) {
+                if ($item->level_twenty != 0) {
+                    $item->level_twenty = $talentData->has($item->level_twenty) ? $talentData[$item->level_twenty] : null;
+                }
+            }
+
+            $item->winner = $item->winner == 1 ? 'True' : 'False';
+
+            return $item;
+        });
+
+        return $result;
+    }
 
 }

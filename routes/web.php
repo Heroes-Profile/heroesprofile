@@ -160,6 +160,10 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('Esports/Other/{series}/Player/{battletag}/{blizz_id}/Hero/{hero}', [EsportOtherController::class, 'showPlayerHero']);
     Route::get('Esports/Other/{series}/Player/{battletag}/{blizz_id}/Map/{game_map}', [EsportOtherController::class, 'showPlayerMap']);
 
+    Route::get('Esports/Other/{series}/Player/{battletag}/{blizz_id}/Match/History', [EsportOtherController::class, 'showPlayerMatchHistory']);
+    Route::get('Esports/Other/{series}/Team/{team}/Match/History', [EsportOtherController::class, 'showTeamMatchHistory']);
+
+
     Route::get('Esports/{esport}/Team/{team}', [EsportsController::class, 'showSingleTeam']);
     Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}', [EsportsController::class, 'showPlayer']);
     Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Hero/{hero}', [EsportsController::class, 'showPlayerHero']);
