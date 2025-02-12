@@ -118,7 +118,43 @@
        
       </div>
       
+      <div v-if="activeButton === 'overallHeroStats'">
+        <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
+          <single-select-filter :values="seasons" :text="'Seasons'" @input-changed="handleInputChange"></single-select-filter>
+          <single-select-filter :values="regions" :text="'Regions'" @input-changed="handleInputChange"></single-select-filter>
+          <single-select-filter :values="tournaments" :text="'Tournaments'" @input-changed="handleInputChange"></single-select-filter>
 
+
+
+
+          <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
+        </div>
+        <esports-hero-stats v-if="heroStatsData" :data="heroStatsData"></esports-hero-stats>
+      </div>
+
+      <div v-if="activeButton === 'overallTalentStats'">
+        <div v-if="!selectedHero">
+          <hero-selection :heroes="heroes"></hero-selection>
+        </div>
+
+
+        <div v-else>
+          <div v-if="talentStatsData">
+            <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
+              <single-select-filter :values="seasons" :text="'Seasons'" @input-changed="handleInputChange"></single-select-filter>
+              <single-select-filter :values="regions" :text="'Regions'" @input-changed="handleInputChange"></single-select-filter>
+              <single-select-filter :values="tournaments" :text="'Tournaments'" @input-changed="handleInputChange"></single-select-filter>
+
+              <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
+            </div>
+
+            
+            <esports-talent-stats :talentdetaildata="talentStatsData.talentData" :talentbuilddata="talentStatsData.buildData" :talentimages="talentimages" :selectedHero="selectedHero"></esports-talent-stats>
+          </div>
+
+        </div>
+
+      </div>
 
 
 
@@ -144,6 +180,8 @@ export default {
     seasons: Array,
     regions: Array,
     tournaments: Array,
+    heroes: Object,
+    talentimages: Object,
   },
   data(){
     return {
@@ -156,6 +194,8 @@ export default {
       tournament: null,
       userinput: '',
       battletagresponse: null,
+      heroStatsData: null,
+      selectedHero: null,
     }
   },
   created(){
@@ -238,6 +278,62 @@ export default {
       }
     },
 
+    async getHeroStats(){
+      this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+
+      try{
+        const response = await this.$axios.post(`/api/v1/esports/other/${this.series.name}/hero/stats`, {
+          season: this.season,
+          esport: "Other",
+          series: this.series.name,
+          region: this.region,
+          tournament: this.tournament,
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
+        });
+        this.heroStatsData = response.data;
+      }catch(error){
+        //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
+      }
+    },
+    async getTalentStats(){
+      this.isLoading = true;
+
+      if (this.cancelTokenSource) {
+        this.cancelTokenSource.cancel('Request canceled');
+      }
+      this.cancelTokenSource = this.$axios.CancelToken.source();
+
+      try{
+        const response = await this.$axios.post(`/api/v1/esports/other/${this.series.name}/hero/talents/stats`, {
+          season: this.season,
+          hero: this.selectedHero.name,
+          esport: "Other",
+          series: this.series.name,
+          region: this.region,
+          tournament: this.tournament,
+        }, 
+        {
+          cancelToken: this.cancelTokenSource.token,
+        });
+        this.talentStatsData = response.data;
+      }catch(error){
+        //Do something here
+      }finally {
+        this.cancelTokenSource = null;
+        this.isLoading = false;
+      }
+    },
+
     setButtonActive(buttonName) {
       this.activeButton = buttonName;
 
@@ -283,6 +379,10 @@ export default {
         this.talentStatsData = null;
         this.getTalentStats();
       }
+    },
+    clickedHero(hero){
+      this.selectedHero = hero;
+      this.getTalentStats();
     },
   }
 }

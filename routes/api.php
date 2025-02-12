@@ -129,6 +129,12 @@ Route::prefix('v1')->group(function () {
     Route::post('esports/ngs/hero/stats', [EsportsController::class, 'getOverallHeroStats']);
     Route::post('esports/ngs/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
 
+
+    Route::post('esports/other/{series}/hero/stats', [EsportOtherController::class, 'getOverallHeroStats']);
+    Route::post('esports/other/{series}/hero/talents/stats', [EsportOtherController::class, 'getOverallTalentStats']);
+
+    
+
     Route::post('esports/ngs/division/single', [NGSSingleDivisionController::class, 'getSingleDivisionData']);
     Route::post('esport/division/match/history', [NGSSingleDivisionController::class, 'getSingleDivisionMatchHistory']);
 
