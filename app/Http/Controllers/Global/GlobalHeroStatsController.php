@@ -48,7 +48,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
     public function getGlobalHeroData(Request $request)
     {
 
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = $this->globalsValidationRules($request['timeframe_type'], $request['timeframe']);
 
@@ -116,7 +116,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
                 ->groupBy('global_hero_stats.hero', 'global_hero_stats.win_loss')
                 ->orderBy('heroes.name', 'asc')
                 ->orderBy('global_hero_stats.win_loss', 'asc')
-                //->toSql();
+                // ->toSql();
                 ->get();
 
             $banData = GlobalHeroStatsBans::query()
@@ -133,7 +133,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
                 ->filterByRegion($region)
                 ->groupBy('global_hero_stats_bans.hero')
                 ->orderBy('heroes.name', 'asc')
-                //->toSql();
+                // ->toSql();
                 ->get();
 
             $changeData = null;
@@ -144,7 +144,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
                     ->select('heroes.name', 'heroes.id as hero_id', 'win_rate as change_win_rate')
                     ->filterByGameVersion($this->calculateGameVersionsForHeroChange($gameVersion))
                     ->filterByGameType($gameType)
-                    //->toSql();
+                    // ->toSql();
                     ->get();
             }
 
@@ -156,7 +156,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
 
     private function calculateGameVersionsForHeroChange($gameVersion)
     {
-        //Fix later
+        // Fix later
         return [SeasonGameVersion::select('game_version')->where('id', (SeasonGameVersion::select('id')->where('game_version', '2.55.3.90670')->first()->id - 1))->first()->game_version];
     }
 
@@ -281,7 +281,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         ];
     }
 
-    //🤮
+    // 🤮
     private function checkIfChange($timeframe, $region, $game_type, $map, $league_tier, $hero_league_tier, $role_league_tier, $hero_level)
     {
         if (

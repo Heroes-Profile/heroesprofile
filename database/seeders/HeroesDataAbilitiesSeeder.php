@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -558,23 +559,22 @@ class HeroesDataAbilitiesSeeder extends Seeder
             ['Zul\'jin', 'zuljin', 'ZULJ', 'Regeneration', 'Zul\'jin channels to regenerate 30% of his maximum Health over 4 seconds. Moving while channeling or taking damage will interrupt this effect.', '75', '15', 'False', 'E1', 'E', ''],
             ['Zul\'jin', 'zuljin', 'ZULJ', 'Taz\'dingo!', 'For the next 4 seconds, Zul\'jin is Unkillable, and cannot be reduced to less than 1 Health. Taz\'dingo!', '75', '90', 'False', 'R1', 'R', ''],
             ['Zul\'jin', 'zuljin', 'ZULJ', 'Twin Cleave', 'Throw 2 axes in a large, circular arc, dealing 112 (+4% per level) damage and Slowing affected enemies by 15% per axe for 2 seconds.', '60', '10', 'False', 'W1', 'W', ''],
-            
 
-         ];
-         foreach ($data as $row) {
-          DB::table('heroes_data_abilities')->insert([
-              'hero_name' => $row[0],
-              'short_name' => $row[1],
-              'attribute_id' => $row[2],
-              'title' => $row[3],
-              'description' => $row[4],
-              'mana_cost' => $row[5],
-              'cooldown' => $row[6],
-              'trait' => $row[7],
-              'name' => $row[8],
-              'hotkey' => $row[9],
-              'icon' => $row[10],
-          ]);
+        ];
+        foreach ($data as $row) {
+            DB::table('heroes_data_abilities')->insert([
+                'hero_name' => $row[0],
+                'short_name' => $row[1],
+                'attribute_id' => $row[2],
+                'title' => $row[3],
+                'description' => $row[4],
+                'mana_cost' => $row[5],
+                'cooldown' => $row[6],
+                'trait' => $row[7],
+                'name' => $row[8],
+                'hotkey' => $row[9],
+                'icon' => $row[10],
+            ]);
         }
     }
 }

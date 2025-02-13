@@ -33,8 +33,8 @@ class CheckIfPrivateProfilePage
             return redirect('/');
         }
 
-        //$user = BattlenetAccount::find(1);
-        //Auth::login($user);
+        // $user = BattlenetAccount::find(1);
+        // Auth::login($user);
 
         if ($containsAccount) {
             if (! Auth::check()) {

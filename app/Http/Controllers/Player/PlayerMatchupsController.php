@@ -46,7 +46,7 @@ class PlayerMatchupsController extends Controller
             'region' => $region,
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
-            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'], //$this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'], // $this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
 
         ]);
     }
@@ -54,7 +54,7 @@ class PlayerMatchupsController extends Controller
     public function getMatchupData(Request $request)
     {
 
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validator = \Validator::make($request->only(['blizz_id', 'region', 'battletag']), [
             'blizz_id' => 'required|integer',
@@ -141,7 +141,7 @@ class PlayerMatchupsController extends Controller
                 ->where('blizz_id', '<>', $blizz_id)
                 ->groupBy('hero', 'team', 'winner')
                 ->select('hero', 'team', 'winner', DB::raw('COUNT(*) AS total'))
-                //->toSql();
+                // ->toSql();
                 ->get();
 
             foreach ($result as $hero => $value) {

@@ -174,7 +174,7 @@ class GlobalDataService
             1 => 'NA',
             2 => 'EU',
             3 => 'KR',
-            /*  4 => "UNK",*/
+            /*  4 => "UNK", */
             5 => 'CN',
         ];
     }
@@ -185,7 +185,7 @@ class GlobalDataService
             'NA' => 1,
             'EU' => 2,
             'KR' => 3,
-            /*  4 => "UNK",*/
+            /*  4 => "UNK", */
             'CN' => 5,
         ];
     }
@@ -232,23 +232,23 @@ class GlobalDataService
 
     public function calculateCacheTimeInMinutes($timeframe)
     {
-        //return 300;
+        // return 300;
 
         if (app()->environment('production')) {
             if (count($timeframe) == 1 && $timeframe[0] == $this->getLatestPatch()) {
                 $date = SeasonGameVersion::where('game_version', min($timeframe))->value('date_added');
                 $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
 
-                if ($changeInMinutes < 1440) {  //1 day
-                    return .25; //15 min
-                } elseif ($changeInMinutes < (1440 * 3.5)) { //half week
-                    return 6 * 60; //6 hours
-                } elseif ($changeInMinutes < (1440 * 7)) { //1 week
-                    return 24 * 60; //1 day
-                } elseif ($changeInMinutes < (1440 * 2)) { //2 week
-                    return 24 * 60 * 7; //7 day
+                if ($changeInMinutes < 1440) {  // 1 day
+                    return .25; // 15 min
+                } elseif ($changeInMinutes < (1440 * 3.5)) { // half week
+                    return 6 * 60; // 6 hours
+                } elseif ($changeInMinutes < (1440 * 7)) { // 1 week
+                    return 24 * 60; // 1 day
+                } elseif ($changeInMinutes < (1440 * 2)) { // 2 week
+                    return 24 * 60 * 7; // 7 day
                 } else {
-                    return 24 * 60 * 7 * 2; //2 weeks
+                    return 24 * 60 * 7 * 2; // 2 weeks
                 }
             } else {
                 $date = SeasonGameVersion::where('game_version', min($timeframe))->value('date_added');
@@ -944,7 +944,7 @@ class GlobalDataService
                 ->groupBy('global_hero_stats.hero', 'global_hero_stats.win_loss')
                 ->orderBy('heroes.name', 'asc')
                 ->orderBy('global_hero_stats.win_loss', 'asc')
-                //->toSql();
+                // ->toSql();
                 ->get();
             $changeData = null;
 

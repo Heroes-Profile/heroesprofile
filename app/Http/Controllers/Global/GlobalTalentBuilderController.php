@@ -69,7 +69,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
 
     public function getData(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'hero' => ['required', new HeroInputValidation],
@@ -184,7 +184,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
                     return $query->where('level_twenty', $level_twenty);
                 })
                 ->groupBy('win_loss', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
-            //->toSql();
+            // ->toSql();
                 ->get();
 
             $transformedData = [
@@ -291,7 +291,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
                 ->when(! is_null($level_twenty), function ($query) use ($level_twenty) {
                     return $query->where('level_twenty', $level_twenty);
                 })
-                //->toSql();
+                // ->toSql();
                 ->groupBy('win_loss')
                 ->get();
 
@@ -384,7 +384,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         return [
             'talentData' => $data['data'],
             'buildData' => $data['buildReturnData'],
-            'replays' => null, /*$replays,*/
+            'replays' => null, /* $replays, */
         ];
     }
 

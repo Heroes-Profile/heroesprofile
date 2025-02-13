@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -10008,23 +10009,23 @@ class GlobalHeroStatsBansTableSeeder extends Seeder
             ['502554961', '2.55.4.91418', '0', '6', '0', '4', '6', '5', '3', '0', '0.6'],
             ['503004630', '2.55.4.91418', '0', '6', '0', '4', '6', '25', '1', '3', '0.2'],
             ['503004635', '2.55.4.91418', '0', '6', '0', '4', '6', '25', '1', '14', '0.2'],
-            
+
         ];
         foreach ($data as $row) {
-          DB::table('global_hero_stats_bans')->insert([
-              'global_hero_stats_bans_id' => $row[0],
-              'game_version' => $row[1],
-              'game_type' => $row[2],
-              'league_tier' => $row[3],
-              'hero_league_tier' => $row[4],
-              'role_league_tier' => $row[5],
-              'game_map' => $row[6],
-              'hero_level' => $row[7],
-              'region' => $row[8],
-              'hero' => $row[9],
-              'bans' => $row[10]
-          ]);
+            DB::table('global_hero_stats_bans')->insert([
+                'global_hero_stats_bans_id' => $row[0],
+                'game_version' => $row[1],
+                'game_type' => $row[2],
+                'league_tier' => $row[3],
+                'hero_league_tier' => $row[4],
+                'role_league_tier' => $row[5],
+                'game_map' => $row[6],
+                'hero_level' => $row[7],
+                'region' => $row[8],
+                'hero' => $row[9],
+                'bans' => $row[10],
+            ]);
         }
-        
+
     }
 }

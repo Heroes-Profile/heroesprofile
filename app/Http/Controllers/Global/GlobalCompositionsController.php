@@ -49,7 +49,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
     public function getCompositionsData(Request $request)
     {
 
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
             'hero' => ['sometimes', 'nullable', new HeroInputValidation],
@@ -116,7 +116,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                 ->filterByRegion($region)
                 ->groupBy('composition_id', 'win_loss')
                 ->with(['composition'])
-                //->toSql();
+                // ->toSql();
                 ->get();
 
             $roleData = MMRTypeID::all();
@@ -177,7 +177,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 
     public function getTopHeroData(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
             'hero' => ['sometimes', 'nullable', new HeroInputValidation],
@@ -216,7 +216,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         $compositionID = $request['composition_id'];
 
         $cacheKey = 'GlobalCompositionTopHeroes|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
-        //return $cacheKey;
+        // return $cacheKey;
 
         $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
             $gameType,
@@ -241,12 +241,12 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                 ->filterByRoleLeagueTier($roleLeagueTier)
                 ->filterByGameMap($gameMap)
                 ->filterByHeroLevel($heroLevel)
-                //->filterByHero($hero)
+                // ->filterByHero($hero)
                 ->filterByCompositionID($compositionID)
                 ->excludeMirror($mirror)
                 ->filterByRegion($region)
                 ->groupBy('hero')
-                //->toSql();
+                // ->toSql();
                 ->get();
 
             $heroData = $this->globalDataService->getHeroes();

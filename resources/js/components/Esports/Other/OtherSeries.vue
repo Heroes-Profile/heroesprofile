@@ -269,8 +269,6 @@ export default {
           cancelToken: this.cancelTokenSource.token,
         });
         this.battletagresponse = response.data;
-
-        console.log(this.battletagresponse);
       }catch(error){
         //Do something here
       }finally {

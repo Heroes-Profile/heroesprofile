@@ -69,7 +69,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
     public function getHeroMatchupData(Request $request)
     {
 
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
             'hero' => ['required', new HeroInputValidation],
@@ -137,7 +137,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                 ->groupBy('ally')
                 ->groupBy('win_loss')
                 ->orderBy('ally')
-              //->toSql();
+              // ->toSql();
                 ->get();
             $allyData = $this->combineData($allyData, 'ally', $hero, $role);
 
@@ -156,7 +156,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                 ->filterByRegion($region)
                 ->groupBy('enemy')
                 ->groupBy('win_loss')
-                //->toSql();
+                // ->toSql();
                 ->get();
             $enemyData = $this->combineData($enemyData, 'enemy', $hero, $role);
 

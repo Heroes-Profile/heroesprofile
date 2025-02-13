@@ -52,7 +52,7 @@ class PlayerMMRController extends Controller
     public function getData(Request $request)
     {
 
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'battletag' => 'required|string',
@@ -115,7 +115,7 @@ class PlayerMMRController extends Controller
             ->when(! is_null($role), function ($query) use ($role) {
                 return $query->whereIn('hero', Hero::select('id')->where('new_role', $role)->get()->toArray());
             })
-            //->toSql();
+            // ->toSql();
             ->orderByDesc('mmr_date_parsed')
             ->get();
 
