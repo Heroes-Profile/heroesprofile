@@ -1,18 +1,19 @@
 <?php
 
+use App\Http\Controllers\AnimationsController;
 use App\Http\Controllers\Auth\BattleNetController;
 use App\Http\Controllers\Auth\PatreonController;
 use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\CompareController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Esports\CCL\CCLController;
-use App\Http\Controllers\Esports\Other\EsportOtherController;
 use App\Http\Controllers\Esports\EsportsController;
 use App\Http\Controllers\Esports\HeroesInternational\HeroesInternationalController;
 use App\Http\Controllers\Esports\MastersClash\MastersClashController;
 use App\Http\Controllers\Esports\NGS\NGSController;
 use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
 use App\Http\Controllers\Esports\NutCup\NutCupController;
+use App\Http\Controllers\Esports\Other\EsportOtherController;
 use App\Http\Controllers\GithubChangeController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
@@ -39,7 +40,6 @@ use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
-use App\Http\Controllers\AnimationsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -59,8 +59,8 @@ Route::fallback(function () {
 
 Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/', [MainPageController::class, 'show']);
-    //Route::get('/test', [MainPageController::class, 'test']);
-    //Route::get('/testJS', [MainPageController::class, 'testJS']);
+    // Route::get('/test', [MainPageController::class, 'test']);
+    // Route::get('/testJS', [MainPageController::class, 'testJS']);
 
     Route::get('/Contact', [ContactController::class, 'show']);
 
@@ -70,10 +70,10 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
 
     Route::get('/battletag/searched/{userinput}/{type}', [BattletagSearchController::class, 'show']);
 
-    //Route::get('/Compare', [CompareController::class, 'show']);
-    //Route::get('/Compare/{hero}', [CompareController::class, 'show']);
+    // Route::get('/Compare', [CompareController::class, 'show']);
+    // Route::get('/Compare/{hero}', [CompareController::class, 'show']);
 
-    //Login
+    // Login
     Route::get('/Authenticate/Battlenet', [BattleNetController::class, 'show']);
     Route::get('/Battlenet/Logout', [BattleNetController::class, 'logout']);
 
@@ -109,12 +109,12 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
 
     Route::get('/Global/Party', [GlobalPartyStatsController::class, 'show']);
 
-    //Route::get('/Global/Extra', [GlobalExtraStats::class, 'show']); //Not sure if I want to keep this for rewrite.  Taking it out for now
+    // Route::get('/Global/Extra', [GlobalExtraStats::class, 'show']); //Not sure if I want to keep this for rewrite.  Taking it out for now
 
-    //Logged in User Settings
+    // Logged in User Settings
     Route::get('Profile/Settings', [ProfileController::class, 'showSettings'])->middleware('ensureBattlenetAuth');
 
-    //Player data
+    // Player data
     Route::get('Player/{battletag}/{blizz_id}/{region}', [PlayerController::class, 'show'])->middleware('checkIfPrivateProfilePage');
     Route::get('Player/{battletag}/{blizz_id}/{region}/FriendFoe', [FriendFoeController::class, 'show'])->middleware('checkIfPrivateProfilePage');
     Route::get('Player/{battletag}/{blizz_id}/{region}/Hero', [PlayerHeroesController::class, 'showAll'])->middleware('checkIfPrivateProfilePage');
@@ -163,7 +163,6 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('Esports/Other/{series}/Player/{battletag}/{blizz_id}/Match/History', [EsportOtherController::class, 'showPlayerMatchHistory']);
     Route::get('Esports/Other/{series}/Team/{team}/Match/History', [EsportOtherController::class, 'showTeamMatchHistory']);
 
-
     Route::get('Esports/{esport}/Team/{team}', [EsportsController::class, 'showSingleTeam']);
     Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}', [EsportsController::class, 'showPlayer']);
     Route::get('Esports/{esport}/Player/{battletag}/{blizz_id}/Hero/{hero}', [EsportsController::class, 'showPlayerHero']);
@@ -183,7 +182,7 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
 
 });
 
-//Ads.txt redirects
+// Ads.txt redirects
 Route::redirect('/ads.txt', 'https://adstxt.venatusmedia.com/60f587eddd63d722e7e57bc1_ads.txt');
 Route::redirect('/ads.txt', 'https://adstxt.venatusmedia.com/60f587eddd63d722e7e57bc1_ads.txt')->name('ads.txt');
 
@@ -195,8 +194,6 @@ Route::redirect('https://www.{any}/ads.txt', 'https://adstxt.venatusmedia.com/60
 
 Route::redirect('https://{any}/ads.txt', 'https://adstxt.venatusmedia.com/60f587eddd63d722e7e57bc1_ads.txt');
 Route::redirect('https://{any}/ads.txt', 'https://adstxt.venatusmedia.com/60f587eddd63d722e7e57bc1_ads.txt')->name('https.ads.txt');
-
-
 
 Route::get('/Animation/Deathwing', [AnimationsController::class, 'showDeathwing']);
 Route::get('/Animation/Tassadar', [AnimationsController::class, 'showTassadar']);

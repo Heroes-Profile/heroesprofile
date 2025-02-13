@@ -32,7 +32,7 @@ class NGSController extends Controller
 
     public function getStandingData(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'season' => ['required', new NGSSeasonInputValidation],
@@ -96,7 +96,7 @@ class NGSController extends Controller
 
     public function getTeamsData(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'season' => ['required', new NGSSeasonInputValidation],
@@ -158,7 +158,7 @@ class NGSController extends Controller
 
     public function playerSearch(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'userinput' => ['required', 'string', new BattletagInputProhibitCharacters],

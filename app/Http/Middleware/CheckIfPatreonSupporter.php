@@ -18,8 +18,8 @@ class CheckIfPatreonSupporter
      */
     public function handle(Request $request, Closure $next): Response
     {
-        //$user = BattlenetAccount::find(1);
-        //Auth::login($user);
+        // $user = BattlenetAccount::find(1);
+        // Auth::login($user);
 
         if (Auth::check()) {
             $user = Auth::user();

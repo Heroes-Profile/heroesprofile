@@ -10009,29 +10009,29 @@ class GlobalHeroStackSizeSeeder extends Seeder
             ['134747774', '2.55.4.91418', '0', '6', '6', '6', '12', '40', '0', '2', '0', '51', '0', '00005', '00005', '1'],
             ['135060976', '2.55.4.91418', '0', '6', '6', '6', '12', '40', '0', '2', '0', '69', '0', '00005', '00005', '1'],
             ['134226607', '2.55.4.91418', '0', '6', '6', '6', '12', '40', '0', '2', '0', '73', '0', '00005', '50000', '1'],
-            
+
         ];
 
         foreach ($data as $row) {
-          DB::table('global_hero_stack_size')->insert([
-              'global_hero_stats_id' => $row[0],
-              'game_version' => $row[1],
-              'game_type' => $row[2],
-              'league_tier' => $row[3],
-              'hero_league_tier' => $row[4],
-              'role_league_tier' => $row[5],
-              'game_map' => $row[6],
-              'hero_level' => $row[7],
-              'mirror' => $row[8],
-              'region' => $row[9],
-              'win_loss' => $row[10],
-              'hero' => $row[11],
-              'hero_stack_size' => $row[12],
-              'team_ally_stack_value' => $row[13],
-              'team_enemy_stack_value' => $row[14],
-              'games_played' => $row[15]
-          ]);
+            DB::table('global_hero_stack_size')->insert([
+                'global_hero_stats_id' => $row[0],
+                'game_version' => $row[1],
+                'game_type' => $row[2],
+                'league_tier' => $row[3],
+                'hero_league_tier' => $row[4],
+                'role_league_tier' => $row[5],
+                'game_map' => $row[6],
+                'hero_level' => $row[7],
+                'mirror' => $row[8],
+                'region' => $row[9],
+                'win_loss' => $row[10],
+                'hero' => $row[11],
+                'hero_stack_size' => $row[12],
+                'team_ally_stack_value' => $row[13],
+                'team_enemy_stack_value' => $row[14],
+                'games_played' => $row[15],
+            ]);
         }
-        
+
     }
 }

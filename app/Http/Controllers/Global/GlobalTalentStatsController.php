@@ -73,7 +73,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
     public function getGlobalHeroTalentData(Request $request)
     {
 
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
             'hero' => ['required', new HeroInputValidation],
@@ -150,7 +150,7 @@ if (! env('Production')) {
                 ->orderBy('talent')
                 ->orderBy('win_loss')
                 ->with(['talentInfo'])
-                //->toSql();
+                // ->toSql();
                 ->get();
 
             $data = collect($data)->groupBy('level')->map(function ($levelGroup) {
@@ -198,7 +198,7 @@ if (! env('Production')) {
     public function getGlobalHeroTalentBuildData(Request $request)
     {
 
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
             'hero' => ['required', new HeroInputValidation],
@@ -330,7 +330,7 @@ if (! env('Production')) {
             ->groupBy('heroesprofile.global_hero_talents.hero', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
             ->orderBy('games_played', 'DESC')
             ->limit($this->buildsToReturn)
-            //->toSql();
+            // ->toSql();
             ->get();
 
         return $data;
@@ -355,7 +355,7 @@ if (! env('Production')) {
             ->groupBy('heroesprofile.global_hero_talents.hero', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
             ->orderBy('games_played', 'DESC')
             ->limit(100)
-            //->toSql();
+            // ->toSql();
             ->get();
         $uniqueRows = collect();
         $seenCombinations = [];
@@ -404,7 +404,7 @@ if (! env('Production')) {
             ->groupBy('heroesprofile.global_hero_talents.hero', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
             ->orderBy('games_played', 'DESC')
             ->limit(100)
-            //->toSql();
+            // ->toSql();
             ->get();
         $filteredData = $data->unique($columnName)
             ->sortByDesc('games_played')
@@ -444,7 +444,7 @@ if (! env('Production')) {
             ->where('level_thirteen', 0)
             ->where('level_sixteen', 0)
             ->where('level_twenty', 0)
-            //->toSql();
+            // ->toSql();
             ->groupBy('win_loss')
             ->get();
 
@@ -477,7 +477,7 @@ if (! env('Production')) {
             ->where('level_thirteen', $build->level_thirteen)
             ->where('level_sixteen', 0)
             ->where('level_twenty', 0)
-            //->toSql();
+            // ->toSql();
             ->groupBy('win_loss')
             ->get();
 
@@ -514,7 +514,7 @@ if (! env('Production')) {
             ->where('level_thirteen', $build->level_thirteen)
             ->where('level_sixteen', $build->level_sixteen)
             ->where('level_twenty', 0)
-            //->toSql();
+            // ->toSql();
             ->groupBy('win_loss')
             ->get();
 
@@ -551,7 +551,7 @@ if (! env('Production')) {
             ->where('level_thirteen', $build->level_thirteen)
             ->where('level_sixteen', $build->level_sixteen)
             ->where('level_twenty', $build->level_twenty)
-            //->toSql();
+            // ->toSql();
             ->groupBy('win_loss')
             ->get();
 

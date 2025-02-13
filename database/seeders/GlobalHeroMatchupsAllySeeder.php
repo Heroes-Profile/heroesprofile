@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class GlobalHeroMatchupsAllySeeder extends Seeder
 {
@@ -10012,7 +10012,7 @@ class GlobalHeroMatchupsAllySeeder extends Seeder
             ['889637938', '2.55.4.91418', '0', '6', '0', '5', '18', '25', '39', '80', '0', '2', '1', '1'],
             ['896174357', '2.55.4.91418', '0', '6', '0', '6', '1', '25', '39', '75', '0', '2', '0', '1'],
             ['896174356', '2.55.4.91418', '0', '6', '0', '6', '1', '25', '39', '87', '0', '2', '0', '1'],
-                    
+
         ];
 
         foreach ($data as $row) {

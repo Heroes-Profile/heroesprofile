@@ -27,7 +27,7 @@ class MastersClashController extends Controller
 
     public function getTeamsData(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'season' => 'required|in:1',
@@ -50,7 +50,7 @@ class MastersClashController extends Controller
 
     public function getRecentMatchData(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'season' => 'required|in:1',

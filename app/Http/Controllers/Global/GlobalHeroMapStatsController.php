@@ -67,7 +67,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
     public function getHeroStatMapData(Request $request)
     {
 
-        //return response()->json($request->all());
+        // return response()->json($request->all());
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
             'hero' => ['required', new HeroInputValidation],
         ]);
@@ -95,7 +95,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
 
         $cacheKey = 'GlobalHeroMapStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
-        //return $cacheKey;
+        // return $cacheKey;
 
         /*
         if (! env('Production')) {
@@ -132,7 +132,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
                 ->groupBy('win_loss')
                 ->groupBy('hero')
                 ->groupBy('map_id')
-                //->toSql();
+                // ->toSql();
                 ->get();
 
             $gamesPlayedPerMap = GlobalHeroStats::query()
@@ -147,7 +147,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
                 ->excludeMirror($mirror)
                 ->filterByRegion($region)
                 ->groupBy('game_map')
-                //->toSql();
+                // ->toSql();
                 ->get();
 
             $banData = GlobalHeroStatsBans::query()
@@ -165,7 +165,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
                 ->filterByRegion($region)
                 ->groupBy('hero')
                 ->groupBy('map_id')
-                //->toSql();
+                // ->toSql();
                 ->get();
 
             return $this->combineData($gameType, $hero, $data, $gamesPlayedPerMap, $banData);
@@ -191,7 +191,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
             ->groupBy(function ($data) {
                 return $data['name'].$data['map_id'];
             })
-        //For some reason every hero has 1 game played in ARAM that isnt an ARAM map...something odd in my backend code
+        // For some reason every hero has 1 game played in ARAM that isnt an ARAM map...something odd in my backend code
             ->filter(function ($group) use ($gameType, $mapData) {
                 if (count($gameType) == 1 && $gameType[0] == '6') {
                     $firstItem = $group->first();

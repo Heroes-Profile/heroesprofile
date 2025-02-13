@@ -104,9 +104,9 @@ class SingleMatchController extends Controller
 
         if ($this->esport == 'MastersClash') {
             $this->schema .= '_mcl';
-        }elseif ($this->esport == 'Other') {
+        } elseif ($this->esport == 'Other') {
             $this->schema .= '_ml';
-            
+
         } elseif ($this->esport) {
             $this->schema .= '_'.strtolower($this->esport);
         }
@@ -215,7 +215,7 @@ class SingleMatchController extends Controller
             })
             ->where($this->schema.'.replay.replayID', $replayID)
             ->orderBy('team', 'ASC')
-            //->toSql();
+            // ->toSql();
             ->get();
 
         $talentData = HeroesDataTalent::all();
@@ -261,7 +261,7 @@ class SingleMatchController extends Controller
                 'draft_order' => $this->esport != 'CCL' && $this->esport != 'MastersClash' ? $this->getDraftOrder($replayID, $heroData) : null,
                 'experience_breakdown' => $this->getExperienceBreakdown($replayID),
                 'team_names' => $team_names,
-                'map_bans' => ($this->esport && $this->esport != "Other") ? $this->getMapBans($replayID, $maps, $team_names) : null,
+                'map_bans' => ($this->esport && $this->esport != 'Other') ? $this->getMapBans($replayID, $maps, $team_names) : null,
                 'first_pick' => $this->esport ? $replayGroup[0]->first_pick : null,
                 'match_games' => $this->esport ? $this->getMatchGames($replayID, $maps) : null,
             ];
@@ -642,7 +642,7 @@ class SingleMatchController extends Controller
             for ($i = 0; $i < count($array); $i++) {
 
                 if ($data['score'][$value] == $array[$i]) {
-                    //$data["score"][$value . "_rank"] = ((100 / count($array)) * ($i + 1));
+                    // $data["score"][$value . "_rank"] = ((100 / count($array)) * ($i + 1));
 
                     $playerArray[$player]['score'][$value.'_rank'] = ((100 / count($array)) * ($i + 1));
                 }
@@ -713,7 +713,7 @@ class SingleMatchController extends Controller
 
             $x_axis_time[$minutes] = $minutes;
             $team_one_values[$minutes] = $experienceData['HeroXP'];
-            //$team_one_values[$minutes] = $experienceData["TotalXP"]; //Add in other XP values later
+            // $team_one_values[$minutes] = $experienceData["TotalXP"]; //Add in other XP values later
             $team_one_level[$minutes] = $experienceData['TeamLevel'];
         }
 
@@ -723,7 +723,7 @@ class SingleMatchController extends Controller
 
             $x_axis_time[$minutes] = $minutes;
             $team_two_values[$minutes] = $experienceData['HeroXP'];
-            //$team_two_values[$minutes] = $experienceData["TotalXP"]; //Add in other XP values later
+            // $team_two_values[$minutes] = $experienceData["TotalXP"]; //Add in other XP values later
             $team_two_level[$minutes] = $experienceData['TeamLevel'];
         }
 

@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -10008,23 +10009,23 @@ class GlobalHeroTalentsWithHeroesSeeder extends Seeder
             ['388024693', '231', '0', '0', '5', '40', '0', '10', '1236', '5', '1'],
             ['388024666', '231', '0', '0', '5', '40', '0', '10', '1236', '7', '1'],
             ['388024679', '231', '0', '0', '5', '40', '0', '10', '1236', '48', '1'],
-            
+
         ];
 
         foreach ($data as $row) {
-          DB::table('global_hero_talents_with_heroes')->insert([
-              'global_hero_talents_with_heroes_id' => $row[0],
-              'game_version' => $row[1],
-              'game_type' => $row[2],
-              'league_tier' => $row[3],
-              'game_map' => $row[4],
-              'hero' => $row[5],
-              'win_loss' => $row[6],
-              'level' => $row[7],
-              'talent' => $row[8],
-              'ally' => $row[9],
-              'games_played' => $row[10],
-          ]);
+            DB::table('global_hero_talents_with_heroes')->insert([
+                'global_hero_talents_with_heroes_id' => $row[0],
+                'game_version' => $row[1],
+                'game_type' => $row[2],
+                'league_tier' => $row[3],
+                'game_map' => $row[4],
+                'hero' => $row[5],
+                'win_loss' => $row[6],
+                'level' => $row[7],
+                'talent' => $row[8],
+                'ally' => $row[9],
+                'games_played' => $row[10],
+            ]);
         }
     }
 }

@@ -55,7 +55,7 @@ class GlobalDraftController extends GlobalsInputValidationController
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'userinput' => $userinput,
                 'filters' => $this->globalDataService->getFilterData(),
-                'gametypedefault' => ['sl'], //$this->globalDataService->getGameTypeDefault('multi'),
+                'gametypedefault' => ['sl'], // $this->globalDataService->getGameTypeDefault('multi'),
                 'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
@@ -66,7 +66,7 @@ class GlobalDraftController extends GlobalsInputValidationController
     public function getDraftData(Request $request)
     {
 
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
             'hero' => ['required', new HeroInputValidation],
@@ -94,7 +94,7 @@ class GlobalDraftController extends GlobalsInputValidationController
 
         $cacheKey = 'GlobalDraftStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
-        //return $cacheKey;
+        // return $cacheKey;
 
         /*
         if (! env('Production')) {
@@ -129,7 +129,7 @@ class GlobalDraftController extends GlobalsInputValidationController
                 ->groupBy('pick_number', 'win_loss')
                 ->orderBy('pick_number')
                 ->orderBy('win_loss')
-                //->toSql();
+                // ->toSql();
                 // $data;
                 ->get();
 
