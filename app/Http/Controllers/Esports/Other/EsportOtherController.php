@@ -40,6 +40,53 @@ class EsportOtherController extends Controller
 
     public function show(Request $request)
     {
+        
+        $seasons = Replay::select('season')
+        ->distinct()
+        ->orderBy('season', 'desc')
+        ->whereNot('series', 'Nut Cup')
+        ->whereNot('series', 'Heroes Lounge')
+        ->get()
+        ->map(function ($season) {
+            return [
+                'code' => $season->season,  
+                'name' => $season->season,
+            ];
+        });
+
+        
+        $regions = Replay::select('heroesprofile_ml.regions.name as name', 'heroesprofile_ml.regions.region_id as code')
+            ->distinct()
+            ->join('heroesprofile_ml.regions', 'heroesprofile_ml.regions.region_id', '=', 'heroesprofile_ml.replay.region')  
+            ->whereNot('series', 'Nut Cup')
+            ->whereNot('series', 'Heroes Lounge')
+            ->orderBy('code', 'asc')
+            ->get();
+
+        $tournaments = Replay::select('tournament as name', 'tournament as code')
+            ->distinct()
+            ->whereNot('series', 'Nut Cup')
+            ->whereNot('series', 'Heroes Lounge')
+            ->orderBy('name', 'asc')
+            ->get();
+
+            
+        $teams = Replay::select('team_0_name as team_name')
+            ->whereNotIn('series', ['Nut Cup', 'Heroes Lounge'])
+            ->union(
+                Replay::select('team_1_name as team_name')
+                    ->whereNotIn('series', ['Nut Cup', 'Heroes Lounge'])
+            )
+            ->distinct()
+            ->orderBy('team_name')
+            ->get()
+            ->map(function ($team) {
+                return [
+                    'code' => $team->team_name,
+                    'name' => $team->team_name  
+                ];
+            });
+
         return view('Esports.Other.OtherMain')
             ->with([
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
@@ -47,6 +94,10 @@ class EsportOtherController extends Controller
                 'filters' => $this->globalDataService->getFilterData(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
                 'series' => Series::whereNot('name', 'Nut Cup')->whereNot('name', 'Heroes Lounge')->get(),
+                'seasons' => $seasons,
+                'regions' => $regions,
+                'tournaments' => $tournaments,
+                'teams' => $teams,
             ]);
     }
 
@@ -393,6 +444,113 @@ class EsportOtherController extends Controller
             'filters' => $this->globalDataService->getFilterData(),
             'season' => $request['season'],
         ]);
+    }
+
+    public function getAllMatches(Request $request){
+      //return response()->json($request->all());
+
+      $validationRules = [
+        'series' => 'nullable|numeric',
+        'region' => 'nullable|numeric',
+        'tournament' => 'nullable|string',
+        'season' => 'nullable|numeric',
+        'team' => 'nullable|string',
+        'map' => 'nullable|string',
+        'season' => 'nullable|numeric',
+        'userinput' => ['nullable', 'string', new BattletagInputProhibitCharacters],
+        'pagination_page' => 'required:integer',
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                'data' => [$request->all()],
+                'status' => 'failure to validate inputs',
+            ];
+        }
+        $this->series = $request["series"] ? Series::select("name")->where("series_id", $request["series"])->first()->name : null;
+        $this->region = $request["region"];
+        $tournament = $request['tournament'];
+        $this->season = $request['season'];
+        $this->team_name = $request['team'];
+        $map = $request['map'];
+        $userinput = $request['userinput'];
+        $this->schema = 'heroesprofile_ml';
+
+
+        $team = $request['team'];
+        $team_id = null;
+
+        $pagination_page = $request['pagination_page'];
+        $perPage = 100;
+
+        $maps = Map::all();
+        $maps = $maps->keyBy('map_id');
+
+
+        $result = DB::table($this->schema.'.replay')
+        ->when($userinput, function ($query) {
+            $query->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
+                  ->join($this->schema.'.battletags', $this->schema.'.battletags.player_id', '=', $this->schema.'.player.battletag');
+        })
+        ->when($this->series, function ($query) {
+            return $query->where(function ($query) {
+                $query->where('series', $this->series);
+            });
+        })
+        ->whereNot("series", "Heroes Lounge")
+        ->whereNot("series", "Nut Cup")
+        ->when($this->region, function ($query) {
+            return $query->where('region', $this->region);
+        })
+        ->when($tournament, function ($query) use($tournament) {
+            return $query->where('tournament', $tournament);
+        })
+        ->when($this->season, function ($query) {
+            return $query->where('season', $this->season);
+        })
+        ->when($this->team_name, function ($query) {
+            return $query->where(function ($query) {
+                $query->where('team_0_name', $this->team_name)
+                    ->orWhere('team_1_name', $this->team_name);
+            });
+        })
+        ->when($map, function ($query) use ($map){
+            return $query->where('game_map', Map::select("map_id")->where("name", $map)->first()->map_id);
+        })
+        ->when($userinput, function ($query) use ($userinput) {
+            $playerIds = [];
+        
+            if (strpos($userinput, '#') !== false) {
+                $playerIds = Battletag::where("battletag", $userinput)->pluck('player_id')->toArray();
+            } else {
+                $playerIds = Battletag::where("battletag", 'like', '%' . $userinput . '%')->pluck('player_id')->toArray();
+            }
+            return $query->whereIn($this->schema.'.player.battletag', $playerIds);
+        })
+        
+
+        ->orderByDesc('game_date')//;
+
+
+        //$sql = $result->toSql();
+        //$bindings = $result->getBindings();
+        //dd(vsprintf(str_replace('?', '%s', $sql), $bindings));
+
+        ->paginate($perPage, ['*'], 'page', $pagination_page);
+
+
+
+        
+
+        $modifiedResult = $result->map(function ($item) use ($maps, $team) {
+
+            $item->game_map = $maps[$item->game_map]['name'];
+            return $item;
+        });
+
+        return $result;
     }
 
     public function getTeamData(Request $request){

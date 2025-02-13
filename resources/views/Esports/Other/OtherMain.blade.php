@@ -11,6 +11,10 @@
     :talentimages="{{ json_encode($talentimages) }}" 
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
     :series="{{ json_encode($series) }}"
+    :seasons="{{ json_encode($seasons) }}"
+    :regions="{{ json_encode($regions) }}"
+    :tournaments="{{ json_encode($tournaments) }}"
+    :teams="{{ json_encode($teams) }}"
   >
   </other-main>
 @endsection
