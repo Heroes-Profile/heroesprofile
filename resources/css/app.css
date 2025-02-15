@@ -453,3 +453,5 @@ a[href*="javascript:void(0)"] {
   margin-bottom:0;
   padding-bottom:0;
 }
+
+.preMatch table{min-width:auto;}
