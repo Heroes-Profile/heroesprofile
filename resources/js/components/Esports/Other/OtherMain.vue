@@ -4,7 +4,7 @@
     <page-heading :infoText1="'See below the tournaments for filterable list of replays'" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div>
-      <esports-organizations :data="hgcSeries" :esport="'Other'"></esports-organizations>
+      <esports-organizations :data="hgcSeries" :esport="'Other'" class="hgcSeries-wrapper"></esports-organizations>
       <esports-organizations :data="withoutHGCSeries" :esport="'Other'"></esports-organizations>
     </div>
 
@@ -98,7 +98,7 @@
                   {{ row.game_map }}
                 </td>
                 <td>
-                  <format-date :input="row.game_date"><</format-date>
+                  <format-date :input="row.game_date"></format-date>
                 </td>
               </tr>
               
