@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Global;
 use App\Models\GlobalHeroTalents;
 use App\Models\HeroesDataTalent;
 use App\Models\Replay;
+use App\Models\Talent;
 use App\Rules\HeroInputValidation;
 use App\Rules\SelectedTalentInputValidation;
 use Illuminate\Http\Request;
@@ -315,7 +316,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
                 'win_rate' => $winRate,
             ];
 
-            $talents = HeroesDataTalent::where('hero_name', $hero_name)->orderBy('level', 'ASC')->orderBy('sort', 'ASC')->get();
+            $talents = HeroesDataTalent::where('hero_name', $hero_name)->orderBy('level', 'ASC')->orderBy('sort', 'ASC')->limit(100)->get();
             $data = $this->formatTalentData($talents, $transformedData);
 
             return [
@@ -324,15 +325,68 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
             ];
         });
 
-        /*
+        return [
+            'talentData' => $data['data'],
+            'buildData' => $data['buildReturnData'],
+        ];
+    }
+
+    public function getReplayData(Request $request)
+    {
+        $validationRules = [
+            'hero' => ['required', new HeroInputValidation],
+        ];
+
+        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
+            'hero' => ['required', new HeroInputValidation],
+            'selectedtalents' => ['sometimes', 'nullable', new SelectedTalentInputValidation],
+        ]);
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        $hero_name = $request['hero'];
+        $selectedtalents = $request['selectedtalents'];
+
+        $level_one = $selectedtalents[1];
+        $level_four = $selectedtalents[4];
+        $level_seven = $selectedtalents[7];
+        $level_ten = $selectedtalents[10];
+        $level_thirteen = $selectedtalents[13];
+        $level_sixteen = $selectedtalents[16];
+        $level_twenty = $selectedtalents[20];
+
+        if (! $level_one && ! $level_four && ! $level_seven && ! $level_ten && ! $level_thirteen && ! $level_sixteen && ! $level_twenty) {
+            $talents = HeroesDataTalent::where('hero_name', $hero_name)->orderBy('level', 'ASC')->orderBy('sort', 'ASC')->get();
+
+            return ['talentData' => $this->formatTalentData($talents, [])];
+        }
+
+        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
+        $leagueTier = $request['league_tier'];
+        $heroLeagueTier = $request['hero_league_tier'];
+        $roleLeagueTier = $request['role_league_tier'];
+        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
+        $heroLevel = $request['hero_level'];
+        $region = $this->globalDataService->getRegionFilterValues($request['region']);
+        $mirror = $request['mirror'];
+        $cacheKey = 'GlobalTalentsBuilder|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+
+        $talentData = HeroesDataTalent::all();
+        $talentData = $talentData->keyBy('talent_id');
+
         $replays = Replay::query()
             ->join('player', 'player.replayID', '=', 'replay.replayID')
-            ->join('talents', function ($join) {
-                $join->on('talents.replayID', '=', 'replay.replayID')
-                    ->on('talents.battletag', '=', 'player.battletag');
-            })
-            ->join('maps', 'maps.map_id', '=', 'replay.game_map')
-            ->select('replay.replayID', 'maps.name', 'winner', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
+            ->select('replay.replayID')
             ->whereIn('game_version', $gameVersion)
             ->whereIn('game_type', $gameType)
             ->where('hero', $hero)
@@ -342,6 +396,15 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
             ->when(! is_null($region), function ($query) use ($region) {
                 return $query->whereIn('region', $region);
             })
+            ->orderByDesc('replay.game_date')
+        //->toSql();
+            ->limit(10000)
+            ->get();
+
+        $replayIDs = $replays->pluck('replayID')->toArray();
+
+        $replayTalents = Talent::select('replayID', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
+            ->whereIn('talents.replayID', $replayIDs)
             ->when(! is_null($level_one), function ($query) use ($level_one) {
                 return $query->where('level_one', $level_one);
             })
@@ -363,29 +426,22 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
             ->when(! is_null($level_twenty), function ($query) use ($level_twenty) {
                 return $query->where('level_twenty', $level_twenty);
             })
-
-            //->toSql();
-            ->orderByDesc('replay.game_date')
-            ->LIMIT(100)
+            ->limit(50)
             ->get();
 
-        $replays = $replays->map(function ($match) use ($talentData) {
-            $match['level_one'] = $match['level_one'] ? $talentData[$match['level_one']] : null;
-            $match['level_four'] = $match['level_four'] ? $talentData[$match['level_four']] : null;
-            $match['level_seven'] = $match['level_seven'] ? $talentData[$match['level_seven']] : null;
-            $match['level_ten'] = $match['level_ten'] ? $talentData[$match['level_ten']] : null;
-            $match['level_thirteen'] = $match['level_thirteen'] ? $talentData[$match['level_thirteen']] : null;
-            $match['level_sixteen'] = $match['level_sixteen'] ? $talentData[$match['level_sixteen']] : null;
-            $match['level_twenty'] = $match['level_twenty'] ? $talentData[$match['level_twenty']] : null;
+        $replayTalents = $replayTalents->map(function ($replay) use ($talentData) {
+            $replay['level_one'] = $replay['level_one'] ? $talentData[$replay['level_one']] : null;
+            $replay['level_four'] = $replay['level_four'] ? $talentData[$replay['level_four']] : null;
+            $replay['level_seven'] = $replay['level_seven'] ? $talentData[$replay['level_seven']] : null;
+            $replay['level_ten'] = $replay['level_ten'] ? $talentData[$replay['level_ten']] : null;
+            $replay['level_thirteen'] = $replay['level_thirteen'] ? $talentData[$replay['level_thirteen']] : null;
+            $replay['level_sixteen'] = $replay['level_sixteen'] ? $talentData[$replay['level_sixteen']] : null;
+            $replay['level_twenty'] = $replay['level_twenty'] ? $talentData[$replay['level_twenty']] : null;
 
-            return $match;
+            return $replay;
         });
-        */
-        return [
-            'talentData' => $data['data'],
-            'buildData' => $data['buildReturnData'],
-            'replays' => null, /* $replays, */
-        ];
+
+        return $replayTalents;
     }
 
     private function formatTalentData($talents, $transformedData)
