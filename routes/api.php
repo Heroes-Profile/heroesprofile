@@ -32,6 +32,7 @@ use App\Http\Controllers\Player\PlayerMMRController;
 use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
+use App\Http\Controllers\PreMatchController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -112,6 +113,7 @@ Route::prefix('v1')->group(function () {
     Route::post('player/mmr', [PlayerMMRController::class, 'getData']);
 
     Route::post('match/single', [SingleMatchController::class, 'getData']);
+    Route::post('prematch', [PreMatchController::class, 'getData']);
 
     Route::post('profile/save/settings', [ProfileController::class, 'saveSettings']);
     Route::post('profile/remove/patreon', [ProfileController::class, 'removePatreon']);

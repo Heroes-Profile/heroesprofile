@@ -40,6 +40,7 @@ use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
+use App\Http\Controllers\PreMatchController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -179,6 +180,19 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('Esports/HeroesInternational', [HeroesInternationalController::class, 'show']);
 
     Route::get('Match/Prediction/Game', [MatchPredictionGameController::class, 'show']);
+
+
+    Route::get('/PreMatch/Results/', function (Illuminate\Http\Request $request) {
+      $prematchID = $request->query('prematchID');
+
+      if ($prematchID) {
+          return redirect("/PreMatch/Results/$prematchID", 301);
+      }
+
+      return redirect('/');
+    });
+    Route::get('/PreMatch/Results/{prematchID}', [PreMatchController::class, 'show']);
+
 
 });
 
