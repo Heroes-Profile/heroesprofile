@@ -448,3 +448,8 @@ a[href*="javascript:void(0)"] {
 .responsive-table td:last-child{
   @apply max-md:pr-[3em];
 }
+
+.hgcSeries-wrapper > div{
+  margin-bottom:0;
+  padding-bottom:0;
+}

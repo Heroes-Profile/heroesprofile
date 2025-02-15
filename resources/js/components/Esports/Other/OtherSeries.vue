@@ -95,8 +95,8 @@
         </div>
 
 
-        <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[25vw]   2xl:mx-auto  " style=" ">
-          <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
+        <div v-if="battletagresponse" id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden   2xl:mx-auto  " style=" ">
+          <table id="responsive-table" class="responsive-table  relative min-w-[30em]" ref="responsivetable">
             <thead>
               <tr>
                 <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
