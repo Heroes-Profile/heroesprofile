@@ -11,7 +11,7 @@
 
       <div class="text-center md:w-[15%] mb-15 mx-5">
         <a :href="'/Esports/HeroesInternational/?tournament=nationscup'"><img src="/images/HI/Flags/AllFlags.png" alt="Heroes International"/></a>
-        <custom-button :href="'/Esports/HeroesInternational/?tournament=nationscup'" :text="'Heroes International'" :alt="'Heroes International'" :size="'big'" class="mt-10"></custom-button>
+        <custom-button :href="'/Esports/HeroesInternational/?tournament=nationscup'" :text="'Nations Cup'" :alt="'Nations Cup'" :size="'big'" class="mt-10"></custom-button>
       </div>
 
     </div>

@@ -48,7 +48,7 @@ class CompareController extends Controller
 
     public function getData(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'hero' => ['required', new HeroInputValidation],
@@ -148,7 +148,7 @@ class CompareController extends Controller
                     ->when($season != 'All', function ($query) use ($seasonDate) {
                         return $query->where('game_date', '>=', $seasonDate->start_date)->where('game_date', '<', $seasonDate->end_date);
                     })
-                    //->toSql();
+                    // ->toSql();
                     ->get();
 
                 $statistics = [

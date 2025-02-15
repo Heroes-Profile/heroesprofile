@@ -62,7 +62,7 @@ export default {
   },
   computed: {
     selectedOptionsName() {
-      const selected = this.values.find(value => value.code == this.selectedOptions);
+      const selected = this.values.find(value => value.code === this.selectedOptions);
       return selected ? selected.name : '';
     },
     filteredValues() {
@@ -99,7 +99,7 @@ export default {
   },
   methods: {
     isChecked(value){
-      if(value == this.selectedOptions){
+      if(value === this.selectedOptions){
         return true;
       }
       return false

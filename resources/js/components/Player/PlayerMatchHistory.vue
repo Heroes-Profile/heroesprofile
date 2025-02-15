@@ -10,7 +10,8 @@
       :minimumgamesdefault="'0'"
       :includehero="true"
       :includerole="true"
-      :includegametypefull="true"
+      :includegametypefull="showcustomgames ? false : true"
+      :includegametypefullcustom="showcustomgames"
       :includeseason="true"
       :includegamemap="true"
       :hideadvancedfilteringbutton="true"
@@ -142,6 +143,7 @@ export default {
     isPatreon: Boolean,
     patreonUser: Boolean,
     gametypedefault: Array,
+    showcustomgames: Boolean,
     playermatchtablestyle: {
       type: [String, Boolean]
     },

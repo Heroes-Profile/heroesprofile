@@ -61,26 +61,39 @@
           @input-changed="handleInputChange"
         ></single-select-filter>
       </span>
-      <div id="table-container" ref="tablecontainer" class="  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
-      <table id="responsive-table" class="responsive-table  relative max-sm:text-xs" ref="responsivetable">
-      
-        <thead>
+      <div id="table-container" ref="tablecontainer" class="w-[100vw]   2xl:mx-auto  " style=" ">
+        <table id="responsive-table" class="responsive-table  relative" ref="responsivetable">
+          <thead class="top-0 w-full sticky z-40">
           <tr>
-            <th @click="sortTable('hero_name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('hero_name')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Hero
             </th>
-            <th @click="sortTable('win_rate_as_ally')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Win Rate as Ally %
-            </th>            
-            <th @click="sortTable('win_rate_against')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Win Rate Against  {{ this.selectedHero.name }} %
+            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              <div class="flex items-center">
+                <div>
+                  Base Win Rate %
+                </div>
+                <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
+                  <slot>
+                    <div>
+                      <p>This row's hero global win rate.  This would be their win rate in all games that match the filter.  This is displayed to make comparisons of ally and enemy win rates easier.</p>
+                    </div>
+                  </slot>
+                </round-image>
+              </div>
             </th>
-            <th @click="sortTable('games_played_as_ally')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('win_rate_as_ally')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              Win Rate as Ally %
+            </th>
+            <th @click="sortTable('win_rate_against')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              Win Rate Against {{ this.selectedHero.name }} %
+            </th>
+            <th @click="sortTable('games_played_as_ally')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games Played As Ally
             </th>
-            <th @click="sortTable('games_played_against')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th @click="sortTable('games_played_against')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games Played Against {{ this.selectedHero.name }}
-            </th>                 
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -92,10 +105,14 @@
               </div>
             </td>
             <td class="py-2 px-3 ">
-              {{ row.ally && row.ally.win_rate.toFixed(2) ? row.ally.win_rate.toFixed(2) : 0 }}
+              {{ row.ally && row.ally.stats && row.ally.stats.win_rate.toFixed(2) ? row.ally.stats.win_rate.toFixed(2) : 0 }}
+            </td>
+            
+            <td class="py-2 px-3 ">
+              {{ row.ally && row.ally.win_rate.toFixed(2) ? row.ally.win_rate.toFixed(2) : 0 }} ({{ getDifference(row.ally && row.ally.win_rate.toFixed(2) ? row.ally.win_rate.toFixed(2) : 0, row.ally && row.ally.stats && row.ally.stats.win_rate.toFixed(2) ? row.ally.stats.win_rate.toFixed(2) : 0) }})
             </td>
             <td class="py-2 px-3 ">
-              {{ row.enemy && row.enemy.win_rate.toFixed(2) ? row.enemy.win_rate.toFixed(2) : 0 }}
+              {{ row.enemy && row.enemy.win_rate.toFixed(2) ? row.enemy.win_rate.toFixed(2) : 0 }} ({{ getDifference(row.enemy && row.enemy.win_rate.toFixed(2) ? row.enemy.win_rate.toFixed(2) : 0, row.enemy && row.enemy.stats && row.enemy.stats.win_rate.toFixed(2) ? row.enemy.stats.win_rate.toFixed(2) : 0) }})
             </td>
             <td class="py-2 px-3 ">
               {{ row.ally && row.ally.games_played.toLocaleString('en-US') ? row.ally.games_played.toLocaleString('en-US') : 0 }}
@@ -422,6 +439,14 @@
 
 
       },
+      getDifference(baseWinRate, winrate){
+        var difference = (baseWinRate - winrate).toFixed(2);
+
+        if(difference > 0){
+          difference = "+" + difference;
+        }
+        return difference;
+      }
     }
   }
 </script>

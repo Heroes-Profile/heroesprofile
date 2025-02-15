@@ -11,6 +11,8 @@
       :includegametypefull="true"
       :includeminimumgames="true"
       :hideadvancedfilteringbutton="true"
+      :includeseasonwithall="true"
+      :includehero="true"
       >
     </filters>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
@@ -131,6 +133,7 @@ export default {
       hero: null,
       minimumgames: 0,
       searchQuery: '',
+      season: Number,
       stats: [
         { name: "Avg Assists", value: 'avg_assists', selected: false, flash: false},
         { name: "Avg Clutch Heals", value: 'avg_clutch_heals', selected: false, flash: false},
@@ -277,6 +280,7 @@ export default {
           type: "all",
           page: "map",
           game_map: this.map,
+          season: this.season,
         }, 
         {
           cancelToken: this.cancelTokenSource.token,
@@ -308,7 +312,14 @@ export default {
     filterData(filteredData){
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
-      this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
+      if (filteredData.single.Heroes) {
+        const hero = this.filters.heroes.find(h => h.code === filteredData.single.Heroes);
+        this.hero = hero ? hero.name : null;
+      }
+      this.season = filteredData.single.Season ? filteredData.single.Season : null;
+      if(this.season == "All"){
+        this.season = null;
+      }
       this.data = null;
       this.sortKey = '';
       this.sortDir ='asc';

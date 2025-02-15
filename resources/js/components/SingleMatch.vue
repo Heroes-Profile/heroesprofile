@@ -21,8 +21,11 @@
           <span v-if="!esport">
             {{ data.game_type }}
           </span>
+          <span v-else>
+            {{ series ? series : esport }}
+          </span>
           <span>{{ data.game_length }}</span>
-          <span v-if="data.downloadable || (esport && esport == 'CCL')" class="link" @click="downloadReplay(data, replayid)">
+          <span v-if="data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))" class="link" @click="downloadReplay(data, replayid)">
             Download Replay
           </span>
         </div>
@@ -32,7 +35,7 @@
       <div class=" mdp-10 text-center ">
         <div class="flex  justify-center max-w-[1500px] mx-auto  md:gap-10">
           <div class=" max-w-[50%]  md:max-w-[600px]">
-            <group-box class="md:w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :winnerloser="getWinnerLoser(0, data.winner)" :esportteamname="getEsportTeamName(0)" popupsize="large" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
+            <group-box class="md:w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :series="series" :winnerloser="getWinnerLoser(0, data.winner)" :esportteamname="getEsportTeamName(0)" popupsize="large" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
 
 
             <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
@@ -55,7 +58,7 @@
             </div>
 
 
-            <div v-if="esport">
+            <div v-if="esport && esport != 'Other'">
               Map Bans
               <div class="flex gap-2 justify-center mt-4">
                 <map-image-wrapper v-if="data.map_bans.team_zero_ban_data.map_ban_one" :map="data.map_bans.team_zero_ban_data.map_ban_one" :size="'big'">
@@ -72,7 +75,7 @@
 
 
           <div class=" max-w-[50%]  md:max-w-[600px]">
-            <group-box class="md:w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :winnerloser="getWinnerLoser(1, data.winner)" :esportteamname="getEsportTeamName(1)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'" :winner="data.winner == 1 ? true : false"></group-box>
+            <group-box class="md:w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :series="series" :winnerloser="getWinnerLoser(1, data.winner)" :esportteamname="getEsportTeamName(1)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'" :winner="data.winner == 1 ? true : false"></group-box>
 
             <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
               {{ esport ? this.data.team_names.team_two.team_name : "Team 2" }} Bans
@@ -92,7 +95,7 @@
               <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average Hero MMR'" :value="getAverageValue('hero_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average Role MMR'" :value="getAverageValue('role_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
             </div>
-            <div v-if="esport" class="">
+            <div v-if="esport && esport != 'Other'" class="">
               Map Bans
               <div class="flex gap-2 justify-center mt-4">
               <map-image-wrapper v-if="data.map_bans.team_one_ban_data.map_ban_one" :map="data.map_bans.team_one_ban_data.map_ban_one" :size="'big'">
@@ -109,7 +112,7 @@
       </div>
     </div>
 
-      <div v-if="esport" class="max-w-[1500px] mx-auto mb-10">
+      <div v-if="esport && esport != 'Other'" class="max-w-[1500px] mx-auto mb-10">
         
         <table class="min-w-[1000px] max-w-[1000px]">
           <thead>
@@ -131,7 +134,7 @@
           <tbody>
             <tr v-for="(row, index) in data.match_games" :key="index">
               <td width="25%">
-                <a class="link" :href="`/Esports/${esport}/Match/Single/${row.replayID}`">{{ row.replayID }}</a>
+                <a v-if="esport" class="link" :href="`/Esports/${esport}/Match/Single/${row.replayID}`">{{ row.replayID }}</a>
               </td>
               <td width="25%">{{ row.round }}</td>
               <td width="25%">{{ row.game }}</td>
@@ -176,7 +179,7 @@
           <template v-for="(item, index) in combinedPlayers" :key="index">
             
             <div>
-              <a class="flex flex-wrap items-end my-5 w-full justify-evenly"  :href="item.check ? 'javascript:void(0)' : esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
+              <a class="flex flex-wrap items-end my-5 w-full justify-evenly"  :href="matchScorePlayerURL(item)">
                 <hero-image-wrapper :size="'big'" :hero="item.hero" class="mr-2"></hero-image-wrapper>
                 <div>
                   <div class="flex flex-wrap justify-between flex-1">
@@ -249,7 +252,7 @@
         <div class="">
           <div class="w-full  mb-10" v-for="(item, index) in data.players[0]" :key="index">
             
-            <a class="flex  w-full"  :href="item.check ? 'javascript:void(0)' : esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
+            <a class="flex  w-full"  :href="getPlayerProfileLink(item, true)">
               <hero-image-wrapper class="mr-5" :size="'big'" :hero="item.hero"></hero-image-wrapper>
               <div>
                 {{ item.battletag }} - {{ item.hero.name }}
@@ -434,7 +437,7 @@
       <tr>
         <td >{{ section.title }}</td>
         <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">
-          <a :href="esport ? '/Esports/' + esport + '/Player/' + player.battletag + '/' + player.blizz_id + '/Hero/' + player.hero.name : '/Player/' + player.battletag + '/' + player.blizz_id + '/' + player.region + '/Hero/' + player.hero.name">{{ player.battletag }}</a>
+          <a :href="getPlayerProfileLink(player, true)">{{ player.battletag }}</a>
         </td>
     </tr>
   </thead>
@@ -461,7 +464,7 @@
         :key="playerIndex"
         
         >
-        <a :href="esport ? '/Esports/' + esport + '/Player/' + player.battletag + '/' + player.blizz_id + '/Hero/' + player.hero.name : '/Player/' + player.battletag + '/' + player.blizz_id + '/' + player.region + '/Hero/' + player.hero.name">{{ player.battletag }}</a>
+        <a :href="getPlayerProfileLink(player, true)">{{ player.battletag }}</a>
       </td>
     </tr>
   </thead>
@@ -495,6 +498,7 @@
     },
     props: {
       esport: String,
+      series: String,
       replayid: Number,
       user: Object,
       patreonUser: Boolean,
@@ -801,8 +805,12 @@
       }
     },
     async downloadReplay(data, replayID){
-      if(this.esport && this.esport == "CCL"){
-        window.location = `https://storage.googleapis.com/heroesprofile-ccl/${replayID}.StormReplay`;
+      if(this.esport){
+        if(this.esport == "CCL"){
+          window.location = `https://storage.googleapis.com/heroesprofile-ccl/${replayID}.StormReplay`;
+        }else if(this.esport == "Other"){
+          window.location = `https://storage.googleapis.com/heroesprofile-esport-other/${replayID}.StormReplay`;
+        }
       }else{
         window.location = `https://api.heroesprofile.com/openApi/Replay/Download?replayID=${replayID}`;
       }
@@ -815,6 +823,47 @@
       }
 
       return totalKills;
+    },
+    matchScorePlayerURL(item){
+      if(item.check){
+        return 'javascript:void(0)';
+      }
+      if(this.esport){
+        if(this.series){
+          return'/Esports/' + this.esport + "/" + this.series + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name;
+        }
+        return '/Esports/' + this.esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name;
+      }
+      return '/Player/' + item.battletag + '/' + item.blizz_id + '/' + this.data.region + '/Hero/' + item.hero.name;
+    },
+
+    getPlayerProfileLink(item, heroPage){
+      if(item.check){
+        return 'javascript:void(0)';
+      }
+      var url = "";
+      if(this.esport){
+        if(this.esport == "Other"){
+          url = '/Esports/' + this.esport + '/' + this.series + '/Player/' + item.battletag + '/' + item.blizz_id;
+
+          if(heroPage){
+            url = url + '/Hero/' + item.hero.name;
+          }
+          return url;
+        }else{
+          url = '/Esports/' + this.esport + '/Player/' + item.battletag + '/' + item.blizz_id;
+
+          if(heroPage){
+            url = url + '/Hero/' + item.hero.name;
+          }
+          return url;
+        }
+      }
+      url = '/Player/' + item.battletag + '/' + item.blizz_id + '/' + this.data.region;
+      if(heroPage){
+        url = url + '/Hero/' + item.hero.name;
+      }
+      return url;
     },
   }
 }

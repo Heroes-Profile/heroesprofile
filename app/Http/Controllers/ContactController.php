@@ -15,7 +15,7 @@ class ContactController extends Controller
 
     public function submitMessage(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $data = $request->validate([
             'battletag' => ['required', 'string', new BattletagInputProhibitCharacters],

@@ -10014,24 +10014,24 @@ class GlobalHeroDraftOrderTableSeeder extends Seeder
             ['367125670', '2.55.4.91418', '5', '0', '0', '0', '1', '15', '1', '33', '11', '1', '0.2'],
             ['370707599', '2.55.4.91418', '5', '0', '0', '0', '1', '15', '1', '33', '13', '0', '0.2'],
             ['367820166', '2.55.4.91418', '5', '0', '0', '0', '1', '15', '1', '33', '14', '0', '0.2'],
-            
+
         ];
         foreach ($data as $row) {
-          DB::table('global_hero_draft_order')->insert([
-              'global_hero_draft_order_id' => $row[0],
-              'game_version' => $row[1],
-              'game_type' => $row[2],
-              'league_tier' => $row[3],
-              'hero_league_tier' => $row[4],
-              'role_league_tier' => $row[5],
-              'game_map' => $row[6],
-              'hero_level' => $row[7],
-              'region' => $row[8],
-              'hero' => $row[9],
-              'pick_number' => $row[10],
-              'win_loss' => $row[11],
-              'count' => $row[12]
-          ]);
-      }
+            DB::table('global_hero_draft_order')->insert([
+                'global_hero_draft_order_id' => $row[0],
+                'game_version' => $row[1],
+                'game_type' => $row[2],
+                'league_tier' => $row[3],
+                'hero_league_tier' => $row[4],
+                'role_league_tier' => $row[5],
+                'game_map' => $row[6],
+                'hero_level' => $row[7],
+                'region' => $row[8],
+                'hero' => $row[9],
+                'pick_number' => $row[10],
+                'win_loss' => $row[11],
+                'count' => $row[12],
+            ]);
+        }
     }
 }

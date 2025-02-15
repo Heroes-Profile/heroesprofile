@@ -63,7 +63,7 @@ class FriendFoeController extends Controller
             'season' => $season,
             'game_type' => $game_type,
             'game_map' => $game_map,
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault('single'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'gametypedefault' => $this->globalDataService->getGameTypeDefault('single'), // Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);
@@ -72,9 +72,9 @@ class FriendFoeController extends Controller
 
     public function getFriendFoeData(Request $request)
     {
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+        ini_set('max_execution_time', 300); // 300 seconds = 5 minutes
 
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'blizz_id' => 'required|integer',
@@ -171,7 +171,7 @@ class FriendFoeController extends Controller
             })
             ->where('team', 0)
             ->groupBy('hero', 'team', 'winner', 'player.blizz_id', 'battletag')
-            //->toSql();
+            // ->toSql();
             ->get();
 
         $teamValue = $type == 'friend' ? 1 : 0;

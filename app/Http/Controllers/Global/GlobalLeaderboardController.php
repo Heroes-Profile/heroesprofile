@@ -46,7 +46,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
     public function getLeaderboardData(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'season' => ['required', new SeasonInputValidation],
@@ -70,18 +70,18 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         }
 
         $hero = $request['hero'];
-        $role = $this->getMMRTypeValue($request['role']);
+        $role = $this->globalDataService->getMMRTypeValue($request['role']);
 
-        $gameType = $this->getGameTypeFilterValues($request['game_type']);
+        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
         $season = $request['season'];
-        $region = $this->getRegionFilterValues($request['region']);
+        $region = $this->globalDataService->getRegionFilterValues($request['region']);
         $tierrank = $request['tierrank'];
         $type = $request['type'];
         $typeNumber = 0;
 
         if ($type != 'match prediction') {
             if ($type == 'player') {
-                $typeNumber = $this->getMMRTypeValue($request['type']);
+                $typeNumber = $this->globalDataService->getMMRTypeValue($request['type']);
             } elseif ($type == 'hero') {
                 $typeNumber = $hero;
             } elseif ($type == 'role') {
@@ -114,7 +114,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                 ->filterByType($typeNumber)
                 ->filterByStackSize($groupsize)
                 ->filterByRegion($region)
-                //->toSql();
+                // ->toSql();
                 ->get();
 
             $heroData = $this->globalDataService->getHeroes();
@@ -189,7 +189,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                 $item->rating = $item->win_rate;
             });
 
-            //$weeksDifference = $this->globalDataService->matchPredictionGetWeeksSinceSeasonStart();
+            // $weeksDifference = $this->globalDataService->matchPredictionGetWeeksSinceSeasonStart();
 
             $filteredLeaderboard = $leaderboard->filter(function ($item) {
                 return $item->games_played >= 20;
@@ -215,7 +215,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
     public function getLeaderboardRating(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'season' => ['required', new SeasonInputValidation],
@@ -239,9 +239,9 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         }
         $blizz_id = $request['blizz_id'];
         $hero = $request['hero'];
-        $role = $this->getMMRTypeValue($request['role']);
+        $role = $this->globalDataService->getMMRTypeValue($request['role']);
 
-        $gameType = $this->getGameTypeFilterValues($request['game_type']);
+        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
         $season = $request['season'];
         $region = $request['region'];
 
@@ -249,7 +249,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         $typeNumber = 0;
 
         if ($type == 'player') {
-            $typeNumber = $this->getMMRTypeValue($request['type']);
+            $typeNumber = $this->globalDataService->getMMRTypeValue($request['type']);
         } elseif ($type == 'hero') {
             $typeNumber = $hero;
         } elseif ($type == 'role') {

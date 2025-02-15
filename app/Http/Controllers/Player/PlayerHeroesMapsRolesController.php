@@ -28,9 +28,9 @@ class PlayerHeroesMapsRolesController extends Controller
 {
     public function getData(Request $request)
     {
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+        ini_set('max_execution_time', 600); // 300 seconds = 5 minutes
 
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'battletag' => 'required|string',
@@ -63,7 +63,7 @@ class PlayerHeroesMapsRolesController extends Controller
         $blizz_id = $request['blizz_id'];
         $region = $request['region'];
         $type = $request['type'];
-
+        $season = $request['season'];
         if ($type == 'all') {
             $game_type = $request['game_type'] ? GameType::whereIn('short_name', $request['game_type'])->pluck('type_id')->toArray() : null;
         } else {
@@ -71,11 +71,12 @@ class PlayerHeroesMapsRolesController extends Controller
         }
 
         $hero = $request['hero'] ? $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id : null;
+
         $minimum_games = $request['minimumgames'];
         $page = $request['page'];
         $role = $request['role'];
         if ($type == 'all') {
-            $game_map = $this->getGameMapFilterValues($request['game_map']);
+            $game_map = $this->globalDataService->getGameMapFilterValues($request['game_map']);
         } else {
             $game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->first() : null;
         }
@@ -104,7 +105,7 @@ class PlayerHeroesMapsRolesController extends Controller
                 }
             })
             ->where('blizz_id', $blizz_id)
-            ->when($type == 'single' && $page == 'hero', function ($query) use ($hero) {
+            ->when(($type == 'single' && $page == 'hero') || ($type == 'all' && $hero), function ($query) use ($hero) {
                 return $query->where('hero', $hero);
             })
             ->when($type == 'single' && $page == 'role', function ($query) use ($role) {
@@ -133,7 +134,7 @@ class PlayerHeroesMapsRolesController extends Controller
                 'game_date',
                 'game_map',
                 'game_type',
-                DB::raw('game_length - 70 as game_length'),
+                DB::raw('CAST(game_length AS SIGNED) - 70 as game_length'),
                 'stack_size',
                 'mastery_taunt',
                 'new_role',
@@ -186,7 +187,9 @@ class PlayerHeroesMapsRolesController extends Controller
                 'time_on_fire',
                 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty',
             ])
-                //->toSql();
+                // ->toSql();
+                // return $result;
+
             ->get();
 
         $heroData = $this->globalDataService->getHeroes();
@@ -818,7 +821,7 @@ class PlayerHeroesMapsRolesController extends Controller
 
     public function findMatch(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'battletag' => 'required|string',
@@ -902,19 +905,13 @@ class PlayerHeroesMapsRolesController extends Controller
             ->where('hero', $hero)
             ->where($stat, $value)
             ->select('replay.replayID')
-            //->toSql();
+            // ->toSql();
             ->first();
 
-        return $result->replayID;
-    }
-
-    public function getGameMapFilterValues($game_maps)
-    {
-        if (is_null($game_maps)) {
+        if ($result) {
+            return $result->replayID;
+        } else {
             return null;
         }
-        $mapIds = Map::whereIn('name', $game_maps)->pluck('map_id')->toArray();
-
-        return $mapIds;
     }
 }

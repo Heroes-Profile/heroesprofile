@@ -27,15 +27,15 @@ class ProfileController extends Controller
 
     public function saveSettings(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'userhero' => 'nullable|numeric',
             'usergametype' => ['sometimes', 'nullable', new GameTypeInputValidation],
             'talentbuildtype' => ['sometimes', 'nullable', new TalentBuildTypeInputValidation],
             'darkmode' => 'nullable|boolean',
-            'darkmode' => 'nullable|boolean',
             'playerhistorytable' => 'nullable|boolean',
+            'customgames' => 'nullable|boolean',
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -113,6 +113,17 @@ class ProfileController extends Controller
             $user->userSettings()->updateOrCreate(
                 ['setting' => 'advancedfiltering'],
                 ['value' => $advancedfiltering]
+            );
+        }
+
+        if (! is_null($request['customgames'])) {
+            $user = BattlenetAccount::find($request['userid']);
+
+            $customgames = $request['customgames'];
+
+            $user->userSettings()->updateOrCreate(
+                ['setting' => 'customgames'],
+                ['value' => $customgames]
             );
         }
 
