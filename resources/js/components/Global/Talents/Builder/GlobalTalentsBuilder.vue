@@ -124,12 +124,13 @@
 
     <div class=" my-5 bg-teal py-5 px-2"><infobox class="max-w-[1500px] mx-auto " :input="'Possible Replays do not take into account Hero Level, Player Rank, Hero Rank, Role Rank, or Mirror Match Filter options'"></infobox></div>
 
-    <custom-button @click="showReplayList = !showReplayList" :text="'Get list of replays matching talent selection'" :alt="'Get list of replays matching talent selection'" size="small" :ignoreclick="true"></custom-button>
-
+    <div class="max-w-[1500px] mx-auto mb-4">
+      <custom-button @click="showReplayList = !showReplayList" :text="'Get list of replays matching talent selection'" :alt="'Get list of replays matching talent selection'" size="small" :ignoreclick="true"></custom-button>
+    </div>
     <table class="" v-if="showReplayList">
       <thead>
         <tr>
-          <th>
+          <th width="200px">
             Game ID
           </th>
           <th>
