@@ -7,8 +7,11 @@
         <single-select-filter :values="data.seasons" :text="'Seasons'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifiedseason"></single-select-filter>
         <single-select-filter v-if="esport == 'NGS'" :values="data.divisions" :text="'Divisions'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="modifieddivision"></single-select-filter>
       </div>
-
-      <div class="flex md:p-20 gap-10 mx-auto justify-center items-between  max-md:flex-col max-md:items-center  ">
+      <span v-if="esport == 'Other'" class="text-2xl uppercase block text-center mt-5 mb-5">
+            {{ team }}
+          </span>
+      <div class="flex md:p-20 gap-10 mx-auto justify-center items-between  max-md:flex-col max-md:items-center md:pt-2 ">
+       
         <div class="flex-1 flex flex-wrap justify-between max-w-[400px] w-full items-between mt-[1em] max-md:order-1">
           <stat-box class="w-[48%]" :title="'Wins'" :value="data.wins.toLocaleString('en-US')"></stat-box>
           <stat-box class="w-[48%]" :title="'Losses'" :value="data.losses.toLocaleString('en-US')"></stat-box>
@@ -18,9 +21,7 @@
           <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="yellow"></stat-box>          
         </div>
         <div class="my-auto">
-          <span v-if="esport == 'Other'">
-            {{ team }}
-          </span>
+          
           <round-image :title="team" :image="data.icon_url" size="large" :rectangle="true"></round-image>
         </div>
         <div class="flex-1 flex flex-wrap max-w-[400px] text-left w-full items-between max-md:order-2">
@@ -96,12 +97,12 @@
       <div class="bg-lighten p-10">
         <div class=" max-w-[90em] ml-auto mr-auto mb-10">
           <h2 class="text-3xl font-bold py-5 text-center">Enemy Teams</h2>
-          <div class="flex flex-wrap justify-center gap-4">
-            <a :href="team.enemy_link"  v-for="(team, index) in data.enemy_teams" :key="index" >
+          <div class="flex flex-wrap justify-center gap-10">
+            <a :href="team.enemy_link"  v-for="(team, index) in data.enemy_teams" :key="index" class="text-center flex flex-col align-middle min-w-[8em] ">
               <span v-if="esport == 'Other'">
                 {{ team.team }}
               </span>
-              <round-image :size="'big'" :title="team.team" :image="team.icon_url" :hovertextstyleoverride="true">
+              <round-image :size="'big'" :title="team.team" :image="team.icon_url" :hovertextstyleoverride="true" class="ml-auto mr-auto">
                 <image-hover-box :title="team.team_name" :paragraph-one="team.inputhover"></image-hover-box>
               </round-image>
             </a>
