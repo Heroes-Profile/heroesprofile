@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText1" :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+    <page-heading :infoText1="infoText1" :heading="heading" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div v-if="data">
       <div class="flex justify-center max-w-[1500px] mx-auto">
@@ -65,7 +65,7 @@
             :data="item"
           ></game-summary-box>
           <div class="max-w-[1500px] mx-auto flex justify-end">
-          <custom-button :href="`/Esports/${esport}/Player/${battletag}/${blizz_id}/Match/History`" class="ml-auto mt-4" text="View Match History"></custom-button>
+          <custom-button :href="esport != 'Other' ? `/Esports/${esport}/Player/${battletag}/${blizz_id}/Match/History` : `/Esports/${esport}/${series}/Player/${battletag}/${blizz_id}/Match/History`" class="ml-auto mt-4" text="View Match History"></custom-button>
         </div>
         </div>
       </div>
@@ -85,6 +85,7 @@ export default {
   },
   props: {
   	esport: String,
+    series: String,
     division: String, 
     battletag: String,
     blizz_id: {
@@ -95,6 +96,7 @@ export default {
     },
     hero: Object,
     tournament: String,
+    seriesimage: String,
   },
   data(){
     return {
@@ -122,6 +124,8 @@ export default {
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
       }else if(this.esport == "MastersClash"){
         return "/images/MCL/no-image.png"
+      }else if(this.esport == "Other"){
+        return "/images/EsportOther/" + this.seriesimage;
       }
     },
     headingImageUrl(){
@@ -131,6 +135,8 @@ export default {
         return "/Esports/CCL"
       }else if(this.esport == "MastersClash"){
         return "/Esports/MastersClash"
+      }else if(this.esport == "Other"){
+        return "/Esports/Other/" + this.series; 
       }
     },
     infoText1(){
@@ -140,7 +146,17 @@ export default {
         return `${this.battletag} during season ${this.modifiedseason}`;
       }else if(this.esport == "MastersClash"){
         return `${this.battletag} during season ${this.modifiedseason}`;
+      }else if(this.esport == "Other"){
+        return `${this.battletag} in series ${this.series}`;
       }
+    },
+    heading(){
+      if(this.esport == 'HeroesInternational'){
+        return "Heroes International";
+      }else if(this.esport == "Other"){
+        return;
+      }
+      return this.esport;
     },
     sortedData() {
       if (!this.sortKey) return this.data.heroes;
@@ -165,9 +181,17 @@ export default {
         this.cancelTokenSource.cancel('Request canceled');
       }
       this.cancelTokenSource = this.$axios.CancelToken.source();
+
+      var url = "/api/v1/esports/single/player/hero";
+      
+      if(this.series){
+        url = "/api/v1/esports/other/single/player/hero";
+      }
+
       try{
-        const response = await this.$axios.post("/api/v1/esports/single/player/hero", {
+        const response = await this.$axios.post(url, {
           esport: this.esport,
+          series: this.series,
           division: this.modifieddivision,
           battletag: this.battletag,
           blizz_id: this.blizz_id,
@@ -228,6 +252,8 @@ export default {
         return "/images/NGS/no-image-clipped.png"
       }else if(this.esport == "CCL"){
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
+      }else if(this.esport == "Other"){
+        return "/images/EsportOther/" + this.seriesimage;
       }
     },
   }

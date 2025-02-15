@@ -10009,24 +10009,24 @@ class GlobalHeroTalentsVersusHeroesSeeder extends Seeder
             ['510853870', '231', '0', '0', '4', '89', '1', '13', '3874', '24', '1'],
             ['510853849', '231', '0', '0', '4', '89', '1', '13', '3874', '26', '1'],
             ['510853856', '231', '0', '0', '4', '89', '1', '13', '3874', '36', '1'],
-            
+
         ];
 
         foreach ($data as $row) {
-          DB::table('global_hero_talents_versus_heroes')->insert([
-              'global_hero_talents_versus_heroes_id' => $row[0],
-              'game_version' => $row[1],
-              'game_type' => $row[2],
-              'league_tier' => $row[3],
-              'game_map' => $row[4],
-              'hero' => $row[5],
-              'win_loss' => $row[6],
-              'level' => $row[7],
-              'talent' => $row[8],
-              'enemy' => $row[9],
-              'games_played' => $row[10],
-          ]);
+            DB::table('global_hero_talents_versus_heroes')->insert([
+                'global_hero_talents_versus_heroes_id' => $row[0],
+                'game_version' => $row[1],
+                'game_type' => $row[2],
+                'league_tier' => $row[3],
+                'game_map' => $row[4],
+                'hero' => $row[5],
+                'win_loss' => $row[6],
+                'level' => $row[7],
+                'talent' => $row[8],
+                'enemy' => $row[9],
+                'games_played' => $row[10],
+            ]);
         }
-        
+
     }
 }

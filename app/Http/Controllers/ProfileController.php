@@ -27,7 +27,7 @@ class ProfileController extends Controller
 
     public function saveSettings(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'userhero' => 'nullable|numeric',

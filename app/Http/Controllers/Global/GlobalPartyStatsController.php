@@ -45,9 +45,9 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
 
     public function getPartyStats(Request $request)
     {
-        ini_set('max_execution_time', 300); //300 seconds = 5 minutes
+        ini_set('max_execution_time', 300); // 300 seconds = 5 minutes
 
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
             'hero' => ['sometimes', 'nullable', new HeroInputValidation],
@@ -82,7 +82,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
 
         $cacheKey = 'GlobalPartyStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
-        //return $cacheKey;
+        // return $cacheKey;
 
         /*
         if (! env('Production')) {
@@ -123,7 +123,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
                 ->filterByEnemyStackSize($teamtwoparty)
                 ->groupBy('team_ally_stack_value', 'team_enemy_stack_value')
                 ->orderBy('team_ally_stack_value', 'asc')
-                //->toSql();
+                // ->toSql();
                 ->get();
 
             $returnData = [];

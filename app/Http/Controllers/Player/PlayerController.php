@@ -60,7 +60,7 @@ class PlayerController extends Controller
             'blizz_id' => $blizz_id,
             'region' => $region,
             'season' => $season,
-            'gametypedefault' => null, //$this->globalDataService->getGameTypeDefault('single'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'gametypedefault' => null, // $this->globalDataService->getGameTypeDefault('single'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
 
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
@@ -70,7 +70,7 @@ class PlayerController extends Controller
     public function getPlayerData(Request $request)
     {
 
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'battletag' => 'required|string',
@@ -211,11 +211,11 @@ class PlayerController extends Controller
 
                 return $query;
             })
-            //->where("replay.replayID", "<=", 46984901) //testing
+            // ->where("replay.replayID", "<=", 46984901) //testing
             ->when($cachedData, function ($query, $cachedData) {
                 return $query->where('replay.replayID', '>', $cachedData->latest_replayID);
             })
-            //->toSql();
+            // ->toSql();
             ->get();
 
         if ($result->isEmpty()) {
@@ -259,7 +259,7 @@ class PlayerController extends Controller
             ->where('region', $region)
             ->max('account_level');
 
-        //10355545 is the replayID where we started tracking mvp
+        // 10355545 is the replayID where we started tracking mvp
         $mvp_games = $result->where('replayID', '>', 10355545)->count();
         $games_mvp = $result->where('match_award', 1)->count();
 

@@ -122,20 +122,16 @@
       </tbody>
     </table>
 
-<!--
     <div class=" my-5 bg-teal py-5 px-2"><infobox class="max-w-[1500px] mx-auto " :input="'Possible Replays do not take into account Hero Level, Player Rank, Hero Rank, Role Rank, or Mirror Match Filter options'"></infobox></div>
 
-    <table class="">
+    <div class="max-w-[1500px] mx-auto mb-4">
+      <custom-button @click="showReplayList = !showReplayList" :text="'Get list of replays matching talent selection'" :alt="'Get list of replays matching talent selection'" size="small" :ignoreclick="true"></custom-button>
+    </div>
+    <table class="" v-if="showReplayList">
       <thead>
         <tr>
-          <th>
+          <th width="200px">
             Game ID
-          </th>
-          <th>
-            Map
-          </th>
-          <th>
-            Winner
           </th>
           <th>
             Talents
@@ -146,12 +142,6 @@
         <tr v-for="(row, index) in replays" :key="index">
           <td>
             <a class="link" :href="`/Match/Single/${row.replayID}`">{{ row.replayID}}</a>
-          </td>
-          <td>
-            {{ row.name}}
-          </td>
-          <td>
-            {{ row.winner == 0 ? "False" : "True" }}
           </td>
           <td>
             <div class="flex gap-x-1 mx-2 items-center">
@@ -167,8 +157,6 @@
         </tr>
       </tbody>
     </table>
-
-  -->
   </div>
 
 
@@ -228,7 +216,7 @@
         herorank: null,
         rolerank: null,
         mirrormatch: 0,
-
+        showReplayList: false,
       }
     },
     created(){
@@ -250,9 +238,17 @@
     computed: {
     },
     watch: {
+      showReplayList(newValue) {
+        if (newValue) {
+          this.getReplayData();
+        } 
+      }    
     },
     methods: {
       async getData(){
+        if(this.showReplayList){
+          this.showReplayList = false;
+        }
         this.dataError = false;
         this.isLoading = true;
 
@@ -288,6 +284,47 @@
           this.data = response.data.talentData;
           this.replays = response.data.replays;
           this.builddata = response.data.buildData;
+        }catch(error){
+          this.dataError = true;
+        }finally {
+          this.cancelTokenSource = null;
+          this.isLoading = false;
+        }
+      },
+      async getReplayData(){
+        this.dataError = false;
+        this.isLoading = true;
+
+        if (this.cancelTokenSource) {
+          this.cancelTokenSource.cancel('Request canceled');
+        }
+        this.cancelTokenSource = this.$axios.CancelToken.source();
+      
+        this.replays = null;
+        try{
+          const response = await this.$axios.post("/api/v1/global/talents/builder/replays", {
+            hero: this.selectedHero.name,
+            selectedtalents: this.clickedData,
+            timeframe_type: this.timeframetype,
+            timeframe: this.timeframe,
+            region: this.region,
+            hero_level: this.herolevel,
+            game_type: this.gametype,
+            game_map: this.gamemap,
+            league_tier: this.playerrank,
+            hero_league_tier: this.herorank,
+            role_league_tier: this.rolerank,
+            mirrormatch: this.mirrormatch,
+          }, 
+          {
+            cancelToken: this.cancelTokenSource.token,
+          });
+
+          if(response.data.status == "failure to validate inputs"){
+            throw new Error("Failure to validate inputs");
+          }
+          
+          this.replays = response.data;
         }catch(error){
           this.dataError = true;
         }finally {

@@ -54,7 +54,7 @@ class PlayerMatchHistory extends Controller
             'blizz_id' => $blizz_id,
             'region' => $region,
             'filters' => $this->globalDataService->getFilterData(),
-            'gametypedefault' => $gametypedefault, //$this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'gametypedefault' => $gametypedefault, // $this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
             'showcustomgames' => $showcustomgames,
         ]);
@@ -99,7 +99,7 @@ class PlayerMatchHistory extends Controller
     public function getData(Request $request)
     {
 
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'battletag' => 'required|string',

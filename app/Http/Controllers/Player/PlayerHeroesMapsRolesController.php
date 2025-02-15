@@ -28,9 +28,9 @@ class PlayerHeroesMapsRolesController extends Controller
 {
     public function getData(Request $request)
     {
-        ini_set('max_execution_time', 600); //300 seconds = 5 minutes
+        ini_set('max_execution_time', 600); // 300 seconds = 5 minutes
 
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'battletag' => 'required|string',
@@ -187,8 +187,8 @@ class PlayerHeroesMapsRolesController extends Controller
                 'time_on_fire',
                 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty',
             ])
-                //->toSql();
-                //return $result;
+                // ->toSql();
+                // return $result;
 
             ->get();
 
@@ -821,7 +821,7 @@ class PlayerHeroesMapsRolesController extends Controller
 
     public function findMatch(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'battletag' => 'required|string',
@@ -905,7 +905,7 @@ class PlayerHeroesMapsRolesController extends Controller
             ->where('hero', $hero)
             ->where($stat, $value)
             ->select('replay.replayID')
-            //->toSql();
+            // ->toSql();
             ->first();
 
         if ($result) {

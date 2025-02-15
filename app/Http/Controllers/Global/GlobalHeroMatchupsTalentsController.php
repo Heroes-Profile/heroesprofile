@@ -105,7 +105,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
     public function getHeroMatchupsTalentsData(Request $request)
     {
 
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
             'hero' => ['required', new HeroInputValidation],
@@ -136,7 +136,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
 
         $cacheKey = 'GlobalHeroMatchupsTalents|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
 
-        //return $cacheKey;
+        // return $cacheKey;
 
         /*
         if (! env('Production')) {
@@ -181,8 +181,8 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
                 ->orderBy('level')
                 ->orderBy('win_loss')
                 ->with(['talentInfo'])
-                //->toSql();
-                //return $data;
+                // ->toSql();
+                // return $data;
                 ->get();
 
             $data = collect($data)->groupBy('level')->map(function ($levelGroup) {

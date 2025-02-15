@@ -80,7 +80,7 @@ class NGSSingleDivisionController extends Controller
 
     public function getSingleDivisionMatchHistory(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'season' => ['sometimes', 'nullable', new NGSSeasonInputValidation],
@@ -168,7 +168,7 @@ class NGSSingleDivisionController extends Controller
 
     public function getSingleDivisionData(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'season' => ['sometimes', 'nullable', new NGSSeasonInputValidation],

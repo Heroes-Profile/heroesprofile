@@ -96,9 +96,9 @@ class MatchPredictionGameController extends Controller
             ->where('game_type', $gameType)
             ->first();
 
-        //$replayID = 51977960;
-        //$replayID = 51974603;
-        //$replayID = 51972542;
+        // $replayID = 51977960;
+        // $replayID = 51974603;
+        // $replayID = 51972542;
 
         $replayID = $replayData->replayID;
 

@@ -1,6 +1,6 @@
 EsportsPlayerHeroStats<template>
   <div>
-    <page-heading :infoText1="infoText1" :heading="esport == 'HeroesInternational' ? 'Heroes International' : esport" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
+    <page-heading :infoText1="infoText1" :heading="heading" :heading-image="headingImage" :heading-image-url="headingImageUrl"></page-heading>
 
     <div v-if="data">
       <div class="flex justify-center max-w-[1500px] mx-auto">
@@ -89,6 +89,7 @@ export default {
   },
   props: {
   	esport: String,
+    series: String,
     division: String, 
     battletag: String,
     blizz_id: {
@@ -99,6 +100,7 @@ export default {
     },
     game_map: Object,
     tournament: String,
+    seriesimage: String,
   },
   data(){
     return {
@@ -126,6 +128,8 @@ export default {
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
       }else if(this.esport == "MastersClash"){
         return "/images/MCL/no-image.png"
+      }else if(this.esport == "Other"){
+        return "/images/EsportOther/" + this.seriesimage;
       }
     },
     headingImageUrl(){
@@ -135,6 +139,8 @@ export default {
         return "/Esports/CCL"
       }else if(this.esport == "MastersClash"){
         return "/Esports/MastersClash"
+      }else if(this.esport == "Other"){
+        return "/Esports/Other/" + this.series; 
       }
     },
     infoText1(){
@@ -144,7 +150,17 @@ export default {
         return `${this.battletag} during season ${this.modifiedseason}`;
       }else if(this.esport == "MastersClash"){
         return `${this.battletag} during season ${this.modifiedseason}`;
+      }else if(this.esport == "Other"){
+        return `${this.battletag} in series ${this.series}`;
       }
+    },
+    heading(){
+      if(this.esport == 'HeroesInternational'){
+        return "Heroes International";
+      }else if(this.esport == "Other"){
+        return;
+      }
+      return this.esport;
     },
     sortedData() {
       if (!this.sortKey) return this.data.heroes;
@@ -170,9 +186,16 @@ export default {
       }
       this.cancelTokenSource = this.$axios.CancelToken.source();
 
+      var url = "/api/v1/esports/single/player/map";
+      
+      if(this.series){
+        url = "/api/v1/esports/other/single/player/map";
+      }
+
       try{
-        const response = await this.$axios.post("/api/v1/esports/single/player/map", {
+        const response = await this.$axios.post(url, {
           esport: this.esport,
+          series: this.series,
           division: this.modifieddivision,
           battletag: this.battletag,
           blizz_id: this.blizz_id,
@@ -233,6 +256,8 @@ export default {
         return "/images/NGS/no-image-clipped.png"
       }else if(this.esport == "CCL"){
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
+      }else if(this.esport == "Other"){
+        return "/images/EsportOther/" + this.seriesimage;
       }
     },
   }
