@@ -6,6 +6,7 @@ use App\Models\BattlenetAccount;
 use App\Models\Battletag;
 use App\Models\CCL\CCLTeam;
 use App\Models\GameType;
+use App\Models\GlobalHeroStats;
 use App\Models\HeaderAlert;
 use App\Models\Hero;
 use App\Models\HeroesDataTalent;
@@ -13,12 +14,15 @@ use App\Models\LeagueTier;
 use App\Models\Map;
 use App\Models\MastersClash\MastersClashTeam;
 use App\Models\MatchPredictionSeason;
+use App\Models\MMRTypeID;
 use App\Models\NGS\NGSTeam;
 use App\Models\Replay;
 use App\Models\SeasonDate;
 use App\Models\SeasonGameVersion;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class GlobalDataService
@@ -115,21 +119,23 @@ class GlobalDataService
         ];
 
     }
-    public function showcustomgames(){
-      if (Auth::check()) {
-        $user = Auth::user();
 
-        $customgames = $user->userSettings->firstWhere('setting', 'customgames');
+    public function showcustomgames()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
 
-        if($customgames){
-          $customgames = $customgames->value == 1 ? true : false ;
+            $customgames = $user->userSettings->firstWhere('setting', 'customgames');
 
+            if ($customgames) {
+                $customgames = $customgames->value == 1 ? true : false;
+
+            }
+
+            return $customgames;
         }
 
-        return $customgames;
-      }
-
-    return false;
+        return false;
     }
 
     public function getPlayerLoadSettings()
@@ -168,7 +174,7 @@ class GlobalDataService
             1 => 'NA',
             2 => 'EU',
             3 => 'KR',
-            /*  4 => "UNK",*/
+            /*  4 => "UNK", */
             5 => 'CN',
         ];
     }
@@ -179,7 +185,7 @@ class GlobalDataService
             'NA' => 1,
             'EU' => 2,
             'KR' => 3,
-            /*  4 => "UNK",*/
+            /*  4 => "UNK", */
             'CN' => 5,
         ];
     }
@@ -226,23 +232,23 @@ class GlobalDataService
 
     public function calculateCacheTimeInMinutes($timeframe)
     {
-        //return 300;
+        // return 300;
 
         if (app()->environment('production')) {
             if (count($timeframe) == 1 && $timeframe[0] == $this->getLatestPatch()) {
                 $date = SeasonGameVersion::where('game_version', min($timeframe))->value('date_added');
                 $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
 
-                if ($changeInMinutes < 1440) {  //1 day
-                    return .25; //15 min
-                } elseif ($changeInMinutes < (1440 * 3.5)) { //half week
-                    return 6 * 60; //6 hours
-                } elseif ($changeInMinutes < (1440 * 7)) { //1 week
-                    return 24 * 60; //1 day
-                } elseif ($changeInMinutes < (1440 * 2)) { //2 week
-                    return 24 * 60 * 7; //7 day
+                if ($changeInMinutes < 1440) {  // 1 day
+                    return .25; // 15 min
+                } elseif ($changeInMinutes < (1440 * 3.5)) { // half week
+                    return 6 * 60; // 6 hours
+                } elseif ($changeInMinutes < (1440 * 7)) { // 1 week
+                    return 24 * 60; // 1 day
+                } elseif ($changeInMinutes < (1440 * 2)) { // 2 week
+                    return 24 * 60 * 7; // 7 day
                 } else {
-                    return 24 * 60 * 7 * 2; //2 weeks
+                    return 24 * 60 * 7 * 2; // 2 weeks
                 }
             } else {
                 $date = SeasonGameVersion::where('game_version', min($timeframe))->value('date_added');
@@ -819,5 +825,212 @@ class GlobalDataService
     public function isOwner($blizz_id, $region)
     {
         return ($blizz_id == 67280 and $region == 1) ? true : false;
+    }
+
+    public function getTimeframeFilterValues($timeframeType, $timeframes)
+    {
+        if ($timeframeType == 'major') {
+            $query = SeasonGameVersion::select('game_version');
+
+            foreach ($timeframes as $timeframe) {
+                $query->orWhere('game_version', 'like', $timeframe.'%');
+            }
+            $gameVersion = $query->get()
+                ->pluck('game_version')
+                ->toArray();
+
+            return $gameVersion;
+        }
+
+        return $timeframes;
+    }
+
+    public function getTimeFrameFilterValuesLastUpdate($hero)
+    {
+        $game_version = Hero::select('last_change_patch_version')->where('id', $hero)->first()->last_change_patch_version;
+
+        $gameVersion = SeasonGameVersion::select('game_version')->where('game_version', '>=', $game_version)->get()->pluck('game_version')->toArray();
+
+        return $gameVersion;
+    }
+
+    public function getRegionFilterValues($regions)
+    {
+        if (is_null($regions)) {
+            return null;
+        }
+
+        if (! is_array($regions)) {
+            return $this->getRegionStringToID()[$regions];
+        }
+
+        return array_map(function ($region) {
+            return $this->getRegionStringToID()[$region];
+        }, $regions);
+    }
+
+    public function getGameMapFilterValues($game_maps)
+    {
+        if (is_null($game_maps)) {
+            return null;
+        }
+        $mapIds = Map::whereIn('name', $game_maps)->pluck('map_id')->toArray();
+
+        return $mapIds;
+    }
+
+    public function getHeroFilterValue($hero)
+    {
+        if (is_null($hero)) {
+            return null;
+        }
+
+        return $this->getHeroes()->keyBy('name')[$hero]->id;
+    }
+
+    public function getGameTypeFilterValues($game_type)
+    {
+        if (is_array($game_type)) {
+            return GameType::whereIn('short_name', $game_type)->pluck('type_id')->toArray();
+        } else {
+            return GameType::where('short_name', $game_type)->pluck('type_id')->first();
+        }
+    }
+
+    public function getMMRTypeValue($input)
+    {
+        return MMRTypeID::where('name', $input)->pluck('mmr_type_id')->first();
+    }
+
+    public function getAllHeroesGlobalWinRates(Request $request)
+    {
+        $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameType = $this->getGameTypeFilterValues($request['game_type']);
+        $leagueTier = $request['league_tier'];
+        $heroLeagueTier = $request['hero_league_tier'];
+        $roleLeagueTier = $request['role_league_tier'];
+        $gameMap = $this->getGameMapFilterValues($request['game_map']);
+        $heroLevel = $request['hero_level'];
+        $mirror = $request['mirror'];
+        $region = $this->getRegionFilterValues($request['region']);
+        $hero = $this->getHeroFilterValue($request['hero']);
+        $role = $request['role'];
+
+        $cacheKey = 'GlobalHeroStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+
+        $data = Cache::store('database')->remember($cacheKey, $this->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
+            $gameType,
+            $leagueTier,
+            $heroLeagueTier,
+            $roleLeagueTier,
+            $gameMap,
+            $heroLevel,
+            $region,
+            $mirror
+        ) {
+            $data = GlobalHeroStats::query()
+                ->join('heroes', 'heroes.id', '=', 'global_hero_stats.hero')
+                ->select('heroes.name', 'heroes.short_name', 'heroes.id as hero_id', 'global_hero_stats.win_loss', 'heroes.new_role as role')
+                ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
+                ->filterByGameVersion($gameVersion)
+                ->filterByGameType($gameType)
+                ->filterByLeagueTier($leagueTier)
+                ->filterByHeroLeagueTier($heroLeagueTier)
+                ->filterByRoleLeagueTier($roleLeagueTier)
+                ->filterByGameMap($gameMap)
+                ->filterByHeroLevel($heroLevel)
+                ->excludeMirror($mirror)
+                ->filterByRegion($region)
+                ->groupBy('global_hero_stats.hero', 'global_hero_stats.win_loss')
+                ->orderBy('heroes.name', 'asc')
+                ->orderBy('global_hero_stats.win_loss', 'asc')
+                // ->toSql();
+                ->get();
+            $changeData = null;
+
+            return $this->combineData($data);
+        });
+
+        return $data;
+
+    }
+
+    private function combineData($data)
+    {
+        $totalGamesPlayed = collect($data)->sum('games_played') / 10;
+
+        $combinedData = collect($data)->groupBy('name')->map(function ($group) use ($totalGamesPlayed) {
+            $firstItem = $group->first();
+
+            $wins = $group->where('win_loss', 1)->sum('games_played');
+            $losses = $group->where('win_loss', 0)->sum('games_played');
+            $gamesPlayed = $wins + $losses;
+
+            $winRate = 0;
+            if ($gamesPlayed > 0) {
+                $winRate = ($wins / $gamesPlayed) * 100;
+            }
+
+            $popularity = (($gamesPlayed) / $totalGamesPlayed) * 100;
+            $pickRate = ($gamesPlayed / $totalGamesPlayed) * 100;
+
+            $adjustedPickRate = (($gamesPlayed / $totalGamesPlayed) * 100) / 100;
+            $influence = round((($winRate / 100) - 0.5) * ($adjustedPickRate * 10000));
+
+            $confidenceInterval = $this->calculateWinRateConfidenceInterval($wins, $gamesPlayed);
+
+            $statFilterTotal = $group->sum('total_filter_type');
+
+            return [
+                'name' => $firstItem['name'],
+                'short_name' => $firstItem['short_name'],
+                'hero_id' => $firstItem['hero_id'],
+                'role' => $firstItem['role'],
+                'wins' => $wins,
+                'losses' => $losses,
+                'games_played' => $gamesPlayed,
+                'win_rate' => round($winRate, 2),
+                'popularity' => round($popularity, 2),
+                'pick_rate' => round($pickRate, 2),
+                'influence' => $influence,
+                'confidence_interval' => round($confidenceInterval, 2),
+                'total_filter_type' => $gamesPlayed > 0 ? round($statFilterTotal / $gamesPlayed, 2) : 0,
+            ];
+        })->sortByDesc('win_rate')->values()->toArray();
+
+        $combinedCollection = collect($combinedData);
+
+        $positiveInfluenceCollection = $combinedCollection->filter(function ($item) {
+            return $item['influence'] > 0;
+        });
+
+        $negativeInfluenceCollection = $combinedCollection->filter(function ($item) {
+            return $item['influence'] < 0;
+        });
+
+        $averageWinRate = $combinedCollection->avg('win_rate');
+        $averageConfidenceInterval = $combinedCollection->avg('confidence_interval');
+        $averagePopularity = $combinedCollection->avg('popularity');
+        $averagePickRate = $combinedCollection->avg('pick_rate');
+        $averagePositiveInfluence = $positiveInfluenceCollection->avg('influence');
+        $averageNegativeInfluence = $negativeInfluenceCollection->avg('influence');
+        $averageGamesPlayed = count($combinedCollection) > 0 ? $combinedCollection->sum('games_played') / count($combinedCollection) : 0;
+        $averageTotalFilterType = $combinedCollection->avg('total_filter_type');
+
+        return $combinedData;
+    }
+
+    public function calculateWinRateConfidenceInterval($wins, $totalGamesPlayed, $confidenceLevel = 0.95)
+    {
+        if ($totalGamesPlayed == 0) {
+            return 0; // Or whatever you'd like to return when no games are played
+        }
+
+        $winRate = ($wins / $totalGamesPlayed) * 100;
+        $zScore = 1.96; // For a 95% confidence level, you might want to map other confidence levels to their respective z-scores
+
+        $confidence = ($zScore * sqrt(($winRate / 100 * (1 - $winRate / 100)) / $totalGamesPlayed)) * 100;
+
+        return $confidence;
     }
 }

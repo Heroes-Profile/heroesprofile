@@ -58,13 +58,13 @@ class PlayerTalentsController extends Controller
             'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
             'heroes' => $this->globalDataService->getHeroes(),
-            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'], //$this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'], // $this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
         ]);
     }
 
     public function getPlayerTalentData(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'battletag' => 'required|string',
@@ -132,7 +132,7 @@ class PlayerTalentsController extends Controller
             ->when(! is_null($fromdate), function ($query) use ($fromdate) {
                 return $query->where('game_date', '>=', $fromdate);
             })
-            //->toSql();
+            // ->toSql();
             ->get();
 
         $talentData = HeroesDataTalent::all();

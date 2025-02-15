@@ -41,9 +41,9 @@ class PlayerMatchHistory extends Controller
 
         $gametypedefault = ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'];
         $showcustomgames = false;
-        if($this->globalDataService->showcustomgames()){
-          array_push($gametypedefault, 'cu');
-          $showcustomgames = true;
+        if ($this->globalDataService->showcustomgames()) {
+            array_push($gametypedefault, 'cu');
+            $showcustomgames = true;
         }
 
         return view('Player.matchHistory')->with([
@@ -54,7 +54,7 @@ class PlayerMatchHistory extends Controller
             'blizz_id' => $blizz_id,
             'region' => $region,
             'filters' => $this->globalDataService->getFilterData(),
-            'gametypedefault' => $gametypedefault, //$this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'gametypedefault' => $gametypedefault, // $this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
             'showcustomgames' => $showcustomgames,
         ]);
@@ -89,14 +89,17 @@ class PlayerMatchHistory extends Controller
             ->where('region', $region)
             ->orderBy('replayID', 'DESC')
             ->first();
-
-        return \Redirect::to('/Match/Single/'.$latest_replay->replayID);
+        if ($latest_replay) {
+            return \Redirect::to('/Match/Single/'.$latest_replay->replayID);
+        } else {
+            return;
+        }
     }
 
     public function getData(Request $request)
     {
 
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'battletag' => 'required|string',

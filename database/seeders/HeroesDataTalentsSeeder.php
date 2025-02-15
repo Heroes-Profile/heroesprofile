@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -3055,27 +3056,27 @@ class HeroesDataTalentsSeeder extends Seeder
             ['5608', 'Rehgar', 'rehgar', 'Rehg', 'Wellspring', 'RehgarWellspring', 'Every 2 seconds, Earthbind Totem will cast an untalented Chain Heal at the nearest allied Hero with the lowest Health. This Chain Heal heals for 35% of its normal amount.', 'playable', ' ', '', ' ', '3', '13', 'storm_ui_icon_rehgar_earthbindtotem.png', ''],
             ['5609', 'Rehgar', 'rehgar', 'Rehg', 'Pit Fighter', 'RehgarPitFighter', 'Gain 10% increased Attack Damage and 3 Spell Power. Each nearby ally Hero grants an additional stack of this effect, up to 5 stacks.  While at 2 or more stacks, Purge\'s cooldown refreshes 50% faster.', 'playable', ' ', '', ' ', '4', '20', 'storm_ui_ingame_heroselect_btn_rehgar.png', ''],
             ['5610', 'Rehgar', 'rehgar', 'Rehg', 'Elemental Conduit', 'RehgarElementalConduit', 'Activate to gain Lightning Shield and grant all nearby allied Heroes a Shield equal to 10% of their maximum Health for 5 seconds.  For up to 5 seconds after activating, hitting an enemy Hero with this effects\' Lightning Shield gives nearby allies a Shield equal to 1.5% of their maximum Health for 5 seconds.', 'playable', '', '70', '', '3', '20', 'storm_ui_icon_talent_stormshield.png', ''],
-            
+
         ];
 
         foreach ($data as $row) {
-          DB::table('heroes_data_talents')->insert([
-            'talent_id' => $row[0],
-            'hero_name' => $row[1],
-            'short_name' => $row[2],
-              'attribute_id' => $row[3],
-              'title' => $row[4],
-              'talent_name' => $row[5],
-              'description' => $row[6],
-              'status' => $row[7],
-              'hotkey' => $row[8],
-              'cooldown' => $row[9],
-              'mana_cost' => $row[10],
-              'sort' => $row[11],
-              'level' => $row[12],
-              'icon' => $row[13],
-              'required_talent_id' => $row[14] == '' ? null :  $row[14],
-          ]);
-      }
+            DB::table('heroes_data_talents')->insert([
+                'talent_id' => $row[0],
+                'hero_name' => $row[1],
+                'short_name' => $row[2],
+                'attribute_id' => $row[3],
+                'title' => $row[4],
+                'talent_name' => $row[5],
+                'description' => $row[6],
+                'status' => $row[7],
+                'hotkey' => $row[8],
+                'cooldown' => $row[9],
+                'mana_cost' => $row[10],
+                'sort' => $row[11],
+                'level' => $row[12],
+                'icon' => $row[13],
+                'required_talent_id' => $row[14] == '' ? null : $row[14],
+            ]);
+        }
     }
 }

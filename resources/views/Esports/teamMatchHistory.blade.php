@@ -6,6 +6,8 @@
 @section('content')
   <esports-match-history 
     :esport="{{ json_encode($esport) }}" 
+    :series="{{ isset($series) ? json_encode($series) : 'null' }}" 
+    :seriesimage="{{ isset($seriesimage) ? json_encode($seriesimage) : 'null' }}" 
     :division="{{ json_encode($division) }}" 
     :team="{{ json_encode($team) }}" 
     :season="{{ json_encode($season) }}" 

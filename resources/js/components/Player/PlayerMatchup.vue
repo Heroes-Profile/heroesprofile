@@ -14,6 +14,7 @@
     :includegametypefull="true"
     :hideadvancedfilteringbutton="true"
     :includehero="true"
+    :includeseasonwithall="true"
     >
   </filters>
   <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
@@ -104,6 +105,7 @@
         sortDir: 'desc',
         topfiveheroes: [],
         topfiveenemies: [],
+        season: Number,
       }
     },
     created(){
@@ -154,6 +156,7 @@
             game_type: this.gametype, 
             game_map: this.gamemap,
             hero: this.hero,
+            season: this.season,
           }, 
           {
             cancelToken: this.cancelTokenSource.token,
@@ -185,6 +188,10 @@
         this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
         this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
         this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
+        this.season = filteredData.single.Season ? filteredData.single.Season : null;
+        if(this.season == "All"){
+          this.season = null;
+        }
 
         this.data = null;
         this.topfiveheroes = null;

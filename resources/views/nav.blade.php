@@ -85,7 +85,13 @@
                         @if(isset($mainSearchAccount))
                         <div class="relative group inline-block nav-item ">
                             <a class="cursor-pointer">
-                            {{ $mainSearchAccount['battletag'] }} ({{ $regions[$mainSearchAccount['region']] }})
+                            {{ $mainSearchAccount['battletag'] }} 
+                            @if(isset($regions[$mainSearchAccount['region']]))
+                                ({{ $regions[$mainSearchAccount['region']] }})
+                            @else
+                                (Region not found, log out and back in)
+                            @endif
+
                             </a>
                             <div class="nav-dropdown  ">
                                 <div class="nav-dropdown-inner-wrapper ">

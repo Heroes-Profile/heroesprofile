@@ -48,7 +48,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
     public function getGlobalHeroData(Request $request)
     {
 
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = $this->globalsValidationRules($request['timeframe_type'], $request['timeframe']);
 
@@ -61,22 +61,28 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
             ];
         }
 
-        $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
-        $gameType = $this->getGameTypeFilterValues($request['game_type']);
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
         $leagueTier = $request['league_tier'];
         $heroLeagueTier = $request['hero_league_tier'];
         $roleLeagueTier = $request['role_league_tier'];
-        $gameMap = $this->getGameMapFilterValues($request['game_map']);
+        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
         $heroLevel = $request['hero_level'];
         $mirror = $request['mirror'];
 
-        $region = $this->getRegionFilterValues($request['region']);
+        $region = $this->globalDataService->getRegionFilterValues($request['region']);
 
         $statFilter = $request['statfilter'];
-        $hero = $this->getHeroFilterValue($request['hero']);
+        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
         $role = $request['role'];
 
         $cacheKey = 'GlobalHeroStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+
+        /*
+        if (! env('Production')) {
+            Cache::store('database')->forget($cacheKey);
+        }
+        */
 
         $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
             $gameType,
@@ -110,7 +116,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
                 ->groupBy('global_hero_stats.hero', 'global_hero_stats.win_loss')
                 ->orderBy('heroes.name', 'asc')
                 ->orderBy('global_hero_stats.win_loss', 'asc')
-                //->toSql();
+                // ->toSql();
                 ->get();
 
             $banData = GlobalHeroStatsBans::query()
@@ -127,7 +133,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
                 ->filterByRegion($region)
                 ->groupBy('global_hero_stats_bans.hero')
                 ->orderBy('heroes.name', 'asc')
-                //->toSql();
+                // ->toSql();
                 ->get();
 
             $changeData = null;
@@ -138,7 +144,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
                     ->select('heroes.name', 'heroes.id as hero_id', 'win_rate as change_win_rate')
                     ->filterByGameVersion($this->calculateGameVersionsForHeroChange($gameVersion))
                     ->filterByGameType($gameType)
-                    //->toSql();
+                    // ->toSql();
                     ->get();
             }
 
@@ -150,7 +156,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
 
     private function calculateGameVersionsForHeroChange($gameVersion)
     {
-        //Fix later
+        // Fix later
         return [SeasonGameVersion::select('game_version')->where('id', (SeasonGameVersion::select('id')->where('game_version', '2.55.3.90670')->first()->id - 1))->first()->game_version];
     }
 
@@ -194,7 +200,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
             $adjustedPickRate = (($gamesPlayed / $totalGamesPlayed) * 100) / (100 - $banRate);
             $influence = round((($winRate / 100) - 0.5) * ($adjustedPickRate * 10000));
 
-            $confidenceInterval = $this->calculateWinRateConfidenceInterval($wins, $gamesPlayed);
+            $confidenceInterval = $this->globalDataService->calculateWinRateConfidenceInterval($wins, $gamesPlayed);
 
             $statFilterTotal = $group->sum('total_filter_type');
 
@@ -275,7 +281,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         ];
     }
 
-    //🤮
+    // 🤮
     private function checkIfChange($timeframe, $region, $game_type, $map, $league_tier, $hero_league_tier, $role_league_tier, $hero_level)
     {
         if (
@@ -292,19 +298,5 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         }
 
         return false;
-    }
-
-    private function calculateWinRateConfidenceInterval($wins, $totalGamesPlayed, $confidenceLevel = 0.95)
-    {
-        if ($totalGamesPlayed == 0) {
-            return 0; // Or whatever you'd like to return when no games are played
-        }
-
-        $winRate = ($wins / $totalGamesPlayed) * 100;
-        $zScore = 1.96; // For a 95% confidence level, you might want to map other confidence levels to their respective z-scores
-
-        $confidence = ($zScore * sqrt(($winRate / 100 * (1 - $winRate / 100)) / $totalGamesPlayed)) * 100;
-
-        return $confidence;
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -102,20 +103,20 @@ class HeroesSeeder extends Seeder
         ];
 
         foreach ($data as $row) {
-          DB::table('heroes')->insert([
-            'id' => $row[0],
-            'name' => $row[1],
-            'short_name' => $row[2],
-              'alt_name' => $row[3],
-              'role' => $row[4],
-              'new_role' => $row[5],
-              'type' => $row[6],
-              'release_date' => $row[7] == '' ? null : \DateTime::createFromFormat('m/d/Y h:i:s A', $row[7])->format('Y-m-d H:i:s'),  
-              'rework_date' => $row[8] == '' ? null : \DateTime::createFromFormat('m/d/Y h:i:s A', $row[8])->format('Y-m-d H:i:s'),
-              'last_change_patch_version' => $row[9],
-              'attribute_id' => $row[10],
-              'build_copy_name' => $row[11],
-          ]);
-      }
+            DB::table('heroes')->insert([
+                'id' => $row[0],
+                'name' => $row[1],
+                'short_name' => $row[2],
+                'alt_name' => $row[3],
+                'role' => $row[4],
+                'new_role' => $row[5],
+                'type' => $row[6],
+                'release_date' => $row[7] == '' ? null : \DateTime::createFromFormat('m/d/Y h:i:s A', $row[7])->format('Y-m-d H:i:s'),
+                'rework_date' => $row[8] == '' ? null : \DateTime::createFromFormat('m/d/Y h:i:s A', $row[8])->format('Y-m-d H:i:s'),
+                'last_change_patch_version' => $row[9],
+                'attribute_id' => $row[10],
+                'build_copy_name' => $row[11],
+            ]);
+        }
     }
 }

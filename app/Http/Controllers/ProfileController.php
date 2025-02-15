@@ -27,7 +27,7 @@ class ProfileController extends Controller
 
     public function saveSettings(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'userhero' => 'nullable|numeric',
@@ -115,17 +115,17 @@ class ProfileController extends Controller
                 ['value' => $advancedfiltering]
             );
         }
-        
+
         if (! is_null($request['customgames'])) {
-          $user = BattlenetAccount::find($request['userid']);
+            $user = BattlenetAccount::find($request['userid']);
 
-          $customgames = $request['customgames'];
+            $customgames = $request['customgames'];
 
-          $user->userSettings()->updateOrCreate(
-              ['setting' => 'customgames'],
-              ['value' => $customgames]
-          );
-      }
+            $user->userSettings()->updateOrCreate(
+                ['setting' => 'customgames'],
+                ['value' => $customgames]
+            );
+        }
 
         if (! is_null($request['talentbuildtype'])) {
             $user = BattlenetAccount::find($request['userid']);

@@ -69,7 +69,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
     public function getHeroMatchupData(Request $request)
     {
 
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
             'hero' => ['required', new HeroInputValidation],
@@ -85,15 +85,15 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
             ];
         }
 
-        $hero = $this->getHeroFilterValue($request['hero']);
-        $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
-        $gameType = $this->getGameTypeFilterValues($request['game_type']);
+        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
         $leagueTier = $request['league_tier'];
         $heroLeagueTier = $request['hero_league_tier'];
         $roleLeagueTier = $request['role_league_tier'];
-        $gameMap = $this->getGameMapFilterValues($request['game_map']);
+        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
         $heroLevel = $request['hero_level'];
-        $region = $this->getRegionFilterValues($request['region']);
+        $region = $this->globalDataService->getRegionFilterValues($request['region']);
         $statFilter = $request['statfilter'];
         $mirror = $request['mirror'];
 
@@ -101,7 +101,11 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
 
         $cacheKey = 'GlobalMatchupStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
-        //return $gameMap;
+        /*
+        if (! env('Production')) {
+            Cache::store('database')->forget($cacheKey);
+        }
+        */
 
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
             $hero,
@@ -133,7 +137,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                 ->groupBy('ally')
                 ->groupBy('win_loss')
                 ->orderBy('ally')
-              //->toSql();
+              // ->toSql();
                 ->get();
             $allyData = $this->combineData($allyData, 'ally', $hero, $role);
 
@@ -152,7 +156,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                 ->filterByRegion($region)
                 ->groupBy('enemy')
                 ->groupBy('win_loss')
-                //->toSql();
+                // ->toSql();
                 ->get();
             $enemyData = $this->combineData($enemyData, 'enemy', $hero, $role);
 
@@ -182,6 +186,22 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
 
             return ['ally' => $allyData, 'enemy' => $enemyData, 'combined' => $combinedData];
         });
+
+        $heroData = $this->globalDataService->getAllHeroesGlobalWinRates($request);
+
+        foreach ($data['combined'] as &$combinedEntry) {
+            foreach ($heroData as $heroStats) {
+                if ($combinedEntry['ally']['hero']['name'] === $heroStats['name']) {
+                    $combinedEntry['ally']['stats'] = $heroStats;
+                }
+            }
+
+            foreach ($heroData as $heroStats) {
+                if ($combinedEntry['enemy']['hero']['name'] === $heroStats['name']) {
+                    $combinedEntry['enemy']['stats'] = $heroStats;
+                }
+            }
+        }
 
         return $data;
     }

@@ -69,7 +69,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
 
     public function getData(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'hero' => ['required', new HeroInputValidation],
@@ -107,20 +107,26 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
             return ['talentData' => $this->formatTalentData($talents, [])];
         }
 
-        $hero = $this->getHeroFilterValue($request['hero']);
-        $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
-        $gameType = $this->getGameTypeFilterValues($request['game_type']);
+        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
         $leagueTier = $request['league_tier'];
         $heroLeagueTier = $request['hero_league_tier'];
         $roleLeagueTier = $request['role_league_tier'];
-        $gameMap = $this->getGameMapFilterValues($request['game_map']);
+        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
         $heroLevel = $request['hero_level'];
-        $region = $this->getRegionFilterValues($request['region']);
+        $region = $this->globalDataService->getRegionFilterValues($request['region']);
         $mirror = $request['mirror'];
         $cacheKey = 'GlobalTalentsBuilder|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
         $talentData = HeroesDataTalent::all();
         $talentData = $talentData->keyBy('talent_id');
+
+        /*
+        if (! env('Production')) {
+            Cache::store('database')->forget($cacheKey);
+        }
+        */
 
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
             $talentData,
@@ -178,7 +184,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
                     return $query->where('level_twenty', $level_twenty);
                 })
                 ->groupBy('win_loss', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
-            //->toSql();
+            // ->toSql();
                 ->get();
 
             $transformedData = [
@@ -285,7 +291,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
                 ->when(! is_null($level_twenty), function ($query) use ($level_twenty) {
                     return $query->where('level_twenty', $level_twenty);
                 })
-                //->toSql();
+                // ->toSql();
                 ->groupBy('win_loss')
                 ->get();
 
@@ -378,7 +384,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         return [
             'talentData' => $data['data'],
             'buildData' => $data['buildReturnData'],
-            'replays' => null, /*$replays,*/
+            'replays' => null, /* $replays, */
         ];
     }
 
