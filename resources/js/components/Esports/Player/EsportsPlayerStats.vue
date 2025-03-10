@@ -116,7 +116,7 @@
             :data="item"
           ></game-summary-box>
           <div class="max-w-[1500px] mx-auto flex justify-end mt-4">
-          <custom-button :href="`/Esports/${esport}/Player/${battletag}/${blizz_id}/Match/History`" class="flex justify-end " text="View Match History"></custom-button>
+          <custom-button :href="`/Esports/${esport}${esport === 'Other' ? `/${series}` : ''}/Player/${battletag}/${blizz_id}/Match/History`" class="flex justify-end " text="View Match History"></custom-button>
         </div>
         </div>
       </div>
