@@ -66,7 +66,7 @@ class GlobalDataService
 
     public function getDefaultTimeframe()
     {
-        return SeasonGameVersion::select('game_version')->orderBy('game_version', 'DESC')->first()->game_version;
+        return SeasonGameVersion::select('game_version')->where('valid_globals', 1)->orderBy('major', 'DESC')->orderBy('minor', 'DESC')->orderBy('patch', 'DESC')->first()->game_version;
     }
 
     public function getDefaultBuildType()
@@ -376,7 +376,10 @@ class GlobalDataService
 
         $filterData->timeframes = SeasonGameVersion::select('game_version')
             ->where('game_version', '>=', $filtersMinimumPatch)
-            ->orderBy('game_version', 'DESC')
+            ->where('valid_globals', 1)
+            ->orderBy('major', 'DESC')
+            ->orderBy('minor', 'DESC')
+            ->orderBy('patch', 'DESC')
             ->get()
             ->map(function ($item) {
                 return ['code' => $item->game_version, 'name' => $item->game_version];
@@ -384,7 +387,10 @@ class GlobalDataService
 
         $filterData->timeframes_grouped = SeasonGameVersion::select('game_version')
             ->where('game_version', '>=', $filtersMinimumPatch)
-            ->orderBy('game_version', 'DESC')
+            ->where('valid_globals', 1)
+            ->orderBy('major', 'DESC')
+            ->orderBy('minor', 'DESC')
+            ->orderBy('patch', 'DESC')
             ->get()
             ->groupBy(function ($date) {
                 return substr($date->game_version, 0, 4);  // group by years (first 4 characters)
