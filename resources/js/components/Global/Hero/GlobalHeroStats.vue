@@ -551,7 +551,7 @@ export default {
       this.toggletalentbuilds[hero] = !this.toggletalentbuilds[hero];
     },
     determineIfLargeData(){
-      if(this.timeframetype == "major" || this.timeframe.length >= 3 || this.statfilter != "win_rate"){
+      if(this.timeframetype == "major" || this.timeframetype == "major_grouped" || this.timeframe.length >= 3 || this.statfilter != "win_rate"){
         return  true;
       }
       return false;

@@ -26,7 +26,7 @@ class TimeframeMinorInputValidation implements Rule
             if (! empty($invalidVersions)) {
                 return false;
             }
-        } elseif ($this->timeframeType === 'major') {
+        } elseif ($this->timeframeType === 'major' || $this->timeframeType === 'major_grouped') {
             foreach ($value as $timeframeValue) {
                 $matchingVersions = SeasonGameVersion::where('game_version', 'like', trim($timeframeValue).'%')
                     ->where('valid_globals', 1)
