@@ -369,7 +369,7 @@
         }
       },
       determineIfLargeData(){
-        if(this.timeframetype == "major" || (this.timeframetype == "last_update" || this.timeframe.length >= 3) || this.statfilter != "win_rate"){
+        if(this.timeframetype == "major" || this.timeframetype == "major_grouped" || (this.timeframetype == "last_update" || this.timeframe.length >= 3) || this.statfilter != "win_rate"){
           return  true;
         }
         return false;

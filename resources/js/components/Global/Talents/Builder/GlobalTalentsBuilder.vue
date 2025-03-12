@@ -400,7 +400,7 @@
         });
       },
       determineIfLargeData(){
-        if(this.timeframetype == "major" || this.timeframe.length >= 3){
+        if(this.timeframetype == "major" || this.timeframetype == "major_grouped"  || this.timeframe.length >= 3){
           return  true;
         }
         return false;

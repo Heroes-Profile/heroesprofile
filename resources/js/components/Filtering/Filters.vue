@@ -518,7 +518,7 @@
 
         if(this.includestatfilter && this.toggleExtraFilters){
           if(this.selectedMultiFilters.hasOwnProperty('Timeframes')){
-            if(this.selectedSingleFilters['Timeframe Type'] == 'major' || this.selectedMultiFilters['Timeframes'].length > 5){
+            if(this.selectedSingleFilters['Timeframe Type'] == 'major' || this.selectedSingleFilters['Timeframe Type'] == 'major_grouped' || this.selectedMultiFilters['Timeframes'].length > 5){
               return false;
             }
           }
@@ -567,6 +567,8 @@
           return this.filters.timeframes;
         }else if(this.timeframetype == "major"){
           return this.filters.timeframes_grouped;
+        }else if(this.timeframetype == "major_grouped"){
+          return this.filters.timeframes_sub_grouped;
         }
       },
       seasons(){
@@ -725,6 +727,8 @@
           return [this.filters.timeframes[0]?.code || ''];
         } else if(this.timeframetype == "major"){
           return [this.filters.timeframes_grouped[0]?.code || ''];
+        }else if(this.timeframetype == "major_grouped"){
+          return [this.filters.timeframes_sub_grouped[0]?.code || ''];
         }
         return '';
       },
