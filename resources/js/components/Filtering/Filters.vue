@@ -531,7 +531,7 @@
       },
       timeframeTypeWithLastUpdate(){
         const updatedTimeframeTypes = [...this.filters.timeframe_type];
-        updatedTimeframeTypes.push({ code: 'last_update', name: 'Last Update' });
+        //updatedTimeframeTypes.push({ code: 'last_update', name: 'Last Update' });
         return updatedTimeframeTypes;
       },
       defaultTimeFrameType(){
