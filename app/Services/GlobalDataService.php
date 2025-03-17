@@ -356,9 +356,9 @@ class GlobalDataService
         return MatchPredictionSeason::select('match_prediction_season_id')->orderBy('match_prediction_season_id', 'DESC')->first()->match_prediction_season_id;
     }
 
-    public function getFilterData()
+    public function getFilterData($filtersMinimumPatch = '2.53.0.83004')
     {
-        $filtersMinimumPatch = '2.53.0.83004';
+        
         if (Auth::check()) {
             $user = Auth::user();
 
@@ -375,8 +375,28 @@ class GlobalDataService
             ['code' => 'minor', 'name' => 'Minor Patch'],
         ];
 
+        list($major, $minor, $patch, $build) = explode('.', $filtersMinimumPatch);
+
+
         $filterData->timeframes = SeasonGameVersion::select('game_version')
-            ->where('game_version', '>=', $filtersMinimumPatch)
+            ->where(function ($query) use ($major, $minor, $patch, $build) {
+                $query->where('major', '>', $major)
+                    ->orWhere(function ($query) use ($major, $minor) {
+                        $query->where('major', $major)
+                            ->where('minor', '>', $minor);
+                    })
+                    ->orWhere(function ($query) use ($major, $minor, $patch) {
+                        $query->where('major', $major)
+                            ->where('minor', $minor)
+                            ->where('patch', '>', $patch);
+                    })
+                    ->orWhere(function ($query) use ($major, $minor, $patch, $build) {
+                        $query->where('major', $major)
+                            ->where('minor', $minor)
+                            ->where('patch', $patch)
+                            ->where('build', '>=', $build);
+                    });
+            })
             ->where('valid_globals', 1)
             ->orderBy('major', 'DESC')
             ->orderBy('minor', 'DESC')
@@ -387,7 +407,24 @@ class GlobalDataService
             });
 
         $filterData->timeframes_grouped = SeasonGameVersion::select('game_version')
-            ->where('game_version', '>=', $filtersMinimumPatch)
+            ->where(function ($query) use ($major, $minor, $patch, $build) {
+                $query->where('major', '>', $major)
+                    ->orWhere(function ($query) use ($major, $minor) {
+                        $query->where('major', $major)
+                            ->where('minor', '>', $minor);
+                    })
+                    ->orWhere(function ($query) use ($major, $minor, $patch) {
+                        $query->where('major', $major)
+                            ->where('minor', $minor)
+                            ->where('patch', '>', $patch);
+                    })
+                    ->orWhere(function ($query) use ($major, $minor, $patch, $build) {
+                        $query->where('major', $major)
+                            ->where('minor', $minor)
+                            ->where('patch', $patch)
+                            ->where('build', '>=', $build);
+                    });
+            })
             ->where('valid_globals', 1)
             ->orderBy('major', 'DESC')
             ->orderBy('minor', 'DESC')
@@ -406,7 +443,24 @@ class GlobalDataService
 
 
         $filterData->timeframes_sub_grouped = SeasonGameVersion::select('game_version')
-            ->where('game_version', '>=', $filtersMinimumPatch)
+            ->where(function ($query) use ($major, $minor, $patch, $build) {
+                $query->where('major', '>', $major)
+                    ->orWhere(function ($query) use ($major, $minor) {
+                        $query->where('major', $major)
+                            ->where('minor', '>', $minor);
+                    })
+                    ->orWhere(function ($query) use ($major, $minor, $patch) {
+                        $query->where('major', $major)
+                            ->where('minor', $minor)
+                            ->where('patch', '>', $patch);
+                    })
+                    ->orWhere(function ($query) use ($major, $minor, $patch, $build) {
+                        $query->where('major', $major)
+                            ->where('minor', $minor)
+                            ->where('patch', $patch)
+                            ->where('build', '>=', $build);
+                    });
+            })
             ->where('valid_globals', 1)
             ->orderBy('major', 'DESC')
             ->orderBy('minor', 'DESC')
