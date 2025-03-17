@@ -1,11 +1,11 @@
 @extends('layouts.app', $bladeGlobals)    
 
-@section('title', 'Global Composition Stats')
+@section('title', 'Global Hero Composition Stats')
 @section('meta_keywords', 'Heroes Profile, Composition Stats, Hero Roles, Hero Compositions, Win Rates, Compositions Data')
-@section('meta_description', 'Explore global composition stats on Heroes Profile. Analyze hero roles and compositions, view win rates, and discover the most effective hero combinations.  Filter and analyze hero data to make informed decisions.')
+@section('meta_description', 'Explore global hero composition stats on Heroes Profile. Analyze hero roles and compositions, view win rates, and discover the most effective hero combinations.  Filter and analyze hero data to make informed decisions.')
 
 @section('content')
-  <compositions-stats 
+  <hero-compositions-stats 
     :filters="{{ json_encode($filters) }}" 
     :gametypedefault="{{ json_encode($gametypedefault) }}" 
     :heroes="{{ json_encode($heroes) }}" 
@@ -17,5 +17,5 @@
     :urlparameters="{{ json_encode($urlparameters) }}"
 
   >
-  </compositions-stats>
+  </hero-compositions-stats>
 @endsection
