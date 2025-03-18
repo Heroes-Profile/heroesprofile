@@ -106,13 +106,7 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
 
     Route::get('/Global/Leaderboard', [GlobalLeaderboardController::class, 'show']);
 
-    
-    Route::get('/Global/Compositions', function () {
-        return redirect('/Global/Role/Compositions', 301);
-    });
-
-    Route::get('/Global/Role/Compositions', [GlobalCompositionsController::class, 'showRole']);
-    Route::get('/Global/Hero/Compositions', [GlobalCompositionsController::class, 'showHero']);
+    Route::get('/Global/Compositions', [GlobalCompositionsController::class, 'show']);
 
     Route::get('/Global/Party', [GlobalPartyStatsController::class, 'show']);
 

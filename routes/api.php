@@ -74,8 +74,7 @@ Route::prefix('v1')->group(function () {
 
     Route::post('global/matchups/talents', [GlobalHeroMatchupsTalentsController::class, 'getHeroMatchupsTalentsData']);
 
-    Route::post('global/role/compositions', [GlobalCompositionsController::class, 'getRoleCompositionsData']);
-    Route::post('global/hero/compositions', [GlobalCompositionsController::class, 'getHeroCompositionsData']);
+    Route::post('global/compositions', [GlobalCompositionsController::class, 'getCompositionsData']);
 
     Route::post('global/compositions/heroes', [GlobalCompositionsController::class, 'getTopHeroData']);
 

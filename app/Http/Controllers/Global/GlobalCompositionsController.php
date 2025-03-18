@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Global;
 
 use App\Models\GameType;
 use App\Models\GlobalCompositions;
-use App\Models\GlobalHeroCompositions;
 use App\Models\MMRTypeID;
 use App\Rules\HeroInputValidation;
 use Illuminate\Http\Request;
@@ -13,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 class GlobalCompositionsController extends GlobalsInputValidationController
 {
-    public function showRole(Request $request)
+    public function show(Request $request)
     {
         $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
 
@@ -31,7 +30,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
             }
         }
 
-        return view('Global.Compositions.roleCompositionsStats')
+        return view('Global.Compositions.compositionsStats')
             ->with([
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'filters' => $this->globalDataService->getFilterData(),
@@ -47,41 +46,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 
     }
 
-    public function showHero(Request $request)
-    {
-        $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
-
-        $validator = Validator::make($request->all(), $validationRules);
-
-        if ($validator->fails()) {
-            if (env('Production')) {
-                return \Redirect::to('/');
-            } else {
-                return [
-                    'data' => $request->all(),
-                    'errors' => $validator->errors()->all(),
-                    'status' => 'failure to validate inputs',
-                ];
-            }
-        }
-
-        return view('Global.Compositions.heroCompositionsStats')
-            ->with([
-                'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
-                'filters' => $this->globalDataService->getFilterData("2.55.10.93810"),
-                'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
-                'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
-                'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),
-                'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
-                'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
-                'urlparameters' => $request->all(),
-                'heroes' => $this->globalDataService->getHeroes(),
-            ]);
-
-    }
-
-
-    public function getRoleCompositionsData(Request $request)
+    public function getCompositionsData(Request $request)
     {
 
         // return response()->json($request->all());
@@ -115,7 +80,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         $talentbuildType = $request['talentbuildtype'];
         $minimumGames = $request['minimum_games'];
 
-        $cacheKey = 'GlobalRoleCompositionStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalCompositionStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
         /*
         if (! env('Production')) {
@@ -196,121 +161,6 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                         'role_three' => $role_three,
                         'role_four' => $role_four,
                         'role_five' => $role_five,
-                    ];
-                })
-                ->filter()
-                ->sortByDesc('win_rate')
-                ->values()
-                ->toArray();
-
-            return $filteredData;
-
-        });
-
-        return $data;
-    }
-
-    public function getHeroCompositionsData(Request $request)
-    {
-
-        // return response()->json($request->all());
-
-        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
-            'hero' => ['sometimes', 'nullable', new HeroInputValidation],
-            'minimum_games' => 'required|integer',
-        ]);
-
-        $validator = Validator::make($request->all(), $validationRules);
-
-        if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'errors' => $validator->errors()->all(),
-                'status' => 'failure to validate inputs',
-            ];
-        }
-
-        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
-        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
-        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
-        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
-        $region = $this->globalDataService->getRegionFilterValues($request['region']);
-        $mirror = $request['mirror'];
-        $minimumGames = $request['minimum_games'];
-
-        $cacheKey = 'GlobalHeroCompositionStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
-
-        
-        if (! env('Production')) {
-            Cache::store('database')->forget($cacheKey);
-        }
-        
-
-        $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
-            $gameType,
-            $gameMap,
-            $hero,
-            $mirror,
-            $region,
-            $minimumGames
-        ) {
-
-            $data = GlobalHeroCompositions::query()
-                ->select('hero_composition_id', 'win_loss')
-                ->selectRaw('SUM(games_played) as games_played')
-                ->filterByGameVersion($gameVersion)
-                ->filterByGameType($gameType)
-                ->filterByGameMap($gameMap)
-                ->filterByHero($hero)
-                ->excludeMirror($mirror)
-                ->filterByRegion($region)
-                ->groupBy('hero_composition_id', 'win_loss')
-                ->with(['composition'])
-                // ->toSql();
-                ->get();
-            $heroData = $this->globalDataService->getHeroes();
-            $heroData = $heroData->keyBy('id');
-            
-            $totalGamesPlayed = collect($data)->sum('games_played') / 2;
-            
-            $filteredData = collect($data)
-                ->groupBy('hero_composition_id')
-                ->map(function ($group) use ($totalGamesPlayed, $heroData, $minimumGames) {
-                    $wins = $group->where('win_loss', 1)->sum('games_played');
-                    $losses = $group->where('win_loss', 0)->sum('games_played');
-                    $gamesPlayed = $wins + $losses;
-
-                    if ($gamesPlayed <= $minimumGames) {
-                        return null;
-                    }
-                    $winRate = 0;
-                    if ($gamesPlayed > 0) {
-                        $winRate = ($wins / $gamesPlayed) * 100;
-                    }
-
-                    $popularity = round(($gamesPlayed / $totalGamesPlayed) * 100, 2);
-
-                    $compositionData = $group->first()['composition'];
-
-
-                    $hero_one = $heroData[$group->first()['composition']['hero_one']];
-                    $hero_two = $heroData[$group->first()['composition']['hero_two']];
-                    $hero_three = $heroData[$group->first()['composition']['hero_three']];
-                    $hero_four = $heroData[$group->first()['composition']['hero_four']];
-                    $hero_five = $heroData[$group->first()['composition']['hero_five']];
-
-                    return [
-                        'hero_composition_id' => $group->first()['hero_composition_id'],
-                        'wins' => $wins,
-                        'losses' => $losses,
-                        'win_rate' => round($winRate, 2),
-                        'games_played' => round($gamesPlayed),
-                        'popularity' => $popularity,
-                        'hero_one' => $hero_one,
-                        'hero_two' => $hero_two,
-                        'hero_three' => $hero_three,
-                        'hero_four' => $hero_four,
-                        'hero_five' => $hero_five,
                     ];
                 })
                 ->filter()

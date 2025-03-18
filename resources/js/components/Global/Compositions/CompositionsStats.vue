@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText" :heading="'Role Compositional Statistics'"></page-heading>
+    <page-heading :infoText1="infoText" :heading="'Compositional Statistics'"></page-heading>
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
@@ -44,7 +44,7 @@
         <thead>
           <tr>
             <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-              Role Composition
+              Composition
             </th>
             <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Win Rate %
@@ -153,7 +153,7 @@
 
 <script>
 export default {
-  name: 'RoleCompositionsStats',
+  name: 'CompositionsStats',
   components: {
   },
   props: {
@@ -174,7 +174,7 @@ export default {
     return {
       dataError: false,
       windowWidth: window.innerWidth,
-      infoText: "Role Composition stats based on differing increments, stat types, game type, or Rank. Click on a Composition to see detailed composition information.",
+      infoText: "Composition stats based on differing increments, stat types, game type, or Rank. Click on a Composition to see detailed composition information.",
       sortKey: '',
       sortDir: 'desc',
       compositiondata: null,
@@ -237,7 +237,7 @@ export default {
       this.cancelTokenSource = this.$axios.CancelToken.source();
 
       try{
-        const response = await this.$axios.post("/api/v1/global/role/compositions", {
+        const response = await this.$axios.post("/api/v1/global/compositions", {
           timeframe_type: this.timeframetype,
           timeframe: this.timeframe,
           region: this.region,
