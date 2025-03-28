@@ -32,6 +32,7 @@
 
     </script>
 
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1,  user-scalable=yes">
@@ -41,7 +42,8 @@
     <title>@yield('title') | Heroes Profile</title>
     <meta name = "keywords" content = "@yield('meta_keywords')" />
     <meta name = "description" content = "@yield('meta_description')" />
-    <meta property="og:image" content="">
+
+    <meta property="og:image" content="{{ asset('images/logo/heroesprofilelogo.png') }}">
 
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
