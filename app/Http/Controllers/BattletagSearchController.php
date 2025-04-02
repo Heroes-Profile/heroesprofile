@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BannedAccountsNote;
+use App\Models\BannedAccount;
 use App\Models\Battletag;
 use App\Models\Map;
 use App\Models\Replay;
@@ -52,7 +52,7 @@ class BattletagSearchController extends Controller
         $uniqueBlizzIDRegion = [];
 
         $privateAccounts = $this->globalDataService->getPrivateAccounts();
-        $bannedAccounts = BannedAccountsNote::get();
+        $bannedAccounts = BannedAccount::get();
 
         foreach ($data as $row) {
             $blizz_id = $row['blizz_id'];

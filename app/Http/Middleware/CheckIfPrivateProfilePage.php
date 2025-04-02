@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\BannedAccountsNote;
+use App\Models\BannedAccount;
 use App\Models\BattlenetAccount;
 use App\Services\GlobalDataService;
 use Closure;
@@ -24,7 +24,7 @@ class CheckIfPrivateProfilePage
             return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
         });
 
-        $bannedAccounts = BannedAccountsNote::get();
+        $bannedAccounts = BannedAccount::get();
         $existingBan = $bannedAccounts->contains(function ($account) use ($blizz_id, $region) {
             return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
         });

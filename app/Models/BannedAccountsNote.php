@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BannedAccountsNote extends Model
+class BannedAccount extends Model
 {
-    protected $table = 'banned_accounts_notes';
+    protected $table = 'banned_accounts';
 
-    protected $primaryKey = 'banned_accounts_notes_id';
+    protected $primaryKey = 'banned_accounts_id';
 
     protected $connection = 'heroesprofile';
 
