@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Global;
 
-use App\Models\BannedAccountsNote;
+use App\Models\BannedAccount;
 use App\Models\BattlenetAccount;
 use App\Models\HeroesDataTalent;
 use App\Models\Leaderboard;
@@ -126,7 +126,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             $talentData = $talentData->keyBy('talent_id');
 
             $patreonAccounts = BattlenetAccount::has('patreonAccount')->get();
-            $bannedAccounts = BannedAccountsNote::get();
+            $bannedAccounts = BannedAccount::get();
 
             $blizzIDRegionMapping = [];
             $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber, $patreonAccounts, &$blizzIDRegionMapping, $tierrank, $bannedAccounts) {
