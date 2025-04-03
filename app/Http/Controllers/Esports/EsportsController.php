@@ -15,6 +15,7 @@ use App\Rules\NGSDivisionInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class EsportsController extends Controller
 {
@@ -59,7 +60,11 @@ class EsportsController extends Controller
         $otherValidationRules = [
             'division' => 'nullable|string',
             'season' => 'nullable|numeric',
-            'tournament' => 'nullable|in:main,nationscup',
+            'tournament' => [
+                'nullable',
+                Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
+                'in:main,nationscup',
+            ],
         ];
 
         $validator = Validator::make(compact('esport', 'battletag', 'blizz_id'), $validationRules);
@@ -98,7 +103,11 @@ class EsportsController extends Controller
         $otherValidationRules = [
             'division' => 'nullable|string',
             'season' => 'nullable|numeric',
-            'tournament' => 'nullable|in:main,nationscup',
+            'tournament' => [
+                'nullable',
+                Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
+                'in:main,nationscup',
+            ],
         ];
 
         $validator = Validator::make(compact('esport', 'team'), $validationRules);
@@ -148,7 +157,11 @@ class EsportsController extends Controller
         $otherValidationRules = [
             'division' => 'nullable|string',
             'season' => 'nullable|numeric',
-            'tournament' => 'nullable|in:main,nationscup',
+            'tournament' => [
+                'nullable',
+                Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
+                'in:main,nationscup',
+            ],
         ];
 
         $validator = Validator::make(compact('esport', 'battletag', 'blizz_id'), $validationRules);
@@ -190,7 +203,11 @@ class EsportsController extends Controller
         $otherValidationRules = [
             'division' => 'nullable|string',
             'season' => 'nullable|numeric',
-            'tournament' => 'nullable|in:main,nationscup',
+            'tournament' => [
+                'nullable',
+                Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
+                'in:main,nationscup',
+            ],
         ];
 
         $validator = Validator::make(compact('esport', 'battletag', 'blizz_id', 'hero'), $validationRules);
@@ -235,7 +252,11 @@ class EsportsController extends Controller
         $otherValidationRules = [
             'division' => 'nullable|string',
             'season' => 'nullable|numeric',
-            'tournament' => 'nullable|in:main,nationscup',
+            'tournament' => [
+                'nullable',
+                Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
+                'in:main,nationscup',
+            ],
         ];
 
         $validator = Validator::make(compact('esport', 'battletag', 'blizz_id', 'game_map'), $validationRules);
@@ -276,7 +297,11 @@ class EsportsController extends Controller
         $otherValidationRules = [
             'division' => 'nullable|string',
             'season' => 'nullable|numeric',
-            'tournament' => 'nullable|in:main,nationscup',
+            'tournament' => [
+                'nullable',
+                Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
+                'in:main,nationscup',
+            ],
         ];
 
         $validator = Validator::make(compact('esport', 'team'), $validationRules);
@@ -317,7 +342,11 @@ class EsportsController extends Controller
             'division' => 'nullable|string',
             'season' => 'nullable|numeric',
             'pagination_page' => 'required:integer',
-            'tournament' => 'nullable|in:main,nationscup',
+            'tournament' => [
+                'nullable',
+                Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
+                'in:main,nationscup',
+            ],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -464,7 +493,11 @@ class EsportsController extends Controller
             'division' => 'nullable|string',
             'season' => 'nullable|numeric',
             'pagination_page' => 'required:integer',
-            'tournament' => 'nullable|in:main,nationscup',
+            'tournament' => [
+                'nullable',
+                Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
+                'in:main,nationscup',
+            ],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -559,7 +592,11 @@ class EsportsController extends Controller
             'hero' => ['sometimes', 'nullable', new HeroInputValidation],
             'game_map' => ['sometimes', 'nullable',  new GameMapInputValidation],
             'pagination_page' => 'required:integer',
-            'tournament' => 'nullable|in:main,nationscup',
+            'tournament' => [
+                'nullable',
+                Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
+                'in:main,nationscup',
+            ],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -676,7 +713,11 @@ class EsportsController extends Controller
             'esport' => 'required|in:NGS,CCL,MastersClash,NutCup,hi,hi_nc',
             'season' => 'required|numeric',
             'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation],
-            'tournament' => 'nullable|in:main,nationscup',
+            'tournament' => [
+                'nullable',
+                Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
+                'in:main,nationscup',
+            ],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -759,7 +800,11 @@ class EsportsController extends Controller
             'season' => 'required|numeric',
             'division' => ['sometimes', 'nullable', new NGSDivisionInputValidation],
             'hero' => ['required', new HeroInputValidation],
-            'tournament' => 'nullable|in:main,nationscup',
+            'tournament' => [
+                'nullable',
+                Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
+                'in:main,nationscup',
+            ],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -977,7 +1022,11 @@ class EsportsController extends Controller
 
         $validationRules = [
             'esport' => 'required|in:NGS,CCL,MastersClash,HeroesInternational',
-            'tournament' => 'nullable|in:main,nationscup',
+            'tournament' => [
+                'nullable',
+                Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
+                'in:main,nationscup',
+            ],
             'team' => 'nullable|string',
             'battletag' => 'nullable|string',
             'blizz_id' => 'nullable|string',
@@ -985,7 +1034,11 @@ class EsportsController extends Controller
             'season' => 'nullable|numeric',
             'hero' => ['sometimes', 'nullable', new HeroInputValidation],
             'game_map' => ['sometimes', 'nullable',  new GameMapInputValidation],
-            'tournament' => 'nullable|in:main,nationscup',
+            'tournament' => [
+                'nullable',
+                Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
+                'in:main,nationscup',
+            ],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);

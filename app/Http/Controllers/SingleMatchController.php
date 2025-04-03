@@ -11,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class SingleMatchController extends Controller
 {
@@ -35,6 +36,7 @@ class SingleMatchController extends Controller
                 ];
             }
         }
+
         return view('singleMatch')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'esport' => null,
@@ -48,7 +50,11 @@ class SingleMatchController extends Controller
         $validationRules = [
             'esport' => 'required|in:NGS,CCL,MastersClash,HeroesInternational',
             'replayID' => 'required|integer',
-            'tournament' => 'nullable|in:main,nationscup',
+            'tournament' => [
+                'nullable',
+                Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
+                'in:main,nationscup',
+            ],
         ];
 
         $validator = Validator::make(compact('esport', 'replayID'), $validationRules);
@@ -64,26 +70,31 @@ class SingleMatchController extends Controller
             }
 
         }
+
         return view('singleMatch')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'esport' => $esport,
             'replayID' => $replayID,
-            'tournament' => $request["tournament"],
+            'tournament' => $request['tournament'],
         ]);
     }
 
     public function getData(Request $request)
     {
+
         $validationRules = [
             'esport' => 'nullable|in:NGS,CCL,MastersClash,Other,HeroesInternational',
             'series' => 'nullable|string',
-            'tournament' => 'nullable|in:main,nationscup',
+            'tournament' => [
+                'nullable',
+                Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
+                'in:main,nationscup',
+            ],
             'user' => 'nullable',
             'replayID' => [
                 'required',
                 'integer',
                 function ($attribute, $value, $fail) use ($request) {
-
                     if (is_null($request->input('esport'))) {
                         $validator = new ReplayIDValidation;
                         if (! $validator->passes($attribute, $value)) {
