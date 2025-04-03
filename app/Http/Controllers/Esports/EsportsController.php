@@ -340,10 +340,10 @@ class EsportsController extends Controller
 
         if ($this->esport == 'MastersClash') {
             $this->schema .= '_mcl';
-        }else if($this->esport == 'HeroesInternational'){
-            if($tournament == "main"){
+        } elseif ($this->esport == 'HeroesInternational') {
+            if ($tournament == 'main') {
                 $this->schema .= '_hi';
-            }else if($tournament == "nationscup"){
+            } elseif ($tournament == 'nationscup') {
                 $this->schema .= '_hi_nc';
             }
         } elseif ($this->esport) {
@@ -547,7 +547,7 @@ class EsportsController extends Controller
 
     public function getRecentMatchData(Request $request)
     {
-        //return response()->json($request->all());
+        // return response()->json($request->all());
 
         $validationRules = [
             'esport' => 'required|in:NGS,CCL,MastersClash,HeroesInternational',
@@ -1027,7 +1027,7 @@ class EsportsController extends Controller
 
             $this->team_name = $request['team'];
         } elseif ($this->esport == 'hi' && $this->tournament == 'main') {
-            $this->team = $request['team'] ? HeroesInternationalMainTeam::where('season', $this->season)->where('team_name', $request['team'])->first()->team_id : null;
+            $this->team = $request['team'] ? HeroesInternationalMainTeam::where('season', 1)->where('team_name', $request['team'])->first()->team_id : null;
             $this->team_name = $request['team'];
         } elseif ($this->esport == 'hi_nc' && $this->tournament == 'nationscup') {
 

@@ -35,7 +35,6 @@ class SingleMatchController extends Controller
                 ];
             }
         }
-
         return view('singleMatch')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'esport' => null,
@@ -56,7 +55,7 @@ class SingleMatchController extends Controller
         if ($validator->fails()) {
             if (env('Production')) {
                 return \Redirect::to('/');
-            }else{
+            } else {
                 return [
                     'data' => compact('esport', 'replayID'),
                     'status' => 'failure to validate inputs',
@@ -64,7 +63,6 @@ class SingleMatchController extends Controller
             }
 
         }
-
         return view('singleMatch')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'esport' => $esport,
@@ -100,7 +98,7 @@ class SingleMatchController extends Controller
         if ($validator->fails()) {
             if (env('Production')) {
                 return \Redirect::to('/');
-            }else{
+            } else {
                 return [
                     'data' => $request->all(),
                     'errors' => $validator->errors()->all(),
@@ -114,18 +112,16 @@ class SingleMatchController extends Controller
 
         $this->schema = 'heroesprofile';
 
-        $tournament = $request["tournament"];
-
-
+        $tournament = $request['tournament'];
 
         if ($this->esport == 'MastersClash') {
             $this->schema .= '_mcl';
         } elseif ($this->esport == 'Other') {
             $this->schema .= '_ml';
-        }else if($this->esport == 'HeroesInternational'){
-            if($tournament == "main"){
+        } elseif ($this->esport == 'HeroesInternational') {
+            if ($tournament == 'main') {
                 $this->schema .= '_hi';
-            }else if($tournament == "nationscup"){
+            } elseif ($tournament == 'nationscup') {
                 $this->schema .= '_hi_nc';
             }
 
@@ -227,7 +223,7 @@ class SingleMatchController extends Controller
 
                 ]);
             })
-            ->when($this->esport == 'CCL' || $this->esport == 'HeroesInternational' ||  $this->esport == 'Other', function ($query) {
+            ->when($this->esport == 'CCL' || $this->esport == 'HeroesInternational' || $this->esport == 'Other', function ($query) {
                 return $query->addSelect([
                     $this->schema.'.player.mastery_tier as mastery_taunt',
                     $this->schema.'.player.team_id',
@@ -838,7 +834,6 @@ class SingleMatchController extends Controller
             $team_name_0 = $result->team_0_id;
             $team_name_1 = $result->team_1_id;
         }
-
 
         $team_zero_data = DB::table($this->schema.'.teams')
             ->where('season', $result->season)
