@@ -36,7 +36,7 @@
           </hero-image-wrapper>
         </div>
 
-        <a v-else-if="esport && esport != 'Other' && match && playerlink && item.hero" :href="'/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name">
+        <a v-else-if="esport && esport != 'Other' && match && playerlink && item.hero" :href="'/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name + (tournament ? '?tournament=' + tournament : '')" v-if="!item.check">
           <hero-image-wrapper :size="'big'" :hero="item.hero">
             <image-hover-box 
               :title="item.hero.name" 
@@ -124,6 +124,7 @@
       popupsize: String,
       showpopup: true,
       series: String,
+      tournament: String,
     },
     data(){
       return {

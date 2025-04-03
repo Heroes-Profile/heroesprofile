@@ -68,6 +68,7 @@
       esport: Boolean,
       esportLeague: String,
       esportSeries: String,
+      tournament: String,
     },
     data(){
       return {
@@ -88,6 +89,11 @@
           if(this.esportSeries){
             return '/Esports/' + this.esportLeague + '/' + this.esportSeries + '/Match/Single/' + this.data.replayID;
           }
+
+          if(this.esportLeague == "HeroesInternational"){
+            return '/Esports/' + this.esportLeague + '/Match/Single/' + this.data.replayID + '/?tournament=' + this.tournament;
+          }
+
           return '/Esports/' + this.esportLeague + '/Match/Single/' + this.data.replayID;
         }
         return '/Match/Single/' + this.data.replayID;

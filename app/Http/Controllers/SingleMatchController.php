@@ -48,6 +48,7 @@ class SingleMatchController extends Controller
         $validationRules = [
             'esport' => 'required|in:NGS,CCL,MastersClash,HeroesInternational',
             'replayID' => 'required|integer',
+            'tournament' => 'nullable|in:main,nationscup',
         ];
 
         $validator = Validator::make(compact('esport', 'replayID'), $validationRules);
@@ -68,6 +69,7 @@ class SingleMatchController extends Controller
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'esport' => $esport,
             'replayID' => $replayID,
+            'tournament' => $request["tournament"],
         ]);
     }
 
@@ -76,6 +78,7 @@ class SingleMatchController extends Controller
         $validationRules = [
             'esport' => 'nullable|in:NGS,CCL,MastersClash,Other,HeroesInternational',
             'series' => 'nullable|string',
+            'tournament' => 'nullable|in:main,nationscup',
             'user' => 'nullable',
             'replayID' => [
                 'required',
@@ -111,10 +114,20 @@ class SingleMatchController extends Controller
 
         $this->schema = 'heroesprofile';
 
+        $tournament = $request["tournament"];
+
+
+
         if ($this->esport == 'MastersClash') {
             $this->schema .= '_mcl';
         } elseif ($this->esport == 'Other') {
             $this->schema .= '_ml';
+        }else if($this->esport == 'HeroesInternational'){
+            if($tournament == "main"){
+                $this->schema .= '_hi';
+            }else if($tournament == "nationscup"){
+                $this->schema .= '_hi_nc';
+            }
 
         } elseif ($this->esport) {
             $this->schema .= '_'.strtolower($this->esport);
@@ -214,7 +227,7 @@ class SingleMatchController extends Controller
 
                 ]);
             })
-            ->when($this->esport == 'CCL' || $this->esport == 'Other', function ($query) {
+            ->when($this->esport == 'CCL' || $this->esport == 'HeroesInternational' ||  $this->esport == 'Other', function ($query) {
                 return $query->addSelect([
                     $this->schema.'.player.mastery_tier as mastery_taunt',
                     $this->schema.'.player.team_id',
@@ -267,7 +280,7 @@ class SingleMatchController extends Controller
                 'winner' => ($replayGroup[0]->team == 0 && $replayGroup[0]->winner == 1) ? 0 : 1,
                 'players' => [],
                 'replay_bans' => $this->getReplayBans($replayID, $heroData),
-                'draft_order' => $this->esport != 'CCL' && $this->esport != 'MastersClash' ? $this->getDraftOrder($replayID, $heroData) : null,
+                'draft_order' => $this->esport != 'CCL' && $this->esport != 'MastersClash' && $this->esport != 'HeroesInternational' ? $this->getDraftOrder($replayID, $heroData) : null,
                 'experience_breakdown' => $this->getExperienceBreakdown($replayID),
                 'team_names' => $team_names,
                 'map_bans' => ($this->esport && $this->esport != 'Other') ? $this->getMapBans($replayID, $maps, $team_names) : null,
@@ -766,13 +779,13 @@ class SingleMatchController extends Controller
             if ($row->team == 0) {
                 if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
                     $team_zero_id = $row->team_name;
-                } elseif ($this->esport == 'CCL' || $this->esport == 'Other') {
+                } elseif ($this->esport == 'CCL' || $this->esport == 'Other' || $this->esport == 'HeroesInternational') {
                     $team_zero_id = $row->team_id;
                 }
             } else {
                 if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
                     $team_one_id = $row->team_name;
-                } elseif ($this->esport == 'CCL' || $this->esport == 'Other') {
+                } elseif ($this->esport == 'CCL' || $this->esport == 'Other' || $this->esport == 'HeroesInternational') {
                     $team_one_id = $row->team_id;
                 }
             }
@@ -806,7 +819,7 @@ class SingleMatchController extends Controller
                     $this->schema.'.replay.team_1_name',
                 ]);
             })
-            ->when($this->esport == 'CCL', function ($query) {
+            ->when($this->esport == 'CCL' || $this->esport == 'HeroesInternational', function ($query) {
                 return $query->addSelect([
                     $this->schema.'.replay.team_0_id',
                     $this->schema.'.replay.team_1_id',
@@ -821,10 +834,11 @@ class SingleMatchController extends Controller
         if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
             $team_name_0 = $result->team_0_name;
             $team_name_1 = $result->team_1_name;
-        } elseif ($this->esport == 'CCL') {
+        } elseif ($this->esport == 'CCL' || $this->esport == 'HeroesInternational') {
             $team_name_0 = $result->team_0_id;
             $team_name_1 = $result->team_1_id;
         }
+
 
         $team_zero_data = DB::table($this->schema.'.teams')
             ->where('season', $result->season)
@@ -897,7 +911,7 @@ class SingleMatchController extends Controller
                     $this->schema.'.replay.team_1_name',
                 ]);
             })
-            ->when($this->esport == 'CCL', function ($query) {
+            ->when($this->esport == 'CCL' || $this->esport == 'HeroesInternational', function ($query) {
                 return $query->addSelect([
                     $this->schema.'.replay.team_0_id',
                     $this->schema.'.replay.team_1_id',
@@ -915,7 +929,7 @@ class SingleMatchController extends Controller
             ->when($this->esport == 'MastersClash', function ($query) use ($result) {
                 return $query->where('team_0_name', $result->team_0_name)->where('team_1_name', $result->team_1_name);
             })
-            ->when($this->esport == 'CCL', function ($query) use ($result) {
+            ->when($this->esport == 'CCL' || $this->esport == 'HeroesInternational', function ($query) use ($result) {
                 return $query->where('team_0_id', $result->team_0_id)->where('team_1_id', $result->team_1_id);
             })
             ->where('round', $result->round)

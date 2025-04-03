@@ -81,7 +81,6 @@ export default {
     }
   },
   created(){
-    console.log(this.tournament);
     this.$nextTick(() => {
         const responsivetable = this.$refs.responsivetable;
           if (responsivetable && this.windowWidth < 1500) {

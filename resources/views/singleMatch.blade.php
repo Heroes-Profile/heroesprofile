@@ -10,6 +10,7 @@
     :replayid="{{ $replayID }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
     :user="{{ json_encode(Auth::user()) }}"
+    :tournament="{{ json_encode($tournament) }}"
 >
 </single-match>
 @endsection

@@ -245,6 +245,7 @@
             :esport="true" 
             :esport-league="esport"
             :esport-series="series"
+            :tournament="tournament"
             :data="item"
           ></game-summary-box>
           <div class="flex justify-end mt-4">

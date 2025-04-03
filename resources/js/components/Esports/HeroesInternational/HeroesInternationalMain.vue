@@ -174,9 +174,7 @@ export default {
       cancelTokenSource: null,
     };
   },
-  created(){
-    console.log(this.tournament);
-    
+  created(){    
     this.preloadedImage.src = '/images/HI/heroes_international.png';
     this.season = this.defaultseason;
   },
