@@ -43,6 +43,7 @@ class HeroesInternationalController extends Controller
                     'defaultseason' => 1,
                     'filters' => $this->globalDataService->getFilterData(),
                     'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
+                    'tournament' => 'main',
                 ]);
         } elseif ($tournament == 'nationscup') {
             return view('Esports.HeroesInternational.heroesInternationalNationsCup')
@@ -52,6 +53,7 @@ class HeroesInternationalController extends Controller
                     'defaultseason' => 1,
                     'filters' => $this->globalDataService->getFilterData(),
                     'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
+                    'tournament' => 'nationscup',
                 ]);
         } else {
             return view('Esports.HeroesInternational.heroesInternationalEntry')->with([

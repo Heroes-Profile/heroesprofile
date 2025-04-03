@@ -163,28 +163,27 @@ class PreMatchController extends Controller
                         ->values();
 
                     $combinedTopHeroes = collect([$qm_topHeroes, $sl_topHeroes, $ar_topHeroes])
-                      ->flatten(1) 
-                      ->groupBy('hero') 
-                      ->map(function ($heroGames, $hero) {
-                          return [
-                              'hero' => $hero,
-                              'count' => $heroGames->sum('count'), 
-                          ];
-                      })
-                      ->sortByDesc('count') 
-                      ->take(3) 
-                      ->values(); 
+                        ->flatten(1)
+                        ->groupBy('hero')
+                        ->map(function ($heroGames, $hero) {
+                            return [
+                                'hero' => $hero,
+                                'count' => $heroGames->sum('count'),
+                            ];
+                        })
+                        ->sortByDesc('count')
+                        ->take(3)
+                        ->values();
 
                     $heroData = $this->globalDataService->getHeroes();
                     $heroData = $heroData->keyBy('id');
 
                     $combinedTopHeroes = $combinedTopHeroes->map(function ($data) use ($heroData) {
-                      return [
-                          'hero' => $heroData[$data['hero']],
-                          'count' => $data['count'],
-                      ];
+                        return [
+                            'hero' => $heroData[$data['hero']],
+                            'count' => $data['count'],
+                        ];
                     });
-                  
 
                     return [
                         'battletag' => explode('#', $player->battletag)[0],

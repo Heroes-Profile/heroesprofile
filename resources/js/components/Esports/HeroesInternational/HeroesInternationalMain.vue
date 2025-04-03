@@ -88,7 +88,7 @@
               </a>
             </li>
           </ul>
-          <esports-recent-matches :data="recentMatchesData.data" :esport="'hi'"></esports-recent-matches>
+          <esports-recent-matches :data="recentMatchesData.data" :esport="'hi'" :tournament="tournament"></esports-recent-matches>
           <ul class="pagination flex max-w-[1500px] mx-auto px-2 justify-between mb-2 text-sm">
             <li class="page-item mr-auto" :class="{ disabled: !recentMatchesData.pagination.prev_page_url }">
               <a class="page-link" @click.prevent="getRecentMatches(recentMatchesData.pagination.current_page - 1)" href="#">
@@ -155,6 +155,7 @@ export default {
     filters: Object,
     heroes: Object,
     talentimages: Object,
+    tournament: String,
   },
   data() {
     return {
@@ -173,7 +174,7 @@ export default {
       cancelTokenSource: null,
     };
   },
-  created(){
+  created(){    
     this.preloadedImage.src = '/images/HI/heroes_international.png';
     this.season = this.defaultseason;
   },

@@ -404,7 +404,6 @@ class GlobalDataService
                 return ['code' => substr($item->game_version, 0, 4), 'name' => substr($item->game_version, 0, 4)];  // use the first 4 characters
             });
 
-
         $filterData->timeframes_sub_grouped = SeasonGameVersion::select('game_version')
             ->where('game_version', '>=', $filtersMinimumPatch)
             ->where('valid_globals', 1)
@@ -415,6 +414,7 @@ class GlobalDataService
             ->groupBy(function ($date) {
                 // Group by major.minor.patch (first three segments)
                 $segments = explode('.', $date->game_version);
+
                 return isset($segments[2]) ? "{$segments[0]}.{$segments[1]}.{$segments[2]}" : "{$segments[0]}.{$segments[1]}";
             })
             ->map(function ($grouped) {
@@ -424,6 +424,7 @@ class GlobalDataService
             ->map(function ($item) {
                 $segments = explode('.', $item->game_version);
                 $code = isset($segments[2]) ? "{$segments[0]}.{$segments[1]}.{$segments[2]}" : "{$segments[0]}.{$segments[1]}";
+
                 return ['code' => $code, 'name' => $code];  // Use the first three segments
             });
 
@@ -868,9 +869,9 @@ class GlobalDataService
             $gameVersion = $query->get()
                 ->pluck('game_version')
                 ->toArray();
+
             return $gameVersion;
         }
-
 
         return $timeframes;
     }
