@@ -29,7 +29,7 @@
         <tbody>
           <tr v-for="(row, index) in sortedData" :key="index">
             <td>
-              <a class="link" :href="`/Esports/${esport}/Match/Single/` + row.replayID">{{ row.replayID }}</a>
+              <a class="link" :href="`/Esports/${esport}${esport === 'Other' ? `/${series}` : ''}/Match/Single/` + row.replayID">{{ row.replayID }}</a>
             </td>
             <td>
               {{ formatDate(row.game_date) }}
