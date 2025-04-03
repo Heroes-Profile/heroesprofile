@@ -245,11 +245,12 @@
             :esport="true" 
             :esport-league="esport"
             :esport-series="series"
+            :tournament="tournament"
             :data="item"
           ></game-summary-box>
           <div class="flex justify-end mt-4">
             <custom-button 
-              :href="`/Esports/${esport}${esport === 'Other' ? `/${series}` : ''}/Team/${team}/Match/History${season ? `?season=${season}` : ''}${esport === 'NGS' && division ? `&division=${division}` : ''}${esport === 'HeroesInternational' && tournament ? `&tournament=${tournament}` : ''}`" 
+              :href="`/Esports/${esport}${esport === 'Other' ? `/${series}` : ''}/Team/${team}/Match/History${season ? `?season=${season}` : ''}${esport === 'NGS' && division ? `&division=${division}` : ''}${esport === 'HeroesInternational' && tournament ? `?tournament=${tournament}` : ''}`" 
               class="ml-auto" 
               text="View Match History">
             </custom-button>

@@ -30,9 +30,9 @@ use App\Http\Controllers\Player\PlayerMatchHistory;
 use App\Http\Controllers\Player\PlayerMatchupsController;
 use App\Http\Controllers\Player\PlayerMMRController;
 use App\Http\Controllers\Player\PlayerTalentsController;
+use App\Http\Controllers\PreMatchController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
-use App\Http\Controllers\PreMatchController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -59,9 +59,7 @@ Route::prefix('v1')->group(function () {
 
     Route::post('global/talents/builder/replays', [GlobalTalentBuilderController::class, 'getReplayData']);
 
-
     Route::post('global/talents/', [GlobalTalentStatsController::class, 'getGlobalHeroTalentData']);
-
 
     Route::post('global/talents/build', [GlobalTalentStatsController::class, 'getGlobalHeroTalentBuildData']);
 

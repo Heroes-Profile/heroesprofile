@@ -63,10 +63,11 @@
             :esport="true" 
             :esport-league="esport"
             :esport-series="series"
+            :tournament="tournament"
             :data="item"
           ></game-summary-box>
           <div class="max-w-[1500px] mx-auto flex justify-end">
-            <custom-button :href="`/Esports/${esport}${esport === 'Other' ? `/${series}` : ''}/Player/${battletag}/${blizz_id}/Match/History`" class="flex justify-end " text="View Match History"></custom-button>
+            <custom-button :href="getMatchHistoryUrl()" class="flex justify-end " text="View Match History"></custom-button>
           </div>
         </div>
       </div>
@@ -110,7 +111,7 @@ export default {
       cancelTokenSource: null,
     }
   },
-  created(){
+  created(){    
     this.modifiedseason = this.season;
     this.modifieddivision = this.division;
   },
@@ -256,6 +257,15 @@ export default {
       }else if(this.esport == "Other"){
         return "/images/EsportOther/" + this.seriesimage;
       }
+    },
+    getMatchHistoryUrl(){
+      if(this.esport == 'Other'){
+        return `/Esports/${this.esport}/${this.series}/Player/${this.battletag}/${this.blizz_id}/Match/History`;
+      }else if(this.esport == 'HeroesInternational'){
+        return `/Esports/${this.esport}/Player/${this.battletag}/${this.blizz_id}/Match/History?tournament=${this.tournament}`;
+      }
+
+      return `/Esports/${this.esport}/Player/${this.battletag}/${this.blizz_id}/Match/History`;
     },
   }
 }

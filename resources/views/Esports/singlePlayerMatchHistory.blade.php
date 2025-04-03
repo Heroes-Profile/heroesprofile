@@ -12,6 +12,7 @@
     :seriesimage="{{ isset($seriesimage) ? json_encode($seriesimage) : 'null' }}" 
     :season="{{ json_encode($season) }}" 
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
+    :tournament="{{ json_encode($tournament) }}"
 
   >  
   </esports-player-match-history>

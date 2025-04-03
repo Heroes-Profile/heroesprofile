@@ -397,7 +397,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
                 return $query->whereIn('region', $region);
             })
             ->orderByDesc('replay.game_date')
-        //->toSql();
+        // ->toSql();
             ->limit(10000)
             ->get();
 

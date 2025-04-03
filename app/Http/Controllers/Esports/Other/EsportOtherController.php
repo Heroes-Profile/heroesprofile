@@ -94,6 +94,8 @@ class EsportOtherController extends Controller
                 'regions' => $regions,
                 'tournaments' => $tournaments,
                 'teams' => $teams,
+                'tournament' => null,
+
             ]);
     }
 
@@ -161,6 +163,8 @@ class EsportOtherController extends Controller
                 'seasons' => $seasons,
                 'regions' => $regions,
                 'tournaments' => $tournaments,
+                'tournament' => null,
+
             ]);
     }
 
@@ -201,7 +205,7 @@ class EsportOtherController extends Controller
                 'team' => $team,
                 'season' => $request['season'],
                 'region' => $request['region'],
-                'tournament' => $request['tournament'],
+                'tournament' => null,
                 'image' => 'logo.png',
                 'division' => null,
             ]);
@@ -229,6 +233,7 @@ class EsportOtherController extends Controller
             'series' => $series,
             'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon,
             'replayID' => $replayID,
+            'tournament' => null,
         ]);
     }
 
@@ -269,7 +274,7 @@ class EsportOtherController extends Controller
                 'blizz_id' => $blizz_id,
                 'season' => $request['season'],
                 'division' => $request['division'],
-                'tournament' => $request['tournament'],
+                'tournament' => null,
             ]);
     }
 
@@ -436,6 +441,7 @@ class EsportOtherController extends Controller
             'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon,
             'filters' => $this->globalDataService->getFilterData(),
             'season' => $request['season'],
+            'tournament' => null,
         ]);
     }
 

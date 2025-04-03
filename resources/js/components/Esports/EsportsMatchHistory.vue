@@ -23,7 +23,7 @@
         <tbody>
           <tr v-for="(row, index) in sortedData" :key="index">
             <td>
-              <a class="link" :href="esport != 'Other' ? `/Esports/${esport}/Match/Single/` + row.replayID : `/Esports/${esport}/${series}/Match/Single/` + row.replayID">{{ row.replayID }}</a>
+              <a class="link" :href="getMatchUrl(row.replayID)">{{ row.replayID }}</a>
             </td>
             <td>
               {{ formatDate(row.game_date) }}
@@ -170,6 +170,16 @@ export default {
       if (this.cancelTokenSource) {
         this.cancelTokenSource.cancel('Request canceled by user');
       }
+    },
+    getMatchUrl(replayID){
+      if(this.esport == 'Other'){
+        return`/Esports/${this.esport}/${this.series}/Match/Single/` + replayID;
+      }else if(this.esport == 'HeroesInternational'){
+        return `/Esports/${this.esport}/Match/Single/` + replayID + '?tournament=' + this.tournament;
+      }
+
+
+      return `/Esports/${this.esport}/Match/Single/` + replayID;
     },
     filterData(filteredData){
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;

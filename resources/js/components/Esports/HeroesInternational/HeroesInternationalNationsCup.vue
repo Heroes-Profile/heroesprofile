@@ -72,7 +72,7 @@
           <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" color="teal" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal"  :ignoreclick="true"></custom-button>
         </div>
         
-        <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'hi_nc'"></esports-recent-matches>
+        <esports-recent-matches v-if="recentMatchesData" :data="recentMatchesData.data" :esport="'hi_nc'" :tournament="tournament"></esports-recent-matches>
       </div>
 
 
@@ -123,6 +123,7 @@ export default {
     filters: Object,
     heroes: Object,
     talentimages: Object,
+    tournament: String,
   },
   data() {
     return {

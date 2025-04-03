@@ -83,6 +83,7 @@ class EsportsController extends Controller
             'esport' => $esport,
             'filters' => $this->globalDataService->getFilterData(),
             'season' => $request['season'],
+            'tournament' => $request['tournament'],
         ]);
     }
 
@@ -335,9 +336,16 @@ class EsportsController extends Controller
         $this->battletag = $request['battletag'];
 
         $this->season = $request['season'];
+        $tournament = $request['tournament'];
 
         if ($this->esport == 'MastersClash') {
             $this->schema .= '_mcl';
+        } elseif ($this->esport == 'HeroesInternational') {
+            if ($tournament == 'main') {
+                $this->schema .= '_hi';
+            } elseif ($tournament == 'nationscup') {
+                $this->schema .= '_hi_nc';
+            }
         } elseif ($this->esport) {
             $this->schema .= '_'.strtolower($this->esport);
         }
@@ -1019,7 +1027,7 @@ class EsportsController extends Controller
 
             $this->team_name = $request['team'];
         } elseif ($this->esport == 'hi' && $this->tournament == 'main') {
-            $this->team = $request['team'] ? HeroesInternationalMainTeam::where('season', $this->season)->where('team_name', $request['team'])->first()->team_id : null;
+            $this->team = $request['team'] ? HeroesInternationalMainTeam::where('season', 1)->where('team_name', $request['team'])->first()->team_id : null;
             $this->team_name = $request['team'];
         } elseif ($this->esport == 'hi_nc' && $this->tournament == 'nationscup') {
 

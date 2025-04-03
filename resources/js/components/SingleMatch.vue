@@ -22,7 +22,7 @@
             {{ data.game_type }}
           </span>
           <span v-else>
-            {{ series ? series : esport }}
+            {{ getEsportTitle() }}
           </span>
           <span>{{ data.game_length }}</span>
           <span v-if="data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))" class="link" @click="downloadReplay(data, replayid)">
@@ -35,7 +35,7 @@
       <div class=" mdp-10 text-center ">
         <div class="flex  justify-center max-w-[1500px] mx-auto  md:gap-10">
           <div class=" max-w-[50%]  md:max-w-[600px]">
-            <group-box class="md:w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :series="series" :winnerloser="getWinnerLoser(0, data.winner)" :esportteamname="getEsportTeamName(0)" popupsize="large" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
+            <group-box class="md:w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :series="series" :tournament="tournament" :winnerloser="getWinnerLoser(0, data.winner)" :esportteamname="getEsportTeamName(0)" popupsize="large" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
 
 
             <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
@@ -75,7 +75,7 @@
 
 
           <div class=" max-w-[50%]  md:max-w-[600px]">
-            <group-box class="md:w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :series="series" :winnerloser="getWinnerLoser(1, data.winner)" :esportteamname="getEsportTeamName(1)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'" :winner="data.winner == 1 ? true : false"></group-box>
+            <group-box class="md:w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :series="series" :tournament="tournament" :winnerloser="getWinnerLoser(1, data.winner)" :esportteamname="getEsportTeamName(1)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'" :winner="data.winner == 1 ? true : false"></group-box>
 
             <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
               {{ esport ? this.data.team_names.team_two.team_name : "Team 2" }} Bans
@@ -134,7 +134,7 @@
           <tbody>
             <tr v-for="(row, index) in data.match_games" :key="index">
               <td width="25%">
-                <a v-if="esport" class="link" :href="`/Esports/${esport}/Match/Single/${row.replayID}`">{{ row.replayID }}</a>
+                <a v-if="esport" class="link" :href="`/Esports/${esport}/Match/Single/${row.replayID}${tournament ? '?tournament=' + tournament : ''}`">{{ row.replayID }}</a>
               </td>
               <td width="25%">{{ row.round }}</td>
               <td width="25%">{{ row.game }}</td>
@@ -502,6 +502,7 @@
       replayid: Number,
       user: Object,
       patreonUser: Boolean,
+      tournament: String,
     },
     data(){
       return {
@@ -628,6 +629,7 @@
           esport: this.esport,
           replayID: this.replayid,
           user: this.user,
+          tournament: this.tournament,
         }, 
         {
           cancelToken: this.cancelTokenSource.token,
@@ -832,6 +834,10 @@
         if(this.series){
           return'/Esports/' + this.esport + "/" + this.series + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name;
         }
+
+        if(this.esport == "HeroesInternational"){
+          return '/Esports/' + this.esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name + "?tournament=" + this.tournament;
+        }
         return '/Esports/' + this.esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name;
       }
       return '/Player/' + item.battletag + '/' + item.blizz_id + '/' + this.data.region + '/Hero/' + item.hero.name;
@@ -850,11 +856,16 @@
             url = url + '/Hero/' + item.hero.name;
           }
           return url;
+    
         }else{
           url = '/Esports/' + this.esport + '/Player/' + item.battletag + '/' + item.blizz_id;
 
           if(heroPage){
             url = url + '/Hero/' + item.hero.name;
+          }
+
+          if(this.esport == "HeroesInternational"){
+            url = url + '?tournament=' + this.tournament;
           }
           return url;
         }
@@ -864,6 +875,20 @@
         url = url + '/Hero/' + item.hero.name;
       }
       return url;
+    },
+    getEsportTitle(){
+      if(this.series){
+        return this.series;
+      }else if(this.esport == "HeroesInternational"){
+        if(this.tournament == "main"){
+          return "Heroes International";
+        }
+        if(this.tournament == "nationscup"){
+          return "Heroes International Nations Cup";
+        }
+      }
+
+      return this.esport;
     },
   }
 }
