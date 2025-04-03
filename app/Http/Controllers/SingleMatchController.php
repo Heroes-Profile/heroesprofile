@@ -39,6 +39,7 @@ class SingleMatchController extends Controller
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'esport' => null,
             'replayID' => $replayID,
+            'tournament' => null,
         ]);
     }
 
