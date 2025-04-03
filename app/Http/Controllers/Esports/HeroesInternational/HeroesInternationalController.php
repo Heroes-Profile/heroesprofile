@@ -9,6 +9,7 @@ use App\Models\Map;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class HeroesInternationalController extends Controller
 {
@@ -17,7 +18,11 @@ class HeroesInternationalController extends Controller
     public function show(Request $request)
     {
         $validationRules = [
-            'tournament' => 'nullable|in:main,nationscup',
+            'tournament' => [
+                'nullable',
+                Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
+                'in:main,nationscup',
+            ],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
