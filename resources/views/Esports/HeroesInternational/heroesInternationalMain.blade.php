@@ -11,6 +11,6 @@
     :filters="{{ json_encode($filters) }}"
     :talentimages="{{ json_encode($talentimages) }}" 
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
-
+    :tournament="{{ json_encode($tournament) }}"
   ></heroes-international-main>
 @endsection

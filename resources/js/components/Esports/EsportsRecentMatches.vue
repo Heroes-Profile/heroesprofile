@@ -28,7 +28,10 @@
       </thead>
         <tbody>
           <tr v-for="(row, index) in sortedData" :key="index">
-            <td>
+            <td v-if="tournament">
+              <a class="link" :href="`/Esports/${getUrlValue(esport)}/Match/Single/${row.replayID}/?tournament=${tournament}`">{{ row.replayID }}</a>
+            </td>
+            <td v-else>
               <a class="link" :href="`/Esports/${getUrlValue(esport)}/Match/Single/${row.replayID}`">{{ row.replayID }}</a>
             </td>
             <td class="">
@@ -67,6 +70,7 @@ export default {
   props: {
     data: Array,
     esport: String,
+    tournament: String,
   },
   data(){
     return {
@@ -77,6 +81,7 @@ export default {
     }
   },
   created(){
+    console.log(this.tournament);
     this.$nextTick(() => {
         const responsivetable = this.$refs.responsivetable;
           if (responsivetable && this.windowWidth < 1500) {
@@ -123,8 +128,6 @@ export default {
     },
     getUrlValue(esport){
       if(esport == "hi" || esport == "hi_nc"){
-        return "HeroesInternational";
-      }else if(esport == "hi_nc"){
         return "HeroesInternational";
       }
 

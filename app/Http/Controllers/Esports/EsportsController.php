@@ -539,7 +539,7 @@ class EsportsController extends Controller
 
     public function getRecentMatchData(Request $request)
     {
-        // return response()->json($request->all());
+        //return response()->json($request->all());
 
         $validationRules = [
             'esport' => 'required|in:NGS,CCL,MastersClash,HeroesInternational',

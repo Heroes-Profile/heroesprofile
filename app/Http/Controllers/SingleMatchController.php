@@ -46,17 +46,22 @@ class SingleMatchController extends Controller
     public function showWithEsport(Request $request, $esport, $replayID)
     {
         $validationRules = [
-            'esport' => 'required|in:NGS,CCL,MastersClash',
+            'esport' => 'required|in:NGS,CCL,MastersClash,HeroesInternational',
             'replayID' => 'required|integer',
         ];
 
         $validator = Validator::make(compact('esport', 'replayID'), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => compact('esport', 'replayID'),
-                'status' => 'failure to validate inputs',
-            ];
+            if (env('Production')) {
+                return \Redirect::to('/');
+            }else{
+                return [
+                    'data' => compact('esport', 'replayID'),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
+
         }
 
         return view('singleMatch')->with([
@@ -69,7 +74,7 @@ class SingleMatchController extends Controller
     public function getData(Request $request)
     {
         $validationRules = [
-            'esport' => 'nullable|in:NGS,CCL,MastersClash,Other',
+            'esport' => 'nullable|in:NGS,CCL,MastersClash,Other,HeroesInternational',
             'series' => 'nullable|string',
             'user' => 'nullable',
             'replayID' => [
@@ -90,11 +95,15 @@ class SingleMatchController extends Controller
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'errors' => $validator->errors()->all(),
-                'status' => 'failure to validate inputs',
-            ];
+            if (env('Production')) {
+                return \Redirect::to('/');
+            }else{
+                return [
+                    'data' => $request->all(),
+                    'errors' => $validator->errors()->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
         }
 
         $this->esport = $request['esport'];
