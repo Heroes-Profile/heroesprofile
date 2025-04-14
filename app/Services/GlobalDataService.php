@@ -120,11 +120,15 @@ class GlobalDataService
 
     }
 
-    public function showcustomgames()
+    public function showcustomgames($battletag, $blizz_id, $region)
     {
         if (Auth::check()) {
             $user = Auth::user();
 
+            if($user->blizz_id != $blizz_id || $user->region != $region) {
+                return false;
+            }
+            
             $customgames = $user->userSettings->firstWhere('setting', 'customgames');
 
             if ($customgames) {

@@ -41,7 +41,7 @@ class PlayerMatchHistory extends Controller
 
         $gametypedefault = ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'];
         $showcustomgames = false;
-        if ($this->globalDataService->showcustomgames()) {
+        if ($this->globalDataService->showcustomgames($battletag, $blizz_id, $region)) {
             array_push($gametypedefault, 'cu');
             $showcustomgames = true;
         }
