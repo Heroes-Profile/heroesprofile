@@ -125,10 +125,10 @@ class GlobalDataService
         if (Auth::check()) {
             $user = Auth::user();
 
-            if($user->blizz_id != $blizz_id || $user->region != $region) {
+            if ($user->blizz_id != $blizz_id || $user->region != $region) {
                 return false;
             }
-            
+
             $customgames = $user->userSettings->firstWhere('setting', 'customgames');
 
             if ($customgames) {
