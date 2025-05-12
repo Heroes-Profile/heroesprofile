@@ -28,7 +28,7 @@
           </ol>
         </div>
         <h3 v-if="leaderboardtype != 'Match Prediction'" class="font-bold text-2xl uppercase pb-2 max-md:text-base">Heroes Profile Rating formula</h3>
-        <img v-if="leaderboardtype != 'Match Prediction'" class="max-w-[1000px] w-full" :src="'/images/miscellaneous/mmr_calculation.png'"/>
+        <img v-if="leaderboardtype != 'Match Prediction'" class="max-w-[1000px] w-full" :src="'/images/miscellaneous/leaderboard_rating_calculation.png'"/>
       </div>
       <filters 
         :onFilter="filterData" 
@@ -117,7 +117,7 @@
                     Heroes Profile Rating
                   </th>      
                   <th v-if="leaderboardtype != 'Match Prediction'" @click="sortTable('mmr')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'mmr'}]">
-                    {{ leaderboardtype }} MMR
+                    HP {{ leaderboardtype }} MMR
                   </th> 
                   <th v-if="leaderboardtype != 'Match Prediction'" @click="sortTable('tier_id')" :class="['py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer',{ 'bg-blue': sortKey === 'tier_id'}]">
                     Tier

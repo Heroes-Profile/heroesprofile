@@ -70,47 +70,56 @@
       <div class="bg-lighten">
         <div class="flex justify-center max-w-[1500px] mx-auto items-center max-md:flex-col">
       <div class="max-w-[1500px] mx-auto">
+        <h2 class="text-3xl font-bold py-5 text-center">Heroes Profile MMR 
+          <round-image class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large">
+            <slot>
+              <div>
+                <p class="max-sm:text-xs">Heroes Profile MMR is a custom algorithm developed by Heroes Profile for approximating a player's skill. This MMR or rank does not correlate to your in-game rank or MMR.</p>
+              </div>
+            </slot>
+          </round-image>
+        </h2>
         <div class="grid grid-cols-4 max-md:grid-cols-2 items-center gap-10 md:px-20 py-5 justify-center" >
           <h4 class="text-right">Quick Match</h4>
           <stat-bar-box :title="'Win Rate'" :value=" data.qm_mmr_data ? data.qm_mmr_data.win_rate.toFixed(2) : 0 "></stat-bar-box>
-          <stat-box title="Rank Tier" :value="data.qm_mmr_data ? data.qm_mmr_data.rank_tier : ''"></stat-box>
-          <stat-box :title="'MMR'" :value="data.qm_mmr_data ? data.qm_mmr_data.mmr.toLocaleString('en-US') : 0 "></stat-box>
+          <stat-box title="HP Rank Tier" :value="data.qm_mmr_data ? data.qm_mmr_data.rank_tier : ''"></stat-box>
+          <stat-box :title="'HP MMR'" :value="data.qm_mmr_data ? data.qm_mmr_data.mmr.toLocaleString('en-US') : 0 "></stat-box>
         </div>
 
         <div class="grid grid-cols-4 max-md:grid-cols-2   items-center gap-10 md:px-20 py-5 justify-center" >
           <h4 class="text-right">Unranked Draft</h4>
           <stat-bar-box :title="'Win Rate'" :value=" data.ud_mmr_data ? data.ud_mmr_data.win_rate.toFixed(2) : 0 " color="teal"></stat-bar-box>
-          <stat-box title="Rank Tier" :value="data.ud_mmr_data ? data.ud_mmr_data.rank_tier : ''" color="teal"></stat-box>
-          <stat-box :title="'MMR'" :value="data.ud_mmr_data ? data.ud_mmr_data.mmr.toLocaleString('en-US') : 0 " color="teal"></stat-box>
+          <stat-box title="HP Rank Tier" :value="data.ud_mmr_data ? data.ud_mmr_data.rank_tier : ''" color="teal"></stat-box>
+          <stat-box :title="'HP MMR'" :value="data.ud_mmr_data ? data.ud_mmr_data.mmr.toLocaleString('en-US') : 0 " color="teal"></stat-box>
         </div>
 
         <div class=" grid grid-cols-4 max-md:grid-cols-2  items-center gap-10 md:px-20 py-5 justify-center" >
           <h4 class="text-right">Hero league</h4>
           <stat-bar-box :title="'Win Rate'" :value=" data.hl_mmr_data ? data.hl_mmr_data.win_rate.toFixed(2) : 0 " color="red"></stat-bar-box>
-          <stat-box title="Rank Tier" :value="data.hl_mmr_data ? data.hl_mmr_data.rank_tier : ''" color="red"></stat-box>
-          <stat-box :title="'MMR'" :value="data.hl_mmr_data ? data.hl_mmr_data.mmr.toLocaleString('en-US') : 0 " color="red"></stat-box>
+          <stat-box title="HP Rank Tier" :value="data.hl_mmr_data ? data.hl_mmr_data.rank_tier : ''" color="red"></stat-box>
+          <stat-box :title="'HP MMR'" :value="data.hl_mmr_data ? data.hl_mmr_data.mmr.toLocaleString('en-US') : 0 " color="red"></stat-box>
         </div>
 
 
         <div class="grid grid-cols-4 max-md:grid-cols-2  items-center gap-10 md:px-20 py-5 justify-center" >
           <h4 class="text-right">Team league</h4>
           <stat-bar-box :title="'Win Rate'" :value=" data.tl_mmr_data ? data.tl_mmr_data.win_rate.toFixed(2) : 0 " color="yellow"></stat-bar-box>
-          <stat-box title="Rank Tier" :value="data.tl_mmr_data ? data.tl_mmr_data.rank_tier : ''" color="yellow"></stat-box>
-          <stat-box :title="'MMR'" :value="data.tl_mmr_data ? data.tl_mmr_data.mmr.toLocaleString('en-US') : 0 " color="yellow"></stat-box>
+          <stat-box title="HP Rank Tier" :value="data.tl_mmr_data ? data.tl_mmr_data.rank_tier : ''" color="yellow"></stat-box>
+          <stat-box :title="'HP MMR'" :value="data.tl_mmr_data ? data.tl_mmr_data.mmr.toLocaleString('en-US') : 0 " color="yellow"></stat-box>
         </div>
 
         <div class="grid grid-cols-4  max-md:grid-cols-2  items-center gap-10 md:px-20 py-5 justify-center" >
          <h4 class="text-right"> Storm league</h4>
          <stat-bar-box :title="'Win Rate'" :value=" data.sl_mmr_data ? data.sl_mmr_data.win_rate.toFixed(2) : 0 " color="gray-dark"></stat-bar-box>
-         <stat-box title="Rank Tier" :value="data.sl_mmr_data ? data.sl_mmr_data.rank_tier : ''" color="gray-dark"></stat-box>
-         <stat-box :title="'MMR'" :value="data.sl_mmr_data ? data.sl_mmr_data.mmr.toLocaleString('en-US') : 0 " color="gray-dark"></stat-box>
+         <stat-box title="HP Rank Tier" :value="data.sl_mmr_data ? data.sl_mmr_data.rank_tier : ''" color="gray-dark"></stat-box>
+         <stat-box :title="'HP MMR'" :value="data.sl_mmr_data ? data.sl_mmr_data.mmr.toLocaleString('en-US') : 0 " color="gray-dark"></stat-box>
        </div>
 
        <div class="grid grid-cols-4 max-md:grid-cols-2  items-center gap-10 md:px-20 py-5 justify-center" >
         <h4 class="text-right">ARAM</h4>
         <stat-bar-box :title="'Win Rate'" :value=" data.ar_mmr_data ? data.ar_mmr_data.win_rate.toFixed(2) : 0 "></stat-bar-box>
-        <stat-box title="Rank Tier" :value="data.ar_mmr_data ? data.ar_mmr_data.rank_tier : ''"></stat-box>
-        <stat-box :title="'MMR'" :value="data.ar_mmr_data ? data.ar_mmr_data.mmr.toLocaleString('en-US') : 0 "></stat-box>
+        <stat-box title="HP Rank Tier" :value="data.ar_mmr_data ? data.ar_mmr_data.rank_tier : ''"></stat-box>
+        <stat-box :title="'HP MMR'" :value="data.ar_mmr_data ? data.ar_mmr_data.mmr.toLocaleString('en-US') : 0 "></stat-box>
       </div>
 
      

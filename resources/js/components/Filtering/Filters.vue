@@ -223,7 +223,8 @@
           <!-- Tier Single -->
           <single-select-filter v-if="modifiedincludetier" 
             :values="filters.rank_tiers" 
-            :text="'Rank'" 
+            :text="'HP Rank'" 
+            :showrankinfo="true"
             :defaultValue="tierrank"
             @input-changed="handleInputChange"
           ></single-select-filter>
@@ -231,17 +232,17 @@
           <!-- Player Rank -->
           <multi-select-filter v-if="includeplayerrank" 
             :values="filters.rank_tiers" 
-            :text="'Player Rank'"
+            :text="'HP Player Rank'"
+            :showrankinfo="true"
             :defaultValue="playerrank"
             @input-changed="handleInputChange"
           ></multi-select-filter>
-          
-
 
           <!-- Hero Rank -->
           <multi-select-filter v-if="includeherorank && toggleExtraFilters" 
             :values="filters.rank_tiers" 
-            :text="'Hero Rank'" 
+            :text="'HP Hero Rank'" 
+            :showrankinfo="true"
             :defaultValue="herorank"
             @input-changed="handleInputChange"
           ></multi-select-filter>
@@ -249,7 +250,8 @@
           <!-- Role Rank -->
           <multi-select-filter v-if="includerolerank && toggleExtraFilters" 
             :values="filters.rank_tiers" 
-            :text="'Role Rank'" 
+            :text="'HP Role Rank'" 
+            :showrankinfo="true"
             :defaultValue="rolerank"
             @input-changed="handleInputChange"
           ></multi-select-filter>
