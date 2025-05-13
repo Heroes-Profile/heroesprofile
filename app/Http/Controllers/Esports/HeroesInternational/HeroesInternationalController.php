@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\HeroesInternational\HeroesInternationalMainTeam;
 use App\Models\HeroesInternational\HeroesInternationalNationsCupTeam;
 use App\Models\Map;
+use App\Rules\HeroInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -106,6 +107,7 @@ class HeroesInternationalController extends Controller
             'season' => 'required|in:1',
             'esport' => 'required|in:hi,hi_nc',
             'pagination_page' => 'required:integer',
+            'hero' => ['sometimes', 'nullable', new HeroInputValidation],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -138,6 +140,7 @@ class HeroesInternationalController extends Controller
 
         $maps = Map::all();
         $maps = $maps->keyBy('map_id');
+        $hero = $request['hero'] ? $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id : null;
 
         $paginationInfo = [
             'current_page' => $results->currentPage(),
@@ -146,11 +149,21 @@ class HeroesInternationalController extends Controller
             'last_page' => $results->lastPage(),
         ];
 
-        $groupedResults = $results->groupBy('replayID')->map(function ($group) use ($heroData, $maps) {
+        $groupedResults = $results->groupBy('replayID')->map(function ($group) use ($heroData, $maps, $hero) {
             $heroes = [];
+
+            $foundHero = false;
 
             for ($i = 0; $i < 10; $i++) {
                 $heroes[$i] = isset($group[$i]) && isset($group[$i]->hero) ? $heroData[$group[$i]->hero] : null;
+
+                if ($hero && isset($group[$i]) && isset($group[$i]->hero) && $heroes[$i]['id'] == $hero) {
+                    $foundHero = true;
+                }
+            }
+
+            if ($hero && ! $foundHero) {
+                return null;
             }
 
             return [
@@ -163,7 +176,7 @@ class HeroesInternationalController extends Controller
                 'team_1_id' => $group[0]->team_1_id,
                 'heroes' => $heroes,
             ];
-        })->values()->all();
+        })->filter()->values()->all();
 
         return ['data' => $groupedResults, 'pagination' => $paginationInfo];
     }

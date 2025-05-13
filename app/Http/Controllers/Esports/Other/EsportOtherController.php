@@ -458,6 +458,7 @@ class EsportOtherController extends Controller
             'map' => 'nullable|string',
             'season' => 'nullable|numeric',
             'userinput' => ['nullable', 'string', new BattletagInputProhibitCharacters],
+            'hero' => ['sometimes', 'nullable', new HeroInputValidation],
             'pagination_page' => 'required:integer',
         ];
 
@@ -487,8 +488,10 @@ class EsportOtherController extends Controller
         $maps = Map::all();
         $maps = $maps->keyBy('map_id');
 
+        $this->hero = $request['hero'] ? $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id : null;
+
         $result = DB::table($this->schema.'.replay')
-            ->when($userinput, function ($query) {
+            ->when($userinput || $this->hero, function ($query) {
                 $query->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
                     ->join($this->schema.'.battletags', $this->schema.'.battletags.player_id', '=', $this->schema.'.player.battletag');
             })
@@ -527,6 +530,9 @@ class EsportOtherController extends Controller
                 }
 
                 return $query->whereIn($this->schema.'.player.battletag', $playerIds);
+            })
+            ->when($this->hero, function ($query) {
+                return $query->where($this->schema.'.player.hero', $this->hero);
             })
             ->orderByDesc('game_date')// ;
 
