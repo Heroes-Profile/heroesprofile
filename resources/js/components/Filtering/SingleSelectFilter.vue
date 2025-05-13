@@ -1,7 +1,17 @@
 <template>
   <div id="filter-label" class="relative">
     <div @click="showOptions = !showOptions" class="flex flex-col text-sm font-medium text-gray-700 cursor-pointer p-2  transition-colors" @keydown="handleKeyPress" tabindex="0">
-      <span>{{ this.text }}</span> 
+      <span class="relative">
+        <span class="relative">{{ this.text }}
+          <round-image v-if="showrankinfo" class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large" style="position:absolute; bottom:0; right:-25px;">
+            <slot>
+              <div>
+                <p class="max-sm:text-xs">Heroes Profile Rank is based on a custom MMR algorithm developed by Heroes Profile for approximating a player's skill. This rank does not correlate to in-game rank but the distribution of players in the Heroes Profile dataset.</p>
+              </div>
+            </slot>
+          </round-image>
+        </span>
+      </span> 
       <span class="w-[200px] h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2" ><span class="uppercase font-bold bg-teal rounded px-1 text-nowrap" v-if="selectedOptionsName !== ''">{{ selectedOptionsName }}</span></span>      
     </div>
     <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->
@@ -44,6 +54,7 @@ export default {
     },
     trackclosure: Boolean,
     disabled: Boolean,
+    showrankinfo: Boolean,
   },
   data(){
     return {

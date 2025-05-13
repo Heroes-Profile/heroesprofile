@@ -88,10 +88,10 @@
       <div class="flex-col  border-white px-4">
               
         <div class="">
-            <h3>Default MMR Breakdown Game Type:</h3> 
+            <h3>Default HP MMR Breakdown Game Type:</h3> 
             <single-select-filter
               :values="this.filters.game_types_full" 
-              :text="'MMR Game Type'" 
+              :text="'HP MMR Game Type'" 
               @dropdown-closed="saveSettings()" 
               @input-changed="handleInputChange" 
               :defaultValue="mmrplayerusergametype"

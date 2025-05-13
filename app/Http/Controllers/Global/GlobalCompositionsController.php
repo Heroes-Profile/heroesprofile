@@ -122,21 +122,21 @@ class GlobalCompositionsController extends GlobalsInputValidationController
             $roleData = MMRTypeID::all();
             $roleData = $roleData->keyBy('mmr_type_id');
 
-            $totalGamesPlayed = (collect($data)->sum('games_played') / 5);
+            $totalGamesPlayed = $hero ? (collect($data)->sum('games_played')) : (collect($data)->sum('games_played') / 5);
 
             $filteredData = collect($data)
                 ->groupBy('composition_id')
-                ->map(function ($group) use ($totalGamesPlayed, $roleData, $minimumGames) {
-                    $wins = $group->where('win_loss', 1)->sum('games_played');
-                    $losses = $group->where('win_loss', 0)->sum('games_played');
-                    $gamesPlayed = ($wins + $losses) / 5;
+                ->map(function ($group) use ($totalGamesPlayed, $roleData, $minimumGames, $hero) {
+                    $wins = $hero ? $group->where('win_loss', 1)->sum('games_played') : $group->where('win_loss', 1)->sum('games_played') / 5;
+                    $losses = $hero ? $group->where('win_loss', 0)->sum('games_played') : $group->where('win_loss', 0)->sum('games_played') / 5;
+                    $gamesPlayed = ($wins + $losses);
 
                     if ($gamesPlayed <= $minimumGames) {
                         return null;
                     }
                     $winRate = 0;
                     if ($gamesPlayed > 0) {
-                        $winRate = (($wins / 5) / $gamesPlayed) * 100;
+                        $winRate = (($wins) / $gamesPlayed) * 100;
                     }
 
                     $popularity = round(($gamesPlayed / $totalGamesPlayed) * 100, 2);
@@ -151,8 +151,8 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 
                     return [
                         'composition_id' => $group->first()['composition_id'],
-                        'wins' => $wins / 5,
-                        'losses' => $losses / 5,
+                        'wins' => $wins,
+                        'losses' => $losses,
                         'win_rate' => round($winRate, 2),
                         'games_played' => round($gamesPlayed),
                         'popularity' => $popularity,
@@ -216,7 +216,12 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         $compositionID = $request['composition_id'];
 
         $cacheKey = 'GlobalCompositionTopHeroes|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
-        // return $cacheKey;
+
+        /*
+        if (! env('Production')) {
+            Cache::store('database')->forget($cacheKey);
+        }
+        */
 
         $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
             $gameType,

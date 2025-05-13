@@ -52,9 +52,9 @@
               <stat-box class="min-w-[30%]" :title="'Team Level'" :value="data.players[0][0].score.level" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="esport" :title="'Avg. Hero Level'" :value="getAverageValue('avg_hero_level', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" :title="'Takedowns'" :value="getTakedownsValue(data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average MMR'" :value="getAverageValue('player_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average Hero MMR'" :value="getAverageValue('hero_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average Role MMR'" :value="getAverageValue('role_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Avg. HP MMR'" :value="getAverageValue('player_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Avg. HP Hero MMR'" :value="getAverageValue('hero_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Avg. HP Role MMR'" :value="getAverageValue('role_mmr', data.players[0])" :color="data.winner == 0 ? 'teal' : 'red'"></stat-box>
             </div>
 
 
@@ -91,9 +91,9 @@
               <stat-box class="min-w-[30%]" :title="'Team Level'" :value="data.players[1][0].score.level" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" v-if="esport" :title="'Avg. Hero Level'" :value="getAverageValue('avg_hero_level', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
               <stat-box class="min-w-[30%]" :title="'Takedowns'" :value="getTakedownsValue(data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average MMR'" :value="getAverageValue('player_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average Hero MMR'" :value="getAverageValue('hero_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
-              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Average Role MMR'" :value="getAverageValue('role_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Avg. HP MMR'" :value="getAverageValue('player_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Avg. HP Hero MMR'" :value="getAverageValue('hero_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
+              <stat-box class="min-w-[30%]" v-if="!esport" :title="'Avg. HP Role MMR'" :value="getAverageValue('role_mmr', data.players[1])" :color="data.winner == 1 ? 'teal' : 'red'"></stat-box>
             </div>
             <div v-if="esport && esport != 'Other'" class="">
               Map Bans
@@ -323,7 +323,7 @@
 
 <div v-if="!esport" class=" max-sm:text-sm max-w-[1500px] mx-auto my-5">
 
-  Team 1 Advanced MMR data
+  Team 1 Advanced HP MMR data
 
   <div  ref="tablecontainer" class="table-container w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" " >
 
@@ -338,12 +338,12 @@
       <tr>
         <td >Player</td>
         <td >Hero</td>
-        <td >Player MMR</td>
-        <td >Hero MMR</td>
-        <td >Role MMR</td>
-        <td >Player MMR</td>
-        <td >Hero MMR</td>
-        <td >Role MMR</td>
+        <td >HP Player MMR</td>
+        <td >HP Hero MMR</td>
+        <td >HP Role MMR</td>
+        <td >HP Player MMR</td>
+        <td >HP Hero MMR</td>
+        <td >HP Role MMR</td>
       </tr>
     </thead>
     <tbody>
@@ -375,7 +375,7 @@
 
 <div  v-if="!esport" class="  max-sm:text-sm max-w-[1500px] mx-auto my-5">
 
-  Team 2 Advanced MMR data
+  Team 2 Advanced HP MMR data
 
   <div  ref="tablecontainer" class="table-container w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" " >
 
@@ -390,12 +390,12 @@
       <tr>
         <td>Player</td>
         <td>Hero</td>
-        <td>Player MMR</td>
-        <td>Hero MMR</td>
-        <td>Role MMR</td>
-        <td>Player MMR</td>
-        <td>Hero MMR</td>
-        <td>Role MMR</td>
+        <td>HP Player MMR</td>
+        <td>HP Hero MMR</td>
+        <td>HP Role MMR</td>
+        <td>HP Player MMR</td>
+        <td>HP Hero MMR</td>
+        <td>HP Role MMR</td>
       </tr>
     </thead>
     <tbody>

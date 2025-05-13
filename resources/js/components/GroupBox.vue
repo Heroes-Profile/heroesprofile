@@ -19,9 +19,9 @@
                 :title="item.hero.name" 
                 :paragraph-one="`Played by : <b>${item.battletag}</b>`" 
                 :paragraph-two="`Account Level: ${item.account_level}`"
-                :paragraph-three="`Player MMR: ${item.player_mmr}`"
-                :paragraph-four="`Hero MMR: ${item.hero_mmr}`"
-                :paragraph-five="`Role MMR: ${item.role_mmr}`"
+                :paragraph-three="`HP Player MMR: ${item.player_mmr}`"
+                :paragraph-four="`HP Hero MMR: ${item.hero_mmr}`"
+                :paragraph-five="`HP Role MMR: ${item.role_mmr}`"
                 :paragraph-six="`Hero Level: ${item.hero_level}`"
                 :hpOwner="item.hp_owner ? 'Heroes Profile Owner' : null"
               ></image-hover-box>
