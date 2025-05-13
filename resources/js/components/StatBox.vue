@@ -2,7 +2,7 @@
   <div :class="[
     ' inline-block m-1 text-center min-w-[10em] flex items-center shadow-lg',
   {
-   ' min-w-[15em]' : secondstat
+   ' min-w-[16em]' : secondstat
   }
   ]">
     <div class="w-full" > 

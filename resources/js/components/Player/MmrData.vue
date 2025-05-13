@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-heading :infoText1="infoText" :heading="'MMR Data'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
+    <page-heading :infoText1="infoText" :heading="'Heroes Profile MMR Data'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
     <filters 
       :onFilter="filterData" 
       :filters="filters" 
@@ -18,10 +18,10 @@
 
     <div v-if="data">
 
-      <line-chart class="max-w-[1500px] mx-auto px-4" :data="reversedData" :dataAttribute="'mmr'" :title="`${battletag} MMR Graph for ${gametype}`"></line-chart>
+      <line-chart class="max-w-[1500px] mx-auto px-4" :data="reversedData" :dataAttribute="'mmr'" :title="`${battletag} HP MMR Graph for ${gametype}`"></line-chart>
 
       <div class="max-w-[1500px] mx-auto mt-2 px-4">
-        {{ this.gametype.toUpperCase() }} - League Tier Breakdowns | Player MMR: {{ data[0].mmr }}
+        {{ this.gametype.toUpperCase() }} - League Tier Breakdowns | HP Player MMR: {{ data[0].mmr }}
       </div>
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="1" :mobile-override="false"></dynamic-banner-ad>
@@ -32,10 +32,10 @@
               League
             </th>
             <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-              Min MMR
+              Min HP MMR
             </th>            
             <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-              Max MMR
+              Max HP MMR
             </th>                
           </tr>
         </thead>
@@ -64,16 +64,16 @@
               Game Date
             </th>            
             <th @click="sortTable('mmr_date_parsed')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              MMR Date Parsed
+              HP MMR Date Parsed
             </th>
             <th @click="sortTable('hero_id')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Hero
             </th>
             <th @click="sortTable('mmr')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              MMR
+              HP MMR
             </th>    
             <th @click="sortTable('mmr_change')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              MMR Change
+              HP MMR Change
             </th>      
             <th @click="sortTable('winner')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Winner

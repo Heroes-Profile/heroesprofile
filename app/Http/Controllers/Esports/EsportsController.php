@@ -618,6 +618,7 @@ class EsportsController extends Controller
         $this->division = $request['division'];
         $this->season = $request['season'];
         $this->hero = $request['hero'] ? $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id : null;
+
         $this->game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->toArray() : null;
 
         if ($this->esport == 'MastersClash') {
@@ -629,6 +630,10 @@ class EsportsController extends Controller
         $pagination_page = $request['pagination_page'];
         $perPage = 1000;
 
+        if ($this->hero) {
+            $perPage = 5000;
+
+        }
         $results = DB::table($this->schema.'.replay')->select($this->schema.'.replay.replayID', 'hero', 'game_map', 'round', 'game', 'game_date')
             ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
             ->join($this->schema.'.teams', function ($join) {
@@ -675,8 +680,19 @@ class EsportsController extends Controller
         $groupedResults = $results->groupBy('replayID')->map(function ($group) use ($heroData, $maps) {
             $heroes = [];
 
+            $foundHero = false;
+
             for ($i = 0; $i < 10; $i++) {
                 $heroes[$i] = isset($group[$i]) && isset($group[$i]->hero) ? $heroData[$group[$i]->hero] : null;
+
+                if ($this->hero && isset($group[$i]) && isset($group[$i]->hero) && $heroes[$i]['id'] == $this->hero) {
+                    $foundHero = true;
+                }
+
+            }
+
+            if ($this->hero && ! $foundHero) {
+                return null;
             }
 
             $team_0_name = null;
@@ -700,7 +716,7 @@ class EsportsController extends Controller
                 'team_1_name' => $team_1_name,
                 'heroes' => $heroes,
             ];
-        })->values()->all();
+        })->filter()->values()->all();
 
         return ['data' => $groupedResults, 'pagination' => $paginationInfo];
     }

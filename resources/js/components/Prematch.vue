@@ -1,9 +1,4 @@
 <template>
-  
-
-
-
-  
     <div v-if="data" class="flex preMatch gap-4 mx-4 text-sm flex-wrap">
       <div class="flex-1">
         Team 1
@@ -11,15 +6,15 @@
         <div class="flex flex-wrap ">
           <div class="flex w-full justify-stretch gap-2">
           <stat-box class="flex-1" v-if="!esport" :title="'Avg. Account Level'" :value="data[0].average_account_level" :color="'teal'"></stat-box>
-          <stat-box class="flex-1" v-if="!esport" :title="'Avg. QM MMR'" :value="data[0].average_qm_mmr + '|' + data[0].average_qm_rank" :color="'teal'"></stat-box>
-          <stat-box class="flex-1" v-if="!esport" :title="'Avg. SL MMR'" :value="data[0].average_sl_mmr + '|' + data[0].average_sl_rank" :color="'teal'"></stat-box>
-          <stat-box class="flex-1" v-if="!esport" :title="'Avg. AR MMR'" :value="data[0].average_ar_mmr + '|' + data[0].average_ar_rank" :color="'teal'"></stat-box>
+          <stat-box class="flex-1" v-if="!esport" :title="'Avg. QM HP MMR'" :value="data[0].average_qm_mmr + '|' + data[0].average_qm_rank" :color="'teal'"></stat-box>
+          <stat-box class="flex-1" v-if="!esport" :title="'Avg. SL HP MMR'" :value="data[0].average_sl_mmr + '|' + data[0].average_sl_rank" :color="'teal'"></stat-box>
+          <stat-box class="flex-1" v-if="!esport" :title="'Avg. AR HP MMR'" :value="data[0].average_ar_mmr + '|' + data[0].average_ar_rank" :color="'teal'"></stat-box>
           </div>
           <div class="flex w-full justify-between gap-2">
           <stat-box class="flex-1" v-if="!esport" :title="'Top ACC. Level'" :value="data[0].highest_account_level_battletag" :color="'blue'"></stat-box>
-          <stat-box class="flex-1" v-if="!esport" :title="'Best QM Rank'" :value="data[0].highest_qm_mmr_battletag" :color="'blue'"></stat-box>
-          <stat-box class="flex-1" v-if="!esport" :title="'Best SL Rank'" :value="data[0].highest_sl_mmr_battletag" :color="'blue'"></stat-box>
-          <stat-box class="flex-1" v-if="!esport" :title="'Best ARAM Rank'" :value="data[0].highest_ar_mmr_battletag" :color="'blue'"></stat-box>
+          <stat-box class="flex-1" v-if="!esport" :title="'Best QM HP Rank'" :value="data[0].highest_qm_mmr_battletag" :color="'blue'"></stat-box>
+          <stat-box class="flex-1" v-if="!esport" :title="'Best SL HP Rank'" :value="data[0].highest_sl_mmr_battletag" :color="'blue'"></stat-box>
+          <stat-box class="flex-1" v-if="!esport" :title="'Best ARAM HP Rank'" :value="data[0].highest_ar_mmr_battletag" :color="'blue'"></stat-box>
           </div>
         </div>
 
@@ -27,6 +22,7 @@
         <div>
           <table id="responsive-table" class="responsive-table  relative w-full" ref="responsivetable">
             <thead class=" top-0 w-full  z-40">
+              
               <tr class="">
                 <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                   Player
@@ -67,10 +63,10 @@
                             Game Type
                           </th>
                           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-                            MMR
+                            HP MMR
                           </th>
                           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-                            Rank
+                            HP Rank
                           </th>
                           <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                             Win Rate
@@ -80,6 +76,8 @@
                           </th>
                         </tr>
                       </thead>
+                      <tbody>
+
                         <tr>
                           <td>
                             Quick Match
@@ -133,7 +131,9 @@
                             {{ row.ar_games_played}}
                           </td>
                         </tr>
-
+                        
+                        
+                      </tbody>
                     </table>
                   </td>
                 </tr>
@@ -152,15 +152,15 @@
 
 
         <stat-box class="flex-1" v-if="!esport" :title="'Avg. Account Level'" :value="data[1].average_account_level" :color="'teal'"></stat-box>
-        <stat-box class="flex-1" v-if="!esport" :title="'Avg. QM MMR'" :value="data[1].average_qm_mmr + '|' + data[1].average_qm_rank" :color="'teal'"></stat-box>
-        <stat-box class="flex-1" v-if="!esport" :title="'Avg. SL MMR'" :value="data[1].average_sl_mmr + '|' + data[1].average_sl_rank" :color="'teal'"></stat-box>
-        <stat-box class="flex-1" v-if="!esport" :title="'Avg. AR MMR'" :value="data[1].average_ar_mmr + '|' + data[1].average_ar_rank" :color="'teal'"></stat-box>
+        <stat-box class="flex-1" v-if="!esport" :title="'Avg. QM HP MMR'" :value="data[1].average_qm_mmr + '|' + data[1].average_qm_rank" :color="'teal'"></stat-box>
+        <stat-box class="flex-1" v-if="!esport" :title="'Avg. SL HP MMR'" :value="data[1].average_sl_mmr + '|' + data[1].average_sl_rank" :color="'teal'"></stat-box>
+        <stat-box class="flex-1" v-if="!esport" :title="'Avg. AR HP MMR'" :value="data[1].average_ar_mmr + '|' + data[1].average_ar_rank" :color="'teal'"></stat-box>
           </div>
           <div class="flex w-full justify-between gap-2">
         <stat-box class="flex-1" v-if="!esport" :title="'Top ACC. Level'" :value="data[1].highest_account_level_battletag" :color="'blue'"></stat-box>
-        <stat-box class="flex-1" v-if="!esport" :title="'Best QM Rank'" :value="data[1].highest_qm_mmr_battletag" :color="'blue'"></stat-box>
-        <stat-box class="flex-1" v-if="!esport" :title="'Best SL Rank'" :value="data[1].highest_sl_mmr_battletag" :color="'blue'"></stat-box>
-        <stat-box class="flex-1" v-if="!esport" :title="'Best ARAM Rank'" :value="data[1].highest_ar_mmr_battletag" :color="'blue'"></stat-box>
+        <stat-box class="flex-1" v-if="!esport" :title="'Best QM HP Rank'" :value="data[1].highest_qm_mmr_battletag" :color="'blue'"></stat-box>
+        <stat-box class="flex-1" v-if="!esport" :title="'Best SL HP Rank'" :value="data[1].highest_sl_mmr_battletag" :color="'blue'"></stat-box>
+        <stat-box class="flex-1" v-if="!esport" :title="'Best ARAM HP Rank'" :value="data[1].highest_ar_mmr_battletag" :color="'blue'"></stat-box>
         </div>
       </div>
 
@@ -211,10 +211,10 @@
                           Game Type
                         </th>
                         <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-                          MMR
+                          HP MMR
                         </th>
                         <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-                          Rank
+                          HP Rank
                         </th>
                         <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
                           Win Rate
@@ -224,6 +224,7 @@
                         </th>
                       </tr>
                     </thead>
+                    <tbody>
                       <tr>
                         <td>
                           Quick Match
@@ -277,7 +278,7 @@
                           {{ row.ar_games_played}}
                         </td>
                       </tr>
-
+                    </tbody>
                   </table>
                 </td>
               </tr>
@@ -286,6 +287,9 @@
         </table>
       </div>
     </div>
+  </div>
+  <div v-else-if="isLoading">
+    <loading-component></loading-component>
   </div>
 </template>
 

@@ -15,6 +15,8 @@
       <single-select-filter :values="seasons" :text="'Seasons'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter :values="teams" :text="'Teams'" @input-changed="handleInputChange"></single-select-filter>
       <single-select-filter :values="filters.game_maps" :text="'Map'" @input-changed="handleInputChange"></single-select-filter>
+      <single-select-filter :values="filters.heroes" :text="'Heroes'" @input-changed="handleInputChange"></single-select-filter>
+
 
       <input type="text" class="form-control variable-text rounded-l p-2" :placeholder="'Search for player'" :aria-label="'filter'" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="filter()">
 
@@ -148,6 +150,7 @@ export default {
     regions: Array,
     tournaments: Array,
     teams: Array,
+    heroes: Object,
   },
   data(){
     return {
@@ -163,6 +166,7 @@ export default {
       team: null,
       map: null,
       userinput: null,
+      selectedHero: null,
     }
   },
   computed: {
@@ -207,6 +211,7 @@ export default {
           team: this.team,
           map: this.map,
           userinput: this.userinput,
+          hero: this.selectedHero ? this.selectedHero.name : null,
           pagination_page: page,
         }, 
         {
@@ -242,6 +247,8 @@ export default {
         this.team = eventPayload.value;
       }else if(eventPayload.field == "Map"){
         this.map = eventPayload.value;
+      }else if(eventPayload.field == "Heroes"){
+        this.selectedHero = this.heroes.find(value => value.id === eventPayload.value);
       }
     },
 

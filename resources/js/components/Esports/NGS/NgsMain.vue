@@ -141,6 +141,7 @@
         <div class="flex flex-wrap gap-2 max-w-[1500px] justify-center mx-auto items-center mb-10">
           <single-select-filter :values="filters.ngs_divisions" :text="'Divisions'" @input-changed="handleInputChange"></single-select-filter>
           <single-select-filter :values="filters.ngs_seasons" :text="'Seasons'" @input-changed="handleInputChange" :defaultValue="defaultseason"></single-select-filter>
+          <single-select-filter :values="filters.heroes" :text="'Heroes'" @input-changed="handleInputChange"></single-select-filter>
           <custom-button :disabled="isLoading"  @click="filter()" :text="'Filter'" :size="'medium'" class="bg-teal rounded text-white ml-10 px-4 py-2 mt-auto mb-2 hover:bg-lteal" :ignoreclick="true"></custom-button>
         </div>
 
@@ -405,6 +406,7 @@ export default {
           season: this.season,
           division: this.division,
           pagination_page: page,
+          hero: this.selectedHero ? this.selectedHero.name : null,
           esport: "NGS",
         }, 
         {

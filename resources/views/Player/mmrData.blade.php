@@ -1,7 +1,7 @@
 @extends('layouts.app', $bladeGlobals)    
-@section('title', $battletag . "'s MMR Data")
-@section('meta_keywords', 'MMR Data, Matchmaking Rating, Player Skill, Skill Rating, Player Statistics')
-@section('meta_description', 'Explore the MMR data of ' . $battletag . ', including match making rating, player skill, and player statistics.')
+@section('title', $battletag . "'s HP MMR Data")
+@section('meta_keywords', 'HP MMR Data, Matchmaking Rating, Player Skill, Skill Rating, Player Statistics')
+@section('meta_description', 'Explore the HP MMR data of ' . $battletag . ', including match making rating, player skill, and player statistics.')
 @section('content')
   <mmr-data 
     :battletag="{{ json_encode($battletag) }}" 
