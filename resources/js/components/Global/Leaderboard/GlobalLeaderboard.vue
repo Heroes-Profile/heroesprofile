@@ -406,8 +406,7 @@ export default {
       }
 
       this.region = filteredData.single["Regions"] ? filteredData.single["Regions"] : null;
-      this.tierrank = filteredData.single.Rank ? filteredData.single.Rank : null;
-
+      this.tierrank = filteredData.single["HP Rank"] ? filteredData.single["HP Rank"]  : null;
       this.sortKey = '';
       this.sortDir = 'desc';
       this.playerRating = null;

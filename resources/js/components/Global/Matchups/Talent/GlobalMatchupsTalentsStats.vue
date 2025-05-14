@@ -256,7 +256,7 @@
         this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaultMinor;
         this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : null;
         this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
-        this.playerrank = filteredData.multi["Player Rank"] ? Array.from(filteredData.multi["Player Rank"]) : null;
+        this.playerrank = filteredData.multi["HP Player Rank"] ? Array.from(filteredData.multi["HP Player Rank"]) : null;
 
 
         let queryString = `?timeframe_type=${this.timeframetype}`;
