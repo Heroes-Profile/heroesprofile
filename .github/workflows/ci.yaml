@@ -1,0 +1,25 @@
+# https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions
+
+name: CI
+
+on:
+  push:
+    branches: '*'
+  pull_request:
+    branches: '*'
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/cache@v3
+      with:
+        path: /tmp/composer-cache
+        key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
+
+    - uses: php-actions/composer@v6
+
+    - run: vendor/bin/pint --test --verbose --ansi app
