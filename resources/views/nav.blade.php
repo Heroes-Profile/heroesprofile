@@ -82,6 +82,19 @@
                     </div>
 
                     
+                    <div class="relative group inline-block nav-item">
+                        <a class=" cursor-pointer">Donate</a>
+                        <div class="nav-dropdown ">
+                            <div class="nav-dropdown-inner-wrapper ">
+                                 <a href="https://www.patreon.com/c/heroesprofile" target="_blank" >Patreon</a>
+                                 <a href="https://opencollective.com/heroes-profile" target="_blank" >Open Collective</a>
+                            </div>
+
+             
+                        </div>
+                    </div>
+
+                    
                         @if(isset($mainSearchAccount))
                         <div class="relative group inline-block nav-item ">
                             <a class="cursor-pointer">
