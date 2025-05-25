@@ -68,7 +68,7 @@
             <th @click="sortTable('hero_name')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Hero
             </th>
-            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th @click="sortTable('base_win_rate')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
               <div class="flex items-center">
                 <div>
                   Base Win Rate %
@@ -82,11 +82,29 @@
                 </round-image>
               </div>
             </th>
-            <th @click="sortTable('win_rate_as_ally')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Win Rate as Ally %
+            <th  class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <div class="flex items-center">
+                <span @click="sortTable('win_rate_as_ally')">Win Rate as Ally % | </span><span @click="sortTable('ally_difference')">(Difference)</span>
+                <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
+                  <slot>
+                    <div>
+                      <p>Difference is (Win Rate as Ally - Hero Base Win Rate)</p>
+                    </div>
+                  </slot>
+                </round-image>
+              </div>
             </th>
-            <th @click="sortTable('win_rate_against')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Win Rate Against {{ this.selectedHero.name }} %
+            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <div class="flex items-center">
+                <span @click="sortTable('win_rate_against')">Win Rate Against {{ this.selectedHero.name }} % | </span><span @click="sortTable('enemy_difference')">(Difference)</span>
+                <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
+                  <slot>
+                    <div>
+                      <p>Difference is (Win Rate Against {{ this.selectedHero.name }} - Hero Base Win Rate)</p>
+                    </div>
+                  </slot>
+                </round-image>
+              </div>
             </th>
             <th @click="sortTable('games_played_as_ally')" class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games Played As Ally
@@ -222,8 +240,20 @@
           } else if (this.sortKey === 'games_played_against') {
             valA = a.enemy && a.enemy.games_played ? a.enemy.games_played : 0;
             valB = b.enemy && b.enemy.games_played ? b.enemy.games_played : 0;
+          }else if (this.sortKey === 'base_win_rate') {
+            valA = a.ally && a.ally.stats && a.ally.stats.win_rate ? a.ally.stats.win_rate : 0;
+            valB = b.ally && b.ally.stats && b.ally.stats.win_rate ? b.ally.stats.win_rate : 0; 
+          }else if (this.sortKey === 'ally_difference') {
+            valA = a.ally && a.ally.stats && a.ally.stats.win_rate ? a.ally.stats.win_rate.toFixed(2) - a.ally.win_rate.toFixed(2) : 0;
+            valB = b.ally && b.ally.stats && b.ally.stats.win_rate ? b.ally.stats.win_rate.toFixed(2) - b.ally.win_rate.toFixed(2) : 0; 
+          }else if (this.sortKey === 'enemy_difference') {
+            valA = a.enemy && a.enemy.stats && a.enemy.stats.win_rate ? a.enemy.stats.win_rate.toFixed(2) - a.enemy.win_rate.toFixed(2) : 0;
+            valB = b.enemy && b.enemy.stats && b.enemy.stats.win_rate ? b.enemy.stats.win_rate.toFixed(2) - b.enemy.win_rate.toFixed(2) : 0; 
           }
-          
+
+
+
+
           if (this.sortDir === 'asc') {
             return valA < valB ? -1 : 1;
           } else {
