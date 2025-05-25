@@ -514,6 +514,30 @@
       window.addEventListener('resize', this.checkScreenWidth);
     },
     mounted() {
+
+      if(this.playerrankinput){
+        this.selectedMultiFilters["HP Player Rank"] = this.playerrankinput;
+      }
+
+      if(this.herorankinput){
+        this.selectedMultiFilters["HP Hero Rank"] = this.herorankinput;
+      }
+
+      if(this.rolerankinput){
+        this.selectedMultiFilters["HP Role Rank"] = this.rolerankinput;
+      }
+
+      if(this.regioninput){
+        this.selectedMultiFilters["Regions"] = this.regioninput;
+      }
+
+      if(this.gamemapinput){
+        this.selectedMultiFilters["Map"] = this.gamemapinput;
+      }
+
+      if(this.herolevelinput){
+        this.selectedMultiFilters["Hero Level"] = this.herolevelinput;
+      }
     },
     computed: {
       showStatTypeFilter(){
