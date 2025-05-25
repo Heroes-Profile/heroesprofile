@@ -133,8 +133,8 @@
             <th @click="sortTable('games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games Played
             </th>       
-            <th v-if="this.showStatTypeColumn" @click="sortTable('games_played')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              {{ this.statfilter }}
+            <th v-if="this.showStatTypeColumn" @click="sortTable('total_filter_type')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              {{ this.statfiltername }}
             </th>
             <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             </th>                              
@@ -227,7 +227,7 @@ export default {
       talentbuilddata: {},
       selectedbuildtype: null,
       cancelTokenSource: null,
-
+      statfiltername: null,
 
       //Sending to filter
       timeframetype: null,
@@ -463,6 +463,8 @@ export default {
       this.timeframe = filteredData.multi.Timeframes ? Array.from(filteredData.multi.Timeframes): this.defaultMinor;
       this.region = filteredData.multi.Regions ? [...Array.from(filteredData.multi.Regions)] : null;
       this.statfilter = filteredData.single["Stat Filter"] ? filteredData.single["Stat Filter"] : this.statfilter;
+      this.statfiltername = this.statfilter ? this.filters.stat_filter.find(s => s.code === this.statfilter).name : null;
+
       this.herolevel = filteredData.multi["Hero Level"] ? Array.from(filteredData.multi["Hero Level"]) : null;
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
@@ -533,6 +535,8 @@ export default {
       this.getData();
     },
     sortTable(key) {
+
+      console.log(key);
       if (key === this.sortKey) {
         this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
       } else {
@@ -601,6 +605,7 @@ export default {
 
       if(this.urlparameters["statfilter"]){
         this.statfilter = this.urlparameters["statfilter"];
+        this.statfiltername = this.statfilter ? this.filters.stat_filter.find(s => s.code === this.statfilter).name : null;
       }
       
       if(this.urlparameters["hero_level"]){
