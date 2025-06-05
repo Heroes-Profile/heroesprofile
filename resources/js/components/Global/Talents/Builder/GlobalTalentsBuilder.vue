@@ -58,7 +58,13 @@
             :defaultValue="selectedHero.id"
             @input-changed="handleInputChange"
           ></single-select-filter>
+          <span @click="resetTalentData" class="mt-auto ml-auto link text-sm">Reset Talent data</span>
+
         </span>
+        
+
+
+
       </div>
 
     <div class="flex px-3 gap-5 mx-auto justify-center flex-wrap flex-col max-w-[1500px]">
@@ -332,6 +338,18 @@
           this.isLoading = false;
         }
       },
+      resetTalentData() {
+        this.clickedData = {
+          1: null,
+          4: null,
+          7: null,
+          10: null,
+          13: null,
+          16: null,
+          20: null,
+        };
+        this.getData();
+      },
       cancelAxiosRequest() {
         if (this.cancelTokenSource) {
           this.cancelTokenSource.cancel('Request canceled by user');
@@ -505,7 +523,7 @@
 
           //Have to use setTimeout to make this occur on next tic to allow header info/text to update properly.  
           setTimeout(() => {
-            this.getData();
+            this.resetTalentData();
           }, .25);
         }
       },
