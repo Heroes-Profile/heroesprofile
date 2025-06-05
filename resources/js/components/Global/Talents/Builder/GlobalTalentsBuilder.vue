@@ -58,8 +58,7 @@
             :defaultValue="selectedHero.id"
             @input-changed="handleInputChange"
           ></single-select-filter>
-
-                  <span @click="resetTalentData" class="mt-auto ml-auto link text-sm">Reset Talent data</span>
+          <span @click="resetTalentData" class="mt-auto ml-auto link text-sm">Reset Talent data</span>
 
         </span>
         
@@ -524,7 +523,7 @@
 
           //Have to use setTimeout to make this occur on next tic to allow header info/text to update properly.  
           setTimeout(() => {
-            this.getData();
+            this.resetTalentData();
           }, .25);
         }
       },
