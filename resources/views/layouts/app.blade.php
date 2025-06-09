@@ -93,7 +93,7 @@
               <div class="footer-nav">
               </div>
               
-              @if($isBackendOff)
+              @if(isset($isBackendOff) && isBackendOff)
                   <div class="bg-red text-sm text-center p-1">
                       The backend is currently offline. Some features may not be available.  Please contact zemill@heroesprofile.com
                   </div>
