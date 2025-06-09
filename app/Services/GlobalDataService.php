@@ -108,13 +108,19 @@ class GlobalDataService
         }
 
         $regions = $this->getRegionIDtoString();
+        $latestGame = $this->getLatestGameDate();
+        $latestGameUtc = Carbon::parse($latestGame, 'UTC');
+        $nowUtc = Carbon::now('UTC');
+
+        $isBackendOff = $nowUtc->diffInSeconds($latestGameUtc) > (3 * 60 * 60); // 6 hours
 
         return [
             'regions' => $regions,
             'darkmode' => $darkModeValue,
             'maxReplayID' => $this->calculateMaxReplayNumber(),
             'latestPatch' => $this->getLatestPatch(),
-            'latestGameDate' => $this->getLatestGameDate(),
+            'latestGameDate' => $latestGame,
+            'isBackendOff' => $isBackendOff,
             'headeralert' => $this->getHeaderAlert(),
         ];
 
