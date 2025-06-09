@@ -93,7 +93,11 @@
               <div class="footer-nav">
               </div>
               
-              @if(isset($maxReplayID))
+              @if($isBackendOff)
+                  <div class="bg-red text-sm text-center p-1">
+                      The backend is currently offline. Some features may not be available.  Please contact zemill@heroesprofile.com
+                  </div>
+              @elseif(isset($maxReplayID))
                   <div>{{ $maxReplayID }} replays | Patch {{ $latestPatch }} | Up to date as of: <format-date :input="'{{ $latestGameDate }}'"></format-date></div>
               @endif
 
