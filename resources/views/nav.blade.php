@@ -34,7 +34,7 @@
                                 <a href="/Global/Talents" >Talent Stats</a>
                                 <a href="/Global/Hero/Maps" >Map Stats</a>
                                 <a href="/Global/Matchups" >Matchup Stats</a>
-                                <a href="/Global/Matchups/Talents" >Matchup Talent Stats</a>
+                            {{--    <a href="/Global/Matchups/Talents" >Matchup Talent Stats</a> --}} 
                                 <a href="/Global/Compositions" >Compositional Stats</a>
                                 <a href="/Global/Draft" >Draft Stats</a>
                                 <a href="/Global/Party" >Party Stats</a>
