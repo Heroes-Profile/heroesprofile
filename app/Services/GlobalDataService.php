@@ -366,7 +366,7 @@ class GlobalDataService
         return MatchPredictionSeason::select('match_prediction_season_id')->orderBy('match_prediction_season_id', 'DESC')->first()->match_prediction_season_id;
     }
 
-    public function getFilterData()
+    public function getFilterData($overrideDefaultPatchVersion = false, $defaultPatchVersion = null)
     {
         $filtersMinimumPatch = '2.53.0.83004';
         if (Auth::check()) {
@@ -375,6 +375,10 @@ class GlobalDataService
             if ($this->checkIfSiteFlair($user->blizz_id, $user->region) || $this->isOwner($user->blizz_id, $user->region)) {
                 $filtersMinimumPatch = '2.52.0.81700';
             }
+        }
+
+        if($overrideDefaultPatchVersion){
+            $filtersMinimumPatch = $defaultPatchVersion;
         }
 
         $filterData = new \stdClass;
