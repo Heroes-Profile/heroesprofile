@@ -46,7 +46,7 @@ class CommunitySupportRedirect
             $patreonUser = PatreonAccount::where('battlenet_accounts_id', $user->battlenet_accounts_id)->first();
         }
 
-        if ($patreonUser && $patreonUser->site_flair == 1) {
+        if ($patreonUser && ($patreonUser->site_flair == 1 || $patreonUser->ad_free == 1)) {
             return $next($request);
         }
 
