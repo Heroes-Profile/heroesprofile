@@ -41,4 +41,71 @@ class MainPageController extends Controller
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
         ]);
     }
+<<<<<<< Updated upstream
+=======
+
+    public function getPatreonEarnings(): ?float
+    {
+        try {
+            $response = Http::get('https://www.patreon.com/heroesprofile');
+
+            if (! $response->ok()) {
+                return null;
+            }
+
+            $html = $response->body();
+            $crawler = new Crawler($html);
+
+            $raw = $crawler->filter('span[data-tag="earnings-count"]')->first()?->text(null);
+
+            if (! $raw) {
+                return null;
+            }
+
+            // Extract numeric value, remove $ and /month etc.
+            preg_match('/[\d,.]+/', $raw, $matches);
+
+            return isset($matches[0]) ? floatval(str_replace(',', '', $matches[0])) : null;
+        } catch (\Exception $e) {
+            \Log::error('Failed to fetch Patreon earnings: '.$e->getMessage());
+
+            return null;
+        }
+    }
+
+
+    public function testPatreonEarnings()
+    {
+        try {
+            $response = Http::withHeaders([
+                'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0 Safari/537.36',
+            ])->get('https://www.patreon.com/heroesprofile');
+
+            if (!$response->ok()) {
+                return "HTTP request failed with status: " . $response->status();
+            }
+
+            $html = $response->body();
+
+            // Optional: Dump raw HTML if needed
+            // return response($html);
+
+            $crawler = new Crawler($html);
+            $earnings = $crawler->filter('span[data-tag="earnings-count"]')->first()?->text(null);
+
+            if (!$earnings) {
+                return "Could not find earnings span.";
+            }
+
+            // Extract number
+            preg_match('/[\d,.]+/', $earnings, $matches);
+            $amount = isset($matches[0]) ? floatval(str_replace(',', '', $matches[0])) : null;
+
+            return "Extracted earnings amount: " . ($amount ?? 'null');
+
+        } catch (\Exception $e) {
+            return "Exception: " . $e->getMessage();
+        }
+    }
+>>>>>>> Stashed changes
 }
