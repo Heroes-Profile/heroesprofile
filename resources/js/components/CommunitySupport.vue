@@ -4,6 +4,7 @@
      <p class="mb-4">
       Heroes Profile is a community-funded site that relies on the support of its users to pay for server costs.
       We are currently operating at a loss and need your help to keep the site running. We've temporarily disabled the site for free users to reduce costs and encourage community support.
+      Feel free to contact us at zemill@heroesprofile.com
     </p>
     <hr class="pb-4"/>
     <h2 class="text-center text-[1.5em] pb-4">To view the site while it is temporarily down, please do one of the following:</h2>
