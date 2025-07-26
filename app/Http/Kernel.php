@@ -70,5 +70,6 @@ class Kernel extends HttpKernel
         'ensureBattlenetAuth' => \App\Http\Middleware\EnsureBattlenetAuthenticated::class,
         'checkIfPrivateProfilePage' => \App\Http\Middleware\CheckIfPrivateProfilePage::class,
         'logIpAndUserAgent' => \App\Http\Middleware\LogIPAndUserAgent::class,
+        'communitySupportRedirect' => \App\Http\Middleware\CommunitySupportRedirect::class,
     ];
 }
