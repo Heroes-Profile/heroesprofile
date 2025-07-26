@@ -377,7 +377,7 @@ class GlobalDataService
             }
         }
 
-        if($overrideDefaultPatchVersion){
+        if ($overrideDefaultPatchVersion) {
             $filtersMinimumPatch = $defaultPatchVersion;
         }
 
