@@ -28,6 +28,7 @@ class CommunitySupportRedirect
             'authenticate/patreon/success',
             'Authenticate/Patreon/Failed',
             'Community/Support',
+            'Profile/Settings',
         ];
 
         // Normalize and compare against request path (case-insensitive)
@@ -45,8 +46,10 @@ class CommunitySupportRedirect
             $patreonUser = PatreonAccount::where('battlenet_accounts_id', $user->battlenet_accounts_id)->first();
         }
 
-        return $patreonUser
-            ? $next($request)
-            : redirect('/Community/Support');
+        if ($patreonUser && $patreonUser->site_flair == 1) {
+            return $next($request);
+        }
+
+        return redirect('/Community/Support');
     }
 }
