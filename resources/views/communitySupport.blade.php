@@ -9,6 +9,7 @@
     :maxreplayid="{{ json_encode($maxReplayID) }}"
     :latestpatch="{{ json_encode($latestPatch) }}"
     :latestgamedate="{{ json_encode($latestGameDate) }}"
+    :patreonearnings="{{ json_encode($patreonEarnings) }}"
   >
   </community-support>
 @endsection
