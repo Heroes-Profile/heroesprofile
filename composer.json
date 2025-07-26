@@ -15,8 +15,7 @@
         "socialiteproviders/battlenet": "^4.1",
         "socialiteproviders/patreon": "^5.0",
         "spatie/laravel-ignition": "^2.3",
-        "symfony/css-selector": "^7.3",
-        "symfony/dom-crawler": "^7.3"
+        "symfony/css-selector": "^7.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

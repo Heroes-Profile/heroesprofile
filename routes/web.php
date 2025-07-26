@@ -212,8 +212,4 @@ Route::redirect('https://{any}/ads.txt', 'https://adstxt.venatusmedia.com/60f587
 Route::get('/Animation/Deathwing', [AnimationsController::class, 'showDeathwing']);
 Route::get('/Animation/Tassadar', [AnimationsController::class, 'showTassadar']);
 
-
-
-
-
 Route::get('/test/patreon-earnings', [MainPageController::class, 'testPatreonEarnings']);
