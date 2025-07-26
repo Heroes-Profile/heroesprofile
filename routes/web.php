@@ -58,7 +58,7 @@ Route::fallback(function () {
     return response()->view('errors.404', [], 404);
 });
 
-Route::middleware(['logIpAndUserAgent'])->group(function () {
+Route::middleware(['logIpAndUserAgent', 'communitySupportRedirect'])->group(function () {
     Route::get('/', [MainPageController::class, 'show']);
     // Route::get('/test', [MainPageController::class, 'test']);
     // Route::get('/testJS', [MainPageController::class, 'testJS']);
@@ -85,6 +85,8 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/authenticate/patreon', [PatreonController::class, 'redirectToProvider']);
     Route::get('/authenticate/patreon/success', [PatreonController::class, 'handleProviderCallback']);
     Route::get('/Authenticate/Patreon/Failed', [PatreonController::class, 'handleProviderCallbackFailed']);
+
+    Route::get('/Community/Support', [MainPageController::class, 'showSupport']);
 
     Route::get('/Global/Hero/Maps/', [GlobalHeroMapStatsController::class, 'show']);
     Route::get('/Global/Hero/Maps/{hero}', [GlobalHeroMapStatsController::class, 'show']);

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Symfony\Component\DomCrawler\Crawler;
 
 class MainPageController extends Controller
 {
@@ -13,6 +15,17 @@ class MainPageController extends Controller
             'maxReplayID' => $this->globalDataService->calculateMaxReplayNumber(),
             'latestPatch' => $this->globalDataService->getLatestPatch(),
             'latestGameDate' => $this->globalDataService->getLatestGameDate(),
+        ]);
+    }
+
+    public function showSupport(Request $request)
+    {
+        return view('communitySupport')->with([
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+            'maxReplayID' => $this->globalDataService->calculateMaxReplayNumber(),
+            'latestPatch' => $this->globalDataService->getLatestPatch(),
+            'latestGameDate' => $this->globalDataService->getLatestGameDate(),
+            'patreonEarnings' => $this->getPatreonEarnings(),
         ]);
     }
 
@@ -41,9 +54,6 @@ class MainPageController extends Controller
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
         ]);
     }
-<<<<<<< Updated upstream
-=======
-
     public function getPatreonEarnings(): ?float
     {
         try {
@@ -72,7 +82,6 @@ class MainPageController extends Controller
             return null;
         }
     }
-
 
     public function testPatreonEarnings()
     {
@@ -107,5 +116,4 @@ class MainPageController extends Controller
             return "Exception: " . $e->getMessage();
         }
     }
->>>>>>> Stashed changes
 }
