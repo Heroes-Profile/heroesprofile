@@ -16,6 +16,16 @@ class MainPageController extends Controller
         ]);
     }
 
+    public function showSupport(Request $request)
+    {
+        return view('communitySupport')->with([
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+            'maxReplayID' => $this->globalDataService->calculateMaxReplayNumber(),
+            'latestPatch' => $this->globalDataService->getLatestPatch(),
+            'latestGameDate' => $this->globalDataService->getLatestGameDate(),
+        ]);
+    }
+
     public function getFooterData()
     {
         return [
