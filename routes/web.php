@@ -58,7 +58,8 @@ Route::fallback(function () {
     return response()->view('errors.404', [], 404);
 });
 
-Route::middleware(['logIpAndUserAgent', 'communitySupportRedirect'])->group(function () {
+//Route::middleware(['logIpAndUserAgent', 'communitySupportRedirect'])->group(function () {
+Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/', [MainPageController::class, 'show']);
     // Route::get('/test', [MainPageController::class, 'test']);
     // Route::get('/testJS', [MainPageController::class, 'testJS']);
