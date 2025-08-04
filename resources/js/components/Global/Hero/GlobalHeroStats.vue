@@ -535,8 +535,6 @@ export default {
       this.getData();
     },
     sortTable(key) {
-
-      console.log(key);
       if (key === this.sortKey) {
         this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
       } else {
