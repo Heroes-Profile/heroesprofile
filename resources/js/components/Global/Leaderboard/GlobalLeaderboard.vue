@@ -52,9 +52,9 @@
         :hideadvancedfilteringbutton="true"
         :advancedfiltering="advancedfiltering"
         :excludetimeframes="true"
-
         :includetier="true"
         :tierrank="''"
+        :disabledeselectfilters="true"
       >
       </filters>
       <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
@@ -288,7 +288,7 @@ export default {
       isfiltered: false,
     }
   },
-  created(){
+  created(){    
     this.gametype = this.gametypedefault[0];
     this.season = this.defaultseason;
     this.matchpredictionseason = this.defaultpredictionseason;

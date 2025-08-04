@@ -27,6 +27,7 @@
             :text="'Leaderboard Type'"
             @input-changed="handleInputChange" 
             :defaultValue="'Player'"
+            :disabledeselectfilters="disabledeselectfilters"
           ></single-select-filter>
 
           <!-- Heroes Swap -->
@@ -51,6 +52,7 @@
             :text="'Group Size'" 
             @input-changed="handleInputChange" 
             :defaultValue="modifiedGroupSizeDefaultValue"
+            :disabledeselectfilters="disabledeselectfilters"
           ></single-select-filter>
 
           <!--<single-select-filter v-if="includecharttype" :values="filters.chart_type" :text="'Chart Type'" @input-changed="handleInputChange" :defaultValue="'Account Level'"></single-select-filter>-->
@@ -111,6 +113,7 @@
             :text="'Game Type'" 
             @input-changed="handleInputChange" 
             :defaultValue="gametype[0]"
+            :disabledeselectfilters="disabledeselectfilters"
           ></single-select-filter>
 
           <!-- Current Game Type Single -->
@@ -184,6 +187,7 @@
             :text="'Season'" 
             @input-changed="handleInputChange" 
             :defaultValue="defaultSeason"
+            :disabledeselectfilters="disabledeselectfilters"
           ></single-select-filter>
 
           <!-- Match Prediction Seasons -->
@@ -412,6 +416,7 @@
       rolerequired: Boolean,
       excludetimeframes: Boolean,
       disablefilter: Boolean,
+      disabledeselectfilters: Boolean,
     },
     data(){
       return {

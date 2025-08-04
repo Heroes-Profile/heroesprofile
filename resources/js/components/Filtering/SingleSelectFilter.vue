@@ -55,6 +55,7 @@ export default {
     trackclosure: Boolean,
     disabled: Boolean,
     showrankinfo: Boolean,
+    disabledeselectfilters: Boolean,
   },
   data(){
     return {
@@ -124,7 +125,14 @@ export default {
     toggleSelectedOptions(value) {
       if(this.text === "Stat Filter"){
         this.selectedOptions = this.selectedOptions === value ? 'win_rate' : value;
-      }else if (this.text !== "Timeframe Type" && this.text !== "Build Filter" && this.text !== "Minimum Games" && this.text !== "Mirror Matches") {                                          
+      }else if ((this.text !== "Timeframe Type" && 
+        this.text !== "Build Filter" && 
+        this.text !== "Minimum Games" && 
+        this.text !== "Mirror Matches" && 
+        this.text !== "Talent Build Type" && 
+        this.text !== "Type" && 
+        this.text !== "Leaderboard Type") && !this.disabledeselectfilters
+    ) {                                          
         this.selectedOptions = this.selectedOptions === value ? '' : value;
       } else {
         this.selectedOptions = value;
