@@ -28,6 +28,8 @@ services:
     volumes:
       - ../:/var/www
       - /var/www/node_modules  # Prevent node_modules from being overwritten by host
+    depends_on:
+      - app
     working_dir: /var/www
     command: npm run dev -- --host 0.0.0.0
 
