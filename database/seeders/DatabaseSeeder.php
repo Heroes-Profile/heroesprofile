@@ -45,6 +45,7 @@ class DatabaseSeeder extends Seeder
             MasterMmrDataSlSeeder::class,
             MasterMmrDataTlSeeder::class,
             MasterMmrDataUdSeeder::class,
+            MatchPredictionSeasonSeeder::class,
             MmrTypeIdsSeeder::class,
             PlayerSeeder::class,
             ReplaySeeder::class,

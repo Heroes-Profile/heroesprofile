@@ -138,6 +138,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
 
             $changeData = null;
 
+         
             if ($this->checkIfChange($gameVersion, $region, $gameType, $gameMap, $leagueTier, $heroLeagueTier, $roleLeagueTier, $heroLevel)) {
                 $changeData = GlobalHeroChange::query()
                     ->join('heroesprofile.heroes', 'heroesprofile.heroes.id', '=', 'global_hero_change.hero')
@@ -147,17 +148,50 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
                     // ->toSql();
                     ->get();
             }
-
             return $this->combineData($data, $statFilter, $banData, $changeData, $hero, $role);
         });
 
         return $data;
     }
 
-    private function calculateGameVersionsForHeroChange($gameVersion)
-    {
-        // Fix later
-        return [SeasonGameVersion::select('game_version')->where('id', (SeasonGameVersion::select('id')->where('game_version', '2.55.3.90670')->first()->id - 1))->first()->game_version];
+    private function calculateGameVersionsForHeroChange($version)
+    {   
+        try{
+            [$major, $minor, $patch, $build] = explode('.', $version[0]);
+            $major = (int)$major;
+            $minor = (int)$minor;
+            $patch = (int)$patch;
+            $build = (int)$build;
+
+            $previousVersion = SeasonGameVersion::where('valid_globals', 1)
+                ->where(function ($query) use ($major, $minor, $patch, $build) {
+                    $query->where('major', '<', $major)
+                        ->orWhere(function ($q) use ($major, $minor) {
+                            $q->where('major', '=', $major)
+                            ->where('minor', '<', $minor);
+                        })
+                        ->orWhere(function ($q) use ($major, $minor, $patch) {
+                            $q->where('major', '=', $major)
+                            ->where('minor', '=', $minor)
+                            ->where('patch', '<', $patch);
+                        })
+                        ->orWhere(function ($q) use ($major, $minor, $patch, $build) {
+                            $q->where('major', '=', $major)
+                            ->where('minor', '=', $minor)
+                            ->where('patch', '=', $patch)
+                            ->where('build', '<', $build);
+                        });
+                })
+                ->orderByDesc('major')
+                ->orderByDesc('minor')
+                ->orderByDesc('patch')
+                ->orderByDesc('build')
+                ->first();
+
+            return $previousVersion ? [$previousVersion->game_version] : ["2.55.3.90670"];
+        }   catch (\Exception $e) {
+            return ["2.55.3.90670"];
+        }   
     }
 
     private function combineData($data, $statFilter, $banData, $changeData, $hero, $role)
