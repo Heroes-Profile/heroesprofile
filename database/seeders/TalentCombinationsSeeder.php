@@ -10020,7 +10020,7 @@ class TalentCombinationsSeeder extends Seeder
 
         foreach ($data as $row) {
             DB::table('talent_combinations')->insert([
-                'id' => $row[0],
+                'talent_combination_id' => $row[0],
                 'hero' => $row[1],
                 'level_one' => $row[2],
                 'level_four' => $row[3],

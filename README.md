@@ -1,6 +1,7 @@
 # Heroes Profile
 [Master Heroes Profile](https://www.heroesprofile.com/)(master branch)
 
+
 # Cloning the Heroes Profile repository
 
 -   `git clone --recursive https://github.com/Heroes-Profile/heroesprofile.git`
@@ -8,6 +9,12 @@
 ## Installation
 
 Heroes Profile is a Laravel, Vue3, Tailwind app compiled with Vite. Making use of a MySql database. Every system has different methods for getting the required dependencies installed so please reference the main tools sites for installation instructions.
+
+## Local Docker Installation Instructions
+
+[Local Docker Installation Instructions](docker-compose/README.md)
+
+## Local Installation Instructions
 
 Laravel - https://laravel.com/
 
@@ -17,7 +24,7 @@ MySQL - MySQL can be installed in different ways. If you do not currently have M
 
 Optional - A visual tool for looking at the database and data is suggested. MySql Workbench is our preference - https://www.mysql.com/products/workbench/
 
-In addition to creating the environment yourself, there are also a lot of different tools that can pull together all the dependencies for you. Homestead is an example.
+In addition to creating the environment yourself, there are also a lot of different tools that can pull together all the dependencies for you. Homestead is an example, or our docker instructions referenced above.
 
 For windows users, Wampserver64 is a useful tool as it installs the MySql server and php at the same time. https://sourceforge.net/projects/wampserver/
 
@@ -31,9 +38,11 @@ For windows users, Wampserver64 is a useful tool as it installs the MySql server
 
 ## Database setup
 
--   Create the following schemas in your MySql database. `heroesprofile`, `heroesprofile_cache`, `heroesprofile_logs`, 
+-   Create the following schemas in your MySql database: `heroesprofile`, `heroesprofile_cache`, `heroesprofile_logs`, `heroesprofile_ngs`, `heroesprofile_ccl`, `heroesprofile_mcl`, `heroesprofile_hi`, `heroesprofile_hi_nc`
 
--   Base site table migrations and seeders have been provided.  Run `php artisan migrate` to run migrations and `php artisan db:seed`.  It seems the seeders stop early sometimes, or error out on memory issues.  If that occurs, just comment out the seeders that have already ran in `database\seeders\DatabaseSeeder.php` and then run `php artisan db:seed` again.  NOTE:  The data provided in the seeders is not complete.  A lot of player data maps to battletag ZEMILL#1940 and global data based on patch `2.55.4.91418`
+-   Base site table migrations and seeders have been provided.  Run `php artisan migrate` to run migrations and `php artisan db:seed`.  It seems the seeders stop early sometimes, or error out on memory issues.  If that occurs, just comment out the seeders that have already ran in `database\seeders\DatabaseSeeder.php` and then run `php artisan db:seed` again.  You can also attempt to increase memory usage/and or execution timeout.  E.g  `php -d memory_limit=2G -d max_execution_time=0 artisan db:seed `
+
+NOTE:  The data provided in the seeders is not complete.  A lot of player data maps to battletag ZEMILL#1940 and global data based on patch `2.55.4.91418`
 
 ## Running the project
 
