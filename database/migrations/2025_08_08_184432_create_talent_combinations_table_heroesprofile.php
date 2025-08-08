@@ -25,8 +25,8 @@ class CreateTalentCombinationsTableHeroesprofile extends Migration
             $table->integer('level_twenty')->nullable();
 
             $table->unique([
-                'hero', 'level_one', 'level_four', 'level_seven', 
-                'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'
+                'hero', 'level_one', 'level_four', 'level_seven',
+                'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty',
             ], 'Unique');
 
             $table->index(['hero', 'level_twenty'], 'index');

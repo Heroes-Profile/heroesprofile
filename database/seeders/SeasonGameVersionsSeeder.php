@@ -15,9 +15,8 @@ class SeasonGameVersionsSeeder extends Seeder
     public function run()
     {
         $data = [
-            [231,25,'2.55.4.91418','2023-11-21 18:24:07',1],
+            [231, 25, '2.55.4.91418', '2023-11-21 18:24:07', 1],
         ];
-
 
         foreach ($data as $row) {
             DB::table('season_game_versions')->insert([
