@@ -6,6 +6,8 @@
 
 -   `git clone --recursive https://github.com/Heroes-Profile/heroesprofile.git`
 
+## Local Docker Installation Instructions
+
 [Local Docker Installation Instructions](docker-compose/README.md)
 
 ## Installation
