@@ -1,9 +1,12 @@
 # Heroes Profile
 [Master Heroes Profile](https://www.heroesprofile.com/)(master branch)
 
+
 # Cloning the Heroes Profile repository
 
 -   `git clone --recursive https://github.com/Heroes-Profile/heroesprofile.git`
+
+[Local Docker Installation Instructions](docker-compose/README.md)
 
 ## Installation
 
