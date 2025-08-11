@@ -1,0 +1,42 @@
+services:
+  app:
+    build:
+      context: ../
+      dockerfile: ./docker-compose/Dockerfile
+    ports:
+      - 8000:8000
+      - 5173:5173
+    volumes:
+      - ../:/var/www
+      - ../public:/var/www/html
+      - /var/www/node_modules  # Prevent node_modules from being overwritten by host
+    depends_on:
+      mysql:
+        condition: service_healthy
+    command:
+      bash -c "
+        php artisan migrate --force &&
+        npm run dev -- --host 0.0.0.0 &
+        apache2-foreground
+      "
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_USER: heroesprofile
+      MYSQL_PASSWORD: heroesprofile_password
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
+    healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+        timeout: 10s
+        interval: 1s
+        retries: 10
+
+
+volumes:
+  mysql_data:
