@@ -66,7 +66,7 @@ class GlobalDataService
 
     public function getDefaultTimeframe()
     {
-        return SeasonGameVersion::select('game_version')->where('valid_globals', 1)->orderBy('major', 'DESC')->orderBy('minor', 'DESC')->orderBy('patch', 'DESC')->first()->game_version;
+        return SeasonGameVersion::select('game_version')->where('valid_globals', 1)->orderBy('major', 'DESC')->orderBy('minor', 'DESC')->orderBy('patch', 'DESC')->orderBy('build', 'DESC')->first()->game_version;
     }
 
     public function getDefaultBuildType()
