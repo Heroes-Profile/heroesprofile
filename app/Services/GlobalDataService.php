@@ -372,6 +372,7 @@ class GlobalDataService
     private function parseVersionString($versionString)
     {
         $parts = explode('.', $versionString);
+
         return [
             'major' => (int) ($parts[0] ?? 0),
             'minor' => (int) ($parts[1] ?? 0),
@@ -386,24 +387,24 @@ class GlobalDataService
     private function applyVersionFilter($query, $minimumVersionString)
     {
         $minVersion = $this->parseVersionString($minimumVersionString);
-        
+
         return $query->where(function ($q) use ($minVersion) {
             $q->where('major', '>', $minVersion['major'])
-              ->orWhere(function ($q2) use ($minVersion) {
-                  $q2->where('major', '=', $minVersion['major'])
-                     ->where('minor', '>', $minVersion['minor']);
-              })
-              ->orWhere(function ($q3) use ($minVersion) {
-                  $q3->where('major', '=', $minVersion['major'])
-                     ->where('minor', '=', $minVersion['minor'])
-                     ->where('patch', '>', $minVersion['patch']);
-              })
-              ->orWhere(function ($q4) use ($minVersion) {
-                  $q4->where('major', '=', $minVersion['major'])
-                     ->where('minor', '=', $minVersion['minor'])
-                     ->where('patch', '=', $minVersion['patch'])
-                     ->where('build', '>=', $minVersion['build']);
-              });
+                ->orWhere(function ($q2) use ($minVersion) {
+                    $q2->where('major', '=', $minVersion['major'])
+                        ->where('minor', '>', $minVersion['minor']);
+                })
+                ->orWhere(function ($q3) use ($minVersion) {
+                    $q3->where('major', '=', $minVersion['major'])
+                        ->where('minor', '=', $minVersion['minor'])
+                        ->where('patch', '>', $minVersion['patch']);
+                })
+                ->orWhere(function ($q4) use ($minVersion) {
+                    $q4->where('major', '=', $minVersion['major'])
+                        ->where('minor', '=', $minVersion['minor'])
+                        ->where('patch', '=', $minVersion['patch'])
+                        ->where('build', '>=', $minVersion['build']);
+                });
         });
     }
 
@@ -432,7 +433,7 @@ class GlobalDataService
 
         $timeframesQuery = SeasonGameVersion::select('game_version')
             ->where('valid_globals', 1);
-        
+
         $filterData->timeframes = $this->applyVersionFilter($timeframesQuery, $filtersMinimumPatch)
             ->orderBy('major', 'DESC')
             ->orderBy('minor', 'DESC')
@@ -444,7 +445,7 @@ class GlobalDataService
 
         $timeframesGroupedQuery = SeasonGameVersion::select('game_version')
             ->where('valid_globals', 1);
-        
+
         $filterData->timeframes_grouped = $this->applyVersionFilter($timeframesGroupedQuery, $filtersMinimumPatch)
             ->orderBy('major', 'DESC')
             ->orderBy('minor', 'DESC')
@@ -463,7 +464,7 @@ class GlobalDataService
 
         $timeframesSubGroupedQuery = SeasonGameVersion::select('game_version')
             ->where('valid_globals', 1);
-        
+
         $filterData->timeframes_sub_grouped = $this->applyVersionFilter($timeframesSubGroupedQuery, $filtersMinimumPatch)
             ->orderBy('major', 'DESC')
             ->orderBy('minor', 'DESC')
@@ -485,8 +486,6 @@ class GlobalDataService
 
                 return ['code' => $code, 'name' => $code];  // Use the first three segments
             });
-
-
 
         $filterData->regions = [
             ['code' => 'NA', 'name' => 'NA'],
