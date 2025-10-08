@@ -227,7 +227,7 @@
       </div>
     </div>
     <div v-else-if="isLoading">
-      <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
+      <loading-component></loading-component>
     </div>
   </div>
 </template>
@@ -249,12 +249,12 @@ export default {
     advancedfiltering: Boolean,
     weekssincestart: Number,
     matchpredictionweekssincestart: Number,
+    urlparameters: Object,
   },
   data(){
     return {
       windowWidth: window.innerWidth,
       isLoading: false,
-      cancelTokenSource: null,
       infoText1: "Leaderboards are a reflection of user uploaded data. Due to replay file corruption or other issues, the data is not always reflective of real player stats. Please keep that in mind when reviewing leaderboards.",
       columns: [
         { text: 'Rank', value: 'rank', sortable: true },
@@ -288,7 +288,7 @@ export default {
       isfiltered: false,
     }
   },
-  created(){    
+  created(){   
     this.gametype = this.gametypedefault[0];
     this.season = this.defaultseason;
     this.matchpredictionseason = this.defaultpredictionseason;
@@ -296,6 +296,10 @@ export default {
     if(this.region != null || this.tierrank != null){
       this.rankchange = true;
       this.isfiltered = true;
+    }
+
+    if(this.urlparameters){
+      this.setURLParameters();
     }
 
     this.getData();
@@ -333,18 +337,41 @@ export default {
         return true;
       }
       return false;
-    }
+    },
+    queryString(){      
+      let queryString = `?type=${this.leaderboardtype}`;
+      queryString += `&group_size=${this.groupsize}`;
+
+      if(this.hero){
+        queryString += `&hero=${this.hero}`;
+      }
+      if(this.role){
+        queryString += `&role=${this.role}`;
+      }
+
+
+      queryString += `&game_type=${this.gametype}`;
+      if(this.season){
+        queryString += `&season=${this.season}`;
+      }
+
+      if(this.region){
+        queryString += `&region=${this.region}`;
+      }
+
+    
+      if(this.tierrank){
+        queryString += `&tier_rank=${this.convertRankIDtoName(this.tierrank)}`;
+      }
+
+      return queryString;
+    },
   },
   watch: {
   },
   methods: {
     async getData(){
       this.isLoading = true;
-
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled');
-      }
-      this.cancelTokenSource = this.$axios.CancelToken.source();
       try{
         const response = await this.$axios.post("/api/v1/global/leaderboard", {
 
@@ -358,7 +385,6 @@ export default {
           tierrank: this.tierrank,
         }, 
         {
-          cancelToken: this.cancelTokenSource.token,
         });
 
         if(response.data.status == "failure to validate inputs"){
@@ -370,7 +396,6 @@ export default {
       }catch(error){
         //Do something here
       }finally {
-        this.cancelTokenSource = null;
         this.isLoading = false;
         this.$nextTick(() => {
         const responsivetable = this.$refs.responsivetable;
@@ -384,14 +409,9 @@ export default {
         });
       }
     },
-    cancelAxiosRequest() {
-      if (this.cancelTokenSource) {
-        this.cancelTokenSource.cancel('Request canceled by user');
-      }
-    },
     filterData(filteredData){
-      this.leaderboardtype = filteredData.single["Type"] ? filteredData.single["Type"] : this.leaderboardtype;
       this.leaderboardtype = filteredData.single["Leaderboard Type"] ? filteredData.single["Leaderboard Type"] : this.leaderboardtype;
+
 
       this.groupsize = filteredData.single["Group Size"] ? filteredData.single["Group Size"] : this.groupsize;
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
@@ -411,6 +431,12 @@ export default {
       this.sortDir = 'desc';
       this.playerRating = null;
       this.playerRatingGamesPlayed = null;
+
+      const currentUrl = window.location.href;
+      let currentPath = window.location.pathname;
+      history.pushState(null, null, `${currentPath}${this.queryString}`);
+
+      
       this.data = null;
       this.getData();
     },
@@ -457,12 +483,7 @@ export default {
       if(this.patreonUser){
         this.playerRating = null;
         this.ratingLoading = true;
-
-        if (this.cancelTokenSource) {
-          this.cancelTokenSource.cancel('Request canceled');
-        }
-        this.cancelTokenSource = this.$axios.CancelToken.source();
-
+        
         try{
           const response = await this.$axios.post("/api/v1/global/leaderboard/calculate/rating", {
             season: this.season, 
@@ -475,7 +496,6 @@ export default {
             blizz_id: user.blizz_id
           }, 
           {
-            cancelToken: this.cancelTokenSource.token,
           });
 
           this.playerRating = response.data.rating;
@@ -483,7 +503,6 @@ export default {
         }catch(error){
           //Do something here
         }finally {
-          this.cancelTokenSource = null;
           this.ratingLoading = false;
         }
       }
@@ -494,7 +513,44 @@ export default {
         return "Sorted Rank|(Rank)"; 
       }
       return "Rank"
-    }
+    },
+    convertRankIDtoName(rankID) {
+      const tier = this.filters.rank_tiers.find(tier => tier.code === rankID);
+      return tier ? tier.name : null;
+    },
+    setURLParameters(){
+      if(this.urlparameters["type"]){
+        this.leaderboardtype = this.urlparameters["type"];
+      }
+      if(this.urlparameters["group_size"]){
+        this.groupsize = this.urlparameters["group_size"];
+      }
+
+      if(this.urlparameters["season"]){
+        this.season = this.urlparameters["season"];
+      }
+
+      if(this.urlparameters["game_type"]){
+        this.gametype = this.urlparameters["game_type"];
+      }
+
+      if(this.urlparameters["region"]){
+        this.region = this.urlparameters["region"];
+      }
+      
+      if(this.urlparameters["hero"]){
+        this.hero = this.urlparameters["hero"];
+      }
+
+
+      if (this.urlparameters["tier_rank"]) {
+        const tierName = this.urlparameters["tier_rank"];
+        const capitalizedTierName = tierName.charAt(0).toUpperCase() + tierName.slice(1);
+        const tier = this.filters.rank_tiers.find(tier => tier.name === capitalizedTierName);
+        this.tierrank = tier ? tier.code : null;
+      }
+
+    },
   }
 }
 </script>
