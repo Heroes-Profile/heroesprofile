@@ -40,7 +40,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             'defaultpredictionseason' => (string) $this->globalDataService->getDefaultMatchPredictionSeason(),
             'weekssincestart' => $this->globalDataService->getWeeksSinceSeasonStart(),
             'matchpredictionweekssincestart' => $this->globalDataService->matchPredictionGetWeeksSinceSeasonStart(),
-
+            'urlparameters' => $request->all(),
         ]);
     }
 
@@ -73,6 +73,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         $role = $this->globalDataService->getMMRTypeValue($request['role']);
 
         $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
+
         $season = $request['season'];
         $region = $this->globalDataService->getRegionFilterValues($request['region']);
         $tierrank = $request['tierrank'];

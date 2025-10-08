@@ -484,48 +484,6 @@ export default {
       this.sortKey = '';
       this.sortDir = 'desc';
 
-      this.queryString  = `?timeframe_type=${this.timeframetype}`;
-      this.queryString += `&timeframe=${this.timeframe}`;
-
-      this.queryString += `&game_type=${this.gametype}`;
-
-      if(this.region){
-        this.queryString += `&region=${this.region}`;
-      }
-
-      if(this.herolevel){
-        this.queryString += `&hero_level=${this.herolevel}`;
-      }
-
-      if(this.gamemap){
-        this.queryString += `&game_map=${this.gamemap}`;
-      }
-
-      if(this.hero){
-        this.queryString += `&hero=${this.hero}`;
-      }
-
-      if(this.role){
-        this.queryString += `&role=${this.role}`;
-      }
-
-    
-      if(this.playerrank){
-        this.queryString += `&league_tier=${this.convertRankIDtoName(this.playerrank)}`;
-      }
-
-      if(this.herorank){
-        this.queryString += `&hero_league_tier=${this.convertRankIDtoName(this.herorank)}`;
-      }
-
-      if(this.rolerank){
-        this.queryString += `&role_league_tier=${this.convertRankIDtoName(this.rolerank)}`;
-      }
-
-      this.queryString += `&statfilter=${this.statfilter}`;
-      this.queryString += `&build_type=${this.talentbuildtype}`;
-      this.queryString += `&mirror=${this.mirrormatch}`;
-
       const currentUrl = window.location.href;
       let currentPath = window.location.pathname;
       history.pushState(null, null, `${currentPath}${this.queryString}`);

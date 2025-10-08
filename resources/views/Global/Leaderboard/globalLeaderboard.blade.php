@@ -14,6 +14,7 @@
     :advancedfiltering="{{ json_encode($advancedfiltering) }}"
     :weekssincestart="{{ json_encode($weekssincestart) }}"
     :matchpredictionweekssincestart="{{ json_encode($matchpredictionweekssincestart) }}"
+    :urlparameters="{{ json_encode($urlparameters) }}"
   >
   </global-leaderboard>
 @endsection
