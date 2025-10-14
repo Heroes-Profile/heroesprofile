@@ -267,6 +267,10 @@
     methods: {
       clickedHero(hero) {
         this.selectedHero = hero;
+
+        // Update document title dynamically
+        document.title = `${this.selectedHero.name} Matchups Stats | Heroes Profile`;
+
         let currentPath = window.location.pathname;
         history.pushState(null, null, `${currentPath}/${this.selectedHero.name}`);
         this.getData();
@@ -453,6 +457,10 @@
       handleInputChange(eventPayload){
         if(eventPayload.value != ""){
           this.selectedHero = this.heroes.find(hero => hero.id === eventPayload.value);
+
+          // Update document title dynamically
+          document.title = `${this.selectedHero.name} Matchups Stats | Heroes Profile`;
+
           let currentPath = window.location.pathname;
           let newPath = currentPath.replace(/\/[^/]*$/, `/${this.selectedHero.name}`);
           history.pushState(null, null, newPath);
