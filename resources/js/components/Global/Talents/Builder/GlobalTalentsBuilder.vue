@@ -364,6 +364,9 @@
         this.selectedHero = hero;
         this.preloadTalentImages(hero);
 
+        // Update document title dynamically
+        document.title = `${this.selectedHero.name} Talent Builder | Heroes Profile`;
+
         let currentPath = window.location.pathname;
         history.pushState(null, null, `${currentPath}/${this.selectedHero.name}`);
 
@@ -514,6 +517,10 @@
       handleInputChange(eventPayload){
         if(eventPayload.value != ""){
           this.selectedHero = this.heroes.find(hero => hero.id === eventPayload.value);
+
+          // Update document title dynamically
+          document.title = `${this.selectedHero.name} Talent Builder | Heroes Profile`;
+
           let currentPath = window.location.pathname;
           let newPath = currentPath.replace(/\/[^/]*$/, `/${this.selectedHero.name}`);
           history.pushState(null, null, newPath);
