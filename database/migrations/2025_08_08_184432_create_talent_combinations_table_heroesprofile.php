@@ -15,7 +15,7 @@ class CreateTalentCombinationsTableHeroesprofile extends Migration
     {
         Schema::create('talent_combinations', function (Blueprint $table) {
             $table->increments('talent_combination_id');
-            $table->integer('hero')->nullable();
+            $table->tinyInteger('hero')->nullable();
             $table->integer('level_one')->nullable();
             $table->integer('level_four')->nullable();
             $table->integer('level_seven')->nullable();
