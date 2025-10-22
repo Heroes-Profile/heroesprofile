@@ -102,7 +102,7 @@ class MatchPredictionGameController extends Controller
 
         $replayID = $replayData->replayID;
 
-        $playerData = Player::select('battletag', 'hero', 'team', 'player_conservative_rating')
+        $playerData = Player::select('player_id', 'hero', 'team', 'player_conservative_rating')
             ->where('replayID', $replayID)
             ->get();
 
@@ -167,9 +167,9 @@ class MatchPredictionGameController extends Controller
         $playerData = $playerData->map(function ($player) use ($heroData, &$averageMMR, $indexedTalents) {
             $player->hero = $heroData[$player->hero];
             $averageMMR[] = 1800 + ($player->player_conservative_rating * 40);
-            $player->talent = $indexedTalents[$player->battletag];
+            $player->talent = $indexedTalents[$player->player_id];
 
-            unset($player->battletag);
+            unset($player->player_id);
             unset($player->player_conservative_rating);
 
             return $player;
