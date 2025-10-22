@@ -9,7 +9,7 @@ class CreateHeroesTable extends Migration
     public function up()
     {
         Schema::create('heroes', function (Blueprint $table) {
-            $table->id();
+            $table->integer('id')->primary();
             $table->string('name')->unique();
             $table->string('short_name');
             $table->string('alt_name')->nullable();

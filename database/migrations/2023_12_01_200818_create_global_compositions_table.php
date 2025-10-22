@@ -14,7 +14,7 @@ class CreateGlobalCompositionsTable extends Migration
     public function up()
     {
         Schema::create('global_compositions', function (Blueprint $table) {
-            $table->id('global_compositions_id');
+            $table->increments('global_compositions_id');
             $table->string('game_version');
             $table->tinyInteger('game_type');
             $table->tinyInteger('league_tier');
