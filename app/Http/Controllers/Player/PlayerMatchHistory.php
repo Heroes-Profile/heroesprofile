@@ -141,12 +141,12 @@ class PlayerMatchHistory extends Controller
             /*
             ->join('scores', function ($join) {
                 $join->on('scores.replayID', '=', 'replay.replayID')
-                    ->on('scores.battletag', '=', 'player.battletag');
+                    ->on('scores.battletag', '=', 'player.player_id');
             })
             */
             ->join('talents', function ($join) {
                 $join->on('talents.replayID', '=', 'replay.replayID')
-                    ->on('talents.battletag', '=', 'player.battletag');
+                    ->on('talents.battletag', '=', 'player.player_id');
             })
             ->join('heroes', 'heroes.id', '=', 'player.hero')
             ->select([

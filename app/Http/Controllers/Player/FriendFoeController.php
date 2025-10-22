@@ -164,7 +164,7 @@ class FriendFoeController extends Controller
                 DB::raw('COUNT(*) AS total')
             )
             ->join('player', 'player.replayID', '=', 'replay.replayID')
-            ->join('battletags', 'battletags.player_id', '=', 'player.battletag')
+            ->join('battletags', 'battletags.player_id', '=', 'player.player_id')
             ->whereIn('replay.replayID', $innerQuery->pluck('replayID')->toArray())
             ->when(! is_null($groupSize) && $type == 'friend', function ($query) use ($innerQuery) {
                 return $query->whereIn('party', $innerQuery->pluck('party')->toArray());
@@ -219,7 +219,7 @@ class FriendFoeController extends Controller
                 DB::raw('COUNT(*) AS total')
             )
             ->join('player', 'player.replayID', '=', 'replay.replayID')
-            ->join('battletags', 'battletags.player_id', '=', 'player.battletag')
+            ->join('battletags', 'battletags.player_id', '=', 'player.player_id')
             ->whereIn('replay.replayID', $innerQuery->pluck('replayID')->toArray())
             ->when(! is_null($groupSize) && $type == 'friend', function ($query) use ($innerQuery) {
                 return $query->whereIn('party', $innerQuery->pluck('party')->toArray());

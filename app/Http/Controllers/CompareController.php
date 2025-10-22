@@ -96,7 +96,7 @@ class CompareController extends Controller
                     ->join('player', 'player.replayID', '=', 'replay.replayID')
                     ->join('scores', function ($join) {
                         $join->on('scores.replayID', '=', 'replay.replayID')
-                            ->on('scores.battletag', '=', 'player.battletag');
+                            ->on('scores.battletag', '=', 'player.player_id');
                     })
                     ->select([
                         'winner',
