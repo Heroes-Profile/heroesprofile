@@ -17,7 +17,7 @@ class CreatePlayerTable extends Migration
             $table->increments('player_table_id');
             $table->unsignedInteger('replayID');
             $table->unsignedBigInteger('blizz_id');
-            $table->integer('player_id');
+            $table->unsignedInteger('player_id');
             $table->tinyInteger('hero');
             $table->unsignedSmallInteger('hero_level');
             $table->unsignedSmallInteger('mastery_taunt')->nullable();
