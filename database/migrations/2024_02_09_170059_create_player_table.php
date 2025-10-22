@@ -17,7 +17,7 @@ class CreatePlayerTable extends Migration
             $table->increments('player_table_id');
             $table->unsignedInteger('replayID');
             $table->unsignedBigInteger('blizz_id');
-            $table->unsignedInteger('player_id');
+            $table->unsignedInteger('battletag');
             $table->tinyInteger('hero');
             $table->unsignedSmallInteger('hero_level');
             $table->unsignedSmallInteger('mastery_taunt')->nullable();
@@ -39,7 +39,7 @@ class CreatePlayerTable extends Migration
             $table->double('role_change')->nullable();
             $table->dateTime('mmr_date_parsed')->nullable();
 
-            $table->unique(['replayID', 'player_id', 'hero'], 'UNIQUE');
+            $table->unique(['replayID', 'battletag', 'hero'], 'UNIQUE');
             $table->index(['replayID', 'blizz_id', 'hero'], 'replayID_blizzID_Hero');
             $table->index(['blizz_id', 'hero'], 'blizzID_hero');
             $table->index(['replayID', 'hero', 'player_conservative_rating'], 'replayID_hero_ConservativeRating');

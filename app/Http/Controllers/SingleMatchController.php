@@ -143,14 +143,14 @@ class SingleMatchController extends Controller
 
         $result = DB::table($this->schema.'.replay')
             ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
-            ->join($this->schema.'.battletags', $this->schema.'.battletags.player_id', '=', $this->schema.'.player.player_id')
+            ->join($this->schema.'.battletags', $this->schema.'.battletags.player_id', '=', $this->schema.'.player.battletag')
             ->join($this->schema.'.scores', function ($join) {
                 $join->on($this->schema.'.scores.replayID', '=', $this->schema.'.replay.replayID')
-                    ->on($this->schema.'.scores.battletag', '=', $this->schema.'.player.player_id');
+                    ->on($this->schema.'.scores.battletag', '=', $this->schema.'.player.battletag');
             })
             ->join($this->schema.'.talents', function ($join) {
                 $join->on($this->schema.'.talents.replayID', '=', $this->schema.'.replay.replayID')
-                    ->on($this->schema.'.talents.battletag', '=', $this->schema.'.player.player_id');
+                    ->on($this->schema.'.talents.battletag', '=', $this->schema.'.player.battletag');
             })
             ->select([
                 $this->schema.'.replay.game_date',

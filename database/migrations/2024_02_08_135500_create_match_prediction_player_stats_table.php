@@ -40,4 +40,3 @@ class CreateMatchPredictionPlayerStatsTable extends Migration
         Schema::dropIfExists('match_prediction_player_stats');
     }
 }
-

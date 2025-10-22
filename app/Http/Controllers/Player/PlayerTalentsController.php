@@ -100,7 +100,7 @@ class PlayerTalentsController extends Controller
             ->join('player', 'player.replayID', '=', 'replay.replayID')
             ->join('talents', function ($join) {
                 $join->on('talents.replayID', '=', 'replay.replayID')
-                    ->on('talents.battletag', '=', 'player.player_id');
+                    ->on('talents.battletag', '=', 'player.battletag');
             })
             ->select([
                 'player.winner AS winner',

@@ -33,4 +33,3 @@ class CreateBannedAccountsTable extends Migration
         Schema::dropIfExists('banned_accounts');
     }
 }
-
