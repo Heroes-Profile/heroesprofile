@@ -14,7 +14,7 @@ class CreateMasterGamesPlayedDataGroupsTable extends Migration
     public function up()
     {
         Schema::create('master_games_played_data_groups', function (Blueprint $table) {
-            $table->id('master_games_played_data_groups_id');
+            $table->increments('master_games_played_data_groups_id');
             $table->unsignedBigInteger('type_value');
             $table->integer('stack_size')->default(0);
             $table->double('season');
