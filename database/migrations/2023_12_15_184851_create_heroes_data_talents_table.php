@@ -9,7 +9,7 @@ class CreateHeroesDataTalentsTable extends Migration
     public function up()
     {
         Schema::create('heroes_data_talents', function (Blueprint $table) {
-            $table->id('talent_id');
+            $table->increments('talent_id');
             $table->string('hero_name');
             $table->string('short_name');
             $table->string('attribute_id');

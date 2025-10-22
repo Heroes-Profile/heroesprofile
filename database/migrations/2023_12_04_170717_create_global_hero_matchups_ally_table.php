@@ -14,7 +14,7 @@ class CreateGlobalHeroMatchupsAllyTable extends Migration
     public function up()
     {
         Schema::create('global_hero_matchups_ally', function (Blueprint $table) {
-            $table->id('global_hero_matchups_ally_id');
+            $table->increments('global_hero_matchups_ally_id');
             $table->string('game_version');
             $table->tinyInteger('game_type');
             $table->tinyInteger('league_tier');

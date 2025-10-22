@@ -23,7 +23,7 @@ class CreateGlobalCompositionsTable extends Migration
             $table->tinyInteger('game_map');
             $table->unsignedInteger('hero_level');
             $table->integer('composition_id');
-            $table->integer('hero')->nullable();
+            $table->tinyInteger('hero')->nullable();
             $table->tinyInteger('mirror')->default(0);
             $table->integer('region');
             $table->tinyInteger('win_loss');
