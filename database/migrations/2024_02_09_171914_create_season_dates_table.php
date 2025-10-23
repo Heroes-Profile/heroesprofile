@@ -14,7 +14,7 @@ class CreateSeasonDatesTable extends Migration
     public function up()
     {
         Schema::create('season_dates', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
             $table->unsignedInteger('year');
             $table->double('season', 10, 2)->unsigned();
             $table->dateTime('start_date');

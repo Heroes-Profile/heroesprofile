@@ -31,7 +31,7 @@ class CreateLeaderboardTable extends Migration
             $table->double('conservative_rating');
             $table->double('rating')->nullable();
             $table->double('normalized_rating')->nullable();
-            $table->integer('most_played_hero')->nullable();
+            $table->tinyInteger('most_played_hero')->nullable();
             $table->integer('level_one')->nullable();
             $table->integer('level_four')->nullable();
             $table->integer('level_seven')->nullable();

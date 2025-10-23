@@ -9,7 +9,7 @@ class CreateGlobalHeroTalentsTable extends Migration
     public function up()
     {
         Schema::create('global_hero_talents', function (Blueprint $table) {
-            $table->id('global_hero_talents_id');
+            $table->increments('global_hero_talents_id');
             $table->string('game_version', 45)->nullable();
             $table->tinyInteger('game_type');
             $table->tinyInteger('league_tier');
@@ -63,6 +63,7 @@ class CreateGlobalHeroTalentsTable extends Migration
 
             $table->unique(['game_version', 'game_type', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'hero', 'mirror', 'region', 'win_loss', 'talent_combination_id'], 'unique');
             $table->index(['game_version', 'game_type', 'hero', 'league_tier', 'hero_league_tier', 'role_league_tier', 'game_map', 'hero_level', 'mirror', 'region', 'win_loss', 'talent_combination_id', 'games_played'], 'Index_w-gamesPlayed');
+            $table->index(['talent_combination_id', 'game_version', 'game_type', 'hero', 'league_tier'], 'idx_talents_lookup');
         });
     }
 

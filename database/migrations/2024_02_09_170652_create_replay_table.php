@@ -14,8 +14,8 @@ class CreateReplayTable extends Migration
     public function up()
     {
         Schema::create('replay', function (Blueprint $table) {
-            $table->unsignedBigInteger('replayID')->primary();
-            $table->unsignedTinyInteger('game_type');
+            $table->unsignedInteger('replayID')->primary();
+            $table->tinyInteger('game_type');
             $table->dateTime('game_date');
             $table->unsignedSmallInteger('game_length');
             $table->unsignedTinyInteger('game_map');

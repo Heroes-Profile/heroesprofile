@@ -14,7 +14,7 @@ class CreateMasterMmrDataSlTable extends Migration
     public function up()
     {
         Schema::create('master_mmr_data_sl', function (Blueprint $table) {
-            $table->id('master_mmr_data_sl_id');
+            $table->increments('master_mmr_data_sl_id');
             $table->unsignedBigInteger('type_value');
             $table->unsignedTinyInteger('game_type');
             $table->unsignedInteger('blizz_id');

@@ -117,8 +117,8 @@ class MmrTypeIdsSeeder extends Seeder
 
         foreach ($data as $row) {
             DB::table('mmr_type_ids')->insert([
-                'mmr_type_id' => $row[0],
-                'name' => $row[1],
+                'mmr_type_id' => $row[1],
+                'name' => $row[2],
             ]);
         }
     }

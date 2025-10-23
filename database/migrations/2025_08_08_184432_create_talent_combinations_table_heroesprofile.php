@@ -15,7 +15,7 @@ class CreateTalentCombinationsTableHeroesprofile extends Migration
     {
         Schema::create('talent_combinations', function (Blueprint $table) {
             $table->increments('talent_combination_id');
-            $table->integer('hero')->nullable();
+            $table->tinyInteger('hero')->nullable();
             $table->integer('level_one')->nullable();
             $table->integer('level_four')->nullable();
             $table->integer('level_seven')->nullable();
@@ -30,6 +30,7 @@ class CreateTalentCombinationsTableHeroesprofile extends Migration
             ], 'Unique');
 
             $table->index(['hero', 'level_twenty'], 'index');
+            $table->index(['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'], 'idx_talent_levels');
         });
     }
 

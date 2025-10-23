@@ -14,11 +14,11 @@ class CreatePlayerTable extends Migration
     public function up()
     {
         Schema::create('player', function (Blueprint $table) {
-            $table->id('player_table_id');
-            $table->unsignedBigInteger('replayID');
+            $table->increments('player_table_id');
+            $table->unsignedInteger('replayID');
             $table->unsignedBigInteger('blizz_id');
-            $table->string('battletag', 50)->collation('utf8mb4_0900_ai_ci');
-            $table->unsignedTinyInteger('hero');
+            $table->unsignedInteger('battletag');
+            $table->tinyInteger('hero');
             $table->unsignedSmallInteger('hero_level');
             $table->unsignedSmallInteger('mastery_taunt')->nullable();
             $table->unsignedTinyInteger('team');

@@ -18,7 +18,8 @@ This guide helps you set up Heroes Profile for local development using Docker Co
    ```
 
 3. **Run database seeders (optional)**
-
+   Wait for the app to create database tables before running seeders.
+   
    ```bash
    docker compose exec app php artisan db:seed
    ```
