@@ -46,7 +46,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('v1')->group(function () {
+Route::prefix('v1')->middleware('web')->group(function () {
     Route::post('main/footer/data', [MainPageController::class, 'getFooterData']);
 
     Route::post('main/header/data', [MainPageController::class, 'getHeaderAlertData']);
