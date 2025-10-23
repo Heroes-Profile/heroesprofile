@@ -9,7 +9,7 @@ class CreateGlobalHeroMatchupsEnemyTable extends Migration
     public function up()
     {
         Schema::create('global_hero_matchups_enemy', function (Blueprint $table) {
-            $table->id('global_hero_matchups_enemy_id');
+            $table->increments('global_hero_matchups_enemy_id');
             $table->string('game_version');
             $table->tinyInteger('game_type');
             $table->tinyInteger('league_tier');

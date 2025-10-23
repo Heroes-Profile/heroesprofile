@@ -14,9 +14,9 @@ class CreateBattletagsTable extends Migration
     public function up()
     {
         Schema::create('battletags', function (Blueprint $table) {
-            $table->id('player_id');
-            $table->unsignedBigInteger('blizz_id');
-            $table->string('battletag');
+            $table->increments('player_id');
+            $table->integer('blizz_id');
+            $table->string('battletag', 45);
             $table->tinyInteger('region');
             $table->integer('account_level')->default(0);
             $table->tinyInteger('patreon')->nullable();

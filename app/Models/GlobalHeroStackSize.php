@@ -8,7 +8,7 @@ class GlobalHeroStackSize extends Model
 {
     protected $table = 'global_hero_stack_size';
 
-    protected $primaryKey = 'global_hero_stats_id';
+    protected $primaryKey = 'global_hero_stack_size_id';
 
     protected $connection = 'heroesprofile';
 

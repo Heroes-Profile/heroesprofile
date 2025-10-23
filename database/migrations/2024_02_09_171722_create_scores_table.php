@@ -14,8 +14,8 @@ class CreateScoresTable extends Migration
     public function up()
     {
         Schema::create('scores', function (Blueprint $table) {
-            $table->unsignedBigInteger('replayID');
-            $table->string('battletag', 50)->charset('utf8mb4')->collation('utf8mb4_0900_ai_ci');
+            $table->unsignedInteger('replayID');
+            $table->unsignedInteger('battletag');
             $table->integer('level')->nullable();
             $table->integer('kills')->nullable();
             $table->integer('assists')->nullable();
