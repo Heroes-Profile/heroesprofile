@@ -10014,7 +10014,7 @@ class GlobalHeroStackSizeSeeder extends Seeder
 
         foreach ($data as $row) {
             DB::table('global_hero_stack_size')->insert([
-                'global_hero_stats_id' => $row[0],
+                'global_hero_stack_size_id' => $row[0],
                 'game_version' => $row[1],
                 'game_type' => $row[2],
                 'league_tier' => $row[3],
