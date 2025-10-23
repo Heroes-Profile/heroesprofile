@@ -185,7 +185,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
 
                     $returnData[$comboType][$combo]['win_rate'] = $gamesPlayed ? round(($returnData[$comboType][$combo]['wins'] / $gamesPlayed) * 100, 2) : 0;
 
-                    $returnData[$comboType][$combo]['stack_size_name'] = $party_combinations[$row->team_enemy_stack_value];
+                    $returnData[$comboType][$combo]['stack_size_name'] = $party_combinations[$row->team_enemy_stack_value] ?? '5 Solo';
                 }
             }
 
