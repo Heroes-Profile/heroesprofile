@@ -22,6 +22,7 @@ return [
     'allowed_origins' => [
         'https://www.heroesprofile.com', 
         'https://heroesprofile.com',
+        'https://develop.heroesprofile.com/',
     ],
 
     'allowed_origins_patterns' => [],
