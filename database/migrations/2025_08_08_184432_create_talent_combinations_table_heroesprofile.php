@@ -30,6 +30,7 @@ class CreateTalentCombinationsTableHeroesprofile extends Migration
             ], 'Unique');
 
             $table->index(['hero', 'level_twenty'], 'index');
+            $table->index(['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'], 'idx_talent_levels');
         });
     }
 
