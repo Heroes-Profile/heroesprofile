@@ -415,15 +415,22 @@ if (! env('Production')) {
 
     private function getTopBuildsData($build, $win_loss, $hero, $gameVersion, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region, $statFilter)
     {
+        $buildStages = [
+            ['thirteen' => 0, 'sixteen' => 0, 'twenty' => 0],      // Levels 1-10
+            ['thirteen' => $build->level_thirteen, 'sixteen' => 0, 'twenty' => 0],  // Levels 1-13
+            ['thirteen' => $build->level_thirteen, 'sixteen' => $build->level_sixteen, 'twenty' => 0],  // Levels 1-16
+            ['thirteen' => $build->level_thirteen, 'sixteen' => $build->level_sixteen, 'twenty' => $build->level_twenty],  // Full build
+        ];
+
         $transformedData = [
             'wins' => 0,
             'losses' => 0,
             'total_filter_type' => 0,
         ];
 
-        $data = GlobalHeroTalents::query()
+        $baseQuery = GlobalHeroTalents::query()
             ->join('talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
-            ->select('win_loss')
+            ->select('win_loss', 'level_thirteen', 'level_sixteen', 'level_twenty')
             ->selectRaw('SUM(games_played) AS games_played')
             ->when($statFilter !== 'win_rate', function ($query) use ($statFilter) {
                 return $query->selectRaw("SUM(global_hero_talents.$statFilter) as total_filter_type");
@@ -441,129 +448,29 @@ if (! env('Production')) {
             ->where('level_four', $build->level_four)
             ->where('level_seven', $build->level_seven)
             ->where('level_ten', $build->level_ten)
-            ->where('level_thirteen', 0)
-            ->where('level_sixteen', 0)
-            ->where('level_twenty', 0)
-            // ->toSql();
-            ->groupBy('win_loss')
-            ->get();
-
-        $transformedData = [
-            'wins' => ($transformedData['wins'] + $data->where('win_loss', 1)->sum('games_played')),
-            'losses' => ($transformedData['losses'] + $data->where('win_loss', 0)->sum('games_played')),
-            'total_filter_type' => $statFilter !== 'win_rate' ? ($transformedData['total_filter_type'] + $data->sum('total_filter_type')) : 0,
-        ];
-
-        $data = GlobalHeroTalents::query()
-            ->join('talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
-            ->select('win_loss')
-            ->selectRaw('SUM(games_played) AS games_played')
-            ->when($statFilter !== 'win_rate', function ($query) use ($statFilter) {
-                return $query->selectRaw("SUM(global_hero_talents.$statFilter) as total_filter_type");
+            ->where(function ($query) use ($buildStages) {
+                foreach ($buildStages as $stage) {
+                    $query->orWhere(function ($q) use ($stage) {
+                        $q->where('level_thirteen', $stage['thirteen'])
+                          ->where('level_sixteen', $stage['sixteen'])
+                          ->where('level_twenty', $stage['twenty']);
+                    });
+                }
             })
-            ->filterByGameVersion($gameVersion)
-            ->filterByGameType($gameType)
-            ->filterByHero($hero)
-            ->filterByLeagueTier($leagueTier)
-            ->filterByHeroLeagueTier($heroLeagueTier)
-            ->filterByRoleLeagueTier($roleLeagueTier)
-            ->filterByGameMap($gameMap)
-            ->filterByHeroLevel($heroLevel)
-            ->filterByRegion($region)
-            ->where('level_one', $build->level_one)
-            ->where('level_four', $build->level_four)
-            ->where('level_seven', $build->level_seven)
-            ->where('level_ten', $build->level_ten)
-            ->where('level_thirteen', $build->level_thirteen)
-            ->where('level_sixteen', 0)
-            ->where('level_twenty', 0)
-            // ->toSql();
-            ->groupBy('win_loss')
+            ->groupBy('win_loss', 'level_thirteen', 'level_sixteen', 'level_twenty')
             ->get();
 
-        $transformedData = [
-            /*
-            'wins' => ($transformedData['wins'] + ($data->where('win_loss', 1)->sum('games_played') * 1.125)),
-            'losses' => ($transformedData['losses'] + ($data->where('win_loss', 0)->sum('games_played') * 1.125)),
-          */
-            'wins' => ($transformedData['wins'] + ($data->where('win_loss', 1)->sum('games_played'))),
-            'losses' => ($transformedData['losses'] + ($data->where('win_loss', 0)->sum('games_played'))),
-            'total_filter_type' => $statFilter !== 'win_rate' ? ($transformedData['total_filter_type'] + $data->sum('total_filter_type')) : 0,
-        ];
+        foreach ($baseQuery as $row) {
+            $wins = $row->win_loss == 1 ? $row->games_played : 0;
+            $losses = $row->win_loss == 0 ? $row->games_played : 0;
 
-        $data = GlobalHeroTalents::query()
-            ->join('talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
-            ->select('win_loss')
-            ->selectRaw('SUM(games_played) AS games_played')
-            ->when($statFilter !== 'win_rate', function ($query) use ($statFilter) {
-                return $query->selectRaw("SUM(global_hero_talents.$statFilter) as total_filter_type");
-            })
-            ->filterByGameVersion($gameVersion)
-            ->filterByGameType($gameType)
-            ->filterByHero($hero)
-            ->filterByLeagueTier($leagueTier)
-            ->filterByHeroLeagueTier($heroLeagueTier)
-            ->filterByRoleLeagueTier($roleLeagueTier)
-            ->filterByGameMap($gameMap)
-            ->filterByHeroLevel($heroLevel)
-            ->filterByRegion($region)
-            ->where('level_one', $build->level_one)
-            ->where('level_four', $build->level_four)
-            ->where('level_seven', $build->level_seven)
-            ->where('level_ten', $build->level_ten)
-            ->where('level_thirteen', $build->level_thirteen)
-            ->where('level_sixteen', $build->level_sixteen)
-            ->where('level_twenty', 0)
-            // ->toSql();
-            ->groupBy('win_loss')
-            ->get();
+            $transformedData['wins'] += $wins;
+            $transformedData['losses'] += $losses;
+            $transformedData['total_filter_type'] += $statFilter !== 'win_rate' ? ($row->total_filter_type ?? 0) : 0;
+        }
 
-        $transformedData = [
-            /*
-            'wins' => ($transformedData['wins'] + ($data->where('win_loss', 1)->sum('games_played') * 1.33)),
-            'losses' => ($transformedData['losses'] + ($data->where('win_loss', 0)->sum('games_played') * 1.33)),
-          */
-            'wins' => ($transformedData['wins'] + ($data->where('win_loss', 1)->sum('games_played'))),
-            'losses' => ($transformedData['losses'] + ($data->where('win_loss', 0)->sum('games_played'))),
-            'total_filter_type' => $statFilter !== 'win_rate' ? ($transformedData['total_filter_type'] + $data->sum('total_filter_type')) : 0,
-        ];
-
-        $data = GlobalHeroTalents::query()
-            ->join('talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
-            ->select('win_loss')
-            ->selectRaw('SUM(games_played) AS games_played')
-            ->when($statFilter !== 'win_rate', function ($query) use ($statFilter) {
-                return $query->selectRaw("SUM(global_hero_talents.$statFilter) as total_filter_type");
-            })
-            ->filterByGameVersion($gameVersion)
-            ->filterByGameType($gameType)
-            ->filterByHero($hero)
-            ->filterByLeagueTier($leagueTier)
-            ->filterByHeroLeagueTier($heroLeagueTier)
-            ->filterByRoleLeagueTier($roleLeagueTier)
-            ->filterByGameMap($gameMap)
-            ->filterByHeroLevel($heroLevel)
-            ->filterByRegion($region)
-            ->where('level_one', $build->level_one)
-            ->where('level_four', $build->level_four)
-            ->where('level_seven', $build->level_seven)
-            ->where('level_ten', $build->level_ten)
-            ->where('level_thirteen', $build->level_thirteen)
-            ->where('level_sixteen', $build->level_sixteen)
-            ->where('level_twenty', $build->level_twenty)
-            // ->toSql();
-            ->groupBy('win_loss')
-            ->get();
-
-        $transformedData = [
-            /*
-            'wins' => round($transformedData['wins'] + ($data->where('win_loss', 1)->sum('games_played') * 1.5)),
-            'losses' => round($transformedData['losses'] + ($data->where('win_loss', 0)->sum('games_played') * 1.5)),
-          */
-            'wins' => round($transformedData['wins'] + ($data->where('win_loss', 1)->sum('games_played'))),
-            'losses' => round($transformedData['losses'] + ($data->where('win_loss', 0)->sum('games_played'))),
-            'total_filter_type' => $statFilter !== 'win_rate' ? ($transformedData['total_filter_type'] + $data->sum('total_filter_type')) : 0,
-        ];
+        $transformedData['wins'] = round($transformedData['wins']);
+        $transformedData['losses'] = round($transformedData['losses']);
 
         return $transformedData;
     }
