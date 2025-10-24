@@ -274,8 +274,8 @@ if (! env('Production')) {
 
             // Map the data back to each build
             foreach ($topBuilds as $build) {
-                $buildKey = $build->level_one . '-' . $build->level_four . '-' . $build->level_seven . '-' .
-                            $build->level_ten . '-' . $build->level_thirteen . '-' . $build->level_sixteen . '-' .
+                $buildKey = $build->level_one.'-'.$build->level_four.'-'.$build->level_seven.'-'.
+                            $build->level_ten.'-'.$build->level_thirteen.'-'.$build->level_sixteen.'-'.
                             $build->level_twenty;
                 $build->buildData = $allBuildData[$buildKey] ?? [
                     'wins' => 0,
@@ -460,12 +460,12 @@ if (! env('Production')) {
                     foreach ($buildLevels as $levels) {
                         $outerQuery->orWhere(function ($q) use ($build, $levels) {
                             $q->where('level_one', $build->level_one)
-                              ->where('level_four', $build->level_four)
-                              ->where('level_seven', $build->level_seven)
-                              ->where('level_ten', $build->level_ten)
-                              ->where('level_thirteen', $levels['thirteen'])
-                              ->where('level_sixteen', $levels['sixteen'])
-                              ->where('level_twenty', $levels['twenty']);
+                                ->where('level_four', $build->level_four)
+                                ->where('level_seven', $build->level_seven)
+                                ->where('level_ten', $build->level_ten)
+                                ->where('level_thirteen', $levels['thirteen'])
+                                ->where('level_sixteen', $levels['sixteen'])
+                                ->where('level_twenty', $levels['twenty']);
                         });
                     }
                 }
@@ -477,14 +477,14 @@ if (! env('Production')) {
         $buildDataMap = [];
         foreach ($query as $row) {
             // Match to the full build (not progressive levels)
-            $buildKey = $row->level_one . '-' . $row->level_four . '-' . $row->level_seven . '-' .
-                        $row->level_ten . '-' . $row->level_thirteen . '-' . $row->level_sixteen . '-' .
+            $buildKey = $row->level_one.'-'.$row->level_four.'-'.$row->level_seven.'-'.
+                        $row->level_ten.'-'.$row->level_thirteen.'-'.$row->level_sixteen.'-'.
                         $row->level_twenty;
 
             // Find which original build this row belongs to by checking if it matches any progressive level
             foreach ($builds as $build) {
-                $fullBuildKey = $build->level_one . '-' . $build->level_four . '-' . $build->level_seven . '-' .
-                                $build->level_ten . '-' . $build->level_thirteen . '-' . $build->level_sixteen . '-' .
+                $fullBuildKey = $build->level_one.'-'.$build->level_four.'-'.$build->level_seven.'-'.
+                                $build->level_ten.'-'.$build->level_thirteen.'-'.$build->level_sixteen.'-'.
                                 $build->level_twenty;
 
                 // Check if this row matches this build's first 4 levels
@@ -502,7 +502,7 @@ if (! env('Production')) {
                     );
 
                     if ($matchesProgressiveLevel) {
-                        if (!isset($buildDataMap[$fullBuildKey])) {
+                        if (! isset($buildDataMap[$fullBuildKey])) {
                             $buildDataMap[$fullBuildKey] = [
                                 'wins' => 0,
                                 'losses' => 0,
@@ -566,8 +566,8 @@ if (! env('Production')) {
                 foreach ($buildStages as $stage) {
                     $query->orWhere(function ($q) use ($stage) {
                         $q->where('level_thirteen', $stage['thirteen'])
-                          ->where('level_sixteen', $stage['sixteen'])
-                          ->where('level_twenty', $stage['twenty']);
+                            ->where('level_sixteen', $stage['sixteen'])
+                            ->where('level_twenty', $stage['twenty']);
                     });
                 }
             })
