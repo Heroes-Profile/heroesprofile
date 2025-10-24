@@ -21,7 +21,7 @@ class CheckUserAgent
             'bingbot',
             'proximic',
             'Bytespider',
-            
+
             // SEO and marketing bots (consolidated keywords)
             'SemrushBot',
             'GrapeshotCrawler',
@@ -39,7 +39,7 @@ class CheckUserAgent
             'weborama-fetcher',
             'ExteContextCrawl',
             'Leikibot',
-            
+
             // AI/LLM bots (consolidated)
             'ChatGPT',
             'ClaudeBot',
@@ -47,7 +47,7 @@ class CheckUserAgent
             'PerplexityBot',
             'ShapBot',
             'OAI-SearchBot',
-            
+
             // Advertising bots (consolidated)
             'AudigentAdBot',
             'CriteoBot',
@@ -55,7 +55,7 @@ class CheckUserAgent
             'MicroAdBot',
             'AdmixerBot',
             'Google-Display-Ads-Bot',
-            
+
             // Data collection and scraping bots
             'SirdataBot',
             'AdkernelTopicCrawler',
@@ -126,23 +126,23 @@ class CheckUserAgent
             'LinkupBot',
             'NiueBot',
             'Spideraf-Bot',
-            
+
             // Archive.org bots (consolidated)
             'archive.org_bot',
-            
+
             // Qwant bots (consolidated)
             'Qwantbot',
-            
+
             // Security and scanning bots
             'StingrayBot',
             'Richaudience Brandsafety Bot',
-            
+
             // Social media bots (be careful - some might be legitimate)
             'redditbot',
             'TelegramBot',
             'Twitterbot',
             'Facebot',
-            
+
             // Other specific bots
             'Brightbot',
             'DuckAssistBot',
@@ -168,48 +168,48 @@ class CheckUserAgent
             'facebookexternalhit',
             'star-finder.de Bot',
             'StartmeBot',
-            
+
             // Python scraping tools and libraries
             'python-requests',
             'Python/',
             'aiohttp/',
             'urllib',
             'httpx',
-            
+
             // Scraping frameworks
             'Scrapy/',
             'newspaper/',
             'trafilatura/',
             'colly',
-            
+
             // Command line tools
             'curl/',
             'curl ',
             'wget/',
             'Wget/',
-            
+
             // Security testing tools
             'Fuzz Faster U Fool',
             'sqlmap/',
-            
+
             // SEO scraping tools
             'Screaming Frog SEO Spider',
-            
+
             // Custom apps
             'HotsPicker',
-            
+
             // Microsoft Office data extraction
             'Microsoft.Data.Mashup',
             'Microsoft Office Excel',
-            
+
             // Malformed and placeholder user agents
             '{uagent}',
-            
+
             // Ad fraud and analytics crawlers
             'Pixalate.com',
             'DnBCrawler-Analytics',
             'Owler',
-            
+
             // HTTP clients and libraries
             'got (https://github.com/sindresorhus/got)',
             'node-fetch/',
@@ -218,7 +218,7 @@ class CheckUserAgent
             'libcurl-agent',
             'gvfs/',
             'udu/',
-            
+
             // Web scraping and parsing tools
             'LinuxGetparser',
             'WordPress/',
@@ -243,10 +243,10 @@ class CheckUserAgent
             'site-checker',
             'CSE-Agent',
             'ATTENTION! FREE! NEW BLOCKCHAIN SEARCH ENGINE!',
-            
+
             // Meta/Facebook crawlers
             'meta-externalads',
-            
+
             // Web scraping tools and frameworks
             'Jaunt/',
             'Java Browser',
@@ -258,25 +258,25 @@ class CheckUserAgent
             'Apache-HttpClient/',
             'Java/',
             'PostmanRuntime/',
-            
+
             // Crawlers and bots
             'MaxPointCrawler',
             'crawler_eb_germany',
             'Discourse Forum Onebox',
-            
+
             // Mobile apps and chat clients
             'chatterino-api-cache',
             'WhatsApp/',
             'com.tinyspeck.chatlyio',
-            
+
             // Streaming devices
             'Roku Dynamic Menu',
             'The Roku Channel',
             'YouViewHTML',
-            
+
             // Gaming platforms
             'Valve/Steam HTTP Client',
-            
+
             // Streaming devices and smart TVs
             'VIZIO',
             'Hulu/',
@@ -284,7 +284,7 @@ class CheckUserAgent
             'WatchFreeFlix/',
             '7plus/',
             'TF1/',
-            
+
             // HTTP clients and libraries
             'fasthttp',
             'RestSharp/',
@@ -301,7 +301,7 @@ class CheckUserAgent
             'VLC/',
             'eMClient/',
             'PSheet',
-            
+
             // Web scraping and testing tools
             'insomnia/',
             'Wappalyzer',
@@ -328,7 +328,7 @@ class CheckUserAgent
             'GoFastValidator/',
             'Domain-Verification-Tool/',
             'HubSpot Connect',
-            
+
             // Mobile apps and chat clients
             'GrokAppAndroid/',
             'WebexTeams',
@@ -344,7 +344,7 @@ class CheckUserAgent
             'Bloglines/',
             'OpenAI/',
             'GodotEngine/',
-            
+
             // Malformed and suspicious user agents
             'Mozila/5.0',
             'Microsoft Windows Network Diagnostics',
@@ -353,7 +353,7 @@ class CheckUserAgent
             'acebookexternalhit/',
             '*',
             'doors_user',
-            
+
             // Old mobile devices (legacy)
             'SonyEricsson',
             'BlackBerry',
