@@ -269,8 +269,19 @@ if (! env('Production')) {
                 $topBuilds = $this->topBuildsOnUniqueLevel($hero, $gameVersion, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region, $uniqueLevel);
             }
 
+            // Fetch all build data in a single query
+            $allBuildData = $this->getBatchTopBuildsData($topBuilds, $hero, $gameVersion, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region, $statFilter);
+
+            // Map the data back to each build
             foreach ($topBuilds as $build) {
-                $build->buildData = $this->getTopBuildsData($build, 1, $hero, $gameVersion, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region, $statFilter);
+                $buildKey = $build->level_one . '-' . $build->level_four . '-' . $build->level_seven . '-' .
+                            $build->level_ten . '-' . $build->level_thirteen . '-' . $build->level_sixteen . '-' .
+                            $build->level_twenty;
+                $build->buildData = $allBuildData[$buildKey] ?? [
+                    'wins' => 0,
+                    'losses' => 0,
+                    'total_filter_type' => 0,
+                ];
             }
 
             return $topBuilds;
@@ -411,6 +422,109 @@ if (! env('Production')) {
             ->take($this->buildsToReturn);
 
         return $filteredData;
+    }
+
+    private function getBatchTopBuildsData($builds, $hero, $gameVersion, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region, $statFilter)
+    {
+        if ($builds->isEmpty()) {
+            return [];
+        }
+
+        // Build the query with OR conditions for all builds and their progressive levels
+        $query = GlobalHeroTalents::query()
+            ->join('talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
+            ->select('win_loss', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
+            ->selectRaw('SUM(games_played) AS games_played')
+            ->when($statFilter !== 'win_rate', function ($query) use ($statFilter) {
+                return $query->selectRaw("SUM(global_hero_talents.$statFilter) as total_filter_type");
+            })
+            ->filterByGameVersion($gameVersion)
+            ->filterByGameType($gameType)
+            ->filterByHero($hero)
+            ->filterByLeagueTier($leagueTier)
+            ->filterByHeroLeagueTier($heroLeagueTier)
+            ->filterByRoleLeagueTier($roleLeagueTier)
+            ->filterByGameMap($gameMap)
+            ->filterByHeroLevel($heroLevel)
+            ->filterByRegion($region)
+            ->where(function ($outerQuery) use ($builds) {
+                foreach ($builds as $build) {
+                    // For each build, add conditions for all progressive levels
+                    $buildLevels = [
+                        ['thirteen' => 0, 'sixteen' => 0, 'twenty' => 0],
+                        ['thirteen' => $build->level_thirteen, 'sixteen' => 0, 'twenty' => 0],
+                        ['thirteen' => $build->level_thirteen, 'sixteen' => $build->level_sixteen, 'twenty' => 0],
+                        ['thirteen' => $build->level_thirteen, 'sixteen' => $build->level_sixteen, 'twenty' => $build->level_twenty],
+                    ];
+
+                    foreach ($buildLevels as $levels) {
+                        $outerQuery->orWhere(function ($q) use ($build, $levels) {
+                            $q->where('level_one', $build->level_one)
+                              ->where('level_four', $build->level_four)
+                              ->where('level_seven', $build->level_seven)
+                              ->where('level_ten', $build->level_ten)
+                              ->where('level_thirteen', $levels['thirteen'])
+                              ->where('level_sixteen', $levels['sixteen'])
+                              ->where('level_twenty', $levels['twenty']);
+                        });
+                    }
+                }
+            })
+            ->groupBy('win_loss', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
+            ->get();
+
+        // Group results by build key
+        $buildDataMap = [];
+        foreach ($query as $row) {
+            // Match to the full build (not progressive levels)
+            $buildKey = $row->level_one . '-' . $row->level_four . '-' . $row->level_seven . '-' .
+                        $row->level_ten . '-' . $row->level_thirteen . '-' . $row->level_sixteen . '-' .
+                        $row->level_twenty;
+
+            // Find which original build this row belongs to by checking if it matches any progressive level
+            foreach ($builds as $build) {
+                $fullBuildKey = $build->level_one . '-' . $build->level_four . '-' . $build->level_seven . '-' .
+                                $build->level_ten . '-' . $build->level_thirteen . '-' . $build->level_sixteen . '-' .
+                                $build->level_twenty;
+
+                // Check if this row matches this build's first 4 levels
+                if ($row->level_one == $build->level_one &&
+                    $row->level_four == $build->level_four &&
+                    $row->level_seven == $build->level_seven &&
+                    $row->level_ten == $build->level_ten) {
+
+                    // Check if it matches any of the progressive levels
+                    $matchesProgressiveLevel = (
+                        ($row->level_thirteen == 0 && $row->level_sixteen == 0 && $row->level_twenty == 0) ||
+                        ($row->level_thirteen == $build->level_thirteen && $row->level_sixteen == 0 && $row->level_twenty == 0) ||
+                        ($row->level_thirteen == $build->level_thirteen && $row->level_sixteen == $build->level_sixteen && $row->level_twenty == 0) ||
+                        ($row->level_thirteen == $build->level_thirteen && $row->level_sixteen == $build->level_sixteen && $row->level_twenty == $build->level_twenty)
+                    );
+
+                    if ($matchesProgressiveLevel) {
+                        if (!isset($buildDataMap[$fullBuildKey])) {
+                            $buildDataMap[$fullBuildKey] = [
+                                'wins' => 0,
+                                'losses' => 0,
+                                'total_filter_type' => 0,
+                            ];
+                        }
+
+                        $buildDataMap[$fullBuildKey]['wins'] += ($row->win_loss == 1 ? $row->games_played : 0);
+                        $buildDataMap[$fullBuildKey]['losses'] += ($row->win_loss == 0 ? $row->games_played : 0);
+                        $buildDataMap[$fullBuildKey]['total_filter_type'] += $statFilter !== 'win_rate' ? ($row->total_filter_type ?? 0) : 0;
+                    }
+                }
+            }
+        }
+
+        // Round values
+        foreach ($buildDataMap as $key => $data) {
+            $buildDataMap[$key]['wins'] = round($data['wins']);
+            $buildDataMap[$key]['losses'] = round($data['losses']);
+        }
+
+        return $buildDataMap;
     }
 
     private function getTopBuildsData($build, $win_loss, $hero, $gameVersion, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region, $statFilter)
