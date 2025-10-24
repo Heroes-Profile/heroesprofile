@@ -18,6 +18,7 @@
         "symfony/css-selector": "^7.3"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.16",
         "fakerphp/faker": "^1.9.1",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",

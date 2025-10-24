@@ -14,7 +14,7 @@ html{background-color:lightgrey; font-family: 'Open Sans', sans-serif; box-sizin
 }
 .dark-mode .expandable-dropdown{
   @apply  bg-gray-dark text-white;
-  
+
 }
 
 .filter-label{
@@ -55,7 +55,7 @@ body{
 }
 
 .nav-item{
-  padding-top:10px; 
+  padding-top:10px;
   padding-bottom:10px;
   @apply max-md:w-full text-center;
 }
@@ -106,8 +106,8 @@ nav .search-component{
 }
 
 @media (max-width:768px){
-    
- 
+
+
     .main-navigation-wrapper{
       @apply min-h-[100vh] absolute w-full hidden ;
     }
@@ -153,12 +153,12 @@ nav .search-component{
 
 table{
   @apply bg-gray-light text-black;
-  
+
  width:100%;
   margin-left:auto;
   margin-right:auto;
-  
- 
+
+
 }
 table td{flex:1;}
 .dark-mode table{
@@ -230,7 +230,7 @@ h1{
 .popup-arrow{
 
 
-   
+
     width: 0;
     height: 0;
     border-left: .5em solid transparent;
@@ -239,8 +239,8 @@ h1{
     text-align: center;
     margin-left:auto;
     margin-right:auto;
-    
-    
+
+
 
 }
 
@@ -263,8 +263,8 @@ h1{
 
 .stack-single {
   width:.5em;
- 
-  
+
+
   display: flex;
 }
 @media (min-width:768px){
@@ -275,7 +275,7 @@ h1{
 }
 
 .stack-single.stack-solo {
- 
+
   margin-left: 0.5em;
 }
 
@@ -352,14 +352,14 @@ h1{
 }
 
 .solo{
-  
+
    @apply text-blue;
 
 
 }
 .double{
  @apply  text-red;
-  
+
 }
 .triple{
   @apply text-teal;
@@ -370,24 +370,24 @@ h1{
 }
 
 .compare-selection-box:nth-child(1n) .compare-selection-title{
-  
+
     @apply bg-blue;
-  
+
 }
 .compare-selection-box:nth-child(2n) .compare-selection-title{
-  
+
     @apply bg-teal;
-  
+
 }
 .compare-selection-box:nth-child(3n) .compare-selection-title{
-  
+
     @apply bg-red;
-  
+
 }
 .compare-selection-box:nth-child(4n) .compare-selection-title{
-  
+
     @apply bg-yellow;
-  
+
 }
 
 
@@ -455,3 +455,7 @@ a[href*="javascript:void(0)"] {
 }
 
 .preMatch table{min-width:auto;}
+
+div.phpdebugbar * {
+    background: unset;
+}
