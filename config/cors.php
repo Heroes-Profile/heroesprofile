@@ -19,7 +19,11 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => [
+        'https://www.heroesprofile.com', 
+        'https://heroesprofile.com',
+        'https://develop.heroesprofile.com/',
+    ],
 
     'allowed_origins_patterns' => [],
 

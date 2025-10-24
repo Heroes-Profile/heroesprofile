@@ -14,7 +14,7 @@ class CreateBattlenetAccountsTable extends Migration
     public function up()
     {
         Schema::create('battlenet_accounts', function (Blueprint $table) {
-            $table->id('battlenet_accounts_id');
+            $table->increments('battlenet_accounts_id');
             $table->unsignedBigInteger('battlenet_id')->nullable();
             $table->string('battletag')->unique();
             $table->unsignedBigInteger('blizz_id')->nullable();

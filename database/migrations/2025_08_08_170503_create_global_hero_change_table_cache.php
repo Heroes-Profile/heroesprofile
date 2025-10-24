@@ -17,7 +17,7 @@ class CreateGlobalHeroChangeTableCache extends Migration
             $table->increments('global_hero_change_id');
             $table->string('game_version', 45);
             $table->integer('game_type');
-            $table->integer('hero');
+            $table->tinyInteger('hero');
             $table->double('win_rate')->nullable();
             $table->double('popularity')->nullable();
             $table->double('ban_rate')->nullable();

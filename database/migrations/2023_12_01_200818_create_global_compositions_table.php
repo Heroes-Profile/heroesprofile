@@ -14,7 +14,7 @@ class CreateGlobalCompositionsTable extends Migration
     public function up()
     {
         Schema::create('global_compositions', function (Blueprint $table) {
-            $table->id('global_compositions_id');
+            $table->increments('global_compositions_id');
             $table->string('game_version');
             $table->tinyInteger('game_type');
             $table->tinyInteger('league_tier');
@@ -23,7 +23,7 @@ class CreateGlobalCompositionsTable extends Migration
             $table->tinyInteger('game_map');
             $table->unsignedInteger('hero_level');
             $table->integer('composition_id');
-            $table->integer('hero')->nullable();
+            $table->tinyInteger('hero')->nullable();
             $table->tinyInteger('mirror')->default(0);
             $table->integer('region');
             $table->tinyInteger('win_loss');

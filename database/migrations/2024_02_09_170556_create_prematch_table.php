@@ -14,7 +14,7 @@ class CreatePrematchTable extends Migration
     public function up()
     {
         Schema::create('prematch', function (Blueprint $table) {
-            $table->id('prematch_id');
+            $table->increments('prematch_id');
             $table->unsignedBigInteger('prematch_replayID')->nullable();
             $table->unsignedInteger('game_type')->nullable();
             $table->unsignedInteger('game_map')->nullable();

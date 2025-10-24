@@ -270,11 +270,12 @@ class CompositionsTableSeeder extends Seeder
 
         foreach ($data as $row) {
             DB::table('compositions')->insert([
-                'role_one' => $row[0],
-                'role_two' => $row[1],
-                'role_three' => $row[2],
-                'role_four' => $row[3],
-                'role_five' => $row[4],
+                'composition_id' => $row[0],
+                'role_one' => $row[1],
+                'role_two' => $row[2],
+                'role_three' => $row[3],
+                'role_four' => $row[4],
+                'role_five' => $row[5],
             ]);
         }
     }

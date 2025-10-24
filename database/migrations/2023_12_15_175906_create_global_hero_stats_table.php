@@ -9,7 +9,7 @@ class CreateGlobalHeroStatsTable extends Migration
     public function up()
     {
         Schema::create('global_hero_stats', function (Blueprint $table) {
-            $table->id('global_hero_stats_id');
+            $table->increments('global_hero_stats_id');
             $table->string('game_version', 45)->nullable();
             $table->tinyInteger('game_type');
             $table->tinyInteger('league_tier');
