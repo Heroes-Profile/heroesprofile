@@ -22,6 +22,15 @@ class CCLController extends Controller
                 'defaultseason' => $defaultseason,
                 'filters' => $this->globalDataService->getFilterData(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
+                'organizations' => CCLTeam::select('team_name')
+                    ->distinct()
+                    ->get()
+                    ->map(function ($team) {
+                        return [
+                            'code' => $team->team_name,
+                            'name' => $team->team_name,
+                        ];
+                    }),
             ]);
     }
 

@@ -706,6 +706,10 @@ class EsportsController extends Controller
                 $team_1_name = $group[0]->team_1_id;
             }
 
+            if ($this->esport == 'CCL' && $this->team && ($group[0]->team_0_id != $this->team && $group[0]->team_1_id != $this->team)) {
+                return null;
+            }
+
             return [
                 'replayID' => $group[0]->replayID,
                 'game_date' => $group[0]->game_date,
