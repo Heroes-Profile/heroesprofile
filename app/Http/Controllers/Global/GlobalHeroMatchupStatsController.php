@@ -189,18 +189,15 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
         });
 
         $heroData = $this->globalDataService->getAllHeroesGlobalWinRates($request);
+        $heroDataByName = collect($heroData)->keyBy('name');
 
         foreach ($data['combined'] as &$combinedEntry) {
-            foreach ($heroData as $heroStats) {
-                if ($combinedEntry['ally']['hero']['name'] === $heroStats['name']) {
-                    $combinedEntry['ally']['stats'] = $heroStats;
-                }
+            if (isset($heroDataByName[$combinedEntry['ally']['hero']['name']])) {
+                $combinedEntry['ally']['stats'] = $heroDataByName[$combinedEntry['ally']['hero']['name']];
             }
 
-            foreach ($heroData as $heroStats) {
-                if ($combinedEntry['enemy']['hero']['name'] === $heroStats['name']) {
-                    $combinedEntry['enemy']['stats'] = $heroStats;
-                }
+            if (isset($heroDataByName[$combinedEntry['enemy']['hero']['name']])) {
+                $combinedEntry['enemy']['stats'] = $heroDataByName[$combinedEntry['enemy']['hero']['name']];
             }
         }
 
@@ -234,24 +231,15 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
             ];
         })->filter()->sortByDesc('win_rate')->values()->toArray();
 
-        $found = false;
         $notFound = [];
+        $existingHeroIds = collect($combinedData)->pluck('hero.id')->flip();
 
         foreach ($heroData as $hero) {
-            $found = false;
-            foreach ($combinedData as $data) {
-
-                if ($role && ($hero['new_role'] != $role)) {
-                    $found = true;
-                    break;
-                }
-                if ($data['hero']['id'] == $hero->id) {
-                    $found = true;
-                    break;
-                }
+            if ($role && ($hero['new_role'] != $role)) {
+                continue;
             }
 
-            if (! $found && $heroID != $hero->id) {
+            if (!isset($existingHeroIds[$hero->id]) && $heroID != $hero->id) {
                 $notFound[] = $hero;
             }
         }
