@@ -3,7 +3,14 @@
     <page-heading :infoText1="infoText1" heading="Contact"></page-heading>
 
     <div>
-      <form @submit.prevent="submitForm" class="flex flex-col max-w-[1500px] mx-auto p-4 gap-2">
+      <div class="mx-auto max-w-[1500px] bg-gray-200 p-8 text-center rounded-lg">
+        <h3 class="text-xl font-semibold text-gray-700 mb-4">Contact Form Temporarily Disabled</h3>
+        <p class="text-gray-600 mb-4">The contact form is currently unavailable. Please use the email address below for inquiries:</p>
+        <p class="text-blue-600 font-medium">ZEMILL@heroesprofile.com</p>
+      </div>
+
+      <!-- Disabled form (hidden but kept for potential future re-enabling) -->
+      <form @submit.prevent="submitForm" class="flex flex-col max-w-[1500px] mx-auto p-4 gap-2" style="display: none;">
         <label for="name">Battletag:</label>
         <input class="form-control search-input mr-3 text-black" type="text" id="name" v-model="formData.battletag" required>
 
@@ -40,7 +47,7 @@ export default {
         email: '',
         message: '',
       },
-      infoText1: "If you find an issue on the website, or have general questions, please contact us directly at ZEMILL@heroesprofile.com, or fill out the form below",
+      infoText1: "If you find an issue on the website, or have general questions, please contact us directly at ZEMILL@heroesprofile.com",
       emailSent: false,
     }
   },
