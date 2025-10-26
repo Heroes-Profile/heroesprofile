@@ -15,16 +15,7 @@ class ContactController extends Controller
 
     public function submitMessage(Request $request)
     {
-        // return response()->json($request->all());
-
-        $data = $request->validate([
-            'battletag' => ['required', 'string', new BattletagInputProhibitCharacters],
-            'email' => 'required|email',
-            'message' => 'required|string',
-        ]);
-
-        Mail::to('contact@heroesprofile.com')->send(new \App\Mail\ContactFormMail($data));
-
-        return 'success';
+        // Contact form is disabled
+        return response()->json(['error' => 'Contact form is temporarily disabled. Please email ZEMILL@heroesprofile.com directly.'], 503);
     }
 }
