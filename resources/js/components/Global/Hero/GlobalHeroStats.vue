@@ -57,41 +57,42 @@
         <div id="table-container" ref="tablecontainer" class="w-auto   w-[100vw]   2xl:mx-auto  " style=" ">
       <table id="responsive-table" class="responsive-table  relative" ref="responsivetable">
         <thead>
-          <th class="py-2 px-3 border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
-            Avg
-          </th>
-          <th class="py-2 px-3 border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ getValueFixed(data.average_win_rate) }}
-          </th>
-          <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ "&#177;" }}{{ getValueFixed(data.average_confidence_interval)}}
-          </th>
-          <th v-if="showWinRateChange" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ getValueFixed(data.average_positive_win_rate_change) }}{{ "|" }}{{ getValueFixed(data.average_negative_win_rate_change) }}
-          </th>
-          <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ getValueFixed(data.average_popularity) }}
-          </th>
-          <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ getValueFixed(data.average_pick_rate) }}
-          </th>
-          <th v-if="this.gametype.includes('sl')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ getValueFixed(data.average_ban_rate) }}
-          </th>
-          <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ getValueLocal(data.average_positive_influence) }}{{ "|" }}{{ getValueLocal(data.average_negative_influence) }}
-          </th>
-          <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ getValueLocal(data.average_games_played) }}
-          </th>
+          <tr>
+            <th class="py-2 px-3 border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              Avg
+            </th>
+            <th class="py-2 px-3 border-gray-200 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              {{ getValueFixed(data.average_win_rate) }}
+            </th>
+            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              {{ "&#177;" }}{{ getValueFixed(data.average_confidence_interval)}}
+            </th>
+            <th v-if="showWinRateChange" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              {{ getValueFixed(data.average_positive_win_rate_change) }}{{ "|" }}{{ getValueFixed(data.average_negative_win_rate_change) }}
+            </th>
+            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              {{ getValueFixed(data.average_popularity) }}
+            </th>
+            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              {{ getValueFixed(data.average_pick_rate) }}
+            </th>
+            <th v-if="this.gametype.includes('sl')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+              {{ getValueFixed(data.average_ban_rate) }}
+            </th>
+            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              {{ getValueLocal(data.average_positive_influence) }}{{ "|" }}{{ getValueLocal(data.average_negative_influence) }}
+            </th>
+            <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              {{ getValueLocal(data.average_games_played) }}
+            </th>
 
-          <th  v-if="this.showStatTypeColumn"  class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
-            {{ getValueLocal(getValueFixed(data.averaege_total_filter_type)) }}
-          </th>
+            <th  v-if="this.showStatTypeColumn"  class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
+              {{ getValueLocal(getValueFixed(data.averaege_total_filter_type)) }}
+            </th>
 
-          <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
-          </th>
-
+            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+            </th>
+          </tr>
         </thead>
         <thead class="top-0 w-full sticky z-40">
           <tr>
