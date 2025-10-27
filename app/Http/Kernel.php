@@ -22,7 +22,6 @@ class Kernel extends HttpKernel
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
         \App\Http\Middleware\SetGlobalDataValues::class,
-        \App\Http\Middleware\CheckBannedIPs::class,
         \App\Http\Middleware\CheckUserAgent::class,
     ];
 
@@ -72,6 +71,5 @@ class Kernel extends HttpKernel
         'checkIfPrivateProfilePage' => \App\Http\Middleware\CheckIfPrivateProfilePage::class,
         'logIpAndUserAgent' => \App\Http\Middleware\LogIPAndUserAgent::class,
         'communitySupportRedirect' => \App\Http\Middleware\CommunitySupportRedirect::class,
-        'checkBannedIPs' => \App\Http\Middleware\CheckBannedIPs::class,
     ];
 }
