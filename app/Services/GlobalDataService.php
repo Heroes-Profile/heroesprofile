@@ -1021,7 +1021,7 @@ class GlobalDataService
         $hero = $this->getHeroFilterValue($request['hero']);
         $role = $request['role'];
 
-        $cacheKey = 'GlobalHeroStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalHeroStats|'.hash('sha256', json_encode($gameVersion).'|'.json_encode($request->all()));
 
         $data = Cache::store('database')->remember($cacheKey, $this->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
             $gameType,
@@ -1051,7 +1051,6 @@ class GlobalDataService
                 ->orderBy('global_hero_stats.win_loss', 'asc')
                 // ->toSql();
                 ->get();
-            $changeData = null;
 
             return $this->combineData($data);
         });
