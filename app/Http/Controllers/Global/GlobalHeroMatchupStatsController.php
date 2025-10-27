@@ -239,7 +239,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                 continue;
             }
 
-            if (!isset($existingHeroIds[$hero->id]) && $heroID != $hero->id) {
+            if (! isset($existingHeroIds[$hero->id]) && $heroID != $hero->id) {
                 $notFound[] = $hero;
             }
         }

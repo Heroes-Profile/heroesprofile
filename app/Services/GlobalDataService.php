@@ -28,7 +28,9 @@ use Illuminate\Support\Facades\DB;
 class GlobalDataService
 {
     private $cachedHeroes = null;
+
     private $cachedGameTypes = null;
+
     private $cachedSeasonsData = null;
 
     public function __construct() {}
@@ -280,6 +282,7 @@ class GlobalDataService
         if ($this->cachedGameTypes === null) {
             $this->cachedGameTypes = GameType::orderBy('type_id', 'ASC')->get();
         }
+
         return clone $this->cachedGameTypes;
     }
 
@@ -288,6 +291,7 @@ class GlobalDataService
         if ($this->cachedHeroes === null) {
             $this->cachedHeroes = Hero::orderBy('name', 'ASC')->get();
         }
+
         return clone $this->cachedHeroes;
     }
 
@@ -309,6 +313,7 @@ class GlobalDataService
         if ($this->cachedSeasonsData === null) {
             $this->cachedSeasonsData = SeasonDate::orderBy('id', 'desc')->get();
         }
+
         return clone $this->cachedSeasonsData;
     }
 
@@ -1032,28 +1037,28 @@ class GlobalDataService
             $region,
             $mirror
         ) {
-                $data = GlobalHeroStats::query()
-                    ->join('heroes', 'heroes.id', '=', 'global_hero_stats.hero')
-                    ->select('heroes.name', 'heroes.short_name', 'heroes.id as hero_id', 'global_hero_stats.win_loss', 'heroes.new_role as role')
-                    ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
-                    ->filterByGameVersion($gameVersion)
-                    ->filterByGameType($gameType)
-                    ->filterByLeagueTier($leagueTier)
-                    ->filterByHeroLeagueTier($heroLeagueTier)
-                    ->filterByRoleLeagueTier($roleLeagueTier)
-                    ->filterByGameMap($gameMap)
-                    ->filterByHeroLevel($heroLevel)
-                    ->excludeMirror($mirror)
-                    ->filterByRegion($region)
-                    ->groupBy('global_hero_stats.hero', 'global_hero_stats.win_loss')
-                    ->get();
+            $data = GlobalHeroStats::query()
+                ->join('heroes', 'heroes.id', '=', 'global_hero_stats.hero')
+                ->select('heroes.name', 'heroes.short_name', 'heroes.id as hero_id', 'global_hero_stats.win_loss', 'heroes.new_role as role')
+                ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
+                ->filterByGameVersion($gameVersion)
+                ->filterByGameType($gameType)
+                ->filterByLeagueTier($leagueTier)
+                ->filterByHeroLeagueTier($heroLeagueTier)
+                ->filterByRoleLeagueTier($roleLeagueTier)
+                ->filterByGameMap($gameMap)
+                ->filterByHeroLevel($heroLevel)
+                ->excludeMirror($mirror)
+                ->filterByRegion($region)
+                ->groupBy('global_hero_stats.hero', 'global_hero_stats.win_loss')
+                ->get();
 
-                $sorted = $data->sortBy(function ($item) {
-                    return [$item->name, $item->win_loss];
-                })->values();
+            $sorted = $data->sortBy(function ($item) {
+                return [$item->name, $item->win_loss];
+            })->values();
 
-                return $this->combineData($sorted);
-            });
+            return $this->combineData($sorted);
+        });
 
         return $data;
     }
