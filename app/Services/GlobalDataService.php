@@ -1046,7 +1046,6 @@ class GlobalDataService
                     ->excludeMirror($mirror)
                     ->filterByRegion($region)
                     ->groupBy('global_hero_stats.hero', 'global_hero_stats.win_loss')
-                    ->groupBy('global_hero_stats.win_loss')  // Ensure win_loss is in GROUP BY
                     ->get();
 
                 $sorted = $data->sortBy(function ($item) {
