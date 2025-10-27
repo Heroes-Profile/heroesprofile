@@ -30,7 +30,6 @@ class GlobalDataService
     private $cachedHeroes = null;
     private $cachedGameTypes = null;
     private $cachedSeasonsData = null;
-    private $cachedFilterData = [];
 
     public function __construct() {}
 
@@ -281,7 +280,7 @@ class GlobalDataService
         if ($this->cachedGameTypes === null) {
             $this->cachedGameTypes = GameType::orderBy('type_id', 'ASC')->get();
         }
-        return $this->cachedGameTypes;
+        return clone $this->cachedGameTypes;
     }
 
     public function getHeroes()
@@ -289,7 +288,7 @@ class GlobalDataService
         if ($this->cachedHeroes === null) {
             $this->cachedHeroes = Hero::orderBy('name', 'ASC')->get();
         }
-        return $this->cachedHeroes;
+        return clone $this->cachedHeroes;
     }
 
     public function getHeroesByID()
@@ -310,7 +309,7 @@ class GlobalDataService
         if ($this->cachedSeasonsData === null) {
             $this->cachedSeasonsData = SeasonDate::orderBy('id', 'desc')->get();
         }
-        return $this->cachedSeasonsData;
+        return clone $this->cachedSeasonsData;
     }
 
     public function getSeasonFromDate($date)
