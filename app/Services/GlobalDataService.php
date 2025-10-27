@@ -27,6 +27,12 @@ use Illuminate\Support\Facades\DB;
 
 class GlobalDataService
 {
+    private $cachedHeroes = null;
+
+    private $cachedGameTypes = null;
+
+    private $cachedSeasonsData = null;
+
     public function __construct() {}
 
     public function getHeaderAlert()
@@ -273,12 +279,20 @@ class GlobalDataService
 
     public function getGameTypes()
     {
-        return GameType::orderBy('type_id', 'ASC')->get();
+        if ($this->cachedGameTypes === null) {
+            $this->cachedGameTypes = GameType::orderBy('type_id', 'ASC')->get();
+        }
+
+        return clone $this->cachedGameTypes;
     }
 
     public function getHeroes()
     {
-        return Hero::orderBy('name', 'ASC')->get();
+        if ($this->cachedHeroes === null) {
+            $this->cachedHeroes = Hero::orderBy('name', 'ASC')->get();
+        }
+
+        return clone $this->cachedHeroes;
     }
 
     public function getHeroesByID()
@@ -296,7 +310,11 @@ class GlobalDataService
 
     public function getSeasonsData()
     {
-        return SeasonDate::orderBy('id', 'desc')->get();
+        if ($this->cachedSeasonsData === null) {
+            $this->cachedSeasonsData = SeasonDate::orderBy('id', 'desc')->get();
+        }
+
+        return clone $this->cachedSeasonsData;
     }
 
     public function getSeasonFromDate($date)
@@ -1007,7 +1025,7 @@ class GlobalDataService
         $hero = $this->getHeroFilterValue($request['hero']);
         $role = $request['role'];
 
-        $cacheKey = 'GlobalHeroStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalHeroStats|'.hash('sha256', json_encode($gameVersion).'|'.json_encode($request->all()));
 
         $data = Cache::store('database')->remember($cacheKey, $this->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
             $gameType,
@@ -1033,17 +1051,16 @@ class GlobalDataService
                 ->excludeMirror($mirror)
                 ->filterByRegion($region)
                 ->groupBy('global_hero_stats.hero', 'global_hero_stats.win_loss')
-                ->orderBy('heroes.name', 'asc')
-                ->orderBy('global_hero_stats.win_loss', 'asc')
-                // ->toSql();
                 ->get();
-            $changeData = null;
 
-            return $this->combineData($data);
+            $sorted = $data->sortBy(function ($item) {
+                return [$item->name, $item->win_loss];
+            })->values();
+
+            return $this->combineData($sorted);
         });
 
         return $data;
-
     }
 
     private function combineData($data)
