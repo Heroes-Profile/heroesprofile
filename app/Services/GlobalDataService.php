@@ -27,6 +27,11 @@ use Illuminate\Support\Facades\DB;
 
 class GlobalDataService
 {
+    private $cachedHeroes = null;
+    private $cachedGameTypes = null;
+    private $cachedSeasonsData = null;
+    private $cachedFilterData = [];
+
     public function __construct() {}
 
     public function getHeaderAlert()
@@ -273,12 +278,18 @@ class GlobalDataService
 
     public function getGameTypes()
     {
-        return GameType::orderBy('type_id', 'ASC')->get();
+        if ($this->cachedGameTypes === null) {
+            $this->cachedGameTypes = GameType::orderBy('type_id', 'ASC')->get();
+        }
+        return $this->cachedGameTypes;
     }
 
     public function getHeroes()
     {
-        return Hero::orderBy('name', 'ASC')->get();
+        if ($this->cachedHeroes === null) {
+            $this->cachedHeroes = Hero::orderBy('name', 'ASC')->get();
+        }
+        return $this->cachedHeroes;
     }
 
     public function getHeroesByID()
@@ -296,7 +307,10 @@ class GlobalDataService
 
     public function getSeasonsData()
     {
-        return SeasonDate::orderBy('id', 'desc')->get();
+        if ($this->cachedSeasonsData === null) {
+            $this->cachedSeasonsData = SeasonDate::orderBy('id', 'desc')->get();
+        }
+        return $this->cachedSeasonsData;
     }
 
     public function getSeasonFromDate($date)
