@@ -159,7 +159,7 @@ class EsportOtherController extends Controller
                 'filters' => $this->globalDataService->getFilterData(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
                 'series' => Series::where('name', $series)->first(),
-                'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon,
+                'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon ?? 'heroesprofilelogo.png',
                 'seasons' => $seasons,
                 'regions' => $regions,
                 'tournaments' => $tournaments,
@@ -201,7 +201,7 @@ class EsportOtherController extends Controller
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => 'Other',
                 'series' => $series,
-                'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon,
+                'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon ?? 'heroesprofilelogo.png',
                 'team' => $team,
                 'season' => $request['season'],
                 'region' => $request['region'],
@@ -231,7 +231,7 @@ class EsportOtherController extends Controller
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'esport' => 'Other',
             'series' => $series,
-            'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon,
+            'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon ?? 'heroesprofilelogo.png',
             'replayID' => $replayID,
             'tournament' => null,
         ]);
@@ -269,7 +269,7 @@ class EsportOtherController extends Controller
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => 'Other',
                 'series' => $series,
-                'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon,
+                'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon ?? 'heroesprofilelogo.png',
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
                 'season' => $request['season'],
@@ -313,7 +313,7 @@ class EsportOtherController extends Controller
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => 'Other',
                 'series' => $series,
-                'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon,
+                'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon ?? 'heroesprofilelogo.png',
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
                 'season' => $request['season'],
@@ -357,7 +357,7 @@ class EsportOtherController extends Controller
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => 'Other',
                 'series' => $series,
-                'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon,
+                'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon ?? 'heroesprofilelogo.png',
                 'battletag' => $battletag,
                 'blizz_id' => $blizz_id,
                 'season' => $request['season'],
@@ -397,7 +397,7 @@ class EsportOtherController extends Controller
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
                 'esport' => 'Other',
                 'series' => $series,
-                'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon,
+                'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon ?? 'heroesprofilelogo.png',
                 'team' => $team,
                 'season' => $request['season'],
                 'type' => 'team',
@@ -438,7 +438,7 @@ class EsportOtherController extends Controller
             'blizz_id' => $blizz_id,
             'esport' => 'Other',
             'series' => $series,
-            'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon,
+            'seriesimage' => Series::select('icon')->where('name', $series)->first()->icon ?? 'heroesprofilelogo.png',
             'filters' => $this->globalDataService->getFilterData(),
             'season' => $request['season'],
             'tournament' => null,
@@ -497,19 +497,19 @@ class EsportOtherController extends Controller
             })
             ->when($this->series, function ($query) {
                 return $query->where(function ($query) {
-                    $query->where('series', $this->series);
+                    $query->where($this->schema.'.replay.series', $this->series);
                 });
             })
-            ->whereNot('series', 'Heroes Lounge')
-            ->whereNot('series', 'Nut Cup')
+            ->whereNot($this->schema.'.replay.series', 'Heroes Lounge')
+            ->whereNot($this->schema.'.replay.series', 'Nut Cup')
             ->when($this->region, function ($query) {
-                return $query->where('region', $this->region);
+                return $query->where($this->schema.'.replay.region', $this->region);
             })
             ->when($tournament, function ($query) use ($tournament) {
-                return $query->where('tournament', $tournament);
+                return $query->where($this->schema.'.replay.tournament', $tournament);
             })
             ->when($this->season, function ($query) {
-                return $query->where('season', $this->season);
+                return $query->where($this->schema.'.replay.season', $this->season);
             })
             ->when($this->team_name, function ($query) {
                 return $query->where(function ($query) {
@@ -591,7 +591,7 @@ class EsportOtherController extends Controller
         $teams = Replay::selectRaw('team_0_name as team_name')
             ->where('series', $series)
             ->when($region, function ($query) use ($region) {
-                return $query->where('region', $region);
+                return $query->where('replay.region', $region);
             })
             ->when($tournament, function ($query) use ($tournament) {
                 return $query->where('tournament', $tournament);
@@ -755,7 +755,7 @@ class EsportOtherController extends Controller
                 $this->schema.'.player.team_id',
                 $this->schema.'.replay.season',
             ])
-            ->where('series', $this->series)
+            ->where($this->schema.'.replay.series', $this->series)
 
             ->when($this->team, function ($query) {
                 return $query->where(function ($query) {
@@ -1028,7 +1028,7 @@ class EsportOtherController extends Controller
         $banned_data = $this->getBanData($results, 0, 1, $heroData);
         $enemy_banned_data = $this->getBanData($results, 1, 0, $heroData);
 
-        $image = '/images/EsportOther/'.Series::select('icon')->where('name', $this->series)->first()->icon;
+        $image = '/images/EsportOther/'.(Series::select('icon')->where('name', $this->series)->first()->icon ?? 'heroesprofilelogo.png');
 
         return [
             'wins' => $wins,
@@ -1131,7 +1131,7 @@ class EsportOtherController extends Controller
 
             $image = $teamImageMap[$enemyteam];
 
-            $image = '/images/EsportOther/'.Series::select('icon')->where('name', $series)->first()->icon;
+            $image = '/images/EsportOther/'.(Series::select('icon')->where('name', $series)->first()->icon ?? 'heroesprofilelogo.png');
 
             $returnData[$counter]['icon_url'] = $image;
 
@@ -1237,15 +1237,15 @@ class EsportOtherController extends Controller
 
         $heroResults = DB::table($this->schema.'.replay')->select('replay.replayID', 'hero', 'winner')
             ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
-            ->where('series', $this->series)
+            ->where($this->schema.'.replay.series', $this->series)
             ->when($this->region, function ($query) {
-                return $query->where('region', $this->region);
+                return $query->where($this->schema.'.replay.region', $this->region);
             })
             ->when($this->tournament, function ($query) {
-                return $query->where('tournament', $this->tournament);
+                return $query->where($this->schema.'.replay.tournament', $this->tournament);
             })
             ->when($this->season, function ($query) {
-                return $query->where('season', $this->season);
+                return $query->where($this->schema.'.replay.season', $this->season);
             })
             ->get();
 
@@ -1339,15 +1339,15 @@ class EsportOtherController extends Controller
                 $this->schema.'.talents.level_sixteen AS level_sixteen',
                 $this->schema.'.talents.level_twenty AS level_twenty',
             ])
-            ->where('series', $this->series)
+            ->where($this->schema.'.replay.series', $this->series)
             ->when($this->region, function ($query) {
-                return $query->where('region', $this->region);
+                return $query->where($this->schema.'.replay.region', $this->region);
             })
             ->when($this->tournament, function ($query) {
-                return $query->where('tournament', $this->tournament);
+                return $query->where($this->schema.'.replay.tournament', $this->tournament);
             })
             ->when($this->season, function ($query) {
-                return $query->where('season', $this->season);
+                return $query->where($this->schema.'.replay.season', $this->season);
             })
             ->where('hero', $hero)
             // ->toSql();
@@ -1554,10 +1554,10 @@ class EsportOtherController extends Controller
         $result = DB::table($this->schema.'.replay')
             ->when($this->season, function ($query) {
                 $query->where(function ($query) {
-                    $query->where('season', $this->season);
+                    $query->where($this->schema.'.replay.season', $this->season);
                 });
             })
-            ->where('series', $this->series)
+            ->where($this->schema.'.replay.series', $this->series)
             ->when($this->team, function ($query) {
                 return $query->where(function ($query) {
                     $query->where('teams.team_name', $this->team_name);
@@ -1644,13 +1644,13 @@ class EsportOtherController extends Controller
             ->when(! is_null($this->season), function ($query) {
                 $seasonDate = SeasonDate::find($this->season);
                 if ($seasonDate) {
-                    return $query->where('game_date', '>=', $seasonDate->start_date)
-                        ->where('game_date', '<', $seasonDate->end_date);
+                    return $query->where($this->schema.'.replay.game_date', '>=', $seasonDate->start_date)
+                        ->where($this->schema.'.replay.game_date', '<', $seasonDate->end_date);
                 }
 
                 return $query;
             })
-            ->orderByDesc('game_date')
+            ->orderByDesc($this->schema.'.replay.game_date')
             ->paginate($perPage, ['*'], 'page', $pagination_page);
 
         $heroData = $this->globalDataService->getHeroes();
