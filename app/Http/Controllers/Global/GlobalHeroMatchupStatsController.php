@@ -99,7 +99,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
 
         $role = $request['role'];
 
-        $cacheKey = 'GlobalMatchupStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalMatchupStats|'.hash('sha256', json_encode($gameVersion).'|'.json_encode($request->all()));
 
         /*
         if (! env('Production')) {
@@ -120,6 +120,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
             $region,
             $role
         ) {
+            $heroData = $this->globalDataService->getHeroes()->keyBy('id');
 
             $allyData = GlobalHeromatchupsAlly::query()
                 ->select('ally', 'win_loss')
@@ -139,7 +140,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                 ->orderBy('ally')
               // ->toSql();
                 ->get();
-            $allyData = $this->combineData($allyData, 'ally', $hero, $role);
+            $allyData = $this->combineData($allyData, 'ally', $hero, $role, $heroData);
 
             $enemyData = GlobalHeromatchupsEnemy::query()
                 ->select('enemy', 'win_loss')
@@ -158,7 +159,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                 ->groupBy('win_loss')
                 // ->toSql();
                 ->get();
-            $enemyData = $this->combineData($enemyData, 'enemy', $hero, $role);
+            $enemyData = $this->combineData($enemyData, 'enemy', $hero, $role, $heroData);
 
             $allyDataKeyed = collect($allyData)->keyBy(function ($item) {
                 return $item['hero']['name'];
@@ -206,11 +207,8 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
         return $data;
     }
 
-    private function combineData($data, $type, $heroID, $role)
+    private function combineData($data, $type, $heroID, $role, $heroData)
     {
-
-        $heroData = $this->globalDataService->getHeroes();
-        $heroData = $heroData->keyBy('id');
 
         $combinedData = collect($data)->groupBy($type)->map(function ($group) use ($type, $heroData, $role) {
             $firstItem = $group->first();
