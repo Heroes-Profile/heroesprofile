@@ -1033,30 +1033,31 @@ class GlobalDataService
             $region,
             $mirror
         ) {
-            $data = GlobalHeroStats::query()
-                ->join('heroes', 'heroes.id', '=', 'global_hero_stats.hero')
-                ->select('heroes.name', 'heroes.short_name', 'heroes.id as hero_id', 'global_hero_stats.win_loss', 'heroes.new_role as role')
-                ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
-                ->filterByGameVersion($gameVersion)
-                ->filterByGameType($gameType)
-                ->filterByLeagueTier($leagueTier)
-                ->filterByHeroLeagueTier($heroLeagueTier)
-                ->filterByRoleLeagueTier($roleLeagueTier)
-                ->filterByGameMap($gameMap)
-                ->filterByHeroLevel($heroLevel)
-                ->excludeMirror($mirror)
-                ->filterByRegion($region)
-                ->groupBy('global_hero_stats.hero', 'global_hero_stats.win_loss')
-                ->orderBy('heroes.name', 'asc')
-                ->orderBy('global_hero_stats.win_loss', 'asc')
-                // ->toSql();
-                ->get();
+                $data = GlobalHeroStats::query()
+                    ->join('heroes', 'heroes.id', '=', 'global_hero_stats.hero')
+                    ->select('heroes.name', 'heroes.short_name', 'heroes.id as hero_id', 'global_hero_stats.win_loss', 'heroes.new_role as role')
+                    ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
+                    ->filterByGameVersion($gameVersion)
+                    ->filterByGameType($gameType)
+                    ->filterByLeagueTier($leagueTier)
+                    ->filterByHeroLeagueTier($heroLeagueTier)
+                    ->filterByRoleLeagueTier($roleLeagueTier)
+                    ->filterByGameMap($gameMap)
+                    ->filterByHeroLevel($heroLevel)
+                    ->excludeMirror($mirror)
+                    ->filterByRegion($region)
+                    ->groupBy('global_hero_stats.hero', 'global_hero_stats.win_loss')
+                    ->groupBy('global_hero_stats.win_loss')  // Ensure win_loss is in GROUP BY
+                    ->get();
 
-            return $this->combineData($data);
-        });
+                $sorted = $data->sortBy(function ($item) {
+                    return [$item->name, $item->win_loss];
+                })->values();
+
+                return $this->combineData($sorted);
+            });
 
         return $data;
-
     }
 
     private function combineData($data)
