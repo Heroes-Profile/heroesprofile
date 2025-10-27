@@ -1,5 +1,5 @@
 @extends('layouts.app', $bladeGlobals)    
 @section('title', 'Contact')
 @section('content')
-  <contact-form></contact-form>
+  <contact-form :recaptcha-site-key="'{{ $recaptchaSiteKey }}'"></contact-form>
 @endsection

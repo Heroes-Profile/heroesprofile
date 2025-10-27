@@ -180,7 +180,7 @@ Route::prefix('v1')->middleware('web')->group(function () {
 
     Route::post('compare', [CompareController::class, 'getData']);
 
-    Route::post('contact', [ContactController::class, 'submitMessage']);
+    Route::post('contact', [ContactController::class, 'submitMessage'])->middleware('throttle:contact');
 
     Route::post('match/prediction/game', [MatchPredictionGameController::class, 'getReplayData']);
     Route::post('match/prediction/game/choose/winner', [MatchPredictionGameController::class, 'chooseWinner']);
