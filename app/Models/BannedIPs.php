@@ -17,7 +17,7 @@ class BannedIPs extends Model
     protected $fillable = [
         'ip',
         'reason',
-        'banned_date'
+        'banned_date',
     ];
 
     protected $casts = [
@@ -56,7 +56,7 @@ class BannedIPs extends Model
         return self::create([
             'ip' => $ip,
             'reason' => $reason,
-            'banned_date' => now()
+            'banned_date' => now(),
         ]);
     }
 

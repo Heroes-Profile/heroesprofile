@@ -23,11 +23,12 @@ class BlockBannedIPs
             // Check if IP is banned
             if (BannedIPs::isBanned($ip)) {
                 $banDetails = BannedIPs::getBanDetails($ip);
+
                 // Return 403 Forbidden response
                 return response()->view('errors.403', [
                     'message' => 'Access denied. Your IP address has been banned.',
                     'ban_reason' => $banDetails->reason ?? 'No reason provided',
-                    'banned_date' => $banDetails->banned_date
+                    'banned_date' => $banDetails->banned_date,
                 ], 403);
             }
 
@@ -48,8 +49,10 @@ class BlockBannedIPs
             $forwardedFor = $request->header('X-Forwarded-For');
             if (strpos($forwardedFor, ',') !== false) {
                 $ips = explode(',', $forwardedFor);
+
                 return trim($ips[0]);
             }
+
             return $forwardedFor;
         }
 

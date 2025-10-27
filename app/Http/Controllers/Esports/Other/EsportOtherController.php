@@ -945,7 +945,7 @@ class EsportOtherController extends Controller
 
             $gamesPlayed = $wins + $losses;
 
-            $link = "/Esports/{$this->esport}/{$this->series}/Player/{$this->battletag}/{$this->blizz_id}/Map/" . (isset($maps[$group[0]->game_map]) ? $maps[$group[0]->game_map]['name'] : 'Unknown Map');
+            $link = "/Esports/{$this->esport}/{$this->series}/Player/{$this->battletag}/{$this->blizz_id}/Map/".(isset($maps[$group[0]->game_map]) ? $maps[$group[0]->game_map]['name'] : 'Unknown Map');
 
             if ($this->season) {
                 $link .= "?season={$this->season}";

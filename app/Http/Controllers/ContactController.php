@@ -22,7 +22,7 @@ class ContactController extends Controller
         // return response()->json($request->all());
 
         // Honeypot validation - if website field is filled, it's likely a bot
-        if (!empty($request->input('website'))) {
+        if (! empty($request->input('website'))) {
             // Silently reject the submission (don't reveal it's a honeypot)
             return 'success';
         }
@@ -31,7 +31,7 @@ class ContactController extends Controller
         $recaptchaToken = $request->input('recaptcha_token');
         if ($recaptchaToken) {
             $recaptchaResult = $recaptchaService->verify($recaptchaToken, 'contact_form');
-            if (!$recaptchaResult['success']) {
+            if (! $recaptchaResult['success']) {
                 return response()->json(['error' => 'reCAPTCHA verification failed'], 400);
             }
         }

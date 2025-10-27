@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 class RecaptchaService
 {
     protected $secretKey;
+
     protected $scoreThreshold;
 
     public function __construct()
@@ -18,15 +19,12 @@ class RecaptchaService
 
     /**
      * Verify reCAPTCHA v3 token
-     *
-     * @param string $token
-     * @param string $action
-     * @return array
      */
     public function verify(string $token, string $action = 'contact_form'): array
     {
         if (empty($this->secretKey)) {
             Log::warning('reCAPTCHA secret key not configured');
+
             return ['success' => false, 'error' => 'reCAPTCHA not configured'];
         }
 
@@ -39,11 +37,12 @@ class RecaptchaService
 
             $data = $response->json();
 
-            if (!$data['success']) {
+            if (! $data['success']) {
                 Log::warning('reCAPTCHA verification failed', [
                     'errors' => $data['error-codes'] ?? [],
                     'ip' => request()->ip(),
                 ]);
+
                 return ['success' => false, 'error' => 'reCAPTCHA verification failed'];
             }
 
@@ -55,6 +54,7 @@ class RecaptchaService
                     'threshold' => $this->scoreThreshold,
                     'ip' => request()->ip(),
                 ]);
+
                 return ['success' => false, 'error' => 'reCAPTCHA score too low', 'score' => $score];
             }
 
@@ -65,6 +65,7 @@ class RecaptchaService
                     'received' => $data['action'],
                     'ip' => request()->ip(),
                 ]);
+
                 return ['success' => false, 'error' => 'reCAPTCHA action mismatch'];
             }
 
@@ -79,14 +80,13 @@ class RecaptchaService
                 'error' => $e->getMessage(),
                 'ip' => request()->ip(),
             ]);
+
             return ['success' => false, 'error' => 'reCAPTCHA verification error'];
         }
     }
 
     /**
      * Get site key for frontend
-     *
-     * @return string|null
      */
     public function getSiteKey(): ?string
     {
