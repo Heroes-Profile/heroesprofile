@@ -14,7 +14,7 @@ const app = createApp({});
 import '@fortawesome/fontawesome-free/css/all.css'
 
 // Automatically register Vue components
-const components = import.meta.globEager('./components/**/*.vue');
+const components = import.meta.glob('./components/**/*.vue', { eager: true });
 Object.entries(components).forEach(([path, definition]) => {
     app.component(path.split('/').pop().replace(/\.\w+$/, ''), definition.default);
 });

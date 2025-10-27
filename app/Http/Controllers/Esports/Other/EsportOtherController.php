@@ -543,7 +543,7 @@ class EsportOtherController extends Controller
 
         $modifiedResult = $result->map(function ($item) use ($maps) {
 
-            $item->game_map = $maps[$item->game_map]['name'];
+            $item->game_map = isset($maps[$item->game_map]) ? $maps[$item->game_map]['name'] : 'Unknown Map';
 
             return $item;
         });
@@ -879,7 +879,7 @@ class EsportOtherController extends Controller
             return [
                 'replayID' => $group[0]->replayID,
                 'game_date' => $group[0]->game_date,
-                'game_map' => $maps[$group[0]->game_map],
+                'game_map' => isset($maps[$group[0]->game_map]) ? $maps[$group[0]->game_map] : null,
                 'game' => $group[0]->game,
                 'round' => $group[0]->round,
                 'team_0_name' => $team_0_name,
@@ -945,7 +945,7 @@ class EsportOtherController extends Controller
 
             $gamesPlayed = $wins + $losses;
 
-            $link = "/Esports/{$this->esport}/{$this->series}/Player/{$this->battletag}/{$this->blizz_id}/Map/{$maps[$group[0]->game_map]['name']}";
+            $link = "/Esports/{$this->esport}/{$this->series}/Player/{$this->battletag}/{$this->blizz_id}/Map/" . (isset($maps[$group[0]->game_map]) ? $maps[$group[0]->game_map]['name'] : 'Unknown Map');
 
             if ($this->season) {
                 $link .= "?season={$this->season}";
@@ -953,9 +953,9 @@ class EsportOtherController extends Controller
 
             return [
                 'map_id' => $group[0]->game_map,
-                'map' => $maps[$group[0]->game_map],
-                'game_map' => $maps[$group[0]->game_map],
-                'name' => $maps[$group[0]->game_map]['name'],
+                'map' => isset($maps[$group[0]->game_map]) ? $maps[$group[0]->game_map] : null,
+                'game_map' => isset($maps[$group[0]->game_map]) ? $maps[$group[0]->game_map] : null,
+                'name' => isset($maps[$group[0]->game_map]) ? $maps[$group[0]->game_map]['name'] : 'Unknown Map',
                 'wins' => $wins,
                 'losses' => $losses,
                 'win_rate' => $gamesPlayed > 0 ? round(($wins / $gamesPlayed) * 100, 2) : 0,
@@ -1571,7 +1571,7 @@ class EsportOtherController extends Controller
 
         $modifiedResult = $result->map(function ($item) use ($maps, $team) {
 
-            $item->game_map = $maps[$item->game_map]['name'];
+            $item->game_map = isset($maps[$item->game_map]) ? $maps[$item->game_map]['name'] : 'Unknown Map';
 
             $temp_team = strtolower($team);
             $team_team_one = strtolower($item->team_0_name);
@@ -1666,7 +1666,7 @@ class EsportOtherController extends Controller
             $item->hero_id = $item->hero;
             $item->hero = $heroData[$item->hero];
 
-            $item->game_map = $maps[$item->game_map]['name'];
+            $item->game_map = isset($maps[$item->game_map]) ? $maps[$item->game_map]['name'] : 'Unknown Map';
 
             if ($item->level_one) {
                 if ($item->level_one != 0) {
