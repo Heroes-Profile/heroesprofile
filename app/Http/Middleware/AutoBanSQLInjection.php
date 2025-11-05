@@ -16,6 +16,9 @@ class AutoBanSQLInjection
     protected $sqlInjectionPatterns = [
         '/(-1|0x)\s*(\'|"|\%27|\%22)?\s*(OR|AND)\s+\d+[\*\+\-\/]?\d*\s*[=<>]+\s*\d+/i', // -1' OR 5*5=25
         '/(\'|"|\%27|\%22)\s*(OR|AND)\s*(\'|"|\%27|\%22)/i', // ' OR '
+        '/\(\s*select\s+/i', // (select ... - Common in injection testing
+        '/\bselect\s+.*\s+from\s+/i', // SELECT ... FROM (DUAL, tables, etc.)
+        '/\b(union|insert|update|delete|drop|create|alter|exec|execute)\s+/i', // Other SQL keywords
         '/\bwaitfor\s+delay\b/i', // SQL Server time delay
         '/\bsleep\s*\(/i', // MySQL sleep
         '/\bpg_sleep\s*\(/i', // PostgreSQL sleep
