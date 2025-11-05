@@ -28,6 +28,11 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
 
+        // Global rate limiting to prevent DDoS and rapid SQL injection attempts
+        RateLimiter::for('global', function (Request $request) {
+            return Limit::perMinute(120)->by($request->ip());
+        });
+
         // Specific rate limiting for contact form
         RateLimiter::for('contact', function (Request $request) {
             return Limit::perMinute(3)->by($request->ip());
