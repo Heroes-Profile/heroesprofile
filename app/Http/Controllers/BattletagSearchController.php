@@ -16,7 +16,7 @@ class BattletagSearchController extends Controller
     {
         $validationRules = [
             'userinput' => ['required', 'string', 'max:255', new BattletagInputProhibitCharacters],
-            'type' => ['required', 'string', 'in:all,battlenet'],
+            'type' => ['required', 'string', 'in:all,battlenet,alt'],
         ];
 
         $validator = Validator::make(compact('userinput', 'type'), $validationRules);
