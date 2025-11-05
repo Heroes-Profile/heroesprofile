@@ -34,14 +34,17 @@ class AutoBanSQLInjection
 
         // Check URL path and route parameters for SQL injection
         $pathToCheck = $request->path();
-        foreach ($request->route()->parameters() ?? [] as $value) {
-            if (is_string($value)) {
-                $pathToCheck .= '/' . $value;
+        if ($request->route()) {
+            foreach ($request->route()->parameters() as $value) {
+                if (is_string($value)) {
+                    $pathToCheck .= '/'.$value;
+                }
             }
         }
 
         if ($this->containsSQLInjection($pathToCheck)) {
             $this->banAndBlock($ip, $request->fullUrl());
+
             return $this->blockedResponse();
         }
 
@@ -54,7 +57,7 @@ class AutoBanSQLInjection
     protected function containsSQLInjection(string $input): bool
     {
         $decodedInput = urldecode($input);
-        
+
         foreach ($this->sqlInjectionPatterns as $pattern) {
             if (preg_match($pattern, $decodedInput)) {
                 return true;
@@ -69,9 +72,9 @@ class AutoBanSQLInjection
      */
     protected function banAndBlock(string $ip, string $url): void
     {
-        if (!BannedIPs::isBanned($ip)) {
+        if (! BannedIPs::isBanned($ip)) {
             BannedIPs::banIp($ip, 'SQL injection attempt detected');
-            
+
             Log::warning('SQL Injection - IP Auto-Banned', [
                 'ip' => $ip,
                 'url' => $url,
@@ -85,7 +88,7 @@ class AutoBanSQLInjection
     protected function blockedResponse(): Response
     {
         return response()->json([
-            'error' => 'Access denied'
+            'error' => 'Access denied',
         ], 403);
     }
 
@@ -98,8 +101,10 @@ class AutoBanSQLInjection
             $forwardedFor = $request->header('X-Forwarded-For');
             if (strpos($forwardedFor, ',') !== false) {
                 $ips = explode(',', $forwardedFor);
+
                 return trim($ips[0]);
             }
+
             return $forwardedFor;
         }
 
@@ -110,4 +115,3 @@ class AutoBanSQLInjection
         return $request->ip();
     }
 }
-
