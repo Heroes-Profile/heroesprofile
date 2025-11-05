@@ -48,6 +48,17 @@ class AutoBanSQLInjection
             return $this->blockedResponse();
         }
 
+        // Check headers for SQL injection (X-Forwarded-For, User-Agent, etc.)
+        $headersToCheck = ['X-Forwarded-For', 'User-Agent', 'Referer', 'X-Real-IP'];
+        foreach ($headersToCheck as $header) {
+            $value = $request->header($header);
+            if ($value && $this->containsSQLInjection($value)) {
+                $this->banAndBlock($ip, $request->fullUrl().' [Header: '.$header.']');
+
+                return $this->blockedResponse();
+            }
+        }
+
         return $next($request);
     }
 
