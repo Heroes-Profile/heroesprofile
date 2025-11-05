@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use App\Models\BannedIPs;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class AutoBanSQLInjection
@@ -16,13 +15,16 @@ class AutoBanSQLInjection
     protected $sqlInjectionPatterns = [
         '/(-1|0x)\s*(\'|"|\%27|\%22)?\s*(OR|AND)\s+\d+[\*\+\-\/]?\d*\s*[=<>]+\s*\d+/i', // -1' OR 5*5=25
         '/(\'|"|\%27|\%22)\s*(OR|AND)\s*(\'|"|\%27|\%22)/i', // ' OR '
+        '/\(\s*select\s+/i', // (select ... - Common in injection testing
+        '/\bselect\s+.*\s+from\s+/i', // SELECT ... FROM (DUAL, tables, etc.)
+        '/\b(union|insert|update|delete|drop|create|alter|exec|execute)\s+/i', // Other SQL keywords
         '/\bwaitfor\s+delay\b/i', // SQL Server time delay
         '/\bsleep\s*\(/i', // MySQL sleep
         '/\bpg_sleep\s*\(/i', // PostgreSQL sleep
         '/DBMS_PIPE\.RECEIVE_MESSAGE/i', // Oracle time delay
         '/\bif\s*\(\s*now\s*\(\s*\)\s*=\s*sysdate\s*\(\s*\)/i', // MySQL conditional
         '/\bXOR\s*\(/i', // XOR operations
-        '/(\/\*|\*\/|--|\#)/i', // SQL comments
+        '/(\/\*|\*\/|--\s)/i', // SQL comments (-- followed by space, not just --)
     ];
 
     /**
@@ -49,12 +51,11 @@ class AutoBanSQLInjection
         }
 
         // Check headers for SQL injection (X-Forwarded-For, User-Agent, etc.)
+        // Just block the request, don't ban (headers can be spoofed)
         $headersToCheck = ['X-Forwarded-For', 'User-Agent', 'Referer', 'X-Real-IP'];
         foreach ($headersToCheck as $header) {
             $value = $request->header($header);
             if ($value && $this->containsSQLInjection($value)) {
-                $this->banAndBlock($ip, $request->fullUrl().' [Header: '.$header.']');
-
                 return $this->blockedResponse();
             }
         }
@@ -85,11 +86,6 @@ class AutoBanSQLInjection
     {
         if (! BannedIPs::isBanned($ip)) {
             BannedIPs::banIp($ip, 'SQL injection attempt detected', $url);
-
-            Log::warning('SQL Injection - IP Auto-Banned', [
-                'ip' => $ip,
-                'url' => $url,
-            ]);
         }
     }
 
