@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use App\Models\BannedIPs;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class AutoBanSQLInjection
@@ -52,12 +51,11 @@ class AutoBanSQLInjection
         }
 
         // Check headers for SQL injection (X-Forwarded-For, User-Agent, etc.)
+        // Just block the request, don't ban (headers can be spoofed)
         $headersToCheck = ['X-Forwarded-For', 'User-Agent', 'Referer', 'X-Real-IP'];
         foreach ($headersToCheck as $header) {
             $value = $request->header($header);
             if ($value && $this->containsSQLInjection($value)) {
-                $this->banAndBlock($ip, $request->fullUrl().' [Header: '.$header.']');
-
                 return $this->blockedResponse();
             }
         }
@@ -88,11 +86,6 @@ class AutoBanSQLInjection
     {
         if (! BannedIPs::isBanned($ip)) {
             BannedIPs::banIp($ip, 'SQL injection attempt detected', $url);
-
-            Log::warning('SQL Injection - IP Auto-Banned', [
-                'ip' => $ip,
-                'url' => $url,
-            ]);
         }
     }
 
