@@ -24,7 +24,7 @@ class AutoBanSQLInjection
         '/DBMS_PIPE\.RECEIVE_MESSAGE/i', // Oracle time delay
         '/\bif\s*\(\s*now\s*\(\s*\)\s*=\s*sysdate\s*\(\s*\)/i', // MySQL conditional
         '/\bXOR\s*\(/i', // XOR operations
-        '/(\/\*|\*\/|--|\#)/i', // SQL comments
+        '/(\/\*|\*\/|--\s)/i', // SQL comments (-- followed by space, not just --)
     ];
 
     /**
