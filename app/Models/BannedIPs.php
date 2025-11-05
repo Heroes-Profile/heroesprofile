@@ -18,6 +18,7 @@ class BannedIPs extends Model
         'ip',
         'reason',
         'banned_date',
+        'page_access',
     ];
 
     protected $casts = [
@@ -51,12 +52,13 @@ class BannedIPs extends Model
     /**
      * Ban an IP address
      */
-    public static function banIp($ip, $reason = null)
+    public static function banIp($ip, $reason = null, $pageAccess = null)
     {
         return self::create([
             'ip' => $ip,
             'reason' => $reason,
             'banned_date' => now(),
+            'page_access' => $pageAccess,
         ]);
     }
 
