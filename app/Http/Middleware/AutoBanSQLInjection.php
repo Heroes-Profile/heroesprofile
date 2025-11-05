@@ -73,7 +73,7 @@ class AutoBanSQLInjection
     protected function banAndBlock(string $ip, string $url): void
     {
         if (! BannedIPs::isBanned($ip)) {
-            BannedIPs::banIp($ip, 'SQL injection attempt detected');
+            BannedIPs::banIp($ip, 'SQL injection attempt detected', $url);
 
             Log::warning('SQL Injection - IP Auto-Banned', [
                 'ip' => $ip,
