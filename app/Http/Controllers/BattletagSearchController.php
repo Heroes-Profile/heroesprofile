@@ -12,10 +12,28 @@ use Illuminate\Support\Facades\Validator;
 
 class BattletagSearchController extends Controller
 {
-    public function show(Request $request)
+    public function show(Request $request, $userinput, $type)
     {
+        $validationRules = [
+            'userinput' => ['required', 'string', 'max:255', new BattletagInputProhibitCharacters],
+            'type' => ['required', 'string', 'in:all,battlenet'],
+        ];
 
-        return view('searchedBattletagHolding')->with(['userinput' => $request['userinput'], 'type' => $request['type'], 'bladeGlobals' => $this->globalDataService->getBladeGlobals()]);
+        $validator = Validator::make(compact('userinput', 'type'), $validationRules);
+
+        if ($validator->fails()) {
+            if (env('Production')) {
+                return \Redirect::to('/');
+            } else {
+                return [
+                    'data' => compact('userinput', 'type'),
+                    'errors' => $validator->errors()->all(),
+                    'status' => 'failure to validate inputs',
+                ];
+            }
+        }
+
+        return view('searchedBattletagHolding')->with(['userinput' => $userinput, 'type' => $type, 'bladeGlobals' => $this->globalDataService->getBladeGlobals()]);
     }
 
     public function battletagSearch(Request $request)

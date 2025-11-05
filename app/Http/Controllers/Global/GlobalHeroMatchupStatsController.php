@@ -99,7 +99,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
 
         $role = $request['role'];
 
-        $cacheKey = 'GlobalMatchupStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalMatchupStats|'.hash('sha256', json_encode($gameVersion).'|'.json_encode($request->all()));
 
         /*
         if (! env('Production')) {
@@ -120,6 +120,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
             $region,
             $role
         ) {
+            $heroData = $this->globalDataService->getHeroes()->keyBy('id');
 
             $allyData = GlobalHeromatchupsAlly::query()
                 ->select('ally', 'win_loss')
@@ -139,7 +140,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                 ->orderBy('ally')
               // ->toSql();
                 ->get();
-            $allyData = $this->combineData($allyData, 'ally', $hero, $role);
+            $allyData = $this->combineData($allyData, 'ally', $hero, $role, $heroData);
 
             $enemyData = GlobalHeromatchupsEnemy::query()
                 ->select('enemy', 'win_loss')
@@ -158,7 +159,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                 ->groupBy('win_loss')
                 // ->toSql();
                 ->get();
-            $enemyData = $this->combineData($enemyData, 'enemy', $hero, $role);
+            $enemyData = $this->combineData($enemyData, 'enemy', $hero, $role, $heroData);
 
             $allyDataKeyed = collect($allyData)->keyBy(function ($item) {
                 return $item['hero']['name'];
@@ -188,29 +189,23 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
         });
 
         $heroData = $this->globalDataService->getAllHeroesGlobalWinRates($request);
+        $heroDataByName = collect($heroData)->keyBy('name');
 
         foreach ($data['combined'] as &$combinedEntry) {
-            foreach ($heroData as $heroStats) {
-                if ($combinedEntry['ally']['hero']['name'] === $heroStats['name']) {
-                    $combinedEntry['ally']['stats'] = $heroStats;
-                }
+            if (isset($heroDataByName[$combinedEntry['ally']['hero']['name']])) {
+                $combinedEntry['ally']['stats'] = $heroDataByName[$combinedEntry['ally']['hero']['name']];
             }
 
-            foreach ($heroData as $heroStats) {
-                if ($combinedEntry['enemy']['hero']['name'] === $heroStats['name']) {
-                    $combinedEntry['enemy']['stats'] = $heroStats;
-                }
+            if (isset($heroDataByName[$combinedEntry['enemy']['hero']['name']])) {
+                $combinedEntry['enemy']['stats'] = $heroDataByName[$combinedEntry['enemy']['hero']['name']];
             }
         }
 
         return $data;
     }
 
-    private function combineData($data, $type, $heroID, $role)
+    private function combineData($data, $type, $heroID, $role, $heroData)
     {
-
-        $heroData = $this->globalDataService->getHeroes();
-        $heroData = $heroData->keyBy('id');
 
         $combinedData = collect($data)->groupBy($type)->map(function ($group) use ($type, $heroData, $role) {
             $firstItem = $group->first();
@@ -236,24 +231,15 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
             ];
         })->filter()->sortByDesc('win_rate')->values()->toArray();
 
-        $found = false;
         $notFound = [];
+        $existingHeroIds = collect($combinedData)->pluck('hero.id')->flip();
 
         foreach ($heroData as $hero) {
-            $found = false;
-            foreach ($combinedData as $data) {
-
-                if ($role && ($hero['new_role'] != $role)) {
-                    $found = true;
-                    break;
-                }
-                if ($data['hero']['id'] == $hero->id) {
-                    $found = true;
-                    break;
-                }
+            if ($role && ($hero['new_role'] != $role)) {
+                continue;
             }
 
-            if (! $found && $heroID != $hero->id) {
+            if (! isset($existingHeroIds[$hero->id]) && $heroID != $hero->id) {
                 $notFound[] = $hero;
             }
         }
