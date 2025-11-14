@@ -2,7 +2,15 @@
   
   <div class="search-component flex items-stretch mt-auto py-4 ">
     <input type="text" class="form-control variable-text rounded-l p-2" :placeholder="labelText" :aria-label="labelText" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="clickedButton">
-    <button v-if="buttonText" class="btn btn-outline-secondary bg-teal hover:bg-lteal rounded-r p-2" type="button" @click="clickedButton">{{ buttonText }}</button>
+    <button
+      v-if="buttonText"
+      class="btn btn-outline-secondary bg-teal hover:bg-lteal rounded-r p-2"
+      type="button"
+      :disabled="!isInputValid"
+      @click="clickedButton"
+    >
+      {{ buttonText }}
+    </button>
   </div>
   
 </template>
@@ -28,12 +36,18 @@
     mounted() {
     },
     computed: {
+      isInputValid() {
+        return this.userinput && this.userinput.trim().length > 0;
+      }
     },
     watch: {
     },
     methods: {
       clickedButton(){
-        window.location.href = '/battletag/searched/' + encodeURIComponent(this.userinput) + "/" + this.type;
+        if (!this.isInputValid) {
+          return;
+        }
+        window.location.href = '/battletag/searched/' + encodeURIComponent(this.userinput.trim()) + "/" + this.type;
       }
     }
   }
