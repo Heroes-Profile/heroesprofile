@@ -64,6 +64,8 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     // Route::get('/test', [MainPageController::class, 'test']);
     // Route::get('/testJS', [MainPageController::class, 'testJS']);
 
+    Route::redirect('/Search', '/', 301);
+
     Route::get('/Contact', [ContactController::class, 'show']);
 
     Route::get('/Privacy/Policy', [PrivacyPolicyController::class, 'show']);
