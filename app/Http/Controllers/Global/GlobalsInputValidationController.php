@@ -13,6 +13,7 @@ use App\Rules\StatFilterInputValidation;
 use App\Rules\TierInputByIDValidation;
 use App\Rules\TierInputByNameValidation;
 use App\Rules\TimeframeMinorInputValidation;
+use App\Models\SeasonGameVersion;
 
 class GlobalsInputValidationController extends Controller
 {
@@ -53,5 +54,46 @@ class GlobalsInputValidationController extends Controller
             'role_league_tier' => ['sometimes', 'nullable', new TierInputByIDValidation],
             'mirror' => 'sometimes|in:null,0,1',
         ];
+    }
+
+    /**
+     * Split game versions by their ID from season_game_versions table
+     * Versions with ID >= threshold go to new table, others go to old table
+     *
+     * @param array $gameVersions Array of game version strings
+     * @param int $idThreshold The ID threshold (default 250)
+     * @return array [oldTableVersions, newTableVersions]
+     */
+    protected function splitGameVersionsByPatch($gameVersions, $idThreshold = 250)
+    {
+        $oldTableVersions = [];
+        $newTableVersions = [];
+        
+        // Look up all game versions in the season_game_versions table to get their IDs
+        $versionIds = SeasonGameVersion::whereIn('game_version', $gameVersions)
+            ->pluck('id', 'game_version')
+            ->toArray();
+        
+        foreach ($gameVersions as $version) {
+            try {
+                // Check if we have an ID for this version
+                if (isset($versionIds[$version])) {
+                    $versionId = $versionIds[$version];
+                    if ($versionId >= $idThreshold) {
+                        $newTableVersions[] = $version;
+                    } else {
+                        $oldTableVersions[] = $version;
+                    }
+                } else {
+                    // If version not found in table, default to old table
+                    $oldTableVersions[] = $version;
+                }
+            } catch (\Exception $e) {
+                // If anything fails, default to old table
+                $oldTableVersions[] = $version;
+            }
+        }
+        
+        return [$oldTableVersions, $newTableVersions];
     }
 }
