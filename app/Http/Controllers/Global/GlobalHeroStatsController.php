@@ -62,6 +62,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         }
 
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
         $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
         $leagueTier = $request['league_tier'];
         $heroLeagueTier = $request['hero_league_tier'];
@@ -76,7 +77,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
         $role = $request['role'];
 
-        $cacheKey = 'GlobalHeroStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalHeroStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
 
         
         if (config('app.env') !== 'production') {
@@ -85,6 +86,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         
 
         $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
+            $gameVersionIDs,
             $gameType,
             $leagueTier,
             $heroLeagueTier,
@@ -104,7 +106,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
                 ->when($statFilter !== 'win_rate', function ($query) use ($statFilter) {
                     return $query->selectRaw("SUM(global_hero_stats.$statFilter) as total_filter_type");
                 })
-                ->filterByGameVersion($gameVersion)
+                ->filterByGameVersion($gameVersionIDs)
                 ->filterByGameType($gameType)
                 ->filterByLeagueTier($leagueTier)
                 ->filterByHeroLeagueTier($heroLeagueTier)
@@ -123,7 +125,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
                 ->join('heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')
                 ->select('heroes.name', 'heroes.id as hero_id')
                 ->selectRaw('SUM(global_hero_stats_bans.bans) as bans')
-                ->filterByGameVersion($gameVersion)
+                ->filterByGameVersion($gameVersionIDs)
                 ->filterByGameType($gameType)
                 ->filterByLeagueTier($leagueTier)
                 ->filterByHeroLeagueTier($heroLeagueTier)
