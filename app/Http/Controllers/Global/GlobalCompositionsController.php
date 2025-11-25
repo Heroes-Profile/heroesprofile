@@ -427,9 +427,9 @@ class GlobalCompositionsController extends GlobalsInputValidationController
             $heroData = $heroData->keyBy('id');
 
             $data = $data->map(function ($item) use ($heroData) {
-                $item['role'] = $heroData[$item->hero]['new_role'];
-                $item['name'] = $heroData[$item->hero]['name'];
-                $item['herodata'] = $heroData[$item->hero];
+                $item['role'] = $heroData[$item['hero']]['new_role'];
+                $item['name'] = $heroData[$item['hero']]['name'];
+                $item['herodata'] = $heroData[$item['hero']];
 
                 return $item;
             });
