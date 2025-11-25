@@ -100,7 +100,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
             $mirror
         ) {
             $data = GlobalHeroStats::query()
-                ->join('heroes', 'heroes.id', '=', 'global_hero_stats.hero')
+                ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stats.hero')
                 ->select('heroes.name', 'heroes.short_name', 'heroes.id as hero_id', 'global_hero_stats.win_loss', 'heroes.new_role as role')
                 ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
                 ->when($statFilter !== 'win_rate', function ($query) use ($statFilter) {
@@ -122,10 +122,10 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
                 ->get();
 
             $banData = GlobalHeroStatsBans::query()
-                ->join('heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')
+                ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')
                 ->select('heroes.name', 'heroes.id as hero_id')
                 ->selectRaw('SUM(global_hero_stats_bans.bans) as bans')
-                ->filterByGameVersion($gameVersionIDs)
+                ->filterByGameVersion($gameVersion)
                 ->filterByGameType($gameType)
                 ->filterByLeagueTier($leagueTier)
                 ->filterByHeroLeagueTier($heroLeagueTier)
