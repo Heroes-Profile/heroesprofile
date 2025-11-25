@@ -123,9 +123,9 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
             // Query old table for stats
             if (! empty($oldTableVersions)) {
                 $oldData = GlobalHeroStats::query()
-                    ->join('heroes', 'heroes.id', '=', 'global_hero_stats.hero')
-                    ->join('maps', 'maps.map_id', '=', 'global_hero_stats.game_map')
-                    ->select('heroes.name', 'heroes.id as hero_id', 'global_hero_stats.win_loss', 'map_id')
+                    ->join('heroesprofile.heroes', 'heroesprofile.heroes.id', '=', 'global_hero_stats.hero')
+                    ->join('heroesprofile.maps', 'heroesprofile.maps.map_id', '=', 'global_hero_stats.game_map')
+                    ->select('heroesprofile.heroes.name', 'heroesprofile.heroes.id as hero_id', 'global_hero_stats.win_loss', 'heroesprofile.maps.map_id')
                     ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
                     ->filterByGameVersion($oldTableVersions)
                     ->filterByGameType($gameType)

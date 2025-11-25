@@ -1028,7 +1028,7 @@ class GlobalDataService
 
         $cacheKey = 'GlobalHeroStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
 
-        $data = Cache::store('database')->remember($cacheKey, $this->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
+        $data = Cache::store('database')->remember($cacheKey, $this->calculateCacheTimeInMinutes($gameVersion), function () use (
             $gameVersionIDs,
             $gameType,
             $leagueTier,
