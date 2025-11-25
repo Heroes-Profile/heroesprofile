@@ -38,7 +38,7 @@ For windows users, Wampserver64 is a useful tool as it installs the MySql server
 
 ## Database setup
 
--   Create the following schemas in your MySql database: `heroesprofile`, `heroesprofile_cache`, `heroesprofile_logs`, `heroesprofile_ngs`, `heroesprofile_ccl`, `heroesprofile_mcl`, `heroesprofile_hi`, `heroesprofile_hi_nc`
+-   Create the following schemas in your MySql database: `heroesprofile`, `heroesprofile_globals`, `heroesprofile_cache`, `heroesprofile_logs`, `heroesprofile_ngs`, `heroesprofile_ccl`, `heroesprofile_mcl`, `heroesprofile_hi`, `heroesprofile_hi_nc`
 
 -   Base site table migrations and seeders have been provided.  Run `php artisan migrate` to run migrations and `php artisan db:seed`.  It seems the seeders stop early sometimes, or error out on memory issues.  If that occurs, just comment out the seeders that have already ran in `database\seeders\DatabaseSeeder.php` and then run `php artisan db:seed` again.  You can also attempt to increase memory usage/and or execution timeout.  E.g  `php -d memory_limit=2G -d max_execution_time=0 artisan db:seed `
 

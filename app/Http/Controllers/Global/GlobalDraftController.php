@@ -19,7 +19,7 @@ class GlobalDraftController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [
@@ -38,7 +38,7 @@ class GlobalDraftController extends GlobalsInputValidationController
             $validator = Validator::make(['hero' => $hero], $validationRules);
 
             if ($validator->fails()) {
-                if (env('Production')) {
+                if (config('app.env') === 'production') {
                     return \Redirect::to('/');
                 } else {
                     return [
@@ -115,11 +115,11 @@ class GlobalDraftController extends GlobalsInputValidationController
         ) {
             // Split game versions by ID (ID >= 250 goes to new table)
             [$oldTableVersions, $newTableVersions] = $this->splitGameVersionsByPatch($gameVersion, 250);
-            
+
             $allData = collect();
-            
+
             // Query old table if there are versions with ID < 250
-            if (!empty($oldTableVersions)) {
+            if (! empty($oldTableVersions)) {
                 $oldData = GlobalHeroDraftOrder::query()
                     ->select('pick_number', 'win_loss')
                     ->selectRaw('SUM(count) as games_played')
@@ -137,40 +137,40 @@ class GlobalDraftController extends GlobalsInputValidationController
                     ->map(function ($item) {
                         return $item->toArray();
                     });
-                
+
                 $allData = $allData->merge($oldData);
             }
-            
+
             // Query new table if there are versions with ID >= 250
-            if (!empty($newTableVersions)) {
+            if (! empty($newTableVersions)) {
                 // Convert game version strings to IDs for the new table
                 $newTableVersionIds = SeasonGameVersion::whereIn('game_version', $newTableVersions)
                     ->pluck('id')
                     ->toArray();
-                
-                if (!empty($newTableVersionIds)) {
+
+                if (! empty($newTableVersionIds)) {
                     $newData = DB::connection('heroesprofile')
                         ->table('heroesprofile_globals.global_hero_draft_order as global_hero_draft_order')
                         ->select('global_hero_draft_order.pick_number', 'global_hero_draft_order.win_loss')
                         ->selectRaw('SUM(global_hero_draft_order.count) as games_played')
                         ->whereIn('global_hero_draft_order.game_version', $newTableVersionIds)
                         ->whereIn('global_hero_draft_order.game_type', $gameType)
-                        ->when($leagueTier !== null && !empty($leagueTier), function ($query) use ($leagueTier) {
+                        ->when($leagueTier !== null && ! empty($leagueTier), function ($query) use ($leagueTier) {
                             return $query->whereIn('global_hero_draft_order.league_tier', $leagueTier);
                         })
-                        ->when($heroLeagueTier !== null && !empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
+                        ->when($heroLeagueTier !== null && ! empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
                             return $query->whereIn('global_hero_draft_order.hero_league_tier', $heroLeagueTier);
                         })
-                        ->when($roleLeagueTier !== null && !empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
+                        ->when($roleLeagueTier !== null && ! empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
                             return $query->whereIn('global_hero_draft_order.role_league_tier', $roleLeagueTier);
                         })
-                        ->when($gameMap !== null && !empty($gameMap), function ($query) use ($gameMap) {
+                        ->when($gameMap !== null && ! empty($gameMap), function ($query) use ($gameMap) {
                             return $query->whereIn('global_hero_draft_order.game_map', $gameMap);
                         })
-                        ->when($heroLevel !== null && !empty($heroLevel), function ($query) use ($heroLevel) {
+                        ->when($heroLevel !== null && ! empty($heroLevel), function ($query) use ($heroLevel) {
                             return $query->whereIn('global_hero_draft_order.hero_level', $heroLevel);
                         })
-                        ->when($region !== null && !empty($region), function ($query) use ($region) {
+                        ->when($region !== null && ! empty($region), function ($query) use ($region) {
                             return $query->whereIn('global_hero_draft_order.region', $region);
                         })
                         ->where('global_hero_draft_order.hero', $hero)
@@ -181,25 +181,27 @@ class GlobalDraftController extends GlobalsInputValidationController
                         ->map(function ($item) {
                             return (array) $item;
                         });
-                    
+
                     $allData = $allData->merge($newData);
                 }
             }
-            
+
             // Combine and re-aggregate data from both tables
             $allData = $allData->map(function ($item) {
                 if (is_object($item)) {
                     return (array) $item;
                 }
+
                 return $item;
             })->filter(function ($item) {
                 return is_array($item) && isset($item['pick_number']) && isset($item['win_loss']);
             });
-            
+
             $data = $allData->groupBy(function ($item) {
-                return $item['pick_number'] . '_' . $item['win_loss'];
+                return $item['pick_number'].'_'.$item['win_loss'];
             })->map(function ($group) {
                 $first = $group->first();
+
                 return [
                     'pick_number' => $first['pick_number'],
                     'win_loss' => $first['win_loss'],

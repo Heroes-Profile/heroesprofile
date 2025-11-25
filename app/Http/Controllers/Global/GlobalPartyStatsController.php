@@ -20,7 +20,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [
@@ -105,11 +105,11 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
         ) {
             // Split game versions by ID (ID >= 250 goes to new table)
             [$oldTableVersions, $newTableVersions] = $this->splitGameVersionsByPatch($gameVersion, 250);
-            
+
             $allData = collect();
-            
+
             // Query old table if there are versions with ID < 250
-            if (!empty($oldTableVersions)) {
+            if (! empty($oldTableVersions)) {
                 $oldData = GlobalHeroStackSize::query()
                     ->select('team_ally_stack_value', 'team_enemy_stack_value')
                     ->selectRaw('SUM(games_played) as games_played')
@@ -132,17 +132,17 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
                     ->map(function ($item) {
                         return $item->toArray();
                     });
-                
+
                 $allData = $allData->merge($oldData);
             }
-            
+
             // Query new table if there are versions with ID >= 250
-            if (!empty($newTableVersions)) {
+            if (! empty($newTableVersions)) {
                 $newTableVersionIds = SeasonGameVersion::whereIn('game_version', $newTableVersions)
                     ->pluck('id')
                     ->toArray();
-                
-                if (!empty($newTableVersionIds)) {
+
+                if (! empty($newTableVersionIds)) {
                     $newData = DB::connection('heroesprofile')
                         ->table('heroesprofile_globals.global_hero_stack_size as global_hero_stack_size')
                         ->select('global_hero_stack_size.team_ally_stack_value', 'global_hero_stack_size.team_enemy_stack_value')
@@ -151,19 +151,19 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
                         ->selectRaw('SUM(IF(global_hero_stack_size.win_loss = 0, global_hero_stack_size.games_played, 0)) AS losses')
                         ->whereIn('global_hero_stack_size.game_version', $newTableVersionIds)
                         ->whereIn('global_hero_stack_size.game_type', $gameType)
-                        ->when($leagueTier !== null && !empty($leagueTier), function ($query) use ($leagueTier) {
+                        ->when($leagueTier !== null && ! empty($leagueTier), function ($query) use ($leagueTier) {
                             return $query->whereIn('global_hero_stack_size.league_tier', $leagueTier);
                         })
-                        ->when($heroLeagueTier !== null && !empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
+                        ->when($heroLeagueTier !== null && ! empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
                             return $query->whereIn('global_hero_stack_size.hero_league_tier', $heroLeagueTier);
                         })
-                        ->when($roleLeagueTier !== null && !empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
+                        ->when($roleLeagueTier !== null && ! empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
                             return $query->whereIn('global_hero_stack_size.role_league_tier', $roleLeagueTier);
                         })
-                        ->when($gameMap !== null && !empty($gameMap), function ($query) use ($gameMap) {
+                        ->when($gameMap !== null && ! empty($gameMap), function ($query) use ($gameMap) {
                             return $query->whereIn('global_hero_stack_size.game_map', $gameMap);
                         })
-                        ->when($heroLevel !== null && !empty($heroLevel), function ($query) use ($heroLevel) {
+                        ->when($heroLevel !== null && ! empty($heroLevel), function ($query) use ($heroLevel) {
                             return $query->whereIn('global_hero_stack_size.hero_level', $heroLevel);
                         })
                         ->when($mirror == 1, function ($query) {
@@ -171,16 +171,16 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
                         }, function ($query) {
                             return $query->where('global_hero_stack_size.mirror', 0);
                         })
-                        ->when($region !== null && !empty($region), function ($query) use ($region) {
+                        ->when($region !== null && ! empty($region), function ($query) use ($region) {
                             return $query->whereIn('global_hero_stack_size.region', $region);
                         })
                         ->when($hero !== null, function ($query) use ($hero) {
                             return $query->where('global_hero_stack_size.hero', $hero);
                         })
-                        ->when($teamoneparty !== null && !empty($teamoneparty), function ($query) use ($teamoneparty) {
+                        ->when($teamoneparty !== null && ! empty($teamoneparty), function ($query) use ($teamoneparty) {
                             return $query->where('global_hero_stack_size.team_ally_stack_value', $teamoneparty);
                         })
-                        ->when($teamtwoparty !== null && !empty($teamtwoparty), function ($query) use ($teamtwoparty) {
+                        ->when($teamtwoparty !== null && ! empty($teamtwoparty), function ($query) use ($teamtwoparty) {
                             return $query->where('global_hero_stack_size.team_enemy_stack_value', $teamtwoparty);
                         })
                         ->groupBy('global_hero_stack_size.team_ally_stack_value', 'global_hero_stack_size.team_enemy_stack_value')
@@ -189,25 +189,27 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
                         ->map(function ($item) {
                             return (array) $item;
                         });
-                    
+
                     $allData = $allData->merge($newData);
                 }
             }
-            
+
             // Combine and re-aggregate data from both tables
             $allData = $allData->map(function ($item) {
                 if (is_object($item)) {
                     return (array) $item;
                 }
+
                 return $item;
             })->filter(function ($item) {
                 return is_array($item) && isset($item['team_ally_stack_value']) && isset($item['team_enemy_stack_value']);
             });
-            
+
             $data = $allData->groupBy(function ($item) {
-                return $item['team_ally_stack_value'] . '_' . $item['team_enemy_stack_value'];
+                return $item['team_ally_stack_value'].'_'.$item['team_enemy_stack_value'];
             })->map(function ($group) {
                 $first = $group->first();
+
                 return (object) [
                     'team_ally_stack_value' => $first['team_ally_stack_value'],
                     'team_enemy_stack_value' => $first['team_enemy_stack_value'],

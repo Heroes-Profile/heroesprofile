@@ -27,7 +27,7 @@ class SingleMatchController extends Controller
 
         $validator = Validator::make(compact('replayID'), $validationRules);
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [
@@ -60,7 +60,7 @@ class SingleMatchController extends Controller
         $validator = Validator::make(compact('esport', 'replayID'), $validationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [
@@ -108,7 +108,7 @@ class SingleMatchController extends Controller
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [

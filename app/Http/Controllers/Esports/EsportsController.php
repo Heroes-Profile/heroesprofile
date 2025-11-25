@@ -71,7 +71,7 @@ class EsportsController extends Controller
         $otherValidator = Validator::make($request->all(), $otherValidationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [
@@ -115,7 +115,7 @@ class EsportsController extends Controller
         $otherValidator = Validator::make($request->all(), $otherValidationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [
@@ -169,7 +169,7 @@ class EsportsController extends Controller
         $otherValidator = Validator::make($request->all(), $otherValidationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [
@@ -215,7 +215,7 @@ class EsportsController extends Controller
         $otherValidator = Validator::make($request->all(), $otherValidationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [
@@ -264,7 +264,7 @@ class EsportsController extends Controller
         $otherValidator = Validator::make($request->all(), $otherValidationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [
@@ -308,7 +308,7 @@ class EsportsController extends Controller
         $otherValidator = Validator::make($request->all(), $otherValidationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [
