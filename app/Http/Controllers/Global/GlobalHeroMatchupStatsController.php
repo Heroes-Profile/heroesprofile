@@ -124,12 +124,12 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
 
             // Split game versions by ID (ID >= 250 goes to new table)
             [$oldTableVersions, $newTableVersions] = $this->splitGameVersionsByPatch($gameVersion, 250);
-            
+
             // Query ally data
             $allyAllData = collect();
-            
+
             // Query old table for ally
-            if (!empty($oldTableVersions)) {
+            if (! empty($oldTableVersions)) {
                 $allyOldData = GlobalHeromatchupsAlly::query()
                     ->select('ally', 'win_loss')
                     ->selectRaw('SUM(games_played) as games_played')
@@ -149,17 +149,17 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                     ->map(function ($item) {
                         return $item->toArray();
                     });
-                
+
                 $allyAllData = $allyAllData->merge($allyOldData);
             }
-            
+
             // Query new table for ally
-            if (!empty($newTableVersions)) {
+            if (! empty($newTableVersions)) {
                 $newTableVersionIds = SeasonGameVersion::whereIn('game_version', $newTableVersions)
                     ->pluck('id')
                     ->toArray();
-                
-                if (!empty($newTableVersionIds)) {
+
+                if (! empty($newTableVersionIds)) {
                     $allyNewData = DB::connection('heroesprofile')
                         ->table('heroesprofile_globals.global_hero_matchups_ally as global_hero_matchups_ally')
                         ->select('global_hero_matchups_ally.ally', 'global_hero_matchups_ally.win_loss')
@@ -167,19 +167,19 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                         ->whereIn('global_hero_matchups_ally.game_version', $newTableVersionIds)
                         ->whereIn('global_hero_matchups_ally.game_type', $gameType)
                         ->where('global_hero_matchups_ally.hero', $hero)
-                        ->when($leagueTier !== null && !empty($leagueTier), function ($query) use ($leagueTier) {
+                        ->when($leagueTier !== null && ! empty($leagueTier), function ($query) use ($leagueTier) {
                             return $query->whereIn('global_hero_matchups_ally.league_tier', $leagueTier);
                         })
-                        ->when($heroLeagueTier !== null && !empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
+                        ->when($heroLeagueTier !== null && ! empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
                             return $query->whereIn('global_hero_matchups_ally.hero_league_tier', $heroLeagueTier);
                         })
-                        ->when($roleLeagueTier !== null && !empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
+                        ->when($roleLeagueTier !== null && ! empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
                             return $query->whereIn('global_hero_matchups_ally.role_league_tier', $roleLeagueTier);
                         })
-                        ->when($gameMap !== null && !empty($gameMap), function ($query) use ($gameMap) {
+                        ->when($gameMap !== null && ! empty($gameMap), function ($query) use ($gameMap) {
                             return $query->whereIn('global_hero_matchups_ally.game_map', $gameMap);
                         })
-                        ->when($heroLevel !== null && !empty($heroLevel), function ($query) use ($heroLevel) {
+                        ->when($heroLevel !== null && ! empty($heroLevel), function ($query) use ($heroLevel) {
                             return $query->whereIn('global_hero_matchups_ally.hero_level', $heroLevel);
                         })
                         ->when($mirror == 1, function ($query) {
@@ -187,7 +187,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                         }, function ($query) {
                             return $query->where('global_hero_matchups_ally.mirror', 0);
                         })
-                        ->when($region !== null && !empty($region), function ($query) use ($region) {
+                        ->when($region !== null && ! empty($region), function ($query) use ($region) {
                             return $query->whereIn('global_hero_matchups_ally.region', $region);
                         })
                         ->groupBy('global_hero_matchups_ally.ally')
@@ -197,39 +197,41 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                         ->map(function ($item) {
                             return (array) $item;
                         });
-                    
+
                     $allyAllData = $allyAllData->merge($allyNewData);
                 }
             }
-            
+
             // Combine and re-aggregate ally data
             $allyAllData = $allyAllData->map(function ($item) {
                 if (is_object($item)) {
                     return (array) $item;
                 }
+
                 return $item;
             })->filter(function ($item) {
                 return is_array($item) && isset($item['ally']) && isset($item['win_loss']);
             });
-            
+
             $allyData = $allyAllData->groupBy(function ($item) {
-                return $item['ally'] . '_' . $item['win_loss'];
+                return $item['ally'].'_'.$item['win_loss'];
             })->map(function ($group) {
                 $first = $group->first();
+
                 return [
                     'ally' => $first['ally'],
                     'win_loss' => $first['win_loss'],
                     'games_played' => $group->sum('games_played'),
                 ];
             })->values();
-            
+
             $allyData = $this->combineData($allyData, 'ally', $hero, $role, $heroData);
 
             // Query enemy data
             $enemyAllData = collect();
-            
+
             // Query old table for enemy
-            if (!empty($oldTableVersions)) {
+            if (! empty($oldTableVersions)) {
                 $enemyOldData = GlobalHeromatchupsEnemy::query()
                     ->select('enemy', 'win_loss')
                     ->selectRaw('SUM(games_played) as games_played')
@@ -249,17 +251,17 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                     ->map(function ($item) {
                         return $item->toArray();
                     });
-                
+
                 $enemyAllData = $enemyAllData->merge($enemyOldData);
             }
-            
+
             // Query new table for enemy
-            if (!empty($newTableVersions)) {
+            if (! empty($newTableVersions)) {
                 $newTableVersionIds = SeasonGameVersion::whereIn('game_version', $newTableVersions)
                     ->pluck('id')
                     ->toArray();
-                
-                if (!empty($newTableVersionIds)) {
+
+                if (! empty($newTableVersionIds)) {
                     $enemyNewData = DB::connection('heroesprofile')
                         ->table('heroesprofile_globals.global_hero_matchups_enemy as global_hero_matchups_enemy')
                         ->select('global_hero_matchups_enemy.enemy', 'global_hero_matchups_enemy.win_loss')
@@ -267,19 +269,19 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                         ->whereIn('global_hero_matchups_enemy.game_version', $newTableVersionIds)
                         ->whereIn('global_hero_matchups_enemy.game_type', $gameType)
                         ->where('global_hero_matchups_enemy.hero', $hero)
-                        ->when($leagueTier !== null && !empty($leagueTier), function ($query) use ($leagueTier) {
+                        ->when($leagueTier !== null && ! empty($leagueTier), function ($query) use ($leagueTier) {
                             return $query->whereIn('global_hero_matchups_enemy.league_tier', $leagueTier);
                         })
-                        ->when($heroLeagueTier !== null && !empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
+                        ->when($heroLeagueTier !== null && ! empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
                             return $query->whereIn('global_hero_matchups_enemy.hero_league_tier', $heroLeagueTier);
                         })
-                        ->when($roleLeagueTier !== null && !empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
+                        ->when($roleLeagueTier !== null && ! empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
                             return $query->whereIn('global_hero_matchups_enemy.role_league_tier', $roleLeagueTier);
                         })
-                        ->when($gameMap !== null && !empty($gameMap), function ($query) use ($gameMap) {
+                        ->when($gameMap !== null && ! empty($gameMap), function ($query) use ($gameMap) {
                             return $query->whereIn('global_hero_matchups_enemy.game_map', $gameMap);
                         })
-                        ->when($heroLevel !== null && !empty($heroLevel), function ($query) use ($heroLevel) {
+                        ->when($heroLevel !== null && ! empty($heroLevel), function ($query) use ($heroLevel) {
                             return $query->whereIn('global_hero_matchups_enemy.hero_level', $heroLevel);
                         })
                         ->when($mirror == 1, function ($query) {
@@ -287,7 +289,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                         }, function ($query) {
                             return $query->where('global_hero_matchups_enemy.mirror', 0);
                         })
-                        ->when($region !== null && !empty($region), function ($query) use ($region) {
+                        ->when($region !== null && ! empty($region), function ($query) use ($region) {
                             return $query->whereIn('global_hero_matchups_enemy.region', $region);
                         })
                         ->groupBy('global_hero_matchups_enemy.enemy')
@@ -296,32 +298,34 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
                         ->map(function ($item) {
                             return (array) $item;
                         });
-                    
+
                     $enemyAllData = $enemyAllData->merge($enemyNewData);
                 }
             }
-            
+
             // Combine and re-aggregate enemy data
             $enemyAllData = $enemyAllData->map(function ($item) {
                 if (is_object($item)) {
                     return (array) $item;
                 }
+
                 return $item;
             })->filter(function ($item) {
                 return is_array($item) && isset($item['enemy']) && isset($item['win_loss']);
             });
-            
+
             $enemyData = $enemyAllData->groupBy(function ($item) {
-                return $item['enemy'] . '_' . $item['win_loss'];
+                return $item['enemy'].'_'.$item['win_loss'];
             })->map(function ($group) {
                 $first = $group->first();
+
                 return [
                     'enemy' => $first['enemy'],
                     'win_loss' => $first['win_loss'],
                     'games_played' => $group->sum('games_played'),
                 ];
             })->values();
-            
+
             $enemyData = $this->combineData($enemyData, 'enemy', $hero, $role, $heroData);
 
             $allyDataKeyed = collect($allyData)->keyBy(function ($item) {

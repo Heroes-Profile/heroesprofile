@@ -102,11 +102,11 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         ) {
             // Split game versions by ID (ID >= 250 goes to new table)
             [$oldTableVersions, $newTableVersions] = $this->splitGameVersionsByPatch($gameVersion, 250);
-            
+
             $allData = collect();
-            
+
             // Query old table if there are versions with ID < 250
-            if (!empty($oldTableVersions)) {
+            if (! empty($oldTableVersions)) {
                 $oldData = GlobalCompositions::query()
                     ->select('composition_id', 'win_loss')
                     ->selectRaw('SUM(games_played) as games_played')
@@ -126,37 +126,37 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                     ->map(function ($item) {
                         return $item->toArray();
                     });
-                
+
                 $allData = $allData->merge($oldData);
             }
-            
+
             // Query new table if there are versions with ID >= 250
-            if (!empty($newTableVersions)) {
+            if (! empty($newTableVersions)) {
                 // Convert game version strings to IDs for the new table
                 $newTableVersionIds = SeasonGameVersion::whereIn('game_version', $newTableVersions)
                     ->pluck('id')
                     ->toArray();
-                
-                if (!empty($newTableVersionIds)) {
+
+                if (! empty($newTableVersionIds)) {
                     $newData = DB::connection('heroesprofile')
                         ->table('heroesprofile_globals.global_compositions as global_compositions')
                         ->select('global_compositions.composition_id', 'global_compositions.win_loss')
                         ->selectRaw('SUM(global_compositions.games_played) as games_played')
                         ->whereIn('global_compositions.game_version', $newTableVersionIds)
                         ->whereIn('global_compositions.game_type', $gameType)
-                        ->when($leagueTier !== null && !empty($leagueTier), function ($query) use ($leagueTier) {
+                        ->when($leagueTier !== null && ! empty($leagueTier), function ($query) use ($leagueTier) {
                             return $query->whereIn('global_compositions.league_tier', $leagueTier);
                         })
-                        ->when($heroLeagueTier !== null && !empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
+                        ->when($heroLeagueTier !== null && ! empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
                             return $query->whereIn('global_compositions.hero_league_tier', $heroLeagueTier);
                         })
-                        ->when($roleLeagueTier !== null && !empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
+                        ->when($roleLeagueTier !== null && ! empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
                             return $query->whereIn('global_compositions.role_league_tier', $roleLeagueTier);
                         })
-                        ->when($gameMap !== null && !empty($gameMap), function ($query) use ($gameMap) {
+                        ->when($gameMap !== null && ! empty($gameMap), function ($query) use ($gameMap) {
                             return $query->whereIn('global_compositions.game_map', $gameMap);
                         })
-                        ->when($heroLevel !== null && !empty($heroLevel), function ($query) use ($heroLevel) {
+                        ->when($heroLevel !== null && ! empty($heroLevel), function ($query) use ($heroLevel) {
                             return $query->whereIn('global_compositions.hero_level', $heroLevel);
                         })
                         ->when($hero !== null, function ($query) use ($hero) {
@@ -167,7 +167,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                         }, function ($query) {
                             return $query->where('global_compositions.mirror', 0);
                         })
-                        ->when($region !== null && !empty($region), function ($query) use ($region) {
+                        ->when($region !== null && ! empty($region), function ($query) use ($region) {
                             return $query->whereIn('global_compositions.region', $region);
                         })
                         ->groupBy('global_compositions.composition_id', 'global_compositions.win_loss')
@@ -175,34 +175,37 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                         ->map(function ($item) {
                             return (array) $item;
                         });
-                    
+
                     // Load composition relationships for new data
                     $compositionIds = $newData->pluck('composition_id')->unique();
                     $compositions = \App\Models\Composition::whereIn('composition_id', $compositionIds)->get()->keyBy('composition_id');
-                    
+
                     $newData = $newData->map(function ($item) use ($compositions) {
                         $item['composition'] = $compositions[$item['composition_id']] ?? null;
+
                         return $item;
                     });
-                    
+
                     $allData = $allData->merge($newData);
                 }
             }
-            
+
             // Combine and re-aggregate data from both tables
             $allData = $allData->map(function ($item) {
                 if (is_object($item)) {
                     return (array) $item;
                 }
+
                 return $item;
             })->filter(function ($item) {
                 return is_array($item) && isset($item['composition_id']) && isset($item['win_loss']);
             });
-            
+
             $data = $allData->groupBy(function ($item) {
-                return $item['composition_id'] . '_' . $item['win_loss'];
+                return $item['composition_id'].'_'.$item['win_loss'];
             })->map(function ($group) {
                 $first = $group->first();
+
                 return [
                     'composition_id' => $first['composition_id'],
                     'win_loss' => $first['win_loss'],
@@ -327,11 +330,11 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         ) {
             // Split game versions by ID (ID >= 250 goes to new table)
             [$oldTableVersions, $newTableVersions] = $this->splitGameVersionsByPatch($gameVersion, 250);
-            
+
             $allData = collect();
-            
+
             // Query old table if there are versions with ID < 250
-            if (!empty($oldTableVersions)) {
+            if (! empty($oldTableVersions)) {
                 $oldData = GlobalCompositions::query()
                     ->select('hero')
                     ->selectRaw('SUM(games_played) as games_played')
@@ -350,37 +353,37 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                     ->map(function ($item) {
                         return $item->toArray();
                     });
-                
+
                 $allData = $allData->merge($oldData);
             }
-            
+
             // Query new table if there are versions with ID >= 250
-            if (!empty($newTableVersions)) {
+            if (! empty($newTableVersions)) {
                 // Convert game version strings to IDs for the new table
                 $newTableVersionIds = SeasonGameVersion::whereIn('game_version', $newTableVersions)
                     ->pluck('id')
                     ->toArray();
-                
-                if (!empty($newTableVersionIds)) {
+
+                if (! empty($newTableVersionIds)) {
                     $newData = DB::connection('heroesprofile')
                         ->table('heroesprofile_globals.global_compositions as global_compositions')
                         ->select('global_compositions.hero')
                         ->selectRaw('SUM(global_compositions.games_played) as games_played')
                         ->whereIn('global_compositions.game_version', $newTableVersionIds)
                         ->whereIn('global_compositions.game_type', $gameType)
-                        ->when($leagueTier !== null && !empty($leagueTier), function ($query) use ($leagueTier) {
+                        ->when($leagueTier !== null && ! empty($leagueTier), function ($query) use ($leagueTier) {
                             return $query->whereIn('global_compositions.league_tier', $leagueTier);
                         })
-                        ->when($heroLeagueTier !== null && !empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
+                        ->when($heroLeagueTier !== null && ! empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
                             return $query->whereIn('global_compositions.hero_league_tier', $heroLeagueTier);
                         })
-                        ->when($roleLeagueTier !== null && !empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
+                        ->when($roleLeagueTier !== null && ! empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
                             return $query->whereIn('global_compositions.role_league_tier', $roleLeagueTier);
                         })
-                        ->when($gameMap !== null && !empty($gameMap), function ($query) use ($gameMap) {
+                        ->when($gameMap !== null && ! empty($gameMap), function ($query) use ($gameMap) {
                             return $query->whereIn('global_compositions.game_map', $gameMap);
                         })
-                        ->when($heroLevel !== null && !empty($heroLevel), function ($query) use ($heroLevel) {
+                        ->when($heroLevel !== null && ! empty($heroLevel), function ($query) use ($heroLevel) {
                             return $query->whereIn('global_compositions.hero_level', $heroLevel);
                         })
                         ->where('global_compositions.composition_id', $compositionID)
@@ -389,7 +392,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                         }, function ($query) {
                             return $query->where('global_compositions.mirror', 0);
                         })
-                        ->when($region !== null && !empty($region), function ($query) use ($region) {
+                        ->when($region !== null && ! empty($region), function ($query) use ($region) {
                             return $query->whereIn('global_compositions.region', $region);
                         })
                         ->groupBy('global_compositions.hero')
@@ -397,21 +400,22 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                         ->map(function ($item) {
                             return (array) $item;
                         });
-                    
+
                     $allData = $allData->merge($newData);
                 }
             }
-            
+
             // Combine and re-aggregate data from both tables
             $allData = $allData->map(function ($item) {
                 if (is_object($item)) {
                     return (array) $item;
                 }
+
                 return $item;
             })->filter(function ($item) {
                 return is_array($item) && isset($item['hero']);
             });
-            
+
             $data = $allData->groupBy('hero')->map(function ($group) {
                 return [
                     'hero' => $group->first()['hero'],
