@@ -1014,6 +1014,7 @@ class GlobalDataService
     public function getAllHeroesGlobalWinRates(Request $request)
     {
         $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
         $gameType = $this->getGameTypeFilterValues($request['game_type']);
         $leagueTier = $request['league_tier'];
         $heroLeagueTier = $request['hero_league_tier'];
@@ -1025,9 +1026,10 @@ class GlobalDataService
         $hero = $this->getHeroFilterValue($request['hero']);
         $role = $request['role'];
 
-        $cacheKey = 'GlobalHeroStats|'.hash('sha256', json_encode($gameVersion).'|'.json_encode($request->all()));
+        $cacheKey = 'GlobalHeroStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
 
         $data = Cache::store('database')->remember($cacheKey, $this->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
+            $gameVersionIDs,
             $gameType,
             $leagueTier,
             $heroLeagueTier,
@@ -1038,10 +1040,10 @@ class GlobalDataService
             $mirror
         ) {
             $data = GlobalHeroStats::query()
-                ->join('heroes', 'heroes.id', '=', 'global_hero_stats.hero')
+                ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stats.hero')
                 ->select('heroes.name', 'heroes.short_name', 'heroes.id as hero_id', 'global_hero_stats.win_loss', 'heroes.new_role as role')
                 ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
-                ->filterByGameVersion($gameVersion)
+                ->filterByGameVersion($gameVersionIDs)
                 ->filterByGameType($gameType)
                 ->filterByLeagueTier($leagueTier)
                 ->filterByHeroLeagueTier($heroLeagueTier)
