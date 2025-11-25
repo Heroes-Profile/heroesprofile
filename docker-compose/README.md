@@ -72,6 +72,7 @@ docker compose exec mysql mysql -h mysql -u root -proot_password heroesprofile
 The MySQL container automatically creates all required databases:
 
 - heroesprofile (main)
+- heroesprofile_globals
 - heroesprofile_cache
 - heroesprofile_logs
 - heroesprofile_ngs

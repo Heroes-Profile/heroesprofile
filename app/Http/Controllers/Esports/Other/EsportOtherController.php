@@ -116,7 +116,7 @@ class EsportOtherController extends Controller
         $validator = Validator::make(compact('series'), $validationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [
@@ -186,7 +186,7 @@ class EsportOtherController extends Controller
         $otherValidator = Validator::make($request->all(), $otherValidationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [
@@ -254,7 +254,7 @@ class EsportOtherController extends Controller
         $otherValidator = Validator::make($request->all(), $otherValidationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [
@@ -296,7 +296,7 @@ class EsportOtherController extends Controller
         $otherValidator = Validator::make($request->all(), $otherValidationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [
@@ -341,7 +341,7 @@ class EsportOtherController extends Controller
         $otherValidator = Validator::make($request->all(), $otherValidationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [
@@ -382,7 +382,7 @@ class EsportOtherController extends Controller
         $otherValidator = Validator::make($request->all(), $otherValidationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [
@@ -422,7 +422,7 @@ class EsportOtherController extends Controller
         $otherValidator = Validator::make($request->all(), $otherValidationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [
@@ -572,7 +572,7 @@ class EsportOtherController extends Controller
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return response()->json([

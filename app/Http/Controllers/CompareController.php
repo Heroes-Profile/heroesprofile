@@ -23,7 +23,7 @@ class CompareController extends Controller
             $validator = Validator::make(['hero' => $hero], $validationRules);
 
             if ($validator->fails()) {
-                if (env('Production')) {
+                if (config('app.env') === 'production') {
                     return \Redirect::to('/');
                 } else {
                     return [

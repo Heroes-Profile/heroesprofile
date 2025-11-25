@@ -21,7 +21,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [
@@ -40,7 +40,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
             $validator = Validator::make(['hero' => $hero], $validationRules);
 
             if ($validator->fails()) {
-                if (env('Production')) {
+                if (config('app.env') === 'production') {
                     return \Redirect::to('/');
                 } else {
                     return [
@@ -116,12 +116,12 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
         ) {
             // Split game versions by ID (ID >= 250 goes to new table)
             [$oldTableVersions, $newTableVersions] = $this->splitGameVersionsByPatch($gameVersion, 250);
-            
+
             // Query GlobalHeroStats data
             $allData = collect();
-            
+
             // Query old table for stats
-            if (!empty($oldTableVersions)) {
+            if (! empty($oldTableVersions)) {
                 $oldData = GlobalHeroStats::query()
                     ->join('heroes', 'heroes.id', '=', 'global_hero_stats.hero')
                     ->join('maps', 'maps.map_id', '=', 'global_hero_stats.game_map')
@@ -143,17 +143,17 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
                     ->map(function ($item) {
                         return $item->toArray();
                     });
-                
+
                 $allData = $allData->merge($oldData);
             }
-            
+
             // Query new table for stats
-            if (!empty($newTableVersions)) {
+            if (! empty($newTableVersions)) {
                 $newTableVersionIds = SeasonGameVersion::whereIn('game_version', $newTableVersions)
                     ->pluck('id')
                     ->toArray();
-                
-                if (!empty($newTableVersionIds)) {
+
+                if (! empty($newTableVersionIds)) {
                     $newData = DB::connection('heroesprofile')
                         ->table('heroesprofile_globals.global_hero_stats as global_hero_stats')
                         ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stats.hero')
@@ -163,16 +163,16 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
                         ->whereIn('global_hero_stats.game_version', $newTableVersionIds)
                         ->whereIn('global_hero_stats.game_type', $gameType)
                         ->where('global_hero_stats.hero', $hero)
-                        ->when($leagueTier !== null && !empty($leagueTier), function ($query) use ($leagueTier) {
+                        ->when($leagueTier !== null && ! empty($leagueTier), function ($query) use ($leagueTier) {
                             return $query->whereIn('global_hero_stats.league_tier', $leagueTier);
                         })
-                        ->when($heroLeagueTier !== null && !empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
+                        ->when($heroLeagueTier !== null && ! empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
                             return $query->whereIn('global_hero_stats.hero_league_tier', $heroLeagueTier);
                         })
-                        ->when($roleLeagueTier !== null && !empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
+                        ->when($roleLeagueTier !== null && ! empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
                             return $query->whereIn('global_hero_stats.role_league_tier', $roleLeagueTier);
                         })
-                        ->when($heroLevel !== null && !empty($heroLevel), function ($query) use ($heroLevel) {
+                        ->when($heroLevel !== null && ! empty($heroLevel), function ($query) use ($heroLevel) {
                             return $query->whereIn('global_hero_stats.hero_level', $heroLevel);
                         })
                         ->when($mirror == 1, function ($query) {
@@ -180,7 +180,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
                         }, function ($query) {
                             return $query->where('global_hero_stats.mirror', 0);
                         })
-                        ->when($region !== null && !empty($region), function ($query) use ($region) {
+                        ->when($region !== null && ! empty($region), function ($query) use ($region) {
                             return $query->whereIn('global_hero_stats.region', $region);
                         })
                         ->groupBy('global_hero_stats.win_loss')
@@ -190,25 +190,27 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
                         ->map(function ($item) {
                             return (array) $item;
                         });
-                    
+
                     $allData = $allData->merge($newData);
                 }
             }
-            
+
             // Combine and re-aggregate stats data
             $allData = $allData->map(function ($item) {
                 if (is_object($item)) {
                     return (array) $item;
                 }
+
                 return $item;
             })->filter(function ($item) {
                 return is_array($item) && isset($item['hero_id']) && isset($item['win_loss']) && isset($item['map_id']);
             });
-            
+
             $data = $allData->groupBy(function ($item) {
-                return $item['hero_id'] . '_' . $item['win_loss'] . '_' . $item['map_id'];
+                return $item['hero_id'].'_'.$item['win_loss'].'_'.$item['map_id'];
             })->map(function ($group) {
                 $first = $group->first();
+
                 return [
                     'name' => $first['name'],
                     'hero_id' => $first['hero_id'],
@@ -217,11 +219,11 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
                     'games_played' => $group->sum('games_played'),
                 ];
             })->values();
-            
+
             // Query gamesPlayedPerMap
             $gamesPlayedAllData = collect();
-            
-            if (!empty($oldTableVersions)) {
+
+            if (! empty($oldTableVersions)) {
                 $gamesPlayedOldData = GlobalHeroStats::query()
                     ->select('game_map')
                     ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
@@ -238,32 +240,32 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
                     ->map(function ($item) {
                         return $item->toArray();
                     });
-                
+
                 $gamesPlayedAllData = $gamesPlayedAllData->merge($gamesPlayedOldData);
             }
-            
-            if (!empty($newTableVersions)) {
+
+            if (! empty($newTableVersions)) {
                 $newTableVersionIds = SeasonGameVersion::whereIn('game_version', $newTableVersions)
                     ->pluck('id')
                     ->toArray();
-                
-                if (!empty($newTableVersionIds)) {
+
+                if (! empty($newTableVersionIds)) {
                     $gamesPlayedNewData = DB::connection('heroesprofile')
                         ->table('heroesprofile_globals.global_hero_stats as global_hero_stats')
                         ->select('global_hero_stats.game_map')
                         ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
                         ->whereIn('global_hero_stats.game_version', $newTableVersionIds)
                         ->whereIn('global_hero_stats.game_type', $gameType)
-                        ->when($leagueTier !== null && !empty($leagueTier), function ($query) use ($leagueTier) {
+                        ->when($leagueTier !== null && ! empty($leagueTier), function ($query) use ($leagueTier) {
                             return $query->whereIn('global_hero_stats.league_tier', $leagueTier);
                         })
-                        ->when($heroLeagueTier !== null && !empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
+                        ->when($heroLeagueTier !== null && ! empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
                             return $query->whereIn('global_hero_stats.hero_league_tier', $heroLeagueTier);
                         })
-                        ->when($roleLeagueTier !== null && !empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
+                        ->when($roleLeagueTier !== null && ! empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
                             return $query->whereIn('global_hero_stats.role_league_tier', $roleLeagueTier);
                         })
-                        ->when($heroLevel !== null && !empty($heroLevel), function ($query) use ($heroLevel) {
+                        ->when($heroLevel !== null && ! empty($heroLevel), function ($query) use ($heroLevel) {
                             return $query->whereIn('global_hero_stats.hero_level', $heroLevel);
                         })
                         ->when($mirror == 1, function ($query) {
@@ -271,7 +273,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
                         }, function ($query) {
                             return $query->where('global_hero_stats.mirror', 0);
                         })
-                        ->when($region !== null && !empty($region), function ($query) use ($region) {
+                        ->when($region !== null && ! empty($region), function ($query) use ($region) {
                             return $query->whereIn('global_hero_stats.region', $region);
                         })
                         ->groupBy('global_hero_stats.game_map')
@@ -279,32 +281,34 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
                         ->map(function ($item) {
                             return (array) $item;
                         });
-                    
+
                     $gamesPlayedAllData = $gamesPlayedAllData->merge($gamesPlayedNewData);
                 }
             }
-            
+
             $gamesPlayedAllData = $gamesPlayedAllData->map(function ($item) {
                 if (is_object($item)) {
                     return (array) $item;
                 }
+
                 return $item;
             })->filter(function ($item) {
                 return is_array($item) && isset($item['game_map']);
             });
-            
+
             $gamesPlayedPerMap = $gamesPlayedAllData->groupBy('game_map')->map(function ($group) {
                 $first = $group->first();
+
                 return [
                     'game_map' => $first['game_map'],
                     'games_played' => $group->sum('games_played'),
                 ];
             })->values();
-            
+
             // Query ban data
             $banAllData = collect();
-            
-            if (!empty($oldTableVersions)) {
+
+            if (! empty($oldTableVersions)) {
                 $banOldData = GlobalHeroStatsBans::query()
                     ->join('heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')
                     ->join('maps', 'maps.map_id', '=', 'global_hero_stats_bans.game_map')
@@ -324,16 +328,16 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
                     ->map(function ($item) {
                         return $item->toArray();
                     });
-                
+
                 $banAllData = $banAllData->merge($banOldData);
             }
-            
-            if (!empty($newTableVersions)) {
+
+            if (! empty($newTableVersions)) {
                 $newTableVersionIds = SeasonGameVersion::whereIn('game_version', $newTableVersions)
                     ->pluck('id')
                     ->toArray();
-                
-                if (!empty($newTableVersionIds)) {
+
+                if (! empty($newTableVersionIds)) {
                     $banNewData = DB::connection('heroesprofile')
                         ->table('heroesprofile_globals.global_hero_stats_bans as global_hero_stats_bans')
                         ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')
@@ -343,19 +347,19 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
                         ->whereIn('global_hero_stats_bans.game_version', $newTableVersionIds)
                         ->whereIn('global_hero_stats_bans.game_type', $gameType)
                         ->where('global_hero_stats_bans.hero', $hero)
-                        ->when($leagueTier !== null && !empty($leagueTier), function ($query) use ($leagueTier) {
+                        ->when($leagueTier !== null && ! empty($leagueTier), function ($query) use ($leagueTier) {
                             return $query->whereIn('global_hero_stats_bans.league_tier', $leagueTier);
                         })
-                        ->when($heroLeagueTier !== null && !empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
+                        ->when($heroLeagueTier !== null && ! empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
                             return $query->whereIn('global_hero_stats_bans.hero_league_tier', $heroLeagueTier);
                         })
-                        ->when($roleLeagueTier !== null && !empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
+                        ->when($roleLeagueTier !== null && ! empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
                             return $query->whereIn('global_hero_stats_bans.role_league_tier', $roleLeagueTier);
                         })
-                        ->when($heroLevel !== null && !empty($heroLevel), function ($query) use ($heroLevel) {
+                        ->when($heroLevel !== null && ! empty($heroLevel), function ($query) use ($heroLevel) {
                             return $query->whereIn('global_hero_stats_bans.hero_level', $heroLevel);
                         })
-                        ->when($region !== null && !empty($region), function ($query) use ($region) {
+                        ->when($region !== null && ! empty($region), function ($query) use ($region) {
                             return $query->whereIn('global_hero_stats_bans.region', $region);
                         })
                         ->groupBy('global_hero_stats_bans.hero')
@@ -364,24 +368,26 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
                         ->map(function ($item) {
                             return (array) $item;
                         });
-                    
+
                     $banAllData = $banAllData->merge($banNewData);
                 }
             }
-            
+
             $banAllData = $banAllData->map(function ($item) {
                 if (is_object($item)) {
                     return (array) $item;
                 }
+
                 return $item;
             })->filter(function ($item) {
                 return is_array($item) && isset($item['hero_id']) && isset($item['map_id']);
             });
-            
+
             $banData = $banAllData->groupBy(function ($item) {
-                return $item['hero_id'] . '_' . $item['map_id'];
+                return $item['hero_id'].'_'.$item['map_id'];
             })->map(function ($group) {
                 $first = $group->first();
+
                 return [
                     'name' => $first['name'],
                     'hero_id' => $first['hero_id'],
@@ -404,6 +410,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
             if (is_object($item)) {
                 return (array) $item;
             }
+
             return $item;
         });
 
