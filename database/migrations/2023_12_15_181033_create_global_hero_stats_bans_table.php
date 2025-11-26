@@ -8,9 +8,9 @@ class CreateGlobalHeroStatsBansTable extends Migration
 {
     public function up()
     {
-        Schema::create('global_hero_stats_bans', function (Blueprint $table) {
+        Schema::connection('heroesprofile_globals')->create('global_hero_stats_bans', function (Blueprint $table) {
             $table->increments('global_hero_stats_bans_id');
-            $table->string('game_version', 45);
+            $table->integer('game_version')->notNull();
             $table->tinyInteger('game_type');
             $table->tinyInteger('league_tier');
             $table->tinyInteger('hero_league_tier')->default(0);
@@ -28,6 +28,6 @@ class CreateGlobalHeroStatsBansTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('global_hero_stats_bans');
+        Schema::connection('heroesprofile_globals')->dropIfExists('global_hero_stats_bans');
     }
 }

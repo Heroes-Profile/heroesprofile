@@ -310,8 +310,8 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
 
             if (! empty($oldTableVersions)) {
                 $banOldData = GlobalHeroStatsBans::query()
-                    ->join('heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')
-                    ->join('maps', 'maps.map_id', '=', 'global_hero_stats_bans.game_map')
+                    ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')
+                    ->join('heroesprofile.maps as maps', 'maps.map_id', '=', 'global_hero_stats_bans.game_map')
                     ->select('heroes.name', 'heroes.id as hero_id', 'map_id')
                     ->selectRaw('SUM(global_hero_stats_bans.bans) as bans')
                     ->filterByGameVersion($oldTableVersions)
