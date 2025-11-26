@@ -123,7 +123,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
                 ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')
                 ->select('heroes.name', 'heroes.id as hero_id')
                 ->selectRaw('SUM(global_hero_stats_bans.bans) as bans')
-                ->filterByGameVersion($gameVersion)
+                ->filterByGameVersion($gameVersionIDs)
                 ->filterByGameType($gameType)
                 ->filterByLeagueTier($leagueTier)
                 ->filterByHeroLeagueTier($heroLeagueTier)
