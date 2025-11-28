@@ -179,27 +179,27 @@
           <template v-for="(item, index) in combinedPlayers" :key="index">
             
             <div>
-              <a class="flex flex-wrap items-end my-5 w-full justify-evenly"  :href="matchScorePlayerURL(item)">
+              <a class="flex flex-wrap items-end my-5 w-full justify-evenly max-md:block"  :href="matchScorePlayerURL(item)">
                 <hero-image-wrapper :size="'big'" :hero="item.hero" class="mr-2"></hero-image-wrapper>
                 <div>
-                  <div class="flex flex-wrap justify-between flex-1">
+                  <div class="flex flex-wrap justify-between flex-1  max-md:w-full">
                     <span> {{ item.battletag }}</span> 
                     <span>Heroes Profile Rating: {{ item.total_rank }}</span>
                   </div>
-                  <div class="flex flex-wrap md:space-x-9 items-between w-full flex-1 ">
-                    <div class="flex flex-1">
-                      <stat-box class="min-w-[8em]" :title="'Kills'" :value="item.score.kills" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-                      <stat-box class="min-w-[8em]" :title="'Takedowns'" :value="item.score.takedowns" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-                      <stat-box class="min-w-[8em]" :title="'Deaths'" :value="item.score.deaths" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                  <div class="flex flex-wrap md:space-x-9 items-between w-full flex-1 max-md:flex-col">
+                    <div class="flex flex-1 max-md:w-full">
+                      <stat-box class="min-w-[8em] max-md:min-w-[30%]" :title="'Kills'" :value="item.score.kills" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                      <stat-box class="min-w-[8em] max-md:min-w-[30%]" :title="'Takedowns'" :value="item.score.takedowns" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                      <stat-box class="min-w-[8em] max-md:min-w-[30%]" :title="'Deaths'" :value="item.score.deaths" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
                     </div>
-                    <div class="flex flex-1">
-                      <stat-box class="min-w-[8em]" :title="'Siege Dmg.'" :value="item.score.siege_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-                      <stat-box class="min-w-[8em]" :title="'Hero Dmg.'" :value="item.score.hero_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-                      <stat-box class="min-w-[8em]" :title="'Healing'" :value="item.score.total_healing" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                    <div class="flex flex-1 max-md:w-full">
+                      <stat-box class="min-w-[8em] max-md:min-w-[30%]" :title="'Siege Dmg.'" :value="item.score.siege_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                      <stat-box class="min-w-[8em] max-md:min-w-[30%]" :title="'Hero Dmg.'" :value="item.score.hero_damage" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                      <stat-box class="min-w-[8em] max-md:min-w-[30%]" :title="'Healing'" :value="item.score.total_healing" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
                     </div>
-                    <div class="flex flex-1">
-                      <stat-box class="min-w-[8em]" :title="'Dmg. Taken'" :value="item.score.damage_taken ? item.score.damage_taken : 0 " :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
-                      <stat-box class="min-w-[8em]" :title="'Exp. Con.'" :value="item.score.experience_contribution" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                    <div class="flex flex-1 max-md:w-full">
+                      <stat-box class="min-w-[8em] max-md:min-w-[30%]" :title="'Dmg. Taken'" :value="item.score.damage_taken ? item.score.damage_taken : 0 " :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
+                      <stat-box class="min-w-[8em] max-md:min-w-[30%]" :title="'Exp. Con.'" :value="item.score.experience_contribution" :color="item.winner == 1 ? 'teal' : 'red'"></stat-box>
                     </div>
                   </div>
 
