@@ -259,7 +259,18 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
             $data = collect($data)->groupBy('level')->map(function ($levelGroup) {
 
-                $totalGamesPlayed = collect($levelGroup)->sum('games_played');
+                // Exclude talent 0 when calculating total games at this level
+                $validTalents = $levelGroup->groupBy('talent')->filter(function ($talentGroup) {
+                    $firstItem = $talentGroup->first();
+                    return $firstItem['talent'] != 0;
+                });
+
+                // Calculate total games at this level by summing wins + losses for each valid talent (excluding talent 0)
+                $totalGamesPlayed = $validTalents->map(function ($talentGroup) {
+                    $wins = $talentGroup->where('win_loss', 1)->sum('games_played');
+                    $losses = $talentGroup->where('win_loss', 0)->sum('games_played');
+                    return $wins + $losses;
+                })->sum();
 
                 return $levelGroup->groupBy('talent')->map(function ($talentGroup) use ($totalGamesPlayed) {
                     $firstItem = $talentGroup->first();
