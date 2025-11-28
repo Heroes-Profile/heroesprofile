@@ -10,7 +10,7 @@ class GlobalCompositions extends Model
 
     protected $primaryKey = 'global_compositions_id';
 
-    protected $connection = 'heroesprofile';
+    protected $connection = 'heroesprofile_globals';
 
     public $timestamps = false;
 

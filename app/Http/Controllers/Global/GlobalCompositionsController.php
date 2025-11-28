@@ -84,11 +84,9 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 
         $cacheKey = 'GlobalCompositionStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
 
-        /*
-        if (! env('Production')) {
+        if (config('app.env') !== 'production') {
             Cache::store('database')->forget($cacheKey);
         }
-        */
 
         $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
             $gameVersionIDs,
