@@ -147,7 +147,7 @@
           </thead>
           <tbody>
             <tr class="@apply even:bg-gray-xlight" v-for="(row, index) in sortedData" :key="index">
-              <td>
+              <td class="py-2 px-3 flex items-center  max-md:justify-center gap-1">
                 <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
               </td>
               <td>
