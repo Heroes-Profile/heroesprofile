@@ -514,7 +514,8 @@
         this.modifiedGroupSizeDefaultValue = "Solo";
       }
 
-      this.checkScreenWidth();
+      // Set initial visibility based on screen width (hidden on mobile, shown on desktop)
+      this.showNav = window.innerWidth > 768;
 
       window.addEventListener('resize', this.checkScreenWidth);
     },
@@ -779,8 +780,10 @@
         this.showNav = !this.showNav;
       },
       checkScreenWidth() {
-      // Set showDiv to true on desktop (width greater than 768 pixels) and false on mobile
-          this.showNav = window.innerWidth > 768;
+      // Only auto-show on desktop, never auto-hide (let the X button handle closing)
+          if (window.innerWidth > 768) {
+            this.showNav = true;
+          }
        },
     }
   };
