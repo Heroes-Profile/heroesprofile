@@ -1,5 +1,5 @@
 <template>
-  <div id="filter-label" class="relative" :class="{ 'bg-red': highlighttimesframes }">
+  <div id="filter-label" class="relative max-md:w-[40%]" :class="{ 'bg-red': highlighttimesframes }">
     <div @click="showOptions = !showOptions" class="flex flex-col text-sm font-medium text-gray-700 cursor-pointer  p-2    transition-colors">
       <span class="relative">
         <span class="relative">{{ this.text }}
@@ -16,7 +16,7 @@
 
 
       
-      <span class="min-w-[200px] h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2 flex relative">
+      <span class="md:min-w-[200px] h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2 flex relative">
         <span v-if="selectedOptions.length <= 3" v-for="name in selectedOptionsName" class="uppercase whitespace-nowrap  font-bold  bg-teal rounded px-1 mx-1 flex no-wrap">{{ name }}</span>
         <span v-else-if="selectedOptions.length > 3" class="uppercase whitespace-nowrap  font-bold  bg-teal rounded px-1 mx-1 flex no-wrap">{{ selectedOptions.length }} of {{ values.length }} selected</span>
       </span>
