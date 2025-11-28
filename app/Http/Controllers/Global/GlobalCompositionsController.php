@@ -9,7 +9,6 @@ use App\Models\SeasonGameVersion;
 use App\Rules\HeroInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalCompositionsController extends GlobalsInputValidationController
@@ -21,7 +20,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            if (config('app.env') === 'production') {
+            if (env('Production')) {
                 return \Redirect::to('/');
             } else {
                 return [
@@ -70,6 +69,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 
         $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
         $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
         $leagueTier = $request['league_tier'];
         $heroLeagueTier = $request['hero_league_tier'];
@@ -82,13 +82,14 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         $talentbuildType = $request['talentbuildtype'];
         $minimumGames = $request['minimum_games'];
 
-        $cacheKey = 'GlobalCompositionStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalCompositionStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
 
         if (config('app.env') !== 'production') {
             Cache::store('database')->forget($cacheKey);
         }
 
-        $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
+        $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
+            $gameVersionIDs,
             $gameType,
             $leagueTier,
             $heroLeagueTier,
@@ -100,119 +101,24 @@ class GlobalCompositionsController extends GlobalsInputValidationController
             $region,
             $minimumGames
         ) {
-            // Split game versions by ID (ID >= 250 goes to new table)
-            [$oldTableVersions, $newTableVersions] = $this->splitGameVersionsByPatch($gameVersion, 250);
 
-            $allData = collect();
-
-            // Query old table if there are versions with ID < 250
-            if (! empty($oldTableVersions)) {
-                $oldData = GlobalCompositions::query()
-                    ->select('composition_id', 'win_loss')
-                    ->selectRaw('SUM(games_played) as games_played')
-                    ->filterByGameVersion($oldTableVersions)
-                    ->filterByGameType($gameType)
-                    ->filterByLeagueTier($leagueTier)
-                    ->filterByHeroLeagueTier($heroLeagueTier)
-                    ->filterByRoleLeagueTier($roleLeagueTier)
-                    ->filterByGameMap($gameMap)
-                    ->filterByHeroLevel($heroLevel)
-                    ->filterByHero($hero)
-                    ->excludeMirror($mirror)
-                    ->filterByRegion($region)
-                    ->groupBy('composition_id', 'win_loss')
-                    ->with(['composition'])
-                    ->get()
-                    ->map(function ($item) {
-                        return $item->toArray();
-                    });
-
-                $allData = $allData->merge($oldData);
-            }
-
-            // Query new table if there are versions with ID >= 250
-            if (! empty($newTableVersions)) {
-                // Convert game version strings to IDs for the new table
-                $newTableVersionIds = SeasonGameVersion::whereIn('game_version', $newTableVersions)
-                    ->pluck('id')
-                    ->toArray();
-
-                if (! empty($newTableVersionIds)) {
-                    $newData = DB::connection('heroesprofile')
-                        ->table('heroesprofile_globals.global_compositions as global_compositions')
-                        ->select('global_compositions.composition_id', 'global_compositions.win_loss')
-                        ->selectRaw('SUM(global_compositions.games_played) as games_played')
-                        ->whereIn('global_compositions.game_version', $newTableVersionIds)
-                        ->whereIn('global_compositions.game_type', $gameType)
-                        ->when($leagueTier !== null && ! empty($leagueTier), function ($query) use ($leagueTier) {
-                            return $query->whereIn('global_compositions.league_tier', $leagueTier);
-                        })
-                        ->when($heroLeagueTier !== null && ! empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
-                            return $query->whereIn('global_compositions.hero_league_tier', $heroLeagueTier);
-                        })
-                        ->when($roleLeagueTier !== null && ! empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
-                            return $query->whereIn('global_compositions.role_league_tier', $roleLeagueTier);
-                        })
-                        ->when($gameMap !== null && ! empty($gameMap), function ($query) use ($gameMap) {
-                            return $query->whereIn('global_compositions.game_map', $gameMap);
-                        })
-                        ->when($heroLevel !== null && ! empty($heroLevel), function ($query) use ($heroLevel) {
-                            return $query->whereIn('global_compositions.hero_level', $heroLevel);
-                        })
-                        ->when($hero !== null, function ($query) use ($hero) {
-                            return $query->where('global_compositions.hero', $hero);
-                        })
-                        ->when($mirror == 1, function ($query) {
-                            return $query->whereIn('global_compositions.mirror', [0, 1]);
-                        }, function ($query) {
-                            return $query->where('global_compositions.mirror', 0);
-                        })
-                        ->when($region !== null && ! empty($region), function ($query) use ($region) {
-                            return $query->whereIn('global_compositions.region', $region);
-                        })
-                        ->groupBy('global_compositions.composition_id', 'global_compositions.win_loss')
-                        ->get()
-                        ->map(function ($item) {
-                            return (array) $item;
-                        });
-
-                    // Load composition relationships for new data
-                    $compositionIds = $newData->pluck('composition_id')->unique();
-                    $compositions = \App\Models\Composition::whereIn('composition_id', $compositionIds)->get()->keyBy('composition_id');
-
-                    $newData = $newData->map(function ($item) use ($compositions) {
-                        $item['composition'] = $compositions[$item['composition_id']] ?? null;
-
-                        return $item;
-                    });
-
-                    $allData = $allData->merge($newData);
-                }
-            }
-
-            // Combine and re-aggregate data from both tables
-            $allData = $allData->map(function ($item) {
-                if (is_object($item)) {
-                    return (array) $item;
-                }
-
-                return $item;
-            })->filter(function ($item) {
-                return is_array($item) && isset($item['composition_id']) && isset($item['win_loss']);
-            });
-
-            $data = $allData->groupBy(function ($item) {
-                return $item['composition_id'].'_'.$item['win_loss'];
-            })->map(function ($group) {
-                $first = $group->first();
-
-                return [
-                    'composition_id' => $first['composition_id'],
-                    'win_loss' => $first['win_loss'],
-                    'games_played' => $group->sum('games_played'),
-                    'composition' => $first['composition'] ?? null,
-                ];
-            })->values();
+            $data = GlobalCompositions::query()
+                ->select('composition_id', 'win_loss')
+                ->selectRaw('SUM(games_played) as games_played')
+                ->filterByGameVersion($gameVersionIDs)
+                ->filterByGameType($gameType)
+                ->filterByLeagueTier($leagueTier)
+                ->filterByHeroLeagueTier($heroLeagueTier)
+                ->filterByRoleLeagueTier($roleLeagueTier)
+                ->filterByGameMap($gameMap)
+                ->filterByHeroLevel($heroLevel)
+                ->filterByHero($hero)
+                ->excludeMirror($mirror)
+                ->filterByRegion($region)
+                ->groupBy('composition_id', 'win_loss')
+                ->with(['composition'])
+                // ->toSql();
+                ->get();
 
             $roleData = MMRTypeID::all();
             $roleData = $roleData->keyBy('mmr_type_id');
@@ -293,6 +199,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
 
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
 
         $gameTypeRecords = GameType::whereIn('short_name', $request['game_type'])->get();
         $gameType = $gameTypeRecords->pluck('type_id')->toArray();
@@ -310,13 +217,14 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 
         $compositionID = $request['composition_id'];
 
-        $cacheKey = 'GlobalCompositionTopHeroes|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalCompositionTopHeroes|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
 
         if (config('app.env') !== 'production') {
             Cache::store('database')->forget($cacheKey);
         }
 
-        $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
+        $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
+            $gameVersionIDs,
             $gameType,
             $leagueTier,
             $heroLeagueTier,
@@ -328,108 +236,32 @@ class GlobalCompositionsController extends GlobalsInputValidationController
             $compositionID
 
         ) {
-            // Split game versions by ID (ID >= 250 goes to new table)
-            [$oldTableVersions, $newTableVersions] = $this->splitGameVersionsByPatch($gameVersion, 250);
 
-            $allData = collect();
-
-            // Query old table if there are versions with ID < 250
-            if (! empty($oldTableVersions)) {
-                $oldData = GlobalCompositions::query()
-                    ->select('hero')
-                    ->selectRaw('SUM(games_played) as games_played')
-                    ->filterByGameVersion($oldTableVersions)
-                    ->filterByGameType($gameType)
-                    ->filterByLeagueTier($leagueTier)
-                    ->filterByHeroLeagueTier($heroLeagueTier)
-                    ->filterByRoleLeagueTier($roleLeagueTier)
-                    ->filterByGameMap($gameMap)
-                    ->filterByHeroLevel($heroLevel)
-                    ->filterByCompositionID($compositionID)
-                    ->excludeMirror($mirror)
-                    ->filterByRegion($region)
-                    ->groupBy('hero')
-                    ->get()
-                    ->map(function ($item) {
-                        return $item->toArray();
-                    });
-
-                $allData = $allData->merge($oldData);
-            }
-
-            // Query new table if there are versions with ID >= 250
-            if (! empty($newTableVersions)) {
-                // Convert game version strings to IDs for the new table
-                $newTableVersionIds = SeasonGameVersion::whereIn('game_version', $newTableVersions)
-                    ->pluck('id')
-                    ->toArray();
-
-                if (! empty($newTableVersionIds)) {
-                    $newData = DB::connection('heroesprofile')
-                        ->table('heroesprofile_globals.global_compositions as global_compositions')
-                        ->select('global_compositions.hero')
-                        ->selectRaw('SUM(global_compositions.games_played) as games_played')
-                        ->whereIn('global_compositions.game_version', $newTableVersionIds)
-                        ->whereIn('global_compositions.game_type', $gameType)
-                        ->when($leagueTier !== null && ! empty($leagueTier), function ($query) use ($leagueTier) {
-                            return $query->whereIn('global_compositions.league_tier', $leagueTier);
-                        })
-                        ->when($heroLeagueTier !== null && ! empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
-                            return $query->whereIn('global_compositions.hero_league_tier', $heroLeagueTier);
-                        })
-                        ->when($roleLeagueTier !== null && ! empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
-                            return $query->whereIn('global_compositions.role_league_tier', $roleLeagueTier);
-                        })
-                        ->when($gameMap !== null && ! empty($gameMap), function ($query) use ($gameMap) {
-                            return $query->whereIn('global_compositions.game_map', $gameMap);
-                        })
-                        ->when($heroLevel !== null && ! empty($heroLevel), function ($query) use ($heroLevel) {
-                            return $query->whereIn('global_compositions.hero_level', $heroLevel);
-                        })
-                        ->where('global_compositions.composition_id', $compositionID)
-                        ->when($mirror == 1, function ($query) {
-                            return $query->whereIn('global_compositions.mirror', [0, 1]);
-                        }, function ($query) {
-                            return $query->where('global_compositions.mirror', 0);
-                        })
-                        ->when($region !== null && ! empty($region), function ($query) use ($region) {
-                            return $query->whereIn('global_compositions.region', $region);
-                        })
-                        ->groupBy('global_compositions.hero')
-                        ->get()
-                        ->map(function ($item) {
-                            return (array) $item;
-                        });
-
-                    $allData = $allData->merge($newData);
-                }
-            }
-
-            // Combine and re-aggregate data from both tables
-            $allData = $allData->map(function ($item) {
-                if (is_object($item)) {
-                    return (array) $item;
-                }
-
-                return $item;
-            })->filter(function ($item) {
-                return is_array($item) && isset($item['hero']);
-            });
-
-            $data = $allData->groupBy('hero')->map(function ($group) {
-                return [
-                    'hero' => $group->first()['hero'],
-                    'games_played' => $group->sum('games_played'),
-                ];
-            })->values();
+            $data = GlobalCompositions::query()
+                ->select('hero')
+                ->selectRaw('SUM(games_played) as games_played')
+                ->filterByGameVersion($gameVersionIDs)
+                ->filterByGameType($gameType)
+                ->filterByLeagueTier($leagueTier)
+                ->filterByHeroLeagueTier($heroLeagueTier)
+                ->filterByRoleLeagueTier($roleLeagueTier)
+                ->filterByGameMap($gameMap)
+                ->filterByHeroLevel($heroLevel)
+                // ->filterByHero($hero)
+                ->filterByCompositionID($compositionID)
+                ->excludeMirror($mirror)
+                ->filterByRegion($region)
+                ->groupBy('hero')
+                // ->toSql();
+                ->get();
 
             $heroData = $this->globalDataService->getHeroes();
             $heroData = $heroData->keyBy('id');
 
             $data = $data->map(function ($item) use ($heroData) {
-                $item['role'] = $heroData[$item['hero']]['new_role'];
-                $item['name'] = $heroData[$item['hero']]['name'];
-                $item['herodata'] = $heroData[$item['hero']];
+                $item['role'] = $heroData[$item->hero]['new_role'];
+                $item['name'] = $heroData[$item->hero]['name'];
+                $item['herodata'] = $heroData[$item->hero];
 
                 return $item;
             });
