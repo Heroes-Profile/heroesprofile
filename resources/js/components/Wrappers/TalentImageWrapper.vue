@@ -5,7 +5,7 @@
       <p>{{ this.removeNumbers(talent.hotkey) }}</p>
       <p>{{ talent.description }}</p>
     </round-image>
-    <round-image v-else-if="talent != 0 && talent" :size="size" :image="'/images/talents/no-image.png'">
+    <round-image v-else-if="talent != 0 && talent" :size="size" :image="'/images/talents/no-image.png'" tooltipdir="right">
       <h2>{{ "Talent removed or changed" }}</h2>
     </round-image>
 </template>

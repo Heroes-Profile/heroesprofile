@@ -459,3 +459,5 @@ a[href*="javascript:void(0)"] {
 div.phpdebugbar * {
     background: unset;
 }
+
+thead{border-color:transparent;}
