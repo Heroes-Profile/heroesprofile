@@ -61,6 +61,8 @@ Route::fallback(function () {
 // Route::middleware(['logIpAndUserAgent', 'communitySupportRedirect'])->group(function () {
 Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/', [MainPageController::class, 'show']);
+
+    // Testing routes
     // Route::get('/test', [MainPageController::class, 'test']);
     // Route::get('/testJS', [MainPageController::class, 'testJS']);
 
