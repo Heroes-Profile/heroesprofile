@@ -22,7 +22,7 @@ export default defineConfig({
                 },
             },
         }),
-        flareSourcemapUploader.default({
+        flareSourcemapUploader({
             key: 'zUKxLuLu568IhI1XL3uJDprYdM74p2Wk'
         }),
     ],
