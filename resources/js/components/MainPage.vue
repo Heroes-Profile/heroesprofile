@@ -37,7 +37,7 @@
             <i class="fa-solid fa-globe" style="font-size: 100px;"></i>
 
             <h3 class="text-2xl mb-10 mt-2">Global Stats</h3>
-            <p>Variety of global stats for heroes including, overall stats, builds, compositions, draft, matchups, and more.</p>
+            <p>Variety of Heroes of the Storm stats, including global stats for heroes, talent stats, overall stats, builds, compositions, draft, matchups, and more.</p>
             <div class="flex mt-auto gap-10">
               <custom-button  :href="'/Global/Hero'" :text="'Hero Stats'" :alt="'Hero Stats'" :size="'big'" class="mt-auto flex-1" ></custom-button>
               <custom-button :href="'/Global/Talents'" :text="'Talent Stats'" :alt="'Hero Stats'" :size="'big'"  class="mt-auto flex-1" ></custom-button>
