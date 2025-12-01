@@ -10,7 +10,7 @@ class GlobalHeroDraftOrder extends Model
 
     protected $primaryKey = 'global_hero_draft_order_id';
 
-    protected $connection = 'heroesprofile';
+    protected $connection = 'heroesprofile_globals';
 
     public $timestamps = false;
 

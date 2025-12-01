@@ -13,7 +13,7 @@ class CreateGlobalCompositionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('global_compositions', function (Blueprint $table) {
+        Schema::connection('heroesprofile_globals')->create('global_compositions', function (Blueprint $table) {
             $table->increments('global_compositions_id');
             $table->string('game_version');
             $table->tinyInteger('game_type');
@@ -40,6 +40,6 @@ class CreateGlobalCompositionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('global_compositions');
+        Schema::connection('heroesprofile_globals')->dropIfExists('global_compositions');
     }
 }
