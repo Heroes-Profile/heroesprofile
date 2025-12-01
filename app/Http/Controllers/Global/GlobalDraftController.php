@@ -104,7 +104,6 @@ class GlobalDraftController extends GlobalsInputValidationController
 
         $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
             $hero,
-            $gameVersion,
             $gameVersionIDs,
             $gameType,
             $leagueTier,
