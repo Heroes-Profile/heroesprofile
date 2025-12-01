@@ -9776,7 +9776,7 @@ class GlobalHeroStatsTableSeeder extends Seeder
         ];
 
         foreach ($data as $row) {
-            DB::table('global_hero_stats')->insert([
+            DB::connection('heroesprofile_globals')->table('global_hero_stats')->insert([
                 'global_hero_stats_id' => $row[0],
                 'game_version' => $row[1],
                 'game_type' => $row[2],
