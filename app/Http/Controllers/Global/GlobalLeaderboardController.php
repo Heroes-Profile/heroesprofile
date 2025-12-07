@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Global;
 
 use App\Models\BannedAccount;
+use App\Models\BannedLeaderboardAccounts;
 use App\Models\BattlenetAccount;
 use App\Models\HeroesDataTalent;
 use App\Models\Leaderboard;
@@ -129,11 +130,12 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
             $patreonAccounts = BattlenetAccount::has('patreonAccount')->get();
             $bannedAccounts = BannedAccount::get();
+            $bannedLeaderboardAccounts = BannedLeaderboardAccounts::where('season', $season)->get();
             $privateAccounts = BattlenetAccount::where('private', 1)->get();
             $authenticatedUser = Auth::user();
 
             $blizzIDRegionMapping = [];
-            $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber, $patreonAccounts, &$blizzIDRegionMapping, $tierrank, $bannedAccounts, $privateAccounts, $authenticatedUser) {
+            $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber, $patreonAccounts, &$blizzIDRegionMapping, $tierrank, $bannedAccounts, $bannedLeaderboardAccounts, $privateAccounts, $authenticatedUser) {
 
                 if (array_key_exists($item->blizz_id.'|'.$item->region, $blizzIDRegionMapping)) {
                     return null;
@@ -147,6 +149,15 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                     return $ban->blizz_id == $item->blizz_id && $ban->region == $item->region;
                 });
                 if ($existingBan) {
+                    $this->rankModifier++;
+
+                    return null;
+                }
+
+                $existingLeaderboardBan = $bannedLeaderboardAccounts->first(function ($ban) use ($item) {
+                    return $ban->blizz_id == $item->blizz_id && $ban->region == $item->region;
+                });
+                if ($existingLeaderboardBan) {
                     $this->rankModifier++;
 
                     return null;
