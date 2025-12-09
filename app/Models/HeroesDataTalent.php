@@ -36,4 +36,12 @@ class HeroesDataTalent extends Model
     {
         return $this->hasOne(GlobalHeroTalentDetails::class, 'talent_id', 'talent');
     }
+
+    /**
+     * Scope to include all talents, including non-playable ones
+     */
+    public function scopeWithAllStatuses($query)
+    {
+        return $query->withoutGlobalScope('playable');
+    }
 }

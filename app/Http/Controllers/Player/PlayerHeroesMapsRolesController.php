@@ -198,7 +198,7 @@ class PlayerHeroesMapsRolesController extends Controller
         $maps = Map::all();
         $maps = $maps->keyBy('map_id');
 
-        $talentData = HeroesDataTalent::all();
+        $talentData = HeroesDataTalent::withAllStatuses()->get();
         $talentData = $talentData->keyBy('talent_id');
 
         $gameTypes = $this->globalDataService->getGameTypeIDtoString();
