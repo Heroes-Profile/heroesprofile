@@ -152,7 +152,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                     ->excludeMirror($mirror)
                     ->filterByRegion($region)
                     ->groupBy('hero', 'win_loss', 'talent', 'global_hero_talents_details.level')
-                    ->with(['talentInfo' => function($query) {
+                    ->with(['talentInfo' => function ($query) {
                         $query->withAllStatuses();
                     }])
                     ->get()
@@ -405,7 +405,6 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                     'total_filter_type' => 0,
                 ];
             }
-
 
             return $topBuilds;
         });
