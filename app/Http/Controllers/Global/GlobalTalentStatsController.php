@@ -152,7 +152,9 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                     ->excludeMirror($mirror)
                     ->filterByRegion($region)
                     ->groupBy('hero', 'win_loss', 'talent', 'global_hero_talents_details.level')
-                    ->with(['talentInfo'])
+                    ->with(['talentInfo' => function ($query) {
+                        $query->withAllStatuses();
+                    }])
                     ->get()
                     ->map(function ($item) {
                         $array = $item->toArray();
@@ -217,7 +219,10 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
                     // Load talent relationships for new data
                     $talentIds = $newData->pluck('talent')->unique();
-                    $talents = \App\Models\HeroesDataTalent::whereIn('talent_id', $talentIds)->get()->keyBy('talent_id');
+                    $talents = \App\Models\HeroesDataTalent::withAllStatuses()
+                        ->whereIn('talent_id', $talentIds)
+                        ->get()
+                        ->keyBy('talent_id');
 
                     $newData = $newData->map(function ($item) use ($talents) {
                         $item['talentInfo'] = $talents[$item['talent']] ?? null;
@@ -404,7 +409,9 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             return $topBuilds;
         });
 
-        $talentData = HeroesDataTalent::where('hero_name', $heroModel->name)->get();
+        $talentData = HeroesDataTalent::withAllStatuses()
+            ->where('hero_name', $heroModel->name)
+            ->get();
         $talentData = $talentData->keyBy('talent_id');
 
         $heroData = $this->globalDataService->getHeroes();
