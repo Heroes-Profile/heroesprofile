@@ -142,36 +142,36 @@ s<template>
           </thead>
           <tbody>
             <tr v-if="partydata.double" v-for="row in partydata.double" :key="(row.ally_combo + '|' + row.enemy_combo)">
-              <td class="py-2 px-3 w-[35%]">
-                <div class="flex flex-wrap py max-md:flex-col max-md:items-start">
+              <td class="py-2 md:px-3 md:w-[35%]">
+                <div class="flex flex-wrap max-md:flex-col max-md:items-start py">
                   <div class="flex-1">
                     {{ row.stack_size_name }}
                   </div>
-                  <div class="md:mx-10flex-1">
-                    <span class="flex" v-if="row.stack_size_name == '5 Solo'">
+                  <div class="md:mx-10 flex-1">
+                    <span class="flex max-md:flex-col" v-if="row.stack_size_name == '5 Solo'">
                       <div class="stack-wrapper "><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
                     </span>
-                    <span class="flex" v-if="row.stack_size_name == '1 Double, 3 Solo'">
+                    <span class="flex max-md:flex-col" v-if="row.stack_size_name == '1 Double, 3 Solo'">
                       <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
                     </span>
 
-                    <span class="flex" v-if="row.stack_size_name == '2 Double, 1 Solo'">
+                    <span class="flex max-md:flex-col" v-if="row.stack_size_name == '2 Double, 1 Solo'">
                       <div class="stack-wrapper "><div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
                     </span>
 
-                    <span class="flex" v-if="row.stack_size_name == '1 Triple, 2 Solo'">
+                    <span class="flex max-md:flex-col" v-if="row.stack_size_name == '1 Triple, 2 Solo'">
                       <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div><div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
                     </span>
 
-                    <span class="flex" v-if="row.stack_size_name == '1 Triple, 1 Double'">
+                    <span class="flex max-md:flex-col" v-if="row.stack_size_name == '1 Triple, 1 Double'">
                       <div class="stack-wrapper "><div class="stack-single stack-triple"><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></div> <div class="stack-single stack-double"><i class="fas fa-user double"></i><i class="fas fa-user double"></i></div></div>
                     </span>
 
-                    <span class="flex" v-if="row.stack_size_name == '1 Quad, 1 Solo'">
+                    <span class="flex max-md:flex-col" v-if="row.stack_size_name == '1 Quad, 1 Solo'">
                       <div class="stack-wrapper "><div class="stack-single stack-quad"><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i><i class="fas fa-user quadruple"></i></div> <div class="stack-single stack-solo"><i class="fas fa-user solo"></i></div></div>
                     </span>
 
-                    <span class="flex" v-if="row.stack_size_name == '1 team of 5'">
+                    <span class="flex max-md:flex-col" v-if="row.stack_size_name == '1 team of 5'">
                       <div class="stack-wrapper "><div class="stack-single stack-quint"><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i><i class="fas fa-user quintuple"></i></div></div>
                     </span>
                   </div>
