@@ -198,7 +198,7 @@ class PlayerMatchHistory extends Controller
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
-        $talentData = HeroesDataTalent::all();
+        $talentData = HeroesDataTalent::withAllStatuses()->get();
         $talentData = $talentData->keyBy('talent_id');
 
         $maps = Map::all();

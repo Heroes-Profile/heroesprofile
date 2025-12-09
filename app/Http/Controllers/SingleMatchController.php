@@ -248,7 +248,7 @@ class SingleMatchController extends Controller
             // ->toSql();
             ->get();
 
-        $talentData = HeroesDataTalent::all();
+        $talentData = HeroesDataTalent::withAllStatuses()->get();
         $talentData = $talentData->keyBy('talent_id');
 
         $heroData = $this->globalDataService->getHeroes();
