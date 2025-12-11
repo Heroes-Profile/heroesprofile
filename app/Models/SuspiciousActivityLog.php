@@ -16,4 +16,3 @@ class SuspiciousActivityLog extends Model
 
     protected $fillable = ['ip', 'user_agent', 'path', 'reason'];
 }
-

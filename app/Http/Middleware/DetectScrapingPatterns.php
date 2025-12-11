@@ -44,7 +44,7 @@ class DetectScrapingPatterns
         // Check for scraping patterns
         if ($this->detectScrapingPattern($ip, $path)) {
             $this->logSuspiciousActivity($ip, $userAgent, $path, 'Scraping pattern detected');
-            
+
             // Auto-ban disabled for testing - reviewing logs first
             // TODO: Enable auto-banning after reviewing logs and confirming detection accuracy
             /*
@@ -71,16 +71,16 @@ class DetectScrapingPatterns
         // Check for malformed patterns (not version numbers, which change over time)
         $suspiciousPatterns = [
             // Claims to be Mozilla but missing browser engine indicators
-            function($ua) {
-                return stripos($ua, 'Mozilla/5.0') !== false && 
-                       !preg_match('/AppleWebKit|Gecko|Chrome|Safari|Firefox|Edge|Opera/i', $ua);
+            function ($ua) {
+                return stripos($ua, 'Mozilla/5.0') !== false &&
+                       ! preg_match('/AppleWebKit|Gecko|Chrome|Safari|Firefox|Edge|Opera/i', $ua);
             },
             // Malformed version strings (e.g., "Version/." or "Version//")
-            function($ua) {
+            function ($ua) {
                 return preg_match('/Version\/[^0-9]|Version\/\/|Chrome\/[^0-9]|Firefox\/[^0-9]/i', $ua);
             },
             // Suspiciously short or generic user agents
-            function($ua) {
+            function ($ua) {
                 return strlen($ua) < 20 && stripos($ua, 'bot') === false;
             },
         ];
@@ -123,7 +123,7 @@ class DetectScrapingPatterns
         $patternGroups = [];
         foreach ($patternData as $entry) {
             $pattern = $entry['pattern'];
-            if (!isset($patternGroups[$pattern])) {
+            if (! isset($patternGroups[$pattern])) {
                 $patternGroups[$pattern] = [];
             }
             $patternGroups[$pattern][] = $entry;
@@ -135,6 +135,7 @@ class DetectScrapingPatterns
                 // Check if requests are sequential/patterned (not random)
                 if ($this->isSequentialPattern($entries)) {
                     Cache::put($cacheKey, $patternData, now()->addMinutes($this->timeWindowMinutes));
+
                     return true;
                 }
             }
@@ -155,8 +156,10 @@ class DetectScrapingPatterns
         if (count($parts) > 1) {
             // Remove last segment to get pattern
             array_pop($parts);
-            return implode('/', $parts) . '/';
+
+            return implode('/', $parts).'/';
         }
+
         return $path;
     }
 
@@ -229,7 +232,7 @@ class DetectScrapingPatterns
         // Check if segments are mostly in alphabetical order
         $sorted = $lastSegments;
         sort($sorted);
-        
+
         // Count how many are in order
         $inOrder = 0;
         for ($i = 0; $i < count($lastSegments); $i++) {
@@ -255,7 +258,7 @@ class DetectScrapingPatterns
         $numbers = [];
         foreach ($paths as $path) {
             if (preg_match('/\d+/', $path, $matches)) {
-                $numbers[] = (int)$matches[0];
+                $numbers[] = (int) $matches[0];
             }
         }
 
@@ -303,8 +306,10 @@ class DetectScrapingPatterns
             $forwardedFor = $request->header('X-Forwarded-For');
             if (strpos($forwardedFor, ',') !== false) {
                 $ips = explode(',', $forwardedFor);
+
                 return trim($ips[0]);
             }
+
             return $forwardedFor;
         }
 
@@ -315,4 +320,3 @@ class DetectScrapingPatterns
         return $request->ip();
     }
 }
-
