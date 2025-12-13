@@ -43,7 +43,7 @@
                         </div>
                     </div>
 
-                    <a class="  nav-item" href="/Global/Leaderboard">Leaderboards</a>
+                    <!--<a class="  nav-item" href="/Global/Leaderboard">Leaderboards</a>-->
 
                     <div class="relative group inline-block nav-item">
                         <a class=" cursor-pointer">Tools</a>
