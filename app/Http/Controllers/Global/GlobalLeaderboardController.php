@@ -46,6 +46,13 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
         ]);
     }
 
+    public function showRemoved(Request $request)
+    {
+        return view('Global.Leaderboard.globalLeaderboardRemoved')->with([
+            'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
+        ]);
+    }
+
     public function getLeaderboardData(Request $request)
     {
         // return response()->json($request->all());
