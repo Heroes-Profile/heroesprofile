@@ -28,8 +28,12 @@
                   <li>Do not turn the uploader on and off, as this results in behavior that looks like replay pruning and may cause a review or account to be flagged</li>
                 </ul>
                 
+                <p class="text-sm italic mb-4">
+                  Our zero tolerance process means player accounts will be banned from the site.  The data will no longer be viewable or accessible. Violations will result in irreversible action.
+                </p>
+                
                 <div class="mb-4">
-                  <p class="font-semibold mb-2">Automatic Uploader Recommendations:</p>
+                  <p class="font-semibold mb-2">Automatic Uploader Recommendation:</p>
                   <p class="mb-3">
                     Keep the uploader running continuously throughout your playtime.
                   </p>
