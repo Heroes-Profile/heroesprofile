@@ -25,7 +25,7 @@
                   <li>Do not only upload wins</li>
                   <li>Do not upload losses through excluded uploaders to try and game the system into excluding it</li>
                   <li>Use automatic uploaders to prevent friends/other players from making your account appear to violate these rules</li>
-                  <li>Do not turn the uploader on and off, as this results in behavior that looks like replay pruning and may cause a review or account to be flagged</li>
+                  <li>Do not turn the uploader on and off during playtime between matches, as this results in behavior that looks like replay pruning and may cause a review or account to be flagged</li>
                 </ul>
                 
                 <p class="text-sm italic mb-4">
