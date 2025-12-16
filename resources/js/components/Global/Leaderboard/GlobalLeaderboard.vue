@@ -1,5 +1,9 @@
 <template>
   <div>
+    <div v-if="showPopup" class="modal">
+      <leaderboard-popup @popupclosed="showPopup = false"></leaderboard-popup>
+    </div>
+
     <page-heading :infoText1="infoText1" :heading="'Leaderboard'">
       <template #extraInfo>
         <p class="text-sm max-md:text-sm">
@@ -286,6 +290,7 @@ export default {
       tierrank: null,
       rankchange: false,
       isfiltered: false,
+      showPopup: true,
     }
   },
   created(){   
@@ -301,6 +306,14 @@ export default {
     if(this.urlparameters){
       this.setURLParameters();
     }
+
+    if (typeof localStorage !== 'undefined' && localStorage !== null) {
+        if (localStorage.getItem('leaderboardpopup')) {
+          this.showPopup = false;
+        }
+      } else {
+        this.showPopup = false;
+      }
 
     this.getData();
   },

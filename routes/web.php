@@ -111,8 +111,7 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/Global/Talents/Builder/{hero}', [GlobalTalentBuilderController::class, 'show']);
     Route::get('/Global/Talents/{hero}', [GlobalTalentStatsController::class, 'show']);
 
-    // Route::get('/Global/Leaderboard/', [GlobalLeaderboardController::class, 'show']);
-    Route::get('/Global/Leaderboard/', [GlobalLeaderboardController::class, 'showRemoved']);
+    Route::get('/Global/Leaderboard/', [GlobalLeaderboardController::class, 'show']);
 
     Route::get('/Global/Compositions', [GlobalCompositionsController::class, 'show']);
 

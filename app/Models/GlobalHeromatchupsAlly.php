@@ -10,7 +10,7 @@ class GlobalHeromatchupsAlly extends Model
 
     protected $primaryKey = 'global_hero_matchups_ally_id';
 
-    protected $connection = 'heroesprofile';
+    protected $connection = 'heroesprofile_globals';
 
     public $timestamps = false;
 
@@ -31,7 +31,7 @@ class GlobalHeromatchupsAlly extends Model
 
     public function scopeFilterByLeagueTier($query, $leagueTier)
     {
-        if (! empty($leagueTier)) {
+        if (! is_null($leagueTier)) {
             return $query->whereIn('league_tier', $leagueTier);
         }
 
@@ -40,7 +40,7 @@ class GlobalHeromatchupsAlly extends Model
 
     public function scopeFilterByHeroLeagueTier($query, $heroLeagueTier)
     {
-        if (! empty($heroLeagueTier)) {
+        if (! is_null($heroLeagueTier)) {
             return $query->whereIn('hero_league_tier', $heroLeagueTier);
         }
 
@@ -49,7 +49,7 @@ class GlobalHeromatchupsAlly extends Model
 
     public function scopeFilterByRoleLeagueTier($query, $roleLeagueTier)
     {
-        if (! empty($roleLeagueTier)) {
+        if (! is_null($roleLeagueTier)) {
             return $query->whereIn('role_league_tier', $roleLeagueTier);
         }
 
@@ -58,7 +58,7 @@ class GlobalHeromatchupsAlly extends Model
 
     public function scopeFilterByGameMap($query, $gameMap)
     {
-        if (! empty($gameMap)) {
+        if (! is_null($gameMap)) {
             return $query->whereIn('game_map', $gameMap);
         }
 
@@ -67,7 +67,7 @@ class GlobalHeromatchupsAlly extends Model
 
     public function scopeFilterByHeroLevel($query, $heroLevel)
     {
-        if (! empty($heroLevel)) {
+        if (! is_null($heroLevel)) {
             return $query->whereIn('hero_level', $heroLevel);
         }
 
@@ -92,7 +92,7 @@ class GlobalHeromatchupsAlly extends Model
 
     public function scopeFilterByRegion($query, $region)
     {
-        if (! empty($region)) {
+        if (! is_null($region)) {
             return $query->whereIn('region', $region);
         }
 

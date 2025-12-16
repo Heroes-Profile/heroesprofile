@@ -20,7 +20,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [
@@ -39,7 +39,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
             $validator = Validator::make(['hero' => $hero], $validationRules);
 
             if ($validator->fails()) {
-                if (env('Production')) {
+                if (config('app.env') === 'production') {
                     return \Redirect::to('/');
                 } else {
                     return [

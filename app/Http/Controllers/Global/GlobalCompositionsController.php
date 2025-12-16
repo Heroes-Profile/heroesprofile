@@ -20,7 +20,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         $validator = Validator::make($request->all(), $validationRules);
 
         if ($validator->fails()) {
-            if (env('Production')) {
+            if (config('app.env') === 'production') {
                 return \Redirect::to('/');
             } else {
                 return [
