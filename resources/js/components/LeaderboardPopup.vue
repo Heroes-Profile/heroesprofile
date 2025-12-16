@@ -82,6 +82,12 @@ export default {
   created(){
   },
   mounted() {
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+  },
+  beforeUnmount() {
+    // Restore body scroll when modal is closed
+    document.body.style.overflow = '';
   },
   computed: {
   },
@@ -102,30 +108,35 @@ export default {
 
 <style scoped>
   .modal-mask {
-    position: fixed;
+    position: absolute;
     z-index: 9998;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;
+    height: 100vh;
     background-color: rgba(0, 0, 0, 0.9);
-    display: table;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     transition: opacity 0.3s ease;
-}
+    overflow-y: auto;
+  }
 
 .modal-wrapper {
-  display: table-cell;
-  vertical-align: middle;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  min-height: 100%;
 }
 
 .modal-container {
-  
   margin: 0px auto;
-  
-  
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
-  
 }
 
 .modal-header h3 {
