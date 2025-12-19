@@ -36,3 +36,5 @@ class CreateSuspiciousActivityLogTable extends Migration
         Schema::dropIfExists('heroesprofile_logs.suspicious_activity_log');
     }
 }
+
+
