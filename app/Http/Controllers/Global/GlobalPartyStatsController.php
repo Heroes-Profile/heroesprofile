@@ -8,7 +8,6 @@ use App\Rules\HeroInputValidation;
 use App\Rules\PartyCombinationRule;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalPartyStatsController extends GlobalsInputValidationController
@@ -69,6 +68,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
 
         $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
         $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
         $leagueTier = $request['league_tier'];
         $heroLeagueTier = $request['hero_league_tier'];
@@ -82,7 +82,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
         $teamoneparty = $request['teamoneparty'];
         $teamtwoparty = $request['teamtwoparty'];
 
-        $cacheKey = 'GlobalPartyStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalPartyStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
 
         // return $cacheKey;
 
@@ -90,7 +90,8 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
             Cache::store('database')->forget($cacheKey);
         }
 
-        $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
+        $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
+            $gameVersionIDs,
             $gameType,
             $leagueTier,
             $heroLeagueTier,
@@ -103,121 +104,28 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
             $teamoneparty,
             $teamtwoparty
         ) {
-            // Split game versions by ID (ID >= 250 goes to new table)
-            [$oldTableVersions, $newTableVersions] = $this->splitGameVersionsByPatch($gameVersion, 250);
 
-            $allData = collect();
-
-            // Query old table if there are versions with ID < 250
-            if (! empty($oldTableVersions)) {
-                $oldData = GlobalHeroStackSize::query()
-                    ->select('team_ally_stack_value', 'team_enemy_stack_value')
-                    ->selectRaw('SUM(games_played) as games_played')
-                    ->selectRaw('SUM(IF(win_loss = 1, games_played, 0)) AS wins')
-                    ->selectRaw('SUM(IF(win_loss = 0, games_played, 0)) AS losses')
-                    ->filterByGameVersion($oldTableVersions)
-                    ->filterByGameType($gameType)
-                    ->filterByLeagueTier($leagueTier)
-                    ->filterByHeroLeagueTier($heroLeagueTier)
-                    ->filterByRoleLeagueTier($roleLeagueTier)
-                    ->filterByGameMap($gameMap)
-                    ->filterByHeroLevel($heroLevel)
-                    ->excludeMirror($mirror)
-                    ->filterByRegion($region)
-                    ->filterByHero($hero)
-                    ->filterByAllyStackSize($teamoneparty)
-                    ->filterByEnemyStackSize($teamtwoparty)
-                    ->groupBy('team_ally_stack_value', 'team_enemy_stack_value')
-                    ->get()
-                    ->map(function ($item) {
-                        return $item->toArray();
-                    });
-
-                $allData = $allData->merge($oldData);
-            }
-
-            // Query new table if there are versions with ID >= 250
-            if (! empty($newTableVersions)) {
-                $newTableVersionIds = SeasonGameVersion::whereIn('game_version', $newTableVersions)
-                    ->pluck('id')
-                    ->toArray();
-
-                if (! empty($newTableVersionIds)) {
-                    $newData = DB::connection('heroesprofile')
-                        ->table('heroesprofile_globals.global_hero_stack_size as global_hero_stack_size')
-                        ->select('global_hero_stack_size.team_ally_stack_value', 'global_hero_stack_size.team_enemy_stack_value')
-                        ->selectRaw('SUM(global_hero_stack_size.games_played) as games_played')
-                        ->selectRaw('SUM(IF(global_hero_stack_size.win_loss = 1, global_hero_stack_size.games_played, 0)) AS wins')
-                        ->selectRaw('SUM(IF(global_hero_stack_size.win_loss = 0, global_hero_stack_size.games_played, 0)) AS losses')
-                        ->whereIn('global_hero_stack_size.game_version', $newTableVersionIds)
-                        ->whereIn('global_hero_stack_size.game_type', $gameType)
-                        ->when($leagueTier !== null && ! empty($leagueTier), function ($query) use ($leagueTier) {
-                            return $query->whereIn('global_hero_stack_size.league_tier', $leagueTier);
-                        })
-                        ->when($heroLeagueTier !== null && ! empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
-                            return $query->whereIn('global_hero_stack_size.hero_league_tier', $heroLeagueTier);
-                        })
-                        ->when($roleLeagueTier !== null && ! empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
-                            return $query->whereIn('global_hero_stack_size.role_league_tier', $roleLeagueTier);
-                        })
-                        ->when($gameMap !== null && ! empty($gameMap), function ($query) use ($gameMap) {
-                            return $query->whereIn('global_hero_stack_size.game_map', $gameMap);
-                        })
-                        ->when($heroLevel !== null && ! empty($heroLevel), function ($query) use ($heroLevel) {
-                            return $query->whereIn('global_hero_stack_size.hero_level', $heroLevel);
-                        })
-                        ->when($mirror == 1, function ($query) {
-                            return $query->whereIn('global_hero_stack_size.mirror', [0, 1]);
-                        }, function ($query) {
-                            return $query->where('global_hero_stack_size.mirror', 0);
-                        })
-                        ->when($region !== null && ! empty($region), function ($query) use ($region) {
-                            return $query->whereIn('global_hero_stack_size.region', $region);
-                        })
-                        ->when($hero !== null, function ($query) use ($hero) {
-                            return $query->where('global_hero_stack_size.hero', $hero);
-                        })
-                        ->when($teamoneparty !== null && ! empty($teamoneparty), function ($query) use ($teamoneparty) {
-                            return $query->where('global_hero_stack_size.team_ally_stack_value', $teamoneparty);
-                        })
-                        ->when($teamtwoparty !== null && ! empty($teamtwoparty), function ($query) use ($teamtwoparty) {
-                            return $query->where('global_hero_stack_size.team_enemy_stack_value', $teamtwoparty);
-                        })
-                        ->groupBy('global_hero_stack_size.team_ally_stack_value', 'global_hero_stack_size.team_enemy_stack_value')
-                        ->orderBy('global_hero_stack_size.team_ally_stack_value', 'asc')
-                        ->get()
-                        ->map(function ($item) {
-                            return (array) $item;
-                        });
-
-                    $allData = $allData->merge($newData);
-                }
-            }
-
-            // Combine and re-aggregate data from both tables
-            $allData = $allData->map(function ($item) {
-                if (is_object($item)) {
-                    return (array) $item;
-                }
-
-                return $item;
-            })->filter(function ($item) {
-                return is_array($item) && isset($item['team_ally_stack_value']) && isset($item['team_enemy_stack_value']);
-            });
-
-            $data = $allData->groupBy(function ($item) {
-                return $item['team_ally_stack_value'].'_'.$item['team_enemy_stack_value'];
-            })->map(function ($group) {
-                $first = $group->first();
-
-                return (object) [
-                    'team_ally_stack_value' => $first['team_ally_stack_value'],
-                    'team_enemy_stack_value' => $first['team_enemy_stack_value'],
-                    'games_played' => $group->sum('games_played'),
-                    'wins' => $group->sum('wins'),
-                    'losses' => $group->sum('losses'),
-                ];
-            })->values();
+            $data = GlobalHeroStackSize::query()
+                ->select('team_ally_stack_value', 'team_enemy_stack_value')
+                ->selectRaw('SUM(games_played) as games_played')
+                ->selectRaw('SUM(IF(win_loss = 1, games_played, 0)) AS wins')
+                ->selectRaw('SUM(IF(win_loss = 0, games_played, 0)) AS losses')
+                ->filterByGameVersion($gameVersionIDs)
+                ->filterByGameType($gameType)
+                ->filterByLeagueTier($leagueTier)
+                ->filterByHeroLeagueTier($heroLeagueTier)
+                ->filterByRoleLeagueTier($roleLeagueTier)
+                ->filterByGameMap($gameMap)
+                ->filterByHeroLevel($heroLevel)
+                ->excludeMirror($mirror)
+                ->filterByRegion($region)
+                ->filterByHero($hero)
+                ->filterByAllyStackSize($teamoneparty)
+                ->filterByEnemyStackSize($teamtwoparty)
+                ->groupBy('team_ally_stack_value', 'team_enemy_stack_value')
+                ->orderBy('team_ally_stack_value', 'asc')
+                // ->toSql();
+                ->get();
 
             $returnData = [];
             $total = 0;

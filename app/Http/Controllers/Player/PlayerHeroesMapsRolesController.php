@@ -902,7 +902,9 @@ class PlayerHeroesMapsRolesController extends Controller
 
                 return $query;
             })
-            ->where('hero', $hero)
+            ->when(! is_null($hero), function ($query) use ($hero) {
+                return $query->where('hero', $hero);
+            })
             ->where($stat, $value)
             ->select('replay.replayID')
             // ->toSql();
