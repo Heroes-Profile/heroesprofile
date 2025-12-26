@@ -38,3 +38,4 @@ class CreateSuspiciousActivityLogTable extends Migration
 }
 
 
+
