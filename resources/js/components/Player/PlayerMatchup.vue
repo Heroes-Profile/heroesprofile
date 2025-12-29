@@ -46,8 +46,8 @@
       </thead>
       <tbody>
         <tr v-for="(row, index) in sortedData" :key="index">
-          <td class="py-2 px-3 flex items-center gap-1">
-            <a class="link" :href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Hero/' + row.hero.name">
+          <td class="py-2 px-3">
+            <a class="link flex items-center gap-1" :href="'/Player/' + battletag + '/' + blizzid + '/' + region + '/Hero/' + row.hero.name">
               <hero-image-wrapper :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
             </a>
           </td>
