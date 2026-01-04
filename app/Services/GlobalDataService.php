@@ -456,6 +456,7 @@ class GlobalDataService
             ->orderBy('major', 'DESC')
             ->orderBy('minor', 'DESC')
             ->orderBy('patch', 'DESC')
+            ->orderBy('build', 'DESC')
             ->get()
             ->map(function ($item) {
                 return ['code' => $item->game_version, 'name' => $item->game_version];
@@ -468,12 +469,17 @@ class GlobalDataService
             ->orderBy('major', 'DESC')
             ->orderBy('minor', 'DESC')
             ->orderBy('patch', 'DESC')
+            ->orderBy('build', 'DESC')
             ->get()
             ->groupBy(function ($date) {
                 return substr($date->game_version, 0, 4);  // group by years (first 4 characters)
             })
             ->map(function ($grouped) {
                 return $grouped->first();  // pick the first item from each group
+            })
+            ->sortByDesc(function ($item) {
+                // Sort by numeric version components to ensure correct ordering
+                return [$item->major, $item->minor, $item->patch, $item->build];
             })
             ->values()  // reset the array keys
             ->map(function ($item) {
@@ -487,6 +493,7 @@ class GlobalDataService
             ->orderBy('major', 'DESC')
             ->orderBy('minor', 'DESC')
             ->orderBy('patch', 'DESC')
+            ->orderBy('build', 'DESC')
             ->get()
             ->groupBy(function ($date) {
                 // Group by major.minor.patch (first three segments)
@@ -496,6 +503,10 @@ class GlobalDataService
             })
             ->map(function ($grouped) {
                 return $grouped->first(); // Pick the first item from each group
+            })
+            ->sortByDesc(function ($item) {
+                // Sort by numeric version components to ensure correct ordering
+                return [$item->major, $item->minor, $item->patch, $item->build];
             })
             ->values()  // Reset the array keys
             ->map(function ($item) {

@@ -196,7 +196,9 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
                     ->filterByLeagueTier($leagueTier)
                     ->filterByGameMap($gameMap)
                     ->groupBy('win_loss', 'level', 'talent')
-                    ->with(['talentInfo'])
+                    ->with(['talentInfo' => function ($query) {
+                        $query->withAllStatuses();
+                    }])
                     ->get()
                     ->map(function ($item) {
                         $array = $item->toArray();
@@ -236,7 +238,10 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
 
                 // Load talent relationships for new data
                 $talentIds = $newData->pluck('talent')->unique();
-                $talents = \App\Models\HeroesDataTalent::whereIn('talent_id', $talentIds)->get()->keyBy('talent_id');
+                $talents = \App\Models\HeroesDataTalent::withAllStatuses()
+                    ->whereIn('talent_id', $talentIds)
+                    ->get()
+                    ->keyBy('talent_id');
 
                 $newData = $newData->map(function ($item) use ($talents) {
                     $item['talentInfo'] = $talents[$item['talent']] ?? null;
@@ -296,7 +301,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
                         'win_rate' => $winRate,
                         'level' => $firstItem['level'],
                         'talent' => $firstItem['talent'],
-                        'sort' => $talentInfo['sort'],
+                        'sort' => isset($talentInfo['sort']) ? $talentInfo['sort'] : null,
                         'talentInfo' => $talentInfo,
                     ];
                 })->sortBy('sort')->values()->toArray();
