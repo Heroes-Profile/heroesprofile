@@ -2,12 +2,20 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\WhitelistedIPsService;
 use Closure;
 
 class CheckUserAgent
 {
     public function handle($request, Closure $next)
     {
+        // Check if IP is whitelisted - if so, bypass user agent checks
+        // Use shared IP extraction method for consistency
+        $ip = \App\Services\WhitelistedIPsService::getClientIp($request);
+        if (WhitelistedIPsService::isWhitelisted($ip)) {
+            return $next($request);
+        }
+
         $userAgent = $request->header('User-Agent');
         $blockedUserAgents = [
             // Chinese search engines and scrapers

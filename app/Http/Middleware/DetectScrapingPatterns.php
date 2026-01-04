@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\BannedIPs;
 use App\Models\SuspiciousActivityLog;
+use App\Services\WhitelistedIPsService;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -31,7 +32,14 @@ class DetectScrapingPatterns
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $ip = $this->getClientIp($request);
+        // Use shared IP extraction method for consistency
+        $ip = WhitelistedIPsService::getClientIp($request);
+
+        // Check if IP is whitelisted - if so, bypass all scraping pattern detection
+        if (WhitelistedIPsService::isWhitelisted($ip)) {
+            return $next($request);
+        }
+
         $userAgent = $request->header('User-Agent', '');
         $path = $request->path();
 
@@ -295,28 +303,5 @@ class DetectScrapingPatterns
         } catch (\Exception $e) {
             // Silently fail if database insert fails
         }
-    }
-
-    /**
-     * Extract client IP address handling proxies
-     */
-    protected function getClientIp(Request $request): string
-    {
-        if ($request->hasHeader('X-Forwarded-For')) {
-            $forwardedFor = $request->header('X-Forwarded-For');
-            if (strpos($forwardedFor, ',') !== false) {
-                $ips = explode(',', $forwardedFor);
-
-                return trim($ips[0]);
-            }
-
-            return $forwardedFor;
-        }
-
-        if ($request->hasHeader('X-Real-IP')) {
-            return $request->header('X-Real-IP');
-        }
-
-        return $request->ip();
     }
 }

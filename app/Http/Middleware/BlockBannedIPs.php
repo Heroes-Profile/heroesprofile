@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\BannedIPs;
+use App\Services\WhitelistedIPsService;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,8 +18,13 @@ class BlockBannedIPs
     public function handle(Request $request, Closure $next): Response
     {
         try {
-            // Extract IP address using the same logic as LogIPAndUserAgent middleware
-            $ip = $this->getClientIp($request);
+            // Extract IP address using shared method for consistency
+            $ip = WhitelistedIPsService::getClientIp($request);
+
+            // Check if IP is whitelisted - if so, bypass all blocks
+            if (WhitelistedIPsService::isWhitelisted($ip)) {
+                return $next($request);
+            }
 
             // Check if IP is banned
             if (BannedIPs::isBanned($ip)) {
@@ -37,31 +43,5 @@ class BlockBannedIPs
         }
 
         return $next($request);
-    }
-
-    /**
-     * Extract client IP address handling proxies
-     */
-    private function getClientIp(Request $request): string
-    {
-        // Check for forwarded IP first (for proxy setups)
-        if ($request->hasHeader('X-Forwarded-For')) {
-            $forwardedFor = $request->header('X-Forwarded-For');
-            if (strpos($forwardedFor, ',') !== false) {
-                $ips = explode(',', $forwardedFor);
-
-                return trim($ips[0]);
-            }
-
-            return $forwardedFor;
-        }
-
-        // Check for real IP header
-        if ($request->hasHeader('X-Real-IP')) {
-            return $request->header('X-Real-IP');
-        }
-
-        // Fall back to remote address
-        return $request->ip();
     }
 }
