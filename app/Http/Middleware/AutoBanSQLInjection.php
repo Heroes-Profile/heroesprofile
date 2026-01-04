@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\BannedIPs;
+use App\Services\WhitelistedIPsService;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,7 +33,13 @@ class AutoBanSQLInjection
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $ip = $this->getClientIp($request);
+        // Use shared IP extraction method for consistency
+        $ip = WhitelistedIPsService::getClientIp($request);
+
+        // Check if IP is whitelisted - if so, bypass all SQL injection checks
+        if (WhitelistedIPsService::isWhitelisted($ip)) {
+            return $next($request);
+        }
 
         // Check URL path and route parameters for SQL injection
         $pathToCheck = $request->path();
@@ -97,28 +104,5 @@ class AutoBanSQLInjection
         return response()->json([
             'error' => 'Access denied',
         ], 403);
-    }
-
-    /**
-     * Extract client IP address
-     */
-    protected function getClientIp(Request $request): string
-    {
-        if ($request->hasHeader('X-Forwarded-For')) {
-            $forwardedFor = $request->header('X-Forwarded-For');
-            if (strpos($forwardedFor, ',') !== false) {
-                $ips = explode(',', $forwardedFor);
-
-                return trim($ips[0]);
-            }
-
-            return $forwardedFor;
-        }
-
-        if ($request->hasHeader('X-Real-IP')) {
-            return $request->header('X-Real-IP');
-        }
-
-        return $request->ip();
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\BattlenetAccount;
 use App\Models\IpLogging;
+use App\Services\WhitelistedIPsService;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -25,17 +26,8 @@ class LogIPAndUserAgent
 
         try {
             Cookie::queue(Cookie::forget('additional-battletags'));
-            $ip = '';
-            if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER) && ! empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                if (strpos($_SERVER['HTTP_X_FORWARDED_FOR'], ',') !== false) {
-                    $addr = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-                    $ip = trim($addr[0]);
-                } else {
-                    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-                }
-            } else {
-                $ip = $_SERVER['REMOTE_ADDR'];
-            }
+            // Use shared IP extraction method for consistency across all middleware
+            $ip = WhitelistedIPsService::getClientIp($request);
 
             $page = substr($request->path(), 0, 500);
             $userAgent = $request->header('User-Agent');
