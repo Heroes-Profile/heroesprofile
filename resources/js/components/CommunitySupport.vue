@@ -26,7 +26,7 @@
    <div class="max-w-[900px] mx-auto">
     
     <p class="mb-4">
-      Our funding goal is $700 per month, which covers server costs.
+      Our funding goal is $800 per month, which covers server costs.
       As of now, we have raised ${{ patreonearnings }} per month through Patreon subscriptions.
     </p>
   
@@ -35,7 +35,7 @@
     <div class="progress-container">
       <div class="progress-bar" :style="{ width: progressPercent + '%' }"></div>
     </div>
-    <p class="mx-auto text-center text-sm italic">Raised: ${{ patreonearnings }} of $700</p>
+    <p class="mx-auto text-center text-sm italic">Raised: ${{ patreonearnings }} of $800</p>
   </div>
   </div>
 </template>
@@ -51,7 +51,7 @@ export default {
   },
   computed: {
     progressPercent() {
-      const goal = 700;
+      const goal = 800;
       const percent = (this.patreonearnings / goal) * 100;
       return Math.min(percent, 100).toFixed(2);
     },
