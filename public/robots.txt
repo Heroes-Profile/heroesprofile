@@ -1,3 +1,4 @@
+# Block bad bots
 User-agent: AhrefsBot
 Disallow: /
 
@@ -10,10 +11,12 @@ Disallow: /
 User-agent: YandexBot
 Disallow: /
 
+# Only allow search engines to crawl home page, Global pages (including leaderboards), and specific player profiles
 User-agent: *
 Disallow: /
-
 Allow: /$
 Allow: /Global/
+Allow: /Global/Leaderboard/
+Allow: /Player/Zemill/67280/1/
 
 Sitemap: https://www.heroesprofile.com/sitemap.xml

@@ -7,8 +7,8 @@
 @endif
 
 
-@section('meta_keywords', 'Talent Builder, Talent Builds, Hero Talents, Custom Builds')
-@section('meta_description', 'Build and customize your own hero talent builds. Analyze talent performance with real data to optimize your hero builds for success.')
+@section('meta_keywords', 'heroes of the storm talent builder, hots talent builder, talent builder, talent builds, hero talents, custom builds, heroes of the storm builds')
+@section('meta_description', 'Heroes of the Storm talent builder and custom build creator. Build and customize your own hero talent builds. Analyze talent performance with real data to optimize your hero builds for success on Heroes Profile.')
 @section('content')
   <global-talents-builder 
     :heroes="{{ json_encode($heroes) }}" 

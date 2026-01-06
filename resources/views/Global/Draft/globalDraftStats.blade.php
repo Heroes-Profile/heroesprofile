@@ -6,8 +6,8 @@
   @section('title', 'Global Draft Stats')
 @endif
 
-@section('meta_keywords', 'Draft Stats, Hero Bans, Hero Picks, Draft Order, Drafting Data')
-@section('meta_description', 'Explore global draft stats. Analyze hero bans, picks, draft order, and drafting data to strategize your games effectively. Filter and analyze hero data to make informed decisions.')
+@section('meta_keywords', 'heroes of the storm draft, hots draft, draft stats, hero bans, hero picks, draft order, drafting data, heroes of the storm drafting')
+@section('meta_description', 'Heroes of the Storm draft statistics and strategy. Analyze hero bans, picks, draft order, and drafting data to strategize your games effectively. Filter and analyze draft data to make informed decisions on Heroes Profile.')
 
 @section('content')
   <global-draft-stats 

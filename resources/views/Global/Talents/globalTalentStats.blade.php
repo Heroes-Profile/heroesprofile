@@ -6,8 +6,8 @@
   @section('title', 'Talent Stats & Builds')
 @endif
 
-@section('meta_keywords', 'Talent Stats, Talent Win Rates, Talent Builds, Hero Talents')
-@section('meta_description', 'Explore talent stats for heroes, including talent win rates and talent builds. Analyze which talents perform well and customize your hero builds for success.')
+@section('meta_keywords', 'heroes of the storm talents, hots talents, talent stats, talent win rates, talent builds, hero talents, heroes of the storm builds')
+@section('meta_description', 'Heroes of the Storm talent statistics and builds. Explore talent stats for heroes, including talent win rates and talent builds. Analyze which talents perform well and customize your hero builds for success on Heroes Profile.')
 @section('content')
   <global-talents-stats 
     :heroes="{{ json_encode($heroes) }}" 

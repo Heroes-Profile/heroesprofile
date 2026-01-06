@@ -1,8 +1,8 @@
 @extends('layouts.app', $bladeGlobals)    
 
 @section('title', 'Global Hero Stats')
-@section('meta_keywords', 'Hero Win Rates, Pick Rate, Ban Rate, Hero Influence, Win Rate Confidence, Hero Performance')
-@section('meta_description', 'Explore global hero win rate statistics, including pick rate, ban rate, hero influence, win rate confidence, and hero performance metrics. Filter and analyze hero data to make informed decisions.')
+@section('meta_keywords', 'heroes of the storm statistics, heroes of the storm stats, hots statistics, hero win rates, pick rate, ban rate, hero influence, win rate confidence, hero performance')
+@section('meta_description', 'Comprehensive Heroes of the Storm hero statistics and analytics. Explore global hero win rates, pick rates, ban rates, hero influence, and performance metrics. Filter and analyze Heroes of the Storm hero statistics to make informed decisions on Heroes Profile.')
 
 @section('content')
   <global-hero-stats 
