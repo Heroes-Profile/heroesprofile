@@ -1,8 +1,8 @@
 @extends('layouts.app', $bladeGlobals)    
 
 @section('title', 'Global Composition Stats')
-@section('meta_keywords', 'Heroes Profile, Composition Stats, Hero Roles, Hero Compositions, Win Rates, Compositions Data')
-@section('meta_description', 'Explore global composition stats on Heroes Profile. Analyze hero roles and compositions, view win rates, and discover the most effective hero combinations.  Filter and analyze hero data to make informed decisions.')
+@section('meta_keywords', 'heroes of the storm compositions, hots compositions, hero compositions, composition stats, hero roles, win rates, team compositions, heroes of the storm team comps')
+@section('meta_description', 'Heroes of the Storm composition statistics and team builds. Analyze hero roles and compositions, view win rates, and discover the most effective hero combinations. Filter and analyze composition data to make informed decisions on Heroes Profile.')
 
 @section('content')
   <compositions-stats 

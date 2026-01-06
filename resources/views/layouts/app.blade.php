@@ -43,7 +43,19 @@
     <meta name = "keywords" content = "@yield('meta_keywords')" />
     <meta name = "description" content = "@yield('meta_description')" />
 
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="@yield('title') | Heroes Profile">
+    <meta property="og:description" content="@yield('meta_description')">
     <meta property="og:image" content="{{ asset('images/logo/heroesprofilelogo.png') }}">
+    <meta property="og:site_name" content="Heroes Profile">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('title') | Heroes Profile">
+    <meta name="twitter:description" content="@yield('meta_description')">
+    <meta name="twitter:image" content="{{ asset('images/logo/heroesprofilelogo.png') }}">
 
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
