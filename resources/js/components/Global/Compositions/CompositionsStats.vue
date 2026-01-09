@@ -248,7 +248,7 @@ export default {
           league_tier: this.playerrank,
           hero_league_tier: this.herorank,
           role_league_tier: this.rolerank,
-          mirrormatch: this.mirrormatch,
+          mirror: this.mirrormatch,
           minimum_games: this.minimumgames
         }, 
         {
@@ -296,7 +296,7 @@ export default {
           league_tier: this.playerrank,
           hero_league_tier: this.herorank,
           role_league_tier: this.rolerank,
-          mirrormatch: this.mirrormatch,
+          mirror: this.mirrormatch,
           minimum_games: this.minimumgames,
           composition_id: compositionid,
         }, 
