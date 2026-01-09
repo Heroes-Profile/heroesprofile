@@ -227,7 +227,7 @@
             league_tier: this.playerrank,
             hero_league_tier: this.herorank,
             role_league_tier: this.rolerank,
-            mirrormatch: this.mirrormatch,
+            mirror: this.mirrormatch,
           }, 
           {
             cancelToken: this.cancelTalentsTokenSource.token,
@@ -268,7 +268,7 @@
             league_tier: this.playerrank,
             hero_league_tier: this.herorank,
             role_league_tier: this.rolerank,
-            mirrormatch: this.mirrormatch,
+            mirror: this.mirrormatch,
             talentbuildtype: this.talentbuildtype
           }, 
           {
