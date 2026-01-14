@@ -11,7 +11,6 @@ use App\Rules\HeroInputValidation;
 use App\Rules\SelectedTalentInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalTalentBuilderController extends GlobalsInputValidationController
@@ -149,148 +148,78 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
             $level_sixteen,
             $level_twenty,
         ) {
-            // Split game versions by ID (ID >= 250 goes to new table)
-            [$oldTableVersions, $newTableVersions] = $this->splitGameVersionsByPatch($gameVersion, 250);
+            $gameVersionIds = SeasonGameVersion::whereIn('game_version', $gameVersion)
+                ->pluck('id')
+                ->toArray();
 
-            $allData = collect();
-
-            // Query old table
-            if (! empty($oldTableVersions)) {
-                $oldData = GlobalHeroTalents::query()
-                    ->join('talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
-                    ->select('win_loss', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
-                    ->selectRaw('SUM(games_played) AS games_played')
-                    ->filterByGameVersion($oldTableVersions)
-                    ->filterByGameType($gameType)
-                    ->filterByHero($hero)
-                    ->filterByLeagueTier($leagueTier)
-                    ->filterByHeroLeagueTier($heroLeagueTier)
-                    ->filterByRoleLeagueTier($roleLeagueTier)
-                    ->filterByGameMap($gameMap)
-                    ->filterByHeroLevel($heroLevel)
-                    ->filterByRegion($region)
-                    ->when(! is_null($level_one), function ($query) use ($level_one) {
-                        return $query->where('level_one', $level_one);
-                    })
-                    ->when(! is_null($level_four), function ($query) use ($level_four) {
-                        return $query->where('level_four', $level_four);
-                    })
-                    ->when(! is_null($level_seven), function ($query) use ($level_seven) {
-                        return $query->where('level_seven', $level_seven);
-                    })
-                    ->when(! is_null($level_ten), function ($query) use ($level_ten) {
-                        return $query->where('level_ten', $level_ten);
-                    })
-                    ->when(! is_null($level_thirteen), function ($query) use ($level_thirteen) {
-                        return $query->where('level_thirteen', $level_thirteen);
-                    })
-                    ->when(! is_null($level_sixteen), function ($query) use ($level_sixteen) {
-                        return $query->where('level_sixteen', $level_sixteen);
-                    })
-                    ->when(! is_null($level_twenty), function ($query) use ($level_twenty) {
-                        return $query->where('level_twenty', $level_twenty);
-                    })
-                    ->groupBy('win_loss', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
-                    ->get()
-                    ->map(function ($item) {
-                        return $item->toArray();
-                    });
-
-                $allData = $allData->merge($oldData);
-            }
-
-            // Query new table
-            if (! empty($newTableVersions)) {
-                $newTableVersionIds = SeasonGameVersion::whereIn('game_version', $newTableVersions)
-                    ->pluck('id')
-                    ->toArray();
-
-                if (! empty($newTableVersionIds)) {
-                    $newData = DB::connection('heroesprofile')
-                        ->table('heroesprofile_globals.global_hero_talents as global_hero_talents')
-                        ->join('heroesprofile.talent_combinations as talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
-                        ->select('global_hero_talents.win_loss', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
-                        ->selectRaw('SUM(global_hero_talents.games_played) AS games_played')
-                        ->whereIn('global_hero_talents.game_version', $newTableVersionIds)
-                        ->whereIn('global_hero_talents.game_type', $gameType)
-                        ->where('global_hero_talents.hero', $hero)
-                        ->when($leagueTier !== null && ! empty($leagueTier), function ($query) use ($leagueTier) {
-                            return $query->whereIn('global_hero_talents.league_tier', $leagueTier);
-                        })
-                        ->when($heroLeagueTier !== null && ! empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
-                            return $query->whereIn('global_hero_talents.hero_league_tier', $heroLeagueTier);
-                        })
-                        ->when($roleLeagueTier !== null && ! empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
-                            return $query->whereIn('global_hero_talents.role_league_tier', $roleLeagueTier);
-                        })
-                        ->when($gameMap !== null && ! empty($gameMap), function ($query) use ($gameMap) {
-                            return $query->whereIn('global_hero_talents.game_map', $gameMap);
-                        })
-                        ->when($heroLevel !== null && ! empty($heroLevel), function ($query) use ($heroLevel) {
-                            return $query->whereIn('global_hero_talents.hero_level', $heroLevel);
-                        })
-                        ->when($region !== null && ! empty($region), function ($query) use ($region) {
-                            return $query->whereIn('global_hero_talents.region', $region);
-                        })
-                        ->when(! is_null($level_one), function ($query) use ($level_one) {
-                            return $query->where('level_one', $level_one);
-                        })
-                        ->when(! is_null($level_four), function ($query) use ($level_four) {
-                            return $query->where('level_four', $level_four);
-                        })
-                        ->when(! is_null($level_seven), function ($query) use ($level_seven) {
-                            return $query->where('level_seven', $level_seven);
-                        })
-                        ->when(! is_null($level_ten), function ($query) use ($level_ten) {
-                            return $query->where('level_ten', $level_ten);
-                        })
-                        ->when(! is_null($level_thirteen), function ($query) use ($level_thirteen) {
-                            return $query->where('level_thirteen', $level_thirteen);
-                        })
-                        ->when(! is_null($level_sixteen), function ($query) use ($level_sixteen) {
-                            return $query->where('level_sixteen', $level_sixteen);
-                        })
-                        ->when(! is_null($level_twenty), function ($query) use ($level_twenty) {
-                            return $query->where('level_twenty', $level_twenty);
-                        })
-                        ->groupBy('global_hero_talents.win_loss', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
-                        ->get()
-                        ->map(function ($item) {
-                            return (array) $item;
-                        });
-
-                    $allData = $allData->merge($newData);
-                }
-            }
-
-            // Combine and re-aggregate
-            $allData = $allData->map(function ($item) {
-                if (is_object($item)) {
-                    return (array) $item;
-                }
-
-                return $item;
-            })->filter(function ($item) {
-                return is_array($item) && isset($item['win_loss']) && isset($item['level_one']);
-            });
-
-            $data = $allData->groupBy(function ($item) {
-                return $item['win_loss'].'_'.$item['level_one'].'_'.$item['level_four'].'_'.$item['level_seven'].'_'.$item['level_ten'].'_'.$item['level_thirteen'].'_'.$item['level_sixteen'].'_'.$item['level_twenty'];
-            })->map(function ($group) {
-                $first = $group->first();
-
+            if (empty($gameVersionIds)) {
                 return [
-                    'win_loss' => $first['win_loss'],
-                    'level_one' => $first['level_one'],
-                    'level_four' => $first['level_four'],
-                    'level_seven' => $first['level_seven'],
-                    'level_ten' => $first['level_ten'],
-                    'level_thirteen' => $first['level_thirteen'],
-                    'level_sixteen' => $first['level_sixteen'],
-                    'level_twenty' => $first['level_twenty'],
-                    'games_played' => $group->sum('games_played'),
+                    'data' => $this->formatTalentData(HeroesDataTalent::where('hero_name', $hero_name)->orderBy('level', 'ASC')->orderBy('sort', 'ASC')->limit(100)->get(), []),
+                    'buildReturnData' => [
+                        'level_one' => $level_one ? $talentData[$level_one] : null,
+                        'level_four' => $level_four ? $talentData[$level_four] : null,
+                        'level_seven' => $level_seven ? $talentData[$level_seven] : null,
+                        'level_ten' => $level_ten ? $talentData[$level_ten] : null,
+                        'level_thirteen' => $level_thirteen ? $talentData[$level_thirteen] : null,
+                        'level_sixteen' => $level_sixteen ? $talentData[$level_sixteen] : null,
+                        'level_twenty' => $level_twenty ? $talentData[$level_twenty] : null,
+                        'wins' => 0,
+                        'losses' => 0,
+                        'games_played' => 0,
+                        'win_rate' => 0,
+                    ],
                 ];
-            })->values();
+            }
+
+            $data = GlobalHeroTalents::query()
+                ->join('heroesprofile.talent_combinations as talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
+                ->select('global_hero_talents.win_loss', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
+                ->selectRaw('SUM(global_hero_talents.games_played) AS games_played')
+                ->filterByGameVersion($gameVersionIds)
+                ->filterByGameType($gameType)
+                ->filterByHero($hero)
+                ->filterByLeagueTier($leagueTier)
+                ->filterByHeroLeagueTier($heroLeagueTier)
+                ->filterByRoleLeagueTier($roleLeagueTier)
+                ->filterByGameMap($gameMap)
+                ->filterByHeroLevel($heroLevel)
+                ->filterByRegion($region)
+                ->when(! is_null($level_one), function ($query) use ($level_one) {
+                    return $query->where('level_one', $level_one);
+                })
+                ->when(! is_null($level_four), function ($query) use ($level_four) {
+                    return $query->where('level_four', $level_four);
+                })
+                ->when(! is_null($level_seven), function ($query) use ($level_seven) {
+                    return $query->where('level_seven', $level_seven);
+                })
+                ->when(! is_null($level_ten), function ($query) use ($level_ten) {
+                    return $query->where('level_ten', $level_ten);
+                })
+                ->when(! is_null($level_thirteen), function ($query) use ($level_thirteen) {
+                    return $query->where('level_thirteen', $level_thirteen);
+                })
+                ->when(! is_null($level_sixteen), function ($query) use ($level_sixteen) {
+                    return $query->where('level_sixteen', $level_sixteen);
+                })
+                ->when(! is_null($level_twenty), function ($query) use ($level_twenty) {
+                    return $query->where('level_twenty', $level_twenty);
+                })
+                ->groupBy('global_hero_talents.win_loss', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'win_loss' => $item->win_loss,
+                        'level_one' => $item->level_one,
+                        'level_four' => $item->level_four,
+                        'level_seven' => $item->level_seven,
+                        'level_ten' => $item->level_ten,
+                        'level_thirteen' => $item->level_thirteen,
+                        'level_sixteen' => $item->level_sixteen,
+                        'level_twenty' => $item->level_twenty,
+                        'games_played' => $item->games_played,
+                    ];
+                });
 
             $transformedData = [
                 'level_one' => [],
@@ -357,145 +286,51 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
                 }
             }
 
-            $buildReturnData = [
-                'wins' => 0,
-                'losses' => 0,
-            ];
+            $buildsData = GlobalHeroTalents::query()
+                ->join('heroesprofile.talent_combinations as talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
+                ->select('global_hero_talents.win_loss')
+                ->selectRaw('SUM(global_hero_talents.games_played) AS games_played')
+                ->filterByGameVersion($gameVersionIds)
+                ->filterByGameType($gameType)
+                ->filterByHero($hero)
+                ->filterByLeagueTier($leagueTier)
+                ->filterByHeroLeagueTier($heroLeagueTier)
+                ->filterByRoleLeagueTier($roleLeagueTier)
+                ->filterByGameMap($gameMap)
+                ->filterByHeroLevel($heroLevel)
+                ->filterByRegion($region)
+                ->when(! is_null($level_one), function ($query) use ($level_one) {
+                    return $query->where('level_one', $level_one);
+                })
+                ->when(! is_null($level_four), function ($query) use ($level_four) {
+                    return $query->where('level_four', $level_four);
+                })
+                ->when(! is_null($level_seven), function ($query) use ($level_seven) {
+                    return $query->where('level_seven', $level_seven);
+                })
+                ->when(! is_null($level_ten), function ($query) use ($level_ten) {
+                    return $query->where('level_ten', $level_ten);
+                })
+                ->when(! is_null($level_thirteen), function ($query) use ($level_thirteen) {
+                    return $query->where('level_thirteen', $level_thirteen);
+                })
+                ->when(! is_null($level_sixteen), function ($query) use ($level_sixteen) {
+                    return $query->where('level_sixteen', $level_sixteen);
+                })
+                ->when(! is_null($level_twenty), function ($query) use ($level_twenty) {
+                    return $query->where('level_twenty', $level_twenty);
+                })
+                ->groupBy('global_hero_talents.win_loss')
+                ->get()
+                ->map(function ($item) {
+                    return (object) [
+                        'win_loss' => $item->win_loss,
+                        'games_played' => $item->games_played,
+                    ];
+                });
 
-            // Query buildsData - split by version ID
-            $buildsAllData = collect();
-
-            // Query old table for buildsData
-            if (! empty($oldTableVersions)) {
-                $buildsOldData = GlobalHeroTalents::query()
-                    ->join('talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
-                    ->select('win_loss')
-                    ->selectRaw('SUM(games_played) AS games_played')
-                    ->filterByGameVersion($oldTableVersions)
-                    ->filterByGameType($gameType)
-                    ->filterByHero($hero)
-                    ->filterByLeagueTier($leagueTier)
-                    ->filterByHeroLeagueTier($heroLeagueTier)
-                    ->filterByRoleLeagueTier($roleLeagueTier)
-                    ->filterByGameMap($gameMap)
-                    ->filterByHeroLevel($heroLevel)
-                    ->filterByRegion($region)
-                    ->when(! is_null($level_one), function ($query) use ($level_one) {
-                        return $query->where('level_one', $level_one);
-                    })
-                    ->when(! is_null($level_four), function ($query) use ($level_four) {
-                        return $query->where('level_four', $level_four);
-                    })
-                    ->when(! is_null($level_seven), function ($query) use ($level_seven) {
-                        return $query->where('level_seven', $level_seven);
-                    })
-                    ->when(! is_null($level_ten), function ($query) use ($level_ten) {
-                        return $query->where('level_ten', $level_ten);
-                    })
-                    ->when(! is_null($level_thirteen), function ($query) use ($level_thirteen) {
-                        return $query->where('level_thirteen', $level_thirteen);
-                    })
-                    ->when(! is_null($level_sixteen), function ($query) use ($level_sixteen) {
-                        return $query->where('level_sixteen', $level_sixteen);
-                    })
-                    ->when(! is_null($level_twenty), function ($query) use ($level_twenty) {
-                        return $query->where('level_twenty', $level_twenty);
-                    })
-                    ->groupBy('win_loss')
-                    ->get()
-                    ->map(function ($item) {
-                        return $item->toArray();
-                    });
-
-                $buildsAllData = $buildsAllData->merge($buildsOldData);
-            }
-
-            // Query new table for buildsData
-            if (! empty($newTableVersions)) {
-                $newTableVersionIds = SeasonGameVersion::whereIn('game_version', $newTableVersions)
-                    ->pluck('id')
-                    ->toArray();
-
-                if (! empty($newTableVersionIds)) {
-                    $buildsNewData = DB::connection('heroesprofile')
-                        ->table('heroesprofile_globals.global_hero_talents as global_hero_talents')
-                        ->join('heroesprofile.talent_combinations as talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
-                        ->select('global_hero_talents.win_loss')
-                        ->selectRaw('SUM(global_hero_talents.games_played) AS games_played')
-                        ->whereIn('global_hero_talents.game_version', $newTableVersionIds)
-                        ->whereIn('global_hero_talents.game_type', $gameType)
-                        ->where('global_hero_talents.hero', $hero)
-                        ->when($leagueTier !== null && ! empty($leagueTier), function ($query) use ($leagueTier) {
-                            return $query->whereIn('global_hero_talents.league_tier', $leagueTier);
-                        })
-                        ->when($heroLeagueTier !== null && ! empty($heroLeagueTier), function ($query) use ($heroLeagueTier) {
-                            return $query->whereIn('global_hero_talents.hero_league_tier', $heroLeagueTier);
-                        })
-                        ->when($roleLeagueTier !== null && ! empty($roleLeagueTier), function ($query) use ($roleLeagueTier) {
-                            return $query->whereIn('global_hero_talents.role_league_tier', $roleLeagueTier);
-                        })
-                        ->when($gameMap !== null && ! empty($gameMap), function ($query) use ($gameMap) {
-                            return $query->whereIn('global_hero_talents.game_map', $gameMap);
-                        })
-                        ->when($heroLevel !== null && ! empty($heroLevel), function ($query) use ($heroLevel) {
-                            return $query->whereIn('global_hero_talents.hero_level', $heroLevel);
-                        })
-                        ->when($region !== null && ! empty($region), function ($query) use ($region) {
-                            return $query->whereIn('global_hero_talents.region', $region);
-                        })
-                        ->when(! is_null($level_one), function ($query) use ($level_one) {
-                            return $query->where('level_one', $level_one);
-                        })
-                        ->when(! is_null($level_four), function ($query) use ($level_four) {
-                            return $query->where('level_four', $level_four);
-                        })
-                        ->when(! is_null($level_seven), function ($query) use ($level_seven) {
-                            return $query->where('level_seven', $level_seven);
-                        })
-                        ->when(! is_null($level_ten), function ($query) use ($level_ten) {
-                            return $query->where('level_ten', $level_ten);
-                        })
-                        ->when(! is_null($level_thirteen), function ($query) use ($level_thirteen) {
-                            return $query->where('level_thirteen', $level_thirteen);
-                        })
-                        ->when(! is_null($level_sixteen), function ($query) use ($level_sixteen) {
-                            return $query->where('level_sixteen', $level_sixteen);
-                        })
-                        ->when(! is_null($level_twenty), function ($query) use ($level_twenty) {
-                            return $query->where('level_twenty', $level_twenty);
-                        })
-                        ->groupBy('global_hero_talents.win_loss')
-                        ->get()
-                        ->map(function ($item) {
-                            return (array) $item;
-                        });
-
-                    $buildsAllData = $buildsAllData->merge($buildsNewData);
-                }
-            }
-
-            // Combine and re-aggregate buildsData
-            $buildsAllData = $buildsAllData->map(function ($item) {
-                if (is_object($item)) {
-                    return (array) $item;
-                }
-
-                return $item;
-            })->filter(function ($item) {
-                return is_array($item) && isset($item['win_loss']);
-            });
-
-            $buildsData = $buildsAllData->groupBy('win_loss')->map(function ($group) {
-                $first = $group->first();
-
-                return (object) [
-                    'win_loss' => $first['win_loss'],
-                    'games_played' => $group->sum('games_played'),
-                ];
-            })->values();
-
-            $wins = ($buildReturnData['wins'] + $buildsData->where('win_loss', 1)->sum('games_played'));
-            $losses = ($buildReturnData['losses'] + $buildsData->where('win_loss', 0)->sum('games_played'));
+            $wins = $buildsData->where('win_loss', 1)->sum('games_played');
+            $losses = $buildsData->where('win_loss', 0)->sum('games_played');
             $gamesPlayed = $wins + $losses;
             $winRate = $gamesPlayed > 0 ? round(($wins / $gamesPlayed) * 100, 2) : 0;
 

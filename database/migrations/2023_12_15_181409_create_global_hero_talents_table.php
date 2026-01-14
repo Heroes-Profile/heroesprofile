@@ -8,9 +8,9 @@ class CreateGlobalHeroTalentsTable extends Migration
 {
     public function up()
     {
-        Schema::create('global_hero_talents', function (Blueprint $table) {
+        Schema::connection('heroesprofile_globals')->create('global_hero_talents', function (Blueprint $table) {
             $table->increments('global_hero_talents_id');
-            $table->string('game_version', 45)->nullable();
+            $table->integer('game_version')->notNull();
             $table->tinyInteger('game_type');
             $table->tinyInteger('league_tier');
             $table->tinyInteger('hero_league_tier')->default(0);
@@ -69,6 +69,6 @@ class CreateGlobalHeroTalentsTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('global_hero_talents');
+        Schema::connection('heroesprofile_globals')->dropIfExists('global_hero_talents');
     }
 }

@@ -11,7 +11,7 @@ class GlobalHeroTalentDetails extends Model
 
     protected $primaryKey = 'global_hero_talent_details_id';
 
-    protected $connection = 'heroesprofile';
+    protected $connection = 'heroesprofile_globals';
 
     public $timestamps = false;
 
