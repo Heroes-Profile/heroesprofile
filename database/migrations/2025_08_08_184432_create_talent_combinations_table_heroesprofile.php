@@ -13,7 +13,7 @@ class CreateTalentCombinationsTableHeroesprofile extends Migration
      */
     public function up()
     {
-        Schema::create('talent_combinations', function (Blueprint $table) {
+        Schema::connection('heroesprofile_globals')->create('talent_combinations', function (Blueprint $table) {
             $table->increments('talent_combination_id');
             $table->tinyInteger('hero')->nullable();
             $table->integer('level_one')->nullable();
@@ -41,6 +41,6 @@ class CreateTalentCombinationsTableHeroesprofile extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('talent_combinations');
+        Schema::connection('heroesprofile_globals')->dropIfExists('talent_combinations');
     }
 }

@@ -10,7 +10,7 @@ class TalentCombination extends Model
 
     protected $primaryKey = 'talent_combination_id';
 
-    protected $connection = 'heroesprofile';
+    protected $connection = 'heroesprofile_globals';
 
     public $timestamps = false;
 }

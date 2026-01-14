@@ -172,7 +172,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
             }
 
             $data = GlobalHeroTalents::query()
-                ->join('heroesprofile.talent_combinations as talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
+                ->join('heroesprofile_globals.talent_combinations as talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
                 ->select('global_hero_talents.win_loss', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
                 ->selectRaw('SUM(global_hero_talents.games_played) AS games_played')
                 ->filterByGameVersion($gameVersionIds)
@@ -287,7 +287,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
             }
 
             $buildsData = GlobalHeroTalents::query()
-                ->join('heroesprofile.talent_combinations as talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
+                ->join('heroesprofile_globals.talent_combinations as talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
                 ->select('global_hero_talents.win_loss')
                 ->selectRaw('SUM(global_hero_talents.games_played) AS games_played')
                 ->filterByGameVersion($gameVersionIds)

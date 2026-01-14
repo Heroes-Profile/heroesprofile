@@ -10019,7 +10019,7 @@ class TalentCombinationsSeeder extends Seeder
         ];
 
         foreach ($data as $row) {
-            DB::table('talent_combinations')->insert([
+            DB::connection('heroesprofile_globals')->table('talent_combinations')->insert([
                 'talent_combination_id' => $row[0],
                 'hero' => $row[1],
                 'level_one' => $row[2],
