@@ -8,7 +8,7 @@ class CreateGlobalHeroTalentsVersusHeroesTable extends Migration
 {
     public function up()
     {
-        Schema::create('global_hero_talents_versus_heroes', function (Blueprint $table) {
+        Schema::connection('heroesprofile_globals')->create('global_hero_talents_versus_heroes', function (Blueprint $table) {
             $table->increments('global_hero_talents_versus_heroes_id');
             $table->integer('game_version');
             $table->tinyInteger('game_type');
@@ -28,6 +28,6 @@ class CreateGlobalHeroTalentsVersusHeroesTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('global_hero_talents_versus_heroes');
+        Schema::connection('heroesprofile_globals')->dropIfExists('global_hero_talents_versus_heroes');
     }
 }

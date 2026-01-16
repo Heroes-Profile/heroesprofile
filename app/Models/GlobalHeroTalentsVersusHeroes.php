@@ -10,7 +10,7 @@ class GlobalHeroTalentsVersusHeroes extends Model
 
     protected $primaryKey = 'global_hero_talents_versus_heroes_id';
 
-    protected $connection = 'heroesprofile';
+    protected $connection = 'heroesprofile_globals';
 
     public $timestamps = false;
 

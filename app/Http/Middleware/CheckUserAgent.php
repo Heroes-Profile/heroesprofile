@@ -17,12 +17,12 @@ class CheckUserAgent
         }
 
         $userAgent = $request->header('User-Agent');
-        
+
         // Allow legitimate Googlebot crawlers (but not Google-Display-Ads-Bot)
         if ($userAgent && stripos($userAgent, 'Googlebot') !== false && stripos($userAgent, 'Google-Display-Ads-Bot') === false) {
             return $next($request);
         }
-        
+
         $blockedUserAgents = [
             // Chinese search engines and scrapers
             'Baiduspider',
