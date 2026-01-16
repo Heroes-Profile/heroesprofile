@@ -10013,7 +10013,7 @@ class GlobalHeroTalentsWithHeroesSeeder extends Seeder
         ];
 
         foreach ($data as $row) {
-            DB::table('global_hero_talents_with_heroes')->insert([
+            DB::connection('heroesprofile_globals')->table('global_hero_talents_with_heroes')->insert([
                 'global_hero_talents_with_heroes_id' => $row[0],
                 'game_version' => $row[1],
                 'game_type' => $row[2],

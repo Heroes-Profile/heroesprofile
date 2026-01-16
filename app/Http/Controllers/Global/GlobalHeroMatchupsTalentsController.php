@@ -11,7 +11,6 @@ use App\Models\SeasonGameVersion;
 use App\Rules\HeroInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationController
@@ -165,117 +164,35 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
             $firstHeroWinRateData = round($firstHeroWinRateData, 2);
 
             $model = $type === 'Ally' ? GlobalHeroTalentsWithHeroes::class : GlobalHeroTalentsVersusHeroes::class;
-            $table = $type === 'Ally' ? 'global_hero_talents_with_heroes' : 'global_hero_talents_versus_heroes';
-            $allyEnemyColumn = $type === 'Ally' ? 'ally' : 'enemy';
 
-            // Split game versions by ID (ID >= 250 goes to new table)
-            // Note: gameVersionIDs are already IDs, so we need to check them directly
-            $oldTableVersionIds = array_filter($gameVersionIDs, function ($id) {
-                return $id < 250;
-            });
-            $newTableVersionIds = array_filter($gameVersionIDs, function ($id) {
-                return $id >= 250;
-            });
+            $allData = $model::query()
+                ->select('win_loss', 'level', 'talent')
+                ->selectRaw('SUM(games_played) as games_played')
+                ->filterByGameVersion($gameVersionIDs)
+                ->filterByGameType($gameType)
+                ->filterByHero($hero)
+                ->filterByAllyEnemy($allyEnemy)
+                ->filterByLeagueTier($leagueTier)
+                ->filterByGameMap($gameMap)
+                ->groupBy('win_loss', 'level', 'talent')
+                ->with(['talentInfo' => function ($query) {
+                    $query->withAllStatuses();
+                }])
+                ->get()
+                ->map(function ($item) {
+                    $array = $item->toArray();
+                    // Normalize talentInfo to camelCase (toArray() converts relations to snake_case)
+                    if (isset($array['talent_info']) && ! isset($array['talentInfo'])) {
+                        $array['talentInfo'] = $array['talent_info'];
+                        unset($array['talent_info']);
+                    }
 
-            // Convert old table IDs back to version strings (old table uses strings)
-            $oldTableVersions = SeasonGameVersion::whereIn('id', $oldTableVersionIds)
-                ->pluck('game_version')
-                ->toArray();
-
-            $allData = collect();
-
-            // Query old table
-            if (! empty($oldTableVersions)) {
-                $oldData = $model::query()
-                    ->select('win_loss', 'level', 'talent')
-                    ->selectRaw('SUM(games_played) as games_played')
-                    ->filterByGameVersion($oldTableVersions)
-                    ->filterByGameType($gameType)
-                    ->filterByHero($hero)
-                    ->filterByAllyEnemy($allyEnemy)
-                    ->filterByLeagueTier($leagueTier)
-                    ->filterByGameMap($gameMap)
-                    ->groupBy('win_loss', 'level', 'talent')
-                    ->with(['talentInfo' => function ($query) {
-                        $query->withAllStatuses();
-                    }])
-                    ->get()
-                    ->map(function ($item) {
-                        $array = $item->toArray();
-                        // Normalize talentInfo to camelCase (toArray() converts relations to snake_case)
-                        if (isset($array['talent_info']) && ! isset($array['talentInfo'])) {
-                            $array['talentInfo'] = $array['talent_info'];
-                            unset($array['talent_info']);
-                        }
-
-                        return $array;
-                    });
-
-                $allData = $allData->merge($oldData);
-            }
-
-            // Query new table
-            if (! empty($newTableVersionIds)) {
-                $newData = DB::connection('heroesprofile')
-                    ->table("heroesprofile_globals.$table as {$table}")
-                    ->select("{$table}.win_loss", "{$table}.level", "{$table}.talent")
-                    ->selectRaw("SUM({$table}.games_played) as games_played")
-                    ->whereIn("{$table}.game_version", $newTableVersionIds)
-                    ->whereIn("{$table}.game_type", $gameType)
-                    ->where("{$table}.hero", $hero)
-                    ->where("{$table}.$allyEnemyColumn", $allyEnemy)
-                    ->when($leagueTier !== null && ! empty($leagueTier), function ($query) use ($leagueTier, $table) {
-                        return $query->whereIn("{$table}.league_tier", $leagueTier);
-                    })
-                    ->when($gameMap !== null && ! empty($gameMap), function ($query) use ($gameMap, $table) {
-                        return $query->whereIn("{$table}.game_map", $gameMap);
-                    })
-                    ->groupBy("{$table}.win_loss", "{$table}.level", "{$table}.talent")
-                    ->get()
-                    ->map(function ($item) {
-                        return (array) $item;
-                    });
-
-                // Load talent relationships for new data
-                $talentIds = $newData->pluck('talent')->unique();
-                $talents = \App\Models\HeroesDataTalent::withAllStatuses()
-                    ->whereIn('talent_id', $talentIds)
-                    ->get()
-                    ->keyBy('talent_id');
-
-                $newData = $newData->map(function ($item) use ($talents) {
-                    $item['talentInfo'] = $talents[$item['talent']] ?? null;
-
-                    return $item;
+                    return $array;
                 });
 
-                $allData = $allData->merge($newData);
-            }
-
-            // Combine and re-aggregate
-            $allData = $allData->map(function ($item) {
-                if (is_object($item)) {
-                    return (array) $item;
-                }
-
-                return $item;
-            })->filter(function ($item) {
+            $data = $allData->filter(function ($item) {
                 return is_array($item) && isset($item['win_loss']) && isset($item['level']) && isset($item['talent']);
             });
-
-            $data = $allData->groupBy(function ($item) {
-                return $item['win_loss'].'_'.$item['level'].'_'.$item['talent'];
-            })->map(function ($group) {
-                $first = $group->first();
-
-                return [
-                    'win_loss' => $first['win_loss'],
-                    'level' => $first['level'],
-                    'talent' => $first['talent'],
-                    'games_played' => $group->sum('games_played'),
-                    'talentInfo' => $first['talentInfo'] ?? null,
-                ];
-            })->values();
 
             $data = collect($data)->groupBy('level')->map(function ($levelGroup) {
 
