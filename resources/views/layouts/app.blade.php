@@ -32,7 +32,16 @@
 
     </script>
 
-    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/logo/heroesprofilelogo.png') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/logo/heroesprofilelogo.png') }}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('images/logo/heroesprofilelogo.png') }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('images/logo/heroesprofilelogo.png') }}">
+    <link rel="icon" type="image/png" sizes="512x512" href="{{ asset('images/logo/heroesprofilelogo.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/logo/heroesprofilelogo.png') }}">
+    <meta name="msapplication-TileImage" content="{{ asset('images/logo/heroesprofilelogo.png') }}">
+    <meta name="theme-color" content="#000000">
 
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1,  user-scalable=yes">
