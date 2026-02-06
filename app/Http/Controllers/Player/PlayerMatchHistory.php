@@ -87,7 +87,7 @@ class PlayerMatchHistory extends Controller
             ])
             ->where('blizz_id', $blizz_id)
             ->where('region', $region)
-            ->orderBy('replayID', 'DESC')
+            ->orderByDesc('game_date')
             ->first();
         if ($latest_replay) {
             return \Redirect::to('/Match/Single/'.$latest_replay->replayID);
