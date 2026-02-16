@@ -46,8 +46,17 @@
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     
     <div v-if="this.data.data">
-      <div class="max-w-[1500px] mx-auto flex justify-end mb-2">
+      <div class="max-w-[1500px] mx-auto flex justify-between mb-2">
+        <div>
+          <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
+        </div>
         <custom-button @click="toggleChartValue" text="Toggle Chart" alt="Toggle Chart" size="small" :ignoreclick="true"></custom-button>
+      </div>
+
+      <div v-if="showPatchNotes" class="max-w-[1500px] mx-auto mb-4 p-4 rounded bg-gray-800 text-gray-200">
+        <div v-if="patchNotesLoading" class="text-center py-4">Loading patch notes...</div>
+        <div v-else-if="patchNotesContent" v-html="patchNotesContent"></div>
+        <div v-else class="text-center py-4 text-gray-400">No summary available for this patch.</div>
       </div>
 
       <div v-if="togglechart">
@@ -224,6 +233,10 @@ export default {
       sortDir: 'desc',
       data: [],
       togglechart: false,
+      showPatchNotes: false,
+      patchNotesContent: null,
+      patchNotesLoading: false,
+      patchNotesLoadedVersion: null,
       toggletalentbuilds: {},
       talentbuilddata: {},
       selectedbuildtype: null,
@@ -270,6 +283,14 @@ export default {
         return true;      
       }
       return false;
+    },
+    patchNotesUrl() {
+      if (this.timeframetype !== 'minor' || !this.timeframe || this.timeframe.length !== 1) {
+        return null;
+      }
+      const selectedVersion = this.timeframe[0];
+      const match = this.filters.timeframes.find(t => t.code === selectedVersion);
+      return match && match.patch_notes_url ? match.patch_notes_url : null;
     },
     showWinRateChange(){
       return (
@@ -482,6 +503,9 @@ export default {
       this.talentbuilddata = {};
       this.toggletalentbuilds = {};
       this.loadingStates = {};
+      this.showPatchNotes = false;
+      this.patchNotesContent = null;
+      this.patchNotesLoadedVersion = null;
       this.sortKey = '';
       this.sortDir = 'desc';
 
@@ -503,6 +527,24 @@ export default {
     },
     toggleChartValue() {
       this.togglechart = !this.togglechart;
+    },
+    async togglePatchNotes() {
+      this.showPatchNotes = !this.showPatchNotes;
+      if (this.showPatchNotes && this.timeframe.length === 1 && this.patchNotesLoadedVersion !== this.timeframe[0]) {
+        this.patchNotesLoading = true;
+        this.patchNotesContent = null;
+        try {
+          const response = await fetch(`/patch-notes/${this.timeframe[0]}.html`);
+          if (response.ok) {
+            this.patchNotesContent = await response.text();
+          }
+        } catch (e) {
+          this.patchNotesContent = null;
+        } finally {
+          this.patchNotesLoadedVersion = this.timeframe[0];
+          this.patchNotesLoading = false;
+        }
+      }
     },
     viewtalentbuilds(hero, index){
       if (!this.talentbuilddata[hero]) {

@@ -7,7 +7,7 @@ use Illuminate\Contracts\Validation\Rule;
 class BattletagInputProhibitCharacters implements Rule
 {
     // Block common SQL injection and XSS characters
-    protected $prohibitedCharacters = [' ', '?', '%', '\'', '"', '(', ')', ';', '--', '/*', '*/', '<', '>', '=', '|', '\\'];
+    protected $prohibitedCharacters = [' ', '?', '%', '\'', '"', '(', ')', ';', '--', '/*', '*/', '<', '>', '=', '|', '\\', '*'];
 
     // Also check for common SQL injection patterns
     protected $prohibitedPatterns = [

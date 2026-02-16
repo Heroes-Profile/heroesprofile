@@ -14,19 +14,15 @@ class CreateSeasonGameVersionsTable extends Migration
     public function up()
     {
         Schema::create('season_game_versions', function (Blueprint $table) {
-            $table->increments('id'); // int NOT NULL AUTO_INCREMENT PRIMARY KEY
-            $table->unsignedInteger('season');
+            $table->increments('id');
+            $table->integer('season');
             $table->string('game_version', 45);
             $table->dateTime('date_added')->nullable();
-
-            // This replaces your tinyint updated_globals with valid_globals with default 1
             $table->tinyInteger('valid_globals')->default(1);
-
-            // Generated (computed) columns are not directly supported in Laravel schema builder
-            // So we need to add them via raw SQL after creating the table.
+            $table->mediumText('patch_notes_url')->nullable();
         });
 
-        // Add generated columns using raw SQL after the table creation
+        // Generated (stored) columns are not directly supported in Laravel schema builder
         DB::statement("
             ALTER TABLE `season_game_versions`
             ADD COLUMN `major` int GENERATED ALWAYS AS (CAST(SUBSTRING_INDEX(`game_version`, '.', 1) AS UNSIGNED)) STORED,
@@ -35,9 +31,8 @@ class CreateSeasonGameVersionsTable extends Migration
             ADD COLUMN `build` int GENERATED ALWAYS AS (CAST(SUBSTRING_INDEX(`game_version`, '.', -1) AS UNSIGNED)) STORED
         ");
 
-        // Add indexes
         Schema::table('season_game_versions', function (Blueprint $table) {
-            $table->unique(['season', 'game_version'], 'unique');
+            $table->index(['season', 'game_version'], 'unique');
             $table->index('valid_globals', 'globals');
             $table->index('game_version', 'gameversion');
         });
