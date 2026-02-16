@@ -1,16 +1,19 @@
 <template>
   
-  <div class="search-component flex items-stretch mt-auto py-4 ">
-    <input type="text" class="form-control variable-text rounded-l p-2" :placeholder="labelText" :aria-label="labelText" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="clickedButton">
-    <button
-      v-if="buttonText"
-      class="btn btn-outline-secondary bg-teal hover:bg-lteal rounded-r p-2"
-      type="button"
-      :disabled="!isInputValid"
-      @click="clickedButton"
-    >
-      {{ buttonText }}
-    </button>
+  <div class="search-component mt-auto py-4">
+    <div class="flex items-stretch">
+      <input type="text" class="form-control variable-text rounded-l p-2" :placeholder="labelText" :aria-label="labelText" aria-describedby="basic-addon2" v-model="userinput" @keyup.enter="clickedButton">
+      <button
+        v-if="buttonText"
+        class="btn btn-outline-secondary bg-teal hover:bg-lteal rounded-r p-2"
+        type="button"
+        :disabled="!isInputValid"
+        @click="clickedButton"
+      >
+        {{ buttonText }}
+      </button>
+    </div>
+    <p v-if="errorMessage" class="text-red text-sm mt-1">{{ errorMessage }}</p>
   </div>
   
 </template>
@@ -28,7 +31,8 @@
       return {
         userinput: "",
         buttonText: "Find Player",
-        labelText: "Enter a battletag"
+        labelText: "Enter a battletag",
+        prohibitedCharacters: ['*', '?', '%', '\'', '"', '(', ')', ';', '<', '>', '=', '|', '\\'],
       }
     },
     created(){
@@ -37,7 +41,23 @@
     },
     computed: {
       isInputValid() {
-        return this.userinput && this.userinput.trim().length > 0;
+        return this.userinput && this.userinput.trim().length > 0 && !this.hasProhibitedCharacters;
+      },
+      hasProhibitedCharacters() {
+        if (!this.userinput) return false;
+        return this.prohibitedCharacters.some(char => this.userinput.includes(char));
+      },
+      foundProhibitedCharacters() {
+        if (!this.userinput) return [];
+        return this.prohibitedCharacters.filter(char => this.userinput.includes(char));
+      },
+      errorMessage() {
+        if (!this.userinput || this.userinput.trim().length === 0) return '';
+        if (this.hasProhibitedCharacters) {
+          const chars = this.foundProhibitedCharacters.map(c => `"${c}"`).join(', ');
+          return `The following characters are not allowed: ${chars}`;
+        }
+        return '';
       }
     },
     watch: {
