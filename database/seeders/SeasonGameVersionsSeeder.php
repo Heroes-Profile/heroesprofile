@@ -15,7 +15,7 @@ class SeasonGameVersionsSeeder extends Seeder
     public function run()
     {
         $data = [
-            [231, 25, '2.55.4.91418', '2023-11-21 18:24:07', 1],
+            [231, 25, '2.55.4.91418', '2023-11-21 18:24:07', 1, null],
         ];
 
         foreach ($data as $row) {
@@ -25,6 +25,7 @@ class SeasonGameVersionsSeeder extends Seeder
                 'game_version' => $row[2],
                 'date_added' => $row[3],
                 'valid_globals' => $row[4],
+                'patch_notes_url' => $row[5],
             ]);
         }
     }

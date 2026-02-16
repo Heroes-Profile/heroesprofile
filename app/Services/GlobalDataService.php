@@ -449,7 +449,7 @@ class GlobalDataService
             ['code' => 'minor', 'name' => 'Minor Patch'],
         ];
 
-        $timeframesQuery = SeasonGameVersion::select('game_version')
+        $timeframesQuery = SeasonGameVersion::select('game_version', 'patch_notes_url')
             ->where('valid_globals', 1);
 
         $filterData->timeframes = $this->applyVersionFilter($timeframesQuery, $filtersMinimumPatch)
@@ -459,7 +459,7 @@ class GlobalDataService
             ->orderBy('build', 'DESC')
             ->get()
             ->map(function ($item) {
-                return ['code' => $item->game_version, 'name' => $item->game_version];
+                return ['code' => $item->game_version, 'name' => $item->game_version, 'patch_notes_url' => $item->patch_notes_url];
             });
 
         $timeframesGroupedQuery = SeasonGameVersion::select('game_version')

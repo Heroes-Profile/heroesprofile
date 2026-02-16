@@ -46,7 +46,12 @@
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
     
     <div v-if="this.data.data">
-      <div class="max-w-[1500px] mx-auto flex justify-end mb-2">
+      <div class="max-w-[1500px] mx-auto flex justify-between mb-2">
+        <div>
+          <a v-if="patchNotesUrl" :href="patchNotesUrl" target="_blank" rel="noopener noreferrer">
+            <custom-button text="Patch Notes" alt="Patch Notes" size="small" :ignoreclick="true"></custom-button>
+          </a>
+        </div>
         <custom-button @click="toggleChartValue" text="Toggle Chart" alt="Toggle Chart" size="small" :ignoreclick="true"></custom-button>
       </div>
 
@@ -270,6 +275,14 @@ export default {
         return true;      
       }
       return false;
+    },
+    patchNotesUrl() {
+      if (this.timeframetype !== 'minor' || !this.timeframe || this.timeframe.length !== 1) {
+        return null;
+      }
+      const selectedVersion = this.timeframe[0];
+      const match = this.filters.timeframes.find(t => t.code === selectedVersion);
+      return match && match.patch_notes_url ? match.patch_notes_url : null;
     },
     showWinRateChange(){
       return (
