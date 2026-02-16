@@ -67,14 +67,25 @@
       </div>
     </div>
 
-    <div class="flex max-w-[1500px] mx-auto mb-2">
-      <div v-if="showTalentHeroToggle" class="text-center flex items-center justify-stretch gap-2 mx-2">
-        Talents:    
-        <tab-button  :tab1text="this.hero.name" :ignoreclick="true" :tab2text="this.enemyally.name" @tab-click="talentHeroOrEnemySideSelected" > </tab-button>
+    <div class="flex justify-between max-w-[1500px] mx-auto mb-2">
+      <div class="flex">
+        <div v-if="showTalentHeroToggle" class="text-center flex items-center justify-stretch gap-2 mx-2">
+          Talents:    
+          <tab-button  :tab1text="this.hero.name" :ignoreclick="true" :tab2text="this.enemyally.name" @tab-click="talentHeroOrEnemySideSelected" > </tab-button>
+        </div>
+        <div class="text-center mt-auto">
+          <tab-button :tab1text="'Enemy'" :ignoreclick="true" :tab2text="'Ally'" @tab-click="heroOrEnemySideSelected" > </tab-button>
+        </div>
       </div>
-      <div class="text-center mt-auto">
-        <tab-button :tab1text="'Enemy'" :ignoreclick="true" :tab2text="'Ally'" @tab-click="heroOrEnemySideSelected" > </tab-button>
-      </div>
+      <span>
+        <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
+      </span>
+    </div>
+
+    <div v-if="showPatchNotes" class="max-w-[1500px] mx-auto mb-4 p-4 rounded bg-gray-800 text-gray-200">
+      <div v-if="patchNotesLoading" class="text-center py-4">Loading patch notes...</div>
+      <div v-else-if="patchNotesContent" v-html="patchNotesContent"></div>
+      <div v-else class="text-center py-4 text-gray-400">No summary available for this patch.</div>
     </div>
     <div class=" mx-auto px-4">
       <global-talent-details-section v-if="talentdetaildata" :talentdetaildata="talentdetaildata" :statfilter="null"></global-talent-details-section>
@@ -126,6 +137,10 @@
         type: "Enemy",
         firstwinratedata: null,
         secondwinratedata: null,
+        showPatchNotes: false,
+        patchNotesContent: null,
+        patchNotesLoading: false,
+        patchNotesLoadedVersion: null,
       }
     },
     created(){
@@ -147,6 +162,14 @@
      
     },
     computed: {
+      patchNotesUrl() {
+        if (this.timeframetype !== 'minor' || !this.timeframe || this.timeframe.length !== 1) {
+          return null;
+        }
+        const selectedVersion = this.timeframe[0];
+        const match = this.filters.timeframes.find(t => t.code === selectedVersion);
+        return match && match.patch_notes_url ? match.patch_notes_url : null;
+      },
       showTalentHeroToggle(){
         if(!this.hero || !this.enemyally){
           return false;
@@ -275,6 +298,10 @@
         let currentPath = window.location.pathname;
         history.pushState(null, null, `${currentPath}${queryString}`);
 
+        this.showPatchNotes = false;
+        this.patchNotesContent = null;
+        this.patchNotesLoadedVersion = null;
+
         this.talentdetaildata = null;
         this.getData();
       },
@@ -308,6 +335,24 @@
         if(this.shouldFilterData){
           this.talentdetaildata = null;
           this.getData();
+        }
+      },
+      async togglePatchNotes() {
+        this.showPatchNotes = !this.showPatchNotes;
+        if (this.showPatchNotes && this.timeframe.length === 1 && this.patchNotesLoadedVersion !== this.timeframe[0]) {
+          this.patchNotesLoading = true;
+          this.patchNotesContent = null;
+          try {
+            const response = await fetch(`/patch-notes/${this.timeframe[0]}.html`);
+            if (response.ok) {
+              this.patchNotesContent = await response.text();
+            }
+          } catch (e) {
+            this.patchNotesContent = null;
+          } finally {
+            this.patchNotesLoadedVersion = this.timeframe[0];
+            this.patchNotesLoading = false;
+          }
         }
       },
       convertRankIDtoName(rankIDs) {
