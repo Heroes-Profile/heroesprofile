@@ -9,6 +9,11 @@ class CheckUserAgent
 {
     public function handle($request, Closure $next)
     {
+        // In dev mode, bypass all user agent checks
+        if (config('app.env') !== 'production') {
+            return $next($request);
+        }
+
         // Check if IP is whitelisted - if so, bypass user agent checks
         // Use shared IP extraction method for consistency
         $ip = \App\Services\WhitelistedIPsService::getClientIp($request);

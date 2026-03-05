@@ -18,6 +18,11 @@ class BlockBannedIPs
     public function handle(Request $request, Closure $next): Response
     {
         try {
+            // In dev mode, bypass all IP blocking
+            if (config('app.env') !== 'production') {
+                return $next($request);
+            }
+
             // Extract IP address using shared method for consistency
             $ip = WhitelistedIPsService::getClientIp($request);
 
