@@ -89,10 +89,12 @@
                 <div v-if="statContainsMax(stat)">
                   <span class="link" @click="navigateToMaxStatMatch(row.hero, stat.value, row[stat.value])" title="Navigate to this match">{{ showStatValue(stat.value, row[stat.value]) }}</span>
                 </div>
+                <div v-else-if="statisranktier(stat)">
+                  {{ row[stat.value] }}
+                </div>
                 <div v-else>
                   {{ stat.value !== null ? showStatValue(stat.value, row[stat.value]) : '' }}
                 </div>
-
               </td>
             </template>
 
@@ -237,11 +239,17 @@ export default {
         { name: "Max Vengeance", value: 'max_vengeance', selected: false, flash: false},
         { name: "Max Watch Tower Captures", value: 'max_watch_tower_captures', selected: false, flash: false},
         { name: "HP MMR Quick Match", value: 'qm_mmr_data', selected: false, flash: false},
+        { name: "HP Rank Tier Quick Match", value: 'qm_rank_tier', selected: false, flash: false},
         { name: "HP MMR Unranked Draft", value: 'ud_mmr_data', selected: false, flash: false},
+        { name: "HP Rank Tier Unranked Draft", value: 'ud_rank_tier', selected: false, flash: false},
         { name: "HP MMR Hero League", value: 'hl_mmr_data', selected: false, flash: false},
+        { name: "HP Rank Tier Hero League", value: 'hl_rank_tier', selected: false, flash: false},
         { name: "HP MMR Team League", value: 'tl_mmr_data', selected: false, flash: false},
+        { name: "HP Rank Tier Team League", value: 'tl_rank_tier', selected: false, flash: false},
         { name: "HP MMR Storm League", value: 'sl_mmr_data', selected: false, flash: false},
+        { name: "HP Rank Tier Storm League", value: 'sl_rank_tier', selected: false, flash: false},
         { name: "HP MMR ARAM", value: 'ar_mmr_data', selected: false, flash: false},
+        { name: "HP Rank Tier ARAM", value: 'ar_rank_tier', selected: false, flash: false},
         { name: "Wins", value: 'wins', selected: false, flash: false},
 
       ],
@@ -387,6 +395,9 @@ export default {
     },
     statContainsMax(stat) {
       return stat.value.toLowerCase().includes('max');
+    },
+    statisranktier(stat){
+      return stat.value.toLowerCase().includes('tier');
     },
     async navigateToMaxStatMatch(hero, stat, value){
       this.matchIsLoading = true;

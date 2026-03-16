@@ -32,6 +32,11 @@ class DetectScrapingPatterns
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // In dev mode, bypass all scraping pattern detection
+        if (config('app.env') !== 'production') {
+            return $next($request);
+        }
+
         // Use shared IP extraction method for consistency
         $ip = WhitelistedIPsService::getClientIp($request);
 

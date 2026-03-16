@@ -633,6 +633,12 @@ class PlayerHeroesMapsRolesController extends Controller
                 'tl_mmr_data' => $type == 'single' ? $tl_mmr_data : $this->getHeroDataForAll($heroData[$heroStats->pluck('hero')->first()], $tl_mmr_data),
                 'sl_mmr_data' => $type == 'single' ? $sl_mmr_data : $this->getHeroDataForAll($heroData[$heroStats->pluck('hero')->first()], $sl_mmr_data),
                 'ar_mmr_data' => $type == 'single' ? $ar_mmr_data : $this->getHeroDataForAll($heroData[$heroStats->pluck('hero')->first()], $ar_mmr_data),
+                'qm_rank_tier' => $type == 'single' ? ($qm_mmr_data->rank_tier ?? null) : $this->getHeroDataForAllRankTier($heroData[$heroStats->pluck('hero')->first()], $qm_mmr_data, 1),
+                'ud_rank_tier' => $type == 'single' ? ($ud_mmr_data->rank_tier ?? null) : $this->getHeroDataForAllRankTier($heroData[$heroStats->pluck('hero')->first()], $ud_mmr_data, 2),
+                'hl_rank_tier' => $type == 'single' ? ($hl_mmr_data->rank_tier ?? null) : $this->getHeroDataForAllRankTier($heroData[$heroStats->pluck('hero')->first()], $hl_mmr_data, 3),
+                'tl_rank_tier' => $type == 'single' ? ($tl_mmr_data->rank_tier ?? null) : $this->getHeroDataForAllRankTier($heroData[$heroStats->pluck('hero')->first()], $tl_mmr_data, 4),
+                'sl_rank_tier' => $type == 'single' ? ($sl_mmr_data->rank_tier ?? null) : $this->getHeroDataForAllRankTier($heroData[$heroStats->pluck('hero')->first()], $sl_mmr_data, 5),
+                'ar_rank_tier' => $type == 'single' ? ($ar_mmr_data->rank_tier ?? null) : $this->getHeroDataForAllRankTier($heroData[$heroStats->pluck('hero')->first()], $ar_mmr_data, 6),
 
                 'stack_size_one_wins' => $stack_size_one_wins,
                 'stack_size_one_losses' => $stack_size_one_losses,
@@ -807,12 +813,30 @@ class PlayerHeroesMapsRolesController extends Controller
         return $returnData;
     }
 
-    public function getHeroDataForAll($hero, $data)
+    public function getHeroDataForAll($hero, $data, $field = 'mmr')
     {
-        if (! is_null($data)) {
+        if (! is_null($data) && $hero) {
+            $mmrDataset = $data->where('name', $hero->name)->first();
+            if (! is_null($mmrDataset) && isset($mmrDataset->{$field})) {
+                return $mmrDataset->{$field};
+            }
+
+            if (! is_null($mmrDataset) && $field === 'mmr') {
+                return $mmrDataset->mmr;
+            }
+        }
+
+        return null;
+    }
+
+    public function getHeroDataForAllRankTier($hero, $data, $gameType)
+    {
+        if (! is_null($data) && $hero) {
             $mmrDataset = $data->where('name', $hero->name)->first();
             if (! is_null($mmrDataset)) {
-                return $data->where('name', $hero->name)->first()->mmr;
+                $mmr = $mmrDataset->mmr;
+
+                return $this->globalDataService->calculateSubTier($this->globalDataService->getRankTiers($gameType, $hero->id), $mmr);
             }
         }
 
