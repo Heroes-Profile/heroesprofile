@@ -835,6 +835,7 @@ class PlayerHeroesMapsRolesController extends Controller
             $mmrDataset = $data->where('name', $hero->name)->first();
             if (! is_null($mmrDataset)) {
                 $mmr = $mmrDataset->mmr;
+
                 return $this->globalDataService->calculateSubTier($this->globalDataService->getRankTiers($gameType, $hero->id), $mmr);
             }
         }
