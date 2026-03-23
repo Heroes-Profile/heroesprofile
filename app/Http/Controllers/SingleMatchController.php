@@ -280,7 +280,7 @@ class SingleMatchController extends Controller
 
             $replayDetails = [
                 'region' => $replayGroup[0]->region,
-                'downloadable' => ! $this->esport ? $replayGroup[0]->date_added > now()->subWeeks(4) : null,
+                'downloadable' => null,//! $this->esport ? $replayGroup[0]->date_added > now()->subWeeks(4) : null,
                 'game_type' => ! $this->esport ? $this->globalDataService->getGameTypeIDtoString()[$replayGroup[0]->game_type]['name'] : null,
                 'game_date' => $replayGroup[0]->game_date,
                 'game_map' => $maps[$replayGroup[0]->game_map],
