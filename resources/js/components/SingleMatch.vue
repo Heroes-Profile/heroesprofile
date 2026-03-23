@@ -25,8 +25,17 @@
             {{ getEsportTitle() }}
           </span>
           <span>{{ data.game_length }}</span>
-          <span v-if="data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))" class="link" @click="downloadReplay(data, replayid)">
+          <!-- Download requires login for all (esport and non-esport) -->
+          <span v-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && user" class="link" @click="downloadReplay(data, replayid)">
             Download Replay
+          </span>
+          <span v-else-if="data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed">
+            Download Replay
+            <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
+              <slot>
+                <p>You need to be logged in to download replays.</p>
+              </slot>
+            </round-image>
           </span>
         </div>
       </div>
@@ -806,16 +815,23 @@
         return "/images/CCL/600-600-HHE_CCL_Logo_rectangle.png"
       }
     },
-    async downloadReplay(data, replayID){
-      if(this.esport){
-        if(this.esport == "CCL"){
-          window.location = `https://storage.googleapis.com/heroesprofile-ccl/${replayID}.StormReplay`;
-        }else if(this.esport == "Other"){
-          window.location = `https://storage.googleapis.com/heroesprofile-esport-other/${replayID}.StormReplay`;
-        }
-      }else{
-        window.location = `https://api.heroesprofile.com/openApi/Replay/Download?replayID=${replayID}`;
+    downloadReplay(data, replayID){
+      if(!this.user){
+        return;
       }
+      const params = new URLSearchParams({ replayID });
+      if(this.user.battletag){
+        params.set('battletag', this.user.battletag);
+      }
+      if(this.user.battlenet_accounts_id){
+        params.set('user_id', this.user.battlenet_accounts_id);
+      }
+      if(this.esport == "CCL"){
+        params.set('esport', 'CCL');
+      }else if(this.esport == "Other"){
+        params.set('esport', 'Other');
+      }
+      window.location = `https://api.heroesprofile.com/openApi/Replay/Download?${params.toString()}`;
     },
     getTakedownsValue(data){
       let totalKills = 0;
