@@ -383,7 +383,7 @@ export default {
           this.talentBuildType = eventPayload.value;
         }else if(eventPayload.field == "Game Type"){
           this.usergametype = eventPayload.value;
-        }else if(eventPayload.field == "MMR Game Type"){
+        }else if(eventPayload.field == "HP MMR Game Type" || eventPayload.field == "MMR Game Type"){
           this.mmrplayerusergametype = eventPayload.value;
         }else if(eventPayload.field == "Player Load"){
           this.playerload = eventPayload.value;
