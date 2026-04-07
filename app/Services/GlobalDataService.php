@@ -749,6 +749,7 @@ class GlobalDataService
             ->get();
 
         $returnData = [];
+        $data = ['split' => 0];
         $prevMin = 0;
 
         foreach ($result as $row) {
@@ -806,16 +807,22 @@ class GlobalDataService
         $multiply = 1;
 
         foreach ($rankTiers as $key => $tierInfo) {
-            $minMmr = $tierInfo['min_mmr'];
-            $maxMmr = $tierInfo['max_mmr'];
-            $split = $tierInfo['split'];
+            $minMmr = $tierInfo['min_mmr'] ?? 0;
+            $maxMmr = $tierInfo['max_mmr'] ?? '';
+            $split = $tierInfo['split'] ?? 0;
 
-            if ($maxMmr == '') {
+            if ($maxMmr == '' && $split > 0) {
                 $maxMmr = $minMmr + $split;
+            } elseif ($maxMmr == '') {
+                $maxMmr = $minMmr;
             }
 
             if ($mmr >= $minMmr && $mmr < $maxMmr) {
                 if ($tierNames[$key] != 'Master') {
+                    if ($split <= 0) {
+                        continue;
+                    }
+
                     if ($mmr < ($minMmr + $split)) {
                         $result = $tierNames[$key].' '.$counter;
                     } else {
