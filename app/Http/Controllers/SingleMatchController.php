@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Award;
+use App\Models\BattletagNotAllowedDownloadReplay;
 use App\Models\HeroesDataTalent;
 use App\Models\Map;
 use App\Models\ReplayExperienceBreakdownBlob;
 use App\Rules\ReplayIDValidation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -269,7 +271,17 @@ class SingleMatchController extends Controller
             });
         }
 
-        $groupedData = $result->groupBy('replayID')->map(function ($replayGroup) use ($privateAccounts, $result, $talentData, $heroData, $maps, $replayID) {
+        $replayDownloadBlocked = false;
+        if (Auth::check()) {
+            $authBattletag = Auth::user()->battletag;
+            if (is_string($authBattletag) && $authBattletag !== '') {
+                $replayDownloadBlocked = BattletagNotAllowedDownloadReplay::query()
+                    ->where('battletag', $authBattletag)
+                    ->exists();
+            }
+        }
+
+        $groupedData = $result->groupBy('replayID')->map(function ($replayGroup) use ($privateAccounts, $result, $talentData, $heroData, $maps, $replayID, $replayDownloadBlocked) {
             $totalSeconds = $replayGroup[0]->game_length - 70;
             $minutes = floor($totalSeconds / 60);
             $seconds = $totalSeconds % 60;
@@ -281,6 +293,7 @@ class SingleMatchController extends Controller
             $replayDetails = [
                 'region' => $replayGroup[0]->region,
                 'downloadable' => ! $this->esport ? $replayGroup[0]->date_added > now()->subWeeks(4) : null,
+                'replay_download_blocked' => $replayDownloadBlocked,
                 'game_type' => ! $this->esport ? $this->globalDataService->getGameTypeIDtoString()[$replayGroup[0]->game_type]['name'] : null,
                 'game_date' => $replayGroup[0]->game_date,
                 'game_map' => $maps[$replayGroup[0]->game_map],

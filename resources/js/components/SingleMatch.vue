@@ -25,11 +25,11 @@
             {{ getEsportTitle() }}
           </span>
           <span>{{ data.game_length }}</span>
-          <!-- Download requires login for all (esport and non-esport) -->
-          <span v-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && user" class="link" @click="downloadReplay(data, replayid)">
+          <!-- Download requires login for all (esport and non-esport); blocked battletags get no control -->
+          <span v-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && user && !data.replay_download_blocked" class="link" @click="downloadReplay(data, replayid)">
             Download Replay
           </span>
-          <span v-else-if="data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed">
+          <span v-else-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && !user" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed">
             Download Replay
             <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
               <slot>
@@ -816,7 +816,7 @@
       }
     },
     downloadReplay(data, replayID){
-      if(!this.user){
+      if(!this.user || (data && data.replay_download_blocked)){
         return;
       }
       const params = new URLSearchParams({ replayID });
