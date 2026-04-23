@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BattlenetAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
 
@@ -47,10 +48,13 @@ class BattleNetController extends Controller
                 'blizz_id' => $this->globalDataService->getBlizzIDGivenFullBattletag($user->nickname, $request->cookie('battlenet_region')),
                 'region' => $request->cookie('battlenet_region'),
                 'battlenet_access_token' => $user->accessTokenResponseBody['access_token'],
-                'remember_token' => $user->token,
                 // Other necessary fields like email, etc.
             ]
         );
+
+        // Keep remember tokens in Laravel's expected short random format.
+        $battlenetAccount->setRememberToken(Str::random(60));
+        $battlenetAccount->save();
 
         Auth::login($battlenetAccount, true);
 

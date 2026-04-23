@@ -50,7 +50,7 @@
                   <div class="" v-else-if="row.patreon">
                     <i class="fas fa-star" style="color:gold"></i>
                   </div>
-                  <a class="link" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
+                  <a class="link" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
 
                 </div>
               </td>
@@ -96,7 +96,7 @@
                   <div class="" v-else-if="row.patreon">
                     <i class="fas fa-star" style="color:gold"></i>
                   </div>
-                  <a class="link" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
+                  <a class="link" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
 
                 </div>
               </td>

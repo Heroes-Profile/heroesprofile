@@ -46,7 +46,7 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 # Enable site and Apache modules
 RUN a2ensite 000-default && a2enmod rewrite
 
-RUN echo "LimitRequestFieldSize 8192" >> /etc/apache2/apache2.conf
+RUN echo "LimitRequestFieldSize 16384" >> /etc/apache2/apache2.conf
 
 # Open port 8000
 EXPOSE 8000

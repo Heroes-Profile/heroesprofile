@@ -321,9 +321,9 @@
  </div>
   <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false"></dynamic-banner-ad>
 
- <div v-if="data.experience_breakdown" class="bg-lighten p-10 text-center">
-  <div class="flex flex-wrap justify-center max-w-[2000px] mx-auto">
-    <div >
+<div v-if="data.experience_breakdown" class="bg-lighten p-10 max-md:px-2 text-center overflow-x-hidden">
+  <div class="flex flex-wrap justify-center max-w-[2000px] mx-auto w-full">
+    <div class="w-full">
       <dual-line-chart :data="data.experience_breakdown" :winner="data.winner"></dual-line-chart>
     </div>
   </div>
@@ -334,7 +334,7 @@
 
   Team 1 Advanced HP MMR data
 
-  <div  ref="tablecontainer" class="table-container w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" " >
+  <div  ref="tablecontainer" class="table-container w-full overflow-x-auto 2xl:mx-auto" style=" " >
 
 
   <table :class="['responsive-table', 'relative', { winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }]">
@@ -386,7 +386,7 @@
 
   Team 2 Advanced HP MMR data
 
-  <div  ref="tablecontainer" class="table-container w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" " >
+  <div  ref="tablecontainer" class="table-container w-full overflow-x-auto 2xl:mx-auto" style=" " >
 
 
   <table :class="['responsive-table', 'relative', { winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }]">
@@ -438,7 +438,7 @@
 <div class="max-sm:text-sm max-w-[1500px] mx-auto my-5">
   Team 1 Advanced Stats
 
-  <div  ref="tablecontainer" class="table-container w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" " v-for="(section, sectionIndex) in sections" :key="sectionIndex">
+  <div  ref="tablecontainer" class="table-container w-full overflow-x-auto 2xl:mx-auto" style=" " v-for="(section, sectionIndex) in sections" :key="sectionIndex">
 
  
   <table :class="['responsive-table', 'relative', { winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }]" >
@@ -463,7 +463,7 @@
 <dynamic-banner-ad :patreon-user="patreonUser" :index="6" :mobile-override="false"></dynamic-banner-ad>
  
   Team 2 Advanced Stats
-  <div  ref="tablecontainer" class="table-container w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" " v-for="(section, sectionIndex) in sections" :key="sectionIndex">
+  <div  ref="tablecontainer" class="table-container w-full overflow-x-auto 2xl:mx-auto" style=" " v-for="(section, sectionIndex) in sections" :key="sectionIndex">
   <table :id="'responsive-table-' +sectionIndex" :ref="'responsivetable'+sectionIndex" :class="['responsive-table', 'relative', { winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }]" >
     <thead>
       <tr>
@@ -616,13 +616,29 @@
         if(this.$el && this.$el.querySelectorAll('table')){
           const tables = this.$el.querySelectorAll('table');
           tables.forEach(table => {
-            var newTableWidth = this.windowWidth /table.clientWidth;
             var tablewrapper = table.closest('.table-container');
             if(tablewrapper){
-            table.style.transformOrigin = 'top left';
-              table.style.transform = `scale(${newTableWidth})`;
-              tablewrapper.style.height = (table.clientHeight * newTableWidth) + 'px';
+              // On mobile we prefer native horizontal scroll for readability.
+              if (this.windowWidth <= 768) {
+                table.style.transformOrigin = '';
+                table.style.transform = '';
+                tablewrapper.style.height = '';
+                return;
+              }
 
+              const wrapperWidth = tablewrapper.clientWidth || this.windowWidth;
+              const scale = Math.min(1, wrapperWidth / table.clientWidth);
+
+              if (scale < 1) {
+                table.style.transformOrigin = 'top left';
+                table.style.transform = `scale(${scale})`;
+                tablewrapper.style.height = (table.clientHeight * scale) + 'px';
+              } else {
+                // Never scale up; upscaling causes clipping on narrower layouts.
+                table.style.transformOrigin = '';
+                table.style.transform = '';
+                tablewrapper.style.height = '';
+              }
             }
           })
         }
