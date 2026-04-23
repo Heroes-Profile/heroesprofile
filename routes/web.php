@@ -218,3 +218,7 @@ Route::get('/Animation/Deathwing', [AnimationsController::class, 'showDeathwing'
 Route::get('/Animation/Tassadar', [AnimationsController::class, 'showTassadar']);
 
 Route::get('/test/patreon-earnings', [MainPageController::class, 'testPatreonEarnings']);
+
+Route::get('/__test-429', function () {
+    return response()->view('errors.429', [], 429);
+});
