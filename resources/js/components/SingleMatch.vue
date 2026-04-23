@@ -321,9 +321,9 @@
  </div>
   <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false"></dynamic-banner-ad>
 
- <div v-if="data.experience_breakdown" class="bg-lighten p-10 text-center">
-  <div class="flex flex-wrap justify-center max-w-[2000px] mx-auto">
-    <div >
+<div v-if="data.experience_breakdown" class="bg-lighten p-10 max-md:px-2 text-center overflow-x-hidden">
+  <div class="flex flex-wrap justify-center max-w-[2000px] mx-auto w-full">
+    <div class="w-full">
       <dual-line-chart :data="data.experience_breakdown" :winner="data.winner"></dual-line-chart>
     </div>
   </div>

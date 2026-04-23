@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <canvas id="myChart" width="1500" height="400"></canvas>
+  <div class="w-full max-w-[1500px] mx-auto">
+    <canvas ref="chartCanvas" class="w-full"></canvas>
   </div>
 </template>
 
@@ -47,7 +47,7 @@ export default {
     let loserLevel = this.winner == 1 ?  team_one_level : team_two_level ;
 
 
-    const ctx = document.getElementById('myChart').getContext('2d');
+    const ctx = this.$refs.chartCanvas.getContext('2d');
     this.chart = new Chart(ctx, {
       type: 'line',
       data: {
@@ -97,6 +97,7 @@ export default {
       },
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         scales: {
           x: {
             grid: {
@@ -128,6 +129,17 @@ export default {
         },
       },
     });
+
+    // Provide predictable chart height while still allowing responsive width.
+    this.$refs.chartCanvas.style.height = '400px';
+    if (window.innerWidth < 768) {
+      this.$refs.chartCanvas.style.height = '260px';
+    }
+  },
+  beforeUnmount() {
+    if (this.chart) {
+      this.chart.destroy();
+    }
   },
 };
 </script>
