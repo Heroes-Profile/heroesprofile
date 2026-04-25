@@ -14,8 +14,8 @@ class CreateCacheTable extends Migration
     public function up()
     {
         Schema::connection('heroesprofile_cache')->create('cache', function (Blueprint $table) {
-            $table->string('key', 750)->charset('utf8mb4')->collation('utf8mb4_unicode_ci')->primary();
-            $table->mediumText('value')->charset('utf8mb4')->collation('utf8mb4_unicode_ci');
+            $table->string('key', 750)->charset('utf8mb4')->collation('utf8mb4_0900_ai_ci')->primary();
+            $table->mediumText('value')->charset('utf8mb4')->collation('utf8mb4_0900_ai_ci');
             $table->integer('expiration');
             $table->index('expiration');
         });

@@ -29,7 +29,7 @@ class CreateBattletagsTable extends Migration
             $table->index('patreon');
             $table->index('opt_out');
             $table->index(['battletag', 'region'], 'battletag_region');
-            $table->index('account_level', null, null, 'INVISIBLE');
+            $table->index('account_level');
             $table->index(['region', 'account_level', 'latest_game'], 'region_accountLevel_latestGame');
         });
     }
