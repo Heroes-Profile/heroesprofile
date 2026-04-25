@@ -16,7 +16,7 @@ class CheckUserAgent
 
         // Check if IP is whitelisted - if so, bypass user agent checks
         // Use shared IP extraction method for consistency
-        $ip = \App\Services\WhitelistedIPsService::getClientIp($request);
+        $ip = WhitelistedIPsService::getClientIp($request);
         if (WhitelistedIPsService::isWhitelisted($ip)) {
             return $next($request);
         }

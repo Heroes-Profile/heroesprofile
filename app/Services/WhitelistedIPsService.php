@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\WhitelistIP;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
 class WhitelistedIPsService
@@ -50,7 +51,7 @@ class WhitelistedIPsService
     /**
      * Get all whitelisted IP addresses
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     public static function getWhitelistedIPs()
     {

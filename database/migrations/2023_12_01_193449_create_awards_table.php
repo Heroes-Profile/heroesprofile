@@ -16,8 +16,8 @@ class CreateAwardsTable extends Migration
         Schema::create('awards', function (Blueprint $table) {
             $table->id('award_table_id');
             $table->integer('award_id');
-            $table->string('title');
-            $table->string('icon');
+            $table->string('title')->collation('utf8mb4_0900_ai_ci');
+            $table->string('icon')->collation('utf8mb4_0900_ai_ci');
             $table->unique(['award_id', 'title', 'icon'], 'UNIQUE');
         });
     }

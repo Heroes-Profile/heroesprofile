@@ -28,8 +28,6 @@ return new class extends Migration
         // Set charset and collation
         DB::statement('ALTER TABLE `banned_leaderboard_accounts` ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci');
 
-        // Make the composite index invisible (MySQL 8.0+)
-        DB::statement('ALTER TABLE `banned_leaderboard_accounts` ALTER INDEX `index` INVISIBLE');
     }
 
     /**

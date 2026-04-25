@@ -43,7 +43,7 @@ This guide helps you set up Heroes Profile for local development using Docker Co
 ## Services
 
 - **app**: Laravel application (port 8000)
-- **mysql**: MySQL 8.0 database (port 3306)
+- **mysql**: MySQL 8.4 database (port 3306)
 
 ## Useful Commands
 

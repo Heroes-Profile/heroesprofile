@@ -27,7 +27,7 @@ class CreateMatchPredictionPlayerStatsTable extends Migration
 
         // Add computed columns using raw SQL since Laravel doesn't have direct support
         DB::statement('ALTER TABLE match_prediction_player_stats ADD COLUMN games_played INT GENERATED ALWAYS AS (win + loss) VIRTUAL');
-        DB::statement('ALTER TABLE match_prediction_player_stats ADD COLUMN win_rate DOUBLE GENERATED ALWAYS AS ((win / games_played) * 100) VIRTUAL');
+        DB::statement('ALTER TABLE match_prediction_player_stats ADD COLUMN win_rate DOUBLE GENERATED ALWAYS AS ((win / NULLIF(games_played, 0)) * 100) VIRTUAL');
     }
 
     /**

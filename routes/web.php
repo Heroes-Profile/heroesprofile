@@ -41,6 +41,7 @@ use App\Http\Controllers\PreMatchController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -140,7 +141,7 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
 
     Route::get('Match/Single/{replayID}', [SingleMatchController::class, 'showWithoutEsport']);
 
-    Route::get('/Match/Single/', function (Illuminate\Http\Request $request) {
+    Route::get('/Match/Single/', function (Request $request) {
         $replayID = $request->query('replayID');
 
         if ($replayID) {
@@ -188,7 +189,7 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
 
     Route::get('Match/Prediction/Game', [MatchPredictionGameController::class, 'show']);
 
-    Route::get('/PreMatch/Results/', function (Illuminate\Http\Request $request) {
+    Route::get('/PreMatch/Results/', function (Request $request) {
         $prematchID = $request->query('prematchID');
 
         if ($prematchID) {
