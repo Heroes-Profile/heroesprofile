@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ContactFormMail;
 use App\Rules\BattletagInputProhibitCharacters;
 use App\Services\RecaptchaService;
 use Illuminate\Http\Request;
@@ -44,7 +45,7 @@ class ContactController extends Controller
             'recaptcha_token' => 'nullable|string', // reCAPTCHA token
         ]);
 
-        Mail::to('contact@heroesprofile.com')->send(new \App\Mail\ContactFormMail($data));
+        Mail::to('contact@heroesprofile.com')->send(new ContactFormMail($data));
 
         return 'success';
     }

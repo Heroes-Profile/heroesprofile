@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\BattlenetAccount;
+
 return [
 
     /*
@@ -62,7 +64,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\BattlenetAccount::class,
+            'model' => BattlenetAccount::class,
         ],
     ],
 

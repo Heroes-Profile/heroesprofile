@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
+use SocialiteProviders\Manager\Config;
 
 class BattleNetController extends Controller
 {
@@ -33,7 +34,7 @@ class BattleNetController extends Controller
             $clientSecret = env('BATTLENET_SECRET', false);
             $redirectUrl = env('BATTLENET_REDIRECT_URI', false);
             $additionalProviderConfig = ['region' => 'us'];
-            $config = new \SocialiteProviders\Manager\Config($clientId, $clientSecret, $redirectUrl, $additionalProviderConfig);
+            $config = new Config($clientId, $clientSecret, $redirectUrl, $additionalProviderConfig);
 
             $user = Socialite::driver('battlenet')->setConfig($config)->user();
         } catch (InvalidStateException $e) {

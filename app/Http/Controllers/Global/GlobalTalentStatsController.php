@@ -108,7 +108,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $statFilter = $request['statfilter'];
         $mirror = $request['mirror'];
 
-        $cacheKey = 'GlobalHeroTalentStats|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalHeroTalentStats|'.implode(',', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
         if (config('app.env') !== 'production') {
             Cache::store('database')->forget($cacheKey);
@@ -265,7 +265,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $mirror = $request['mirror'];
         $talentbuildType = $request['talentbuildtype'];
 
-        $cacheKey = 'GlobalHeroTalentStatsBuilds|'.implode(',', \App\Models\SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = 'GlobalHeroTalentStatsBuilds|'.implode(',', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
         if (config('app.env') !== 'production') {
             Cache::store('database')->forget($cacheKey);

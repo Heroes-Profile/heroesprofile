@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Client\ConnectionException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -31,7 +32,7 @@ class Handler extends ExceptionHandler
     public function shouldReport(Throwable $e)
     {
         // Customize this logic to exclude specific types of exceptions
-        if ($e instanceof \Illuminate\Http\Client\ConnectionException) {
+        if ($e instanceof ConnectionException) {
             return false; // Do not report ConnectionExceptions to Flare
         }
 
