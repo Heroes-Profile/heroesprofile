@@ -2,7 +2,7 @@
   <div>
     <page-heading :infoText1="'Role data for ' + battletag + ' on ' + role" :heading="'Role Stats: '+ role" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
       <slot>
-        <round-image :image="`/images/roles/${role}.PNG`" :excludehover="true"></round-image>
+        <round-image :image="`/images/roles/${role.toLowerCase()}.PNG`" :excludehover="true"></round-image>
       </slot>
     </page-heading>
 
@@ -27,7 +27,7 @@
           <stat-box class="w-[48%]" :title="'KDA'" :value="data.kda" color="red"></stat-box>                  
         </div>
         <div class="my-auto">
-          <round-image :image="`/images/roles/${role}.PNG`" :excludehover="true" size="large"></round-image>
+          <round-image :image="`/images/roles/${role.toLowerCase()}.PNG`" :excludehover="true" size="large"></round-image>
         </div>
 
         <div class="flex flex-wrap max-w-[450px] text-left w-full items-between h-full justify-center mt-[1em]">
