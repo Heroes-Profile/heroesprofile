@@ -91,6 +91,12 @@
             <single-select-filter :values="buildtypes" :text="'Talent Build Type'" :defaultValue="this.talentbuildtype" @input-changed="buildtypechange"></single-select-filter>
             {{ this.selectedHero.name }} {{ "Talent Builds"}}
             <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
+            <div class="mt-4">
+              Create your own builds at
+              <a :href="'/Global/Talents/Builder/' + selectedHero.name" class="link" target="_blank">
+                {{ '/Global/Talents/Builder/' + selectedHero.name }}
+              </a>
+            </div>
           </div>
         </div>
         <div v-else-if="!isTalentsLoading && dataError" class="flex items-center justify-center">
