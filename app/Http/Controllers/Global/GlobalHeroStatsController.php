@@ -73,7 +73,11 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
 
         $region = $this->globalDataService->getRegionFilterValues($request['region']);
 
-        $statFilter = $request['statfilter'];
+        // Treat missing/empty stat filter as win_rate to avoid malformed SQL.
+        $statFilter = $request->input('statfilter');
+        if (empty($statFilter)) {
+            $statFilter = 'win_rate';
+        }
         $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
         $role = $request['role'];
 
@@ -101,7 +105,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
                 ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stats.hero')
                 ->select('heroes.name', 'heroes.short_name', 'heroes.id as hero_id', 'global_hero_stats.win_loss', 'heroes.new_role as role')
                 ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
-                ->when($statFilter !== 'win_rate', function ($query) use ($statFilter) {
+                ->when(! empty($statFilter) && $statFilter !== 'win_rate', function ($query) use ($statFilter) {
                     return $query->selectRaw("SUM(global_hero_stats.$statFilter) as total_filter_type");
                 })
                 ->filterByGameVersion($gameVersionIDs)
