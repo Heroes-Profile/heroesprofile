@@ -113,6 +113,7 @@ export default {
   props: {
     division: String,
     defaultseason: Number,
+    season: [String, Number],
     filters: Object,
   },
   data(){
@@ -128,7 +129,7 @@ export default {
   },
   created(){
     this.preloadedImage.src = '/images/NGS/no-image-clipped.png';
-    this.modifiedseason = this.defaultseason;
+    this.modifiedseason = this.season ?? this.defaultseason;
   },
   mounted() {
     this.getData();
