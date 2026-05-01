@@ -105,7 +105,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
         $heroLevel = $request['hero_level'];
         $region = $this->globalDataService->getRegionFilterValues($request['region']);
-        $statFilter = $request['statfilter'];
+        $statFilter = $this->normalizeStatFilter($request['statfilter'] ?? null);
         $mirror = $request['mirror'];
 
         $cacheKey = 'GlobalHeroTalentStats|'.implode(',', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
@@ -261,7 +261,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
         $heroLevel = $request['hero_level'];
         $region = $this->globalDataService->getRegionFilterValues($request['region']);
-        $statFilter = $request['statfilter'];
+        $statFilter = $this->normalizeStatFilter($request['statfilter'] ?? null);
         $mirror = $request['mirror'];
         $talentbuildType = $request['talentbuildtype'];
 
@@ -515,6 +515,8 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
     private function getBatchTopBuildsData($builds, $hero, $gameVersion, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region, $statFilter)
     {
+        $statFilter = $this->normalizeStatFilter($statFilter);
+
         if ($builds->isEmpty()) {
             return [];
         }
@@ -638,6 +640,8 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
     private function getTopBuildsData($build, $win_loss, $hero, $gameVersion, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region, $statFilter)
     {
+        $statFilter = $this->normalizeStatFilter($statFilter);
+
         $buildStages = [
             ['thirteen' => 0, 'sixteen' => 0, 'twenty' => 0],      // Levels 1-10
             ['thirteen' => $build->level_thirteen, 'sixteen' => 0, 'twenty' => 0],  // Levels 1-13
@@ -696,5 +700,14 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $transformedData['losses'] = round($transformedData['losses']);
 
         return $transformedData;
+    }
+
+    private function normalizeStatFilter($statFilter): string
+    {
+        if (! is_string($statFilter) || trim($statFilter) === '') {
+            return 'win_rate';
+        }
+
+        return trim($statFilter);
     }
 }
