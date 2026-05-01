@@ -51,6 +51,7 @@ class Kernel extends HttpKernel
         TrustProxies::class,
         HandleCors::class,
         PreventRequestsDuringMaintenance::class,
+        CheckUserAgent::class,
         BlockBannedIPs::class,
         ThrottleRequests::class.':global', // Limit requests per IP
         AutoBanSQLInjection::class,
@@ -58,7 +59,6 @@ class Kernel extends HttpKernel
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
         SetGlobalDataValues::class,
-        CheckUserAgent::class,
         DetectScrapingPatterns::class,
     ];
 
