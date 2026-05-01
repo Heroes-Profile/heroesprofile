@@ -263,6 +263,7 @@ class CheckUserAgent
 
             // Meta/Facebook crawlers
             'meta-externalads',
+            'meta-externalagent/1.1 (+https://developers.facebook.com/docs/sharing/webmasters/crawler)',
 
             // Web scraping tools and frameworks
             'Jaunt/',
