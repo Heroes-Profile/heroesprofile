@@ -93,15 +93,18 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         }
 
         $hero_name = $request['hero'];
-        $selectedtalents = $request['selectedtalents'];
+        $selectedtalents = $request->input('selectedtalents');
+        if (! is_array($selectedtalents)) {
+            $selectedtalents = [];
+        }
 
-        $level_one = $selectedtalents[1];
-        $level_four = $selectedtalents[4];
-        $level_seven = $selectedtalents[7];
-        $level_ten = $selectedtalents[10];
-        $level_thirteen = $selectedtalents[13];
-        $level_sixteen = $selectedtalents[16];
-        $level_twenty = $selectedtalents[20];
+        $level_one = $selectedtalents[1] ?? null;
+        $level_four = $selectedtalents[4] ?? null;
+        $level_seven = $selectedtalents[7] ?? null;
+        $level_ten = $selectedtalents[10] ?? null;
+        $level_thirteen = $selectedtalents[13] ?? null;
+        $level_sixteen = $selectedtalents[16] ?? null;
+        $level_twenty = $selectedtalents[20] ?? null;
 
         if (! $level_one && ! $level_four && ! $level_seven && ! $level_ten && ! $level_thirteen && ! $level_sixteen && ! $level_twenty) {
             $talents = HeroesDataTalent::where('hero_name', $hero_name)->orderBy('level', 'ASC')->orderBy('sort', 'ASC')->get();
@@ -386,15 +389,18 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         }
 
         $hero_name = $request['hero'];
-        $selectedtalents = $request['selectedtalents'];
+        $selectedtalents = $request->input('selectedtalents');
+        if (! is_array($selectedtalents)) {
+            $selectedtalents = [];
+        }
 
-        $level_one = $selectedtalents[1];
-        $level_four = $selectedtalents[4];
-        $level_seven = $selectedtalents[7];
-        $level_ten = $selectedtalents[10];
-        $level_thirteen = $selectedtalents[13];
-        $level_sixteen = $selectedtalents[16];
-        $level_twenty = $selectedtalents[20];
+        $level_one = $selectedtalents[1] ?? null;
+        $level_four = $selectedtalents[4] ?? null;
+        $level_seven = $selectedtalents[7] ?? null;
+        $level_ten = $selectedtalents[10] ?? null;
+        $level_thirteen = $selectedtalents[13] ?? null;
+        $level_sixteen = $selectedtalents[16] ?? null;
+        $level_twenty = $selectedtalents[20] ?? null;
 
         if (! $level_one && ! $level_four && ! $level_seven && ! $level_ten && ! $level_thirteen && ! $level_sixteen && ! $level_twenty) {
             $talents = HeroesDataTalent::where('hero_name', $hero_name)->orderBy('level', 'ASC')->orderBy('sort', 'ASC')->get();

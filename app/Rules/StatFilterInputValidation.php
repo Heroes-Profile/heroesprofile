@@ -6,7 +6,10 @@ use Illuminate\Contracts\Validation\Rule;
 
 class StatFilterInputValidation implements Rule
 {
-    protected $validStats = [
+    /**
+     * Codes allowed for global stat filters (must match DB column names where used in SUM()).
+     */
+    public const VALID_STAT_CODES = [
         'win_rate',
         'game_time',
         'kills',
@@ -63,10 +66,19 @@ class StatFilterInputValidation implements Rule
 
     public function passes($attribute, $value)
     {
+        if ($value === null) {
+            return true;
+        }
+
+        if (! is_string($value)) {
+            return false;
+        }
+
         if ($value != 'win_rate' && ($this->timeframeType == 'major' || count($this->timeframe) > 5)) {
             return false;
         }
-        if (! in_array($value, $this->validStats)) {
+
+        if (! in_array($value, self::VALID_STAT_CODES, true)) {
             return false;
         }
 

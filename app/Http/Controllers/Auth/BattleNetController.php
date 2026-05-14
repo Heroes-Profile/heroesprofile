@@ -29,6 +29,18 @@ class BattleNetController extends Controller
 
     public function handleProviderCallback(Request $request)
     {
+        // Blizzard sends error + error_description (no `code`) when the user denies consent
+        // or when the authorization step fails — do not call the token endpoint in that case.
+        if ($request->filled('error')) {
+            return redirect('/Authenticate/Battlenet/Failed')
+                ->with('oauth_error', $request->query('error'))
+                ->with('oauth_error_description', $request->query('error_description'));
+        }
+
+        if (! $request->filled('code')) {
+            return redirect('/Authenticate/Battlenet/Failed');
+        }
+
         try {
             $clientId = env('BATTLENET_KEY', false);
             $clientSecret = env('BATTLENET_SECRET', false);

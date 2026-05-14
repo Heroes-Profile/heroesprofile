@@ -8,6 +8,7 @@ use App\Models\GlobalHeroTalents;
 use App\Models\HeroesDataTalent;
 use App\Models\SeasonGameVersion;
 use App\Rules\HeroInputValidation;
+use App\Rules\StatFilterInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -139,7 +140,9 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                 ->select('heroes.name', 'global_hero_talents_details.hero as id', 'global_hero_talents_details.win_loss', 'global_hero_talents_details.talent', 'global_hero_talents_details.level')
                 ->selectRaw('SUM(global_hero_talents_details.games_played) as games_played')
                 ->when($statFilter !== 'win_rate', function ($query) use ($statFilter) {
-                    return $query->selectRaw("SUM(global_hero_talents_details.$statFilter) as total_filter_type");
+                    $column = str_replace('`', '``', $statFilter);
+
+                    return $query->selectRaw("SUM(`global_hero_talents_details`.`{$column}`) as total_filter_type");
                 })
                 ->filterByGameVersion($gameVersionIds)
                 ->filterByGameType($gameType)
@@ -534,7 +537,9 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ->select('global_hero_talents.win_loss', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
             ->selectRaw('SUM(global_hero_talents.games_played) AS games_played')
             ->when($statFilter !== 'win_rate', function ($query) use ($statFilter) {
-                return $query->selectRaw("SUM(global_hero_talents.$statFilter) as total_filter_type");
+                $column = str_replace('`', '``', $statFilter);
+
+                return $query->selectRaw("SUM(`global_hero_talents`.`{$column}`) as total_filter_type");
             })
             ->filterByGameVersion($gameVersionIds)
             ->filterByGameType($gameType)
@@ -660,7 +665,9 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ->select('win_loss', 'level_thirteen', 'level_sixteen', 'level_twenty')
             ->selectRaw('SUM(games_played) AS games_played')
             ->when($statFilter !== 'win_rate', function ($query) use ($statFilter) {
-                return $query->selectRaw("SUM(global_hero_talents.$statFilter) as total_filter_type");
+                $column = str_replace('`', '``', $statFilter);
+
+                return $query->selectRaw("SUM(`global_hero_talents`.`{$column}`) as total_filter_type");
             })
             ->filterByGameVersion($gameVersion)
             ->filterByGameType($gameType)
@@ -704,10 +711,20 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
 
     private function normalizeStatFilter($statFilter): string
     {
-        if (! is_string($statFilter) || trim($statFilter) === '') {
+        if (! is_string($statFilter)) {
             return 'win_rate';
         }
 
-        return trim($statFilter);
+        $statFilter = trim($statFilter);
+
+        if ($statFilter === '') {
+            return 'win_rate';
+        }
+
+        if (! in_array($statFilter, StatFilterInputValidation::VALID_STAT_CODES, true)) {
+            return 'win_rate';
+        }
+
+        return $statFilter;
     }
 }
