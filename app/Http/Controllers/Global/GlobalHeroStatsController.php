@@ -219,7 +219,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
             $bans = $matchingBan ? round($matchingBan['bans']) : 0; // Round the bans value
 
             $banRate = 0;
-            if ($bans > 0) {
+            if ($bans > 0 && $totalGamesPlayed > 0) {
                 $banRate = ($bans / $totalGamesPlayed) * 100;
             }
 
@@ -232,10 +232,13 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
                 }
             }
 
-            $popularity = (($gamesPlayed + $bans) / $totalGamesPlayed) * 100;
-            $pickRate = ($gamesPlayed / $totalGamesPlayed) * 100;
+            $popularity = $totalGamesPlayed > 0 ? (($gamesPlayed + $bans) / $totalGamesPlayed) * 100 : 0;
+            $pickRate = $totalGamesPlayed > 0 ? ($gamesPlayed / $totalGamesPlayed) * 100 : 0;
 
-            $adjustedPickRate = (($gamesPlayed / $totalGamesPlayed) * 100) / (100 - $banRate);
+            $adjustedDenominator = 100 - $banRate;
+            $adjustedPickRate = ($totalGamesPlayed > 0 && $adjustedDenominator > 0)
+                ? (($gamesPlayed / $totalGamesPlayed) * 100) / $adjustedDenominator
+                : 0;
             $influence = round((($winRate / 100) - 0.5) * ($adjustedPickRate * 10000));
 
             $confidenceInterval = $this->globalDataService->calculateWinRateConfidenceInterval($wins, $gamesPlayed);
