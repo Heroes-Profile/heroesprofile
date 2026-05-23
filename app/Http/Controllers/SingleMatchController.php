@@ -39,6 +39,10 @@ class SingleMatchController extends Controller
             }
         }
 
+        if (! $this->globalDataService->canViewMatchReplay($replayID)) {
+            return $this->denyUnauthorizedCustomMatch();
+        }
+
         return view('singleMatch')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'esport' => null,
@@ -123,6 +127,10 @@ class SingleMatchController extends Controller
 
         $this->esport = $request['esport'];
         $replayID = $request['replayID'];
+
+        if (is_null($this->esport) && ! $this->globalDataService->canViewMatchReplay($replayID)) {
+            return $this->denyUnauthorizedCustomMatch();
+        }
 
         $this->schema = 'heroesprofile';
 
@@ -961,5 +969,10 @@ class SingleMatchController extends Controller
         }
 
         return $matches;
+    }
+
+    private function denyUnauthorizedCustomMatch()
+    {
+        return \Redirect::to('/');
     }
 }
