@@ -16,6 +16,7 @@ use App\Models\MastersClash\MastersClashTeam;
 use App\Models\MatchPredictionSeason;
 use App\Models\MMRTypeID;
 use App\Models\NGS\NGSTeam;
+use App\Models\Player;
 use App\Models\Replay;
 use App\Models\SeasonDate;
 use App\Models\SeasonGameVersion;
@@ -152,6 +153,43 @@ class GlobalDataService
         }
 
         return false;
+    }
+
+    public function canViewMatchReplay(int $replayID): bool
+    {
+        $gameType = Replay::where('replayID', $replayID)->value('game_type');
+
+        if ($gameType === null) {
+            return false;
+        }
+
+        if ((int) $gameType !== 0) {
+            return true;
+        }
+
+        return $this->canViewCustomMatch($replayID);
+    }
+
+    public function canViewCustomMatch(int $replayID): bool
+    {
+        if (! Auth::check()) {
+            return false;
+        }
+
+        $user = Auth::user();
+
+        $customgames = $user->userSettings->firstWhere('setting', 'customgames');
+
+        if (! $customgames || $customgames->value != 1) {
+            return false;
+        }
+
+        return Player::query()
+            ->join('replay', 'player.replayID', '=', 'replay.replayID')
+            ->where('player.replayID', $replayID)
+            ->where('player.blizz_id', $user->blizz_id)
+            ->where('replay.region', $user->region)
+            ->exists();
     }
 
     public function getPlayerLoadSettings()
