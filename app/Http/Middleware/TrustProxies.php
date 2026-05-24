@@ -10,9 +10,12 @@ class TrustProxies extends Middleware
     /**
      * The trusted proxies for this application.
      *
+     * Cloud Run sits behind Google's load balancer, which sets X-Forwarded-For.
+     * Trusting proxies here ensures $request->ip() resolves to the visitor IP.
+     *
      * @var array<int, string>|string|null
      */
-    protected $proxies;
+    protected $proxies = '*';
 
     /**
      * The headers that should be used to detect proxies.

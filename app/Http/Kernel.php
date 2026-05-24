@@ -16,6 +16,7 @@ use App\Http\Middleware\LogIPAndUserAgent;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\SetGlobalDataValues;
+use App\Http\Middleware\ThrottleNonApiRequests;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\ValidateSignature;
@@ -53,7 +54,7 @@ class Kernel extends HttpKernel
         PreventRequestsDuringMaintenance::class,
         CheckUserAgent::class,
         BlockBannedIPs::class,
-        ThrottleRequests::class.':global', // Limit requests per IP
+        ThrottleNonApiRequests::class,
         AutoBanSQLInjection::class,
         ValidatePostSize::class,
         TrimStrings::class,

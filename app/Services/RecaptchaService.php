@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -20,8 +21,11 @@ class RecaptchaService
     /**
      * Verify reCAPTCHA v3 token
      */
-    public function verify(string $token, string $action = 'contact_form'): array
+    public function verify(string $token, string $action = 'contact_form', ?Request $request = null): array
     {
+        $request = $request ?? request();
+        $ip = WhitelistedIPsService::getClientIp($request);
+
         if (empty($this->secretKey)) {
             Log::warning('reCAPTCHA secret key not configured');
 
@@ -32,7 +36,7 @@ class RecaptchaService
             $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
                 'secret' => $this->secretKey,
                 'response' => $token,
-                'remoteip' => request()->ip(),
+                'remoteip' => $ip,
             ]);
 
             $data = $response->json();
@@ -40,7 +44,7 @@ class RecaptchaService
             if (! $data['success']) {
                 Log::warning('reCAPTCHA verification failed', [
                     'errors' => $data['error-codes'] ?? [],
-                    'ip' => request()->ip(),
+                    'ip' => $ip,
                 ]);
 
                 return ['success' => false, 'error' => 'reCAPTCHA verification failed'];
@@ -52,7 +56,7 @@ class RecaptchaService
                 Log::warning('reCAPTCHA score too low', [
                     'score' => $score,
                     'threshold' => $this->scoreThreshold,
-                    'ip' => request()->ip(),
+                    'ip' => $ip,
                 ]);
 
                 return ['success' => false, 'error' => 'reCAPTCHA score too low', 'score' => $score];
@@ -63,7 +67,7 @@ class RecaptchaService
                 Log::warning('reCAPTCHA action mismatch', [
                     'expected' => $action,
                     'received' => $data['action'],
-                    'ip' => request()->ip(),
+                    'ip' => $ip,
                 ]);
 
                 return ['success' => false, 'error' => 'reCAPTCHA action mismatch'];
@@ -78,7 +82,7 @@ class RecaptchaService
         } catch (\Exception $e) {
             Log::error('reCAPTCHA verification error', [
                 'error' => $e->getMessage(),
-                'ip' => request()->ip(),
+                'ip' => $ip,
             ]);
 
             return ['success' => false, 'error' => 'reCAPTCHA verification error'];
