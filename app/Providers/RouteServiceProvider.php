@@ -38,6 +38,11 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(3)->by($this->rateLimitKey($request));
         });
 
+        // Archive replays (replayID < max - 1,000,000)
+        RateLimiter::for('old-replay', function (Request $request) {
+            return Limit::perMinute(15)->by($this->rateLimitKey($request));
+        });
+
         $this->routes(function () {
             Route::middleware('api')
                 ->prefix('api')
