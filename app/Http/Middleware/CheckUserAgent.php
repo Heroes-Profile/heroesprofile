@@ -406,5 +406,4 @@ class CheckUserAgent
 
         return $next($request);
     }
-
 }
