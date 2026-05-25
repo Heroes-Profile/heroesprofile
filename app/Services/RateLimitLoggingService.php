@@ -20,7 +20,7 @@ class RateLimitLoggingService
             }
 
             RateLimitLog::create([
-                'ip' => WhitelistedIPsService::getClientIp($request),
+                'ip' => ClientIpService::getClientIp($request),
                 'user_id' => Auth::id(),
                 'http_method' => $request->method(),
                 'path' => substr($request->path(), 0, 500),
