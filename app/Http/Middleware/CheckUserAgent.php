@@ -422,11 +422,11 @@ class CheckUserAgent
         }
 
         $minVersions = [
-            'Chrome'  => 120,
+            'Chrome' => 120,
             'Firefox' => 115,
-            'Safari'  => 604, // WebKit build shipped with Safari 17
-            'Edge'    => 120,
-            'OPR'     => 100, // Opera
+            'Safari' => 604, // WebKit build shipped with Safari 17
+            'Edge' => 120,
+            'OPR' => 100, // Opera
         ];
 
         foreach ($minVersions as $browser => $minVersion) {
