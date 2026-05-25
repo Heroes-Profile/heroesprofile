@@ -387,10 +387,6 @@ class CheckUserAgent
             }
         }
 
-        if ($this->isOutdatedBrowser($userAgent)) {
-            return response()->json(['message' => 'Access denied. Please update your browser.'], 403);
-        }
-
         // Check for specific user agents
         $specificUserAgents = [
             'Mozilla/5.0 (compatible; AwarioBot/1.0; +https://awario.com/bots.html)',
@@ -411,32 +407,4 @@ class CheckUserAgent
         return $next($request);
     }
 
-    /**
-     * Block browsers with very outdated major versions.
-     * Real users auto-update; bots impersonate old versions.
-     */
-    protected function isOutdatedBrowser(?string $userAgent): bool
-    {
-        if (empty($userAgent)) {
-            return false;
-        }
-
-        $minVersions = [
-            'Chrome' => 120,
-            'Firefox' => 115,
-            'Safari' => 604, // WebKit build shipped with Safari 17
-            'Edge' => 120,
-            'OPR' => 100, // Opera
-        ];
-
-        foreach ($minVersions as $browser => $minVersion) {
-            if (preg_match("/{$browser}\\/(\d+)/", $userAgent, $matches)) {
-                if ((int) $matches[1] < $minVersion) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
 }
