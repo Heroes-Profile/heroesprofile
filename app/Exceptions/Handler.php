@@ -2,8 +2,11 @@
 
 namespace App\Exceptions;
 
+use App\Services\RateLimitLoggingService;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Exceptions\ThrottleRequestsException;
+use Illuminate\Http\Request;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -27,10 +30,18 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             return $this->shouldReport($e);
         });
+
+        $this->renderable(function (ThrottleRequestsException $e, Request $request) {
+            app(RateLimitLoggingService::class)->logFromThrottleException($request, $e);
+        });
     }
 
     public function shouldReport(Throwable $e)
     {
+        if ($e instanceof ThrottleRequestsException) {
+            return false;
+        }
+
         // Customize this logic to exclude specific types of exceptions
         if ($e instanceof ConnectionException) {
             return false; // Do not report ConnectionExceptions to Flare

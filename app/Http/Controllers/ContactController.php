@@ -31,7 +31,7 @@ class ContactController extends Controller
         // Validate reCAPTCHA
         $recaptchaToken = $request->input('recaptcha_token');
         if ($recaptchaToken) {
-            $recaptchaResult = $recaptchaService->verify($recaptchaToken, 'contact_form');
+            $recaptchaResult = $recaptchaService->verify($recaptchaToken, 'contact_form', $request);
             if (! $recaptchaResult['success']) {
                 return response()->json(['error' => 'reCAPTCHA verification failed'], 400);
             }

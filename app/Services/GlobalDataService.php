@@ -28,6 +28,9 @@ use Illuminate\Support\Facades\DB;
 
 class GlobalDataService
 {
+    /** Replays older than (max replay ID - this value) get stricter rate limits. */
+    public const OLD_REPLAY_THRESHOLD = 1_000_000;
+
     private $cachedHeroes = null;
 
     private $cachedGameTypes = null;
@@ -59,7 +62,19 @@ class GlobalDataService
 
     public function calculateMaxReplayNumber()
     {
-        return Replay::max('replayID');
+        return $this->getMaxReplayId();
+    }
+
+    public function getMaxReplayId(): int
+    {
+        return (int) Cache::remember('max_replay_id', 300, function () {
+            return Replay::max('replayID') ?? 0;
+        });
+    }
+
+    public function isOldReplay(int $replayId): bool
+    {
+        return $replayId < ($this->getMaxReplayId() - self::OLD_REPLAY_THRESHOLD);
     }
 
     public function getDefaultTimeframeType()

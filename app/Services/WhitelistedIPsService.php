@@ -9,29 +9,11 @@ use Illuminate\Http\Request;
 class WhitelistedIPsService
 {
     /**
-     * Extract client IP address handling proxies
-     * This method is shared across all middleware to ensure consistent IP extraction
+     * Extract client IP address handling proxies.
+     * Relies on TrustProxies middleware so $request->ip() reflects the visitor IP on Cloud Run.
      */
     public static function getClientIp(Request $request): string
     {
-        // Check for forwarded IP first (for proxy setups)
-        if ($request->hasHeader('X-Forwarded-For')) {
-            $forwardedFor = $request->header('X-Forwarded-For');
-            if (strpos($forwardedFor, ',') !== false) {
-                $ips = explode(',', $forwardedFor);
-
-                return trim($ips[0]);
-            }
-
-            return $forwardedFor;
-        }
-
-        // Check for real IP header
-        if ($request->hasHeader('X-Real-IP')) {
-            return $request->header('X-Real-IP');
-        }
-
-        // Fall back to remote address
         return $request->ip();
     }
 

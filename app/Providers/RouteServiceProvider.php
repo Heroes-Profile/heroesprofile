@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\WhitelistedIPsService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -25,17 +26,21 @@ class RouteServiceProvider extends ServiceProvider
     public function boot(): void
     {
         RateLimiter::for('api', function (Request $request) {
-            return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
+            return Limit::perMinute(180)->by($this->rateLimitKey($request));
         });
 
-        // Global rate limiting to prevent DDoS and rapid SQL injection attempts
+        // Page navigations and other non-API requests
         RateLimiter::for('global', function (Request $request) {
-            return Limit::perMinute(120)->by($request->ip());
+            return Limit::perMinute(120)->by($this->rateLimitKey($request));
         });
 
-        // Specific rate limiting for contact form
         RateLimiter::for('contact', function (Request $request) {
-            return Limit::perMinute(3)->by($request->ip());
+            return Limit::perMinute(3)->by($this->rateLimitKey($request));
+        });
+
+        // Archive replay pages (GET Match/Single/{id}, replayID < max - 1,000,000)
+        RateLimiter::for('old-replay', function (Request $request) {
+            return Limit::perMinute(15)->by($this->rateLimitKey($request));
         });
 
         $this->routes(function () {
@@ -46,5 +51,17 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
         });
+    }
+
+    /**
+     * Resolve the rate-limit bucket from the real client IP, not the load balancer.
+     */
+    protected function rateLimitKey(Request $request): string
+    {
+        if ($request->user()) {
+            return 'user:'.$request->user()->id;
+        }
+
+        return WhitelistedIPsService::getClientIp($request);
     }
 }

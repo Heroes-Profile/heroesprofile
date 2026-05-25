@@ -16,8 +16,11 @@ use App\Http\Middleware\LogIPAndUserAgent;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\SetGlobalDataValues;
+use App\Http\Middleware\ThrottleNonApiRequests;
+use App\Http\Middleware\ThrottleOldReplayRequests;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
+use App\Http\Middleware\ValidateApiPostOrigin;
 use App\Http\Middleware\ValidateSignature;
 use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
@@ -53,13 +56,14 @@ class Kernel extends HttpKernel
         PreventRequestsDuringMaintenance::class,
         CheckUserAgent::class,
         BlockBannedIPs::class,
-        ThrottleRequests::class.':global', // Limit requests per IP
+        ThrottleNonApiRequests::class,
         AutoBanSQLInjection::class,
         ValidatePostSize::class,
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
         SetGlobalDataValues::class,
         DetectScrapingPatterns::class,
+        ThrottleOldReplayRequests::class,
     ];
 
     /**
@@ -80,6 +84,7 @@ class Kernel extends HttpKernel
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            ValidateApiPostOrigin::class,
             ThrottleRequests::class.':api',
             SubstituteBindings::class,
         ],
