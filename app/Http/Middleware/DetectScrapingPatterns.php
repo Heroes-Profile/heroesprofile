@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\BannedIPs;
 use App\Models\SuspiciousActivityLog;
 use App\Services\WhitelistedIPsService;
 use Closure;
