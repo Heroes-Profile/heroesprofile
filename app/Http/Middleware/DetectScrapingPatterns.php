@@ -15,17 +15,17 @@ class DetectScrapingPatterns
     /**
      * Maximum number of similar requests before flagging as scraping
      */
-    protected $maxSimilarRequests = 10;
+    protected $maxSimilarRequests = 5;
 
     /**
      * Time window in minutes to check for patterns
      */
-    protected $timeWindowMinutes = 15;
+    protected $timeWindowMinutes = 5;
 
     /**
      * Minimum number of unique pages with similar patterns
      */
-    protected $minPatternMatches = 20;
+    protected $minPatternMatches = 10;
 
     /**
      * Handle an incoming request.
@@ -58,14 +58,11 @@ class DetectScrapingPatterns
         if ($this->detectScrapingPattern($ip, $path)) {
             $this->logSuspiciousActivity($ip, $userAgent, $path, 'Scraping pattern detected');
 
-            // Auto-ban disabled for testing - reviewing logs first
-            // TODO: Enable auto-banning after reviewing logs and confirming detection accuracy
-            /*
-            if (!BannedIPs::isBanned($ip)) {
+            if (! BannedIPs::isBanned($ip)) {
                 BannedIPs::banIp($ip, 'Automated scraping pattern detected', $path);
             }
+
             return response()->json(['message' => 'Access denied. Automated scraping is not allowed.'], 403);
-            */
         }
 
         return $next($request);
