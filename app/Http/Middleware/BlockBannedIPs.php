@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\BannedIPs;
+use App\Services\ClientIpService;
 use App\Services\WhitelistedIPsService;
 use Closure;
 use Illuminate\Http\Request;
@@ -22,7 +23,7 @@ class BlockBannedIPs
                 return $next($request);
             }
 
-            $ip = WhitelistedIPsService::getClientIp($request);
+            $ip = ClientIpService::getClientIp($request);
 
             if (WhitelistedIPsService::isWhitelisted($ip)) {
                 return $next($request);

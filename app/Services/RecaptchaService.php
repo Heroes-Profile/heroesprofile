@@ -24,7 +24,7 @@ class RecaptchaService
     public function verify(string $token, string $action = 'contact_form', ?Request $request = null): array
     {
         $request = $request ?? request();
-        $ip = WhitelistedIPsService::getClientIp($request);
+        $ip = ClientIpService::getClientIp($request);
 
         if (empty($this->secretKey)) {
             Log::warning('reCAPTCHA secret key not configured');

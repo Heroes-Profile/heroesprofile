@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Services\ClientIpService;
 use App\Services\GlobalDataService;
 use App\Services\WhitelistedIPsService;
 use Closure;
@@ -24,7 +25,7 @@ class ThrottleOldReplayRequests
             return $next($request);
         }
 
-        $ip = WhitelistedIPsService::getClientIp($request);
+        $ip = ClientIpService::getClientIp($request);
 
         if (WhitelistedIPsService::isWhitelisted($ip)) {
             return $next($request);

@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\BattlenetAccount;
 use App\Models\IpLogging;
-use App\Services\WhitelistedIPsService;
+use App\Services\ClientIpService;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -26,8 +26,7 @@ class LogIPAndUserAgent
 
         try {
             Cookie::queue(Cookie::forget('additional-battletags'));
-            // Use shared IP extraction method for consistency across all middleware
-            $ip = WhitelistedIPsService::getClientIp($request);
+            $ip = ClientIpService::getClientIp($request);
 
             $page = substr($request->path(), 0, 500);
             $userAgent = $request->header('User-Agent');

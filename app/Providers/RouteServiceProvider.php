@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Services\WhitelistedIPsService;
+use App\Services\ClientIpService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -61,6 +61,6 @@ class RouteServiceProvider extends ServiceProvider
             return 'user:'.$request->user()->id;
         }
 
-        return WhitelistedIPsService::getClientIp($request);
+        return ClientIpService::getClientIp($request);
     }
 }
