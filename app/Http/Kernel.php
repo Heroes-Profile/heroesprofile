@@ -20,6 +20,7 @@ use App\Http\Middleware\ThrottleNonApiRequests;
 use App\Http\Middleware\ThrottleOldReplayRequests;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
+use App\Http\Middleware\ValidateApiPostOrigin;
 use App\Http\Middleware\ValidateSignature;
 use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
@@ -83,6 +84,7 @@ class Kernel extends HttpKernel
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            ValidateApiPostOrigin::class,
             ThrottleRequests::class.':api',
             SubstituteBindings::class,
         ],
