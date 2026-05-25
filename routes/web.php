@@ -60,7 +60,7 @@ Route::fallback(function () {
 });
 
 // Route::middleware(['logIpAndUserAgent', 'communitySupportRedirect', 'detectScrapingPatterns'])->group(function () {
-Route::middleware(['logIpAndUserAgent'])->group(function () {
+Route::middleware(['requireWebsiteAuthForAll', 'logIpAndUserAgent'])->group(function () {
     Route::get('/', [MainPageController::class, 'show']);
 
     // Testing routes
