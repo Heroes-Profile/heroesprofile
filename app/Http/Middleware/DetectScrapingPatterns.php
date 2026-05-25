@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\BannedIPs;
 use App\Models\SuspiciousActivityLog;
+use App\Services\FakeChromeUserAgentService;
 use App\Services\WhitelistedIPsService;
 use Closure;
 use Illuminate\Http\Request;
@@ -78,6 +79,10 @@ class DetectScrapingPatterns
     protected function isSuspiciousUserAgent(string $userAgent): bool
     {
         if (empty($userAgent)) {
+            return true;
+        }
+
+        if (FakeChromeUserAgentService::isFake($userAgent)) {
             return true;
         }
 
