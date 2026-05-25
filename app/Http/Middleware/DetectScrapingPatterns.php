@@ -58,10 +58,6 @@ class DetectScrapingPatterns
         if ($this->detectScrapingPattern($ip, $path)) {
             $this->logSuspiciousActivity($ip, $userAgent, $path, 'Scraping pattern detected');
 
-            if (! BannedIPs::isBanned($ip)) {
-                BannedIPs::banIp($ip, 'Automated scraping pattern detected', $path);
-            }
-
             return response()->json(['message' => 'Access denied. Automated scraping is not allowed.'], 403);
         }
 
