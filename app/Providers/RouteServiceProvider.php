@@ -26,12 +26,11 @@ class RouteServiceProvider extends ServiceProvider
     public function boot(): void
     {
         RateLimiter::for('api', function (Request $request) {
-            return Limit::perMinute(180)->by($this->rateLimitKey($request));
+            return Limit::perMinute(60)->by($this->rateLimitKey($request));
         });
 
-        // Page navigations and other non-API requests
         RateLimiter::for('global', function (Request $request) {
-            return Limit::perMinute(120)->by($this->rateLimitKey($request));
+            return Limit::perMinute(40)->by($this->rateLimitKey($request));
         });
 
         RateLimiter::for('contact', function (Request $request) {
