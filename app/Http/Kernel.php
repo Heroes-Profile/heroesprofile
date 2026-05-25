@@ -3,13 +3,10 @@
 namespace App\Http;
 
 use App\Http\Middleware\Authenticate;
-use App\Http\Middleware\AutoBanSQLInjection;
 use App\Http\Middleware\BlockBannedIPs;
 use App\Http\Middleware\CheckIfPatreonSupporter;
 use App\Http\Middleware\CheckIfPrivateProfilePage;
-use App\Http\Middleware\CheckUserAgent;
 use App\Http\Middleware\CommunitySupportRedirect;
-use App\Http\Middleware\DetectScrapingPatterns;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\EnsureBattlenetAuthenticated;
 use App\Http\Middleware\LogIPAndUserAgent;
@@ -55,15 +52,12 @@ class Kernel extends HttpKernel
         TrustProxies::class,
         HandleCors::class,
         PreventRequestsDuringMaintenance::class,
-        CheckUserAgent::class,
         BlockBannedIPs::class,
         ThrottleNonApiRequests::class,
-        AutoBanSQLInjection::class,
         ValidatePostSize::class,
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
         SetGlobalDataValues::class,
-        DetectScrapingPatterns::class,
         ThrottleOldReplayRequests::class,
     ];
 
