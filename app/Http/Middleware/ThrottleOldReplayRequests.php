@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use App\Services\GlobalDataService;
 use App\Services\ClientIpService;
+use App\Services\GlobalDataService;
 use App\Services\WhitelistedIPsService;
 use Closure;
 use Illuminate\Http\Request;
