@@ -16,7 +16,7 @@ class ThrottleOldReplayRequests
     ) {}
 
     /**
-     * Apply a stricter rate limit when accessing archive replays.
+     * Apply a stricter rate limit when loading archive replay pages (web routes only).
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -30,29 +30,28 @@ class ThrottleOldReplayRequests
             return $next($request);
         }
 
-        $replayId = $this->extractReplayId($request);
-
-        if ($replayId === null || ! $this->globalDataService->isOldReplay($replayId)) {
+        if (! $this->isReplayWebPath($request->path())) {
             return $next($request);
         }
 
-        // Count the expensive data fetch once per replay, not the HTML shell.
-        if ($request->path() !== 'api/v1/match/single') {
+        $replayId = $this->extractReplayIdFromPath($request->path());
+
+        if ($replayId === null || ! $this->globalDataService->isOldReplay($replayId)) {
             return $next($request);
         }
 
         return app(ThrottleRequests::class)->handle($request, $next, 'old-replay');
     }
 
-    protected function extractReplayId(Request $request): ?int
+    protected function isReplayWebPath(string $path): bool
     {
-        if ($request->path() === 'api/v1/match/single') {
-            $replayId = $request->input('replayID');
+        return preg_match('#^(Esports/[^/]+/)?Match/Single/\d+#i', $path) === 1
+            || preg_match('#^Esports/Other/[^/]+/Match/Single/\d+#i', $path) === 1;
+    }
 
-            return is_numeric($replayId) ? (int) $replayId : null;
-        }
-
-        if (preg_match('#Match/Single/(\d+)#i', $request->path(), $matches) === 1) {
+    protected function extractReplayIdFromPath(string $path): ?int
+    {
+        if (preg_match('#Match/Single/(\d+)#i', $path, $matches) === 1) {
             return (int) $matches[1];
         }
 
