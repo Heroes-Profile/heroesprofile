@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Services\FakeChromeUserAgentService;
 use App\Services\WhitelistedIPsService;
 use Closure;
 
@@ -27,10 +26,6 @@ class CheckUserAgent
         // Allow legitimate Googlebot crawlers (but not Google-Display-Ads-Bot)
         if ($userAgent && stripos($userAgent, 'Googlebot') !== false && stripos($userAgent, 'Google-Display-Ads-Bot') === false) {
             return $next($request);
-        }
-
-        if ($userAgent && FakeChromeUserAgentService::isFake($userAgent)) {
-            return response()->json(['message' => 'Access denied for bot/scraping tool.'], 403);
         }
 
         $blockedUserAgents = [
