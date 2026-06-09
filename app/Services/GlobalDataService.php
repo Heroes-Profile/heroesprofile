@@ -301,33 +301,58 @@ class GlobalDataService
 
     public function calculateCacheTimeInMinutes($timeframe)
     {
-        // return 300;
+        return (int) ceil($this->calculateCacheTimeInSeconds($timeframe) / 60);
+    }
 
-        if (app()->environment('production')) {
-            if (count($timeframe) == 1 && $timeframe[0] == $this->getLatestPatch()) {
+    public function isGlobalAsyncEnabled(): bool
+    {
+        return (bool) config('global.async_enabled');
+    }
+
+    public function calculateCacheTimeInSeconds($timeframe)
+    {
+        if (! $this->isGlobalAsyncEnabled()) {
+            return 0;
+        }
+
+        if (count($timeframe) == 1 && $timeframe[0] == $this->getLatestPatch()) {
                 $date = SeasonGameVersion::where('game_version', min($timeframe))->value('date_added');
                 $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
 
                 if ($changeInMinutes < 1440) {  // 1 day
-                    return .25; // 15 min
+                    return 15 * 60;
                 } elseif ($changeInMinutes < (1440 * 3.5)) { // half week
-                    return 6 * 60; // 6 hours
+                    return 6 * 60 * 60;
                 } elseif ($changeInMinutes < (1440 * 7)) { // 1 week
-                    return 24 * 60; // 1 day
-                } elseif ($changeInMinutes < (1440 * 2)) { // 2 week
-                    return 24 * 60 * 7; // 7 day
+                    return 24 * 60 * 60;
+                } elseif ($changeInMinutes < (1440 * 14)) { // 2 weeks
+                    return 7 * 24 * 60 * 60;
                 } else {
-                    return 24 * 60 * 7 * 2; // 2 weeks
+                    return 14 * 24 * 60 * 60;
                 }
-            } else {
-                $date = SeasonGameVersion::where('game_version', min($timeframe))->value('date_added');
-                $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
+        } else {
+            $date = SeasonGameVersion::where('game_version', min($timeframe))->value('date_added');
+            $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
 
-                return $changeInMinutes;
-            }
+            return max(60, (int) $changeInMinutes * 60);
+        }
+    }
+
+    public function getCacheFreshAndStaleSeconds(array $timeframe): array
+    {
+        $fresh = $this->calculateCacheTimeInSeconds($timeframe);
+
+        if ($fresh <= 0) {
+            return [0, 0];
         }
 
-        return 0;
+        if (count($timeframe) == 1 && $timeframe[0] == $this->getLatestPatch()) {
+            $stale = max($fresh * 4, 6 * 60 * 60);
+        } else {
+            $stale = (int) max($fresh * 2, $fresh + 3600);
+        }
+
+        return [$fresh, $stale];
     }
 
     public function getGameTypes()

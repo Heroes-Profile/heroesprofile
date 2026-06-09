@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Global;
 
+use App\Http\Controllers\Global\Concerns\HandlesAsyncGlobalQueries;
 use App\Models\GlobalHeromatchupsAlly;
 use App\Models\GlobalHeromatchupsEnemy;
 use App\Models\GlobalHeroTalentsVersusHeroes;
@@ -10,11 +11,11 @@ use App\Models\Hero;
 use App\Models\SeasonGameVersion;
 use App\Rules\HeroInputValidation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationController
 {
+    use HandlesAsyncGlobalQueries;
     public function show(Request $request, $hero = null, $allyenemy = null)
     {
         $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
@@ -123,6 +124,16 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
                 'status' => 'failure to validate inputs',
             ];
         }
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
+
+        $cacheKey = 'GlobalHeroMatchupsTalents|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
+
+        return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeHeroMatchupsTalentsData');
+    }
+
+    public function executeHeroMatchupsTalentsData(Request $request)
+    {
         $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
         $allyEnemy = $this->globalDataService->getHeroes()->keyBy('name')[$request['ally_enemy']]->id;
         $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
@@ -134,32 +145,13 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
 
-        $cacheKey = 'GlobalHeroMatchupsTalents|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
-
-        // return $cacheKey;
-
-        if (config('app.env') !== 'production') {
-            Cache::store('database')->forget($cacheKey);
-        }
-
         if ($talentView == 'ally_enemy') {
             $temp = $hero;
             $hero = $allyEnemy;
             $allyEnemy = $temp;
         }
 
-        $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
-            $hero,
-            $allyEnemy,
-            $type,
-            $gameVersion,
-            $gameVersionIDs,
-            $gameType,
-            $leagueTier,
-            $gameMap,
-        ) {
-
-            $firstHeroWinRateData = $this->calculateWinRateData($hero, $allyEnemy, $type, $gameVersion, $gameType, $leagueTier, $gameMap);
+        $firstHeroWinRateData = $this->calculateWinRateData($hero, $allyEnemy, $type, $gameVersion, $gameType, $leagueTier, $gameMap);
             $secondHeroWinRate = $type == 'Ally' ? round($firstHeroWinRateData, 2) : round(100 - $firstHeroWinRateData, 2);
             $firstHeroWinRateData = round($firstHeroWinRateData, 2);
 
@@ -224,10 +216,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
                 })->sortBy('sort')->values()->toArray();
             });
 
-            return ['first_win_rate' => $firstHeroWinRateData, 'second_win_rate' => $secondHeroWinRate, 'data' => $data];
-        });
-
-        return $data;
+        return ['first_win_rate' => $firstHeroWinRateData, 'second_win_rate' => $secondHeroWinRate, 'data' => $data];
     }
 
     private function calculateWinRateData($hero, $allyEnemy, $type, $gameVersion, $gameType, $leagueTier, $gameMap)

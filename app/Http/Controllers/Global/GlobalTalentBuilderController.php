@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Global;
 
+use App\Http\Controllers\Global\Concerns\HandlesAsyncGlobalQueries;
 use App\Models\GlobalHeroTalents;
 use App\Models\HeroesDataTalent;
 use App\Models\Replay;
@@ -10,11 +11,11 @@ use App\Models\Talent;
 use App\Rules\HeroInputValidation;
 use App\Rules\SelectedTalentInputValidation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalTalentBuilderController extends GlobalsInputValidationController
 {
+    use HandlesAsyncGlobalQueries;
     public function show(Request $request, $hero = null)
     {
         $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
@@ -112,6 +113,28 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
             return ['talentData' => $this->formatTalentData($talents, [])];
         }
 
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $cacheKey = 'GlobalTalentsBuilder|'.implode(',', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+
+        return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeTalentBuilderData');
+    }
+
+    public function executeTalentBuilderData(Request $request)
+    {
+        $hero_name = $request['hero'];
+        $selectedtalents = $request->input('selectedtalents');
+        if (! is_array($selectedtalents)) {
+            $selectedtalents = [];
+        }
+
+        $level_one = $selectedtalents[1] ?? null;
+        $level_four = $selectedtalents[4] ?? null;
+        $level_seven = $selectedtalents[7] ?? null;
+        $level_ten = $selectedtalents[10] ?? null;
+        $level_thirteen = $selectedtalents[13] ?? null;
+        $level_sixteen = $selectedtalents[16] ?? null;
+        $level_twenty = $selectedtalents[20] ?? null;
+
         $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
@@ -121,58 +144,32 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
         $heroLevel = $request['hero_level'];
         $region = $this->globalDataService->getRegionFilterValues($request['region']);
-        $mirror = $request['mirror'];
-        $cacheKey = 'GlobalTalentsBuilder|'.implode(',', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
         $talentData = HeroesDataTalent::all();
         $talentData = $talentData->keyBy('talent_id');
 
-        if (config('app.env') !== 'production') {
-            Cache::store('database')->forget($cacheKey);
-        }
-
-        $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
-            $talentData,
-            $hero,
-            $hero_name,
-            $gameVersion,
-            $gameType,
-            $leagueTier,
-            $heroLeagueTier,
-            $roleLeagueTier,
-            $gameMap,
-            $heroLevel,
-            $region,
-            $level_one,
-            $level_four,
-            $level_seven,
-            $level_ten,
-            $level_thirteen,
-            $level_sixteen,
-            $level_twenty,
-        ) {
-            $gameVersionIds = SeasonGameVersion::whereIn('game_version', $gameVersion)
+        $gameVersionIds = SeasonGameVersion::whereIn('game_version', $gameVersion)
                 ->pluck('id')
                 ->toArray();
 
-            if (empty($gameVersionIds)) {
-                return [
-                    'data' => $this->formatTalentData(HeroesDataTalent::where('hero_name', $hero_name)->orderBy('level', 'ASC')->orderBy('sort', 'ASC')->limit(100)->get(), []),
-                    'buildReturnData' => [
-                        'level_one' => $level_one ? $talentData[$level_one] : null,
-                        'level_four' => $level_four ? $talentData[$level_four] : null,
-                        'level_seven' => $level_seven ? $talentData[$level_seven] : null,
-                        'level_ten' => $level_ten ? $talentData[$level_ten] : null,
-                        'level_thirteen' => $level_thirteen ? $talentData[$level_thirteen] : null,
-                        'level_sixteen' => $level_sixteen ? $talentData[$level_sixteen] : null,
-                        'level_twenty' => $level_twenty ? $talentData[$level_twenty] : null,
-                        'wins' => 0,
-                        'losses' => 0,
-                        'games_played' => 0,
-                        'win_rate' => 0,
-                    ],
-                ];
-            }
+        if (empty($gameVersionIds)) {
+            return [
+                'talentData' => $this->formatTalentData(HeroesDataTalent::where('hero_name', $hero_name)->orderBy('level', 'ASC')->orderBy('sort', 'ASC')->limit(100)->get(), []),
+                'buildData' => [
+                    'level_one' => $level_one ? $talentData[$level_one] : null,
+                    'level_four' => $level_four ? $talentData[$level_four] : null,
+                    'level_seven' => $level_seven ? $talentData[$level_seven] : null,
+                    'level_ten' => $level_ten ? $talentData[$level_ten] : null,
+                    'level_thirteen' => $level_thirteen ? $talentData[$level_thirteen] : null,
+                    'level_sixteen' => $level_sixteen ? $talentData[$level_sixteen] : null,
+                    'level_twenty' => $level_twenty ? $talentData[$level_twenty] : null,
+                    'wins' => 0,
+                    'losses' => 0,
+                    'games_played' => 0,
+                    'win_rate' => 0,
+                ],
+            ];
+        }
 
             $data = GlobalHeroTalents::query()
                 ->join('heroesprofile_globals.talent_combinations as talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
@@ -355,15 +352,9 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
             $talents = HeroesDataTalent::where('hero_name', $hero_name)->orderBy('level', 'ASC')->orderBy('sort', 'ASC')->limit(100)->get();
             $data = $this->formatTalentData($talents, $transformedData);
 
-            return [
-                'data' => $data,
-                'buildReturnData' => $buildReturnData,
-            ];
-        });
-
         return [
-            'talentData' => $data['data'],
-            'buildData' => $data['buildReturnData'],
+            'talentData' => $data,
+            'buildData' => $buildReturnData,
         ];
     }
 

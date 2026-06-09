@@ -10,6 +10,7 @@ use App\Http\Controllers\Esports\MastersClash\MastersClashController;
 use App\Http\Controllers\Esports\NGS\NGSController;
 use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
 use App\Http\Controllers\Esports\Other\EsportOtherController;
+use App\Http\Controllers\Global\GlobalAsyncStatusController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
 use App\Http\Controllers\Global\GlobalExtraStats;
@@ -52,6 +53,8 @@ Route::prefix('v1')->middleware('web')->group(function () {
     Route::post('main/header/data', [MainPageController::class, 'getHeaderAlertData']);
 
     Route::post('battletag/search', [BattletagSearchController::class, 'battletagSearch']);
+
+    Route::get('global/async/status/{jobId}', [GlobalAsyncStatusController::class, 'show']);
 
     Route::post('global/hero/', [GlobalHeroStatsController::class, 'getGlobalHeroData']);
 

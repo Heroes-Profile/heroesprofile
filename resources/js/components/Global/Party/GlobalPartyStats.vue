@@ -637,7 +637,7 @@ export default {
       this.cancelTokenSource = this.$axios.CancelToken.source();
 
       try{
-        const response = await this.$axios.post("/api/v1/global/party", {
+        const response = await this.$globalAsyncPost("/api/v1/global/party", {
           timeframe_type: this.timeframetype,
           timeframe: this.timeframe,
           region: this.region,

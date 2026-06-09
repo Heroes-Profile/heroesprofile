@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Global;
 
+use App\Http\Controllers\Global\Concerns\HandlesAsyncGlobalQueries;
 use App\Models\GameType;
 use App\Models\GlobalHeroTalentDetails;
 use App\Models\GlobalHeroTalents;
@@ -11,11 +12,11 @@ use App\Rules\HeroInputValidation;
 use App\Rules\StatFilterInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalTalentStatsController extends GlobalsInputValidationController
 {
+    use HandlesAsyncGlobalQueries;
     public function show(Request $request, $hero = null)
     {
         $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
@@ -99,6 +100,21 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         }
 
+        $cacheKey = 'GlobalHeroTalentStats|'.implode(',', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+
+        return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeGlobalHeroTalentData');
+    }
+
+    public function executeGlobalHeroTalentData(Request $request)
+    {
+        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
+
+        if ($request['timeframe_type'] == 'last_update') {
+            $gameVersion = $this->globalDataService->getTimeframeFilterValuesLastUpdate($hero);
+        } else {
+            $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        }
+
         $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
         $leagueTier = $request['league_tier'];
         $heroLeagueTier = $request['hero_league_tier'];
@@ -109,33 +125,15 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $statFilter = $this->normalizeStatFilter($request['statfilter'] ?? null);
         $mirror = $request['mirror'];
 
-        $cacheKey = 'GlobalHeroTalentStats|'.implode(',', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+        $gameVersionIds = SeasonGameVersion::whereIn('game_version', $gameVersion)
+            ->pluck('id')
+            ->toArray();
 
-        if (config('app.env') !== 'production') {
-            Cache::store('database')->forget($cacheKey);
+        if (empty($gameVersionIds)) {
+            return collect();
         }
-        $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
-            $hero,
-            $gameVersion,
-            $gameType,
-            $leagueTier,
-            $heroLeagueTier,
-            $roleLeagueTier,
-            $gameMap,
-            $heroLevel,
-            $mirror,
-            $region,
-            $statFilter
-        ) {
-            $gameVersionIds = SeasonGameVersion::whereIn('game_version', $gameVersion)
-                ->pluck('id')
-                ->toArray();
 
-            if (empty($gameVersionIds)) {
-                return collect();
-            }
-
-            $data = GlobalHeroTalentDetails::query()
+        $data = GlobalHeroTalentDetails::query()
                 ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_talents_details.hero')
                 ->select('heroes.name', 'global_hero_talents_details.hero as id', 'global_hero_talents_details.win_loss', 'global_hero_talents_details.talent', 'global_hero_talents_details.level')
                 ->selectRaw('SUM(global_hero_talents_details.games_played) as games_played')
@@ -220,9 +218,6 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                 })->sortBy('sort')->filter()->values()->toArray();
             });
 
-            return $data;
-        });
-
         return $data;
     }
 
@@ -255,6 +250,22 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         }
 
+        $cacheKey = 'GlobalHeroTalentStatsBuilds|'.implode(',', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+
+        return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeGlobalHeroTalentBuildData');
+    }
+
+    public function executeGlobalHeroTalentBuildData(Request $request)
+    {
+        $heroModel = $this->globalDataService->getHeroModel($request['hero']);
+        $hero = $heroModel->id;
+
+        if ($request['timeframe_type'] == 'last_update') {
+            $gameVersion = $this->globalDataService->getTimeframeFilterValuesLastUpdate($hero);
+        } else {
+            $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        }
+
         $gameTypeRecords = GameType::whereIn('short_name', $request['game_type'])->get();
         $gameType = $gameTypeRecords->pluck('type_id')->toArray();
 
@@ -268,27 +279,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $mirror = $request['mirror'];
         $talentbuildType = $request['talentbuildtype'];
 
-        $cacheKey = 'GlobalHeroTalentStatsBuilds|'.implode(',', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
-
-        if (config('app.env') !== 'production') {
-            Cache::store('database')->forget($cacheKey);
-        }
-
-        $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
-            $hero,
-            $gameVersion,
-            $gameType,
-            $leagueTier,
-            $heroLeagueTier,
-            $roleLeagueTier,
-            $gameMap,
-            $heroLevel,
-            $mirror,
-            $region,
-            $statFilter,
-            $talentbuildType
-        ) {
-            $topBuilds = null;
+        $topBuilds = null;
             if ($talentbuildType == 'Popular') {
                 $topBuilds = $this->topBuildsOnPopularity($hero, $gameVersion, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region);
             } elseif ($talentbuildType == 'HP Algorithm') {
@@ -303,19 +294,18 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             $allBuildData = $this->getBatchTopBuildsData($topBuilds, $hero, $gameVersion, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region, $statFilter);
 
             // Map the data back to each build
-            foreach ($topBuilds as $build) {
-                $buildKey = $build->level_one.'-'.$build->level_four.'-'.$build->level_seven.'-'.
-                            $build->level_ten.'-'.$build->level_thirteen.'-'.$build->level_sixteen.'-'.
-                            $build->level_twenty;
-                $build->buildData = $allBuildData[$buildKey] ?? [
-                    'wins' => 0,
-                    'losses' => 0,
-                    'total_filter_type' => 0,
-                ];
-            }
+        foreach ($topBuilds as $build) {
+            $buildKey = $build->level_one.'-'.$build->level_four.'-'.$build->level_seven.'-'.
+                        $build->level_ten.'-'.$build->level_thirteen.'-'.$build->level_sixteen.'-'.
+                        $build->level_twenty;
+            $build->buildData = $allBuildData[$buildKey] ?? [
+                'wins' => 0,
+                'losses' => 0,
+                'total_filter_type' => 0,
+            ];
+        }
 
-            return $topBuilds;
-        });
+        $data = $topBuilds;
 
         $talentData = HeroesDataTalent::withAllStatuses()
             ->where('hero_name', $heroModel->name)

@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Global;
 
+use App\Http\Controllers\Global\Concerns\HandlesAsyncGlobalQueries;
 use App\Models\GlobalHeroStackSize;
 use App\Models\SeasonGameVersion;
 use App\Rules\HeroInputValidation;
 use App\Rules\PartyCombinationRule;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalPartyStatsController extends GlobalsInputValidationController
 {
+    use HandlesAsyncGlobalQueries;
     public function show(Request $request)
     {
         $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
@@ -66,6 +67,16 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
             ];
         }
 
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
+
+        $cacheKey = 'GlobalPartyStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
+
+        return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executePartyStats');
+    }
+
+    public function executePartyStats(Request $request)
+    {
         $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
@@ -77,35 +88,10 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
         $heroLevel = $request['hero_level'];
         $region = $this->globalDataService->getRegionFilterValues($request['region']);
         $mirror = $request['mirror'];
-        $heropartysize = $request['heropartysize'];
-
         $teamoneparty = $request['teamoneparty'];
         $teamtwoparty = $request['teamtwoparty'];
 
-        $cacheKey = 'GlobalPartyStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
-
-        // return $cacheKey;
-
-        if (config('app.env') !== 'production') {
-            Cache::store('database')->forget($cacheKey);
-        }
-
-        $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
-            $gameVersionIDs,
-            $gameType,
-            $leagueTier,
-            $heroLeagueTier,
-            $roleLeagueTier,
-            $gameMap,
-            $heroLevel,
-            $mirror,
-            $region,
-            $hero,
-            $teamoneparty,
-            $teamtwoparty
-        ) {
-
-            $data = GlobalHeroStackSize::query()
+        $data = GlobalHeroStackSize::query()
                 ->select('team_ally_stack_value', 'team_enemy_stack_value')
                 ->selectRaw('SUM(games_played) as games_played')
                 ->selectRaw('SUM(IF(win_loss = 1, games_played, 0)) AS wins')
@@ -190,10 +176,6 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
                 }
             }
 
-            return $returnData;
-
-        });
-
-        return $data;
+        return $returnData;
     }
 }
