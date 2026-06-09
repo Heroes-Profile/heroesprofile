@@ -26,7 +26,7 @@
             :values="filters.leaderboard_type" 
             :text="'Leaderboard Type'"
             @input-changed="handleInputChange" 
-            :defaultValue="'Player'"
+            :defaultValue="leaderboardtypeinput || 'Player'"
             :disabledeselectfilters="disabledeselectfilters"
           ></single-select-filter>
 
@@ -408,11 +408,13 @@
       minimumgamesdefault: {
         tpye: [String, Number]
       },
-      defaultSeason: String,
-      defaultpredictionseason: String,
+      defaultSeason: [String, Number],
+      defaultpredictionseason: [String, Number],
       defaultPredictionSeason: String,
       advancedfiltering: Boolean,
       groupSizeDefaultValue: String,
+      leaderboardtypeinput: String,
+      tierrankinput: [String, Number],
       rolerequired: Boolean,
       excludetimeframes: Boolean,
       disablefilter: Boolean,
@@ -510,8 +512,18 @@
       this.modifiedincludetier = this.includetier;
       this.modifiedincludeseason = this.includeseason;
 
-      if(!this.groupSizeDefaultValue){
+      if(this.groupSizeDefaultValue){
+        this.modifiedGroupSizeDefaultValue = this.groupSizeDefaultValue;
+      } else {
         this.modifiedGroupSizeDefaultValue = "Solo";
+      }
+
+      if(this.tierrankinput != null && this.tierrankinput !== ''){
+        this.tierrank = this.tierrankinput;
+      }
+
+      if(this.leaderboardfiltertype && this.leaderboardtypeinput){
+        this.initializeLeaderboardFilters();
       }
 
       // Set initial visibility based on screen width (hidden on mobile, shown on desktop)
@@ -644,6 +656,69 @@
       window.removeEventListener('resize', this.checkScreenWidth);
     },
     methods: {
+      initializeLeaderboardFilters() {
+        const type = this.leaderboardtypeinput;
+        this.selectedSingleFilters['Leaderboard Type'] = type;
+        this.modifiedincludeseason = true;
+        this.modifiedincludematchpredictionseason = false;
+        this.modifiedincludegroupsize = true;
+        this.modifiedincludetier = true;
+
+        if(type === 'Player'){
+          this.modifiedincludeheroes = false;
+          this.modifiedincluderole = false;
+          this.swapHeroesFilter = false;
+          this.swapRolesFilter = false;
+        }else if(type === 'Hero'){
+          this.modifiedincludeheroes = true;
+          this.modifiedincluderole = false;
+          this.swapHeroesFilter = true;
+          this.swapRolesFilter = false;
+          if(this.heroinput){
+            this.hero = this.heroinput;
+            this.selectedSingleFilters['Heroes'] = this.heroinput;
+          }
+        }else if(type === 'Role'){
+          this.modifiedincludeheroes = false;
+          this.modifiedincluderole = true;
+          this.swapRolesFilter = true;
+          this.swapHeroesFilter = false;
+          if(this.roleinput){
+            this.role = this.roleinput;
+            this.selectedSingleFilters['Role'] = this.roleinput;
+          }
+        }else if(type === 'Match Prediction'){
+          this.modifiedincludegroupsize = false;
+          this.modifiedincludetier = false;
+          this.modifiedincludeseason = false;
+          this.modifiedincludematchpredictionseason = true;
+        }
+
+        if(this.modifiedGroupSizeDefaultValue){
+          this.selectedSingleFilters['Group Size'] = this.modifiedGroupSizeDefaultValue;
+        }
+
+        if(this.defaultSeason){
+          this.seasonvalue = this.defaultSeason;
+          this.selectedSingleFilters['Season'] = this.defaultSeason;
+        }
+
+        if(this.defaultpredictionseason && type === 'Match Prediction'){
+          this.selectedSingleFilters['Match Prediction Season'] = this.defaultpredictionseason;
+        }
+
+        if(this.gametype && this.gametype[0]){
+          this.selectedSingleFilters['Game Type'] = this.gametype[0];
+        }
+
+        if(this.region){
+          this.selectedSingleFilters['Regions'] = this.region;
+        }
+
+        if(this.tierrank){
+          this.selectedSingleFilters['HP Rank'] = this.tierrank;
+        }
+      },
       handleInputChange(eventPayload) {
         if(eventPayload.field == "Timeframe Type"){
           if(eventPayload.value == 'last_update'){

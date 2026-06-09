@@ -41,12 +41,14 @@
         :gametypeinput="[gametype]"
         :regioninput="region"
         :gametypedefault="gametypedefault"
-        :defaultSeason="defaultseason"
-        :defaultpredictionseason="defaultpredictionseason"
+        :defaultSeason="season"
+        :defaultpredictionseason="leaderboardtype == 'Match Prediction' ? season : defaultpredictionseason"
         :leaderboardfiltertype="true"
+        :leaderboardtypeinput="leaderboardtype"
         :includehero="false"
-        :defaultHero="hero"
-        :defaultRole="role"
+        :heroinput="hero"
+        :roleinput="role"
+        :groupSizeDefaultValue="groupsize"
         :includegroupsize="true"
         :includesinglegametypeleaderboard="true"
         :includeseason="true"
@@ -57,7 +59,7 @@
         :advancedfiltering="advancedfiltering"
         :excludetimeframes="true"
         :includetier="true"
-        :tierrank="''"
+        :tierrankinput="tierrank"
         :disabledeselectfilters="true"
       >
       </filters>
@@ -540,7 +542,7 @@ export default {
       }
 
       if(this.urlparameters["season"]){
-        this.season = this.urlparameters["season"];
+        this.season = Number(this.urlparameters["season"]);
       }
 
       if(this.urlparameters["game_type"]){
@@ -550,9 +552,13 @@ export default {
       if(this.urlparameters["region"]){
         this.region = this.urlparameters["region"];
       }
+
+      if(this.urlparameters["role"]){
+        this.role = this.urlparameters["role"];
+      }
       
       if(this.urlparameters["hero"]){
-        this.hero = this.urlparameters["hero"];
+        this.hero = Number(this.urlparameters["hero"]);
       }
 
 
