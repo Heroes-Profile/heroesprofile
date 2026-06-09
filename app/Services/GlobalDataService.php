@@ -316,20 +316,20 @@ class GlobalDataService
         }
 
         if (count($timeframe) == 1 && $timeframe[0] == $this->getLatestPatch()) {
-                $date = SeasonGameVersion::where('game_version', min($timeframe))->value('date_added');
-                $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
+            $date = SeasonGameVersion::where('game_version', min($timeframe))->value('date_added');
+            $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
 
-                if ($changeInMinutes < 1440) {  // 1 day
-                    return 15 * 60;
-                } elseif ($changeInMinutes < (1440 * 3.5)) { // half week
-                    return 6 * 60 * 60;
-                } elseif ($changeInMinutes < (1440 * 7)) { // 1 week
-                    return 24 * 60 * 60;
-                } elseif ($changeInMinutes < (1440 * 14)) { // 2 weeks
-                    return 7 * 24 * 60 * 60;
-                } else {
-                    return 14 * 24 * 60 * 60;
-                }
+            if ($changeInMinutes < 1440) {  // 1 day
+                return 15 * 60;
+            } elseif ($changeInMinutes < (1440 * 3.5)) { // half week
+                return 6 * 60 * 60;
+            } elseif ($changeInMinutes < (1440 * 7)) { // 1 week
+                return 24 * 60 * 60;
+            } elseif ($changeInMinutes < (1440 * 14)) { // 2 weeks
+                return 7 * 24 * 60 * 60;
+            } else {
+                return 14 * 24 * 60 * 60;
+            }
         } else {
             $date = SeasonGameVersion::where('game_version', min($timeframe))->value('date_added');
             $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));

@@ -28,8 +28,7 @@ class ProcessGlobalAsyncQueryJob implements ShouldQueue
         public array $requestData,
         public int $cacheFreshSeconds,
         public int $cacheStaleSeconds
-    ) {
-    }
+    ) {}
 
     public function handle(GlobalAsyncQueryService $globalAsyncQueryService): void
     {

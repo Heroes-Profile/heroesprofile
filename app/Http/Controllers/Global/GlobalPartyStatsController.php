@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 class GlobalPartyStatsController extends GlobalsInputValidationController
 {
     use HandlesAsyncGlobalQueries;
+
     public function show(Request $request)
     {
         $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
@@ -92,89 +93,89 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
         $teamtwoparty = $request['teamtwoparty'];
 
         $data = GlobalHeroStackSize::query()
-                ->select('team_ally_stack_value', 'team_enemy_stack_value')
-                ->selectRaw('SUM(games_played) as games_played')
-                ->selectRaw('SUM(IF(win_loss = 1, games_played, 0)) AS wins')
-                ->selectRaw('SUM(IF(win_loss = 0, games_played, 0)) AS losses')
-                ->filterByGameVersion($gameVersionIDs)
-                ->filterByGameType($gameType)
-                ->filterByLeagueTier($leagueTier)
-                ->filterByHeroLeagueTier($heroLeagueTier)
-                ->filterByRoleLeagueTier($roleLeagueTier)
-                ->filterByGameMap($gameMap)
-                ->filterByHeroLevel($heroLevel)
-                ->excludeMirror($mirror)
-                ->filterByRegion($region)
-                ->filterByHero($hero)
-                ->filterByAllyStackSize($teamoneparty)
-                ->filterByEnemyStackSize($teamtwoparty)
-                ->groupBy('team_ally_stack_value', 'team_enemy_stack_value')
-                ->orderBy('team_ally_stack_value', 'asc')
+            ->select('team_ally_stack_value', 'team_enemy_stack_value')
+            ->selectRaw('SUM(games_played) as games_played')
+            ->selectRaw('SUM(IF(win_loss = 1, games_played, 0)) AS wins')
+            ->selectRaw('SUM(IF(win_loss = 0, games_played, 0)) AS losses')
+            ->filterByGameVersion($gameVersionIDs)
+            ->filterByGameType($gameType)
+            ->filterByLeagueTier($leagueTier)
+            ->filterByHeroLeagueTier($heroLeagueTier)
+            ->filterByRoleLeagueTier($roleLeagueTier)
+            ->filterByGameMap($gameMap)
+            ->filterByHeroLevel($heroLevel)
+            ->excludeMirror($mirror)
+            ->filterByRegion($region)
+            ->filterByHero($hero)
+            ->filterByAllyStackSize($teamoneparty)
+            ->filterByEnemyStackSize($teamtwoparty)
+            ->groupBy('team_ally_stack_value', 'team_enemy_stack_value')
+            ->orderBy('team_ally_stack_value', 'asc')
                 // ->toSql();
-                ->get();
+            ->get();
 
-            $returnData = [];
-            $total = 0;
+        $returnData = [];
+        $total = 0;
 
-            $divideValue = 1;
+        $divideValue = 1;
 
-            if (! $hero) {
-                $divideValue = 10;
+        if (! $hero) {
+            $divideValue = 10;
+        }
+
+        $party_combinations = [
+            '00005' => '5 Solo',
+            '00023' => '1 Double, 3 Solo',
+            '00041' => '2 Double, 1 Solo',
+            '00302' => '1 Triple, 2 Solo',
+            '00320' => '1 Triple, 1 Double',
+            '04001' => '1 Quad, 1 Solo',
+            '50000' => '1 team of 5',
+        ];
+
+        foreach ($data as $row) {
+            $total += $row->wins + $row->losses;
+
+            $comboType = '';
+            switch ($row->team_ally_stack_value) {
+                case '00005':
+                    $comboType = 'solo';
+                    break;
+                case '00023':
+                    $comboType = 'double';
+                    break;
+                case '00041':
+                    $comboType = 'double_double';
+                    break;
+                case '00302':
+                    $comboType = 'triple';
+                    break;
+                case '00320':
+                    $comboType = 'triple_double';
+                    break;
+                case '04001':
+                    $comboType = 'quadruple';
+                    break;
+                case '50000':
+                    $comboType = 'quintuple';
+                    break;
             }
 
-            $party_combinations = [
-                '00005' => '5 Solo',
-                '00023' => '1 Double, 3 Solo',
-                '00041' => '2 Double, 1 Solo',
-                '00302' => '1 Triple, 2 Solo',
-                '00320' => '1 Triple, 1 Double',
-                '04001' => '1 Quad, 1 Solo',
-                '50000' => '1 team of 5',
-            ];
+            if ($comboType) {
+                $combo = $row->team_ally_stack_value.'|'.$row->team_enemy_stack_value;
 
-            foreach ($data as $row) {
-                $total += $row->wins + $row->losses;
+                $returnData[$comboType][$combo]['ally_combo'] = $row->team_ally_stack_value;
+                $returnData[$comboType][$combo]['enemy_combo'] = $row->team_enemy_stack_value;
+                $returnData[$comboType][$combo]['wins'] = round($row->wins / $divideValue);
+                $returnData[$comboType][$combo]['losses'] = round($row->losses / $divideValue);
 
-                $comboType = '';
-                switch ($row->team_ally_stack_value) {
-                    case '00005':
-                        $comboType = 'solo';
-                        break;
-                    case '00023':
-                        $comboType = 'double';
-                        break;
-                    case '00041':
-                        $comboType = 'double_double';
-                        break;
-                    case '00302':
-                        $comboType = 'triple';
-                        break;
-                    case '00320':
-                        $comboType = 'triple_double';
-                        break;
-                    case '04001':
-                        $comboType = 'quadruple';
-                        break;
-                    case '50000':
-                        $comboType = 'quintuple';
-                        break;
-                }
+                $gamesPlayed = $returnData[$comboType][$combo]['wins'] + $returnData[$comboType][$combo]['losses'];
 
-                if ($comboType) {
-                    $combo = $row->team_ally_stack_value.'|'.$row->team_enemy_stack_value;
+                $returnData[$comboType][$combo]['win_rate'] = $gamesPlayed ? round(($returnData[$comboType][$combo]['wins'] / $gamesPlayed) * 100, 2) : 0;
 
-                    $returnData[$comboType][$combo]['ally_combo'] = $row->team_ally_stack_value;
-                    $returnData[$comboType][$combo]['enemy_combo'] = $row->team_enemy_stack_value;
-                    $returnData[$comboType][$combo]['wins'] = round($row->wins / $divideValue);
-                    $returnData[$comboType][$combo]['losses'] = round($row->losses / $divideValue);
-
-                    $gamesPlayed = $returnData[$comboType][$combo]['wins'] + $returnData[$comboType][$combo]['losses'];
-
-                    $returnData[$comboType][$combo]['win_rate'] = $gamesPlayed ? round(($returnData[$comboType][$combo]['wins'] / $gamesPlayed) * 100, 2) : 0;
-
-                    $returnData[$comboType][$combo]['stack_size_name'] = $party_combinations[$row->team_enemy_stack_value] ?? '5 Solo';
-                }
+                $returnData[$comboType][$combo]['stack_size_name'] = $party_combinations[$row->team_enemy_stack_value] ?? '5 Solo';
             }
+        }
 
         return $returnData;
     }

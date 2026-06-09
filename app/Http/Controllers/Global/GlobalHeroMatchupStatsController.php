@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Validator;
 class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
 {
     use HandlesAsyncGlobalQueries;
+
     public function show(Request $request, $hero = null, $allyenemy = null)
     {
         $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
@@ -113,67 +114,67 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
         $heroData = $this->globalDataService->getHeroes()->keyBy('id');
 
         $allyData = GlobalHeromatchupsAlly::query()
-                ->select('ally', 'win_loss')
-                ->selectRaw('SUM(games_played) as games_played')
-                ->filterByGameVersion($gameVersionIDs)
-                ->filterByGameType($gameType)
-                ->filterByHero($hero)
-                ->filterByLeagueTier($leagueTier)
-                ->filterByHeroLeagueTier($heroLeagueTier)
-                ->filterByRoleLeagueTier($roleLeagueTier)
-                ->filterByGameMap($gameMap)
-                ->filterByHeroLevel($heroLevel)
-                ->excludeMirror($mirror)
-                ->filterByRegion($region)
-                ->groupBy('ally')
-                ->groupBy('win_loss')
-                ->orderBy('ally')
+            ->select('ally', 'win_loss')
+            ->selectRaw('SUM(games_played) as games_played')
+            ->filterByGameVersion($gameVersionIDs)
+            ->filterByGameType($gameType)
+            ->filterByHero($hero)
+            ->filterByLeagueTier($leagueTier)
+            ->filterByHeroLeagueTier($heroLeagueTier)
+            ->filterByRoleLeagueTier($roleLeagueTier)
+            ->filterByGameMap($gameMap)
+            ->filterByHeroLevel($heroLevel)
+            ->excludeMirror($mirror)
+            ->filterByRegion($region)
+            ->groupBy('ally')
+            ->groupBy('win_loss')
+            ->orderBy('ally')
               // ->toSql();
-                ->get();
-            $allyData = $this->combineData($allyData, 'ally', $hero, $role, $heroData);
+            ->get();
+        $allyData = $this->combineData($allyData, 'ally', $hero, $role, $heroData);
 
-            $enemyData = GlobalHeromatchupsEnemy::query()
-                ->select('enemy', 'win_loss')
-                ->selectRaw('SUM(games_played) as games_played')
-                ->filterByGameVersion($gameVersionIDs)
-                ->filterByGameType($gameType)
-                ->filterByHero($hero)
-                ->filterByLeagueTier($leagueTier)
-                ->filterByHeroLeagueTier($heroLeagueTier)
-                ->filterByRoleLeagueTier($roleLeagueTier)
-                ->filterByGameMap($gameMap)
-                ->filterByHeroLevel($heroLevel)
-                ->excludeMirror($mirror)
-                ->filterByRegion($region)
-                ->groupBy('enemy')
-                ->groupBy('win_loss')
-                // ->toSql();
-                ->get();
-            $enemyData = $this->combineData($enemyData, 'enemy', $hero, $role, $heroData);
+        $enemyData = GlobalHeromatchupsEnemy::query()
+            ->select('enemy', 'win_loss')
+            ->selectRaw('SUM(games_played) as games_played')
+            ->filterByGameVersion($gameVersionIDs)
+            ->filterByGameType($gameType)
+            ->filterByHero($hero)
+            ->filterByLeagueTier($leagueTier)
+            ->filterByHeroLeagueTier($heroLeagueTier)
+            ->filterByRoleLeagueTier($roleLeagueTier)
+            ->filterByGameMap($gameMap)
+            ->filterByHeroLevel($heroLevel)
+            ->excludeMirror($mirror)
+            ->filterByRegion($region)
+            ->groupBy('enemy')
+            ->groupBy('win_loss')
+            // ->toSql();
+            ->get();
+        $enemyData = $this->combineData($enemyData, 'enemy', $hero, $role, $heroData);
 
-            $allyDataKeyed = collect($allyData)->keyBy(function ($item) {
-                return $item['hero']['name'];
-            });
+        $allyDataKeyed = collect($allyData)->keyBy(function ($item) {
+            return $item['hero']['name'];
+        });
 
-            $enemyDataKeyed = collect($enemyData)->keyBy(function ($item) {
-                return $item['hero']['name'];
-            });
+        $enemyDataKeyed = collect($enemyData)->keyBy(function ($item) {
+            return $item['hero']['name'];
+        });
 
-            // Combine the collections
-            $combinedData = $allyDataKeyed->map(function ($allyItem, $heroName) use ($enemyDataKeyed) {
-                $enemyItem = $enemyDataKeyed->get($heroName);
-                if ($enemyItem) {
-                    return [
-                        'ally' => $allyItem,
-                        'enemy' => $enemyItem,
-                    ];
-                }
-
+        // Combine the collections
+        $combinedData = $allyDataKeyed->map(function ($allyItem, $heroName) use ($enemyDataKeyed) {
+            $enemyItem = $enemyDataKeyed->get($heroName);
+            if ($enemyItem) {
                 return [
                     'ally' => $allyItem,
-                    'enemy' => null,
+                    'enemy' => $enemyItem,
                 ];
-            })->sortKeys()->values()->toArray();
+            }
+
+            return [
+                'ally' => $allyItem,
+                'enemy' => null,
+            ];
+        })->sortKeys()->values()->toArray();
 
         $data = ['ally' => $allyData, 'enemy' => $enemyData, 'combined' => $combinedData];
 

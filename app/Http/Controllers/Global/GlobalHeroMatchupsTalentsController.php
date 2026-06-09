@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Validator;
 class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationController
 {
     use HandlesAsyncGlobalQueries;
+
     public function show(Request $request, $hero = null, $allyenemy = null)
     {
         $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
@@ -152,69 +153,69 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
         }
 
         $firstHeroWinRateData = $this->calculateWinRateData($hero, $allyEnemy, $type, $gameVersion, $gameType, $leagueTier, $gameMap);
-            $secondHeroWinRate = $type == 'Ally' ? round($firstHeroWinRateData, 2) : round(100 - $firstHeroWinRateData, 2);
-            $firstHeroWinRateData = round($firstHeroWinRateData, 2);
+        $secondHeroWinRate = $type == 'Ally' ? round($firstHeroWinRateData, 2) : round(100 - $firstHeroWinRateData, 2);
+        $firstHeroWinRateData = round($firstHeroWinRateData, 2);
 
-            $model = $type === 'Ally' ? GlobalHeroTalentsWithHeroes::class : GlobalHeroTalentsVersusHeroes::class;
+        $model = $type === 'Ally' ? GlobalHeroTalentsWithHeroes::class : GlobalHeroTalentsVersusHeroes::class;
 
-            $allData = $model::query()
-                ->select('win_loss', 'level', 'talent')
-                ->selectRaw('SUM(games_played) as games_played')
-                ->filterByGameVersion($gameVersionIDs)
-                ->filterByGameType($gameType)
-                ->filterByHero($hero)
-                ->filterByAllyEnemy($allyEnemy)
-                ->filterByLeagueTier($leagueTier)
-                ->filterByGameMap($gameMap)
-                ->groupBy('win_loss', 'level', 'talent')
-                ->with(['talentInfo' => function ($query) {
-                    $query->withAllStatuses();
-                }])
-                ->get()
-                ->map(function ($item) {
-                    $array = $item->toArray();
-                    // Normalize talentInfo to camelCase (toArray() converts relations to snake_case)
-                    if (isset($array['talent_info']) && ! isset($array['talentInfo'])) {
-                        $array['talentInfo'] = $array['talent_info'];
-                        unset($array['talent_info']);
-                    }
+        $allData = $model::query()
+            ->select('win_loss', 'level', 'talent')
+            ->selectRaw('SUM(games_played) as games_played')
+            ->filterByGameVersion($gameVersionIDs)
+            ->filterByGameType($gameType)
+            ->filterByHero($hero)
+            ->filterByAllyEnemy($allyEnemy)
+            ->filterByLeagueTier($leagueTier)
+            ->filterByGameMap($gameMap)
+            ->groupBy('win_loss', 'level', 'talent')
+            ->with(['talentInfo' => function ($query) {
+                $query->withAllStatuses();
+            }])
+            ->get()
+            ->map(function ($item) {
+                $array = $item->toArray();
+                // Normalize talentInfo to camelCase (toArray() converts relations to snake_case)
+                if (isset($array['talent_info']) && ! isset($array['talentInfo'])) {
+                    $array['talentInfo'] = $array['talent_info'];
+                    unset($array['talent_info']);
+                }
 
-                    return $array;
-                });
-
-            $data = $allData->filter(function ($item) {
-                return is_array($item) && isset($item['win_loss']) && isset($item['level']) && isset($item['talent']);
+                return $array;
             });
 
-            $data = collect($data)->groupBy('level')->map(function ($levelGroup) {
+        $data = $allData->filter(function ($item) {
+            return is_array($item) && isset($item['win_loss']) && isset($item['level']) && isset($item['talent']);
+        });
 
-                $totalGamesPlayed = collect($levelGroup)->sum('games_played');
+        $data = collect($data)->groupBy('level')->map(function ($levelGroup) {
 
-                return $levelGroup->groupBy('talent')->map(function ($talentGroup) use ($totalGamesPlayed) {
-                    $firstItem = $talentGroup->first();
+            $totalGamesPlayed = collect($levelGroup)->sum('games_played');
 
-                    $wins = $talentGroup->where('win_loss', 1)->sum('games_played');
-                    $losses = $talentGroup->where('win_loss', 0)->sum('games_played');
-                    $gamesPlayed = $wins + $losses;
-                    // Handle both camelCase and snake_case for talentInfo
-                    $talentInfo = $firstItem['talentInfo'] ?? $firstItem['talent_info'] ?? null;
+            return $levelGroup->groupBy('talent')->map(function ($talentGroup) use ($totalGamesPlayed) {
+                $firstItem = $talentGroup->first();
 
-                    $winRate = $gamesPlayed > 0 ? round(($wins / $gamesPlayed) * 100, 2) : 0;
-                    $popularity = $totalGamesPlayed > 0 ? round(($gamesPlayed / $totalGamesPlayed) * 100, 2) : 0;
+                $wins = $talentGroup->where('win_loss', 1)->sum('games_played');
+                $losses = $talentGroup->where('win_loss', 0)->sum('games_played');
+                $gamesPlayed = $wins + $losses;
+                // Handle both camelCase and snake_case for talentInfo
+                $talentInfo = $firstItem['talentInfo'] ?? $firstItem['talent_info'] ?? null;
 
-                    return [
-                        'wins' => $wins,
-                        'losses' => $losses,
-                        'games_played' => $gamesPlayed,
-                        'popularity' => $popularity,
-                        'win_rate' => $winRate,
-                        'level' => $firstItem['level'],
-                        'talent' => $firstItem['talent'],
-                        'sort' => isset($talentInfo['sort']) ? $talentInfo['sort'] : null,
-                        'talentInfo' => $talentInfo,
-                    ];
-                })->sortBy('sort')->values()->toArray();
-            });
+                $winRate = $gamesPlayed > 0 ? round(($wins / $gamesPlayed) * 100, 2) : 0;
+                $popularity = $totalGamesPlayed > 0 ? round(($gamesPlayed / $totalGamesPlayed) * 100, 2) : 0;
+
+                return [
+                    'wins' => $wins,
+                    'losses' => $losses,
+                    'games_played' => $gamesPlayed,
+                    'popularity' => $popularity,
+                    'win_rate' => $winRate,
+                    'level' => $firstItem['level'],
+                    'talent' => $firstItem['talent'],
+                    'sort' => isset($talentInfo['sort']) ? $talentInfo['sort'] : null,
+                    'talentInfo' => $talentInfo,
+                ];
+            })->sortBy('sort')->values()->toArray();
+        });
 
         return ['first_win_rate' => $firstHeroWinRateData, 'second_win_rate' => $secondHeroWinRate, 'data' => $data];
     }
