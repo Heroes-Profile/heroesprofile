@@ -382,7 +382,7 @@ export default {
       try{
         this.data = [];
 
-        const response = await this.$axios.post("/api/v1/global/hero", {
+        const response = await this.$globalAsyncPost("/api/v1/global/hero", {
           timeframe_type: this.timeframetype,
           timeframe: this.timeframe,
           region: this.region,
@@ -396,7 +396,7 @@ export default {
           hero_league_tier: this.herorank,
           role_league_tier: this.rolerank,
           mirror: this.mirrormatch,
-        }, 
+        },
         {
           cancelToken: this.cancelTokenSource.token,
         });

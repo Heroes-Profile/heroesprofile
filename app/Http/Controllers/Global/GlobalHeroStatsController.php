@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers\Global;
 
+use App\Http\Controllers\Global\Concerns\HandlesAsyncGlobalQueries;
 use App\Models\GlobalHeroChange;
 use App\Models\GlobalHeroStats;
 use App\Models\GlobalHeroStatsBans;
 use App\Models\SeasonGameVersion;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalHeroStatsController extends GlobalsInputValidationController
 {
+    use HandlesAsyncGlobalQueries;
+
     public function show(Request $request)
     {
 
@@ -47,9 +49,6 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
 
     public function getGlobalHeroData(Request $request)
     {
-
-        // return response()->json($request->all());
-
         $validationRules = $this->globalsValidationRules($request['timeframe_type'], $request['timeframe']);
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -63,6 +62,15 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
 
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
+        $cacheKey = 'GlobalHeroStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
+
+        return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeGlobalHeroData');
+    }
+
+    public function executeGlobalHeroData(Request $request)
+    {
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
         $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
         $leagueTier = $request['league_tier'];
         $heroLeagueTier = $request['hero_league_tier'];
@@ -70,10 +78,8 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
         $heroLevel = $request['hero_level'];
         $mirror = $request['mirror'];
-
         $region = $this->globalDataService->getRegionFilterValues($request['region']);
 
-        // Treat missing/empty stat filter as win_rate to avoid malformed SQL.
         $statFilter = $request->input('statfilter');
         if (empty($statFilter)) {
             $statFilter = 'win_rate';
@@ -81,81 +87,55 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
         $role = $request['role'];
 
-        $cacheKey = 'GlobalHeroStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
+        $data = GlobalHeroStats::query()
+            ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stats.hero')
+            ->select('heroes.name', 'heroes.short_name', 'heroes.id as hero_id', 'global_hero_stats.win_loss', 'heroes.new_role as role')
+            ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
+            ->when(! empty($statFilter) && $statFilter !== 'win_rate', function ($query) use ($statFilter) {
+                return $query->selectRaw("SUM(global_hero_stats.$statFilter) as total_filter_type");
+            })
+            ->filterByGameVersion($gameVersionIDs)
+            ->filterByGameType($gameType)
+            ->filterByLeagueTier($leagueTier)
+            ->filterByHeroLeagueTier($heroLeagueTier)
+            ->filterByRoleLeagueTier($roleLeagueTier)
+            ->filterByGameMap($gameMap)
+            ->filterByHeroLevel($heroLevel)
+            ->excludeMirror($mirror)
+            ->filterByRegion($region)
+            ->groupBy('global_hero_stats.hero', 'global_hero_stats.win_loss')
+            ->orderBy('heroes.name', 'asc')
+            ->orderBy('global_hero_stats.win_loss', 'asc')
+            ->get();
 
-        if (config('app.env') !== 'production') {
-            Cache::store('database')->forget($cacheKey);
+        $banData = GlobalHeroStatsBans::query()
+            ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')
+            ->select('heroes.name', 'heroes.id as hero_id')
+            ->selectRaw('SUM(global_hero_stats_bans.bans) as bans')
+            ->filterByGameVersion($gameVersionIDs)
+            ->filterByGameType($gameType)
+            ->filterByLeagueTier($leagueTier)
+            ->filterByHeroLeagueTier($heroLeagueTier)
+            ->filterByRoleLeagueTier($roleLeagueTier)
+            ->filterByGameMap($gameMap)
+            ->filterByHeroLevel($heroLevel)
+            ->filterByRegion($region)
+            ->groupBy('global_hero_stats_bans.hero')
+            ->orderBy('heroes.name', 'asc')
+            ->get();
+
+        $changeData = null;
+
+        if ($this->checkIfChange($gameVersion, $region, $gameType, $gameMap, $leagueTier, $heroLeagueTier, $roleLeagueTier, $heroLevel)) {
+            $changeData = GlobalHeroChange::query()
+                ->join('heroesprofile.heroes', 'heroesprofile.heroes.id', '=', 'global_hero_change.hero')
+                ->select('heroes.name', 'heroes.id as hero_id', 'win_rate as change_win_rate')
+                ->filterByGameVersion($this->calculateGameVersionsForHeroChange($gameVersion))
+                ->filterByGameType($gameType)
+                ->get();
         }
 
-        $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use ($gameVersion,
-            $gameVersionIDs,
-            $gameType,
-            $leagueTier,
-            $heroLeagueTier,
-            $roleLeagueTier,
-            $gameMap,
-            $heroLevel,
-            $region,
-            $statFilter,
-            $hero,
-            $role,
-            $mirror
-        ) {
-            $data = GlobalHeroStats::query()
-                ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stats.hero')
-                ->select('heroes.name', 'heroes.short_name', 'heroes.id as hero_id', 'global_hero_stats.win_loss', 'heroes.new_role as role')
-                ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
-                ->when(! empty($statFilter) && $statFilter !== 'win_rate', function ($query) use ($statFilter) {
-                    return $query->selectRaw("SUM(global_hero_stats.$statFilter) as total_filter_type");
-                })
-                ->filterByGameVersion($gameVersionIDs)
-                ->filterByGameType($gameType)
-                ->filterByLeagueTier($leagueTier)
-                ->filterByHeroLeagueTier($heroLeagueTier)
-                ->filterByRoleLeagueTier($roleLeagueTier)
-                ->filterByGameMap($gameMap)
-                ->filterByHeroLevel($heroLevel)
-                ->excludeMirror($mirror)
-                ->filterByRegion($region)
-                ->groupBy('global_hero_stats.hero', 'global_hero_stats.win_loss')
-                ->orderBy('heroes.name', 'asc')
-                ->orderBy('global_hero_stats.win_loss', 'asc')
-                // ->toSql();
-                ->get();
-
-            $banData = GlobalHeroStatsBans::query()
-                ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')
-                ->select('heroes.name', 'heroes.id as hero_id')
-                ->selectRaw('SUM(global_hero_stats_bans.bans) as bans')
-                ->filterByGameVersion($gameVersionIDs)
-                ->filterByGameType($gameType)
-                ->filterByLeagueTier($leagueTier)
-                ->filterByHeroLeagueTier($heroLeagueTier)
-                ->filterByRoleLeagueTier($roleLeagueTier)
-                ->filterByGameMap($gameMap)
-                ->filterByHeroLevel($heroLevel)
-                ->filterByRegion($region)
-                ->groupBy('global_hero_stats_bans.hero')
-                ->orderBy('heroes.name', 'asc')
-                // ->toSql();
-                ->get();
-
-            $changeData = null;
-
-            if ($this->checkIfChange($gameVersion, $region, $gameType, $gameMap, $leagueTier, $heroLeagueTier, $roleLeagueTier, $heroLevel)) {
-                $changeData = GlobalHeroChange::query()
-                    ->join('heroesprofile.heroes', 'heroesprofile.heroes.id', '=', 'global_hero_change.hero')
-                    ->select('heroes.name', 'heroes.id as hero_id', 'win_rate as change_win_rate')
-                    ->filterByGameVersion($this->calculateGameVersionsForHeroChange($gameVersion))
-                    ->filterByGameType($gameType)
-                    // ->toSql();
-                    ->get();
-            }
-
-            return $this->combineData($data, $statFilter, $banData, $changeData, $hero, $role);
-        });
-
-        return $data;
+        return $this->combineData($data, $statFilter, $banData, $changeData, $hero, $role);
     }
 
     private function calculateGameVersionsForHeroChange($version)
@@ -216,7 +196,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
             }
 
             $matchingBan = $banData->where('name', $firstItem['name'])->first();
-            $bans = $matchingBan ? round($matchingBan['bans']) : 0; // Round the bans value
+            $bans = $matchingBan ? round($matchingBan['bans']) : 0;
 
             $banRate = 0;
             if ($bans > 0 && $totalGamesPlayed > 0) {
@@ -322,7 +302,6 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         ];
     }
 
-    // 🤮
     private function checkIfChange($timeframe, $region, $game_type, $map, $league_tier, $hero_league_tier, $role_league_tier, $hero_level)
     {
         if (

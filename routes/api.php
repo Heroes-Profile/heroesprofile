@@ -17,6 +17,8 @@ use App\Http\Controllers\Global\GlobalHeroMapStatsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupsTalentsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupStatsController;
 use App\Http\Controllers\Global\GlobalHeroStatsController;
+use App\Http\Controllers\Global\GlobalQueryStatusController;
+use App\Http\Controllers\Global\GlobalQueryWorkerController;
 use App\Http\Controllers\Global\GlobalLeaderboardController;
 use App\Http\Controllers\Global\GlobalPartyStatsController;
 use App\Http\Controllers\Global\GlobalTalentBuilderController;
@@ -46,7 +48,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::prefix('v1')->middleware(['api', 'cloud.tasks'])->group(function () {
+    Route::post('internal/global/process', [GlobalQueryWorkerController::class, 'process']);
+});
+
 Route::prefix('v1')->middleware('web')->group(function () {
+    Route::get('global/status/{jobId}', [GlobalQueryStatusController::class, 'show']);
     Route::post('main/footer/data', [MainPageController::class, 'getFooterData']);
 
     Route::post('main/header/data', [MainPageController::class, 'getHeaderAlertData']);

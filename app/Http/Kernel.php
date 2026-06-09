@@ -19,6 +19,7 @@ use App\Http\Middleware\ThrottleOldReplayRequests;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\ValidateApiPostOrigin;
+use App\Http\Middleware\VerifyCloudTasksRequest;
 use App\Http\Middleware\ValidateSignature;
 use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
@@ -109,5 +110,6 @@ class Kernel extends HttpKernel
         'logIpAndUserAgent' => LogIPAndUserAgent::class,
         'communitySupportRedirect' => CommunitySupportRedirect::class,
         'requireWebsiteAuthForAll' => RequireWebsiteAuthForAll::class,
+        'cloud.tasks' => VerifyCloudTasksRequest::class,
     ];
 }
