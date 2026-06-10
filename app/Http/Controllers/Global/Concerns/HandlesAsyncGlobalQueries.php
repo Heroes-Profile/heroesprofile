@@ -16,18 +16,27 @@ trait HandlesAsyncGlobalQueries
         string $executeMethod
     ): JsonResponse|array {
         $cacheTtlSeconds = $this->globalDataService->calculateCacheTimeInSeconds($gameVersion);
+        $bypassCache = $this->globalDataService->shouldBypassGlobalCache();
 
         if (! $this->globalDataService->isGlobalAsyncEnabled()) {
-            if (config('app.env') !== 'production') {
+            if ($bypassCache || config('app.env') !== 'production') {
                 Cache::store('database')->forget($cacheKey);
             }
 
-            $data = Cache::store('database')->remember($cacheKey, $cacheTtlSeconds, function () use ($request, $executeMethod) {
-                return app(static::class)->{$executeMethod}($request);
-            });
+            $data = $bypassCache
+                ? app(static::class)->{$executeMethod}($request)
+                : Cache::store('database')->remember($cacheKey, $cacheTtlSeconds, function () use ($request, $executeMethod) {
+                    return app(static::class)->{$executeMethod}($request);
+                });
 
-            return response()->json($data)
+            $response = response()->json($data)
                 ->header('X-Global-Async-Mode', 'sync');
+
+            if ($bypassCache) {
+                $response->header('X-Global-Cache-Bypass', 'true');
+            }
+
+            return $response;
         }
 
         return app(GlobalQueryService::class)->handle(

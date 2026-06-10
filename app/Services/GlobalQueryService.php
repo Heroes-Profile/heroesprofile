@@ -20,8 +20,15 @@ class GlobalQueryService
         int $cacheTtlSeconds
     ): JsonResponse {
         $cache = Cache::store('database');
+        $bypassCache = app(GlobalDataService::class)->shouldBypassGlobalCache();
+        $cacheIndexKey = $this->cacheIndexKey($cacheKey);
 
-        if ($cacheTtlSeconds > 0) {
+        if ($bypassCache) {
+            $cache->forget($cacheKey);
+            $cache->forget($cacheIndexKey);
+        }
+
+        if (! $bypassCache && $cacheTtlSeconds > 0) {
             $cached = $cache->get($cacheKey);
             if ($cached !== null) {
                 return response()->json($cached)
@@ -30,7 +37,6 @@ class GlobalQueryService
             }
         }
 
-        $cacheIndexKey = $this->cacheIndexKey($cacheKey);
         $existing = $cache->get($cacheIndexKey);
 
         if ($existing && in_array($existing['status'], ['pending', 'processing'], true)) {
@@ -57,7 +63,7 @@ class GlobalQueryService
 
         app(CloudTasksDispatcher::class)->dispatch($jobId);
 
-        return $this->acceptedResponse($jobId, 'pending');
+        return $this->withBypassHeader($this->acceptedResponse($jobId, 'pending'), $bypassCache);
     }
 
     public function poll(string $jobId): JsonResponse
@@ -205,5 +211,14 @@ class GlobalQueryService
         ], 202)
             ->header('X-Global-Async-Mode', 'accepted')
             ->header('X-Global-Job-Id', $jobId);
+    }
+
+    private function withBypassHeader(JsonResponse $response, bool $bypassCache): JsonResponse
+    {
+        if ($bypassCache) {
+            $response->header('X-Global-Cache-Bypass', 'true');
+        }
+
+        return $response;
     }
 }

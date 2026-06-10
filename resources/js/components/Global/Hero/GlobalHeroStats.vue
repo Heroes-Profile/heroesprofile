@@ -7,6 +7,7 @@
       <div class="font-bold text-yellow-300 mb-1">Global Hero async debug (develop only)</div>
       <div v-if="serverDebugConfig">Server: {{ serverDebugSummary }}</div>
       <div>Load: {{ loadDebugStatus || 'waiting...' }}</div>
+      <div v-if="headerDebugSummary">Headers: {{ headerDebugSummary }}</div>
       <div v-if="loadMeta && loadMeta.error" class="text-red-300 mt-1">{{ loadMeta.error }}</div>
     </div>
 
@@ -314,8 +315,28 @@ export default {
         `async_getenv=${cfg.global_async_getenv ?? 'unset'}`,
         `fresh_ttl=${cfg.cache_fresh_seconds_sample}s`,
         `handler=${cfg.cloud_tasks?.handler_url ? 'set' : 'missing'}`,
+        `bypass_cache=${cfg.global_bypass_cache_runtime}`,
         `marker=${cfg.deploy_marker}`,
       ].join(' | ');
+    },
+    headerDebugSummary() {
+      if (!this.loadMeta) {
+        return null;
+      }
+
+      const post = this.$formatResponseHeaders(this.loadMeta.postHeaders);
+      const poll = this.$formatResponseHeaders(this.loadMeta.pollHeaders);
+      const parts = [];
+
+      if (post !== 'none') {
+        parts.push(`POST: ${post}`);
+      }
+
+      if (poll !== 'none') {
+        parts.push(`POLL: ${poll}`);
+      }
+
+      return parts.length ? parts.join(' || ') : null;
     },
     showStatTypeColumn(){
       if(this.statfilter && this.statfilter != "win_rate" && !this.isLoading){

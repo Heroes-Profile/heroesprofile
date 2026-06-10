@@ -11,6 +11,7 @@ export function createLoadMeta() {
     jobId: null,
     pollAttempt: 0,
     pollStatus: null,
+    pollHeaders: null,
     pollError: null,
     mode: null,
     startedAt: null,
@@ -44,7 +45,24 @@ function extractDebugHeaders(headers) {
   return {
     cacheStatus: headers['x-global-cache-status'] || null,
     asyncMode: headers['x-global-async-mode'] || null,
+    jobId: headers['x-global-job-id'] || null,
+    cacheBypass: headers['x-global-cache-bypass'] || null,
   };
+}
+
+export function formatResponseHeaders(headers) {
+  if (!headers) {
+    return 'none';
+  }
+
+  const parts = [
+    headers.asyncMode ? `X-Global-Async-Mode=${headers.asyncMode}` : null,
+    headers.cacheStatus ? `X-Global-Cache-Status=${headers.cacheStatus}` : null,
+    headers.jobId ? `X-Global-Job-Id=${headers.jobId}` : null,
+    headers.cacheBypass ? `X-Global-Cache-Bypass=${headers.cacheBypass}` : null,
+  ].filter(Boolean);
+
+  return parts.length ? parts.join(' | ') : 'none';
 }
 
 export function formatLoadMeta(meta) {
@@ -57,8 +75,8 @@ export function formatLoadMeta(meta) {
     meta.mode ? `mode: ${meta.mode}` : null,
     meta.postUrl ? `POST: ${meta.postUrl}` : null,
     meta.postStatus ? `POST status: ${meta.postStatus}` : null,
-    meta.postHeaders?.asyncMode ? `POST X-Global-Async-Mode: ${meta.postHeaders.asyncMode}` : null,
-    meta.postHeaders?.cacheStatus ? `POST X-Global-Cache-Status: ${meta.postHeaders.cacheStatus}` : null,
+    meta.postHeaders ? `POST headers: ${formatResponseHeaders(meta.postHeaders)}` : null,
+    meta.pollHeaders ? `POLL headers: ${formatResponseHeaders(meta.pollHeaders)}` : null,
     meta.jobId ? `job_id: ${meta.jobId}` : null,
     meta.pollAttempt ? `poll attempts: ${meta.pollAttempt}` : null,
     meta.pollStatus ? `poll status: ${meta.pollStatus}` : null,
@@ -95,7 +113,7 @@ export async function globalAsyncPost(axios, url, data, options = {}) {
       meta.phase = 'polling';
       meta.mode = 'async-polled';
       meta.jobId = response.data?.job_id || null;
-      notify(`POST returned ${response.status} (job_id: ${meta.jobId}) — polling...`);
+      notify(`POST returned ${response.status} (job_id: ${meta.jobId}) — ${formatResponseHeaders(meta.postHeaders)} — polling...`);
 
       const polled = await pollGlobalAsyncStatus(axios, meta.jobId, axiosOptions, meta, notify);
 
@@ -111,7 +129,7 @@ export async function globalAsyncPost(axios, url, data, options = {}) {
     meta.mode = meta.postHeaders?.cacheStatus === 'fresh' ? 'cache-fresh' : 'direct-sync';
     meta.finishedAt = new Date().toISOString();
     meta.durationMs = Date.now() - startedAt;
-    notify(`POST returned ${response.status} (${meta.mode})`);
+      notify(`POST returned ${response.status} (${meta.mode}) — ${formatResponseHeaders(meta.postHeaders)}`);
 
     return response;
   } catch (error) {
@@ -151,12 +169,17 @@ async function pollGlobalAsyncStatus(
       }
 
       const response = await axios.get(`/api/v1/global/status/${jobId}`, options);
+      const responseHeaders = extractDebugHeaders(response.headers);
 
       if (meta) {
         meta.pollStatus = response.data?.status || (response.status === 200 ? 'complete' : null);
+        meta.pollHeaders = responseHeaders;
       }
 
       if (response.status === 200 && !response.data?.async) {
+        if (notify && meta) {
+          notify(`Poll complete — ${formatResponseHeaders(meta.pollHeaders)}`);
+        }
         return response;
       }
 

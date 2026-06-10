@@ -314,6 +314,25 @@ class GlobalDataService
         return (bool) config('global.async_enabled');
     }
 
+    public function shouldBypassGlobalCache(): bool
+    {
+        $host = request()->getHost();
+        $allowed = str_contains($host, 'develop')
+            || in_array($host, ['localhost', '127.0.0.1'], true)
+            || ! app()->environment('production');
+
+        if (! $allowed) {
+            return false;
+        }
+
+        $explicit = getenv('GLOBAL_BYPASS_CACHE');
+        if ($explicit !== false && $explicit !== '') {
+            return filter_var($explicit, FILTER_VALIDATE_BOOLEAN);
+        }
+
+        return (bool) config('global.bypass_cache');
+    }
+
     public function calculateCacheTimeInSeconds($timeframe)
     {
         if (! app()->environment('production')) {

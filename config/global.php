@@ -17,6 +17,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Bypass global result cache (testing only)
+    |--------------------------------------------------------------------------
+    |
+    | When true on local/develop, every global request skips cached results
+    | and in-flight job dedup so a fresh async job runs each time.
+    | Ignored on production (www).
+    |
+    */
+
+    'bypass_cache' => env('GLOBAL_BYPASS_CACHE', false),
+
+    /*
+    |--------------------------------------------------------------------------
     | Google Cloud Tasks
     |--------------------------------------------------------------------------
     */
