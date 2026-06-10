@@ -1,15 +1,10 @@
 <template>
   <div>
-    <div
-      v-if="showDebugBanner"
-      class="max-w-[1500px] mx-auto mb-4 p-3 rounded border border-yellow-600 bg-yellow-900/40 text-yellow-100 text-xs font-mono whitespace-pre-wrap"
-    >
-      <div class="font-bold text-yellow-300 mb-1">Global Hero async debug (develop only)</div>
-      <div v-if="serverDebugConfig">Server: {{ serverDebugSummary }}</div>
-      <div>Load: {{ loadDebugStatus || 'waiting...' }}</div>
-      <div v-if="headerDebugSummary">Headers: {{ headerDebugSummary }}</div>
-      <div v-if="loadMeta && loadMeta.error" class="text-red-300 mt-1">{{ loadMeta.error }}</div>
-    </div>
+    <global-async-debug-banner
+      page-label="Global Hero"
+      :load-meta="loadMeta"
+      :load-debug-status="loadDebugStatus"
+    />
 
     <page-heading :infoText1="infoText" heading="Global Hero Statistics"></page-heading>
     
@@ -210,17 +205,16 @@
     </div>
     <div v-else-if="dataError" class="flex flex-col items-center justify-center">
       Error: Reload page/filter
-      <div v-if="showDebugBanner && loadMeta?.error" class="text-sm text-red-300 mt-2 max-w-3xl text-center px-4">
-        {{ loadMeta.error }}
-      </div>
     </div>
   </div>
 </template>
 
 <script>
+import globalAsyncDebug from '../../../mixins/globalAsyncDebug';
 
 export default {
   name: 'GlobalHeroStats',
+  mixins: [globalAsyncDebug],
   components: {
   },
   props: {
@@ -274,9 +268,6 @@ export default {
       talentbuildtype: null,
       loadingStates: {},
       tablewidth: null,
-      loadMeta: null,
-      loadDebugStatus: null,
-      serverDebugConfig: null,
     }
   },
   created(){
@@ -292,52 +283,7 @@ export default {
 
   	this.getData();
   },
-  mounted() {
-    if (this.showDebugBanner) {
-      this.fetchServerDebugConfig();
-    }
-  },
   computed: {
-    showDebugBanner() {
-      const host = window.location.hostname;
-      return host.includes('develop') || host === 'localhost' || host === '127.0.0.1';
-    },
-    serverDebugSummary() {
-      if (!this.serverDebugConfig) {
-        return 'loading...';
-      }
-
-      const cfg = this.serverDebugConfig;
-      return [
-        `APP_ENV=${cfg.app_env}`,
-        `async_runtime=${cfg.global_async_enabled_runtime}`,
-        `async_config=${cfg.global_async_enabled_config}`,
-        `async_getenv=${cfg.global_async_getenv ?? 'unset'}`,
-        `fresh_ttl=${cfg.cache_fresh_seconds_sample}s`,
-        `handler=${cfg.cloud_tasks?.handler_url ? 'set' : 'missing'}`,
-        `bypass_cache=${cfg.global_bypass_cache_runtime}`,
-        `marker=${cfg.deploy_marker}`,
-      ].join(' | ');
-    },
-    headerDebugSummary() {
-      if (!this.loadMeta) {
-        return null;
-      }
-
-      const post = this.$formatResponseHeaders(this.loadMeta.postHeaders);
-      const poll = this.$formatResponseHeaders(this.loadMeta.pollHeaders);
-      const parts = [];
-
-      if (post !== 'none') {
-        parts.push(`POST: ${post}`);
-      }
-
-      if (poll !== 'none') {
-        parts.push(`POLL: ${poll}`);
-      }
-
-      return parts.length ? parts.join(' || ') : null;
-    },
     showStatTypeColumn(){
       if(this.statfilter && this.statfilter != "win_rate" && !this.isLoading){
         return true;      
@@ -430,20 +376,9 @@ export default {
   watch: {
   },
   methods: {
-    async fetchServerDebugConfig() {
-      try {
-        const response = await this.$axios.get('/api/v1/global/debug/config');
-        this.serverDebugConfig = response.data;
-      } catch (error) {
-        this.serverDebugConfig = {
-          error: error.response?.data?.message || error.message || 'Failed to load debug config',
-        };
-      }
-    },
   	async getData(){
       this.dataError = false;
       this.isLoading = true;
-      this.loadMeta = this.$createLoadMeta();
 
       if (this.cancelTokenSource) {
         this.cancelTokenSource.cancel('Request canceled');
@@ -468,21 +403,12 @@ export default {
           role_league_tier: this.rolerank,
           mirror: this.mirrormatch,
         },
-        {
-          cancelToken: this.cancelTokenSource.token,
-          loadMeta: this.loadMeta,
-          onLoadStatus: (message) => {
-            this.loadDebugStatus = message;
-          },
-        });
+        this.prepareGlobalAsyncLoad(this.cancelTokenSource.token));
 
         this.data = response.data;
         this.loadingStates = this.sortedData.map(() => false);
       }catch(error){
         this.dataError = true;
-        if (this.showDebugBanner) {
-          console.error('Global Hero load failed', error);
-        }
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
@@ -523,10 +449,8 @@ export default {
           role_league_tier: this.rolerank,
           mirror: this.mirrormatch,
           talentbuildtype: this.talentbuildtype
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
-        });
+        },
+        this.prepareGlobalAsyncLoad(this.cancelTokenSource.token));
 
         if(response.data.status == "failure to validate inputs"){
           throw new Error("Failure to validate inputs");

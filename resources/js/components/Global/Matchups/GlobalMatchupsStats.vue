@@ -1,5 +1,10 @@
 <template>
   <div>
+    <global-async-debug-banner
+      page-label="Global Matchups"
+      :load-meta="loadMeta"
+      :load-debug-status="loadDebugStatus"
+    />
     <page-heading :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Matchups Statistics' : 'Hero Matchups Statistics'">
       <hero-image-wrapper v-if="selectedHero" :hero="selectedHero" :size="'big'"></hero-image-wrapper>
     </page-heading>
@@ -170,7 +175,10 @@
 </template>
 
 <script>
+  import globalAsyncDebug from '../../../mixins/globalAsyncDebug';
+
   export default {
+    mixins: [globalAsyncDebug],
     name: 'GlobalMatchupsStats',
     components: {
     },
@@ -322,10 +330,8 @@
             role_league_tier: this.rolerank,
             mirror: this.mirrormatch,
             role: this.role,
-          }, 
-          {
-            cancelToken: this.cancelTokenSource.token,
-          });
+          },
+          this.prepareGlobalAsyncLoad(this.cancelTokenSource.token));
           if(response.data.status == "failure to validate inputs"){
             throw new Error("Failure to validate inputs");
           }

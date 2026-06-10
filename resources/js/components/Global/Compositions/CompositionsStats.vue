@@ -1,5 +1,10 @@
 <template>
   <div>
+    <global-async-debug-banner
+      page-label="Global Compositions"
+      :load-meta="loadMeta"
+      :load-debug-status="loadDebugStatus"
+    />
     <page-heading :infoText1="infoText" :heading="'Compositional Statistics'"></page-heading>
     <filters 
       :onFilter="filterData" 
@@ -165,7 +170,10 @@
 </template>
 
 <script>
-export default {
+  import globalAsyncDebug from '../../../mixins/globalAsyncDebug';
+
+  export default {
+    mixins: [globalAsyncDebug],
   name: 'CompositionsStats',
   components: {
   },
@@ -275,10 +283,8 @@ export default {
           role_league_tier: this.rolerank,
           mirror: this.mirrormatch,
           minimum_games: this.minimumgames
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
-        });
+        },
+        this.prepareGlobalAsyncLoad(this.cancelTokenSource.token));
 
         this.compositiondata = response.data;
         this.loadingStates = this.sortedData.map(() => false);
@@ -324,10 +330,8 @@ export default {
           mirror: this.mirrormatch,
           minimum_games: this.minimumgames,
           composition_id: compositionid,
-        }, 
-        {
-          cancelToken: this.cancelTokenSource.token,
-        });
+        },
+        this.prepareGlobalAsyncLoad(this.cancelTokenSource.token));
 
         if(response.data.status == "failure to validate inputs"){
           throw new Error("Failure to validate inputs");
