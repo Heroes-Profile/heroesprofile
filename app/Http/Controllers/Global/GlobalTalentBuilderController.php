@@ -157,205 +157,205 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         $talentData = HeroesDataTalent::all()->keyBy('talent_id');
 
         $gameVersionIds = SeasonGameVersion::whereIn('game_version', $gameVersion)
-                ->pluck('id')
-                ->toArray();
+            ->pluck('id')
+            ->toArray();
 
         if (empty($gameVersionIds)) {
             return [
                 'talentData' => $this->formatTalentData(HeroesDataTalent::where('hero_name', $hero_name)->orderBy('level', 'ASC')->orderBy('sort', 'ASC')->limit(100)->get(), []),
                 'buildData' => [
-                        'level_one' => $level_one ? $talentData[$level_one] : null,
-                        'level_four' => $level_four ? $talentData[$level_four] : null,
-                        'level_seven' => $level_seven ? $talentData[$level_seven] : null,
-                        'level_ten' => $level_ten ? $talentData[$level_ten] : null,
-                        'level_thirteen' => $level_thirteen ? $talentData[$level_thirteen] : null,
-                        'level_sixteen' => $level_sixteen ? $talentData[$level_sixteen] : null,
-                        'level_twenty' => $level_twenty ? $talentData[$level_twenty] : null,
-                        'wins' => 0,
-                        'losses' => 0,
-                        'games_played' => 0,
+                    'level_one' => $level_one ? $talentData[$level_one] : null,
+                    'level_four' => $level_four ? $talentData[$level_four] : null,
+                    'level_seven' => $level_seven ? $talentData[$level_seven] : null,
+                    'level_ten' => $level_ten ? $talentData[$level_ten] : null,
+                    'level_thirteen' => $level_thirteen ? $talentData[$level_thirteen] : null,
+                    'level_sixteen' => $level_sixteen ? $talentData[$level_sixteen] : null,
+                    'level_twenty' => $level_twenty ? $talentData[$level_twenty] : null,
+                    'wins' => 0,
+                    'losses' => 0,
+                    'games_played' => 0,
                     'win_rate' => 0,
                 ],
             ];
         }
 
         $data = GlobalHeroTalents::query()
-                ->join('heroesprofile_globals.talent_combinations as talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
-                ->select('global_hero_talents.win_loss', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
-                ->selectRaw('SUM(global_hero_talents.games_played) AS games_played')
-                ->filterByGameVersion($gameVersionIds)
-                ->filterByGameType($gameType)
-                ->filterByHero($hero)
-                ->filterByLeagueTier($leagueTier)
-                ->filterByHeroLeagueTier($heroLeagueTier)
-                ->filterByRoleLeagueTier($roleLeagueTier)
-                ->filterByGameMap($gameMap)
-                ->filterByHeroLevel($heroLevel)
-                ->filterByRegion($region)
-                ->when(! is_null($level_one), function ($query) use ($level_one) {
-                    return $query->where('level_one', $level_one);
-                })
-                ->when(! is_null($level_four), function ($query) use ($level_four) {
-                    return $query->where('level_four', $level_four);
-                })
-                ->when(! is_null($level_seven), function ($query) use ($level_seven) {
-                    return $query->where('level_seven', $level_seven);
-                })
-                ->when(! is_null($level_ten), function ($query) use ($level_ten) {
-                    return $query->where('level_ten', $level_ten);
-                })
-                ->when(! is_null($level_thirteen), function ($query) use ($level_thirteen) {
-                    return $query->where('level_thirteen', $level_thirteen);
-                })
-                ->when(! is_null($level_sixteen), function ($query) use ($level_sixteen) {
-                    return $query->where('level_sixteen', $level_sixteen);
-                })
-                ->when(! is_null($level_twenty), function ($query) use ($level_twenty) {
-                    return $query->where('level_twenty', $level_twenty);
-                })
-                ->groupBy('global_hero_talents.win_loss', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
-                ->get()
-                ->map(function ($item) {
-                    return [
-                        'win_loss' => $item->win_loss,
-                        'level_one' => $item->level_one,
-                        'level_four' => $item->level_four,
-                        'level_seven' => $item->level_seven,
-                        'level_ten' => $item->level_ten,
-                        'level_thirteen' => $item->level_thirteen,
-                        'level_sixteen' => $item->level_sixteen,
-                        'level_twenty' => $item->level_twenty,
-                        'games_played' => $item->games_played,
-                    ];
-                });
+            ->join('heroesprofile_globals.talent_combinations as talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
+            ->select('global_hero_talents.win_loss', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
+            ->selectRaw('SUM(global_hero_talents.games_played) AS games_played')
+            ->filterByGameVersion($gameVersionIds)
+            ->filterByGameType($gameType)
+            ->filterByHero($hero)
+            ->filterByLeagueTier($leagueTier)
+            ->filterByHeroLeagueTier($heroLeagueTier)
+            ->filterByRoleLeagueTier($roleLeagueTier)
+            ->filterByGameMap($gameMap)
+            ->filterByHeroLevel($heroLevel)
+            ->filterByRegion($region)
+            ->when(! is_null($level_one), function ($query) use ($level_one) {
+                return $query->where('level_one', $level_one);
+            })
+            ->when(! is_null($level_four), function ($query) use ($level_four) {
+                return $query->where('level_four', $level_four);
+            })
+            ->when(! is_null($level_seven), function ($query) use ($level_seven) {
+                return $query->where('level_seven', $level_seven);
+            })
+            ->when(! is_null($level_ten), function ($query) use ($level_ten) {
+                return $query->where('level_ten', $level_ten);
+            })
+            ->when(! is_null($level_thirteen), function ($query) use ($level_thirteen) {
+                return $query->where('level_thirteen', $level_thirteen);
+            })
+            ->when(! is_null($level_sixteen), function ($query) use ($level_sixteen) {
+                return $query->where('level_sixteen', $level_sixteen);
+            })
+            ->when(! is_null($level_twenty), function ($query) use ($level_twenty) {
+                return $query->where('level_twenty', $level_twenty);
+            })
+            ->groupBy('global_hero_talents.win_loss', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'win_loss' => $item->win_loss,
+                    'level_one' => $item->level_one,
+                    'level_four' => $item->level_four,
+                    'level_seven' => $item->level_seven,
+                    'level_ten' => $item->level_ten,
+                    'level_thirteen' => $item->level_thirteen,
+                    'level_sixteen' => $item->level_sixteen,
+                    'level_twenty' => $item->level_twenty,
+                    'games_played' => $item->games_played,
+                ];
+            });
 
-            $transformedData = [
-                'level_one' => [],
-                'level_four' => [],
-                'level_seven' => [],
-                'level_ten' => [],
-                'level_thirteen' => [],
-                'level_sixteen' => [],
-                'level_twenty' => [],
-            ];
+        $transformedData = [
+            'level_one' => [],
+            'level_four' => [],
+            'level_seven' => [],
+            'level_ten' => [],
+            'level_thirteen' => [],
+            'level_sixteen' => [],
+            'level_twenty' => [],
+        ];
 
-            foreach ($data as $key => $value) {
-                if (! array_key_exists($value['level_one'], $transformedData['level_one'])) {
-                    $transformedData['level_one'][$value['level_one']]['wins'] = 0;
-                    $transformedData['level_one'][$value['level_one']]['losses'] = 0;
-                }
-
-                if (! array_key_exists($value['level_four'], $transformedData['level_four'])) {
-                    $transformedData['level_four'][$value['level_four']]['wins'] = 0;
-                    $transformedData['level_four'][$value['level_four']]['losses'] = 0;
-                }
-
-                if (! array_key_exists($value['level_seven'], $transformedData['level_seven'])) {
-                    $transformedData['level_seven'][$value['level_seven']]['wins'] = 0;
-                    $transformedData['level_seven'][$value['level_seven']]['losses'] = 0;
-                }
-
-                if (! array_key_exists($value['level_ten'], $transformedData['level_ten'])) {
-                    $transformedData['level_ten'][$value['level_ten']]['wins'] = 0;
-                    $transformedData['level_ten'][$value['level_ten']]['losses'] = 0;
-                }
-
-                if (! array_key_exists($value['level_thirteen'], $transformedData['level_thirteen'])) {
-                    $transformedData['level_thirteen'][$value['level_thirteen']]['wins'] = 0;
-                    $transformedData['level_thirteen'][$value['level_thirteen']]['losses'] = 0;
-                }
-
-                if (! array_key_exists($value['level_sixteen'], $transformedData['level_sixteen'])) {
-                    $transformedData['level_sixteen'][$value['level_sixteen']]['wins'] = 0;
-                    $transformedData['level_sixteen'][$value['level_sixteen']]['losses'] = 0;
-                }
-
-                if (! array_key_exists($value['level_twenty'], $transformedData['level_twenty'])) {
-                    $transformedData['level_twenty'][$value['level_twenty']]['wins'] = 0;
-                    $transformedData['level_twenty'][$value['level_twenty']]['losses'] = 0;
-                }
-
-                if ($value['win_loss'] == 1) {
-                    $transformedData['level_one'][$value['level_one']]['wins'] += $value['games_played'];
-                    $transformedData['level_four'][$value['level_four']]['wins'] += $value['games_played'];
-                    $transformedData['level_seven'][$value['level_seven']]['wins'] += $value['games_played'];
-                    $transformedData['level_ten'][$value['level_ten']]['wins'] += $value['games_played'];
-                    $transformedData['level_thirteen'][$value['level_thirteen']]['wins'] += $value['games_played'];
-                    $transformedData['level_sixteen'][$value['level_sixteen']]['wins'] += $value['games_played'];
-                    $transformedData['level_twenty'][$value['level_twenty']]['wins'] += $value['games_played'];
-                } elseif ($value['win_loss'] == 0) {
-                    $transformedData['level_one'][$value['level_one']]['losses'] += $value['games_played'];
-                    $transformedData['level_four'][$value['level_four']]['losses'] += $value['games_played'];
-                    $transformedData['level_seven'][$value['level_seven']]['losses'] += $value['games_played'];
-                    $transformedData['level_ten'][$value['level_ten']]['losses'] += $value['games_played'];
-                    $transformedData['level_thirteen'][$value['level_thirteen']]['losses'] += $value['games_played'];
-                    $transformedData['level_sixteen'][$value['level_sixteen']]['losses'] += $value['games_played'];
-                    $transformedData['level_twenty'][$value['level_twenty']]['losses'] += $value['games_played'];
-                }
+        foreach ($data as $key => $value) {
+            if (! array_key_exists($value['level_one'], $transformedData['level_one'])) {
+                $transformedData['level_one'][$value['level_one']]['wins'] = 0;
+                $transformedData['level_one'][$value['level_one']]['losses'] = 0;
             }
 
-            $buildsData = GlobalHeroTalents::query()
-                ->join('heroesprofile_globals.talent_combinations as talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
-                ->select('global_hero_talents.win_loss')
-                ->selectRaw('SUM(global_hero_talents.games_played) AS games_played')
-                ->filterByGameVersion($gameVersionIds)
-                ->filterByGameType($gameType)
-                ->filterByHero($hero)
-                ->filterByLeagueTier($leagueTier)
-                ->filterByHeroLeagueTier($heroLeagueTier)
-                ->filterByRoleLeagueTier($roleLeagueTier)
-                ->filterByGameMap($gameMap)
-                ->filterByHeroLevel($heroLevel)
-                ->filterByRegion($region)
-                ->when(! is_null($level_one), function ($query) use ($level_one) {
-                    return $query->where('level_one', $level_one);
-                })
-                ->when(! is_null($level_four), function ($query) use ($level_four) {
-                    return $query->where('level_four', $level_four);
-                })
-                ->when(! is_null($level_seven), function ($query) use ($level_seven) {
-                    return $query->where('level_seven', $level_seven);
-                })
-                ->when(! is_null($level_ten), function ($query) use ($level_ten) {
-                    return $query->where('level_ten', $level_ten);
-                })
-                ->when(! is_null($level_thirteen), function ($query) use ($level_thirteen) {
-                    return $query->where('level_thirteen', $level_thirteen);
-                })
-                ->when(! is_null($level_sixteen), function ($query) use ($level_sixteen) {
-                    return $query->where('level_sixteen', $level_sixteen);
-                })
-                ->when(! is_null($level_twenty), function ($query) use ($level_twenty) {
-                    return $query->where('level_twenty', $level_twenty);
-                })
-                ->groupBy('global_hero_talents.win_loss')
-                ->get()
-                ->map(function ($item) {
-                    return (object) [
-                        'win_loss' => $item->win_loss,
-                        'games_played' => $item->games_played,
-                    ];
-                });
+            if (! array_key_exists($value['level_four'], $transformedData['level_four'])) {
+                $transformedData['level_four'][$value['level_four']]['wins'] = 0;
+                $transformedData['level_four'][$value['level_four']]['losses'] = 0;
+            }
 
-            $wins = $buildsData->where('win_loss', 1)->sum('games_played');
-            $losses = $buildsData->where('win_loss', 0)->sum('games_played');
-            $gamesPlayed = $wins + $losses;
-            $winRate = $gamesPlayed > 0 ? round(($wins / $gamesPlayed) * 100, 2) : 0;
+            if (! array_key_exists($value['level_seven'], $transformedData['level_seven'])) {
+                $transformedData['level_seven'][$value['level_seven']]['wins'] = 0;
+                $transformedData['level_seven'][$value['level_seven']]['losses'] = 0;
+            }
 
-            $buildReturnData = [
-                'level_one' => $level_one ? $talentData[$level_one] : null,
-                'level_four' => $level_four ? $talentData[$level_four] : null,
-                'level_seven' => $level_seven ? $talentData[$level_seven] : null,
-                'level_ten' => $level_ten ? $talentData[$level_ten] : null,
-                'level_thirteen' => $level_thirteen ? $talentData[$level_thirteen] : null,
-                'level_sixteen' => $level_sixteen ? $talentData[$level_sixteen] : null,
-                'level_twenty' => $level_twenty ? $talentData[$level_twenty] : null,
+            if (! array_key_exists($value['level_ten'], $transformedData['level_ten'])) {
+                $transformedData['level_ten'][$value['level_ten']]['wins'] = 0;
+                $transformedData['level_ten'][$value['level_ten']]['losses'] = 0;
+            }
 
-                'wins' => $wins,
-                'losses' => $losses,
-                'games_played' => $gamesPlayed,
-                'win_rate' => $winRate,
-            ];
+            if (! array_key_exists($value['level_thirteen'], $transformedData['level_thirteen'])) {
+                $transformedData['level_thirteen'][$value['level_thirteen']]['wins'] = 0;
+                $transformedData['level_thirteen'][$value['level_thirteen']]['losses'] = 0;
+            }
+
+            if (! array_key_exists($value['level_sixteen'], $transformedData['level_sixteen'])) {
+                $transformedData['level_sixteen'][$value['level_sixteen']]['wins'] = 0;
+                $transformedData['level_sixteen'][$value['level_sixteen']]['losses'] = 0;
+            }
+
+            if (! array_key_exists($value['level_twenty'], $transformedData['level_twenty'])) {
+                $transformedData['level_twenty'][$value['level_twenty']]['wins'] = 0;
+                $transformedData['level_twenty'][$value['level_twenty']]['losses'] = 0;
+            }
+
+            if ($value['win_loss'] == 1) {
+                $transformedData['level_one'][$value['level_one']]['wins'] += $value['games_played'];
+                $transformedData['level_four'][$value['level_four']]['wins'] += $value['games_played'];
+                $transformedData['level_seven'][$value['level_seven']]['wins'] += $value['games_played'];
+                $transformedData['level_ten'][$value['level_ten']]['wins'] += $value['games_played'];
+                $transformedData['level_thirteen'][$value['level_thirteen']]['wins'] += $value['games_played'];
+                $transformedData['level_sixteen'][$value['level_sixteen']]['wins'] += $value['games_played'];
+                $transformedData['level_twenty'][$value['level_twenty']]['wins'] += $value['games_played'];
+            } elseif ($value['win_loss'] == 0) {
+                $transformedData['level_one'][$value['level_one']]['losses'] += $value['games_played'];
+                $transformedData['level_four'][$value['level_four']]['losses'] += $value['games_played'];
+                $transformedData['level_seven'][$value['level_seven']]['losses'] += $value['games_played'];
+                $transformedData['level_ten'][$value['level_ten']]['losses'] += $value['games_played'];
+                $transformedData['level_thirteen'][$value['level_thirteen']]['losses'] += $value['games_played'];
+                $transformedData['level_sixteen'][$value['level_sixteen']]['losses'] += $value['games_played'];
+                $transformedData['level_twenty'][$value['level_twenty']]['losses'] += $value['games_played'];
+            }
+        }
+
+        $buildsData = GlobalHeroTalents::query()
+            ->join('heroesprofile_globals.talent_combinations as talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
+            ->select('global_hero_talents.win_loss')
+            ->selectRaw('SUM(global_hero_talents.games_played) AS games_played')
+            ->filterByGameVersion($gameVersionIds)
+            ->filterByGameType($gameType)
+            ->filterByHero($hero)
+            ->filterByLeagueTier($leagueTier)
+            ->filterByHeroLeagueTier($heroLeagueTier)
+            ->filterByRoleLeagueTier($roleLeagueTier)
+            ->filterByGameMap($gameMap)
+            ->filterByHeroLevel($heroLevel)
+            ->filterByRegion($region)
+            ->when(! is_null($level_one), function ($query) use ($level_one) {
+                return $query->where('level_one', $level_one);
+            })
+            ->when(! is_null($level_four), function ($query) use ($level_four) {
+                return $query->where('level_four', $level_four);
+            })
+            ->when(! is_null($level_seven), function ($query) use ($level_seven) {
+                return $query->where('level_seven', $level_seven);
+            })
+            ->when(! is_null($level_ten), function ($query) use ($level_ten) {
+                return $query->where('level_ten', $level_ten);
+            })
+            ->when(! is_null($level_thirteen), function ($query) use ($level_thirteen) {
+                return $query->where('level_thirteen', $level_thirteen);
+            })
+            ->when(! is_null($level_sixteen), function ($query) use ($level_sixteen) {
+                return $query->where('level_sixteen', $level_sixteen);
+            })
+            ->when(! is_null($level_twenty), function ($query) use ($level_twenty) {
+                return $query->where('level_twenty', $level_twenty);
+            })
+            ->groupBy('global_hero_talents.win_loss')
+            ->get()
+            ->map(function ($item) {
+                return (object) [
+                    'win_loss' => $item->win_loss,
+                    'games_played' => $item->games_played,
+                ];
+            });
+
+        $wins = $buildsData->where('win_loss', 1)->sum('games_played');
+        $losses = $buildsData->where('win_loss', 0)->sum('games_played');
+        $gamesPlayed = $wins + $losses;
+        $winRate = $gamesPlayed > 0 ? round(($wins / $gamesPlayed) * 100, 2) : 0;
+
+        $buildReturnData = [
+            'level_one' => $level_one ? $talentData[$level_one] : null,
+            'level_four' => $level_four ? $talentData[$level_four] : null,
+            'level_seven' => $level_seven ? $talentData[$level_seven] : null,
+            'level_ten' => $level_ten ? $talentData[$level_ten] : null,
+            'level_thirteen' => $level_thirteen ? $talentData[$level_thirteen] : null,
+            'level_sixteen' => $level_sixteen ? $talentData[$level_sixteen] : null,
+            'level_twenty' => $level_twenty ? $talentData[$level_twenty] : null,
+
+            'wins' => $wins,
+            'losses' => $losses,
+            'games_played' => $gamesPlayed,
+            'win_rate' => $winRate,
+        ];
 
         $talents = HeroesDataTalent::where('hero_name', $hero_name)->orderBy('level', 'ASC')->orderBy('sort', 'ASC')->limit(100)->get();
 
