@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers\Global;
 
+use App\Http\Controllers\Global\Concerns\HandlesAsyncGlobalQueries;
 use App\Models\GameType;
 use App\Models\GlobalCompositions;
 use App\Models\MMRTypeID;
 use App\Models\SeasonGameVersion;
 use App\Rules\HeroInputValidation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalCompositionsController extends GlobalsInputValidationController
 {
+    use HandlesAsyncGlobalQueries;
+
     public function show(Request $request)
     {
         $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
@@ -84,25 +86,24 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 
         $cacheKey = 'GlobalCompositionStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
 
-        if (config('app.env') !== 'production') {
-            Cache::store('database')->forget($cacheKey);
-        }
+        return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeCompositionsData');
+    }
 
-        $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInSeconds($gameVersion), function () use (
-            $gameVersionIDs,
-            $gameType,
-            $leagueTier,
-            $heroLeagueTier,
-            $roleLeagueTier,
-            $gameMap,
-            $heroLevel,
-            $hero,
-            $mirror,
-            $region,
-            $minimumGames
-        ) {
+    public function executeCompositionsData(Request $request)
+    {
+        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
+        $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']))->pluck('id')->toArray();
+        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
+        $leagueTier = $request['league_tier'];
+        $heroLeagueTier = $request['hero_league_tier'];
+        $roleLeagueTier = $request['role_league_tier'];
+        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
+        $heroLevel = $request['hero_level'];
+        $region = $this->globalDataService->getRegionFilterValues($request['region']);
+        $mirror = $request['mirror'];
+        $minimumGames = $request['minimum_games'];
 
-            $data = GlobalCompositions::query()
+        $data = GlobalCompositions::query()
                 ->select('composition_id', 'win_loss')
                 ->selectRaw('SUM(games_played) as games_played')
                 ->filterByGameVersion($gameVersionIDs)
@@ -169,11 +170,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                 ->values()
                 ->toArray();
 
-            return $filteredData;
-
-        });
-
-        return $data;
+        return $filteredData;
     }
 
     public function getTopHeroData(Request $request)
@@ -219,25 +216,23 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 
         $cacheKey = 'GlobalCompositionTopHeroes|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
 
-        if (config('app.env') !== 'production') {
-            Cache::store('database')->forget($cacheKey);
-        }
+        return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeTopHeroData');
+    }
 
-        $data = Cache::store('database')->remember($cacheKey, $this->globalDataService->calculateCacheTimeInSeconds($gameVersion), function () use (
-            $gameVersionIDs,
-            $gameType,
-            $leagueTier,
-            $heroLeagueTier,
-            $roleLeagueTier,
-            $gameMap,
-            $heroLevel,
-            $mirror,
-            $region,
-            $compositionID
+    public function executeTopHeroData(Request $request)
+    {
+        $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']))->pluck('id')->toArray();
+        $gameType = GameType::whereIn('short_name', $request['game_type'])->pluck('type_id')->toArray();
+        $leagueTier = $request['league_tier'];
+        $heroLeagueTier = $request['hero_league_tier'];
+        $roleLeagueTier = $request['role_league_tier'];
+        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
+        $heroLevel = $request['hero_level'];
+        $region = $this->globalDataService->getRegionFilterValues($request['region']);
+        $mirror = $request['mirror'];
+        $compositionID = $request['composition_id'];
 
-        ) {
-
-            $data = GlobalCompositions::query()
+        $data = GlobalCompositions::query()
                 ->select('hero')
                 ->selectRaw('SUM(games_played) as games_played')
                 ->filterByGameVersion($gameVersionIDs)
@@ -276,10 +271,6 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                 return $group->isEmpty();
             })->toArray();
 
-            return $result;
-
-        });
-
-        return $data;
+        return $result;
     }
 }

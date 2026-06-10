@@ -509,7 +509,7 @@ export default {
 
       try{
         this.loadingStates[hero] = true;
-        const response = await this.$axios.post("/api/v1/global/talents/build", {
+        const response = await this.$globalAsyncPost("/api/v1/global/talents/build", {
           hero: hero,
           timeframe_type: this.timeframetype,
           timeframe: this.timeframe,

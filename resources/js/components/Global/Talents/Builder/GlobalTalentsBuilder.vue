@@ -285,7 +285,7 @@
       
         this.replays = null;
         try{
-          const response = await this.$axios.post("/api/v1/global/talents/builder", {
+          const response = await this.$globalAsyncPost("/api/v1/global/talents/builder", {
             hero: this.selectedHero.name,
             selectedtalents: this.clickedData,
             timeframe_type: this.timeframetype,

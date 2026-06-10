@@ -238,7 +238,7 @@
         this.cancelTokenSource = this.$axios.CancelToken.source();
 
         try{
-          const response = await this.$axios.post("/api/v1/global/hero/map", {
+          const response = await this.$globalAsyncPost("/api/v1/global/hero/map", {
             hero: this.selectedHero.name,
             timeframe_type: this.timeframetype,
             timeframe: this.timeframe,

@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Global;
 
+use App\Http\Controllers\Global\Concerns\HandlesAsyncGlobalQueries;
 use App\Models\GlobalHeroDraftOrder;
 use App\Models\SeasonGameVersion;
 use App\Rules\HeroInputValidation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalDraftController extends GlobalsInputValidationController
 {
+    use HandlesAsyncGlobalQueries;
+
     public function show(Request $request, $hero = null)
     {
         $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
@@ -96,25 +98,23 @@ class GlobalDraftController extends GlobalsInputValidationController
 
         $cacheKey = 'GlobalDraftStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
 
-        // return $cacheKey;
+        return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeDraftData');
+    }
 
-        if (config('app.env') !== 'production') {
-            Cache::store('database')->forget($cacheKey);
-        }
+    public function executeDraftData(Request $request)
+    {
+        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
+        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
+        $leagueTier = $request['league_tier'];
+        $heroLeagueTier = $request['hero_league_tier'];
+        $roleLeagueTier = $request['role_league_tier'];
+        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
+        $heroLevel = $request['hero_level'];
+        $region = $this->globalDataService->getRegionFilterValues($request['region']);
 
-        $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInSeconds($gameVersion), function () use (
-            $hero,
-            $gameVersionIDs,
-            $gameType,
-            $leagueTier,
-            $heroLeagueTier,
-            $roleLeagueTier,
-            $gameMap,
-            $heroLevel,
-            $region,
-        ) {
-
-            $data = GlobalHeroDraftOrder::query()
+        $data = GlobalHeroDraftOrder::query()
                 ->select('pick_number', 'win_loss')
                 ->selectRaw('SUM(count) as games_played')
                 ->filterByGameVersion($gameVersionIDs)
@@ -155,9 +155,6 @@ class GlobalDraftController extends GlobalsInputValidationController
                     'win_rate' => $winRate,
                 ];
             })->values()->toArray();
-
-            return $data;
-        });
 
         return $data;
     }

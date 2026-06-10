@@ -241,7 +241,7 @@
         this.cancelTalentsTokenSource = this.$axios.CancelToken.source();
 
         try{
-          const response = await this.$axios.post("/api/v1/global/talents", {
+          const response = await this.$globalAsyncPost("/api/v1/global/talents", {
             hero: this.selectedHero.name,
             timeframe_type: this.timeframetype,
             timeframe: this.timeframe,
@@ -282,7 +282,7 @@
         this.cancelBuildsTokenSource = this.$axios.CancelToken.source();
 
         try{
-          const response = await this.$axios.post("/api/v1/global/talents/build", {
+          const response = await this.$globalAsyncPost("/api/v1/global/talents/build", {
             hero: this.selectedHero.name,
             timeframe_type: this.timeframetype,
             timeframe: this.timeframe,

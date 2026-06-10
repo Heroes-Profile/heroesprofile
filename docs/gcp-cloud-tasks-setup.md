@@ -22,15 +22,33 @@ Service account: `heroesprofile-website@heroesprofile-244413.iam.gserviceaccount
 gcloud projects add-iam-policy-binding heroesprofile-244413 --member=serviceAccount:heroesprofile-website@heroesprofile-244413.iam.gserviceaccount.com --role=roles/cloudtasks.enqueuer --condition=None
 ```
 
-## 3. Cloud Run service account for task OIDC
+## 3. Allow Cloud Run to attach OIDC when creating tasks
 
-Cloud Tasks delivers HTTP tasks with an OIDC token.
+Creating a task with an `oidc_token` requires `iam.serviceAccounts.actAs` on the OIDC service account. Without this you get `PERMISSION_DENIED` / `actAs` from `CloudTasksDispatcher`.
+
+Cloud Run runs as `heroesprofile-website@...` and creates tasks that authenticate as that same account:
+
+```cmd
+gcloud iam service-accounts add-iam-policy-binding heroesprofile-website@heroesprofile-244413.iam.gserviceaccount.com --member=serviceAccount:heroesprofile-website@heroesprofile-244413.iam.gserviceaccount.com --role=roles/iam.serviceAccountUser
+```
+
+If develop Cloud Run uses a different service account, check it first:
+
+```cmd
+gcloud run services describe heroesprofile-website-dev --region=us-east1 --format="value(spec.template.spec.serviceAccountName)"
+```
+
+Grant `roles/iam.serviceAccountUser` on `heroesprofile-website@...` to **that** account instead.
+
+## 4. Allow Cloud Tasks to deliver tasks (OIDC at invoke time)
+
+When Cloud Tasks **invokes** the handler, it must also act as the OIDC service account:
 
 ```cmd
 gcloud iam service-accounts add-iam-policy-binding heroesprofile-website@heroesprofile-244413.iam.gserviceaccount.com --member=serviceAccount:service-484440392946@gcp-sa-cloudtasks.iam.gserviceaccount.com --role=roles/iam.serviceAccountUser --condition=None
 ```
 
-## 4. Allow Cloud Tasks to invoke Cloud Run (direct URL)
+## 5. Allow Cloud Tasks to invoke Cloud Run (direct URL)
 
 Use the **direct Cloud Run URL**, not `develop.heroesprofile.com`. That bypasses Cloudflare and the load balancer (avoids 120s timeout and “Cloudflare-only” firewall rules). Users still browse via Cloudflare as normal.
 
@@ -40,7 +58,7 @@ Develop direct URL: `https://heroesprofile-website-dev-rsfk4hfj3a-ue.a.run.app`
 gcloud run services add-iam-policy-binding heroesprofile-website-dev --region=us-east1 --member=serviceAccount:heroesprofile-website@heroesprofile-244413.iam.gserviceaccount.com --role=roles/run.invoker
 ```
 
-## 5. Cloud Run env vars
+## 6. Cloud Run env vars
 
 **Develop (`heroesprofile-website-dev`):**
 
@@ -50,11 +68,11 @@ gcloud run services update heroesprofile-website-dev --region=us-east1 --timeout
 
 **Production (`heroesprofile-website`):** run `gcloud run services describe heroesprofile-website --region=us-east1 --format="value(status.url)"` and use that `.run.app` URL (not `www.heroesprofile.com`) in `CLOUD_TASKS_HANDLER_URL`.
 
-## 6. PHP extension
+## 7. PHP extension
 
 `google/cloud-tasks` requires the **bcmath** extension (`bccomp()`). The Dockerfiles install it via `docker-php-ext-install bcmath`. Rebuild and redeploy the Cloud Run image after adding it.
 
-## 7. Verify after deploy
+## 8. Verify after deploy
 
 1. Open Global Hero on develop with a cache miss.
 2. POST `/api/v1/global/hero` → **202** in under 1 second.
@@ -62,11 +80,11 @@ gcloud run services update heroesprofile-website-dev --region=us-east1 --timeout
 4. GET `/api/v1/global/status/{job_id}` → **202** then **200**.
 5. Reload same filters → POST **200** (cache hit).
 
-## 8. Local development
+## 9. Local development
 
 Set `GLOBAL_ASYNC_ENABLED=false` in `.env`. Global Hero uses synchronous `Cache::remember()` (no Cloud Tasks).
 
-## 9. Develop test checklist
+## 10. Develop test checklist
 
 After deploying branch `FixCloudflareTimeoutIssues`:
 

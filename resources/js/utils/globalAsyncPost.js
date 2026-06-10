@@ -1,5 +1,5 @@
-const DEFAULT_MAX_ATTEMPTS = 180;
-const DEFAULT_POLL_INTERVAL_MS = 2000;
+const DEFAULT_MAX_ATTEMPTS = 120;
+const DEFAULT_POLL_INTERVAL_MS = 5000;
 
 export function createLoadMeta() {
   return {

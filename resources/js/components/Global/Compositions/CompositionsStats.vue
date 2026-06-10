@@ -262,7 +262,7 @@ export default {
       this.cancelTokenSource = this.$axios.CancelToken.source();
 
       try{
-        const response = await this.$axios.post("/api/v1/global/compositions", {
+        const response = await this.$globalAsyncPost("/api/v1/global/compositions", {
           timeframe_type: this.timeframetype,
           timeframe: this.timeframe,
           region: this.region,
@@ -310,7 +310,7 @@ export default {
         this.cancelTokenSource = this.$axios.CancelToken.source();
 
         this.loadingStates[index] = true;
-        const response = await this.$axios.post("/api/v1/global/compositions/heroes", {
+        const response = await this.$globalAsyncPost("/api/v1/global/compositions/heroes", {
           timeframe_type: this.timeframetype,
           timeframe: this.timeframe,
           region: this.region,
