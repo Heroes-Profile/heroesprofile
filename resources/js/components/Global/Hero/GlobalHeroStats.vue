@@ -453,7 +453,7 @@ export default {
       try{
         this.data = [];
 
-        const response = await this.$globalAsyncPost("/api/v1/global/hero/", {
+        const response = await this.$globalAsyncPost("/api/v1/global/hero", {
           timeframe_type: this.timeframetype,
           timeframe: this.timeframe,
           region: this.region,

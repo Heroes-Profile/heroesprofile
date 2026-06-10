@@ -62,7 +62,7 @@ Route::prefix('v1')->middleware('web')->group(function () {
 
     Route::post('battletag/search', [BattletagSearchController::class, 'battletagSearch']);
 
-    Route::post('global/hero/', [GlobalHeroStatsController::class, 'getGlobalHeroData']);
+    Route::post('global/hero', [GlobalHeroStatsController::class, 'getGlobalHeroData']);
 
     Route::post('global/talents/builder', [GlobalTalentBuilderController::class, 'getData']);
 

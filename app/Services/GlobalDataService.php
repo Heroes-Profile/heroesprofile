@@ -299,9 +299,12 @@ class GlobalDataService
         }
     }
 
+    /**
+     * @deprecated Laravel cache TTL is in seconds. Use calculateCacheTimeInSeconds().
+     */
     public function calculateCacheTimeInMinutes($timeframe)
     {
-        return (int) ceil($this->calculateCacheTimeInSeconds($timeframe) / 60);
+        return $this->calculateCacheTimeInSeconds($timeframe);
     }
 
     public function isGlobalAsyncEnabled(): bool
@@ -1131,7 +1134,7 @@ class GlobalDataService
 
         $cacheKey = 'GlobalHeroStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
 
-        $data = Cache::store('database')->remember($cacheKey, $this->calculateCacheTimeInMinutes($gameVersion), function () use (
+        $data = Cache::store('database')->remember($cacheKey, $this->calculateCacheTimeInSeconds($gameVersion), function () use (
             $gameVersionIDs,
             $gameType,
             $leagueTier,

@@ -107,7 +107,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
             Cache::store('database')->forget($cacheKey);
         }
 
-        $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
+        $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInSeconds($gameVersion), function () use (
             $hero,
             $gameVersionIDs,
             $gameType,

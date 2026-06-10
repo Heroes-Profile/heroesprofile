@@ -148,7 +148,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
             $allyEnemy = $temp;
         }
 
-        $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
+        $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInSeconds($gameVersion), function () use (
             $hero,
             $allyEnemy,
             $type,

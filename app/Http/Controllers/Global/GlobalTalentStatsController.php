@@ -114,7 +114,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         if (config('app.env') !== 'production') {
             Cache::store('database')->forget($cacheKey);
         }
-        $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
+        $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInSeconds($gameVersion), function () use (
             $hero,
             $gameVersion,
             $gameType,
@@ -274,7 +274,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             Cache::store('database')->forget($cacheKey);
         }
 
-        $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
+        $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInSeconds($gameVersion), function () use (
             $hero,
             $gameVersion,
             $gameType,
