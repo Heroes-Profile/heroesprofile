@@ -26,7 +26,8 @@ trait HandlesAsyncGlobalQueries
                 return app(static::class)->{$executeMethod}($request);
             });
 
-            return $data;
+            return response()->json($data)
+                ->header('X-Global-Async-Mode', 'sync');
         }
 
         return app(GlobalQueryService::class)->handle(

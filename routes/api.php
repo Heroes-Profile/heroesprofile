@@ -11,16 +11,17 @@ use App\Http\Controllers\Esports\NGS\NGSController;
 use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
 use App\Http\Controllers\Esports\Other\EsportOtherController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
+use App\Http\Controllers\Global\GlobalDebugController;
 use App\Http\Controllers\Global\GlobalDraftController;
 use App\Http\Controllers\Global\GlobalExtraStats;
 use App\Http\Controllers\Global\GlobalHeroMapStatsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupsTalentsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupStatsController;
 use App\Http\Controllers\Global\GlobalHeroStatsController;
-use App\Http\Controllers\Global\GlobalQueryStatusController;
-use App\Http\Controllers\Global\GlobalQueryWorkerController;
 use App\Http\Controllers\Global\GlobalLeaderboardController;
 use App\Http\Controllers\Global\GlobalPartyStatsController;
+use App\Http\Controllers\Global\GlobalQueryStatusController;
+use App\Http\Controllers\Global\GlobalQueryWorkerController;
 use App\Http\Controllers\Global\GlobalTalentBuilderController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
 use App\Http\Controllers\MainPageController;
@@ -53,6 +54,7 @@ Route::prefix('v1')->middleware(['api', 'cloud.tasks'])->group(function () {
 });
 
 Route::prefix('v1')->middleware('web')->group(function () {
+    Route::get('global/debug/config', [GlobalDebugController::class, 'config']);
     Route::get('global/status/{jobId}', [GlobalQueryStatusController::class, 'show']);
     Route::post('main/footer/data', [MainPageController::class, 'getFooterData']);
 

@@ -25,7 +25,8 @@ class GlobalQueryService
             $cached = $cache->get($cacheKey);
             if ($cached !== null) {
                 return response()->json($cached)
-                    ->header('X-Global-Cache-Status', 'fresh');
+                    ->header('X-Global-Cache-Status', 'fresh')
+                    ->header('X-Global-Async-Mode', 'cache-hit');
             }
         }
 
@@ -201,6 +202,8 @@ class GlobalQueryService
             'async' => true,
             'status' => $status,
             'job_id' => $jobId,
-        ], 202);
+        ], 202)
+            ->header('X-Global-Async-Mode', 'accepted')
+            ->header('X-Global-Job-Id', $jobId);
     }
 }

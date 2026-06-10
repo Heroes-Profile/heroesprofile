@@ -1,5 +1,15 @@
 <template>
   <div>
+    <div
+      v-if="showDebugBanner"
+      class="max-w-[1500px] mx-auto mb-4 p-3 rounded border border-yellow-600 bg-yellow-900/40 text-yellow-100 text-xs font-mono whitespace-pre-wrap"
+    >
+      <div class="font-bold text-yellow-300 mb-1">Global Hero async debug (develop only)</div>
+      <div v-if="serverDebugConfig">Server: {{ serverDebugSummary }}</div>
+      <div>Load: {{ loadDebugStatus || 'waiting...' }}</div>
+      <div v-if="loadMeta && loadMeta.error" class="text-red-300 mt-1">{{ loadMeta.error }}</div>
+    </div>
+
     <page-heading :infoText1="infoText" heading="Global Hero Statistics"></page-heading>
     
     
@@ -197,8 +207,11 @@
       <loading-component @cancel-request="cancelAxiosRequest" v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
       <loading-component @cancel-request="cancelAxiosRequest" v-else></loading-component>
     </div>
-    <div v-else-if="dataError" class="flex items-center justify-center">
+    <div v-else-if="dataError" class="flex flex-col items-center justify-center">
       Error: Reload page/filter
+      <div v-if="showDebugBanner && loadMeta?.error" class="text-sm text-red-300 mt-2 max-w-3xl text-center px-4">
+        {{ loadMeta.error }}
+      </div>
     </div>
   </div>
 </template>
@@ -260,6 +273,9 @@ export default {
       talentbuildtype: null,
       loadingStates: {},
       tablewidth: null,
+      loadMeta: null,
+      loadDebugStatus: null,
+      serverDebugConfig: null,
     }
   },
   created(){
@@ -276,8 +292,31 @@ export default {
   	this.getData();
   },
   mounted() {
+    if (this.showDebugBanner) {
+      this.fetchServerDebugConfig();
+    }
   },
   computed: {
+    showDebugBanner() {
+      const host = window.location.hostname;
+      return host.includes('develop') || host === 'localhost' || host === '127.0.0.1';
+    },
+    serverDebugSummary() {
+      if (!this.serverDebugConfig) {
+        return 'loading...';
+      }
+
+      const cfg = this.serverDebugConfig;
+      return [
+        `APP_ENV=${cfg.app_env}`,
+        `async_runtime=${cfg.global_async_enabled_runtime}`,
+        `async_config=${cfg.global_async_enabled_config}`,
+        `async_getenv=${cfg.global_async_getenv ?? 'unset'}`,
+        `fresh_ttl=${cfg.cache_fresh_seconds_sample}s`,
+        `handler=${cfg.cloud_tasks?.handler_url ? 'set' : 'missing'}`,
+        `marker=${cfg.deploy_marker}`,
+      ].join(' | ');
+    },
     showStatTypeColumn(){
       if(this.statfilter && this.statfilter != "win_rate" && !this.isLoading){
         return true;      
@@ -370,9 +409,20 @@ export default {
   watch: {
   },
   methods: {
+    async fetchServerDebugConfig() {
+      try {
+        const response = await this.$axios.get('/api/v1/global/debug/config');
+        this.serverDebugConfig = response.data;
+      } catch (error) {
+        this.serverDebugConfig = {
+          error: error.response?.data?.message || error.message || 'Failed to load debug config',
+        };
+      }
+    },
   	async getData(){
       this.dataError = false;
       this.isLoading = true;
+      this.loadMeta = this.$createLoadMeta();
 
       if (this.cancelTokenSource) {
         this.cancelTokenSource.cancel('Request canceled');
@@ -382,7 +432,7 @@ export default {
       try{
         this.data = [];
 
-        const response = await this.$globalAsyncPost("/api/v1/global/hero", {
+        const response = await this.$globalAsyncPost("/api/v1/global/hero/", {
           timeframe_type: this.timeframetype,
           timeframe: this.timeframe,
           region: this.region,
@@ -399,12 +449,19 @@ export default {
         },
         {
           cancelToken: this.cancelTokenSource.token,
+          loadMeta: this.loadMeta,
+          onLoadStatus: (message) => {
+            this.loadDebugStatus = message;
+          },
         });
 
         this.data = response.data;
         this.loadingStates = this.sortedData.map(() => false);
       }catch(error){
         this.dataError = true;
+        if (this.showDebugBanner) {
+          console.error('Global Hero load failed', error);
+        }
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
