@@ -50,7 +50,11 @@ gcloud run services update heroesprofile-website-dev --region=us-east1 --timeout
 
 **Production (`heroesprofile-website`):** run `gcloud run services describe heroesprofile-website --region=us-east1 --format="value(status.url)"` and use that `.run.app` URL (not `www.heroesprofile.com`) in `CLOUD_TASKS_HANDLER_URL`.
 
-## 6. Verify after deploy
+## 6. PHP extension
+
+`google/cloud-tasks` requires the **bcmath** extension (`bccomp()`). The Dockerfiles install it via `docker-php-ext-install bcmath`. Rebuild and redeploy the Cloud Run image after adding it.
+
+## 7. Verify after deploy
 
 1. Open Global Hero on develop with a cache miss.
 2. POST `/api/v1/global/hero` → **202** in under 1 second.
@@ -58,11 +62,11 @@ gcloud run services update heroesprofile-website-dev --region=us-east1 --timeout
 4. GET `/api/v1/global/status/{job_id}` → **202** then **200**.
 5. Reload same filters → POST **200** (cache hit).
 
-## 7. Local development
+## 8. Local development
 
 Set `GLOBAL_ASYNC_ENABLED=false` in `.env`. Global Hero uses synchronous `Cache::remember()` (no Cloud Tasks).
 
-## 8. Develop test checklist
+## 9. Develop test checklist
 
 After deploying branch `FixCloudflareTimeoutIssues`:
 

@@ -4,8 +4,8 @@ FROM php:8.2-apache
 RUN apt-get update && apt-get install -y git zip unzip
 RUN curl -L https://deb.nodesource.com/nsolid_setup_deb.sh | bash -s -- 20 && apt-get install nodejs -y
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo_mysql
+# Install PHP extensions (bcmath required by google/cloud-tasks)
+RUN docker-php-ext-install pdo_mysql bcmath
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
