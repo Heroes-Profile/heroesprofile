@@ -1,5 +1,6 @@
 <template>
   <div>
+    <global-async-debug-banner page-label="Global Talents" />
 
     <div class="grid gap-5 grid-cols-1">
       <page-heading :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Talent Statistics' : 'Hero Talent Statistics'">
@@ -241,7 +242,7 @@
         this.cancelTalentsTokenSource = this.$axios.CancelToken.source();
 
         try{
-          const response = await this.$axios.post("/api/v1/global/talents", {
+          const response = await this.$globalAsyncPost("/api/v1/global/talents", {
             hero: this.selectedHero.name,
             timeframe_type: this.timeframetype,
             timeframe: this.timeframe,
@@ -254,7 +255,7 @@
             hero_league_tier: this.herorank,
             role_league_tier: this.rolerank,
             mirror: this.mirrormatch,
-          }, 
+          },
           {
             cancelToken: this.cancelTalentsTokenSource.token,
           });
@@ -282,7 +283,7 @@
         this.cancelBuildsTokenSource = this.$axios.CancelToken.source();
 
         try{
-          const response = await this.$axios.post("/api/v1/global/talents/build", {
+          const response = await this.$globalAsyncPost("/api/v1/global/talents/build", {
             hero: this.selectedHero.name,
             timeframe_type: this.timeframetype,
             timeframe: this.timeframe,
@@ -296,7 +297,7 @@
             role_league_tier: this.rolerank,
             mirror: this.mirrormatch,
             talentbuildtype: this.talentbuildtype
-          }, 
+          },
           {
             cancelToken: this.cancelBuildsTokenSource.token,
           });

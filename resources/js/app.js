@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import axios from 'axios';
+import { globalAsyncPost, formatLoadMeta, formatResponseHeaders, createLoadMeta } from './utils/globalAsyncPost';
 import Cookies from 'js-cookie';
 import { flare } from "@flareapp/flare-client";
 import { flareVue } from "@flareapp/flare-vue";
@@ -21,6 +22,10 @@ Object.entries(components).forEach(([path, definition]) => {
 
 // Set up axios on Vue's prototype
 app.config.globalProperties.$axios = axios;
+app.config.globalProperties.$globalAsyncPost = (url, data, options = {}) => globalAsyncPost(axios, url, data, options);
+app.config.globalProperties.$formatLoadMeta = formatLoadMeta;
+app.config.globalProperties.$formatResponseHeaders = formatResponseHeaders;
+app.config.globalProperties.$createLoadMeta = createLoadMeta;
 
 app.config.globalProperties.$redirectToProfile = function (battletag, blizz_id, region, redirect = true) {
   let data = {

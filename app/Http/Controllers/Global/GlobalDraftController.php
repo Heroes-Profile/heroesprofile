@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Global;
 
+use App\Http\Controllers\Global\Concerns\HandlesAsyncGlobalQueries;
 use App\Models\GlobalHeroDraftOrder;
 use App\Models\SeasonGameVersion;
 use App\Rules\HeroInputValidation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalDraftController extends GlobalsInputValidationController
 {
+    use HandlesAsyncGlobalQueries;
+
     public function show(Request $request, $hero = null)
     {
         $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
@@ -96,68 +98,63 @@ class GlobalDraftController extends GlobalsInputValidationController
 
         $cacheKey = 'GlobalDraftStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
 
-        // return $cacheKey;
+        return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeDraftData');
+    }
 
-        if (config('app.env') !== 'production') {
-            Cache::store('database')->forget($cacheKey);
-        }
+    public function executeDraftData(Request $request)
+    {
+        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
+        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
+        $leagueTier = $request['league_tier'];
+        $heroLeagueTier = $request['hero_league_tier'];
+        $roleLeagueTier = $request['role_league_tier'];
+        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
+        $heroLevel = $request['hero_level'];
+        $region = $this->globalDataService->getRegionFilterValues($request['region']);
 
-        $data = Cache::remember($cacheKey, $this->globalDataService->calculateCacheTimeInMinutes($gameVersion), function () use (
-            $hero,
-            $gameVersionIDs,
-            $gameType,
-            $leagueTier,
-            $heroLeagueTier,
-            $roleLeagueTier,
-            $gameMap,
-            $heroLevel,
-            $region,
-        ) {
-
-            $data = GlobalHeroDraftOrder::query()
-                ->select('pick_number', 'win_loss')
-                ->selectRaw('SUM(count) as games_played')
-                ->filterByGameVersion($gameVersionIDs)
-                ->filterByGameType($gameType)
-                ->filterByLeagueTier($leagueTier)
-                ->filterByHeroLeagueTier($heroLeagueTier)
-                ->filterByRoleLeagueTier($roleLeagueTier)
-                ->filterByGameMap($gameMap)
-                ->filterByHeroLevel($heroLevel)
-                ->filterByRegion($region)
-                ->filterByHero($hero)
-                ->groupBy('pick_number', 'win_loss')
-                ->orderBy('pick_number')
-                ->orderBy('win_loss')
+        $data = GlobalHeroDraftOrder::query()
+            ->select('pick_number', 'win_loss')
+            ->selectRaw('SUM(count) as games_played')
+            ->filterByGameVersion($gameVersionIDs)
+            ->filterByGameType($gameType)
+            ->filterByLeagueTier($leagueTier)
+            ->filterByHeroLeagueTier($heroLeagueTier)
+            ->filterByRoleLeagueTier($roleLeagueTier)
+            ->filterByGameMap($gameMap)
+            ->filterByHeroLevel($heroLevel)
+            ->filterByRegion($region)
+            ->filterByHero($hero)
+            ->groupBy('pick_number', 'win_loss')
+            ->orderBy('pick_number')
+            ->orderBy('win_loss')
                 // ->toSql();
                 // $data;
-                ->get();
+            ->get();
 
-            $totalGamesPlayed = $data->sum('games_played');
+        $totalGamesPlayed = $data->sum('games_played');
 
-            $data = $data->groupBy('pick_number')->map(function ($group) use ($totalGamesPlayed) {
-                $firstItem = $group->first();
+        $data = $data->groupBy('pick_number')->map(function ($group) use ($totalGamesPlayed) {
+            $firstItem = $group->first();
 
-                $wins = round($group->where('win_loss', 1)->sum('games_played'));
-                $losses = round($group->where('win_loss', 0)->sum('games_played'));
-                $gamesPlayed = $wins + $losses;
+            $wins = round($group->where('win_loss', 1)->sum('games_played'));
+            $losses = round($group->where('win_loss', 0)->sum('games_played'));
+            $gamesPlayed = $wins + $losses;
 
-                $winRate = $gamesPlayed > 0 ? round(($wins / $gamesPlayed) * 100, 2) : 0;
+            $winRate = $gamesPlayed > 0 ? round(($wins / $gamesPlayed) * 100, 2) : 0;
 
-                $popularity = $totalGamesPlayed > 0 ? round(($gamesPlayed / $totalGamesPlayed) * 100, 2) : 0;
+            $popularity = $totalGamesPlayed > 0 ? round(($gamesPlayed / $totalGamesPlayed) * 100, 2) : 0;
 
-                return [
-                    'pick_number' => $firstItem['pick_number'],
-                    'wins' => $wins,
-                    'losses' => $losses,
-                    'games_played' => $gamesPlayed,
-                    'popularity' => $popularity,
-                    'win_rate' => $winRate,
-                ];
-            })->values()->toArray();
-
-            return $data;
-        });
+            return [
+                'pick_number' => $firstItem['pick_number'],
+                'wins' => $wins,
+                'losses' => $losses,
+                'games_played' => $gamesPlayed,
+                'popularity' => $popularity,
+                'win_rate' => $winRate,
+            ];
+        })->values()->toArray();
 
         return $data;
     }

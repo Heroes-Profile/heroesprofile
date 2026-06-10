@@ -1,5 +1,6 @@
 <template>
   <div>
+    <global-async-debug-banner page-label="Global Hero Maps" />
 
     <page-heading :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Map Statistics' : 'Hero Map Statistics'">
       <hero-image-wrapper v-if="selectedHero" :hero="selectedHero" :size="'big'"></hero-image-wrapper>
@@ -238,7 +239,7 @@
         this.cancelTokenSource = this.$axios.CancelToken.source();
 
         try{
-          const response = await this.$axios.post("/api/v1/global/hero/map", {
+          const response = await this.$globalAsyncPost("/api/v1/global/hero/map", {
             hero: this.selectedHero.name,
             timeframe_type: this.timeframetype,
             timeframe: this.timeframe,
@@ -249,7 +250,7 @@
             hero_league_tier: this.herorank,
             role_league_tier: this.rolerank,
             mirror: this.mirrormatch,
-          }, 
+          },
           {
             cancelToken: this.cancelTokenSource.token,
           });

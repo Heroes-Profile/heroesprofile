@@ -1,5 +1,6 @@
 <template>
   <div>
+    <global-async-debug-banner page-label="Global Draft" />
     <div class="grid gap-5 grid-cols-1">
       <page-heading :infoText1="infoText1" :infoText2="infoText2" :heading="selectedHero ? selectedHero.name + ' Draft Statistics' : 'Draft Statistics'">
         <hero-image-wrapper v-if="selectedHero" :hero="selectedHero" :size="'big'"></hero-image-wrapper>
@@ -193,7 +194,7 @@
         this.cancelTokenSource = this.$axios.CancelToken.source();
 
         try{
-          const response = await this.$axios.post("/api/v1/global/draft", {
+          const response = await this.$globalAsyncPost("/api/v1/global/draft", {
             hero: this.selectedHero.name,
             timeframe_type: this.timeframetype,
             timeframe: this.timeframe,
@@ -204,7 +205,7 @@
             league_tier: this.playerrank,
             hero_league_tier: this.herorank,
             role_league_tier: this.rolerank,
-          }, 
+          },
           {
             cancelToken: this.cancelTokenSource.token,
           });

@@ -21,5 +21,7 @@ jobs:
         key: ${{ runner.os }}-${{ hashFiles('**/composer.lock') }}
 
     - uses: php-actions/composer@v6
+      with:
+        php_extensions: bcmath
 
     - run: vendor/bin/pint --test --verbose --ansi app
