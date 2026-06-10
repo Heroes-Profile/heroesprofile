@@ -1,10 +1,6 @@
 <template>
   <div>
-    <global-async-debug-banner
-      page-label="Global Talents"
-      :load-meta="loadMeta"
-      :load-debug-status="loadDebugStatus"
-    />
+    <global-async-debug-banner page-label="Global Talents" />
 
     <div class="grid gap-5 grid-cols-1">
       <page-heading :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Talent Statistics' : 'Hero Talent Statistics'">
@@ -118,10 +114,7 @@
 </template>
 
 <script>
-  import globalAsyncDebug from '../../../mixins/globalAsyncDebug';
-
   export default {
-    mixins: [globalAsyncDebug],
     name: 'GlobalTalentsStats',
     components: {
     },
@@ -263,7 +256,9 @@
             role_league_tier: this.rolerank,
             mirror: this.mirrormatch,
           },
-          this.prepareGlobalAsyncLoad(this.cancelTalentsTokenSource.token));
+          {
+            cancelToken: this.cancelTalentsTokenSource.token,
+          });
           if(response.data.status == "failure to validate inputs"){
             throw new Error("Failure to validate inputs");
           }
@@ -303,7 +298,9 @@
             mirror: this.mirrormatch,
             talentbuildtype: this.talentbuildtype
           },
-          this.prepareGlobalAsyncLoad(this.cancelBuildsTokenSource.token));
+          {
+            cancelToken: this.cancelBuildsTokenSource.token,
+          });
 
           
           if(response.data.status == "failure to validate inputs"){

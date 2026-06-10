@@ -12,6 +12,8 @@
 </template>
 
 <script>
+import { getLatestGlobalAsyncDebug, subscribeGlobalAsyncDebug } from '../../utils/globalAsyncPost';
+
 export default {
   name: 'GlobalAsyncDebugBanner',
   props: {
@@ -19,18 +21,15 @@ export default {
       type: String,
       required: true,
     },
-    loadMeta: {
-      type: Object,
-      default: null,
-    },
-    loadDebugStatus: {
-      type: String,
-      default: null,
-    },
   },
   data() {
+    const debug = getLatestGlobalAsyncDebug();
+
     return {
       serverDebugConfig: null,
+      loadMeta: debug.loadMeta,
+      loadDebugStatus: debug.loadDebugStatus,
+      unsubscribeDebug: null,
     };
   },
   computed: {
@@ -82,6 +81,15 @@ export default {
   mounted() {
     if (this.showDebugBanner) {
       this.fetchServerDebugConfig();
+      this.unsubscribeDebug = subscribeGlobalAsyncDebug(({ loadMeta, loadDebugStatus }) => {
+        this.loadMeta = loadMeta;
+        this.loadDebugStatus = loadDebugStatus;
+      });
+    }
+  },
+  beforeUnmount() {
+    if (this.unsubscribeDebug) {
+      this.unsubscribeDebug();
     }
   },
   methods: {

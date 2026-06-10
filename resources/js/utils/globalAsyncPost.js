@@ -1,6 +1,25 @@
 const DEFAULT_MAX_ATTEMPTS = 120;
 const DEFAULT_POLL_INTERVAL_MS = 5000;
 
+const debugSubscribers = new Set();
+let latestDebug = { loadMeta: null, loadDebugStatus: null };
+
+export function getLatestGlobalAsyncDebug() {
+  return latestDebug;
+}
+
+export function subscribeGlobalAsyncDebug(callback) {
+  debugSubscribers.add(callback);
+  callback(latestDebug);
+
+  return () => debugSubscribers.delete(callback);
+}
+
+function publishGlobalAsyncDebug(status, meta) {
+  latestDebug = { loadDebugStatus: status, loadMeta: meta };
+  debugSubscribers.forEach((callback) => callback(latestDebug));
+}
+
 export function createLoadMeta() {
   return {
     phase: 'idle',
@@ -97,8 +116,10 @@ export async function globalAsyncPost(axios, url, data, options = {}) {
 
   const notify = (message) => {
     meta.durationMs = Date.now() - startedAt;
+    const status = message || formatLoadMeta(meta);
+    publishGlobalAsyncDebug(status, meta);
     if (onLoadStatus) {
-      onLoadStatus(message || formatLoadMeta(meta), meta);
+      onLoadStatus(status, meta);
     }
   };
 

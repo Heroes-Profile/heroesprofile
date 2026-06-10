@@ -1,10 +1,6 @@
 <template>
   <div>
-    <global-async-debug-banner
-      page-label="Global Talent Builder"
-      :load-meta="loadMeta"
-      :load-debug-status="loadDebugStatus"
-    />
+    <global-async-debug-banner page-label="Global Talent Builder" />
     <page-heading :infoText1="infoText1" :infoText2="infoText2" :heading="'Talent Builder'"></page-heading>
 
     <div v-if="!selectedHero">
@@ -183,10 +179,7 @@
 </template>
 
 <script>
-  import globalAsyncDebug from '../../../../mixins/globalAsyncDebug';
-
   export default {
-    mixins: [globalAsyncDebug],
     name: 'GlobalTalentsBuilder',
     components: {
     },
@@ -307,7 +300,9 @@
             role_league_tier: this.rolerank,
             mirror: this.mirrormatch,
           },
-          this.prepareGlobalAsyncLoad(this.cancelTokenSource.token));
+          {
+            cancelToken: this.cancelTokenSource.token,
+          });
 
           if(response.data.status == "failure to validate inputs"){
             throw new Error("Failure to validate inputs");

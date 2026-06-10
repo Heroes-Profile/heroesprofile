@@ -1,10 +1,6 @@
 <template>
   <div>
-    <global-async-debug-banner
-      page-label="Global Party"
-      :load-meta="loadMeta"
-      :load-debug-status="loadDebugStatus"
-    />
+    <global-async-debug-banner page-label="Global Party" />
     <page-heading :infoText1="infoText" :heading="'Global Party Statistics'"></page-heading>
 
     <filters 
@@ -558,10 +554,7 @@
 </template>
 
 <script>
-  import globalAsyncDebug from '../../../mixins/globalAsyncDebug';
-
   export default {
-    mixins: [globalAsyncDebug],
   name: 'GlobalPartyStats',
   components: {
   },
@@ -660,7 +653,9 @@
           teamoneparty: this.teamoneparty,
           teamtwoparty: this.teamtwoparty,
         },
-        this.prepareGlobalAsyncLoad(this.cancelTokenSource.token));
+        {
+          cancelToken: this.cancelTokenSource.token,
+        });
 
         if(response.data.status == "failure to validate inputs"){
           throw new Error("Failure to validate inputs");
