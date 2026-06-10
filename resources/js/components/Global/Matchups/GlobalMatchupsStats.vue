@@ -1,5 +1,6 @@
 <template>
   <div>
+    <global-async-debug-banner page-label="Global Matchups" />
     <page-heading :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Matchups Statistics' : 'Hero Matchups Statistics'">
       <hero-image-wrapper v-if="selectedHero" :hero="selectedHero" :size="'big'"></hero-image-wrapper>
     </page-heading>
@@ -309,7 +310,7 @@
         this.cancelTokenSource = this.$axios.CancelToken.source();
 
         try{
-          const response = await this.$axios.post("/api/v1/global/matchups", {
+          const response = await this.$globalAsyncPost("/api/v1/global/matchups", {
             hero: this.selectedHero.name,
             timeframe_type: this.timeframetype,
             timeframe: this.timeframe,
@@ -322,7 +323,7 @@
             role_league_tier: this.rolerank,
             mirror: this.mirrormatch,
             role: this.role,
-          }, 
+          },
           {
             cancelToken: this.cancelTokenSource.token,
           });

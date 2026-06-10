@@ -1,5 +1,7 @@
 <template>
   <div>
+    <global-async-debug-banner page-label="Global Hero" />
+
     <page-heading :infoText1="infoText" heading="Global Hero Statistics"></page-heading>
     
     
@@ -197,14 +199,13 @@
       <loading-component @cancel-request="cancelAxiosRequest" v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
       <loading-component @cancel-request="cancelAxiosRequest" v-else></loading-component>
     </div>
-    <div v-else-if="dataError" class="flex items-center justify-center">
+    <div v-else-if="dataError" class="flex flex-col items-center justify-center">
       Error: Reload page/filter
     </div>
   </div>
 </template>
 
 <script>
-
 export default {
   name: 'GlobalHeroStats',
   components: {
@@ -274,8 +275,6 @@ export default {
     }
 
   	this.getData();
-  },
-  mounted() {
   },
   computed: {
     showStatTypeColumn(){
@@ -382,7 +381,7 @@ export default {
       try{
         this.data = [];
 
-        const response = await this.$axios.post("/api/v1/global/hero", {
+        const response = await this.$globalAsyncPost("/api/v1/global/hero", {
           timeframe_type: this.timeframetype,
           timeframe: this.timeframe,
           region: this.region,
@@ -396,7 +395,7 @@ export default {
           hero_league_tier: this.herorank,
           role_league_tier: this.rolerank,
           mirror: this.mirrormatch,
-        }, 
+        },
         {
           cancelToken: this.cancelTokenSource.token,
         });
@@ -431,7 +430,7 @@ export default {
 
       try{
         this.loadingStates[hero] = true;
-        const response = await this.$axios.post("/api/v1/global/talents/build", {
+        const response = await this.$globalAsyncPost("/api/v1/global/talents/build", {
           hero: hero,
           timeframe_type: this.timeframetype,
           timeframe: this.timeframe,
@@ -445,7 +444,7 @@ export default {
           role_league_tier: this.rolerank,
           mirror: this.mirrormatch,
           talentbuildtype: this.talentbuildtype
-        }, 
+        },
         {
           cancelToken: this.cancelTokenSource.token,
         });

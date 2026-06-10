@@ -1,5 +1,6 @@
 <template>
   <div>
+    <global-async-debug-banner page-label="Global Talent Builder" />
     <page-heading :infoText1="infoText1" :infoText2="infoText2" :heading="'Talent Builder'"></page-heading>
 
     <div v-if="!selectedHero">
@@ -285,7 +286,7 @@
       
         this.replays = null;
         try{
-          const response = await this.$axios.post("/api/v1/global/talents/builder", {
+          const response = await this.$globalAsyncPost("/api/v1/global/talents/builder", {
             hero: this.selectedHero.name,
             selectedtalents: this.clickedData,
             timeframe_type: this.timeframetype,
@@ -298,7 +299,7 @@
             hero_league_tier: this.herorank,
             role_league_tier: this.rolerank,
             mirror: this.mirrormatch,
-          }, 
+          },
           {
             cancelToken: this.cancelTokenSource.token,
           });

@@ -1,5 +1,6 @@
-s<template>
+<template>
   <div>
+    <global-async-debug-banner page-label="Global Party" />
     <page-heading :infoText1="infoText" :heading="'Global Party Statistics'"></page-heading>
 
     <filters 
@@ -553,7 +554,7 @@ s<template>
 </template>
 
 <script>
-export default {
+  export default {
   name: 'GlobalPartyStats',
   components: {
   },
@@ -637,7 +638,7 @@ export default {
       this.cancelTokenSource = this.$axios.CancelToken.source();
 
       try{
-        const response = await this.$axios.post("/api/v1/global/party", {
+        const response = await this.$globalAsyncPost("/api/v1/global/party", {
           timeframe_type: this.timeframetype,
           timeframe: this.timeframe,
           region: this.region,
@@ -651,7 +652,7 @@ export default {
           mirror: this.mirrormatch,
           teamoneparty: this.teamoneparty,
           teamtwoparty: this.teamtwoparty,
-        }, 
+        },
         {
           cancelToken: this.cancelTokenSource.token,
         });

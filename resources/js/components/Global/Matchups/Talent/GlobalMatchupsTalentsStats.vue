@@ -1,5 +1,6 @@
 <template>
   <div>
+    <global-async-debug-banner page-label="Global Matchups Talents" />
     <page-heading :infoText1="infoText1" :infoText2="infoText2" :heading="'Hero Matchup Talents Statistics'"></page-heading>
     <filters 
     :onFilter="filterData" 
@@ -208,7 +209,7 @@
         this.cancelTokenSource = this.$axios.CancelToken.source();
         
         try{
-          const response = await this.$axios.post("/api/v1/global/matchups/talents", {
+          const response = await this.$globalAsyncPost("/api/v1/global/matchups/talents", {
             hero: this.hero.name,
             ally_enemy: this.enemyally.name,
             type: this.type,
@@ -218,7 +219,7 @@
             game_type: this.gametype,
             game_map: this.gamemap,
             league_tier: this.playerrank,
-          }, 
+          },
           {
             cancelToken: this.cancelTokenSource.token,
           });

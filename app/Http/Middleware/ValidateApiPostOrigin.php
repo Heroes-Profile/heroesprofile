@@ -17,6 +17,10 @@ class ValidateApiPostOrigin
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if ($request->is('api/v1/internal/*')) {
+            return $next($request);
+        }
+
         if (config('app.env') !== 'production') {
             return $next($request);
         }

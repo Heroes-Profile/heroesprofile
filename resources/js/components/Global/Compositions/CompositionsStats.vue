@@ -1,5 +1,6 @@
 <template>
   <div>
+    <global-async-debug-banner page-label="Global Compositions" />
     <page-heading :infoText1="infoText" :heading="'Compositional Statistics'"></page-heading>
     <filters 
       :onFilter="filterData" 
@@ -165,7 +166,7 @@
 </template>
 
 <script>
-export default {
+  export default {
   name: 'CompositionsStats',
   components: {
   },
@@ -262,7 +263,7 @@ export default {
       this.cancelTokenSource = this.$axios.CancelToken.source();
 
       try{
-        const response = await this.$axios.post("/api/v1/global/compositions", {
+        const response = await this.$globalAsyncPost("/api/v1/global/compositions", {
           timeframe_type: this.timeframetype,
           timeframe: this.timeframe,
           region: this.region,
@@ -275,7 +276,7 @@ export default {
           role_league_tier: this.rolerank,
           mirror: this.mirrormatch,
           minimum_games: this.minimumgames
-        }, 
+        },
         {
           cancelToken: this.cancelTokenSource.token,
         });
@@ -310,7 +311,7 @@ export default {
         this.cancelTokenSource = this.$axios.CancelToken.source();
 
         this.loadingStates[index] = true;
-        const response = await this.$axios.post("/api/v1/global/compositions/heroes", {
+        const response = await this.$globalAsyncPost("/api/v1/global/compositions/heroes", {
           timeframe_type: this.timeframetype,
           timeframe: this.timeframe,
           region: this.region,
@@ -324,7 +325,7 @@ export default {
           mirror: this.mirrormatch,
           minimum_games: this.minimumgames,
           composition_id: compositionid,
-        }, 
+        },
         {
           cancelToken: this.cancelTokenSource.token,
         });
