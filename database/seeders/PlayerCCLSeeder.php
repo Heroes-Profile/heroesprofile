@@ -7344,7 +7344,7 @@ class PlayerCCLSeeder extends Seeder
                 'player_mean' => $row[10],
                 'player_standard_deviation' => $row[11],
                 'player_change' => $row[12],
-                'mmr_date_parsed' => $row[13],
+                'mmr_date_parsed' => \DateTime::createFromFormat('m/d/Y h:i:s A', $row[13])->format('Y-m-d H:i:s'),
             ]);
         }
     }

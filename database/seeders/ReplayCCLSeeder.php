@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ReplayCCLSeeder extends Seeder
 {
@@ -757,7 +758,7 @@ class ReplayCCLSeeder extends Seeder
                 'round' => $row[5],
                 'game' => $row[6],
                 'first_pick' => $row[7],
-                'game_date' => $row[8],
+                'game_date' => \DateTime::createFromFormat('m/d/Y h:i:s A', $row[8])->format('Y-m-d H:i:s'),
                 'game_length' => $row[9],
                 'game_map' => $row[10],
                 'team_0_map_ban' => $row[11],
@@ -766,7 +767,7 @@ class ReplayCCLSeeder extends Seeder
                 'team_1_map_ban_2' => $row[14],
                 'game_version' => $row[15],
                 'region' => $row[16],
-                'date_added' => $row[17],
+                'date_added' => \DateTime::createFromFormat('m/d/Y h:i:s A', $row[17])->format('Y-m-d H:i:s'),
                 'mmr_ran' => $row[18],
             ]);
         }
