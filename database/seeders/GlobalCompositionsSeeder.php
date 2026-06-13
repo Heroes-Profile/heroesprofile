@@ -10020,7 +10020,7 @@ class GlobalCompositionsSeeder extends Seeder
         ];
 
         foreach ($data as $row) {
-            DB::table('global_compositions')->insert([
+            DB::connection('heroesprofile_globals')->table('global_compositions')->insert([
                 'global_compositions_id' => $row[0],
                 'game_version' => $row[1],
                 'game_type' => $row[2],

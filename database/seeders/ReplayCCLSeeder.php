@@ -748,7 +748,7 @@ class ReplayCCLSeeder extends Seeder
         ];
 
         foreach ($data as $row) {
-            DB::table('replay')->insert([
+            DB::table('heroesprofile_ccl.replay')->insert([
                 'replayID' => $row[0],
                 'season' => $row[1],
                 'type' => $row[2],

@@ -20,3 +20,4 @@ yarn-error.log
 /.vscode
 apache2.conf
 .env copy
+database-audit.md
