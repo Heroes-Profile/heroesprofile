@@ -27,10 +27,16 @@ This guide helps you set up Heroes Profile for local development using Docker Co
     Sometimes seeders take awhile or use a lot of memory to run and can cause the
     seeding process to stop early. If this occurs you can either manually comment
     out seeders that have completed and run again, or attempt to increase memory
-    usage and/or execution timeout.  E.g
+    usage and/or execution timeout. E.g.
 
     ```bash
     docker compose exec app php -d memory_limit=2G -d max_execution_time=0 artisan db:seed
+    ```
+
+    You can also disable PHP's memory limit for the seeding command:
+
+    ```bash
+    docker compose exec app php -d memory_limit=-1 artisan db:seed
     ```
 
     NOTE:  The data provided in the seeders is not complete.
