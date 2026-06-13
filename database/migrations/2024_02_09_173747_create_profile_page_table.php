@@ -75,6 +75,6 @@ class CreateProfilePageTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('profile_page');
+        Schema::dropIfExists('heroesprofile_cache.profile_page');
     }
 }
