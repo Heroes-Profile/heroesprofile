@@ -21,8 +21,8 @@ return new class extends Migration
             $table->text('info')->nullable();
 
             $table->index(['battletag', 'blizz_id', 'season'], 'index');
-            $table->index('season');
-            $table->index('region');
+            $table->index('season', 'season');
+            $table->index('region', 'region');
         });
 
         // Set charset and collation

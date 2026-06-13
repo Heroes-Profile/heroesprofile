@@ -60,7 +60,6 @@ class CreateProfilePageTable extends Migration
             $table->string('stack_five_wins')->nullable();
             $table->string('stack_five_losses')->nullable();
             $table->integer('latest_replayID')->nullable();
-            $table->timestamps();
 
             // Unique constraint
             $table->unique(['blizz_id', 'region', 'game_type', 'season'], 'Unique');
