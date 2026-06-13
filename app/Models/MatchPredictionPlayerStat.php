@@ -10,6 +10,8 @@ class MatchPredictionPlayerStat extends Model
 
     protected $primaryKey = 'match_prediction_player_stats_id';
 
+    protected $connection = 'heroesprofile';
+
     public $timestamps = false;
 
     protected $fillable = ['battlenet_accounts_id', 'season', 'game_type', 'win', 'loss'];

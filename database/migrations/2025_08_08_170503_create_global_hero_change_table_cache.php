@@ -37,6 +37,6 @@ class CreateGlobalHeroChangeTableCache extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('cache.global_hero_change');
+        Schema::dropIfExists('heroesprofile_cache.global_hero_change');
     }
 }

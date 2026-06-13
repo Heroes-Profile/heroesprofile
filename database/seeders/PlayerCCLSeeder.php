@@ -7336,15 +7336,17 @@ class PlayerCCLSeeder extends Seeder
                 'battletag' => $row[2],
                 'hero' => $row[3],
                 'hero_level' => $row[4],
-                'mastery_tier' => $row[5],
-                'team_id' => $row[6],
-                'team' => $row[7],
+                'mastery_tier' => $row[5] !== '' ? $row[5] : null,
+                'team_id' => $row[6] !== '' ? $row[6] : null,
+                'team' => $row[7] !== '' ? $row[7] : null,
                 'winner' => $row[8],
-                'player_conservative_rating' => $row[9],
-                'player_mean' => $row[10],
-                'player_standard_deviation' => $row[11],
-                'player_change' => $row[12],
-                'mmr_date_parsed' => $row[13],
+                'player_conservative_rating' => $row[9] !== '' ? $row[9] : null,
+                'player_mean' => $row[10] !== '' ? $row[10] : null,
+                'player_standard_deviation' => $row[11] !== '' ? $row[11] : null,
+                'player_change' => $row[12] !== '' ? $row[12] : null,
+                'mmr_date_parsed' => $row[13] !== ''
+                    ? \DateTime::createFromFormat('m/d/Y h:i:s A', $row[13])->format('Y-m-d H:i:s')
+                    : null,
             ]);
         }
     }

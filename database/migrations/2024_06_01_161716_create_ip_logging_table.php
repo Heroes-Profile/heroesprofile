@@ -31,6 +31,6 @@ class CreateIpLoggingTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ip_logging');
+        Schema::dropIfExists('heroesprofile_logs.ip_logging');
     }
 }

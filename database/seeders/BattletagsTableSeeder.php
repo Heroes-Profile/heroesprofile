@@ -33166,7 +33166,7 @@ class BattletagsTableSeeder extends Seeder
                 'region' => $row[3],
                 'account_level' => $row[4],
                 'patreon' => $row[5] == '' ? null : intval($row[5]),
-                'opt_out' => $row[6] == '' ? null : intval($row[5]),
+                'opt_out' => $row[6] == '' ? null : intval($row[6]),
                 'latest_game' => \DateTime::createFromFormat('m/d/Y h:i:s A', $row[7])->format('Y-m-d H:i:s'),
             ]);
         }
