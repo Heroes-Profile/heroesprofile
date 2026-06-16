@@ -15,17 +15,26 @@ trait HandlesAsyncGlobalQueries
         array $gameVersion,
         string $executeMethod
     ): JsonResponse|array {
-        $cacheTtlSeconds = $this->globalDataService->calculateCacheTimeInSeconds($gameVersion);
         $bypassCache = $this->globalDataService->shouldBypassGlobalCache();
+        $cache = Cache::store('database');
+
+        if (! $bypassCache) {
+            $cached = $cache->get($cacheKey);
+            if ($cached !== null) {
+                return $this->jsonCacheHitResponse($cached);
+            }
+        }
+
+        $cacheTtlSeconds = $this->globalDataService->calculateCacheTimeInSeconds($gameVersion);
 
         if (! $this->globalDataService->isGlobalAsyncEnabled()) {
             if ($bypassCache || config('app.env') !== 'production') {
-                Cache::store('database')->forget($cacheKey);
+                $cache->forget($cacheKey);
             }
 
             $data = $bypassCache
                 ? app(static::class)->{$executeMethod}($request)
-                : Cache::store('database')->remember($cacheKey, $cacheTtlSeconds, function () use ($request, $executeMethod) {
+                : $cache->remember($cacheKey, $cacheTtlSeconds, function () use ($request, $executeMethod) {
                     return app(static::class)->{$executeMethod}($request);
                 });
 
@@ -46,5 +55,12 @@ trait HandlesAsyncGlobalQueries
             $request->all(),
             $cacheTtlSeconds
         );
+    }
+
+    protected function jsonCacheHitResponse(mixed $data): JsonResponse
+    {
+        return response()->json($data)
+            ->header('X-Global-Cache-Status', 'fresh')
+            ->header('X-Global-Async-Mode', 'cache-hit');
     }
 }

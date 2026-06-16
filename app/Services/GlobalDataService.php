@@ -41,9 +41,11 @@ class GlobalDataService
 
     public function getHeaderAlert()
     {
-        $text = HeaderAlert::where('valid', 1)->value('text');
+        return Cache::remember('global_header_alert', 60, function () {
+            $text = HeaderAlert::where('valid', 1)->value('text');
 
-        return $text ?? null;
+            return $text ?? null;
+        });
     }
 
     public function getPrivateAccounts()
@@ -107,14 +109,18 @@ class GlobalDataService
 
     public function getLatestPatch()
     {
-        return SeasonGameVersion::orderBy('id', 'desc')->limit(1)->value('game_version');
+        return Cache::remember('global_latest_patch', 300, function () {
+            return SeasonGameVersion::orderBy('id', 'desc')->limit(1)->value('game_version');
+        });
     }
 
     public function getLatestGameDate()
     {
-        return Replay::where('game_date', '<=', now())
-            ->orderByDesc('game_date')
-            ->value('game_date');
+        return Cache::remember('global_latest_game_date', 300, function () {
+            return Replay::where('game_date', '<=', now())
+                ->orderByDesc('game_date')
+                ->value('game_date');
+        });
     }
 
     public function getBladeGlobals()
@@ -342,6 +348,17 @@ class GlobalDataService
             return 0;
         }
 
+        $normalized = array_values($timeframe);
+        sort($normalized);
+        $cacheKey = 'global_cache_ttl_seconds|'.hash('sha256', json_encode($normalized));
+
+        return (int) Cache::remember($cacheKey, 60, function () use ($timeframe) {
+            return $this->resolveCacheTimeInSeconds($timeframe);
+        });
+    }
+
+    private function resolveCacheTimeInSeconds(array $timeframe): int
+    {
         if (count($timeframe) == 1 && $timeframe[0] == $this->getLatestPatch()) {
             $date = SeasonGameVersion::where('game_version', min($timeframe))->value('date_added');
             $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));

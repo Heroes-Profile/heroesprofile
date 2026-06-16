@@ -42,4 +42,19 @@ return [
         'service_account' => env('CLOUD_TASKS_SERVICE_ACCOUNT'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Cloud Run CPU (operational — not read by Laravel)
+    |--------------------------------------------------------------------------
+    |
+    | When Cloud Tasks workers call the direct *.run.app handler URL, the
+    | user-facing Cloud Run service (www) can use CPU throttling to reduce
+    | idle billing on short poll requests:
+    |
+    |   gcloud run services update heroesprofile-website --region=us-east1 --cpu-throttling
+    |
+    | Keep --no-cpu-throttling on the worker path (handler URL / request timeout).
+    |
+    */
+
 ];
