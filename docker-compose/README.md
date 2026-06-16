@@ -69,7 +69,7 @@ docker compose exec mysql mysql -h mysql -u root -proot_password heroesprofile
 
 ## Database Access
 
-The MySQL container automatically creates all required databases:
+The MySQL 8.4 container automatically creates all required databases:
 
 - heroesprofile (main)
 - heroesprofile_globals
@@ -87,3 +87,11 @@ Database credentials:
 - Username: heroesprofile
 - Password: heroesprofile_password
 - Root password: root_password
+
+### GUI client (DBeaver)
+
+We use [DBeaver](https://dbeaver.io/) to connect to the database. MySQL Workbench does not work well with MySQL 8.4.
+
+1. Create a new **MySQL** connection in DBeaver
+2. Use the credentials above (`localhost`, port `3306`, user `heroesprofile`)
+3. After connecting, expand the connection to browse the databases listed above
