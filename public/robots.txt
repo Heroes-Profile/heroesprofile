@@ -11,12 +11,41 @@ Disallow: /
 User-agent: YandexBot
 Disallow: /
 
-# Only allow search engines to crawl home page, Global pages (including leaderboards), and specific player profiles
+# Default: block everything, then allow specific public content only
 User-agent: *
 Disallow: /
+
+# Allowed public pages
 Allow: /$
 Allow: /Global/
-Allow: /Global/Leaderboard/
 Allow: /Player/Zemill/67280/1/
+
+# API
+Disallow: /api/
+
+# Auth & account
+Disallow: /Authenticate/
+Disallow: /authenticate/
+Disallow: /Battlenet/
+Disallow: /redirect/
+Disallow: /Profile/
+
+# Player profiles (except Allow above for Zemill)
+Disallow: /Player/
+Allow: /Player/Zemill/67280/1/
+
+# Match pages
+Disallow: /Match/
+
+# Esports
+Disallow: /Esports/
+
+# Pre-match & misc
+Disallow: /PreMatch/
+Disallow: /Animation/
+Disallow: /test/
+
+# Battletag search results
+Disallow: /battletag/
 
 Sitemap: https://www.heroesprofile.com/sitemap.xml
