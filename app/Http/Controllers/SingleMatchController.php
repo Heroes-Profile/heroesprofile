@@ -151,6 +151,16 @@ class SingleMatchController extends Controller
             $this->schema .= '_'.strtolower($this->esport);
         }
 
+        $playerCount = DB::table($this->schema.'.player')
+            ->where('replayID', $replayID)
+            ->count();
+
+        if ($playerCount < 10) {
+            return response()->json([
+                'status' => 'incomplete',
+            ], 404);
+        }
+
         $result = DB::table($this->schema.'.replay')
             ->join($this->schema.'.player', $this->schema.'.player.replayID', '=', $this->schema.'.replay.replayID')
             ->join($this->schema.'.battletags', $this->schema.'.battletags.player_id', '=', $this->schema.'.player.battletag')

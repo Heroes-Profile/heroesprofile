@@ -659,10 +659,19 @@
         {
           cancelToken: this.cancelTokenSource.token,
         });
+
+        if (response.data?.status === 'incomplete' || !response.data?.game_map) {
+          window.location.href = '/';
+          return;
+        }
+
         this.data = response.data; 
         this.combinePlayerArrays();
       }catch(error){
-      //Do something here
+        if (error.response?.data?.status === 'incomplete') {
+          window.location.href = '/';
+          return;
+        }
       }finally {
         this.cancelTokenSource = null; // Reset cancel token source
         this.isLoading = false;
