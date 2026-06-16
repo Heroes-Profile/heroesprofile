@@ -20,9 +20,9 @@ Laravel - https://laravel.com/
 
 PHP - PHP can be installed in different ways. If you do not currently have PHP installed, use google to find the best method for you.
 
-MySQL - MySQL can be installed in different ways. If you do not currently have MySQL installed, use google to find the best method for you.
+MySQL 8.4 - MySQL can be installed in different ways. If you do not currently have MySQL installed, use google to find the best method for you. The Docker setup uses MySQL 8.4.
 
-Optional - A visual tool for looking at the database and data is suggested. MySql Workbench is our preference - https://www.mysql.com/products/workbench/
+Optional - A visual tool for looking at the database and data is suggested. We use [DBeaver](https://dbeaver.io/) (MySQL Workbench does not work well with MySQL 8.4).
 
 In addition to creating the environment yourself, there are also a lot of different tools that can pull together all the dependencies for you. Homestead is an example, or our docker instructions referenced above.
 
