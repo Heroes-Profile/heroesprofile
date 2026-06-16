@@ -298,6 +298,15 @@ class SingleMatchController extends Controller
 
             $team_names = $this->esport ? $this->getTeamNames($result) : null;
 
+            if ($this->esport == 'NGS') {
+                if (is_null($team_names['team_one'])) {
+                    $team_names['team_one'] = $this->lookupTeamFromPlayerResults($result, 0);
+                }
+                if (is_null($team_names['team_two'])) {
+                    $team_names['team_two'] = $this->lookupTeamFromPlayerResults($result, 1);
+                }
+            }
+
             $replayDetails = [
                 'region' => $replayGroup[0]->region,
                 'downloadable' => ! $this->esport ? $replayGroup[0]->date_added > now()->subWeeks(4) : null,
@@ -312,7 +321,7 @@ class SingleMatchController extends Controller
                 'draft_order' => $this->esport != 'CCL' && $this->esport != 'MastersClash' && $this->esport != 'HeroesInternational' ? $this->getDraftOrder($replayID, $heroData) : null,
                 'experience_breakdown' => $this->getExperienceBreakdown($replayID),
                 'team_names' => $team_names,
-                'map_bans' => ($this->esport && $this->esport != 'Other') ? $this->getMapBans($replayID, $maps, $team_names) : null,
+                'map_bans' => ($this->esport && $this->esport != 'Other') ? $this->getMapBans($replayID, $maps, $team_names, $result) : null,
                 'first_pick' => $this->esport ? $replayGroup[0]->first_pick : null,
                 'match_games' => $this->esport ? $this->getMatchGames($replayID, $maps) : null,
             ];
@@ -798,25 +807,56 @@ class SingleMatchController extends Controller
         ];
     }
 
+    private function getPlayerTeamId($row)
+    {
+        if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
+            return $row->team_name ?: null;
+        }
+
+        if ($this->esport == 'CCL' || $this->esport == 'Other' || $this->esport == 'HeroesInternational') {
+            return $row->team_id ?: null;
+        }
+
+        return null;
+    }
+
+    private function lookupTeamById($teamId)
+    {
+        if (! $teamId) {
+            return null;
+        }
+
+        return DB::table($this->schema.'.teams')->where('team_id', $teamId)->first();
+    }
+
+    private function lookupTeamFromPlayerResults($results, $teamNumber)
+    {
+        foreach ($results as $row) {
+            if ($row->team != $teamNumber) {
+                continue;
+            }
+
+            $team = $this->lookupTeamById($this->getPlayerTeamId($row));
+            if ($team) {
+                return $team;
+            }
+        }
+
+        return null;
+    }
+
     private function getTeamNames($results)
     {
         $team_one_id = null;
         $team_zero_id = null;
 
         foreach ($results as $row) {
+            $teamId = $this->getPlayerTeamId($row);
 
-            if ($row->team == 0) {
-                if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
-                    $team_zero_id = $row->team_name;
-                } elseif ($this->esport == 'CCL' || $this->esport == 'Other' || $this->esport == 'HeroesInternational') {
-                    $team_zero_id = $row->team_id;
-                }
-            } else {
-                if ($this->esport == 'NGS' || $this->esport == 'MastersClash') {
-                    $team_one_id = $row->team_name;
-                } elseif ($this->esport == 'CCL' || $this->esport == 'Other' || $this->esport == 'HeroesInternational') {
-                    $team_one_id = $row->team_id;
-                }
+            if ($row->team == 0 && is_null($team_zero_id) && $teamId) {
+                $team_zero_id = $teamId;
+            } elseif ($row->team != 0 && is_null($team_one_id) && $teamId) {
+                $team_one_id = $teamId;
             }
 
             if (! is_null($team_one_id) && ! is_null($team_zero_id)) {
@@ -825,12 +865,12 @@ class SingleMatchController extends Controller
         }
 
         return [
-            'team_one' => DB::table($this->schema.'.teams')->where('team_id', $team_zero_id)->first(),
-            'team_two' => DB::table($this->schema.'.teams')->where('team_id', $team_one_id)->first(),
+            'team_one' => $this->lookupTeamById($team_zero_id),
+            'team_two' => $this->lookupTeamById($team_one_id),
         ];
     }
 
-    private function getMapBans($replayID, $maps, $team_names)
+    private function getMapBans($replayID, $maps, $team_names, $playerResults = null)
     {
         $result = DB::table($this->schema.'.replay')
             ->select('season', 'team_0_map_ban', 'team_0_map_ban_2', 'team_1_map_ban', 'team_1_map_ban_2')
@@ -884,7 +924,36 @@ class SingleMatchController extends Controller
             ->where('team_name', $team_name_1)
             ->first();
 
-        if ($team_names['team_one']->team_name == $team_zero_data->team_name) {
+        if ($this->esport == 'NGS' && $playerResults) {
+            if (is_null($team_names['team_one'])) {
+                $team_names['team_one'] = $this->lookupTeamFromPlayerResults($playerResults, 0);
+            }
+            if (is_null($team_names['team_two'])) {
+                $team_names['team_two'] = $this->lookupTeamFromPlayerResults($playerResults, 1);
+            }
+        }
+
+        $teamOneFromPlayers = $team_names['team_one']?->team_name;
+        $teamTwoFromPlayers = $team_names['team_two']?->team_name;
+
+        if (is_null($teamOneFromPlayers) || is_null($teamTwoFromPlayers) || is_null($team_zero_data) || is_null($team_one_data)) {
+            return [
+                'team_zero_ban_data' => [
+                    'team_data' => $team_names['team_one'],
+                    'name' => $teamOneFromPlayers,
+                    'map_ban_one' => $result->team_0_map_ban != 0 ? $maps[$result->team_0_map_ban] : null,
+                    'map_ban_two' => $result->team_0_map_ban_2 != 0 ? $maps[$result->team_0_map_ban_2] : null,
+                ],
+                'team_one_ban_data' => [
+                    'team_data' => $team_names['team_two'],
+                    'name' => $teamTwoFromPlayers,
+                    'map_ban_one' => $result->team_1_map_ban != 0 ? $maps[$result->team_1_map_ban] : null,
+                    'map_ban_two' => $result->team_1_map_ban_2 != 0 ? $maps[$result->team_1_map_ban_2] : null,
+                ],
+            ];
+        }
+
+        if ($teamOneFromPlayers == $team_zero_data->team_name) {
             $team_zero_ban_data = [
                 'team_data' => $team_zero_data,
                 'name' => $team_zero_data->team_name,
@@ -900,7 +969,7 @@ class SingleMatchController extends Controller
             ];
         }
 
-        if ($team_names['team_two']->team_name == $team_one_data->team_name) {
+        if ($teamTwoFromPlayers == $team_one_data->team_name) {
             $team_one_ban_data = [
                 'team_data' => $team_one_data,
                 'name' => $team_one_data->team_name,
