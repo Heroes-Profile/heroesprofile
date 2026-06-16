@@ -24,7 +24,6 @@ class CreateMasterMmrDataHlTable extends Migration
             $table->double('standard_deviation');
             $table->unsignedInteger('win');
             $table->unsignedInteger('loss');
-            $table->timestamps(); // Add this line if you want timestamps
 
             $table->unique(['type_value', 'game_type', 'blizz_id', 'region'], 'UNIQUE');
             $table->index(['win', 'loss', 'conservative_rating'], 'INDEX-FIX');

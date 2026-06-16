@@ -2,10 +2,15 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class BannedLeaderboardAccounts extends Model
 {
-    use HasFactory;
+    protected $table = 'banned_leaderboard_accounts';
+
+    protected $primaryKey = 'banned_leaderboard_accounts';
+
+    protected $connection = 'heroesprofile';
+
+    public $timestamps = false;
 }

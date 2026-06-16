@@ -5,17 +5,15 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMatchPredictionPlayerStatsTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('match_prediction_player_stats', function (Blueprint $table) {
-            $table->increments('match_prediction_player_stats_id');
+            $table->integer('match_prediction_player_stats_id')->autoIncrement();
             $table->integer('battlenet_accounts_id')->nullable();
             $table->integer('season')->nullable();
             $table->integer('game_type')->nullable();
@@ -25,18 +23,16 @@ class CreateMatchPredictionPlayerStatsTable extends Migration
             $table->unique(['battlenet_accounts_id', 'season', 'game_type'], 'UNIQUE');
         });
 
-        // Add computed columns using raw SQL since Laravel doesn't have direct support
-        DB::statement('ALTER TABLE match_prediction_player_stats ADD COLUMN games_played INT GENERATED ALWAYS AS (win + loss) VIRTUAL');
-        DB::statement('ALTER TABLE match_prediction_player_stats ADD COLUMN win_rate DOUBLE GENERATED ALWAYS AS ((win / NULLIF(games_played, 0)) * 100) VIRTUAL');
+        DB::statement('ALTER TABLE `match_prediction_player_stats` ADD COLUMN `games_played` int GENERATED ALWAYS AS ((`win` + `loss`)) VIRTUAL');
+        DB::statement('ALTER TABLE `match_prediction_player_stats` ADD COLUMN `win_rate` double GENERATED ALWAYS AS (((`win` / nullif((`win` + `loss`),0)) * 100)) VIRTUAL');
+        DB::statement('ALTER TABLE `match_prediction_player_stats` ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci');
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('match_prediction_player_stats');
     }
-}
+};

@@ -15,7 +15,7 @@ class CreateMasterMmrDataCuTable extends Migration
     {
         Schema::create('master_mmr_data_cu', function (Blueprint $table) {
             $table->increments('master_mmr_data_cu_id');
-            $table->unsignedBigInteger('type_value');
+            $table->integer('type_value');
             $table->tinyInteger('game_type');
             $table->unsignedInteger('blizz_id');
             $table->unsignedTinyInteger('region');
@@ -24,10 +24,10 @@ class CreateMasterMmrDataCuTable extends Migration
             $table->double('standard_deviation');
             $table->unsignedInteger('win');
             $table->unsignedInteger('loss');
-            $table->timestamps(); // Add this line if you want timestamps
 
             $table->unique(['type_value', 'game_type', 'blizz_id', 'region'], 'UNIQUE');
             $table->index(['win', 'loss', 'conservative_rating'], 'INDEX-FIX');
+            $table->index(['type_value', 'game_type', 'conservative_rating', 'win', 'loss'], 'INDEX');
         });
     }
 

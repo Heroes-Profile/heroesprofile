@@ -10013,7 +10013,7 @@ class GlobalHeroMatchupsEnemyTableSeeder extends Seeder
         ];
 
         foreach ($data as $row) {
-            DB::table('global_hero_matchups_enemy')->insert([
+            DB::connection('heroesprofile_globals')->table('global_hero_matchups_enemy')->insert([
                 'global_hero_matchups_enemy_id' => $row[0],
                 'game_version' => $row[1],
                 'game_type' => $row[2],

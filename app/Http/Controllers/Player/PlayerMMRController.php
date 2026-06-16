@@ -60,8 +60,8 @@ class PlayerMMRController extends Controller
             'region' => 'required|integer',
             'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation],
             'type' => 'required|in:Player,Hero,Role',
-            'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation],
-            'role' => ['sometimes', 'nullable', new RoleInputValidation],
+            'hero' => ['required_if:type,Hero', 'nullable', new HeroInputByIDValidation],
+            'role' => ['required_if:type,Role', 'nullable', new RoleInputValidation],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -84,7 +84,15 @@ class PlayerMMRController extends Controller
         if ($type == 'Hero' && $hero == null) {
             return [
                 'data' => $request->all(),
-                'errors' => $validator->errors()->all(),
+                'errors' => ['Hero is required when type is Hero.'],
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        if ($type == 'Role' && is_null($role)) {
+            return [
+                'data' => $request->all(),
+                'errors' => ['Role is required when type is Role.'],
                 'status' => 'failure to validate inputs',
             ];
         }
@@ -153,9 +161,25 @@ class PlayerMMRController extends Controller
         if ($type == 'Player') {
             $mmrType = 10000;
         } elseif ($type == 'Hero') {
-            $mmrType = MMRTypeID::where('name', $hero->name)->first()->mmr_type_id;
+            $mmrTypeRecord = MMRTypeID::where('name', $hero->name)->first();
+            if (is_null($mmrTypeRecord)) {
+                return [
+                    'data' => $request->all(),
+                    'errors' => ['Unable to find MMR type for the selected hero.'],
+                    'status' => 'failure to validate inputs',
+                ];
+            }
+            $mmrType = $mmrTypeRecord->mmr_type_id;
         } elseif ($type == 'Role') {
-            $mmrType = MMRTypeID::where('name', $role)->first()->mmr_type_id;
+            $mmrTypeRecord = MMRTypeID::where('name', $role)->first();
+            if (is_null($mmrTypeRecord)) {
+                return [
+                    'data' => $request->all(),
+                    'errors' => ['Unable to find MMR type for the selected role.'],
+                    'status' => 'failure to validate inputs',
+                ];
+            }
+            $mmrType = $mmrTypeRecord->mmr_type_id;
         }
 
         $leagueBreakdown = LeagueBreakdown::where('type_role_hero', $mmrType)->where('game_type', $game_type)->get();

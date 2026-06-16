@@ -16,6 +16,10 @@ class SetGlobalDataValues
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if ($this->shouldSkipGlobalDataWarmup($request)) {
+            return $next($request);
+        }
+
         $globalDataService = new GlobalDataService;
         $globalDataService->calculateMaxReplayNumber();
         $globalDataService->getLatestPatch();
@@ -23,5 +27,13 @@ class SetGlobalDataValues
         $globalDataService->getHeaderAlert();
 
         return $next($request);
+    }
+
+    private function shouldSkipGlobalDataWarmup(Request $request): bool
+    {
+        return $request->is(
+            'api/v1/global/status/*',
+            'api/v1/internal/global/process',
+        );
     }
 }

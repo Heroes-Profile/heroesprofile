@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             GlobalHeroStackSizeSeeder::class,
             GlobalHeroStatsBansTableSeeder::class,
             GlobalHeroStatsTableSeeder::class,
+            TalentCombinationsSeeder::class,
             GlobalHeroTalentsDetailsSeeder::class,
             GlobalHeroTalentsTableSeeder::class,
             GlobalHeroTalentsVersusHeroesSeeder::class,
@@ -47,16 +48,17 @@ class DatabaseSeeder extends Seeder
             MasterMmrDataUdSeeder::class,
             MatchPredictionSeasonSeeder::class,
             MmrTypeIdsSeeder::class,
-            PlayerSeeder::class,
             ReplaySeeder::class,
+            PlayerSeeder::class,
             ReplayBansSeeder::class,
             ReplayDraftOrderSeeder::class,
             ReplayExperienceBreakdownBlobSeeder::class,
             ScoresSeeder::class,
+            TalentsSeeder::class,
+            ReplayCCLSeeder::class,
+            PlayerCCLSeeder::class,
             SeasonDatesSeeder::class,
             SeasonGameVersionsSeeder::class,
-            TalentCombinationsSeeder::class,
-            TalentsSeeder::class,
         ]);
     }
 }
