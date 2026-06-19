@@ -2,14 +2,16 @@
   <div>
     <page-heading  :heading="'Match History'" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner"></page-heading>
 
-    <filters 
-      :onFilter="filterData" 
-      :filters="filters" 
+    <filters
+      :onFilter="filterData"
+      :filters="filters"
       :isLoading="isLoading"
       :gametypedefault="gametype"
       :minimumgamesdefault="'0'"
       :includehero="true"
       :includerole="true"
+      :heroinput="getHeroID()"
+      :roleinput="role"
       :includegametypefull="showcustomgames ? false : true"
       :includegametypefullcustom="showcustomgames"
       :includeseason="true"
@@ -147,6 +149,10 @@ export default {
     playermatchtablestyle: {
       type: [String, Boolean]
     },
+    urlparameters: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   data(){
     return {
@@ -166,6 +172,15 @@ export default {
   },
   created(){
     this.gametype = this.gametypedefault;
+
+    if (this.urlparameters) {
+      if (this.urlparameters['hero']) {
+        this.hero = this.urlparameters['hero'];
+      }
+      if (this.urlparameters['role']) {
+        this.role = this.urlparameters['role'];
+      }
+    }
   },
   mounted() {
     if(this.playerloadsetting == null || this.playerloadsetting == true || this.playerloadsetting == "true"){
@@ -214,7 +229,7 @@ export default {
           region: this.region,
           game_type: this.gametype,
           role: this.role,
-          hero: this.hero,
+          hero: this.getHeroID(),
           game_map: this.gamemap,
           pagination_page: page,
           season: this.season,
@@ -240,6 +255,13 @@ export default {
         });
       }
     },
+    getHeroID() {
+      if (this.hero) {
+        const match = this.filters.heroes.find(h => h.name === this.hero);
+        return match ? match.code : null;
+      }
+      return null;
+    },
     cancelAxiosRequest() {
       if (this.cancelTokenSource) {
         this.cancelTokenSource.cancel('Request canceled by user');
@@ -248,6 +270,7 @@ export default {
     filterData(filteredData){
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
+      this.hero = this.hero ? this.filters.heroes.find(h => h.code === this.hero)?.name : null;
       this.season = filteredData.single.Season ? filteredData.single.Season : null;
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;

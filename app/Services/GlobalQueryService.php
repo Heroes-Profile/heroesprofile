@@ -61,7 +61,17 @@ class GlobalQueryService
             'status' => 'pending',
         ], self::STATUS_TTL_SECONDS);
 
-        app(CloudTasksDispatcher::class)->dispatch($jobId);
+        try {
+            app(CloudTasksDispatcher::class)->dispatch($jobId);
+        } catch (\Throwable $e) {
+            $cache->forget($this->jobKey($jobId));
+            $cache->forget($cacheIndexKey);
+            Log::error('Failed to enqueue Cloud Task after retries', [
+                'job_id' => $jobId,
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
 
         return $this->withBypassHeader($this->acceptedResponse($jobId, 'pending'), $bypassCache);
     }

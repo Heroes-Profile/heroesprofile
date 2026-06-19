@@ -500,6 +500,10 @@ class SingleMatchController extends Controller
         });
         $groupedData = array_values($groupedData->toArray());
 
+        if (empty($groupedData)) {
+            return response()->json(['status' => 'Replay data not found'], 404);
+        }
+
         return $groupedData[0];
     }
 
@@ -951,14 +955,14 @@ class SingleMatchController extends Controller
                 'team_zero_ban_data' => [
                     'team_data' => $team_names['team_one'],
                     'name' => $teamOneFromPlayers,
-                    'map_ban_one' => $result->team_0_map_ban != 0 ? $maps[$result->team_0_map_ban] : null,
-                    'map_ban_two' => $result->team_0_map_ban_2 != 0 ? $maps[$result->team_0_map_ban_2] : null,
+                    'map_ban_one' => isset($maps[$result->team_0_map_ban]) ? $maps[$result->team_0_map_ban] : null,
+                    'map_ban_two' => isset($maps[$result->team_0_map_ban_2]) ? $maps[$result->team_0_map_ban_2] : null,
                 ],
                 'team_one_ban_data' => [
                     'team_data' => $team_names['team_two'],
                     'name' => $teamTwoFromPlayers,
-                    'map_ban_one' => $result->team_1_map_ban != 0 ? $maps[$result->team_1_map_ban] : null,
-                    'map_ban_two' => $result->team_1_map_ban_2 != 0 ? $maps[$result->team_1_map_ban_2] : null,
+                    'map_ban_one' => isset($maps[$result->team_1_map_ban]) ? $maps[$result->team_1_map_ban] : null,
+                    'map_ban_two' => isset($maps[$result->team_1_map_ban_2]) ? $maps[$result->team_1_map_ban_2] : null,
                 ],
             ];
         }
@@ -967,15 +971,15 @@ class SingleMatchController extends Controller
             $team_zero_ban_data = [
                 'team_data' => $team_zero_data,
                 'name' => $team_zero_data->team_name,
-                'map_ban_one' => $result->team_0_map_ban != 0 ? $maps[$result->team_0_map_ban] : null,
-                'map_ban_two' => $result->team_0_map_ban_2 != 0 ? $maps[$result->team_0_map_ban_2] : null,
+                'map_ban_one' => isset($maps[$result->team_0_map_ban]) ? $maps[$result->team_0_map_ban] : null,
+                'map_ban_two' => isset($maps[$result->team_0_map_ban_2]) ? $maps[$result->team_0_map_ban_2] : null,
             ];
         } else {
             $team_zero_ban_data = [
                 'team_data' => $team_one_data,
                 'name' => $team_one_data->team_name,
-                'map_ban_one' => $result->team_1_map_ban != 0 ? $maps[$result->team_1_map_ban] : null,
-                'map_ban_two' => $result->team_1_map_ban_2 != 0 ? $maps[$result->team_1_map_ban_2] : 0,
+                'map_ban_one' => isset($maps[$result->team_1_map_ban]) ? $maps[$result->team_1_map_ban] : null,
+                'map_ban_two' => isset($maps[$result->team_1_map_ban_2]) ? $maps[$result->team_1_map_ban_2] : null,
             ];
         }
 
@@ -983,15 +987,15 @@ class SingleMatchController extends Controller
             $team_one_ban_data = [
                 'team_data' => $team_one_data,
                 'name' => $team_one_data->team_name,
-                'map_ban_one' => $result->team_1_map_ban != 0 ? $maps[$result->team_1_map_ban] : null,
-                'map_ban_two' => $result->team_1_map_ban_2 != 0 ? $maps[$result->team_1_map_ban_2] : null,
+                'map_ban_one' => isset($maps[$result->team_1_map_ban]) ? $maps[$result->team_1_map_ban] : null,
+                'map_ban_two' => isset($maps[$result->team_1_map_ban_2]) ? $maps[$result->team_1_map_ban_2] : null,
             ];
         } else {
             $team_one_ban_data = [
                 'team_data' => $team_zero_data,
                 'name' => $team_zero_data->team_name,
-                'map_ban_one' => $result->team_0_map_ban != 0 ? $maps[$result->team_0_map_ban] : null,
-                'map_ban_two' => $result->team_0_map_ban_2 != 0 ? $maps[$result->team_0_map_ban_2] : null,
+                'map_ban_one' => isset($maps[$result->team_0_map_ban]) ? $maps[$result->team_0_map_ban] : null,
+                'map_ban_two' => isset($maps[$result->team_0_map_ban_2]) ? $maps[$result->team_0_map_ban_2] : null,
             ];
         }
 
