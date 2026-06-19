@@ -49,11 +49,25 @@ class CloudTasksDispatcher
             'task' => $task,
         ]);
 
-        $client->createTask($request);
+        $lastException = null;
+        for ($attempt = 1; $attempt <= 3; $attempt++) {
+            try {
+                $client->createTask($request);
+                Log::info('Cloud Task enqueued for global query', [
+                    'job_id' => $jobId,
+                    'queue' => $queue,
+                    'attempt' => $attempt,
+                ]);
 
-        Log::info('Cloud Task enqueued for global query', [
-            'job_id' => $jobId,
-            'queue' => $queue,
-        ]);
+                return;
+            } catch (\Google\ApiCore\ApiException $e) {
+                $lastException = $e;
+                if ($attempt < 3) {
+                    usleep(250000 * $attempt); // 250ms, 500ms
+                }
+            }
+        }
+
+        throw $lastException;
     }
 }
