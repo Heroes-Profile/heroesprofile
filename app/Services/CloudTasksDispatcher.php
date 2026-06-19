@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Google\ApiCore\ApiException;
 use Google\Cloud\Tasks\V2\Client\CloudTasksClient;
 use Google\Cloud\Tasks\V2\CreateTaskRequest;
 use Google\Cloud\Tasks\V2\HttpMethod;
@@ -60,7 +61,7 @@ class CloudTasksDispatcher
                 ]);
 
                 return;
-            } catch (\Google\ApiCore\ApiException $e) {
+            } catch (ApiException $e) {
                 $lastException = $e;
                 if ($attempt < 3) {
                     usleep(250000 * $attempt); // 250ms, 500ms
