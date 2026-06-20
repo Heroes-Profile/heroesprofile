@@ -25,6 +25,7 @@ use App\Rules\StackSizeInputValidation;
 use App\Rules\TierInputByIDValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalLeaderboardController extends GlobalsInputValidationController
@@ -132,47 +133,40 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
             $rankTiers = $this->globalDataService->getRankTiers($gameType, $typeNumber);
 
-            $talentData = HeroesDataTalent::all();
-            $talentData = $talentData->keyBy('talent_id');
+            $talentData = Cache::remember('heroes_data_talents_keyed', 3600, function () {
+                return HeroesDataTalent::all()->keyBy('talent_id');
+            });
 
-            $patreonAccounts = BattlenetAccount::has('patreonAccount')->get();
-            $bannedAccounts = BannedAccount::get();
-            $bannedLeaderboardAccounts = BannedLeaderboardAccounts::where('season', $season)->get();
-            $privateAccounts = BattlenetAccount::where('private', 1)->get();
+            $patreonAccounts = BattlenetAccount::has('patreonAccount')->get()->keyBy(fn ($a) => $a->blizz_id.'|'.$a->region);
+            $bannedAccounts = BannedAccount::get()->keyBy(fn ($b) => $b->blizz_id.'|'.$b->region);
+            $bannedLeaderboardAccounts = BannedLeaderboardAccounts::where('season', $season)->get()->keyBy(fn ($b) => $b->blizz_id.'|'.$b->region);
+            $privateAccounts = BattlenetAccount::where('private', 1)->get()->keyBy(fn ($a) => $a->blizz_id.'|'.$a->region);
             $authenticatedUser = Auth::user();
 
             $blizzIDRegionMapping = [];
             $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber, $patreonAccounts, &$blizzIDRegionMapping, $tierrank, $bannedAccounts, $bannedLeaderboardAccounts, $privateAccounts, $authenticatedUser) {
+                $key = $item->blizz_id.'|'.$item->region;
 
-                if (array_key_exists($item->blizz_id.'|'.$item->region, $blizzIDRegionMapping)) {
+                if (array_key_exists($key, $blizzIDRegionMapping)) {
                     return null;
-                } else {
-                    $blizzIDRegionMapping[$item->blizz_id.'|'.$item->region] = 'found';
                 }
+                $blizzIDRegionMapping[$key] = 'found';
 
-                $patreonAccount = $patreonAccounts->where('blizz_id', $item->blizz_id)->where('region', $item->region);
+                $patreonAccount = $patreonAccounts->get($key);
 
-                $existingBan = $bannedAccounts->first(function ($ban) use ($item) {
-                    return $ban->blizz_id == $item->blizz_id && $ban->region == $item->region;
-                });
-                if ($existingBan) {
+                if ($bannedAccounts->has($key)) {
                     $this->rankModifier++;
 
                     return null;
                 }
 
-                $existingLeaderboardBan = $bannedLeaderboardAccounts->first(function ($ban) use ($item) {
-                    return $ban->blizz_id == $item->blizz_id && $ban->region == $item->region;
-                });
-                if ($existingLeaderboardBan) {
+                if ($bannedLeaderboardAccounts->has($key)) {
                     $this->rankModifier++;
 
                     return null;
                 }
 
-                $isPrivate = $privateAccounts->first(function ($account) use ($item) {
-                    return $account->blizz_id == $item->blizz_id && $account->region == $item->region;
-                });
+                $isPrivate = $privateAccounts->get($key);
 
                 if ($isPrivate) {
                     // Only show if user is authenticated AND viewing their own account
@@ -184,7 +178,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                     }
                 }
 
-                $item->patreon = is_null($patreonAccount) || empty($patreonAccount) || count($patreonAccount) == 0 ? false : true;
+                $item->patreon = ! is_null($patreonAccount);
                 $item->hp_owner = ($item->blizz_id == 67280 && $item->region == 1) ? true : false;
                 $item->mmr = round(1800 + 40 * $item->conservative_rating);
                 $item->win_rate = round($item->win_rate, 2);
@@ -227,28 +221,22 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
             // $weeksDifference = $this->globalDataService->matchPredictionGetWeeksSinceSeasonStart();
 
-            $bannedAccounts = BannedAccount::get();
-            $privateAccounts = BattlenetAccount::where('private', 1)->get();
+            $bannedAccounts = BannedAccount::get()->keyBy(fn ($b) => $b->blizz_id.'|'.$b->region);
+            $privateAccounts = BattlenetAccount::where('private', 1)->get()->keyBy(fn ($a) => $a->blizz_id.'|'.$a->region);
             $authenticatedUser = Auth::user();
 
             $filteredLeaderboard = $leaderboard->filter(function ($item) use ($bannedAccounts, $privateAccounts, $authenticatedUser) {
-                // Filter out if not enough games
                 if ($item->games_played < 20) {
                     return false;
                 }
 
-                // Filter out banned accounts
-                $existingBan = $bannedAccounts->first(function ($ban) use ($item) {
-                    return $ban->blizz_id == $item->blizz_id && $ban->region == $item->region;
-                });
-                if ($existingBan) {
+                $key = $item->blizz_id.'|'.$item->region;
+
+                if ($bannedAccounts->has($key)) {
                     return false;
                 }
 
-                // Filter out private accounts (unless viewing own account)
-                $isPrivate = $privateAccounts->first(function ($account) use ($item) {
-                    return $account->blizz_id == $item->blizz_id && $account->region == $item->region;
-                });
+                $isPrivate = $privateAccounts->get($key);
 
                 if ($isPrivate) {
                     // Only show if user is authenticated AND viewing their own account

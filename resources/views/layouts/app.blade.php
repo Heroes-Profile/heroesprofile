@@ -66,6 +66,31 @@
     <meta name="twitter:description" content="@yield('meta_description')">
     <meta name="twitter:image" content="{{ asset('images/logo/heroesprofilelogo.png') }}">
 
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ url()->current() }}">
+
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://www.googletagmanager.com">
+    <link rel="preconnect" href="https://www.google-analytics.com">
+    <link rel="preconnect" href="https://hb.vntsm.com">
+
+    <!-- Organization structured data for Google search branding -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Heroes Profile",
+      "url": "https://www.heroesprofile.com",
+      "logo": "https://www.heroesprofile.com/images/logo/heroesprofilelogo.png",
+      "sameAs": [
+        "https://x.com/HeroesProfile",
+        "https://www.reddit.com/r/heroesprofile/",
+        "https://www.patreon.com/c/heroesprofile",
+        "https://opencollective.com/heroes-profile",
+        "https://github.com/Heroes-Profile/heroesprofile"
+      ]
+    }
+    </script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
