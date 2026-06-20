@@ -13,6 +13,7 @@ use App\Rules\HeroInputByIDValidation;
 use App\Rules\RoleInputValidation;
 use App\Rules\SeasonInputValidation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -176,7 +177,7 @@ class PlayerMatchHistory extends Controller
             ->whereIn('game_type', $game_type)
             ->where('region', $region)
             ->when(! is_null($season), function ($query) use ($season) {
-                $seasonDate = SeasonDate::find($season);
+                $seasonDate = Cache::remember('season_date_'.$season, 3600, fn () => SeasonDate::find($season));
                 if ($seasonDate) {
                     return $query->where('game_date', '>=', $seasonDate->start_date)
                         ->where('game_date', '<', $seasonDate->end_date);
