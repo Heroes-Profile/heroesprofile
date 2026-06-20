@@ -14,6 +14,7 @@ use App\Http\Controllers\Esports\NGS\NGSController;
 use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
 use App\Http\Controllers\Esports\NutCup\NutCupController;
 use App\Http\Controllers\Esports\Other\EsportOtherController;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\GithubChangeController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
@@ -73,6 +74,8 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/Contact', [ContactController::class, 'show']);
 
     Route::get('/Privacy/Policy', [PrivacyPolicyController::class, 'show']);
+
+    Route::get('/FAQ', [FaqController::class, 'show']);
 
     Route::get('/Github/Change/Log', [GithubChangeController::class, 'show']);
 
