@@ -18,6 +18,9 @@ Disallow: /
 # Allowed public pages
 Allow: /$
 Allow: /Global/
+Allow: /FAQ
+Allow: /Contact
+Allow: /Privacy/Policy
 Allow: /Player/Zemill/67280/1/
 
 # API

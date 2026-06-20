@@ -267,10 +267,7 @@ class GlobalDataService
 
     public function getGameTypeIDtoString()
     {
-        $game_types = GameType::all();
-        $game_types = $game_types->keyBy('type_id');
-
-        return $game_types;
+        return $this->getGameTypes()->keyBy('type_id');
     }
 
     public function getWeeksSinceSeasonStart()
@@ -385,7 +382,9 @@ class GlobalDataService
     public function getGameTypes()
     {
         if ($this->cachedGameTypes === null) {
-            $this->cachedGameTypes = GameType::orderBy('type_id', 'ASC')->get();
+            $this->cachedGameTypes = Cache::remember('global_game_types', 3600, function () {
+                return GameType::orderBy('type_id', 'ASC')->get();
+            });
         }
 
         return clone $this->cachedGameTypes;
@@ -394,7 +393,9 @@ class GlobalDataService
     public function getHeroes()
     {
         if ($this->cachedHeroes === null) {
-            $this->cachedHeroes = Hero::orderBy('name', 'ASC')->get();
+            $this->cachedHeroes = Cache::remember('global_heroes', 3600, function () {
+                return Hero::orderBy('name', 'ASC')->get();
+            });
         }
 
         return clone $this->cachedHeroes;
@@ -416,7 +417,9 @@ class GlobalDataService
     public function getSeasonsData()
     {
         if ($this->cachedSeasonsData === null) {
-            $this->cachedSeasonsData = SeasonDate::orderBy('id', 'desc')->get();
+            $this->cachedSeasonsData = Cache::remember('global_seasons_data', 600, function () {
+                return SeasonDate::orderBy('id', 'desc')->get();
+            });
         }
 
         return clone $this->cachedSeasonsData;
@@ -546,6 +549,16 @@ class GlobalDataService
             $filtersMinimumPatch = $defaultPatchVersion;
         }
 
+        $ttl = app()->environment('production') ? 600 : 0;
+        $cacheKey = 'filter_data_'.str_replace('.', '_', $filtersMinimumPatch);
+
+        return Cache::remember($cacheKey, $ttl, function () use ($filtersMinimumPatch) {
+            return $this->buildFilterData($filtersMinimumPatch);
+        });
+    }
+
+    private function buildFilterData(string $filtersMinimumPatch): \stdClass
+    {
         $filterData = new \stdClass;
 
         $filterData->timeframe_type = [
