@@ -148,7 +148,11 @@
               @endif
 
               
-              <p><a href="/Privacy/Policy" class="underline text-xs">Privacy Policy</a></p>
+              <p class="text-xs space-x-3">
+                <a href="/FAQ" class="underline">FAQ</a>
+                <a href="/Privacy/Policy" class="underline">Privacy Policy</a>
+                <a href="/Terms/Of/Service" class="underline">Terms of Service</a>
+              </p>
               <div class="copyright">Skill Tree Development, LLC | <a href="https://heroesprofile.com">Heroes Profile</a></div>
             </div>
           </div>

@@ -21,6 +21,7 @@ Allow: /Global/
 Allow: /FAQ
 Allow: /Contact
 Allow: /Privacy/Policy
+Allow: /Terms/Of/Service
 Allow: /Player/Zemill/67280/1/
 
 # API

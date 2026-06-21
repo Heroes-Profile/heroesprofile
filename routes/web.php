@@ -42,6 +42,7 @@ use App\Http\Controllers\PreMatchController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
+use App\Http\Controllers\TermsOfServiceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -74,6 +75,7 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/Contact', [ContactController::class, 'show']);
 
     Route::get('/Privacy/Policy', [PrivacyPolicyController::class, 'show']);
+    Route::get('/Terms/Of/Service', [TermsOfServiceController::class, 'show']);
 
     Route::get('/FAQ', [FaqController::class, 'show']);
 
