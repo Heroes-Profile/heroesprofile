@@ -52,6 +52,7 @@ class GenerateSitemap extends Command
             ['loc' => '/FAQ',                      'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.6'],
             ['loc' => '/Contact',                  'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.4'],
             ['loc' => '/Privacy/Policy',           'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.3'],
+            ['loc' => '/Terms/Of/Service',         'lastmod' => $now, 'changefreq' => 'monthly', 'priority' => '0.3'],
         ];
     }
 
