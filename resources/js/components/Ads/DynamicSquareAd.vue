@@ -17,6 +17,7 @@ export default {
   },
   data(){
     return {
+      detectedBlocker: false,
     }
   },
   created(){
@@ -48,13 +49,22 @@ export default {
             document.querySelector(htmlComponent).appendChild(placement);
             window.top.__vm_add.push(placement);
         });
-      }
 
+        setTimeout(() => {
+          const container = document.querySelector(htmlComponent);
+          if (container) {
+            const placement = container.querySelector('.vm-placement');
+            if (!placement || !placement.hasChildNodes()) {
+              this.detectedBlocker = true;
+            }
+          }
+        }, 3500);
+      }
     }
   },
   computed: {
     adBlocker() {
-      return Cookies.get('ad-blocker') == "true";
+      return this.detectedBlocker || Cookies.get('ad-blocker') == "true";
     },
   },
   watch: {
