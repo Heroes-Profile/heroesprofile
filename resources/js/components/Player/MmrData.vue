@@ -11,6 +11,7 @@
       :hideadvancedfilteringbutton="true"
       :rolerequired="true"
       :herorequired="true"
+      :includeseasonwithall="true"
       >
     </filters>
     
@@ -154,6 +155,7 @@ export default {
       userTimezone: moment.tz.guess(),
       isLoading: false,
       gametype: null,
+      season: null,
       data: null,
       sortKey: '',
       sortDir: 'desc',
@@ -218,6 +220,7 @@ export default {
           type: this.type,
           hero: this.hero,
           role: this.role,
+          season: this.season,
         }, 
         {
           cancelToken: this.cancelTokenSource.token,
@@ -252,6 +255,8 @@ export default {
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
       this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
       this.type = filteredData.single["Type"] ? filteredData.single["Type"] : "Player";
+      this.season = filteredData.single.Season ? filteredData.single.Season : null;
+      if (this.season == "All") this.season = null;
 
       this.data = null;
       this.sortKey = '';

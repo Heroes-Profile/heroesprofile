@@ -7,10 +7,13 @@ use App\Models\GameType;
 use App\Models\Hero;
 use App\Models\LeagueBreakdown;
 use App\Models\MMRTypeID;
+use App\Models\SeasonDate;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
 use App\Rules\RoleInputValidation;
+use App\Rules\SeasonInputValidation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -62,6 +65,7 @@ class PlayerMMRController extends Controller
             'type' => 'required|in:Player,Hero,Role',
             'hero' => ['required_if:type,Hero', 'nullable', new HeroInputByIDValidation],
             'role' => ['required_if:type,Role', 'nullable', new RoleInputValidation],
+            'season' => ['sometimes', 'nullable', new SeasonInputValidation],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -80,6 +84,7 @@ class PlayerMMRController extends Controller
         $hero = $request['hero'] ? $this->globalDataService->getHeroesByID()[$request['hero']] : null;
         $type = $request['type'];
         $role = $request['role'];
+        $season = $request['season'];
 
         if ($type == 'Hero' && $hero == null) {
             return [
@@ -122,6 +127,15 @@ class PlayerMMRController extends Controller
             })
             ->when(! is_null($role), function ($query) use ($role) {
                 return $query->whereIn('hero', Hero::select('id')->where('new_role', $role)->get()->toArray());
+            })
+            ->when(! is_null($season), function ($query) use ($season) {
+                $seasonDate = Cache::remember('season_date_'.$season, 3600, fn () => SeasonDate::find($season));
+                if ($seasonDate) {
+                    return $query->where('game_date', '>=', $seasonDate->start_date)
+                        ->where('game_date', '<', $seasonDate->end_date);
+                }
+
+                return $query;
             })
             // ->toSql();
             ->orderByDesc('mmr_date_parsed')
