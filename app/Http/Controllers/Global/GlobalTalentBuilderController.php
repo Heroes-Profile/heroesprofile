@@ -68,6 +68,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
                 'defaultbuildtype' => $this->globalDataService->getDefaultBuildType(),
                 'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
                 'urlparameters' => $request->all(),
+                'talentbuilderstyle' => $this->globalDataService->getTalentBuilderStyle(),
             ]);
     }
 

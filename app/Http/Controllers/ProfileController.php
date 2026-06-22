@@ -34,6 +34,7 @@ class ProfileController extends Controller
             'usergametype' => ['sometimes', 'nullable', new GameTypeInputValidation],
             'mmrplayerusergametype' => ['sometimes', 'nullable', new GameTypeInputValidation],
             'talentbuildtype' => ['sometimes', 'nullable', new TalentBuildTypeInputValidation],
+            'talentbuilderstyle' => 'nullable|in:vertical,horizontal',
             'darkmode' => 'nullable|boolean',
             'playerhistorytable' => 'nullable|boolean',
             'customgames' => 'nullable|boolean',
@@ -136,6 +137,15 @@ class ProfileController extends Controller
             $user->userSettings()->updateOrCreate(
                 ['setting' => 'talentbuildtype'],
                 ['value' => $talentbuildtype]
+            );
+        }
+
+        if (! is_null($request['talentbuilderstyle'])) {
+            $user = BattlenetAccount::find($request['userid']);
+
+            $user->userSettings()->updateOrCreate(
+                ['setting' => 'talentbuilderstyle'],
+                ['value' => $request['talentbuilderstyle']]
             );
         }
 

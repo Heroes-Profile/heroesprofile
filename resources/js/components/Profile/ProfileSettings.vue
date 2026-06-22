@@ -92,6 +92,10 @@
             ></single-select-filter>
           </div>
           <div>
+            <h3 class="mb-2">Talent Builder Layout</h3>
+            <tab-button tab1text="Vertical" tab2text="Horizontal" :ignoreclick="true" @tab-click="talentbuilderstylesetting" :overridedefaultside="talentbuilderstyle"></tab-button>
+          </div>
+          <div>
             <h3 class="mb-2">Show Advanced Filtering Options</h3>
             <single-select-filter
               :values="advancedfilteringoptions"
@@ -217,6 +221,7 @@ export default {
       advancedfiltering: null,
       talentBuildType: null,
       darkmode: 'left',
+      talentbuilderstyle: 'left',
       playerhistorytable: 'left',
       playerload: 'true',
       customgames: false,
@@ -250,6 +255,7 @@ export default {
     this.advancedfiltering = this.defaultAdvancedFiltering;
     this.talentBuildType = this.defaultBuildType;
     this.darkmode = this.defaultDarkMode;
+    this.talentbuilderstyle = this.defaultTalentBuilderStyle;
     this.playerhistorytable = this.defaultPlayerhistorytable;
     this.customgames = this.defaultCustomGames;
     this.playerload = this.defaultPlayerLoad;
@@ -299,6 +305,13 @@ export default {
       }
       return 'left';
     },
+    defaultTalentBuilderStyle() {
+      if (this.user.user_settings.length > 0) {
+        let setting = this.user.user_settings.find(item => item.setting === 'talentbuilderstyle');
+        return (setting && setting.value === 'horizontal') ? 'right' : 'left';
+      }
+      return 'left';
+    },
     defaultPlayerhistorytable() {
       if (this.user.user_settings.length > 0) {
         let setting = this.user.user_settings.find(item => item.setting === 'playerhistorytable');
@@ -337,6 +350,7 @@ export default {
           usermultigametype: this.savemultigametype,
           advancedfiltering: this.advancedfiltering,
           talentbuildtype: this.talentBuildType,
+          talentbuilderstyle: this.talentbuilderstyle === 'right' ? 'horizontal' : 'vertical',
           darkmode: darkmodeinput,
           playerload: this.playerload,
           customgames: this.customgames,
@@ -398,6 +412,10 @@ export default {
     },
     darkmodesetting(side) {
       this.darkmode = side;
+      this.saveSettings();
+    },
+    talentbuilderstylesetting(side) {
+      this.talentbuilderstyle = side;
       this.saveSettings();
     },
     playermatchhistorystylesetting(side) {

@@ -483,6 +483,19 @@ class GlobalDataService
         return ['sl'];
     }
 
+    public function getTalentBuilderStyle(): string
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+            $setting = $user->userSettings->firstWhere('setting', 'talentbuilderstyle');
+            if ($setting) {
+                return $setting->value;
+            }
+        }
+
+        return 'vertical';
+    }
+
     public function getMMRGameTypeDefault()
     {
         if (Auth::check()) {

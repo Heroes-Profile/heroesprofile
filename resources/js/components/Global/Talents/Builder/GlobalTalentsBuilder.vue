@@ -61,7 +61,8 @@
           ></single-select-filter>
           <span @click="resetTalentData" class="mt-auto ml-auto link text-sm">Reset Talent data</span>
         </span>
-        <span>
+        <span class="flex items-center gap-4">
+          <tab-button v-if="!isMobile" :tab1text="'Vertical'" :tab2text="'Horizontal'" :ignoreclick="true" @tab-click="layoutStyleSelected" :overridedefaultside="effectiveStyle === 'horizontal' ? 'right' : 'left'"></tab-button>
           <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
         </span>
         
@@ -76,16 +77,14 @@
       <div v-else class="text-center py-4 text-gray-400">No summary available for this patch.</div>
     </div>
 
-    <div class="flex px-3 gap-5 mx-auto justify-center flex-wrap flex-col max-w-[1500px]">
-      <talent-builder-column :data="data['1']" :level="1" :clickedData="clickedData"></talent-builder-column>
-      <talent-builder-column :data="data['4']" :level="4" :clickedData="clickedData"></talent-builder-column>
-      <talent-builder-column :data="data['7']" :level="7" :clickedData="clickedData"></talent-builder-column>
-      <talent-builder-column :data="data['10']" :level="10" :clickedData="clickedData"></talent-builder-column>
-      <talent-builder-column :data="data['13']" :level="13" :clickedData="clickedData"></talent-builder-column>
-      <talent-builder-column :data="data['16']" :level="16" :clickedData="clickedData"></talent-builder-column>
-      <talent-builder-column :data="data['20']" :level="20" :clickedData="clickedData"></talent-builder-column>
-
-
+    <div :class="effectiveStyle === 'horizontal' ? 'flex px-3 gap-5 mx-auto justify-center' : 'flex px-3 gap-5 mx-auto justify-center flex-wrap flex-col max-w-[1500px]'">
+      <talent-builder-column :data="data['1']" :level="1" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
+      <talent-builder-column :data="data['4']" :level="4" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
+      <talent-builder-column :data="data['7']" :level="7" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
+      <talent-builder-column :data="data['10']" :level="10" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
+      <talent-builder-column :data="data['13']" :level="13" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
+      <talent-builder-column :data="data['16']" :level="16" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
+      <talent-builder-column :data="data['20']" :level="20" :clickedData="clickedData" :horizontal="effectiveStyle === 'horizontal'"></talent-builder-column>
     </div>
     <div class=" my-5 bg-teal py-5 px-2">
       <infobox class="max-w-[1500px] mx-auto " :input="'Build win rate and how many players have played that exact build. Win rate for builds to level 20 are inflated because teams that make it to level 20 win more. Therefore it is not an accurate representation of a builds viabllity. See table below for that calculation'"></infobox>
@@ -195,7 +194,7 @@
       advancedfiltering: Boolean,
       patreonUser: Boolean,
       urlparameters: Object,
-
+      talentbuilderstyle: { type: String, default: 'vertical' },
     },
     data(){
       return {
@@ -232,6 +231,8 @@
         rolerank: null,
         mirrormatch: 0,
         showReplayList: false,
+        isMobile: window.innerWidth < 768,
+        localStyle: 'vertical',
         showPatchNotes: false,
         patchNotesContent: null,
         patchNotesLoading: false,
@@ -239,6 +240,7 @@
       }
     },
     created(){
+      this.localStyle = this.talentbuilderstyle;
       this.selectedHero = this.inputhero;
       this.timeframe = this.defaulttimeframe;
       this.gametype = this.gametypedefault;
@@ -253,8 +255,16 @@
       }
     },
     mounted() {
+      this._onResize = () => { this.isMobile = window.innerWidth < 768; };
+      window.addEventListener('resize', this._onResize);
+    },
+    beforeUnmount() {
+      window.removeEventListener('resize', this._onResize);
     },
     computed: {
+      effectiveStyle() {
+        return this.isMobile ? 'vertical' : this.localStyle;
+      },
       patchNotesUrl() {
         if (this.timeframetype !== 'minor' || !this.timeframe || this.timeframe.length !== 1) {
           return null;
@@ -272,6 +282,9 @@
       }    
     },
     methods: {
+      layoutStyleSelected(side) {
+        this.localStyle = side === 'right' ? 'horizontal' : 'vertical';
+      },
       async getData(){
         if(this.showReplayList){
           this.showReplayList = false;
