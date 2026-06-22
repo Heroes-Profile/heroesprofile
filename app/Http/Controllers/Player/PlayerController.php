@@ -844,6 +844,11 @@ class PlayerController extends Controller
 
         $returnData->weekday_data = $data->weekday_data ? json_decode($data->weekday_data, true) : null;
 
+        $isOwner = Auth::check()
+            && Auth::user()->blizz_id == $blizz_id
+            && Auth::user()->region == $region;
+
+        $returnData->weekday_data = $isOwner ? $returnData->weekday_data : null;
         return $returnData;
     }
 
