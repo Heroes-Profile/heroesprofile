@@ -21,7 +21,7 @@
     }
   ]"
   
-  @mouseover="handleMouseOver" @mouseleave="showTooltip = false">
+  @mouseover="handleMouseOver" @mouseleave="scheduleHide">
 
     <div class="absolute z-10 bottom-0 right-0 w-9"  v-if="award">
       <img :src="awardicon"/>
@@ -63,8 +63,8 @@
       :src="image" 
       :alt="title">
     
-    <div v-show="showTooltip" :class="[
-        'absolute hidden group-hover:block text-xs z-40',
+    <div v-show="showTooltip" @mouseover="handleMouseOver" @mouseleave="scheduleHide" :class="[
+        'absolute text-xs z-40',
       {
         // Default top positioning
         'left-1/2 transform -translate-x-1/2 bottom-[1em] -translate-y-[2em]': tooltipPosition === 'top',
@@ -120,13 +120,18 @@ export default {
     hpowner: Boolean,
     ispatreon: Boolean,
     icon: String,
-    mobileClick: false
+    mobileClick: false,
+    hidedelay: {
+      type: Number,
+      default: 0,
+    }
     
   },
   data(){
     return {
       showTooltip: false,
-      tooltipPosition: 'top', // 'top', 'right', or 'left'
+      tooltipPosition: 'top',
+      hideTimer: null,
     }
   },
   created(){
@@ -141,7 +146,15 @@ export default {
     isSmallScreen() {
       return window.innerWidth <= 768; // You can adjust the threshold as needed
     },
+    scheduleHide() {
+      if (this.hidedelay === 0) {
+        this.showTooltip = false;
+      } else {
+        this.hideTimer = setTimeout(() => { this.showTooltip = false; }, this.hidedelay);
+      }
+    },
     handleMouseOver() {
+      clearTimeout(this.hideTimer);
       this.showTooltip = true;
       this.calculateTooltipPosition();
     },

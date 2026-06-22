@@ -74,11 +74,12 @@
           ></single-select-filter>
 
           <!-- Timeframes -->
-          <multi-select-filter v-if="includetimeframemodified" 
-            :values="timeframes" 
-            :text="'Timeframes'" 
-            :defaultValue="timeframe" 
+          <multi-select-filter v-if="includetimeframemodified"
+            :values="timeframes"
+            :text="'Timeframes'"
+            :defaultValue="timeframe"
             @input-changed="handleInputChange"
+            infolink="/FAQ#patch-history"
           ></multi-select-filter>
 
           <!-- Current Game Type Multiselect-->

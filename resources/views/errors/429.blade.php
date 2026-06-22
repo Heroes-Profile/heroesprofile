@@ -8,6 +8,8 @@
             5 => 'CN',
         ],
         'darkmode' => 0,
+        'heroes' => [],
+        'maps' => [],
     ];
 @endphp
 

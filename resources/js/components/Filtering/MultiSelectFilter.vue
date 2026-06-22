@@ -3,6 +3,11 @@
     <div @click="showOptions = !showOptions" class="flex flex-col text-sm font-medium text-gray-700 cursor-pointer  p-2    transition-colors">
       <span class="relative">
         <span class="relative">{{ this.text }}
+          <round-image v-if="infolink" class="mt-2" size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000" style="position:absolute; bottom:0; right:-25px;">
+            <div>
+              <p class="max-sm:text-xs">Timeframes correspond to game patches. <a :href="infolink" target="_blank" class="link">View the full patch & season history.</a></p>
+            </div>
+          </round-image>
           <round-image v-if="showrankinfo" class="mt-2"  size="small"    icon="fas fa-info"   title="info"  popupsize="large" mobileClick="true" style="position:absolute; bottom:0; right:-25px;">
             <slot>
               <div>
@@ -62,6 +67,7 @@
       defaultValue: Array,
       trackclosure: Boolean,
       showrankinfo: Boolean,
+      infolink: String,
     },
     data(){
       return {

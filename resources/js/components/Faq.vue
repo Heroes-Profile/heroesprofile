@@ -44,6 +44,34 @@
         </div>
       </div>
 
+      <!-- Patch & Season History -->
+      <div id="patch-history" class="mt-10 mb-8">
+        <h2 class="bg-teal px-4 py-3 rounded-t-lg text-lg font-semibold">Patch &amp; Season History</h2>
+        <div class="bg-lighten rounded-b-lg p-4">
+          <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
+            <thead>
+              <tr>
+                <th style="padding:4px 8px; text-align:left;">Season</th>
+                <th style="padding:4px 8px; text-align:left;">Game Version</th>
+                <th style="padding:4px 8px; text-align:left; white-space:nowrap;">Start Date</th>
+                <th style="padding:4px 8px; text-align:left; white-space:nowrap;">End Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row, i) in patchHistory" :key="i">
+                <td style="padding:3px 8px;">{{ row.season }}</td>
+                <td style="padding:3px 8px;">
+                  <a v-if="row.patch_notes_url" :href="row.patch_notes_url" target="_blank" class="link">{{ row.game_version }}</a>
+                  <span v-else>{{ row.game_version }}</span>
+                </td>
+                <td style="padding:3px 8px;">{{ formatDate(row.start_date) }}</td>
+                <td style="padding:3px 8px;">{{ row.end_date ? formatDate(row.end_date) : 'Present' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- Ask a Question -->
       <div class="mt-12 mb-8">
         <h2 class="bg-teal px-4 py-3 rounded-t-lg text-lg font-semibold">Still have a question?</h2>
@@ -113,7 +141,11 @@ export default {
     recaptchaSiteKey: {
       type: String,
       default: ''
-    }
+    },
+    patchHistory: {
+      type: Array,
+      default: () => []
+    },
   },
   data() {
     return {
@@ -343,6 +375,9 @@ export default {
     },
   },
   methods: {
+    formatDate(dateStr) {
+      return new Date(dateStr).toLocaleDateString(undefined, { year: 'numeric', month: '2-digit', day: '2-digit' });
+    },
     toggle(catName, index) {
       const key = `${catName}-${index}`;
       this.openItems = { ...this.openItems, [key]: !this.openItems[key] };
@@ -402,3 +437,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.patch-history-table {
+  min-width: 0 !important;
+}
+</style>

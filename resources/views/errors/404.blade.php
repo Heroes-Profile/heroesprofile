@@ -7,7 +7,9 @@
             /* 4 => 'UNK', */
             5 => 'CN',
         ],
-        'darkmode' => 0, // Set your default dark mode value here
+        'darkmode' => 0,
+        'heroes' => [],
+        'maps' => [],
     ];
 @endphp
 
