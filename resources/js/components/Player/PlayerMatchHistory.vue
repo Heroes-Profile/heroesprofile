@@ -16,6 +16,8 @@
       :includegametypefullcustom="showcustomgames"
       :includeseason="true"
       :includegamemap="true"
+      :includegroupsize="true"
+      :groupSizeDefaultValue="'All'"
       :hideadvancedfilteringbutton="true"
       >
     </filters>
@@ -165,6 +167,7 @@ export default {
       hero: null,
       gamemap: null,
       season: null,
+      stack_size: null,
       sortKey: '',
       sortDir: 'desc',
       gametype: null,
@@ -233,6 +236,7 @@ export default {
           game_map: this.gamemap,
           pagination_page: page,
           season: this.season,
+          stack_size: this.stack_size,
         }, 
         {
           cancelToken: this.cancelTokenSource.token,
@@ -272,6 +276,7 @@ export default {
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
       this.hero = this.hero ? this.filters.heroes.find(h => h.code === this.hero)?.name : null;
       this.season = filteredData.single.Season ? filteredData.single.Season : null;
+      this.stack_size = filteredData.single["Group Size"] ? filteredData.single["Group Size"] : null;
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
 

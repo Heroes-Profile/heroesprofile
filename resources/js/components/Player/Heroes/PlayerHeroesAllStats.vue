@@ -13,6 +13,7 @@
       :hideadvancedfilteringbutton="true"
       :includegamemap="true"
       :includeseasonwithall="true"
+      :includehero="true"
       >
     </filters>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>

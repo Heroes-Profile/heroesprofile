@@ -112,6 +112,7 @@ class PlayerMatchHistory extends Controller
             'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation],
             'game_map' => ['sometimes', 'nullable', new GameMapInputValidation],
             'season' => ['sometimes', 'nullable', new SeasonInputValidation],
+            'stack_size' => ['sometimes', 'nullable', 'string', 'in:All,Solo,Duo,3 Players,4 Players,5 Players'],
             'pagination_page' => 'required:integer',
         ];
 
@@ -134,6 +135,14 @@ class PlayerMatchHistory extends Controller
         $hero = $request['hero'];
         $game_map = $request['game_map'] ? Map::whereIn('name', $request['game_map'])->pluck('map_id')->toArray() : null;
         $season = $request['season'];
+        $stack_size = match ($request['stack_size'] ?? null) {
+            'Solo' => 1,
+            'Duo' => 2,
+            '3 Players' => 3,
+            '4 Players' => 4,
+            '5 Players' => 5,
+            default => null,
+        };
 
         $pagination_page = $request['pagination_page'];
         $perPage = 100;
@@ -193,6 +202,9 @@ class PlayerMatchHistory extends Controller
             })
             ->when(! is_null($hero), function ($query) use ($hero) {
                 return $query->where('hero', $hero);
+            })
+            ->when(! is_null($stack_size), function ($query) use ($stack_size) {
+                return $query->where('stack_size', $stack_size);
             })
             ->orderByDesc('game_date')
             ->paginate($perPage, ['*'], 'page', $pagination_page);
