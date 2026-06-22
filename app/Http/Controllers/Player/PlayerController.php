@@ -21,6 +21,7 @@ use App\Models\SeasonDate;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\SeasonInputValidation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -135,6 +136,20 @@ class PlayerController extends Controller
 
         if (($latestReplayID && $cachedData) && $cachedData->latest_replayID < $latestReplayID) {
             $this->calculateProfile($blizz_id, $region, $game_type, $season, $cachedData);
+            $cachedData = ProfilePage::filterByBlizzID($blizz_id)
+                ->filterByRegion($region)
+                ->where('game_type', $game_type)
+                ->where('season', $season)
+                ->first();
+        }
+
+        $isOwner = Auth::check()
+            && Auth::user()->blizz_id == $blizz_id
+            && Auth::user()->region == $region;
+
+        if ($isOwner && $cachedData && is_null($cachedData->weekday_data)) {
+            $cachedData->delete();
+            $this->calculateProfile($blizz_id, $region, $game_type, $season);
             $cachedData = ProfilePage::filterByBlizzID($blizz_id)
                 ->filterByRegion($region)
                 ->where('game_type', $game_type)
@@ -392,6 +407,31 @@ class PlayerController extends Controller
             $mapData = $existingMapData;
         }
 
+        // Bucket by UTC hour-of-week (0–167): (dayOfWeek-1)*24 + hourOfDay
+        // The frontend shifts these buckets by the user's local timezone offset to get local days.
+        $weekdayData = $result->groupBy(function ($item) {
+            $ts = strtotime($item->game_date);
+            return ((int) date('N', $ts) - 1) * 24 + (int) date('G', $ts);
+        })->map(function ($items) {
+            return [
+                'wins' => $items->where('winner', 1)->count(),
+                'losses' => $items->where('winner', 0)->count(),
+            ];
+        })->toArray();
+
+        if ($cachedData && $cachedData->weekday_data) {
+            $existingWeekdayData = json_decode($cachedData->weekday_data, true);
+            foreach ($weekdayData as $bucket => $data) {
+                if (isset($existingWeekdayData[$bucket])) {
+                    $existingWeekdayData[$bucket]['wins'] += $data['wins'];
+                    $existingWeekdayData[$bucket]['losses'] += $data['losses'];
+                } else {
+                    $existingWeekdayData[$bucket] = $data;
+                }
+            }
+            $weekdayData = $existingWeekdayData;
+        }
+
         if (! $cachedData) {
             $dataToSave = new ProfilePage;
             $dataToSave->blizz_id = $blizz_id;
@@ -447,6 +487,7 @@ class PlayerController extends Controller
         $dataToSave->matches = $matches;
         $dataToSave->hero_data = $heroData;
         $dataToSave->map_data = $mapData;
+        $dataToSave->weekday_data = json_encode($weekdayData);
 
         $dataToSave->save();
 
@@ -799,6 +840,8 @@ class PlayerController extends Controller
 
             return $match;
         })->values();
+
+        $returnData->weekday_data = $data->weekday_data ? json_decode($data->weekday_data, true) : null;
 
         return $returnData;
     }
