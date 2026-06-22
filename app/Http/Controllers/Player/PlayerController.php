@@ -411,6 +411,7 @@ class PlayerController extends Controller
         // The frontend shifts these buckets by the user's local timezone offset to get local days.
         $weekdayData = $result->groupBy(function ($item) {
             $ts = strtotime($item->game_date);
+
             return ((int) date('N', $ts) - 1) * 24 + (int) date('G', $ts);
         })->map(function ($items) {
             return [

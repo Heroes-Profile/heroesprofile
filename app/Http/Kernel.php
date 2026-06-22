@@ -16,6 +16,7 @@ use App\Http\Middleware\RequireWebsiteAuthForAll;
 use App\Http\Middleware\SetGlobalDataValues;
 use App\Http\Middleware\ThrottleNonApiRequests;
 use App\Http\Middleware\ThrottleOldReplayRequests;
+use App\Http\Middleware\TrackSlowRequests;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\ValidateApiPostOrigin;
@@ -60,6 +61,7 @@ class Kernel extends HttpKernel
         ConvertEmptyStringsToNull::class,
         SetGlobalDataValues::class,
         ThrottleOldReplayRequests::class,
+        TrackSlowRequests::class,
     ];
 
     /**
