@@ -33,6 +33,8 @@ class GlobalDataService
 
     private $cachedHeroes = null;
 
+    private $cachedMaps = null;
+
     private $cachedGameTypes = null;
 
     private $cachedSeasonsData = null;
@@ -150,6 +152,8 @@ class GlobalDataService
             'latestGameDate' => $latestGame,
             'isBackendOff' => $isBackendOff,
             'headeralert' => $this->getHeaderAlert(),
+            'heroes' => $this->getHeroes()->sortBy('name')->values(),
+            'maps' => $this->getMaps(),
         ];
 
     }
@@ -399,6 +403,17 @@ class GlobalDataService
         }
 
         return clone $this->cachedHeroes;
+    }
+
+    public function getMaps()
+    {
+        if ($this->cachedMaps === null) {
+            $this->cachedMaps = Cache::remember('global_maps', 3600, function () {
+                return Map::where('playable', 1)->orderBy('name', 'ASC')->get();
+            });
+        }
+
+        return clone $this->cachedMaps;
     }
 
     public function getHeroesByID()

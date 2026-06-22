@@ -115,6 +115,8 @@
     'mainSearchAccount' => $main_search_account,
     'altSearchAccounts' => [$alt_search_account1, $alt_search_account2, $alt_search_account3],
     'regions' => $bladeGlobals["regions"],
+    'heroes' => $bladeGlobals["heroes"],
+    'maps' => $bladeGlobals["maps"],
     ])
     
 
