@@ -43,6 +43,31 @@ body{
 
 
 
+/* Navigation flyout submenu (opens to the right of a dropdown item) */
+.nav-flyout-wrapper {
+  position: relative;
+}
+.nav-flyout {
+  display: none;
+  position: absolute;
+  left: 100%;
+  top: 0;
+  z-index: 60;
+  min-width: 200px;
+  padding-left: 2px;
+}
+.nav-flyout-wrapper:hover .nav-flyout {
+  display: block;
+}
+@media (max-width: 768px) {
+  .nav-flyout {
+    display: none !important;
+  }
+  .nav-flyout-arrow {
+    display: none;
+  }
+}
+
 /* Navigation */
 .nav-dropdown{
   @apply absolute  left-0 hidden  z-50 md:pt-3  min-w-[200px] max-md:relative;

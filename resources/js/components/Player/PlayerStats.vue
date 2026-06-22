@@ -184,6 +184,13 @@
     <dynamic-square-ad :patreon-user="patreonUser" :index="2"></dynamic-square-ad>
     </div>
 
+    <div class="flex justify-center max-w-[1500px] mx-auto items-center max-md:flex-col" v-if="data && data.weekday_data">
+      <div class="p-10 max-w-[90em] ml-auto mr-auto">
+        <h2 class="text-3xl font-bold py-5">Week Day Win Rates</h2>
+        <player-weekday-win-rates :data="data.weekday_data"></player-weekday-win-rates>
+      </div>
+    </div>
+
     <div class="bg-lighten">
       <div class="p-10 max-w-[90em] ml-auto mr-auto" v-if="data && data.matchData">
         <h2 class="text-3xl font-bold py-5">Most Recent matches</h2>

@@ -1,19 +1,37 @@
 <template>
   <div>
-    <div class="  m-1 bg-gray-light rounded-2xl flex">
-      <h2 class="bg-blue rounded-l-2xl p-2 text-sm text-center uppercase relative pr-8 min-w-[9em]">Level {{ level }} 
+    <!-- Horizontal layout: fixed-width column, header on top, talents stack vertically -->
+    <div v-if="horizontal" class="w-[170px] inline-block m-1 bg-gray-light rounded-2xl">
+      <h2 class="bg-blue rounded-t-2xl p-2 text-sm text-center uppercase relative">Level {{ level }}
         <div @click="removeAnySelections" class="absolute right-0 top-0 text-bold p-2 rounded hover:bg-teal">
           <i class="fa-solid fa-xmark"></i>
         </div>
       </h2>
-      <div class="flex flex-wrap  w-full max-md:justify-center text-sm max-md:text-sm">
-      <div class="min-w-[20%]" v-for="(talent, index) in data" :key="talent.title" >
+      <div v-for="(talent, index) in data" :key="talent.title">
         <talent-builder-click-box
           :talent="talent"
           :isClicked="isSelected(talent)"
+          :horizontal="true"
           @click="talentClicked(talent, index, level)"
         ></talent-builder-click-box>
       </div>
+    </div>
+
+    <!-- Vertical layout: full-width row, header on left, talents wrap horizontally -->
+    <div v-else class="m-1 bg-gray-light rounded-2xl flex">
+      <h2 class="bg-blue rounded-l-2xl p-2 text-sm text-center uppercase relative pr-8 min-w-[9em]">Level {{ level }}
+        <div @click="removeAnySelections" class="absolute right-0 top-0 text-bold p-2 rounded hover:bg-teal">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+      </h2>
+      <div class="flex flex-wrap w-full max-md:justify-center text-sm max-md:text-sm">
+        <div class="min-w-[20%]" v-for="(talent, index) in data" :key="talent.title">
+          <talent-builder-click-box
+            :talent="talent"
+            :isClicked="isSelected(talent)"
+            @click="talentClicked(talent, index, level)"
+          ></talent-builder-click-box>
+        </div>
       </div>
     </div>
   </div>
@@ -28,6 +46,7 @@ export default {
     level: Number,
     data: Object,
     clickedData: Object,
+    horizontal: { type: Boolean, default: false },
   },
   data(){
     return {

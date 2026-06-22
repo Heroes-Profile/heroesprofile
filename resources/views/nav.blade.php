@@ -31,12 +31,32 @@
                             <div class="nav-dropdown-inner-wrapper ">
                                 {{-- ... (Global Hero Stats dropdown items) --}}
                                 <a href="/Global/Hero" >Hero Stats</a>
-                                <a href="/Global/Talents" >Talent Stats</a>
-                                <a href="/Global/Hero/Maps" >Map Stats</a>
-                                <a href="/Global/Matchups" >Matchup Stats</a>
+                                <nav-search-flyout
+                                    :items="{{ json_encode($heroes) }}"
+                                    :label="'Talent Stats'"
+                                    :all-label="'All Heroes'"
+                                    :base-url-override="'/Global/Talents'"
+                                ></nav-search-flyout>
+                                <nav-search-flyout
+                                    :items="{{ json_encode($heroes) }}"
+                                    :label="'Map Stats'"
+                                    :all-label="'All Heroes'"
+                                    :base-url-override="'/Global/Hero/Maps'"
+                                ></nav-search-flyout>
+                                <nav-search-flyout
+                                    :items="{{ json_encode($heroes) }}"
+                                    :label="'Matchup Stats'"
+                                    :all-label="'All Heroes'"
+                                    :base-url-override="'/Global/Matchups'"
+                                ></nav-search-flyout>
                                 <a href="/Global/Matchups/Talents" >Matchup Talent Stats</a>
                                 <a href="/Global/Compositions" >Compositional Stats</a>
-                                <a href="/Global/Draft" >Draft Stats</a>
+                                <nav-search-flyout
+                                    :items="{{ json_encode($heroes) }}"
+                                    :label="'Draft Stats'"
+                                    :all-label="'All Heroes'"
+                                    :base-url-override="'/Global/Draft'"
+                                ></nav-search-flyout>
                                 <a href="/Global/Party" >Party Stats</a>
                                 {{--<a href="/Global/Extra" >Extra Stats</a>--}}
                             </div>
@@ -112,11 +132,48 @@
                                     {{-- ... (mainSearchAccount dropdown items) --}}
                                     <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}" >Profile</a>
                                     <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/FriendFoe" >Friends and Foes</a>
-                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Hero" >Heroes</a>
-                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role" >Roles</a>
-                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Map" >Maps</a>
+                                    <nav-search-flyout
+                                        :battletag="'{{ $mainSearchAccount['battletag'] }}'"
+                                        :blizz-id="{{ $mainSearchAccount['blizz_id'] }}"
+                                        :region="{{ $mainSearchAccount['region'] }}"
+                                        :items="{{ json_encode($heroes) }}"
+                                        :label="'Heroes'"
+                                        :subpath="'Hero'"
+                                        :all-label="'All Heroes'"
+                                    ></nav-search-flyout>
+                                    <div class="nav-flyout-wrapper">
+                                        <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role" class="flex justify-between items-center">Roles <span class="nav-flyout-arrow ml-4">›</span></a>
+                                        <div class="nav-flyout">
+                                            <div class="nav-dropdown-inner-wrapper rounded-b-lg rounded-r-lg">
+                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role">All Roles</a>
+                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/Bruiser">Bruiser</a>
+                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/Healer">Healer</a>
+                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/Melee%20Assassin">Melee Assassin</a>
+                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/Ranged%20Assassin">Ranged Assassin</a>
+                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/Support">Support</a>
+                                                <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Role/Tank">Tank</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <nav-search-flyout
+                                        :battletag="'{{ $mainSearchAccount['battletag'] }}'"
+                                        :blizz-id="{{ $mainSearchAccount['blizz_id'] }}"
+                                        :region="{{ $mainSearchAccount['region'] }}"
+                                        :items="{{ json_encode($maps) }}"
+                                        :label="'Maps'"
+                                        :subpath="'Map'"
+                                        :all-label="'All Maps'"
+                                    ></nav-search-flyout>
                                     <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Matchups" >Matchups</a>
-                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Talents" >Talents</a>
+                                    <nav-search-flyout
+                                        :battletag="'{{ $mainSearchAccount['battletag'] }}'"
+                                        :blizz-id="{{ $mainSearchAccount['blizz_id'] }}"
+                                        :region="{{ $mainSearchAccount['region'] }}"
+                                        :items="{{ json_encode($heroes) }}"
+                                        :label="'Talents'"
+                                        :subpath="'Talents'"
+                                        :all-label="'All Talents'"
+                                    ></nav-search-flyout>
                                     <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/MMR" >HP MMR Breakdown</a>
                                     <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Match/History" >Match History</a>
                                     <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Match/Latest" >Latest Match</a>
@@ -180,11 +237,48 @@
               <div  class="mobile-secondary-nav-name flex justify-between md:hidden max-md:text-xs md:p-3 bg-teal">{{ $account['battletag'] }} ({{ $regions[$account['region']] }}) <button class="close-secondary-nav">x</button></div>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" >Profile</a>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/FriendFoe" >Friends and Foes</a>
-              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Hero" >Heroes</a>
-              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role">Roles</a>
-              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Map" >Maps</a>
+              <nav-search-flyout
+                :battletag="'{{ $account['battletag'] }}'"
+                :blizz-id="{{ $account['blizz_id'] }}"
+                :region="{{ $account['region'] }}"
+                :items="{{ json_encode($heroes) }}"
+                :label="'Heroes'"
+                :subpath="'Hero'"
+                :all-label="'All Heroes'"
+              ></nav-search-flyout>
+              <div class="nav-flyout-wrapper">
+                <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role" class="flex justify-between items-center">Roles <span class="nav-flyout-arrow ml-4">›</span></a>
+                <div class="nav-flyout">
+                  <div class="nav-dropdown-inner-wrapper rounded-b-lg rounded-r-lg">
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role">All Roles</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/Bruiser">Bruiser</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/Healer">Healer</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/Melee%20Assassin">Melee Assassin</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/Ranged%20Assassin">Ranged Assassin</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/Support">Support</a>
+                    <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Role/Tank">Tank</a>
+                  </div>
+                </div>
+              </div>
+              <nav-search-flyout
+                :battletag="'{{ $account['battletag'] }}'"
+                :blizz-id="{{ $account['blizz_id'] }}"
+                :region="{{ $account['region'] }}"
+                :items="{{ json_encode($maps) }}"
+                :label="'Maps'"
+                :subpath="'Map'"
+                :all-label="'All Maps'"
+              ></nav-search-flyout>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Matchups">Matchups</a>
-              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Talents" >Talents</a>
+              <nav-search-flyout
+                :battletag="'{{ $account['battletag'] }}'"
+                :blizz-id="{{ $account['blizz_id'] }}"
+                :region="{{ $account['region'] }}"
+                :items="{{ json_encode($heroes) }}"
+                :label="'Talents'"
+                :subpath="'Talents'"
+                :all-label="'All Talents'"
+              ></nav-search-flyout>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/MMR">HP MMR Breakdown</a>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Match/History">Match History</a>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Match/Latest">Latest Match</a>

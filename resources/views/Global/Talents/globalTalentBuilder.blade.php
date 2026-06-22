@@ -22,6 +22,7 @@
     :advancedfiltering="{{ json_encode($advancedfiltering) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
     :urlparameters="{{ json_encode($urlparameters) }}"
+    :talentbuilderstyle="{{ json_encode($talentbuilderstyle) }}"
 
   >
   </global-talents-builder>
