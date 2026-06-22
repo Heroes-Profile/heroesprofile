@@ -1,6 +1,6 @@
 <template>
   <div v-if="!patreonUser">
-    <div v-if="!adBlocker" :id="`dynamic-square-ad-container-${index}`" style="min-height:250px;"></div>
+    <div v-if="!adBlocker" :id="`dynamic-square-ad-container-${index}`" style="min-height:250px; position:relative;"></div>
   </div>
 </template>
 
