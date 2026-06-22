@@ -13,7 +13,7 @@ class TrackSlowRequests
 
     public function handle(Request $request, Closure $next): Response
     {
-        if (config('app.env') === 'production') {
+        if (config('app.env') === 'production' && ! $request->hasHeader('X-CloudTasks-TaskName')) {
             $request->attributes->set('_start_time', microtime(true));
         }
 

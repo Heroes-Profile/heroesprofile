@@ -39,11 +39,8 @@
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
     <div v-if="partydata" class="max-w-[1500px] mx-auto">
-      <div class="flex justify-between max-w-[1500px] mx-auto mb-2">
-        <span></span>
-        <span>
-          <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
-        </span>
+      <div class="flex justify-end max-w-[1500px] mx-auto mb-2">
+        <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
       </div>
 
       <div v-if="showPatchNotes" class="max-w-[1500px] mx-auto mb-4 p-4 rounded bg-gray-800 text-gray-200">
@@ -52,10 +49,25 @@
         <div v-else class="text-center py-4 text-gray-400">No summary available for this patch.</div>
       </div>
 
-      <div class="flex">
-        <div class="w-auto inline-block m-1 ml-auto">
+      <div class="flex items-start gap-6 mb-8 mt-2">
+        <div v-if="partyWinRates.length" class="flex-1 min-w-0">
+          <h2 class="text-lg font-semibold mb-3">Party Size Win Rates</h2>
+          <div v-for="row in partyWinRates" :key="row.label" class="mb-3">
+            <div class="text-sm mb-1">
+              <span class="font-medium">{{ row.label }}</span>
+              <span class="ml-4 text-gray-400">Total Games: {{ (row.wins + row.losses).toLocaleString('en-US') }}</span>
+            </div>
+            <div class="flex items-center w-full h-7 rounded overflow-hidden bg-gray-700">
+              <div :style="{ width: row.win_rate.toFixed(2) + '%', backgroundColor: row.color }" class="h-full flex items-center pl-2">
+                <span class="text-white text-xs font-semibold whitespace-nowrap">{{ row.win_rate.toFixed(2) }}%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-auto shrink-0 m-1">
           <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Legend</h2>
-          <div class=" bg-gray-light rounded-b p-5 gap-5 justify-center">
+          <div class="bg-gray-light rounded-b p-5 gap-5 justify-center">
             <span class="text-black block">Group of 1 <i class="fas fa-user solo"></i></span>
             <span class="text-black block">Group of 2 <i class="fas fa-user double"></i><i class="fas fa-user double"></i></span>
             <span class="text-black block">Group of 3 <i class="fas fa-user triple"></i><i class="fas fa-user triple"></i><i class="fas fa-user triple"></i></span>
@@ -616,6 +628,32 @@
   mounted() {
   },
   computed: {
+    partyWinRates() {
+      if (!this.partydata) return [];
+      const groups = [
+        { label: 'Solo',        keys: ['solo'],                          color: '#213d7a' },
+        { label: 'Two Stack',   keys: ['double', 'double_double'],       color: '#008b8b' },
+        { label: 'Three Stack', keys: ['triple', 'triple_double'],       color: '#b33616' },
+        { label: 'Four Stack',  keys: ['quadruple'],                     color: '#d98c40' },
+        { label: 'Five Stack',  keys: ['quintuple'],                     color: '#213d7a' },
+      ];
+      return groups.map(g => {
+        let wins = 0, losses = 0;
+        g.keys.forEach(key => {
+          if (this.partydata[key]) {
+            const rows = Array.isArray(this.partydata[key])
+              ? this.partydata[key]
+              : Object.values(this.partydata[key]);
+            rows.forEach(row => {
+              wins += row.wins;
+              losses += row.losses;
+            });
+          }
+        });
+        const total = wins + losses;
+        return { label: g.label, color: g.color, wins, losses, win_rate: total > 0 ? (wins / total) * 100 : 0 };
+      }).filter(r => (r.wins + r.losses) > 0);
+    },
     patchNotesUrl() {
       if (this.timeframetype !== 'minor' || !this.timeframe || this.timeframe.length !== 1) {
         return null;
