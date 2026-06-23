@@ -136,7 +136,7 @@ class PlayerMatchHistory extends Controller
         $game_map = $request['game_map'] ? Map::whereIn('name', $request['game_map'])->pluck('map_id')->toArray() : null;
         $season = $request['season'];
         $stack_size = match ($request['stack_size'] ?? null) {
-            'Solo' => 1,
+            'Solo' => [0, 1],
             'Duo' => 2,
             '3 Players' => 3,
             '4 Players' => 4,
@@ -204,7 +204,9 @@ class PlayerMatchHistory extends Controller
                 return $query->where('hero', $hero);
             })
             ->when(! is_null($stack_size), function ($query) use ($stack_size) {
-                return $query->where('stack_size', $stack_size);
+                return is_array($stack_size)
+                    ? $query->whereIn('stack_size', $stack_size)
+                    : $query->where('stack_size', $stack_size);
             })
             ->orderByDesc('game_date')
             ->paginate($perPage, ['*'], 'page', $pagination_page);
