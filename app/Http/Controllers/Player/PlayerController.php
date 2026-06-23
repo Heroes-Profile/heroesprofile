@@ -103,7 +103,7 @@ class PlayerController extends Controller
             ->where('season', $season)
             ->first();
 
-        if($cachedData && is_null($cachedData->weekday_data)){
+        if ($cachedData && is_null($cachedData->weekday_data)) {
             $cachedData->delete();
         }
         if (! $cachedData) {
@@ -838,6 +838,7 @@ class PlayerController extends Controller
         })->values();
 
         $returnData->weekday_data = $data->weekday_data ? json_decode($data->weekday_data, true) : null;
+
         return $returnData;
     }
 
