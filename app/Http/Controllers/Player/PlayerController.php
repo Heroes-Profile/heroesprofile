@@ -103,6 +103,9 @@ class PlayerController extends Controller
             ->where('season', $season)
             ->first();
 
+        if($cachedData && is_null($cachedData->weekday_data)){
+            $cachedData->delete();
+        }
         if (! $cachedData) {
             $this->calculateProfile($blizz_id, $region, $game_type, $season);
 
@@ -143,28 +146,17 @@ class PlayerController extends Controller
                 ->first();
         }
 
-        $isOwner = Auth::check()
-            && Auth::user()->blizz_id == $blizz_id
-            && Auth::user()->region == $region;
-
-        if ($isOwner && $cachedData && is_null($cachedData->weekday_data)) {
-            $cachedData->delete();
-            $this->calculateProfile($blizz_id, $region, $game_type, $season);
-            $cachedData = ProfilePage::filterByBlizzID($blizz_id)
-                ->filterByRegion($region)
-                ->where('game_type', $game_type)
-                ->where('season', $season)
-                ->first();
-        }
-
-        $cachedData->weekday_data = $isOwner ? $cachedData->weekday_data : null;
-
-
         if ($cachedData) {
+            $isOwner = Auth::check()
+                && Auth::user()->blizz_id == $blizz_id
+                && Auth::user()->region == $region;
+
+            $cachedData->weekday_data = $isOwner ? $cachedData->weekday_data : null;
+
             return $this->formatCache($cachedData, $blizz_id, $region, $battletag);
-        } else {
-            return null;
         }
+
+        return null;
     }
 
     private function calculateProfile($blizz_id, $region, $game_type, $season, $cachedData = null)
