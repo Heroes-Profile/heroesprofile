@@ -3,8 +3,9 @@
     <div class="text-center my-5">
       <input 
         type="text" 
-        v-model="searchQuery" 
-        class="border rounded p-2 text-black" 
+        v-model="searchQuery"
+        @input="$emit('search', searchQuery)"
+        class="border rounded p-2 text-black"
         placeholder="Search for a hero..."
       />
     </div>
