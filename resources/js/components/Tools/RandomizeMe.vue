@@ -1,57 +1,66 @@
 <template>
-  <div class="max-w-[900px] mx-auto px-4 py-10">
-    <h1 class="text-3xl font-bold text-center mb-2">Randomize Me</h1>
-    <p class="text-center text-gray-400 mb-8">Get a random hero and a real build from last 1,000 games.</p>
+  <div>
+    <page-heading :infoText1="infoText" :heading="'Randomize Me'"></page-heading>
 
-    <div class="flex justify-center mb-10">
-      <button
-        @click="randomize"
-        :disabled="loading"
-        class="bg-teal hover:bg-lteal text-white font-bold px-8 py-3 rounded text-lg disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        <i class="fa-solid fa-shuffle mr-2"></i>
-        {{ loading ? 'Randomizing...' : (hero ? 'Randomize Again' : 'Randomize!') }}
-      </button>
-    </div>
-
-    <div v-if="error" class="text-center text-red-400 mb-6">{{ error }}</div>
-
-    <div v-if="hero" class="flex flex-col items-center gap-8">
-      <div class="flex flex-col items-center">
-        <hero-image-wrapper :key="hero.id" :rectangle="true" :hero="hero" :title="hero.name" size="large"></hero-image-wrapper>
-        <h2 class="text-2xl font-bold mt-4">{{ hero.name }}</h2>
+    <div v-if="!loading">
+      <div class="max-w-[900px] mx-auto px-4 py-10">
+      <div class="flex justify-center mb-10">
+        <button
+          @click="randomize"
+          :disabled="loading"
+          class="bg-teal hover:bg-lteal text-white font-bold px-8 py-3 rounded text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <i class="fa-solid fa-shuffle mr-2"></i>
+          {{ loading ? 'Randomizing...' : (hero ? 'Randomize Again' : 'Randomize!') }}
+        </button>
       </div>
 
-      <div v-if="build" class="w-full">
-        <h3 class="text-lg font-semibold mb-4 text-center">Random Build from Recent Games</h3>
-        <div class="py-2 px-3">
-          <div class="flex flex-wrap gap-4">
-            <talent-image-wrapper :talent="build.level_one"></talent-image-wrapper>
-            <talent-image-wrapper :talent="build.level_four"></talent-image-wrapper>
-            <talent-image-wrapper :talent="build.level_seven"></talent-image-wrapper>
-            <talent-image-wrapper :talent="build.level_ten"></talent-image-wrapper>
-            <talent-image-wrapper :talent="build.level_thirteen"></talent-image-wrapper>
-            <talent-image-wrapper :talent="build.level_sixteen"></talent-image-wrapper>
-            <talent-image-wrapper :talent="build.level_twenty"></talent-image-wrapper>
-          </div>
-          <div class="flex flex-wrap flex-col md:flex-row items-start gap-2 mt-2">
-            <span class="text-sm text-gray-400">{{ copyString }}</span>
-            <i
-              :class="['fa-solid fa-copy cursor-pointer', copied ? 'text-teal-400' : 'text-gray-400', 'hover:text-white']"
-              :title="copied ? 'COPIED' : 'COPY TO CLIPBOARD'"
-              @click="copyToClipboard"
-            ></i>
-          </div>
-          <div class="flex flex-wrap gap-4 mt-3 text-sm text-gray-400">
-            <span v-if="build.game_type"><span class="text-gray-500">Mode:</span> {{ build.game_type }}</span>
-            <span v-if="build.region"><span class="text-gray-500">Region:</span> {{ build.region }}</span>
-            <span v-if="build.game_map"><span class="text-gray-500">Map:</span> {{ build.game_map }}</span>
+      <div v-if="error" class="text-center text-red-400 mb-6">{{ error }}</div>
+
+
+      <div v-else-if="hero" class="flex flex-col items-center gap-8">
+        <div class="flex flex-col items-center">
+          <hero-image-wrapper :key="hero.id" :rectangle="true" :hero="hero" :title="hero.name" size="large"></hero-image-wrapper>
+          <h2 class="text-2xl font-bold mt-4">{{ hero.name }}</h2>
+        </div>
+
+        <div v-if="build" class="w-full">
+          <div class="py-2 px-3">
+            <div class="flex flex-wrap gap-4 justify-center">
+              <talent-image-wrapper :talent="build.level_one"></talent-image-wrapper>
+              <talent-image-wrapper :talent="build.level_four"></talent-image-wrapper>
+              <talent-image-wrapper :talent="build.level_seven"></talent-image-wrapper>
+              <talent-image-wrapper :talent="build.level_ten"></talent-image-wrapper>
+              <talent-image-wrapper :talent="build.level_thirteen"></talent-image-wrapper>
+              <talent-image-wrapper :talent="build.level_sixteen"></talent-image-wrapper>
+              <talent-image-wrapper :talent="build.level_twenty"></talent-image-wrapper>
+            </div>
+            <div class="flex flex-wrap flex-col md:flex-row items-center justify-center gap-2 mt-2">
+              <span class="text-sm text-gray-400">{{ copyString }}</span>
+              <i
+                :class="['fa-solid fa-copy cursor-pointer', copied ? 'text-teal-400' : 'text-gray-400', 'hover:text-white']"
+                :title="copied ? 'COPIED' : 'COPY TO CLIPBOARD'"
+                @click="copyToClipboard"
+              ></i>
+            </div>
+            <div class="flex flex-wrap gap-4 mt-3 text-sm text-gray-400 justify-center">
+              <span v-if="build.game_type"><span class="text-gray-500">Mode:</span> {{ build.game_type }}</span>
+              <span v-if="build.region"><span class="text-gray-500">Region:</span> {{ build.region }}</span>
+              <span v-if="build.game_map"><span class="text-gray-500">Map:</span> {{ build.game_map }}</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div v-else-if="!loading" class="text-gray-500 text-center">No complete build found for this hero.</div>
+        <div v-else-if="!loading" class="text-gray-500 text-center">No complete build found for this hero.</div>
+      </div>
+      </div>
     </div>
+    <div v-if="loading">
+      <loading-component></loading-component>
+    </div>
+
+    
+
   </div>
 </template>
 
@@ -70,6 +79,7 @@ export default {
   },
   data() {
     return {
+      infoText: 'Get a random Heroes of the Storm hero and a real talent build pulled from their last 1,000 games. Use it as a fun challenge or to try something new.',
       hero: null,
       build: null,
       loading: false,

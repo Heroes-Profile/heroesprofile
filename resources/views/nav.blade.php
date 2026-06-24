@@ -77,6 +77,7 @@
                                 <a href="https://autobattler.setup.heroesprofile.com/" target="_blank" >Auto Battler</a>
                                 <a href="/Match/Prediction/Game" >Match Prediction Game</a>
                                 <a href="/Tools/RandomizeMe" >Randomize Me</a>
+                                <a href="/Tools/Activity" >Activity Graphs</a>
                                 <a href="/" >Find a Player</a>
 
 
