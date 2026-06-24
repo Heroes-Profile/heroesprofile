@@ -71,6 +71,7 @@ Route::prefix('v1')->middleware('web')->group(function () {
     Route::post('global/talents/', [GlobalTalentStatsController::class, 'getGlobalHeroTalentData']);
 
     Route::post('global/talents/build', [GlobalTalentStatsController::class, 'getGlobalHeroTalentBuildData']);
+    Route::post('global/talents/build/all', [GlobalTalentStatsController::class, 'getGlobalHeroTalentBuildDataAll']);
 
     Route::post('global/leaderboard', [GlobalLeaderboardController::class, 'getLeaderboardData']);
     Route::post('global/leaderboard/calculate/rating', [GlobalLeaderboardController::class, 'getLeaderboardRating']);

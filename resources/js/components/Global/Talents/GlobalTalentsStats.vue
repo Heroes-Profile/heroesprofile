@@ -10,7 +10,19 @@
 
     
         <div v-if="!selectedHero">
-          <hero-selection :heroes="heroes"></hero-selection>
+          <div class="flex justify-between max-w-[1500px] mx-auto md:px-4">
+            <hero-selection :heroes="heroes" @search="heroSearchQuery = $event"></hero-selection>
+          </div>
+
+          <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false"></dynamic-banner-ad>
+
+          <div class="max-w-[1500px] mx-auto md:px-4 mt-8 w-full">
+            <h2 class="heading mb-4">Most Popular Builds for Latest Patch Per Hero and Game Type</h2>
+            <div v-if="!talentbuilddataall" class="text-sm text-gray-400 flex items-center gap-2">
+              <i class="fas fa-spinner fa-spin"></i> Loading all talent builds...
+            </div>
+            <global-talent-builds-all v-else :heroes="filteredHeroesForTable" :talentbuilddataall="talentbuilddataall"></global-talent-builds-all>
+          </div>
         </div>
 
         <div v-else>
@@ -144,6 +156,8 @@
        selectedHero: null,
        talentdetaildata: null,
        talentbuilddata: null,
+       talentbuilddataall: null,
+       heroSearchQuery: "",
        buildtypes: [
         { code: 'Popular', name: 'Popular' },
         { code: 'HP Algorithm', name: 'HP Algorithm' },
@@ -200,9 +214,16 @@
     }
    },
     mounted() {
-
+      if(!this.inputhero){
+        this.getTalentBuildDataAll();
+      }
     },
     computed: {
+      filteredHeroesForTable() {
+        if (!this.heroSearchQuery) return this.heroes;
+        const q = this.heroSearchQuery.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+        return this.heroes.filter(h => h.name.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().includes(q));
+      },
       patchNotesUrl() {
         if (this.timeframetype !== 'minor' || !this.timeframe || this.timeframe.length !== 1) {
           return null;
@@ -316,6 +337,51 @@
           this.isBuildsLoading = false;
         }
       },
+
+      async getTalentBuildDataAll(){
+        this.dataError = false;
+        this.isBuildsLoading = true;
+
+        if (this.cancelBuildsTokenSource) {
+          this.cancelBuildsTokenSource.cancel('Request canceled');
+        }
+        this.cancelBuildsTokenSource = this.$axios.CancelToken.source();
+
+        try{
+          const response = await this.$globalAsyncPost("/api/v1/global/talents/build/all", {
+            timeframe_type: this.timeframetype,
+            timeframe: this.timeframe,
+            region: this.region,
+            statfilter: this.statfilter,
+            hero_level: this.herolevel,
+            game_type: this.gametype,
+            game_map: this.gamemap,
+            league_tier: this.playerrank,
+            hero_league_tier: this.herorank,
+            role_league_tier: this.rolerank,
+            mirror: this.mirrormatch,
+            talentbuildtype: this.talentbuildtype,
+          },
+          {
+            cancelToken: this.cancelBuildsTokenSource.token,
+          });
+
+          
+          if(response.data.status == "failure to validate inputs"){
+            throw new Error("Failure to validate inputs");
+          }
+          
+          this.talentbuilddataall = response.data;
+
+        }catch(error){
+          this.dataError = true;
+        }finally {
+          this.cancelBuildsTokenSource = null;
+          this.isBuildsLoading = false;
+        }
+      },
+
+
       cancelAxiosRequest() {
         if (this.cancelTalentsTokenSource || this.cancelBuildsTokenSource) {
           this.cancelTalentsTokenSource.cancel('Request canceled by user');
@@ -338,6 +404,7 @@
 
         this.talentdetaildata = null;
         this.talentbuilddata  = null;
+        this.talentbuilddataall  = null;
         this.showPatchNotes = false;
         this.patchNotesContent = null;
         this.patchNotesLoadedVersion = null;

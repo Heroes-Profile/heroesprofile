@@ -12,6 +12,7 @@ use App\Rules\HeroInputValidation;
 use App\Rules\StatFilterInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalTalentStatsController extends GlobalsInputValidationController
@@ -277,6 +278,69 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $cacheKey = 'GlobalHeroTalentStatsBuilds|'.implode(',', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeGlobalHeroTalentBuildData');
+    }
+
+    public function getGlobalHeroTalentBuildDataAll(Request $request)
+    {
+        $heroes = $this->globalDataService->getHeroes();
+        $cache = Cache::store('database');
+        $talentbuildType = $request['talentbuildtype'] ?? $this->globalDataService->getDefaultBuildType();
+        $timeframeType = $request['timeframe_type'] ?? $this->globalDataService->getDefaultTimeframeType();
+        $timeframe = $request['timeframe'] ?? [$this->globalDataService->getDefaultTimeframe()];
+
+        $allCacheKey = 'GlobalHeroTalentStatsBuildsAll|'.hash('sha256', json_encode([
+            'timeframe_type' => $timeframeType,
+            'timeframe' => $timeframe,
+            'talentbuildtype' => $talentbuildType,
+        ]));
+
+        $cachedAll = $cache->get($allCacheKey);
+        if ($cachedAll !== null) {
+            return $cachedAll;
+        }
+
+        $gameTypes = ['qm', 'sl', 'ar'];
+        $gameVersion = $timeframeType === 'last_update'
+            ? null
+            : $this->globalDataService->getTimeframeFilterValues($timeframeType, $timeframe);
+
+        $result = [];
+
+        foreach ($heroes as $heroModel) {
+            $result[$heroModel->name] = [];
+
+            foreach ($gameTypes as $gameType) {
+                $heroRequest = Request::create('/api/v1/global/talents/build', 'POST', array_merge([
+                    'hero' => $heroModel->name,
+                ], $request->all(), [
+                    'talentbuildtype' => $talentbuildType,
+                    'timeframe_type' => $timeframeType,
+                    'timeframe' => $timeframe,
+                    'game_type' => [$gameType],
+                ]));
+
+                $resolvedGameVersion = $timeframeType === 'last_update'
+                    ? $this->globalDataService->getTimeframeFilterValuesLastUpdate($heroModel->id)
+                    : $gameVersion;
+
+                $cacheKey = 'GlobalHeroTalentStatsBuilds|'.implode(',', SeasonGameVersion::select('id')->whereIn('game_version', $resolvedGameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($heroRequest->all()));
+
+                $cached = $cache->get($cacheKey);
+
+                if ($cached !== null) {
+                    $result[$heroModel->name][$gameType] = $cached;
+                } else {
+                    $result[$heroModel->name][$gameType] = $this->executeGlobalHeroTalentBuildData($heroRequest);
+                }
+            }
+        }
+
+        $cacheTtlSeconds = $this->globalDataService->calculateCacheTimeInSeconds(
+            $gameVersion ?? $this->globalDataService->getTimeframeFilterValues($timeframeType, $timeframe)
+        );
+        $cache->put($allCacheKey, $result, $cacheTtlSeconds);
+
+        return $result;
     }
 
     public function executeGlobalHeroTalentBuildData(Request $request)

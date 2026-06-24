@@ -70,10 +70,13 @@
         'left-1/2 transform -translate-x-1/2 bottom-[1em] -translate-y-[2em]': tooltipPosition === 'top',
         'bottom-[4.5em] -translate-y-[2em]': tooltipPosition === 'top' && size === 'big',
         'bottom-[6em] -translate-y-[3em]': tooltipPosition === 'top' && size === 'xl',
-        
+
+        // Bottom positioning (when too close to top of viewport)
+        'left-1/2 transform -translate-x-1/2 top-[1em] translate-y-[2em]': tooltipPosition === 'bottom',
+
         // Right positioning (when too close to left edge)
         'left-full top-1/2 -translate-y-1/2 ml-2': tooltipPosition === 'right',
-        
+
         // Left positioning (when too close to right edge)
         'right-full top-1/2 -translate-y-1/2 mr-2': tooltipPosition === 'left',
         
@@ -160,25 +163,25 @@ export default {
     },
     calculateTooltipPosition() {
       if (!this.$refs.container) return;
-      
+
       const rect = this.$refs.container.getBoundingClientRect();
-      const tooltipWidth = this.popupsize === 'large' ? 320 : 192; // 20em or 12em in pixels (approx)
+      const tooltipWidth = this.popupsize === 'large' ? 320 : 192;
+      const tooltipHeight = 120; // approximate height of tooltip popup
       const halfTooltip = tooltipWidth / 2;
       const screenWidth = window.innerWidth;
-      
-      // Check if tooltip would overflow left edge when centered
+
       const leftEdgeWhenCentered = rect.left + (rect.width / 2) - halfTooltip;
-      // Check if tooltip would overflow right edge when centered
       const rightEdgeWhenCentered = rect.left + (rect.width / 2) + halfTooltip;
-      
-      if (leftEdgeWhenCentered < 10) {
-        // Too close to left edge, show tooltip on the right
+      const tooCloseToTop = rect.top < tooltipHeight;
+
+      if (tooCloseToTop) {
+        // Not enough space above — show below instead
+        this.tooltipPosition = 'bottom';
+      } else if (leftEdgeWhenCentered < 10) {
         this.tooltipPosition = 'right';
       } else if (rightEdgeWhenCentered > screenWidth - 10) {
-        // Too close to right edge, show tooltip on the left
         this.tooltipPosition = 'left';
       } else {
-        // Default: show tooltip on top
         this.tooltipPosition = 'top';
       }
     }
