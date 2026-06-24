@@ -15,6 +15,15 @@
         :defaultValue="'All'"
         @input-changed="handleRegionChange"
       ></single-select-filter>
+      <button
+        :disabled="loading"
+        @click="applyFilter"
+        :class="loading
+          ? 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 max-md:mt-auto max-md:w-full'
+          : 'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10'"
+      >
+        Filter
+      </button>
     </div>
 
     <div v-if="loading">
@@ -66,6 +75,8 @@ export default {
       error: null,
       gametype: null,
       region: null,
+      pendingGametype: null,
+      pendingRegion: null,
       activeYears: [],
     };
   },
@@ -91,11 +102,14 @@ export default {
   },
   methods: {
     handleGameTypeChange(payload) {
-      this.gametype = payload.value === 'All' ? null : payload.value;
-      this.fetchData();
+      this.pendingGametype = payload.value === 'All' ? null : payload.value;
     },
     handleRegionChange(payload) {
-      this.region = payload.value === 'All' ? null : payload.value;
+      this.pendingRegion = payload.value === 'All' ? null : payload.value;
+    },
+    applyFilter() {
+      this.gametype = this.pendingGametype;
+      this.region = this.pendingRegion;
       this.fetchData();
     },
     toggleYear(year) {

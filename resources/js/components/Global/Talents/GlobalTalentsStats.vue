@@ -266,8 +266,8 @@
         // Update document title dynamically
         document.title = `${this.selectedHero.name} Talent Stats & Builds | Heroes Profile`;
 
-        let currentPath = window.location.pathname;
-        history.pushState(null, null, `${currentPath}/${this.selectedHero.name}`);
+        let basePath = '/Global/Talents';
+        history.pushState(null, null, `${basePath}/${this.selectedHero.name}`);
         Promise.allSettled([
           this.getTalentData(),
           this.getTalentBuildData(),
