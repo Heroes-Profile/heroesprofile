@@ -53,6 +53,8 @@
           :data="filteredData"
           :dataAttribute="'unique_players'"
           :title="'Unique Players per Month'"
+          :pointRadius="4"
+          :pointHoverRadius="8"
         ></line-chart>
       </template>
     </div>
@@ -130,7 +132,8 @@ export default {
       })
         .then(response => {
           this.data = response.data;
-          this.activeYears = [...this.availableYears];
+          const currentYear = new Date().getFullYear().toString();
+          this.activeYears = this.availableYears.includes(currentYear) ? [currentYear] : [...this.availableYears];
         })
         .catch(() => {
           this.error = 'Failed to load activity data.';
