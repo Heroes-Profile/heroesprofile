@@ -4,7 +4,21 @@
 
     <div class="grid gap-5 grid-cols-1">
       <page-heading :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Talent Statistics' : 'Hero Talent Statistics'">
-        <hero-image-wrapper v-if="selectedHero" :hero="selectedHero" :size="'big'"></hero-image-wrapper>
+        <div v-if="selectedHero" class="relative" @mouseleave="heroDropdownOpen = false">
+          <hero-image-wrapper :hero="selectedHero" :size="'big'" :includehover="false" class="cursor-pointer" @click.native="heroDropdownOpen = !heroDropdownOpen"></hero-image-wrapper>
+          <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 220px; max-height: 340px; overflow-y: auto;">
+            <input v-model="heroDropdownSearch" type="text" placeholder="Search hero..." class="w-full px-2 py-1 text-xs bg-gray-dark text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
+            <div
+              v-for="h in filteredDropdownHeroes"
+              :key="h.id"
+              class="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-lighten text-sm"
+              @click="clickedHero(h); heroDropdownOpen = false"
+            >
+              <hero-image-wrapper :hero="h" :includehover="false" class="flex-shrink-0"></hero-image-wrapper>
+              <span>{{ h.name }}</span>
+            </div>
+          </div>
+        </div>
       </page-heading>
 
 
@@ -153,6 +167,8 @@
        cancelTalentsTokenSource: null,
        cancelBuildsTokenSource: null,
        infoText: "Talent win rates and Talent Builds based on patches, hero, hero level, game type, game map, or Rank.",
+       heroDropdownOpen: false,
+       heroDropdownSearch: '',
        selectedHero: null,
        talentdetaildata: null,
        talentbuilddata: null,
@@ -219,6 +235,11 @@
       }
     },
     computed: {
+      filteredDropdownHeroes() {
+        const q = this.heroDropdownSearch.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+        if (!q) return this.heroes;
+        return this.heroes.filter(h => h.name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().includes(q));
+      },
       filteredHeroesForTable() {
         if (!this.heroSearchQuery) return this.heroes;
         const q = this.heroSearchQuery.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
@@ -238,13 +259,15 @@
     methods: {
       clickedHero(hero) {
         this.selectedHero = hero;
+        this.talentdetaildata = null;
+        this.talentbuilddata = null;
         this.preloadTalentImages(hero);
 
         // Update document title dynamically
         document.title = `${this.selectedHero.name} Talent Stats & Builds | Heroes Profile`;
 
-        let currentPath = window.location.pathname;
-        history.pushState(null, null, `${currentPath}/${this.selectedHero.name}`);
+        let basePath = '/Global/Talents';
+        history.pushState(null, null, `${basePath}/${this.selectedHero.name}`);
         Promise.allSettled([
           this.getTalentData(),
           this.getTalentBuildData(),

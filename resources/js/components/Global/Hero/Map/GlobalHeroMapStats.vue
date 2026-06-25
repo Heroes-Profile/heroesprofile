@@ -3,7 +3,16 @@
     <global-async-debug-banner page-label="Global Hero Maps" />
 
     <page-heading :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Map Statistics' : 'Hero Map Statistics'">
-      <hero-image-wrapper v-if="selectedHero" :hero="selectedHero" :size="'big'"></hero-image-wrapper>
+      <div v-if="selectedHero" class="relative" @mouseleave="heroDropdownOpen = false">
+        <hero-image-wrapper :hero="selectedHero" :size="'big'" :includehover="false" class="cursor-pointer" @click.native="heroDropdownOpen = !heroDropdownOpen"></hero-image-wrapper>
+        <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 220px; max-height: 340px; overflow-y: auto;">
+          <input v-model="heroDropdownSearch" type="text" placeholder="Search hero..." class="w-full px-2 py-1 text-xs bg-gray-dark text-white border-b border-white/20 focus:outline-none focus:border-teal" @click.stop />
+          <div v-for="h in filteredDropdownHeroes" :key="h.id" class="flex items-center gap-2 px-3 py-2 cursor-pointer hover:bg-lighten text-sm" @click="clickedHero(h); heroDropdownOpen = false">
+            <hero-image-wrapper :hero="h" :includehover="false" class="flex-shrink-0"></hero-image-wrapper>
+            <span>{{ h.name }}</span>
+          </div>
+        </div>
+      </div>
     </page-heading>
     <div v-if="!selectedHero">
       <hero-selection :heroes="heroes"></hero-selection>
@@ -141,6 +150,8 @@
         dataError: false,
         windowWidth: window.innerWidth,
         isLoading: false,
+        heroDropdownOpen: false,
+        heroDropdownSearch: '',
         infoText: "Hero Maps provide information on which maps are good for each hero",
         selectedHero: null,
         data: null,
@@ -179,6 +190,11 @@
     mounted() {
     },
     computed: {
+      filteredDropdownHeroes() {
+        const q = this.heroDropdownSearch.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+        if (!q) return this.heroes;
+        return this.heroes.filter(h => h.name.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().includes(q));
+      },
       patchNotesUrl() {
         if (this.timeframetype !== 'minor' || !this.timeframe || this.timeframe.length !== 1) {
           return null;
@@ -221,12 +237,13 @@
     methods: {
       clickedHero(hero) {
         this.selectedHero = hero;
+        this.data = null;
 
         // Update document title dynamically
         document.title = `${this.selectedHero.name} Map Stats | Heroes Profile`;
 
-        let currentPath = window.location.pathname;
-        history.pushState(null, null, `${currentPath}/${this.selectedHero.name}`);
+        let basePath = '/Global/Hero/Maps';
+        history.pushState(null, null, `${basePath}/${this.selectedHero.name}`);
         this.getData();
       },
       async getData(){

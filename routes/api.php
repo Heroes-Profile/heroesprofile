@@ -36,6 +36,8 @@ use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\PreMatchController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SingleMatchController;
+use App\Http\Controllers\Tools\ActivityGraphsController;
+use App\Http\Controllers\Tools\RandomizeMeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -72,6 +74,9 @@ Route::prefix('v1')->middleware('web')->group(function () {
 
     Route::post('global/talents/build', [GlobalTalentStatsController::class, 'getGlobalHeroTalentBuildData']);
     Route::post('global/talents/build/all', [GlobalTalentStatsController::class, 'getGlobalHeroTalentBuildDataAll']);
+
+    Route::post('tools/randomize-me', [RandomizeMeController::class, 'getRandomBuild']);
+    Route::post('tools/activity/players/unique', [ActivityGraphsController::class, 'getUniquePlayersPerMonth']);
 
     Route::post('global/leaderboard', [GlobalLeaderboardController::class, 'getLeaderboardData']);
     Route::post('global/leaderboard/calculate/rating', [GlobalLeaderboardController::class, 'getLeaderboardRating']);
