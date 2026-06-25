@@ -514,7 +514,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $uniqueRows = collect();
         $seenCombinations = [];
 
-        foreach ($data as $row) {
+        foreach ($data->sortByDesc('games_played') as $row) {
             $combination = $row->level_one.'-'.$row->level_four.'-'.$row->level_seven;
 
             if (! isset($seenCombinations[$combination])) {
@@ -579,8 +579,8 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                 ];
             });
 
-        $filteredData = $data->unique($columnName)
-            ->sortByDesc('games_played')
+        $filteredData = $data->sortByDesc('games_played')
+            ->unique($columnName)
             ->take($this->buildsToReturn);
 
         return $filteredData;

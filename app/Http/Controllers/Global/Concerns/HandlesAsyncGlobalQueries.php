@@ -18,6 +18,10 @@ trait HandlesAsyncGlobalQueries
         $bypassCache = $this->globalDataService->shouldBypassGlobalCache();
         $cache = Cache::store('database');
 
+        if ($bypassCache || config('app.env') !== 'production') {
+            $cache->forget($cacheKey);
+        }
+
         if (! $bypassCache) {
             $cached = $cache->get($cacheKey);
             if ($cached !== null) {
@@ -28,9 +32,6 @@ trait HandlesAsyncGlobalQueries
         $cacheTtlSeconds = $this->globalDataService->calculateCacheTimeInSeconds($gameVersion);
 
         if (! $this->globalDataService->isGlobalAsyncEnabled()) {
-            if ($bypassCache || config('app.env') !== 'production') {
-                $cache->forget($cacheKey);
-            }
 
             $data = $bypassCache
                 ? app(static::class)->{$executeMethod}($request)
