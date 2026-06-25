@@ -582,7 +582,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $filteredData = $data->sortByDesc('games_played')
             ->unique($columnName)
             ->take($this->buildsToReturn);
-            
+
         return $filteredData;
     }
 
