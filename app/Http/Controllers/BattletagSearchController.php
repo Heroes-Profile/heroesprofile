@@ -50,18 +50,48 @@ class BattletagSearchController extends Controller
 
         $data = $this->searchForBattletag($request['userinput']);
 
+        foreach ($data as $item) {
+            unset($item->battletag);
+        }
+
         return $data;
     }
 
-    private function searchForBattletag($input)
+    public function friendFoeSearch(Request $request)
+    {
+        $validator = Validator::make($request->only(['userinput', 'region']), [
+            'userinput' => ['required', 'string', new BattletagInputProhibitCharacters],
+            'region' => ['required', 'integer'],
+        ]);
+
+        if ($validator->fails()) {
+            return [
+                'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        $data = $this->searchForBattletag($request['userinput'], (int) $request['region']);
+
+        foreach ($data as $item) {
+            unset($item->battletag);
+        }
+
+        return $data;
+    }
+
+    private function searchForBattletag($input, ?int $region = null)
     {
         if (strpos($input, '#') !== false) {
             $data = Battletag::select('blizz_id', 'battletag', 'region', 'latest_game')
                 ->where('battletag', $input)
+                ->when($region, fn ($q) => $q->where('region', $region))
                 ->get();
         } else {
             $data = Battletag::select('blizz_id', 'battletag', 'region', 'latest_game')
                 ->where('battletag', 'LIKE', $input.'#%')
+                ->when($region, fn ($q) => $q->where('region', $region))
                 ->get();
         }
 

@@ -144,6 +144,18 @@ class PlayerMatchHistory extends Controller
             default => null,
         };
 
+        $ff_blizzid = $request['ff_blizzid'] ?? null;
+        $ff_region = $request['ff_region'] ?? null;
+
+        $ff_replay_ids = null;
+        if ($ff_blizzid && $ff_region) {
+            $ff_replay_ids = DB::table('replay')
+                ->join('player', 'player.replayID', '=', 'replay.replayID')
+                ->where('player.blizz_id', $ff_blizzid)
+                ->where('replay.region', $ff_region)
+                ->pluck('replay.replayID');
+        }
+
         $pagination_page = $request['pagination_page'];
         $perPage = 100;
 
@@ -207,6 +219,9 @@ class PlayerMatchHistory extends Controller
                 return is_array($stack_size)
                     ? $query->whereIn('stack_size', $stack_size)
                     : $query->where('stack_size', $stack_size);
+            })
+            ->when(! is_null($ff_replay_ids), function ($query) use ($ff_replay_ids) {
+                return $query->whereIn('replay.replayID', $ff_replay_ids);
             })
             ->orderByDesc('game_date')
             ->paginate($perPage, ['*'], 'page', $pagination_page);
