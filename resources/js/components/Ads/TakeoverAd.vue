@@ -48,14 +48,11 @@ export default {
             window.top.__vm_add.push(placement);
         });
       }
-
     }
-
-
   },
   computed: {
     adBlocker() {
-      return Cookies.get('ad-blocker') == "true";
+      return sessionStorage.getItem('ad-blocker-detected') === 'true' || Cookies.get('ad-blocker') == "true";
     },
   },
   watch: {
