@@ -40,18 +40,12 @@
                     <h4 class="text-center">Account Level</h4>
                     <span class="text-lg text-teal block text-center font-bold">{{ row.account_level }}</span>
                     <h4 class="text-center">Top 3 Heroes </h4>  
-                    <div class="flex justify-center gap-1">        
-                      <hero-image-wrapper :size="'small'" :hero="row.top_heroes[0].hero">
-                        <image-hover-box :title="row.top_heroes[0].hero.name" :paragraph-one="'Games Played:' + row.top_heroes[0].count"></image-hover-box>
-                      </hero-image-wrapper>
-    
-                      <hero-image-wrapper :size="'small'" :hero="row.top_heroes[1].hero">
-                        <image-hover-box :title="row.top_heroes[1].hero.name" :paragraph-one="'Games Played:' + row.top_heroes[1].count"></image-hover-box>
-                      </hero-image-wrapper>
-
-                      <hero-image-wrapper :size="'small'" :hero="row.top_heroes[2].hero">
-                        <image-hover-box :title="row.top_heroes[2].hero.name" :paragraph-one="'Games Played:' + row.top_heroes[2].count"></image-hover-box>
-                      </hero-image-wrapper>
+                    <div class="flex justify-center gap-1">
+                      <template v-for="(heroEntry, i) in row.top_heroes" :key="i">
+                        <hero-image-wrapper :size="'small'" :hero="heroEntry.hero">
+                          <image-hover-box :title="heroEntry.hero.name" :paragraph-one="'Games Played:' + heroEntry.count"></image-hover-box>
+                        </hero-image-wrapper>
+                      </template>
                     </div>
 
                   </td>
@@ -186,18 +180,12 @@
                     <h4 class="text-center">Account Level</h4>
                     <span class="text-lg text-teal block text-center font-bold">{{ row.account_level }}</span>
                     <h4 class="text-center">Top 3 Heroes </h4>  
-                    <div class="flex justify-center gap-1">        
-                      <hero-image-wrapper :size="'small'" :hero="row.top_heroes[0].hero">
-                        <image-hover-box :title="row.top_heroes[0].hero.name" :paragraph-one="'Games Played:' + row.top_heroes[0].count"></image-hover-box>
-                      </hero-image-wrapper>
-    
-                      <hero-image-wrapper :size="'small'" :hero="row.top_heroes[1].hero">
-                        <image-hover-box :title="row.top_heroes[1].hero.name" :paragraph-one="'Games Played:' + row.top_heroes[1].count"></image-hover-box>
-                      </hero-image-wrapper>
-
-                      <hero-image-wrapper :size="'small'" :hero="row.top_heroes[2].hero">
-                        <image-hover-box :title="row.top_heroes[2].hero.name" :paragraph-one="'Games Played:' + row.top_heroes[2].count"></image-hover-box>
-                      </hero-image-wrapper>
+                    <div class="flex justify-center gap-1">
+                      <template v-for="(heroEntry, i) in row.top_heroes" :key="i">
+                        <hero-image-wrapper :size="'small'" :hero="heroEntry.hero">
+                          <image-hover-box :title="heroEntry.hero.name" :paragraph-one="'Games Played:' + heroEntry.count"></image-hover-box>
+                        </hero-image-wrapper>
+                      </template>
                     </div>
 
                   
