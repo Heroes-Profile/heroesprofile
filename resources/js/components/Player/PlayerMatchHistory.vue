@@ -4,6 +4,7 @@
 
     <filters
       :onFilter="filterData"
+      :onFfSearching="setFfSearching"
       :filters="filters"
       :isLoading="isLoading"
       :gametypedefault="gametype"
@@ -19,6 +20,10 @@
       :includegroupsize="true"
       :groupSizeDefaultValue="'All'"
       :hideadvancedfilteringbutton="true"
+      :matchhistorybattletagsearch="true"
+      :ffbattletaginput="ffBattletag"
+      :ffblizzidinput="ffBlizzid"
+      :ffregioninput="ffRegion || region"
       >
     </filters>
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
@@ -171,6 +176,9 @@ export default {
       sortKey: '',
       sortDir: 'desc',
       gametype: null,
+      ffBattletag: null,
+      ffBlizzid: null,
+      ffRegion: null,
     }
   },
   created(){
@@ -182,6 +190,11 @@ export default {
       }
       if (this.urlparameters['role']) {
         this.role = this.urlparameters['role'];
+      }
+      if (this.urlparameters['ff_battletag']) {
+        this.ffBattletag = this.urlparameters['ff_battletag'];
+        this.ffBlizzid = this.urlparameters['ff_blizzid'] ?? null;
+        this.ffRegion = this.urlparameters['ff_region'] ?? null;
       }
     }
   },
@@ -237,6 +250,8 @@ export default {
           pagination_page: page,
           season: this.season,
           stack_size: this.stack_size,
+          ff_blizzid: this.ffBlizzid,
+          ff_region: this.ffRegion,
         }, 
         {
           cancelToken: this.cancelTokenSource.token,
@@ -279,10 +294,16 @@ export default {
       this.stack_size = filteredData.single["Group Size"] ? filteredData.single["Group Size"] : null;
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
-
+      this.ffBattletag = filteredData.ffBattletag || null;
+      this.ffBlizzid = filteredData.ffBlizzid || null;
+      this.ffRegion = filteredData.ffRegion || null;
 
       this.data = null;
       this.getData(1);
+    },
+    setFfSearching(val) {
+      this.isLoading = val;
+      if (val) this.data = null;
     },
     sortTable(key) {
       if (key === this.sortKey) {

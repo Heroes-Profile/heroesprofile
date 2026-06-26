@@ -305,6 +305,39 @@
             :defaultValue="mirrormatch"
           ></single-select-filter>
 
+          <!-- Friend/Foe Battletag Search -->
+          <div id="filter-label" class="relative">
+            <div v-if="matchhistorybattletagsearch" class="flex flex-col text-sm font-medium text-gray-700 p-2">
+              <span>Friend/Foe Player</span>
+              <div class="relative">
+                <input
+                  type="text"
+                  v-model="ffBattletag"
+                  placeholder="Enter battletag"
+                  class="md:w-[200px] min-w-[100px] h-[40px] overflow-hidden hover:bg-teal border-solid border-[1px] border-white bg-blue p-2 text-white focus:outline-none"
+                  @input="ffBlizzid = null; ffRegion = null; ffSearchResults = []; ffSearchError = null"
+                />
+                <div v-if="ffSearchResults.length > 1" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="min-width:280px; max-height:340px; overflow-y:auto;">
+                  <div
+                    v-for="result in ffSearchResults"
+                    :key="result.blizz_id + '-' + result.region"
+                    class="bg-blue hover:bg-lblue p-3 mb-1 rounded flex flex-col items-center cursor-pointer text-sm"
+                    @click="selectFfResult(result)"
+                  >
+                    <div>{{ result.battletagShort }} ({{ result.regionName }})</div>
+                    <div class="text-xs text-gray-400">{{ result.latest_game }}</div>
+                    <div>Games Played: {{ result.totalGamesPlayed }}</div>
+                    <div v-if="result.latestMap">{{ result.latestMap.name }}</div>
+                    <div v-if="result.latestHero">
+                      <hero-image-wrapper :hero="result.latestHero"></hero-image-wrapper>
+                    </div>
+                  </div>
+                </div>
+                <p v-if="ffSearchError" class="text-red text-xs mt-1">{{ ffSearchError }}</p>
+              </div>
+            </div>
+          </div>
+
           <!-- Game Date -->
           <div id="filter-label" class="relative">
             <div v-if="includegamedate" class="flex items-end  text-sm font-medium text-gray-700 cursor-pointer p-2  transition-colors">
@@ -405,6 +438,10 @@
         type: Function,
         required: true,
       },
+      onFfSearching: {
+        type: Function,
+        default: null,
+      },
       gametypedefault: Array,
       minimumgamesdefault: {
         tpye: [String, Number]
@@ -420,6 +457,10 @@
       excludetimeframes: Boolean,
       disablefilter: Boolean,
       disabledeselectfilters: Boolean,
+      matchhistorybattletagsearch: Boolean,
+      ffbattletaginput: String,
+      ffblizzidinput: [String, Number],
+      ffregioninput: [String, Number],
     },
     data(){
       return {
@@ -463,6 +504,12 @@
         seasonvalue: null,
         modifiedincludetier: null,
         modifiedincludeseason: null,
+        ffBattletag: null,
+        ffBlizzid: null,
+        ffRegion: null,
+        ffSearchResults: [],
+        ffSearchError: null,
+        ffSearchLoading: false,
       }
     },
     created(){
@@ -526,6 +573,10 @@
       if(this.leaderboardfiltertype && this.leaderboardtypeinput){
         this.initializeLeaderboardFilters();
       }
+
+      this.ffBattletag = this.ffbattletaginput || null;
+      this.ffBlizzid = this.ffblizzidinput || null;
+      this.ffRegion = this.ffregioninput || null;
 
       // Set initial visibility based on screen width (hidden on mobile, shown on desktop)
       this.showNav = window.innerWidth > 768;
@@ -840,17 +891,57 @@
         }
         return '';
       },
-      applyFilter() {
+      async applyFilter() {
         if ((this.selectedMultiFilters.hasOwnProperty('Timeframes') || this.selectedSingleFilters["Timeframe Type"] == "last_update") && this.selectedMultiFilters.hasOwnProperty('Game Type')) {
+          if (this.matchhistorybattletagsearch && this.ffBattletag && !this.ffBlizzid) {
+            await this.resolveFfPlayer();
+            if (!this.ffBlizzid) return;
+          }
+
           if(window.innerWidth < 768){
             this.showNav = false;
           }
           const allSelectedFilters = {
             single: this.selectedSingleFilters,
-            multi: this.selectedMultiFilters
+            multi: this.selectedMultiFilters,
+            ffBattletag: this.ffBattletag || null,
+            ffBlizzid: this.ffBlizzid || null,
+            ffRegion: this.ffRegion || null,
           };
-          this.onFilter(allSelectedFilters); 
+          this.onFilter(allSelectedFilters);
         }
+      },
+      async resolveFfPlayer() {
+        this.ffSearchResults = [];
+        this.ffSearchError = null;
+        this.ffSearchLoading = true;
+        if (this.onFfSearching) this.onFfSearching(true);
+        try {
+          const response = await this.$axios.post('/api/v1/player/friendfoe/search', {
+            userinput: this.ffBattletag,
+            region: this.ffregioninput,
+          });
+          const results = Object.values(response.data);
+          if (results.length === 0) {
+            this.ffSearchError = 'No player found.';
+          } else if (results.length === 1) {
+            this.selectFfResult(results[0]);
+          } else {
+            this.ffSearchResults = results;
+          }
+        } catch {
+          this.ffSearchError = 'Search failed. Please try again.';
+        } finally {
+          this.ffSearchLoading = false;
+          if (this.onFfSearching) this.onFfSearching(false);
+        }
+      },
+      selectFfResult(result) {
+        this.ffBattletag = result.battletagShort;
+        this.ffBlizzid = result.blizz_id;
+        this.ffRegion = result.region;
+        this.ffSearchResults = [];
+        this.applyFilter();
       },
       showMobile(){
         this.showNav = !this.showNav;

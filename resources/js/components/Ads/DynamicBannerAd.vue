@@ -57,6 +57,7 @@ export default {
             const placement = container.querySelector('.vm-placement');
             if (!placement || !placement.hasChildNodes()) {
               this.detectedBlocker = true;
+              sessionStorage.setItem('ad-blocker-detected', 'true');
             }
           }
         }, 3500);
@@ -65,7 +66,7 @@ export default {
   },
   computed: {
     adBlocker() {
-      return this.detectedBlocker || Cookies.get('ad-blocker') == "true";
+      return this.detectedBlocker || sessionStorage.getItem('ad-blocker-detected') === 'true' || Cookies.get('ad-blocker') == "true";
     },
   },
   watch: {

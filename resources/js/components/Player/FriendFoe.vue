@@ -36,7 +36,10 @@
               </th>
               <th  @click="sortTableFriend('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%] ">
                 Win Rate with Friend
-              </th>                  
+              </th>
+              <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider w-[10%]">
+                Matches
+              </th>
             </tr>
           </thead>
 
@@ -62,6 +65,9 @@
               </td>
               <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString('en-US') }}</td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3">
+                <a class="link" :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`">Matches</a>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -81,7 +87,10 @@
               </th>
               <th @click="sortTableEnemy('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer w-[25%]">
                 Foe's Win Rate Against {{ battletag }}
-              </th>                  
+              </th>
+              <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider w-[10%]">
+                Matches
+              </th>
             </tr>
           </thead>
 
@@ -110,6 +119,9 @@
               </td>
               <td class="py-2 px-3 ">{{ row.total_games_played.toLocaleString('en-US') }}</td>
               <td class="py-2 px-3 ">{{ row.win_rate.toFixed(2) }}</td>
+              <td class="py-2 px-3">
+                <a class="link" :href="`/Player/${battletag}/${blizzid}/${region}/Match/History?ff_battletag=${row.battletag}&ff_blizzid=${row.blizz_id}&ff_region=${row.region}`">Matches</a>
+              </td>
             </tr>
           </tbody>
         </table>

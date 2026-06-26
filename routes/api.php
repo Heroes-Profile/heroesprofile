@@ -102,6 +102,7 @@ Route::prefix('v1')->middleware('web')->group(function () {
     Route::post('player', [PlayerController::class, 'getPlayerData']);
 
     Route::post('player/friendfoe', [FriendFoeController::class, 'getFriendFoeData']);
+    Route::post('player/friendfoe/search', [BattletagSearchController::class, 'friendFoeSearch']);
 
     Route::post('player/matchups', [PlayerMatchupsController::class, 'getMatchupData']);
 

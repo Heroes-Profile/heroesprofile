@@ -4,11 +4,11 @@
     <div class="max-w-[1500px] mx-auto mt-10 w-full" v-if="battletagresponse">
       <div class="flex flex-col items-center justify-center " v-if="battletagresponse.length > 1">
         <h2 class="text-xl mb-4 ">Results</h2>
-        <a 
-          class="bg-blue hover:bg-lblue p-4 rounded mb-4 w-[500px] flex flex-col items-center cursor-pointer" 
-          v-for="(item, index) in battletagresponse" 
-          :key="index" 
-          @click="redirectToProfile(item.battletag, item.blizz_id, item.region, false)"
+        <a
+          class="bg-blue hover:bg-lblue p-4 rounded mb-4 w-[500px] flex flex-col items-center cursor-pointer"
+          v-for="(item, index) in battletagresponse"
+          :key="index"
+          @click="redirectToProfile(item.battletagShort, item.blizz_id, item.region, false)"
           :href="`/Player/${item.battletagShort}/${item.blizz_id}/${item.region}`"
         >
           <div>{{ item.battletagShort }} ({{ item.regionName }})</div>
@@ -63,10 +63,9 @@ export default {
   },
   computed: {
     isBattletagReponseValid() {
-      return this.battletagresponse[0] && 
-            this.battletagresponse[0].battletag && 
-            this.battletagresponse[0].battletag.includes('#') &&
-            this.battletagresponse[0].blizz_id !== undefined && 
+      return this.battletagresponse[0] &&
+            this.battletagresponse[0].battletagShort &&
+            this.battletagresponse[0].blizz_id !== undefined &&
             this.battletagresponse[0].region !== undefined;
     }
   },
@@ -91,7 +90,7 @@ export default {
         this.battletagresponse = response.data;
         if(this.isBattletagReponseValid) {
           if(this.battletagresponse.length == 1){
-            this.redirectToProfile(this.battletagresponse[0].battletag, this.battletagresponse[0].blizz_id, this.battletagresponse[0].region);
+            this.redirectToProfile(this.battletagresponse[0].battletagShort, this.battletagresponse[0].blizz_id, this.battletagresponse[0].region);
           }
         } else {
           //Do something here
@@ -108,9 +107,9 @@ export default {
         this.cancelTokenSource.cancel('Request canceled by user');
       }
     },
-    redirectToProfile(battletag, blizz_id, region) {
+    redirectToProfile(battletagShort, blizz_id, region) {
       this.isLoading = true;
-      this.$redirectToProfile(battletag.split('#')[0], blizz_id, region);
+      this.$redirectToProfile(battletagShort, blizz_id, region);
     }
   }
 }

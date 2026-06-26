@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script>  
+<script>
 import Cookies from 'js-cookie';
 
 export default {
@@ -44,7 +44,7 @@ export default {
   },
   computed: {
     adBlocker() {
-      return Cookies.get('ad-blocker') == "true";
+      return sessionStorage.getItem('ad-blocker-detected') === 'true' || Cookies.get('ad-blocker') == "true";
     },
   },
   watch: {
