@@ -11,6 +11,7 @@ use App\Models\SeasonGameVersion;
 use App\Rules\HeroInputValidation;
 use App\Rules\StatFilterInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
+use App\Services\GlobalQueryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
@@ -284,9 +285,9 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
     {
         $heroes = $this->globalDataService->getHeroes();
         $cache = Cache::store('database');
-        $talentbuildType = $request['talentbuildtype'] ?? $this->globalDataService->getDefaultBuildType();
-        $timeframeType = $request['timeframe_type'] ?? $this->globalDataService->getDefaultTimeframeType();
-        $timeframe = $request['timeframe'] ?? [$this->globalDataService->getDefaultTimeframe()];
+        $talentbuildType = $this->globalDataService->getDefaultBuildType();
+        $timeframeType = $this->globalDataService->getDefaultTimeframeType();
+        $timeframe = [$this->globalDataService->getDefaultTimeframe()];
 
         $allCacheKey = 'GlobalHeroTalentStatsBuildsAll|'.hash('sha256', json_encode([
             'timeframe_type' => $timeframeType,
@@ -305,19 +306,27 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             : $this->globalDataService->getTimeframeFilterValues($timeframeType, $timeframe);
 
         $result = [];
+        $hasMisses = false;
 
         foreach ($heroes as $heroModel) {
             $result[$heroModel->name] = [];
 
             foreach ($gameTypes as $gameType) {
-                $heroRequest = Request::create('/api/v1/global/talents/build', 'POST', array_merge([
+                $heroRequest = Request::create('/api/v1/global/talents/build', 'POST', [
                     'hero' => $heroModel->name,
-                ], $request->all(), [
                     'talentbuildtype' => $talentbuildType,
                     'timeframe_type' => $timeframeType,
                     'timeframe' => $timeframe,
                     'game_type' => [$gameType],
-                ]));
+                    'region' => null,
+                    'statfilter' => 'win_rate',
+                    'hero_level' => null,
+                    'game_map' => null,
+                    'league_tier' => null,
+                    'hero_league_tier' => null,
+                    'role_league_tier' => null,
+                    'mirror' => '0',
+                ]);
 
                 $resolvedGameVersion = $timeframeType === 'last_update'
                     ? $this->globalDataService->getTimeframeFilterValuesLastUpdate($heroModel->id)
@@ -330,15 +339,25 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                 if ($cached !== null) {
                     $result[$heroModel->name][$gameType] = $cached;
                 } else {
-                    $result[$heroModel->name][$gameType] = $this->executeGlobalHeroTalentBuildData($heroRequest);
+                    $hasMisses = true;
+                    $result[$heroModel->name][$gameType] = null;
+                    app(GlobalQueryService::class)->dispatchIfNotPending(
+                        $cacheKey,
+                        static::class,
+                        'executeGlobalHeroTalentBuildData',
+                        $heroRequest->all(),
+                        $this->globalDataService->calculateCacheTimeInSeconds($resolvedGameVersion)
+                    );
                 }
             }
         }
 
-        $cacheTtlSeconds = $this->globalDataService->calculateCacheTimeInSeconds(
-            $gameVersion ?? $this->globalDataService->getTimeframeFilterValues($timeframeType, $timeframe)
-        );
-        $cache->put($allCacheKey, $result, $cacheTtlSeconds);
+        if (! $hasMisses) {
+            $cacheTtlSeconds = $this->globalDataService->calculateCacheTimeInSeconds(
+                $gameVersion ?? $this->globalDataService->getTimeframeFilterValues($timeframeType, $timeframe)
+            );
+            $cache->put($allCacheKey, $result, $cacheTtlSeconds);
+        }
 
         return $result;
     }

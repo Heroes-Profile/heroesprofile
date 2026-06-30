@@ -371,20 +371,7 @@
         this.cancelBuildsTokenSource = this.$axios.CancelToken.source();
 
         try{
-          const response = await this.$globalAsyncPost("/api/v1/global/talents/build/all", {
-            timeframe_type: this.timeframetype,
-            timeframe: this.timeframe,
-            region: this.region,
-            statfilter: this.statfilter,
-            hero_level: this.herolevel,
-            game_type: this.gametype,
-            game_map: this.gamemap,
-            league_tier: this.playerrank,
-            hero_league_tier: this.herorank,
-            role_league_tier: this.rolerank,
-            mirror: this.mirrormatch,
-            talentbuildtype: this.talentbuildtype,
-          },
+          const response = await this.$globalAsyncPost("/api/v1/global/talents/build/all", {},
           {
             cancelToken: this.cancelBuildsTokenSource.token,
           });
