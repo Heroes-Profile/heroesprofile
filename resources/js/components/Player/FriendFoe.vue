@@ -131,7 +131,7 @@
         </table>
       </div>
     </div>
-    <div v-else-if="friendIsLoading || enemyIsLoading">
+    <div v-else-if="(friendIsLoading || enemyIsLoading) && !asyncLoading">
       <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
     </div>
   </div>
