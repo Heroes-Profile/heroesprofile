@@ -20,6 +20,10 @@
     
     <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
 
+    <div v-if="asyncLoading">
+      <loading-component :textoverride="true">This is taking longer than expected.<br/>A background task is computing your results.<br/>Please be patient.</loading-component>
+    </div>
+
     <div v-if="frienddata && enemydata" class="gap-1 mx-auto  flex justify-center max-w-[1500px] max-md:flex-col max-md:text-sm max-md:max-w-[100vw]">
       <div>
         <table class="min-w-0 max-w-[750px] max-md:max-w-[100vw]">
@@ -127,7 +131,7 @@
         </table>
       </div>
     </div>
-    <div v-else-if="friendIsLoading || enemyIsLoading">
+    <div v-else-if="(friendIsLoading || enemyIsLoading) && !asyncLoading">
       <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
     </div>
   </div>
@@ -173,6 +177,7 @@ export default {
       friendCancelTokenSource: null,
       enemyCancelTokenSource: null,
       groupsize: null,
+      asyncLoading: false,
     }
   },
   created(){
@@ -235,14 +240,7 @@ export default {
   },
   methods: {
     async getData(type){
-
       let cancelTokenSource;
-
-
-      if (cancelTokenSource) {
-        cancelTokenSource.cancel('Request canceled');
-      }
-
 
       if (type === 'friend') {
         this.friendCancelTokenSource = this.$axios.CancelToken.source();
@@ -254,33 +252,42 @@ export default {
         this.enemyIsLoading = true;
       }
 
+      try {
+        const response = await this.$globalAsyncPost(
+          "/api/v1/player/friendfoe",
+          {
+            type: type,
+            blizz_id: this.blizzid,
+            region: this.region,
+            game_type: this.gametype,
+            season: this.season,
+            hero: this.hero,
+            game_map: this.gamemap,
+            groupsize: this.groupsize,
+          },
+          {
+            cancelToken: cancelTokenSource.token,
+            onLoadStatus: (status, meta) => {
+              if (meta.phase === 'polling') {
+                this.asyncLoading = true;
+              }
+            },
+          }
+        );
 
-      try{
-        const response = await this.$axios.post("/api/v1/player/friendfoe", {
-          type: type,
-          blizz_id: this.blizzid,
-          region: this.region,
-          
-          game_type: this.gametype,
-          season: this.season,
-          hero: this.hero,
-          game_map: this.gamemap,
-          groupsize: this.groupsize,
-        }, 
-        {
-          cancelToken: cancelTokenSource.token,
-        });
-        
         return response.data;
-      }catch(error){
+      } catch(error) {
         //Do something here
-      }finally {
+      } finally {
         if (type === 'friend') {
           this.friendCancelTokenSource = null;
           this.friendIsLoading = false;
         } else if (type === 'enemy') {
           this.enemyCancelTokenSource = null;
           this.enemyIsLoading = false;
+        }
+        if (!this.friendIsLoading && !this.enemyIsLoading) {
+          this.asyncLoading = false;
         }
       }
     },

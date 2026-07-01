@@ -76,6 +76,51 @@ class GlobalQueryService
         return $this->withBypassHeader($this->acceptedResponse($jobId, 'pending'), $bypassCache);
     }
 
+    public function dispatchAsync(
+        string $cacheKey,
+        string $handlerClass,
+        string $handlerMethod,
+        array $requestData,
+        int $cacheTtlSeconds
+    ): JsonResponse {
+        $cache = Cache::store('database');
+        $cacheIndexKey = $this->cacheIndexKey($cacheKey);
+
+        $existing = $cache->get($cacheIndexKey);
+        if ($existing && in_array($existing['status'], ['pending', 'processing'], true)) {
+            return $this->acceptedResponse($existing['job_id'], $existing['status']);
+        }
+
+        $jobId = (string) Str::uuid();
+
+        $jobPayload = [
+            'status' => 'pending',
+            'cache_key' => $cacheKey,
+            'handler_class' => $handlerClass,
+            'handler_method' => $handlerMethod,
+            'request' => $requestData,
+            'cache_ttl_seconds' => $cacheTtlSeconds,
+            'error' => null,
+        ];
+
+        $cache->put($this->jobKey($jobId), $jobPayload, self::STATUS_TTL_SECONDS);
+        $cache->put($cacheIndexKey, ['job_id' => $jobId, 'status' => 'pending'], self::STATUS_TTL_SECONDS);
+
+        try {
+            app(CloudTasksDispatcher::class)->dispatch($jobId);
+        } catch (\Throwable $e) {
+            $cache->forget($this->jobKey($jobId));
+            $cache->forget($cacheIndexKey);
+            Log::error('Failed to enqueue Cloud Task (dispatchAsync)', [
+                'job_id' => $jobId,
+                'error' => $e->getMessage(),
+            ]);
+            throw $e;
+        }
+
+        return $this->acceptedResponse($jobId, 'pending');
+    }
+
     public function dispatchIfNotPending(
         string $cacheKey,
         string $handlerClass,
