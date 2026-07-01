@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
 use App\Models\BattlenetAccount;
+use App\Models\FriendFoeCache;
 use App\Models\GameType;
 use App\Models\Map;
 use App\Models\SeasonDate;
@@ -12,12 +13,15 @@ use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
 use App\Rules\SeasonInputValidation;
 use App\Rules\StackSizeInputValidation;
+use App\Services\GlobalQueryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class FriendFoeController extends Controller
 {
+    private const CACHE_TTL_SECONDS = 1200;
+
     public function show(Request $request, $battletag, $blizz_id, $region)
     {
         $validationRules = [
@@ -72,10 +76,6 @@ class FriendFoeController extends Controller
 
     public function getFriendFoeData(Request $request)
     {
-        ini_set('max_execution_time', 300); // 300 seconds = 5 minutes
-
-        // return response()->json($request->all());
-
         $validationRules = [
             'blizz_id' => 'required|integer',
             'region' => 'required|integer',
@@ -97,6 +97,49 @@ class FriendFoeController extends Controller
             ];
         }
 
+        if (config('app.env') !== 'production') {
+            return response()->json($this->executeFriendFoeData($request));
+        }
+
+        $paramsHash = hash('sha256', json_encode([
+            'blizz_id' => $request['blizz_id'],
+            'region' => $request['region'],
+            'type' => $request['type'],
+            'game_type' => $request['game_type'],
+            'season' => $request['season'],
+            'hero' => $request['hero'],
+            'game_map' => $request['game_map'],
+            'groupsize' => $request['groupsize'],
+        ]));
+
+        $dbCache = FriendFoeCache::where('params_hash', $paramsHash)->first();
+
+        if ($dbCache) {
+            $latestReplayId = $this->getLatestReplayId(
+                $request['blizz_id'],
+                $request['region'],
+                $request['game_type'],
+                $request['season']
+            );
+
+            if (! $latestReplayId || $dbCache->latest_replayID >= $latestReplayId) {
+                return response()->json(json_decode($dbCache->data, true));
+            }
+        }
+
+        $cacheKey = 'FriendFoeData|'.$paramsHash;
+
+        return app(GlobalQueryService::class)->dispatchAsync(
+            $cacheKey,
+            static::class,
+            'executeFriendFoeData',
+            $request->all(),
+            self::CACHE_TTL_SECONDS
+        );
+    }
+
+    public function executeFriendFoeData(Request $request)
+    {
         $blizz_id = $request['blizz_id'];
         $region = $request['region'];
         $gameType = GameType::whereIn('short_name', $request['game_type'])->pluck('type_id')->toArray();
@@ -154,11 +197,11 @@ class FriendFoeController extends Controller
                 'winner',
                 'player.blizz_id',
                 DB::raw(
-                    '(SELECT battletag 
-                      FROM heroesprofile.battletags 
-                      WHERE blizz_id = player.blizz_id 
-                        AND region = replay.region 
-                      ORDER BY latest_game DESC 
+                    '(SELECT battletag
+                      FROM heroesprofile.battletags
+                      WHERE blizz_id = player.blizz_id
+                        AND region = replay.region
+                      ORDER BY latest_game DESC
                       LIMIT 1) AS battletag'
                 ),
                 DB::raw('COUNT(*) AS total')
@@ -171,7 +214,6 @@ class FriendFoeController extends Controller
             })
             ->where('team', 0)
             ->groupBy('hero', 'team', 'winner', 'player.blizz_id', 'battletag')
-            // ->toSql();
             ->get();
 
         $teamValue = $type == 'friend' ? 1 : 0;
@@ -209,11 +251,11 @@ class FriendFoeController extends Controller
                 'winner',
                 'player.blizz_id',
                 DB::raw(
-                    '(SELECT battletag 
-                      FROM heroesprofile.battletags 
-                      WHERE blizz_id = player.blizz_id 
-                        AND region = replay.region 
-                      ORDER BY latest_game DESC 
+                    '(SELECT battletag
+                      FROM heroesprofile.battletags
+                      WHERE blizz_id = player.blizz_id
+                        AND region = replay.region
+                      ORDER BY latest_game DESC
                       LIMIT 1) AS battletag'
                 ),
                 DB::raw('COUNT(*) AS total')
@@ -287,6 +329,57 @@ class FriendFoeController extends Controller
             ->values()
             ->toArray();
 
+        $latestReplayId = $this->getLatestReplayId(
+            $blizz_id,
+            $region,
+            $request['game_type'],
+            $request['season']
+        );
+
+        $paramsHash = hash('sha256', json_encode([
+            'blizz_id' => $blizz_id,
+            'region' => $region,
+            'type' => $type,
+            'game_type' => $request['game_type'],
+            'season' => $request['season'],
+            'hero' => $request['hero'],
+            'game_map' => $request['game_map'],
+            'groupsize' => $request['groupsize'],
+        ]));
+
+        FriendFoeCache::updateOrCreate(
+            ['params_hash' => $paramsHash],
+            [
+                'blizz_id' => $blizz_id,
+                'region' => $region,
+                'type' => $type,
+                'latest_replayID' => $latestReplayId ?? 0,
+                'data' => json_encode($finalResults),
+            ]
+        );
+
         return $finalResults;
+    }
+
+    private function getLatestReplayId($blizz_id, $region, $game_type, $season): ?int
+    {
+        $gameTypeIds = $game_type
+            ? GameType::whereIn('short_name', (array) $game_type)->pluck('type_id')->toArray()
+            : null;
+
+        $query = DB::table('replay')
+            ->join('player', 'player.replayID', '=', 'replay.replayID')
+            ->where('player.blizz_id', $blizz_id)
+            ->where('replay.region', $region)
+            ->when($gameTypeIds, fn ($q) => $q->whereIn('game_type', $gameTypeIds))
+            ->when(! is_null($season), function ($q) use ($season) {
+                $seasonDate = SeasonDate::find($season);
+                if ($seasonDate) {
+                    $q->where('game_date', '>=', $seasonDate->start_date)
+                        ->where('game_date', '<', $seasonDate->end_date);
+                }
+            });
+
+        return $query->max('replay.replayID');
     }
 }
