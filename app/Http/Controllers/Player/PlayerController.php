@@ -105,6 +105,12 @@ class PlayerController extends Controller
 
         if ($cachedData && is_null($cachedData->weekday_data)) {
             $cachedData->delete();
+            $cachedData = null;
+        }
+
+        if ($cachedData && is_null($cachedData->latest_replayID)) {
+            $cachedData->delete();
+            $cachedData = null;
         }
         if (! $cachedData) {
             $this->calculateProfile($blizz_id, $region, $game_type, $season);
