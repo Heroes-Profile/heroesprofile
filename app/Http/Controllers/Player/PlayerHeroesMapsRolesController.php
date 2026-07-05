@@ -13,6 +13,7 @@ use App\Models\MasterMMRDataSL;
 use App\Models\MasterMMRDataTL;
 use App\Models\MasterMMRDataUD;
 use App\Models\MMRTypeID;
+use App\Models\PlayerStatsCache;
 use App\Models\Replay;
 use App\Models\SeasonDate;
 use App\Rules\GameMapInputValidation;
@@ -20,18 +21,17 @@ use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputValidation;
 use App\Rules\RoleInputValidation;
 use App\Rules\SeasonInputValidation;
+use App\Services\GlobalQueryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class PlayerHeroesMapsRolesController extends Controller
 {
+    private const CACHE_TTL_SECONDS = 1200;
+
     public function getData(Request $request)
     {
-        ini_set('max_execution_time', 600); // 300 seconds = 5 minutes
-
-        // return response()->json($request->all());
-
         $validationRules = [
             'battletag' => 'required|string',
             'blizz_id' => 'required|integer',
@@ -59,6 +59,51 @@ class PlayerHeroesMapsRolesController extends Controller
             }
         }
 
+        if (config('app.env') !== 'production') {
+            return response()->json($this->executeGetData($request));
+        }
+
+        $paramsHash = hash('sha256', json_encode([
+            'blizz_id' => $request['blizz_id'],
+            'region' => $request['region'],
+            'type' => $request['type'],
+            'page' => $request['page'],
+            'game_type' => $request['game_type'],
+            'hero' => $request['hero'],
+            'role' => $request['role'],
+            'game_map' => $request['game_map'],
+            'season' => $request['season'],
+            'minimumgames' => $request['minimumgames'],
+        ]));
+
+        $dbCache = PlayerStatsCache::where('params_hash', $paramsHash)->first();
+
+        if ($dbCache) {
+            $latestReplayId = $this->getLatestReplayId(
+                $request['blizz_id'],
+                $request['region'],
+                $request['game_type'],
+                $request['season']
+            );
+
+            if (! $latestReplayId || $dbCache->latest_replayID >= $latestReplayId) {
+                return response()->json(json_decode($dbCache->data, true));
+            }
+        }
+
+        $cacheKey = 'PlayerStatsData|'.$paramsHash;
+
+        return app(GlobalQueryService::class)->dispatchAsync(
+            $cacheKey,
+            static::class,
+            'executeGetData',
+            $request->all(),
+            self::CACHE_TTL_SECONDS
+        );
+    }
+
+    public function executeGetData(Request $request)
+    {
         $battletag = $request['battletag'];
         $blizz_id = $request['blizz_id'];
         $region = $request['region'];
@@ -810,7 +855,58 @@ class PlayerHeroesMapsRolesController extends Controller
             $returnData = array_values($filteredData);
         }
 
+        $paramsHash = hash('sha256', json_encode([
+            'blizz_id' => $request['blizz_id'],
+            'region' => $request['region'],
+            'type' => $request['type'],
+            'page' => $request['page'],
+            'game_type' => $request['game_type'],
+            'hero' => $request['hero'],
+            'role' => $request['role'],
+            'game_map' => $request['game_map'],
+            'season' => $request['season'],
+            'minimumgames' => $request['minimumgames'],
+        ]));
+
+        $latestReplayId = $this->getLatestReplayId(
+            $request['blizz_id'],
+            $request['region'],
+            $request['game_type'],
+            $request['season']
+        );
+
+        PlayerStatsCache::updateOrCreate(
+            ['params_hash' => $paramsHash],
+            [
+                'blizz_id' => $request['blizz_id'],
+                'region' => $request['region'],
+                'latest_replayID' => $latestReplayId ?? 0,
+                'data' => json_encode($returnData),
+            ]
+        );
+
         return $returnData;
+    }
+
+    private function getLatestReplayId($blizz_id, $region, $game_type, $season): ?int
+    {
+        $gameTypeIds = $game_type
+            ? GameType::whereIn('short_name', (array) $game_type)->pluck('type_id')->toArray()
+            : null;
+
+        return DB::table('replay')
+            ->join('player', 'player.replayID', '=', 'replay.replayID')
+            ->where('player.blizz_id', $blizz_id)
+            ->where('replay.region', $region)
+            ->when($gameTypeIds, fn ($q) => $q->whereIn('game_type', $gameTypeIds))
+            ->when(! is_null($season), function ($q) use ($season) {
+                $seasonDate = SeasonDate::find($season);
+                if ($seasonDate) {
+                    $q->where('game_date', '>=', $seasonDate->start_date)
+                        ->where('game_date', '<', $seasonDate->end_date);
+                }
+            })
+            ->max('replay.replayID');
     }
 
     public function getHeroDataForAll($hero, $data, $field = 'mmr')

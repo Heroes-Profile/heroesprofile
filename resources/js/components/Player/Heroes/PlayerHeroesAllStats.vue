@@ -105,7 +105,10 @@
       </table>
       </div>
     </div>
-    <div v-if="isLoading">
+    <div v-if="asyncLoading">
+      <loading-component :textoverride="true">This is taking longer than expected.<br/>A background task is computing your results.<br/>Please be patient.</loading-component>
+    </div>
+    <div v-if="isLoading && !asyncLoading">
         <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true" :timer="true" :starttime="timertime">Large amount of data.<br/>Please be patient.<br/></loading-component>
     </div>
     <div v-if="matchIsLoading">
@@ -141,6 +144,7 @@ export default {
       windowWidth: window.innerWidth,
       showOptions: false,
       isLoading: false,
+      asyncLoading: false,
       matchIsLoading: false,
       cancelTokenSource: null,
       infoText: "Select a hero below to view detailed stats for that hero. Use the search box above to filter the list of heroes. Or scroll down to the advanced section for table view.",
@@ -313,7 +317,7 @@ export default {
       this.cancelTokenSource = this.$axios.CancelToken.source();
 
       try{
-        const response = await this.$axios.post("/api/v1/player/heroes/all", {
+        const response = await this.$globalAsyncPost("/api/v1/player/heroes/all", {
           battletag: this.battletag,
           blizz_id: this.blizzid,
           region: this.region,
@@ -325,17 +329,23 @@ export default {
           type: "all",
           page: "hero",
           season: this.season,
-        }, 
+        },
         {
           cancelToken: this.cancelTokenSource.token,
+          onLoadStatus: (status, meta) => {
+            if (meta.phase === 'polling') {
+              this.asyncLoading = true;
+            }
+          },
         });
         this.data = response.data;
       }catch(error){
         //Do something here
-        
+
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
+        this.asyncLoading = false;
         this.$nextTick(() => {
         const responsivetable = this.$refs.responsivetable;
           if (responsivetable && this.windowWidth < 1500) {

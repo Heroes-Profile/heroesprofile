@@ -191,9 +191,12 @@
       </div>
     </div>
     <div v-else-if="typeof data === 'undefined'"  class="flex items-center justify-center">
-      No data 
+      No data
     </div>
-    <div v-else-if="isLoading">
+    <div v-if="asyncLoading">
+      <loading-component :textoverride="true">This is taking longer than expected.<br/>A background task is computing your results.<br/>Please be patient.</loading-component>
+    </div>
+    <div v-else-if="isLoading && !asyncLoading">
       <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
 
@@ -226,6 +229,7 @@
       return {
         cancelTokenSource: null,
         isLoading: false,
+        asyncLoading: false,
         modifiedgametype: null,
         modifiedseason: null,
         modifiedgamemap: null,
@@ -361,7 +365,7 @@
         this.cancelTokenSource = this.$axios.CancelToken.source();
 
         try{
-          const response = await this.$axios.post("/api/v1/player/heroes/single", {
+          const response = await this.$globalAsyncPost("/api/v1/player/heroes/single", {
             battletag: this.battletag,
             blizz_id: this.blizzid,
             region: this.region,
@@ -371,17 +375,23 @@
             hero: this.hero,
             type: "single",
             page: "hero",
-          }, 
+          },
           {
             cancelToken: this.cancelTokenSource.token,
+            onLoadStatus: (status, meta) => {
+              if (meta.phase === 'polling') {
+                this.asyncLoading = true;
+              }
+            },
           });
 
           this.data = response.data[0];
         }catch(error){
-        //Do something here
+          //Do something here
         }finally {
           this.cancelTokenSource = null;
           this.isLoading = false;
+          this.asyncLoading = false;
           this.disableFilterInput = false;
         }
       },
