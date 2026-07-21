@@ -4,23 +4,23 @@
   "title": "Live Patch",
   "blizzard_url": "https://news.blizzard.com/en-us/article/24291432/heroes-of-the-storm-live-patch-notes-july-20-2026",
   "general": [
-    { "type": "new", "note": "New skin: Ruby Chromesthesia Lucio." },
-    { "type": "new", "note": "Haunted Mines added to Ranked play." },
+    { "type": "new", "note": "New Skin: Ruby Chromesthesia Lucio." },
+    { "type": "new", "note": "Haunted Mines has been added to Ranked." },
     { "type": "change", "note": "Players can now party with unplaced players in Storm League." },
-    { "type": "change", "note": "Updated homescreen and startup music." }
+    { "type": "change", "note": "Updated Homescreen and Startup Music." }
   ],
   "maps": [
     {
       "map": "Hanamura Temple",
       "image": "bg_hanamura_temple.jpg",
       "type": "change",
-      "notes": ["Additional brush added in several locations."]
+      "notes": ["Additional brush has been added in several locations."]
     },
     {
       "map": "Warhead Junction",
       "image": "bg_warhead_junction.jpg",
       "type": "change",
-      "notes": ["Warhead channel penalty on interrupt reduced (10s → 5s)."]
+      "notes": ["Warhead's channel penalty on interrupt reduced from 10 to 5 seconds."]
     }
   ],
   "heroes": [
@@ -29,11 +29,12 @@
       "short_name": "abathur",
       "type": "change",
       "notes": [
-        "Locust Strain reworked — health 350 → 225, damage 58 → 36, Locusts now self-heal (20% of damage dealt, 20% max health when a minion dies nearby), bonus damage to non-Heroes now 100%.",
-        "Envenomed Nests armor reduction 10 → 15.",
-        "Locust Brood moved to Level 1 (cooldown 45s → 75s); Survival Instincts moved to Level 16.",
-        "New Level 4 talent Slapathur: Basic Attacks deal 350% bonus damage and stun for 3 seconds.",
-        "Evolve Monstrosity now displays as a Quest with a unit frame."
+        "Locust Strain [D]: Health reduced from 350 to 225. Locusts no longer have a duration but now lose Health over time. Locusts now heal for 20% of the damage they deal, and heal for 20% of their maximum Health when a nearby Minion dies. Locust damage reduced from 58 to 36. Locusts now deal 100% bonus damage to non-Heroes and no longer deal 25% bonus damage to Structures.",
+        "Envenomed Nests (Level 1): Armor reduction increased from 10 to 15.",
+        "Locust Brood (Level 1): Moved from Level 16 to Level 1. Cooldown increased from 45 to 75 seconds.",
+        "New — Slapathur (Level 4): Abathur's Basic Attacks now deal 350% bonus damage, Stun enemies, and disable Structures for 1.5 seconds. This effect has a 6 second cooldown per target against Structures and Heroes.",
+        "Evolve Monstrosity (Level 10): Now displays as a Quest. Abathur now has a Monstrosity unit frame for tracking Health and stacks of the unit.",
+        "Survival Instincts (Level 16): Moved from Level 1 to Level 16."
       ]
     },
     {
@@ -41,11 +42,15 @@
       "short_name": "alexstrasza",
       "type": "mixed",
       "notes": [
-        "Dragonqueen cooldown 150s → 130s (now starts after expiration).",
-        "Breath of Life healing 20% → 15%; Preservation healing 30% → 25%.",
-        "Flames of Fury cooldown 5s → 6s with a new Mythic quest (hit 40 Heroes without dying to refresh Dragonqueen duration).",
-        "Lifeblossom removes Slows/Roots and persists through transformation.",
-        "Draconic Discipline now reduces Preservation cooldown per Hero healed instead of extending duration."
+        "Dragonqueen [D]: Cooldown now starts after Dragonqueen has expired. Cooldown reduced from 150 to 130 seconds. Talents that affect Gift of Life also apply to Breath of Life. Talents that affect Abundance also apply to Preservation.",
+        "Breath of Life (Dragonqueen Q): Healing reduced from 20% to 15%.",
+        "Preservation (Dragonqueen W): Healing reduced from 30% to 25%.",
+        "Live and Let Live (Level 1): Now also provides 25% recharge rate for Breath of Life.",
+        "Flames of Fury (Level 1): Cooldown reduction increased from 5 to 6 seconds. New Mythic Reward: hit an additional 40 Heroes without dying to cause Dragonqueen's duration to be refreshed when damaging an enemy Hero.",
+        "Lifeblossom (Level 7): Now makes Breath of Life remove Slows and Roots. Transforming into Dragonqueen will no longer remove the collected Lifeblossom.",
+        "Draconic Discipline (Level 16): No longer affects Dragonqueen's duration. For each allied Hero healed with Dragonqueen's Basic Attacks, reduce the cooldown of Preservation by 1.25 seconds.",
+        "On Ruby Wings (Level 20): New functionality — if at least 3 Heroes are in an area hit by a Fireball, that Fireball charge is not consumed.",
+        "Ancient Flame (Level 20): Now also provides +25% Health. Does not provide Quest stacks while active."
       ]
     },
     {
@@ -53,8 +58,8 @@
       "short_name": "blaze",
       "type": "nerf",
       "notes": [
-        "Adrenaline Stimpack Attack Speed bonus 100% → 85%.",
-        "Bunker Drop cooldown 80s → 85s."
+        "Adrenaline Stimpack (Level 1): Active Attack Speed bonus reduced from 100% to 85%.",
+        "Bunker Drop (Level 10): Cooldown increased from 80 to 85 seconds."
       ]
     },
     {
@@ -62,8 +67,9 @@
       "short_name": "cho",
       "type": "mixed",
       "notes": [
-        "Consuming Fire healing bonus becomes flat 75 health; Calloused Hide threshold 60% → 50%.",
-        "Firestarter cooldown reduction 1s → 1.5s per attack."
+        "Consuming Fire (Level 1): Healing bonus increased from 150% to a flat 75 Health.",
+        "Calloused Hide (Level 1): Health threshold required to trigger reduced from 60% to 50%.",
+        "Firestarter (Level 7): Cooldown reduction per Basic Attack increased from 1 to 1.5 seconds."
       ]
     },
     {
@@ -71,10 +77,10 @@
       "short_name": "gall",
       "type": "mixed",
       "notes": [
-        "Rising Dread bonus 25% → 20%.",
-        "Bomb's Away stacks uncapped but damage 5 → 4 per stack.",
-        "Double Trouble cooldown reduction 0.5s → 1s.",
-        "Leaden Orb stun 0.75s → 0.6s."
+        "Rising Dread (Level 4): Bonus per bounce reduced from 25% to 20%.",
+        "Bomb's Away (Level 4): No longer has a cap on stacks. Damage bonus per stack lowered from 5 to 4.",
+        "Double Trouble (Level 7): Shadowflame's cooldown reduction from the Quest Reward increased from 0.5 to 1 second.",
+        "Leaden Orb (Level 16): Stun duration reduced from 0.75 to 0.6 seconds."
       ]
     },
     {
@@ -82,11 +88,12 @@
       "short_name": "chromie",
       "type": "mixed",
       "notes": [
-        "Dragon's Breath now shows a radius preview to enemies.",
-        "Time Trap health 400 → 250.",
-        "Once Again The First Time quest 40 → 20 stacks but requires no deaths.",
-        "Deep Breathing 1% → 0.5% per stack, uncapped.",
-        "Here and There range 20 → 40 with snap targeting."
+        "Dragon's Breath [W]: Now shows a radius preview to enemies.",
+        "Time Trap [E]: Health reduced from 400 to 250.",
+        "Once Again The First Time (Level 1): Quest requirement reduced from 40 to 20 stacks. Quest must now be completed without dying.",
+        "Deep Breathing (Level 1): Damage per stack reduced from 1% to 0.5%. No longer has a cap on stacks.",
+        "Chronic Conditions (Level 2): Now also causes Time Trap to activate automatically upon touching an enemy Hero. Slow reduced from 30% to 20%. Movement Speed bonus reduced from 30% to 20%.",
+        "Here and There (Level 11): Range increased from 20 to 40. Snap targeting is now used — the Echo nearest the player's target position will be used."
       ]
     },
     {
@@ -94,9 +101,12 @@
       "short_name": "diablo",
       "type": "mixed",
       "notes": [
-        "Shadow Charge damage 40 → 45; Overpower damage 73 → 80.",
-        "Fire Stomp damage reduced (12 → 11, return 36 → 34).",
-        "Diabolical Momentum cooldown reduction 1.5s → 2s per attack."
+        "Shadow Charge [Q]: Damage increased from 40 to 45. Terrain collision damage increased from 130 to 140.",
+        "Fire Stomp [W]: Damage reduced from 12 to 11. Return damage reduced from 36 to 34.",
+        "Overpower [E]: Damage increased from 73 to 80.",
+        "Diabolical Momentum (Level 7): Cooldown reduction per Basic Attack increased from 1.5 to 2 seconds.",
+        "Dying Breath (Level 20): Cooldown reduction per Hero hit increased from 25 to 30 seconds.",
+        "Lord of Terror (Level 20): Health stolen increased from 10% to 12% maximum Health."
       ]
     },
     {
@@ -104,9 +114,12 @@
       "short_name": "genji",
       "type": "mixed",
       "notes": [
-        "Swift as the Wind Movement Speed 30% → 40%; Pathfinder duration 4s → 6s.",
-        "Perfect Defense and Flow Like Water cooldown reduction improved.",
-        "Final Cut damage 125 → 115."
+        "Swift as the Wind (Level 1): Movement Speed bonus increased from 30% to 40%.",
+        "Pathfinder (Level 1): Movement Speed duration increased from 4 to 6 seconds.",
+        "Strike at the Heart (Level 4): Damage increased from 134 to 142.",
+        "Perfect Defense (Level 7): Cooldown reduction per hit increased from 2 to 2.5 seconds.",
+        "Flow Like Water (Level 13): Cooldown reduction per hit increased from 3 to 4 seconds.",
+        "Final Cut (Level 16): Damage reduced from 125 to 115."
       ]
     },
     {
@@ -114,8 +127,8 @@
       "short_name": "hogger",
       "type": "nerf",
       "notes": [
-        "On the Prowl rage generation 30 → 25.",
-        "Hogger's Joggers rage threshold 30 → 35."
+        "On the Prowl (Level 1): Rage generated on activation reduced from 30 to 25.",
+        "Hogger's Joggers (Level 4): Rage threshold required to gain 10% Movement Speed increased from 30 to 35."
       ]
     },
     {
@@ -123,8 +136,8 @@
       "short_name": "johanna",
       "type": "nerf",
       "notes": [
-        "Shield Glare cooldown 12s → 13s.",
-        "Blessed Shield cooldown 60s → 65s."
+        "Shield Glare [E]: Cooldown increased from 12 to 13 seconds.",
+        "Blessed Shield (Level 10): Cooldown increased from 60 to 65 seconds."
       ]
     },
     {
@@ -132,8 +145,8 @@
       "short_name": "malganis",
       "type": "nerf",
       "notes": [
-        "Will of Tichondrius stun increase 0.5s → 0.25s.",
-        "Blind as a Bat now has a 0.2s reactivation delay between swipes."
+        "Will of Tichondrius (Level 1): Stun's duration increase reduced from 0.5 to 0.25 seconds.",
+        "Blind as a Bat (Level 16): There is now a 0.2 second reactivation delay upon finishing 3 swipes of Fel Claws. This matches the time between other swipes."
       ]
     },
     {
@@ -141,9 +154,9 @@
       "short_name": "qhira",
       "type": "mixed",
       "notes": [
-        "Blood Rage gains a baseline quest (+0.25% damage per stack); bleed damage 11 → 8.",
-        "Revolving Sweep can no longer be detached by the target becoming Unstoppable.",
-        "Fatal Wounds bonus 30% → 50% against low-health Heroes (quest removed)."
+        "Blood Rage [W]: New baseline Quest — deal damage to enemy Heroes with Blood Rage's bleed to permanently increase its damage by 0.25% per stack. Blood Rage's bleed damage reduced from 11 to 8.",
+        "Revolving Sweep [E]: Once attached, Revolving Sweep can no longer be detached by the target becoming Unstoppable.",
+        "Fatal Wounds (Level 1): Damage bonus against low Health targets increased from 30% to 50%. Quest removed."
       ]
     },
     {
@@ -151,12 +164,15 @@
       "short_name": "ragnaros",
       "type": "change",
       "notes": [
-        "Molten Core reworked — cooldown 120s → 180s, health 3996 → 5000, duration 18s → 23s, now stuns for 1 second on exit; ability range starts at 20 and grows to 35 over 9 seconds.",
-        "Molten Swing damage 161 → 250 with knockback (cooldown 6s → 9s).",
-        "Meteor Shower damage 151 → 200, +66% area, 35% slow (cooldown 2.5s → 6s).",
-        "Explosive Rune cooldown 4s → 2.5s, damage now 440 over 5 seconds.",
-        "Blast Wave damage 104 → 120.",
-        "Sulfuras Smash gains a new Mythic quest (hit 8 Heroes for an extra charge)."
+        "Blast Wave [E]: Damage increased from 104 to 120.",
+        "Molten Core [D]: Cooldown increased from 120 to 180 seconds. Health increased from 3996 to 5000. Duration increased from 18 to 23 seconds. Ragnaros is now Stunned for 1 second upon exiting. Molten Core's abilities' range reduced from 35 to 20, but now grows from 20 to 35 over 9 seconds (Molten Swing is not affected).",
+        "Molten Swing (Molten Core Q): Damage increased from 161 to 250. No longer deals increased damage to Minions. Cooldown increased from 6 to 9 seconds. Now also knocks enemies back.",
+        "Meteor Shower (Molten Core W): Damage increased from 151 to 200. Cooldown increased from 2.5 to 6 seconds. Area of effect increased by 66%. Delay between hits significantly increased. No longer deals increased damage to Minions. Slow increased from 25% to 35%. Now deals 75% reduced damage to Structures.",
+        "Explosive Rune (Molten Core E): Cooldown decreased from 4 to 2.5 seconds. Damage adjusted from 285 on impact to 440 damage over 5 seconds. No longer deals increased damage to Minions. Now deals 75% reduced damage to Structures.",
+        "Engulfing Flame (Level 1): Damage bonus reduced from 75% to 50%.",
+        "Sulfuras Smash (Level 10): New Mythic Quest — hit 8 enemy Heroes with the center of Sulfuras Smash. Mythic Reward: Sulfuras Smash gains an extra charge.",
+        "Lava Surge (Level 20): No longer reduces the cooldown of Lava Wave by 30 seconds. Now also gives +200% Movement Speed to allied Minions and Mercenaries in its path.",
+        "Heroic Difficulty (Level 20): New functionality — when Molten Core is used on a dead Fort or Keep, its cooldown is reduced by 110 seconds. Passive: increases the starting and maximum range of Molten Core's abilities by 100% (Molten Swing is not affected)."
       ]
     },
     {
@@ -164,7 +180,7 @@
       "short_name": "thrall",
       "type": "change",
       "notes": [
-        "Crash Lightning disabled in ARAM."
+        "Crash Lightning (Level 1): Talent disabled in ARAM."
       ]
     },
     {
@@ -172,10 +188,12 @@
       "short_name": "whitemane",
       "type": "mixed",
       "notes": [
-        "Searing Lash gains a new quest (+3 max health, +2 mana per Hero hit).",
-        "Inquisitor's Prayer restores 25 mana per Hero and extends Zeal by 2 seconds.",
-        "Intercession cooldown 45s → 60s.",
-        "Scarlet Wrath mana return 0.5% → 1%."
+        "Searing Lash [E]: New Quest — hit Heroes with Searing Lash to increase Whitemane's maximum Health by 3 and Mana by 2.",
+        "Pity the Frail (Level 1): Cooldown reduction per hit reduced from 1.5 to 1 second.",
+        "Inquisitor's Prayer (Level 1): New functionality — for each Hero hit by Searing Lash, restore 25 Mana. Passive: Zeal's duration is increased by 2 seconds.",
+        "Intercession (Level 7): Cooldown increased from 45 to 60 seconds.",
+        "Scarlet Wrath (Level 13): Mana restore increased from 0.5% to 1%.",
+        "Guiding Light (Level 20): Now also increases the Spell Power gained from Zeal's activation by 15%."
       ]
     },
     {
@@ -183,22 +201,163 @@
       "short_name": "yrel",
       "type": "mixed",
       "notes": [
-        "Basic ability buffs with mana costs reduced (65 → 50): Vindication heal 320 → 370, Righteous Hammer stun 0.75s → 1s, Avenging Wrath slow 50% → 60%.",
-        "Divine Purpose cooldown 8s → 12s; basic abilities now reduce it by 3 seconds on interrupt and it no longer resets on heroic use."
+        "Vindication [Q]: Heal increased from 320 to 370. Damage increased from 140 to 160. Mana cost reduced from 65 to 50.",
+        "Righteous Hammer [W]: Stun duration increased from 0.75 to 1 second. Damage increased from 125 to 140. Mana cost reduced from 65 to 50.",
+        "Avenging Wrath [E]: Slow increased from 50% to 60%. Damage increased from 225 to 260. Mana cost reduced from 65 to 50.",
+        "Divine Purpose [D]: Cooldown increased from 8 to 12 seconds. Cooldown is now reduced by 3 seconds whenever Yrel's Basic Abilities are interrupted. Cooldown is no longer reset when Yrel's Heroic Abilities are used.",
+        "Hand of Freedom (Level 4): Cooldown increased from 30 to 40 seconds. Movement Speed bonus reduced from 30% to 25%.",
+        "Seraphim (Level 20): Cooldown increased from 10 to 20 seconds."
       ]
     }
   ],
-  "bug_fixes": [
-    "General: Fort, Keep, and Core attack beams are now more visible when targeting Heroes.",
-    "Maps: Haunted Mines — fixed auto-mount issue when using Hearthstone inside the mines. Warhead Junction — fixed Hero visibility during Warhead launch and persistent channel beam on interrupt.",
-    "Ana: Eye of Horus no longer reveals global lines at structures; minor damage delay removed.",
-    "Arthas: Howling Blast visuals now match its area; Froststrike slow baseline issues resolved.",
-    "Deathwing: No longer teleports if killed during Cataclysm.",
-    "D.Va: Defense Matrix damage reduction now properly applies to summoned units.",
-    "Jaina: Ultimate Evolution clones now correctly inherit spell power across multiple abilities.",
-    "Nazeebo: Voodoo Ritual quest indicator and tooltip corrections.",
-    "Xul: Skeletal unit Defense Matrix and evasion interaction fixes.",
-    "Yrel: Avenging Wrath is no longer interrupted by Roots during channeling.",
-    "Additional fixes for Anub'arak, Deckard, Hogger, Kerrigan, Leoric, Malfurion, Medivh, Nova, Probius, Tychus, and Zagara."
-  ]
+  "bug_fixes": {
+    "general": [
+      "Attack beams from Forts, Keeps, and the Core will now be more visible when attacking Heroes."
+    ],
+    "maps": [
+      {
+        "map": "Haunted Mines",
+        "image": "bg_haunted_mines.jpg",
+        "notes": ["Fixed an issue where the player would not auto-mount when using the Hearthstone from inside the mines."]
+      },
+      {
+        "map": "Warhead Junction",
+        "image": "bg_warhead_junction.jpg",
+        "notes": [
+          "Fixed an issue that caused Heroes to not be revealed while launching a Warhead.",
+          "Fixed an issue that caused the Warhead's channel beam to persist when interrupted."
+        ]
+      }
+    ],
+    "heroes": [
+      {
+        "name": "Ana",
+        "short_name": "ana",
+        "notes": [
+          "Eye of Horus: no longer reveals in a global line when hitting a Structure.",
+          "Eye of Horus: removed a minor delay when dealing damage to enemy Heroes."
+        ]
+      },
+      {
+        "name": "Anub'arak",
+        "short_name": "anubarak",
+        "notes": [
+          "Scarab Host: fixed Beetles created by Ultimate Evolution clones of Anub'arak not gaining Spell Power bonuses.",
+          "Scarab Host: fixed Beetles not having their damage reduced by D.Va's Defense Matrix.",
+          "Leeching Scarabs: fixed the healing done not being affected by damage modifiers."
+        ]
+      },
+      {
+        "name": "Arthas",
+        "short_name": "arthas",
+        "notes": [
+          "Howling Blast: fixed the visuals not matching the area hit.",
+          "Frostmourne Hungers: fixed the Slow benefit of Froststrike being provided baseline.",
+          "Army of the Dead: fixed Ghouls not having their damage reduced by D.Va's Defense Matrix."
+        ]
+      },
+      {
+        "name": "Deathwing",
+        "short_name": "deathwing",
+        "notes": ["Cataclysm: Deathwing will no longer be teleported to where Cataclysm is targeted if he is killed during Cataclysm."]
+      },
+      {
+        "name": "Deckard",
+        "short_name": "deckard",
+        "notes": ["Lorenado: fixed an issue that caused Lorenado to not deal damage to Unstoppable enemies."]
+      },
+      {
+        "name": "Hogger",
+        "short_name": "hogger",
+        "notes": ["No Control: fixed an issue that caused No Control to target enemies that are not visible."]
+      },
+      {
+        "name": "Jaina",
+        "short_name": "jaina",
+        "notes": [
+          "Frostbolt: fixed the range indicator not matching the actual range.",
+          "Frostbolt, Blizzard, and Cone of Cold cast by Ultimate Evolution clones of Jaina now gain Spell Power bonuses.",
+          "Summon Water Elemental: the Water Elemental's Basic Attack damage now inherits all damage modifiers placed on Jaina.",
+          "Wintermute: fixed Wintermute effects dealing more damage than intended to Chilled targets.",
+          "Wintermute's Blizzard, Cone of Cold, and Frostbolt now inherit all damage modifiers placed on Jaina, initiate their casts at the same time Jaina initiates hers, and are interrupted if either is interrupted."
+        ]
+      },
+      {
+        "name": "Kerrigan",
+        "short_name": "kerrigan",
+        "notes": ["Summon Ultralisk: fixed the Ultralisk not having its damage reduced by D.Va's Defense Matrix."]
+      },
+      {
+        "name": "Leoric",
+        "short_name": "leoric",
+        "notes": ["Royal Focus: now displays the remaining duration around Skeletal Swing's button."]
+      },
+      {
+        "name": "Malfurion",
+        "short_name": "malfurion",
+        "notes": [
+          "Vengeful Roots: fixed the Treant not having its damage reduced by D.Va's Defense Matrix.",
+          "Vengeful Roots: the Treant's damage now displays as Vengeful Roots in the Death Recap."
+        ]
+      },
+      {
+        "name": "Medivh",
+        "short_name": "medivh",
+        "notes": [
+          "Raven Familiar: fixed Raven Familiars created by Ultimate Evolution clones of Medivh not gaining Spell Power bonuses.",
+          "Guardian of Tirisfal: fixed targets near the edge of Arcane Rift's range not being hit."
+        ]
+      },
+      {
+        "name": "Nazeebo",
+        "short_name": "nazeebo",
+        "notes": [
+          "Voodoo Ritual: Quest progress indicators now show around the killed enemy Minion.",
+          "Voodoo Ritual: Quest progress is now gained when a second Nazeebo damages the target and it dies within 6 seconds of the first Nazeebo applying Voodoo Ritual.",
+          "Voodoo Ritual: stacks gained prior to selecting Thing of the Deep are now granted to Thing of the Deep.",
+          "Fixed incorrect total damage values in the Voodoo Ritual and Vile Infection tooltips.",
+          "Thing of the Deep: no longer causes Voodoo Ritual to display two Quest indicators.",
+          "Blood Ritual: fixed no Health or Mana being granted when the target affected by Voodoo Ritual timed out due to passive Health loss."
+        ]
+      },
+      {
+        "name": "Nova",
+        "short_name": "nova",
+        "notes": ["Fast Reload: fixed Fast Reload triggering when a Triple Tap target dies before it hits them."]
+      },
+      {
+        "name": "Probius",
+        "short_name": "probius",
+        "notes": [
+          "Photon Cannon: fixed Photon Cannons not having their damage reduced by D.Va's Defense Matrix.",
+          "Gathering Minerals: now also empowers any Photon Cannon already on the battlefield upon Quest completion."
+        ]
+      },
+      {
+        "name": "Tychus",
+        "short_name": "tychus",
+        "notes": ["Overkill: fixed an issue that caused Overkill to reveal unintended areas."]
+      },
+      {
+        "name": "Xul",
+        "short_name": "xul",
+        "notes": [
+          "Raise Skeleton: fixed Skeletal Warriors not having their damage reduced by D.Va's Defense Matrix.",
+          "Skeletal Mages: fixed Mages not having their damage reduced by D.Va's Defense Matrix.",
+          "Skeletal Mages: fixed Mages not applying their Slow in an aura while Blinded or against Evading Heroes, and not applying their Slow with attacks against Heroes with Heroic-Attack-only Evasion effects.",
+          "Weaken: fixed the damage reduction not applying while Xul is Blinded or against Heroes with Heroic-Attack-only Evasion effects."
+        ]
+      },
+      {
+        "name": "Yrel",
+        "short_name": "yrel",
+        "notes": ["Avenging Wrath: fixed an issue that caused Avenging Wrath to be interrupted by Roots while being channeled."]
+      },
+      {
+        "name": "Zagara",
+        "short_name": "zagara",
+        "notes": ["Infested Drop: fixed Roaches created by Ultimate Evolution clones of Zagara not gaining Spell Power bonuses."]
+      }
+    ]
+  }
 }

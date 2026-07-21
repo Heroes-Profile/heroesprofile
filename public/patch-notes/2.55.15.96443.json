@@ -55,16 +55,82 @@
       ]
     }
   ],
-  "bug_fixes": [
-    "Maps: Hanamura Samurai Sentinel camp now shows Bruiser icon. Braxis Holdout terrain rendering fix.",
-    "Azmodan: Battleborn now properly reduces Demon Lieutenant cooldown. Black Pool now deals reduced damage to non-Heroes.",
-    "Deathwing: AI can no longer use the removed Form Swap ability.",
-    "Gul'dan: Ruinous Affliction now correctly triggers on 3rd and 6th hit.",
-    "Jaina: Ice Cold no longer allows moving through pathing blockers. Ice Block tooltip now shows correct cooldown.",
-    "Muradin: Dwarf Toss no longer goes on cooldown on invalid terrain. Dwarf Block can no longer stack beyond 3 charges.",
-    "Murky: Fixed losing increased size after death. Fixed respawning faster than intended. Shell Game and Faster Fish UI fixes.",
-    "Rehgar: Elemental Conduit shield refresh now correctly searches around Rehgar and properly refreshes to 5 seconds.",
-    "Thrall: Echo of the Elements no longer bounces to cloaked targets. Rolling Thunder and Alpha Wolf damage now display as crits.",
-    "Zagara: Roaches now display correctly in death recap and use melee attacks instead of missiles."
-  ]
+  "bug_fixes": {
+    "general": [],
+    "maps": [
+      {
+        "map": "Hanamura",
+        "image": "bg_hanamura.jpg",
+        "notes": ["Samurai Sentinel camp now shows Bruiser icon."]
+      },
+      {
+        "map": "Braxis Holdout",
+        "image": "bg_braxis_holdout.jpg",
+        "notes": ["Terrain rendering fix."]
+      }
+    ],
+    "heroes": [
+      {
+        "name": "Azmodan",
+        "short_name": "azmodan",
+        "notes": [
+          "Battleborn now properly reduces Demon Lieutenant cooldown.",
+          "Black Pool now deals reduced damage to non-Heroes."
+        ]
+      },
+      {
+        "name": "Deathwing",
+        "short_name": "deathwing",
+        "notes": ["AI can no longer use the removed Form Swap ability."]
+      },
+      {
+        "name": "Gul'dan",
+        "short_name": "guldan",
+        "notes": ["Ruinous Affliction now correctly triggers on 3rd and 6th hit."]
+      },
+      {
+        "name": "Jaina",
+        "short_name": "jaina",
+        "notes": [
+          "Ice Cold no longer allows moving through pathing blockers.",
+          "Ice Block tooltip now shows correct cooldown."
+        ]
+      },
+      {
+        "name": "Muradin",
+        "short_name": "muradin",
+        "notes": [
+          "Dwarf Toss no longer goes on cooldown on invalid terrain.",
+          "Dwarf Block can no longer stack beyond 3 charges."
+        ]
+      },
+      {
+        "name": "Murky",
+        "short_name": "murky",
+        "notes": [
+          "Fixed losing increased size after death.",
+          "Fixed respawning faster than intended.",
+          "Shell Game and Faster Fish UI fixes."
+        ]
+      },
+      {
+        "name": "Rehgar",
+        "short_name": "rehgar",
+        "notes": ["Elemental Conduit shield refresh now correctly searches around Rehgar and properly refreshes to 5 seconds."]
+      },
+      {
+        "name": "Thrall",
+        "short_name": "thrall",
+        "notes": [
+          "Echo of the Elements no longer bounces to cloaked targets.",
+          "Rolling Thunder and Alpha Wolf damage now display as crits."
+        ]
+      },
+      {
+        "name": "Zagara",
+        "short_name": "zagara",
+        "notes": ["Roaches now display correctly in death recap and use melee attacks instead of missiles."]
+      }
+    ]
+  }
 }

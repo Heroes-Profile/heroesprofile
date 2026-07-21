@@ -127,12 +127,40 @@
       ]
     }
   ],
-  "bug_fixes": [
-    "Alarak's Deadly Charge activation fix when in Trait slot.",
-    "Ana's Aim Down Sights can now be toggled during Silence.",
-    "Jaina's Frostbolt model fix for Dreadlord/Lunar skins.",
-    "Orphea's Allegrissimo cooldown reduction fix.",
-    "Sylvanas' Possession Quick Cast and cooldown reduction fixes.",
-    "Tychus' Odin Thrusters cooldown display fix."
-  ]
+  "bug_fixes": {
+    "general": [],
+    "maps": [],
+    "heroes": [
+      {
+        "name": "Alarak",
+        "short_name": "alarak",
+        "notes": ["Deadly Charge activation fix when in Trait slot."]
+      },
+      {
+        "name": "Ana",
+        "short_name": "ana",
+        "notes": ["Aim Down Sights can now be toggled during Silence."]
+      },
+      {
+        "name": "Jaina",
+        "short_name": "jaina",
+        "notes": ["Frostbolt model fix for Dreadlord/Lunar skins."]
+      },
+      {
+        "name": "Orphea",
+        "short_name": "orphea",
+        "notes": ["Allegrissimo cooldown reduction fix."]
+      },
+      {
+        "name": "Sylvanas",
+        "short_name": "sylvanas",
+        "notes": ["Possession Quick Cast and cooldown reduction fixes."]
+      },
+      {
+        "name": "Tychus",
+        "short_name": "tychus",
+        "notes": ["Odin Thrusters cooldown display fix."]
+      }
+    ]
+  }
 }

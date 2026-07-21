@@ -73,13 +73,46 @@
       ]
     }
   ],
-  "bug_fixes": [
-    "Maps: Volskaya Foundry — Triglav Protector Particle Cannon charge no longer causes other players' cursors to highlight incorrectly.",
-    "Arthas: Rime and Remorseless Winter healing now display correctly in Death Recap.",
-    "Chen: Breath of Fire again deals impact damage.",
-    "Muradin: Storm Bolt / Perfect Storm quest UI, Mana refund, cooldown, and Self Healing score fixes.",
-    "Rexxar: Misha respawns correctly when her respawn timer finishes.",
-    "Tychus / Zagara: Infest displays as a Quest Bonus where applicable.",
-    "Tyrande: Lunar Blaze quest progress fixes (non-standard death states, non-Hero kills, progression indicator)."
-  ]
+  "bug_fixes": {
+    "general": [],
+    "maps": [
+      {
+        "map": "Volskaya Foundry",
+        "image": "bg_volskaya_foundry.jpg",
+        "notes": ["Triglav Protector Particle Cannon charge no longer causes other players' cursors to highlight incorrectly."]
+      }
+    ],
+    "heroes": [
+      {
+        "name": "Arthas",
+        "short_name": "arthas",
+        "notes": ["Rime and Remorseless Winter healing now display correctly in Death Recap."]
+      },
+      {
+        "name": "Chen",
+        "short_name": "chen",
+        "notes": ["Breath of Fire again deals impact damage."]
+      },
+      {
+        "name": "Muradin",
+        "short_name": "muradin",
+        "notes": ["Storm Bolt / Perfect Storm quest UI, Mana refund, cooldown, and Self Healing score fixes."]
+      },
+      {
+        "name": "Rexxar",
+        "short_name": "rexxar",
+        "notes": ["Misha respawns correctly when her respawn timer finishes."]
+      },
+      {
+        "name": "Zagara",
+        "short_name": "zagara",
+        "notes": ["Infest displays as a Quest Bonus where applicable (Tychus / Zagara)."]
+      },
+      {
+        "name": "Tyrande",
+        "short_name": "tyrande",
+        "notes": ["Lunar Blaze quest progress fixes (non-standard death states, non-Hero kills, progression indicator)."]
+      }
+    ]
+  }
 }
