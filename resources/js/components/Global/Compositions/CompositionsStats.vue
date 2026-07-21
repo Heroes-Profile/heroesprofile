@@ -45,11 +45,7 @@
         </span>
       </div>
 
-      <div v-if="showPatchNotes" class="max-w-[1500px] mx-auto mb-4 p-4 rounded bg-gray-800 text-gray-200">
-        <div v-if="patchNotesLoading" class="text-center py-4">Loading patch notes...</div>
-        <div v-else-if="patchNotesContent" v-html="patchNotesContent"></div>
-        <div v-else class="text-center py-4 text-gray-400">No summary available for this patch.</div>
-      </div>
+      <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
 
       <div id="table-container" ref="tablecontainer" class="w-auto  overflow-hidden w-[100vw]   2xl:mx-auto  " style=" ">
       <table id="responsive-table" class="responsive-table  relative max-w-[1500px]" ref="responsivetable">
@@ -208,9 +204,6 @@
       isLoading: false,
       loadingStates: {},
       showPatchNotes: false,
-      patchNotesContent: null,
-      patchNotesLoading: false,
-      patchNotesLoadedVersion: null,
     }
   },
   created(){
@@ -408,29 +401,12 @@
       history.pushState(null, null, `${currentPath}${queryString}`);
 
       this.showPatchNotes = false;
-      this.patchNotesContent = null;
-      this.patchNotesLoadedVersion = null;
 
       this.compositiondata = null;
       this.getData();
     },
-    async togglePatchNotes() {
+    togglePatchNotes() {
       this.showPatchNotes = !this.showPatchNotes;
-      if (this.showPatchNotes && this.timeframe.length === 1 && this.patchNotesLoadedVersion !== this.timeframe[0]) {
-        this.patchNotesLoading = true;
-        this.patchNotesContent = null;
-        try {
-          const response = await fetch(`/patch-notes/${this.timeframe[0]}.html`);
-          if (response.ok) {
-            this.patchNotesContent = await response.text();
-          }
-        } catch (e) {
-          this.patchNotesContent = null;
-        } finally {
-          this.patchNotesLoadedVersion = this.timeframe[0];
-          this.patchNotesLoading = false;
-        }
-      }
     },
     sortTable(key) {
       if (key === this.sortKey) {

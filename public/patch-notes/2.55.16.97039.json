@@ -1,0 +1,85 @@
+{
+  "version": "2.55.16.97039",
+  "date": "May 11, 2026",
+  "title": "Balance Patch",
+  "blizzard_url": "https://news.blizzard.com/en-us/article/24276959/heroes-of-the-storm-balance-patch-notes-may-11-2026",
+  "general": [],
+  "maps": [
+    {
+      "map": "Haunted Mines",
+      "image": "bg_haunted_mines.jpg",
+      "type": "change",
+      "notes": ["Skull scaling increased (5% → 7%). Golem scaling reduced early (before 5 minutes) and increased significantly in the late game."]
+    }
+  ],
+  "heroes": [
+    {
+      "name": "Arthas",
+      "short_name": "arthas",
+      "type": "mixed",
+      "notes": [
+        "Base health and Death Coil healing increased.",
+        "Frostmourne Hungers — lower damage per quest stack on Basic Attacks, higher damage bonus on charged attacks.",
+        "Frost Presence: line damage can hit in both the line and the final area; Death Coil slow from the talent lasts longer.",
+        "Icebound Fortitude clears Slows and Roots on use.",
+        "Path of Frost sets minimum Movement Speed to 140% instead of flat +40% Movement Speed."
+      ]
+    },
+    {
+      "name": "Chen",
+      "short_name": "chen",
+      "type": "buff",
+      "notes": [
+        "Flying Kick damage up.",
+        "Fortifying Brew — slightly faster interrupt window, more shield per tick.",
+        "Accumulating Flame: initial hit grants a quest stack; higher stack thresholds (25/80)."
+      ]
+    },
+    {
+      "name": "Deathwing",
+      "short_name": "deathwing",
+      "type": "mixed",
+      "notes": [
+        "Molten Flame damage per tick increased.",
+        "Destroyer's Rampage duration reduced (6s → 4s)."
+      ]
+    },
+    {
+      "name": "Gazlowe",
+      "short_name": "gazlowe",
+      "type": "buff",
+      "notes": [
+        "Rock-It! Turret damage up.",
+        "One Man Wrecking Crew damage bonus increased (60% → 75%)."
+      ]
+    },
+    {
+      "name": "Mal'Ganis",
+      "short_name": "malganis",
+      "type": "mixed",
+      "notes": [
+        "Will of Tichondrius — lower damage per stack, easier quest unlock.",
+        "Winged Guard stacks slightly more often.",
+        "Deep Sleep move-speed bonus up.",
+        "Wrath of Nathreza transfers more damage to Mal'Ganis."
+      ]
+    },
+    {
+      "name": "Murky",
+      "short_name": "murky",
+      "type": "buff",
+      "notes": [
+        "March of the Murlocs cooldown reduced (100s → 90s)."
+      ]
+    }
+  ],
+  "bug_fixes": [
+    "Maps: Volskaya Foundry — Triglav Protector Particle Cannon charge no longer causes other players' cursors to highlight incorrectly.",
+    "Arthas: Rime and Remorseless Winter healing now display correctly in Death Recap.",
+    "Chen: Breath of Fire again deals impact damage.",
+    "Muradin: Storm Bolt / Perfect Storm quest UI, Mana refund, cooldown, and Self Healing score fixes.",
+    "Rexxar: Misha respawns correctly when her respawn timer finishes.",
+    "Tychus / Zagara: Infest displays as a Quest Bonus where applicable.",
+    "Tyrande: Lunar Blaze quest progress fixes (non-standard death states, non-Hero kills, progression indicator)."
+  ]
+}

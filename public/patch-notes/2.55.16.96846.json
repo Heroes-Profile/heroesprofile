@@ -1,0 +1,151 @@
+{
+  "version": "2.55.16.96846",
+  "date": "April 20, 2026",
+  "title": "Live Patch",
+  "blizzard_url": "https://news.blizzard.com/en-us/article/24261475/heroes-of-the-storm-live-patch-notes-april-20-2026",
+  "general": [
+    { "type": "new", "note": "New Mount: Scrapper Mad Axe Mono Wheel." },
+    { "type": "change", "note": "Unranked Mode has been removed." },
+    { "type": "change", "note": "Respawn timers reduced in the mid-to-late game; by level 22, respawns are back to 65 seconds." },
+    { "type": "change", "note": "Updated home screen and startup music." }
+  ],
+  "maps": [
+    {
+      "map": "Garden of Terror Classic",
+      "image": "bg_garden_of_terror.jpg",
+      "type": "new",
+      "notes": ["Original map returns to Custom Games under this name (distinct from current Garden of Terror)."]
+    },
+    {
+      "map": "Haunted Mines",
+      "image": "bg_haunted_mines.jpg",
+      "type": "change",
+      "notes": ["Returns to Quick Match.", "Mine Golem drops 10 extra Skulls over its life; objective completes at 55 Skulls (not 100).", "Hero vision is reduced in the mines."]
+    },
+    {
+      "map": "Warhead Junction",
+      "image": "bg_warhead_junction.jpg",
+      "type": "change",
+      "notes": ["Nuke cast time 2.5s → 3s; casting breaks on taking damage.", "Nuke DoT damage +100%.", "Nuke damage to Forts/Keeps 100% → 125%."]
+    }
+  ],
+  "heroes": [
+    {
+      "name": "Arthas",
+      "short_name": "arthas",
+      "type": "change",
+      "notes": [
+        "Full rework — new Death Coil (damage or self-heal), Howling Blast, Frozen Tempest (stacking slows), charge-based Army of the Dead, Sindragosa heroic, and questing Frostmourne Hungers (D).",
+        "Full talent tree replaced."
+      ]
+    },
+    {
+      "name": "Chen",
+      "short_name": "chen",
+      "type": "change",
+      "notes": [
+        "Keg Smash / Breath of Fire tuning (Breath initial damage down, duration up, no Energy cost; Keg Smash cost up).",
+        "Fortifying Brew briefly blocks extra commands.",
+        "Talent reshuffle: Accumulating Flames to 1 with reworked quest/Mythic, Eye of the Tiger to 4, Elusive Brawler move-speed nerf, Wandering Keg CD up, Pressure Point slow duration up."
+      ]
+    },
+    {
+      "name": "Deathwing",
+      "short_name": "deathwing",
+      "type": "nerf",
+      "notes": [
+        "Onslaught cooldown 5s → 6s; Dragonflight 15s → 20s.",
+        "Gaze onto Destruction duration 5s → 3.5s."
+      ]
+    },
+    {
+      "name": "Falstad",
+      "short_name": "falstad",
+      "type": "nerf",
+      "notes": [
+        "Frequent Flyer kill-credit range 14 → 8.5."
+      ]
+    },
+    {
+      "name": "Garrosh",
+      "short_name": "garrosh",
+      "type": "nerf",
+      "notes": [
+        "Wrecking Ball range and search range reduced.",
+        "Unrivaled Strength ranged bonus 20% → 15%."
+      ]
+    },
+    {
+      "name": "Gazlowe",
+      "short_name": "gazlowe",
+      "type": "buff",
+      "notes": [
+        "Rock-It! Turret health up (510 → 600), decay over 20s (was 17).",
+        "Robo-Goblin DPS 90 → 100."
+      ]
+    },
+    {
+      "name": "Mal'Ganis",
+      "short_name": "malganis",
+      "type": "change",
+      "notes": [
+        "Necrotic Embrace — double Vampiric Touch benefit, 15 Spell Armor (was 25 Armor), damage up.",
+        "Will of Tichondrius / Vampiric Aura / Fueled by Torment / Might of Sargeras level and effect changes."
+      ]
+    },
+    {
+      "name": "Medivh",
+      "short_name": "medivh",
+      "type": "mixed",
+      "notes": [
+        "Winds of Celerity and Raven's Intellect buffed; Raven Familiar slow reduced.",
+        "Force of Magic spell power up; Circle of Protection no longer increases Force of Will CD.",
+        "Guardian of Tirisfal also +50% Arcane Rift range."
+      ]
+    },
+    {
+      "name": "Muradin",
+      "short_name": "muradin",
+      "type": "mixed",
+      "notes": [
+        "Storm Bolt grants 5 stacks if the target dies within 3s of a hit; pierce quest threshold 40 → 45.",
+        "Dwarf Launch CD reduction per hit 2s → 1s."
+      ]
+    },
+    {
+      "name": "Sgt. Hammer",
+      "short_name": "sgthammer",
+      "type": "buff",
+      "notes": [
+        "Maelstrom Rounds damage bonus 30% → 40%.",
+        "Hyper-Cooling Engines / Ultra-Capacitors: CD reduction from Structures instead of splash.",
+        "Advanced Lava Strike damage bonus 50% → 65%."
+      ]
+    },
+    {
+      "name": "Thrall",
+      "short_name": "thrall",
+      "type": "mixed",
+      "notes": [
+        "Crash Lightning — fewer stacks lost on death.",
+        "Echo of the Elements — longer kill window, higher stack thresholds, second reward no longer adds a bounce; other tuning.",
+        "Rolling Thunder now grants an extra Chain Lightning bounce."
+      ]
+    },
+    {
+      "name": "Tyrande",
+      "short_name": "tyrande",
+      "type": "change",
+      "notes": [
+        "Lunar Flare — stack on kill within 3s, Mythic also grants +1 attack range, Hero-hit damage tuning.",
+        "Quickening Blessing move bonus up.",
+        "Commander of Sentinels no longer increases Sentinel cooldown (vs. PTR)."
+      ]
+    }
+  ],
+  "bug_fixes": [
+    "General: Unstoppable targets correctly immune to Blinds.",
+    "Maps: Bosses no longer prioritize attacking summoned units. Blackheart's Bay AI coin turn-in. Infernal Shrines minion pathing near Punisher beams.",
+    "Heroes: D.Va Defense Matrix AI retargeting; Dragonflight CD-on-damage rule; Garrosh In For the Kill; Gul'dan Drain Life interrupt; Jaina Improved Ice Block / AI; Kael'thas Rebirth AI; Li Li Cloud Serpent FoW visibility; Medivh Poly Bomb AI; Nazeebo Superstition Corpse Spider display; Samuro Mirror Image move/AI; Stukov Weighted Pustule vs. slow removal; Thrall Feral Spirit extension."
+  ]
+}
