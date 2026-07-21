@@ -1,0 +1,70 @@
+{
+  "version": "2.55.15.96443",
+  "date": "February 19, 2026",
+  "title": "Balance Patch",
+  "blizzard_url": "https://news.blizzard.com/en-us/article/24244471/heroes-of-the-storm-balance-patch-notes-february-19-2026",
+  "general": [],
+  "maps": [],
+  "heroes": [
+    {
+      "name": "Deathwing",
+      "short_name": "deathwing",
+      "type": "nerf",
+      "notes": [
+        "Incinerate cooldown increased from 6s to 7s.",
+        "Death Drop Spell Armor duration reduced from 6s to 4s."
+      ]
+    },
+    {
+      "name": "Muradin",
+      "short_name": "muradin",
+      "type": "mixed",
+      "notes": [
+        "Storm Bolt quest requirements reduced (50/200 → 40/160).",
+        "Give 'Em The Axe bonus damage reduced from 50% to 40%.",
+        "Sledgehammer now also reduces Storm Bolt cooldown by 1.5s.",
+        "Perfect Storm now restores 25 Mana on reset, internal cooldown reduced.",
+        "Healing Static heal per Hero hit increased from 5% to 6%."
+      ]
+    },
+    {
+      "name": "Murky",
+      "short_name": "murky",
+      "type": "buff",
+      "notes": [
+        "Revive Shield duration increased from 10s to 15s.",
+        "March of the Murlocs cooldown reduced from 110s to 100s.",
+        "Egg Shell shield now lasts until destroyed and increased from 35% to 50%.",
+        "Never-Ending March now lasts a minimum of 7 seconds."
+      ]
+    },
+    {
+      "name": "Sylvanas",
+      "short_name": "sylvanas",
+      "type": "nerf",
+      "notes": [
+        "Lost Soul extra 10% damage bonus removed."
+      ]
+    },
+    {
+      "name": "Tyrande",
+      "short_name": "tyrande",
+      "type": "buff",
+      "notes": [
+        "Lunar Flare Mythic reward requirements reduced from 45 to 40 Hero hits."
+      ]
+    }
+  ],
+  "bug_fixes": [
+    "Maps: Hanamura Samurai Sentinel camp now shows Bruiser icon. Braxis Holdout terrain rendering fix.",
+    "Azmodan: Battleborn now properly reduces Demon Lieutenant cooldown. Black Pool now deals reduced damage to non-Heroes.",
+    "Deathwing: AI can no longer use the removed Form Swap ability.",
+    "Gul'dan: Ruinous Affliction now correctly triggers on 3rd and 6th hit.",
+    "Jaina: Ice Cold no longer allows moving through pathing blockers. Ice Block tooltip now shows correct cooldown.",
+    "Muradin: Dwarf Toss no longer goes on cooldown on invalid terrain. Dwarf Block can no longer stack beyond 3 charges.",
+    "Murky: Fixed losing increased size after death. Fixed respawning faster than intended. Shell Game and Faster Fish UI fixes.",
+    "Rehgar: Elemental Conduit shield refresh now correctly searches around Rehgar and properly refreshes to 5 seconds.",
+    "Thrall: Echo of the Elements no longer bounces to cloaked targets. Rolling Thunder and Alpha Wolf damage now display as crits.",
+    "Zagara: Roaches now display correctly in death recap and use melee attacks instead of missiles."
+  ]
+}

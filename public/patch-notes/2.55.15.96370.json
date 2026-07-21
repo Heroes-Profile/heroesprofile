@@ -1,0 +1,138 @@
+{
+  "version": "2.55.15.96370",
+  "date": "February 10, 2026",
+  "title": "Live Patch",
+  "blizzard_url": "https://news.blizzard.com/en-us/article/24244446/heroes-of-the-storm-live-patch-notes-february-10-2026",
+  "general": [
+    { "type": "new", "note": "New Skin: Toon'Dan Gul'Dan." },
+    { "type": "change", "note": "Quests that can lose stacks will never drop below milestone thresholds." },
+    { "type": "change", "note": "Pinnacle Rewards renamed to Mythic Rewards." },
+    { "type": "change", "note": "Summoned Units now lose health each second (health and duration adjusted to compensate). Structures now prioritize Summoned Units when no minions remain, and Summoned Units no longer take half damage from Structures." },
+    { "type": "change", "note": "Watch Towers reset to neutral after 45 seconds unoccupied." }
+  ],
+  "maps": [
+    {
+      "map": "Volskaya Foundry",
+      "image": "bg_volskaya_foundry.jpg",
+      "type": "change",
+      "notes": ["Triglav Protector Basic Attacks deal +100% damage to structures (up from +50%), base attack damage reduced, scaling increased with 2 players."]
+    },
+    {
+      "map": "Warhead Junction",
+      "image": "bg_warhead_junction.jpg",
+      "type": "change",
+      "notes": ["Burn duration now displayed on affected structures."]
+    }
+  ],
+  "heroes": [
+    {
+      "name": "Azmodan",
+      "short_name": "azmodan",
+      "type": "change",
+      "notes": [
+        "Globe of Annihilation deals 50% damage to non-Heroes.",
+        "Demon Warriors reworked — now have 2 charges, lose health over time, deal double damage to Minions/Mercs.",
+        "Multiple talent adjustments including Pride moved to baseline at 450 stacks."
+      ]
+    },
+    {
+      "name": "Deathwing",
+      "short_name": "deathwing",
+      "type": "change",
+      "notes": [
+        "Major rework — Form Switch now only occurs on landing.",
+        "Attack damage reduced. Ability costs and cooldowns restructured.",
+        "Cataclysm gains a new Mythic quest (2,000 stacks for 2,500% damage to Structures/Minions).",
+        "Dragonflight cooldown reduced to 15s."
+      ]
+    },
+    {
+      "name": "Falstad",
+      "short_name": "falstad",
+      "type": "nerf",
+      "notes": [
+        "Lightning Rod range reduced, time between strikes increased."
+      ]
+    },
+    {
+      "name": "Jaina",
+      "short_name": "jaina",
+      "type": "buff",
+      "notes": [
+        "New Mythic quest on Frostbite — at 30,000 ability damage to chilled Heroes, Ice Block allows moving and casting while active."
+      ]
+    },
+    {
+      "name": "Kael'thas",
+      "short_name": "kaelthas",
+      "type": "buff",
+      "notes": [
+        "Convection reward increased to 200 damage / 100 health."
+      ]
+    },
+    {
+      "name": "Kerrigan",
+      "short_name": "kerrigan",
+      "type": "change",
+      "notes": [
+        "Ravage quest reworked with proximity-based stacking.",
+        "Free charge kill window reduced."
+      ]
+    },
+    {
+      "name": "Muradin",
+      "short_name": "muradin",
+      "type": "change",
+      "notes": [
+        "Storm Bolt quest reworked — stacks from Basic Attacks on slowed/stunned targets. Mythic Reward: +50% range, +100% width, pierces all.",
+        "Give 'em the Axe moved to Level 1.",
+        "Mountain King reworked."
+      ]
+    },
+    {
+      "name": "Murky",
+      "short_name": "murky",
+      "type": "change",
+      "notes": [
+        "Gains 35% Shield on revive. Slime now affects Structures.",
+        "Pufferfish quest reworked — Mythic Reward at 400 stacks grants 50% Health.",
+        "Shell Game and Egg Shell reworked. Big Tuna Kahuna removed."
+      ]
+    },
+    {
+      "name": "Sylvanas",
+      "short_name": "sylvanas",
+      "type": "buff",
+      "notes": [
+        "Mercenary Queen now applies 3 stacks of Black Arrows to Mercs."
+      ]
+    },
+    {
+      "name": "Thrall",
+      "short_name": "thrall",
+      "type": "mixed",
+      "notes": [
+        "Basic Attack damage reduced.",
+        "Crash Lightning and Echo of the Elements Mythic rewards buffed."
+      ]
+    },
+    {
+      "name": "Tyrande",
+      "short_name": "tyrande",
+      "type": "mixed",
+      "notes": [
+        "Lunar Flare gains a new Mythic quest (at 45 Hero hits, Basic Attacks occasionally trigger Lunar Flare).",
+        "Mana costs increased across abilities.",
+        "Moonlit Arrows moved to Level 1. Multiple talent shuffles."
+      ]
+    }
+  ],
+  "bug_fixes": [
+    "Alarak's Deadly Charge activation fix when in Trait slot.",
+    "Ana's Aim Down Sights can now be toggled during Silence.",
+    "Jaina's Frostbolt model fix for Dreadlord/Lunar skins.",
+    "Orphea's Allegrissimo cooldown reduction fix.",
+    "Sylvanas' Possession Quick Cast and cooldown reduction fixes.",
+    "Tychus' Odin Thrusters cooldown display fix."
+  ]
+}
