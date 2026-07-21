@@ -21,6 +21,7 @@ use App\Models\Replay;
 use App\Models\SeasonDate;
 use App\Models\SeasonGameVersion;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -30,6 +31,16 @@ class GlobalDataService
 {
     /** Replays older than (max replay ID - this value) get stricter rate limits. */
     public const OLD_REPLAY_THRESHOLD = 1_000_000;
+
+    /**
+     * Hour (America/New_York) at/after which the leaderboard "weeks since season start" value
+     * rolls over to the new day. The CalculateLeaderboards batch runs ~4am-12pm EST and freezes
+     * the snapshot; we flip only once it has completed so the displayed weeks matches the frozen
+     * rows and then stays stable for the rest of the day. Bump to 13 if the batch ever runs long.
+     */
+    public const LEADERBOARD_ROLLOVER_HOUR = 12;
+
+    private $cachedWeeksSinceSeasonStart = null;
 
     private $cachedHeroes = null;
 
@@ -276,11 +287,33 @@ class GlobalDataService
 
     public function getWeeksSinceSeasonStart()
     {
-        $currentSeasonStartDate = SeasonDate::orderBy('id', 'desc')->limit(1)->value('start_date');
-        $startDate = Carbon::parse($currentSeasonStartDate);
-        $currentDate = Carbon::now();
+        if (! is_null($this->cachedWeeksSinceSeasonStart)) {
+            return $this->cachedWeeksSinceSeasonStart;
+        }
 
-        return $startDate->diffInWeeks($currentDate);
+        $season = SeasonDate::orderBy('id', 'desc')->limit(1)->first(['start_date', 'end_date']);
+
+        // Mirror the CalculateLeaderboards (C#) batch: date-only DATEDIFF/7, rounded to the
+        // nearest whole week, capped at the season end, floored at 1.
+        $startDate = CarbonImmutable::parse($season->start_date, 'America/New_York')->startOfDay();
+
+        // Roll over to the new day's value only once the morning batch has completed (~12pm EST),
+        // so the displayed weeks matches the frozen snapshot instead of drifting on live now().
+        $nowNy = CarbonImmutable::now('America/New_York');
+        $effective = ($nowNy->hour >= self::LEADERBOARD_ROLLOVER_HOUR ? $nowNy : $nowNy->subDay())->startOfDay();
+
+        // Cap at season end (C#: dateDiffValue = min(now, end_date)).
+        if ($season->end_date) {
+            $endDate = CarbonImmutable::parse($season->end_date, 'America/New_York')->startOfDay();
+            if ($effective->gt($endDate)) {
+                $effective = $endDate;
+            }
+        }
+
+        $days = $startDate->diffInDays($effective);
+        $weeks = max(1, (int) round($days / 7));
+
+        return $this->cachedWeeksSinceSeasonStart = $weeks;
     }
 
     public function matchPredictionGetWeeksSinceSeasonStart()
