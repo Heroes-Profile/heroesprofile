@@ -143,9 +143,87 @@
       ]
     }
   ],
-  "bug_fixes": [
-    "General: Unstoppable targets correctly immune to Blinds.",
-    "Maps: Bosses no longer prioritize attacking summoned units. Blackheart's Bay AI coin turn-in. Infernal Shrines minion pathing near Punisher beams.",
-    "Heroes: D.Va Defense Matrix AI retargeting; Dragonflight CD-on-damage rule; Garrosh In For the Kill; Gul'dan Drain Life interrupt; Jaina Improved Ice Block / AI; Kael'thas Rebirth AI; Li Li Cloud Serpent FoW visibility; Medivh Poly Bomb AI; Nazeebo Superstition Corpse Spider display; Samuro Mirror Image move/AI; Stukov Weighted Pustule vs. slow removal; Thrall Feral Spirit extension."
-  ]
+  "bug_fixes": {
+    "general": [
+      "Unstoppable targets are now correctly immune to Blinds."
+    ],
+    "maps": [
+      {
+        "map": "All Maps",
+        "notes": ["Bosses no longer prioritize attacking summoned units."]
+      },
+      {
+        "map": "Blackheart's Bay",
+        "image": "bg_blackhearts_bay.jpg",
+        "notes": ["AI coin turn-in fix."]
+      },
+      {
+        "map": "Infernal Shrines",
+        "image": "bg_infernal_shrines.jpg",
+        "notes": ["Minion pathing fix near Punisher beams."]
+      }
+    ],
+    "heroes": [
+      {
+        "name": "D.Va",
+        "short_name": "dva",
+        "notes": ["Defense Matrix AI retargeting fix."]
+      },
+      {
+        "name": "Deathwing",
+        "short_name": "deathwing",
+        "notes": ["Dragonflight cooldown-on-damage rule fix."]
+      },
+      {
+        "name": "Garrosh",
+        "short_name": "garrosh",
+        "notes": ["In For the Kill fix."]
+      },
+      {
+        "name": "Gul'dan",
+        "short_name": "guldan",
+        "notes": ["Drain Life interrupt fix."]
+      },
+      {
+        "name": "Jaina",
+        "short_name": "jaina",
+        "notes": ["Improved Ice Block / AI fixes."]
+      },
+      {
+        "name": "Kael'thas",
+        "short_name": "kaelthas",
+        "notes": ["Rebirth AI fix."]
+      },
+      {
+        "name": "Li Li",
+        "short_name": "lili",
+        "notes": ["Cloud Serpent Fog of War visibility fix."]
+      },
+      {
+        "name": "Medivh",
+        "short_name": "medivh",
+        "notes": ["Poly Bomb AI fix."]
+      },
+      {
+        "name": "Nazeebo",
+        "short_name": "nazeebo",
+        "notes": ["Superstition Corpse Spider display fix."]
+      },
+      {
+        "name": "Samuro",
+        "short_name": "samuro",
+        "notes": ["Mirror Image movement/AI fixes."]
+      },
+      {
+        "name": "Stukov",
+        "short_name": "stukov",
+        "notes": ["Weighted Pustule vs. slow removal fix."]
+      },
+      {
+        "name": "Thrall",
+        "short_name": "thrall",
+        "notes": ["Feral Spirit extension fix."]
+      }
+    ]
+  }
 }

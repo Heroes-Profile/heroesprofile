@@ -210,27 +210,154 @@
       ]
     }
   ],
-  "bug_fixes": [
-    "General: Attack beams from Forts, Keeps, and the Core will now be more visible when attacking Heroes.",
-    "Haunted Mines: Fixed an issue where the player would not auto-mount when using the Hearthstone from inside the mines.",
-    "Warhead Junction: Fixed an issue that caused Heroes to not be revealed while launching a Warhead. Fixed an issue that caused the Warhead's channel beam to persist when interrupted.",
-    "Ana — Eye of Horus: No longer reveals in a global line when hitting a Structure. Removed a minor delay when dealing damage to enemy Heroes.",
-    "Anub'arak — Scarab Host: Fixed Beetles created by Ultimate Evolution clones of Anub'arak not gaining Spell Power bonuses, and Beetles not having their damage reduced by D.Va's Defense Matrix. Leeching Scarabs: fixed the healing done not being affected by damage modifiers.",
-    "Arthas — Howling Blast: Fixed the visuals not matching the area hit. Frostmourne Hungers: fixed the Slow benefit of Froststrike being provided baseline. Army of the Dead: fixed Ghouls not having their damage reduced by D.Va's Defense Matrix.",
-    "Deathwing — Cataclysm: Deathwing will no longer be teleported to where Cataclysm is targeted if he is killed during Cataclysm.",
-    "Deckard — Lorenado: Fixed an issue that caused Lorenado to not deal damage to Unstoppable enemies.",
-    "Hogger — No Control: Fixed an issue that caused No Control to target enemies that are not visible.",
-    "Jaina — Frostbolt: Fixed the range indicator not matching the actual range. Frostbolt, Blizzard, and Cone of Cold cast by Ultimate Evolution clones of Jaina now gain Spell Power bonuses. Summon Water Elemental: the Water Elemental's Basic Attack damage now inherits all damage modifiers placed on Jaina. Wintermute: fixed Wintermute effects dealing more damage than intended to Chilled targets; Wintermute's Blizzard, Cone of Cold, and Frostbolt now inherit all damage modifiers placed on Jaina and now cast at the same time Jaina initiates her cast, and are interrupted if either is interrupted.",
-    "Kerrigan — Summon Ultralisk: Fixed the Ultralisk not having its damage reduced by D.Va's Defense Matrix.",
-    "Leoric — Royal Focus: Now displays the remaining duration around Skeletal Swing's button.",
-    "Malfurion — Vengeful Roots: Fixed the Treant not having its damage reduced by D.Va's Defense Matrix. The Treant's damage now displays as Vengeful Roots in the Death Recap.",
-    "Medivh — Raven Familiar: Fixed Raven Familiars created by Ultimate Evolution clones of Medivh not gaining Spell Power bonuses. Guardian of Tirisfal: fixed targets near the edge of Arcane Rift's range not being hit.",
-    "Nazeebo — Voodoo Ritual: Quest progress indicators now show around the killed enemy Minion. Quest progress is now gained when a second Nazeebo damages the target and it dies within 6 seconds of the first Nazeebo applying Voodoo Ritual. Stacks gained prior to selecting Thing of the Deep are now granted to Thing of the Deep. Fixed incorrect total damage values in the Voodoo Ritual and Vile Infection tooltips. Thing of the Deep: no longer causes Voodoo Ritual to display two Quest indicators. Blood Ritual: fixed no Health or Mana being granted when the target affected by Voodoo Ritual timed out due to passive Health loss.",
-    "Nova — Fast Reload: Fixed Fast Reload triggering when a Triple Tap target dies before it hits them.",
-    "Probius — Photon Cannon: Fixed Photon Cannons not having their damage reduced by D.Va's Defense Matrix. Gathering Minerals: now also empowers any Photon Cannon already on the battlefield upon Quest completion.",
-    "Tychus — Overkill: Fixed an issue that caused Overkill to reveal unintended areas.",
-    "Xul — Raise Skeleton: Fixed Skeletal Warriors not having their damage reduced by D.Va's Defense Matrix. Skeletal Mages: fixed Mages not having their damage reduced by D.Va's Defense Matrix, and not applying their Slow in an aura while Blinded, against Evading Heroes, or with attacks against Heroes with Heroic-Attack-only Evasion effects. Weaken: fixed the damage reduction not applying while Xul is Blinded or against Heroes with Heroic-Attack-only Evasion effects.",
-    "Yrel — Avenging Wrath: Fixed an issue that caused Avenging Wrath to be interrupted by Roots while being channeled.",
-    "Zagara — Infested Drop: Fixed Roaches created by Ultimate Evolution clones of Zagara not gaining Spell Power bonuses."
-  ]
+  "bug_fixes": {
+    "general": [
+      "Attack beams from Forts, Keeps, and the Core will now be more visible when attacking Heroes."
+    ],
+    "maps": [
+      {
+        "map": "Haunted Mines",
+        "image": "bg_haunted_mines.jpg",
+        "notes": ["Fixed an issue where the player would not auto-mount when using the Hearthstone from inside the mines."]
+      },
+      {
+        "map": "Warhead Junction",
+        "image": "bg_warhead_junction.jpg",
+        "notes": [
+          "Fixed an issue that caused Heroes to not be revealed while launching a Warhead.",
+          "Fixed an issue that caused the Warhead's channel beam to persist when interrupted."
+        ]
+      }
+    ],
+    "heroes": [
+      {
+        "name": "Ana",
+        "short_name": "ana",
+        "notes": [
+          "Eye of Horus: no longer reveals in a global line when hitting a Structure.",
+          "Eye of Horus: removed a minor delay when dealing damage to enemy Heroes."
+        ]
+      },
+      {
+        "name": "Anub'arak",
+        "short_name": "anubarak",
+        "notes": [
+          "Scarab Host: fixed Beetles created by Ultimate Evolution clones of Anub'arak not gaining Spell Power bonuses.",
+          "Scarab Host: fixed Beetles not having their damage reduced by D.Va's Defense Matrix.",
+          "Leeching Scarabs: fixed the healing done not being affected by damage modifiers."
+        ]
+      },
+      {
+        "name": "Arthas",
+        "short_name": "arthas",
+        "notes": [
+          "Howling Blast: fixed the visuals not matching the area hit.",
+          "Frostmourne Hungers: fixed the Slow benefit of Froststrike being provided baseline.",
+          "Army of the Dead: fixed Ghouls not having their damage reduced by D.Va's Defense Matrix."
+        ]
+      },
+      {
+        "name": "Deathwing",
+        "short_name": "deathwing",
+        "notes": ["Cataclysm: Deathwing will no longer be teleported to where Cataclysm is targeted if he is killed during Cataclysm."]
+      },
+      {
+        "name": "Deckard",
+        "short_name": "deckard",
+        "notes": ["Lorenado: fixed an issue that caused Lorenado to not deal damage to Unstoppable enemies."]
+      },
+      {
+        "name": "Hogger",
+        "short_name": "hogger",
+        "notes": ["No Control: fixed an issue that caused No Control to target enemies that are not visible."]
+      },
+      {
+        "name": "Jaina",
+        "short_name": "jaina",
+        "notes": [
+          "Frostbolt: fixed the range indicator not matching the actual range.",
+          "Frostbolt, Blizzard, and Cone of Cold cast by Ultimate Evolution clones of Jaina now gain Spell Power bonuses.",
+          "Summon Water Elemental: the Water Elemental's Basic Attack damage now inherits all damage modifiers placed on Jaina.",
+          "Wintermute: fixed Wintermute effects dealing more damage than intended to Chilled targets.",
+          "Wintermute's Blizzard, Cone of Cold, and Frostbolt now inherit all damage modifiers placed on Jaina, initiate their casts at the same time Jaina initiates hers, and are interrupted if either is interrupted."
+        ]
+      },
+      {
+        "name": "Kerrigan",
+        "short_name": "kerrigan",
+        "notes": ["Summon Ultralisk: fixed the Ultralisk not having its damage reduced by D.Va's Defense Matrix."]
+      },
+      {
+        "name": "Leoric",
+        "short_name": "leoric",
+        "notes": ["Royal Focus: now displays the remaining duration around Skeletal Swing's button."]
+      },
+      {
+        "name": "Malfurion",
+        "short_name": "malfurion",
+        "notes": [
+          "Vengeful Roots: fixed the Treant not having its damage reduced by D.Va's Defense Matrix.",
+          "Vengeful Roots: the Treant's damage now displays as Vengeful Roots in the Death Recap."
+        ]
+      },
+      {
+        "name": "Medivh",
+        "short_name": "medivh",
+        "notes": [
+          "Raven Familiar: fixed Raven Familiars created by Ultimate Evolution clones of Medivh not gaining Spell Power bonuses.",
+          "Guardian of Tirisfal: fixed targets near the edge of Arcane Rift's range not being hit."
+        ]
+      },
+      {
+        "name": "Nazeebo",
+        "short_name": "nazeebo",
+        "notes": [
+          "Voodoo Ritual: Quest progress indicators now show around the killed enemy Minion.",
+          "Voodoo Ritual: Quest progress is now gained when a second Nazeebo damages the target and it dies within 6 seconds of the first Nazeebo applying Voodoo Ritual.",
+          "Voodoo Ritual: stacks gained prior to selecting Thing of the Deep are now granted to Thing of the Deep.",
+          "Fixed incorrect total damage values in the Voodoo Ritual and Vile Infection tooltips.",
+          "Thing of the Deep: no longer causes Voodoo Ritual to display two Quest indicators.",
+          "Blood Ritual: fixed no Health or Mana being granted when the target affected by Voodoo Ritual timed out due to passive Health loss."
+        ]
+      },
+      {
+        "name": "Nova",
+        "short_name": "nova",
+        "notes": ["Fast Reload: fixed Fast Reload triggering when a Triple Tap target dies before it hits them."]
+      },
+      {
+        "name": "Probius",
+        "short_name": "probius",
+        "notes": [
+          "Photon Cannon: fixed Photon Cannons not having their damage reduced by D.Va's Defense Matrix.",
+          "Gathering Minerals: now also empowers any Photon Cannon already on the battlefield upon Quest completion."
+        ]
+      },
+      {
+        "name": "Tychus",
+        "short_name": "tychus",
+        "notes": ["Overkill: fixed an issue that caused Overkill to reveal unintended areas."]
+      },
+      {
+        "name": "Xul",
+        "short_name": "xul",
+        "notes": [
+          "Raise Skeleton: fixed Skeletal Warriors not having their damage reduced by D.Va's Defense Matrix.",
+          "Skeletal Mages: fixed Mages not having their damage reduced by D.Va's Defense Matrix.",
+          "Skeletal Mages: fixed Mages not applying their Slow in an aura while Blinded or against Evading Heroes, and not applying their Slow with attacks against Heroes with Heroic-Attack-only Evasion effects.",
+          "Weaken: fixed the damage reduction not applying while Xul is Blinded or against Heroes with Heroic-Attack-only Evasion effects."
+        ]
+      },
+      {
+        "name": "Yrel",
+        "short_name": "yrel",
+        "notes": ["Avenging Wrath: fixed an issue that caused Avenging Wrath to be interrupted by Roots while being channeled."]
+      },
+      {
+        "name": "Zagara",
+        "short_name": "zagara",
+        "notes": ["Infested Drop: fixed Roaches created by Ultimate Evolution clones of Zagara not gaining Spell Power bonuses."]
+      }
+    ]
+  }
 }
