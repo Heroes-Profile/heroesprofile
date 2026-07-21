@@ -45,6 +45,9 @@
         "Breath of Life healing 20% → 15%; Preservation healing 30% → 25%.",
         "Flames of Fury cooldown 5s → 6s with a new Mythic quest (hit 40 Heroes without dying to refresh Dragonqueen duration).",
         "Lifeblossom removes Slows/Roots and persists through transformation.",
+        "Live and Let Live grants an additional 25% charge recharge rate.",
+        "On Ruby Wings refreshes if it hits 3 or more Heroes.",
+        "Ancient Flame gains an additional 25% Health bonus.",
         "Draconic Discipline now reduces Preservation cooldown per Hero healed instead of extending duration."
       ]
     },
@@ -86,6 +89,7 @@
         "Time Trap health 400 → 250.",
         "Once Again The First Time quest 40 → 20 stacks but requires no deaths.",
         "Deep Breathing 1% → 0.5% per stack, uncapped.",
+        "Chronic Conditions now auto-activates on enemy contact; slow/speed 30% → 20%.",
         "Here and There range 20 → 40 with snap targeting."
       ]
     },
@@ -94,9 +98,11 @@
       "short_name": "diablo",
       "type": "mixed",
       "notes": [
-        "Shadow Charge damage 40 → 45; Overpower damage 73 → 80.",
+        "Shadow Charge damage 40 → 45, terrain collision damage 130 → 140; Overpower damage 73 → 80.",
         "Fire Stomp damage reduced (12 → 11, return 36 → 34).",
-        "Diabolical Momentum cooldown reduction 1.5s → 2s per attack."
+        "Diabolical Momentum cooldown reduction 1.5s → 2s per attack.",
+        "Dying Breath cooldown 25s → 30s.",
+        "Lord of Terror health steal 10% → 12%."
       ]
     },
     {
@@ -105,7 +111,8 @@
       "type": "mixed",
       "notes": [
         "Swift as the Wind Movement Speed 30% → 40%; Pathfinder duration 4s → 6s.",
-        "Perfect Defense and Flow Like Water cooldown reduction improved.",
+        "Strike at the Heart damage 134 → 142.",
+        "Perfect Defense cooldown reduction 2s → 2.5s; Flow Like Water cooldown reduction 3s → 4s.",
         "Final Cut damage 125 → 115."
       ]
     },
@@ -132,7 +139,7 @@
       "short_name": "malganis",
       "type": "nerf",
       "notes": [
-        "Will of Tichondrius stun increase 0.5s → 0.25s.",
+        "Will of Tichondrius: the talent's bonus stun duration reduced from 0.5s to 0.25s.",
         "Blind as a Bat now has a 0.2s reactivation delay between swipes."
       ]
     },
@@ -156,6 +163,9 @@
         "Meteor Shower damage 151 → 200, +66% area, 35% slow (cooldown 2.5s → 6s).",
         "Explosive Rune cooldown 4s → 2.5s, damage now 440 over 5 seconds.",
         "Blast Wave damage 104 → 120.",
+        "Engulfing Flame bonus 75% → 50%.",
+        "Lava Surge no longer reduces cooldowns; now grants minion speed.",
+        "Heroic Difficulty reworked.",
         "Sulfuras Smash gains a new Mythic quest (hit 8 Heroes for an extra charge)."
       ]
     },
@@ -173,9 +183,11 @@
       "type": "mixed",
       "notes": [
         "Searing Lash gains a new quest (+3 max health, +2 mana per Hero hit).",
+        "Pity the Frail cooldown 1.5s → 1s.",
         "Inquisitor's Prayer restores 25 mana per Hero and extends Zeal by 2 seconds.",
         "Intercession cooldown 45s → 60s.",
-        "Scarlet Wrath mana return 0.5% → 1%."
+        "Scarlet Wrath mana return 0.5% → 1%.",
+        "Guiding Light grants 15% Spell Power from Zeal."
       ]
     },
     {
@@ -183,8 +195,8 @@
       "short_name": "yrel",
       "type": "mixed",
       "notes": [
-        "Basic ability buffs with mana costs reduced (65 → 50): Vindication heal 320 → 370, Righteous Hammer stun 0.75s → 1s, Avenging Wrath slow 50% → 60%.",
-        "Divine Purpose cooldown 8s → 12s; basic abilities now reduce it by 3 seconds on interrupt and it no longer resets on heroic use."
+        "Basic ability buffs with mana costs reduced (65 → 50): Vindication heal 320 → 370 and damage 140 → 160, Righteous Hammer stun 0.75s → 1s and damage 125 → 140, Avenging Wrath slow 50% → 60% and damage 225 → 260.",
+        "Divine Purpose cooldown 8s → 12s; cooldown refund when a basic ability is interrupted reduced from 8s to 3s, and it no longer resets on heroic use."
       ]
     }
   ],
