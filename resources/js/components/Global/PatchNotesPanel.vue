@@ -90,7 +90,6 @@
       </div>
     </div>
 
-    <div v-else-if="legacyHtml" v-html="legacyHtml"></div>
     <div v-else class="text-center py-4 text-gray-medium">No summary available for this patch.</div>
   </div>
 </template>
@@ -108,7 +107,6 @@ export default {
     return {
       loading: false,
       notes: null,
-      legacyHtml: null,
       selectedHero: null,
       showBugFixes: false,
       badges: {
@@ -152,22 +150,15 @@ export default {
     async loadNotes() {
       this.loading = true;
       this.notes = null;
-      this.legacyHtml = null;
       this.selectedHero = null;
       this.showBugFixes = false;
       try {
         const response = await fetch(`/patch-notes/${this.version}.json`);
         if (response.ok) {
           this.notes = await response.json();
-        } else {
-          const legacyResponse = await fetch(`/patch-notes/${this.version}.html`);
-          if (legacyResponse.ok) {
-            this.legacyHtml = await legacyResponse.text();
-          }
         }
       } catch (e) {
         this.notes = null;
-        this.legacyHtml = null;
       } finally {
         this.loading = false;
       }
