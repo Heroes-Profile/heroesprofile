@@ -12,11 +12,13 @@
       <div class="md:w-[50%]">
        Patreon subscribers may bypass this page and access the site directly. Please log in to your account
       and authenticate with Patreon to gain access.
+      <br>
+      <br>
       <custom-button href="/Authenticate/Battlenet" text="Login with Existing Patreon Donation" alt="Login with Battle.net" size="big" class=" mt-[2em]"></custom-button>
       </div>
       <div class="md:hidden   bg-white w-full h-[2px] "></div>
       <div class="md:w-[50%]">
-      Please consider supporting the site by donating on Patreon. Your support helps us cover server costs and keep the site running. Once you have donated, you may log in to view the site.
+      Please consider supporting the site by donating on Patreon. Your support helps us cover server and architecture costs and keep the site running. Once you have donated, you may log in to view the site.
       <custom-button href="https://www.patreon.com/c/heroesprofile" text="Donate on Patreon" alt="Donate on Patreon" size="big"  color="red" class="mb-4 mt-[2em]"></custom-button>
        <p class="mb-4 text-sm italic text-center mt-2">
       For new subscribers, it may take 10-15 minutes for the site to recognize your subscription.
@@ -26,7 +28,7 @@
    <div class="max-w-[900px] mx-auto">
     
     <p class="mb-4">
-      Our funding goal is $800 per month, which covers server costs.
+      Our funding goal is ${{ patreongoal }} per month, which covers server and architecture costs.
       As of now, we have raised ${{ patreonearnings }} per month through Patreon subscriptions.
     </p>
   
@@ -35,7 +37,7 @@
     <div class="progress-container">
       <div class="progress-bar" :style="{ width: progressPercent + '%' }"></div>
     </div>
-    <p class="mx-auto text-center text-sm italic">Raised: ${{ patreonearnings }} of $800</p>
+    <p class="mx-auto text-center text-sm italic">Raised: ${{ patreonearnings }} of ${{ patreongoal }}</p>
   </div>
   </div>
 </template>
@@ -48,11 +50,14 @@ export default {
       type: Number,
       required: true,
     },
+    patreongoal: {
+      type: Number,
+      required: true,
+    },
   },
   computed: {
     progressPercent() {
-      const goal = 800;
-      const percent = (this.patreonearnings / goal) * 100;
+      const percent = (this.patreonearnings / this.patreongoal) * 100;
       return Math.min(percent, 100).toFixed(2);
     },
   },

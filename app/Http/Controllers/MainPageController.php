@@ -25,6 +25,7 @@ class MainPageController extends Controller
             'latestPatch' => $this->globalDataService->getLatestPatch(),
             'latestGameDate' => $this->globalDataService->getLatestGameDate(),
             'patreonEarnings' => $this->getPatreonEarnings(),
+            'patreonGoal' => $this->getPatreonGoal(),
         ]);
     }
 
@@ -57,5 +58,10 @@ class MainPageController extends Controller
     public function getPatreonEarnings(): ?float
     {
         return PatreonTotalTracker::select('total')->orderByDesc('patreon_total_tracker_id')->first()?->total ?? 0.0;
+    }
+
+    public function getPatreonGoal(): ?float
+    {
+        return PatreonTotalTracker::select('goal')->orderByDesc('patreon_total_tracker_id')->first()?->goal ?? 800.0;
     }
 }

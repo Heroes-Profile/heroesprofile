@@ -5,6 +5,7 @@
 @section('content')
   <community-support
     :patreonearnings="{{ json_encode($patreonEarnings) }}"
+    :patreongoal="{{ json_encode($patreonGoal) }}"
   >
   </community-support>
 @endsection
