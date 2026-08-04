@@ -151,10 +151,12 @@
           ></single-select-filter>
 
           <!-- Stat Type Filter -->
-          <single-select-filter v-if="showStatTypeFilter" 
-            :values="filters.stat_filter" 
-            :text="'Stat Filter'" 
-            :defaultValue="statfilter" 
+          <single-select-filter v-if="showStatTypeFilter"
+            :values="filters.stat_filter"
+            :text="'Stat Filter'"
+            :defaultValue="statfilter"
+            :disabled="statfilterdisabled"
+            :key="'statfilter-' + statfilterdisabled"
             @input-changed="handleInputChange"
           ></single-select-filter>
 
@@ -508,6 +510,7 @@
         showNav: true,
         defaultRoleModified: null,
         modifiedGroupSizeDefaultValue: null,
+        statfilterdisabled: false,
         swapHeroesFilter: false,
         swapRolesFilter: false,
         includetimeframemodified: null,
@@ -574,6 +577,11 @@
         this.modifiedGroupSizeDefaultValue = this.groupSizeDefaultValue;
       } else {
         this.modifiedGroupSizeDefaultValue = "Solo";
+      }
+
+      if(this.groupsizeadvanced && this.groupSizeDefaultValue && this.groupSizeDefaultValue != 'All'){
+        this.statfilter = 'win_rate';
+        this.statfilterdisabled = true;
       }
 
       if(this.tierrankinput != null && this.tierrankinput !== ''){
@@ -866,6 +874,16 @@
 
           }
         }
+        if(eventPayload.field == "Group Size" && this.groupsizeadvanced){
+          if(eventPayload.value && eventPayload.value != 'All'){
+            this.statfilter = 'win_rate';
+            this.selectedSingleFilters['Stat Filter'] = 'win_rate';
+            this.statfilterdisabled = true;
+          } else {
+            this.statfilterdisabled = false;
+          }
+        }
+
         if(eventPayload.field == "Season" && this.includegroupsize){
           if(!this.overrideGroupSizeRemoval){
             this.modifiedincludegroupsize = (eventPayload.value >= 20);

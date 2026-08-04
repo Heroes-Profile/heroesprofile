@@ -46,16 +46,7 @@ class GlobalsInputValidationController extends Controller
             'timeframe' => $timeframeType !== 'last_update' ? ['required', new TimeframeMinorInputValidation($timeframeType)] : 'nullable',
             'game_type' => ['required', new GameTypeInputValidation],
             'region' => ['sometimes', 'nullable', new RegionInputValidation],
-            'statfilter' => [
-                'sometimes',
-                'nullable',
-                new StatFilterInputValidation($timeframeType, $timeframe),
-                function ($attribute, $value, $fail) {
-                    if (! empty(request('groupsize')) && request('groupsize') !== 'All' && ! empty($value) && $value !== 'win_rate') {
-                        $fail('The statfilter must be win_rate when groupsize is set.');
-                    }
-                },
-            ],
+            'statfilter' => ['sometimes', 'nullable', new StatFilterInputValidation($timeframeType, $timeframe)],
             'hero_level' => ['sometimes', 'nullable', new HeroLevelInputValidation],
             'hero' => ['sometimes', 'nullable', new HeroInputValidation],
             'role' => ['sometimes', 'nullable', new RoleInputValidation],
