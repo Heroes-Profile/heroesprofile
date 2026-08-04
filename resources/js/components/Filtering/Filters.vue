@@ -47,10 +47,10 @@
           ></single-select-filter>
 
           <!-- Group Size -->
-          <single-select-filter v-if="modifiedincludegroupsize" 
-            :values="filters.group_size" 
-            :text="'Group Size'" 
-            @input-changed="handleInputChange" 
+          <single-select-filter v-if="modifiedincludegroupsize && !groupsizeadvanced"
+            :values="filters.group_size"
+            :text="'Group Size'"
+            @input-changed="handleInputChange"
             :defaultValue="modifiedGroupSizeDefaultValue"
             :disabledeselectfilters="disabledeselectfilters"
           ></single-select-filter>
@@ -351,6 +351,15 @@
               <button class="h-[40px] bg-blue md:m-t-auto  p-2 border-r-[1px] border-t-[1px] border-b-[1px] hover:bg-teal" @click="resetGameDate()">X</button>
             </div>
           </div>
+
+          <!-- Group Size (advanced, global pages) -->
+          <single-select-filter v-if="modifiedincludegroupsize && groupsizeadvanced && toggleExtraFilters"
+            :values="filters.group_size"
+            :text="'Group Size'"
+            @input-changed="handleInputChange"
+            :defaultValue="modifiedGroupSizeDefaultValue"
+            :disabledeselectfilters="disabledeselectfilters"
+          ></single-select-filter>
         </div>
         <button :disabled="disabledFilter" @click="applyFilter"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disabledFilter, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disabledFilter}">
           Filter
@@ -396,6 +405,7 @@
       playerheroroletype: Boolean,
       leaderboardfiltertype: Boolean,
       includegroupsize: Boolean,
+      groupsizeadvanced: Boolean,
       includecharttype: Boolean,
       includetimeframetype: Boolean,
       includetimeframe: Boolean,

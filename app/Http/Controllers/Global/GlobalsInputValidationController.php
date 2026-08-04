@@ -10,6 +10,7 @@ use App\Rules\HeroInputValidation;
 use App\Rules\HeroLevelInputValidation;
 use App\Rules\RegionInputValidation;
 use App\Rules\RoleInputValidation;
+use App\Rules\StackSizeInputValidation;
 use App\Rules\StatFilterInputValidation;
 use App\Rules\TierInputByIDValidation;
 use App\Rules\TierInputByNameValidation;
@@ -34,6 +35,7 @@ class GlobalsInputValidationController extends Controller
             'role_league_tier' => ['sometimes', 'nullable', new TierInputByNameValidation],
             'mirror' => 'sometimes|in:null,0,1',
             'minimum_games' => 'sometimes|nullable|integer',
+            'group_size' => ['sometimes', 'nullable', new StackSizeInputValidation],
         ];
     }
 
@@ -44,7 +46,16 @@ class GlobalsInputValidationController extends Controller
             'timeframe' => $timeframeType !== 'last_update' ? ['required', new TimeframeMinorInputValidation($timeframeType)] : 'nullable',
             'game_type' => ['required', new GameTypeInputValidation],
             'region' => ['sometimes', 'nullable', new RegionInputValidation],
-            'statfilter' => ['sometimes', 'nullable', new StatFilterInputValidation($timeframeType, $timeframe)],
+            'statfilter' => [
+                'sometimes',
+                'nullable',
+                new StatFilterInputValidation($timeframeType, $timeframe),
+                function ($attribute, $value, $fail) {
+                    if (! empty(request('groupsize')) && request('groupsize') !== 'All' && ! empty($value) && $value !== 'win_rate') {
+                        $fail('The statfilter must be win_rate when groupsize is set.');
+                    }
+                },
+            ],
             'hero_level' => ['sometimes', 'nullable', new HeroLevelInputValidation],
             'hero' => ['sometimes', 'nullable', new HeroInputValidation],
             'role' => ['sometimes', 'nullable', new RoleInputValidation],
@@ -53,6 +64,7 @@ class GlobalsInputValidationController extends Controller
             'hero_league_tier' => ['sometimes', 'nullable', new TierInputByIDValidation],
             'role_league_tier' => ['sometimes', 'nullable', new TierInputByIDValidation],
             'mirror' => 'sometimes|in:null,0,1',
+            'groupsize' => ['sometimes', 'nullable', new StackSizeInputValidation],
         ];
     }
 
