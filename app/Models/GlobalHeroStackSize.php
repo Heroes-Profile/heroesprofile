@@ -98,6 +98,15 @@ class GlobalHeroStackSize extends Model
         return $query;
     }
 
+    public function scopeFilterByHeroStackSize($query, $stackSize)
+    {
+        if (! empty($stackSize)) {
+            return $query->whereIn('hero_stack_size', $stackSize);
+        }
+
+        return $query;
+    }
+
     public function scopeFilterByAllyStackSize($query, $stack_size)
     {
         if ($stack_size) {

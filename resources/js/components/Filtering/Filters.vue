@@ -47,10 +47,10 @@
           ></single-select-filter>
 
           <!-- Group Size -->
-          <single-select-filter v-if="modifiedincludegroupsize" 
-            :values="filters.group_size" 
-            :text="'Group Size'" 
-            @input-changed="handleInputChange" 
+          <single-select-filter v-if="modifiedincludegroupsize && !groupsizeadvanced"
+            :values="filters.group_size"
+            :text="'Group Size'"
+            @input-changed="handleInputChange"
             :defaultValue="modifiedGroupSizeDefaultValue"
             :disabledeselectfilters="disabledeselectfilters"
           ></single-select-filter>
@@ -151,10 +151,12 @@
           ></single-select-filter>
 
           <!-- Stat Type Filter -->
-          <single-select-filter v-if="showStatTypeFilter" 
-            :values="filters.stat_filter" 
-            :text="'Stat Filter'" 
-            :defaultValue="statfilter" 
+          <single-select-filter v-if="showStatTypeFilter"
+            :values="filters.stat_filter"
+            :text="'Stat Filter'"
+            :defaultValue="statfilter"
+            :disabled="statfilterdisabled"
+            :key="'statfilter-' + statfilterdisabled"
             @input-changed="handleInputChange"
           ></single-select-filter>
 
@@ -351,6 +353,15 @@
               <button class="h-[40px] bg-blue md:m-t-auto  p-2 border-r-[1px] border-t-[1px] border-b-[1px] hover:bg-teal" @click="resetGameDate()">X</button>
             </div>
           </div>
+
+          <!-- Group Size (advanced, global pages) -->
+          <single-select-filter v-if="modifiedincludegroupsize && groupsizeadvanced && toggleExtraFilters"
+            :values="filters.group_size"
+            :text="'Group Size'"
+            @input-changed="handleInputChange"
+            :defaultValue="modifiedGroupSizeDefaultValue"
+            :disabledeselectfilters="disabledeselectfilters"
+          ></single-select-filter>
         </div>
         <button :disabled="disabledFilter" @click="applyFilter"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disabledFilter, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disabledFilter}">
           Filter
@@ -396,6 +407,7 @@
       playerheroroletype: Boolean,
       leaderboardfiltertype: Boolean,
       includegroupsize: Boolean,
+      groupsizeadvanced: Boolean,
       includecharttype: Boolean,
       includetimeframetype: Boolean,
       includetimeframe: Boolean,
@@ -498,6 +510,7 @@
         showNav: true,
         defaultRoleModified: null,
         modifiedGroupSizeDefaultValue: null,
+        statfilterdisabled: false,
         swapHeroesFilter: false,
         swapRolesFilter: false,
         includetimeframemodified: null,
@@ -564,6 +577,11 @@
         this.modifiedGroupSizeDefaultValue = this.groupSizeDefaultValue;
       } else {
         this.modifiedGroupSizeDefaultValue = "Solo";
+      }
+
+      if(this.groupsizeadvanced && this.groupSizeDefaultValue && this.groupSizeDefaultValue != 'All'){
+        this.statfilter = 'win_rate';
+        this.statfilterdisabled = true;
       }
 
       if(this.tierrankinput != null && this.tierrankinput !== ''){
@@ -856,6 +874,16 @@
 
           }
         }
+        if(eventPayload.field == "Group Size" && this.groupsizeadvanced){
+          if(eventPayload.value && eventPayload.value != 'All'){
+            this.statfilter = 'win_rate';
+            this.selectedSingleFilters['Stat Filter'] = 'win_rate';
+            this.statfilterdisabled = true;
+          } else {
+            this.statfilterdisabled = false;
+          }
+        }
+
         if(eventPayload.field == "Season" && this.includegroupsize){
           if(!this.overrideGroupSizeRemoval){
             this.modifiedincludegroupsize = (eventPayload.value >= 20);
