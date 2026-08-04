@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Global;
 
 use App\Http\Controllers\Global\Concerns\HandlesAsyncGlobalQueries;
 use App\Models\GlobalHeroChange;
+use App\Models\GlobalHeroStackSize;
 use App\Models\GlobalHeroStats;
 use App\Models\GlobalHeroStatsBans;
 use App\Models\SeasonGameVersion;
@@ -87,46 +88,75 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
         $role = $request['role'];
 
-        $data = GlobalHeroStats::query()
-            ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stats.hero')
-            ->select('heroes.name', 'heroes.short_name', 'heroes.id as hero_id', 'global_hero_stats.win_loss', 'heroes.new_role as role')
-            ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
-            ->when(! empty($statFilter) && $statFilter !== 'win_rate', function ($query) use ($statFilter) {
-                return $query->selectRaw("SUM(global_hero_stats.$statFilter) as total_filter_type");
-            })
-            ->filterByGameVersion($gameVersionIDs)
-            ->filterByGameType($gameType)
-            ->filterByLeagueTier($leagueTier)
-            ->filterByHeroLeagueTier($heroLeagueTier)
-            ->filterByRoleLeagueTier($roleLeagueTier)
-            ->filterByGameMap($gameMap)
-            ->filterByHeroLevel($heroLevel)
-            ->excludeMirror($mirror)
-            ->filterByRegion($region)
-            ->groupBy('global_hero_stats.hero', 'global_hero_stats.win_loss')
-            ->orderBy('heroes.name', 'asc')
-            ->orderBy('global_hero_stats.win_loss', 'asc')
-            ->get();
+        $groupSize = $this->getGroupSizeFilterValues($request['groupsize']);
 
-        $banData = GlobalHeroStatsBans::query()
-            ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')
-            ->select('heroes.name', 'heroes.id as hero_id')
-            ->selectRaw('SUM(global_hero_stats_bans.bans) as bans')
-            ->filterByGameVersion($gameVersionIDs)
-            ->filterByGameType($gameType)
-            ->filterByLeagueTier($leagueTier)
-            ->filterByHeroLeagueTier($heroLeagueTier)
-            ->filterByRoleLeagueTier($roleLeagueTier)
-            ->filterByGameMap($gameMap)
-            ->filterByHeroLevel($heroLevel)
-            ->filterByRegion($region)
-            ->groupBy('global_hero_stats_bans.hero')
-            ->orderBy('heroes.name', 'asc')
-            ->get();
+        if ($groupSize) {
+            $statFilter = 'win_rate';
+
+            $data = GlobalHeroStackSize::query()
+                ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stack_size.hero')
+                ->select('heroes.name', 'heroes.short_name', 'heroes.id as hero_id', 'global_hero_stack_size.win_loss', 'heroes.new_role as role')
+                ->selectRaw('SUM(global_hero_stack_size.games_played) as games_played')
+                ->filterByGameVersion($gameVersionIDs)
+                ->filterByGameType($gameType)
+                ->filterByLeagueTier($leagueTier)
+                ->filterByHeroLeagueTier($heroLeagueTier)
+                ->filterByRoleLeagueTier($roleLeagueTier)
+                ->filterByGameMap($gameMap)
+                ->filterByHeroLevel($heroLevel)
+                ->excludeMirror($mirror)
+                ->filterByRegion($region)
+                ->filterByHeroStackSize($groupSize)
+                ->groupBy('global_hero_stack_size.hero', 'global_hero_stack_size.win_loss')
+                ->orderBy('heroes.name', 'asc')
+                ->orderBy('global_hero_stack_size.win_loss', 'asc')
+                ->get();
+        } else {
+            $data = GlobalHeroStats::query()
+                ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stats.hero')
+                ->select('heroes.name', 'heroes.short_name', 'heroes.id as hero_id', 'global_hero_stats.win_loss', 'heroes.new_role as role')
+                ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
+                ->when(! empty($statFilter) && $statFilter !== 'win_rate', function ($query) use ($statFilter) {
+                    return $query->selectRaw("SUM(global_hero_stats.$statFilter) as total_filter_type");
+                })
+                ->filterByGameVersion($gameVersionIDs)
+                ->filterByGameType($gameType)
+                ->filterByLeagueTier($leagueTier)
+                ->filterByHeroLeagueTier($heroLeagueTier)
+                ->filterByRoleLeagueTier($roleLeagueTier)
+                ->filterByGameMap($gameMap)
+                ->filterByHeroLevel($heroLevel)
+                ->excludeMirror($mirror)
+                ->filterByRegion($region)
+                ->groupBy('global_hero_stats.hero', 'global_hero_stats.win_loss')
+                ->orderBy('heroes.name', 'asc')
+                ->orderBy('global_hero_stats.win_loss', 'asc')
+                ->get();
+        }
+
+        $banData = collect();
+
+        if (! $groupSize) {
+            $banData = GlobalHeroStatsBans::query()
+                ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stats_bans.hero')
+                ->select('heroes.name', 'heroes.id as hero_id')
+                ->selectRaw('SUM(global_hero_stats_bans.bans) as bans')
+                ->filterByGameVersion($gameVersionIDs)
+                ->filterByGameType($gameType)
+                ->filterByLeagueTier($leagueTier)
+                ->filterByHeroLeagueTier($heroLeagueTier)
+                ->filterByRoleLeagueTier($roleLeagueTier)
+                ->filterByGameMap($gameMap)
+                ->filterByHeroLevel($heroLevel)
+                ->filterByRegion($region)
+                ->groupBy('global_hero_stats_bans.hero')
+                ->orderBy('heroes.name', 'asc')
+                ->get();
+        }
 
         $changeData = null;
 
-        if ($this->checkIfChange($gameVersion, $region, $gameType, $gameMap, $leagueTier, $heroLeagueTier, $roleLeagueTier, $heroLevel)) {
+        if (! $groupSize && $this->checkIfChange($gameVersion, $region, $gameType, $gameMap, $leagueTier, $heroLeagueTier, $roleLeagueTier, $heroLevel)) {
             $changeData = GlobalHeroChange::query()
                 ->join('heroesprofile.heroes', 'heroesprofile.heroes.id', '=', 'global_hero_change.hero')
                 ->select('heroes.name', 'heroes.id as hero_id', 'win_rate as change_win_rate')
@@ -136,6 +166,24 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         }
 
         return $this->combineData($data, $statFilter, $banData, $changeData, $hero, $role);
+    }
+
+    private function getGroupSizeFilterValues($groupsize)
+    {
+        $groupSizeValues = null;
+        if ($groupsize == 'Solo') {
+            $groupSizeValues = [0, 1];
+        } elseif ($groupsize == 'Duo') {
+            $groupSizeValues = [2];
+        } elseif ($groupsize == '3 Players') {
+            $groupSizeValues = [3];
+        } elseif ($groupsize == '4 Players') {
+            $groupSizeValues = [4];
+        } elseif ($groupsize == '5 Players') {
+            $groupSizeValues = [5];
+        }
+
+        return $groupSizeValues;
     }
 
     private function calculateGameVersionsForHeroChange($version)

@@ -39,6 +39,9 @@
       :includeherorank="true"
       :includerolerank="true"
       :includemirror="true"
+      :includegroupsize="true"
+      :groupsizeadvanced="true"
+      :groupSizeDefaultValue="groupsize"
       :includetalentbuildtype="true"
       :advancedfiltering="advancedfiltering"
       :buildtypedefault="defaultbuildtype"
@@ -83,7 +86,7 @@
             <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
               {{ getValueFixed(data.average_pick_rate) }}
             </th>
-            <th v-if="this.gametype.includes('sl')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th v-if="this.gametype.includes('sl') && !this.groupSizeActive" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
               {{ getValueFixed(data.average_ban_rate) }}
             </th>
             <th class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
@@ -121,7 +124,7 @@
             <th @click="sortTable('pick_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Pick Rate %
             </th>   
-            <th v-if="this.gametype.includes('sl')" @click="sortTable('ban_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th v-if="this.gametype.includes('sl') && !this.groupSizeActive" @click="sortTable('ban_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Ban Rate %
             </th>    
             <th @click="sortTable('influence')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -163,7 +166,7 @@
               <td v-else-if="showWinRateChange && row.win_rate_change >= 0" class="py-2 px-3 "><span v-html="'&plus;'"></span>{{ getValueFixed(row.win_rate_change) }}</td>
               <td class="py-2 px-3">{{ getValueFixed(row.popularity) }}</td>
               <td class="py-2 px-3">{{ getValueFixed(row.pick_rate) }}</td>
-              <td  v-if="this.gametype.includes('sl')" class="py-2 px-3">{{ getValueFixed(row.ban_rate) }}</td>
+              <td  v-if="this.gametype.includes('sl') && !this.groupSizeActive" class="py-2 px-3">{{ getValueFixed(row.ban_rate) }}</td>
               <td class="py-2 px-3">{{ getValueLocal(row.influence) }}</td>
               <td class="py-2 px-3 ">{{ getValueLocal(row.games_played) }}</td>
               <td v-if="this.showStatTypeColumn" class="py-2 px-3 ">{{ getValueLocal(getValueFixed(row.total_filter_type)) }}</td>
@@ -251,6 +254,7 @@ export default {
       herorank: null,
       rolerank: null,
       mirrormatch: 0,
+      groupsize: "All",
       talentbuildtype: null,
       loadingStates: {},
       tablewidth: null,
@@ -272,9 +276,12 @@ export default {
   computed: {
     showStatTypeColumn(){
       if(this.statfilter && this.statfilter != "win_rate" && !this.isLoading){
-        return true;      
+        return true;
       }
       return false;
+    },
+    groupSizeActive(){
+      return this.groupsize && this.groupsize != "All";
     },
     patchNotesUrl() {
       if (this.timeframetype !== 'minor' || !this.timeframe || this.timeframe.length !== 1) {
@@ -297,7 +304,8 @@ export default {
         !this.rolerank &&
         !this.herolevel &&
         this.statfilter === 'win_rate' &&
-        this.mirrormatch == 0
+        this.mirrormatch == 0 &&
+        !this.groupSizeActive
       );
 
     },
@@ -352,6 +360,10 @@ export default {
         queryString += `&role_league_tier=${this.convertRankIDtoName(this.rolerank)}`;
       }
 
+      if(this.groupsize && this.groupsize != 'All'){
+        queryString += `&group_size=${this.groupsize}`;
+      }
+
       queryString += `&statfilter=${this.statfilter}`;
       queryString += `&build_type=${this.talentbuildtype}`;
       queryString += `&mirror=${this.mirrormatch}`;
@@ -388,6 +400,7 @@ export default {
           hero_league_tier: this.herorank,
           role_league_tier: this.rolerank,
           mirror: this.mirrormatch,
+          groupsize: this.groupsize,
         },
         {
           cancelToken: this.cancelTokenSource.token,
@@ -490,7 +503,13 @@ export default {
       this.herorank = filteredData.multi["HP Hero Rank"] ? Array.from(filteredData.multi["HP Hero Rank"]) : null;
       this.rolerank = filteredData.multi["HP Role Rank"] ? Array.from(filteredData.multi["HP Role Rank"]) : null;
       this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
+      this.groupsize = filteredData.single["Group Size"] ? filteredData.single["Group Size"] : this.groupsize;
       this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : this.talentbuildtype;
+
+      if(this.groupsize && this.groupsize != 'All' && this.statfilter != 'win_rate'){
+        this.statfilter = 'win_rate';
+        this.statfiltername = this.filters.stat_filter.find(s => s.code === this.statfilter).name;
+      }
       
       this.talentbuilddata = {};
       this.toggletalentbuilds = {};
@@ -635,6 +654,15 @@ export default {
 
       if (this.urlparameters["mirror"]) {
         this.mirrormatch = this.urlparameters["mirror"];
+      }
+
+      if (this.urlparameters["group_size"]) {
+        this.groupsize = this.urlparameters["group_size"];
+
+        if(this.groupsize != 'All' && this.statfilter != 'win_rate'){
+          this.statfilter = 'win_rate';
+          this.statfiltername = this.filters.stat_filter.find(s => s.code === this.statfilter).name;
+        }
       }
     },
   }
