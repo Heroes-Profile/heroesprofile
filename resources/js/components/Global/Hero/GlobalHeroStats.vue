@@ -100,7 +100,7 @@
               {{ getValueLocal(getValueFixed(data.averaege_total_filter_type)) }}
             </th>
 
-            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
+            <th v-if="!this.groupSizeActive" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">
             </th>
           </tr>
         </thead>
@@ -147,7 +147,7 @@
             <th v-if="this.showStatTypeColumn" @click="sortTable('total_filter_type')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               {{ this.statfiltername }}
             </th>
-            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th v-if="!this.groupSizeActive" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
             </th>                              
           </tr>
         </thead>
@@ -170,7 +170,7 @@
               <td class="py-2 px-3">{{ getValueLocal(row.influence) }}</td>
               <td class="py-2 px-3 ">{{ getValueLocal(row.games_played) }}</td>
               <td v-if="this.showStatTypeColumn" class="py-2 px-3 ">{{ getValueLocal(getValueFixed(row.total_filter_type)) }}</td>
-              <td class="py-2 px-3 ">
+              <td v-if="!groupSizeActive" class="py-2 px-3 ">
                 <custom-button
                   @click="viewtalentbuilds(row.name, index)"
                   text="View Talent Builds"
