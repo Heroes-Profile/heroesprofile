@@ -921,6 +921,13 @@ class GlobalDataService
 
     public function getRankTiers($game_type, $type)
     {
+        return Cache::remember("rank_tiers|{$game_type}|{$type}", 3600, function () use ($game_type, $type) {
+            return $this->buildRankTiers($game_type, $type);
+        });
+    }
+
+    private function buildRankTiers($game_type, $type)
+    {
         $result = DB::table('league_breakdowns')
             ->select('game_type', 'league_tier', 'min_mmr')
             ->where('type_role_hero', $type)
