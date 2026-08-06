@@ -99,7 +99,8 @@
           <global-talent-details-section class="mx-auto" :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
         </div>
         <div v-else-if="isTalentsLoading">
-          <loading-component v-if="determineIfLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+          <loading-component v-if="determineIfVeryLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Very large amount of data.<br/>Compiling can take 5-10 minutes.<br/>Please be patient.<br/>Loading Data...</loading-component>
+          <loading-component v-else-if="determineIfLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
           <loading-component v-else @cancel-request="cancelAxiosRequest"></loading-component>
         </div>
         <div v-else-if="dataError" class="flex items-center justify-center">
@@ -127,7 +128,8 @@
         </div>
 
         <div v-else-if="isBuildsLoading">
-          <loading-component v-if="determineIfLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+          <loading-component v-if="determineIfVeryLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Very large amount of data.<br/>Compiling can take 5-10 minutes.<br/>Please be patient.<br/>Loading Data...</loading-component>
+          <loading-component v-else-if="determineIfLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
           <loading-component v-else @cancel-request="cancelAxiosRequest"></loading-component>
         </div>
       </div>
@@ -472,6 +474,12 @@
       determineIfLargeData(){
         if(this.timeframetype == "major" || this.timeframetype == "major_grouped" || (this.timeframetype == "last_update" || this.timeframe.length >= 3) || this.statfilter != "win_rate"){
           return  true;
+        }
+        return false;
+      },
+      determineIfVeryLargeData(){
+        if((this.timeframetype == "major" || this.timeframetype == "major_grouped") && this.timeframe && this.timeframe.length > 1){
+          return true;
         }
         return false;
       },
