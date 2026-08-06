@@ -27,7 +27,8 @@
   <takeover-ad :patreon-user="patreonUser"></takeover-ad>
 
   <div v-if="isLoading">
-    <loading-component @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+    <loading-component v-if="determineIfVeryLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Very large amount of data.<br/>Compiling can take 5-10 minutes.<br/>Please be patient.<br/>Loading Data...</loading-component>
+    <loading-component v-else @cancel-request="cancelAxiosRequest" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
   </div>
   <div v-else-if="dataError" class="flex items-center justify-center">
       Error: Reload page/filter
@@ -192,6 +193,12 @@
     watch: {
     },
     methods: {
+      determineIfVeryLargeData(){
+        if((this.timeframetype == "major" || this.timeframetype == "major_grouped") && this.timeframe && this.timeframe.length > 1){
+          return true;
+        }
+        return false;
+      },
       async getData(){
         this.dataError = false;
         this.isLoading = true;

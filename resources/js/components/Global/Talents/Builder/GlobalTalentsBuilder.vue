@@ -44,7 +44,8 @@
 
 
   <div v-if="isLoading">
-    <loading-component @cancel-request="cancelAxiosRequest" v-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
+    <loading-component @cancel-request="cancelAxiosRequest" v-if="determineIfVeryLargeData()" :textoverride="true">Very large amount of data.<br/>Compiling can take 5-10 minutes.<br/>Please be patient.<br/>Loading Data...</loading-component>
+    <loading-component @cancel-request="cancelAxiosRequest" v-else-if="determineIfLargeData()" :textoverride="true">Large amount of data.<br/>Please be patient.<br/>Loading Data...</loading-component>
     <loading-component @cancel-request="cancelAxiosRequest" v-else></loading-component>
   </div>
   <div v-else-if="dataError" class="flex items-center justify-center">
@@ -455,6 +456,12 @@
       determineIfLargeData(){
         if(this.timeframetype == "major" || this.timeframetype == "major_grouped"  || this.timeframe.length >= 3){
           return  true;
+        }
+        return false;
+      },
+      determineIfVeryLargeData(){
+        if((this.timeframetype == "major" || this.timeframetype == "major_grouped") && this.timeframe && this.timeframe.length > 1){
+          return true;
         }
         return false;
       },
