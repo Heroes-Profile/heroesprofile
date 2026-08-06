@@ -294,6 +294,8 @@ export default {
     },
     showWinRateChange(){
       return (
+        this.timeframetype !== 'major' &&
+        this.timeframetype !== 'major_grouped' &&
         this.timeframe.length === 1 &&
         !this.region &&
         this.gametype.length === 1 &&
