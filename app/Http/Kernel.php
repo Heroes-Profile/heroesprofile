@@ -8,6 +8,7 @@ use App\Http\Middleware\CheckIfPatreonSupporter;
 use App\Http\Middleware\CheckIfPrivateProfilePage;
 use App\Http\Middleware\CommunitySupportRedirect;
 use App\Http\Middleware\EncryptCookies;
+use App\Http\Middleware\EnsureApiAccountAuthenticated;
 use App\Http\Middleware\EnsureBattlenetAuthenticated;
 use App\Http\Middleware\LogIPAndUserAgent;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
@@ -108,6 +109,7 @@ class Kernel extends HttpKernel
         'throttle' => ThrottleRequests::class,
         'verified' => EnsureEmailIsVerified::class,
         'ensureBattlenetAuth' => EnsureBattlenetAuthenticated::class,
+        'ensureApiAccountAuth' => EnsureApiAccountAuthenticated::class,
         'checkIfPrivateProfilePage' => CheckIfPrivateProfilePage::class,
         'logIpAndUserAgent' => LogIPAndUserAgent::class,
         'communitySupportRedirect' => CommunitySupportRedirect::class,

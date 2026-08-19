@@ -6,40 +6,19 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Seeds the public API endpoint registry for local Docker databases, which have
- * no legacy `endpoints` table to populate from.
+ * Endpoint registry for local databases. Rows are wide here for readability and
+ * expanded into per-plan quota rows on insert.
  *
- * 56 endpoints: 27 carried over from the old `endpoints` table with their quotas
- * unchanged, plus 29 new ones exposing main-site capabilities the API never
- * published. Nine are deliberately absent — the four hotsapi endpoints, the four
- * CCL endpoints, and ngs_player_mmr (its route is commented out in the old app).
- *
- * Rows are stored wide here (one row per endpoint, six plan columns) purely for
- * readability, then expanded into the normalized quota table on insert.
- *
- * Production was populated by hand and predates the ngs_player_mmr removal, so it
- * carries an unused gap in endpoint_id. Nothing references endpoint_id — lookups
- * go through `endpoint`, ordering through group_sort/sort, and api_token_calls
- * keys on the endpoint string — so local and production ids need not match.
+ * endpoint_id is not referenced anywhere, so these need not match production ids.
  */
 class ApiEndpointRegistrySeeder extends Seeder
 {
     private const CONNECTION = 'heroesprofile_api';
 
-    /**
-     * Plan ids, in the order their allowances appear in each data row below.
-     *
-     * 1 basic · 2 intermediate · 3 developer · 4 partner · 5 ngs · 6 heroes_lounge.
-     * Plans 7 (ccl), 8/9 (twitch_2hr, twitch_4hr) and 10 (masters_clash) are retired
-     * and deliberately have no quota rows.
-     */
+    /** basic, intermediate, developer, partner, ngs, heroes_lounge. */
     private const PLAN_IDS = [1, 2, 3, 4, 5, 6];
 
-    /**
-     * [endpoint, name, group_name, group_sort, sort, basic, intermediate, developer, partner, ngs, heroes_lounge]
-     *
-     * Alphabetical by endpoint — insertion order determines endpoint_id 1-56.
-     */
+    /** [endpoint, name, group_name, group_sort, sort, ...one allowance per PLAN_IDS] */
     private const ENDPOINTS = [
         ['account_level_stats', 'Stats/Account/Level', 'General', 1, 6, 70, 210, 1000, 10000, 0, 0],
         ['activity_unique_players', 'Tools/Activity/UniquePlayers', 'Tools', 9, 2, 70, 210, 1000, 10000, 0, 0],
@@ -128,7 +107,6 @@ class ApiEndpointRegistrySeeder extends Seeder
                 'updated_at' => $now,
             ];
 
-            // Plan allowances start at offset 5 and run in PLAN_IDS order.
             foreach (self::PLAN_IDS as $offset => $planId) {
                 $quotas[] = [
                     'endpoint_id' => $endpointId,

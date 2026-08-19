@@ -1,6 +1,11 @@
 <?php
 
 use App\Http\Controllers\AnimationsController;
+use App\Http\Controllers\Api\Account\AccountController as ApiAccountController;
+use App\Http\Controllers\Api\ApiHomeController;
+use App\Http\Controllers\Api\Auth\LoginController as ApiLoginController;
+use App\Http\Controllers\Api\Auth\PasswordResetController as ApiPasswordResetController;
+use App\Http\Controllers\Api\Auth\RegisterController as ApiRegisterController;
 use App\Http\Controllers\Auth\BattleNetController;
 use App\Http\Controllers\Auth\PatreonController;
 use App\Http\Controllers\BattletagSearchController;
@@ -211,6 +216,28 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     });
     Route::get('/PreMatch/Results/{prematchID}', [PreMatchController::class, 'show']);
 
+});
+
+// API developer portal. Own layout, own guard, no ads.
+Route::middleware(['logIpAndUserAgent'])->prefix('Api')->group(function () {
+    Route::get('/', [ApiHomeController::class, 'index']);
+
+    Route::get('/Login', [ApiLoginController::class, 'show']);
+    // Login throttling is per email+IP in the controller, not per IP here.
+    Route::post('/Login', [ApiLoginController::class, 'login']);
+    Route::post('/Logout', [ApiLoginController::class, 'logout']);
+
+    Route::get('/Register', [ApiRegisterController::class, 'show']);
+    Route::post('/Register', [ApiRegisterController::class, 'register'])->middleware('throttle:contact');
+
+    Route::get('/Password/Forgot', [ApiPasswordResetController::class, 'showRequestForm']);
+    Route::post('/Password/Forgot', [ApiPasswordResetController::class, 'sendResetLink'])->middleware('throttle:contact');
+    Route::get('/Password/Reset/{token}', [ApiPasswordResetController::class, 'showResetForm'])->name('api.password.reset');
+    Route::post('/Password/Reset', [ApiPasswordResetController::class, 'reset'])->middleware('throttle:contact');
+
+    Route::middleware('ensureApiAccountAuth')->group(function () {
+        Route::get('/Account', [ApiAccountController::class, 'index']);
+    });
 });
 
 // Ads.txt redirects

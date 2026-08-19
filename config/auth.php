@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Api\ApiAccount;
 use App\Models\BattlenetAccount;
 
 return [
@@ -42,6 +43,12 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        // API customer accounts. Independent of the Battlenet `web` guard.
+        'api_web' => [
+            'driver' => 'session',
+            'provider' => 'api_accounts',
+        ],
     ],
 
     /*
@@ -65,6 +72,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => BattlenetAccount::class,
+        ],
+
+        'api_accounts' => [
+            'driver' => 'eloquent',
+            'model' => ApiAccount::class,
         ],
     ],
 
@@ -91,6 +103,15 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => 'password_reset_tokens',
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+
+        // Shared with the old API site — one pending reset per email across both.
+        'api_accounts' => [
+            'provider' => 'api_accounts',
+            'connection' => 'heroesprofile_api',
+            'table' => 'password_resets',
             'expire' => 60,
             'throttle' => 60,
         ],

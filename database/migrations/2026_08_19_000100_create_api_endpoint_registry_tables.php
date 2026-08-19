@@ -5,26 +5,10 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Normalized API endpoint registry for the public API: one row per endpoint, one
- * row per (endpoint, plan) quota.
+ * Endpoint registry driving per-plan quotas. Replaces the old `endpoints` table,
+ * which held one column per plan and needed a schema change to add one.
  *
- * Replaces — for the new site only — the hand-maintained `endpoints` wide table
- * and the eight-branch UNION in `endpoint_view`. In the old schema each plan is
- * both a column and a UNION branch, so adding a plan needs a schema change plus a
- * view edit. That is how plans 7 (ccl) and 10 (masters_clash) ended up present in
- * `subscription_plans` but absent from the view, leaving subscribers on those
- * plans unable to call any endpoint. Here, adding a plan is an insert.
- *
- * Deliberately additive. `endpoints` and `endpoint_view` are left untouched, so
- * the old API site keeps enforcing quotas exactly as it does today. That means
- * two registries during the transition — see database/sql/README notes in
- * 2026_08_19_api_endpoint_registry.sql. Pointing `endpoint_view` at these tables
- * is an optional later step (2026_08_19_api_endpoint_view_swap.sql); it is not
- * required for the new site and does change old-site behaviour.
- *
- * Schema only. Data is applied by hand from
- * database/sql/2026_08_19_api_endpoint_registry.sql, which is the record of what
- * was actually run against production.
+ * The old `endpoints` and `endpoint_view` are left in place for the old API site.
  */
 return new class extends Migration
 {

@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>@yield('title') | Heroes Profile API</title>
+    <meta name="description" content="@yield('meta_description', 'The Heroes Profile API — Heroes of the Storm statistics, replay data, and player profiles.')">
+
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/logo/heroesprofilelogo.png') }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/logo/heroesprofilelogo.png') }}">
+    <meta name="theme-color" content="#000000">
+
+    <link rel="canonical" href="{{ url()->current() }}">
+
+    {{-- No ads or $bladeGlobals here — none of it applies to the API section. --}}
+
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+  </head>
+
+  <body class="bg-black text-white font-sans">
+    <div id="app" class="flex flex-col align-stretch" style="min-height:100vh;">
+
+      @include('api.partials.nav')
+
+      <main class="flex-grow w-full">
+        @yield('content')
+      </main>
+
+      <div class="mt-auto">
+        <div class="text-center mx-auto bg-lighten border-t-4 border-teal mt-[2em] w-full px-4">
+          <div class="container-boxed py-8 mx-auto">
+            <a class="flex justify-center items-center font-logo text-2xl py-3 mx-auto text-center" href="/">
+              Heroes
+              <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
+              Profile
+            </a>
+
+            <p class="text-xs space-x-3">
+              <a href="/Privacy/Policy" class="underline">Privacy Policy</a>
+              <a href="/Terms/Of/Service" class="underline">Terms of Service</a>
+              <a href="/" class="underline">Main Site</a>
+            </p>
+
+            <div class="text-xs mt-2 text-gray-medium">
+              Skill Tree Development, LLC | <a href="https://heroesprofile.com">Heroes Profile</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    @stack('scripts')
+  </body>
+</html>
