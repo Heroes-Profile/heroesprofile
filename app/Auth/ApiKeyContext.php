@@ -28,4 +28,10 @@ class ApiKeyContext
     {
         return $this->account->hasMigrated();
     }
+
+    /** Serve fixtures and charge no quota. */
+    public function receivesTestData(): bool
+    {
+        return $this->account->receivesTestData();
+    }
 }

@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\Account\AccountController as ApiAccountController;
+use App\Http\Controllers\Api\Account\ApiKeyController;
 use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\CompareController;
 use App\Http\Controllers\ContactController;
@@ -53,6 +55,12 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->middleware(['api', 'cloud.tasks'])->group(function () {
     Route::post('internal/global/process', [GlobalQueryWorkerController::class, 'process']);
+});
+
+Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function () {
+    Route::post('account/keys', [ApiKeyController::class, 'store']);
+    Route::post('account/keys/revoke', [ApiKeyController::class, 'revoke']);
+    Route::post('account/test-mode', [ApiAccountController::class, 'setTestMode']);
 });
 
 Route::prefix('v1')->middleware('web')->group(function () {

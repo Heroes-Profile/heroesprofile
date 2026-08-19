@@ -37,6 +37,8 @@ class ApiKeyResolver
             return null;
         }
 
+        $this->touchLastUsed((int) $row['key_id']);
+
         return new ApiKeyContext(
             account: $account,
             keyId: (int) $row['key_id'],
@@ -49,7 +51,27 @@ class ApiKeyResolver
 
     public function forget(string $plainKey): void
     {
-        Cache::forget('api_key:'.ApiKey::hash($plainKey));
+        $this->forgetHash(ApiKey::hash($plainKey));
+    }
+
+    /** Used on revoke, where only the stored hash is available. */
+    public function forgetHash(string $hash): void
+    {
+        Cache::forget('api_key:'.$hash);
+    }
+
+    /** Throttled to one write per key per 5 minutes rather than one per request. */
+    private function touchLastUsed(int $keyId): void
+    {
+        $marker = 'api_key_touched:'.$keyId;
+
+        if (Cache::has($marker)) {
+            return;
+        }
+
+        Cache::put($marker, true, self::CACHE_SECONDS);
+
+        ApiKey::where('id', $keyId)->update(['last_used_at' => now()]);
     }
 
     /**

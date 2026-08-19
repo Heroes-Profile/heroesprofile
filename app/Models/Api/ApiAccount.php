@@ -36,6 +36,7 @@ class ApiAccount extends Authenticatable
         'terms_accepted_at' => 'datetime',
         'last_read_announcements_at' => 'datetime',
         'migrated' => 'boolean',
+        'test_mode' => 'boolean',
         'uses_two_factor_auth' => 'boolean',
     ];
 
@@ -57,6 +58,21 @@ class ApiAccount extends Authenticatable
     public function hasMigrated(): bool
     {
         return (bool) $this->migrated;
+    }
+
+    /** Opt-in fixtures, switchable at any time once migrated. */
+    public function inTestMode(): bool
+    {
+        return (bool) $this->test_mode;
+    }
+
+    /**
+     * Fixtures instead of live data, and no quota consumed. True while an account
+     * has not migrated, or whenever it has test mode switched on.
+     */
+    public function receivesTestData(): bool
+    {
+        return ! $this->hasMigrated() || $this->inTestMode();
     }
 
     public function hasComptedAccess(): bool

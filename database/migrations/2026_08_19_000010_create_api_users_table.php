@@ -78,6 +78,9 @@ return new class extends Migration
 
             // Gates live data on the public API. Always starts at 0.
             $table->boolean('migrated')->default(false);
+
+            // Opt-in fixtures for an already migrated account. Toggleable.
+            $table->boolean('test_mode')->default(false);
         });
     }
 
