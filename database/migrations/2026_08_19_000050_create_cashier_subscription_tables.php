@@ -5,8 +5,8 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Cashier's tables under non-default names. Spark owns `subscriptions` and keeps
- * using it until the cutover, so Cashier cannot share it — the column names differ
+ * Cashier's tables under non-default names. The old API site keeps using
+ * `subscriptions` until the cutover, and the column names differ anyway
  * (`type` vs `name`, `stripe_price` vs `stripe_plan`).
  *
  * `user_id` is unsignedInteger, not the usual foreignId, because `users.id` is

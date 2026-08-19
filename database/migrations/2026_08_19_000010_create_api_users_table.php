@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * API customer accounts. Mirrors the existing production table, which predates any
- * migration — much of it is leftover Spark scaffolding (two-factor, teams, billing).
+ * migration. Much of it is unused scaffolding (two-factor, teams, billing address).
  */
 return new class extends Migration
 {
@@ -38,7 +38,7 @@ return new class extends Migration
 
             $table->integer('current_team_id')->nullable();
 
-            // card_* are Spark's Cashier 12 names, kept because the old site reads
+            // card_* are the Cashier 12 names, kept because the old site reads
             // them. pm_* are what Cashier 15 writes.
             $table->string('stripe_id')->nullable();
             $table->string('current_billing_plan')->nullable();

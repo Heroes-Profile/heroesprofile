@@ -71,4 +71,27 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Comped Access
+    |--------------------------------------------------------------------------
+    |
+    | Flag on `users` => the plan it grants, in precedence order. An account with
+    | one of these set resolves to that plan without any Stripe subscription.
+    |
+    | The old site required a subscription row before it would look at these
+    | flags, so comped grants were faked with placeholder rows sharing one
+    | customer id. Deriving the plan here removes the need for those.
+    |
+    | `d_approved` is deliberately absent: it makes the Developer tier
+    | selectable, it does not grant it. Those accounts still pay.
+    |
+    */
+
+    'comped_flags' => [
+        'p_approved' => 4,
+        'n_approved' => 5,
+        'h_approved' => 6,
+    ],
+
 ];

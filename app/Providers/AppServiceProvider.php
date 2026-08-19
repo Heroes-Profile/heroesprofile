@@ -37,7 +37,7 @@ class AppServiceProvider extends ServiceProvider
         Auth::viaRequest('api_key', fn ($request) => app(ApiKeyGuard::class)($request));
 
         // Cashier bills API accounts, and its tables live under non-default names
-        // so Spark can keep using `subscriptions` until the cutover.
+        // so the old API site keeps using `subscriptions` until the cutover.
         Cashier::useCustomerModel(ApiAccount::class);
         Cashier::useSubscriptionModel(CashierSubscription::class);
         Cashier::useSubscriptionItemModel(CashierSubscriptionItem::class);

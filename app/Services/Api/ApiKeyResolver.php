@@ -60,6 +60,23 @@ class ApiKeyResolver
         Cache::forget('api_key:'.$hash);
     }
 
+    /**
+     * First matching flag wins. Partner is listed first because it is the only
+     * comped tier with a non-zero allowance on the general endpoints.
+     *
+     * @return array{0: ?int, 1: ?string}
+     */
+    private function plansFromApprovalFlags(object $row): array
+    {
+        foreach (config('api_plans.comped_flags') as $column => $planId) {
+            if ((bool) ($row->{$column} ?? false)) {
+                return [$planId, config("api_plans.plans.{$planId}.key")];
+            }
+        }
+
+        return [null, null];
+    }
+
     /** Throttled to one write per key per 5 minutes rather than one per request. */
     private function touchLastUsed(int $keyId): void
     {
@@ -114,11 +131,20 @@ class ApiKeyResolver
             }
         }
 
+        $planId = $row->plan_id !== null ? (int) $row->plan_id : null;
+        $planName = $row->plan;
+
+        // Comped accounts have no Stripe subscription, so their plan comes from
+        // the approval flags instead.
+        if ($planId === null) {
+            [$planId, $planName] = $this->plansFromApprovalFlags($row);
+        }
+
         return [
             'key_id' => $row->key_id,
             'account_id' => $row->account_id,
-            'plan_id' => $row->plan_id,
-            'plan' => $row->plan,
+            'plan_id' => $planId,
+            'plan' => $planName,
             'subscription_active' => $row->stripe_status === 'active' && ! $lapsed,
             'comped' => $comped,
         ];
