@@ -34,4 +34,14 @@ class ApiKeyContext
     {
         return $this->account->receivesTestData();
     }
+
+    /**
+     * An account with no subscription at all gets fixtures rather than a rejection,
+     * so a new signup can integrate before paying. A plan that exists but has lapsed
+     * is a different case and still fails entitlement.
+     */
+    public function servesFixtures(): bool
+    {
+        return $this->receivesTestData() || $this->planId === null;
+    }
 }

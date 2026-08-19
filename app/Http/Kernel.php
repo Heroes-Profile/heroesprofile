@@ -8,6 +8,7 @@ use App\Http\Middleware\CheckIfPatreonSupporter;
 use App\Http\Middleware\CheckIfPrivateProfilePage;
 use App\Http\Middleware\CommunitySupportRedirect;
 use App\Http\Middleware\EncryptCookies;
+use App\Http\Middleware\EnforceApiQuota;
 use App\Http\Middleware\EnsureApiAccountAuthenticated;
 use App\Http\Middleware\EnsureBattlenetAuthenticated;
 use App\Http\Middleware\LogIPAndUserAgent;
@@ -110,6 +111,7 @@ class Kernel extends HttpKernel
         'verified' => EnsureEmailIsVerified::class,
         'ensureBattlenetAuth' => EnsureBattlenetAuthenticated::class,
         'ensureApiAccountAuth' => EnsureApiAccountAuthenticated::class,
+        'api.quota' => EnforceApiQuota::class,
         'checkIfPrivateProfilePage' => CheckIfPrivateProfilePage::class,
         'logIpAndUserAgent' => LogIPAndUserAgent::class,
         'communitySupportRedirect' => CommunitySupportRedirect::class,
