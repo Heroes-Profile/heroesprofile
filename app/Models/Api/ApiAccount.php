@@ -4,13 +4,14 @@ namespace App\Models\Api;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Cashier\Billable;
 
 /**
  * API customer account. Shares `heroesprofile_api.users` with the old API site.
  */
 class ApiAccount extends Authenticatable
 {
-    use Notifiable;
+    use Billable, Notifiable;
 
     protected $connection = 'heroesprofile_api';
 

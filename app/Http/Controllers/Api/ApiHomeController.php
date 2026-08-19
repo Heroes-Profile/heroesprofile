@@ -8,20 +8,22 @@ use Illuminate\Support\Facades\Auth;
 
 class ApiHomeController extends Controller
 {
-    /** Paid tiers shown on the landing page, keyed by subscription_plan id. */
-    private const PLANS = [
-        1 => ['key' => 'basic', 'name' => 'Basic', 'price' => 5],
-        2 => ['key' => 'intermediate', 'name' => 'Intermediate', 'price' => 10],
-        3 => ['key' => 'developer', 'name' => 'Developer', 'price' => 25],
-    ];
-
     public function index()
     {
         return view('api.index', [
             'authenticated' => Auth::guard('api_web')->check(),
-            'plans' => array_values(self::PLANS),
+            'plans' => array_values($this->paidPlans()),
             'pricingData' => $this->pricingSummary(),
         ]);
+    }
+
+    /** @return array<int, array<string, mixed>> keyed by subscription_plan id */
+    private function paidPlans(): array
+    {
+        return array_filter(
+            config('api_plans.plans'),
+            fn (array $plan) => $plan['paid']
+        );
     }
 
     /**
@@ -29,8 +31,10 @@ class ApiHomeController extends Controller
      */
     private function pricingSummary(): array
     {
+        $plans = $this->paidPlans();
+
         $endpoints = ApiEndpoint::query()
-            ->with(['quotas' => fn ($query) => $query->whereIn('subscription_plan', array_keys(self::PLANS))])
+            ->with(['quotas' => fn ($query) => $query->whereIn('subscription_plan', array_keys($plans))])
             ->excludingEsports()
             ->ordered()
             ->get();
@@ -52,7 +56,7 @@ class ApiHomeController extends Controller
 
             // First endpoint in a group stands for the whole group.
             foreach ($endpoint->quotas as $quota) {
-                $key = self::PLANS[$quota->subscription_plan]['key'];
+                $key = $plans[$quota->subscription_plan]['key'];
 
                 if ($groups[$group][$key] === null) {
                     $groups[$group][$key] = $this->formatCallLimit($quota->calls_per_week);

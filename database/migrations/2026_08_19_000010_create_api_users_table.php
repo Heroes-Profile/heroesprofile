@@ -38,11 +38,14 @@ return new class extends Migration
 
             $table->integer('current_team_id')->nullable();
 
-            // Cashier 12 column names.
+            // card_* are Spark's Cashier 12 names, kept because the old site reads
+            // them. pm_* are what Cashier 15 writes.
             $table->string('stripe_id')->nullable();
             $table->string('current_billing_plan')->nullable();
             $table->string('card_brand')->nullable();
             $table->string('card_last_four')->nullable();
+            $table->string('pm_type')->nullable();
+            $table->string('pm_last_four', 4)->nullable();
             $table->string('card_country')->nullable();
             $table->string('billing_address')->nullable();
             $table->string('billing_address_line_2')->nullable();
