@@ -49,6 +49,12 @@ return [
             'driver' => 'session',
             'provider' => 'api_accounts',
         ],
+
+        // Public API. Driver registered in AppServiceProvider.
+        'api_key' => [
+            'driver' => 'api_key',
+            'provider' => 'api_accounts',
+        ],
     ],
 
     /*

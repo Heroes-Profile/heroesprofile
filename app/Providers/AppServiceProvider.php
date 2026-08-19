@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Auth\ApiKeyGuard;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Sanctum\Sanctum;
 
@@ -27,5 +29,7 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.env') === 'production') {
             \URL::forceScheme('https');
         }
+
+        Auth::viaRequest('api_key', fn ($request) => app(ApiKeyGuard::class)($request));
     }
 }
