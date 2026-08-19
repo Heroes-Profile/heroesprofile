@@ -80,7 +80,6 @@
           <thead>
             <tr>
               <th class="py-2 px-3 text-left text-sm">Name</th>
-              <th class="py-2 px-3 text-left text-sm">Key</th>
               <th class="py-2 px-3 text-left text-sm">Created</th>
               <th class="py-2 px-3 text-left text-sm">Last Used</th>
               <th class="py-2 px-3 text-left text-sm"></th>
@@ -89,7 +88,6 @@
           <tbody>
             <tr v-for="key in keys" :key="key.id">
               <td class="py-2 px-3">{{ key.name }}</td>
-              <td class="py-2 px-3"><code>{{ key.masked }}</code></td>
               <td class="py-2 px-3">{{ key.created_at }}</td>
               <td class="py-2 px-3">{{ key.last_used_at || 'Never' }}</td>
               <td class="py-2 px-3 text-right">

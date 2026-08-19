@@ -65,7 +65,6 @@ class ApiKeyController extends Controller
         return [
             'id' => $key->id,
             'name' => $key->name,
-            'masked' => $key->masked,
             'created_at' => $key->created_at?->toDateString(),
             'last_used_at' => $key->last_used_at?->toDateTimeString(),
         ];

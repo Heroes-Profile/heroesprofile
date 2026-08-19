@@ -7,9 +7,8 @@ use Illuminate\Support\Str;
 
 class ApiKey extends Model
 {
-    public const PREFIX_LENGTH = 8;
-
-    public const SECRET_LENGTH = 32;
+    /** Matches the length the old API site issued. */
+    public const SECRET_LENGTH = 60;
 
     protected $connection = 'heroesprofile_api';
 
@@ -18,7 +17,6 @@ class ApiKey extends Model
     protected $fillable = [
         'api_account_id',
         'name',
-        'prefix',
         'secret_hash',
     ];
 
@@ -47,14 +45,11 @@ class ApiKey extends Model
      */
     public static function generateFor(ApiAccount $account, string $name): array
     {
-        $prefix = Str::lower(Str::random(self::PREFIX_LENGTH));
-        $secret = Str::random(self::SECRET_LENGTH);
-        $plain = 'hp_'.$prefix.'_'.$secret;
+        $plain = Str::random(self::SECRET_LENGTH);
 
         $key = static::create([
             'api_account_id' => $account->id,
             'name' => $name,
-            'prefix' => $prefix,
             'secret_hash' => static::hash($plain),
         ]);
 
@@ -69,11 +64,5 @@ class ApiKey extends Model
     public function revoke(): void
     {
         $this->forceFill(['revoked_at' => now()])->save();
-    }
-
-    /** hp_a1b2c3d4… — enough to identify a key without revealing it. */
-    public function getMaskedAttribute(): string
-    {
-        return 'hp_'.$this->prefix.'…';
     }
 }

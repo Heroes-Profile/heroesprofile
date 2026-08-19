@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 /**
  * Replaces the old `api_tokens` table, which stored 60-character keys in plaintext.
- * Only a hash is kept here; `prefix` exists so the UI can show which key is which.
+ * Only a hash is kept here — the key itself is unrecoverable after creation.
  */
 return new class extends Migration
 {
@@ -22,7 +22,6 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->unsignedInteger('api_account_id');
             $table->string('name');
-            $table->string('prefix', 8);
             $table->string('secret_hash', 64)->unique();
             $table->timestamp('last_used_at')->nullable();
             $table->timestamp('revoked_at')->nullable();
