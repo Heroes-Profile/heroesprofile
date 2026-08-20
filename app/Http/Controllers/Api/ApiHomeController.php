@@ -17,6 +17,15 @@ class ApiHomeController extends Controller
         ]);
     }
 
+    /**
+     * Developer tier is not self-serve — it needs `d_approved` on the account —
+     * so the CTA sends people here to ask for it.
+     */
+    public function developerTier()
+    {
+        return view('api.developer-tier');
+    }
+
     /** @return array<int, array<string, mixed>> keyed by subscription_plan id */
     private function paidPlans(): array
     {

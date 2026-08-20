@@ -4,12 +4,13 @@ namespace App\Http\Controllers\Api\Account;
 
 use App\Http\Controllers\Controller;
 use App\Models\Api\ApiKey;
+use App\Services\Api\UsageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class AccountController extends Controller
 {
-    public function index()
+    public function index(UsageService $usage)
     {
         $account = Auth::guard('api_web')->user();
 
@@ -31,6 +32,7 @@ class AccountController extends Controller
                 'receives_test_data' => $account->receivesTestData(),
             ],
             'keys' => $keys,
+            'usage' => $usage->forAccount($account),
         ]);
     }
 

@@ -47,7 +47,7 @@
 
       <div v-if="error" class="bg-red p-3 mb-4">{{ error }}</div>
 
-      <div class="bg-lighten p-6">
+      <div class="bg-lighten p-6 mb-8">
         <h2 class="text-lg mb-4">API Keys</h2>
 
         <form @submit.prevent="createKey" class="flex flex-wrap gap-2 items-end mb-6">
@@ -97,6 +97,11 @@
           </tbody>
         </table>
       </div>
+
+      <div class="bg-lighten p-6">
+        <h2 class="text-lg mb-4">This Week's Usage</h2>
+        <api-usage-table :usage="usage" :compact="true"></api-usage-table>
+      </div>
     </div>
   </div>
 </template>
@@ -112,6 +117,10 @@ export default {
       required: true
     },
     initialkeys: {
+      type: Array,
+      default: () => [],
+    },
+    usage: {
       type: Array,
       default: () => [],
     },

@@ -222,6 +222,7 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
 // API developer portal. Own layout, own guard, no ads.
 Route::middleware(['logIpAndUserAgent'])->prefix('Api')->group(function () {
     Route::get('/', [ApiHomeController::class, 'index']);
+    Route::get('/DeveloperTier', [ApiHomeController::class, 'developerTier']);
 
     Route::get('/Login', [ApiLoginController::class, 'show']);
     // Login throttling is per email+IP in the controller, not per IP here.

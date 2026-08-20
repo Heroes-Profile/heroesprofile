@@ -33,13 +33,16 @@ class PlanService
      */
     public function selectableBy(ApiAccount $account): array
     {
-        return array_filter($this->all(), function (array $plan, int $planId) use ($account) {
-            if (! $plan['paid']) {
-                return false;
-            }
+        $plans = array_filter($this->all(), fn (array $plan) => $plan['paid']);
 
-            return $planId === 3 ? (bool) $account->d_approved : true;
-        }, ARRAY_FILTER_USE_BOTH);
+        foreach ($plans as $planId => $plan) {
+            // Developer is shown to everyone but only bought after approval.
+            $plans[$planId]['purchasable'] = $planId === 3
+                ? (bool) $account->d_approved
+                : true;
+        }
+
+        return $plans;
     }
 
     /**
@@ -97,6 +100,22 @@ class PlanService
         );
 
         return $fromStripe === false ? $plan['price'] : $fromStripe;
+    }
+
+    /** The plan a Stripe Price belongs to, or null when it is not one of ours. */
+    public function planIdForPrice(?string $stripePrice): ?int
+    {
+        if ($stripePrice === null) {
+            return null;
+        }
+
+        foreach ($this->all() as $planId => $plan) {
+            if ($plan['stripe_price'] === $stripePrice) {
+                return $planId;
+            }
+        }
+
+        return null;
     }
 
     /** The same plan list the landing page and billing page render. */

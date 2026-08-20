@@ -5,16 +5,16 @@ namespace App\Http\Controllers\Api\Account;
 use App\Http\Controllers\Controller;
 use App\Models\Api\ApiAccount;
 use App\Services\Api\PlanService;
+use App\Services\Api\UsageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Throwable;
 
 class BillingController extends Controller
 {
-    /** Cashier's subscription name. The old site used 'default' too. */
-    private const SUBSCRIPTION = 'default';
+    private const SUBSCRIPTION = ApiAccount::SUBSCRIPTION;
 
-    public function show(PlanService $plans)
+    public function show(PlanService $plans, UsageService $usage)
     {
         $account = $this->account();
         $subscription = $account->subscription(self::SUBSCRIPTION);
@@ -24,7 +24,7 @@ class BillingController extends Controller
             'plans' => $plans->present($plans->selectableBy($account)),
             'granted' => $plans->present($plans->grantedTo($account)),
             'subscription' => $subscription ? [
-                'plan_id' => $this->planIdForPrice($subscription->stripe_price, $plans),
+                'plan_id' => $plans->planIdForPrice($subscription->stripe_price),
                 'stripe_price' => $subscription->stripe_price,
                 'status' => $subscription->stripe_status,
                 'on_grace_period' => $subscription->onGracePeriod(),
@@ -35,6 +35,7 @@ class BillingController extends Controller
                 'brand' => $account->pm_type,
                 'last_four' => $account->pm_last_four,
             ] : null,
+            'usage' => $usage->forAccount($account),
         ]);
     }
 
@@ -78,13 +79,15 @@ class BillingController extends Controller
         $account = $this->account();
         $selectable = $plans->selectableBy($account);
 
-        if (! isset($selectable[$validated['plan_id']])) {
+        $plan = $selectable[$validated['plan_id']] ?? null;
+
+        if ($plan === null || ! $plan['purchasable']) {
             return response()->json([
                 'error' => 'That plan is not available on your account.',
             ], 403);
         }
 
-        $price = $selectable[$validated['plan_id']]['stripe_price'];
+        $price = $plan['stripe_price'];
 
         try {
             if ($account->subscribed(self::SUBSCRIPTION)) {
@@ -152,21 +155,6 @@ class BillingController extends Controller
                 'total' => $invoice->total(),
             ])->all(),
         ]);
-    }
-
-    private function planIdForPrice(?string $stripePrice, PlanService $plans): ?int
-    {
-        if ($stripePrice === null) {
-            return null;
-        }
-
-        foreach ($plans->all() as $planId => $plan) {
-            if ($plan['stripe_price'] === $stripePrice) {
-                return $planId;
-            }
-        }
-
-        return null;
     }
 
     private function account(): ApiAccount

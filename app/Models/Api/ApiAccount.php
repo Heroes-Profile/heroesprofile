@@ -41,6 +41,9 @@ class ApiAccount extends Authenticatable
         'uses_two_factor_auth' => 'boolean',
     ];
 
+    /** Cashier subscription name. The old site used 'default' too. */
+    public const SUBSCRIPTION = 'default';
+
     /** Comped access flags, granted by hand per partner or esports org. */
     public const APPROVAL_COLUMNS = [
         'd_approved',

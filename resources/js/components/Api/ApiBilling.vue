@@ -72,6 +72,13 @@
             </div>
             <div class="mt-auto">
               <span v-if="current && current.plan_id === plan.id" class="text-sm text-lteal">Current plan</span>
+              <a
+                v-else-if="!plan.purchasable"
+                href="/Api/DeveloperTier"
+                class="transition-colors text-white rounded bg-red hover:bg-lred py-2 px-4 w-full inline-block text-center"
+              >
+                Contact Us
+              </a>
               <button
                 v-else
                 :disabled="!card || busy"
@@ -95,7 +102,7 @@
         </template>
       </div>
 
-      <div class="bg-lighten p-6">
+      <div class="bg-lighten p-6 mb-8">
         <h2 class="text-lg mb-4">Invoices</h2>
 
         <p v-if="!invoices.length" class="text-sm text-gray-medium">No invoices yet.</p>
@@ -114,6 +121,16 @@
             </tr>
           </tbody>
         </table>
+      </div>
+
+      <div class="bg-lighten p-6">
+        <h2 class="text-lg mb-4">Endpoint Limits</h2>
+        <p class="text-sm text-gray-medium mb-4">
+          Every endpoint has its own weekly allowance and its own rolling seven-day
+          window, which starts on your first call to that endpoint. Calls made while
+          you are receiving test data are not counted.
+        </p>
+        <api-usage-table :usage="usage"></api-usage-table>
       </div>
     </div>
   </div>
@@ -136,6 +153,10 @@ export default {
     },
     subscription: Object,
     paymentmethod: Object,
+    usage: {
+      type: Array,
+      default: () => [],
+    },
   },
   data(){
     return {

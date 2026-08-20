@@ -6,6 +6,7 @@
   <api-account
     :account="{{ json_encode($account) }}"
     :initialkeys="{{ json_encode($keys) }}"
+    :usage="{{ json_encode($usage) }}"
   >
   </api-account>
 @endsection

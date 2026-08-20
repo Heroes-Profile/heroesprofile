@@ -9,6 +9,7 @@
     :granted="{{ json_encode($granted) }}"
     :subscription="{{ json_encode($subscription) }}"
     :paymentmethod="{{ json_encode($paymentMethod) }}"
+    :usage="{{ json_encode($usage) }}"
   >
   </api-billing>
 @endsection
