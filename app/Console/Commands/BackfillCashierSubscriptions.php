@@ -180,7 +180,7 @@ class BackfillCashierSubscriptions extends Command
         return [null, $remote->status];
     }
 
-    /** The existing card_* columns are what Cashier 15 reads as pm_*. */
+    /** The existing card_* columns are what Cashier reads as pm_*. */
     private function backfillPaymentMethodColumns(bool $write): int
     {
         $query = DB::connection(self::CONNECTION)

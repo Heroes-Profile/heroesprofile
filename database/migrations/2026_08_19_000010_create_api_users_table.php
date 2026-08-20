@@ -39,7 +39,7 @@ return new class extends Migration
             $table->integer('current_team_id')->nullable();
 
             // card_* are the Cashier 12 names, kept because the old site reads
-            // them. pm_* are what Cashier 15 writes.
+            // them. pm_* are what current Cashier writes.
             $table->string('stripe_id')->nullable();
             $table->string('current_billing_plan')->nullable();
             $table->string('card_brand')->nullable();
