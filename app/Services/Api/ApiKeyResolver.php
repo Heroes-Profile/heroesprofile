@@ -42,7 +42,7 @@ class ApiKeyResolver
         return new ApiKeyContext(
             account: $account,
             keyId: (int) $row['key_id'],
-            planId: $row['plan_id'] !== null ? (int) $row['plan_id'] : null,
+            planIds: $row['plan_ids'],
             planName: $row['plan'],
             subscriptionActive: $row['subscription_active'],
             comped: $row['comped'],
@@ -61,20 +61,22 @@ class ApiKeyResolver
     }
 
     /**
-     * First matching flag wins. Partner is listed first because it is the only
-     * comped tier with a non-zero allowance on the general endpoints.
+     * Every comped grant on the account, not just the first — an account flagged
+     * for both Partner and NGS holds both.
      *
-     * @return array{0: ?int, 1: ?string}
+     * @return array<int, int>
      */
     private function plansFromApprovalFlags(object $row): array
     {
+        $planIds = [];
+
         foreach (config('api_plans.comped_flags') as $column => $planId) {
             if ((bool) ($row->{$column} ?? false)) {
-                return [$planId, config("api_plans.plans.{$planId}.key")];
+                $planIds[] = $planId;
             }
         }
 
-        return [null, null];
+        return $planIds;
     }
 
     /** Throttled to one write per key per 5 minutes rather than one per request. */
@@ -131,19 +133,26 @@ class ApiKeyResolver
             }
         }
 
-        $planId = $row->plan_id !== null ? (int) $row->plan_id : null;
-        $planName = $row->plan;
+        // An account can hold several plans at once: a purchased subscription plus
+        // any comped grants. Every one counts, and each endpoint uses whichever
+        // gives the highest allowance.
+        $planIds = [];
+        $planName = null;
 
-        // Comped accounts have no Stripe subscription, so their plan comes from
-        // the approval flags instead.
-        if ($planId === null) {
-            [$planId, $planName] = $this->plansFromApprovalFlags($row);
+        if ($row->plan_id !== null) {
+            $planIds[] = (int) $row->plan_id;
+            $planName = $row->plan;
+        }
+
+        foreach ($this->plansFromApprovalFlags($row) as $compedPlanId) {
+            $planIds[] = $compedPlanId;
+            $planName ??= config("api_plans.plans.{$compedPlanId}.key");
         }
 
         return [
             'key_id' => $row->key_id,
             'account_id' => $row->account_id,
-            'plan_id' => $planId,
+            'plan_ids' => array_values(array_unique($planIds)),
             'plan' => $planName,
             'subscription_active' => $row->stripe_status === 'active' && ! $lapsed,
             'comped' => $comped,

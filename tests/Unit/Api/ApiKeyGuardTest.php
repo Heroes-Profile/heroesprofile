@@ -87,12 +87,29 @@ class ApiKeyGuardTest extends TestCase
         $this->assertFalse($this->context(active: false, comped: false)->isEntitled());
     }
 
-    private function context(bool $active = true, bool $comped = false): ApiKeyContext
+    public function test_an_account_holding_no_plan_serves_fixtures(): void
     {
+        $this->assertTrue($this->context(planIds: [])->servesFixtures());
+        $this->assertFalse($this->context(planIds: [2])->servesFixtures());
+    }
+
+    public function test_an_account_can_hold_a_purchased_and_a_comped_plan(): void
+    {
+        $this->assertSame([2, 4], $this->context(planIds: [2, 4])->planIds);
+    }
+
+    private function context(bool $active = true, bool $comped = false, array $planIds = [2]): ApiKeyContext
+    {
+        $account = new ApiAccount(['name' => 'Test', 'email' => 'test@example.com']);
+
+        // Not fillable, and an unmigrated account always serves fixtures.
+        $account->migrated = true;
+        $account->test_mode = false;
+
         return new ApiKeyContext(
-            account: new ApiAccount(['name' => 'Test', 'email' => 'test@example.com']),
+            account: $account,
             keyId: 1,
-            planId: 2,
+            planIds: $planIds,
             planName: 'intermediate',
             subscriptionActive: $active,
             comped: $comped,

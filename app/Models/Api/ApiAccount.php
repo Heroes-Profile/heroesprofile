@@ -55,6 +55,15 @@ class ApiAccount extends Authenticatable
         'ml_upload_approved',
     ];
 
+    /**
+     * Cashier derives its foreign key from the class name, which would give
+     * `api_account_id`. The table is `users`, so the column is `user_id`.
+     */
+    public function getForeignKey()
+    {
+        return 'user_id';
+    }
+
     /** Unmigrated accounts get fixtures from the public API, not live data. */
     public function hasMigrated(): bool
     {

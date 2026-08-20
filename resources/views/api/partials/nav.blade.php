@@ -17,6 +17,7 @@
 
       @if($apiUser)
         <a href="/Api/Account" class="hover:text-lteal">Account</a>
+        <a href="/Api/Account/Billing" class="hover:text-lteal">Billing</a>
 
         @unless($apiUser->hasMigrated())
           <a href="/Api/Account" class="px-2 py-1 rounded bg-yellow text-black text-xs" title="You are receiving test data until you activate live data">

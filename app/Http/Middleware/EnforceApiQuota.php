@@ -44,12 +44,12 @@ class EnforceApiQuota
             );
         }
 
-        $limit = $this->limitFor($endpoint, $context->planId);
+        $limit = $this->limitFor($endpoint, $context->planIds);
 
-        if ($limit === null) {
+        if ($limit === null || $limit === 0) {
             return $this->error(
                 'endpoint_not_in_plan',
-                'The '.$context->planName.' plan does not include this endpoint.',
+                'Your plan does not include this endpoint.',
                 403,
                 $endpoint
             );
@@ -82,19 +82,31 @@ class EnforceApiQuota
             ->header('X-RateLimit-Reset', $this->secondsUntilReset($usage));
     }
 
-    private function limitFor(string $endpoint, int $planId): ?int
+    /**
+     * The most generous allowance across every plan the account holds, so buying a
+     * tier on top of a comped grant can only ever help.
+     *
+     * @param  array<int, int>  $planIds
+     */
+    private function limitFor(string $endpoint, array $planIds): ?int
     {
+        if ($planIds === []) {
+            return null;
+        }
+
+        sort($planIds);
+
         $limit = Cache::remember(
-            'api_quota:'.$endpoint.':'.$planId,
+            'api_quota:'.$endpoint.':'.implode(',', $planIds),
             self::QUOTA_CACHE_SECONDS,
-            function () use ($endpoint, $planId) {
-                $row = ApiEndpoint::query()
+            function () use ($endpoint, $planIds) {
+                $max = ApiEndpoint::query()
                     ->join('api_endpoint_quotas as q', 'q.endpoint_id', '=', 'api_endpoints.endpoint_id')
                     ->where('api_endpoints.endpoint', $endpoint)
-                    ->where('q.subscription_plan', $planId)
-                    ->value('q.calls_per_week');
+                    ->whereIn('q.subscription_plan', $planIds)
+                    ->max('q.calls_per_week');
 
-                return $row === null ? false : (int) $row;
+                return $max === null ? false : (int) $max;
             }
         );
 

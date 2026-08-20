@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AnimationsController;
 use App\Http\Controllers\Api\Account\AccountController as ApiAccountController;
+use App\Http\Controllers\Api\Account\BillingController as ApiBillingController;
 use App\Http\Controllers\Api\ApiHomeController;
 use App\Http\Controllers\Api\Auth\LoginController as ApiLoginController;
 use App\Http\Controllers\Api\Auth\PasswordResetController as ApiPasswordResetController;
@@ -237,6 +238,7 @@ Route::middleware(['logIpAndUserAgent'])->prefix('Api')->group(function () {
 
     Route::middleware('ensureApiAccountAuth')->group(function () {
         Route::get('/Account', [ApiAccountController::class, 'index']);
+        Route::get('/Account/Billing', [ApiBillingController::class, 'show']);
     });
 });
 

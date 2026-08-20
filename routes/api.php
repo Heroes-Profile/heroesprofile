@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\Account\AccountController as ApiAccountController;
 use App\Http\Controllers\Api\Account\ApiKeyController;
+use App\Http\Controllers\Api\Account\BillingController;
 use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\CompareController;
 use App\Http\Controllers\ContactController;
@@ -61,6 +62,13 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
     Route::post('account/keys', [ApiKeyController::class, 'store']);
     Route::post('account/keys/revoke', [ApiKeyController::class, 'revoke']);
     Route::post('account/test-mode', [ApiAccountController::class, 'setTestMode']);
+
+    Route::post('account/billing/setup-intent', [BillingController::class, 'setupIntent']);
+    Route::post('account/billing/payment-method', [BillingController::class, 'savePaymentMethod']);
+    Route::post('account/billing/subscribe', [BillingController::class, 'subscribe']);
+    Route::post('account/billing/cancel', [BillingController::class, 'cancel']);
+    Route::post('account/billing/resume', [BillingController::class, 'resume']);
+    Route::get('account/billing/invoices', [BillingController::class, 'invoices']);
 });
 
 Route::prefix('v1')->middleware('web')->group(function () {
