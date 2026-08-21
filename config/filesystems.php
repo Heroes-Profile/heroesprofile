@@ -48,6 +48,14 @@ return [
             'visibility' => 'private',
         ],
 
+        /* NGS replays live in their own bucket, separate from uploader replays. */
+        'gcs-ngs' => [
+            'driver' => 'gcs',
+            'project_id' => env('GOOGLE_CLOUD_PROJECT_ID'),
+            'bucket' => env('GOOGLE_CLOUD_NGS_BUCKET', 'heroesprofile-ngs'),
+            'visibility' => 'private',
+        ],
+
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
