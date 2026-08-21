@@ -20,14 +20,12 @@ class ApiEndpointRegistrySeeder extends Seeder
 
     /** [endpoint, name, group_name, group_sort, sort, ...one allowance per PLAN_IDS] */
     private const ENDPOINTS = [
-        ['account_level_stats', 'Stats/Account/Level', 'General', 1, 6, 70, 210, 1000, 10000, 0, 0],
         ['activity_unique_players', 'Tools/Activity/UniquePlayers', 'Tools', 9, 2, 70, 210, 1000, 10000, 0, 0],
         ['compare', 'Compare', 'Player Miscellaneous', 6, 2, 25, 500, 5000, 50000, 0, 0],
         ['global_compositions', 'Global/Compositions', 'Hero Data', 3, 8, 70, 210, 1000, 10000, 0, 0],
         ['global_compositions_heroes', 'Global/Compositions/Heroes', 'Hero Data', 3, 9, 70, 210, 1000, 10000, 0, 0],
         ['global_draft', 'Global/Draft', 'Hero Data', 3, 10, 70, 210, 1000, 10000, 0, 0],
         ['global_party', 'Global/Party', 'Hero Data', 3, 11, 70, 210, 1000, 10000, 0, 0],
-        ['hero_level_stats', 'Stats/Hero/Level', 'General', 1, 7, 70, 210, 1000, 10000, 0, 0],
         ['heroes', 'Heroes', 'General', 1, 2, 1000000, 1000000, 1000000, 1000000, 0, 0],
         ['heroes_map_stats', 'Heroes/Map/Stats', 'Hero Data', 3, 6, 70, 210, 1000, 10000, 0, 0],
         ['heroes_matchups', 'Hero/Matchups', 'Hero Data', 3, 2, 700, 2100, 10000, 100000, 0, 0],
@@ -53,6 +51,7 @@ class ApiEndpointRegistrySeeder extends Seeder
         ['ngs_standings', 'NGS/Standings', 'NGS Public Data', 7, 7, 50, 100, 1000, 10000, 1000000, 0],
         ['ngs_team_match_history', 'NGS/Team/Match/History', 'NGS Public Data', 7, 13, 100, 10000, 25000, 50000, 50000, 0],
         ['ngs_teams', 'NGS/Teams', 'NGS Public Data', 7, 9, 50, 100, 1000, 10000, 1000000, 0],
+        ['randomize_me', 'Tools/RandomizeMe', 'Tools', 9, 1, 1000000, 1000000, 1000000, 1000000, 0, 0],
         ['patches', 'Patches', 'General', 1, 1, 1000000, 1000000, 1000000, 1000000, 0, 0],
         ['player', 'Player', 'Player Data', 4, 1, 10000, 25000, 50000, 250000, 250000, 250000],
         ['player_friendfoe', 'Player/FriendFoe', 'Player Data', 4, 13, 25, 500, 5000, 50000, 0, 0],
@@ -70,7 +69,6 @@ class ApiEndpointRegistrySeeder extends Seeder
         ['player_role_all', 'Player/Role/All', 'Player Data', 4, 7, 25, 500, 5000, 50000, 0, 0],
         ['player_role_single', 'Player/Role/Single', 'Player Data', 4, 8, 25, 500, 5000, 50000, 0, 0],
         ['player_talents_build', 'Player/Talents/Build', 'Player Data', 4, 6, 25, 500, 5000, 50000, 0, 0],
-        ['randomize_me', 'Tools/RandomizeMe', 'Tools', 9, 1, 1000000, 1000000, 1000000, 1000000, 0, 0],
         ['replay_ban', 'Replay/Ban', 'Replays', 2, 3, 100, 10000, 100000, 250000, 0, 0],
         ['replay_data', 'Replay/Data', 'Replays', 2, 2, 1000, 25000, 250000, 1000000, 0, 0],
         ['replay_download', 'Replay/Download', 'Replays', 2, 1, 1000, 10000, 25000, 100000, 0, 0],

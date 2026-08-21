@@ -3,8 +3,15 @@
 namespace App\Http\Controllers\Api\Public;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Global\GlobalCompositionsController;
+use App\Http\Controllers\Global\GlobalDraftController;
+use App\Http\Controllers\Global\GlobalHeroMapStatsController;
+use App\Http\Controllers\Global\GlobalHeroMatchupsTalentsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupStatsController;
 use App\Http\Controllers\Global\GlobalHeroStatsController;
+use App\Http\Controllers\Global\GlobalLeaderboardController;
+use App\Http\Controllers\Global\GlobalPartyStatsController;
+use App\Http\Controllers\Global\GlobalTalentBuilderController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
 use App\Services\GlobalQueryService;
 use Illuminate\Http\JsonResponse;
@@ -31,6 +38,9 @@ class GlobalStatsController extends Controller
 {
     /** Suggested seconds between polls. A cold query is minutes, not seconds. */
     private const POLL_INTERVAL = 10;
+
+    /** What the site's own composition pages send. Required by the controller. */
+    private const DEFAULT_MINIMUM_GAMES = 100;
 
     public function heroStats(Request $request): Response
     {
@@ -63,6 +73,127 @@ class GlobalStatsController extends Controller
         return $this->delegate($request, $controller, 'getGlobalHeroTalentBuildData');
     }
 
+    /** Which team compositions win, and how often. */
+    public function compositions(Request $request): Response
+    {
+        return $this->delegate($request, GlobalCompositionsController::class, 'getCompositionsData', [
+            'minimum_games' => self::DEFAULT_MINIMUM_GAMES,
+        ]);
+    }
+
+    /** The heroes that make up one composition, identified by `composition_id`. */
+    public function compositionHeroes(Request $request): Response
+    {
+        return $this->delegate($request, GlobalCompositionsController::class, 'getTopHeroData', [
+            'minimum_games' => self::DEFAULT_MINIMUM_GAMES,
+        ], ['composition_id']);
+    }
+
+    /** Draft order and pick position for one hero. */
+    public function draft(Request $request): Response
+    {
+        return $this->delegate($request, GlobalDraftController::class, 'getDraftData', [], ['hero']);
+    }
+
+    /** How party size affects win rate. */
+    public function party(Request $request): Response
+    {
+        return $this->delegate($request, GlobalPartyStatsController::class, 'getPartyStats');
+    }
+
+    /**
+     * Season leaderboards.
+     *
+     * Does not use the shared globals rules — it is scoped by season rather than
+     * by patch. `type` and `groupsize` default to what the page opens with, and
+     * the season to the current one.
+     */
+    public function leaderboard(Request $request): Response
+    {
+        // Alone among the global endpoints, this one validates `hero` by id. The
+        // public contract is a name everywhere, so translate before delegating.
+        if ($request->filled('hero')) {
+            $heroId = $this->globalDataService->getHeroes()
+                ->firstWhere('name', $request->input('hero'))?->id;
+
+            if ($heroId === null) {
+                return response()->json([
+                    'error' => ['code' => 'unknown_hero', 'message' => 'No hero by that name.'],
+                ], 422);
+            }
+
+            $request->merge(['hero' => $heroId]);
+        }
+
+        return $this->delegate(
+            $request,
+            GlobalLeaderboardController::class,
+            'getLeaderboardData',
+            [
+                'season' => $this->globalDataService->getDefaultSeason(),
+                'game_type' => 'sl',
+                'type' => 'player',
+                'groupsize' => 'Solo',
+            ],
+            arrays: [],
+        );
+    }
+
+    /** One hero's win rate per map. */
+    public function heroMaps(Request $request): Response
+    {
+        return $this->delegate($request, GlobalHeroMapStatsController::class, 'getHeroStatMapData', [], ['hero']);
+    }
+
+    /**
+     * Talent performance for one hero against or alongside another.
+     *
+     * `type` and `talent_view` default to what the site's own page opens with:
+     * the hero's talents, measured against an enemy.
+     */
+    public function heroMatchupTalents(Request $request): Response
+    {
+        return $this->delegate($request, GlobalHeroMatchupsTalentsController::class, 'getHeroMatchupsTalentsData', [
+            'type' => 'Enemy',
+            'talent_view' => 'hero',
+        ], ['hero', 'ally_enemy']);
+    }
+
+    /**
+     * Every hero's most popular build in one call.
+     *
+     * Takes no parameters at all: the underlying controller reads the timeframe
+     * and build type from the site's own defaults rather than the request.
+     */
+    public function talentBuildsAll(Request $request): Response
+    {
+        return $this->delegate($request, GlobalTalentStatsController::class, 'getGlobalHeroTalentBuildDataAll');
+    }
+
+    /**
+     * Win rates for a partially chosen build, so a caller can evaluate a talent
+     * before picking it. `selectedtalents` narrows to builds already containing
+     * those talents.
+     */
+    public function talentBuilder(Request $request): Response
+    {
+        return $this->delegate($request, GlobalTalentBuilderController::class, 'getData', [], ['hero']);
+    }
+
+    /**
+     * The replays behind a talent-builder result.
+     *
+     * `selectedtalents` is required here even though the controller treats it as
+     * optional: with none selected it short-circuits and returns the same talent
+     * list `heroes/talents/builder` does, so an omission would silently answer as
+     * a different endpoint. Keyed by tier — `selectedtalents[1]`,
+     * `selectedtalents[4]` and so on through 20 — with talent ids as values.
+     */
+    public function talentBuilderReplays(Request $request): Response
+    {
+        return $this->delegate($request, GlobalTalentBuilderController::class, 'getReplayData', [], ['hero', 'selectedtalents']);
+    }
+
     /**
      * Results for a job returned by any of the above. Outside the quota middleware
      * on purpose: a five minute query polled every ten seconds would otherwise cost
@@ -77,11 +208,43 @@ class GlobalStatsController extends Controller
             : $response;
     }
 
-    private function delegate(Request $request, Controller|string $controller, string $method): Response
-    {
+    /**
+     * @param  array<string, mixed>  $defaults  Parameters the site's own pages always
+     *                                          send, so a public caller need not.
+     * @param  array<int, string>  $requires  Parameters with no sensible default.
+     *                                        Caught here because the controllers
+     *                                        answer a miss with 200 and a `status`
+     *                                        field rather than an error status.
+     */
+    private function delegate(
+        Request $request,
+        Controller|string $controller,
+        string $method,
+        array $defaults = [],
+        array $requires = [],
+        array $arrays = ['timeframe', 'game_type']
+    ): Response {
+        foreach ($requires as $parameter) {
+            if (! $request->filled($parameter)) {
+                return response()->json([
+                    'error' => [
+                        'code' => 'missing_'.$parameter,
+                        'message' => 'This endpoint needs a '.str_replace('_', ' ', $parameter).'.',
+                    ],
+                ], 422);
+            }
+        }
+
+        foreach ($defaults as $key => $value) {
+            if (! $request->has($key)) {
+                $request->merge([$key => $value]);
+            }
+        }
+
         // The rule objects take strings, but the controllers count() and whereIn()
-        // these, so both have to arrive as arrays.
-        foreach (['timeframe', 'game_type'] as $parameter) {
+        // these, so both have to arrive as arrays. Not universally, though — see
+        // the leaderboard, which interpolates game_type into a cache key.
+        foreach ($arrays as $parameter) {
             if (is_string($request->input($parameter))) {
                 $request->merge([
                     $parameter => explode(',', $request->input($parameter)),

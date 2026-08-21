@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Public\NgsController;
 use App\Http\Controllers\Api\Public\PlayerController;
 use App\Http\Controllers\Api\Public\PreMatchController;
 use App\Http\Controllers\Api\Public\ReferenceController;
+use App\Http\Controllers\Api\Public\ToolsController;
 use App\Http\Controllers\Api\Public\UploadController;
 use Illuminate\Support\Facades\Route;
 
@@ -61,13 +62,49 @@ Route::get('players/heroes', [PlayerController::class, 'heroes'])
     ->middleware(['api.fixtures:player_hero_all', 'api.quota:player_hero_all'])
     ->name('api.public.players.heroes');
 
+Route::get('players/heroes/single', [PlayerController::class, 'hero'])
+    ->middleware(['api.fixtures:player_hero_single', 'api.quota:player_hero_single'])
+    ->name('api.public.players.heroes.single');
+
+Route::get('players/maps', [PlayerController::class, 'maps'])
+    ->middleware(['api.fixtures:player_map_all', 'api.quota:player_map_all'])
+    ->name('api.public.players.maps');
+
+Route::get('players/maps/single', [PlayerController::class, 'map'])
+    ->middleware(['api.fixtures:player_map_single', 'api.quota:player_map_single'])
+    ->name('api.public.players.maps.single');
+
+Route::get('players/roles', [PlayerController::class, 'roles'])
+    ->middleware(['api.fixtures:player_role_all', 'api.quota:player_role_all'])
+    ->name('api.public.players.roles');
+
+Route::get('players/roles/single', [PlayerController::class, 'role'])
+    ->middleware(['api.fixtures:player_role_single', 'api.quota:player_role_single'])
+    ->name('api.public.players.roles.single');
+
 Route::get('players/mmr', [PlayerController::class, 'mmr'])
     ->middleware(['api.fixtures:player_mmr', 'api.quota:player_mmr'])
     ->name('api.public.players.mmr');
 
+Route::get('players/mmr/heroes', [PlayerController::class, 'heroMmr'])
+    ->middleware(['api.fixtures:player_mmr_hero', 'api.quota:player_mmr_hero'])
+    ->name('api.public.players.mmr.heroes');
+
+Route::get('players/mmr/roles', [PlayerController::class, 'roleMmr'])
+    ->middleware(['api.fixtures:player_mmr_role', 'api.quota:player_mmr_role'])
+    ->name('api.public.players.mmr.roles');
+
 Route::get('players/talents/build', [PlayerController::class, 'talentBuild'])
     ->middleware(['api.fixtures:player_talents_build', 'api.quota:player_talents_build'])
     ->name('api.public.players.talents.build');
+
+Route::get('players/matchups', [PlayerController::class, 'matchups'])
+    ->middleware(['api.fixtures:player_matchups', 'api.quota:player_matchups'])
+    ->name('api.public.players.matchups');
+
+Route::get('players/friendfoe', [PlayerController::class, 'friendFoe'])
+    ->middleware(['api.fixtures:player_friendfoe', 'api.quota:player_friendfoe'])
+    ->name('api.public.players.friendfoe');
 
 /*
 | Match reads. `replayID` is a path segment rather than a query parameter — it
@@ -109,6 +146,58 @@ Route::get('heroes/talents/details', [GlobalStatsController::class, 'talentDetai
 Route::get('heroes/talents/builds', [GlobalStatsController::class, 'talentBuilds'])
     ->middleware(['api.fixtures:heroes_talents_builds', 'api.quota:heroes_talents_builds'])
     ->name('api.public.heroes.talents.builds');
+
+Route::get('compositions', [GlobalStatsController::class, 'compositions'])
+    ->middleware(['api.fixtures:global_compositions', 'api.quota:global_compositions'])
+    ->name('api.public.compositions');
+
+Route::get('compositions/heroes', [GlobalStatsController::class, 'compositionHeroes'])
+    ->middleware(['api.fixtures:global_compositions_heroes', 'api.quota:global_compositions_heroes'])
+    ->name('api.public.compositions.heroes');
+
+Route::get('draft', [GlobalStatsController::class, 'draft'])
+    ->middleware(['api.fixtures:global_draft', 'api.quota:global_draft'])
+    ->name('api.public.draft');
+
+Route::get('party', [GlobalStatsController::class, 'party'])
+    ->middleware(['api.fixtures:global_party', 'api.quota:global_party'])
+    ->name('api.public.party');
+
+Route::get('heroes/maps', [GlobalStatsController::class, 'heroMaps'])
+    ->middleware(['api.fixtures:heroes_map_stats', 'api.quota:heroes_map_stats'])
+    ->name('api.public.heroes.maps');
+
+Route::get('heroes/matchups/talents', [GlobalStatsController::class, 'heroMatchupTalents'])
+    ->middleware(['api.fixtures:heroes_matchups_talents', 'api.quota:heroes_matchups_talents'])
+    ->name('api.public.heroes.matchups.talents');
+
+Route::get('heroes/talents/builds/all', [GlobalStatsController::class, 'talentBuildsAll'])
+    ->middleware(['api.fixtures:heroes_talents_builds_all', 'api.quota:heroes_talents_builds_all'])
+    ->name('api.public.heroes.talents.builds.all');
+
+Route::get('heroes/talents/builder', [GlobalStatsController::class, 'talentBuilder'])
+    ->middleware(['api.fixtures:talent_builder', 'api.quota:talent_builder'])
+    ->name('api.public.heroes.talents.builder');
+
+Route::get('heroes/talents/builder/replays', [GlobalStatsController::class, 'talentBuilderReplays'])
+    ->middleware(['api.fixtures:talent_builder_replays', 'api.quota:talent_builder_replays'])
+    ->name('api.public.heroes.talents.builder.replays');
+
+Route::get('leaderboard', [GlobalStatsController::class, 'leaderboard'])
+    ->middleware(['api.fixtures:leaderboard', 'api.quota:leaderboard'])
+    ->name('api.public.leaderboard');
+
+/*
+| Tools. Scoped to neither a patch nor a player, so no globals parameters.
+*/
+
+Route::get('tools/randomize', [ToolsController::class, 'randomize'])
+    ->middleware(['api.fixtures:randomize_me', 'api.quota:randomize_me'])
+    ->name('api.public.tools.randomize');
+
+Route::get('tools/activity/players/unique', [ToolsController::class, 'uniquePlayers'])
+    ->middleware(['api.fixtures:activity_unique_players', 'api.quota:activity_unique_players'])
+    ->name('api.public.tools.activity.players.unique');
 
 /*
 | Job results. No quota middleware: polling is free, and the call that created

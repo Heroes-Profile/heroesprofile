@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Middleware\ServeApiFixtures;
 use App\Models\NGS\Player as NgsPlayer;
 use App\Models\NGS\Replay as NgsReplay;
 use App\Services\GlobalDataService;
@@ -33,6 +34,7 @@ class CaptureApiSamples extends Command
                             {--rows=0 : Maximum items kept per list. 0 keeps everything, which is the default so a sample shows the real cardinality.}
                             {--query=* : Extra query parameters as key=value, applied to every endpoint captured.}
                             {--out= : Directory to write to. Defaults to storage/app/api-samples.}
+                            {--promote : Write straight to resources/api-fixtures, so a captured endpoint is a finished fixture. Refused with --raw.}
                             {--raw : Skip anonymisation. Never use for anything that will become a committed fixture.}';
 
     protected $description = 'Write a truncated sample of each public API response for fixture authoring';
@@ -50,9 +52,23 @@ class CaptureApiSamples extends Command
      */
     private const IDENTIFYING_FIELDS = [
         'battletag' => 'battletag',
+        // The battletag with its discriminator stripped — so replacing only
+        // `battletag` leaves the player's actual name sitting beside it.
+        'split_battletag' => 'name',
         'blizz_id' => 'id',
         'region' => 'region',
+        // A real replay id undoes the battletag replacement: `matches/{replayID}`
+        // is public, so anyone can resolve the match and read the player straight
+        // back out of it.
+        'replayID' => 'replay',
+        // Player activity. Reference dates — `release_date`, `last_updated` on a
+        // hero — are not listed and stay real, because they describe the game
+        // rather than a person.
+        'game_date' => 'date',
     ];
+
+    /** What every scrubbed player date collapses to, as existing fixtures have it. */
+    private const PLACEHOLDER_DATE = '2020-01-01 00:00:00';
 
     /** @var array<string, array<string, mixed>> original value => replacement, per field */
     private array $replacements = [];
@@ -67,8 +83,22 @@ class CaptureApiSamples extends Command
     public function handle(): int
     {
         $rows = max(0, (int) $this->option('rows'));
-        $directory = $this->option('out') ?: storage_path('app/api-samples');
         $only = $this->option('endpoint');
+
+        // Capturing and then hand-copying each file into place is two steps for
+        // one job, and the copy is where an endpoint quietly ends up with no
+        // fixture. --promote closes that, but never for a raw capture: those
+        // carry real player data and must not become committed fixtures.
+        if ($this->option('promote') && $this->option('raw')) {
+            $this->error('--promote and --raw are mutually exclusive: a raw capture must never become a fixture.');
+
+            return self::FAILURE;
+        }
+
+        $directory = $this->option('out')
+            ?: ($this->option('promote')
+                ? resource_path(ServeApiFixtures::DIRECTORY)
+                : storage_path('app/api-samples'));
 
         File::ensureDirectoryExists($directory);
 
@@ -83,7 +113,13 @@ class CaptureApiSamples extends Command
             try {
                 $payload = $this->capture($route, $endpoint);
             } catch (Throwable $e) {
-                $this->error($endpoint.' — '.Str::limit($e->getMessage(), 120));
+                // A crash inside a delegated controller says nothing about where
+                // it happened, and these are all third-party-to-us call stacks.
+                $where = $e instanceof RuntimeException
+                    ? ''
+                    : ' ('.basename($e->getFile()).':'.$e->getLine().')';
+
+                $this->error($endpoint.' — '.Str::limit($e->getMessage(), 120).$where);
                 $failed++;
 
                 continue;
@@ -97,12 +133,31 @@ class CaptureApiSamples extends Command
                 $payload = $this->scrub($payload);
             }
 
+            // Promoting means this file ships as the documented shape of the
+            // endpoint, so a capture that is not one must not be written. Both of
+            // these look like successful captures from the outside: the internal
+            // controllers answer a validation failure with HTTP 200 and a `status`
+            // field, and an unnarrowed query can legitimately return nothing.
+            if ($this->option('promote') && ($reason = $this->unfitForFixture($payload)) !== null) {
+                $this->error($endpoint.' — not written: '.$reason);
+                $failed++;
+
+                continue;
+            }
+
             File::put($path, json_encode(
                 $payload,
                 JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
             ));
 
             $this->line('<info>'.$endpoint.'</info> → '.$path);
+
+            // Fixtures are served in full on every test-mode call, so a large one
+            // is a cost paid forever. --rows keeps the shape and drops the bulk.
+            if ($this->option('promote') && ($size = filesize($path)) > 1024 * 1024) {
+                $this->warn('  '.$endpoint.' is '.round($size / 1024 / 1024, 1).'MB. Consider re-capturing it with --rows.');
+            }
+
             $written++;
         }
 
@@ -114,9 +169,36 @@ class CaptureApiSamples extends Command
             $this->reportReplacements();
         }
 
+        if ($this->option('promote')) {
+            $this->warn('Written straight to fixtures. Read the replacements above before committing: a field that is not anonymised is a field that ships.');
+        }
+
         $this->info($written.' captured'.($failed > 0 ? ', '.$failed.' failed' : '').'.');
 
         return $failed > 0 ? self::FAILURE : self::SUCCESS;
+    }
+
+    /**
+     * Why this capture must not become a fixture, or null if it may.
+     *
+     * A fixture is what an account on test data receives, so an empty one
+     * documents an endpoint as returning nothing and an error one documents a
+     * shape no working call ever produces.
+     */
+    private function unfitForFixture(mixed $payload): ?string
+    {
+        if ($payload === [] || $payload === null) {
+            return 'the endpoint returned nothing. Narrow it with --query, or pick a player with data for it.';
+        }
+
+        if (is_array($payload) && ($payload['status'] ?? null) === 'failure to validate inputs') {
+            $errors = $payload['errors'] ?? [];
+
+            return 'the endpoint rejected the request — '
+                .(is_array($errors) ? implode(' ', $errors) : 'no reason given');
+        }
+
+        return null;
     }
 
     /** @return array<string, Route> keyed by registry endpoint */
@@ -167,6 +249,18 @@ class CaptureApiSamples extends Command
 
         $response = app()->call([app($class), $method], $arguments);
 
+        // The public controllers answer a bad request with a real status code, so
+        // this catches our own error envelopes before they can be written as the
+        // documented shape of the endpoint.
+        if (method_exists($response, 'getStatusCode') && $response->getStatusCode() >= 400) {
+            $body = method_exists($response, 'getContent') ? json_decode($response->getContent(), true) : null;
+
+            throw new RuntimeException(
+                'the endpoint answered '.$response->getStatusCode().' — '
+                .($body['error']['message'] ?? 'no message given')
+            );
+        }
+
         if (method_exists($response, 'getContent')) {
             return json_decode($response->getContent(), true);
         }
@@ -205,10 +299,14 @@ class CaptureApiSamples extends Command
 
         $replacement = match (self::IDENTIFYING_FIELDS[$key]) {
             'battletag' => 'ExamplePlayer'.$index.'#0000',
+            'name' => 'ExamplePlayer'.$index,
             // Pinned to one real region rather than a fake number: there are only
             // four valid values, and a made-up one would fail a consumer's own
             // validation against the fixture.
             'region' => is_numeric($value) ? 1 : 'NA',
+            // Its own range, so a fake replay id is never mistaken for a blizz_id.
+            'replay' => 90000000 + $index,
+            'date' => self::PLACEHOLDER_DATE,
             default => 9000000 + $index,
         };
 
@@ -302,7 +400,22 @@ class CaptureApiSamples extends Command
                 // Accept either `Zemill#1940` or `Zemill%231940`. These go into the
                 // request as decoded values, so a percent-encoded battletag would
                 // otherwise be searched for literally and match nobody.
-                $overrides[$key] = urldecode($value);
+                $value = urldecode($value);
+
+                // `selectedtalents[1]=2859` has to reach the controller as a nested
+                // array. Without this it arrives as a parameter literally named
+                // `selectedtalents[1]`, which nothing reads.
+                if (preg_match('/^([^\[\]]+)\[([^\]]*)\]$/', $key, $matches)) {
+                    if ($matches[2] === '') {
+                        $overrides[$matches[1]][] = $value;
+                    } else {
+                        $overrides[$matches[1]][$matches[2]] = $value;
+                    }
+
+                    continue;
+                }
+
+                $overrides[$key] = $value;
             }
         }
 

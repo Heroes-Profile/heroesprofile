@@ -1,0 +1,130 @@
+[
+    {
+        "pick_number": 0,
+        "wins": 72,
+        "losses": 66,
+        "games_played": 138,
+        "popularity": 2.41,
+        "win_rate": 52.17
+    },
+    {
+        "pick_number": 1,
+        "wins": 70,
+        "losses": 88,
+        "games_played": 158,
+        "popularity": 2.76,
+        "win_rate": 44.3
+    },
+    {
+        "pick_number": 2,
+        "wins": 137,
+        "losses": 174,
+        "games_played": 311,
+        "popularity": 5.43,
+        "win_rate": 44.05
+    },
+    {
+        "pick_number": 3,
+        "wins": 162,
+        "losses": 190,
+        "games_played": 352,
+        "popularity": 6.15,
+        "win_rate": 46.02
+    },
+    {
+        "pick_number": 4,
+        "wins": 178,
+        "losses": 181,
+        "games_played": 359,
+        "popularity": 6.27,
+        "win_rate": 49.58
+    },
+    {
+        "pick_number": 5,
+        "wins": 223,
+        "losses": 234,
+        "games_played": 457,
+        "popularity": 7.98,
+        "win_rate": 48.8
+    },
+    {
+        "pick_number": 6,
+        "wins": 233,
+        "losses": 238,
+        "games_played": 471,
+        "popularity": 8.23,
+        "win_rate": 49.47
+    },
+    {
+        "pick_number": 7,
+        "wins": 231,
+        "losses": 214,
+        "games_played": 445,
+        "popularity": 7.77,
+        "win_rate": 51.91
+    },
+    {
+        "pick_number": 8,
+        "wins": 171,
+        "losses": 196,
+        "games_played": 367,
+        "popularity": 6.41,
+        "win_rate": 46.59
+    },
+    {
+        "pick_number": 9,
+        "wins": 371,
+        "losses": 366,
+        "games_played": 737,
+        "popularity": 12.88,
+        "win_rate": 50.34
+    },
+    {
+        "pick_number": 10,
+        "wins": 432,
+        "losses": 437,
+        "games_played": 869,
+        "popularity": 15.18,
+        "win_rate": 49.71
+    },
+    {
+        "pick_number": 11,
+        "wins": 147,
+        "losses": 135,
+        "games_played": 282,
+        "popularity": 4.93,
+        "win_rate": 52.13
+    },
+    {
+        "pick_number": 12,
+        "wins": 116,
+        "losses": 124,
+        "games_played": 240,
+        "popularity": 4.19,
+        "win_rate": 48.33
+    },
+    {
+        "pick_number": 13,
+        "wins": 122,
+        "losses": 111,
+        "games_played": 233,
+        "popularity": 4.07,
+        "win_rate": 52.36
+    },
+    {
+        "pick_number": 14,
+        "wins": 88,
+        "losses": 81,
+        "games_played": 169,
+        "popularity": 2.95,
+        "win_rate": 52.07
+    },
+    {
+        "pick_number": 15,
+        "wins": 71,
+        "losses": 65,
+        "games_played": 136,
+        "popularity": 2.38,
+        "win_rate": 52.21
+    }
+]

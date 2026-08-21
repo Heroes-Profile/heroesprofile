@@ -19,6 +19,44 @@ use Illuminate\Support\Facades\Validator;
 
 class PlayerMatchHistory extends Controller
 {
+    /**
+     * Every stat column on `scores`.
+     *
+     * The join was commented out here for a long time, so match history carried
+     * no stat line at all. The public API's `players/matches` replaces the old
+     * `/Player/Replays`, which did return these — without them a caller has to
+     * fetch each match separately to get a stat it used to receive in bulk.
+     *
+     * The site's own match history does not render them yet.
+     */
+    private const SCORE_COLUMNS = [
+        'level', 'kills', 'assists', 'takedowns', 'deaths', 'highest_kill_streak',
+        'hero_damage', 'siege_damage', 'structure_damage', 'minion_damage',
+        'creep_damage', 'summon_damage', 'time_cc_enemy_heroes', 'healing',
+        'self_healing', 'damage_taken', 'experience_contribution', 'town_kills',
+        'time_spent_dead', 'merc_camp_captures', 'watch_tower_captures',
+        'meta_experience', 'match_award', 'protection_allies', 'silencing_enemies',
+        'rooting_enemies', 'stunning_enemies', 'clutch_heals', 'escapes',
+        'vengeance', 'outnumbered_deaths', 'teamfight_escapes', 'teamfight_healing',
+        'teamfight_damage_taken', 'teamfight_hero_damage', 'multikill',
+        'physical_damage', 'spell_damage', 'regen_globes', 'first_to_ten',
+        'time_on_fire',
+    ];
+
+    /**
+     * Qualified, because `level` and `match_award` are not unique across the
+     * joined tables.
+     *
+     * @return array<int, string>
+     */
+    private static function scoreColumns(): array
+    {
+        return array_map(
+            fn (string $column) => 'scores.'.$column.' AS '.$column,
+            self::SCORE_COLUMNS
+        );
+    }
+
     public function show(Request $request, $battletag, $blizz_id, $region)
     {
         $validationRules = [
@@ -161,12 +199,10 @@ class PlayerMatchHistory extends Controller
 
         $result = DB::table('replay')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
-            /*
             ->join('scores', function ($join) {
                 $join->on('scores.replayID', '=', 'replay.replayID')
                     ->on('scores.battletag', '=', 'player.battletag');
             })
-            */
             ->join('talents', function ($join) {
                 $join->on('talents.replayID', '=', 'replay.replayID')
                     ->on('talents.battletag', '=', 'player.battletag');
@@ -193,6 +229,7 @@ class PlayerMatchHistory extends Controller
                 'talents.level_thirteen AS level_thirteen',
                 'talents.level_sixteen AS level_sixteen',
                 'talents.level_twenty AS level_twenty',
+                ...self::scoreColumns(),
             ])
             ->where('blizz_id', $blizz_id)
             ->whereIn('game_type', $game_type)
