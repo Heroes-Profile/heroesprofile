@@ -107,7 +107,7 @@
 
         <p v-if="!invoices.length" class="text-sm text-gray-medium">No invoices yet.</p>
 
-        <table v-else class="responsive-table">
+        <table v-else class="min-w-0 w-full responsive-table">
           <thead>
             <tr>
               <th class="py-2 px-3 text-left text-sm">Date</th>

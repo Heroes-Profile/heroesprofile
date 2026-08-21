@@ -5,7 +5,7 @@
         No calls have counted against your quota in the current window.
       </p>
 
-      <table v-else class="responsive-table mb-3">
+      <table v-else class="min-w-0 w-full responsive-table mb-3">
         <thead>
           <tr>
             <th class="py-2 px-3 text-left text-sm">Endpoint</th>
@@ -37,7 +37,7 @@
       <div v-for="group in usage" :key="group.title" class="mb-6">
         <h3 class="text-lteal mb-2">{{ group.title }}</h3>
 
-        <table class="responsive-table">
+        <table class="min-w-0 w-full responsive-table">
           <thead>
             <tr>
               <th class="py-2 px-3 text-left text-sm">Name</th>

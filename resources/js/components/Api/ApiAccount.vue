@@ -10,13 +10,13 @@
           placeholder values. They do not count against your quota, so you can build and
           test freely. Rate limits still apply.
         </p>
-        <p v-if="!account.migrated" class="text-sm text-gray-medium">
+        <p v-if="!migrated" class="text-sm text-gray-medium">
           Activating live data will expire your existing API key on the old site. Do that
           once your integration is ready.
         </p>
       </div>
 
-      <div v-if="account.migrated" class="bg-lighten p-6 mb-8">
+      <div v-if="migrated" class="bg-lighten p-6 mb-8">
         <h2 class="text-lg mb-2">Data Mode</h2>
         <p class="text-sm text-gray-medium mb-4">
           Switch to test data whenever you are building or debugging. Responses become
@@ -43,6 +43,33 @@
           <code class="bg-darken p-2 break-all flex-grow">{{ newKey.plain_text }}</code>
           <custom-button @click="copyKey" :text="copied ? 'Copied' : 'Copy'" :alt="'Copy key'" :size="'small'" :ignoreclick="true"></custom-button>
         </div>
+      </div>
+
+      <div v-if="!migrated" class="bg-lighten border-l-4 border-teal p-6 mb-8">
+        <h2 class="text-lg mb-2">{{ activateHeading }}</h2>
+        <p class="text-sm mb-2">
+          Your calls currently return example data. Activating switches them to real
+          results, and every call starts counting against your weekly quota.
+        </p>
+        <p v-if="account.has_legacy_token" class="text-sm text-yellow mb-3">
+          This immediately expires your existing key on the old API site. It cannot be
+          undone. Do it once your integration is ready to move.
+        </p>
+        <p v-else class="text-sm text-gray-medium mb-3">
+          You can switch back to example data at any time using the test data toggle.
+        </p>
+
+        <button
+          :disabled="!keys.length || activating"
+          @click="activate"
+          class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4 disabled:bg-gray-medium"
+        >
+          {{ activating ? 'Activating…' : activateHeading }}
+        </button>
+
+        <p v-if="!keys.length" class="text-sm text-gray-medium mt-2">
+          Create an API key below first — activating expires your old one.
+        </p>
       </div>
 
       <div v-if="error" class="bg-red p-3 mb-4">{{ error }}</div>
@@ -75,8 +102,7 @@
         <p v-if="!keys.length" class="text-sm text-gray-medium">
           You have no active keys. Create one above to start using the API.
         </p>
-
-        <table v-else class="responsive-table">
+        <table  v-else class="min-w-0 w-full responsive-table">
           <thead>
             <tr>
               <th class="py-2 px-3 text-left text-sm">Name</th>
@@ -136,9 +162,40 @@ export default {
       error: null,
       testMode: this.account.test_mode,
       receivesTestData: this.account.receives_test_data,
+      migrated: this.account.migrated,
+      activating: false,
     }
   },
+  computed: {
+    // Accounts registered here have no old key, so there is nothing to migrate.
+    activateHeading(){
+      return this.account.has_legacy_token ? 'Migrate Account' : 'Activate Live Data';
+    },
+  },
   methods: {
+    async activate(){
+      const warning = this.account.has_legacy_token
+        ? 'Activate live data? This expires your existing key on the old API site immediately and cannot be undone.'
+        : 'Activate live data? Calls will return real results and start using your weekly quota.';
+
+      if(!confirm(warning)){
+        return;
+      }
+
+      this.activating = true;
+      this.error = null;
+
+      try {
+        const response = await this.$axios.post('/api/v1/account/migrate');
+
+        this.migrated = response.data.migrated;
+        this.receivesTestData = response.data.receives_test_data;
+      } catch (e) {
+        this.error = e.response?.data?.error || 'Could not activate live data. Please try again.';
+      }
+
+      this.activating = false;
+    },
     async setTestMode(side){
       const enabled = side === 'right';
 

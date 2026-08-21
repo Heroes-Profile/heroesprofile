@@ -62,6 +62,7 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
     Route::post('account/keys', [ApiKeyController::class, 'store']);
     Route::post('account/keys/revoke', [ApiKeyController::class, 'revoke']);
     Route::post('account/test-mode', [ApiAccountController::class, 'setTestMode']);
+    Route::post('account/migrate', [ApiAccountController::class, 'migrate']);
 
     Route::post('account/billing/setup-intent', [BillingController::class, 'setupIntent']);
     Route::post('account/billing/payment-method', [BillingController::class, 'savePaymentMethod']);
