@@ -53,4 +53,31 @@ class UploadController extends Controller
             (string) ($request->input('compiled') ?: '0'),
         ));
     }
+
+    /**
+     * Whether a replay with this fingerprint is already stored.
+     *
+     * The client parses this as JSON and reads `exists` as a bool, so this one
+     * keeps an envelope. It also promotes the replay's source — see the service.
+     */
+    public function fingerprint(ReplayUploadService $uploads, string $fingerprint): Response
+    {
+        return response()->json(['exists' => $uploads->fingerprintExists($fingerprint)]);
+    }
+
+    /**
+     * Whether a replay has been parsed and stored yet.
+     *
+     * Answers the literal words `true` and `false` as plain text, because the
+     * client compares the body as a string. Wrap this in JSON and the post-match
+     * page silently stops opening, with only a client-side log line to show for
+     * it. Nothing here is allowed to throw for the same reason: an unparseable
+     * `replayID` answers `false` rather than a validation envelope.
+     */
+    public function parsed(Request $request, ReplayUploadService $uploads): Response
+    {
+        $parsed = $uploads->isParsed((int) $request->query('replayID'));
+
+        return response($parsed ? 'true' : 'false', 200, ['Content-Type' => 'text/plain']);
+    }
 }

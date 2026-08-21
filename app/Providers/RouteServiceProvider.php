@@ -22,6 +22,17 @@ class RouteServiceProvider extends ServiceProvider
     public const HOME = '/home';
 
     /**
+     * Keyless routes the desktop and electron uploaders call. Each has its own
+     * per-IP limiter, so none of them belong in the shared per-key bucket.
+     */
+    private const UPLOADER_ROUTES = [
+        'api.public.upload',
+        'api.public.replays.fingerprint',
+        'api.public.replays.parsed',
+        'api.public.prematch',
+    ];
+
+    /**
      * Define your route model bindings, pattern filters, and other route configuration.
      */
     public function boot(): void
@@ -37,9 +48,10 @@ class RouteServiceProvider extends ServiceProvider
         // Per key, not per IP: two customers behind one address must not share a
         // bucket, and one customer's runaway loop must not throttle the other.
         RateLimiter::for('api-public', function (Request $request) {
-            // Ingestion is anonymous and carries its own per-IP limits. Leaving it
-            // in the anonymous bucket would cap an uploader at 20 replays a minute.
-            if ($request->routeIs('api.public.upload')) {
+            // The uploader's routes are anonymous and carry their own per-IP
+            // limits. Leaving them in the anonymous bucket would cap an uploader
+            // at 20 replays a minute.
+            if ($request->routeIs(...self::UPLOADER_ROUTES)) {
                 return Limit::none();
             }
 
@@ -55,6 +67,21 @@ class RouteServiceProvider extends ServiceProvider
 
         RateLimiter::for('upload-daily', function (Request $request) {
             return Limit::perMinutes(1440, 20000)->by(ClientIpService::getClientIp($request));
+        });
+
+        // The uploader's remaining calls, at the ceilings their old routes had.
+        // The fingerprint check is generous because the client makes one per
+        // replay before deciding whether to upload at all.
+        RateLimiter::for('replay-fingerprints', function (Request $request) {
+            return Limit::perMinute(5000)->by(ClientIpService::getClientIp($request));
+        });
+
+        RateLimiter::for('replay-parsed', function (Request $request) {
+            return Limit::perMinute(60)->by(ClientIpService::getClientIp($request));
+        });
+
+        RateLimiter::for('prematch', function (Request $request) {
+            return Limit::perMinute(120)->by(ClientIpService::getClientIp($request));
         });
 
         RateLimiter::for('contact', function (Request $request) {

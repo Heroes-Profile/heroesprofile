@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\Public\GlobalStatsController;
 use App\Http\Controllers\Api\Public\MatchController;
 use App\Http\Controllers\Api\Public\NgsController;
 use App\Http\Controllers\Api\Public\PlayerController;
+use App\Http\Controllers\Api\Public\PreMatchController;
 use App\Http\Controllers\Api\Public\ReferenceController;
 use App\Http\Controllers\Api\Public\UploadController;
 use Illuminate\Support\Facades\Route;
@@ -157,3 +158,22 @@ Route::get('ngs/replay/data', [NgsController::class, 'replayData'])
 Route::post('upload/heroesprofile/{source}', [UploadController::class, 'store'])
     ->middleware(['throttle:upload', 'throttle:upload-daily'])
     ->name('api.public.upload');
+
+/*
+| The uploader's other keyless calls, each carrying the ceiling its old route
+| had. `replays/parsed` and `prematch` answer plain text rather than JSON: the
+| client string-compares the first and Int32.TryParses the second, so an
+| envelope on either would kill the feature silently. Do not "fix" them.
+*/
+
+Route::get('replays/fingerprints/{fingerprint}', [UploadController::class, 'fingerprint'])
+    ->middleware('throttle:replay-fingerprints')
+    ->name('api.public.replays.fingerprint');
+
+Route::get('replays/parsed', [UploadController::class, 'parsed'])
+    ->middleware('throttle:replay-parsed')
+    ->name('api.public.replays.parsed');
+
+Route::post('prematch', [PreMatchController::class, 'store'])
+    ->middleware('throttle:prematch')
+    ->name('api.public.prematch');

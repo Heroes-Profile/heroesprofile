@@ -2,6 +2,7 @@
 
 namespace App\Services\Api;
 
+use App\Models\Replay;
 use App\Models\ReplayFingerprint;
 use App\Models\UploadAttempt;
 use App\Models\UploadAttemptLog;
@@ -49,6 +50,13 @@ class ReplayUploadService
 
     /** Uploaders that own a replay's source; anything else defers to them. */
     private const PRIMARY_SOURCES = ['desktop', 'electron'];
+
+    /**
+     * What a fingerprint check promotes a replay to. Hardcoded because the
+     * desktop client is the only thing that calls it — electron uploads without
+     * checking first.
+     */
+    private const CHECK_SOURCE = 'desktop';
 
     /**
      * Outcomes that settle a file for good. A `Failure` or `Error` row is not one:
@@ -136,6 +144,38 @@ class ReplayUploadService
         $this->record($ip, $hash, $name, $size, $source, 'Success', $fingerprint, (int) $replay->replayID);
 
         return $this->body($fingerprint, $replay->replayID, 'Success');
+    }
+
+    /**
+     * Whether a replay with this fingerprint is already stored.
+     *
+     * The desktop client asks before uploading and skips the upload entirely when
+     * the answer is true, so the upload path's source promotion never runs for a
+     * replay somebody else already sent. This is the only place it can happen,
+     * which is why a read has a write in it.
+     */
+    public function fingerprintExists(string $fingerprint): bool
+    {
+        $replayID = ReplayFingerprint::where('fingerprint', $fingerprint)->value('replayID');
+
+        if ($replayID === null) {
+            return false;
+        }
+
+        $this->recordSourceChange((int) $replayID, self::CHECK_SOURCE);
+
+        return true;
+    }
+
+    /**
+     * Whether a replay has been parsed and stored.
+     *
+     * The uploader polls this after an upload and opens the post-match page the
+     * moment it turns true.
+     */
+    public function isParsed(int $replayID): bool
+    {
+        return $replayID > 0 && Replay::where('replayID', $replayID)->exists();
     }
 
     /**
