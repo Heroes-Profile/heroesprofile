@@ -25,9 +25,6 @@ class ServeApiFixtures
 
     public const DIRECTORY = 'api-fixtures';
 
-    /** Visible in a debugger without having to read response headers. */
-    private const NOTE_KEY = '_test_data';
-
     public function handle(Request $request, Closure $next, string $endpoint): Response
     {
         $context = $request->attributes->get(ApiKeyGuard::REQUEST_ATTRIBUTE);
@@ -52,8 +49,11 @@ class ServeApiFixtures
             ], 500)->header(self::HEADER, 'fixture');
         }
 
+        // Served verbatim. The response body must be shape-identical to the live
+        // one, so a consumer coding against a fixture does not find a field that
+        // disappears the moment they activate. `X-HP-Data-Source` is the signal.
         return response()
-            ->json($this->annotate($fixture))
+            ->json($fixture)
             ->header(self::HEADER, 'fixture');
     }
 
@@ -73,18 +73,5 @@ class ServeApiFixtures
         $decoded = json_decode((string) file_get_contents($path), true);
 
         return is_array($decoded) ? $decoded : null;
-    }
-
-    /**
-     * Only an object-shaped fixture can carry the note; a top-level list is served
-     * untouched so the response shape still matches the real endpoint.
-     */
-    private function annotate(array $fixture): array
-    {
-        if (array_is_list($fixture)) {
-            return $fixture;
-        }
-
-        return [self::NOTE_KEY => 'Example data, not live results. This account is in test mode or has not activated live data. No quota was consumed.'] + $fixture;
     }
 }

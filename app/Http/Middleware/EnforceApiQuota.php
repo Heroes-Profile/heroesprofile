@@ -19,6 +19,14 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class EnforceApiQuota
 {
+    /**
+     * Deliberately not `X-RateLimit-*`. That belongs to the per-minute throttle,
+     * and Laravel's ThrottleRequests overwrites those headers with whichever limit
+     * is tighter — which would hide the weekly allowance behind the per-minute one
+     * and silently change what the header means as usage climbs.
+     */
+    private const HEADER_PREFIX = 'X-HP-Quota-';
+
     private const QUOTA_CACHE_SECONDS = 300;
 
     public function handle(Request $request, Closure $next, string $endpoint): Response
@@ -63,7 +71,11 @@ class EnforceApiQuota
                 'Weekly limit of '.number_format($limit).' calls reached for this endpoint.',
                 429,
                 $endpoint
-            )->header('Retry-After', $this->secondsUntilReset($usage));
+            )
+                ->header('Retry-After', $this->secondsUntilReset($usage))
+                ->header(self::HEADER_PREFIX.'Limit', $limit)
+                ->header(self::HEADER_PREFIX.'Remaining', 0)
+                ->header(self::HEADER_PREFIX.'Reset', $this->secondsUntilReset($usage));
         }
 
         DB::connection('heroesprofile_api')
@@ -77,9 +89,9 @@ class EnforceApiQuota
         $this->recordEgress($context->account->id, $endpoint, $response);
 
         return $response
-            ->header('X-RateLimit-Limit', $limit)
-            ->header('X-RateLimit-Remaining', max(0, $limit - ($usage->calls + 1)))
-            ->header('X-RateLimit-Reset', $this->secondsUntilReset($usage));
+            ->header(self::HEADER_PREFIX.'Limit', $limit)
+            ->header(self::HEADER_PREFIX.'Remaining', max(0, $limit - ($usage->calls + 1)))
+            ->header(self::HEADER_PREFIX.'Reset', $this->secondsUntilReset($usage));
     }
 
     /**

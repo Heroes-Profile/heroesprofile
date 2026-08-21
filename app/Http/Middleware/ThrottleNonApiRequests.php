@@ -15,7 +15,10 @@ class ThrottleNonApiRequests
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->is('api/*') || $this->isStripeWebhook($request)) {
+        // `v1/*` is the public API on its own subdomain, where the path carries no
+        // `api/` prefix. It has its own per-key limiter and must not also land in
+        // an IP bucket shared with every other caller behind the same address.
+        if ($request->is('api/*', 'v1/*') || $this->isStripeWebhook($request)) {
             return $next($request);
         }
 

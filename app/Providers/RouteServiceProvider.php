@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Auth\ApiKeyGuard;
 use App\Services\ClientIpService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
@@ -33,6 +34,13 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(40)->by($this->rateLimitKey($request));
         });
 
+        // Per key, not per IP: two customers behind one address must not share a
+        // bucket, and one customer's runaway loop must not throttle the other.
+        RateLimiter::for('api-public', function (Request $request) {
+            return Limit::perMinute($this->publicApiPerMinute($request))
+                ->by($this->rateLimitKey($request));
+        });
+
         RateLimiter::for('contact', function (Request $request) {
             return Limit::perMinute(3)->by($this->rateLimitKey($request));
         });
@@ -47,6 +55,16 @@ class RouteServiceProvider extends ServiceProvider
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
 
+            Route::middleware('api.public')
+                ->domain(config('api.domain'))
+                ->prefix('v1')
+                ->group(base_path('routes/api-public.php'));
+
+            // Same routes, reachable before DNS moves to this app.
+            Route::middleware('api.public')
+                ->prefix(config('api.path'))
+                ->group(base_path('routes/api-public.php'));
+
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
         });
@@ -57,10 +75,31 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function rateLimitKey(Request $request): string
     {
+        $context = $request->attributes->get(ApiKeyGuard::REQUEST_ATTRIBUTE);
+
+        if ($context !== null) {
+            return 'apikey:'.$context->keyId;
+        }
+
         if ($request->user()) {
             return 'user:'.$request->user()->id;
         }
 
         return ClientIpService::getClientIp($request);
+    }
+
+    /** Developer buys a higher ceiling; an unresolved key gets the anonymous one. */
+    private function publicApiPerMinute(Request $request): int
+    {
+        $limits = config('api.rate_limits');
+        $context = $request->attributes->get(ApiKeyGuard::REQUEST_ATTRIBUTE);
+
+        if ($context === null) {
+            return $limits['anonymous'];
+        }
+
+        return in_array(3, $context->planIds, true)
+            ? $limits['developer']
+            : $limits['default'];
     }
 }

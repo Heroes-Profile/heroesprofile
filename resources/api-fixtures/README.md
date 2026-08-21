@@ -16,5 +16,7 @@ Rules:
   endpoint has no file, because an endpoint that falls through to live data
   silently defeats the gate.
 
-An object at the top level also gets a `_test_data` note added to the response. A
-top-level array is served untouched so the shape still matches the real endpoint.
+Fixtures are served **verbatim** — nothing is injected into the body. The response
+must be shape-identical to the live one, so a consumer coding against a fixture
+never finds a field that disappears when they activate live data. The only signal
+is the `X-HP-Data-Source: fixture` response header.

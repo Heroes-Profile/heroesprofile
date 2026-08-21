@@ -15,6 +15,7 @@ use App\Http\Middleware\LogIPAndUserAgent;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
 use App\Http\Middleware\RequireWebsiteAuthForAll;
+use App\Http\Middleware\ResolveApiKey;
 use App\Http\Middleware\ServeApiFixtures;
 use App\Http\Middleware\SetGlobalDataValues;
 use App\Http\Middleware\ThrottleNonApiRequests;
@@ -87,6 +88,18 @@ class Kernel extends HttpKernel
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             ValidateApiPostOrigin::class,
             ThrottleRequests::class.':api',
+            SubstituteBindings::class,
+        ],
+
+        /*
+         * Public API. Stateless on purpose: no session, no CSRF, no
+         * CheckIfPatreonSupporter, and no ValidateApiPostOrigin — that one 403s
+         * anything without a heroesprofile Origin, which is every third-party
+         * client there is.
+         */
+        'api.public' => [
+            ResolveApiKey::class,
+            ThrottleRequests::class.':api-public',
             SubstituteBindings::class,
         ],
     ];
