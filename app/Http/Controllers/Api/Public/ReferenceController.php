@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputValidation;
 use App\Rules\RoleInputValidation;
-use App\Services\GlobalDataService;
 use App\Support\CsvResponse;
 use Illuminate\Http\Request;
 
@@ -21,8 +20,6 @@ class ReferenceController extends Controller
 {
     /** Overall rank tiers rather than per-role or per-hero, as the old API did. */
     private const OVERALL_TIER_TYPE = 10000;
-
-    public function __construct(private readonly GlobalDataService $globalDataService) {}
 
     public function maps(Request $request)
     {

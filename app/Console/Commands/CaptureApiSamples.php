@@ -27,9 +27,30 @@ class CaptureApiSamples extends Command
                             {--endpoint=* : Registry keys to capture. Defaults to all routed public endpoints.}
                             {--rows=2 : Maximum items kept per list.}
                             {--query=* : Extra query parameters as key=value, applied to every endpoint captured.}
-                            {--out= : Directory to write to. Defaults to storage/app/api-samples.}';
+                            {--out= : Directory to write to. Defaults to storage/app/api-samples.}
+                            {--raw : Skip anonymisation. Never use for anything that will become a committed fixture.}';
 
     protected $description = 'Write a truncated sample of each public API response for fixture authoring';
+
+    /**
+     * Fields carrying a real person or match. Replaced with stable fakes so a
+     * sample can become a committed fixture without shipping player data.
+     *
+     * Deliberately not `name` — heroes, maps and talents all use it.
+     *
+     * Every field here is one that exists in this codebase — do not add a field
+     * on the assumption it might. A field NOT listed is written through
+     * untouched, so read the capture before promoting it to a fixture; the
+     * replacement report is there to make an omission visible.
+     */
+    private const IDENTIFYING_FIELDS = [
+        'battletag' => 'battletag',
+        'blizz_id' => 'id',
+        'region' => 'region',
+    ];
+
+    /** @var array<string, array<string, mixed>> original value => replacement, per field */
+    private array $replacements = [];
 
     /** Endpoints that need parameters before they will answer at all. */
     private const DEFAULT_QUERY = [
@@ -63,8 +84,14 @@ class CaptureApiSamples extends Command
 
             $path = $directory.'/'.$endpoint.'.json';
 
+            $payload = $this->truncate($payload, $rows);
+
+            if (! $this->option('raw')) {
+                $payload = $this->scrub($payload);
+            }
+
             File::put($path, json_encode(
-                $this->truncate($payload, $rows),
+                $payload,
                 JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
             ));
 
@@ -73,6 +100,13 @@ class CaptureApiSamples extends Command
         }
 
         $this->newLine();
+
+        if ($this->option('raw')) {
+            $this->warn('Captured RAW. These contain real player data — do not commit them as fixtures.');
+        } else {
+            $this->reportReplacements();
+        }
+
         $this->info($written.' captured'.($failed > 0 ? ', '.$failed.' failed' : '').'.');
 
         return $failed > 0 ? self::FAILURE : self::SUCCESS;
@@ -117,6 +151,65 @@ class CaptureApiSamples extends Command
         return $response;
     }
 
+    /**
+     * Replaces identifying values with stable fakes. The same battletag maps to
+     * the same fake everywhere in the run, so relationships between records
+     * survive and the fixture still reads coherently.
+     */
+    private function scrub(mixed $value, ?string $key = null): mixed
+    {
+        if (is_array($value)) {
+            $scrubbed = [];
+
+            foreach ($value as $childKey => $child) {
+                $scrubbed[$childKey] = $this->scrub($child, is_string($childKey) ? $childKey : $key);
+            }
+
+            return $scrubbed;
+        }
+
+        if ($key === null || $value === null || ! isset(self::IDENTIFYING_FIELDS[$key])) {
+            return $value;
+        }
+
+        $original = (string) $value;
+
+        if (isset($this->replacements[$key][$original])) {
+            return $this->replacements[$key][$original];
+        }
+
+        $index = count($this->replacements[$key] ?? []) + 1;
+
+        $replacement = match (self::IDENTIFYING_FIELDS[$key]) {
+            'battletag' => 'ExamplePlayer'.$index.'#0000',
+            // Pinned to one real region rather than a fake number: there are only
+            // four valid values, and a made-up one would fail a consumer's own
+            // validation against the fixture.
+            'region' => is_numeric($value) ? 1 : 'NA',
+            default => 9000000 + $index,
+        };
+
+        return $this->replacements[$key][$original] = $replacement;
+    }
+
+    private function reportReplacements(): void
+    {
+        if ($this->replacements === []) {
+            $this->line('<comment>Nothing anonymised.</comment> If this endpoint returns player data, add its fields to IDENTIFYING_FIELDS.');
+
+            return;
+        }
+
+        $this->table(
+            ['Field', 'Distinct values replaced'],
+            array_map(
+                fn ($field, $values) => [$field, count($values)],
+                array_keys($this->replacements),
+                array_values($this->replacements)
+            )
+        );
+    }
+
     /** @return array<string, string> */
     private function queryOverrides(): array
     {
@@ -125,7 +218,11 @@ class CaptureApiSamples extends Command
         foreach ($this->option('query') as $pair) {
             if (str_contains($pair, '=')) {
                 [$key, $value] = explode('=', $pair, 2);
-                $overrides[$key] = $value;
+
+                // Accept either `Zemill#1940` or `Zemill%231940`. These go into the
+                // request as decoded values, so a percent-encoded battletag would
+                // otherwise be searched for literally and match nobody.
+                $overrides[$key] = urldecode($value);
             }
         }
 

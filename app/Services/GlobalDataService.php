@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\BannedAccount;
 use App\Models\BattlenetAccount;
 use App\Models\Battletag;
 use App\Models\CCL\CCLTeam;
@@ -73,6 +74,34 @@ class GlobalDataService
         });
 
         return $filteredAccounts;
+    }
+
+    /**
+     * Whether a player has hidden their profile or been banned.
+     *
+     * The site enforces this in CheckIfPrivateProfilePage by redirecting; the
+     * public API has no session to make an owner exception with, so a restricted
+     * account is refused outright.
+     */
+    public function isRestrictedAccount($blizz_id, $region): bool
+    {
+        return Cache::remember(
+            'restricted_account|'.$blizz_id.'|'.$region,
+            300,
+            function () use ($blizz_id, $region) {
+                $isPrivate = $this->getPrivateAccounts()->contains(
+                    fn ($account) => $account['blizz_id'] == $blizz_id && $account['region'] == $region
+                );
+
+                if ($isPrivate) {
+                    return true;
+                }
+
+                return BannedAccount::where('blizz_id', $blizz_id)
+                    ->where('region', $region)
+                    ->exists();
+            }
+        );
     }
 
     public function calculateMaxReplayNumber()

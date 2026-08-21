@@ -1,0 +1,88 @@
+{
+    "tableData": [
+        {
+            "replayID": 90000003,
+            "game_date": "2020-01-01 00:00:00",
+            "game_map": 6,
+            "mmr_ran": 1,
+            "winner": "True",
+            "hero": {
+                "id": 1,
+                "name": "Abathur",
+                "short_name": "abathur",
+                "alt_name": null,
+                "role": "Specialist",
+                "new_role": "Support",
+                "type": "Melee",
+                "release_date": "2014-03-13 00:00:01",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Abat",
+                "build_copy_name": "Abathur",
+                "last_updated": "2024-02-06 18:32:51"
+            },
+            "player_conservative_rating": 25.0,
+            "player_change": 25.0,
+            "hero_conservative_rating": 25.0,
+            "hero_change": 25.0,
+            "role_conservative_rating": 25.0,
+            "role_change": 25.0,
+            "mmr_date_parsed": "2020-01-01 00:00:00",
+            "hero_id": 1,
+            "mmr": 2500,
+            "mmr_change": 25.0,
+            "x_label": "2025-12-05 19:23:46"
+        },
+        {
+            "replayID": 90000004,
+            "game_date": "2020-01-01 00:00:00",
+            "game_map": 7,
+            "mmr_ran": 1,
+            "winner": "True",
+            "hero": {
+                "id": 1,
+                "name": "Abathur",
+                "short_name": "abathur",
+                "alt_name": null,
+                "role": "Specialist",
+                "new_role": "Support",
+                "type": "Melee",
+                "release_date": "2014-03-13 00:00:01",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Abat",
+                "build_copy_name": "Abathur",
+                "last_updated": "2024-02-06 18:32:51"
+            },
+            "player_conservative_rating": 25.0,
+            "player_change": 25.0,
+            "hero_conservative_rating": 25.0,
+            "hero_change": 25.0,
+            "role_conservative_rating": 25.0,
+            "role_change": 25.0,
+            "mmr_date_parsed": "2020-01-01 00:00:00",
+            "hero_id": 1,
+            "mmr": 2500,
+            "mmr_change": 25.0,
+            "x_label": "2022-04-14 18:38:58"
+        }
+    ],
+    "leagueData": [
+        {
+            "league_breakdowns_id": 276119,
+            "type_role_hero": 10000,
+            "game_type": 1,
+            "league_tier": 1,
+            "min_mmr": 785,
+            "max_mmr": 2500
+        },
+        {
+            "league_breakdowns_id": 2576,
+            "type_role_hero": 10000,
+            "game_type": 1,
+            "league_tier": 2,
+            "min_mmr": 2439,
+            "max_mmr": 2500
+        }
+    ]
+}
