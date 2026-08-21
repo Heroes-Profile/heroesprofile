@@ -33,6 +33,9 @@ class GlobalDataService
     /** Replays older than (max replay ID - this value) get stricter rate limits. */
     public const OLD_REPLAY_THRESHOLD = 1_000_000;
 
+    /** How long a replay file is kept before it is purged from storage. */
+    public const REPLAY_RETENTION_WEEKS = 4;
+
     /**
      * Hour (America/New_York) at/after which the leaderboard "weeks since season start" value
      * rolls over to the new day. The CalculateLeaderboards batch runs ~4am-12pm EST and freezes
@@ -114,6 +117,13 @@ class GlobalDataService
         return (int) Cache::remember('max_replay_id', 300, function () {
             return Replay::max('replayID') ?? 0;
         });
+    }
+
+    /** Whether the original file for a replay is still stored. */
+    public function replayFileIsRetained($dateAdded): bool
+    {
+        return $dateAdded !== null
+            && Carbon::parse($dateAdded)->gt(now()->subWeeks(self::REPLAY_RETENTION_WEEKS));
     }
 
     public function isOldReplay(int $replayId): bool
@@ -514,6 +524,31 @@ class GlobalDataService
                 ->orderBy('build', 'DESC')
                 ->get();
         });
+    }
+
+    /**
+     * Hero bans for a match, grouped by team and resolved to hero records.
+     *
+     * `$schema` because esports matches live in sibling schemas; the public API
+     * only ever asks for the default one.
+     */
+    public function getReplayBans($replayID, $schema = 'heroesprofile')
+    {
+        $heroData = $this->getHeroesByID();
+
+        return DB::table($schema.'.replay_bans')
+            ->select('team', 'hero')
+            ->where('replayID', $replayID)
+            ->orderBy('ban_id')
+            ->get()
+            ->groupBy('team')
+            ->map(function ($teamGroup) use ($heroData) {
+                return $teamGroup->map(function ($replayBan) use ($heroData) {
+                    $replayBan->hero = $heroData[$replayBan->hero] ?? $replayBan->hero;
+
+                    return $replayBan;
+                });
+            });
     }
 
     public function getHeroesByID()

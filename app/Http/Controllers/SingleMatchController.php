@@ -319,7 +319,7 @@ class SingleMatchController extends Controller
 
             $replayDetails = [
                 'region' => $replayGroup[0]->region,
-                'downloadable' => ! $this->esport ? $replayGroup[0]->date_added > now()->subWeeks(4) : null,
+                'downloadable' => ! $this->esport ? $this->globalDataService->replayFileIsRetained($replayGroup[0]->date_added) : null,
                 'replay_download_blocked' => $replayDownloadBlocked,
                 'game_type' => ! $this->esport ? $this->globalDataService->getGameTypeIDtoString()[$replayGroup[0]->game_type]['name'] : null,
                 'game_date' => $replayGroup[0]->game_date,
@@ -327,7 +327,7 @@ class SingleMatchController extends Controller
                 'game_length' => $timeFormat,
                 'winner' => ($replayGroup[0]->team == 0 && $replayGroup[0]->winner == 1) ? 0 : 1,
                 'players' => [],
-                'replay_bans' => $this->getReplayBans($replayID, $heroData),
+                'replay_bans' => $this->globalDataService->getReplayBans($replayID, $this->schema),
                 'draft_order' => $this->esport != 'CCL' && $this->esport != 'MastersClash' && $this->esport != 'HeroesInternational' ? $this->getDraftOrder($replayID, $heroData) : null,
                 'experience_breakdown' => $this->getExperienceBreakdown($replayID),
                 'team_names' => $team_names,
@@ -724,25 +724,6 @@ class SingleMatchController extends Controller
         }
 
         return $playerArray;
-    }
-
-    private function getReplayBans($replayID, $heroData)
-    {
-        $replayBans = DB::table($this->schema.'.replay_bans')
-            ->select('team', 'hero')
-            ->where('replayID', $replayID)
-            ->orderBy('ban_id')
-            ->get()
-            ->groupBy('team')
-            ->map(function ($teamGroup) use ($heroData) {
-                return $teamGroup->map(function ($replayBan) use ($heroData) {
-                    $replayBan->hero = $heroData[$replayBan->hero] ?? $replayBan->hero;
-
-                    return $replayBan;
-                });
-            });
-
-        return $replayBans;
     }
 
     private function getDraftOrder($replayID, $heroData)

@@ -17,6 +17,7 @@
         "laravel/ui": "^4.2",
         "socialiteproviders/battlenet": "^4.1",
         "socialiteproviders/patreon": "^5.0",
+        "spatie/laravel-google-cloud-storage": "^2.3",
         "spatie/laravel-ignition": "^2.3",
         "symfony/css-selector": "^7.3"
     },

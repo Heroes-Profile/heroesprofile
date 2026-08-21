@@ -26,12 +26,25 @@ class ServeApiFixtures
 
     public const DIRECTORY = 'api-fixtures';
 
+    /**
+     * Endpoints that answer with a file rather than JSON. The fixture is the file
+     * itself, served as a download so a test-mode caller exercises the same code
+     * path a live one does.
+     */
+    private const BINARY_EXTENSIONS = ['StormReplay'];
+
     public function handle(Request $request, Closure $next, string $endpoint): Response
     {
         $context = $request->attributes->get(ApiKeyGuard::REQUEST_ATTRIBUTE);
 
         if ($context === null || ! $context->servesFixtures()) {
             return $next($request);
+        }
+
+        if ($binary = $this->binaryFixture($endpoint)) {
+            return response()
+                ->download($binary, basename($binary))
+                ->withHeaders([self::HEADER => 'fixture']);
         }
 
         $fixture = $this->read($endpoint);
@@ -72,6 +85,34 @@ class ServeApiFixtures
     public static function path(string $endpoint): string
     {
         return resource_path(self::DIRECTORY.'/'.$endpoint.'.json');
+    }
+
+    /** A fixture exists for an endpoint if it has either a JSON or a binary one. */
+    public static function exists(string $endpoint): bool
+    {
+        if (is_file(self::path($endpoint))) {
+            return true;
+        }
+
+        return self::binaryPath($endpoint) !== null;
+    }
+
+    private static function binaryPath(string $endpoint): ?string
+    {
+        foreach (self::BINARY_EXTENSIONS as $extension) {
+            $candidate = resource_path(self::DIRECTORY.'/'.$endpoint.'.'.$extension);
+
+            if (is_file($candidate)) {
+                return $candidate;
+            }
+        }
+
+        return null;
+    }
+
+    private function binaryFixture(string $endpoint): ?string
+    {
+        return self::binaryPath($endpoint);
     }
 
     private function read(string $endpoint): ?array

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Public\MatchController;
 use App\Http\Controllers\Api\Public\PlayerController;
 use App\Http\Controllers\Api\Public\ReferenceController;
 use Illuminate\Support\Facades\Route;
@@ -63,3 +64,23 @@ Route::get('players/mmr', [PlayerController::class, 'mmr'])
 Route::get('players/talents/build', [PlayerController::class, 'talentBuild'])
     ->middleware(['api.fixtures:player_talents_build', 'api.quota:player_talents_build'])
     ->name('api.public.players.talents.build');
+
+/*
+| Match reads. `replayID` is a path segment rather than a query parameter — it
+| identifies the resource, and unlike a battletag it carries no characters that
+| need encoding.
+*/
+
+Route::get('matches/{replayID}', [MatchController::class, 'show'])
+    ->whereNumber('replayID')
+    ->middleware(['api.fixtures:replay_data', 'api.quota:replay_data'])
+    ->name('api.public.matches.show');
+
+Route::get('matches/{replayID}/bans', [MatchController::class, 'bans'])
+    ->whereNumber('replayID')
+    ->middleware(['api.fixtures:replay_ban', 'api.quota:replay_ban'])
+    ->name('api.public.matches.bans');
+
+Route::get('replays/download', [MatchController::class, 'download'])
+    ->middleware(['api.fixtures:replay_download', 'api.quota:replay_download'])
+    ->name('api.public.replays.download');

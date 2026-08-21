@@ -1,0 +1,117 @@
+{
+    "replayID": 90000010,
+    "bans": [
+        [
+            {
+                "team": 0,
+                "hero": {
+                    "id": 53,
+                    "name": "Sylvanas",
+                    "short_name": "sylvanas",
+                    "alt_name": null,
+                    "role": "Specialist",
+                    "new_role": "Ranged Assassin",
+                    "type": "Ranged",
+                    "release_date": "2015-03-24 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.4.91769",
+                    "attribute_id": "Sylv",
+                    "build_copy_name": "Sylvanas",
+                    "last_updated": "2024-02-06 18:32:51"
+                }
+            },
+            {
+                "team": 0,
+                "hero": {
+                    "id": 26,
+                    "name": "Johanna",
+                    "short_name": "johanna",
+                    "alt_name": "Crusader",
+                    "role": "Warrior",
+                    "new_role": "Tank",
+                    "type": "Melee",
+                    "release_date": "2015-06-02 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.4.91368",
+                    "attribute_id": "Crus",
+                    "build_copy_name": "Johanna",
+                    "last_updated": "2024-02-02 15:34:06"
+                }
+            },
+            {
+                "team": 0,
+                "hero": {
+                    "id": 28,
+                    "name": "Kerrigan",
+                    "short_name": "kerrigan",
+                    "alt_name": null,
+                    "role": "Assassin",
+                    "new_role": "Melee Assassin",
+                    "type": "Melee",
+                    "release_date": "2014-03-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.4.91769",
+                    "attribute_id": "Kerr",
+                    "build_copy_name": "Kerrigan",
+                    "last_updated": "2024-02-06 18:32:51"
+                }
+            }
+        ],
+        [
+            {
+                "team": 1,
+                "hero": {
+                    "id": 88,
+                    "name": "Qhira",
+                    "short_name": "qhira",
+                    "alt_name": "NexusHunter",
+                    "role": null,
+                    "new_role": "Melee Assassin",
+                    "type": "Melee",
+                    "release_date": "2019-08-06 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.4.91769",
+                    "attribute_id": "NXHU",
+                    "build_copy_name": "Qhira",
+                    "last_updated": "2024-02-06 18:32:51"
+                }
+            },
+            {
+                "team": 1,
+                "hero": {
+                    "id": 3,
+                    "name": "Anub'arak",
+                    "short_name": "anubarak",
+                    "alt_name": "Anubarak",
+                    "role": "Warrior",
+                    "new_role": "Tank",
+                    "type": "Melee",
+                    "release_date": "2014-10-07 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.4.91368",
+                    "attribute_id": "Anub",
+                    "build_copy_name": "Anubarak",
+                    "last_updated": "2024-02-02 15:34:06"
+                }
+            },
+            {
+                "team": 1,
+                "hero": {
+                    "id": 15,
+                    "name": "Diablo",
+                    "short_name": "diablo",
+                    "alt_name": null,
+                    "role": "Warrior",
+                    "new_role": "Tank",
+                    "type": "Melee",
+                    "release_date": "2014-03-13 00:00:00",
+                    "rework_date": null,
+                    "last_change_patch_version": "2.55.4.91368",
+                    "attribute_id": "Diab",
+                    "build_copy_name": "Diablo",
+                    "last_updated": "2024-02-02 15:34:06"
+                }
+            }
+        ]
+    ]
+}

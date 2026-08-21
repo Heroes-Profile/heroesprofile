@@ -8,6 +8,7 @@ use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route as Router;
 use Illuminate\Support\Str;
+use RuntimeException;
 use Throwable;
 
 /**
@@ -25,7 +26,7 @@ class CaptureApiSamples extends Command
 {
     protected $signature = 'api:capture-samples
                             {--endpoint=* : Registry keys to capture. Defaults to all routed public endpoints.}
-                            {--rows=2 : Maximum items kept per list.}
+                            {--rows=0 : Maximum items kept per list. 0 keeps everything, which is the default so a sample shows the real cardinality.}
                             {--query=* : Extra query parameters as key=value, applied to every endpoint captured.}
                             {--out= : Directory to write to. Defaults to storage/app/api-samples.}
                             {--raw : Skip anonymisation. Never use for anything that will become a committed fixture.}';
@@ -59,7 +60,7 @@ class CaptureApiSamples extends Command
 
     public function handle(): int
     {
-        $rows = max(1, (int) $this->option('rows'));
+        $rows = max(0, (int) $this->option('rows'));
         $directory = $this->option('out') ?: storage_path('app/api-samples');
         $only = $this->option('endpoint');
 
@@ -142,7 +143,19 @@ class CaptureApiSamples extends Command
 
         [$class, $method] = explode('@', $route->getActionName());
 
-        $response = app()->call([app($class), $method], ['request' => $request]);
+        // A route parameter such as {replayID} is an argument, not a query value.
+        // Supply it from --query so one flag covers both shapes.
+        $arguments = ['request' => $request];
+
+        foreach ($route->parameterNames() as $name) {
+            if (! array_key_exists($name, $query)) {
+                throw new RuntimeException("Endpoint [{$endpoint}] needs --query={$name}=<value>.");
+            }
+
+            $arguments[$name] = $query[$name];
+        }
+
+        $response = app()->call([app($class), $method], $arguments);
 
         if (method_exists($response, 'getContent')) {
             return json_decode($response->getContent(), true);
@@ -237,7 +250,9 @@ class CaptureApiSamples extends Command
         }
 
         if (array_is_list($value)) {
-            return array_map(fn ($item) => $this->truncate($item, $rows), array_slice($value, 0, $rows));
+            $items = $rows > 0 ? array_slice($value, 0, $rows) : $value;
+
+            return array_map(fn ($item) => $this->truncate($item, $rows), $items);
         }
 
         return array_map(fn ($item) => $this->truncate($item, $rows), $value);

@@ -1,28 +1,39 @@
 {
     "patches": [
         {
-            "id": 9002,
-            "season": 99,
-            "game_version": "9.99.9.99999",
-            "major": 9,
-            "minor": 99,
-            "patch": 9,
-            "build": 99999,
-            "date_added": "2020-01-02T00:00:00.000000Z",
-            "valid_globals": true,
-            "patch_notes_url": null
+            "id": 168,
+            "season": 1,
+            "game_version": "14.0.0.38236",
+            "major": 14,
+            "minor": 0
         },
         {
-            "id": 9001,
-            "season": 99,
-            "game_version": "9.99.9.99998",
-            "major": 9,
-            "minor": 99,
-            "patch": 9,
-            "build": 99998,
-            "date_added": "2020-01-01T00:00:00.000000Z",
-            "valid_globals": true,
-            "patch_notes_url": null
+            "id": 166,
+            "season": 1,
+            "game_version": "13.4.0.37795",
+            "major": 13,
+            "minor": 4
+        },
+        {
+            "id": 170,
+            "season": 1,
+            "game_version": "13.3.0.37569",
+            "major": 13,
+            "minor": 3
+        },
+        {
+            "id": 178,
+            "season": 1,
+            "game_version": "13.2.0.37351",
+            "major": 13,
+            "minor": 2
+        },
+        {
+            "id": 183,
+            "season": 1,
+            "game_version": "13.1.0.37274",
+            "major": 13,
+            "minor": 1
         }
     ]
 }

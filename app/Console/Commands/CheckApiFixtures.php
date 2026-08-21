@@ -40,8 +40,8 @@ class CheckApiFixtures extends Command
                 continue;
             }
 
-            if (! is_file(ServeApiFixtures::path($endpoint))) {
-                $problems[] = [$route->uri(), $endpoint, 'No fixture at resources/'.ServeApiFixtures::DIRECTORY.'/'.$endpoint.'.json'];
+            if (! ServeApiFixtures::exists($endpoint)) {
+                $problems[] = [$route->uri(), $endpoint, 'No fixture at resources/'.ServeApiFixtures::DIRECTORY.'/'.$endpoint.'.*'];
             }
         }
 

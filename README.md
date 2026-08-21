@@ -53,6 +53,57 @@ NOTE:  The data provided in the seeders is not complete.  A lot of player data m
 -   Run `npm run dev` - - watches for any changes and automatically recompiles
 
 
+## Public API fixtures
+
+Endpoints under `/v1/*` serve a canned response instead of live data whenever an
+account has not activated live data or has test mode switched on. Those canned
+responses are the JSON files in `resources/api-fixtures/`, one per endpoint, named
+after its key in `api_endpoints.endpoint` — so `heroes_stats` is
+`heroes_stats.json`. `replay_download` returns a file rather than JSON, so its
+fixture is a `.StormReplay`.
+
+**Every public endpoint needs one.** Without a fixture an unactivated account
+would fall through to live data, which is the thing the gate exists to prevent.
+
+### Checking
+
+-   Run `php artisan api:check-fixtures`
+
+It walks the routes, and fails if an endpoint charging quota is missing either its
+fixture file or the `api.fixtures` middleware. Run it after adding an endpoint.
+
+### Creating
+
+Do not hand-write a fixture — the shape will be wrong. Capture the real response
+and edit that:
+
+-   Run `php artisan api:capture-samples --endpoint=<key>`
+
+It calls the controller directly (no API key or running server needed) and writes
+the response to `storage/app/api-samples/<key>.json`. Endpoints needing input take
+it from `--query`, which also fills route parameters:
+
+-   `php artisan api:capture-samples --endpoint=player --query=battletag=Someone#1234 --query=region=1`
+-   `php artisan api:capture-samples --endpoint=replay_data --query=replayID=64836717`
+
+`battletag`, `blizz_id` and `region` are replaced with stable fakes as it writes —
+the same original always maps to the same fake, so records still cross-reference.
+The command prints what it replaced; if an endpoint returns player data and that
+table is empty, it came back under a field name the scrubber does not know, and
+that field needs adding to `IDENTIFYING_FIELDS` before the sample is used.
+
+Then copy the sample into `resources/api-fixtures/` and edit it:
+
+-   Replace real statistics with round placeholder numbers. Nobody should mistake
+    a fixture for production data.
+-   Keep hero, map, talent and game type records real — they are public game data,
+    and consumers match against them.
+-   Keep the cardinality the endpoint actually returns: ten players in a match,
+    three bans a team, seven talent levels. Trim only open-ended lists, and trim
+    them to a handful rather than one.
+-   Do not add fields that are not in the live response. A fixture must be
+    shape-identical, or code written against it breaks on activation.
+
 # Contributing
 
 All contributions are welcome. The owners of Heroes Profile reserve the right to include or deny any merge requests from the community. Also, please try and only create pull requests that contain updates to the specific update you want to make. Including environment or auto-generated updates to framework code that are not required for your change only complicates making updates.

@@ -30,6 +30,24 @@ return [
 
     'disks' => [
 
+        /*
+         * Replay storage. Objects are named by fingerprint, not replay id.
+         * Requires spatie/laravel-google-cloud-storage.
+         *
+         * No key file on purpose. Cloud Run exposes its runtime service account
+         * through the metadata server, so the client authenticates by Application
+         * Default Credentials — nothing to ship, nothing to rotate. Adding a
+         * `key_file` here is what makes it look for a JSON file instead.
+         *
+         * Locally, `gcloud auth application-default login` provides the same.
+         */
+        'gcs' => [
+            'driver' => 'gcs',
+            'project_id' => env('GOOGLE_CLOUD_PROJECT_ID'),
+            'bucket' => env('GOOGLE_CLOUD_STORAGE_BUCKET'),
+            'visibility' => 'private',
+        ],
+
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),

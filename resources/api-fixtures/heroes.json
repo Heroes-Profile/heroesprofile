@@ -1,34 +1,39 @@
 {
     "heroes": [
         {
-            "id": 9001,
-            "name": "Example Hero Alpha",
-            "short_name": "examplealpha",
+            "id": 1,
+            "name": "Abathur",
+            "short_name": "abathur",
             "alt_name": null,
-            "role": "Specialist",
-            "new_role": "Tank",
-            "type": "Melee",
-            "release_date": "2020-01-01 00:00:01",
-            "rework_date": null,
-            "last_change_patch_version": "9.99.9.99999",
-            "attribute_id": "Exa1",
-            "build_copy_name": "Example Hero Alpha",
-            "last_updated": "2020-01-01 00:00:00"
+            "role": "Specialist"
         },
         {
-            "id": 9002,
-            "name": "Example Hero Beta",
-            "short_name": "examplebeta",
+            "id": 2,
+            "name": "Alarak",
+            "short_name": "alarak",
             "alt_name": null,
-            "role": "Assassin",
-            "new_role": "Ranged Assassin",
-            "type": "Ranged",
-            "release_date": "2020-01-01 00:00:01",
-            "rework_date": null,
-            "last_change_patch_version": "9.99.9.99999",
-            "attribute_id": "Exa2",
-            "build_copy_name": "Example Hero Beta",
-            "last_updated": "2020-01-01 00:00:00"
+            "role": "Assassin"
+        },
+        {
+            "id": 74,
+            "name": "Alexstrasza",
+            "short_name": "alexstrasza",
+            "alt_name": null,
+            "role": "Support"
+        },
+        {
+            "id": 72,
+            "name": "Ana",
+            "short_name": "ana",
+            "alt_name": null,
+            "role": "Support"
+        },
+        {
+            "id": 87,
+            "name": "Anduin",
+            "short_name": "anduin",
+            "alt_name": "",
+            "role": "Healer"
         }
     ]
 }
