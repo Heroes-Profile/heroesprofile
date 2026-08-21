@@ -4,7 +4,6 @@ namespace App\Services\Api;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Support\Facades\Log;
 use RuntimeException;
 
 /**
@@ -63,12 +62,11 @@ class ReplayParserClient
         $body = (string) $response->getBody();
 
         if ($status < 200 || $status >= 300) {
-            Log::warning('Replay parser request failed', [
-                'status' => $status,
-                'input' => $key,
-                'bucket' => $bucket,
-                'parse_type' => $parseType,
-            ]);
+            // `http_errors` is off, so Guzzle throws nothing here — without this
+            // report a parser outage would be invisible to Flare.
+            report(new RuntimeException(
+                "Replay parser returned HTTP {$status} for [{$key}] in [{$bucket}] (parseType {$parseType}): {$body}"
+            ));
 
             return ['error' => $body, 'status' => $status];
         }
@@ -76,10 +74,9 @@ class ReplayParserClient
         $decoded = json_decode($body, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            Log::warning('Replay parser returned non-JSON', [
-                'input' => $key,
-                'bucket' => $bucket,
-            ]);
+            report(new RuntimeException(
+                "Replay parser returned non-JSON for [{$key}] in [{$bucket}]: {$body}"
+            ));
 
             return ['error' => $body];
         }
@@ -98,8 +95,9 @@ class ReplayParserClient
             return ['Authorization' => 'Bearer '.$this->idToken($audience)];
         } catch (RuntimeException $e) {
             // Without a token the parser will reject the call, but failing here
-            // would lose the more useful error from the parser itself.
-            Log::warning('Could not obtain a Cloud Run ID token', ['message' => $e->getMessage()]);
+            // would lose the more useful error from the parser itself. Reported
+            // rather than logged, so a broken metadata server is not silent.
+            report($e);
 
             return [];
         }

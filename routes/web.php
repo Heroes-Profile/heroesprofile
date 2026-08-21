@@ -51,6 +51,7 @@ use App\Http\Controllers\SingleMatchController;
 use App\Http\Controllers\TermsOfServiceController;
 use App\Http\Controllers\Tools\ActivityGraphsController;
 use App\Http\Controllers\Tools\RandomizeMeController;
+use App\Http\Controllers\UploadController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -86,6 +87,10 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/Terms/Of/Service', [TermsOfServiceController::class, 'show']);
 
     Route::get('/FAQ', [FaqController::class, 'show']);
+
+    // The page posts to the public API's ingestion endpoint, which is where the
+    // upload actually happens — nothing is uploaded through this route.
+    Route::get('/Upload', [UploadController::class, 'show']);
 
     Route::get('/Github/Change/Log', [GithubChangeController::class, 'show']);
 

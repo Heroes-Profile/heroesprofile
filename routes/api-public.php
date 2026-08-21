@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\Public\MatchController;
 use App\Http\Controllers\Api\Public\NgsController;
 use App\Http\Controllers\Api\Public\PlayerController;
 use App\Http\Controllers\Api\Public\ReferenceController;
+use App\Http\Controllers\Api\Public\UploadController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -144,3 +145,15 @@ Route::get('ngs/player/profile', [NgsController::class, 'playerProfile'])
 Route::get('ngs/replay/data', [NgsController::class, 'replayData'])
     ->middleware(['api.ngs', 'api.fixtures:ngs_replay_data'])
     ->name('api.public.ngs.replay.data');
+
+/*
+| Ingestion. Anonymous permanently, so no key, no fixtures, and no quota —
+| there is no account to charge. Its own per-IP limits stand in, carried over
+| from the old route; the shared per-key limiter skips this one, because a
+| client working through a backlog would exhaust the anonymous 20 a minute in
+| seconds.
+*/
+
+Route::post('upload/heroesprofile/{source}', [UploadController::class, 'store'])
+    ->middleware(['throttle:upload', 'throttle:upload-daily'])
+    ->name('api.public.upload');

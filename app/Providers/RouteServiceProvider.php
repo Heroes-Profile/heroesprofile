@@ -37,8 +37,24 @@ class RouteServiceProvider extends ServiceProvider
         // Per key, not per IP: two customers behind one address must not share a
         // bucket, and one customer's runaway loop must not throttle the other.
         RateLimiter::for('api-public', function (Request $request) {
+            // Ingestion is anonymous and carries its own per-IP limits. Leaving it
+            // in the anonymous bucket would cap an uploader at 20 replays a minute.
+            if ($request->routeIs('api.public.upload')) {
+                return Limit::none();
+            }
+
             return Limit::perMinute($this->publicApiPerMinute($request))
                 ->by($this->rateLimitKey($request));
+        });
+
+        // Replay ingestion, per IP: the uploaders send no key to bucket by. Both
+        // ceilings are the ones the old upload route carried.
+        RateLimiter::for('upload', function (Request $request) {
+            return Limit::perMinute(60)->by(ClientIpService::getClientIp($request));
+        });
+
+        RateLimiter::for('upload-daily', function (Request $request) {
+            return Limit::perMinutes(1440, 20000)->by(ClientIpService::getClientIp($request));
         });
 
         RateLimiter::for('contact', function (Request $request) {
