@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Auth\ApiKeyGuard;
+use App\Support\CsvResponse;
 use Closure;
 use Illuminate\Http\Request;
 use RuntimeException;
@@ -49,7 +50,18 @@ class ServeApiFixtures
             ], 500)->header(self::HEADER, 'fixture');
         }
 
-        // Served verbatim. The response body must be shape-identical to the live
+        // `?mode=csv` has to work here too, or an account on fixtures asks for CSV
+        // and silently gets JSON — a difference that disappears on activation.
+        if ($request->input('mode') === 'csv') {
+            $rows = CsvResponse::rowsFromPayload($fixture);
+
+            if ($rows !== null) {
+                return CsvResponse::stream($rows, $endpoint)
+                    ->withHeaders([self::HEADER => 'fixture']);
+            }
+        }
+
+        // Otherwise served verbatim. The body must be shape-identical to the live
         // one, so a consumer coding against a fixture does not find a field that
         // disappears the moment they activate. `X-HP-Data-Source` is the signal.
         return response()

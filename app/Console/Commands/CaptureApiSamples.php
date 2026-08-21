@@ -1,0 +1,148 @@
+<?php
+
+namespace App\Console\Commands;
+
+use Illuminate\Console\Command;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Route as Router;
+use Illuminate\Support\Str;
+use Throwable;
+
+/**
+ * Captures a small sample of each public endpoint's real response, so fixtures can
+ * be written against the actual shape instead of a guess.
+ *
+ * Calls the controller directly rather than issuing an HTTP request: no API key,
+ * no running server, and the fixture and quota middleware are bypassed — otherwise
+ * an account on test data would capture the very fixture we are trying to verify.
+ *
+ * Read-only, and every list is truncated to --rows so this samples structure
+ * rather than dumping data.
+ */
+class CaptureApiSamples extends Command
+{
+    protected $signature = 'api:capture-samples
+                            {--endpoint=* : Registry keys to capture. Defaults to all routed public endpoints.}
+                            {--rows=2 : Maximum items kept per list.}
+                            {--query=* : Extra query parameters as key=value, applied to every endpoint captured.}
+                            {--out= : Directory to write to. Defaults to storage/app/api-samples.}';
+
+    protected $description = 'Write a truncated sample of each public API response for fixture authoring';
+
+    /** Endpoints that need parameters before they will answer at all. */
+    private const DEFAULT_QUERY = [
+        'mmr_tier' => ['game_type' => 'sl', 'mmr' => 2400],
+    ];
+
+    public function handle(): int
+    {
+        $rows = max(1, (int) $this->option('rows'));
+        $directory = $this->option('out') ?: storage_path('app/api-samples');
+        $only = $this->option('endpoint');
+
+        File::ensureDirectoryExists($directory);
+
+        $written = 0;
+        $failed = 0;
+
+        foreach ($this->publicRoutes() as $endpoint => $route) {
+            if ($only !== [] && ! in_array($endpoint, $only, true)) {
+                continue;
+            }
+
+            try {
+                $payload = $this->capture($route, $endpoint);
+            } catch (Throwable $e) {
+                $this->error($endpoint.' — '.Str::limit($e->getMessage(), 120));
+                $failed++;
+
+                continue;
+            }
+
+            $path = $directory.'/'.$endpoint.'.json';
+
+            File::put($path, json_encode(
+                $this->truncate($payload, $rows),
+                JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE
+            ));
+
+            $this->line('<info>'.$endpoint.'</info> → '.$path);
+            $written++;
+        }
+
+        $this->newLine();
+        $this->info($written.' captured'.($failed > 0 ? ', '.$failed.' failed' : '').'.');
+
+        return $failed > 0 ? self::FAILURE : self::SUCCESS;
+    }
+
+    /** @return array<string, Route> keyed by registry endpoint */
+    private function publicRoutes(): array
+    {
+        $routes = [];
+
+        foreach (Router::getRoutes() as $route) {
+            if (! in_array('GET', $route->methods(), true)) {
+                continue;
+            }
+
+            foreach ($route->gatherMiddleware() as $middleware) {
+                if (is_string($middleware) && str_starts_with($middleware, 'api.quota:')) {
+                    $endpoint = substr($middleware, strlen('api.quota:'));
+                    $routes[$endpoint] ??= $route;
+                }
+            }
+        }
+
+        return $routes;
+    }
+
+    private function capture(Route $route, string $endpoint): mixed
+    {
+        $query = array_merge(self::DEFAULT_QUERY[$endpoint] ?? [], $this->queryOverrides());
+
+        $request = Request::create('/'.ltrim($route->uri(), '/'), 'GET', $query);
+        app()->instance('request', $request);
+
+        [$class, $method] = explode('@', $route->getActionName());
+
+        $response = app()->call([app($class), $method], ['request' => $request]);
+
+        if (method_exists($response, 'getContent')) {
+            return json_decode($response->getContent(), true);
+        }
+
+        return $response;
+    }
+
+    /** @return array<string, string> */
+    private function queryOverrides(): array
+    {
+        $overrides = [];
+
+        foreach ($this->option('query') as $pair) {
+            if (str_contains($pair, '=')) {
+                [$key, $value] = explode('=', $pair, 2);
+                $overrides[$key] = $value;
+            }
+        }
+
+        return $overrides;
+    }
+
+    /** Keeps the shape, drops the volume. */
+    private function truncate(mixed $value, int $rows): mixed
+    {
+        if (! is_array($value)) {
+            return $value;
+        }
+
+        if (array_is_list($value)) {
+            return array_map(fn ($item) => $this->truncate($item, $rows), array_slice($value, 0, $rows));
+        }
+
+        return array_map(fn ($item) => $this->truncate($item, $rows), $value);
+    }
+}

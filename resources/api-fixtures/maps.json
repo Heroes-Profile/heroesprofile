@@ -1,25 +1,22 @@
 {
-  "maps": [
-    {
-      "map_id": 1001,
-      "name": "Example Battleground Alpha",
-      "short_name": "example_alpha",
-      "playable": 1,
-      "sanitized_map_name": "example_battleground_alpha"
-    },
-    {
-      "map_id": 1002,
-      "name": "Example Battleground Beta",
-      "short_name": "example_beta",
-      "playable": 1,
-      "sanitized_map_name": "example_battleground_beta"
-    },
-    {
-      "map_id": 1003,
-      "name": "Example Battleground Gamma",
-      "short_name": "example_gamma",
-      "playable": 1,
-      "sanitized_map_name": "example_battleground_gamma"
-    }
-  ]
+    "maps": [
+        {
+            "map_id": 9001,
+            "name": "Example Battleground Alpha",
+            "short_name": "ExampleBattlegroundAlpha",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "example_battleground_alpha"
+        },
+        {
+            "map_id": 9002,
+            "name": "Example Battleground Beta",
+            "short_name": "ExampleBattlegroundBeta",
+            "type": "standard",
+            "ranked_rotation": 0,
+            "playable": 1,
+            "sanitized_map_name": "example_battleground_beta"
+        }
+    ]
 }

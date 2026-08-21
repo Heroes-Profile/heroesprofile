@@ -1,0 +1,40 @@
+{
+    "talents": {
+        "Example Hero Alpha": [
+            {
+                "talent_id": 990001,
+                "hero_name": "Example Hero Alpha",
+                "short_name": "examplealpha",
+                "attribute_id": "Exa1",
+                "title": "Example Talent One",
+                "talent_name": "ExampleHeroAlphaExampleTalentOne",
+                "description": "Example talent text. This is not real game data.",
+                "status": "playable",
+                "hotkey": "Q",
+                "cooldown": "",
+                "mana_cost": "",
+                "sort": "1",
+                "level": 1,
+                "icon": "storm_ui_icon_example_one.png",
+                "required_talent_id": null
+            },
+            {
+                "talent_id": 990002,
+                "hero_name": "Example Hero Alpha",
+                "short_name": "examplealpha",
+                "attribute_id": "Exa1",
+                "title": "Example Talent Two",
+                "talent_name": "ExampleHeroAlphaExampleTalentTwo",
+                "description": "Example talent text. This is not real game data.",
+                "status": "playable",
+                "hotkey": "W",
+                "cooldown": "",
+                "mana_cost": "",
+                "sort": "2",
+                "level": 1,
+                "icon": "storm_ui_icon_example_two.png",
+                "required_talent_id": null
+            }
+        ]
+    }
+}

@@ -449,6 +449,44 @@ class GlobalDataService
         return clone $this->cachedMaps;
     }
 
+    /**
+     * Playable talents grouped by hero. Level 0 is excluded — those are a hero's
+     * base abilities, not draftable talents.
+     *
+     * Cached per hero because the whole set is large; the model's global scope
+     * already limits this to playable rows.
+     */
+    public function getPlayableHeroesTalents($heroName = null)
+    {
+        $cacheKey = 'global_playable_heroes_talents|'.($heroName ?? 'all');
+
+        return Cache::remember($cacheKey, 3600, function () use ($heroName) {
+            return HeroesDataTalent::where('level', '!=', 0)
+                ->when($heroName, fn ($query) => $query->where('hero_name', $heroName))
+                ->orderBy('hero_name')
+                ->orderBy('level')
+                ->orderBy('sort')
+                ->get()
+                ->groupBy('hero_name');
+        });
+    }
+
+    /**
+     * Every patch, newest first — ordered by version components rather than `id`,
+     * matching getDefaultTimeframe() and the filter timeframe lists. Insertion
+     * order and version order are not the same thing when a patch is backfilled.
+     */
+    public function getPatches()
+    {
+        return Cache::remember('global_patches', 600, function () {
+            return SeasonGameVersion::orderBy('major', 'DESC')
+                ->orderBy('minor', 'DESC')
+                ->orderBy('patch', 'DESC')
+                ->orderBy('build', 'DESC')
+                ->get();
+        });
+    }
+
     public function getHeroesByID()
     {
         $heroData = $this->getHeroes();

@@ -1,0 +1,28 @@
+{
+    "patches": [
+        {
+            "id": 9002,
+            "season": 99,
+            "game_version": "9.99.9.99999",
+            "major": 9,
+            "minor": 99,
+            "patch": 9,
+            "build": 99999,
+            "date_added": "2020-01-02T00:00:00.000000Z",
+            "valid_globals": true,
+            "patch_notes_url": null
+        },
+        {
+            "id": 9001,
+            "season": 99,
+            "game_version": "9.99.9.99998",
+            "major": 9,
+            "minor": 99,
+            "patch": 9,
+            "build": 99998,
+            "date_added": "2020-01-01T00:00:00.000000Z",
+            "valid_globals": true,
+            "patch_notes_url": null
+        }
+    ]
+}
