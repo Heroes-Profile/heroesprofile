@@ -88,6 +88,21 @@ class ApiAccount extends Authenticatable
         return ! $this->hasMigrated() || $this->inTestMode();
     }
 
+    /**
+     * NGS data is a granted permission rather than a purchased tier, so it is not
+     * sold, not priced and not visible in the plan tables. Either flag is enough
+     * to read; writing needs both, as the old API required.
+     */
+    public function hasNgsAccess(): bool
+    {
+        return (bool) $this->n_approved || (bool) $this->n_upload_approved;
+    }
+
+    public function hasNgsUploadAccess(): bool
+    {
+        return (bool) $this->n_approved && (bool) $this->n_upload_approved;
+    }
+
     public function hasComptedAccess(): bool
     {
         foreach (self::APPROVAL_COLUMNS as $column) {

@@ -2,9 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Models\NGS\Player as NgsPlayer;
+use App\Models\NGS\Replay as NgsReplay;
+use App\Services\GlobalDataService;
 use Illuminate\Console\Command;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route as Router;
 use Illuminate\Support\Str;
@@ -56,6 +60,8 @@ class CaptureApiSamples extends Command
     /** Endpoints that need parameters before they will answer at all. */
     private const DEFAULT_QUERY = [
         'mmr_tier' => ['game_type' => 'sl', 'mmr' => 2400],
+        'ngs_leaderboard_highest_average_stat' => ['stat' => 'hero_damage'],
+        'ngs_leaderboard_highest_total_stat' => ['stat' => 'hero_damage'],
     ];
 
     public function handle(): int
@@ -123,10 +129,14 @@ class CaptureApiSamples extends Command
                 continue;
             }
 
-            foreach ($route->gatherMiddleware() as $middleware) {
-                if (is_string($middleware) && str_starts_with($middleware, 'api.quota:')) {
-                    $endpoint = substr($middleware, strlen('api.quota:'));
-                    $routes[$endpoint] ??= $route;
+            // Keyed off either middleware: NGS endpoints carry fixtures but no
+            // quota, so looking only for api.quota would skip them.
+            foreach (['api.quota:', 'api.fixtures:'] as $alias) {
+                foreach ($route->gatherMiddleware() as $middleware) {
+                    if (is_string($middleware) && str_starts_with($middleware, $alias)) {
+                        $endpoint = substr($middleware, strlen($alias));
+                        $routes[$endpoint] ??= $route;
+                    }
                 }
             }
         }
@@ -136,7 +146,7 @@ class CaptureApiSamples extends Command
 
     private function capture(Route $route, string $endpoint): mixed
     {
-        $query = array_merge(self::DEFAULT_QUERY[$endpoint] ?? [], $this->queryOverrides());
+        $query = array_merge($this->defaultsFor($endpoint), $this->queryOverrides());
 
         $request = Request::create('/'.ltrim($route->uri(), '/'), 'GET', $query);
         app()->instance('request', $request);
@@ -221,6 +231,63 @@ class CaptureApiSamples extends Command
                 array_values($this->replacements)
             )
         );
+    }
+
+    /**
+     * Parameters an endpoint needs before it will answer. Most are fixed; NGS
+     * needs a season, division, team and round that actually played, so it looks
+     * one up rather than making the caller know a valid combination.
+     *
+     * @return array<string, mixed>
+     */
+    private function defaultsFor(string $endpoint): array
+    {
+        if (! in_array($endpoint, ['ngs_match', 'ngs_hero_stat', 'ngs_player_profile', 'ngs_replay_data'], true)) {
+            return self::DEFAULT_QUERY[$endpoint] ?? [];
+        }
+
+        $replay = NgsReplay::orderByDesc('replayID')->first();
+
+        if ($replay === null) {
+            return [];
+        }
+
+        $defaults = [
+            'season' => $replay->season,
+            'division' => $replay->division_0,
+            'team' => $replay->team_0_name,
+            'round' => $replay->round,
+        ];
+
+        if ($endpoint === 'ngs_replay_data') {
+            $defaults = ['replayID' => $replay->replayID];
+        }
+
+        if ($endpoint === 'ngs_player_profile') {
+            $playerId = NgsPlayer::where('replayID', $replay->replayID)->value('battletag');
+
+            $defaults = [
+                'battletag' => DB::connection('heroesprofile_ngs')
+                    ->table('battletags')
+                    ->where('player_id', $playerId)
+                    ->value('battletag'),
+                'season' => $replay->season,
+            ];
+        }
+
+        if ($endpoint === 'ngs_hero_stat') {
+            $hero = NgsPlayer::where('replayID', $replay->replayID)->value('hero');
+
+            $defaults = [
+                'season' => $replay->season,
+                'division' => $replay->division_0,
+                'hero' => app(GlobalDataService::class)->getHeroesByID()[$hero]->name ?? null,
+            ];
+        }
+
+        $this->line('  <comment>using</comment> '.json_encode($defaults));
+
+        return $defaults;
     }
 
     /** @return array<string, string> */

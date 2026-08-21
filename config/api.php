@@ -22,6 +22,24 @@ return [
     | Developer. Unauthenticated callers fall back to an IP bucket.
     */
 
+    /*
+    | NGS replay uploads name a file to fetch. Fetching an arbitrary caller-supplied
+    | URL server-side is SSRF — on Cloud Run it reaches the metadata server and the
+    | service account's token — so the source is pinned to the bucket NGS actually
+    | publishes to.
+    */
+
+    'ngs' => [
+        'replay_bucket' => env('NGS_REPLAY_BUCKET', 'ngs-replay-storage'),
+
+        'replay_hosts' => [
+            's3.amazonaws.com',
+            'ngs-replay-storage.s3.amazonaws.com',
+        ],
+
+        'storage_disk' => 'gcs-ngs',
+    ],
+
     'rate_limits' => [
         'default' => 60,
         'developer' => 120,

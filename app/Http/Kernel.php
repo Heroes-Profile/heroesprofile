@@ -14,6 +14,7 @@ use App\Http\Middleware\EnsureBattlenetAuthenticated;
 use App\Http\Middleware\LogIPAndUserAgent;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\RequireNgsAccess;
 use App\Http\Middleware\RequireWebsiteAuthForAll;
 use App\Http\Middleware\ResolveApiKey;
 use App\Http\Middleware\ServeApiFixtures;
@@ -127,6 +128,7 @@ class Kernel extends HttpKernel
         'ensureApiAccountAuth' => EnsureApiAccountAuthenticated::class,
         'api.quota' => EnforceApiQuota::class,
         'api.fixtures' => ServeApiFixtures::class,
+        'api.ngs' => RequireNgsAccess::class,
         'checkIfPrivateProfilePage' => CheckIfPrivateProfilePage::class,
         'logIpAndUserAgent' => LogIPAndUserAgent::class,
         'communitySupportRedirect' => CommunitySupportRedirect::class,

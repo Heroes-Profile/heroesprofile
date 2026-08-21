@@ -97,7 +97,7 @@
             </th>
 
             <th  v-if="this.showStatTypeColumn"  class="py-2 px-3 text-left text-sm leading-4 text-gray-500 tracking-wider">
-              {{ getValueLocal(getValueFixed(data.averaege_total_filter_type)) }}
+              {{ getValueLocal(getValueFixed(data.average_total_filter_type)) }}
             </th>
 
             <th v-if="!this.groupSizeActive" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider">

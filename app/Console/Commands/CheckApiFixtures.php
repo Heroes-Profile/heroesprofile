@@ -26,22 +26,25 @@ class CheckApiFixtures extends Command
         $checked = 0;
 
         foreach (Router::getRoutes() as $route) {
-            $endpoint = $this->middlewareArgument($route, 'api.quota');
+            $quota = $this->middlewareArgument($route, 'api.quota');
+            $fixture = $this->middlewareArgument($route, 'api.fixtures');
 
-            if ($endpoint === null) {
+            if ($quota === null && $fixture === null) {
                 continue;
             }
 
             $checked++;
 
-            if ($this->middlewareArgument($route, 'api.fixtures') !== $endpoint) {
-                $problems[] = [$route->uri(), $endpoint, 'Missing api.fixtures middleware'];
+            // An endpoint that charges quota must serve fixtures, or an account on
+            // test data would fall through to live results.
+            if ($quota !== null && $fixture !== $quota) {
+                $problems[] = [$route->uri(), $quota, 'Missing api.fixtures middleware'];
 
                 continue;
             }
 
-            if (! ServeApiFixtures::exists($endpoint)) {
-                $problems[] = [$route->uri(), $endpoint, 'No fixture at resources/'.ServeApiFixtures::DIRECTORY.'/'.$endpoint.'.*'];
+            if ($fixture !== null && ! ServeApiFixtures::exists($fixture)) {
+                $problems[] = [$route->uri(), $fixture, 'No fixture at resources/'.ServeApiFixtures::DIRECTORY.'/'.$fixture.'.*'];
             }
         }
 
