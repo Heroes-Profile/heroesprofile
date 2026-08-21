@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\ApiHomeController;
 use App\Http\Controllers\Api\Auth\LoginController as ApiLoginController;
 use App\Http\Controllers\Api\Auth\PasswordResetController as ApiPasswordResetController;
 use App\Http\Controllers\Api\Auth\RegisterController as ApiRegisterController;
+use App\Http\Controllers\Api\DocsController as ApiDocsController;
+use App\Http\Controllers\Api\TryItController as ApiTryItController;
 use App\Http\Controllers\Auth\BattleNetController;
 use App\Http\Controllers\Auth\PatreonController;
 use App\Http\Controllers\BattletagSearchController;
@@ -229,6 +231,8 @@ Route::middleware(['logIpAndUserAgent'])->prefix('Api')->group(function () {
     Route::get('/', [ApiHomeController::class, 'index']);
     Route::get('/DeveloperTier', [ApiHomeController::class, 'developerTier']);
 
+    Route::get('/Docs', [ApiDocsController::class, 'index']);
+
     Route::get('/Login', [ApiLoginController::class, 'show']);
     // Login throttling is per email+IP in the controller, not per IP here.
     Route::post('/Login', [ApiLoginController::class, 'login']);
@@ -243,6 +247,10 @@ Route::middleware(['logIpAndUserAgent'])->prefix('Api')->group(function () {
     Route::post('/Password/Reset', [ApiPasswordResetController::class, 'reset'])->middleware('throttle:contact');
 
     Route::middleware('ensureApiAccountAuth')->group(function () {
+        // Executes one public endpoint for the signed-in account, charged to its
+        // own key. Behind the portal guard: it acts as the account.
+        Route::post('/Docs/Try', ApiTryItController::class)->middleware('throttle:contact');
+
         Route::get('/Account', [ApiAccountController::class, 'index']);
         Route::get('/Account/Billing', [ApiBillingController::class, 'show']);
     });

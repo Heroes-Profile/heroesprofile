@@ -69,40 +69,109 @@ would fall through to live data, which is the thing the gate exists to prevent.
 
 -   Run `php artisan api:check-fixtures`
 
-It walks the routes, and fails if an endpoint charging quota is missing either its
-fixture file or the `api.fixtures` middleware. Run it after adding an endpoint.
+It fails if an endpoint charging quota is missing either its fixture file or the
+`api.fixtures` middleware, and separately if a row in `api_endpoints` has no route
+behind it — the registry drives the pricing table and the docs nav, so a row with
+no endpoint is something the portal advertises and the API answers 404 for.
+
+The registry half needs a database and degrades to a warning without one, so the
+route-to-fixture half still runs in CI.
 
 ### Creating
 
-Do not hand-write a fixture — the shape will be wrong. Capture the real response
-and edit that:
+Never hand-write a fixture — the shape will be wrong. Capture the real response:
 
--   Run `php artisan api:capture-samples --endpoint=<key>`
+```
+php artisan api:capture-samples --promote --endpoint=<key>
+```
 
-It calls the controller directly (no API key or running server needed) and writes
-the response to `storage/app/api-samples/<key>.json`. Endpoints needing input take
-it from `--query`, which also fills route parameters:
+It calls the controller directly — no API key, no running server — and `--promote`
+writes straight to `resources/api-fixtures/`. Without it the capture lands in
+`storage/app/api-samples/` for inspection instead.
 
--   `php artisan api:capture-samples --endpoint=player --query=battletag=Someone#1234 --query=region=1`
--   `php artisan api:capture-samples --endpoint=replay_data --query=replayID=64836717`
+Endpoints needing input take it from `--query`, which also fills route parameters
+and nested ones:
 
-`battletag`, `blizz_id` and `region` are replaced with stable fakes as it writes —
-the same original always maps to the same fake, so records still cross-reference.
-The command prints what it replaced; if an endpoint returns player data and that
-table is empty, it came back under a field name the scrubber does not know, and
-that field needs adding to `IDENTIFYING_FIELDS` before the sample is used.
+```
+php artisan api:capture-samples --promote --endpoint=player --query="battletag=Someone#1234" --query=region=1
+php artisan api:capture-samples --promote --endpoint=replay_data --query=replayID=64836717
+php artisan api:capture-samples --promote --endpoint=talent_builder_replays --query=hero=Anduin --query="selectedtalents[1]=2859"
+```
 
-Then copy the sample into `resources/api-fixtures/` and edit it:
+Quote the battletag — `#` starts a comment in PowerShell.
 
--   Replace real statistics with round placeholder numbers. Nobody should mistake
-    a fixture for production data.
--   Keep hero, map, talent and game type records real — they are public game data,
-    and consumers match against them.
--   Keep the cardinality the endpoint actually returns: ten players in a match,
-    three bans a team, seven talent levels. Trim only open-ended lists, and trim
-    them to a handful rather than one.
--   Do not add fields that are not in the live response. A fixture must be
-    shape-identical, or code written against it breaks on activation.
+**`--promote` refuses to write a capture that should not become a fixture:** an
+empty response, an internal validation failure (those arrive as HTTP 200 with a
+`status` field, so nothing else catches them), or any 4xx from the endpoint
+itself. It warns above 1MB — use `--rows=N` to keep the shape and drop the bulk.
+
+Identifying fields are replaced as it writes: `battletag`, `split_battletag`,
+`blizz_id`, `region`, `replayID` and `game_date`. The same original always maps to
+the same fake, so records still cross-reference. **Read the replacement table it
+prints.** A field it does not know is written through untouched — that is how a
+real player name shipped once beside an anonymised battletag — so if an endpoint
+returns player data and a field is missing from that table, add it to
+`IDENTIFYING_FIELDS` in `CaptureApiSamples` and re-capture.
+
+Replay ids matter especially: `/matches/{replayID}` is public, so a real one
+resolves back to the match and undoes the battletag replacement.
+
+## Adding a public API endpoint
+
+Five steps, and two commands refuse to let you skip any of them.
+
+**1. Wrap an existing controller.** Public endpoints are thin wrappers over the
+controllers the site itself uses — no new SQL. Add a method to the matching
+`app/Http/Controllers/Api/Public/*Controller`.
+
+**Read the target controller's validation rules first.** Almost every one assumes
+parameters the site's own pages always send, and none of them handle the absence
+well — `game_type` alone is required-as-array in one, required-as-scalar in
+another, and optional-meaning-everything in a third. A missing parameter usually
+surfaces as HTTP 200 with a `status` field rather than an error. Declare defaults
+for what the site always sends, and reject what has no sensible default with a
+422 naming it.
+
+**2. Route it** in `routes/api-public.php` with both middlewares, named
+`api.public.*`:
+
+```php
+Route::get('players/heroes', [PlayerController::class, 'heroes'])
+    ->middleware(['api.fixtures:player_hero_all', 'api.quota:player_hero_all'])
+    ->name('api.public.players.heroes');
+```
+
+The middleware argument is the `api_endpoints.endpoint` key, which is also the
+fixture filename.
+
+**3. Document it** in `config/api_spec.php` — a `summary`, its `parameters` (or
+`uses` to pull in the shared `globals` / `player` sets), and `async` if it can
+answer 202. Add it to a section under `groups`. Response schemas come from the
+fixture, so there is nothing to write for those; describe individual response
+fields by adding them to `fields`, which applies by name across every endpoint.
+
+**4. Capture its fixture**, as above.
+
+**5. Rebuild the spec:**
+
+```
+php artisan api:build-spec
+```
+
+Then check both:
+
+```
+php artisan api:check-fixtures
+php artisan api:build-spec --check
+```
+
+`api:check-fixtures` fails if a routed endpoint has no fixture, **and** if a
+registry row has no route — the second half is what catches the pricing table and
+docs nav advertising endpoints that 404. Rows retired on purpose are named in
+`UNROUTED_BY_DESIGN`.
+
+`api:build-spec` fails if an endpoint has no config entry, no section, or no
+fixture to derive a response from. Both run in CI.
 
 # Contributing
 

@@ -10,6 +10,7 @@ use App\Services\Api\NgsHeroStatService;
 use App\Services\Api\NgsLeaderboardService;
 use App\Services\Api\NgsMatchService;
 use App\Services\Api\NgsPlayerProfileService;
+use App\Support\GameLength;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -80,7 +81,9 @@ class NgsController extends Controller
             ['request' => $request]
         );
 
-        return $result instanceof Response ? $result : response()->json($result);
+        // Same conversion as `matches/{replayID}`: this shares that controller,
+        // and so shared its display-formatted length.
+        return $result instanceof Response ? $result : response()->json(GameLength::inPayload($result));
     }
 
     public function playerProfile(Request $request, NgsPlayerProfileService $profiles): JsonResponse

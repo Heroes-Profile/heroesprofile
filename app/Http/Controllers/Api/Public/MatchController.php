@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Public;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SingleMatchController;
 use App\Services\Api\ReplayDownloadService;
+use App\Support\GameLength;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -40,7 +41,9 @@ class MatchController extends Controller
             return $result;
         }
 
-        return response()->json($result);
+        // The site formats length for display; every other endpoint reports it as
+        // seconds. One field, one meaning.
+        return response()->json(GameLength::inPayload($result));
     }
 
     /**

@@ -5,6 +5,8 @@ namespace App\Services\Api;
 use App\Auth\ApiKeyContext;
 use App\Models\Api\ApiAccount;
 use App\Models\Api\ApiKey;
+use Closure;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -24,7 +26,7 @@ class ApiKeyResolver
         $row = Cache::remember(
             'api_key:'.$hash,
             self::CACHE_SECONDS,
-            fn () => $this->lookup($hash) ?? false
+            fn () => $this->lookup(fn ($query) => $query->where('api_keys.secret_hash', $hash)) ?? false
         );
 
         if ($row === false) {
@@ -38,6 +40,41 @@ class ApiKeyResolver
         }
 
         $this->touchLastUsed((int) $row['key_id']);
+
+        return new ApiKeyContext(
+            account: $account,
+            keyId: (int) $row['key_id'],
+            planIds: $row['plan_ids'],
+            planName: $row['plan'],
+            subscriptionActive: $row['subscription_active'],
+            comped: $row['comped'],
+        );
+    }
+
+    /**
+     * The same context, resolved from an account rather than from a key.
+     *
+     * The portal's test client executes calls for a signed-in account, and keys
+     * are hashed — so there is no plaintext to resolve from. Entitlement still
+     * comes from one of the account's own keys, and quota is charged to it, so a
+     * call made here counts exactly as the caller's own would.
+     *
+     * Deliberately uncached: revocation clears the hash-keyed entries, and a
+     * second cache namespace it did not know about would outlive a revoked key.
+     */
+    public function resolveForAccount(int $accountId): ?ApiKeyContext
+    {
+        $row = $this->lookup(fn ($query) => $query->where('api_keys.api_account_id', $accountId));
+
+        if ($row === null) {
+            return null;
+        }
+
+        $account = ApiAccount::find($row['account_id']);
+
+        if (! $account) {
+            return null;
+        }
 
         return new ApiKeyContext(
             account: $account,
@@ -97,7 +134,10 @@ class ApiKeyResolver
      * Subscription still comes from the old `subscriptions` table, which is the live
      * source for both sites until billing moves to Cashier.
      */
-    private function lookup(string $hash): ?array
+    /**
+     * @param  Closure(Builder): void  $constrain  which key to find
+     */
+    private function lookup(Closure $constrain): ?array
     {
         $approvals = ApiAccount::APPROVAL_COLUMNS;
 
@@ -106,8 +146,8 @@ class ApiKeyResolver
             ->join('users', 'users.id', '=', 'api_keys.api_account_id')
             ->leftJoin('subscriptions', 'subscriptions.user_id', '=', 'users.id')
             ->leftJoin('subscription_plans', 'subscription_plans.stripe_plan', '=', 'subscriptions.stripe_plan')
-            ->where('api_keys.secret_hash', $hash)
             ->whereNull('api_keys.revoked_at')
+            ->tap($constrain)
             ->orderByDesc('subscriptions.created_at')
             ->select(array_merge([
                 'api_keys.id as key_id',

@@ -13,7 +13,9 @@
     </a>
 
     <div class="flex flex-wrap items-center gap-4 text-sm">
-      {{-- Docs / Test Client / Pricing links go here once those pages exist. --}}
+      <a href="/Api/Docs" class="hover:text-lteal">Docs</a>
+
+      {{-- Test Client / Pricing links go here once those pages exist. --}}
 
       @if($apiUser)
         <a href="/Api/Account" class="hover:text-lteal">Account</a>
