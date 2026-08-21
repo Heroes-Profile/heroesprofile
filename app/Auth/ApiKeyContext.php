@@ -48,6 +48,13 @@ class ApiKeyContext
      */
     public function servesFixtures(): bool
     {
+        // An admin exercising their grant is judged on test mode alone. The
+        // no-plan fallback below would otherwise pin them to fixtures whatever
+        // they set, since an admin has no reason to hold a subscription.
+        if ($this->account->actingAsAdmin()) {
+            return $this->account->inTestMode();
+        }
+
         return $this->receivesTestData() || $this->planIds === [];
     }
 }

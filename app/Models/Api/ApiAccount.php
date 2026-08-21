@@ -38,6 +38,8 @@ class ApiAccount extends Authenticatable
         'last_read_announcements_at' => 'datetime',
         'migrated' => 'boolean',
         'test_mode' => 'boolean',
+        'admin' => 'boolean',
+        'admin_mode' => 'boolean',
         'uses_two_factor_auth' => 'boolean',
     ];
 
@@ -82,10 +84,37 @@ class ApiAccount extends Authenticatable
     /**
      * Fixtures instead of live data, and no quota consumed. True while an account
      * has not migrated, or whenever it has test mode switched on.
+     *
+     * An admin exercising their grant is judged on `test_mode` alone. Migration
+     * is about not pulling live data from two sites at once, which does not apply
+     * to the person running the site — and without this an admin could never see
+     * live data to check it against.
      */
     public function receivesTestData(): bool
     {
+        if ($this->actingAsAdmin()) {
+            return $this->inTestMode();
+        }
+
         return ! $this->hasMigrated() || $this->inTestMode();
+    }
+
+    /** Whether this account has been granted admin. Set in the database only. */
+    public function isAdmin(): bool
+    {
+        return (bool) $this->admin;
+    }
+
+    /**
+     * Whether the grant is currently being exercised.
+     *
+     * An admin can switch this off to be treated as an ordinary account — same
+     * quota, same key requirement, same migration gate — which is the only way to
+     * see what a customer sees without giving up the grant.
+     */
+    public function actingAsAdmin(): bool
+    {
+        return $this->isAdmin() && (bool) $this->admin_mode;
     }
 
     /**

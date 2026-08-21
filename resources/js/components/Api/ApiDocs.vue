@@ -26,6 +26,10 @@
           class="form-control w-full text-black rounded p-2 text-sm mb-3"
         />
 
+        <ul v-if="variables.length && !search" class="text-sm mb-4">
+          <li><a href="#variables" class="hover:text-lteal">Variables</a></li>
+        </ul>
+
         <div v-for="group in groups" :key="group.name" class="mb-4">
           <h3 class="text-lteal text-sm uppercase tracking-wider mb-1">{{ group.name }}</h3>
           <ul class="text-sm space-y-1">
@@ -37,7 +41,53 @@
       </nav>
 
       <div class="flex-grow min-w-0">
+
+        <!--
+          Admins only. Both switches exist on the account page too; they are
+          mirrored here because this is where calls are actually run, and going
+          back and forth to change what a call returns is the whole friction.
+        -->
+        <div v-if="state && state.admin" class="bg-lighten p-4 mb-6 flex flex-wrap items-center gap-6">
+          <div>
+            <div class="text-sm mb-1">Admin mode</div>
+            <tab-button
+              tab1text="On"
+              tab2text="Off"
+              tab1alt="Ignore quota, keys and migration status"
+              tab2alt="Be treated as an ordinary account"
+              :ignoreclick="true"
+              :overridedefaultside="state.admin_mode ? 'left' : 'right'"
+              @tab-click="setAdminMode"
+            ></tab-button>
+          </div>
+
+          <div>
+            <div class="text-sm mb-1">Data</div>
+            <tab-button
+              tab1text="Live"
+              tab2text="Test"
+              tab1alt="Return real data"
+              tab2alt="Return example data"
+              :ignoreclick="true"
+              :overridedefaultside="state.test_mode ? 'right' : 'left'"
+              @tab-click="setTestMode"
+            ></tab-button>
+          </div>
+
+          <p class="text-xs text-gray-medium max-w-[420px]">
+            <template v-if="state.admin_mode">
+              Calls skip quota and need no key. Turn admin mode off to see exactly what a
+              customer on your plan would get.
+            </template>
+            <template v-else>
+              Being treated as an ordinary account — quota, key and migration status all apply.
+            </template>
+          </p>
+        </div>
+
         <p v-if="!groups.length" class="text-sm text-gray-medium">Nothing matches "{{ search }}".</p>
+
+        <api-variables v-if="variables.length && !search" :variables="variables"></api-variables>
 
         <section v-for="group in groups" :key="group.name" class="mb-10">
           <h2 class="text-2xl mb-4">{{ group.name }}</h2>
@@ -125,7 +175,10 @@
                     :disabled="running === op.id"
                     @click="execute(op)"
                   ></custom-button>
-                  <span class="text-xs text-gray-medium">Runs against your account and spends one call.</span>
+                  <span class="text-xs text-gray-medium">
+                    <template v-if="state && state.admin_mode">Runs as admin — no key, no quota.</template>
+                    <template v-else>Runs against your account and spends one call.</template>
+                  </span>
                 </div>
 
                 <div v-if="running === op.id" class="mt-3">
@@ -198,6 +251,14 @@ export default {
       default: null,
     },
     authenticated: Boolean,
+    account: {
+      type: Object,
+      default: null,
+    },
+    variables: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -206,6 +267,8 @@ export default {
       results: {},
       running: null,
       copied: null,
+      // Local copy: the switches below change it without a page reload.
+      state: this.account,
     }
   },
   created() {
@@ -289,6 +352,24 @@ export default {
      * is nothing here to send. The server resolves the account's own key, charges
      * it, and returns what came back.
      */
+    /* Both write through to the account, and both are admin-only server-side. */
+    async setAdminMode(side) {
+      await this.setMode('/api/v1/account/admin-mode', { admin_mode: side === 'left' });
+    },
+
+    async setTestMode(side) {
+      await this.setMode('/api/v1/account/test-mode', { test_mode: side === 'right' });
+    },
+
+    async setMode(url, payload) {
+      try {
+        const response = await this.$axios.post(url, payload);
+        this.state = Object.assign({}, this.state, response.data);
+      } catch (error) {
+        // Left as it was; the switch reflects the server, not the click.
+      }
+    },
+
     async execute(op) {
       this.running = op.id;
 

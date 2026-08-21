@@ -91,7 +91,15 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "qm",
+                                "ud",
+                                "hl",
+                                "tl",
+                                "sl",
+                                "ar"
+                            ]
                         },
                         "description": "Game type short names, comma-separated.",
                         "example": "sl"
@@ -189,7 +197,15 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "All",
+                                "Solo",
+                                "Duo",
+                                "3 Players",
+                                "4 Players",
+                                "5 Players"
+                            ]
                         },
                         "description": "Party size filter."
                     },
@@ -431,7 +447,15 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "qm",
+                                "ud",
+                                "hl",
+                                "tl",
+                                "sl",
+                                "ar"
+                            ]
                         },
                         "description": "Game type short names, comma-separated.",
                         "example": "sl"
@@ -529,7 +553,15 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "All",
+                                "Solo",
+                                "Duo",
+                                "3 Players",
+                                "4 Players",
+                                "5 Players"
+                            ]
                         },
                         "description": "Party size filter."
                     },
@@ -1017,7 +1049,15 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "qm",
+                                "ud",
+                                "hl",
+                                "tl",
+                                "sl",
+                                "ar"
+                            ]
                         },
                         "description": "Game type short names, comma-separated.",
                         "example": "sl"
@@ -1115,7 +1155,15 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "All",
+                                "Solo",
+                                "Duo",
+                                "3 Players",
+                                "4 Players",
+                                "5 Players"
+                            ]
                         },
                         "description": "Party size filter."
                     },
@@ -1309,7 +1357,15 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "qm",
+                                "ud",
+                                "hl",
+                                "tl",
+                                "sl",
+                                "ar"
+                            ]
                         },
                         "description": "Game type short names, comma-separated.",
                         "example": "sl"
@@ -1407,7 +1463,15 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "All",
+                                "Solo",
+                                "Duo",
+                                "3 Players",
+                                "4 Players",
+                                "5 Players"
+                            ]
                         },
                         "description": "Party size filter."
                     },
@@ -1571,7 +1635,15 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "qm",
+                                "ud",
+                                "hl",
+                                "tl",
+                                "sl",
+                                "ar"
+                            ]
                         },
                         "description": "Game type short names, comma-separated.",
                         "example": "sl"
@@ -1588,7 +1660,7 @@
                     {
                         "name": "hero",
                         "in": "query",
-                        "required": false,
+                        "required": true,
                         "schema": {
                             "type": "string"
                         },
@@ -1669,7 +1741,15 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "All",
+                                "Solo",
+                                "Duo",
+                                "3 Players",
+                                "4 Players",
+                                "5 Players"
+                            ]
                         },
                         "description": "Party size filter."
                     },
@@ -2141,7 +2221,15 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "qm",
+                                "ud",
+                                "hl",
+                                "tl",
+                                "sl",
+                                "ar"
+                            ]
                         },
                         "description": "Game type short names, comma-separated.",
                         "example": "sl"
@@ -2239,7 +2327,15 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "All",
+                                "Solo",
+                                "Duo",
+                                "3 Players",
+                                "4 Players",
+                                "5 Players"
+                            ]
                         },
                         "description": "Party size filter."
                     },
@@ -3198,7 +3294,15 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "qm",
+                                "ud",
+                                "hl",
+                                "tl",
+                                "sl",
+                                "ar"
+                            ]
                         },
                         "description": "Game type short names, comma-separated.",
                         "example": "sl"
@@ -3296,7 +3400,15 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "All",
+                                "Solo",
+                                "Duo",
+                                "3 Players",
+                                "4 Players",
+                                "5 Players"
+                            ]
                         },
                         "description": "Party size filter."
                     },
@@ -3595,7 +3707,15 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "qm",
+                                "ud",
+                                "hl",
+                                "tl",
+                                "sl",
+                                "ar"
+                            ]
                         },
                         "description": "Game type short names, comma-separated.",
                         "example": "sl"
@@ -3693,7 +3813,15 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "All",
+                                "Solo",
+                                "Duo",
+                                "3 Players",
+                                "4 Players",
+                                "5 Players"
+                            ]
                         },
                         "description": "Party size filter."
                     },
@@ -4377,7 +4505,15 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "qm",
+                                "ud",
+                                "hl",
+                                "tl",
+                                "sl",
+                                "ar"
+                            ]
                         },
                         "description": "Game type short names, comma-separated.",
                         "example": "sl"
@@ -4475,7 +4611,15 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "All",
+                                "Solo",
+                                "Duo",
+                                "3 Players",
+                                "4 Players",
+                                "5 Players"
+                            ]
                         },
                         "description": "Party size filter."
                     },
@@ -4950,7 +5094,15 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "qm",
+                                "ud",
+                                "hl",
+                                "tl",
+                                "sl",
+                                "ar"
+                            ]
                         },
                         "description": "Game type short names, comma-separated.",
                         "example": "sl"
@@ -4967,7 +5119,7 @@
                     {
                         "name": "hero",
                         "in": "query",
-                        "required": false,
+                        "required": true,
                         "schema": {
                             "type": "string"
                         },
@@ -5048,7 +5200,15 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "All",
+                                "Solo",
+                                "Duo",
+                                "3 Players",
+                                "4 Players",
+                                "5 Players"
+                            ]
                         },
                         "description": "Party size filter."
                     },
@@ -5060,6 +5220,27 @@
                             "type": "string"
                         },
                         "description": "Statistic to filter on."
+                    },
+                    {
+                        "name": "talentbuildtype",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "Popular",
+                                "HP Algorithm",
+                                "Unique Lvl 1",
+                                "Unique Lvl 4",
+                                "Unique Lvl 7",
+                                "Unique Lvl 10",
+                                "Unique Lvl 13",
+                                "Unique Lvl 16",
+                                "Unique Lvl 20"
+                            ]
+                        },
+                        "description": "Which ranking decides the builds returned. Defaults to `Popular`.",
+                        "example": "Popular"
                     },
                     {
                         "name": "total_builds",
@@ -161037,7 +161218,15 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "qm",
+                                "ud",
+                                "hl",
+                                "tl",
+                                "sl",
+                                "ar"
+                            ]
                         },
                         "description": "Game type short names, comma-separated.",
                         "example": "sl"
@@ -161054,7 +161243,7 @@
                     {
                         "name": "hero",
                         "in": "query",
-                        "required": false,
+                        "required": true,
                         "schema": {
                             "type": "string"
                         },
@@ -161135,7 +161324,15 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "All",
+                                "Solo",
+                                "Duo",
+                                "3 Players",
+                                "4 Players",
+                                "5 Players"
+                            ]
                         },
                         "description": "Party size filter."
                     },
@@ -162128,7 +162325,15 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "All",
+                                "Solo",
+                                "Duo",
+                                "3 Players",
+                                "4 Players",
+                                "5 Players"
+                            ]
                         },
                         "description": "Party size. Defaults to `Solo`."
                     },
@@ -162404,7 +162609,8 @@
                                             "description": "Region id. 1 NA, 2 EU, 3 KR, 5 CN."
                                         },
                                         "downloadable": {
-                                            "type": "boolean"
+                                            "type": "boolean",
+                                            "description": "Whether the replay file is still within the retention window and can be fetched from `/replays/download`."
                                         },
                                         "replay_download_blocked": {
                                             "type": "boolean"
@@ -164951,7 +165157,8 @@
                                             "description": "Region id. 1 NA, 2 EU, 3 KR, 5 CN."
                                         },
                                         "downloadable": {
-                                            "type": "null"
+                                            "type": "null",
+                                            "description": "Whether the replay file is still within the retention window and can be fetched from `/replays/download`."
                                         },
                                         "replay_download_blocked": {
                                             "type": "boolean"
@@ -166453,7 +166660,15 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "qm",
+                                "ud",
+                                "hl",
+                                "tl",
+                                "sl",
+                                "ar"
+                            ]
                         },
                         "description": "Game type short names, comma-separated.",
                         "example": "sl"
@@ -166551,7 +166766,15 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "All",
+                                "Solo",
+                                "Duo",
+                                "3 Players",
+                                "4 Players",
+                                "5 Players"
+                            ]
                         },
                         "description": "Party size filter."
                     },
@@ -170088,7 +170311,15 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "All",
+                                "Solo",
+                                "Duo",
+                                "3 Players",
+                                "4 Players",
+                                "5 Players"
+                            ]
                         },
                         "description": "Party size filter."
                     }
@@ -184261,6 +184492,150 @@
                 "security": [],
                 "tags": [
                     "Uploading Replays"
+                ]
+            }
+        },
+        "/replays": {
+            "get": {
+                "summary": "A page of replays, for building a local copy of the data. Paged by replay id: pass the `next_after` from one response as the `after` of the next, and stop when it comes back null.",
+                "operationId": "api.public.replays.index",
+                "parameters": [
+                    {
+                        "name": "after",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "Return replays with an id greater than this. Omit to start from the beginning.",
+                        "example": 0
+                    },
+                    {
+                        "name": "timeframe_type",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "minor",
+                                "major"
+                            ]
+                        },
+                        "description": "How `timeframe` is read."
+                    },
+                    {
+                        "name": "timeframe",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "One patch or build.",
+                        "example": "2.55.17.97771"
+                    },
+                    {
+                        "name": "game_type",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Game type short names, comma-separated. Omit for every type."
+                    },
+                    {
+                        "name": "game_map",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Map names, comma-separated. Omit for every map."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "replays": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "replayID": {
+                                                        "type": "integer",
+                                                        "description": "The match id. Pass it to `/matches/{replayID}` for full detail."
+                                                    },
+                                                    "region": {
+                                                        "type": "integer",
+                                                        "description": "Region id. 1 NA, 2 EU, 3 KR, 5 CN."
+                                                    },
+                                                    "fingerprint": {
+                                                        "type": "string"
+                                                    },
+                                                    "game_type": {
+                                                        "type": "string"
+                                                    },
+                                                    "game_version": {
+                                                        "type": "string"
+                                                    },
+                                                    "game_map": {
+                                                        "type": "string"
+                                                    },
+                                                    "game_date": {
+                                                        "type": "string",
+                                                        "description": "When the match was played, as `YYYY-MM-DD HH:MM:SS` UTC."
+                                                    },
+                                                    "parsed": {
+                                                        "type": "integer"
+                                                    },
+                                                    "deleted": {
+                                                        "type": "integer"
+                                                    },
+                                                    "downloadable": {
+                                                        "type": "boolean",
+                                                        "description": "Whether the replay file is still within the retention window and can be fetched from `/replays/download`."
+                                                    }
+                                                },
+                                                "required": [
+                                                    "replayID",
+                                                    "region",
+                                                    "fingerprint",
+                                                    "game_type",
+                                                    "game_version",
+                                                    "game_map",
+                                                    "game_date",
+                                                    "parsed",
+                                                    "deleted",
+                                                    "downloadable"
+                                                ]
+                                            }
+                                        },
+                                        "next_after": {
+                                            "type": "integer",
+                                            "description": "Pass as `after` to get the following page. Null once you have caught up."
+                                        },
+                                        "max_replay_id": {
+                                            "type": "integer",
+                                            "description": "The highest replay id stored, so you know how far there is to go."
+                                        }
+                                    },
+                                    "required": [
+                                        "replays",
+                                        "next_after",
+                                        "max_replay_id"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-endpoint-key": "replay_index",
+                "tags": [
+                    "Matches"
                 ]
             }
         },

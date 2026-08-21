@@ -49,12 +49,12 @@ class GlobalStatsController extends Controller
 
     public function heroMatchups(Request $request): Response
     {
-        return $this->delegate($request, GlobalHeroMatchupStatsController::class, 'getHeroMatchupData');
+        return $this->delegate($request, GlobalHeroMatchupStatsController::class, 'getHeroMatchupData', [], ['hero']);
     }
 
     public function talentDetails(Request $request): Response
     {
-        return $this->delegate($request, GlobalTalentStatsController::class, 'getGlobalHeroTalentData');
+        return $this->delegate($request, GlobalTalentStatsController::class, 'getGlobalHeroTalentData', [], ['hero']);
     }
 
     /**
@@ -70,7 +70,11 @@ class GlobalStatsController extends Controller
         $controller = app(GlobalTalentStatsController::class)
             ->setBuildsToReturn((int) ($validated['total_builds'] ?? Controller::DEFAULT_BUILDS_TO_RETURN));
 
-        return $this->delegate($request, $controller, 'getGlobalHeroTalentBuildData');
+        return $this->delegate($request, $controller, 'getGlobalHeroTalentBuildData', [
+            // Required internally. `Popular` is what the site shows a visitor who
+            // is not logged in — see GlobalDataService::getDefaultBuildType().
+            'talentbuildtype' => 'Popular',
+        ], ['hero']);
     }
 
     /** Which team compositions win, and how often. */

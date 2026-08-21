@@ -108,8 +108,7 @@ itself. It warns above 1MB — use `--rows=N` to keep the shape and drop the bul
 Identifying fields are replaced as it writes: `battletag`, `split_battletag`,
 `blizz_id`, `region`, `replayID` and `game_date`. The same original always maps to
 the same fake, so records still cross-reference. **Read the replacement table it
-prints.** A field it does not know is written through untouched — that is how a
-real player name shipped once beside an anonymised battletag — so if an endpoint
+prints.** A field it does not know is written through untouched so if an endpoint
 returns player data and a field is missing from that table, add it to
 `IDENTIFYING_FIELDS` in `CaptureApiSamples` and re-capture.
 

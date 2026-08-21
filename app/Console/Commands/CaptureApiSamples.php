@@ -61,6 +61,10 @@ class CaptureApiSamples extends Command
         // is public, so anyone can resolve the match and read the player straight
         // back out of it.
         'replayID' => 'replay',
+        // A replay id by another name — the cursor a caller pages with.
+        'next_after' => 'replay',
+        // Identifies one real match, and names its object in the bucket.
+        'fingerprint' => 'fingerprint',
         // Player activity. Reference dates — `release_date`, `last_updated` on a
         // hero — are not listed and stay real, because they describe the game
         // rather than a person.
@@ -306,6 +310,7 @@ class CaptureApiSamples extends Command
             'region' => is_numeric($value) ? 1 : 'NA',
             // Its own range, so a fake replay id is never mistaken for a blizz_id.
             'replay' => 90000000 + $index,
+            'fingerprint' => sprintf('%08x-0000-4000-8000-%012d', $index, $index),
             'date' => self::PLACEHOLDER_DATE,
             default => 9000000 + $index,
         };

@@ -33,6 +33,8 @@ class AccountController extends Controller
                 'test_mode' => $account->inTestMode(),
                 'receives_test_data' => $account->receivesTestData(),
                 'has_legacy_token' => $this->hasLegacyToken($account),
+                'admin' => $account->isAdmin(),
+                'admin_mode' => $account->actingAsAdmin(),
             ],
             'keys' => $keys,
             'usage' => $usage->forAccount($account),
@@ -89,6 +91,33 @@ class AccountController extends Controller
 
         return response()->json([
             'test_mode' => $account->inTestMode(),
+            'receives_test_data' => $account->receivesTestData(),
+        ]);
+    }
+
+    /**
+     * Turns the admin grant on or off for this account.
+     *
+     * Only whether the grant is exercised — never whether it is held. An account
+     * that could grant itself admin would not be a permission, so `admin` is set
+     * in the database and this refuses anyone who does not already have it.
+     */
+    public function setAdminMode(Request $request)
+    {
+        $validated = $request->validate([
+            'admin_mode' => ['required', 'boolean'],
+        ]);
+
+        $account = Auth::guard('api_web')->user();
+
+        if (! $account->isAdmin()) {
+            return response()->json(['error' => 'This account is not an admin.'], 403);
+        }
+
+        $account->forceFill(['admin_mode' => $validated['admin_mode']])->save();
+
+        return response()->json([
+            'admin_mode' => $account->actingAsAdmin(),
             'receives_test_data' => $account->receivesTestData(),
         ]);
     }

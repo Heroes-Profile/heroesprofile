@@ -51,6 +51,7 @@ return [
         ],
         'game_type' => [
             'required' => true,
+            'enum' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'],
             'description' => 'Game type short names, comma-separated.',
             'example' => 'sl',
         ],
@@ -63,7 +64,7 @@ return [
         'hero_league_tier' => ['description' => 'Hero league tier id.'],
         'role_league_tier' => ['description' => 'Role league tier id.'],
         'mirror' => ['enum' => ['0', '1'], 'description' => 'Include mirror matches.'],
-        'groupsize' => ['description' => 'Party size filter.'],
+        'groupsize' => ['enum' => ['All', 'Solo', 'Duo', '3 Players', '4 Players', '5 Players'], 'description' => 'Party size filter.'],
         'statfilter' => ['description' => 'Statistic to filter on.'],
     ],
 
@@ -128,6 +129,7 @@ return [
             'api.public.matches.bans',
             'api.public.matches.show',
             'api.public.replays.download',
+            'api.public.replays.index',
         ],
 
         'NGS Stats' => [
@@ -180,6 +182,9 @@ return [
         'replayID' => 'The match id. Pass it to `/matches/{replayID}` for full detail.',
         'blizz_id' => 'Blizzard account id. Stable per region, and not a battletag.',
         'region' => 'Region id. 1 NA, 2 EU, 3 KR, 5 CN.',
+        'next_after' => 'Pass as `after` to get the following page. Null once you have caught up.',
+        'max_replay_id' => 'The highest replay id stored, so you know how far there is to go.',
+        'downloadable' => 'Whether the replay file is still within the retention window and can be fetched from `/replays/download`.',
         'win_rate' => 'Percentage, 0 to 100.',
         'popularity' => 'Percentage of matches in which this appeared, 0 to 100.',
     ],
@@ -374,7 +379,7 @@ return [
                 'hero' => ['description' => 'Restrict to one hero by name.'],
                 'season' => ['type' => 'integer'],
                 'game_map' => ['description' => 'Map name.'],
-                'groupsize' => ['description' => 'Party size filter.'],
+                'groupsize' => ['enum' => ['All', 'Solo', 'Duo', '3 Players', '4 Players', '5 Players'], 'description' => 'Party size filter.'],
             ],
         ],
 
@@ -393,6 +398,17 @@ return [
             'summary' => 'Hero bans for one match.',
             'parameters' => [
                 'replayID' => ['type' => 'integer', 'description' => 'Heroes Profile match ID.'],
+            ],
+        ],
+
+        'api.public.replays.index' => [
+            'summary' => 'A page of replays, for building a local copy of the data. Paged by replay id: pass the `next_after` from one response as the `after` of the next, and stop when it comes back null.',
+            'parameters' => [
+                'after' => ['type' => 'integer', 'description' => 'Return replays with an id greater than this. Omit to start from the beginning.', 'example' => 0],
+                'timeframe_type' => ['enum' => ['minor', 'major'], 'description' => 'How `timeframe` is read.'],
+                'timeframe' => ['description' => 'One patch or build.', 'example' => '2.55.17.97771'],
+                'game_type' => ['description' => 'Game type short names, comma-separated. Omit for every type.'],
+                'game_map' => ['description' => 'Map names, comma-separated. Omit for every map.'],
             ],
         ],
 
@@ -426,6 +442,9 @@ return [
             'summary' => 'How one hero performs with and against every other.',
             'uses' => ['globals'],
             'async' => true,
+            'parameters' => [
+                'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
+            ],
         ],
 
         'api.public.heroes.maps' => [
@@ -453,6 +472,9 @@ return [
             'summary' => 'Win rate and popularity for every talent.',
             'uses' => ['globals'],
             'async' => true,
+            'parameters' => [
+                'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
+            ],
         ],
 
         'api.public.heroes.talents.builds' => [
@@ -460,6 +482,12 @@ return [
             'uses' => ['globals'],
             'async' => true,
             'parameters' => [
+                'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
+                'talentbuildtype' => [
+                    'enum' => ['Popular', 'HP Algorithm', 'Unique Lvl 1', 'Unique Lvl 4', 'Unique Lvl 7', 'Unique Lvl 10', 'Unique Lvl 13', 'Unique Lvl 16', 'Unique Lvl 20'],
+                    'description' => 'Which ranking decides the builds returned. Defaults to `Popular`.',
+                    'example' => 'Popular',
+                ],
                 'total_builds' => ['type' => 'integer', 'description' => 'How many builds to return, 1 to 25. Defaults to 7.'],
             ],
         ],
@@ -533,7 +561,7 @@ return [
                 'season' => ['type' => 'integer', 'description' => 'Season id. Defaults to the current season.'],
                 'game_type' => ['description' => 'One game type short name. Defaults to `sl`.', 'example' => 'sl'],
                 'type' => ['enum' => ['player', 'hero', 'role', 'match prediction'], 'description' => 'What the board ranks. Defaults to `player`.'],
-                'groupsize' => ['description' => 'Party size. Defaults to `Solo`.'],
+                'groupsize' => ['enum' => ['All', 'Solo', 'Duo', '3 Players', '4 Players', '5 Players'], 'description' => 'Party size. Defaults to `Solo`.'],
                 'hero' => ['description' => 'Hero name, when `type` is `hero`.'],
                 'role' => ['description' => 'Role name, when `type` is `role`.'],
                 'region' => ['type' => 'integer', 'description' => 'Region id.'],

@@ -112,6 +112,10 @@ Route::get('players/friendfoe', [PlayerController::class, 'friendFoe'])
 | need encoding.
 */
 
+Route::get('replays', [MatchController::class, 'index'])
+    ->middleware(['api.fixtures:replay_index', 'api.quota:replay_index'])
+    ->name('api.public.replays.index');
+
 Route::get('matches/{replayID}', [MatchController::class, 'show'])
     ->whereNumber('replayID')
     ->middleware(['api.fixtures:replay_data', 'api.quota:replay_data'])

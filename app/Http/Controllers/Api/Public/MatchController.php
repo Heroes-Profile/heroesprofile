@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Public;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SingleMatchController;
 use App\Services\Api\ReplayDownloadService;
+use App\Services\Api\ReplayIndexService;
 use App\Support\GameLength;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,6 +45,26 @@ class MatchController extends Controller
         // The site formats length for display; every other endpoint reports it as
         // seconds. One field, one meaning.
         return response()->json(GameLength::inPayload($result));
+    }
+
+    /**
+     * A page of replays, for building a local copy of the data.
+     *
+     * Replaces the old `/Replay/Min_id`, which the plan had classed as a hotsapi
+     * artifact on the strength of a stale spec summary — the implementation
+     * returned no hotsapi column and was a general bulk index.
+     */
+    public function index(Request $request, ReplayIndexService $replays): Response
+    {
+        $validated = $request->validate([
+            'after' => ['sometimes', 'integer', 'min:0'],
+            'timeframe_type' => ['sometimes', 'in:minor,major'],
+            'timeframe' => ['sometimes', 'string', 'max:32'],
+            'game_type' => ['sometimes', 'string', 'max:64'],
+            'game_map' => ['sometimes', 'string', 'max:255'],
+        ]);
+
+        return response()->json($replays->page($validated));
     }
 
     /**

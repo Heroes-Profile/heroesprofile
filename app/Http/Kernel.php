@@ -10,6 +10,7 @@ use App\Http\Middleware\CommunitySupportRedirect;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\EnforceApiQuota;
 use App\Http\Middleware\EnsureApiAccountAuthenticated;
+use App\Http\Middleware\EnsureApiAdmin;
 use App\Http\Middleware\EnsureBattlenetAuthenticated;
 use App\Http\Middleware\LogIPAndUserAgent;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
@@ -126,6 +127,7 @@ class Kernel extends HttpKernel
         'verified' => EnsureEmailIsVerified::class,
         'ensureBattlenetAuth' => EnsureBattlenetAuthenticated::class,
         'ensureApiAccountAuth' => EnsureApiAccountAuthenticated::class,
+        'ensureApiAdmin' => EnsureApiAdmin::class,
         'api.quota' => EnforceApiQuota::class,
         'api.fixtures' => ServeApiFixtures::class,
         'api.ngs' => RequireNgsAccess::class,

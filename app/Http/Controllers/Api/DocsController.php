@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Support\ApiVariables;
 use Illuminate\Support\Facades\Auth;
 
 class DocsController extends Controller
@@ -12,9 +13,23 @@ class DocsController extends Controller
 
     public function index()
     {
+        $account = Auth::guard('api_web')->user();
+
         return view('api.docs', [
-            'authenticated' => Auth::guard('api_web')->check(),
+            'authenticated' => $account !== null,
             'spec' => $this->spec(),
+            // Alongside the endpoints rather than on a page of its own: the values a
+            // parameter accepts are wanted while reading the endpoint that takes it.
+            'variables' => ApiVariables::all(),
+            // Admins get the data switch and the admin toggle inline, so checking
+            // an endpoint against live data does not mean a trip to the account
+            // page and back.
+            'account' => $account === null ? null : [
+                'admin' => $account->isAdmin(),
+                'admin_mode' => $account->actingAsAdmin(),
+                'test_mode' => $account->inTestMode(),
+                'receives_test_data' => $account->receivesTestData(),
+            ],
         ]);
     }
 

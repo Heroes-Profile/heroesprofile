@@ -7,5 +7,7 @@
   <api-docs
     :spec="{{ json_encode($spec) }}"
     :authenticated="{{ json_encode($authenticated) }}"
+    :account="{{ json_encode($account) }}"
+    :variables="{{ json_encode($variables) }}"
   ></api-docs>
 @endsection

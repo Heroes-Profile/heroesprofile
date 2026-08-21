@@ -37,6 +37,14 @@ class EnforceApiQuota
             return $this->error('unauthenticated', 'A valid API key is required.', 401);
         }
 
+        // An admin exercising their grant is not metered: exercising every
+        // endpoint to check it works would otherwise spend a real allowance, and
+        // there is no one to bill. Entitlement, plan and quota are all skipped;
+        // the route's rate limiter still applies.
+        if ($context->account->actingAsAdmin()) {
+            return $next($request);
+        }
+
         // Fixtures cost nothing: no registry lookup, no usage read or write. Only
         // the route's rate limiter applies.
         if ($context->servesFixtures()) {

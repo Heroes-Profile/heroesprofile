@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Auth\ApiKeyContext;
 use App\Auth\ApiKeyGuard;
 use App\Http\Controllers\Controller;
 use App\Services\Api\ApiKeyResolver;
@@ -48,6 +49,19 @@ class TryItController extends Controller
 
         $account = Auth::guard('api_web')->user();
         $context = $resolver->resolveForAccount((int) $account->id);
+
+        // An admin exercising their grant needs no key: quota is skipped
+        // downstream, and the key id only buckets the rate limiter.
+        if ($context === null && $account->actingAsAdmin()) {
+            $context = new ApiKeyContext(
+                account: $account,
+                keyId: 0,
+                planIds: [],
+                planName: null,
+                subscriptionActive: false,
+                comped: false,
+            );
+        }
 
         if ($context === null) {
             return response()->json([

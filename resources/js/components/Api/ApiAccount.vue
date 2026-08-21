@@ -16,7 +16,27 @@
         </p>
       </div>
 
-      <div v-if="migrated" class="bg-lighten p-6 mb-8">
+      <div v-if="account.admin" class="bg-lighten border-l-4 border-teal p-6 mb-8">
+        <h2 class="text-lg mb-2">Admin Mode <span class="text-sm text-lteal">{{ adminMode ? 'on' : 'off' }}</span></h2>
+        <p class="text-sm text-gray-medium mb-4">
+          While on, calls ignore quota, need no key, and are not held back by migration
+          status. Turn it off to be treated as an ordinary account — the grant stays, so
+          you can switch back.
+        </p>
+        <tab-button
+          tab1text="On"
+          tab2text="Off"
+          tab1alt="Ignore quota, keys and migration status"
+          tab2alt="Be treated as an ordinary account"
+          :ignoreclick="true"
+          :overridedefaultside="adminMode ? 'left' : 'right'"
+          @tab-click="setAdminMode"
+        ></tab-button>
+      </div>
+
+      <!-- Admins see this whether or not they have migrated: admin mode ignores
+           the migration gate, so the live/test switch is meaningful either way. -->
+      <div v-if="migrated || account.admin" class="bg-lighten p-6 mb-8">
         <h2 class="text-lg mb-2">Data Mode</h2>
         <p class="text-sm text-gray-medium mb-4">
           Switch to test data whenever you are building or debugging. Responses become
@@ -161,6 +181,7 @@ export default {
       copied: false,
       error: null,
       testMode: this.account.test_mode,
+      adminMode: this.account.admin_mode,
       receivesTestData: this.account.receives_test_data,
       migrated: this.account.migrated,
       activating: false,
@@ -196,6 +217,24 @@ export default {
 
       this.activating = false;
     },
+    async setAdminMode(side) {
+      const enabled = side === 'left';
+
+      if (enabled === this.adminMode) {
+        return;
+      }
+
+      try {
+        const response = await this.$axios.post('/api/v1/account/admin-mode', {
+          admin_mode: enabled,
+        });
+
+        this.adminMode = response.data.admin_mode;
+      } catch (error) {
+        // Left as it was; the switch reflects the server, not the click.
+      }
+    },
+
     async setTestMode(side){
       const enabled = side === 'right';
 

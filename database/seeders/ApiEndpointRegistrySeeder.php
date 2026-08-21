@@ -69,6 +69,7 @@ class ApiEndpointRegistrySeeder extends Seeder
         ['player_role_all', 'Player/Role/All', 'Player Data', 4, 7, 25, 500, 5000, 50000, 0, 0],
         ['player_role_single', 'Player/Role/Single', 'Player Data', 4, 8, 25, 500, 5000, 50000, 0, 0],
         ['player_talents_build', 'Player/Talents/Build', 'Player Data', 4, 6, 25, 500, 5000, 50000, 0, 0],
+        ['replay_index', 'Replays', 'Replays', 2, 4, 1000, 25000, 250000, 1000000, 0, 0],
         ['replay_ban', 'Replay/Ban', 'Replays', 2, 3, 100, 10000, 100000, 250000, 0, 0],
         ['replay_data', 'Replay/Data', 'Replays', 2, 2, 1000, 25000, 250000, 1000000, 0, 0],
         ['replay_download', 'Replay/Download', 'Replays', 2, 1, 1000, 10000, 25000, 100000, 0, 0],
