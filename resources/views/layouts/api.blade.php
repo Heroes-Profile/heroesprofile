@@ -49,8 +49,8 @@
             </p>
 
             <p class="text-xs space-x-3">
-              <a href="/Privacy/Policy" class="underline">Privacy Policy</a>
-              <a href="/Terms/Of/Service" class="underline">Terms of Service</a>
+              <a href="/Api/Privacy" class="underline">Privacy Policy</a>
+              <a href="/Api/Terms" class="underline">Terms of Service</a>
               <a href="/" class="underline">Main Site</a>
             </p>
 

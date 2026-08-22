@@ -48,6 +48,8 @@ class ApiKeyResolver
             planName: $row['plan'],
             subscriptionActive: $row['subscription_active'],
             comped: $row['comped'],
+            // Coalesced: entries cached before this field existed outlive a deploy.
+            subscriptionUnresolved: $row['subscription_unresolved'] ?? false,
         );
     }
 
@@ -83,6 +85,8 @@ class ApiKeyResolver
             planName: $row['plan'],
             subscriptionActive: $row['subscription_active'],
             comped: $row['comped'],
+            // Coalesced: entries cached before this field existed outlive a deploy.
+            subscriptionUnresolved: $row['subscription_unresolved'] ?? false,
         );
     }
 
@@ -152,6 +156,10 @@ class ApiKeyResolver
             ->select(array_merge([
                 'api_keys.id as key_id',
                 'users.id as account_id',
+                // Distinguishes "no subscription at all" from "subscription whose
+                // plan did not resolve". `stripe_status` cannot do that job — a
+                // handful of legacy rows carry a null status.
+                'subscriptions.id as subscription_id',
                 'subscriptions.stripe_status',
                 'subscriptions.ends_at',
                 'subscription_plans.plan_id',
@@ -189,6 +197,12 @@ class ApiKeyResolver
             $planName ??= config("api_plans.plans.{$compedPlanId}.key");
         }
 
+        // A subscription that exists but resolves to no plan must never fall through
+        // to the no-plan fixture path — that path exists so someone who has not
+        // bought anything can evaluate the API, and letting a payer land on it
+        // serves them sample data while their card is charged.
+        $subscriptionUnresolved = $row->subscription_id !== null && $row->plan_id === null;
+
         return [
             'key_id' => $row->key_id,
             'account_id' => $row->account_id,
@@ -196,6 +210,7 @@ class ApiKeyResolver
             'plan' => $planName,
             'subscription_active' => $row->stripe_status === 'active' && ! $lapsed,
             'comped' => $comped,
+            'subscription_unresolved' => $subscriptionUnresolved,
         ];
     }
 }

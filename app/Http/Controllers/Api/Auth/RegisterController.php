@@ -26,6 +26,7 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:heroesprofile_api.users,email'],
             'password' => ['required', 'confirmed', Password::min(8)],
+            'terms' => ['accepted'],
         ]);
 
         $account = ApiAccount::create([
@@ -33,6 +34,11 @@ class RegisterController extends Controller
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
         ]);
+
+        // Not fillable — acceptance is stamped here, never from request input.
+        $account->terms_version_accepted = config('api.terms_version');
+        $account->terms_accepted_at = now();
+        $account->save();
 
         // `migrated` stays 0 — activating live data is a deliberate act in the UI.
         Auth::guard('api_web')->login($account);

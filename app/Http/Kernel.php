@@ -15,6 +15,7 @@ use App\Http\Middleware\EnsureBattlenetAuthenticated;
 use App\Http\Middleware\LogIPAndUserAgent;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\RequireApiTermsAcceptance;
 use App\Http\Middleware\RequireNgsAccess;
 use App\Http\Middleware\RequireWebsiteAuthForAll;
 use App\Http\Middleware\ResolveApiKey;
@@ -128,6 +129,7 @@ class Kernel extends HttpKernel
         'ensureBattlenetAuth' => EnsureBattlenetAuthenticated::class,
         'ensureApiAccountAuth' => EnsureApiAccountAuthenticated::class,
         'ensureApiAdmin' => EnsureApiAdmin::class,
+        'requireApiTerms' => RequireApiTermsAcceptance::class,
         'api.quota' => EnforceApiQuota::class,
         'api.fixtures' => ServeApiFixtures::class,
         'api.ngs' => RequireNgsAccess::class,

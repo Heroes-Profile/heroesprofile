@@ -5,11 +5,11 @@
     <div class="mx-auto max-w-[1500px] p-4">
       <p class="mb-8">
         Heroes Profile API is a tool used to get Heroes of the Storm data parsed for
-        <a href="https://heroesprofile.com" class="underline hover:text-lteal">HeroesProfile.com</a>.
+        <a href="https://www.heroesprofile.com/" class="underline hover:text-lteal">Heroes Profile</a>.
         We source original replay data from our own
         <a href="/upload" class="underline hover:text-lteal">Uploader</a>, then parse the data to
         provide you with up-to-date calculated MMR, win rates, and more. Your subscription helps us
-        create new features for HeroesProfile.com. View our
+        create new features for Heroes Profile. View our
         <a href="/Api/Docs" class="underline hover:text-lteal">Documentation</a> or
         <a href="/Api/Register" class="underline hover:text-lteal">Register</a> to get started.
       </p>
@@ -116,7 +116,7 @@ export default {
   },
   data(){
     return {
-      infoText: "Hero statistics, talent builds, match data, player profiles and MMR — the same data that powers heroesprofile.com.",
+      infoText: "Hero statistics, talent builds, match data, player profiles and MMR — the same data that powers www.heroesprofile.com.",
       features: {
         basic: [
           'Ideal for an individual player looking to keep track of data in an outside spreadsheet',
