@@ -13,8 +13,17 @@
     </a>
 
     <div class="flex flex-wrap items-center gap-4 text-sm">
+      {{-- The portal has its own shell, so nothing else here leads back out. --}}
+      <a href="/" class="hover:text-lteal flex items-center gap-1">
+        <i class="fas fa-arrow-left text-xs"></i> Main Site
+      </a>
+
       <a href="/Api/Docs" class="hover:text-lteal">Docs</a>
       <a href="/Api/Migrating" class="hover:text-lteal">Migrating</a>
+      <a href="https://github.com/Heroes-Profile/heroesprofile" target="_blank" rel="noopener"
+         class="hover:text-lteal flex items-center gap-1" title="Heroes Profile on GitHub">
+        <i class="fab fa-github"></i> GitHub
+      </a>
 
       {{-- Test Client / Pricing links go here once those pages exist. --}}
 

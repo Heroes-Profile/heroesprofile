@@ -1,5 +1,7 @@
 <template>
   <div>
+    <scroll-to-top></scroll-to-top>
+
     <page-heading
       heading="Docs"
       :infoText1="'Every endpoint, generated from the routes themselves — so this page cannot describe an endpoint that does not exist.'"

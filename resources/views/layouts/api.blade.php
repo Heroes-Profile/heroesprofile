@@ -38,6 +38,16 @@
               Profile
             </a>
 
+            {{-- The main site keeps these behind a hover dropdown, which has no
+                 touch fallback. Flat links here work everywhere. --}}
+            <p class="text-xs space-x-3 mb-2">
+              <a href="https://github.com/Heroes-Profile/heroesprofile/issues/new?assignees=&labels=&projects=&template=bug_report.md" target="_blank" rel="noopener" class="underline">Report a Bug</a>
+              <a href="https://github.com/Heroes-Profile/heroesprofile/discussions/new?category=ideas" target="_blank" rel="noopener" class="underline">Request a Feature</a>
+              <a href="https://github.com/Heroes-Profile/heroesprofile/discussions" target="_blank" rel="noopener" class="underline">Discussions</a>
+              <a href="/Github/Change/Log" class="underline">Change Log</a>
+              <a href="/Contact" class="underline">Contact</a>
+            </p>
+
             <p class="text-xs space-x-3">
               <a href="/Privacy/Policy" class="underline">Privacy Policy</a>
               <a href="/Terms/Of/Service" class="underline">Terms of Service</a>

@@ -56,14 +56,14 @@
       </a>
 
 
-      <a href="https://api.heroesprofile.com/Api" target="_blank" class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
+      <a href="/Api" class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
 
         <i class="fa-solid fa-database" style="font-size: 100px;"></i>
 
         <h3 class="text-2xl mb-10 mt-2">Heroes Profile API</h3>
         <p class="mb-10">Heroes Profile API is a tool used to get Heroes of the Storm data parsed for HeroesProfile.com. </p>
       
-        <custom-button  :href="'https://api.heroesprofile.com/Api'" :targetblank="true" :text="'API'" :alt="'API'"  :size="'big'" class="mt-auto"  :color="'teal'"></custom-button>
+        <custom-button  :href="'/Api'" :text="'API'" :alt="'API'"  :size="'big'" class="mt-auto"  :color="'teal'"></custom-button>
       </a>
 
       <div class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
