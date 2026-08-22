@@ -14,6 +14,7 @@
 
     <div class="flex flex-wrap items-center gap-4 text-sm">
       <a href="/Api/Docs" class="hover:text-lteal">Docs</a>
+      <a href="/Api/Migrating" class="hover:text-lteal">Migrating</a>
 
       {{-- Test Client / Pricing links go here once those pages exist. --}}
 

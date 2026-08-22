@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Auth\LoginController as ApiLoginController;
 use App\Http\Controllers\Api\Auth\PasswordResetController as ApiPasswordResetController;
 use App\Http\Controllers\Api\Auth\RegisterController as ApiRegisterController;
 use App\Http\Controllers\Api\DocsController as ApiDocsController;
+use App\Http\Controllers\Api\MigratingController as ApiMigratingController;
 use App\Http\Controllers\Api\TryItController as ApiTryItController;
 use App\Http\Controllers\Auth\BattleNetController;
 use App\Http\Controllers\Auth\PatreonController;
@@ -49,6 +50,7 @@ use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\PreMatchController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReplayDownloadController;
 use App\Http\Controllers\SingleMatchController;
 use App\Http\Controllers\TermsOfServiceController;
 use App\Http\Controllers\Tools\ActivityGraphsController;
@@ -93,6 +95,14 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     // The page posts to the public API's ingestion endpoint, which is where the
     // upload actually happens — nothing is uploaded through this route.
     Route::get('/Upload', [UploadController::class, 'show']);
+
+    // The match page's download button. Battlenet auth, a per-person daily limit,
+    // and no API key — the public API's replays/download is a separate thing for
+    // API customers.
+    Route::get('/Match/Single/{replayID}/Download', ReplayDownloadController::class)
+        ->whereNumber('replayID')
+        ->middleware('ensureBattlenetAuth')
+        ->name('replay.download');
 
     Route::get('/Github/Change/Log', [GithubChangeController::class, 'show']);
 
@@ -232,6 +242,7 @@ Route::middleware(['logIpAndUserAgent'])->prefix('Api')->group(function () {
     Route::get('/DeveloperTier', [ApiHomeController::class, 'developerTier']);
 
     Route::get('/Docs', [ApiDocsController::class, 'index']);
+    Route::get('/Migrating', [ApiMigratingController::class, 'index']);
 
     Route::get('/Login', [ApiLoginController::class, 'show']);
     // Login throttling is per email+IP in the controller, not per IP here.

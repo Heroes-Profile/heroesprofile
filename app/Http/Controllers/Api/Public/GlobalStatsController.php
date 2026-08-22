@@ -13,6 +13,7 @@ use App\Http\Controllers\Global\GlobalLeaderboardController;
 use App\Http\Controllers\Global\GlobalPartyStatsController;
 use App\Http\Controllers\Global\GlobalTalentBuilderController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
+use App\Services\GlobalDataService;
 use App\Services\GlobalQueryService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -245,6 +246,10 @@ class GlobalStatsController extends Controller
             }
         }
 
+        if ($rejection = $this->rejectUnqueryableTimeframe($request)) {
+            return $rejection;
+        }
+
         // The rule objects take strings, but the controllers count() and whereIn()
         // these, so both have to arrive as arrays. Not universally, though — see
         // the leaderboard, which interpolates game_type into a cache key.
@@ -271,6 +276,47 @@ class GlobalStatsController extends Controller
         $payload = json_decode($result->getContent(), true);
 
         return $this->describeJob($result, $payload['job_id'] ?? null);
+    }
+
+    /**
+     * Refuses a patch older than the site's own filters offer.
+     *
+     * The shared globals rules only check `valid_globals`, so older data passes
+     * validation — the site simply never offers it in a dropdown. The API has no
+     * dropdown, so without this a caller could query patches the site itself
+     * considers not worth comparing against, and get answers nobody stands behind.
+     *
+     * `major` and `major_grouped` are prefixes rather than whole versions, so they
+     * are judged by whether any queryable build starts with them.
+     */
+    private function rejectUnqueryableTimeframe(Request $request): ?Response
+    {
+        $timeframes = (array) $request->input('timeframe', []);
+
+        if ($timeframes === [] || $request->input('timeframe_type') === 'last_update') {
+            return null;
+        }
+
+        $queryable = $this->globalDataService->queryableGameVersions();
+        $exact = $request->input('timeframe_type', 'minor') === 'minor';
+
+        foreach ($timeframes as $timeframe) {
+            $ok = $exact
+                ? in_array($timeframe, $queryable, true)
+                : (bool) array_filter($queryable, fn ($v) => str_starts_with($v, trim((string) $timeframe)));
+
+            if (! $ok) {
+                return response()->json([
+                    'error' => [
+                        'code' => 'timeframe_unavailable',
+                        'message' => 'That patch is not available for global statistics. The oldest queryable patch is '
+                            .GlobalDataService::MINIMUM_GLOBALS_PATCH.'. The Variables section of the docs lists them all.',
+                    ],
+                ], 422);
+            }
+        }
+
+        return null;
     }
 
     /** Tells the caller where to collect the result and how often to ask. */

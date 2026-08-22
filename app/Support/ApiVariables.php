@@ -7,10 +7,10 @@ use App\Models\Hero;
 use App\Models\LeagueTier;
 use App\Models\Map;
 use App\Models\SeasonDate;
-use App\Models\SeasonGameVersion;
 use App\Rules\StackSizeInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
 use App\Services\Api\NgsLeaderboardService;
+use App\Services\GlobalDataService;
 
 /**
  * What every parameter will and will not accept.
@@ -76,8 +76,8 @@ class ApiVariables
             [
                 'name' => 'timeframe',
                 'used_by' => 'Every global statistics endpoint',
-                'summary' => 'A build (`2.55.17.97771`) when `timeframe_type` is `minor`, or a patch (`2.55`) when it is `major`. The most recent are listed; older ones remain valid.',
-                'values' => SeasonGameVersion::orderByDesc('id')->limit(40)->pluck('game_version')->all(),
+                'summary' => 'A build (`2.55.17.97771`) when `timeframe_type` is `minor`, or a patch (`2.55`) when it is `major`. This is every patch that can be queried: older data exists but is not offered, the same limit the site applies to its own filters.',
+                'values' => app(GlobalDataService::class)->queryableGameVersions(),
             ],
             [
                 'name' => 'season',

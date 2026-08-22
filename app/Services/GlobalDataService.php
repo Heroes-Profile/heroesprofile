@@ -37,6 +37,19 @@ class GlobalDataService
     public const REPLAY_RETENTION_WEEKS = 4;
 
     /**
+     * Oldest patch the globals filters offer. Older data exists but is not
+     * offered: it predates changes that make it not worth comparing against.
+     *
+     * Was a literal inside `getFilterData()`, where only the dropdowns saw it —
+     * so nothing rejected an older patch, it was just never offered. The public
+     * API is the first caller that can ask for one directly.
+     */
+    public const MINIMUM_GLOBALS_PATCH = '2.53.0.83004';
+
+    /** The floor for site flair holders and the owner, who see further back. */
+    public const MINIMUM_GLOBALS_PATCH_PRIVILEGED = '2.52.0.81700';
+
+    /**
      * Hour (America/New_York) at/after which the leaderboard "weeks since season start" value
      * rolls over to the new day. The CalculateLeaderboards batch runs ~4am-12pm EST and freezes
      * the snapshot; we flip only once it has completed so the displayed weeks matches the frozen
@@ -673,6 +686,25 @@ class GlobalDataService
     /**
      * Apply version filtering to a query using numeric comparison
      */
+    /**
+     * Game versions a globals query may name: carrying globals data, and no older
+     * than the floor the filters offer.
+     *
+     * @return array<int, string>
+     */
+    public function queryableGameVersions(?string $minimum = null): array
+    {
+        $query = SeasonGameVersion::select('game_version')->where('valid_globals', 1);
+
+        return $this->applyVersionFilter($query, $minimum ?? self::MINIMUM_GLOBALS_PATCH)
+            ->orderBy('major', 'DESC')
+            ->orderBy('minor', 'DESC')
+            ->orderBy('patch', 'DESC')
+            ->orderBy('build', 'DESC')
+            ->pluck('game_version')
+            ->all();
+    }
+
     private function applyVersionFilter($query, $minimumVersionString)
     {
         $minVersion = $this->parseVersionString($minimumVersionString);
@@ -699,12 +731,12 @@ class GlobalDataService
 
     public function getFilterData($overrideDefaultPatchVersion = false, $defaultPatchVersion = null)
     {
-        $filtersMinimumPatch = '2.53.0.83004';
+        $filtersMinimumPatch = self::MINIMUM_GLOBALS_PATCH;
         if (Auth::check()) {
             $user = Auth::user();
 
             if ($this->checkIfSiteFlair($user->blizz_id, $user->region) || $this->isOwner($user->blizz_id, $user->region)) {
-                $filtersMinimumPatch = '2.52.0.81700';
+                $filtersMinimumPatch = self::MINIMUM_GLOBALS_PATCH_PRIVILEGED;
             }
         }
 

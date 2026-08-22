@@ -62,6 +62,29 @@ return [
             'throw' => true,
         ],
 
+        /*
+         * Esport replays, each in its own bucket and named by replay id rather
+         * than fingerprint. Only the site's own download route reaches these —
+         * the public API does not serve esport replays.
+         */
+        'gcs-ccl' => [
+            'driver' => 'gcs',
+            'project_id' => env('GOOGLE_CLOUD_PROJECT_ID'),
+            'bucket' => env('GOOGLE_CLOUD_CCL_BUCKET', 'heroesprofile-ccl'),
+            'key_file_path' => env('GOOGLE_CLOUD_KEY_FILE'),
+            'visibility' => 'private',
+            'throw' => true,
+        ],
+
+        'gcs-esport-other' => [
+            'driver' => 'gcs',
+            'project_id' => env('GOOGLE_CLOUD_PROJECT_ID'),
+            'bucket' => env('GOOGLE_CLOUD_ESPORT_OTHER_BUCKET', 'heroesprofile-esport-other'),
+            'key_file_path' => env('GOOGLE_CLOUD_KEY_FILE'),
+            'visibility' => 'private',
+            'throw' => true,
+        ],
+
         /* NGS replays live in their own bucket, separate from uploader replays. */
         'gcs-ngs' => [
             'driver' => 'gcs',
