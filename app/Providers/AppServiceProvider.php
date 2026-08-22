@@ -6,7 +6,9 @@ use App\Auth\ApiKeyGuard;
 use App\Models\Api\ApiAccount;
 use App\Models\Api\CashierSubscription;
 use App\Models\Api\CashierSubscriptionItem;
+use App\Services\Api\ApiKeyResolver;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Cashier\Cashier;
 use Laravel\Sanctum\Sanctum;
@@ -41,5 +43,19 @@ class AppServiceProvider extends ServiceProvider
         Cashier::useCustomerModel(ApiAccount::class);
         Cashier::useSubscriptionModel(CashierSubscription::class);
         Cashier::useSubscriptionItemModel(CashierSubscriptionItem::class);
+
+        // The nav's test-data badge, resolved the same way the quota middleware
+        // resolves it. Asking a second source would let the badge disagree with
+        // what the API actually serves, and it is the disagreement that misleads.
+        View::composer('api.partials.nav', function ($view) {
+            $account = Auth::guard('api_web')->user();
+
+            $view->with(
+                'navServesFixtures',
+                $account
+                    ? (bool) app(ApiKeyResolver::class)->resolveForAccount($account->id)?->servesFixtures()
+                    : false
+            );
+        });
     }
 }

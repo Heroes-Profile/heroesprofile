@@ -15,6 +15,9 @@ class ApiKeyContext
      *                                    account that also buys a tier holds both,
      *                                    and each endpoint uses the highest
      *                                    allowance among them.
+     * @param  bool  $subscriptionUnresolved  A subscription row exists but named no
+     *                                        plan we recognise. Never the same thing
+     *                                        as holding no subscription.
      */
     public function __construct(
         public readonly ApiAccount $account,
@@ -23,6 +26,7 @@ class ApiKeyContext
         public readonly ?string $planName,
         public readonly bool $subscriptionActive,
         public readonly bool $comped,
+        public readonly bool $subscriptionUnresolved = false,
     ) {}
 
     public function isEntitled(): bool
@@ -55,6 +59,18 @@ class ApiKeyContext
             return $this->account->inTestMode();
         }
 
-        return $this->receivesTestData() || $this->planIds === [];
+        // Asked for explicitly, or still behind the migration gate.
+        if ($this->receivesTestData()) {
+            return true;
+        }
+
+        // Holding an unreadable subscription is not the same as holding none. The
+        // fallback below is for people who have not bought anything; someone whose
+        // payment we cannot map to a plan has to fail loudly instead.
+        if ($this->subscriptionUnresolved) {
+            return false;
+        }
+
+        return $this->planIds === [];
     }
 }

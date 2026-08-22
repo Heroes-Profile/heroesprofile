@@ -9,6 +9,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -49,6 +50,24 @@ class EnforceApiQuota
         // the route's rate limiter applies.
         if ($context->servesFixtures()) {
             return $next($request);
+        }
+
+        // Their card is being charged for something we cannot price. Loud on both
+        // sides: the caller gets an error rather than sample data, and this is a
+        // data fault only we can fix.
+        if ($context->subscriptionUnresolved) {
+            Log::critical('API subscription resolved to no plan', [
+                'account_id' => $context->account->id,
+                'key_id' => $context->keyId,
+                'endpoint' => $endpoint,
+            ]);
+
+            return $this->error(
+                'plan_unresolved',
+                'Your subscription could not be matched to a plan. Please contact support — you have not been charged for this call.',
+                403,
+                $endpoint
+            );
         }
 
         if (! $context->isEntitled()) {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Account;
 
 use App\Http\Controllers\Controller;
 use App\Models\Api\ApiAccount;
+use App\Services\Api\ApiKeyResolver;
 use App\Services\Api\PlanService;
 use App\Services\Api\UsageService;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class BillingController extends Controller
 {
     private const SUBSCRIPTION = ApiAccount::SUBSCRIPTION;
 
-    public function show(PlanService $plans, UsageService $usage)
+    public function show(PlanService $plans, UsageService $usage, ApiKeyResolver $keys)
     {
         $account = $this->account();
         $subscription = $account->subscription(self::SUBSCRIPTION);
@@ -36,6 +37,9 @@ class BillingController extends Controller
                 'last_four' => $account->pm_last_four,
             ] : null,
             'usage' => $usage->forAccount($account),
+            // Paying while on fixtures is legitimate — someone can subscribe with
+            // test mode still on — but it should never be a surprise.
+            'servesFixtures' => (bool) $keys->resolveForAccount($account->id)?->servesFixtures(),
         ]);
     }
 

@@ -38,6 +38,14 @@ class RegisterController extends Controller
         // Not fillable — acceptance is stamped here, never from request input.
         $account->terms_version_accepted = config('api.terms_version');
         $account->terms_accepted_at = now();
+
+        // Once the public API is live there is nothing for a new account to
+        // migrate from, so the gate is only in the way. Until then it applies to
+        // everyone. See `api.new_accounts_migrated`.
+        if (config('api.new_accounts_migrated')) {
+            $account->migrated = true;
+        }
+
         $account->save();
 
         // `migrated` stays 0 — activating live data is a deliberate act in the UI.

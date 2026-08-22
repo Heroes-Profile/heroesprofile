@@ -6,6 +6,15 @@
       <div v-if="error" class="bg-red p-3 mb-4">{{ error }}</div>
       <div v-if="notice" class="bg-teal p-3 mb-4">{{ notice }}</div>
 
+      <div v-if="servesfixtures" class="bg-lighten border-l-4 border-yellow p-4 mb-8">
+        <p class="text-sm">
+          <strong>Your API calls are returning example data.</strong>
+          Subscribing does not change that on its own — live data is switched on from your
+          <a href="/Api/Account" class="underline hover:text-lteal">account page</a>.
+          Responses carry <code class="text-lteal">X-HP-Data-Source: fixture</code> while this is the case.
+        </p>
+      </div>
+
       <div class="bg-lighten p-6 mb-8">
         <h2 class="text-lg mb-4">Payment Method</h2>
 
@@ -156,6 +165,10 @@ export default {
     usage: {
       type: Array,
       default: () => [],
+    },
+    servesfixtures: {
+      type: Boolean,
+      default: false,
     },
   },
   data(){
