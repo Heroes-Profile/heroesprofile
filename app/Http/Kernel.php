@@ -30,6 +30,7 @@ use App\Http\Middleware\ValidateApiPostOrigin;
 use App\Http\Middleware\ValidateSignature;
 use App\Http\Middleware\VerifyCloudTasksRequest;
 use App\Http\Middleware\VerifyCsrfToken;
+use App\Http\Middleware\VerifyStripeWebhookSecretConfigured;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
@@ -62,6 +63,9 @@ class Kernel extends HttpKernel
         HandleCors::class,
         PreventRequestsDuringMaintenance::class,
         BlockBannedIPs::class,
+        // Ahead of the throttle exemption below, so an unverifiable webhook is
+        // refused rather than merely let through unthrottled.
+        VerifyStripeWebhookSecretConfigured::class,
         ThrottleNonApiRequests::class,
         ValidatePostSize::class,
         TrimStrings::class,

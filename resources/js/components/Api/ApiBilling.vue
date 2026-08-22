@@ -282,7 +282,35 @@ export default {
         await this.$axios.post('/api/v1/account/billing/subscribe', { plan_id: plan.id });
         window.location.reload();
       } catch (e) {
+        if(e.response?.status === 402 && e.response.data?.client_secret){
+          await this.confirmPayment(e.response.data.client_secret);
+          return;
+        }
+
         this.error = e.response?.data?.error || 'Could not change your plan.';
+        this.busy = false;
+      }
+    },
+    // The bank wants 3D Secure. The subscription already exists but is unpaid, so
+    // the customer has to finish here or it is voided in about a day.
+    async confirmPayment(clientSecret){
+      this.busyText = 'Waiting for your bank to confirm...';
+
+      try {
+        // Stripe.js is only initialised when the card form mounts, and a customer
+        // with a saved card never sees that form.
+        const stripe = this.stripe || window.Stripe(this.stripekey);
+        const { error } = await stripe.handleNextAction({ clientSecret });
+
+        if(error){
+          this.error = error.message;
+          this.busy = false;
+          return;
+        }
+
+        window.location.reload();
+      } catch (e) {
+        this.error = 'Could not confirm the payment with your bank. Open your billing page again to retry.';
         this.busy = false;
       }
     },

@@ -7,8 +7,11 @@ use App\Models\Api\ApiAccount;
 use App\Services\Api\ApiKeyResolver;
 use App\Services\Api\PlanService;
 use App\Services\Api\UsageService;
+use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Laravel\Cashier\Exceptions\IncompletePayment;
 use Throwable;
 
 class BillingController extends Controller
@@ -74,7 +77,7 @@ class BillingController extends Controller
         ]);
     }
 
-    public function subscribe(Request $request, PlanService $plans)
+    public function subscribe(Request $request, PlanService $plans, ApiKeyResolver $keys)
     {
         $validated = $request->validate([
             'plan_id' => ['required', 'integer'],
@@ -93,22 +96,43 @@ class BillingController extends Controller
 
         $price = $plan['stripe_price'];
 
-        try {
-            if ($account->subscribed(self::SUBSCRIPTION)) {
-                $account->subscription(self::SUBSCRIPTION)->swap($price);
-            } else {
-                $account->newSubscription(self::SUBSCRIPTION, $price)->create(
-                    $account->defaultPaymentMethod()?->id
-                );
-            }
-        } catch (Throwable $e) {
-            return $this->stripeError($e);
-        }
+        return $this->withBillingLock($account, function () use ($account, $price, $keys) {
+            // Re-read inside the lock. The relation is cached on the model, and the
+            // whole point of the lock is that the answer may have changed between
+            // the request arriving and getting here.
+            $account->unsetRelation('subscriptions');
 
-        return response()->json(['ok' => true]);
+            try {
+                if ($account->subscribed(self::SUBSCRIPTION)) {
+                    $account->subscription(self::SUBSCRIPTION)->swap($price);
+                } else {
+                    $account->newSubscription(self::SUBSCRIPTION, $price)->create(
+                        $account->defaultPaymentMethod()?->id
+                    );
+                }
+            } catch (IncompletePayment $e) {
+                // The subscription exists but is unpaid pending authentication.
+                // Entitlement follows `stripe_status`, so it is already correct;
+                // what matters is that the customer gets a way to finish rather
+                // than a message telling them Stripe said no.
+                $keys->forgetAccount($account->id);
+
+                return response()->json([
+                    'requires_action' => true,
+                    'client_secret' => $e->payment->clientSecret(),
+                    'error' => 'Your bank needs to confirm this payment.',
+                ], 402);
+            } catch (Throwable $e) {
+                return $this->stripeError($e);
+            }
+
+            $keys->forgetAccount($account->id);
+
+            return response()->json(['ok' => true]);
+        });
     }
 
-    public function cancel()
+    public function cancel(ApiKeyResolver $keys)
     {
         $account = $this->account();
 
@@ -116,17 +140,21 @@ class BillingController extends Controller
             return response()->json(['error' => 'You have no active subscription.'], 404);
         }
 
-        try {
-            // At period end, so they keep access they have already paid for.
-            $account->subscription(self::SUBSCRIPTION)->cancel();
-        } catch (Throwable $e) {
-            return $this->stripeError($e);
-        }
+        return $this->withBillingLock($account, function () use ($account, $keys) {
+            try {
+                // At period end, so they keep access they have already paid for.
+                $account->subscription(self::SUBSCRIPTION)->cancel();
+            } catch (Throwable $e) {
+                return $this->stripeError($e);
+            }
 
-        return response()->json(['ok' => true]);
+            $keys->forgetAccount($account->id);
+
+            return response()->json(['ok' => true]);
+        });
     }
 
-    public function resume()
+    public function resume(ApiKeyResolver $keys)
     {
         $account = $this->account();
         $subscription = $account->subscription(self::SUBSCRIPTION);
@@ -135,13 +163,43 @@ class BillingController extends Controller
             return response()->json(['error' => 'Nothing to resume.'], 404);
         }
 
-        try {
-            $subscription->resume();
-        } catch (Throwable $e) {
-            return $this->stripeError($e);
+        return $this->withBillingLock($account, function () use ($account, $subscription, $keys) {
+            try {
+                $subscription->resume();
+            } catch (Throwable $e) {
+                return $this->stripeError($e);
+            }
+
+            $keys->forgetAccount($account->id);
+
+            return response()->json(['ok' => true]);
+        });
+    }
+
+    /**
+     * Serialises billing changes for one account.
+     *
+     * `subscribe()` is check-then-act: it asks whether a subscription exists, then
+     * creates one. Two requests arriving together — a double click, a retry after a
+     * timeout, two tabs — both see "none" and both create, and the customer is billed
+     * twice. Cancel and resume are held under the same lock so they cannot interleave
+     * with a swap either.
+     */
+    private function withBillingLock(ApiAccount $account, Closure $work)
+    {
+        $lock = Cache::lock('api-billing:'.$account->id, 15);
+
+        if (! $lock->get()) {
+            return response()->json([
+                'error' => 'Another billing change is still going through. Give it a moment and try again.',
+            ], 409);
         }
 
-        return response()->json(['ok' => true]);
+        try {
+            return $work();
+        } finally {
+            $lock->release();
+        }
     }
 
     public function invoices()

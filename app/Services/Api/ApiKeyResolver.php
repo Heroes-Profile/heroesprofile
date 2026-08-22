@@ -16,6 +16,8 @@ class ApiKeyResolver
 
     private const CONNECTION = 'heroesprofile_api';
 
+    public function __construct(private readonly PlanService $plans) {}
+
     public function resolve(string $plainKey): ?ApiKeyContext
     {
         if ($plainKey === '') {
@@ -102,6 +104,21 @@ class ApiKeyResolver
     }
 
     /**
+     * Drops every cached entry for an account, across all of its keys.
+     *
+     * Entitlement is cached with the key, so a billing change is invisible until the
+     * entry ages out — five minutes of a cancelled account still working, or of
+     * someone who just upgraded being told their plan does not cover an endpoint.
+     * Call this whenever a subscription changes, wherever the change came from.
+     */
+    public function forgetAccount(int $accountId): void
+    {
+        ApiKey::where('api_account_id', $accountId)
+            ->pluck('secret_hash')
+            ->each(fn (string $hash) => $this->forgetHash($hash));
+    }
+
+    /**
      * Every comped grant on the account, not just the first — an account flagged
      * for both Partner and NGS holds both.
      *
@@ -135,10 +152,15 @@ class ApiKeyResolver
     }
 
     /**
-     * Subscription still comes from the old `subscriptions` table, which is the live
-     * source for both sites until billing moves to Cashier.
-     */
-    /**
+     * Subscription comes from `cashier_subscriptions`, the same table the billing
+     * page reads. The old Spark `subscriptions` table is no longer consulted here:
+     * it stops being written the moment Spark's billing UI is disabled, and reading
+     * one table while writing another is how a paying customer ends up on fixtures.
+     *
+     * Cancellations still happen on the old site during the transition. Those reach
+     * this table through Stripe's webhook, not through Spark — so the webhook is a
+     * prerequisite, not a convenience.
+     *
      * @param  Closure(Builder): void  $constrain  which key to find
      */
     private function lookup(Closure $constrain): ?array
@@ -148,22 +170,25 @@ class ApiKeyResolver
         $row = DB::connection(self::CONNECTION)
             ->table('api_keys')
             ->join('users', 'users.id', '=', 'api_keys.api_account_id')
-            ->leftJoin('subscriptions', 'subscriptions.user_id', '=', 'users.id')
-            ->leftJoin('subscription_plans', 'subscription_plans.stripe_plan', '=', 'subscriptions.stripe_plan')
+            // Type pinned in the join rather than a where, which would drop every
+            // account that holds no subscription at all.
+            ->leftJoin('cashier_subscriptions', function ($join) {
+                $join->on('cashier_subscriptions.user_id', '=', 'users.id')
+                    ->where('cashier_subscriptions.type', '=', ApiAccount::SUBSCRIPTION);
+            })
             ->whereNull('api_keys.revoked_at')
             ->tap($constrain)
-            ->orderByDesc('subscriptions.created_at')
+            ->orderByDesc('cashier_subscriptions.created_at')
             ->select(array_merge([
                 'api_keys.id as key_id',
                 'users.id as account_id',
                 // Distinguishes "no subscription at all" from "subscription whose
                 // plan did not resolve". `stripe_status` cannot do that job — a
                 // handful of legacy rows carry a null status.
-                'subscriptions.id as subscription_id',
-                'subscriptions.stripe_status',
-                'subscriptions.ends_at',
-                'subscription_plans.plan_id',
-                'subscription_plans.plan',
+                'cashier_subscriptions.id as subscription_id',
+                'cashier_subscriptions.stripe_status',
+                'cashier_subscriptions.stripe_price',
+                'cashier_subscriptions.ends_at',
             ], array_map(fn ($column) => 'users.'.$column, $approvals)))
             ->first();
 
@@ -181,15 +206,19 @@ class ApiKeyResolver
             }
         }
 
+        // Resolved from config, the same map the billing page and usage table use.
+        // Reading the plan from a second place is what let the two disagree.
+        $purchasedPlanId = $this->plans->planIdForPrice($row->stripe_price);
+
         // An account can hold several plans at once: a purchased subscription plus
         // any comped grants. Every one counts, and each endpoint uses whichever
         // gives the highest allowance.
         $planIds = [];
         $planName = null;
 
-        if ($row->plan_id !== null) {
-            $planIds[] = (int) $row->plan_id;
-            $planName = $row->plan;
+        if ($purchasedPlanId !== null) {
+            $planIds[] = $purchasedPlanId;
+            $planName = config("api_plans.plans.{$purchasedPlanId}.key");
         }
 
         foreach ($this->plansFromApprovalFlags($row) as $compedPlanId) {
@@ -201,14 +230,17 @@ class ApiKeyResolver
         // to the no-plan fixture path — that path exists so someone who has not
         // bought anything can evaluate the API, and letting a payer land on it
         // serves them sample data while their card is charged.
-        $subscriptionUnresolved = $row->subscription_id !== null && $row->plan_id === null;
+        $subscriptionUnresolved = $row->subscription_id !== null && $purchasedPlanId === null;
 
         return [
             'key_id' => $row->key_id,
             'account_id' => $row->account_id,
             'plan_ids' => array_values(array_unique($planIds)),
             'plan' => $planName,
-            'subscription_active' => $row->stripe_status === 'active' && ! $lapsed,
+            // Matches Cashier's own `valid()`: trialing counts, and past_due does
+            // not, because Cashier deactivates it by default. Diverging here is what
+            // would deny a trial the billing page shows as fine.
+            'subscription_active' => in_array($row->stripe_status, ['active', 'trialing'], true) && ! $lapsed,
             'comped' => $comped,
             'subscription_unresolved' => $subscriptionUnresolved,
         ];

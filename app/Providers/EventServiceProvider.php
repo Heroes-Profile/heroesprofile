@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use App\Listeners\ClearApiEntitlementCache;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use Laravel\Cashier\Events\WebhookHandled;
 use SocialiteProviders\Battlenet\BattlenetExtendSocialite;
 use SocialiteProviders\Manager\SocialiteWasCalled;
 
@@ -23,6 +25,9 @@ class EventServiceProvider extends ServiceProvider
         SocialiteWasCalled::class => [
             BattlenetExtendSocialite::class.'@handle',
             'SocialiteProviders\\Patreon\\PatreonExtendSocialite@handle',
+        ],
+        WebhookHandled::class => [
+            ClearApiEntitlementCache::class,
         ],
     ];
 
