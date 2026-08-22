@@ -26,6 +26,71 @@ class ApiHomeController extends Controller
         return view('api.developer-tier');
     }
 
+    /**
+     * Every endpoint and what each tier allows, rather than the landing page's
+     * one-row-per-group summary.
+     */
+    public function endpointLimits()
+    {
+        return view('api.endpoint-limits', [
+            'plans' => array_values($this->paidPlans()),
+            'groups' => $this->endpointLimitDetail(),
+        ]);
+    }
+
+    /**
+     * One row per endpoint, carrying every paid tier's weekly allowance.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function endpointLimitDetail(): array
+    {
+        $plans = $this->paidPlans();
+
+        $endpoints = ApiEndpoint::query()
+            ->with(['quotas' => fn ($query) => $query->whereIn('subscription_plan', array_keys($plans))])
+            ->excludingEsports()
+            ->ordered()
+            ->get();
+
+        $groups = [];
+
+        foreach ($endpoints as $endpoint) {
+            // A registry row with no endpoint key drives nothing and cannot be
+            // called, so it has no allowance to show.
+            if (($endpoint->endpoint ?? '') === '') {
+                continue;
+            }
+
+            $group = $endpoint->group_name;
+
+            if (! isset($groups[$group])) {
+                $groups[$group] = [
+                    'title' => $group,
+                    'group_sort' => $endpoint->group_sort,
+                    'endpoints' => [],
+                ];
+            }
+
+            $limits = [];
+
+            foreach ($plans as $planId => $plan) {
+                $quota = $endpoint->quotas->firstWhere('subscription_plan', $planId);
+                $limits[$plan['key']] = $this->formatCallLimit($quota?->calls_per_week);
+            }
+
+            $groups[$group]['endpoints'][] = [
+                'name' => $endpoint->name,
+                'endpoint' => $endpoint->endpoint,
+                'limits' => $limits,
+            ];
+        }
+
+        usort($groups, fn ($a, $b) => $a['group_sort'] <=> $b['group_sort']);
+
+        return array_values($groups);
+    }
+
     /** @return array<int, array<string, mixed>> keyed by subscription_plan id */
     private function paidPlans(): array
     {
@@ -78,10 +143,15 @@ class ApiHomeController extends Controller
         return array_values($groups);
     }
 
+    /**
+     * A zero or absent allowance is not free access — `EnforceApiQuota` answers it
+     * with a 403 saying the plan does not include the endpoint. Saying "Free" here
+     * advertised access that the API refuses.
+     */
     private function formatCallLimit(?int $calls): string
     {
         if ($calls === null || $calls === 0) {
-            return 'Free';
+            return 'Not included';
         }
 
         return number_format($calls);

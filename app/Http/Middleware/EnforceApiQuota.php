@@ -60,11 +60,14 @@ class EnforceApiQuota
                 'account_id' => $context->account->id,
                 'key_id' => $context->keyId,
                 'endpoint' => $endpoint,
+                'reason' => $context->unresolvedReason,
             ]);
 
             return $this->error(
                 'plan_unresolved',
-                'Your subscription could not be matched to a plan. Please contact support — you have not been charged for this call.',
+                // The same wording the portal shows them, so the integration's error
+                // and the page they go on to read do not tell different stories.
+                $context->unresolvedMessage().' This call was not charged against any allowance.',
                 403,
                 $endpoint
             );

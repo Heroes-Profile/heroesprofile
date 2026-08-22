@@ -25,7 +25,8 @@
         <i class="fab fa-github"></i> GitHub
       </a>
 
-      {{-- Test Client / Pricing links go here once those pages exist. --}}
+      {{-- Plans and per-endpoint limits are reached from the landing page, which is
+           where someone deciding on a tier already is. --}}
 
       @if($apiUser)
         <a href="/Api/Account" class="hover:text-lteal">Account</a>

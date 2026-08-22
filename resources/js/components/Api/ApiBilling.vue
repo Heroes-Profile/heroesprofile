@@ -6,6 +6,13 @@
       <div v-if="error" class="bg-red p-3 mb-4">{{ error }}</div>
       <div v-if="notice" class="bg-teal p-3 mb-4">{{ notice }}</div>
 
+      <div v-if="subscriptionissue" class="bg-lighten border-l-4 border-red p-4 mb-8">
+        <p class="text-sm">
+          <strong>Your API key is being refused.</strong>
+          {{ subscriptionissue }}
+        </p>
+      </div>
+
       <div v-if="servesfixtures" class="bg-lighten border-l-4 border-yellow p-4 mb-8">
         <p class="text-sm">
           <strong>Your API calls are returning example data.</strong>
@@ -169,6 +176,10 @@ export default {
     servesfixtures: {
       type: Boolean,
       default: false,
+    },
+    subscriptionissue: {
+      type: String,
+      default: null,
     },
   },
   data(){

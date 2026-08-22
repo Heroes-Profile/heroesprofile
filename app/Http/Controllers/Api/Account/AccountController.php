@@ -32,6 +32,9 @@ class AccountController extends Controller
                 'migrated' => $account->hasMigrated(),
                 'test_mode' => $account->inTestMode(),
                 'receives_test_data' => $account->receivesTestData(),
+                // Live data needs a plan. Without one the API answers with fixtures
+                // whatever `test_mode` says, so offering the choice would be a lie.
+                'can_use_live_data' => $usage->planIdsFor($account) !== [],
                 'has_legacy_token' => $this->hasLegacyToken($account),
                 'admin' => $account->isAdmin(),
                 'admin_mode' => $account->actingAsAdmin(),
@@ -80,13 +83,23 @@ class AccountController extends Controller
         ]);
     }
 
-    public function setTestMode(Request $request)
+    public function setTestMode(Request $request, UsageService $usage)
     {
         $validated = $request->validate([
             'test_mode' => ['required', 'boolean'],
         ]);
 
         $account = Auth::guard('api_web')->user();
+
+        // Refused rather than accepted-and-ignored. Storing `test_mode = 0` for an
+        // account the API will serve fixtures to anyway is how the stored state and
+        // the real one drift apart, which is the whole problem here.
+        if (! $validated['test_mode'] && $usage->planIdsFor($account) === []) {
+            return response()->json([
+                'error' => 'Live data needs an active subscription. Until you have one the API returns example data.',
+            ], 422);
+        }
+
         $account->forceFill(['test_mode' => $validated['test_mode']])->save();
 
         return response()->json([

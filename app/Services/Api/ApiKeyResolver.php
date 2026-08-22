@@ -50,8 +50,9 @@ class ApiKeyResolver
             planName: $row['plan'],
             subscriptionActive: $row['subscription_active'],
             comped: $row['comped'],
-            // Coalesced: entries cached before this field existed outlive a deploy.
+            // Coalesced: entries cached before these fields existed outlive a deploy.
             subscriptionUnresolved: $row['subscription_unresolved'] ?? false,
+            unresolvedReason: $row['unresolved_reason'] ?? null,
         );
     }
 
@@ -87,8 +88,9 @@ class ApiKeyResolver
             planName: $row['plan'],
             subscriptionActive: $row['subscription_active'],
             comped: $row['comped'],
-            // Coalesced: entries cached before this field existed outlive a deploy.
+            // Coalesced: entries cached before these fields existed outlive a deploy.
             subscriptionUnresolved: $row['subscription_unresolved'] ?? false,
+            unresolvedReason: $row['unresolved_reason'] ?? null,
         );
     }
 
@@ -226,11 +228,30 @@ class ApiKeyResolver
             $planName ??= config("api_plans.plans.{$compedPlanId}.key");
         }
 
-        // A subscription that exists but resolves to no plan must never fall through
-        // to the no-plan fixture path — that path exists so someone who has not
-        // bought anything can evaluate the API, and letting a payer land on it
-        // serves them sample data while their card is charged.
-        $subscriptionUnresolved = $row->subscription_id !== null && $purchasedPlanId === null;
+        // Neither of these may fall through to the no-plan fixture path. That path
+        // exists so someone who has not bought anything can evaluate the API; a payer
+        // landing on it gets sample data while their card is charged, and nothing
+        // anywhere says so.
+        //
+        // Asked only when nothing else granted a plan. A comped account carries its
+        // own entitlement, and the old site faked those grants with placeholder
+        // `subscriptions` rows that the backfill skips on purpose — so every comped
+        // account looks exactly like a backfill failure unless this checks first.
+        $unresolvedReason = $planIds !== [] ? null : match (true) {
+            // A plan we no longer sell. Retired tiers still sit in
+            // `subscription_plans` but are deliberately absent from config.
+            $row->subscription_id !== null && $purchasedPlanId === null => 'retired_plan',
+
+            // TRANSITIONAL — delete with the old site. Spark writes to
+            // `subscriptions` for the whole coexistence window, so a row can exist
+            // there and not in `cashier_subscriptions` at any point: before the
+            // backfill runs, or after it if one slipped through. Checked only when
+            // Cashier has nothing, so it costs a query for genuine free accounts
+            // and none for anyone else.
+            $row->subscription_id === null && $this->hasLegacySubscription((int) $row->account_id) => 'not_backfilled',
+
+            default => null,
+        };
 
         return [
             'key_id' => $row->key_id,
@@ -242,7 +263,35 @@ class ApiKeyResolver
             // would deny a trial the billing page shows as fine.
             'subscription_active' => in_array($row->stripe_status, ['active', 'trialing'], true) && ! $lapsed,
             'comped' => $comped,
-            'subscription_unresolved' => $subscriptionUnresolved,
+            'subscription_unresolved' => $unresolvedReason !== null,
+            'unresolved_reason' => $unresolvedReason,
         ];
+    }
+
+    /**
+     * TRANSITIONAL — remove when the old API site is decommissioned.
+     *
+     * Whether Spark holds an **active** subscription for this account. Only ever asked
+     * when `cashier_subscriptions` holds none, where the answer separates a customer
+     * whose row has not been copied across from someone who genuinely never
+     * subscribed. Those two are indistinguishable otherwise, and one of them is paying.
+     *
+     * Restricted to `active` on purpose. Most legacy rows are dead — expired, cancelled,
+     * or hand-made placeholders for comped grants and retired tiers, several carrying a
+     * null status and an `ends_at` years out. Those accounts are not entitled to
+     * anything and belong on the ordinary no-plan fixture path; refusing them would be
+     * a loud error for people who are paying nothing and losing nothing.
+     *
+     * A null-status row that Stripe still considers live is not missed: the backfill
+     * resolves its status from Stripe (`resolveStatus()`), after which the account has
+     * a Cashier row and this is never asked.
+     */
+    private function hasLegacySubscription(int $accountId): bool
+    {
+        return DB::connection(self::CONNECTION)
+            ->table('subscriptions')
+            ->where('user_id', $accountId)
+            ->where('stripe_status', 'active')
+            ->exists();
     }
 }

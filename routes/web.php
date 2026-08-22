@@ -241,6 +241,7 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
 Route::middleware(['logIpAndUserAgent'])->prefix('Api')->group(function () {
     Route::get('/', [ApiHomeController::class, 'index']);
     Route::get('/DeveloperTier', [ApiHomeController::class, 'developerTier']);
+    Route::get('/EndpointLimits', [ApiHomeController::class, 'endpointLimits']);
 
     Route::get('/Docs', [ApiDocsController::class, 'index']);
     Route::get('/Migrating', [ApiMigratingController::class, 'index']);

@@ -22,6 +22,7 @@ class BillingController extends Controller
     {
         $account = $this->account();
         $subscription = $account->subscription(self::SUBSCRIPTION);
+        $context = $keys->resolveForAccount($account->id);
 
         return view('api.account.billing', [
             'stripeKey' => config('cashier.key'),
@@ -42,7 +43,10 @@ class BillingController extends Controller
             'usage' => $usage->forAccount($account),
             // Paying while on fixtures is legitimate — someone can subscribe with
             // test mode still on — but it should never be a surprise.
-            'servesFixtures' => (bool) $keys->resolveForAccount($account->id)?->servesFixtures(),
+            'servesFixtures' => (bool) $context?->servesFixtures(),
+            // Their key is being refused. They will otherwise only meet this as a
+            // 403 inside their own integration, where nobody is looking.
+            'subscriptionIssue' => $context?->unresolvedMessage(),
         ]);
     }
 

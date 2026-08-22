@@ -27,7 +27,30 @@ class ApiKeyContext
         public readonly bool $subscriptionActive,
         public readonly bool $comped,
         public readonly bool $subscriptionUnresolved = false,
+        public readonly ?string $unresolvedReason = null,
     ) {}
+
+    /**
+     * Why entitlement could not be read, in words a customer can act on.
+     *
+     * `retired_plan` — they are on a tier we no longer sell.
+     * `not_backfilled` — their subscription has not been copied to the new billing
+     * tables yet. Transitional; goes away with the old site.
+     */
+    public function unresolvedMessage(): ?string
+    {
+        if (! $this->subscriptionUnresolved) {
+            return null;
+        }
+
+        return match ($this->unresolvedReason) {
+            'retired_plan' => 'Your subscription is on a plan we no longer offer, so we cannot tell what it includes. Pick a current plan on the billing page, or contact us and we will sort it out.',
+            'not_backfilled' => 'Your subscription has not finished moving to our new billing system. This is our doing, not yours — contact us and we will fix it.',
+            // Entries cached before the reason existed say only that something is
+            // wrong. Better a vague message than an empty one.
+            default => 'Your subscription could not be matched to a plan. Contact us and we will sort it out.',
+        };
+    }
 
     public function isEntitled(): bool
     {

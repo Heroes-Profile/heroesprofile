@@ -38,19 +38,34 @@
            the migration gate, so the live/test switch is meaningful either way. -->
       <div v-if="migrated || account.admin" class="bg-lighten p-6 mb-8">
         <h2 class="text-lg mb-2">Data Mode</h2>
-        <p class="text-sm text-gray-medium mb-4">
-          Switch to test data whenever you are building or debugging. Responses become
-          fixed examples and stop counting against your weekly quota.
-        </p>
-        <tab-button
-          tab1text="Live Data"
-          tab2text="Test Data"
-          tab1alt="Return real data and use quota"
-          tab2alt="Return example data and use no quota"
-          :ignoreclick="true"
-          :overridedefaultside="testMode ? 'right' : 'left'"
-          @tab-click="setTestMode"
-        ></tab-button>
+
+        <template v-if="account.can_use_live_data">
+          <p class="text-sm text-gray-medium mb-4">
+            Switch to test data whenever you are building or debugging. Responses become
+            fixed examples and stop counting against your weekly quota.
+          </p>
+          <tab-button
+            tab1text="Live Data"
+            tab2text="Test Data"
+            tab1alt="Return real data and use quota"
+            tab2alt="Return example data and use no quota"
+            :ignoreclick="true"
+            :overridedefaultside="testMode ? 'right' : 'left'"
+            @tab-click="setTestMode"
+          ></tab-button>
+        </template>
+
+        <template v-else>
+          <p class="text-sm text-gray-medium mb-4">
+            You are on test data. Responses are fixed examples and cost no quota, so you can
+            build against the API before paying for it.
+            <strong class="text-white">Live data needs an active subscription</strong> — this
+            switch unlocks once you have one.
+          </p>
+          <a href="/Api/Account/Billing" class="inline-block bg-blue hover:bg-lblue transition-colors text-white rounded py-2 px-4">
+            Choose a plan
+          </a>
+        </template>
       </div>
 
       <div v-if="newKey" class="bg-teal p-4 mb-8">
@@ -252,7 +267,9 @@ export default {
         this.testMode = response.data.test_mode;
         this.receivesTestData = response.data.receives_test_data;
       } catch (error) {
-        this.error = 'Could not change data mode. Please try again.';
+        // The server refuses live data without a plan. Say why rather than
+        // offering a retry that cannot succeed.
+        this.error = error.response?.data?.error || 'Could not change data mode. Please try again.';
       }
     },
     async createKey(){
