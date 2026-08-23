@@ -39,12 +39,16 @@ class RegisterController extends Controller
         $account->terms_version_accepted = config('api.terms_version');
         $account->terms_accepted_at = now();
 
-        // Once the public API is live there is nothing for a new account to
-        // migrate from, so the gate is only in the way. Until then it applies to
-        // everyone. See `api.new_accounts_migrated`.
-        if (config('api.new_accounts_migrated')) {
-            $account->migrated = true;
-        }
+        // Straight onto live data. Registration here is only reachable for an email
+        // that is not already in the shared `users` table, so an account created
+        // this way can never hold an old-site token — `api_tokens` is keyed on a
+        // `user_id` that did not exist a moment ago. There is nothing to migrate
+        // from, and the gate would only be a button to click for no reason.
+        //
+        // The gate still does its real job for accounts that predate this site:
+        // those keep `migrated = 0` and go through activation, which is what expires
+        // their old key.
+        $account->migrated = true;
 
         $account->save();
 

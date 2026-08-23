@@ -18,16 +18,41 @@
         expires your old key immediately, so do it when your integration is ready and not
         before.
       </p>
+      <p class="text-sm mt-2">
+        If v1 does not cover something you rely on today,
+        <a href="#missing" class="link">tell us before you activate</a> — not after.
+      </p>
     </div>
 
     <h2 class="text-2xl mb-3">The short version</h2>
     <ul class="list-disc list-inside text-sm space-y-1 mb-8">
-      <li>Base URL becomes <code class="text-lteal">https://{{ $domain }}/v1</code></li>
+      <li>
+        Base URL is <code class="text-lteal">https://www.heroesprofile.com/api/public/v1</code>.
+        Port to that — it works now and keeps working
+      </li>
       <li>Send your key as <code class="text-lteal">Authorization: Bearer &lt;key&gt;</code> instead of <code>?api_token=</code></li>
       <li>Create a new key here — old keys do not carry over, and this one is shown once</li>
       <li>Most paths changed shape. The <a href="/Api/Docs" class="link">docs</a> list every one</li>
       <li>Global statistics can answer <code class="text-lteal">202</code> with a job to poll instead of data</li>
     </ul>
+
+    <h2 class="text-2xl mb-3">Base URL</h2>
+    <p class="text-sm mb-3">
+      <code class="text-lteal">https://www.heroesprofile.com/api/public/v1</code> — every
+      path below hangs off that. <code>/v1/heroes</code> in the table means
+      <code>https://www.heroesprofile.com/api/public/v1/heroes</code>.
+    </p>
+    <p class="text-sm mb-3">
+      <strong><code>{{ $domain }}</code> is still the old API</strong> and stays that way
+      until <strong>1 January 2027</strong>. Pointing at it today gets you the old
+      endpoints, not these — so build against the URL above, not the subdomain.
+    </p>
+    <p class="text-sm mb-8">
+      On that date the subdomain starts serving v1 as
+      <code class="text-lteal">https://{{ $domain }}/v1</code>. <strong>You do not have to
+      move again.</strong> The path-based URL keeps answering afterwards, so porting once
+      is enough — the subdomain is just a shorter alias if you would rather use it.
+    </p>
 
     <h2 class="text-2xl mb-3">Authentication</h2>
     <p class="text-sm mb-3">
@@ -266,9 +291,33 @@ HTTP/1.1 200 OK              done — this is the data
       then activate when you are ready. You can switch back to example data at any time
       from your <a href="/Api/Account" class="link">account page</a>.
     </p>
-    <p class="text-sm">
+    <p class="text-sm mb-8">
       Every endpoint can also be run from the <a href="/Api/Docs" class="link">docs</a>
       with your own key, which is the quickest way to see a real response shape.
+    </p>
+
+    <h2 id="missing" class="text-2xl mb-3">If something you need is missing</h2>
+    <p class="text-sm mb-3">
+      v1 is a rewrite, not a port, and a few things the old API returned were dropped
+      deliberately. If you depend on something that is gone, or a field you used is not
+      in the new response, <strong>get in touch before you activate live data</strong>.
+    </p>
+    <p class="text-sm mb-3">
+      The timing matters. Activating expires your old key immediately, so finding the gap
+      afterwards leaves you with no working key on either API until it is resolved. Check
+      the <a href="/Api/Docs" class="link">docs</a> against what you actually use first,
+      and raise anything missing while your old key still works.
+    </p>
+    <p class="text-sm mb-3">
+      Email <a class="link" href="mailto:zemill@heroesprofile.com">zemill@heroesprofile.com</a>
+      or open an issue on
+      <a class="link" href="https://github.com/Heroes-Profile/heroesprofile/issues/new" target="_blank" rel="noopener">GitHub</a>.
+      Either is fine — GitHub is easier to track, email is fine if the details are private.
+    </p>
+    <p class="text-sm">
+      Tell us which endpoint and field, and what you use it for. The second part is the
+      useful one: it is often available under a different name or shape, and knowing the
+      purpose is what lets us point you at it — or decide it is worth adding back.
     </p>
   </div>
 @endsection

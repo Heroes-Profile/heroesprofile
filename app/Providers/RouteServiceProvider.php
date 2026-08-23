@@ -30,6 +30,8 @@ class RouteServiceProvider extends ServiceProvider
         'api.public.replays.fingerprint',
         'api.public.replays.parsed',
         'api.public.prematch',
+        // The same four under their old paths, for clients that never updated.
+        'api.legacy.*',
     ];
 
     /**
@@ -94,6 +96,12 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         $this->routes(function () {
+            // First, so nothing added to routes/api.php can shadow a legacy path by
+            // accident. Domain-scoped, so it only exists once DNS points here.
+            Route::middleware('api.public')
+                ->domain(config('api.domain'))
+                ->group(base_path('routes/api-legacy.php'));
+
             Route::middleware('api')
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));

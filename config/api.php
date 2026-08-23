@@ -47,21 +47,6 @@ return [
 
     'terms_version' => env('API_TERMS_VERSION', '2026-08-22'),
 
-    /*
-    | Whether accounts registered here start already on live data. Off until the
-    | public API is in production: while the old site is still the one serving
-    | customers, a new account has to go through the migration gate like any
-    | other. Switch on at deploy, so accounts that only ever knew this site skip
-    | an activation step that means nothing to them.
-    |
-    | Deliberately not the `users.migrated` column default — the old site shares
-    | that table and its registration is still open, and an old-site signup marked
-    | migrated would hold a working old token *and* draw live data here, which is
-    | the one thing the gate exists to stop.
-    */
-
-    'new_accounts_migrated' => env('API_NEW_ACCOUNTS_MIGRATED', false),
-
     'rate_limits' => [
         'default' => 60,
         'developer' => 120,

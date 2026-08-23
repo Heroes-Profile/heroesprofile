@@ -29,8 +29,22 @@ return [
         'description' => 'Heroes of the Storm statistics, replay data, talent builds and player profiles.',
     ],
 
+    /*
+    | Order matters: generated clients default to the first server, so the one that
+    | works today has to lead. `api.heroesprofile.com` still resolves to the old site
+    | until the subdomain moves on 1 Jan 2027 — advertising it alone would have
+    | pointed every generated client at a host that cannot serve v1.
+    |
+    | The path-based URL is not a stopgap. `RouteServiceProvider` mounts these routes
+    | under `api.path` with no host constraint, so it keeps answering after the
+    | subdomain moves. Porting to it is a one-time change.
+    |
+    | Keep both in step with `config/api.php` (`path` and `domain`).
+    */
+
     'servers' => [
-        ['url' => 'https://api.heroesprofile.com/v1', 'description' => 'Production'],
+        ['url' => 'https://www.heroesprofile.com/api/public/v1', 'description' => 'Production'],
+        ['url' => 'https://api.heroesprofile.com/v1', 'description' => 'Production, from 1 Jan 2027 when the API subdomain moves here'],
     ],
 
     /*
