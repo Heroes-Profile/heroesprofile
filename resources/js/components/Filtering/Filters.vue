@@ -47,13 +47,20 @@
           ></single-select-filter>
 
           <!-- Group Size -->
-          <single-select-filter v-if="modifiedincludegroupsize && !groupsizeadvanced"
+          <single-select-filter v-if="modifiedincludegroupsize && !groupsizeadvanced && !groupsizemulti"
             :values="filters.group_size"
             :text="'Group Size'"
             @input-changed="handleInputChange"
             :defaultValue="modifiedGroupSizeDefaultValue"
             :disabledeselectfilters="disabledeselectfilters"
           ></single-select-filter>
+
+          <multi-select-filter v-if="modifiedincludegroupsize && !groupsizeadvanced && groupsizemulti"
+            :values="groupSizeOptions"
+            :text="'Group Size'"
+            @input-changed="handleInputChange"
+            :defaultValue="modifiedGroupSizeDefaultValue"
+          ></multi-select-filter>
 
           <!--<single-select-filter v-if="includecharttype" :values="filters.chart_type" :text="'Chart Type'" @input-changed="handleInputChange" :defaultValue="'Account Level'"></single-select-filter>-->
 
@@ -355,13 +362,20 @@
           </div>
 
           <!-- Group Size (advanced, global pages) -->
-          <single-select-filter v-if="modifiedincludegroupsize && groupsizeadvanced && toggleExtraFilters"
+          <single-select-filter v-if="modifiedincludegroupsize && groupsizeadvanced && toggleExtraFilters && !groupsizemulti"
             :values="filters.group_size"
             :text="'Group Size'"
             @input-changed="handleInputChange"
             :defaultValue="modifiedGroupSizeDefaultValue"
             :disabledeselectfilters="disabledeselectfilters"
           ></single-select-filter>
+
+          <multi-select-filter v-if="modifiedincludegroupsize && groupsizeadvanced && toggleExtraFilters && groupsizemulti"
+            :values="groupSizeOptions"
+            :text="'Group Size'"
+            @input-changed="handleInputChange"
+            :defaultValue="modifiedGroupSizeDefaultValue"
+          ></multi-select-filter>
         </div>
         <button :disabled="disabledFilter" @click="applyFilter"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disabledFilter, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disabledFilter}">
           Filter
@@ -462,7 +476,8 @@
       defaultpredictionseason: [String, Number],
       defaultPredictionSeason: String,
       advancedfiltering: Boolean,
-      groupSizeDefaultValue: String,
+      groupSizeDefaultValue: [String, Array],
+      groupsizemulti: Boolean,
       leaderboardtypeinput: String,
       tierrankinput: [String, Number],
       rolerequired: Boolean,
@@ -576,10 +591,10 @@
       if(this.groupSizeDefaultValue){
         this.modifiedGroupSizeDefaultValue = this.groupSizeDefaultValue;
       } else {
-        this.modifiedGroupSizeDefaultValue = "Solo";
+        this.modifiedGroupSizeDefaultValue = this.groupsizemulti ? [] : "Solo";
       }
 
-      if(this.groupsizeadvanced && this.groupSizeDefaultValue && this.groupSizeDefaultValue != 'All'){
+      if(this.groupsizeadvanced && this.groupSizeFilters(this.groupSizeDefaultValue)){
         this.statfilter = 'win_rate';
         this.statfilterdisabled = true;
       }
@@ -628,6 +643,11 @@
       }
     },
     computed: {
+      // Select All would otherwise tick `All` alongside every real size. Nothing
+      // selected already means the unfiltered table, so the option is redundant.
+      groupSizeOptions() {
+        return (this.filters.group_size || []).filter(option => option.code !== 'All');
+      },
       showStatTypeFilter(){
 
         if(this.includestatfilter && this.toggleExtraFilters){
@@ -726,6 +746,14 @@
       window.removeEventListener('resize', this.checkScreenWidth);
     },
     methods: {
+      // Whether a Group Size selection actually narrows anything. `All` means the
+      // unfiltered table rather than a stack size, so it counts as no filter even
+      // when picked alongside real sizes. Takes the string the single select emits
+      // or the array the multi one does.
+      groupSizeFilters(value) {
+        const selected = Array.isArray(value) ? value : (value ? [value] : []);
+        return selected.length > 0 && !selected.includes('All');
+      },
       initializeLeaderboardFilters() {
         const type = this.leaderboardtypeinput;
         this.selectedSingleFilters['Leaderboard Type'] = type;
@@ -765,7 +793,11 @@
         }
 
         if(this.modifiedGroupSizeDefaultValue){
-          this.selectedSingleFilters['Group Size'] = this.modifiedGroupSizeDefaultValue;
+          if(this.groupsizemulti){
+            this.selectedMultiFilters['Group Size'] = this.modifiedGroupSizeDefaultValue;
+          } else {
+            this.selectedSingleFilters['Group Size'] = this.modifiedGroupSizeDefaultValue;
+          }
         }
 
         if(this.defaultSeason){
@@ -867,6 +899,7 @@
             this.modifiedincludematchpredictionseason = true;
 
             delete this.selectedSingleFilters['Group Size'];
+            delete this.selectedMultiFilters['Group Size'];
             delete this.selectedSingleFilters['Rank'];
             delete this.selectedSingleFilters['Season'];
             delete this.selectedSingleFilters['Heroes'];
@@ -875,7 +908,7 @@
           }
         }
         if(eventPayload.field == "Group Size" && this.groupsizeadvanced){
-          if(eventPayload.value && eventPayload.value != 'All'){
+          if(this.groupSizeFilters(eventPayload.value)){
             this.statfilter = 'win_rate';
             this.selectedSingleFilters['Stat Filter'] = 'win_rate';
             this.statfilterdisabled = true;

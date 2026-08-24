@@ -23,7 +23,14 @@ class StackSizeInputValidation implements Rule
 
     public function passes($attribute, $value)
     {
-        return array_key_exists($value, $this->validStackSize);
+        // Global hero stats sends several at once; everywhere else sends one.
+        foreach ((array) $value as $entry) {
+            if (! array_key_exists($entry, $this->validStackSize)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public function message()

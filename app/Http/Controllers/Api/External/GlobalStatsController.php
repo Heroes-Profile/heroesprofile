@@ -16,6 +16,7 @@ use App\Http\Controllers\Global\GlobalTalentStatsController;
 use App\Services\GlobalDataService;
 use App\Services\GlobalQueryService;
 use App\Support\ApiParameters;
+use App\Support\ApiSpecConfig;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -141,7 +142,6 @@ class GlobalStatsController extends Controller
                 'type' => 'player',
                 'groupsize' => 'Solo',
             ],
-            arrays: [],
         );
     }
 
@@ -247,7 +247,7 @@ class GlobalStatsController extends Controller
             }
 
             // Values change, shape does not. Whether these arrive as a scalar or a
-            // list is decided per endpoint by `$arrays` below, and the leaderboard
+            // list is decided per endpoint by the config below, and the leaderboard
             // deliberately keeps them scalar — rewriting the shape here would
             // silently override that.
             $request->merge([
@@ -280,20 +280,15 @@ class GlobalStatsController extends Controller
         string $method,
         array $defaults = [],
         array $requires = [],
-        // Every internal consumer of these four passes them to a helper that
-        // iterates or `whereIn`s — `getTimeframeFilterValues`, `getGameTypeFilterValues`,
-        // `getGameMapFilterValues`, `getRegionFilterValues`. A scalar reaches them as a
-        // string and fails inside the query builder, so they are split here for all
-        // endpoints rather than declared per call site and forgotten on one.
-        array $arrays = [
-            'timeframe', 'game_type', 'game_map', 'region',
-            // Straight into `whereIn` via the model scopes — `filterByHeroLevel`,
-            // `filterByLeagueTier` and the two beside it. Easy to miss because the
-            // request value is assigned to a local first, so a scalar fails inside
-            // the query builder rather than anywhere that names the parameter.
-            'hero_level', 'league_tier', 'hero_league_tier', 'role_league_tier',
-        ]
+        // Which parameters arrive comma-separated. Null reads them from
+        // `config/api_spec.php`, the same declaration the published specification
+        // is built from — so a filter that becomes multi-select on the site is
+        // described and split by one edit, and cannot be documented one way and
+        // handled another. Pass an explicit list only to override that.
+        ?array $arrays = null
     ): Response {
+        $arrays ??= ApiSpecConfig::multiForRoute($request->route()?->getName());
+
         foreach ($requires as $parameter) {
             if (! $request->filled($parameter)) {
                 return response()->json([
@@ -323,8 +318,9 @@ class GlobalStatsController extends Controller
         }
 
         // The rule objects take strings, but the controllers count() and whereIn()
-        // these, so both have to arrive as arrays. Not universally, though — see
-        // the leaderboard, which interpolates game_type into a cache key.
+        // these, so both have to arrive as arrays. Not universally, though — the
+        // leaderboard interpolates game_type into a cache key, and declares its own
+        // parameters rather than the globals set, so nothing here is marked multi.
         foreach ($arrays as $parameter) {
             if (is_string($request->input($parameter))) {
                 $request->merge([

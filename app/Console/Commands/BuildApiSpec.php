@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Http\Middleware\ServeApiFixtures;
+use App\Support\ApiSpecConfig;
 use App\Support\JsonSchemaFromSample;
 use Illuminate\Console\Command;
 use Illuminate\Routing\Route;
@@ -189,23 +190,13 @@ class BuildApiSpec extends Command
      */
     private function parameters(Route $route, array $endpoint, array $config): array
     {
-        $declared = [];
-
-        foreach ((array) ($endpoint['uses'] ?? []) as $set) {
-            $declared = array_merge($declared, $config[$set] ?? []);
-        }
-
-        // `uses` pulls in a whole set, but not every endpoint reads every member of
-        // it. The shared globals rules *validate* `role`, `groupsize` and
-        // `statfilter` on endpoints whose controllers never look at them, so without
-        // this the docs advertise filters that are accepted and then silently do
-        // nothing — worse than rejecting them, because the caller believes the
-        // result is filtered.
-        foreach ((array) ($endpoint['except'] ?? []) as $unused) {
-            unset($declared[$unused]);
-        }
-
-        $declared = array_merge($declared, $endpoint['parameters'] ?? []);
+        // Shared with the request handling, so the document cannot claim an arity
+        // the code does not implement. The `except` removals matter here: the
+        // shared globals rules *validate* `role`, `groupsize` and `statfilter` on
+        // endpoints whose controllers never look at them, so without them the docs
+        // advertise filters that are accepted and then silently do nothing — worse
+        // than rejecting them, because the caller believes the result is filtered.
+        $declared = ApiSpecConfig::resolve($endpoint, $config);
 
         // Applied by middleware across the board, so declaring it per endpoint would
         // be fifty copies of one line that drift apart. Exempt endpoints are the ones
@@ -245,6 +236,15 @@ class BuildApiSpec extends Command
             'required' => (bool) ($spec['required'] ?? false),
             'schema' => $schema,
         ];
+
+        // A comma-separated list, which an enum on its own contradicts: a client
+        // generated from that would reject `sl,tl` even though the API accepts it.
+        // `form` + no explode is the OpenAPI spelling of one comma-joined value.
+        if ($spec['multi'] ?? false) {
+            $parameter['schema'] = ['type' => 'array', 'items' => $schema];
+            $parameter['style'] = 'form';
+            $parameter['explode'] = false;
+        }
 
         if (isset($spec['description'])) {
             $parameter['description'] = $spec['description'];
