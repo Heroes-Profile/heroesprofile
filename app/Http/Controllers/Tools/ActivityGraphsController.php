@@ -12,6 +12,10 @@ class ActivityGraphsController extends GlobalsInputValidationController
 {
     private const START_DATE = '2014-10-01';
 
+    // A month is only final once we are this far past its end - replays for it
+    // can still arrive late. Until then it gets queried live.
+    private const SETTLE_DAYS = 7;
+
     public function show(Request $request)
     {
         return view('Tools.activityGraphs')
@@ -35,33 +39,40 @@ class ActivityGraphsController extends GlobalsInputValidationController
 
         $cache = Cache::store('database');
         $now = Carbon::now();
-        $currentMonth = $now->format('Y-m');
+        $firstUnsettled = $now->copy()->subDays(self::SETTLE_DAYS)->startOfMonth();
 
-        $pastMonths = $cache->get($allCacheKey);
+        $cached = $cache->get($allCacheKey, []);
+        $settled = $this->appendSettledMonths($cache, $cached, $firstUnsettled, $gameType, $region, $filterHash);
 
-        if ($pastMonths === null) {
-            $pastMonths = $this->buildPastMonthsCache($cache, $now, $currentMonth, $gameType, $region, $filterHash);
-            $cache->forever($allCacheKey, $pastMonths);
+        if (count($settled) !== count($cached)) {
+            $cache->forever($allCacheKey, $settled);
         }
 
-        $currentCount = $this->queryUniquePlayersForMonth($now, $gameType, $region);
+        $result = $settled;
 
-        $result = $pastMonths;
-        $result[] = [
-            'x_label' => $currentMonth,
-            'unique_players' => $currentCount,
-        ];
+        $month = $firstUnsettled->copy();
+        while ($month->lessThanOrEqualTo($now)) {
+            $result[] = [
+                'x_label' => $month->format('Y-m'),
+                'unique_players' => $this->queryUniquePlayersForMonth($month, $gameType, $region),
+            ];
+
+            $month->addMonth();
+        }
 
         return response()->json($result);
     }
 
-    private function buildPastMonthsCache($cache, Carbon $now, string $currentMonth, ?array $gameType, ?array $region, string $filterHash): array
+    private function appendSettledMonths($cache, array $settled, Carbon $firstUnsettled, ?array $gameType, ?array $region, string $filterHash): array
     {
-        $start = Carbon::parse(self::START_DATE)->startOfMonth();
-        $result = [];
+        $cutoff = $firstUnsettled->format('Y-m');
+        $settled = array_values(array_filter($settled, fn ($row) => $row['x_label'] < $cutoff));
 
-        $month = $start->copy();
-        while ($month->format('Y-m') !== $currentMonth) {
+        $month = empty($settled)
+            ? Carbon::parse(self::START_DATE)->startOfMonth()
+            : Carbon::parse(end($settled)['x_label'].'-01')->startOfMonth()->addMonth();
+
+        while ($month->lessThan($firstUnsettled)) {
             $monthKey = $month->format('Y-m');
             $cacheKey = 'ActivityGraph|UniquePlayersByMonth|'.$monthKey.'|'.$filterHash;
 
@@ -69,7 +80,7 @@ class ActivityGraphsController extends GlobalsInputValidationController
                 return $this->queryUniquePlayersForMonth($month, $gameType, $region);
             });
 
-            $result[] = [
+            $settled[] = [
                 'x_label' => $monthKey,
                 'unique_players' => $count,
             ];
@@ -77,7 +88,7 @@ class ActivityGraphsController extends GlobalsInputValidationController
             $month->addMonth();
         }
 
-        return $result;
+        return $settled;
     }
 
     private function queryUniquePlayersForMonth(Carbon $month, ?array $gameType, ?array $region): int
