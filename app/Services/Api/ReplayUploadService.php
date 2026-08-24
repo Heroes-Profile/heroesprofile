@@ -81,6 +81,13 @@ class ReplayUploadService
         $settled = UploadAttempt::where('ip', $ip)
             ->where('file_hash', $hash)
             ->whereIn('status', self::SETTLED)
+            // The old API site wrote these rows without either value, so a resend of
+            // anything a user uploaded there would be answered from a row that knows
+            // nothing — a nil fingerprint and replayID 0, reported as Success, with
+            // the file never reaching the bucket. Those rows have to fall through and
+            // be uploaded properly.
+            ->whereNotNull('fingerprint')
+            ->whereNotNull('replayID')
             ->first();
 
         if ($settled !== null) {

@@ -45,6 +45,9 @@
             "name": "NGS Stats"
         },
         {
+            "name": "NGS Replay Upload"
+        },
+        {
             "name": "Tools"
         },
         {
@@ -162514,6 +162517,203 @@
                 "x-endpoint-key": "mmr_tier",
                 "tags": [
                     "Reference"
+                ]
+            }
+        },
+        "/ngs/games/upload": {
+            "post": {
+                "summary": "Ingest one NGS custom game.",
+                "operationId": "api.external.ngs.games.upload",
+                "parameters": [
+                    {
+                        "name": "replay_url",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Where the replay sits in the NGS bucket. Pinned to that bucket — any other host is refused."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Which NGS schema to write. `prod` or `dev`.",
+                        "example": "prod"
+                    },
+                    {
+                        "name": "season",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "NGS season number."
+                    },
+                    {
+                        "name": "round",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Round within the season."
+                    },
+                    {
+                        "name": "game",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Game number within the match."
+                    },
+                    {
+                        "name": "team_one_name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "First team name."
+                    },
+                    {
+                        "name": "team_two_name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Second team name."
+                    },
+                    {
+                        "name": "team_one_player",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "A battletag on the first team, used to work out which side it played. Must appear in the replay.",
+                        "example": "Player#1234"
+                    },
+                    {
+                        "name": "team_two_player",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "The same, for the second team."
+                    },
+                    {
+                        "name": "team_one_map_ban_1",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Map name, banned by the first team."
+                    },
+                    {
+                        "name": "team_one_map_ban_2",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Second map banned by the first team."
+                    },
+                    {
+                        "name": "team_two_map_ban_1",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Map name, banned by the second team."
+                    },
+                    {
+                        "name": "team_two_map_ban_2",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Second map banned by the second team."
+                    },
+                    {
+                        "name": "team_one_image_url",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "First team logo. Defaults to a placeholder."
+                    },
+                    {
+                        "name": "team_two_image_url",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Second team logo. Defaults to a placeholder."
+                    },
+                    {
+                        "name": "tournament",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Defaults to `NGS`."
+                    },
+                    {
+                        "name": "team_one_division",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Defaults to `NGS`."
+                    },
+                    {
+                        "name": "team_two_division",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Defaults to `NGS`."
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The stored match, plus a profile link per player. Keyed by team name, as the NGS tooling expects.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "url": {
+                                            "type": "string",
+                                            "description": "The match page for the game just stored."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "The replay could not be ingested — not a custom game, an unknown map, or a named player absent from it."
+                    }
+                },
+                "x-site-page": "/Esports/NGS",
+                "tags": [
+                    "NGS Replay Upload"
                 ]
             }
         },

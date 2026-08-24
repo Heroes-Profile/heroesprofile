@@ -49,7 +49,7 @@ class ReplayParserClient
 
         $response = $this->client->post($endpoint, [
             'http_errors' => false,
-            'headers' => $this->authHeaders($endpoint),
+            'headers' => $this->authHeaders(self::audienceFor($endpoint)),
             'json' => [
                 'input' => $key,
                 'fingerprint' => $fingerprint,
@@ -85,6 +85,28 @@ class ReplayParserClient
     }
 
     /** @return array<string, string> */
+    /**
+     * The audience a Cloud Run identity token must carry: the service's base URL,
+     * scheme and host only.
+     *
+     * Minting it from the full endpoint instead — path included — produces a token
+     * Cloud Run rejects for audience mismatch, answered as a Google 403 HTML page
+     * rather than anything the parser wrote. Indistinguishable from a missing
+     * invoker role unless you decode the token.
+     */
+    private static function audienceFor(string $endpoint): string
+    {
+        $parts = parse_url($endpoint);
+
+        if (! isset($parts['scheme'], $parts['host'])) {
+            return $endpoint;
+        }
+
+        $port = isset($parts['port']) ? ':'.$parts['port'] : '';
+
+        return $parts['scheme'].'://'.$parts['host'].$port;
+    }
+
     private function authHeaders(string $audience): array
     {
         if (app()->environment('local', 'development')) {
