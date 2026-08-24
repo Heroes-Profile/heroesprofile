@@ -19,6 +19,15 @@ class CreateCacheTable extends Migration
             $table->integer('expiration');
             $table->index('expiration');
         });
+
+        // Required by the database cache driver's atomic locks. `Cache::lock()` is
+        // what serialises billing changes, so without this a subscribe throws before
+        // it reaches Stripe.
+        Schema::connection('heroesprofile_cache')->create('cache_locks', function (Blueprint $table) {
+            $table->string('key', 255)->charset('utf8mb4')->collation('utf8mb4_0900_ai_ci')->primary();
+            $table->string('owner', 255)->charset('utf8mb4')->collation('utf8mb4_0900_ai_ci');
+            $table->integer('expiration');
+        });
     }
 
     /**
@@ -28,6 +37,7 @@ class CreateCacheTable extends Migration
      */
     public function down()
     {
+        Schema::connection('heroesprofile_cache')->dropIfExists('cache_locks');
         Schema::connection('heroesprofile_cache')->dropIfExists('cache');
     }
 }
