@@ -35,11 +35,20 @@ class PlanService
     {
         $plans = array_filter($this->all(), fn (array $plan) => $plan['paid']);
 
+        // A tier already granted must not also be offered for sale. Only Patreon can
+        // put a *paid* tier in here — the comped flags all point at free ones — so
+        // without this a $10 supporter is invited to buy Intermediate twice.
+        $granted = $this->grantedTo($account);
+
         foreach ($plans as $planId => $plan) {
             // Developer is shown to everyone but only bought after approval.
             $plans[$planId]['purchasable'] = $planId === 3
                 ? (bool) $account->d_approved
                 : true;
+
+            if (array_key_exists($planId, $granted)) {
+                $plans[$planId]['purchasable'] = false;
+            }
         }
 
         return $plans;
@@ -59,7 +68,42 @@ class PlanService
             }
         }
 
+        // Patreon grants a tier that is also sold, unlike every flag above. It still
+        // belongs here: this is what the billing page lists as already held, and
+        // selectableBy() reads the same answer to stop offering it for sale.
+        $patreonPlanId = $this->planIdForPatreonCents($account->patreonPledgeCents());
+
+        if ($patreonPlanId !== null) {
+            $granted[$patreonPlanId] = $this->all()[$patreonPlanId];
+        }
+
         return $granted;
+    }
+
+    /**
+     * Plan earned by a pledge, or null.
+     *
+     * Thresholds are read highest first, so $10 stops at Intermediate rather than
+     * falling through to Basic. Lives here rather than in ApiKeyResolver so the
+     * billing page and the key guard cannot disagree about what a pledge buys.
+     */
+    public function planIdForPatreonCents(mixed $cents): ?int
+    {
+        if (! is_numeric($cents)) {
+            return null;
+        }
+
+        $tiers = config('api_plans.patreon_tiers', []);
+
+        krsort($tiers);
+
+        foreach ($tiers as $threshold => $planId) {
+            if ((int) $cents >= $threshold) {
+                return $planId;
+            }
+        }
+
+        return null;
     }
 
     /**

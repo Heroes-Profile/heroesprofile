@@ -94,4 +94,25 @@ return [
         'h_approved' => 6,
     ],
 
+    /*
+    | Patreon-backed access, by pledge amount. Highest matching threshold wins, so
+    | order matters — read top down and stop at the first the pledge clears.
+    |
+    | Cents, matching `patreon_accounts.currently_entitled_amount_cents` exactly, so
+    | there is no unit conversion to get wrong. Note that PatreonSubscriberChecker's
+    | own `cents` parameter holds *dollars* despite its name; this column does not.
+    |
+    | These grant tiers that are also sold. A supporter holding one must not be
+    | offered it on the billing page as well — see PlanService::selectableBy().
+    |
+    | No grandfathering, unlike `ad_free`. A legacy patron reporting a 0 entitled
+    | amount keeps ad-free on the main site but earns no API tier — this needs a live
+    | pledge.
+    */
+
+    'patreon_tiers' => [
+        1000 => 2,
+        500 => 1,
+    ],
+
 ];

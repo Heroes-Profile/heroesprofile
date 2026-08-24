@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Account;
 use App\Http\Controllers\Controller;
 use App\Models\Api\ApiAccount;
 use App\Models\Api\ApiKey;
+use App\Services\Api\PlanService;
 use App\Services\Api\UsageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,6 +39,13 @@ class AccountController extends Controller
                 'has_legacy_token' => $this->hasLegacyToken($account),
                 'admin' => $account->isAdmin(),
                 'admin_mode' => $account->actingAsAdmin(),
+                'patreon_linked' => $account->patreon_accounts_id !== null,
+                // The tier the pledge currently earns, or null when it clears no
+                // threshold. Resolved live, so a lapsed pledge shows as linked but
+                // granting nothing rather than silently keeping the tier.
+                'patreon_plan' => ($id = app(PlanService::class)->planIdForPatreonCents($account->patreonPledgeCents())) !== null
+                    ? config("api_plans.plans.{$id}.name")
+                    : null,
             ],
             'keys' => $keys,
             'usage' => $usage->forAccount($account),

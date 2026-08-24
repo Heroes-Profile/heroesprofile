@@ -41,6 +41,9 @@ return [
         'client_id' => env('PATREON_CLIENT_ID'),
         'client_secret' => env('PATREON_CLIENT_SECRET'),
         'redirect' => env('PATREON_REDIRECT_URI'),
+        // Only pledges to this campaign count. Read through config rather than env()
+        // directly so it survives `config:cache`, unlike the main site's copy.
+        'campaign_id' => env('PATREON_CAMPAIGN_ID'),
     ],
 
     'recaptcha' => [

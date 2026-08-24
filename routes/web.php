@@ -3,6 +3,7 @@
 use App\Http\Controllers\AnimationsController;
 use App\Http\Controllers\Api\Account\AccountController as ApiAccountController;
 use App\Http\Controllers\Api\Account\BillingController as ApiBillingController;
+use App\Http\Controllers\Api\Account\PatreonLinkController as ApiPatreonLinkController;
 use App\Http\Controllers\Api\Admin\AdminConsoleController as ApiAdminConsoleController;
 use App\Http\Controllers\Api\Admin\ImpersonationController as ApiImpersonationController;
 use App\Http\Controllers\Api\ApiHomeController;
@@ -278,6 +279,13 @@ Route::middleware(['logIpAndUserAgent'])->prefix('Api')->group(function () {
         // Executes one public endpoint for the signed-in account, charged to its
         // own key. Behind the portal guard: it acts as the account.
         Route::post('/Docs/Try', ApiTryItController::class)->middleware('throttle:docs-try');
+
+        // Patreon-backed access. Its own callback, registered separately on the
+        // Patreon app: the main site's writes `battlenet_accounts_id`, which is not
+        // an identity an API account can be found through.
+        Route::get('/Patreon/Link', [ApiPatreonLinkController::class, 'redirectToProvider']);
+        Route::get('/Patreon/Callback', [ApiPatreonLinkController::class, 'handleProviderCallback']);
+        Route::post('/Patreon/Unlink', [ApiPatreonLinkController::class, 'unlink']);
 
         Route::get('/Account', [ApiAccountController::class, 'index']);
         Route::get('/Account/Billing', [ApiBillingController::class, 'show']);

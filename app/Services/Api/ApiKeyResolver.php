@@ -178,6 +178,12 @@ class ApiKeyResolver
                 $join->on('cashier_subscriptions.user_id', '=', 'users.id')
                     ->where('cashier_subscriptions.type', '=', ApiAccount::SUBSCRIPTION);
             })
+            // Read live rather than copied into a flag. The comped columns are static
+            // grants with nothing to reconcile them, so a copied pledge would outlive
+            // the support that earned it. Resolving here makes a lapsed patron answer
+            // itself on the next call. Cross-schema, same server — the old site's
+            // ApiTokenValidator joined this way too.
+            ->leftJoin($this->patreonTable().' as patreon_accounts', 'patreon_accounts.patreon_accounts_id', '=', 'users.patreon_accounts_id')
             ->whereNull('api_keys.revoked_at')
             ->tap($constrain)
             ->orderByDesc('cashier_subscriptions.created_at')
@@ -191,6 +197,7 @@ class ApiKeyResolver
                 'cashier_subscriptions.stripe_status',
                 'cashier_subscriptions.stripe_price',
                 'cashier_subscriptions.ends_at',
+                'patreon_accounts.currently_entitled_amount_cents as patreon_cents',
             ], array_map(fn ($column) => 'users.'.$column, $approvals)))
             ->first();
 
@@ -228,6 +235,16 @@ class ApiKeyResolver
             $planName ??= config("api_plans.plans.{$compedPlanId}.key");
         }
 
+        // Stacks with everything above. EnforceApiQuota already takes the most
+        // generous allowance per endpoint across the plans held, so a supporter who
+        // also pays is never worse off for supporting.
+        $patreonPlanId = $this->plans->planIdForPatreonCents($row->patreon_cents ?? null);
+
+        if ($patreonPlanId !== null) {
+            $planIds[] = $patreonPlanId;
+            $planName ??= config("api_plans.plans.{$patreonPlanId}.key");
+        }
+
         // Neither of these may fall through to the no-plan fixture path. That path
         // exists so someone who has not bought anything can evaluate the API; a payer
         // landing on it gets sample data while their card is charged, and nothing
@@ -262,10 +279,22 @@ class ApiKeyResolver
             // not, because Cashier deactivates it by default. Diverging here is what
             // would deny a trial the billing page shows as fine.
             'subscription_active' => in_array($row->stripe_status, ['active', 'trialing'], true) && ! $lapsed,
-            'comped' => $comped,
+            'comped' => $comped || $patreonPlanId !== null,
             'subscription_unresolved' => $unresolvedReason !== null,
             'unresolved_reason' => $unresolvedReason,
         ];
+    }
+
+    /**
+     * Schema-qualified `patreon_accounts`, for the cross-schema join.
+     *
+     * Read from the connection config rather than written literally: the database name
+     * comes from env and differs between environments, and a hardcoded `heroesprofile.`
+     * would silently join the wrong schema on any box that renames it.
+     */
+    private function patreonTable(): string
+    {
+        return config('database.connections.heroesprofile.database').'.patreon_accounts';
     }
 
     /**

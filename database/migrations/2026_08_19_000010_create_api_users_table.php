@@ -91,6 +91,16 @@ return new class extends Migration
             // sees, and the grant is still there to turn it back on.
             $table->boolean('admin')->default(false);
             $table->boolean('admin_mode')->default(true);
+
+            // Links to `heroesprofile.patreon_accounts`, whose own key is a BIGINT.
+            // The existing `patreon_accounts.battlenet_accounts_id` points at a
+            // main-site user, which is a different identity — an API account cannot
+            // be reached through it.
+            //
+            // Unique because one pledge entitles one API account. Without it a single
+            // $10 supporter could supply as many keys as they cared to register.
+            $table->unsignedBigInteger('patreon_accounts_id')->nullable();
+            $table->unique('patreon_accounts_id', 'users_patreon_accounts_id_unique');
         });
     }
 

@@ -110,6 +110,32 @@
       <div v-if="error" class="bg-red p-3 mb-4">{{ error }}</div>
 
       <div class="bg-lighten p-6 mb-8">
+        <h2 class="text-lg mb-4">Patreon</h2>
+
+        <template v-if="patreonLinked">
+          <p v-if="account.patreon_plan" class="text-sm mb-4">
+            Linked. Your pledge includes the <strong>{{ account.patreon_plan }}</strong> tier
+            at no extra cost — it stacks with any plan you buy, and each endpoint uses
+            whichever allowance is higher.
+          </p>
+          <p v-else class="text-sm text-gray-medium mb-4">
+            Linked, but your current pledge does not reach a tier that includes API access.
+          </p>
+
+          <custom-button @click="unlinkPatreon" :text="'Unlink Patreon'" :alt="'Unlink Patreon'" :size="'small'" :ignoreclick="true"></custom-button>
+        </template>
+
+        <template v-else>
+          <p class="text-sm text-gray-medium mb-4">
+            Already supporting Heroes Profile on Patreon? Link your account and your
+            pledge includes API access — no need to pay twice.
+          </p>
+
+          <a href="/Api/Patreon/Link" class="link">Link Patreon</a>
+        </template>
+      </div>
+
+      <div class="bg-lighten p-6 mb-8">
         <h2 class="text-lg mb-4">API Keys</h2>
 
         <form @submit.prevent="createKey" class="flex flex-wrap gap-2 items-end mb-6">
@@ -196,6 +222,7 @@ export default {
       copied: false,
       error: null,
       testMode: this.account.test_mode,
+      patreonLinked: this.account.patreon_linked,
       adminMode: this.account.admin_mode,
       receivesTestData: this.account.receives_test_data,
       migrated: this.account.migrated,
@@ -209,6 +236,18 @@ export default {
     },
   },
   methods: {
+    async unlinkPatreon(){
+      this.error = null;
+
+      try {
+        await this.$axios.post('/Api/Patreon/Unlink');
+        this.patreonLinked = false;
+        // The granted tier came from the pledge, so the page's copy is now wrong.
+        window.location.reload();
+      } catch (error) {
+        this.error = 'Could not unlink Patreon. Please try again.';
+      }
+    },
     async activate(){
       const warning = this.account.has_legacy_token
         ? 'Activate live data? This expires your existing key on the old API site immediately and cannot be undone.'

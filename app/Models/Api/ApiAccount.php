@@ -2,6 +2,7 @@
 
 namespace App\Models\Api;
 
+use App\Models\PatreonAccount;
 use App\Notifications\Api\ResetApiPassword;
 use App\Notifications\Api\VerifyApiEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -116,6 +117,30 @@ class ApiAccount extends Authenticatable implements MustVerifyEmail
         }
 
         return ! $this->hasMigrated() || $this->inTestMode();
+    }
+
+    /**
+     * The linked Patreon record, if any. Cross-schema on the same server.
+     *
+     * `patreon_accounts.battlenet_accounts_id` is the main site's own link and points
+     * at a different identity; this one is the portal's.
+     */
+    public function patreonAccount()
+    {
+        return $this->belongsTo(PatreonAccount::class, 'patreon_accounts_id', 'patreon_accounts_id');
+    }
+
+    /**
+     * Pledge amount behind this account, or null when nothing is linked.
+     *
+     * Read live every time rather than copied onto the account: a pledge that lapses
+     * has nothing to reconcile a stored copy, and the grant would outlive the support.
+     */
+    public function patreonPledgeCents(): ?int
+    {
+        $cents = $this->patreonAccount?->currently_entitled_amount_cents;
+
+        return $cents === null ? null : (int) $cents;
     }
 
     /** Whether this account has been granted admin. Set in the database only. */
