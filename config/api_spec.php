@@ -152,6 +152,10 @@ return [
             'api.external.ngs.replay.data',
         ],
 
+        'NGS Replay Upload' => [
+            'api.external.ngs.games.upload',
+        ],
+
         'Tools' => [
             'api.external.heroes.talents.builder',
             'api.external.heroes.talents.builder.replays',
@@ -771,6 +775,48 @@ return [
             'page' => '/Esports/NGS',
             'parameters' => [
                 'replayID' => ['required' => true, 'type' => 'integer', 'description' => 'Heroes Profile match ID.'],
+            ],
+        ],
+
+        /*
+        | NGS ingestion. Both need `n_approved` and `n_upload_approved`, where the
+        | NGS reads above need only one of the two.
+        */
+
+        'api.external.ngs.games.upload' => [
+            'summary' => 'Ingest one NGS custom game.',
+            'page' => '/Esports/NGS',
+            'parameters' => [
+                'replay_url' => ['required' => true, 'description' => 'Where the replay sits in the NGS bucket. Pinned to that bucket — any other host is refused.'],
+                'mode' => ['required' => true, 'description' => 'Which NGS schema to write. `prod` or `dev`.', 'example' => 'prod'],
+                'season' => ['required' => true, 'type' => 'integer', 'description' => 'NGS season number.'],
+                'round' => ['required' => true, 'description' => 'Round within the season.'],
+                'game' => ['required' => true, 'description' => 'Game number within the match.'],
+                'team_one_name' => ['required' => true, 'description' => 'First team name.'],
+                'team_two_name' => ['required' => true, 'description' => 'Second team name.'],
+                'team_one_player' => ['required' => true, 'description' => 'A battletag on the first team, used to work out which side it played. Must appear in the replay.', 'example' => 'Player#1234'],
+                'team_two_player' => ['required' => true, 'description' => 'The same, for the second team.'],
+                'team_one_map_ban_1' => ['required' => true, 'description' => 'Map name, banned by the first team.'],
+                'team_one_map_ban_2' => ['required' => true, 'description' => 'Second map banned by the first team.'],
+                'team_two_map_ban_1' => ['required' => true, 'description' => 'Map name, banned by the second team.'],
+                'team_two_map_ban_2' => ['required' => true, 'description' => 'Second map banned by the second team.'],
+                'team_one_image_url' => ['description' => 'First team logo. Defaults to a placeholder.'],
+                'team_two_image_url' => ['description' => 'Second team logo. Defaults to a placeholder.'],
+                'tournament' => ['description' => 'Defaults to `NGS`.'],
+                'team_one_division' => ['description' => 'Defaults to `NGS`.'],
+                'team_two_division' => ['description' => 'Defaults to `NGS`.'],
+            ],
+            'responses' => [
+                '200' => [
+                    'description' => 'The stored match, plus a profile link per player. Keyed by team name, as the NGS tooling expects.',
+                    'content' => ['application/json' => ['schema' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'url' => ['type' => 'string', 'description' => 'The match page for the game just stored.'],
+                        ],
+                    ]]],
+                ],
+                '422' => ['description' => 'The replay could not be ingested — not a custom game, an unknown map, or a named player absent from it.'],
             ],
         ],
 
