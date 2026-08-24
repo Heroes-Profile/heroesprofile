@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Auth\ApiKeyGuard;
+use App\Http\Controllers\Api\Admin\ImpersonationController;
 use App\Models\Api\ApiAccount;
 use App\Models\Api\CashierSubscription;
 use App\Models\Api\CashierSubscriptionItem;
@@ -56,6 +57,11 @@ class AppServiceProvider extends ServiceProvider
                     ? (bool) app(ApiKeyResolver::class)->resolveForAccount($account->id)?->servesFixtures()
                     : false
             );
+
+            // Every action taken while swapped in belongs to the customer, so the
+            // banner is not decoration — it is the only thing distinguishing this
+            // session from theirs.
+            $view->with('navImpersonating', session()->has(ImpersonationController::SESSION_KEY));
         });
     }
 }

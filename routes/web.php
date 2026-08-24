@@ -3,6 +3,8 @@
 use App\Http\Controllers\AnimationsController;
 use App\Http\Controllers\Api\Account\AccountController as ApiAccountController;
 use App\Http\Controllers\Api\Account\BillingController as ApiBillingController;
+use App\Http\Controllers\Api\Admin\AdminConsoleController as ApiAdminConsoleController;
+use App\Http\Controllers\Api\Admin\ImpersonationController as ApiImpersonationController;
 use App\Http\Controllers\Api\ApiHomeController;
 use App\Http\Controllers\Api\Auth\EmailVerificationController as ApiEmailVerificationController;
 use App\Http\Controllers\Api\Auth\LoginController as ApiLoginController;
@@ -279,6 +281,18 @@ Route::middleware(['logIpAndUserAgent'])->prefix('Api')->group(function () {
 
         Route::get('/Account', [ApiAccountController::class, 'index']);
         Route::get('/Account/Billing', [ApiBillingController::class, 'show']);
+
+        // Gated on the grant rather than on admin mode, so an admin looking at the
+        // site as a customer keeps the door back. See EnsureApiAdmin.
+        Route::get('/Admin', [ApiAdminConsoleController::class, 'show'])
+            ->middleware('ensureApiAdmin');
+
+        Route::post('/Admin/Impersonate/{id}', [ApiImpersonationController::class, 'start'])
+            ->middleware('ensureApiAdmin')
+            ->whereNumber('id');
+
+        // No admin guard: by the time this is called the session is the customer's.
+        Route::post('/Admin/Impersonate/Stop', [ApiImpersonationController::class, 'stop']);
     });
 });
 

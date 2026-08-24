@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Account\AccountController as ApiAccountController;
 use App\Http\Controllers\Api\Account\ApiKeyController;
 use App\Http\Controllers\Api\Account\BillingController;
+use App\Http\Controllers\Api\Admin\AdminConsoleController;
 use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\CompareController;
 use App\Http\Controllers\ContactController;
@@ -71,6 +72,15 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
     Route::post('account/billing/cancel', [BillingController::class, 'cancel']);
     Route::post('account/billing/resume', [BillingController::class, 'resume']);
     Route::get('account/billing/invoices', [BillingController::class, 'invoices']);
+
+    // Admin console. Same session guard as the rest of the portal, plus the grant.
+    Route::middleware('ensureApiAdmin')->prefix('admin')->group(function () {
+        Route::post('accounts/search', [AdminConsoleController::class, 'search']);
+        Route::get('accounts/{id}', [AdminConsoleController::class, 'account']);
+        Route::post('accounts/{id}/flag', [AdminConsoleController::class, 'setFlag']);
+        Route::get('activity', [AdminConsoleController::class, 'activity']);
+        Route::get('metrics', [AdminConsoleController::class, 'metrics']);
+    });
 });
 
 Route::prefix('v1')->middleware('web')->group(function () {

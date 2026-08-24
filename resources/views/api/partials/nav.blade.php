@@ -2,6 +2,21 @@
     $apiUser = Auth::guard('api_web')->user();
 @endphp
 
+@if($navImpersonating)
+  {{-- Above the nav and on every page: anything done here is genuinely this
+       customer's, so it must never be possible to forget. --}}
+  <div class="w-full bg-yellow text-black px-4 py-2 text-sm flex flex-wrap items-center justify-center gap-3">
+    <span>
+      <strong>Viewing as {{ $apiUser->email }}.</strong>
+      Anything you do here happens on their account.
+    </span>
+    <form method="POST" action="/Api/Admin/Impersonate/Stop" class="inline">
+      @csrf
+      <button type="submit" class="underline">Stop</button>
+    </form>
+  </div>
+@endif
+
 <nav class="w-full bg-lighten border-b-4 border-teal">
   <div class="container-boxed mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
 
@@ -31,6 +46,12 @@
       @if($apiUser)
         <a href="/Api/Account" class="hover:text-lteal">Account</a>
         <a href="/Api/Account/Billing" class="hover:text-lteal">Billing</a>
+
+        {{-- The grant, not admin mode: an admin viewing the site as a customer keeps
+             the way back. --}}
+        @if($apiUser->isAdmin())
+          <a href="/Api/Admin" class="hover:text-lteal">Admin</a>
+        @endif
 
         {{-- Keyed on what the API will actually answer with, not on `migrated`
              alone — an account with no plan is on fixtures too. --}}
