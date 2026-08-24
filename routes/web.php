@@ -246,6 +246,8 @@ Route::middleware(['logIpAndUserAgent'])->prefix('Api')->group(function () {
     Route::get('/', [ApiHomeController::class, 'index']);
     Route::get('/DeveloperTier', [ApiHomeController::class, 'developerTier']);
     Route::get('/EndpointLimits', [ApiHomeController::class, 'endpointLimits']);
+    // A Patreon post published this as /Api/Endpoint/Limits.
+    Route::get('/Endpoint/Limits', fn () => redirect('/Api/EndpointLimits', 301));
 
     Route::get('/Docs', [ApiDocsController::class, 'index']);
     Route::get('/Migrating', [ApiMigratingController::class, 'index']);
