@@ -44,7 +44,11 @@ return new class extends Migration
                 $table->string('stripe_id')->unique();
                 $table->string('stripe_product');
                 $table->string('stripe_price');
+                // Cashier 16 writes both on every item it touches, meter or no
+                // meter; without them, subscribing fails on an unknown column.
+                $table->string('meter_id')->nullable();
                 $table->integer('quantity')->nullable();
+                $table->string('meter_event_name')->nullable();
                 $table->timestamps();
 
                 $table->unique(['subscription_id', 'stripe_price']);

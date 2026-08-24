@@ -28,6 +28,17 @@ return new class extends Migration
                 $table->string('file_name', 255);
                 $table->unsignedInteger('file_size');
                 $table->string('status', 20)->default('Pending');
+
+                // What the attempt resolved to, so a blocked resend is answered
+                // from the row instead of going back to the parser. Declared as
+                // `replay_fingerprints.fingerprint` is: narrowing to a GUID's 36
+                // would reject a longer value, and this insert runs after the
+                // replay is stored, so the upload would fail having done the work.
+                // The old API site names its columns when it inserts, so it keeps
+                // writing rows with both null; those answer with a nil fingerprint
+                // and replayID 0.
+                $table->string('fingerprint', 45)->nullable();
+                $table->integer('replayID')->nullable();
                 $table->timestamp('created_at')->nullable()->useCurrent();
 
                 $table->index(['ip', 'file_hash'], 'idx_ip_file_hash');

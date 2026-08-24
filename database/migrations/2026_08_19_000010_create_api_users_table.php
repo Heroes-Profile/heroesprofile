@@ -84,6 +84,13 @@ return new class extends Migration
 
             // Opt-in fixtures for an already migrated account. Toggleable.
             $table->boolean('test_mode')->default(false);
+
+            // `admin` is the grant, set by hand — an account that could grant
+            // itself admin is not a permission. `admin_mode` is whether the grant
+            // is being exercised: an admin turns it off to see what a customer
+            // sees, and the grant is still there to turn it back on.
+            $table->boolean('admin')->default(false);
+            $table->boolean('admin_mode')->default(true);
         });
     }
 

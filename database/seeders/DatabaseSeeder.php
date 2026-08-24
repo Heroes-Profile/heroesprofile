@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             ApiEndpointRegistrySeeder::class,
+            ApiAccountsSeeder::class,
             AwardsTableSeeder::class,
             BattletagsTableSeeder::class,
             CompositionsTableSeeder::class,

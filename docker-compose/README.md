@@ -40,6 +40,46 @@ This guide helps you set up Heroes Profile for local development using Docker Co
 4. **Access the application**
    - [http://localhost:8000](http://localhost:8000)
 
+## The API site
+
+The API portal and the public API run from this same container — there is no
+second service to start. The portal is at
+[http://localhost:8000/Api](http://localhost:8000/Api) and the API answers under
+`http://localhost:8000/api/external/v1`.
+
+`ApiAccountsSeeder` creates five accounts, one per state the API branches on, and
+prints their credentials when it runs. Each has a fixed API key, because keys are
+hashed and shown once — a seeded account would otherwise be impossible to call
+with. The password is `password` for all of them.
+
+| Account | Resolves as |
+| --- | --- |
+| `fixtures@heroesprofile.test` | No plan, not migrated — serves canned fixture data |
+| `basic@heroesprofile.test` | Basic plan, live data, low weekly quotas |
+| `developer@heroesprofile.test` | Developer plan, live data, higher rate limit |
+| `partner@heroesprofile.test` | Comped Partner grant, no subscription |
+| `admin@heroesprofile.test` | Developer plan plus portal admin |
+
+Calling it:
+
+```bash
+curl -H "Authorization: Bearer developer_local_api_key_000000000000000000000000000000000000"   "http://localhost:8000/api/external/v1/heroes"
+```
+
+That seeder refuses to run outside a local environment, and refuses again if
+`heroesprofile_api.users` already holds rows — the keys above are public, so they
+must never reach a database with real accounts in it.
+
+Two things do not work locally, by design:
+
+- **Billing.** `STRIPE_*` is blank in `.env.docker`. Subscribing and the Stripe
+  webhook need real test-mode keys; everything else, including quota and
+  entitlement, works from the seeded subscriptions.
+- **The legacy uploader paths.** Those are scoped to `API_PUBLIC_DOMAIN`
+  (`api.heroesprofile.com`), so they never match on localhost. Do not point that
+  variable at localhost to test them — the same route file ends in a catch-all
+  redirect to the live site, which would swallow every other page.
+
 ## Services
 
 - **app**: Laravel application (port 8000)
@@ -72,6 +112,7 @@ docker compose exec mysql mysql -h mysql -u root -proot_password heroesprofile
 The MySQL 8.4 container automatically creates all required databases:
 
 - heroesprofile (main)
+- heroesprofile_api
 - heroesprofile_globals
 - heroesprofile_cache
 - heroesprofile_logs
@@ -80,6 +121,7 @@ The MySQL 8.4 container automatically creates all required databases:
 - heroesprofile_mcl
 - heroesprofile_hi
 - heroesprofile_hi_nc
+- heroesprofile_ml
 
 Database credentials:
 
