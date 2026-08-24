@@ -42,6 +42,29 @@ return [
     ],
 
     /*
+    | `?mode=csv` is applied by ConvertResponseToCsv to every endpoint answering
+    | JSON, so it is documented once here rather than repeated on all fifty.
+    */
+    'csv' => [
+        'enum' => ['json', 'csv'],
+        'description' => 'Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.',
+        'example' => 'csv',
+    ],
+
+    /*
+    | Endpoints `mode` does not apply to: a file download and two that answer plain
+    | text on purpose, which deployed clients string-compare.
+    */
+    'csv_exempt' => [
+        'api.external.replay.download',
+        'api.external.replays.parsed',
+        'api.external.replays.fingerprint',
+        'api.external.prematch',
+        'api.external.upload',
+        'api.external.ngs.games.upload',
+    ],
+
+    /*
     | Shared by every global statistics endpoint, from
     | `GlobalsInputValidationController::globalsValidationRules()`.
     */

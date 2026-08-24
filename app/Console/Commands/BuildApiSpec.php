@@ -207,6 +207,13 @@ class BuildApiSpec extends Command
 
         $declared = array_merge($declared, $endpoint['parameters'] ?? []);
 
+        // Applied by middleware across the board, so declaring it per endpoint would
+        // be fifty copies of one line that drift apart. Exempt endpoints are the ones
+        // that do not answer JSON.
+        if (! in_array($route->getName(), $config['csv_exempt'] ?? [], true)) {
+            $declared['mode'] = $config['csv'] ?? [];
+        }
+
         $parameters = [];
 
         foreach ($route->parameterNames() as $pathParameter) {

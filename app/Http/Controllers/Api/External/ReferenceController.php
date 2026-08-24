@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputValidation;
 use App\Rules\RoleInputValidation;
-use App\Support\CsvResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
@@ -36,17 +35,13 @@ class ReferenceController extends Controller
 
     public function maps(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'mode' => ['sometimes', 'in:json,csv'],
         ]);
 
-        $maps = $this->globalDataService->getMaps()->values();
-
-        if (($validated['mode'] ?? 'json') === 'csv') {
-            return CsvResponse::stream($maps->toArray(), 'maps');
-        }
-
-        return response()->json(['maps' => $maps]);
+        // `?mode=csv` is handled by ConvertResponseToCsv for every endpoint, so
+        // nothing here branches on it.
+        return response()->json(['maps' => $this->globalDataService->getMaps()->values()]);
     }
 
     /**
@@ -78,10 +73,6 @@ class ReferenceController extends Controller
         $heroes = $heroes->values()->map(
             fn ($hero) => Arr::except($hero->toArray(), self::WITHHELD_HERO_FIELDS)
         );
-
-        if (($validated['mode'] ?? 'json') === 'csv') {
-            return CsvResponse::stream($heroes->toArray(), 'heroes');
-        }
 
         return response()->json(['heroes' => $heroes]);
     }
