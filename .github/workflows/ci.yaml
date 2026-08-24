@@ -25,3 +25,22 @@ jobs:
         php_extensions: bcmath
 
     - run: vendor/bin/pint --test --verbose --ansi app
+
+    # The public API's routes, fixtures and specification have to agree with each
+    # other. Both commands below fail rather than warn, because every way they can
+    # disagree is silent at runtime: a missing fixture serves live data to an
+    # account that should be getting examples, and a registry row with no route is
+    # an endpoint the pricing table sells and the API answers 404 for.
+    #
+    # Neither needs a database. api:check-fixtures skips its registry half with a
+    # warning when it cannot reach one, and still enforces route-to-fixture.
+    - name: Prepare the application
+      run: |
+        cp .env.example .env
+        php artisan key:generate
+
+    - name: Every routed endpoint has a fixture
+      run: php artisan api:check-fixtures
+
+    - name: The API specification builds
+      run: php artisan api:build-spec --check

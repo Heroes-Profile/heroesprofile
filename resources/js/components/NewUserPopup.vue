@@ -7,7 +7,7 @@
           <div class="modal-header">
             <slot name="header">
 
-              In order to view accurate data for your matches, regularly upload via the <a class="link" href="https://api.heroesprofile.com/upload" target="_blank">Heroes Profile Uploader</a>
+              In order to view accurate data for your matches, regularly upload via the <a class="link" href="/Upload" target="_blank">Heroes Profile Uploader</a>
             </slot>
           </div>  
 

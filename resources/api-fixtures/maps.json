@@ -1,0 +1,175 @@
+{
+    "maps": [
+        {
+            "map_id": 15,
+            "name": "Alterac Pass",
+            "short_name": "AlteracPass",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "alterac_pass"
+        },
+        {
+            "map_id": 1,
+            "name": "Battlefield of Eternity",
+            "short_name": "BattlefieldOfEternity",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "battlefield_of_eternity"
+        },
+        {
+            "map_id": 2,
+            "name": "Blackheart's Bay",
+            "short_name": "BlackheartsBay",
+            "type": "standard",
+            "ranked_rotation": 0,
+            "playable": 1,
+            "sanitized_map_name": "blackhearts_bay"
+        },
+        {
+            "map_id": 3,
+            "name": "Braxis Holdout",
+            "short_name": "BraxisHoldout",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "braxis_holdout"
+        },
+        {
+            "map_id": 21,
+            "name": "Braxis Outpost",
+            "short_name": "BraxisOutpost",
+            "type": "ARAM",
+            "ranked_rotation": 0,
+            "playable": 1,
+            "sanitized_map_name": "braxis_outpost"
+        },
+        {
+            "map_id": 4,
+            "name": "Cursed Hollow",
+            "short_name": "CursedHollow",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "cursed_hollow"
+        },
+        {
+            "map_id": 5,
+            "name": "Dragon Shire",
+            "short_name": "DragonShire",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "dragon_shire"
+        },
+        {
+            "map_id": 6,
+            "name": "Garden of Terror",
+            "short_name": "HauntedWoods",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "garden_of_terror"
+        },
+        {
+            "map_id": 7,
+            "name": "Hanamura Temple",
+            "short_name": "Hanamura",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "hanamura_temple"
+        },
+        {
+            "map_id": 8,
+            "name": "Haunted Mines",
+            "short_name": "HauntedMines",
+            "type": "standard",
+            "ranked_rotation": 0,
+            "playable": 1,
+            "sanitized_map_name": "haunted_mines"
+        },
+        {
+            "map_id": 17,
+            "name": "Industrial District",
+            "short_name": "IndustrialDistrict",
+            "type": "ARAM",
+            "ranked_rotation": 0,
+            "playable": 1,
+            "sanitized_map_name": "industrial_district"
+        },
+        {
+            "map_id": 9,
+            "name": "Infernal Shrines",
+            "short_name": "Shrines",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "infernal_shrines"
+        },
+        {
+            "map_id": 18,
+            "name": "Lost Cavern",
+            "short_name": "LostCavern",
+            "type": "ARAM",
+            "ranked_rotation": 0,
+            "playable": 1,
+            "sanitized_map_name": "lost_cavern"
+        },
+        {
+            "map_id": 20,
+            "name": "Silver City",
+            "short_name": "SilverCity",
+            "type": "ARAM",
+            "ranked_rotation": 0,
+            "playable": 1,
+            "sanitized_map_name": "silver_city"
+        },
+        {
+            "map_id": 10,
+            "name": "Sky Temple",
+            "short_name": "ControlPoints",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "sky_temple"
+        },
+        {
+            "map_id": 11,
+            "name": "Tomb of the Spider Queen",
+            "short_name": "Crypts",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "tomb_of_the_spider_queen"
+        },
+        {
+            "map_id": 12,
+            "name": "Towers of Doom",
+            "short_name": "TowersOfDoom",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "towers_of_doom"
+        },
+        {
+            "map_id": 14,
+            "name": "Volskaya Foundry",
+            "short_name": "Volskaya",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "volskaya_foundry"
+        },
+        {
+            "map_id": 13,
+            "name": "Warhead Junction",
+            "short_name": "Warhead Junction",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "warhead_junction"
+        }
+    ]
+}

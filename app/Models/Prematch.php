@@ -13,4 +13,9 @@ class Prematch extends Model
     protected $connection = 'heroesprofile';
 
     public $timestamps = false;
+
+    protected $fillable = [
+        'prematch_replayID', 'game_type', 'game_map', 'team',
+        'battletag', 'blizz_id', 'region', 'hero',
+    ];
 }

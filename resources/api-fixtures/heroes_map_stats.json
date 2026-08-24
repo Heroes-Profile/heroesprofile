@@ -1,0 +1,194 @@
+[
+    {
+        "name": "Haunted Mines",
+        "map": {
+            "map_id": 8,
+            "name": "Haunted Mines",
+            "short_name": "HauntedMines",
+            "type": "standard",
+            "ranked_rotation": 0,
+            "playable": 1,
+            "sanitized_map_name": "haunted_mines"
+        },
+        "win_rate": 54.71,
+        "games_played": 276,
+        "ban_rate": 23.27,
+        "total_games_played": 3170
+    },
+    {
+        "name": "Garden of Terror",
+        "map": {
+            "map_id": 6,
+            "name": "Garden of Terror",
+            "short_name": "HauntedWoods",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "garden_of_terror"
+        },
+        "win_rate": 52.19,
+        "games_played": 228,
+        "ban_rate": 22.22,
+        "total_games_played": 3170
+    },
+    {
+        "name": "Infernal Shrines",
+        "map": {
+            "map_id": 9,
+            "name": "Infernal Shrines",
+            "short_name": "Shrines",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "infernal_shrines"
+        },
+        "win_rate": 51.6,
+        "games_played": 250,
+        "ban_rate": 22.96,
+        "total_games_played": 3170
+    },
+    {
+        "name": "Battlefield of Eternity",
+        "map": {
+            "map_id": 1,
+            "name": "Battlefield of Eternity",
+            "short_name": "BattlefieldOfEternity",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "battlefield_of_eternity"
+        },
+        "win_rate": 51.39,
+        "games_played": 251,
+        "ban_rate": 22.22,
+        "total_games_played": 3170
+    },
+    {
+        "name": "Towers of Doom",
+        "map": {
+            "map_id": 12,
+            "name": "Towers of Doom",
+            "short_name": "TowersOfDoom",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "towers_of_doom"
+        },
+        "win_rate": 51.37,
+        "games_played": 255,
+        "ban_rate": 23.9,
+        "total_games_played": 3170
+    },
+    {
+        "name": "Sky Temple",
+        "map": {
+            "map_id": 10,
+            "name": "Sky Temple",
+            "short_name": "ControlPoints",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "sky_temple"
+        },
+        "win_rate": 51.21,
+        "games_played": 289,
+        "ban_rate": 22.54,
+        "total_games_played": 3170
+    },
+    {
+        "name": "Tomb of the Spider Queen",
+        "map": {
+            "map_id": 11,
+            "name": "Tomb of the Spider Queen",
+            "short_name": "Crypts",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "tomb_of_the_spider_queen"
+        },
+        "win_rate": 50.72,
+        "games_played": 278,
+        "ban_rate": 24.95,
+        "total_games_played": 3170
+    },
+    {
+        "name": "Alterac Pass",
+        "map": {
+            "map_id": 15,
+            "name": "Alterac Pass",
+            "short_name": "AlteracPass",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "alterac_pass"
+        },
+        "win_rate": 50.19,
+        "games_played": 259,
+        "ban_rate": 20.65,
+        "total_games_played": 3170
+    },
+    {
+        "name": "Volskaya Foundry",
+        "map": {
+            "map_id": 14,
+            "name": "Volskaya Foundry",
+            "short_name": "Volskaya",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "volskaya_foundry"
+        },
+        "win_rate": 48.39,
+        "games_played": 279,
+        "ban_rate": 23.48,
+        "total_games_played": 3170
+    },
+    {
+        "name": "Braxis Holdout",
+        "map": {
+            "map_id": 3,
+            "name": "Braxis Holdout",
+            "short_name": "BraxisHoldout",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "braxis_holdout"
+        },
+        "win_rate": 47.4,
+        "games_played": 308,
+        "ban_rate": 20.13,
+        "total_games_played": 3170
+    },
+    {
+        "name": "Dragon Shire",
+        "map": {
+            "map_id": 5,
+            "name": "Dragon Shire",
+            "short_name": "DragonShire",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "dragon_shire"
+        },
+        "win_rate": 45.93,
+        "games_played": 270,
+        "ban_rate": 21.91,
+        "total_games_played": 3170
+    },
+    {
+        "name": "Cursed Hollow",
+        "map": {
+            "map_id": 4,
+            "name": "Cursed Hollow",
+            "short_name": "CursedHollow",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "cursed_hollow"
+        },
+        "win_rate": 45.37,
+        "games_played": 227,
+        "ban_rate": 21.07,
+        "total_games_played": 3170
+    }
+]

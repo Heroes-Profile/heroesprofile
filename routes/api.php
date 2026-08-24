@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\Account\AccountController as ApiAccountController;
+use App\Http\Controllers\Api\Account\ApiKeyController;
+use App\Http\Controllers\Api\Account\BillingController;
+use App\Http\Controllers\Api\Admin\AdminConsoleController;
 use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\CompareController;
 use App\Http\Controllers\ContactController;
@@ -53,6 +57,30 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->middleware(['api', 'cloud.tasks'])->group(function () {
     Route::post('internal/global/process', [GlobalQueryWorkerController::class, 'process']);
+});
+
+Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function () {
+    Route::post('account/keys', [ApiKeyController::class, 'store']);
+    Route::post('account/keys/revoke', [ApiKeyController::class, 'revoke']);
+    Route::post('account/test-mode', [ApiAccountController::class, 'setTestMode']);
+    Route::post('account/admin-mode', [ApiAccountController::class, 'setAdminMode']);
+    Route::post('account/migrate', [ApiAccountController::class, 'migrate']);
+
+    Route::post('account/billing/setup-intent', [BillingController::class, 'setupIntent']);
+    Route::post('account/billing/payment-method', [BillingController::class, 'savePaymentMethod']);
+    Route::post('account/billing/subscribe', [BillingController::class, 'subscribe']);
+    Route::post('account/billing/cancel', [BillingController::class, 'cancel']);
+    Route::post('account/billing/resume', [BillingController::class, 'resume']);
+    Route::get('account/billing/invoices', [BillingController::class, 'invoices']);
+
+    // Admin console. Same session guard as the rest of the portal, plus the grant.
+    Route::middleware('ensureApiAdmin')->prefix('admin')->group(function () {
+        Route::post('accounts/search', [AdminConsoleController::class, 'search']);
+        Route::get('accounts/{id}', [AdminConsoleController::class, 'account']);
+        Route::post('accounts/{id}/flag', [AdminConsoleController::class, 'setFlag']);
+        Route::get('activity', [AdminConsoleController::class, 'activity']);
+        Route::get('metrics', [AdminConsoleController::class, 'metrics']);
+    });
 });
 
 Route::prefix('v1')->middleware('web')->group(function () {

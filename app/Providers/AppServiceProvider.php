@@ -2,7 +2,16 @@
 
 namespace App\Providers;
 
+use App\Auth\ApiKeyGuard;
+use App\Http\Controllers\Api\Admin\ImpersonationController;
+use App\Models\Api\ApiAccount;
+use App\Models\Api\CashierSubscription;
+use App\Models\Api\CashierSubscriptionItem;
+use App\Services\Api\ApiKeyResolver;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Cashier\Cashier;
 use Laravel\Sanctum\Sanctum;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,5 +36,32 @@ class AppServiceProvider extends ServiceProvider
         if (config('app.env') === 'production') {
             \URL::forceScheme('https');
         }
+
+        Auth::viaRequest('api_key', fn ($request) => app(ApiKeyGuard::class)($request));
+
+        // Cashier bills API accounts, and its tables live under non-default names
+        // so the old API site keeps using `subscriptions` until the cutover.
+        Cashier::useCustomerModel(ApiAccount::class);
+        Cashier::useSubscriptionModel(CashierSubscription::class);
+        Cashier::useSubscriptionItemModel(CashierSubscriptionItem::class);
+
+        // The nav's test-data badge, resolved the same way the quota middleware
+        // resolves it. Asking a second source would let the badge disagree with
+        // what the API actually serves, and it is the disagreement that misleads.
+        View::composer('api.partials.nav', function ($view) {
+            $account = Auth::guard('api_web')->user();
+
+            $view->with(
+                'navServesFixtures',
+                $account
+                    ? (bool) app(ApiKeyResolver::class)->resolveForAccount($account->id)?->servesFixtures()
+                    : false
+            );
+
+            // Every action taken while swapped in belongs to the customer, so the
+            // banner is not decoration — it is the only thing distinguishing this
+            // session from theirs.
+            $view->with('navImpersonating', session()->has(ImpersonationController::SESSION_KEY));
+        });
     }
 }

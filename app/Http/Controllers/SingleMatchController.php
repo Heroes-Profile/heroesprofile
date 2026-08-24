@@ -21,6 +21,39 @@ class SingleMatchController extends Controller
 
     private $schema;
 
+    /**
+     * Whether battletags keep their discriminator.
+     *
+     * The site's match page shows `Zemill`, so this strips `#1940` by default. An
+     * API caller needs the whole thing — it is the only form that identifies a
+     * player uniquely, and every other player endpoint takes one as input.
+     *
+     * Deliberately a setter rather than a request flag: `$esport` is read from the
+     * request, and doing the same here would let anyone unmask players on the
+     * public match page with a query string.
+     */
+    private bool $fullBattletags = false;
+
+    /**
+     * The battletag as this caller should see it. Private accounts never reach
+     * here — they are nulled before this point.
+     */
+    private function displayBattletag(?string $battletag): ?string
+    {
+        if ($battletag === null) {
+            return null;
+        }
+
+        return $this->fullBattletags ? $battletag : explode('#', $battletag)[0];
+    }
+
+    public function withFullBattletags(): self
+    {
+        $this->fullBattletags = true;
+
+        return $this;
+    }
+
     public function showWithoutEsport(Request $request, $replayID)
     {
         $validationRules = [
@@ -319,7 +352,7 @@ class SingleMatchController extends Controller
 
             $replayDetails = [
                 'region' => $replayGroup[0]->region,
-                'downloadable' => ! $this->esport ? $replayGroup[0]->date_added > now()->subWeeks(4) : null,
+                'downloadable' => ! $this->esport ? $this->globalDataService->replayFileIsRetained($replayGroup[0]->date_added) : null,
                 'replay_download_blocked' => $replayDownloadBlocked,
                 'game_type' => ! $this->esport ? $this->globalDataService->getGameTypeIDtoString()[$replayGroup[0]->game_type]['name'] : null,
                 'game_date' => $replayGroup[0]->game_date,
@@ -327,7 +360,7 @@ class SingleMatchController extends Controller
                 'game_length' => $timeFormat,
                 'winner' => ($replayGroup[0]->team == 0 && $replayGroup[0]->winner == 1) ? 0 : 1,
                 'players' => [],
-                'replay_bans' => $this->getReplayBans($replayID, $heroData),
+                'replay_bans' => $this->globalDataService->getReplayBans($replayID, $this->schema),
                 'draft_order' => $this->esport != 'CCL' && $this->esport != 'MastersClash' && $this->esport != 'HeroesInternational' ? $this->getDraftOrder($replayID, $heroData) : null,
                 'experience_breakdown' => $this->getExperienceBreakdown($replayID),
                 'team_names' => $team_names,
@@ -415,7 +448,7 @@ class SingleMatchController extends Controller
                     return [
                         'check' => $containsAccount,
                         'region' => $this->esport ? $region : ($containsAccount ? null : $region),
-                        'battletag' => $this->esport ? explode('#', $row->battletag)[0] : ($containsAccount ? null : explode('#', $row->battletag)[0]),
+                        'battletag' => $this->esport ? explode('#', $row->battletag)[0] : ($containsAccount ? null : $this->displayBattletag($row->battletag)),
                         'blizz_id' => $blizz_id,
                         'hp_owner' => ($row->battletag == 'Zemill#1940' && $region == 1 && $blizz_id == '67280') ? true : false,
                         'winner' => $row->winner,
@@ -724,25 +757,6 @@ class SingleMatchController extends Controller
         }
 
         return $playerArray;
-    }
-
-    private function getReplayBans($replayID, $heroData)
-    {
-        $replayBans = DB::table($this->schema.'.replay_bans')
-            ->select('team', 'hero')
-            ->where('replayID', $replayID)
-            ->orderBy('ban_id')
-            ->get()
-            ->groupBy('team')
-            ->map(function ($teamGroup) use ($heroData) {
-                return $teamGroup->map(function ($replayBan) use ($heroData) {
-                    $replayBan->hero = $heroData[$replayBan->hero] ?? $replayBan->hero;
-
-                    return $replayBan;
-                });
-            });
-
-        return $replayBans;
     }
 
     private function getDraftOrder($replayID, $heroData)

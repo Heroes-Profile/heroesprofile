@@ -7,6 +7,7 @@ use App\Models\GlobalHeroStackSize;
 use App\Models\SeasonGameVersion;
 use App\Rules\HeroInputValidation;
 use App\Rules\PartyCombinationRule;
+use App\Support\PartyCombinations;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -135,15 +136,10 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
             $divideValue = 10;
         }
 
-        $party_combinations = [
-            '00005' => '5 Solo',
-            '00023' => '1 Double, 3 Solo',
-            '00041' => '2 Double, 1 Solo',
-            '00302' => '1 Triple, 2 Solo',
-            '00320' => '1 Triple, 1 Double',
-            '04001' => '1 Quad, 1 Solo',
-            '50000' => '1 team of 5',
-        ];
+        // Defined in App\Support\PartyCombinations, which also documents how the
+        // codes are read. Same values as before — the list lived here and the API
+        // had no way to tell a caller what `00302` meant.
+        $party_combinations = PartyCombinations::NAMES;
 
         foreach ($data as $row) {
             $total += $row->wins + $row->losses;

@@ -8,7 +8,7 @@
             <slot name="header">
               <h3 class="text-lg font-bold mb-4">Important: Conditions & Agreement</h3>
               <p class="mb-4">
-                In order to view accurate data for your matches, regularly upload via the <a class="link" href="https://api.heroesprofile.com/upload" target="_blank">Heroes Profile Uploader</a>.
+                In order to view accurate data for your matches, regularly upload via the <a class="link" href="/Upload" target="_blank">Heroes Profile Uploader</a>.
               </p>
             </slot>
           </div>  

@@ -1,0 +1,42 @@
+{
+    "battletag": "ExamplePlayer1#0000",
+    "region": 1,
+    "ratings": {
+        "Quick Match": {
+            "mmr": 2849,
+            "games_played": 3657,
+            "games_played_last_90_days": 0,
+            "league_tier": "Master"
+        },
+        "Unranked Draft": {
+            "mmr": 2890,
+            "games_played": 161,
+            "games_played_last_90_days": 0,
+            "league_tier": "Master"
+        },
+        "Hero League": {
+            "mmr": 2859,
+            "games_played": 1074,
+            "games_played_last_90_days": 0,
+            "league_tier": "Master"
+        },
+        "Team League": {
+            "mmr": 2928,
+            "games_played": 70,
+            "games_played_last_90_days": 0,
+            "league_tier": "Diamond 1"
+        },
+        "Storm League": {
+            "mmr": 2921,
+            "games_played": 89,
+            "games_played_last_90_days": 0,
+            "league_tier": "Diamond 2"
+        },
+        "ARAM": {
+            "mmr": 2831,
+            "games_played": 1581,
+            "games_played_last_90_days": 18,
+            "league_tier": "Diamond 4"
+        }
+    }
+}

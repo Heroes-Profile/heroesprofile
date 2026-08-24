@@ -345,7 +345,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
             'average_positive_win_rate_change' => round($averagePositiveWinRateChange, 2),
             'average_negative_win_rate_change' => round($averageNegativeWinRateChange, 2),
             'average_games_played' => round($averageGamesPlayed, 0),
-            'averaege_total_filter_type' => round($averageTotalFilterType, 0),
+            'average_total_filter_type' => round($averageTotalFilterType, 0),
             'data' => $combinedData,
         ];
     }

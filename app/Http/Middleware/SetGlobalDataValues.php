@@ -31,9 +31,13 @@ class SetGlobalDataValues
 
     private function shouldSkipGlobalDataWarmup(Request $request): bool
     {
+        // The public API answers from its own caches and must stay cheap — a
+        // fixture response is supposed to touch nothing at all.
         return $request->is(
             'api/v1/global/status/*',
             'api/v1/internal/global/process',
+            config('api.path').'/*',
+            'v1/*',
         );
     }
 }

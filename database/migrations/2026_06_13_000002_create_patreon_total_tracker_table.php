@@ -15,6 +15,7 @@ return new class extends Migration
         Schema::create('patreon_total_tracker', function (Blueprint $table) {
             $table->integer('patreon_total_tracker_id')->autoIncrement();
             $table->decimal('total', 10, 2)->nullable();
+            $table->decimal('goal', 10, 2)->nullable()->default(800);
             $table->dateTime('date_added')->useCurrent()->nullable();
         });
 

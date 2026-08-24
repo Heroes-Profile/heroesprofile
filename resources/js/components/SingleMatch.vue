@@ -844,19 +844,16 @@
       if(!this.user || (data && data.replay_download_blocked)){
         return;
       }
-      const params = new URLSearchParams({ replayID });
-      if(this.user.battletag){
-        params.set('battletag', this.user.battletag);
-      }
-      if(this.user.battlenet_accounts_id){
-        params.set('user_id', this.user.battlenet_accounts_id);
-      }
+      // Identity comes from the session now, not the query string — this is a
+      // route on this site rather than a call out to the API host.
+      const params = new URLSearchParams();
       if(this.esport == "CCL"){
         params.set('esport', 'CCL');
       }else if(this.esport == "Other"){
         params.set('esport', 'Other');
       }
-      window.location = `https://api.heroesprofile.com/openApi/Replay/Download?${params.toString()}`;
+      const query = params.toString();
+      window.location = `/Match/Single/${replayID}/Download${query ? '?' + query : ''}`;
     },
     getTakedownsValue(data){
       let totalKills = 0;

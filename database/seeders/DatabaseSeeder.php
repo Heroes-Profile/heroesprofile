@@ -12,6 +12,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            ApiEndpointRegistrySeeder::class,
+            ApiAccountsSeeder::class,
             AwardsTableSeeder::class,
             BattletagsTableSeeder::class,
             CompositionsTableSeeder::class,

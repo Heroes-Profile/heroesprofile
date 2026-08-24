@@ -15,6 +15,12 @@ class StackSizeInputValidation implements Rule
         '5 Players' => 5,
     ];
 
+    /** The permitted values, so the docs can list what this accepts. */
+    public function allowed(): array
+    {
+        return $this->validStackSize;
+    }
+
     public function passes($attribute, $value)
     {
         return array_key_exists($value, $this->validStackSize);

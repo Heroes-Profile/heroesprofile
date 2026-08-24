@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\BannedAccount;
 use App\Models\BattlenetAccount;
 use App\Models\Battletag;
 use App\Models\CCL\CCLTeam;
@@ -31,6 +32,22 @@ class GlobalDataService
 {
     /** Replays older than (max replay ID - this value) get stricter rate limits. */
     public const OLD_REPLAY_THRESHOLD = 1_000_000;
+
+    /** How long a replay file is kept before it is purged from storage. */
+    public const REPLAY_RETENTION_WEEKS = 4;
+
+    /**
+     * Oldest patch the globals filters offer. Older data exists but is not
+     * offered: it predates changes that make it not worth comparing against.
+     *
+     * Was a literal inside `getFilterData()`, where only the dropdowns saw it —
+     * so nothing rejected an older patch, it was just never offered. The public
+     * API is the first caller that can ask for one directly.
+     */
+    public const MINIMUM_GLOBALS_PATCH = '2.53.0.83004';
+
+    /** The floor for site flair holders and the owner, who see further back. */
+    public const MINIMUM_GLOBALS_PATCH_PRIVILEGED = '2.52.0.81700';
 
     /**
      * Hour (America/New_York) at/after which the leaderboard "weeks since season start" value
@@ -75,6 +92,34 @@ class GlobalDataService
         return $filteredAccounts;
     }
 
+    /**
+     * Whether a player has hidden their profile or been banned.
+     *
+     * The site enforces this in CheckIfPrivateProfilePage by redirecting; the
+     * public API has no session to make an owner exception with, so a restricted
+     * account is refused outright.
+     */
+    public function isRestrictedAccount($blizz_id, $region): bool
+    {
+        return Cache::remember(
+            'restricted_account|'.$blizz_id.'|'.$region,
+            300,
+            function () use ($blizz_id, $region) {
+                $isPrivate = $this->getPrivateAccounts()->contains(
+                    fn ($account) => $account['blizz_id'] == $blizz_id && $account['region'] == $region
+                );
+
+                if ($isPrivate) {
+                    return true;
+                }
+
+                return BannedAccount::where('blizz_id', $blizz_id)
+                    ->where('region', $region)
+                    ->exists();
+            }
+        );
+    }
+
     public function calculateMaxReplayNumber()
     {
         return $this->getMaxReplayId();
@@ -85,6 +130,13 @@ class GlobalDataService
         return (int) Cache::remember('max_replay_id', 300, function () {
             return Replay::max('replayID') ?? 0;
         });
+    }
+
+    /** Whether the original file for a replay is still stored. */
+    public function replayFileIsRetained($dateAdded): bool
+    {
+        return $dateAdded !== null
+            && Carbon::parse($dateAdded)->gt(now()->subWeeks(self::REPLAY_RETENTION_WEEKS));
     }
 
     public function isOldReplay(int $replayId): bool
@@ -449,6 +501,69 @@ class GlobalDataService
         return clone $this->cachedMaps;
     }
 
+    /**
+     * Playable talents grouped by hero. Level 0 is excluded — those are a hero's
+     * base abilities, not draftable talents.
+     *
+     * Cached per hero because the whole set is large; the model's global scope
+     * already limits this to playable rows.
+     */
+    public function getPlayableHeroesTalents($heroName = null)
+    {
+        $cacheKey = 'global_playable_heroes_talents|'.($heroName ?? 'all');
+
+        return Cache::remember($cacheKey, 3600, function () use ($heroName) {
+            return HeroesDataTalent::where('level', '!=', 0)
+                ->when($heroName, fn ($query) => $query->where('hero_name', $heroName))
+                ->orderBy('hero_name')
+                ->orderBy('level')
+                ->orderBy('sort')
+                ->get()
+                ->groupBy('hero_name');
+        });
+    }
+
+    /**
+     * Every patch, newest first — ordered by version components rather than `id`,
+     * matching getDefaultTimeframe() and the filter timeframe lists. Insertion
+     * order and version order are not the same thing when a patch is backfilled.
+     */
+    public function getPatches()
+    {
+        return Cache::remember('global_patches', 600, function () {
+            return SeasonGameVersion::orderBy('major', 'DESC')
+                ->orderBy('minor', 'DESC')
+                ->orderBy('patch', 'DESC')
+                ->orderBy('build', 'DESC')
+                ->get();
+        });
+    }
+
+    /**
+     * Hero bans for a match, grouped by team and resolved to hero records.
+     *
+     * `$schema` because esports matches live in sibling schemas; the public API
+     * only ever asks for the default one.
+     */
+    public function getReplayBans($replayID, $schema = 'heroesprofile')
+    {
+        $heroData = $this->getHeroesByID();
+
+        return DB::table($schema.'.replay_bans')
+            ->select('team', 'hero')
+            ->where('replayID', $replayID)
+            ->orderBy('ban_id')
+            ->get()
+            ->groupBy('team')
+            ->map(function ($teamGroup) use ($heroData) {
+                return $teamGroup->map(function ($replayBan) use ($heroData) {
+                    $replayBan->hero = $heroData[$replayBan->hero] ?? $replayBan->hero;
+
+                    return $replayBan;
+                });
+            });
+    }
+
     public function getHeroesByID()
     {
         $heroData = $this->getHeroes();
@@ -571,6 +686,48 @@ class GlobalDataService
     /**
      * Apply version filtering to a query using numeric comparison
      */
+    /**
+     * Game versions a globals query may name: carrying globals data, and no older
+     * than the floor the filters offer.
+     *
+     * @return array<int, string>
+     */
+    public function queryableGameVersions(?string $minimum = null): array
+    {
+        $query = SeasonGameVersion::select('game_version')->where('valid_globals', 1);
+
+        return $this->applyVersionFilter($query, $minimum ?? self::MINIMUM_GLOBALS_PATCH)
+            ->orderBy('major', 'DESC')
+            ->orderBy('minor', 'DESC')
+            ->orderBy('patch', 'DESC')
+            ->orderBy('build', 'DESC')
+            ->pluck('game_version')
+            ->all();
+    }
+
+    /**
+     * Patches that global statistics will actually accept, as full rows.
+     *
+     * Same filter as queryableGameVersions() — the floor plus `valid_globals` —
+     * so the public `/patches` endpoint cannot advertise a patch that `timeframe`
+     * then rejects with `timeframe_unavailable`. getPatches() stays unfiltered for
+     * the site's own use.
+     */
+    public function getQueryablePatches()
+    {
+        return Cache::remember('global_patches_queryable', 600, function () {
+            return $this->applyVersionFilter(
+                SeasonGameVersion::where('valid_globals', 1),
+                self::MINIMUM_GLOBALS_PATCH
+            )
+                ->orderBy('major', 'DESC')
+                ->orderBy('minor', 'DESC')
+                ->orderBy('patch', 'DESC')
+                ->orderBy('build', 'DESC')
+                ->get();
+        });
+    }
+
     private function applyVersionFilter($query, $minimumVersionString)
     {
         $minVersion = $this->parseVersionString($minimumVersionString);
@@ -597,12 +754,12 @@ class GlobalDataService
 
     public function getFilterData($overrideDefaultPatchVersion = false, $defaultPatchVersion = null)
     {
-        $filtersMinimumPatch = '2.53.0.83004';
+        $filtersMinimumPatch = self::MINIMUM_GLOBALS_PATCH;
         if (Auth::check()) {
             $user = Auth::user();
 
             if ($this->checkIfSiteFlair($user->blizz_id, $user->region) || $this->isOwner($user->blizz_id, $user->region)) {
-                $filtersMinimumPatch = '2.52.0.81700';
+                $filtersMinimumPatch = self::MINIMUM_GLOBALS_PATCH_PRIVILEGED;
             }
         }
 
