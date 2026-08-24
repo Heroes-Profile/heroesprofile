@@ -2,11 +2,13 @@
 
 namespace App\Listeners;
 
+use App\Mail\Api\SubscriptionActivity;
 use App\Models\Api\ApiAccount;
 use App\Notifications\Api\SubscriptionCancelled;
 use App\Notifications\Api\SubscriptionStarted;
 use App\Services\Api\PlanService;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Mail;
 use Laravel\Cashier\Events\WebhookHandled;
 use Throwable;
 
@@ -59,6 +61,8 @@ class SendSubscriptionEmails
             return;
         }
 
+        $this->tellAdmin('Subscription started', $account, $this->planName($object), null);
+
         $account->notify(new SubscriptionStarted($this->planName($object)));
     }
 
@@ -68,10 +72,16 @@ class SendSubscriptionEmails
         // and an unrelated change on an already-cancelled subscription still carries
         // `cancel_at_period_end: true`.
         if (($object['cancel_at_period_end'] ?? false) && array_key_exists('cancel_at_period_end', $previous)) {
-            $account->notify(new SubscriptionCancelled(
+            $endsAt = $this->endOfPeriod($object);
+
+            $this->tellAdmin(
+                'Subscription cancelled',
+                $account,
                 $this->planName($object),
-                $this->endOfPeriod($object),
-            ));
+                $endsAt?->toDayDateTimeString().' UTC',
+            );
+
+            $account->notify(new SubscriptionCancelled($this->planName($object), $endsAt));
 
             return;
         }
@@ -79,6 +89,8 @@ class SendSubscriptionEmails
         // A swap rewrites the items collection. Resumes also arrive as `updated`, and
         // deliberately get nothing.
         if (array_key_exists('items', $previous) || array_key_exists('plan', $previous)) {
+            $this->tellAdmin('Plan changed', $account, $this->planName($object), null);
+
             $account->notify(new SubscriptionStarted($this->planName($object), changed: true));
         }
     }
@@ -91,7 +103,36 @@ class SendSubscriptionEmails
             return;
         }
 
+        $this->tellAdmin('Subscription ended', $account, $this->planName($object), null);
+
         $account->notify(new SubscriptionCancelled($this->planName($object), null));
+    }
+
+    /**
+     * Reported separately from the customer's own mail so one failing address cannot
+     * swallow the other. Silent when no address is configured.
+     */
+    private function tellAdmin(string $event, ApiAccount $account, ?string $plan, ?string $endsAt): void
+    {
+        $address = config('mail.admin_address');
+
+        if (! $address) {
+            return;
+        }
+
+        // Caught here rather than by the caller: a bad admin address must not stop the
+        // customer's own mail, and the customer's must not stop this one.
+        try {
+            Mail::to($address)->send(new SubscriptionActivity(
+                $event,
+                (string) $account->name,
+                (string) $account->email,
+                $plan,
+                $endsAt,
+            ));
+        } catch (Throwable $e) {
+            report($e);
+        }
     }
 
     private function accountFor(mixed $customerId): ?ApiAccount
