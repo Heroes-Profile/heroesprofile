@@ -263,6 +263,25 @@ Route::get('ngs/replay/data', [NgsController::class, 'replayData'])
     ->name('api.external.ngs.replay.data');
 
 /*
+| NGS writes. `api.ngs:upload` demands both flags, where the reads need only one.
+|
+| The old routes answered GET as well as POST — a replay upload behind a URL anyone
+| could paste. POST only here.
+|
+| Upload keeps the fixtures gate, and for a write it earns its place twice over: a
+| test-mode caller gets the example payload back instead of writing to the live NGS
+| schema.
+*/
+
+Route::post('ngs/games/upload', [NgsController::class, 'uploadGames'])
+    ->middleware(['api.ngs:upload', 'api.fixtures:ngs_games_upload'])
+    ->name('api.external.ngs.games.upload');
+
+Route::post('ngs/games/delete', [NgsController::class, 'deleteGames'])
+    ->middleware('api.ngs:upload')
+    ->name('api.external.ngs.games.delete');
+
+/*
 | Ingestion. Anonymous permanently, so no key, no fixtures, and no quota —
 | there is no account to charge. Its own per-IP limits stand in, carried over
 | from the old route; the shared per-key limiter skips this one, because a

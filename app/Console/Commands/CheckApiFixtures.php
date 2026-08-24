@@ -23,12 +23,6 @@ class CheckApiFixtures extends Command
     protected $description = 'Verify every public API endpoint has a fixture file and the fixture middleware';
 
     /**
-     * Registry rows that are deliberately not routed. The old API exposed seven
-     * NGS endpoints; these seven keys it never routed are sunset candidates,
-     * recorded in the plan rather than built. Everything else missing a route is
-     * a gap, not a decision.
-     */
-    /**
      * Registry rows that are not routed *yet*. Reported, but do not fail the
      * command: they are known outstanding work rather than drift, and a check
      * that is permanently red is a check people stop reading.
@@ -36,11 +30,14 @@ class CheckApiFixtures extends Command
      * Distinct from UNROUTED_BY_DESIGN below, which is work deliberately never
      * done. Anything here should eventually leave this list by being built.
      */
-    private const UNROUTED_PENDING = [
-        // The last Milestone I endpoint. Tracked in the plan.
-        'ngs_games_upload',
-    ];
+    private const UNROUTED_PENDING = [];
 
+    /**
+     * Registry rows that are deliberately not routed. The old API exposed seven
+     * NGS endpoints; these seven keys it never routed are sunset candidates,
+     * recorded in the plan rather than built. Everything else missing a route is
+     * a gap, not a decision.
+     */
     private const UNROUTED_BY_DESIGN = [
         'ngs_standings',
         'ngs_divisions',

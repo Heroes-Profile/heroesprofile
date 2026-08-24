@@ -117,6 +117,29 @@ return [
             ]) : [],
         ],
 
+        /*
+        | NGS uploads carry `mode=prod|dev`, which the old API used to pick between
+        | the live NGS schema and a scratch copy. Same switch, same two schemas.
+        */
+        'heroesprofile_ngs_dev' => [
+            'driver' => 'mysql',
+            'host' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_HOST_LOCAL'),
+            'port' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_PORT'),
+            'database' => env('HEROESPROFILE_DB_DATABASE_NGS_DEV'),
+            'username' => env('HEROESPROFILE_DB_USERNAME'),
+            'password' => env('HEROESPROFILE_DB_PASSWORD'),
+            'unix_socket' => env('APP_ENV') == 'production' ? env('HEROESPROFILE_DB_HOST') : '',
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
         'heroesprofile_ccl' => [
             'driver' => 'mysql',
             'host' => env('APP_ENV') == 'production' ? '' : env('HEROESPROFILE_DB_HOST_LOCAL'),
