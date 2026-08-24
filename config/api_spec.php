@@ -2,7 +2,7 @@
 
 /*
 |--------------------------------------------------------------------------
-| Public API specification
+| External API specification
 |--------------------------------------------------------------------------
 |
 | What `php artisan api:build-spec` cannot read off the route table.
@@ -30,21 +30,15 @@ return [
     ],
 
     /*
-    | Order matters: generated clients default to the first server, so the one that
-    | works today has to lead. `api.heroesprofile.com` still resolves to the old site
-    | until the subdomain moves on 1 Jan 2027 — advertising it alone would have
-    | pointed every generated client at a host that cannot serve v1.
+    | One server, deliberately. `api.heroesprofile.com` serves the old API until it is
+    | retired and then redirects here — it is never a second base URL, so listing it
+    | would point generated clients at a host that redirects rather than answers.
     |
-    | The path-based URL is not a stopgap. `RouteServiceProvider` mounts these routes
-    | under `api.path` with no host constraint, so it keeps answering after the
-    | subdomain moves. Porting to it is a one-time change.
-    |
-    | Keep both in step with `config/api.php` (`path` and `domain`).
+    | Keep in step with `api.path` in `config/api.php`.
     */
 
     'servers' => [
-        ['url' => 'https://www.heroesprofile.com/api/public/v1', 'description' => 'Production'],
-        ['url' => 'https://api.heroesprofile.com/v1', 'description' => 'Production, from 1 Jan 2027 when the API subdomain moves here'],
+        ['url' => 'https://www.heroesprofile.com/api/external/v1', 'description' => 'Production'],
     ],
 
     /*
@@ -66,10 +60,10 @@ return [
         'game_type' => [
             'required' => true,
             'enum' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'],
-            'description' => 'Game type short names, comma-separated.',
-            'example' => 'sl',
+            'description' => 'Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.',
+            'example' => 'Storm League',
         ],
-        'region' => ['type' => 'integer', 'description' => 'Region id. 1 NA, 2 EU, 3 KR, 5 CN.'],
+        'region' => ['description' => 'Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.', 'example' => 'NA'],
         'hero' => ['description' => 'Hero name.', 'example' => 'Anduin'],
         'role' => ['description' => 'Role name.', 'example' => 'Healer'],
         'game_map' => ['description' => 'Map name.', 'example' => 'Alterac Pass'],
@@ -97,80 +91,80 @@ return [
     'groups' => [
 
         'Reference' => [
-            'api.public.heroes',
-            'api.public.heroes.talents',
-            'api.public.maps',
-            'api.public.mmr.tier',
-            'api.public.patches',
+            'api.external.heroes',
+            'api.external.heroes.talents',
+            'api.external.maps',
+            'api.external.mmr.tier',
+            'api.external.patches',
         ],
 
         'Global Hero Stats' => [
-            'api.public.compositions',
-            'api.public.compositions.heroes',
-            'api.public.draft',
-            'api.public.heroes.maps',
-            'api.public.heroes.matchups',
-            'api.public.heroes.matchups.talents',
-            'api.public.heroes.stats',
-            'api.public.heroes.talents.builds',
-            'api.public.heroes.talents.builds.all',
-            'api.public.heroes.talents.details',
-            'api.public.party',
+            'api.external.compositions',
+            'api.external.compositions.heroes',
+            'api.external.draft',
+            'api.external.heroes.maps',
+            'api.external.heroes.matchups',
+            'api.external.heroes.matchups.talents',
+            'api.external.heroes.stats',
+            'api.external.heroes.talents.builds',
+            'api.external.heroes.talents.builds.all',
+            'api.external.heroes.talents.details',
+            'api.external.party',
         ],
 
         'Player Stats' => [
-            'api.public.players',
-            'api.public.players.friendfoe',
-            'api.public.players.heroes',
-            'api.public.players.heroes.single',
-            'api.public.players.maps',
-            'api.public.players.maps.single',
-            'api.public.players.matches',
-            'api.public.players.matchups',
-            'api.public.players.mmr',
-            'api.public.players.mmr.heroes',
-            'api.public.players.mmr.roles',
-            'api.public.players.roles',
-            'api.public.players.roles.single',
-            'api.public.players.talents.build',
+            'api.external.players',
+            'api.external.players.friendfoe',
+            'api.external.players.heroes',
+            'api.external.players.heroes.single',
+            'api.external.players.maps',
+            'api.external.players.maps.single',
+            'api.external.players.matches',
+            'api.external.players.matchups',
+            'api.external.players.mmr',
+            'api.external.players.mmr.heroes',
+            'api.external.players.mmr.roles',
+            'api.external.players.roles',
+            'api.external.players.roles.single',
+            'api.external.players.talents.build',
         ],
 
         'Leaderboards' => [
-            'api.public.leaderboard',
+            'api.external.leaderboard',
         ],
 
         'Matches' => [
-            'api.public.matches.bans',
-            'api.public.matches.show',
-            'api.public.replays.download',
-            'api.public.replays.index',
+            'api.external.matches.bans',
+            'api.external.matches.show',
+            'api.external.replays.download',
+            'api.external.replays.index',
         ],
 
         'NGS Stats' => [
-            'api.public.ngs.hero.stat',
-            'api.public.ngs.leaderboard.average',
-            'api.public.ngs.leaderboard.total',
-            'api.public.ngs.match',
-            'api.public.ngs.player.profile',
-            'api.public.ngs.replay.data',
+            'api.external.ngs.hero.stat',
+            'api.external.ngs.leaderboard.average',
+            'api.external.ngs.leaderboard.total',
+            'api.external.ngs.match',
+            'api.external.ngs.player.profile',
+            'api.external.ngs.replay.data',
         ],
 
         'Tools' => [
-            'api.public.heroes.talents.builder',
-            'api.public.heroes.talents.builder.replays',
-            'api.public.tools.activity.players.unique',
-            'api.public.tools.randomize',
+            'api.external.heroes.talents.builder',
+            'api.external.heroes.talents.builder.replays',
+            'api.external.tools.activity.players.unique',
+            'api.external.tools.randomize',
         ],
 
         'Uploading Replays' => [
-            'api.public.prematch',
-            'api.public.replays.fingerprint',
-            'api.public.replays.parsed',
-            'api.public.upload',
+            'api.external.prematch',
+            'api.external.replays.fingerprint',
+            'api.external.replays.parsed',
+            'api.external.upload',
         ],
 
         'Job Results' => [
-            'api.public.jobs',
+            'api.external.jobs',
         ],
 
     ],
@@ -225,29 +219,29 @@ return [
         | Reference data. Large, slow-moving, and effectively free.
         */
 
-        'api.public.maps' => [
+        'api.external.maps' => [
             'summary' => 'Every map, with its id and rotation status.',
             'parameters' => [],
         ],
 
-        'api.public.heroes' => [
+        'api.external.heroes' => [
             'summary' => 'Every hero, with role, type and release date.',
             'parameters' => [],
         ],
 
-        'api.public.heroes.talents' => [
+        'api.external.heroes.talents' => [
             'summary' => 'Every talent for every hero.',
             'parameters' => [
                 'hero' => ['description' => 'Restrict to one hero by name.', 'example' => 'Anduin'],
             ],
         ],
 
-        'api.public.patches' => [
+        'api.external.patches' => [
             'summary' => 'Game versions, with the season each belongs to.',
             'parameters' => [],
         ],
 
-        'api.public.mmr.tier' => [
+        'api.external.mmr.tier' => [
             'summary' => 'The league tier a rating falls in.',
             'parameters' => [
                 'game_type' => ['required' => true, 'description' => 'Game type short name.', 'example' => 'sl'],
@@ -260,12 +254,12 @@ return [
         | the wrappers translate for the controllers that want ids.
         */
 
-        'api.public.players' => [
+        'api.external.players' => [
             'summary' => 'Profile, ratings and career totals for one player.',
             'uses' => ['player'],
         ],
 
-        'api.public.players.matches' => [
+        'api.external.players.matches' => [
             'summary' => 'Match history, with the full stat line for each game.',
             'uses' => ['player'],
             'parameters' => [
@@ -276,7 +270,7 @@ return [
             ],
         ],
 
-        'api.public.players.heroes' => [
+        'api.external.players.heroes' => [
             'summary' => 'Per-hero performance for one player.',
             'uses' => ['player'],
             'parameters' => [
@@ -286,7 +280,7 @@ return [
             ],
         ],
 
-        'api.public.players.heroes.single' => [
+        'api.external.players.heroes.single' => [
             'summary' => 'One hero, for one player.',
             'uses' => ['player'],
             'parameters' => [
@@ -296,7 +290,7 @@ return [
             ],
         ],
 
-        'api.public.players.maps' => [
+        'api.external.players.maps' => [
             'summary' => 'Per-map performance for one player.',
             'uses' => ['player'],
             'parameters' => [
@@ -305,7 +299,7 @@ return [
             ],
         ],
 
-        'api.public.players.maps.single' => [
+        'api.external.players.maps.single' => [
             'summary' => 'One map, for one player.',
             'uses' => ['player'],
             'parameters' => [
@@ -315,7 +309,7 @@ return [
             ],
         ],
 
-        'api.public.players.roles' => [
+        'api.external.players.roles' => [
             'summary' => 'Per-role performance for one player.',
             'uses' => ['player'],
             'parameters' => [
@@ -324,7 +318,7 @@ return [
             ],
         ],
 
-        'api.public.players.roles.single' => [
+        'api.external.players.roles.single' => [
             'summary' => 'One role, for one player.',
             'uses' => ['player'],
             'parameters' => [
@@ -334,7 +328,7 @@ return [
             ],
         ],
 
-        'api.public.players.mmr' => [
+        'api.external.players.mmr' => [
             'summary' => 'Rating history for the account.',
             'uses' => ['player'],
             'parameters' => [
@@ -343,7 +337,7 @@ return [
             ],
         ],
 
-        'api.public.players.mmr.heroes' => [
+        'api.external.players.mmr.heroes' => [
             'summary' => 'Rating history for one hero.',
             'uses' => ['player'],
             'parameters' => [
@@ -353,7 +347,7 @@ return [
             ],
         ],
 
-        'api.public.players.mmr.roles' => [
+        'api.external.players.mmr.roles' => [
             'summary' => 'Rating history for one role.',
             'uses' => ['player'],
             'parameters' => [
@@ -363,7 +357,7 @@ return [
             ],
         ],
 
-        'api.public.players.talents.build' => [
+        'api.external.players.talents.build' => [
             'summary' => 'A player, most played builds on one hero.',
             'uses' => ['player'],
             'parameters' => [
@@ -374,7 +368,7 @@ return [
             ],
         ],
 
-        'api.public.players.matchups' => [
+        'api.external.players.matchups' => [
             'summary' => 'Opponents this player meets most, and how they fare.',
             'uses' => ['player'],
             'parameters' => [
@@ -384,7 +378,7 @@ return [
             ],
         ],
 
-        'api.public.players.friendfoe' => [
+        'api.external.players.friendfoe' => [
             'summary' => 'Team-mates and opponents this player sees repeatedly.',
             'uses' => ['player'],
             'parameters' => [
@@ -401,21 +395,21 @@ return [
         | Matches.
         */
 
-        'api.public.matches.show' => [
+        'api.external.matches.show' => [
             'summary' => 'Full detail for one match, including every stat line.',
             'parameters' => [
                 'replayID' => ['type' => 'integer', 'description' => 'Heroes Profile match ID.'],
             ],
         ],
 
-        'api.public.matches.bans' => [
+        'api.external.matches.bans' => [
             'summary' => 'Hero bans for one match.',
             'parameters' => [
                 'replayID' => ['type' => 'integer', 'description' => 'Heroes Profile match ID.'],
             ],
         ],
 
-        'api.public.replays.index' => [
+        'api.external.replays.index' => [
             'summary' => 'A page of replays, for building a local copy of the data. Paged by replay id: pass the `next_after` from one response as the `after` of the next, and stop when it comes back null.',
             'parameters' => [
                 'after' => ['type' => 'integer', 'description' => 'Return replays with an id greater than this. Omit to start from the beginning.', 'example' => 0],
@@ -426,7 +420,7 @@ return [
             ],
         ],
 
-        'api.public.replays.download' => [
+        'api.external.replays.download' => [
             'summary' => 'The original .StormReplay file for a match.',
             'parameters' => [
                 'replayID' => ['required' => true, 'type' => 'integer', 'description' => 'Heroes Profile match ID.'],
@@ -446,13 +440,13 @@ return [
         | so each carries `async`.
         */
 
-        'api.public.heroes.stats' => [
+        'api.external.heroes.stats' => [
             'summary' => 'Win rate, popularity and ban rate for every hero.',
             'uses' => ['globals'],
             'async' => true,
         ],
 
-        'api.public.heroes.matchups' => [
+        'api.external.heroes.matchups' => [
             'summary' => 'How one hero performs with and against every other.',
             'uses' => ['globals'],
             'async' => true,
@@ -461,7 +455,7 @@ return [
             ],
         ],
 
-        'api.public.heroes.maps' => [
+        'api.external.heroes.maps' => [
             'summary' => 'One hero, win rate per map.',
             'uses' => ['globals'],
             'async' => true,
@@ -470,7 +464,7 @@ return [
             ],
         ],
 
-        'api.public.heroes.matchups.talents' => [
+        'api.external.heroes.matchups.talents' => [
             'summary' => 'Talent performance for one hero against or alongside another.',
             'uses' => ['globals'],
             'async' => true,
@@ -482,7 +476,7 @@ return [
             ],
         ],
 
-        'api.public.heroes.talents.details' => [
+        'api.external.heroes.talents.details' => [
             'summary' => 'Win rate and popularity for every talent.',
             'uses' => ['globals'],
             'async' => true,
@@ -491,7 +485,7 @@ return [
             ],
         ],
 
-        'api.public.heroes.talents.builds' => [
+        'api.external.heroes.talents.builds' => [
             'summary' => 'The most played complete builds for one hero.',
             'uses' => ['globals'],
             'async' => true,
@@ -506,12 +500,12 @@ return [
             ],
         ],
 
-        'api.public.heroes.talents.builds.all' => [
+        'api.external.heroes.talents.builds.all' => [
             'summary' => 'Every hero, most popular builds, for the current patch. Takes no parameters: the timeframe and build type come from the site defaults, not the request.',
             'parameters' => [],
         ],
 
-        'api.public.heroes.talents.builder' => [
+        'api.external.heroes.talents.builder' => [
             'summary' => 'Win rates for a partially chosen build, to evaluate the next talent.',
             'uses' => ['globals'],
             'async' => true,
@@ -521,7 +515,7 @@ return [
             ],
         ],
 
-        'api.public.heroes.talents.builder.replays' => [
+        'api.external.heroes.talents.builder.replays' => [
             'summary' => 'The replays behind a talent-builder result.',
             'uses' => ['globals'],
             'async' => true,
@@ -531,7 +525,7 @@ return [
             ],
         ],
 
-        'api.public.compositions' => [
+        'api.external.compositions' => [
             'summary' => 'Which team compositions win, and how often.',
             'uses' => ['globals'],
             'async' => true,
@@ -540,7 +534,7 @@ return [
             ],
         ],
 
-        'api.public.compositions.heroes' => [
+        'api.external.compositions.heroes' => [
             'summary' => 'The heroes making up one composition.',
             'uses' => ['globals'],
             'async' => true,
@@ -550,7 +544,7 @@ return [
             ],
         ],
 
-        'api.public.draft' => [
+        'api.external.draft' => [
             'summary' => 'Draft order and pick position for one hero.',
             'uses' => ['globals'],
             'async' => true,
@@ -559,7 +553,7 @@ return [
             ],
         ],
 
-        'api.public.party' => [
+        'api.external.party' => [
             'summary' => 'How party size affects win rate.',
             'uses' => ['globals'],
             'async' => true,
@@ -569,7 +563,7 @@ return [
             ],
         ],
 
-        'api.public.leaderboard' => [
+        'api.external.leaderboard' => [
             'summary' => 'Season leaderboards by player, hero or role.',
             'parameters' => [
                 'season' => ['type' => 'integer', 'description' => 'Season id. Defaults to the current season.'],
@@ -583,7 +577,7 @@ return [
             ],
         ],
 
-        'api.public.jobs' => [
+        'api.external.jobs' => [
             'summary' => 'Collect the result of a job returned by a 202. Costs no quota.',
             'parameters' => [
                 'jobId' => ['description' => 'The `job_id` from a 202 response.'],
@@ -600,7 +594,7 @@ return [
         | holding the NGS flags, and charged no quota.
         */
 
-        'api.public.ngs.match' => [
+        'api.external.ngs.match' => [
             'summary' => 'One NGS match.',
             'parameters' => [
                 'season' => ['required' => true, 'type' => 'integer', 'description' => 'NGS season.'],
@@ -610,7 +604,7 @@ return [
             ],
         ],
 
-        'api.public.ngs.hero.stat' => [
+        'api.external.ngs.hero.stat' => [
             'summary' => 'Hero statistics within one NGS division.',
             'parameters' => [
                 'season' => ['required' => true, 'type' => 'integer'],
@@ -620,7 +614,7 @@ return [
             ],
         ],
 
-        'api.public.ngs.player.profile' => [
+        'api.external.ngs.player.profile' => [
             'summary' => 'One NGS player.',
             'parameters' => [
                 'battletag' => ['required' => true, 'description' => 'Full battletag.'],
@@ -629,7 +623,7 @@ return [
             ],
         ],
 
-        'api.public.ngs.leaderboard.average' => [
+        'api.external.ngs.leaderboard.average' => [
             'summary' => 'NGS leaderboard by highest average of one statistic.',
             'parameters' => [
                 'stat' => ['required' => true, 'description' => 'The statistic to rank by.', 'example' => 'hero_damage'],
@@ -637,7 +631,7 @@ return [
             ],
         ],
 
-        'api.public.ngs.leaderboard.total' => [
+        'api.external.ngs.leaderboard.total' => [
             'summary' => 'NGS leaderboard by highest total of one statistic.',
             'parameters' => [
                 'stat' => ['required' => true, 'description' => 'The statistic to rank by.', 'example' => 'hero_damage'],
@@ -645,7 +639,7 @@ return [
             ],
         ],
 
-        'api.public.ngs.replay.data' => [
+        'api.external.ngs.replay.data' => [
             'summary' => 'Full detail for one NGS match by replay id.',
             'parameters' => [
                 'replayID' => ['required' => true, 'type' => 'integer', 'description' => 'Heroes Profile match ID.'],
@@ -656,14 +650,14 @@ return [
         | Tools.
         */
 
-        'api.public.tools.randomize' => [
+        'api.external.tools.randomize' => [
             'summary' => 'A random talent build for one hero.',
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
             ],
         ],
 
-        'api.public.tools.activity.players.unique' => [
+        'api.external.tools.activity.players.unique' => [
             'summary' => 'Unique players seen per month.',
             'parameters' => [
                 'game_type' => ['description' => 'Game type short names, comma-separated. Omit for every type.'],
@@ -680,7 +674,7 @@ return [
         | so an envelope kills the feature with only a client-side log line.
         */
 
-        'api.public.upload' => [
+        'api.external.upload' => [
             'summary' => 'Upload a replay.',
             'parameters' => [
                 'source' => ['description' => 'Which client is uploading. `desktop` and `electron` own a replay source; anything else defers to them.', 'example' => 'desktop'],
@@ -704,7 +698,7 @@ return [
             ],
         ],
 
-        'api.public.replays.fingerprint' => [
+        'api.external.replays.fingerprint' => [
             'summary' => 'Whether a replay with this fingerprint is already stored.',
             'parameters' => [
                 'fingerprint' => ['description' => 'The replay fingerprint.'],
@@ -721,7 +715,7 @@ return [
             ],
         ],
 
-        'api.public.replays.parsed' => [
+        'api.external.replays.parsed' => [
             'summary' => 'Whether a replay has been parsed and stored yet.',
             'parameters' => [
                 'replayID' => ['required' => true, 'type' => 'integer', 'description' => 'Heroes Profile match ID.'],
@@ -734,7 +728,7 @@ return [
             ],
         ],
 
-        'api.public.prematch' => [
+        'api.external.prematch' => [
             'summary' => 'Record the players in a game that is starting.',
             'parameters' => [],
             'responses' => [

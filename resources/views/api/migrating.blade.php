@@ -27,7 +27,7 @@
     <h2 class="text-2xl mb-3">The short version</h2>
     <ul class="list-disc list-inside text-sm space-y-1 mb-8">
       <li>
-        Base URL is <code class="text-lteal">https://www.heroesprofile.com/api/public/v1</code>.
+        Base URL is <code class="text-lteal">https://www.heroesprofile.com/api/external/v1</code>.
         Port to that — it works now and keeps working
       </li>
       <li>Send your key as <code class="text-lteal">Authorization: Bearer &lt;key&gt;</code> instead of <code>?api_token=</code></li>
@@ -38,20 +38,18 @@
 
     <h2 class="text-2xl mb-3">Base URL</h2>
     <p class="text-sm mb-3">
-      <code class="text-lteal">https://www.heroesprofile.com/api/public/v1</code> — every
+      <code class="text-lteal">https://www.heroesprofile.com/api/external/v1</code> — every
       path below hangs off that. <code>/v1/heroes</code> in the table means
-      <code>https://www.heroesprofile.com/api/public/v1/heroes</code>.
+      <code>https://www.heroesprofile.com/api/external/v1/heroes</code>.
     </p>
     <p class="text-sm mb-3">
-      <strong><code>{{ $domain }}</code> is still the old API</strong> and stays that way
-      until <strong>1 January 2027</strong>. Pointing at it today gets you the old
-      endpoints, not these — so build against the URL above, not the subdomain.
+      <strong>That is the only base URL, now and later.</strong> Port to it once and you
+      are done — there is no second address to move to afterwards.
     </p>
     <p class="text-sm mb-8">
-      On that date the subdomain starts serving v1 as
-      <code class="text-lteal">https://{{ $domain }}/v1</code>. <strong>You do not have to
-      move again.</strong> The path-based URL keeps answering afterwards, so porting once
-      is enough — the subdomain is just a shorter alias if you would rather use it.
+      <code>{{ $domain }}</code> is the <em>old</em> API and stays that way until it is
+      switched off on <strong>1 January 2027</strong>, after which it simply redirects
+      here. It is not a way to reach v1 at any point, so do not build against it.
     </p>
 
     <h2 class="text-2xl mb-3">Authentication</h2>

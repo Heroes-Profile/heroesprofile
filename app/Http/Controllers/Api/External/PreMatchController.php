@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Public;
+namespace App\Http\Controllers\Api\External;
 
 use App\Http\Controllers\Controller;
 use App\Services\Api\PreMatchService;

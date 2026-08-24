@@ -41,10 +41,11 @@ class ApiVariables
             [
                 'name' => 'game_type',
                 'used_by' => 'Nearly everything',
-                'summary' => 'Short names, comma-separated for endpoints that accept several. Defaults to `sl` where it is required and you omit it.',
-                'pairs' => GameType::orderBy('type_id')->get()->mapWithKeys(
-                    fn ($type) => [$type->short_name => $type->name]
-                )->all(),
+                'summary' => 'Either form works — `Storm League` or `sl`, case-insensitive. Comma-separated for endpoints that accept several. Defaults to `sl` where it is required and you omit it.',
+                'pairs' => GameType::whereIn('short_name', ApiParameters::GAME_TYPES)
+                    ->orderBy('type_id')->get()->mapWithKeys(
+                        fn ($type) => [$type->short_name => $type->name]
+                    )->all(),
             ],
             [
                 'name' => 'role',
@@ -55,7 +56,7 @@ class ApiVariables
             [
                 'name' => 'region',
                 'used_by' => 'Player endpoints (required), global filters (optional)',
-                'summary' => 'A numeric region id. Player endpoints require it; global endpoints treat its absence as every region.',
+                'summary' => 'Either form works — `NA` or `1`. Player endpoints require it; global endpoints treat its absence as every region.',
                 'pairs' => ['1' => 'NA', '2' => 'EU', '3' => 'KR', '5' => 'CN'],
             ],
             [

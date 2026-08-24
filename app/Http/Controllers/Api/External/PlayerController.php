@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Public;
+namespace App\Http\Controllers\Api\External;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Player\FriendFoeController;
@@ -10,6 +10,7 @@ use App\Http\Controllers\Player\PlayerMatchHistory;
 use App\Http\Controllers\Player\PlayerMatchupsController;
 use App\Http\Controllers\Player\PlayerMMRController;
 use App\Http\Controllers\Player\PlayerTalentsController;
+use App\Support\ApiParameters;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -58,7 +59,7 @@ class PlayerController extends Controller
         return $this->delegate($request, PlayerMatchHistory::class, 'getData', [
             'pagination_page' => 1,
             'game_type' => self::DEFAULT_GAME_TYPE,
-        ], ['hero' => 'id', 'game_type' => 'array']);
+        ], ['hero' => 'id', 'game_type' => 'array', 'game_map' => 'array']);
     }
 
     public function heroes(Request $request): Response
@@ -102,6 +103,8 @@ class PlayerController extends Controller
         return $this->delegate($request, PlayerMatchupsController::class, 'getMatchupData', [], [
             'hero' => 'id',
             'game_type' => 'array',
+            // Reaches Map::whereIn('name', …).
+            'game_map' => 'array',
         ]);
     }
 
@@ -164,6 +167,16 @@ class PlayerController extends Controller
             }
         }
 
+        $expects = ['game_type' => 'array'];
+
+        // The same internal method reads `game_map` two ways, chosen by `$type`:
+        // `all` puts it through getGameMapFilterValues() (whereIn, wants an array),
+        // `single` through Map::where() (wants a scalar). Declaring it either way
+        // for both would break the other half.
+        if ($type === 'all') {
+            $expects['game_map'] = 'array';
+        }
+
         return $this->delegate($request, PlayerHeroesMapsRolesController::class, 'getData', [
             'page' => $page,
             'type' => $type,
@@ -171,7 +184,7 @@ class PlayerController extends Controller
             // null when absent and then calls in_array() on it. `sl` is what the
             // site sends for a visitor who is not logged in.
             'game_type' => self::DEFAULT_GAME_TYPE,
-        ], ['game_type' => 'array']);
+        ], $expects);
     }
 
     /**
@@ -212,7 +225,7 @@ class PlayerController extends Controller
 
         return $this->delegate($request, PlayerTalentsController::class, 'getPlayerTalentData', [
             'game_type' => self::DEFAULT_GAME_TYPE,
-        ], ['game_type' => 'array']);
+        ], ['game_type' => 'array', 'game_map' => 'array']);
     }
 
     /**
@@ -227,6 +240,34 @@ class PlayerController extends Controller
         array $defaults = [],
         array $expects = []
     ): Response {
+        // Names in, ids out — the mirror of the global endpoints, which want region
+        // names. `NA` and `1` both work here, and `Storm League` alongside `sl`.
+        // Runs before validation, which is what enforces the id form.
+        if ($request->filled('region')) {
+            [$ids, $unknown] = ApiParameters::regionIds($request->input('region'));
+
+            if ($unknown !== []) {
+                return $this->error('unknown_region', 'Not a recognised region: '.implode(', ', $unknown).'. Use NA, EU, KR or CN.', 422);
+            }
+
+            $request->merge(['region' => $ids[0] ?? null]);
+        }
+
+        if ($request->filled('game_type')) {
+            [$codes, $unknown] = ApiParameters::gameTypes($request->input('game_type'));
+
+            if ($unknown !== []) {
+                return $this->error('unknown_game_type', 'Not a recognised game type: '.implode(', ', $unknown).'. Accepted: '.implode(', ', ApiParameters::GAME_TYPES).'.', 422);
+            }
+
+            $input = $request->input('game_type');
+            $request->merge([
+                'game_type' => is_string($input) && ! str_contains($input, ',')
+                    ? ($codes[0] ?? $input)
+                    : $codes,
+            ]);
+        }
+
         $validated = $request->validate([
             'battletag' => ['required', 'string'],
             'region' => ['required', 'integer', 'in:1,2,3,5'],
@@ -272,10 +313,15 @@ class PlayerController extends Controller
             $request->merge(['hero' => $heroId]);
         }
 
-        if (($expects['game_type'] ?? null) === 'array' && $request->filled('game_type')) {
-            $request->merge([
-                'game_type' => explode(',', (string) $request->input('game_type')),
-            ]);
+        // Any parameter declared `array` is split, not just game_type. Which ones
+        // need it differs per endpoint and cannot be defaulted: `matches`,
+        // `matchups` and `talentBuild` reach `Map::whereIn('name', …)` and need an
+        // array, while `friendFoe` reaches `Map::where('name', …)` and needs a
+        // scalar. Getting it wrong either way fails inside the query builder.
+        foreach ($expects as $key => $kind) {
+            if ($kind === 'array' && $request->filled($key) && is_string($request->input($key))) {
+                $request->merge([$key => explode(',', (string) $request->input($key))]);
+            }
         }
 
         $result = app()->call([app($controller), $method], ['request' => $request]);

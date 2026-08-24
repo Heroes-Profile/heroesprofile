@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "https://api.heroesprofile.com/v1",
+            "url": "https://www.heroesprofile.com/api/external/v1",
             "description": "Production"
         }
     ],
@@ -58,7 +58,7 @@
         "/compositions": {
             "get": {
                 "summary": "Which team compositions win, and how often.",
-                "operationId": "api.public.compositions",
+                "operationId": "api.external.compositions",
                 "parameters": [
                     {
                         "name": "timeframe_type",
@@ -101,17 +101,18 @@
                                 "ar"
                             ]
                         },
-                        "description": "Game type short names, comma-separated.",
-                        "example": "sl"
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
+                        "example": "Storm League"
                     },
                     {
                         "name": "region",
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "description": "Region id. 1 NA, 2 EU, 3 KR, 5 CN."
+                        "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
+                        "example": "NA"
                     },
                     {
                         "name": "hero",
@@ -414,7 +415,7 @@
         "/compositions/heroes": {
             "get": {
                 "summary": "The heroes making up one composition.",
-                "operationId": "api.public.compositions.heroes",
+                "operationId": "api.external.compositions.heroes",
                 "parameters": [
                     {
                         "name": "timeframe_type",
@@ -457,17 +458,18 @@
                                 "ar"
                             ]
                         },
-                        "description": "Game type short names, comma-separated.",
-                        "example": "sl"
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
+                        "example": "Storm League"
                     },
                     {
                         "name": "region",
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "description": "Region id. 1 NA, 2 EU, 3 KR, 5 CN."
+                        "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
+                        "example": "NA"
                     },
                     {
                         "name": "hero",
@@ -1016,7 +1018,7 @@
         "/draft": {
             "get": {
                 "summary": "Draft order and pick position for one hero.",
-                "operationId": "api.public.draft",
+                "operationId": "api.external.draft",
                 "parameters": [
                     {
                         "name": "timeframe_type",
@@ -1059,17 +1061,18 @@
                                 "ar"
                             ]
                         },
-                        "description": "Game type short names, comma-separated.",
-                        "example": "sl"
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
+                        "example": "Storm League"
                     },
                     {
                         "name": "region",
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "description": "Region id. 1 NA, 2 EU, 3 KR, 5 CN."
+                        "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
+                        "example": "NA"
                     },
                     {
                         "name": "hero",
@@ -1263,7 +1266,7 @@
         "/heroes": {
             "get": {
                 "summary": "Every hero, with role, type and release date.",
-                "operationId": "api.public.heroes",
+                "operationId": "api.external.heroes",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -1294,6 +1297,24 @@
                                                         ]
                                                     },
                                                     "role": {
+                                                        "type": [
+                                                            "string",
+                                                            "null"
+                                                        ]
+                                                    },
+                                                    "new_role": {
+                                                        "type": "string"
+                                                    },
+                                                    "type": {
+                                                        "type": "string"
+                                                    },
+                                                    "release_date": {
+                                                        "type": "string"
+                                                    },
+                                                    "attribute_id": {
+                                                        "type": "string"
+                                                    },
+                                                    "build_copy_name": {
                                                         "type": "string"
                                                     }
                                                 },
@@ -1302,7 +1323,12 @@
                                                     "name",
                                                     "short_name",
                                                     "alt_name",
-                                                    "role"
+                                                    "role",
+                                                    "new_role",
+                                                    "type",
+                                                    "release_date",
+                                                    "attribute_id",
+                                                    "build_copy_name"
                                                 ]
                                             }
                                         }
@@ -1324,7 +1350,7 @@
         "/heroes/maps": {
             "get": {
                 "summary": "One hero, win rate per map.",
-                "operationId": "api.public.heroes.maps",
+                "operationId": "api.external.heroes.maps",
                 "parameters": [
                     {
                         "name": "timeframe_type",
@@ -1367,17 +1393,18 @@
                                 "ar"
                             ]
                         },
-                        "description": "Game type short names, comma-separated.",
-                        "example": "sl"
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
+                        "example": "Storm League"
                     },
                     {
                         "name": "region",
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "description": "Region id. 1 NA, 2 EU, 3 KR, 5 CN."
+                        "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
+                        "example": "NA"
                     },
                     {
                         "name": "hero",
@@ -1602,7 +1629,7 @@
         "/heroes/matchups": {
             "get": {
                 "summary": "How one hero performs with and against every other.",
-                "operationId": "api.public.heroes.matchups",
+                "operationId": "api.external.heroes.matchups",
                 "parameters": [
                     {
                         "name": "timeframe_type",
@@ -1645,17 +1672,18 @@
                                 "ar"
                             ]
                         },
-                        "description": "Game type short names, comma-separated.",
-                        "example": "sl"
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
+                        "example": "Storm League"
                     },
                     {
                         "name": "region",
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "description": "Region id. 1 NA, 2 EU, 3 KR, 5 CN."
+                        "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
+                        "example": "NA"
                     },
                     {
                         "name": "hero",
@@ -2188,7 +2216,7 @@
         "/heroes/matchups/talents": {
             "get": {
                 "summary": "Talent performance for one hero against or alongside another.",
-                "operationId": "api.public.heroes.matchups.talents",
+                "operationId": "api.external.heroes.matchups.talents",
                 "parameters": [
                     {
                         "name": "timeframe_type",
@@ -2231,17 +2259,18 @@
                                 "ar"
                             ]
                         },
-                        "description": "Game type short names, comma-separated.",
-                        "example": "sl"
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
+                        "example": "Storm League"
                     },
                     {
                         "name": "region",
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "description": "Region id. 1 NA, 2 EU, 3 KR, 5 CN."
+                        "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
+                        "example": "NA"
                     },
                     {
                         "name": "hero",
@@ -3261,7 +3290,7 @@
         "/heroes/stats": {
             "get": {
                 "summary": "Win rate, popularity and ban rate for every hero.",
-                "operationId": "api.public.heroes.stats",
+                "operationId": "api.external.heroes.stats",
                 "parameters": [
                     {
                         "name": "timeframe_type",
@@ -3304,17 +3333,18 @@
                                 "ar"
                             ]
                         },
-                        "description": "Game type short names, comma-separated.",
-                        "example": "sl"
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
+                        "example": "Storm League"
                     },
                     {
                         "name": "region",
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "description": "Region id. 1 NA, 2 EU, 3 KR, 5 CN."
+                        "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
+                        "example": "NA"
                     },
                     {
                         "name": "hero",
@@ -3554,7 +3584,7 @@
         "/heroes/talents": {
             "get": {
                 "summary": "Every talent for every hero.",
-                "operationId": "api.public.heroes.talents",
+                "operationId": "api.external.heroes.talents",
                 "parameters": [
                     {
                         "name": "hero",
@@ -3674,7 +3704,7 @@
         "/heroes/talents/builder": {
             "get": {
                 "summary": "Win rates for a partially chosen build, to evaluate the next talent.",
-                "operationId": "api.public.heroes.talents.builder",
+                "operationId": "api.external.heroes.talents.builder",
                 "parameters": [
                     {
                         "name": "timeframe_type",
@@ -3717,17 +3747,18 @@
                                 "ar"
                             ]
                         },
-                        "description": "Game type short names, comma-separated.",
-                        "example": "sl"
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
+                        "example": "Storm League"
                     },
                     {
                         "name": "region",
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "description": "Region id. 1 NA, 2 EU, 3 KR, 5 CN."
+                        "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
+                        "example": "NA"
                     },
                     {
                         "name": "hero",
@@ -4472,7 +4503,7 @@
         "/heroes/talents/builder/replays": {
             "get": {
                 "summary": "The replays behind a talent-builder result.",
-                "operationId": "api.public.heroes.talents.builder.replays",
+                "operationId": "api.external.heroes.talents.builder.replays",
                 "parameters": [
                     {
                         "name": "timeframe_type",
@@ -4515,17 +4546,18 @@
                                 "ar"
                             ]
                         },
-                        "description": "Game type short names, comma-separated.",
-                        "example": "sl"
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
+                        "example": "Storm League"
                     },
                     {
                         "name": "region",
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "description": "Region id. 1 NA, 2 EU, 3 KR, 5 CN."
+                        "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
+                        "example": "NA"
                     },
                     {
                         "name": "hero",
@@ -5061,7 +5093,7 @@
         "/heroes/talents/builds": {
             "get": {
                 "summary": "The most played complete builds for one hero.",
-                "operationId": "api.public.heroes.talents.builds",
+                "operationId": "api.external.heroes.talents.builds",
                 "parameters": [
                     {
                         "name": "timeframe_type",
@@ -5104,17 +5136,18 @@
                                 "ar"
                             ]
                         },
-                        "description": "Game type short names, comma-separated.",
-                        "example": "sl"
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
+                        "example": "Storm League"
                     },
                     {
                         "name": "region",
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "description": "Region id. 1 NA, 2 EU, 3 KR, 5 CN."
+                        "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
+                        "example": "NA"
                     },
                     {
                         "name": "hero",
@@ -5881,7 +5914,7 @@
         "/heroes/talents/builds/all": {
             "get": {
                 "summary": "Every hero, most popular builds, for the current patch. Takes no parameters: the timeframe and build type come from the site defaults, not the request.",
-                "operationId": "api.public.heroes.talents.builds.all",
+                "operationId": "api.external.heroes.talents.builds.all",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -161185,7 +161218,7 @@
         "/heroes/talents/details": {
             "get": {
                 "summary": "Win rate and popularity for every talent.",
-                "operationId": "api.public.heroes.talents.details",
+                "operationId": "api.external.heroes.talents.details",
                 "parameters": [
                     {
                         "name": "timeframe_type",
@@ -161228,17 +161261,18 @@
                                 "ar"
                             ]
                         },
-                        "description": "Game type short names, comma-separated.",
-                        "example": "sl"
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
+                        "example": "Storm League"
                     },
                     {
                         "name": "region",
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "description": "Region id. 1 NA, 2 EU, 3 KR, 5 CN."
+                        "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
+                        "example": "NA"
                     },
                     {
                         "name": "hero",
@@ -162253,7 +162287,7 @@
         "/jobs/{jobId}": {
             "get": {
                 "summary": "Collect the result of a job returned by a 202. Costs no quota.",
-                "operationId": "api.public.jobs",
+                "operationId": "api.external.jobs",
                 "parameters": [
                     {
                         "name": "jobId",
@@ -162284,7 +162318,7 @@
         "/leaderboard": {
             "get": {
                 "summary": "Season leaderboards by player, hero or role.",
-                "operationId": "api.public.leaderboard",
+                "operationId": "api.external.leaderboard",
                 "parameters": [
                     {
                         "name": "season",
@@ -162518,7 +162552,7 @@
         "/maps": {
             "get": {
                 "summary": "Every map, with its id and rotation status.",
-                "operationId": "api.public.maps",
+                "operationId": "api.external.maps",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -162584,7 +162618,7 @@
         "/matches/{replayID}": {
             "get": {
                 "summary": "Full detail for one match, including every stat line.",
-                "operationId": "api.public.matches.show",
+                "operationId": "api.external.matches.show",
                 "parameters": [
                     {
                         "name": "replayID",
@@ -164228,7 +164262,7 @@
         "/matches/{replayID}/bans": {
             "get": {
                 "summary": "Hero bans for one match.",
-                "operationId": "api.public.matches.bans",
+                "operationId": "api.external.matches.bans",
                 "parameters": [
                     {
                         "name": "replayID",
@@ -164354,7 +164388,7 @@
         "/mmr/tier": {
             "get": {
                 "summary": "The league tier a rating falls in.",
-                "operationId": "api.public.mmr.tier",
+                "operationId": "api.external.mmr.tier",
                 "parameters": [
                     {
                         "name": "game_type",
@@ -164414,7 +164448,7 @@
         "/ngs/hero/stat": {
             "get": {
                 "summary": "Hero statistics within one NGS division.",
-                "operationId": "api.public.ngs.hero.stat",
+                "operationId": "api.external.ngs.hero.stat",
                 "parameters": [
                     {
                         "name": "season",
@@ -164540,7 +164574,7 @@
         "/ngs/leaderboard/highest/average/stat": {
             "get": {
                 "summary": "NGS leaderboard by highest average of one statistic.",
-                "operationId": "api.public.ngs.leaderboard.average",
+                "operationId": "api.external.ngs.leaderboard.average",
                 "parameters": [
                     {
                         "name": "stat",
@@ -164612,7 +164646,7 @@
         "/ngs/leaderboard/highest/total/stat": {
             "get": {
                 "summary": "NGS leaderboard by highest total of one statistic.",
-                "operationId": "api.public.ngs.leaderboard.total",
+                "operationId": "api.external.ngs.leaderboard.total",
                 "parameters": [
                     {
                         "name": "stat",
@@ -164684,7 +164718,7 @@
         "/ngs/match": {
             "get": {
                 "summary": "One NGS match.",
-                "operationId": "api.public.ngs.match",
+                "operationId": "api.external.ngs.match",
                 "parameters": [
                     {
                         "name": "season",
@@ -164899,7 +164933,7 @@
         "/ngs/player/profile": {
             "get": {
                 "summary": "One NGS player.",
-                "operationId": "api.public.ngs.player.profile",
+                "operationId": "api.external.ngs.player.profile",
                 "parameters": [
                     {
                         "name": "battletag",
@@ -165132,7 +165166,7 @@
         "/ngs/replay/data": {
             "get": {
                 "summary": "Full detail for one NGS match by replay id.",
-                "operationId": "api.public.ngs.replay.data",
+                "operationId": "api.external.ngs.replay.data",
                 "parameters": [
                     {
                         "name": "replayID",
@@ -166627,7 +166661,7 @@
         "/party": {
             "get": {
                 "summary": "How party size affects win rate.",
-                "operationId": "api.public.party",
+                "operationId": "api.external.party",
                 "parameters": [
                     {
                         "name": "timeframe_type",
@@ -166670,17 +166704,18 @@
                                 "ar"
                             ]
                         },
-                        "description": "Game type short names, comma-separated.",
-                        "example": "sl"
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
+                        "example": "Storm League"
                     },
                     {
                         "name": "region",
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "description": "Region id. 1 NA, 2 EU, 3 KR, 5 CN."
+                        "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
+                        "example": "NA"
                     },
                     {
                         "name": "hero",
@@ -168536,7 +168571,7 @@
         "/patches": {
             "get": {
                 "summary": "Game versions, with the season each belongs to.",
-                "operationId": "api.public.patches",
+                "operationId": "api.external.patches",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -168594,7 +168629,7 @@
         "/players": {
             "get": {
                 "summary": "Profile, ratings and career totals for one player.",
-                "operationId": "api.public.players",
+                "operationId": "api.external.players",
                 "parameters": [
                     {
                         "name": "battletag",
@@ -170230,7 +170265,7 @@
         "/players/friendfoe": {
             "get": {
                 "summary": "Team-mates and opponents this player sees repeatedly.",
-                "operationId": "api.public.players.friendfoe",
+                "operationId": "api.external.players.friendfoe",
                 "parameters": [
                     {
                         "name": "battletag",
@@ -170485,7 +170520,7 @@
         "/players/heroes": {
             "get": {
                 "summary": "Per-hero performance for one player.",
-                "operationId": "api.public.players.heroes",
+                "operationId": "api.external.players.heroes",
                 "parameters": [
                     {
                         "name": "battletag",
@@ -171545,7 +171580,7 @@
         "/players/heroes/single": {
             "get": {
                 "summary": "One hero, for one player.",
-                "operationId": "api.public.players.heroes.single",
+                "operationId": "api.external.players.heroes.single",
                 "parameters": [
                     {
                         "name": "battletag",
@@ -173966,7 +174001,7 @@
         "/players/maps": {
             "get": {
                 "summary": "Per-map performance for one player.",
-                "operationId": "api.public.players.maps",
+                "operationId": "api.external.players.maps",
                 "parameters": [
                     {
                         "name": "battletag",
@@ -174831,7 +174866,7 @@
         "/players/maps/single": {
             "get": {
                 "summary": "One map, for one player.",
-                "operationId": "api.public.players.maps.single",
+                "operationId": "api.external.players.maps.single",
                 "parameters": [
                     {
                         "name": "battletag",
@@ -177431,7 +177466,7 @@
         "/players/matches": {
             "get": {
                 "summary": "Match history, with the full stat line for each game.",
-                "operationId": "api.public.players.matches",
+                "operationId": "api.external.players.matches",
                 "parameters": [
                     {
                         "name": "battletag",
@@ -178253,7 +178288,7 @@
         "/players/matchups": {
             "get": {
                 "summary": "Opponents this player meets most, and how they fare.",
-                "operationId": "api.public.players.matchups",
+                "operationId": "api.external.players.matchups",
                 "parameters": [
                     {
                         "name": "battletag",
@@ -178735,7 +178770,7 @@
         "/players/mmr": {
             "get": {
                 "summary": "Rating history for the account.",
-                "operationId": "api.public.players.mmr",
+                "operationId": "api.external.players.mmr",
                 "parameters": [
                     {
                         "name": "battletag",
@@ -178874,7 +178909,7 @@
         "/players/mmr/heroes": {
             "get": {
                 "summary": "Rating history for one hero.",
-                "operationId": "api.public.players.mmr.heroes",
+                "operationId": "api.external.players.mmr.heroes",
                 "parameters": [
                     {
                         "name": "battletag",
@@ -179132,7 +179167,7 @@
         "/players/mmr/roles": {
             "get": {
                 "summary": "Rating history for one role.",
-                "operationId": "api.public.players.mmr.roles",
+                "operationId": "api.external.players.mmr.roles",
                 "parameters": [
                     {
                         "name": "battletag",
@@ -179384,7 +179419,7 @@
         "/players/roles": {
             "get": {
                 "summary": "Per-role performance for one player.",
-                "operationId": "api.public.players.roles",
+                "operationId": "api.external.players.roles",
                 "parameters": [
                     {
                         "name": "battletag",
@@ -180240,7 +180275,7 @@
         "/players/roles/single": {
             "get": {
                 "summary": "One role, for one player.",
-                "operationId": "api.public.players.roles.single",
+                "operationId": "api.external.players.roles.single",
                 "parameters": [
                     {
                         "name": "battletag",
@@ -182963,7 +182998,7 @@
         "/players/talents/build": {
             "get": {
                 "summary": "A player, most played builds on one hero.",
-                "operationId": "api.public.players.talents.build",
+                "operationId": "api.external.players.talents.build",
                 "parameters": [
                     {
                         "name": "battletag",
@@ -184465,7 +184500,7 @@
         "/prematch": {
             "post": {
                 "summary": "Record the players in a game that is starting.",
-                "operationId": "api.public.prematch",
+                "operationId": "api.external.prematch",
                 "parameters": [],
                 "responses": {
                     "200": {
@@ -184498,7 +184533,7 @@
         "/replays": {
             "get": {
                 "summary": "A page of replays, for building a local copy of the data. Paged by replay id: pass the `next_after` from one response as the `after` of the next, and stop when it comes back null.",
-                "operationId": "api.public.replays.index",
+                "operationId": "api.external.replays.index",
                 "parameters": [
                     {
                         "name": "after",
@@ -184642,7 +184677,7 @@
         "/replays/download": {
             "get": {
                 "summary": "The original .StormReplay file for a match.",
-                "operationId": "api.public.replays.download",
+                "operationId": "api.external.replays.download",
                 "parameters": [
                     {
                         "name": "replayID",
@@ -184682,7 +184717,7 @@
         "/replays/fingerprints/{fingerprint}": {
             "get": {
                 "summary": "Whether a replay with this fingerprint is already stored.",
-                "operationId": "api.public.replays.fingerprint",
+                "operationId": "api.external.replays.fingerprint",
                 "parameters": [
                     {
                         "name": "fingerprint",
@@ -184723,7 +184758,7 @@
         "/replays/parsed": {
             "get": {
                 "summary": "Whether a replay has been parsed and stored yet.",
-                "operationId": "api.public.replays.parsed",
+                "operationId": "api.external.replays.parsed",
                 "parameters": [
                     {
                         "name": "replayID",
@@ -184760,7 +184795,7 @@
         "/tools/activity/players/unique": {
             "get": {
                 "summary": "Unique players seen per month.",
-                "operationId": "api.public.tools.activity.players.unique",
+                "operationId": "api.external.tools.activity.players.unique",
                 "parameters": [
                     {
                         "name": "game_type",
@@ -184817,7 +184852,7 @@
         "/tools/randomize": {
             "get": {
                 "summary": "A random talent build for one hero.",
-                "operationId": "api.public.tools.randomize",
+                "operationId": "api.external.tools.randomize",
                 "parameters": [
                     {
                         "name": "hero",
@@ -185352,7 +185387,7 @@
         "/upload/heroesprofile/{source}": {
             "post": {
                 "summary": "Upload a replay.",
-                "operationId": "api.public.upload",
+                "operationId": "api.external.upload",
                 "parameters": [
                     {
                         "name": "source",

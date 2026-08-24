@@ -26,10 +26,10 @@ class RouteServiceProvider extends ServiceProvider
      * per-IP limiter, so none of them belong in the shared per-key bucket.
      */
     private const UPLOADER_ROUTES = [
-        'api.public.upload',
-        'api.public.replays.fingerprint',
-        'api.public.replays.parsed',
-        'api.public.prematch',
+        'api.external.upload',
+        'api.external.replays.fingerprint',
+        'api.external.replays.parsed',
+        'api.external.prematch',
         // The same four under their old paths, for clients that never updated.
         'api.legacy.*',
     ];
@@ -49,7 +49,7 @@ class RouteServiceProvider extends ServiceProvider
 
         // Per key, not per IP: two customers behind one address must not share a
         // bucket, and one customer's runaway loop must not throttle the other.
-        RateLimiter::for('api-public', function (Request $request) {
+        RateLimiter::for('api-external', function (Request $request) {
             // The uploader's routes are anonymous and carry their own per-IP
             // limits. Leaving them in the anonymous bucket would cap an uploader
             // at 20 replays a minute.
@@ -98,7 +98,7 @@ class RouteServiceProvider extends ServiceProvider
         $this->routes(function () {
             // First, so nothing added to routes/api.php can shadow a legacy path by
             // accident. Domain-scoped, so it only exists once DNS points here.
-            Route::middleware('api.public')
+            Route::middleware('api.external')
                 ->domain(config('api.domain'))
                 ->group(base_path('routes/api-legacy.php'));
 
@@ -106,15 +106,12 @@ class RouteServiceProvider extends ServiceProvider
                 ->prefix('api')
                 ->group(base_path('routes/api.php'));
 
-            Route::middleware('api.public')
-                ->domain(config('api.domain'))
-                ->prefix('v1')
-                ->group(base_path('routes/api-public.php'));
-
-            // Same routes, reachable before DNS moves to this app.
-            Route::middleware('api.public')
+            // One mount, one advertised URL. The API subdomain is deliberately not a
+            // second way in: once DNS moves it redirects here, and only the legacy
+            // uploader paths above still answer on it.
+            Route::middleware('api.external')
                 ->prefix(config('api.path'))
-                ->group(base_path('routes/api-public.php'));
+                ->group(base_path('routes/api-external.php'));
 
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));

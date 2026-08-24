@@ -15,7 +15,7 @@ return [
 
     'domain' => env('API_PUBLIC_DOMAIN', 'api.heroesprofile.com'),
 
-    'path' => 'api/public/v1',
+    'path' => 'api/external/v1',
 
     /*
     | Per-key request ceiling. The pricing page advertises 60 a minute, and 120 on

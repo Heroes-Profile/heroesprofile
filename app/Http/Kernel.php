@@ -99,14 +99,14 @@ class Kernel extends HttpKernel
         ],
 
         /*
-         * Public API. Stateless on purpose: no session, no CSRF, no
+         * External API. Stateless on purpose: no session, no CSRF, no
          * CheckIfPatreonSupporter, and no ValidateApiPostOrigin — that one 403s
          * anything without a heroesprofile Origin, which is every third-party
          * client there is.
          */
-        'api.public' => [
+        'api.external' => [
             ResolveApiKey::class,
-            ThrottleRequests::class.':api-public',
+            ThrottleRequests::class.':api-external',
             SubstituteBindings::class,
         ],
     ];

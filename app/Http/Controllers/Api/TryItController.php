@@ -78,7 +78,7 @@ class TryItController extends Controller
      */
     private function publicRoute(string $name): ?Route
     {
-        if (! str_starts_with($name, 'api.public.')) {
+        if (! str_starts_with($name, 'api.external.')) {
             return null;
         }
 

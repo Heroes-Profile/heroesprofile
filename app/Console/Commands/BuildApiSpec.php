@@ -36,10 +36,10 @@ class BuildApiSpec extends Command
 
     /** Routes that answer without a key, and so carry no security requirement. */
     private const KEYLESS = [
-        'api.public.upload',
-        'api.public.replays.fingerprint',
-        'api.public.replays.parsed',
-        'api.public.prematch',
+        'api.external.upload',
+        'api.external.replays.fingerprint',
+        'api.external.replays.parsed',
+        'api.external.prematch',
     ];
 
     public function handle(): int
@@ -369,7 +369,7 @@ class BuildApiSpec extends Command
         foreach (Router::getRoutes() as $route) {
             $name = $route->getName();
 
-            if ($name === null || ! str_starts_with($name, 'api.public.')) {
+            if ($name === null || ! str_starts_with($name, 'api.external.')) {
                 continue;
             }
 

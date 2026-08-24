@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Public;
+namespace App\Http\Controllers\Api\External;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Global\GlobalCompositionsController;
@@ -15,6 +15,7 @@ use App\Http\Controllers\Global\GlobalTalentBuilderController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
 use App\Services\GlobalDataService;
 use App\Services\GlobalQueryService;
+use App\Support\ApiParameters;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -221,13 +222,70 @@ class GlobalStatsController extends Controller
      *                                        answer a miss with 200 and a `status`
      *                                        field rather than an error status.
      */
+    /**
+     * Rewrites `game_type` and `region` into what the internal controllers read,
+     * or returns a 422 naming the values that were not recognised.
+     *
+     * Global controllers resolve regions through `getRegionStringToID()`, so they
+     * want names — the opposite of the player endpoints, which want ids.
+     */
+    private function normalizeNames(Request $request): ?Response
+    {
+        foreach (['game_type', 'region'] as $parameter) {
+            if (! $request->filled($parameter)) {
+                continue;
+            }
+
+            $input = $request->input($parameter);
+
+            [$resolved, $unknown] = $parameter === 'game_type'
+                ? ApiParameters::gameTypes($input)
+                : ApiParameters::regionNames($input);
+
+            if ($unknown !== []) {
+                return $this->unknownValues($parameter, $unknown);
+            }
+
+            // Values change, shape does not. Whether these arrive as a scalar or a
+            // list is decided per endpoint by `$arrays` below, and the leaderboard
+            // deliberately keeps them scalar — rewriting the shape here would
+            // silently override that.
+            $request->merge([
+                $parameter => is_string($input) && ! str_contains($input, ',')
+                    ? ($resolved[0] ?? $input)
+                    : $resolved,
+            ]);
+        }
+
+        return null;
+    }
+
+    /** @param  array<int, string>  $values */
+    private function unknownValues(string $parameter, array $values): Response
+    {
+        return response()->json([
+            'error' => [
+                'code' => 'unknown_'.$parameter,
+                'message' => 'Not a recognised '.str_replace('_', ' ', $parameter).': '.implode(', ', $values).'.',
+                'accepted' => $parameter === 'game_type'
+                    ? ApiParameters::GAME_TYPES
+                    : ['NA', 'EU', 'KR', 'CN'],
+            ],
+        ], 422);
+    }
+
     private function delegate(
         Request $request,
         Controller|string $controller,
         string $method,
         array $defaults = [],
         array $requires = [],
-        array $arrays = ['timeframe', 'game_type']
+        // Every internal consumer of these four passes them to a helper that
+        // iterates or `whereIn`s — `getTimeframeFilterValues`, `getGameTypeFilterValues`,
+        // `getGameMapFilterValues`, `getRegionFilterValues`. A scalar reaches them as a
+        // string and fails inside the query builder, so they are split here for all
+        // endpoints rather than declared per call site and forgotten on one.
+        array $arrays = ['timeframe', 'game_type', 'game_map', 'region']
     ): Response {
         foreach ($requires as $parameter) {
             if (! $request->filled($parameter)) {
@@ -247,6 +305,13 @@ class GlobalStatsController extends Controller
         }
 
         if ($rejection = $this->rejectUnqueryableTimeframe($request)) {
+            return $rejection;
+        }
+
+        // Names in, codes out. These controllers want short codes and region names;
+        // the API takes either those or the display names, so `Storm League` and
+        // `sl` both work, as do `NA` and `1`.
+        if ($rejection = $this->normalizeNames($request)) {
             return $rejection;
         }
 

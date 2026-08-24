@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\Api\Public\PreMatchController;
-use App\Http\Controllers\Api\Public\UploadController;
+use App\Http\Controllers\Api\External\PreMatchController;
+use App\Http\Controllers\Api\External\UploadController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 | Only reachable when the request carries `Host: api.heroesprofile.com`, so these
 | are inert until DNS is repointed. Nothing here answers on the main site.
 |
-| The handlers are the same ones `routes/api-public.php` uses. The v1 contract was
+| The handlers are the same ones `routes/api-external.php` uses. The v1 contract was
 | built wire-compatible with these clients on purpose: `parsed` reads the same
 | `replayID` query param, and `store` takes the same multipart `file` field that
 | `WebClient.UploadFile` sends.
@@ -52,3 +52,16 @@ Route::get('openApi/Replay/Parsed', [UploadController::class, 'parsed'])
 Route::post('openApi/PreMatch', [PreMatchController::class, 'store'])
     ->middleware('throttle:prematch')
     ->name('api.legacy.prematch');
+
+/*
+| Everything else on this host goes to the portal. The subdomain is not a second
+| base URL for the API and is never advertised as one — the four routes above are
+| grandfathered ingestion paths, not a public surface.
+|
+| Registered last so those four match first. Deliberately outside the
+| `api.legacy.*` limiter exemption: a redirect has no reason to be unmetered.
+*/
+
+Route::any('{any?}', fn () => redirect('https://www.heroesprofile.com/Api', 301))
+    ->where('any', '.*')
+    ->name('api.subdomain.redirect');
