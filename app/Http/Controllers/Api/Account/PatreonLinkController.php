@@ -59,7 +59,9 @@ class PatreonLinkController extends Controller
 
         if ($takenBy) {
             return redirect('/Api/Account')->withErrors([
-                'patreon' => 'That Patreon account is already linked to another API account.',
+                'patreon' => 'That Patreon account is already linked to a different Heroes Profile API account. '
+                    .'Sign in to that account and unlink it there first, then try again. '
+                    .'If you no longer have access to it, email zemill@heroesprofile.com.',
             ]);
         }
 

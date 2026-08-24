@@ -68,18 +68,6 @@
         </template>
       </div>
 
-      <div v-if="newKey" class="bg-teal p-4 mb-8">
-        <h2 class="text-lg mb-2">Copy Your New Key Now</h2>
-        <p class="text-sm mb-3">
-          This is the only time it will be shown. We store a hash of it, so it cannot be
-          retrieved again. If you lose it, revoke the key and create another.
-        </p>
-        <div class="flex flex-wrap gap-2 items-center">
-          <code class="bg-darken p-2 break-all flex-grow">{{ newKey.plain_text }}</code>
-          <custom-button @click="copyKey" :text="copied ? 'Copied' : 'Copy'" :alt="'Copy key'" :size="'small'" :ignoreclick="true"></custom-button>
-        </div>
-      </div>
-
       <div v-if="!migrated" class="bg-lighten border-l-4 border-teal p-6 mb-8">
         <h2 class="text-lg mb-2">{{ activateHeading }}</h2>
         <p class="text-sm mb-2">
@@ -107,6 +95,8 @@
         </p>
       </div>
 
+      <div v-if="linkerror" class="bg-red p-3 mb-4">{{ linkerror }}</div>
+      <div v-if="notice" class="bg-teal p-3 mb-4">{{ notice }}</div>
       <div v-if="error" class="bg-red p-3 mb-4">{{ error }}</div>
 
       <div class="bg-lighten p-6 mb-8">
@@ -133,6 +123,18 @@
 
           <a href="/Api/Patreon/Link" class="link">Link Patreon</a>
         </template>
+      </div>
+
+      <div v-if="newKey" class="bg-teal p-4 mb-8">
+        <h2 class="text-lg mb-2">Copy Your New Key Now</h2>
+        <p class="text-sm mb-3">
+          This is the only time it will be shown. We store a hash of it, so it cannot be
+          retrieved again. If you lose it, revoke the key and create another.
+        </p>
+        <div class="flex flex-wrap gap-2 items-center">
+          <code class="bg-darken p-2 break-all flex-grow">{{ newKey.plain_text }}</code>
+          <custom-button @click="copyKey" :text="copied ? 'Copied' : 'Copy'" :alt="'Copy key'" :size="'small'" :ignoreclick="true"></custom-button>
+        </div>
       </div>
 
       <div class="bg-lighten p-6 mb-8">
@@ -210,6 +212,14 @@ export default {
     usage: {
       type: Array,
       default: () => [],
+    },
+    notice: {
+      type: String,
+      default: null,
+    },
+    linkerror: {
+      type: String,
+      default: null,
     },
   },
   data(){

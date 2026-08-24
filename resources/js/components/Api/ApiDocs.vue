@@ -414,11 +414,24 @@ export default {
       } catch (error) {
         const body = error.response && error.response.data;
 
+        // 419 is always a dead session here, and Laravel words it as "CSRF token
+        // mismatch" — accurate, and no help to someone who has simply been logged
+        // out while the page stayed open.
+        if (error.response && error.response.status === 419) {
+          this.results[op.id] = {
+            status: 419,
+            headers: {},
+            body: 'Your session has expired. Sign in again and reload this page to keep testing.',
+            public_url: null,
+          };
+
+          return;
+        }
+
         // Our own errors use `error`; Laravel's use `message` — a 500 from the
-        // delegated controller, a 422 from validation, a 419 from a stale CSRF
-        // token. Showing only the first turned all of those into one unhelpful
-        // sentence, hiding the actual cause. Fall through to whatever is there,
-        // and keep the whole body when it is neither.
+        // delegated controller, a 422 from validation. Showing only the first turned
+        // both into one unhelpful sentence, hiding the actual cause. Fall through to
+        // whatever is there, and keep the whole body when it is neither.
         this.results[op.id] = {
           status: error.response ? error.response.status : 0,
           headers: {},
