@@ -7,6 +7,7 @@ use App\Services\ClientIpService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
@@ -84,6 +85,26 @@ class RouteServiceProvider extends ServiceProvider
 
         RateLimiter::for('prematch', function (Request $request) {
             return Limit::perMinute(120)->by(ClientIpService::getClientIp($request));
+        });
+
+        /*
+        | The docs "Try it" button. Every press runs a real API call, charged to the
+        | account's own key and counted against its weekly quota, so the ceiling that
+        | matters is already downstream — this only stops a script hammering the
+        | portal endpoint.
+        |
+        | It used to borrow `contact`, which is three a minute. Correct for a contact
+        | form; for a docs page it locked a reader out after three clicks, and the
+        | 429 gave no hint which limit had been hit.
+        |
+        | Bucketed by portal account rather than IP: the route is behind
+        | `ensureApiAccountAuth`, and two people testing from one office should not
+        | share an allowance.
+        */
+        RateLimiter::for('docs-try', function (Request $request) {
+            return Limit::perMinute(30)->by(
+                Auth::guard('api_web')->id() ?? ClientIpService::getClientIp($request)
+            );
         });
 
         RateLimiter::for('contact', function (Request $request) {

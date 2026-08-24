@@ -705,6 +705,29 @@ class GlobalDataService
             ->all();
     }
 
+    /**
+     * Patches that global statistics will actually accept, as full rows.
+     *
+     * Same filter as queryableGameVersions() — the floor plus `valid_globals` —
+     * so the public `/patches` endpoint cannot advertise a patch that `timeframe`
+     * then rejects with `timeframe_unavailable`. getPatches() stays unfiltered for
+     * the site's own use.
+     */
+    public function getQueryablePatches()
+    {
+        return Cache::remember('global_patches_queryable', 600, function () {
+            return $this->applyVersionFilter(
+                SeasonGameVersion::where('valid_globals', 1),
+                self::MINIMUM_GLOBALS_PATCH
+            )
+                ->orderBy('major', 'DESC')
+                ->orderBy('minor', 'DESC')
+                ->orderBy('patch', 'DESC')
+                ->orderBy('build', 'DESC')
+                ->get();
+        });
+    }
+
     private function applyVersionFilter($query, $minimumVersionString)
     {
         $minVersion = $this->parseVersionString($minimumVersionString);

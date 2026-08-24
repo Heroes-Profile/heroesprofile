@@ -285,7 +285,14 @@ class GlobalStatsController extends Controller
         // `getGameMapFilterValues`, `getRegionFilterValues`. A scalar reaches them as a
         // string and fails inside the query builder, so they are split here for all
         // endpoints rather than declared per call site and forgotten on one.
-        array $arrays = ['timeframe', 'game_type', 'game_map', 'region']
+        array $arrays = [
+            'timeframe', 'game_type', 'game_map', 'region',
+            // Straight into `whereIn` via the model scopes — `filterByHeroLevel`,
+            // `filterByLeagueTier` and the two beside it. Easy to miss because the
+            // request value is assigned to a local first, so a scalar fails inside
+            // the query builder rather than anywhere that names the parameter.
+            'hero_level', 'league_tier', 'hero_league_tier', 'role_league_tier',
+        ]
     ): Response {
         foreach ($requires as $parameter) {
             if (! $request->filled($parameter)) {

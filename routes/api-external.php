@@ -82,6 +82,28 @@ Route::get('players/roles/single', [PlayerController::class, 'role'])
     ->middleware(['api.fixtures:player_role_single', 'api.quota:player_role_single'])
     ->name('api.external.players.roles.single');
 
+/*
+| Current rating, and rating over time. The old API's `/Player/MMR` answered the
+| first, so `players/mmr` does too — a porting caller finds what they expect at
+| the URL they expect. History moved under `/history` rather than the reverse.
+|
+| The `/history` routes are declared first: `players/mmr/history` would otherwise
+| be matched by nothing, since `players/mmr/heroes` and it share no prefix, but
+| keeping the pair together is what stops one being edited without the other.
+*/
+
+Route::get('players/mmr/history', [PlayerController::class, 'mmrHistory'])
+    ->middleware(['api.fixtures:player_mmr_history', 'api.quota:player_mmr_history'])
+    ->name('api.external.players.mmr.history');
+
+Route::get('players/mmr/history/heroes', [PlayerController::class, 'heroMmrHistory'])
+    ->middleware(['api.fixtures:player_mmr_history_hero', 'api.quota:player_mmr_history_hero'])
+    ->name('api.external.players.mmr.history.heroes');
+
+Route::get('players/mmr/history/roles', [PlayerController::class, 'roleMmrHistory'])
+    ->middleware(['api.fixtures:player_mmr_history_role', 'api.quota:player_mmr_history_role'])
+    ->name('api.external.players.mmr.history.roles');
+
 Route::get('players/mmr', [PlayerController::class, 'mmr'])
     ->middleware(['api.fixtures:player_mmr', 'api.quota:player_mmr'])
     ->name('api.external.players.mmr');
@@ -116,19 +138,19 @@ Route::get('replays', [MatchController::class, 'index'])
     ->middleware(['api.fixtures:replay_index', 'api.quota:replay_index'])
     ->name('api.external.replays.index');
 
-Route::get('matches/{replayID}', [MatchController::class, 'show'])
+Route::get('replay/{replayID}', [MatchController::class, 'show'])
     ->whereNumber('replayID')
     ->middleware(['api.fixtures:replay_data', 'api.quota:replay_data'])
-    ->name('api.external.matches.show');
+    ->name('api.external.replay.show');
 
-Route::get('matches/{replayID}/bans', [MatchController::class, 'bans'])
+Route::get('replay/{replayID}/bans', [MatchController::class, 'bans'])
     ->whereNumber('replayID')
     ->middleware(['api.fixtures:replay_ban', 'api.quota:replay_ban'])
-    ->name('api.external.matches.bans');
+    ->name('api.external.replay.bans');
 
-Route::get('replays/download', [MatchController::class, 'download'])
+Route::get('download/replay', [MatchController::class, 'download'])
     ->middleware(['api.fixtures:replay_download', 'api.quota:replay_download'])
-    ->name('api.external.replays.download');
+    ->name('api.external.replay.download');
 
 /*
 | Global statistics. A cold query can run for minutes, so a cache miss answers

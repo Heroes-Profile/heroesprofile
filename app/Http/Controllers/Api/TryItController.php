@@ -142,7 +142,10 @@ class TryItController extends Controller
             // What a caller's own code would request. Not what was dispatched:
             // the subdomain is where these live permanently, but it is reached
             // through a domain-constrained route this proxy cannot use.
-            'public_url' => rtrim((string) config('api.domain'), '/').'/v1/'.$path.$suffix,
+            // The base URL the docs advertise, taken from the spec so the two cannot
+            // drift. `api.domain` is the *old* API's host and never serves v1 — a
+            // URL built from it looks copy-pasteable and answers nothing.
+            'public_url' => rtrim((string) config('api_spec.servers.0.url'), '/').'/'.$path.$suffix,
         ]);
     }
 

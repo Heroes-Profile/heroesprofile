@@ -21,6 +21,39 @@ class SingleMatchController extends Controller
 
     private $schema;
 
+    /**
+     * Whether battletags keep their discriminator.
+     *
+     * The site's match page shows `Zemill`, so this strips `#1940` by default. An
+     * API caller needs the whole thing — it is the only form that identifies a
+     * player uniquely, and every other player endpoint takes one as input.
+     *
+     * Deliberately a setter rather than a request flag: `$esport` is read from the
+     * request, and doing the same here would let anyone unmask players on the
+     * public match page with a query string.
+     */
+    private bool $fullBattletags = false;
+
+    /**
+     * The battletag as this caller should see it. Private accounts never reach
+     * here — they are nulled before this point.
+     */
+    private function displayBattletag(?string $battletag): ?string
+    {
+        if ($battletag === null) {
+            return null;
+        }
+
+        return $this->fullBattletags ? $battletag : explode('#', $battletag)[0];
+    }
+
+    public function withFullBattletags(): self
+    {
+        $this->fullBattletags = true;
+
+        return $this;
+    }
+
     public function showWithoutEsport(Request $request, $replayID)
     {
         $validationRules = [
@@ -415,7 +448,7 @@ class SingleMatchController extends Controller
                     return [
                         'check' => $containsAccount,
                         'region' => $this->esport ? $region : ($containsAccount ? null : $region),
-                        'battletag' => $this->esport ? explode('#', $row->battletag)[0] : ($containsAccount ? null : explode('#', $row->battletag)[0]),
+                        'battletag' => $this->esport ? explode('#', $row->battletag)[0] : ($containsAccount ? null : $this->displayBattletag($row->battletag)),
                         'blizz_id' => $blizz_id,
                         'hp_owner' => ($row->battletag == 'Zemill#1940' && $region == 1 && $blizz_id == '67280') ? true : false,
                         'winner' => $row->winner,

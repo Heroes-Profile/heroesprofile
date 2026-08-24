@@ -348,7 +348,7 @@ export default {
             },
             {
               q: 'Does Heroes Profile have an API?',
-              a: 'Yes, we provide a public API. Documentation is available at <a href="https://api.heroesprofile.com" target="_blank" class="link">api.heroesprofile.com</a>. The API has rate limits and is intended for reasonable use — not for bulk downloading the entire replay database.',
+              a: 'Yes, we provide a public API. Documentation is available at <a href="/Api/Docs" class="link">heroesprofile.com/Api/Docs</a>. The API has rate limits and is intended for reasonable use — not for bulk downloading the entire replay database.',
             },
           ],
         },

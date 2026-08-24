@@ -10,6 +10,7 @@ use App\Http\Controllers\Player\PlayerMatchHistory;
 use App\Http\Controllers\Player\PlayerMatchupsController;
 use App\Http\Controllers\Player\PlayerMMRController;
 use App\Http\Controllers\Player\PlayerTalentsController;
+use App\Services\PlayerMmrService;
 use App\Support\ApiParameters;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -105,7 +106,7 @@ class PlayerController extends Controller
             'game_type' => 'array',
             // Reaches Map::whereIn('name', …).
             'game_map' => 'array',
-        ]);
+        ], ['tabledata' => 'matchups']);
     }
 
     /** Team-mates and opponents this player sees repeatedly. */
@@ -124,19 +125,104 @@ class PlayerController extends Controller
         ]);
     }
 
+    /**
+     * Current rating per game type — what the old API's `/Player/MMR` returned.
+     *
+     * The site has no page for this, so there is nothing to delegate to; the query
+     * lives in PlayerMmrService. The rating *history* these URLs used to return is
+     * now under `/players/mmr/history`.
+     */
     public function mmr(Request $request): Response
     {
-        return $this->ratings($request, 'Player');
+        return $this->currentRating($request, null);
     }
 
     public function heroMmr(Request $request): Response
     {
-        return $this->ratings($request, 'Hero');
+        return $this->currentRating($request, 'hero');
     }
 
     public function roleMmr(Request $request): Response
     {
+        return $this->currentRating($request, 'role');
+    }
+
+    public function mmrHistory(Request $request): Response
+    {
+        return $this->ratings($request, 'Player');
+    }
+
+    public function heroMmrHistory(Request $request): Response
+    {
+        return $this->ratings($request, 'Hero');
+    }
+
+    public function roleMmrHistory(Request $request): Response
+    {
         return $this->ratings($request, 'Role');
+    }
+
+    /**
+     * `$subjectParam` names the parameter holding what is being rated — `hero` or
+     * `role` — or null for the account overall.
+     */
+    private function currentRating(Request $request, ?string $subjectParam): Response
+    {
+        if ($subjectParam !== null && ! $request->filled($subjectParam)) {
+            return $this->error(
+                'missing_'.$subjectParam,
+                'This endpoint needs a '.$subjectParam.' to report a rating for.',
+                422
+            );
+        }
+
+        if ($request->filled('region')) {
+            [$ids, $unknown] = ApiParameters::regionIds($request->input('region'));
+
+            if ($unknown !== []) {
+                return $this->error('unknown_region', 'Not a recognised region: '.implode(', ', $unknown).'. Use NA, EU, KR or CN.', 422);
+            }
+
+            $request->merge(['region' => $ids[0] ?? null]);
+        }
+
+        $validated = $request->validate([
+            'battletag' => ['required', 'string'],
+            'region' => ['required', 'integer', 'in:1,2,3,5'],
+        ]);
+
+        $gameTypes = [];
+
+        if ($request->filled('game_type')) {
+            [$gameTypes, $unknown] = ApiParameters::gameTypes($request->input('game_type'));
+
+            if ($unknown !== []) {
+                return $this->error('unknown_game_type', 'Not a recognised game type: '.implode(', ', $unknown).'.', 422);
+            }
+        }
+
+        $blizzId = $this->globalDataService->getBlizzIDGivenFullBattletag(
+            $validated['battletag'],
+            $validated['region']
+        );
+
+        if ($blizzId === null) {
+            return $this->error('unknown_player', 'No player by that battletag in that region.', 404);
+        }
+
+        $ratings = app(PlayerMmrService::class)->summary(
+            (int) $blizzId,
+            (int) $validated['region'],
+            $gameTypes,
+            $subjectParam === null ? null : $request->input($subjectParam),
+            $request->boolean('extra_mmr_info')
+        );
+
+        return response()->json([
+            'battletag' => $validated['battletag'],
+            'region' => (int) $validated['region'],
+            'ratings' => $ratings,
+        ]);
     }
 
     /**
@@ -212,7 +298,13 @@ class PlayerController extends Controller
             // the short name up with `where`, not `whereIn`. Absent, it resolves
             // to null and the query then matches no rows at all.
             'game_type' => self::DEFAULT_GAME_TYPE,
-        ], ['hero' => 'id']);
+        ], ['hero' => 'id'], [
+            // `tableData` is the per-match rating history; `leagueData` is the tier
+            // bands it sits within. Both named after the components that render
+            // them on the site rather than after what they hold.
+            'tableData' => 'history',
+            'leagueData' => 'league_tiers',
+        ]);
     }
 
     public function talentBuild(Request $request): Response
@@ -238,7 +330,8 @@ class PlayerController extends Controller
         string $controller,
         string $method,
         array $defaults = [],
-        array $expects = []
+        array $expects = [],
+        array $rename = []
     ): Response {
         // Names in, ids out — the mirror of the global endpoints, which want region
         // names. `NA` and `1` both work here, and `Storm League` alongside `sl`.
@@ -333,7 +426,36 @@ class PlayerController extends Controller
             return $result;
         }
 
+        // These controllers were written for the site's own pages and name their
+        // top-level keys after the components that render them — `tableData` is a
+        // table because a table displays it. That tells an API caller nothing, so
+        // each endpoint renames what it returns to what the data actually is.
+        foreach ($rename as $from => $to) {
+            if (is_array($result) && array_key_exists($from, $result)) {
+                $result = self::renameKey($result, $from, $to);
+            }
+        }
+
         return response()->json($result);
+    }
+
+    /**
+     * Replaces one key, in place. Rebuilding the array rather than unset-and-append
+     * so the renamed key keeps its position — callers reading a response by eye
+     * should not find it moved to the bottom.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    private static function renameKey(array $data, string $from, string $to): array
+    {
+        $renamed = [];
+
+        foreach ($data as $key => $value) {
+            $renamed[$key === $from ? $to : $key] = $value;
+        }
+
+        return $renamed;
     }
 
     private function error(string $code, string $message, int $status): JsonResponse

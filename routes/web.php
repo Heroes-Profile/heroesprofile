@@ -268,7 +268,7 @@ Route::middleware(['logIpAndUserAgent'])->prefix('Api')->group(function () {
     Route::middleware(['ensureApiAccountAuth', 'requireApiTerms'])->group(function () {
         // Executes one public endpoint for the signed-in account, charged to its
         // own key. Behind the portal guard: it acts as the account.
-        Route::post('/Docs/Try', ApiTryItController::class)->middleware('throttle:contact');
+        Route::post('/Docs/Try', ApiTryItController::class)->middleware('throttle:docs-try');
 
         Route::get('/Account', [ApiAccountController::class, 'index']);
         Route::get('/Account/Billing', [ApiBillingController::class, 'show']);

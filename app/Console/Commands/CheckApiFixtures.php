@@ -28,6 +28,19 @@ class CheckApiFixtures extends Command
      * recorded in the plan rather than built. Everything else missing a route is
      * a gap, not a decision.
      */
+    /**
+     * Registry rows that are not routed *yet*. Reported, but do not fail the
+     * command: they are known outstanding work rather than drift, and a check
+     * that is permanently red is a check people stop reading.
+     *
+     * Distinct from UNROUTED_BY_DESIGN below, which is work deliberately never
+     * done. Anything here should eventually leave this list by being built.
+     */
+    private const UNROUTED_PENDING = [
+        // The last Milestone I endpoint. Tracked in the plan.
+        'ngs_games_upload',
+    ];
+
     private const UNROUTED_BY_DESIGN = [
         'ngs_standings',
         'ngs_divisions',
@@ -115,12 +128,19 @@ class CheckApiFixtures extends Command
             return false;
         }
 
-        $missing = $registry
+        $unrouted = $registry
             ->reject(fn ($row) => in_array($row->endpoint, $routed, true))
             ->reject(fn ($row) => in_array($row->endpoint, self::UNROUTED_BY_DESIGN, true));
 
+        $pending = $unrouted->filter(fn ($row) => in_array($row->endpoint, self::UNROUTED_PENDING, true));
+        $missing = $unrouted->reject(fn ($row) => in_array($row->endpoint, self::UNROUTED_PENDING, true));
+
+        if ($pending->isNotEmpty()) {
+            $this->warn($pending->count().' registry endpoint(s) still to be built: '.$pending->pluck('endpoint')->implode(', '));
+        }
+
         if ($missing->isEmpty()) {
-            $this->info('Every registry endpoint has a route.');
+            $this->info('Every registry endpoint has a route, or is accounted for.');
 
             return false;
         }

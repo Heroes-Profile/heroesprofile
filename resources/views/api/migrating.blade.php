@@ -102,12 +102,12 @@
         <tr><td class="py-2 px-3">/Player/Hero/All</td><td class="py-2 px-3">/v1/players/heroes</td><td class="py-2 px-3">Still a list. Hero is a nested object now, not an id</td></tr>
         <tr><td class="py-2 px-3">/Player/Hero/Single</td><td class="py-2 px-3">/v1/players/heroes/single</td><td class="py-2 px-3">As above, narrowed to one hero</td></tr>
         <tr><td class="py-2 px-3">/Player/Talents/Build</td><td class="py-2 px-3">/v1/players/talents/build</td><td class="py-2 px-3">Now <code>{talentData, buildData}</code></td></tr>
-        <tr><td class="py-2 px-3">/Player/MMR</td><td class="py-2 px-3">/v1/players/mmr</td><td class="py-2 px-3">Now <code>{tableData, leagueData}</code> — history plus the tier bands it sits in</td></tr>
-        <tr><td class="py-2 px-3">/Player/MMR/Hero</td><td class="py-2 px-3">/v1/players/mmr/heroes</td><td class="py-2 px-3">Same two-section shape</td></tr>
-        <tr><td class="py-2 px-3">/Player/MMR/Role</td><td class="py-2 px-3">/v1/players/mmr/roles</td><td class="py-2 px-3">Same two-section shape</td></tr>
-        <tr><td class="py-2 px-3">/Replay/Data</td><td class="py-2 px-3">/v1/matches/{replayID}</td><td class="py-2 px-3">Now one match object — <code>players</code>, <code>replay_bans</code>, <code>draft_order</code>, <code>experience_breakdown</code> — instead of a flat player-row array. Id is a path segment</td></tr>
-        <tr><td class="py-2 px-3">/Replay/Ban</td><td class="py-2 px-3">/v1/matches/{replayID}/bans</td><td class="py-2 px-3">Now <code>{replayID, bans}</code></td></tr>
-        <tr><td class="py-2 px-3">/Replay/Download</td><td class="py-2 px-3">/v1/replays/download</td><td class="py-2 px-3">Unchanged: the file itself. Key required. Note this is the API endpoint — the site's own download button is a separate feature and is unaffected</td></tr>
+        <tr><td class="py-2 px-3">/Player/MMR</td><td class="py-2 px-3">/v1/players/mmr</td><td class="py-2 px-3"><strong>Same information as before</strong> — current rating per game type, with <code>games_played</code>, <code>games_played_last_90_days</code> and <code>league_tier</code>. Wrapped as <code>{battletag, region, ratings}</code> rather than keyed by battletag, and <code>league_tier</code> now carries the sub-tier (<code>Diamond 2</code>, not <code>diamond</code>). <code>extra_mmr_info</code> still adds the raw rating fields</td></tr>
+        <tr><td class="py-2 px-3">/Player/MMR/Hero</td><td class="py-2 px-3">/v1/players/mmr/heroes</td><td class="py-2 px-3">As above, for one hero. <code>hero</code> is a name</td></tr>
+        <tr><td class="py-2 px-3">/Player/MMR/Role</td><td class="py-2 px-3">/v1/players/mmr/roles</td><td class="py-2 px-3">As above, for one role</td></tr>
+        <tr><td class="py-2 px-3">/Replay/Data</td><td class="py-2 px-3">/v1/replay/{replayID}</td><td class="py-2 px-3">Now one match object — <code>players</code>, <code>replay_bans</code>, <code>draft_order</code>, <code>experience_breakdown</code> — instead of a flat player-row array. Id is a path segment</td></tr>
+        <tr><td class="py-2 px-3">/Replay/Ban</td><td class="py-2 px-3">/v1/replay/{replayID}/bans</td><td class="py-2 px-3">Now <code>{replayID, bans}</code></td></tr>
+        <tr><td class="py-2 px-3">/Replay/Download</td><td class="py-2 px-3">/v1/download/replay</td><td class="py-2 px-3">Unchanged: the file itself. Key required. Note this is the API endpoint — the site's own download button is a separate feature and is unaffected</td></tr>
         <tr><td class="py-2 px-3">/Replay/Parsed</td><td class="py-2 px-3">/v1/replays/parsed</td><td class="py-2 px-3">Unchanged. Still plain text, still keyless</td></tr>
         <tr><td class="py-2 px-3">/Replay/Min_id</td><td class="py-2 px-3">/v1/replays</td><td class="py-2 px-3">Now <code>{replays, next_after, max_replay_id}</code>. Cursor is exclusive — see below</td></tr>
         <tr><td class="py-2 px-3">/Replay/Max</td><td class="py-2 px-3">/v1/replays</td><td class="py-2 px-3">Folded in as <code>max_replay_id</code>. No separate call</td></tr>
@@ -122,6 +122,52 @@
       and per-role player breakdowns, friend/foe, matchups, leaderboards and the talent
       builder. The <a href="/Api/Docs" class="link">docs</a> list them all.
     </p>
+
+    <h2 class="text-2xl mb-3">New in v1</h2>
+    <p class="text-sm mb-3">
+      Things the old API had no equivalent for. Nothing here is required to port — they
+      are additions, not replacements.
+    </p>
+    <ul class="list-disc list-inside text-sm space-y-1 mb-4">
+      <li>
+        <code class="text-lteal">/v1/players/mmr/history</code>, and
+        <code>/history/heroes</code> and <code>/history/roles</code> beside it — rating
+        over time, one entry per match, alongside the tier bands it moved through.
+        <code>/v1/players/mmr</code> itself is unchanged in meaning from the old
+        <code>/Player/MMR</code>
+      </li>
+      <li>
+        <code class="text-lteal">Names instead of codes.</code> <code>game_type</code>
+        takes <code>Storm League</code> as well as <code>sl</code>, and
+        <code>region</code> takes <code>NA</code> as well as <code>1</code>. Both forms
+        work everywhere, so nothing you already send needs changing
+      </li>
+      <li>
+        <code class="text-lteal">/v1/replay/{replayID}</code> returns <strong>full
+        battletags</strong>, discriminator included. The site's own match page shows
+        only the name; an API caller gets the whole thing, because that is what every
+        player endpoint takes as input. Players with a private profile are still
+        withheld entirely
+      </li>
+    </ul>
+
+    <h2 class="text-2xl mb-3">Smaller differences worth knowing</h2>
+    <ul class="list-disc list-inside text-sm space-y-1 mb-8">
+      <li>
+        <code>/v1/patches</code> lists only patches global statistics will accept. The
+        old endpoint returned every patch ever recorded, including ones
+        <code>timeframe</code> then rejected
+      </li>
+      <li>
+        <code>/v1/heroes</code> no longer carries <code>rework_date</code>,
+        <code>last_change_patch_version</code> or <code>last_updated</code> — they were
+        not reliable enough to publish
+      </li>
+      <li>
+        <code>league_tier</code> on the MMR endpoints now includes the sub-tier —
+        <code>Diamond 2</code> where the old API said <code>diamond</code>
+      </li>
+    </ul>
 
     <h2 class="text-2xl mb-3">Removed</h2>
     <table class="min-w-0 w-full responsive-table mb-8">
@@ -261,7 +307,7 @@ HTTP/1.1 200 OK              done — this is the data
       <code>next_after</code> comes back <code>null</code>.
     </p>
     <p class="text-sm mb-6">
-      It no longer returns a bucket URL. Use <code>/v1/replays/download?replayID=</code>,
+      It no longer returns a bucket URL. Use <code>/v1/download/replay?replayID=</code>,
       and read <code>downloadable</code> first — replay files are kept on a rolling window,
       so older matches have no file to fetch.
     </p>

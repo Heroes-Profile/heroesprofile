@@ -98,10 +98,15 @@ class ReferenceController extends Controller
         ]);
     }
 
+    /**
+     * Only patches global statistics will accept — the same set `timeframe`
+     * validates against, so this cannot list one that then returns
+     * `timeframe_unavailable`. Already ordered newest first by the query.
+     */
     public function patches()
     {
         return response()->json([
-            'patches' => $this->globalDataService->getPatches(),
+            'patches' => $this->globalDataService->getQueryablePatches(),
         ]);
     }
 

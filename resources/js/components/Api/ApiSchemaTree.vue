@@ -12,7 +12,10 @@
 
         <code class="text-lteal">{{ row.name }}</code>
         <span class="text-gray-medium">{{ row.type }}</span>
-        <span v-if="row.required" class="text-yellow text-xs">required</span>
+        <!-- `required` in the spec, but it means the opposite of the same word in
+             the Parameters table: there it is something you must send, here it is
+             something we always return. Labelled for what it means to a reader. -->
+        <span v-if="row.required" class="text-yellow text-xs" title="This field is present in every response">always present</span>
         <span v-if="row.description" class="text-xs">{{ row.description }}</span>
       </div>
 

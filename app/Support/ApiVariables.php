@@ -60,6 +60,12 @@ class ApiVariables
                 'pairs' => ['1' => 'NA', '2' => 'EU', '3' => 'KR', '5' => 'CN'],
             ],
             [
+                'name' => 'hero_level',
+                'used_by' => 'Global statistics',
+                'summary' => 'A band, not a level — and the value is the band\'s lower bound, so `25` means 25 to 40 rather than "25 or above". Levels are stored bucketed, so a value that is not one of these codes matches nothing. Comma-separated for several bands.',
+                'pairs' => HeroLevelBands::all(),
+            ],
+            [
                 'name' => 'league_tier',
                 'also' => 'hero_league_tier, role_league_tier, tierrank',
                 'used_by' => 'Global statistics, leaderboards',
@@ -91,6 +97,13 @@ class ApiVariables
                 'used_by' => 'Leaderboards, party statistics, friend/foe',
                 'summary' => 'Party size, by name rather than number.',
                 'values' => array_keys((new StackSizeInputValidation)->allowed()),
+            ],
+            [
+                'name' => 'teamoneparty',
+                'also' => 'teamtwoparty, ally_combo, enemy_combo',
+                'used_by' => 'Party statistics',
+                'summary' => 'A party composition code. Five digits, one per group size, read left to right as five-stack, quad, triple, double, solo — each digit being the number of *players* in groups of that size, so every code sums to five. `00023` is two players in a duo plus three solos. These are also the keys of the `/party` response and the values of its `ally_combo` and `enemy_combo` fields.',
+                'pairs' => PartyCombinations::all(),
             ],
             [
                 'name' => 'talentbuildtype',

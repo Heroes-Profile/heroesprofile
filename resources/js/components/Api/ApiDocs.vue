@@ -108,6 +108,25 @@
 
             <p class="text-sm mb-4">{{ op.summary }}</p>
 
+            <!-- The page this endpoint answers for. Faster than any description at
+                 showing what the data is — go and look at it.
+
+                 Player and match pages are addressed by battletag or replay id, so
+                 those are shown as a pattern rather than linked: a link with the
+                 placeholders still in it would just 404. -->
+            <p v-if="op.sitePage" class="text-sm mb-4">
+              Powers
+              <a
+                v-if="!op.sitePage.includes('{')"
+                :href="op.sitePage"
+                target="_blank"
+                rel="noopener"
+                class="link"
+              >heroesprofile.com{{ op.sitePage }}</a>
+              <code v-else class="text-lteal">heroesprofile.com{{ op.sitePage }}</code>
+              — the same data, filtered the same way.
+            </p>
+
             <p v-if="op.quotaKey" class="text-xs text-gray-medium mb-4">
               Counts against your <code class="text-lteal">{{ op.quotaKey }}</code> allowance.
             </p>
@@ -201,7 +220,9 @@
 
                   <p v-if="results[op.id].public_url" class="text-xs break-all mb-2">
                     <span class="text-gray-medium">Request URL</span>
-                    <code class="text-lteal">https://{{ results[op.id].public_url }}</code>
+                    <!-- Carries its own scheme: it comes from the spec's declared
+                         server, so it is exactly the base URL the docs advertise. -->
+                    <code class="text-lteal">{{ results[op.id].public_url }}</code>
                   </p>
 
                   <div class="relative">
@@ -274,13 +295,20 @@ export default {
     }
   },
   created() {
-    // Seed each endpoint's inputs from its documented examples, so Execute does
-    // something useful before anything is typed.
+    // Seed only what a call cannot go without: the required parameters, plus the
+    // timeframe pair that every global endpoint needs to mean anything.
+    //
+    // Optional filters are deliberately left empty. Pre-filling them made Execute
+    // return a narrow slice — one hero, one map, one region — which reads as the
+    // endpoint's normal answer rather than as a filter someone else chose. The
+    // example still shows as placeholder text.
     this.operations.forEach(op => {
       const seeded = {};
 
       op.parameters.forEach(p => {
-        seeded[p.name] = p.example !== undefined ? String(p.example) : '';
+        const seed = p.required || p.name === 'timeframe_type' || p.name === 'timeframe';
+
+        seeded[p.name] = seed && p.example !== undefined ? String(p.example) : '';
       });
 
       this.values[op.id] = seeded;
@@ -308,6 +336,7 @@ export default {
             method,
             summary: op.summary || '',
             quotaKey: op['x-endpoint-key'] || null,
+            sitePage: op['x-site-page'] || null,
             // An empty security array on the operation overrides the document
             // default, which is how the keyless uploader routes are marked.
             secured: !(op.security && op.security.length === 0),
@@ -385,10 +414,16 @@ export default {
       } catch (error) {
         const body = error.response && error.response.data;
 
+        // Our own errors use `error`; Laravel's use `message` — a 500 from the
+        // delegated controller, a 422 from validation, a 419 from a stale CSRF
+        // token. Showing only the first turned all of those into one unhelpful
+        // sentence, hiding the actual cause. Fall through to whatever is there,
+        // and keep the whole body when it is neither.
         this.results[op.id] = {
           status: error.response ? error.response.status : 0,
           headers: {},
-          body: (body && body.error) || 'The request could not be made.',
+          body: (body && (body.error || body.message || body))
+            || 'The request could not be made — no response from the server.',
           public_url: null,
         };
       } finally {

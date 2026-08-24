@@ -168,6 +168,12 @@ class BuildApiSpec extends Command
             $operation['x-endpoint-key'] = $registry;
         }
 
+        // The site page this endpoint answers for. Quicker than any description at
+        // conveying what the data actually is — the reader can go look at it.
+        if ($page = $endpoint['page'] ?? null) {
+            $operation['x-site-page'] = $page;
+        }
+
         if (in_array($name, self::KEYLESS, true)) {
             $operation['security'] = [];
         }
@@ -187,6 +193,16 @@ class BuildApiSpec extends Command
 
         foreach ((array) ($endpoint['uses'] ?? []) as $set) {
             $declared = array_merge($declared, $config[$set] ?? []);
+        }
+
+        // `uses` pulls in a whole set, but not every endpoint reads every member of
+        // it. The shared globals rules *validate* `role`, `groupsize` and
+        // `statfilter` on endpoints whose controllers never look at them, so without
+        // this the docs advertise filters that are accepted and then silently do
+        // nothing — worse than rejecting them, because the caller believes the
+        // result is filtered.
+        foreach ((array) ($endpoint['except'] ?? []) as $unused) {
+            unset($declared[$unused]);
         }
 
         $declared = array_merge($declared, $endpoint['parameters'] ?? []);

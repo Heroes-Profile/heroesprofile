@@ -33,8 +33,12 @@ class MatchController extends Controller
     {
         $request->merge(['replayID' => $replayID]);
 
+        // The site page shows `Zemill`; an API caller needs `Zemill#1940`, since
+        // that is what every player endpoint takes as input and the only form that
+        // identifies someone uniquely. Private accounts are still nulled out
+        // entirely, before this ever applies.
         $result = app()->call(
-            [app(SingleMatchController::class), 'getData'],
+            [app(SingleMatchController::class)->withFullBattletags(), 'getData'],
             ['request' => $request]
         );
 

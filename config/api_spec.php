@@ -67,7 +67,7 @@ return [
         'hero' => ['description' => 'Hero name.', 'example' => 'Anduin'],
         'role' => ['description' => 'Role name.', 'example' => 'Healer'],
         'game_map' => ['description' => 'Map name.', 'example' => 'Alterac Pass'],
-        'hero_level' => ['description' => 'Minimum hero level.'],
+        'hero_level' => ['description' => 'Hero level band, not a level. One of the band codes — see Variables. Comma-separated for several.', 'example' => '25'],
         'league_tier' => ['description' => 'Player league tier id.'],
         'hero_league_tier' => ['description' => 'Hero league tier id.'],
         'role_league_tier' => ['description' => 'Role league tier id.'],
@@ -123,6 +123,9 @@ return [
             'api.external.players.matchups',
             'api.external.players.mmr',
             'api.external.players.mmr.heroes',
+            'api.external.players.mmr.history',
+            'api.external.players.mmr.history.heroes',
+            'api.external.players.mmr.history.roles',
             'api.external.players.mmr.roles',
             'api.external.players.roles',
             'api.external.players.roles.single',
@@ -133,10 +136,10 @@ return [
             'api.external.leaderboard',
         ],
 
-        'Matches' => [
-            'api.external.matches.bans',
-            'api.external.matches.show',
-            'api.external.replays.download',
+        'Replays' => [
+            'api.external.replay.bans',
+            'api.external.replay.show',
+            'api.external.replay.download',
             'api.external.replays.index',
         ],
 
@@ -202,14 +205,13 @@ return [
         'battletag' => [
             'required' => true,
             'description' => 'Full battletag including the discriminator.',
-            'example' => 'ExamplePlayer#0000',
+            'example' => 'Zemill#1940',
         ],
         'region' => [
             'required' => true,
-            'type' => 'integer',
-            'enum' => [1, 2, 3, 5],
-            'description' => 'Region id. 1 NA, 2 EU, 3 KR, 5 CN.',
-            'example' => 1,
+            'enum' => ['NA', 'EU', 'KR', 'CN', 1, 2, 3, 5],
+            'description' => 'Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.',
+            'example' => 'NA',
         ],
     ],
 
@@ -244,7 +246,7 @@ return [
         'api.external.mmr.tier' => [
             'summary' => 'The league tier a rating falls in.',
             'parameters' => [
-                'game_type' => ['required' => true, 'description' => 'Game type short name.', 'example' => 'sl'],
+                'game_type' => ['required' => true, 'description' => 'Game type, by short name or display name — `sl` and `Storm League` both work.', 'example' => 'Storm League'],
                 'mmr' => ['required' => true, 'type' => 'integer', 'description' => 'The rating to place.', 'example' => 2400],
             ],
         ],
@@ -256,134 +258,196 @@ return [
 
         'api.external.players' => [
             'summary' => 'Profile, ratings and career totals for one player.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}',
             'uses' => ['player'],
         ],
 
         'api.external.players.matches' => [
             'summary' => 'Match history, with the full stat line for each game.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/Match/History',
             'uses' => ['player'],
             'parameters' => [
-                'game_type' => ['description' => 'Game type short names, comma-separated. Defaults to `sl`.'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.', 'example' => 'Storm League'],
                 'hero' => ['description' => 'Restrict to one hero by name.'],
                 'season' => ['type' => 'integer', 'description' => 'Restrict to one season.'],
                 'pagination_page' => ['type' => 'integer', 'description' => 'Page of results. Defaults to 1.'],
+                'game_map' => ['description' => 'Filter to one map, or several comma-separated, by name.', 'example' => 'Alterac Pass'],
+                'role' => ['description' => 'Filter to one role, by name.', 'example' => 'Healer'],
+                'stack_size' => ['enum' => ['All', 'Solo', 'Duo', '3 Players', '4 Players', '5 Players'], 'description' => 'Party size the player queued at.'],
             ],
         ],
 
         'api.external.players.heroes' => [
             'summary' => 'Per-hero performance for one player.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/Hero',
             'uses' => ['player'],
             'parameters' => [
-                'game_type' => ['description' => 'Game type short names, comma-separated. Defaults to `sl`.'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.', 'example' => 'Storm League'],
                 'season' => ['type' => 'integer'],
                 'minimumgames' => ['type' => 'integer', 'description' => 'Drop heroes below this many games.'],
+                'hero' => ['description' => 'Filter to one hero, by name.', 'example' => 'Anduin'],
+                'game_map' => ['description' => 'Filter to one map, or several comma-separated, by name.', 'example' => 'Alterac Pass'],
             ],
         ],
 
         'api.external.players.heroes.single' => [
             'summary' => 'One hero, for one player.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/Hero/{hero}',
             'uses' => ['player'],
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
-                'game_type' => ['description' => 'Game type short names, comma-separated. Defaults to `sl`.'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.', 'example' => 'Storm League'],
                 'season' => ['type' => 'integer'],
+                'game_map' => ['description' => 'Filter to one map, by name.', 'example' => 'Alterac Pass'],
             ],
         ],
 
         'api.external.players.maps' => [
             'summary' => 'Per-map performance for one player.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/Map',
             'uses' => ['player'],
             'parameters' => [
-                'game_type' => ['description' => 'Game type short names, comma-separated. Defaults to `sl`.'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.', 'example' => 'Storm League'],
                 'season' => ['type' => 'integer'],
+                'hero' => ['description' => 'Filter to one hero, by name.', 'example' => 'Anduin'],
+                'minimumgames' => ['type' => 'integer', 'description' => 'Drop rows below this many games.'],
             ],
         ],
 
         'api.external.players.maps.single' => [
             'summary' => 'One map, for one player.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/Map/{map}',
             'uses' => ['player'],
             'parameters' => [
                 'map' => ['required' => true, 'description' => 'Map name.', 'example' => 'Alterac Pass'],
-                'game_type' => ['description' => 'Game type short names, comma-separated. Defaults to `sl`.'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.', 'example' => 'Storm League'],
                 'season' => ['type' => 'integer'],
+                'hero' => ['description' => 'Filter to one hero, by name.', 'example' => 'Anduin'],
             ],
         ],
 
         'api.external.players.roles' => [
             'summary' => 'Per-role performance for one player.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/Role',
             'uses' => ['player'],
             'parameters' => [
-                'game_type' => ['description' => 'Game type short names, comma-separated. Defaults to `sl`.'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.', 'example' => 'Storm League'],
                 'season' => ['type' => 'integer'],
+                'hero' => ['description' => 'Filter to one hero, by name.', 'example' => 'Anduin'],
+                'game_map' => ['description' => 'Filter to one map, or several comma-separated, by name.', 'example' => 'Alterac Pass'],
+                'minimumgames' => ['type' => 'integer', 'description' => 'Drop rows below this many games.'],
             ],
         ],
 
         'api.external.players.roles.single' => [
             'summary' => 'One role, for one player.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/Role/{role}',
             'uses' => ['player'],
             'parameters' => [
                 'role' => ['required' => true, 'description' => 'Role name.', 'example' => 'Healer'],
-                'game_type' => ['description' => 'Game type short names, comma-separated. Defaults to `sl`.'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.', 'example' => 'Storm League'],
                 'season' => ['type' => 'integer'],
+                'hero' => ['description' => 'Filter to one hero, by name.', 'example' => 'Anduin'],
+                'game_map' => ['description' => 'Filter to one map, or several comma-separated, by name.', 'example' => 'Alterac Pass'],
             ],
         ],
 
         'api.external.players.mmr' => [
-            'summary' => 'Rating history for the account.',
+            'summary' => 'Current rating per game type, with games played and league tier. What the old API returned from `/Player/MMR`.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/MMR',
             'uses' => ['player'],
             'parameters' => [
-                'game_type' => ['description' => 'One game type short name. Defaults to `sl`.', 'example' => 'sl'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Omit for every type.', 'example' => 'Storm League'],
+                'extra_mmr_info' => ['type' => 'boolean', 'description' => 'Adds `conservative_rating`, `mean` and `standard_deviation` to each rating.', 'example' => 'false'],
+            ],
+        ],
+
+        'api.external.players.mmr.history' => [
+            'summary' => 'Rating over time for the account, one entry per match.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/MMR',
+            'uses' => ['player'],
+            'parameters' => [
+                'game_type' => ['description' => 'One game type, by short name or display name — `sl` and `Storm League` both work. Defaults to Storm League.', 'example' => 'Storm League'],
                 'season' => ['type' => 'integer'],
             ],
         ],
 
         'api.external.players.mmr.heroes' => [
-            'summary' => 'Rating history for one hero.',
+            'summary' => 'Current rating on one hero, per game type.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/MMR',
             'uses' => ['player'],
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
-                'game_type' => ['description' => 'One game type short name. Defaults to `sl`.'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Omit for every type.', 'example' => 'Storm League'],
+                'extra_mmr_info' => ['type' => 'boolean', 'description' => 'Adds `conservative_rating`, `mean` and `standard_deviation` to each rating.', 'example' => 'false'],
+            ],
+        ],
+
+        'api.external.players.mmr.history.heroes' => [
+            'summary' => 'Rating over time on one hero, one entry per match.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/MMR',
+            'uses' => ['player'],
+            'parameters' => [
+                'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
+                'game_type' => ['description' => 'One game type, by short name or display name — `sl` and `Storm League` both work. Defaults to Storm League.', 'example' => 'Storm League'],
                 'season' => ['type' => 'integer'],
             ],
         ],
 
         'api.external.players.mmr.roles' => [
-            'summary' => 'Rating history for one role.',
+            'summary' => 'Current rating in one role, per game type.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/MMR',
             'uses' => ['player'],
             'parameters' => [
                 'role' => ['required' => true, 'description' => 'Role name.', 'example' => 'Healer'],
-                'game_type' => ['description' => 'One game type short name. Defaults to `sl`.'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Omit for every type.', 'example' => 'Storm League'],
+                'extra_mmr_info' => ['type' => 'boolean', 'description' => 'Adds `conservative_rating`, `mean` and `standard_deviation` to each rating.', 'example' => 'false'],
+            ],
+        ],
+
+        'api.external.players.mmr.history.roles' => [
+            'summary' => 'Rating over time in one role, one entry per match.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/MMR',
+            'uses' => ['player'],
+            'parameters' => [
+                'role' => ['required' => true, 'description' => 'Role name.', 'example' => 'Healer'],
+                'game_type' => ['description' => 'One game type, by short name or display name — `sl` and `Storm League` both work. Defaults to Storm League.', 'example' => 'Storm League'],
                 'season' => ['type' => 'integer'],
             ],
         ],
 
         'api.external.players.talents.build' => [
             'summary' => 'A player, most played builds on one hero.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/Talents',
             'uses' => ['player'],
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
-                'game_type' => ['description' => 'Game type short names, comma-separated. Defaults to `sl`.'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.', 'example' => 'Storm League'],
                 'season' => ['type' => 'integer'],
                 'game_map' => ['description' => 'Map name.'],
+                'fromdate' => ['description' => 'Only matches on or after this date, `YYYY-MM-DD`.', 'example' => '2024-01-01'],
             ],
         ],
 
         'api.external.players.matchups' => [
             'summary' => 'Opponents this player meets most, and how they fare.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/Matchups',
             'uses' => ['player'],
             'parameters' => [
-                'game_type' => ['description' => 'Game type short names, comma-separated. Omit for every type.'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Omit for every type.', 'example' => 'Storm League'],
                 'hero' => ['description' => 'Restrict to one hero by name.'],
                 'season' => ['type' => 'integer'],
+                'game_map' => ['description' => 'Filter to one map, or several comma-separated, by name.', 'example' => 'Alterac Pass'],
             ],
         ],
 
         'api.external.players.friendfoe' => [
             'summary' => 'Team-mates and opponents this player sees repeatedly.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/FriendFoe',
             'uses' => ['player'],
             'parameters' => [
                 'type' => ['enum' => ['friend', 'enemy'], 'description' => 'Which side to report. Defaults to `friend`.'],
-                'game_type' => ['description' => 'Game type short names, comma-separated. Defaults to `sl`.'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.', 'example' => 'Storm League'],
                 'hero' => ['description' => 'Restrict to one hero by name.'],
                 'season' => ['type' => 'integer'],
                 'game_map' => ['description' => 'Map name.'],
@@ -395,15 +459,17 @@ return [
         | Matches.
         */
 
-        'api.external.matches.show' => [
+        'api.external.replay.show' => [
             'summary' => 'Full detail for one match, including every stat line.',
+            'page' => '/Match/Single/{replayID}',
             'parameters' => [
                 'replayID' => ['type' => 'integer', 'description' => 'Heroes Profile match ID.'],
             ],
         ],
 
-        'api.external.matches.bans' => [
+        'api.external.replay.bans' => [
             'summary' => 'Hero bans for one match.',
+            'page' => '/Match/Single/{replayID}',
             'parameters' => [
                 'replayID' => ['type' => 'integer', 'description' => 'Heroes Profile match ID.'],
             ],
@@ -415,13 +481,14 @@ return [
                 'after' => ['type' => 'integer', 'description' => 'Return replays with an id greater than this. Omit to start from the beginning.', 'example' => 0],
                 'timeframe_type' => ['enum' => ['minor', 'major'], 'description' => 'How `timeframe` is read.'],
                 'timeframe' => ['description' => 'One patch or build.', 'example' => '2.55.17.97771'],
-                'game_type' => ['description' => 'Game type short names, comma-separated. Omit for every type.'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Omit for every type.', 'example' => 'Storm League'],
                 'game_map' => ['description' => 'Map names, comma-separated. Omit for every map.'],
             ],
         ],
 
-        'api.external.replays.download' => [
+        'api.external.replay.download' => [
             'summary' => 'The original .StormReplay file for a match.',
+            'page' => '/Match/Single/{replayID}',
             'parameters' => [
                 'replayID' => ['required' => true, 'type' => 'integer', 'description' => 'Heroes Profile match ID.'],
             ],
@@ -442,13 +509,18 @@ return [
 
         'api.external.heroes.stats' => [
             'summary' => 'Win rate, popularity and ban rate for every hero.',
+            'page' => '/Global/Hero',
             'uses' => ['globals'],
             'async' => true,
         ],
 
         'api.external.heroes.matchups' => [
             'summary' => 'How one hero performs with and against every other.',
+            'page' => '/Global/Matchups',
             'uses' => ['globals'],
+            // `role` narrows the matchup table; the controller reads no party-size or
+            // stat filter.
+            'except' => ['groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
@@ -457,7 +529,11 @@ return [
 
         'api.external.heroes.maps' => [
             'summary' => 'One hero, win rate per map.',
+            'page' => '/Global/Hero/Maps',
             'uses' => ['globals'],
+            // Validated by the shared globals rules, read by nothing here. Leaving them
+            // documented would advertise a filter that silently does nothing.
+            'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
@@ -466,7 +542,11 @@ return [
 
         'api.external.heroes.matchups.talents' => [
             'summary' => 'Talent performance for one hero against or alongside another.',
+            'page' => '/Global/Matchups/Talents',
             'uses' => ['globals'],
+            // Validated by the shared globals rules, read by nothing here. Leaving them
+            // documented would advertise a filter that silently does nothing.
+            'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
@@ -478,7 +558,10 @@ return [
 
         'api.external.heroes.talents.details' => [
             'summary' => 'Win rate and popularity for every talent.',
+            'page' => '/Global/Talents',
             'uses' => ['globals'],
+            // `statfilter` chooses the statistic ranked; role and party size are not read.
+            'except' => ['role', 'groupsize'],
             'async' => true,
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
@@ -487,7 +570,11 @@ return [
 
         'api.external.heroes.talents.builds' => [
             'summary' => 'The most played complete builds for one hero.',
+            'page' => '/Global/Talents',
             'uses' => ['globals'],
+            // Validated by the shared globals rules, read by nothing here. Leaving them
+            // documented would advertise a filter that silently does nothing.
+            'except' => ['role', 'groupsize'],
             'async' => true,
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
@@ -502,32 +589,54 @@ return [
 
         'api.external.heroes.talents.builds.all' => [
             'summary' => 'Every hero, most popular builds, for the current patch. Takes no parameters: the timeframe and build type come from the site defaults, not the request.',
+            'page' => '/Global/Talents',
             'parameters' => [],
         ],
 
         'api.external.heroes.talents.builder' => [
-            'summary' => 'Win rates for a partially chosen build, to evaluate the next talent.',
+            'summary' => 'Win rates for a partially chosen build, to evaluate the next talent. Call it with no talents selected and it returns the full talent list for that hero instead, which is how you get the `talent_id` values to send back.',
+            'page' => '/Global/Talents/Builder',
             'uses' => ['globals'],
+            // The builder page offers no role, party-size or stat filter, and the
+            // controller reads none of them.
+            'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
-                'selectedtalents' => ['description' => 'Talents already chosen, keyed by tier: `selectedtalents[1]`, `selectedtalents[4]`, through 20. Values are talent ids.'],
+                'selectedtalents[1]' => ['type' => 'integer', 'description' => 'Talent chosen at level 1. Each value is a `talent_id` from `/heroes/talents` — that endpoint lists every talent for a hero with its `talent_id` and the `level` it belongs to. Send only the levels you have picked; the rest are treated as open.'],
+                'selectedtalents[4]' => ['type' => 'integer', 'description' => 'Talent chosen at level 4. A `talent_id` from `/heroes/talents`.'],
+                'selectedtalents[7]' => ['type' => 'integer', 'description' => 'Talent chosen at level 7. A `talent_id` from `/heroes/talents`.'],
+                'selectedtalents[10]' => ['type' => 'integer', 'description' => 'Talent chosen at level 10. A `talent_id` from `/heroes/talents`.'],
+                'selectedtalents[13]' => ['type' => 'integer', 'description' => 'Talent chosen at level 13. A `talent_id` from `/heroes/talents`.'],
+                'selectedtalents[16]' => ['type' => 'integer', 'description' => 'Talent chosen at level 16. A `talent_id` from `/heroes/talents`.'],
+                'selectedtalents[20]' => ['type' => 'integer', 'description' => 'Talent chosen at level 20. A `talent_id` from `/heroes/talents`.'],
             ],
         ],
 
         'api.external.heroes.talents.builder.replays' => [
-            'summary' => 'The replays behind a talent-builder result.',
+            'summary' => 'The replays behind a talent-builder result. Send at least one selected talent — with none, it returns the full talent list for that hero rather than replays.',
+            'page' => '/Global/Talents/Builder',
             'uses' => ['globals'],
+            'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
-                'selectedtalents' => ['required' => true, 'description' => 'Talents to match, keyed by tier: `selectedtalents[1]`, `selectedtalents[4]`, through 20. Values are talent ids. Required: without it this endpoint returns the same talent list as `heroes/talents/builder`.'],
+                'selectedtalents[1]' => ['type' => 'integer', 'description' => 'Talent chosen at level 1. Each value is a `talent_id` from `/heroes/talents` — that endpoint lists every talent for a hero with its `talent_id` and the `level` it belongs to. Send only the levels you have picked; the rest are treated as open.'],
+                'selectedtalents[4]' => ['type' => 'integer', 'description' => 'Talent chosen at level 4. A `talent_id` from `/heroes/talents`.'],
+                'selectedtalents[7]' => ['type' => 'integer', 'description' => 'Talent chosen at level 7. A `talent_id` from `/heroes/talents`.'],
+                'selectedtalents[10]' => ['type' => 'integer', 'description' => 'Talent chosen at level 10. A `talent_id` from `/heroes/talents`.'],
+                'selectedtalents[13]' => ['type' => 'integer', 'description' => 'Talent chosen at level 13. A `talent_id` from `/heroes/talents`.'],
+                'selectedtalents[16]' => ['type' => 'integer', 'description' => 'Talent chosen at level 16. A `talent_id` from `/heroes/talents`.'],
+                'selectedtalents[20]' => ['type' => 'integer', 'description' => 'Talent chosen at level 20. A `talent_id` from `/heroes/talents`.'],
             ],
         ],
 
         'api.external.compositions' => [
             'summary' => 'Which team compositions win, and how often.',
+            'page' => '/Global/Compositions',
             'uses' => ['globals'],
+            // A composition is already five roles, so there is nothing to filter one by.
+            'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
                 'minimum_games' => ['type' => 'integer', 'description' => 'Drop compositions below this many games. Defaults to 100.'],
@@ -536,17 +645,25 @@ return [
 
         'api.external.compositions.heroes' => [
             'summary' => 'The heroes making up one composition.',
+            'page' => '/Global/Compositions',
             'uses' => ['globals'],
+            // Validated by the shared globals rules, read by nothing here. Leaving them
+            // documented would advertise a filter that silently does nothing.
+            'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
-                'composition_id' => ['required' => true, 'type' => 'integer', 'description' => 'A `composition_id` from the `/compositions` response.'],
+                'composition_id' => ['required' => true, 'type' => 'integer', 'description' => 'A `composition_id` from the `/compositions` response.', 'example' => 1],
                 'minimum_games' => ['type' => 'integer', 'description' => 'Defaults to 100.'],
             ],
         ],
 
         'api.external.draft' => [
             'summary' => 'Draft order and pick position for one hero.',
+            'page' => '/Global/Draft',
             'uses' => ['globals'],
+            // Validated by the shared globals rules, read by nothing here. Leaving them
+            // documented would advertise a filter that silently does nothing.
+            'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
@@ -555,7 +672,11 @@ return [
 
         'api.external.party' => [
             'summary' => 'How party size affects win rate.',
+            'page' => '/Global/Party',
             'uses' => ['globals'],
+            // Validated by the shared globals rules, read by nothing here. Leaving them
+            // documented would advertise a filter that silently does nothing.
+            'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
                 'teamoneparty' => ['description' => 'Party combination for the first team.'],
@@ -565,9 +686,10 @@ return [
 
         'api.external.leaderboard' => [
             'summary' => 'Season leaderboards by player, hero or role.',
+            'page' => '/Global/Leaderboard',
             'parameters' => [
                 'season' => ['type' => 'integer', 'description' => 'Season id. Defaults to the current season.'],
-                'game_type' => ['description' => 'One game type short name. Defaults to `sl`.', 'example' => 'sl'],
+                'game_type' => ['description' => 'One game type, by short name or display name — `sl` and `Storm League` both work. Defaults to Storm League.', 'example' => 'Storm League'],
                 'type' => ['enum' => ['player', 'hero', 'role', 'match prediction'], 'description' => 'What the board ranks. Defaults to `player`.'],
                 'groupsize' => ['enum' => ['All', 'Solo', 'Duo', '3 Players', '4 Players', '5 Players'], 'description' => 'Party size. Defaults to `Solo`.'],
                 'hero' => ['description' => 'Hero name, when `type` is `hero`.'],
@@ -596,6 +718,7 @@ return [
 
         'api.external.ngs.match' => [
             'summary' => 'One NGS match.',
+            'page' => '/Esports/NGS',
             'parameters' => [
                 'season' => ['required' => true, 'type' => 'integer', 'description' => 'NGS season.'],
                 'division' => ['required' => true, 'description' => 'Division name.'],
@@ -606,6 +729,7 @@ return [
 
         'api.external.ngs.hero.stat' => [
             'summary' => 'Hero statistics within one NGS division.',
+            'page' => '/Esports/NGS',
             'parameters' => [
                 'season' => ['required' => true, 'type' => 'integer'],
                 'division' => ['required' => true, 'description' => 'Division name.'],
@@ -616,8 +740,9 @@ return [
 
         'api.external.ngs.player.profile' => [
             'summary' => 'One NGS player.',
+            'page' => '/Esports/NGS',
             'parameters' => [
-                'battletag' => ['required' => true, 'description' => 'Full battletag.'],
+                'battletag' => ['required' => true, 'description' => 'Full battletag.', 'example' => 'Zemill#1940'],
                 'season' => ['type' => 'integer'],
                 'division' => ['description' => 'Division name.'],
             ],
@@ -625,6 +750,7 @@ return [
 
         'api.external.ngs.leaderboard.average' => [
             'summary' => 'NGS leaderboard by highest average of one statistic.',
+            'page' => '/Esports/NGS',
             'parameters' => [
                 'stat' => ['required' => true, 'description' => 'The statistic to rank by.', 'example' => 'hero_damage'],
                 'season' => ['type' => 'integer'],
@@ -633,6 +759,7 @@ return [
 
         'api.external.ngs.leaderboard.total' => [
             'summary' => 'NGS leaderboard by highest total of one statistic.',
+            'page' => '/Esports/NGS',
             'parameters' => [
                 'stat' => ['required' => true, 'description' => 'The statistic to rank by.', 'example' => 'hero_damage'],
                 'season' => ['type' => 'integer'],
@@ -641,6 +768,7 @@ return [
 
         'api.external.ngs.replay.data' => [
             'summary' => 'Full detail for one NGS match by replay id.',
+            'page' => '/Esports/NGS',
             'parameters' => [
                 'replayID' => ['required' => true, 'type' => 'integer', 'description' => 'Heroes Profile match ID.'],
             ],
@@ -652,6 +780,7 @@ return [
 
         'api.external.tools.randomize' => [
             'summary' => 'A random talent build for one hero.',
+            'page' => '/Tools/RandomizeMe',
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
             ],
@@ -659,8 +788,9 @@ return [
 
         'api.external.tools.activity.players.unique' => [
             'summary' => 'Unique players seen per month.',
+            'page' => '/Tools/Activity',
             'parameters' => [
-                'game_type' => ['description' => 'Game type short names, comma-separated. Omit for every type.'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Omit for every type.', 'example' => 'Storm League'],
                 'region' => ['type' => 'integer', 'description' => 'Region id. Omit for every region.'],
             ],
         ],
@@ -676,6 +806,7 @@ return [
 
         'api.external.upload' => [
             'summary' => 'Upload a replay.',
+            'page' => '/Upload',
             'parameters' => [
                 'source' => ['description' => 'Which client is uploading. `desktop` and `electron` own a replay source; anything else defers to them.', 'example' => 'desktop'],
                 'fingerprint' => ['description' => 'The client own fingerprint. Accepted and ignored: the server derives its own.'],

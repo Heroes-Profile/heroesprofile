@@ -83,7 +83,7 @@
       <p c>Heroes Profile uses data from Heroes Profile API.  Heroes Profile API uploads are in open Heroes of the Storm replay database with user uploaded replay data.
         Currently, Heroes Profile has pulled {{ getValueLocal(maxreplayid) }} replays up to and including data from patch
       {{ latestpatch }} and date/time <format-date :input="latestgamedate"></format-date> and incorporated them into our dataset.</p>
-      <p>For more information on Heroes Profile API navigate to <a class="link" href="https://api.heroesprofile.com/">https://api.heroesprofile.com/</a></p>
+      <p>For more information on Heroes Profile API navigate to <a class="link" href="/Api">heroesprofile.com/Api</a></p>
       
     </div>
   </div>

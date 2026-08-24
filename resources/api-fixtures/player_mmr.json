@@ -1,88 +1,42 @@
 {
-    "tableData": [
-        {
-            "replayID": 90000001,
-            "game_date": "2020-01-01 00:00:00",
-            "game_map": 6,
-            "mmr_ran": 1,
-            "winner": "True"
+    "battletag": "ExamplePlayer1#0000",
+    "region": 1,
+    "ratings": {
+        "Quick Match": {
+            "mmr": 2849,
+            "games_played": 3657,
+            "games_played_last_90_days": 0,
+            "league_tier": "Master"
         },
-        {
-            "replayID": 90000002,
-            "game_date": "2020-01-01 00:00:00",
-            "game_map": 7,
-            "mmr_ran": 1,
-            "winner": "True"
+        "Unranked Draft": {
+            "mmr": 2890,
+            "games_played": 161,
+            "games_played_last_90_days": 0,
+            "league_tier": "Master"
         },
-        {
-            "replayID": 90000003,
-            "game_date": "2020-01-01 00:00:00",
-            "game_map": 13,
-            "mmr_ran": 1,
-            "winner": "True"
+        "Hero League": {
+            "mmr": 2859,
+            "games_played": 1074,
+            "games_played_last_90_days": 0,
+            "league_tier": "Master"
         },
-        {
-            "replayID": 90000004,
-            "game_date": "2020-01-01 00:00:00",
-            "game_map": 11,
-            "mmr_ran": 1,
-            "winner": "False"
+        "Team League": {
+            "mmr": 2928,
+            "games_played": 70,
+            "games_played_last_90_days": 0,
+            "league_tier": "Diamond 1"
         },
-        {
-            "replayID": 90000005,
-            "game_date": "2020-01-01 00:00:00",
-            "game_map": 13,
-            "mmr_ran": 1,
-            "winner": "False"
+        "Storm League": {
+            "mmr": 2921,
+            "games_played": 89,
+            "games_played_last_90_days": 0,
+            "league_tier": "Diamond 2"
+        },
+        "ARAM": {
+            "mmr": 2831,
+            "games_played": 1581,
+            "games_played_last_90_days": 18,
+            "league_tier": "Diamond 4"
         }
-    ],
-    "leagueData": [
-        {
-            "league_breakdowns_id": 276119,
-            "type_role_hero": 10000,
-            "game_type": 1,
-            "league_tier": 1,
-            "min_mmr": 785,
-            "max_mmr": 2500
-        },
-        {
-            "league_breakdowns_id": 2576,
-            "type_role_hero": 10000,
-            "game_type": 1,
-            "league_tier": 2,
-            "min_mmr": 2439,
-            "max_mmr": 2500
-        },
-        {
-            "league_breakdowns_id": 2577,
-            "type_role_hero": 10000,
-            "game_type": 1,
-            "league_tier": 3,
-            "min_mmr": 2555,
-            "max_mmr": 2500
-        },
-        {
-            "league_breakdowns_id": 2578,
-            "type_role_hero": 10000,
-            "game_type": 1,
-            "league_tier": 4,
-            "min_mmr": 2643,
-            "max_mmr": 2500
-        },
-        {
-            "league_breakdowns_id": 2579,
-            "type_role_hero": 10000,
-            "game_type": 1,
-            "league_tier": 5,
-            "min_mmr": 2728,
-            "max_mmr": 2500
-        },
-        {
-            "league_breakdowns_id": 2580,
-            "type_role_hero": 10000,
-            "game_type": 1,
-            "league_tier": 6,
-            "min_mmr": 2821
-        }
-    ]
+    }
 }
