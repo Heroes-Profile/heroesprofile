@@ -128,12 +128,16 @@
             <tr>
               <th class="py-2 px-3 text-left text-sm">Date</th>
               <th class="py-2 px-3 text-left text-sm">Total</th>
+              <th class="py-2 px-3 text-left text-sm">Invoice</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="invoice in invoices" :key="invoice.id">
               <td class="py-2 px-3">{{ invoice.date }}</td>
               <td class="py-2 px-3">{{ invoice.total }}</td>
+              <td class="py-2 px-3">
+                <a v-if="invoice.url" class="link" :href="invoice.url" target="_blank" rel="noopener">View</a>
+              </td>
             </tr>
           </tbody>
         </table>

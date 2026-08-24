@@ -219,6 +219,8 @@ class BillingController extends Controller
                 'id' => $invoice->id,
                 'date' => $invoice->date()->toDateString(),
                 'total' => $invoice->total(),
+                // Stripe's own hosted page. Null on drafts, so the view has to cope.
+                'url' => $invoice->hosted_invoice_url,
             ])->all(),
         ]);
     }

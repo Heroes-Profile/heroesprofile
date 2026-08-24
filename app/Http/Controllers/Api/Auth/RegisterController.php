@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Api\ApiAccount;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -51,6 +52,10 @@ class RegisterController extends Controller
         $account->migrated = true;
 
         $account->save();
+
+        // Sends the verification mail. Nothing is gated on the result — see
+        // ApiAccount::sendEmailVerificationNotification().
+        event(new Registered($account));
 
         // `migrated` stays 0 — activating live data is a deliberate act in the UI.
         Auth::guard('api_web')->login($account);

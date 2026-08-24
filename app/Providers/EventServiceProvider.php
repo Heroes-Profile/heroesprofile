@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Listeners\ClearApiEntitlementCache;
+use App\Listeners\SendSubscriptionEmails;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -28,6 +29,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         WebhookHandled::class => [
             ClearApiEntitlementCache::class,
+            SendSubscriptionEmails::class,
         ],
     ];
 

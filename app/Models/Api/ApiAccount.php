@@ -2,6 +2,9 @@
 
 namespace App\Models\Api;
 
+use App\Notifications\Api\ResetApiPassword;
+use App\Notifications\Api\VerifyApiEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Cashier\Billable;
@@ -9,7 +12,7 @@ use Laravel\Cashier\Billable;
 /**
  * API customer account. Shares `heroesprofile_api.users` with the old API site.
  */
-class ApiAccount extends Authenticatable
+class ApiAccount extends Authenticatable implements MustVerifyEmail
 {
     use Billable, Notifiable;
 
@@ -59,6 +62,22 @@ class ApiAccount extends Authenticatable
         'm_upload_approved',
         'ml_upload_approved',
     ];
+
+    /**
+     * Nothing is gated on verification — no route carries the `verified` middleware.
+     * Existing accounts predate this and hold a null `email_verified_at`, so enforcing
+     * it would lock out paying customers mid-transition.
+     */
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new VerifyApiEmail);
+    }
+
+    /** Scoped to this model so the main site's `web` guard keeps Laravel's default. */
+    public function sendPasswordResetNotification(#[\SensitiveParameter] $token): void
+    {
+        $this->notify(new ResetApiPassword($token));
+    }
 
     /**
      * Cashier derives its foreign key from the class name, which would give

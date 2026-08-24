@@ -4,6 +4,7 @@ use App\Http\Controllers\AnimationsController;
 use App\Http\Controllers\Api\Account\AccountController as ApiAccountController;
 use App\Http\Controllers\Api\Account\BillingController as ApiBillingController;
 use App\Http\Controllers\Api\ApiHomeController;
+use App\Http\Controllers\Api\Auth\EmailVerificationController as ApiEmailVerificationController;
 use App\Http\Controllers\Api\Auth\LoginController as ApiLoginController;
 use App\Http\Controllers\Api\Auth\PasswordResetController as ApiPasswordResetController;
 use App\Http\Controllers\Api\Auth\RegisterController as ApiRegisterController;
@@ -259,6 +260,12 @@ Route::middleware(['logIpAndUserAgent'])->prefix('Api')->group(function () {
 
     Route::get('/Register', [ApiRegisterController::class, 'show']);
     Route::post('/Register', [ApiRegisterController::class, 'register'])->middleware('throttle:contact');
+
+    // Signed, and deliberately outside the auth group: mail clients open links in
+    // whatever browser they like, rarely the one holding the session.
+    Route::get('/Email/Verify/{id}/{hash}', [ApiEmailVerificationController::class, 'verify'])
+        ->middleware('signed')
+        ->name('api.verification.verify');
 
     Route::get('/Password/Forgot', [ApiPasswordResetController::class, 'showRequestForm']);
     Route::post('/Password/Forgot', [ApiPasswordResetController::class, 'sendResetLink'])->middleware('throttle:contact');
