@@ -195,6 +195,20 @@
                             "type": "integer"
                         },
                         "description": "Drop compositions below this many games. Defaults to 100."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -528,6 +542,20 @@
                             "type": "integer"
                         },
                         "description": "Defaults to 100."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -1120,6 +1148,20 @@
                             ]
                         },
                         "description": "Include mirror matches."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -1210,7 +1252,22 @@
             "get": {
                 "summary": "Every hero, with role, type and release date.",
                 "operationId": "api.external.heroes",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -1418,6 +1475,20 @@
                             ]
                         },
                         "description": "Include mirror matches."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -1673,6 +1744,20 @@
                             ]
                         },
                         "description": "Include mirror matches."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -2262,6 +2347,20 @@
                             ]
                         },
                         "description": "Whose talents to report. Defaults to `hero`."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -3302,6 +3401,20 @@
                             "type": "string"
                         },
                         "description": "Statistic to filter on."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -3448,6 +3561,20 @@
                         },
                         "description": "Restrict to one hero by name.",
                         "example": "Anduin"
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -3745,6 +3872,20 @@
                             "type": "integer"
                         },
                         "description": "Talent chosen at level 20. A `talent_id` from `/heroes/talents`."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -4564,6 +4705,20 @@
                             "type": "integer"
                         },
                         "description": "Talent chosen at level 20. A `talent_id` from `/heroes/talents`."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -5150,6 +5305,20 @@
                             "type": "integer"
                         },
                         "description": "How many builds to return, 1 to 25. Defaults to 7."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -5783,7 +5952,22 @@
             "get": {
                 "summary": "Every hero, most popular builds, for the current patch. Takes no parameters: the timeframe and build type come from the site defaults, not the request.",
                 "operationId": "api.external.heroes.talents.builds.all",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -161221,6 +161405,20 @@
                             "type": "string"
                         },
                         "description": "Statistic to filter on."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -162141,6 +162339,20 @@
                             "type": "string"
                         },
                         "description": "The `job_id` from a 202 response."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -162250,6 +162462,20 @@
                             "type": "string"
                         },
                         "description": "League tier id."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -162398,7 +162624,22 @@
             "get": {
                 "summary": "Every map, with its id and rotation status.",
                 "operationId": "api.external.maps",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -162484,6 +162725,20 @@
                         },
                         "description": "The rating to place.",
                         "example": 2400
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -162756,6 +163011,20 @@
                             "type": "string"
                         },
                         "description": "Restrict to one player."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -162866,6 +163135,20 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -162939,6 +163222,20 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -163030,6 +163327,20 @@
                             "type": "integer"
                         },
                         "description": "Round number."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -163237,6 +163548,20 @@
                             "type": "string"
                         },
                         "description": "Division name."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -163454,6 +163779,20 @@
                             "type": "integer"
                         },
                         "description": "Heroes Profile match ID."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -165083,6 +165422,20 @@
                             "type": "string"
                         },
                         "description": "Party combination for the second team."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -166817,7 +167170,22 @@
             "get": {
                 "summary": "Game versions, with the season each belongs to.",
                 "operationId": "api.external.patches",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Success",
@@ -166928,6 +167296,20 @@
                         },
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
                         "example": "NA"
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -168635,6 +169017,20 @@
                             ]
                         },
                         "description": "Party size filter."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -168877,6 +169273,20 @@
                         },
                         "description": "Filter to one map, or several comma-separated, by name.",
                         "example": "Alterac Pass"
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -169954,6 +170364,20 @@
                         },
                         "description": "Filter to one map, by name.",
                         "example": "Alterac Pass"
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -172390,6 +172814,20 @@
                             "type": "integer"
                         },
                         "description": "Drop rows below this many games."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -173281,6 +173719,20 @@
                         },
                         "description": "Filter to one hero, by name.",
                         "example": "Anduin"
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -175933,6 +176385,20 @@
                             ]
                         },
                         "description": "Party size the player queued at."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -176761,6 +177227,20 @@
                         },
                         "description": "Filter to one map, or several comma-separated, by name.",
                         "example": "Alterac Pass"
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -177242,6 +177722,20 @@
                         },
                         "description": "Adds `conservative_rating`, `mean` and `standard_deviation` to each rating.",
                         "example": "false"
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -177492,6 +177986,20 @@
                         },
                         "description": "Adds `conservative_rating`, `mean` and `standard_deviation` to each rating.",
                         "example": "false"
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -177682,6 +178190,20 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -177949,6 +178471,20 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -178213,6 +178749,20 @@
                         "schema": {
                             "type": "integer"
                         }
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -178476,6 +179026,20 @@
                         },
                         "description": "Adds `conservative_rating`, `mean` and `standard_deviation` to each rating.",
                         "example": "false"
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -178743,6 +179307,20 @@
                             "type": "integer"
                         },
                         "description": "Drop rows below this many games."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -179635,6 +180213,20 @@
                         },
                         "description": "Filter to one map, or several comma-separated, by name.",
                         "example": "Alterac Pass"
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -182383,6 +182975,20 @@
                         },
                         "description": "Only matches on or after this date, `YYYY-MM-DD`.",
                         "example": "2024-01-01"
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -183866,6 +184472,20 @@
                             "type": "integer"
                         },
                         "description": "Heroes Profile match ID."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -185027,6 +185647,20 @@
                             "type": "integer"
                         },
                         "description": "Heroes Profile match ID."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -185197,6 +185831,20 @@
                             "type": "string"
                         },
                         "description": "Map names, comma-separated. Omit for every map."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -185387,6 +186035,20 @@
                             "type": "integer"
                         },
                         "description": "Region id. Omit for every region."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {
@@ -185437,6 +186099,20 @@
                         },
                         "description": "Hero name.",
                         "example": "Anduin"
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
                     }
                 ],
                 "responses": {

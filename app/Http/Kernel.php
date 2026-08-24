@@ -7,6 +7,7 @@ use App\Http\Middleware\BlockBannedIPs;
 use App\Http\Middleware\CheckIfPatreonSupporter;
 use App\Http\Middleware\CheckIfPrivateProfilePage;
 use App\Http\Middleware\CommunitySupportRedirect;
+use App\Http\Middleware\ConvertResponseToCsv;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\EnforceApiQuota;
 use App\Http\Middleware\EnsureApiAccountAuthenticated;
@@ -108,6 +109,10 @@ class Kernel extends HttpKernel
             ResolveApiKey::class,
             ThrottleRequests::class.':api-external',
             SubstituteBindings::class,
+            // Last in the group, so on the way back it runs before the others but
+            // still outside the route middleware — which is what matters, since it
+            // has to see fixture output as well as live output.
+            ConvertResponseToCsv::class,
         ],
     ];
 

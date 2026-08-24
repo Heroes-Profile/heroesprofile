@@ -118,10 +118,14 @@ class EnforceApiQuota
 
         $this->recordEgress($context->account->id, $endpoint, $response);
 
-        return $response
-            ->header(self::HEADER_PREFIX.'Limit', $limit)
-            ->header(self::HEADER_PREFIX.'Remaining', max(0, $limit - ($usage->calls + 1)))
-            ->header(self::HEADER_PREFIX.'Reset', $this->secondsUntilReset($usage));
+        // Set on the header bag rather than chained: `header()` is a Laravel response
+        // helper, and the replay download answers with a Symfony StreamedResponse that
+        // does not have it. Same for the fixture path, which answers a file.
+        $response->headers->set(self::HEADER_PREFIX.'Limit', (string) $limit);
+        $response->headers->set(self::HEADER_PREFIX.'Remaining', (string) max(0, $limit - ($usage->calls + 1)));
+        $response->headers->set(self::HEADER_PREFIX.'Reset', (string) $this->secondsUntilReset($usage));
+
+        return $response;
     }
 
     /**
