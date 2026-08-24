@@ -42,9 +42,9 @@ class ServeApiFixtures
         }
 
         if ($binary = $this->binaryFixture($endpoint)) {
-            return response()
-                ->download($binary, basename($binary))
-                ->withHeaders([self::HEADER => 'fixture']);
+            // Headers passed in, not chained: download() answers with a plain Symfony
+            // BinaryFileResponse, which has none of Laravel's response helpers.
+            return response()->download($binary, basename($binary), [self::HEADER => 'fixture']);
         }
 
         $fixture = $this->read($endpoint);

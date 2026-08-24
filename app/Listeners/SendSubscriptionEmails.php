@@ -71,7 +71,16 @@ class SendSubscriptionEmails
         // Only when it just flipped on. Stripe sends `updated` for plenty of things,
         // and an unrelated change on an already-cancelled subscription still carries
         // `cancel_at_period_end: true`.
-        if (($object['cancel_at_period_end'] ?? false) && array_key_exists('cancel_at_period_end', $previous)) {
+        // Any of these appearing in `previous_attributes` means cancellation state
+        // just changed. Keyed on one of them alone, a Stripe API version that reports
+        // the change through a different field sends the customer nothing at all —
+        // and `deleted()` then skips it too, because it looks already-confirmed.
+        $cancelChanged = array_key_exists('cancel_at_period_end', $previous)
+            || array_key_exists('cancel_at', $previous)
+            || array_key_exists('canceled_at', $previous)
+            || array_key_exists('cancellation_details', $previous);
+
+        if (($object['cancel_at_period_end'] ?? false) && $cancelChanged) {
             $endsAt = $this->endOfPeriod($object);
 
             $this->tellAdmin(

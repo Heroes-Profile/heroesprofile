@@ -74,9 +74,15 @@ class ReplayParserClient
         $decoded = json_decode($body, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            report(new RuntimeException(
-                "Replay parser returned non-JSON for [{$key}] in [{$bucket}]: {$body}"
-            ));
+            // A replay the parser refuses is the caller's file being unusable, not a
+            // fault here — incomplete replays arrive all day and the upload already
+            // answers with a failure status. Reporting each one buries the outages
+            // this report exists to catch.
+            if (! str_starts_with(trim($body), 'Error parsing replay')) {
+                report(new RuntimeException(
+                    "Replay parser returned non-JSON for [{$key}] in [{$bucket}]: {$body}"
+                ));
+            }
 
             return ['error' => $body];
         }
