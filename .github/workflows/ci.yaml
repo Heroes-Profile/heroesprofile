@@ -44,3 +44,16 @@ jobs:
 
     - name: The API specification builds
       run: php artisan api:build-spec --check
+
+    # The committed document is what the docs site and any generated client read,
+    # and nothing regenerates it on deploy. Building it here and failing on a diff
+    # makes every change to the public surface show up in the pull request that
+    # caused it, rather than whenever someone next remembers to run the command.
+    - name: The committed API specification is up to date
+      run: |
+        php artisan api:build-spec
+        if ! git diff --quiet public/spec/heroesprofile-v1.json; then
+          echo "::error::public/spec/heroesprofile-v1.json is stale. Run 'php artisan api:build-spec' and commit the result."
+          git diff --stat public/spec/heroesprofile-v1.json
+          exit 1
+        fi

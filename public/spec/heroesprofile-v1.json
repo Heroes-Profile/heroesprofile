@@ -84,8 +84,13 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
                         "example": "2.55.17.97771"
                     },
@@ -94,16 +99,21 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "qm",
-                                "ud",
-                                "hl",
-                                "tl",
-                                "sl",
-                                "ar"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "qm",
+                                    "ud",
+                                    "hl",
+                                    "tl",
+                                    "sl",
+                                    "ar"
+                                ]
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
                         "example": "Storm League"
                     },
@@ -112,8 +122,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
                         "example": "NA"
                     },
@@ -132,8 +147,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Map name.",
                         "example": "Alterac Pass"
                     },
@@ -142,9 +162,14 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
-                        "description": "Hero level band, not a level. One of the band codes — see Variables. Comma-separated for several.",
+                        "style": "form",
+                        "explode": false,
+                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
                         "example": "25"
                     },
                     {
@@ -152,8 +177,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Player league tier id."
                     },
                     {
@@ -161,8 +191,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Hero league tier id."
                     },
                     {
@@ -170,8 +205,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Role league tier id."
                     },
                     {
@@ -421,8 +461,13 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
                         "example": "2.55.17.97771"
                     },
@@ -431,16 +476,21 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "qm",
-                                "ud",
-                                "hl",
-                                "tl",
-                                "sl",
-                                "ar"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "qm",
+                                    "ud",
+                                    "hl",
+                                    "tl",
+                                    "sl",
+                                    "ar"
+                                ]
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
                         "example": "Storm League"
                     },
@@ -449,8 +499,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
                         "example": "NA"
                     },
@@ -469,8 +524,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Map name.",
                         "example": "Alterac Pass"
                     },
@@ -479,9 +539,14 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
-                        "description": "Hero level band, not a level. One of the band codes — see Variables. Comma-separated for several.",
+                        "style": "form",
+                        "explode": false,
+                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
                         "example": "25"
                     },
                     {
@@ -489,8 +554,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Player league tier id."
                     },
                     {
@@ -498,8 +568,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Hero league tier id."
                     },
                     {
@@ -507,8 +582,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Role league tier id."
                     },
                     {
@@ -1046,8 +1126,13 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
                         "example": "2.55.17.97771"
                     },
@@ -1056,16 +1141,21 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "qm",
-                                "ud",
-                                "hl",
-                                "tl",
-                                "sl",
-                                "ar"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "qm",
+                                    "ud",
+                                    "hl",
+                                    "tl",
+                                    "sl",
+                                    "ar"
+                                ]
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
                         "example": "Storm League"
                     },
@@ -1074,8 +1164,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
                         "example": "NA"
                     },
@@ -1094,8 +1189,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Map name.",
                         "example": "Alterac Pass"
                     },
@@ -1104,9 +1204,14 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
-                        "description": "Hero level band, not a level. One of the band codes — see Variables. Comma-separated for several.",
+                        "style": "form",
+                        "explode": false,
+                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
                         "example": "25"
                     },
                     {
@@ -1114,8 +1219,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Player league tier id."
                     },
                     {
@@ -1123,8 +1233,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Hero league tier id."
                     },
                     {
@@ -1132,8 +1247,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Role league tier id."
                     },
                     {
@@ -1373,8 +1493,13 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
                         "example": "2.55.17.97771"
                     },
@@ -1383,16 +1508,21 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "qm",
-                                "ud",
-                                "hl",
-                                "tl",
-                                "sl",
-                                "ar"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "qm",
+                                    "ud",
+                                    "hl",
+                                    "tl",
+                                    "sl",
+                                    "ar"
+                                ]
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
                         "example": "Storm League"
                     },
@@ -1401,8 +1531,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
                         "example": "NA"
                     },
@@ -1421,8 +1556,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Map name.",
                         "example": "Alterac Pass"
                     },
@@ -1431,9 +1571,14 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
-                        "description": "Hero level band, not a level. One of the band codes — see Variables. Comma-separated for several.",
+                        "style": "form",
+                        "explode": false,
+                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
                         "example": "25"
                     },
                     {
@@ -1441,8 +1586,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Player league tier id."
                     },
                     {
@@ -1450,8 +1600,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Hero league tier id."
                     },
                     {
@@ -1459,8 +1614,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Role league tier id."
                     },
                     {
@@ -1632,8 +1792,13 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
                         "example": "2.55.17.97771"
                     },
@@ -1642,16 +1807,21 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "qm",
-                                "ud",
-                                "hl",
-                                "tl",
-                                "sl",
-                                "ar"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "qm",
+                                    "ud",
+                                    "hl",
+                                    "tl",
+                                    "sl",
+                                    "ar"
+                                ]
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
                         "example": "Storm League"
                     },
@@ -1660,8 +1830,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
                         "example": "NA"
                     },
@@ -1690,8 +1865,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Map name.",
                         "example": "Alterac Pass"
                     },
@@ -1700,9 +1880,14 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
-                        "description": "Hero level band, not a level. One of the band codes — see Variables. Comma-separated for several.",
+                        "style": "form",
+                        "explode": false,
+                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
                         "example": "25"
                     },
                     {
@@ -1710,8 +1895,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Player league tier id."
                     },
                     {
@@ -1719,8 +1909,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Hero league tier id."
                     },
                     {
@@ -1728,8 +1923,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Role league tier id."
                     },
                     {
@@ -2209,8 +2409,13 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
                         "example": "2.55.17.97771"
                     },
@@ -2219,16 +2424,21 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "qm",
-                                "ud",
-                                "hl",
-                                "tl",
-                                "sl",
-                                "ar"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "qm",
+                                    "ud",
+                                    "hl",
+                                    "tl",
+                                    "sl",
+                                    "ar"
+                                ]
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
                         "example": "Storm League"
                     },
@@ -2237,8 +2447,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
                         "example": "NA"
                     },
@@ -2257,8 +2472,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Map name.",
                         "example": "Alterac Pass"
                     },
@@ -2267,9 +2487,14 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
-                        "description": "Hero level band, not a level. One of the band codes — see Variables. Comma-separated for several.",
+                        "style": "form",
+                        "explode": false,
+                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
                         "example": "25"
                     },
                     {
@@ -2277,8 +2502,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Player league tier id."
                     },
                     {
@@ -2286,8 +2516,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Hero league tier id."
                     },
                     {
@@ -2295,8 +2530,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Role league tier id."
                     },
                     {
@@ -3263,8 +3503,13 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
                         "example": "2.55.17.97771"
                     },
@@ -3273,16 +3518,21 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "qm",
-                                "ud",
-                                "hl",
-                                "tl",
-                                "sl",
-                                "ar"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "qm",
+                                    "ud",
+                                    "hl",
+                                    "tl",
+                                    "sl",
+                                    "ar"
+                                ]
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
                         "example": "Storm League"
                     },
@@ -3291,8 +3541,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
                         "example": "NA"
                     },
@@ -3321,8 +3576,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Map name.",
                         "example": "Alterac Pass"
                     },
@@ -3331,9 +3591,14 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
-                        "description": "Hero level band, not a level. One of the band codes — see Variables. Comma-separated for several.",
+                        "style": "form",
+                        "explode": false,
+                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
                         "example": "25"
                     },
                     {
@@ -3341,8 +3606,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Player league tier id."
                     },
                     {
@@ -3350,8 +3620,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Hero league tier id."
                     },
                     {
@@ -3359,8 +3634,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Role league tier id."
                     },
                     {
@@ -3381,17 +3661,21 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "All",
-                                "Solo",
-                                "Duo",
-                                "3 Players",
-                                "4 Players",
-                                "5 Players"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "Solo",
+                                    "Duo",
+                                    "3 Players",
+                                    "4 Players",
+                                    "5 Players"
+                                ]
+                            }
                         },
-                        "description": "Party size filter."
+                        "style": "form",
+                        "explode": false,
+                        "description": "Party sizes to report on, comma-separated for several. Omit for every game regardless of party size, which is also the only form carrying ban and win rate change data."
                     },
                     {
                         "name": "statfilter",
@@ -3707,8 +3991,13 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
                         "example": "2.55.17.97771"
                     },
@@ -3717,16 +4006,21 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "qm",
-                                "ud",
-                                "hl",
-                                "tl",
-                                "sl",
-                                "ar"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "qm",
+                                    "ud",
+                                    "hl",
+                                    "tl",
+                                    "sl",
+                                    "ar"
+                                ]
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
                         "example": "Storm League"
                     },
@@ -3735,8 +4029,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
                         "example": "NA"
                     },
@@ -3755,8 +4054,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Map name.",
                         "example": "Alterac Pass"
                     },
@@ -3765,9 +4069,14 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
-                        "description": "Hero level band, not a level. One of the band codes — see Variables. Comma-separated for several.",
+                        "style": "form",
+                        "explode": false,
+                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
                         "example": "25"
                     },
                     {
@@ -3775,8 +4084,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Player league tier id."
                     },
                     {
@@ -3784,8 +4098,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Hero league tier id."
                     },
                     {
@@ -3793,8 +4112,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Role league tier id."
                     },
                     {
@@ -4540,8 +4864,13 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
                         "example": "2.55.17.97771"
                     },
@@ -4550,16 +4879,21 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "qm",
-                                "ud",
-                                "hl",
-                                "tl",
-                                "sl",
-                                "ar"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "qm",
+                                    "ud",
+                                    "hl",
+                                    "tl",
+                                    "sl",
+                                    "ar"
+                                ]
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
                         "example": "Storm League"
                     },
@@ -4568,8 +4902,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
                         "example": "NA"
                     },
@@ -4588,8 +4927,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Map name.",
                         "example": "Alterac Pass"
                     },
@@ -4598,9 +4942,14 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
-                        "description": "Hero level band, not a level. One of the band codes — see Variables. Comma-separated for several.",
+                        "style": "form",
+                        "explode": false,
+                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
                         "example": "25"
                     },
                     {
@@ -4608,8 +4957,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Player league tier id."
                     },
                     {
@@ -4617,8 +4971,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Hero league tier id."
                     },
                     {
@@ -4626,8 +4985,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Role league tier id."
                     },
                     {
@@ -5164,8 +5528,13 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
                         "example": "2.55.17.97771"
                     },
@@ -5174,16 +5543,21 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "qm",
-                                "ud",
-                                "hl",
-                                "tl",
-                                "sl",
-                                "ar"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "qm",
+                                    "ud",
+                                    "hl",
+                                    "tl",
+                                    "sl",
+                                    "ar"
+                                ]
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
                         "example": "Storm League"
                     },
@@ -5192,8 +5566,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
                         "example": "NA"
                     },
@@ -5212,8 +5591,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Map name.",
                         "example": "Alterac Pass"
                     },
@@ -5222,9 +5606,14 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
-                        "description": "Hero level band, not a level. One of the band codes — see Variables. Comma-separated for several.",
+                        "style": "form",
+                        "explode": false,
+                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
                         "example": "25"
                     },
                     {
@@ -5232,8 +5621,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Player league tier id."
                     },
                     {
@@ -5241,8 +5635,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Hero league tier id."
                     },
                     {
@@ -5250,8 +5649,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Role league tier id."
                     },
                     {
@@ -161294,8 +161698,13 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
                         "example": "2.55.17.97771"
                     },
@@ -161304,16 +161713,21 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "qm",
-                                "ud",
-                                "hl",
-                                "tl",
-                                "sl",
-                                "ar"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "qm",
+                                    "ud",
+                                    "hl",
+                                    "tl",
+                                    "sl",
+                                    "ar"
+                                ]
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
                         "example": "Storm League"
                     },
@@ -161322,8 +161736,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
                         "example": "NA"
                     },
@@ -161342,8 +161761,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Map name.",
                         "example": "Alterac Pass"
                     },
@@ -161352,9 +161776,14 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
-                        "description": "Hero level band, not a level. One of the band codes — see Variables. Comma-separated for several.",
+                        "style": "form",
+                        "explode": false,
+                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
                         "example": "25"
                     },
                     {
@@ -161362,8 +161791,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Player league tier id."
                     },
                     {
@@ -161371,8 +161805,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Hero league tier id."
                     },
                     {
@@ -161380,8 +161819,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Role league tier id."
                     },
                     {
@@ -165302,8 +165746,13 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
                         "example": "2.55.17.97771"
                     },
@@ -165312,16 +165761,21 @@
                         "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "qm",
-                                "ud",
-                                "hl",
-                                "tl",
-                                "sl",
-                                "ar"
-                            ]
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "enum": [
+                                    "qm",
+                                    "ud",
+                                    "hl",
+                                    "tl",
+                                    "sl",
+                                    "ar"
+                                ]
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several.",
                         "example": "Storm League"
                     },
@@ -165330,8 +165784,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
                         "example": "NA"
                     },
@@ -165350,8 +165809,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Map name.",
                         "example": "Alterac Pass"
                     },
@@ -165360,9 +165824,14 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
-                        "description": "Hero level band, not a level. One of the band codes — see Variables. Comma-separated for several.",
+                        "style": "form",
+                        "explode": false,
+                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
                         "example": "25"
                     },
                     {
@@ -165370,8 +165839,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Player league tier id."
                     },
                     {
@@ -165379,8 +165853,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Hero league tier id."
                     },
                     {
@@ -165388,8 +165867,13 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Role league tier id."
                     },
                     {

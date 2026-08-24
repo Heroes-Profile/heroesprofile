@@ -13,6 +13,15 @@ use Illuminate\Support\Facades\Validator;
 
 class GlobalHeroStatsController extends GlobalsInputValidationController
 {
+    /** Solo spans two stored values; the rest map one to one. */
+    private const STACK_SIZES = [
+        'Solo' => [0, 1],
+        'Duo' => [2],
+        '3 Players' => [3],
+        '4 Players' => [4],
+        '5 Players' => [5],
+    ];
+
     use HandlesAsyncGlobalQueries;
 
     public function show(Request $request)
@@ -168,22 +177,29 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         return $this->combineData($data, $statFilter, $banData, $changeData, $hero, $role);
     }
 
+    /**
+     * Stack sizes for one or more selected group sizes, or null for none.
+     *
+     * Null is not just "do not filter" — it sends the caller to global_hero_stats
+     * instead of global_hero_stack_size, which is the only table carrying ban and
+     * change data. `All` therefore means the same as selecting nothing, and wins
+     * over anything picked alongside it.
+     */
     private function getGroupSizeFilterValues($groupsize)
     {
-        $groupSizeValues = null;
-        if ($groupsize == 'Solo') {
-            $groupSizeValues = [0, 1];
-        } elseif ($groupsize == 'Duo') {
-            $groupSizeValues = [2];
-        } elseif ($groupsize == '3 Players') {
-            $groupSizeValues = [3];
-        } elseif ($groupsize == '4 Players') {
-            $groupSizeValues = [4];
-        } elseif ($groupsize == '5 Players') {
-            $groupSizeValues = [5];
+        $selected = array_filter((array) $groupsize, fn ($value) => $value !== null && $value !== '');
+
+        if ($selected === [] || in_array('All', $selected, true)) {
+            return null;
         }
 
-        return $groupSizeValues;
+        $values = [];
+
+        foreach ($selected as $entry) {
+            $values = array_merge($values, self::STACK_SIZES[$entry] ?? []);
+        }
+
+        return $values === [] ? null : array_values(array_unique($values));
     }
 
     private function calculateGameVersionsForHeroChange($version)

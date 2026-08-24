@@ -41,6 +41,7 @@
       :includemirror="true"
       :includegroupsize="true"
       :groupsizeadvanced="true"
+      :groupsizemulti="true"
       :groupSizeDefaultValue="groupsize"
       :includetalentbuildtype="true"
       :advancedfiltering="advancedfiltering"
@@ -255,7 +256,7 @@ export default {
       herorank: null,
       rolerank: null,
       mirrormatch: 0,
-      groupsize: "All",
+      groupsize: [],
       talentbuildtype: null,
       loadingStates: {},
       tablewidth: null,
@@ -282,7 +283,10 @@ export default {
       return false;
     },
     groupSizeActive(){
-      return this.groupsize && this.groupsize != "All";
+      // `All` is the unfiltered table rather than a stack size, so it reads as no
+      // filter even when it is picked alongside real sizes.
+      const selected = Array.isArray(this.groupsize) ? this.groupsize : (this.groupsize ? [this.groupsize] : []);
+      return selected.length > 0 && !selected.includes("All");
     },
     patchNotesUrl() {
       if (this.timeframetype !== 'minor' || !this.timeframe || this.timeframe.length !== 1) {
@@ -363,8 +367,8 @@ export default {
         queryString += `&role_league_tier=${this.convertRankIDtoName(this.rolerank)}`;
       }
 
-      if(this.groupsize && this.groupsize != 'All'){
-        queryString += `&group_size=${this.groupsize}`;
+      if(this.groupSizeActive){
+        queryString += `&group_size=${this.groupsize.join(',')}`;
       }
 
       queryString += `&statfilter=${this.statfilter}`;
@@ -506,10 +510,10 @@ export default {
       this.herorank = filteredData.multi["HP Hero Rank"] ? Array.from(filteredData.multi["HP Hero Rank"]) : null;
       this.rolerank = filteredData.multi["HP Role Rank"] ? Array.from(filteredData.multi["HP Role Rank"]) : null;
       this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
-      this.groupsize = filteredData.single["Group Size"] ? filteredData.single["Group Size"] : this.groupsize;
+      this.groupsize = filteredData.multi["Group Size"] ? Array.from(filteredData.multi["Group Size"]) : this.groupsize;
       this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : this.talentbuildtype;
 
-      if(this.groupsize && this.groupsize != 'All' && this.statfilter != 'win_rate'){
+      if(this.groupSizeActive && this.statfilter != 'win_rate'){
         this.statfilter = 'win_rate';
         this.statfiltername = this.filters.stat_filter.find(s => s.code === this.statfilter).name;
       }
@@ -666,9 +670,9 @@ export default {
       }
 
       if (this.urlparameters["group_size"]) {
-        this.groupsize = this.urlparameters["group_size"];
+        this.groupsize = this.urlparameters["group_size"].split(',');
 
-        if(this.groupsize != 'All' && this.statfilter != 'win_rate'){
+        if(this.groupSizeActive && this.statfilter != 'win_rate'){
           this.statfilter = 'win_rate';
           this.statfiltername = this.filters.stat_filter.find(s => s.code === this.statfilter).name;
         }
