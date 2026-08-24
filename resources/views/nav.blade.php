@@ -72,7 +72,7 @@
                                 <a href="/Global/Talents/Builder" >Talent Builder</a>
                                 <!--<a href="/Compare" >Compare</a>-->
                                 <a href="https://drafter.heroesprofile.com/Drafter" target="_blank" >Drafter</a>
-                                <a href="https://api.heroesprofile.com/upload" target="_blank" >Replay Uploader</a>
+                                <a href="/Upload" >Replay Uploader</a>
                                 {{--<a href="/" class="block px-4 py-2 border-b border-darken hover:bg-lighten cursor-not-allowed pointer-events-none">Activity Graphs</a>--}}
                                 <a href="https://autobattler.setup.heroesprofile.com/" target="_blank" >Auto Battler</a>
                                 <a href="/Match/Prediction/Game" >Match Prediction Game</a>
@@ -188,8 +188,8 @@
                 <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'" class="mt-auto md:hidden"></search-component>
                 {{-- Distinct white or grey line show the seperation here  --}}
                 <div class="flex space-x-5 bg-lighten p-3 mx-2 max-md:order-1 max-md:mt-auto">
-                    <custom-button :href="'https://api.heroesprofile.com/Api'" :targetblank="true" :text="'API'" :alt="'API'"  :size="'small'" :color="'teal'"></custom-button>
-                    <custom-button :href="'https://api.heroesprofile.com/upload'" :targetblank="true" :text="'Replay Uploader'" :alt="'Replay Uploader'"  :size="'small'" :color="'blue'"></custom-button>
+                    <custom-button :href="'/Api'" :text="'API'" :alt="'API'"  :size="'small'" :color="'teal'"></custom-button>
+                    <custom-button :href="'/Upload'" :text="'Replay Uploader'" :alt="'Replay Uploader'"  :size="'small'" :color="'blue'"></custom-button>
                     <custom-button :href="'https://www.patreon.com/heroesprofile'" :targetblank="true" :text="'Remove Ads / Patreon'" :alt="'Patreon'"  :size="'small'" :color="'red'"></custom-button>
                 </div>
 

@@ -56,14 +56,14 @@
       </a>
 
 
-      <a href="https://api.heroesprofile.com/Api" target="_blank" class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
+      <a href="/Api" class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
 
         <i class="fa-solid fa-database" style="font-size: 100px;"></i>
 
         <h3 class="text-2xl mb-10 mt-2">Heroes Profile API</h3>
         <p class="mb-10">Heroes Profile API is a tool used to get Heroes of the Storm data parsed for HeroesProfile.com. </p>
       
-        <custom-button  :href="'https://api.heroesprofile.com/Api'" :targetblank="true" :text="'API'" :alt="'API'"  :size="'big'" class="mt-auto"  :color="'teal'"></custom-button>
+        <custom-button  :href="'/Api'" :text="'API'" :alt="'API'"  :size="'big'" class="mt-auto"  :color="'teal'"></custom-button>
       </a>
 
       <div class="text-center md:w-[30%] mb-20 flex flex-col mx-5">
@@ -83,7 +83,7 @@
       <p c>Heroes Profile uses data from Heroes Profile API.  Heroes Profile API uploads are in open Heroes of the Storm replay database with user uploaded replay data.
         Currently, Heroes Profile has pulled {{ getValueLocal(maxreplayid) }} replays up to and including data from patch
       {{ latestpatch }} and date/time <format-date :input="latestgamedate"></format-date> and incorporated them into our dataset.</p>
-      <p>For more information on Heroes Profile API navigate to <a class="link" href="https://api.heroesprofile.com/">https://api.heroesprofile.com/</a></p>
+      <p>For more information on Heroes Profile API navigate to <a class="link" href="/Api">heroesprofile.com/Api</a></p>
       
     </div>
   </div>

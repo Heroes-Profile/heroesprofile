@@ -10,6 +10,12 @@ class TalentBuildTypeInputValidation implements Rule
         'Popular', 'HP Algorithm', 'Unique Lvl 1', 'Unique Lvl 4', 'Unique Lvl 7', 'Unique Lvl 10', 'Unique Lvl 13', 'Unique Lvl 16', 'Unique Lvl 20',
     ];
 
+    /** The permitted values, so the docs can list what this accepts. */
+    public function allowed(): array
+    {
+        return $this->validBuildTypes;
+    }
+
     public function passes($attribute, $value)
     {
         if (! in_array($value, $this->validBuildTypes)) {

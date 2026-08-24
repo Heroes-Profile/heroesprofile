@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('patreon_total_tracker', function (Blueprint $table) {
-            $table->decimal('goal', 10, 2)->nullable()->default(800)->after('total');
+        Schema::table('heroesprofile_cache.sessions', function (Blueprint $table) {
+            $table->index('last_activity', 'idx_last_activity');
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('patreon_total_tracker', function (Blueprint $table) {
-            $table->dropColumn('goal');
+        Schema::table('heroesprofile_cache.sessions', function (Blueprint $table) {
+            $table->dropIndex('idx_last_activity');
         });
     }
 };

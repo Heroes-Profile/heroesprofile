@@ -104,6 +104,13 @@ return [
     ],
 
     /*
+    | Where subscription activity is reported. Carried over from the old API site,
+    | which mailed this address on every cancellation. Unset means no admin copy.
+    */
+
+    'admin_address' => env('MAIL_FROM_ADDRESS'),
+
+    /*
     |--------------------------------------------------------------------------
     | Markdown Mail Settings
     |--------------------------------------------------------------------------

@@ -1,0 +1,46 @@
+{
+    "stat": "hero_damage",
+    "season": 99,
+    "leaderboard": [
+        {
+            "battletag": "ExamplePlayer1#0000",
+            "avg_hero_damage": 100000.0
+        },
+        {
+            "battletag": "ExamplePlayer2#0000",
+            "avg_hero_damage": 95000.0
+        },
+        {
+            "battletag": "ExamplePlayer3#0000",
+            "avg_hero_damage": 90000.0
+        },
+        {
+            "battletag": "ExamplePlayer4#0000",
+            "avg_hero_damage": 85000.0
+        },
+        {
+            "battletag": "ExamplePlayer5#0000",
+            "avg_hero_damage": 80000.0
+        },
+        {
+            "battletag": "ExamplePlayer6#0000",
+            "avg_hero_damage": 75000.0
+        },
+        {
+            "battletag": "ExamplePlayer7#0000",
+            "avg_hero_damage": 70000.0
+        },
+        {
+            "battletag": "ExamplePlayer8#0000",
+            "avg_hero_damage": 65000.0
+        },
+        {
+            "battletag": "ExamplePlayer9#0000",
+            "avg_hero_damage": 60000.0
+        },
+        {
+            "battletag": "ExamplePlayer10#0000",
+            "avg_hero_damage": 55000.0
+        }
+    ]
+}

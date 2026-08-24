@@ -1,0 +1,78 @@
+{
+    "season": 99,
+    "division": "Example Division",
+    "team": "Example Team",
+    "team_map_bans": [
+        "Sky Temple",
+        "Dragon Shire"
+    ],
+    "enemy": "Example Opponent",
+    "enemy_map_bans": [
+        "Battlefield of Eternity",
+        "Braxis Holdout"
+    ],
+    "round": 1,
+    "total_games": 2,
+    "match_data": {
+        "1": {
+            "map": "Alterac Pass",
+            "length": 1200,
+            "winner": true,
+            "team_heroes": [
+                "Maiev",
+                "Arthas",
+                "Tychus",
+                "Uther",
+                "Ragnaros"
+            ],
+            "team_bans": [
+                "Brightwing",
+                "Falstad",
+                "Junkrat"
+            ],
+            "enemy_heroes": [
+                "Stukov",
+                "Li-Ming",
+                "Sylvanas",
+                "Sonya",
+                "Anub'arak"
+            ],
+            "enemy_bans": [
+                "Muradin",
+                "Qhira",
+                "Hogger"
+            ],
+            "replay_url": "https://www.heroesprofile.com/Esports/NGS/Match/Single/90000001"
+        },
+        "2": {
+            "map": "Infernal Shrines",
+            "length": 1200,
+            "winner": true,
+            "team_heroes": [
+                "Greymane",
+                "Anub'arak",
+                "Li-Ming",
+                "Hogger",
+                "Rehgar"
+            ],
+            "team_bans": [
+                "Brightwing",
+                "Falstad",
+                "Kerrigan"
+            ],
+            "enemy_heroes": [
+                "Anduin",
+                "Tychus",
+                "Junkrat",
+                "Qhira",
+                "Muradin"
+            ],
+            "enemy_bans": [
+                "Alarak",
+                "Uther",
+                "Maiev"
+            ],
+            "replay_url": "https://www.heroesprofile.com/Esports/NGS/Match/Single/90000002"
+        }
+    }
+}

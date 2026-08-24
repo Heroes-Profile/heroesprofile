@@ -26,10 +26,10 @@
       <p>
         All statistics and player data displayed on this Site are derived from replay files voluntarily
         uploaded by the community through the
-        <a class="link" href="https://api.heroesprofile.com" target="_blank">Heroes Profile API</a>.
+        <a class="link" href="/Api">Heroes Profile API</a>.
         By uploading replays, users grant Heroes Profile permission to store, process, and display the
         data contained in those replays. Replay uploads are subject to the
-        <a class="link" href="https://api.heroesprofile.com/terms" target="_blank">Heroes Profile API Terms of Service</a>.
+        <a class="link" href="/Api/Terms">Heroes Profile API Terms of Service</a>.
       </p>
       <br/>
 

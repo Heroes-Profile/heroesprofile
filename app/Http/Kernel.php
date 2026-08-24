@@ -8,11 +8,18 @@ use App\Http\Middleware\CheckIfPatreonSupporter;
 use App\Http\Middleware\CheckIfPrivateProfilePage;
 use App\Http\Middleware\CommunitySupportRedirect;
 use App\Http\Middleware\EncryptCookies;
+use App\Http\Middleware\EnforceApiQuota;
+use App\Http\Middleware\EnsureApiAccountAuthenticated;
+use App\Http\Middleware\EnsureApiAdmin;
 use App\Http\Middleware\EnsureBattlenetAuthenticated;
 use App\Http\Middleware\LogIPAndUserAgent;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\RequireApiTermsAcceptance;
+use App\Http\Middleware\RequireNgsAccess;
 use App\Http\Middleware\RequireWebsiteAuthForAll;
+use App\Http\Middleware\ResolveApiKey;
+use App\Http\Middleware\ServeApiFixtures;
 use App\Http\Middleware\SetGlobalDataValues;
 use App\Http\Middleware\ThrottleNonApiRequests;
 use App\Http\Middleware\ThrottleOldReplayRequests;
@@ -23,6 +30,7 @@ use App\Http\Middleware\ValidateApiPostOrigin;
 use App\Http\Middleware\ValidateSignature;
 use App\Http\Middleware\VerifyCloudTasksRequest;
 use App\Http\Middleware\VerifyCsrfToken;
+use App\Http\Middleware\VerifyStripeWebhookSecretConfigured;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
@@ -55,6 +63,9 @@ class Kernel extends HttpKernel
         HandleCors::class,
         PreventRequestsDuringMaintenance::class,
         BlockBannedIPs::class,
+        // Ahead of the throttle exemption below, so an unverifiable webhook is
+        // refused rather than merely let through unthrottled.
+        VerifyStripeWebhookSecretConfigured::class,
         ThrottleNonApiRequests::class,
         ValidatePostSize::class,
         TrimStrings::class,
@@ -86,6 +97,18 @@ class Kernel extends HttpKernel
             ThrottleRequests::class.':api',
             SubstituteBindings::class,
         ],
+
+        /*
+         * External API. Stateless on purpose: no session, no CSRF, no
+         * CheckIfPatreonSupporter, and no ValidateApiPostOrigin — that one 403s
+         * anything without a heroesprofile Origin, which is every third-party
+         * client there is.
+         */
+        'api.external' => [
+            ResolveApiKey::class,
+            ThrottleRequests::class.':api-external',
+            SubstituteBindings::class,
+        ],
     ];
 
     /**
@@ -108,6 +131,12 @@ class Kernel extends HttpKernel
         'throttle' => ThrottleRequests::class,
         'verified' => EnsureEmailIsVerified::class,
         'ensureBattlenetAuth' => EnsureBattlenetAuthenticated::class,
+        'ensureApiAccountAuth' => EnsureApiAccountAuthenticated::class,
+        'ensureApiAdmin' => EnsureApiAdmin::class,
+        'requireApiTerms' => RequireApiTermsAcceptance::class,
+        'api.quota' => EnforceApiQuota::class,
+        'api.fixtures' => ServeApiFixtures::class,
+        'api.ngs' => RequireNgsAccess::class,
         'checkIfPrivateProfilePage' => CheckIfPrivateProfilePage::class,
         'logIpAndUserAgent' => LogIPAndUserAgent::class,
         'communitySupportRedirect' => CommunitySupportRedirect::class,

@@ -1,0 +1,50 @@
+{
+    "average_win_rate": 50.0,
+    "average_confidence_interval": 3.31,
+    "average_popularity": 50.0,
+    "average_pick_rate": 11.11,
+    "average_ban_rate": 6.38,
+    "average_positive_influence": 35,
+    "average_negative_influence": -27,
+    "average_positive_win_rate_change": 50.0,
+    "average_negative_win_rate_change": 50.0,
+    "average_games_played": 100,
+    "average_total_filter_type": 0,
+    "data": [
+        {
+            "name": "Qhira",
+            "short_name": "qhira",
+            "hero_id": 88,
+            "role": "Melee Assassin",
+            "wins": 100
+        },
+        {
+            "name": "Tyrael",
+            "short_name": "tyrael",
+            "hero_id": 60,
+            "role": "Tank",
+            "wins": 100
+        },
+        {
+            "name": "Whitemane",
+            "short_name": "whitemane",
+            "hero_id": 82,
+            "role": "Healer",
+            "wins": 100
+        },
+        {
+            "name": "The Lost Vikings",
+            "short_name": "thelostvikings",
+            "hero_id": 56,
+            "role": "Support",
+            "wins": 100
+        },
+        {
+            "name": "Sgt. Hammer",
+            "short_name": "sgthammer",
+            "hero_id": 49,
+            "role": "Ranged Assassin",
+            "wins": 100
+        }
+    ]
+}

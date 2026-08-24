@@ -41,6 +41,9 @@ return [
         'client_id' => env('PATREON_CLIENT_ID'),
         'client_secret' => env('PATREON_CLIENT_SECRET'),
         'redirect' => env('PATREON_REDIRECT_URI'),
+        // Only pledges to this campaign count. Read through config rather than env()
+        // directly so it survives `config:cache`, unlike the main site's copy.
+        'campaign_id' => env('PATREON_CAMPAIGN_ID'),
     ],
 
     'recaptcha' => [
@@ -48,4 +51,15 @@ return [
         'secret_key' => env('RECAPTCHA_SECRET_KEY'),
         'score_threshold' => env('RECAPTCHA_SCORE_THRESHOLD', 0.5),
     ],
+
+    /*
+    | The replay parser Cloud Run service. Called service-to-service with an ID
+    | token minted for this URL as audience, so the value must match the parser's
+    | address exactly or the token is rejected.
+    */
+
+    'replay_parser' => [
+        'url' => env('REPLAY_PARSER_URL'),
+    ],
+
 ];

@@ -1,6 +1,20 @@
 <?php
 
 use App\Http\Controllers\AnimationsController;
+use App\Http\Controllers\Api\Account\AccountController as ApiAccountController;
+use App\Http\Controllers\Api\Account\BillingController as ApiBillingController;
+use App\Http\Controllers\Api\Account\PatreonLinkController as ApiPatreonLinkController;
+use App\Http\Controllers\Api\Admin\AdminConsoleController as ApiAdminConsoleController;
+use App\Http\Controllers\Api\Admin\ImpersonationController as ApiImpersonationController;
+use App\Http\Controllers\Api\ApiHomeController;
+use App\Http\Controllers\Api\Auth\EmailVerificationController as ApiEmailVerificationController;
+use App\Http\Controllers\Api\Auth\LoginController as ApiLoginController;
+use App\Http\Controllers\Api\Auth\PasswordResetController as ApiPasswordResetController;
+use App\Http\Controllers\Api\Auth\RegisterController as ApiRegisterController;
+use App\Http\Controllers\Api\DocsController as ApiDocsController;
+use App\Http\Controllers\Api\LegalController as ApiLegalController;
+use App\Http\Controllers\Api\MigratingController as ApiMigratingController;
+use App\Http\Controllers\Api\TryItController as ApiTryItController;
 use App\Http\Controllers\Auth\BattleNetController;
 use App\Http\Controllers\Auth\PatreonController;
 use App\Http\Controllers\BattletagSearchController;
@@ -41,10 +55,12 @@ use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Http\Controllers\PreMatchController;
 use App\Http\Controllers\PrivacyPolicyController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReplayDownloadController;
 use App\Http\Controllers\SingleMatchController;
 use App\Http\Controllers\TermsOfServiceController;
 use App\Http\Controllers\Tools\ActivityGraphsController;
 use App\Http\Controllers\Tools\RandomizeMeController;
+use App\Http\Controllers\UploadController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -80,6 +96,18 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/Terms/Of/Service', [TermsOfServiceController::class, 'show']);
 
     Route::get('/FAQ', [FaqController::class, 'show']);
+
+    // The page posts to the public API's ingestion endpoint, which is where the
+    // upload actually happens — nothing is uploaded through this route.
+    Route::get('/Upload', [UploadController::class, 'show']);
+
+    // The match page's download button. Battlenet auth, a per-person daily limit,
+    // and no API key — the public API's replays/download is a separate thing for
+    // API customers.
+    Route::get('/Match/Single/{replayID}/Download', ReplayDownloadController::class)
+        ->whereNumber('replayID')
+        ->middleware('ensureBattlenetAuth')
+        ->name('replay.download');
 
     Route::get('/Github/Change/Log', [GithubChangeController::class, 'show']);
 
@@ -211,6 +239,69 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     });
     Route::get('/PreMatch/Results/{prematchID}', [PreMatchController::class, 'show']);
 
+});
+
+// API developer portal. Own layout, own guard, no ads.
+Route::middleware(['logIpAndUserAgent'])->prefix('Api')->group(function () {
+    Route::get('/', [ApiHomeController::class, 'index']);
+    Route::get('/DeveloperTier', [ApiHomeController::class, 'developerTier']);
+    Route::get('/EndpointLimits', [ApiHomeController::class, 'endpointLimits']);
+
+    Route::get('/Docs', [ApiDocsController::class, 'index']);
+    Route::get('/Migrating', [ApiMigratingController::class, 'index']);
+
+    // Outside the terms guard — an account being held for re-acceptance has to be
+    // able to read what it is accepting.
+    Route::get('/Terms', [ApiLegalController::class, 'terms']);
+    Route::get('/Privacy', [ApiLegalController::class, 'privacy']);
+    Route::post('/Terms/Accept', [ApiLegalController::class, 'accept'])->middleware('ensureApiAccountAuth');
+
+    Route::get('/Login', [ApiLoginController::class, 'show']);
+    // Login throttling is per email+IP in the controller, not per IP here.
+    Route::post('/Login', [ApiLoginController::class, 'login']);
+    Route::post('/Logout', [ApiLoginController::class, 'logout']);
+
+    Route::get('/Register', [ApiRegisterController::class, 'show']);
+    Route::post('/Register', [ApiRegisterController::class, 'register'])->middleware('throttle:contact');
+
+    // Signed, and deliberately outside the auth group: mail clients open links in
+    // whatever browser they like, rarely the one holding the session.
+    Route::get('/Email/Verify/{id}/{hash}', [ApiEmailVerificationController::class, 'verify'])
+        ->middleware('signed')
+        ->name('api.verification.verify');
+
+    Route::get('/Password/Forgot', [ApiPasswordResetController::class, 'showRequestForm']);
+    Route::post('/Password/Forgot', [ApiPasswordResetController::class, 'sendResetLink'])->middleware('throttle:contact');
+    Route::get('/Password/Reset/{token}', [ApiPasswordResetController::class, 'showResetForm'])->name('api.password.reset');
+    Route::post('/Password/Reset', [ApiPasswordResetController::class, 'reset'])->middleware('throttle:contact');
+
+    Route::middleware(['ensureApiAccountAuth', 'requireApiTerms'])->group(function () {
+        // Executes one public endpoint for the signed-in account, charged to its
+        // own key. Behind the portal guard: it acts as the account.
+        Route::post('/Docs/Try', ApiTryItController::class)->middleware('throttle:docs-try');
+
+        // Patreon-backed access. Its own callback, registered separately on the
+        // Patreon app: the main site's writes `battlenet_accounts_id`, which is not
+        // an identity an API account can be found through.
+        Route::get('/Patreon/Link', [ApiPatreonLinkController::class, 'redirectToProvider']);
+        Route::get('/Patreon/Callback', [ApiPatreonLinkController::class, 'handleProviderCallback']);
+        Route::post('/Patreon/Unlink', [ApiPatreonLinkController::class, 'unlink']);
+
+        Route::get('/Account', [ApiAccountController::class, 'index']);
+        Route::get('/Account/Billing', [ApiBillingController::class, 'show']);
+
+        // Gated on the grant rather than on admin mode, so an admin looking at the
+        // site as a customer keeps the door back. See EnsureApiAdmin.
+        Route::get('/Admin', [ApiAdminConsoleController::class, 'show'])
+            ->middleware('ensureApiAdmin');
+
+        Route::post('/Admin/Impersonate/{id}', [ApiImpersonationController::class, 'start'])
+            ->middleware('ensureApiAdmin')
+            ->whereNumber('id');
+
+        // No admin guard: by the time this is called the session is the customer's.
+        Route::post('/Admin/Impersonate/Stop', [ApiImpersonationController::class, 'stop']);
+    });
 });
 
 // Ads.txt redirects

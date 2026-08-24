@@ -21,6 +21,11 @@ class CreatePatreonAccountsTable extends Migration
             $table->string('email')->nullable();
             $table->tinyInteger('site_flair')->default(0);
             $table->tinyInteger('ad_free')->default(0);
+            // The pledge amount, so API tier thresholds live in config rather than
+            // needing a new boolean and a PatreonSubscriberChecker release per tier.
+            // `ad_free` cannot serve: it is one flag set at $5 and up, so a $5 and a
+            // $10 supporter are indistinguishable through it.
+            $table->integer('currently_entitled_amount_cents')->nullable();
             $table->string('access_token')->nullable();
             $table->string('remember_token')->nullable();
             $table->integer('expires_in')->nullable();

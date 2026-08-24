@@ -1,0 +1,17 @@
+{
+    "url": "https://www.heroesprofile.com/Esports/NGS/Match/Single/99999",
+    "Example Team": {
+        "ExamplePlayerOne#1234 Profile": "https://www.heroesprofile.com/Esports/NGS/Player/ExamplePlayerOne/1111111",
+        "ExamplePlayerTwo#1234 Profile": "https://www.heroesprofile.com/Esports/NGS/Player/ExamplePlayerTwo/2222222",
+        "ExamplePlayerThree#1234 Profile": "https://www.heroesprofile.com/Esports/NGS/Player/ExamplePlayerThree/3333333",
+        "ExamplePlayerFour#1234 Profile": "https://www.heroesprofile.com/Esports/NGS/Player/ExamplePlayerFour/4444444",
+        "ExamplePlayerFive#1234 Profile": "https://www.heroesprofile.com/Esports/NGS/Player/ExamplePlayerFive/5555555"
+    },
+    "Example Opponent": {
+        "ExampleOpponentOne#1234 Profile": "https://www.heroesprofile.com/Esports/NGS/Player/ExampleOpponentOne/6666666",
+        "ExampleOpponentTwo#1234 Profile": "https://www.heroesprofile.com/Esports/NGS/Player/ExampleOpponentTwo/7777777",
+        "ExampleOpponentThree#1234 Profile": "https://www.heroesprofile.com/Esports/NGS/Player/ExampleOpponentThree/8888888",
+        "ExampleOpponentFour#1234 Profile": "https://www.heroesprofile.com/Esports/NGS/Player/ExampleOpponentFour/9999999",
+        "ExampleOpponentFive#1234 Profile": "https://www.heroesprofile.com/Esports/NGS/Player/ExampleOpponentFive/1010101"
+    }
+}
