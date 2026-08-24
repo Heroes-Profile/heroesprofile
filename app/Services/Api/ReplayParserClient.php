@@ -151,7 +151,12 @@ class ReplayParserClient
         ]);
 
         try {
-            $response = $client->get(self::IDENTITY_PATH, [
+            // Absolute, not relying on the client's `base_uri`. The container fills
+            // the nullable `$metadata` constructor argument with a bare Guzzle client
+            // — it is a concrete class, so the null default never applies — and that
+            // client has no base, which made every token fetch fail and every parse
+            // go out unauthenticated.
+            $response = $client->get(self::METADATA_HOST.self::IDENTITY_PATH, [
                 'headers' => ['Metadata-Flavor' => 'Google'],
                 'query' => ['audience' => $audience, 'format' => 'full'],
             ]);
