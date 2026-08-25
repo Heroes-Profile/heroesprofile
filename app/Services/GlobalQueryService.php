@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Support\DatabaseCacheReader;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -19,12 +20,11 @@ class GlobalQueryService
      */
     private const MAX_ATTEMPTS = 3;
 
-    /**
-     * Children of one batch running at once. The queue allows 1000 concurrent
-     * dispatches and 500 a second, so nothing upstream throttles a fan-out —
-     * this ceiling is ours or there is none.
-     */
-    private const BATCH_MAX_IN_FLIGHT = 10;
+    /** Children of one batch running at once. See `config/global.php`. */
+    private function batchMaxInFlight(): int
+    {
+        return max(1, (int) config('global.batch_max_in_flight', 10));
+    }
 
     public function handle(
         string $cacheKey,
@@ -226,6 +226,13 @@ class GlobalQueryService
             }
         }
 
+        // Cloud Tasks is configured on the deployed service only. Without this a
+        // batch run anywhere else dispatches nothing and reports 0 of 90 forever.
+        // The single-query path makes the same choice — see HandlesAsyncGlobalQueries.
+        if (! app(GlobalDataService::class)->isGlobalAsyncEnabled()) {
+            return $this->runBatchInline($parentCacheKey, $children, $handlerClass, $handlerMethod, $cacheTtlSeconds, $bypassCache);
+        }
+
         $jobId = (string) Str::uuid();
         $seeded = [];
 
@@ -252,6 +259,61 @@ class GlobalQueryService
         $this->topUp($jobId);
 
         return $this->withBypassHeader($this->batchAccepted($jobId), $bypassCache);
+    }
+
+    /**
+     * Every child in turn, inside the request itself.
+     *
+     * Not a serious way to answer a ninety-hero question — it is the only way to
+     * exercise one at all where Cloud Tasks is not configured, which is everywhere
+     * but the deployed service. Results are written to the same per-child keys the
+     * queued path uses, so nothing is wasted.
+     *
+     * @param  array<string, array{cache_key: string, request: array<string, mixed>}>  $children
+     */
+    private function runBatchInline(
+        string $parentCacheKey,
+        array $children,
+        string $handlerClass,
+        string $handlerMethod,
+        int $cacheTtlSeconds,
+        bool $bypassCache
+    ): JsonResponse {
+        ignore_user_abort(true);
+        ini_set('max_execution_time', '900');
+
+        $cache = Cache::store('database');
+        $handler = app($handlerClass);
+        $ttl = max(60, $cacheTtlSeconds);
+        $results = [];
+
+        foreach ($children as $label => $child) {
+            $cached = $bypassCache ? null : $cache->get($child['cache_key']);
+
+            if ($cached !== null) {
+                $results[$label] = $cached;
+
+                continue;
+            }
+
+            try {
+                $data = $handler->{$handlerMethod}(new Request($child['request']));
+                $cache->put($child['cache_key'], $data, $ttl);
+                $results[$label] = $data;
+            } catch (\Throwable $exception) {
+                Log::error('Inline batch child failed', [
+                    'label' => $label,
+                    'error' => $exception->getMessage(),
+                ]);
+
+                $results[$label] = ['error' => $exception->getMessage()];
+            }
+        }
+
+        $cache->put($parentCacheKey, $results, $ttl);
+
+        return response()->json($results)
+            ->header('X-Global-Async-Mode', 'sync');
     }
 
     /**
@@ -285,7 +347,7 @@ class GlobalQueryService
             }
         }
 
-        $slots = self::BATCH_MAX_IN_FLIGHT - $inFlight;
+        $slots = $this->batchMaxInFlight() - $inFlight;
 
         if ($slots <= 0 || $queued === []) {
             return;
@@ -482,59 +544,92 @@ class GlobalQueryService
     }
 
     /**
-     * Where every child of a batch stands, in two cache reads rather than two per
-     * child. Worth the indirection: this runs on every poll and again each time a
-     * child finishes, so at ninety children the naive form is tens of thousands of
-     * round trips over one batch.
+     * Where every child of a batch stands, without reading any of their results.
+     *
+     * This runs on every poll and again each time a child finishes, so it is kept
+     * deliberately thin: one query asking which result keys exist, and a second for
+     * the job records of only those children that have no result yet. The results
+     * themselves are whole query outputs and are read once, at assembly, by
+     * `batchResults()`.
      *
      * @param  array<string, array{cache_key: string, request: array<string, mixed>, job_id: ?string}>  $children
-     * @return array<string, array{status: string, data?: mixed, error?: string}>
+     * @return array<string, array{status: string, error?: string}>
      */
     private function childStates(array $children): array
     {
-        $cache = Cache::store('database');
-
         $resultKeys = [];
-        $jobKeys = [];
 
         foreach ($children as $child) {
             $resultKeys[$child['cache_key']] = true;
+        }
 
-            if (($child['job_id'] ?? null) !== null) {
+        $complete = DatabaseCacheReader::existing(array_keys($resultKeys));
+
+        $jobKeys = [];
+
+        foreach ($children as $child) {
+            if (! ($complete[$child['cache_key']] ?? false) && ($child['job_id'] ?? null) !== null) {
                 $jobKeys[$this->jobKey($child['job_id'])] = true;
             }
         }
 
-        $results = $resultKeys === [] ? [] : $cache->many(array_keys($resultKeys));
-        $jobs = $jobKeys === [] ? [] : $cache->many(array_keys($jobKeys));
+        $jobs = DatabaseCacheReader::many(array_keys($jobKeys));
 
         $states = [];
 
         foreach ($children as $label => $child) {
-            $states[$label] = $this->childState($child, $results, $jobs);
+            $states[$label] = $this->childState($child, $complete, $jobs);
         }
 
         return $states;
     }
 
     /**
-     * Where one child stands, from its cached result and its own job record.
+     * A finished batch's payload, reading each child's result once.
+     *
+     * @param  array<string, array{cache_key: string, request: array<string, mixed>, job_id: ?string}>  $children
+     * @param  array<string, array{status: string, error?: string}>  $states
+     * @return array<string, mixed>
+     */
+    private function batchResults(array $children, array $states): array
+    {
+        $keys = [];
+
+        foreach ($children as $label => $child) {
+            if (($states[$label]['status'] ?? null) === 'complete') {
+                $keys[$child['cache_key']] = true;
+            }
+        }
+
+        $results = DatabaseCacheReader::many(array_keys($keys));
+        $payload = [];
+
+        foreach ($children as $label => $child) {
+            $payload[$label] = $states[$label]['status'] === 'complete'
+                ? $results[$child['cache_key']] ?? null
+                : ['error' => $states[$label]['error'] ?? 'Query failed.'];
+        }
+
+        return $payload;
+    }
+
+    /**
+     * Where one child stands, from whether its result exists and what its own job
+     * record says.
      *
      * `queued` covers both never-started and started-but-lost — a job record that
      * has aged out, or one that completed and whose result has since expired.
      * Either way the answer is the same: run it.
      *
      * @param  array{cache_key: string, request: array<string, mixed>, job_id: ?string}  $child
-     * @param  array<string, mixed>  $results
+     * @param  array<string, bool>  $complete
      * @param  array<string, mixed>  $jobs
-     * @return array{status: string, data?: mixed, error?: string}
+     * @return array{status: string, error?: string}
      */
-    private function childState(array $child, array $results, array $jobs): array
+    private function childState(array $child, array $complete, array $jobs): array
     {
-        $result = $results[$child['cache_key']] ?? null;
-
-        if ($result !== null) {
-            return ['status' => 'complete', 'data' => $result];
+        if ($complete[$child['cache_key']] ?? false) {
+            return ['status' => 'complete'];
         }
 
         $childJobId = $child['job_id'] ?? null;
@@ -647,25 +742,18 @@ class GlobalQueryService
             ], 404);
         }
 
-        $results = [];
-        $resolved = 0;
-
-        foreach ($this->childStates($job['children']) as $label => $state) {
-            if ($state['status'] === 'complete') {
-                $results[$label] = $state['data'];
-                $resolved++;
-            } elseif ($state['status'] === 'failed') {
-                $results[$label] = ['error' => $state['error']];
-                $resolved++;
-            }
-        }
-
+        $states = $this->childStates($job['children']);
+        $resolved = count(array_filter(
+            $states,
+            static fn ($state) => in_array($state['status'], ['complete', 'failed'], true)
+        ));
         $total = count($job['children']);
 
         if ($resolved < $total) {
             return $this->batchAccepted($jobId, $resolved, $total);
         }
 
+        $results = $this->batchResults($job['children'], $states);
         $ttl = max(60, (int) ($job['cache_ttl_seconds'] ?? 3600));
         $cache->put($job['cache_key'], $results, $ttl);
 
