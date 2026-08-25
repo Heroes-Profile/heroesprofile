@@ -97,7 +97,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
         $region = $this->globalDataService->getRegionFilterValues($request['region']);
         $mirror = $request['mirror'];
 
-        $cacheKey = 'GlobalHeroMapStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = $this->globalCacheKey('GlobalHeroMapStats', $gameVersionIDs, $request->all());
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeHeroStatMapData');
     }

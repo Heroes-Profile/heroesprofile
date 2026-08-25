@@ -617,9 +617,42 @@ return [
         ],
 
         'api.external.heroes.talents.builds.all' => [
-            'summary' => 'Every hero, most popular builds, for the current patch. Takes no parameters: the timeframe and build type come from the site defaults, not the request.',
+            'summary' => 'Every hero, most played builds, in one call. Takes the same filters as `heroes/talents/builds` and answers one entry per hero — several game types are one query, not separate groupings. A hero whose query cannot be completed answers with `{"error": "..."}` in place of its builds rather than failing the whole set.',
             'page' => '/Global/Talents',
-            'parameters' => [],
+            'uses' => ['globals'],
+            // `hero` is the parameter this endpoint exists in order not to need.
+            // Role and party size are validated by the shared rules and read by
+            // nothing here.
+            'except' => ['hero', 'role', 'groupsize'],
+            'async' => true,
+            'parameters' => [
+                // Redeclared rather than inherited from the set, which marks these
+                // three required. This endpoint accepted no parameters at all until
+                // the filters were added, so every one of them has to stay optional
+                // or a caller relying on that would break.
+                'timeframe_type' => [
+                    'enum' => ['minor', 'major', 'major_grouped', 'last_update'],
+                    'description' => 'How `timeframe` is read. `minor` is a build, `major` a patch. Defaults to the site\'s own current timeframe.',
+                    'example' => 'minor',
+                ],
+                'timeframe' => [
+                    'multi' => true,
+                    'description' => 'One patch or build, or several comma-separated. Defaults to the current patch.',
+                    'example' => '2.55.17.97771',
+                ],
+                'game_type' => [
+                    'multi' => true,
+                    'enum' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'],
+                    'description' => 'Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several, which are counted together rather than reported apart. Defaults to `qm,sl,ar`.',
+                    'example' => 'Storm League',
+                ],
+                'talentbuildtype' => [
+                    'enum' => ['Popular', 'HP Algorithm', 'Unique Lvl 1', 'Unique Lvl 4', 'Unique Lvl 7', 'Unique Lvl 10', 'Unique Lvl 13', 'Unique Lvl 16', 'Unique Lvl 20'],
+                    'description' => 'Which ranking decides the builds returned. Defaults to `Popular`.',
+                    'example' => 'Popular',
+                ],
+                'total_builds' => ['type' => 'integer', 'description' => 'How many builds to return per hero, 1 to 25. Defaults to 7.'],
+            ],
         ],
 
         'api.external.heroes.talents.builder' => [

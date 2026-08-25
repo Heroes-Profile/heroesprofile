@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Global\Concerns;
 
 use App\Services\GlobalQueryService;
+use App\Support\GlobalCacheKey;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -63,5 +64,17 @@ trait HandlesAsyncGlobalQueries
         return response()->json($data)
             ->header('X-Global-Cache-Status', 'fresh')
             ->header('X-Global-Async-Mode', 'cache-hit');
+    }
+
+    /**
+     * The cache key for one global query. See `GlobalCacheKey` for why the
+     * parameters are normalised rather than hashed as they arrived.
+     *
+     * @param  array<int, int|string>  $gameVersionIds
+     * @param  array<string, mixed>  $parameters  Usually `$request->all()`.
+     */
+    protected function globalCacheKey(string $prefix, array $gameVersionIds, array $parameters): string
+    {
+        return GlobalCacheKey::for($prefix, $gameVersionIds, $parameters);
     }
 }

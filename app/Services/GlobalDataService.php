@@ -21,6 +21,7 @@ use App\Models\Player;
 use App\Models\Replay;
 use App\Models\SeasonDate;
 use App\Models\SeasonGameVersion;
+use App\Support\GlobalCacheKey;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
@@ -1387,7 +1388,7 @@ class GlobalDataService
         $hero = $this->getHeroFilterValue($request['hero']);
         $role = $request['role'];
 
-        $cacheKey = 'GlobalHeroStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = GlobalCacheKey::for('GlobalHeroStats', $gameVersionIDs, $request->all());
 
         $data = Cache::store('database')->remember($cacheKey, $this->calculateCacheTimeInSeconds($gameVersion), function () use (
             $gameVersionIDs,

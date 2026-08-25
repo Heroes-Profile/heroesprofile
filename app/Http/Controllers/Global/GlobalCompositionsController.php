@@ -84,7 +84,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         $talentbuildType = $request['talentbuildtype'];
         $minimumGames = $request['minimum_games'];
 
-        $cacheKey = 'GlobalCompositionStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = $this->globalCacheKey('GlobalCompositionStats', $gameVersionIDs, $request->all());
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeCompositionsData');
     }
@@ -214,7 +214,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 
         $compositionID = $request['composition_id'];
 
-        $cacheKey = 'GlobalCompositionTopHeroes|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = $this->globalCacheKey('GlobalCompositionTopHeroes', $gameVersionIDs, $request->all());
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeTopHeroData');
     }

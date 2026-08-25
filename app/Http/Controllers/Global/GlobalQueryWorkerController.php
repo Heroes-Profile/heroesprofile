@@ -17,7 +17,12 @@ class GlobalQueryWorkerController extends Controller
             return response()->json(['error' => 'Missing job_id'], 400);
         }
 
-        $globalQueryService->runJob($jobId);
+        // Cloud Tasks counts retries from zero. A batch reports a child as failed
+        // only once the queue has spent its attempts, so it needs to know which
+        // one this is.
+        $attempt = ((int) $request->header('X-CloudTasks-TaskRetryCount', '0')) + 1;
+
+        $globalQueryService->runJob($jobId, $attempt);
 
         return response()->json(['ok' => true, 'job_id' => $jobId]);
     }

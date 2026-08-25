@@ -113,7 +113,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $statFilter = $this->normalizeStatFilter($request['statfilter'] ?? null);
         $mirror = $request['mirror'];
 
-        $cacheKey = 'GlobalHeroTalentStats|'.implode(',', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = $this->globalCacheKey('GlobalHeroTalentStats', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all());
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeGlobalHeroTalentData');
     }
@@ -276,7 +276,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $mirror = $request['mirror'];
         $talentbuildType = $request['talentbuildtype'];
 
-        $cacheKey = 'GlobalHeroTalentStatsBuilds|'.implode(',', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = $this->globalCacheKey('GlobalHeroTalentStatsBuilds', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all());
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeGlobalHeroTalentBuildData');
     }
@@ -332,7 +332,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                     ? $this->globalDataService->getTimeframeFilterValuesLastUpdate($heroModel->id)
                     : $gameVersion;
 
-                $cacheKey = 'GlobalHeroTalentStatsBuilds|'.implode(',', SeasonGameVersion::select('id')->whereIn('game_version', $resolvedGameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($heroRequest->all()));
+                $cacheKey = $this->globalCacheKey('GlobalHeroTalentStatsBuilds', SeasonGameVersion::select('id')->whereIn('game_version', $resolvedGameVersion)->pluck('id')->toArray(), $heroRequest->all());
 
                 $cached = $cache->get($cacheKey);
 
@@ -362,6 +362,131 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         return $result;
     }
 
+    /**
+     * Every hero's builds under one set of filters, answered as a single job.
+     *
+     * Separate from `getGlobalHeroTalentBuildDataAll()` above, which the site's own
+     * page uses and which is deliberately untouched: that one takes no filters,
+     * groups by game type, and answers 200 with nulls for whatever is still being
+     * computed. This is the public API's version — the caller's filters, one entry
+     * per hero, one job id to poll.
+     *
+     * Nothing here is grouped by game type. `filterByGameType` is a `whereIn`, so
+     * asking for `sl,qm` is one query over both, not two results to nest.
+     */
+    public function getGlobalHeroTalentBuildDataAllFiltered(Request $request)
+    {
+        $validationRules = array_merge($this->globalsValidationRules($request['timeframe_type'], $request['timeframe']), [
+            'talentbuildtype' => ['required', new TalentBuildTypeInputValidation],
+        ]);
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        $lastUpdate = $request['timeframe_type'] == 'last_update';
+
+        $gameVersion = $lastUpdate
+            ? null
+            : $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+
+        // Same for every hero unless the timeframe is `last_update`, which resolves
+        // per hero. Hoisted so this is one query rather than ninety.
+        $sharedVersionIds = $lastUpdate ? null : $this->gameVersionIds($gameVersion);
+
+        $children = [];
+
+        foreach ($this->globalDataService->getHeroes() as $heroModel) {
+            $resolvedGameVersion = $lastUpdate
+                ? $this->globalDataService->getTimeframeFilterValuesLastUpdate($heroModel->id)
+                : $gameVersion;
+
+            $versionIds = $sharedVersionIds ?? $this->gameVersionIds($resolvedGameVersion);
+            $childRequest = $this->talentBuildChildRequest($request, $heroModel->name);
+
+            $children[$heroModel->name] = [
+                'cache_key' => $this->globalCacheKey('GlobalHeroTalentStatsBuilds', $versionIds, $childRequest),
+                'request' => $childRequest,
+            ];
+        }
+
+        $parentRequest = $request->all();
+        ksort($parentRequest);
+
+        return app(GlobalQueryService::class)->dispatchBatch(
+            'GlobalHeroTalentStatsBuildsAllFiltered|'.hash('sha256', json_encode($parentRequest)),
+            $children,
+            static::class,
+            'executeGlobalHeroTalentBuildData',
+            $this->globalDataService->calculateCacheTimeInSeconds(
+                $gameVersion ?? $this->globalDataService->getTimeframeFilterValues(
+                    $this->globalDataService->getDefaultTimeframeType(),
+                    [$this->globalDataService->getDefaultTimeframe()]
+                )
+            ),
+        );
+    }
+
+    /**
+     * One hero's slice of a batch: the same request `/Global/Talents` sends for a
+     * single hero, with the hero swapped in.
+     *
+     * Built explicitly rather than by copying the request so the batch cannot smuggle
+     * its own parameters into a key the single-hero endpoint also uses. Order and
+     * absent values do not matter — `globalCacheKey()` normalises both — so a hero
+     * already computed under these filters by the page, or by a previous batch,
+     * costs this one nothing.
+     *
+     * @return array<string, mixed>
+     */
+    private function talentBuildChildRequest(Request $request, string $heroName): array
+    {
+        return [
+            'hero' => $heroName,
+            'timeframe_type' => $request['timeframe_type'],
+            'timeframe' => $request['timeframe'],
+            'region' => $request['region'],
+            'statfilter' => $request['statfilter'],
+            'hero_level' => $request['hero_level'],
+            'game_type' => $request['game_type'],
+            'game_map' => $request['game_map'],
+            'league_tier' => $request['league_tier'],
+            'hero_league_tier' => $request['hero_league_tier'],
+            'role_league_tier' => $request['role_league_tier'],
+            'mirror' => $request['mirror'],
+            'talentbuildtype' => $request['talentbuildtype'],
+            'total_builds' => $request['total_builds'],
+        ];
+    }
+
+    /**
+     * How many builds one request asked for. The site's pages send nothing and get
+     * the default; `total_builds` is the public API's way of asking for another
+     * number, as the old API's parameter of the same name was.
+     */
+    private function buildsToReturnFor(Request $request): int
+    {
+        $requested = $request['total_builds'] ?? null;
+
+        if ($requested === null || $requested === '') {
+            return self::DEFAULT_BUILDS_TO_RETURN;
+        }
+
+        return max(1, min((int) $requested, self::MAX_BUILDS_TO_RETURN));
+    }
+
+    /** @return array<int, int> */
+    private function gameVersionIds(array $gameVersion): array
+    {
+        return SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray();
+    }
+
     public function executeGlobalHeroTalentBuildData(Request $request)
     {
         $heroModel = $this->globalDataService->getHeroModel($request['hero']);
@@ -383,6 +508,11 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $statFilter = $this->normalizeStatFilter($request['statfilter'] ?? null);
         $mirror = $request['mirror'];
         $talentbuildType = $request['talentbuildtype'];
+
+        // Read off the request, not held on the controller: this runs inside a job
+        // that resolves its own instance, so anything set before the job was
+        // created is gone by the time the query gets here.
+        $this->buildsToReturn = $this->buildsToReturnFor($request);
 
         $topBuilds = null;
         if ($talentbuildType == 'Popular') {

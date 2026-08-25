@@ -125,7 +125,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         $heroLevel = $request['hero_level'];
         $region = $this->globalDataService->getRegionFilterValues($request['region']);
         $mirror = $request['mirror'];
-        $cacheKey = 'GlobalTalentsBuilder|'.implode(',', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = $this->globalCacheKey('GlobalTalentsBuilder', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all());
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeTalentBuilderData');
     }
@@ -417,7 +417,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         $heroLevel = $request['hero_level'];
         $region = $this->globalDataService->getRegionFilterValues($request['region']);
         $mirror = $request['mirror'];
-        $cacheKey = 'GlobalTalentsBuilder|'.implode(',', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray()).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = $this->globalCacheKey('GlobalTalentsBuilder', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all());
 
         $talentData = HeroesDataTalent::all();
         $talentData = $talentData->keyBy('talent_id');
