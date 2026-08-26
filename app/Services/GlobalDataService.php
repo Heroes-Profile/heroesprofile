@@ -21,6 +21,7 @@ use App\Models\Player;
 use App\Models\Replay;
 use App\Models\SeasonDate;
 use App\Models\SeasonGameVersion;
+use App\Support\GlobalCacheKey;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
@@ -561,6 +562,35 @@ class GlobalDataService
 
                     return $replayBan;
                 });
+            });
+    }
+
+    /**
+     * The draft in the order it happened — every ban and pick, one row per action.
+     *
+     * `type` is a varchar of `0` or `1` in the table; it is reported as `Ban` or
+     * `Pick` here, matching what the match page shows for the same rows.
+     *
+     * `player_slot` is passed through as stored. It does not mean the same thing
+     * for both kinds of row — bans carry a team, picks carry the drafting player's
+     * slot — so it is left as the number it is rather than given a name that would
+     * be wrong half the time.
+     */
+    public function getReplayDraftOrder($replayID, $schema = 'heroesprofile')
+    {
+        $heroData = $this->getHeroesByID();
+
+        return DB::table($schema.'.replay_draft_order')
+            ->select('pick_number', 'type', 'player_slot', 'hero')
+            ->where('replayID', $replayID)
+            ->orderBy('pick_number')
+            ->get()
+            ->map(function ($row) use ($heroData) {
+                $row->type = (int) $row->type === 0 ? 'Ban' : 'Pick';
+                // Hero 0 is a slot that timed out without a selection.
+                $row->hero = $row->hero == 0 ? null : ($heroData[$row->hero] ?? $row->hero);
+
+                return $row;
             });
     }
 
@@ -1387,7 +1417,7 @@ class GlobalDataService
         $hero = $this->getHeroFilterValue($request['hero']);
         $role = $request['role'];
 
-        $cacheKey = 'GlobalHeroStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = GlobalCacheKey::for('GlobalHeroStats', $gameVersionIDs, $request->all());
 
         $data = Cache::store('database')->remember($cacheKey, $this->calculateCacheTimeInSeconds($gameVersion), function () use (
             $gameVersionIDs,

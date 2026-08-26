@@ -103,7 +103,7 @@ class GlobalHeroMatchupStatsController extends GlobalsInputValidationController
 
         $role = $request['role'];
 
-        $cacheKey = 'GlobalMatchupStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = $this->globalCacheKey('GlobalMatchupStats', $gameVersionIDs, $request->all());
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeHeroMatchupData');
     }

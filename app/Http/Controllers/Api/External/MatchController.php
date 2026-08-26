@@ -106,4 +106,19 @@ class MatchController extends Controller
             'bans' => $this->globalDataService->getReplayBans($replayID),
         ]);
     }
+
+    /**
+     * The draft in order — bans and picks together, as the match page shows it.
+     *
+     * Overlaps `bans` on purpose: this answers "how did the draft go", and a draft
+     * with its bans removed is not one. A caller who only wants the bans asks for
+     * the bans.
+     */
+    public function draft(int $replayID): Response
+    {
+        return response()->json([
+            'replayID' => $replayID,
+            'draft' => $this->globalDataService->getReplayDraftOrder($replayID),
+        ]);
+    }
 }

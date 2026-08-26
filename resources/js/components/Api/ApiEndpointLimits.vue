@@ -12,10 +12,18 @@
           <code class="text-lteal">403</code> on that tier.
         </p>
         <p class="text-sm mt-2">
-          Every tier also allows 60 requests a minute, or 120 on Developer. Responses carry
+          Every tier also allows 60 requests a minute, or 120 on Developer. A few endpoints
+          differ from that, noted against them below — the ones answering a single replay
+          allow far more, and the ones that fan a single call out into many queries allow
+          far fewer.
+        </p>
+        <p class="text-sm mt-2">
+          Responses carry
           <code class="text-lteal">X-HP-Quota-Limit</code>,
           <code class="text-lteal">X-HP-Quota-Remaining</code> and
-          <code class="text-lteal">X-HP-Quota-Reset</code> so you can track it without guessing.
+          <code class="text-lteal">X-HP-Quota-Reset</code> for the weekly allowance, and
+          <code class="text-lteal">X-RateLimit-*</code> for the per-minute one, so you can
+          track both without guessing.
         </p>
       </div>
 
@@ -34,6 +42,7 @@
               <td>
                 {{ endpoint.name }}
                 <span class="block text-xs text-gray-medium">{{ endpoint.endpoint }}</span>
+                <span v-if="endpoint.rate_note" class="block text-xs text-blue">{{ endpoint.rate_note }}</span>
               </td>
               <td v-for="plan in plans" :key="plan.key" class="text-center">
                 {{ endpoint.limits[plan.key] }}

@@ -69,8 +69,17 @@ class ApiEndpointRegistrySeeder extends Seeder
         ['player_role_all', 'Player/Role/All', 'Player Data', 4, 7, 25, 500, 5000, 50000, 0, 0],
         ['player_role_single', 'Player/Role/Single', 'Player Data', 4, 8, 25, 500, 5000, 50000, 0, 0],
         ['player_talents_build', 'Player/Talents/Build', 'Player Data', 4, 6, 25, 500, 5000, 50000, 0, 0],
-        ['replay_index', 'Replays', 'Replays', 2, 4, 1000, 25000, 250000, 1000000, 0, 0],
-        ['replay_ban', 'Replay/Ban', 'Replays', 2, 3, 100, 10000, 100000, 250000, 0, 0],
+        // Sized against the archive rather than by tier convention: at 1000 rows a
+        // call, 60,000 calls is every replay there is. So these read as a share of
+        // the whole per week — Basic enough to build against, Intermediate 8%,
+        // Developer a third, Partner one full pass.
+        ['replay_index', 'Replays', 'Replays', 2, 4, 100, 5000, 20000, 60000, 0, 0],
+        // The three per-replay reads carry the same allowance. Which slice of a
+        // replay a caller wants — all of it, the bans, the draft — is their
+        // business, and pricing the slices differently only decides which endpoint
+        // they contort their integration around.
+        ['replay_ban', 'Replay/Ban', 'Replays', 2, 3, 1000, 25000, 250000, 1000000, 0, 0],
+        ['replay_draft', 'Replay/Draft', 'Replays', 2, 5, 1000, 25000, 250000, 1000000, 0, 0],
         ['replay_data', 'Replay/Data', 'Replays', 2, 2, 1000, 25000, 250000, 1000000, 0, 0],
         ['replay_download', 'Replay/Download', 'Replays', 2, 1, 1000, 10000, 25000, 100000, 0, 0],
         ['talent_builder', 'Heroes/Talents/Builder', 'Hero Data', 3, 12, 7, 21, 100, 1000, 0, 0],

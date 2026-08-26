@@ -64,4 +64,19 @@ class ApiSpecConfig
             fn ($spec) => (bool) ($spec['multi'] ?? false)
         ));
     }
+
+    /**
+     * Whether one route takes a given parameter.
+     *
+     * Lets the request handling refuse a parameter the documentation does not
+     * offer, without keeping a second list of which endpoints those are. Declaring
+     * it here is what turns it on, in exactly one place.
+     */
+    public static function declaresParameter(?string $routeName, string $parameter): bool
+    {
+        $config = config('api_spec');
+        $endpoint = $config['endpoints'][$routeName] ?? null;
+
+        return $endpoint !== null && array_key_exists($parameter, self::resolve($endpoint, $config));
+    }
 }

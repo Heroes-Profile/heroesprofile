@@ -30,6 +30,24 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Batch query fan-out
+    |--------------------------------------------------------------------------
+    |
+    | How many children of one batch query run at once — `heroes/talents/builds/all`
+    | is ninety, one per hero. The Cloud Tasks queue permits 1000 concurrent
+    | dispatches and 500 a second, so it applies no back pressure of its own and
+    | this is the only ceiling there is.
+    |
+    | Raise it only as far as the worker service and the database connection limit
+    | will take: these are minutes-long analytical queries, and the queue shares a
+    | Cloud Run service with page traffic.
+    |
+    */
+
+    'batch_max_in_flight' => (int) env('GLOBAL_BATCH_MAX_IN_FLIGHT', 10),
+
+    /*
+    |--------------------------------------------------------------------------
     | Google Cloud Tasks
     |--------------------------------------------------------------------------
     */

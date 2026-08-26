@@ -13,6 +13,12 @@ class Controller extends BaseController
 
     protected $globalDataService;
 
+    /**
+     * How many talent builds to return. Resolved per request from `total_builds`
+     * rather than set on the instance — a global query runs inside a job that
+     * builds its own controller, so instance state set by the caller never
+     * reaches it.
+     */
     protected $buildsToReturn;
 
     /** What the site's own talent pages show. */
@@ -25,17 +31,5 @@ class Controller extends BaseController
     {
         $this->globalDataService = $globalDataService;
         $this->buildsToReturn = self::DEFAULT_BUILDS_TO_RETURN;
-    }
-
-    /**
-     * How many talent builds to return. Fixed for the site's own pages; the
-     * public API lets a caller ask for a different number, as the old API's
-     * `total_builds` parameter did.
-     */
-    public function setBuildsToReturn(int $builds): static
-    {
-        $this->buildsToReturn = max(1, min($builds, self::MAX_BUILDS_TO_RETURN));
-
-        return $this;
     }
 }

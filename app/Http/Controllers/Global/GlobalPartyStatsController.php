@@ -85,7 +85,7 @@ class GlobalPartyStatsController extends GlobalsInputValidationController
         $teamoneparty = $request['teamoneparty'];
         $teamtwoparty = $request['teamtwoparty'];
 
-        $cacheKey = 'GlobalPartyStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = $this->globalCacheKey('GlobalPartyStats', $gameVersionIDs, $request->all());
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executePartyStats');
     }

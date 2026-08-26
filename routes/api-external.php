@@ -148,6 +148,11 @@ Route::get('replay/{replayID}/bans', [MatchController::class, 'bans'])
     ->middleware(['api.fixtures:replay_ban', 'api.quota:replay_ban'])
     ->name('api.external.replay.bans');
 
+Route::get('replay/{replayID}/draft', [MatchController::class, 'draft'])
+    ->whereNumber('replayID')
+    ->middleware(['api.fixtures:replay_draft', 'api.quota:replay_draft'])
+    ->name('api.external.replay.draft');
+
 Route::get('download/replay', [MatchController::class, 'download'])
     ->middleware(['api.fixtures:replay_download', 'api.quota:replay_download'])
     ->name('api.external.replay.download');

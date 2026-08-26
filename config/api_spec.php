@@ -163,6 +163,7 @@ return [
 
         'Replays' => [
             'api.external.replay.bans',
+            'api.external.replay.draft',
             'api.external.replay.show',
             'api.external.replay.download',
             'api.external.replays.index',
@@ -504,6 +505,14 @@ return [
             ],
         ],
 
+        'api.external.replay.draft' => [
+            'summary' => 'The draft for one match, in the order it happened. Every ban and pick as one sequence — a draft with its bans taken out is not a draft, so they are included here as well as on `replay/{replayID}/bans`.',
+            'page' => '/Match/Single/{replayID}',
+            'parameters' => [
+                'replayID' => ['type' => 'integer', 'description' => 'Heroes Profile match ID.'],
+            ],
+        ],
+
         'api.external.replays.index' => [
             'summary' => 'A page of replays, for building a local copy of the data. Paged by replay id: pass the `next_after` from one response as the `after` of the next, and stop when it comes back null.',
             'parameters' => [
@@ -541,6 +550,9 @@ return [
             'page' => '/Global/Hero',
             'uses' => ['globals'],
             'async' => true,
+            'parameters' => [
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
+            ],
         ],
 
         'api.external.heroes.matchups' => [
@@ -552,6 +564,7 @@ return [
             'except' => ['groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
             ],
         ],
@@ -578,6 +591,7 @@ return [
             'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
                 'ally_enemy' => ['required' => true, 'description' => 'The other hero, by name.', 'example' => 'Johanna'],
                 'type' => ['enum' => ['Enemy', 'Ally'], 'description' => 'Whether the other hero is an opponent or a team-mate. Defaults to `Enemy`.'],
@@ -593,6 +607,7 @@ return [
             'except' => ['role', 'groupsize'],
             'async' => true,
             'parameters' => [
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
             ],
         ],
@@ -606,6 +621,7 @@ return [
             'except' => ['role', 'groupsize'],
             'async' => true,
             'parameters' => [
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
                 'talentbuildtype' => [
                     'enum' => ['Popular', 'HP Algorithm', 'Unique Lvl 1', 'Unique Lvl 4', 'Unique Lvl 7', 'Unique Lvl 10', 'Unique Lvl 13', 'Unique Lvl 16', 'Unique Lvl 20'],
@@ -617,9 +633,42 @@ return [
         ],
 
         'api.external.heroes.talents.builds.all' => [
-            'summary' => 'Every hero, most popular builds, for the current patch. Takes no parameters: the timeframe and build type come from the site defaults, not the request.',
+            'summary' => 'Every hero, most played builds, in one call. Takes the same filters as `heroes/talents/builds` and answers one entry per hero — several game types are one query, not separate groupings. A hero whose query cannot be completed answers with `{"error": "..."}` in place of its builds rather than failing the whole set.',
             'page' => '/Global/Talents',
-            'parameters' => [],
+            'uses' => ['globals'],
+            // `hero` is the parameter this endpoint exists in order not to need.
+            // Role and party size are validated by the shared rules and read by
+            // nothing here.
+            'except' => ['hero', 'role', 'groupsize'],
+            'async' => true,
+            'parameters' => [
+                // Redeclared rather than inherited from the set, which marks these
+                // three required. This endpoint accepted no parameters at all until
+                // the filters were added, so every one of them has to stay optional
+                // or a caller relying on that would break.
+                'timeframe_type' => [
+                    'enum' => ['minor', 'major', 'major_grouped', 'last_update'],
+                    'description' => 'How `timeframe` is read. `minor` is a build, `major` a patch. Defaults to the site\'s own current timeframe.',
+                    'example' => 'minor',
+                ],
+                'timeframe' => [
+                    'multi' => true,
+                    'description' => 'One patch or build, or several comma-separated. Defaults to the current patch.',
+                    'example' => '2.55.17.97771',
+                ],
+                'game_type' => [
+                    'multi' => true,
+                    'enum' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'],
+                    'description' => 'Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several, which are counted together rather than reported apart. Defaults to `qm,sl,ar`.',
+                    'example' => 'Storm League',
+                ],
+                'talentbuildtype' => [
+                    'enum' => ['Popular', 'HP Algorithm', 'Unique Lvl 1', 'Unique Lvl 4', 'Unique Lvl 7', 'Unique Lvl 10', 'Unique Lvl 13', 'Unique Lvl 16', 'Unique Lvl 20'],
+                    'description' => 'Which ranking decides the builds returned. Defaults to `Popular`.',
+                    'example' => 'Popular',
+                ],
+                'total_builds' => ['type' => 'integer', 'description' => 'How many builds to return per hero, 1 to 25. Defaults to 7.'],
+            ],
         ],
 
         'api.external.heroes.talents.builder' => [
@@ -668,6 +717,7 @@ return [
             'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'minimum_games' => ['type' => 'integer', 'description' => 'Drop compositions below this many games. Defaults to 100.'],
             ],
         ],
@@ -681,6 +731,7 @@ return [
             'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'composition_id' => ['required' => true, 'type' => 'integer', 'description' => 'A `composition_id` from the `/compositions` response.', 'example' => 1],
                 'minimum_games' => ['type' => 'integer', 'description' => 'Defaults to 100.'],
             ],
@@ -695,6 +746,7 @@ return [
             'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
             ],
         ],
@@ -708,6 +760,7 @@ return [
             'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'teamoneparty' => ['description' => 'Party combination for the first team.'],
                 'teamtwoparty' => ['description' => 'Party combination for the second team.'],
             ],

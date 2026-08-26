@@ -96,7 +96,7 @@ class GlobalDraftController extends GlobalsInputValidationController
         $heroLevel = $request['hero_level'];
         $region = $this->globalDataService->getRegionFilterValues($request['region']);
 
-        $cacheKey = 'GlobalDraftStats|'.implode(',', $gameVersionIDs).'|'.hash('sha256', json_encode($request->all()));
+        $cacheKey = $this->globalCacheKey('GlobalDraftStats', $gameVersionIDs, $request->all());
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeDraftData');
     }

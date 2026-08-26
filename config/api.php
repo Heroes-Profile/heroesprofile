@@ -51,6 +51,58 @@ return [
         'default' => 60,
         'developer' => 120,
         'anonymous' => 20,
+
+        /*
+        | Per-minute floors for endpoints the plan-wide limit suits badly.
+        |
+        | The replay endpoints answer one record per call, so a caller works
+        | through them in volume rather than a handful of requests at a time, and
+        | each is a single indexed lookup rather than a minutes-long analytical
+        | query. The old API gave these same endpoints exactly these ceilings.
+        |
+        | This governs how fast an allowance can be spent, never how much: the
+        | weekly quota is still the only thing deciding volume. Without it the two
+        | contradict each other — `replay_data` sold Partner a million calls a week
+        | that sixty a minute cannot physically make in seven days.
+        |
+        | Floors, not overrides. A Developer key keeps its raised plan limit
+        | wherever that is already the higher of the two.
+        */
+
+        'routes' => [
+            // The three per-replay reads share a ceiling. They are asked for the
+            // same way — one replay at a time, in volume, off the back of the
+            // index — so a caller's pace should not depend on which slice of a
+            // replay they happen to want.
+            'api.external.replay.show' => 500,
+            'api.external.replay.bans' => 500,
+            'api.external.replay.draft' => 500,
+            'api.external.replays.index' => 200,
+        ],
+
+        /*
+        | A ceiling, not a floor: it beats the plan limit rather than raising it,
+        | Developer's 120 included.
+        |
+        | One of these requests is not one query. `group_by_map` is one per playable
+        | map, and `heroes/talents/builds/all` is one per hero — so the number that
+        | matters is this multiplied by `global.batch_max_in_flight`, which is how
+        | many heavy queries a single key can have running at once.
+        |
+        | Collection is unaffected. Polling happens on `/jobs/{id}`, a different
+        | route, so a batch already started is never slowed by this.
+        |
+        | Quota is untouched: a batch still costs one call however far it fans out.
+        | If that gets abused, charging by fan-out is the lever — `EnforceApiQuota`
+        | increments by one today and could increment by the child count instead.
+        */
+
+        'batch' => 1,
+
+        /* Routes that fan out on every call, with or without a parameter saying so. */
+        'batch_routes' => [
+            'api.external.heroes.talents.builds.all',
+        ],
     ],
 
 ];

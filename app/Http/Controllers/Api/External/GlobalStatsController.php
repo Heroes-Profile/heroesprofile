@@ -66,14 +66,13 @@ class GlobalStatsController extends Controller
      */
     public function talentBuilds(Request $request): Response
     {
-        $validated = $request->validate([
+        // Rejected here so a bad value is a 422 rather than being clamped silently.
+        // The value itself is read off the request by the query.
+        $request->validate([
             'total_builds' => ['sometimes', 'integer', 'min:1', 'max:'.Controller::MAX_BUILDS_TO_RETURN],
         ]);
 
-        $controller = app(GlobalTalentStatsController::class)
-            ->setBuildsToReturn((int) ($validated['total_builds'] ?? Controller::DEFAULT_BUILDS_TO_RETURN));
-
-        return $this->delegate($request, $controller, 'getGlobalHeroTalentBuildData', [
+        return $this->delegate($request, GlobalTalentStatsController::class, 'getGlobalHeroTalentBuildData', [
             // Required internally. `Popular` is what the site shows a visitor who
             // is not logged in — see GlobalDataService::getDefaultBuildType().
             'talentbuildtype' => 'Popular',
@@ -166,14 +165,31 @@ class GlobalStatsController extends Controller
     }
 
     /**
-     * Every hero's most popular build in one call.
+     * Every hero's builds in one call, under the same filters `heroes/talents/builds`
+     * takes.
      *
-     * Takes no parameters at all: the underlying controller reads the timeframe
-     * and build type from the site's own defaults rather than the request.
+     * Answers with a job id like the rest of this class, so the whole set costs one
+     * call against the allowance no matter how long it takes to compute — polling
+     * `/jobs/{id}` is free. The result is one entry per hero, not grouped by game
+     * type: several game types are one query, not several answers.
+     *
+     * Every filter defaults to what the endpoint did before it took any, so a call
+     * with no parameters still answers.
      */
     public function talentBuildsAll(Request $request): Response
     {
-        return $this->delegate($request, GlobalTalentStatsController::class, 'getGlobalHeroTalentBuildDataAll');
+        $request->validate([
+            'total_builds' => ['sometimes', 'integer', 'min:1', 'max:'.Controller::MAX_BUILDS_TO_RETURN],
+        ]);
+
+        return $this->delegate($request, GlobalTalentStatsController::class, 'getGlobalHeroTalentBuildDataAllFiltered', [
+            'timeframe_type' => $this->globalDataService->getDefaultTimeframeType(),
+            'timeframe' => [$this->globalDataService->getDefaultTimeframe()],
+            'game_type' => ['qm', 'sl', 'ar'],
+            'talentbuildtype' => 'Popular',
+            'statfilter' => 'win_rate',
+            'mirror' => '0',
+        ]);
     }
 
     /**
@@ -287,7 +303,24 @@ class GlobalStatsController extends Controller
         // handled another. Pass an explicit list only to override that.
         ?array $arrays = null
     ): Response {
-        $arrays ??= ApiSpecConfig::multiForRoute($request->route()?->getName());
+        $routeName = $request->route()?->getName();
+        $arrays ??= ApiSpecConfig::multiForRoute($routeName);
+
+        // `group_by_map` fans one request out into a query per playable map, so it
+        // is offered only where that is worth doing. Refused rather than ignored
+        // where it is not — the old API silently dropped it on some requests and
+        // answered a different question than the one asked.
+        if ($request->has('group_by_map') && ! ApiSpecConfig::declaresParameter($routeName, 'group_by_map')) {
+            return response()->json([
+                'error' => [
+                    'code' => 'group_by_map_unsupported',
+                    'message' => 'This endpoint does not group by map.'
+                        .' `heroes/maps` already reports one hero across every map,'
+                        .' and `heroes/talents/builds/all` is a query per hero already —'
+                        .' grouping that by map would be one call for every hero on every map.',
+                ],
+            ], 422);
+        }
 
         foreach ($requires as $parameter) {
             if (! $request->filled($parameter)) {
