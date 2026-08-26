@@ -163,6 +163,7 @@ return [
 
         'Replays' => [
             'api.external.replay.bans',
+            'api.external.replay.draft',
             'api.external.replay.show',
             'api.external.replay.download',
             'api.external.replays.index',
@@ -498,6 +499,14 @@ return [
 
         'api.external.replay.bans' => [
             'summary' => 'Hero bans for one match.',
+            'page' => '/Match/Single/{replayID}',
+            'parameters' => [
+                'replayID' => ['type' => 'integer', 'description' => 'Heroes Profile match ID.'],
+            ],
+        ],
+
+        'api.external.replay.draft' => [
+            'summary' => 'The draft for one match, in the order it happened. Every ban and pick as one sequence — a draft with its bans taken out is not a draft, so they are included here as well as on `replay/{replayID}/bans`.',
             'page' => '/Match/Single/{replayID}',
             'parameters' => [
                 'replayID' => ['type' => 'integer', 'description' => 'Heroes Profile match ID.'],

@@ -565,6 +565,35 @@ class GlobalDataService
             });
     }
 
+    /**
+     * The draft in the order it happened — every ban and pick, one row per action.
+     *
+     * `type` is a varchar of `0` or `1` in the table; it is reported as `Ban` or
+     * `Pick` here, matching what the match page shows for the same rows.
+     *
+     * `player_slot` is passed through as stored. It does not mean the same thing
+     * for both kinds of row — bans carry a team, picks carry the drafting player's
+     * slot — so it is left as the number it is rather than given a name that would
+     * be wrong half the time.
+     */
+    public function getReplayDraftOrder($replayID, $schema = 'heroesprofile')
+    {
+        $heroData = $this->getHeroesByID();
+
+        return DB::table($schema.'.replay_draft_order')
+            ->select('pick_number', 'type', 'player_slot', 'hero')
+            ->where('replayID', $replayID)
+            ->orderBy('pick_number')
+            ->get()
+            ->map(function ($row) use ($heroData) {
+                $row->type = (int) $row->type === 0 ? 'Ban' : 'Pick';
+                // Hero 0 is a slot that timed out without a selection.
+                $row->hero = $row->hero == 0 ? null : ($heroData[$row->hero] ?? $row->hero);
+
+                return $row;
+            });
+    }
+
     public function getHeroesByID()
     {
         $heroData = $this->getHeroes();

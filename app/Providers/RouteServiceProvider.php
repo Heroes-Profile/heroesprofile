@@ -167,8 +167,16 @@ class RouteServiceProvider extends ServiceProvider
             return $limits['anonymous'];
         }
 
-        return in_array(3, $context->planIds, true)
+        $planLimit = in_array(3, $context->planIds, true)
             ? $limits['developer']
             : $limits['default'];
+
+        // Per-route floors raise the ceiling on the endpoints that need throughput
+        // rather than on the plan as a whole, so a tier does not get to burst
+        // through the expensive global queries on the strength of needing to read
+        // replays quickly. See `config/api.php`.
+        $routeLimit = $limits['routes'][$request->route()?->getName()] ?? 0;
+
+        return max($planLimit, $routeLimit);
     }
 }

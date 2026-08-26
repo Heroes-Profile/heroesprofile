@@ -83482,6 +83482,152 @@
                 ]
             }
         },
+        "/replay/{replayID}/draft": {
+            "get": {
+                "summary": "The draft for one match, in the order it happened. Every ban and pick as one sequence — a draft with its bans taken out is not a draft, so they are included here as well as on `replay/{replayID}/bans`.",
+                "operationId": "api.external.replay.draft",
+                "parameters": [
+                    {
+                        "name": "replayID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "Heroes Profile match ID."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "replayID": {
+                                            "type": "integer",
+                                            "description": "The match id. Pass it to `/matches/{replayID}` for full detail."
+                                        },
+                                        "draft": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "pick_number": {
+                                                        "type": "integer"
+                                                    },
+                                                    "type": {
+                                                        "type": "string"
+                                                    },
+                                                    "player_slot": {
+                                                        "type": "integer"
+                                                    },
+                                                    "hero": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "short_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "alt_name": {
+                                                                "type": [
+                                                                    "string",
+                                                                    "null"
+                                                                ]
+                                                            },
+                                                            "role": {
+                                                                "type": [
+                                                                    "null",
+                                                                    "string"
+                                                                ]
+                                                            },
+                                                            "new_role": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": {
+                                                                "type": "string"
+                                                            },
+                                                            "release_date": {
+                                                                "type": "string"
+                                                            },
+                                                            "rework_date": {
+                                                                "type": "null"
+                                                            },
+                                                            "last_change_patch_version": {
+                                                                "type": "string"
+                                                            },
+                                                            "attribute_id": {
+                                                                "type": "string"
+                                                            },
+                                                            "build_copy_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "last_updated": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "short_name",
+                                                            "alt_name",
+                                                            "role",
+                                                            "new_role",
+                                                            "type",
+                                                            "release_date",
+                                                            "rework_date",
+                                                            "last_change_patch_version",
+                                                            "attribute_id",
+                                                            "build_copy_name",
+                                                            "last_updated"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "pick_number",
+                                                    "type",
+                                                    "player_slot",
+                                                    "hero"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "replayID",
+                                        "draft"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-endpoint-key": "replay_draft",
+                "x-site-page": "/Match/Single/{replayID}",
+                "tags": [
+                    "Replays"
+                ]
+            }
+        },
         "/replays": {
             "get": {
                 "summary": "A page of replays, for building a local copy of the data. Paged by replay id: pass the `next_after` from one response as the `after` of the next, and stop when it comes back null.",

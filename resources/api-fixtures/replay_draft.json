@@ -1,0 +1,325 @@
+{
+    "replayID": 90000010,
+    "draft": [
+        {
+            "pick_number": 0,
+            "type": "Ban",
+            "player_slot": 2,
+            "hero": {
+                "id": 88,
+                "name": "Qhira",
+                "short_name": "qhira",
+                "alt_name": "NexusHunter",
+                "role": null,
+                "new_role": "Melee Assassin",
+                "type": "Melee",
+                "release_date": "2019-08-06 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "NXHU",
+                "build_copy_name": "Qhira",
+                "last_updated": "2024-02-06 18:32:51"
+            }
+        },
+        {
+            "pick_number": 1,
+            "type": "Ban",
+            "player_slot": 1,
+            "hero": {
+                "id": 26,
+                "name": "Johanna",
+                "short_name": "johanna",
+                "alt_name": "Crusader",
+                "role": "Warrior",
+                "new_role": "Tank",
+                "type": "Melee",
+                "release_date": "2015-06-02 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91368",
+                "attribute_id": "Crus",
+                "build_copy_name": "Johanna",
+                "last_updated": "2024-02-02 15:34:06"
+            }
+        },
+        {
+            "pick_number": 2,
+            "type": "Ban",
+            "player_slot": 2,
+            "hero": {
+                "id": 19,
+                "name": "Garrosh",
+                "short_name": "garrosh",
+                "alt_name": null,
+                "role": "Warrior",
+                "new_role": "Tank",
+                "type": "Melee",
+                "release_date": "2017-08-08 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Garr",
+                "build_copy_name": "Garrosh",
+                "last_updated": "2024-02-06 18:32:51"
+            }
+        },
+        {
+            "pick_number": 3,
+            "type": "Ban",
+            "player_slot": 1,
+            "hero": {
+                "id": 8,
+                "name": "Brightwing",
+                "short_name": "brightwing",
+                "alt_name": "FaerieDragon",
+                "role": "Support",
+                "new_role": "Healer",
+                "type": "Ranged",
+                "release_date": "2014-04-15 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Faer",
+                "build_copy_name": "Brightwing",
+                "last_updated": "2024-02-06 18:32:51"
+            }
+        },
+        {
+            "pick_number": 4,
+            "type": "Pick",
+            "player_slot": 9,
+            "hero": {
+                "id": 87,
+                "name": "Anduin",
+                "short_name": "anduin",
+                "alt_name": "",
+                "role": "Healer",
+                "new_role": "Healer",
+                "type": "Ranged",
+                "release_date": "2019-04-30 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Andu",
+                "build_copy_name": "Anduin",
+                "last_updated": "2024-02-06 18:32:51"
+            }
+        },
+        {
+            "pick_number": 5,
+            "type": "Pick",
+            "player_slot": 4,
+            "hero": {
+                "id": 17,
+                "name": "Falstad",
+                "short_name": "falstad",
+                "alt_name": null,
+                "role": "Assassin",
+                "new_role": "Ranged Assassin",
+                "type": "Ranged",
+                "release_date": "2014-03-13 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Fals",
+                "build_copy_name": "Falstad",
+                "last_updated": "2024-02-06 18:32:51"
+            }
+        },
+        {
+            "pick_number": 6,
+            "type": "Pick",
+            "player_slot": 1,
+            "hero": {
+                "id": 51,
+                "name": "Stitches",
+                "short_name": "stitches",
+                "alt_name": null,
+                "role": "Warrior",
+                "new_role": "Tank",
+                "type": "Melee",
+                "release_date": "2014-03-13 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Stit",
+                "build_copy_name": "Stitches",
+                "last_updated": "2024-02-06 18:32:51"
+            }
+        },
+        {
+            "pick_number": 7,
+            "type": "Pick",
+            "player_slot": 7,
+            "hero": {
+                "id": 5,
+                "name": "Arthas",
+                "short_name": "arthas",
+                "alt_name": null,
+                "role": "Warrior",
+                "new_role": "Tank",
+                "type": "Melee",
+                "release_date": "2014-03-13 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Arth",
+                "build_copy_name": "Arthas",
+                "last_updated": "2024-02-06 18:32:51"
+            }
+        },
+        {
+            "pick_number": 8,
+            "type": "Pick",
+            "player_slot": 6,
+            "hero": {
+                "id": 7,
+                "name": "Azmodan",
+                "short_name": "azmodan",
+                "alt_name": null,
+                "role": "Specialist",
+                "new_role": "Ranged Assassin",
+                "type": "Ranged",
+                "release_date": "2014-10-07 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Azmo",
+                "build_copy_name": "Azmodan",
+                "last_updated": "2024-02-06 18:32:51"
+            }
+        },
+        {
+            "pick_number": 9,
+            "type": "Ban",
+            "player_slot": 1,
+            "hero": {
+                "id": 67,
+                "name": "Zagara",
+                "short_name": "zagara",
+                "alt_name": null,
+                "role": "Specialist",
+                "new_role": "Ranged Assassin",
+                "type": "Ranged",
+                "release_date": "2014-06-25 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Zaga",
+                "build_copy_name": "Zagara",
+                "last_updated": "2024-02-06 18:32:51"
+            }
+        },
+        {
+            "pick_number": 10,
+            "type": "Ban",
+            "player_slot": 2,
+            "hero": {
+                "id": 46,
+                "name": "Rehgar",
+                "short_name": "rehgar",
+                "alt_name": null,
+                "role": "Support",
+                "new_role": "Healer",
+                "type": "Melee",
+                "release_date": "2014-07-23 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Rehg",
+                "build_copy_name": "Rehgar",
+                "last_updated": "2024-02-06 18:32:51"
+            }
+        },
+        {
+            "pick_number": 11,
+            "type": "Pick",
+            "player_slot": 0,
+            "hero": {
+                "id": 36,
+                "name": "Malfurion",
+                "short_name": "malfurion",
+                "alt_name": null,
+                "role": "Support",
+                "new_role": "Healer",
+                "type": "Ranged",
+                "release_date": "2014-03-13 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91368",
+                "attribute_id": "Malf",
+                "build_copy_name": "Malfurion",
+                "last_updated": "2024-02-02 15:34:06"
+            }
+        },
+        {
+            "pick_number": 12,
+            "type": "Pick",
+            "player_slot": 2,
+            "hero": {
+                "id": 44,
+                "name": "Ragnaros",
+                "short_name": "ragnaros",
+                "alt_name": null,
+                "role": "Assassin",
+                "new_role": "Bruiser",
+                "type": "Melee",
+                "release_date": "2016-12-14 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Ragn",
+                "build_copy_name": "Ragnaros",
+                "last_updated": "2024-02-06 18:32:51"
+            }
+        },
+        {
+            "pick_number": 13,
+            "type": "Pick",
+            "player_slot": 8,
+            "hero": {
+                "id": 57,
+                "name": "Thrall",
+                "short_name": "thrall",
+                "alt_name": null,
+                "role": "Assassin",
+                "new_role": "Bruiser",
+                "type": "Melee",
+                "release_date": "2015-01-13 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Thra",
+                "build_copy_name": "Thrall",
+                "last_updated": "2024-02-06 18:32:51"
+            }
+        },
+        {
+            "pick_number": 14,
+            "type": "Pick",
+            "player_slot": 5,
+            "hero": {
+                "id": 53,
+                "name": "Sylvanas",
+                "short_name": "sylvanas",
+                "alt_name": null,
+                "role": "Specialist",
+                "new_role": "Ranged Assassin",
+                "type": "Ranged",
+                "release_date": "2015-03-24 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Sylv",
+                "build_copy_name": "Sylvanas",
+                "last_updated": "2024-02-06 18:32:51"
+            }
+        },
+        {
+            "pick_number": 15,
+            "type": "Pick",
+            "player_slot": 3,
+            "hero": {
+                "id": 83,
+                "name": "Mephisto",
+                "short_name": "mephisto",
+                "alt_name": null,
+                "role": "Assassin",
+                "new_role": "Ranged Assassin",
+                "type": "Ranged",
+                "release_date": "2018-09-03 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "MEPH",
+                "build_copy_name": "Mephisto",
+                "last_updated": "2024-02-06 18:32:51"
+            }
+        }
+    ]
+}
