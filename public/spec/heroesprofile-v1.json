@@ -228,6 +228,19 @@
                         "description": "Include mirror matches."
                     },
                     {
+                        "name": "group_by_map",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "true",
+                                "false"
+                            ]
+                        },
+                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
+                    },
+                    {
                         "name": "minimum_games",
                         "in": "query",
                         "required": false,
@@ -429,6 +442,7 @@
                     }
                 },
                 "x-endpoint-key": "global_compositions",
+                "x-rate-limit": "The usual 60 requests a minute, dropping to 1 when `group_by_map=true` — that form runs a query per playable map.",
                 "x-site-page": "/Global/Compositions",
                 "tags": [
                     "Global Hero Stats"
@@ -603,6 +617,19 @@
                             ]
                         },
                         "description": "Include mirror matches."
+                    },
+                    {
+                        "name": "group_by_map",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "true",
+                                "false"
+                            ]
+                        },
+                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
                     },
                     {
                         "name": "composition_id",
@@ -1053,6 +1080,7 @@
                     }
                 },
                 "x-endpoint-key": "global_compositions_heroes",
+                "x-rate-limit": "The usual 60 requests a minute, dropping to 1 when `group_by_map=true` — that form runs a query per playable map.",
                 "x-site-page": "/Global/Compositions",
                 "tags": [
                     "Global Hero Stats"
@@ -1270,6 +1298,19 @@
                         "description": "Include mirror matches."
                     },
                     {
+                        "name": "group_by_map",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "true",
+                                "false"
+                            ]
+                        },
+                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
+                    },
+                    {
                         "name": "mode",
                         "in": "query",
                         "required": false,
@@ -1362,6 +1403,7 @@
                     }
                 },
                 "x-endpoint-key": "global_draft",
+                "x-rate-limit": "The usual 60 requests a minute, dropping to 1 when `group_by_map=true` — that form runs a query per playable map.",
                 "x-site-page": "/Global/Draft",
                 "tags": [
                     "Global Hero Stats"
@@ -1946,6 +1988,19 @@
                         "description": "Include mirror matches."
                     },
                     {
+                        "name": "group_by_map",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "true",
+                                "false"
+                            ]
+                        },
+                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
+                    },
+                    {
                         "name": "mode",
                         "in": "query",
                         "required": false,
@@ -2377,6 +2432,7 @@
                     }
                 },
                 "x-endpoint-key": "heroes_matchups",
+                "x-rate-limit": "The usual 60 requests a minute, dropping to 1 when `group_by_map=true` — that form runs a query per playable map.",
                 "x-site-page": "/Global/Matchups",
                 "tags": [
                     "Global Hero Stats"
@@ -2551,6 +2607,19 @@
                             ]
                         },
                         "description": "Include mirror matches."
+                    },
+                    {
+                        "name": "group_by_map",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "true",
+                                "false"
+                            ]
+                        },
+                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
                     },
                     {
                         "name": "ally_enemy",
@@ -3471,6 +3540,7 @@
                     }
                 },
                 "x-endpoint-key": "heroes_matchups_talents",
+                "x-rate-limit": "The usual 60 requests a minute, dropping to 1 when `group_by_map=true` — that form runs a query per playable map.",
                 "x-site-page": "/Global/Matchups/Talents",
                 "tags": [
                     "Global Hero Stats"
@@ -3687,6 +3757,19 @@
                         "description": "Statistic to filter on."
                     },
                     {
+                        "name": "group_by_map",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "true",
+                                "false"
+                            ]
+                        },
+                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
+                    },
+                    {
                         "name": "mode",
                         "in": "query",
                         "required": false,
@@ -3825,6 +3908,7 @@
                     }
                 },
                 "x-endpoint-key": "heroes_stats",
+                "x-rate-limit": "The usual 60 requests a minute, dropping to 1 when `group_by_map=true` — that form runs a query per playable map.",
                 "x-site-page": "/Global/Hero",
                 "tags": [
                     "Global Hero Stats"
@@ -5681,6 +5765,19 @@
                         "description": "Statistic to filter on."
                     },
                     {
+                        "name": "group_by_map",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "true",
+                                "false"
+                            ]
+                        },
+                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
+                    },
+                    {
                         "name": "talentbuildtype",
                         "in": "query",
                         "required": false,
@@ -6346,6 +6443,7 @@
                     }
                 },
                 "x-endpoint-key": "heroes_talents_builds",
+                "x-rate-limit": "The usual 60 requests a minute, dropping to 1 when `group_by_map=true` — that form runs a query per playable map.",
                 "x-site-page": "/Global/Talents",
                 "tags": [
                     "Global Hero Stats"
@@ -58889,6 +58987,7 @@
                     }
                 },
                 "x-endpoint-key": "heroes_talents_builds_all",
+                "x-rate-limit": "1 requests a minute. One call runs a query per hero, so this is deliberately far below the usual limit.",
                 "x-site-page": "/Global/Talents",
                 "tags": [
                     "Global Hero Stats"
@@ -59072,6 +59171,19 @@
                             "type": "string"
                         },
                         "description": "Statistic to filter on."
+                    },
+                    {
+                        "name": "group_by_map",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "true",
+                                "false"
+                            ]
+                        },
+                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
                     },
                     {
                         "name": "mode",
@@ -59987,6 +60099,7 @@
                     }
                 },
                 "x-endpoint-key": "heroes_talents_details",
+                "x-rate-limit": "The usual 60 requests a minute, dropping to 1 when `group_by_map=true` — that form runs a query per playable map.",
                 "x-site-page": "/Global/Talents",
                 "tags": [
                     "Global Hero Stats"
@@ -63113,6 +63226,19 @@
                         "description": "Include mirror matches."
                     },
                     {
+                        "name": "group_by_map",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "true",
+                                "false"
+                            ]
+                        },
+                        "description": "Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused."
+                    },
+                    {
                         "name": "teamoneparty",
                         "in": "query",
                         "required": false,
@@ -64867,6 +64993,7 @@
                     }
                 },
                 "x-endpoint-key": "global_party",
+                "x-rate-limit": "The usual 60 requests a minute, dropping to 1 when `group_by_map=true` — that form runs a query per playable map.",
                 "x-site-page": "/Global/Party",
                 "tags": [
                     "Global Hero Stats"
@@ -83335,6 +83462,7 @@
                     }
                 },
                 "x-endpoint-key": "replay_data",
+                "x-rate-limit": "500 requests a minute, on every plan, rather than the usual 60.",
                 "x-site-page": "/Match/Single/{replayID}",
                 "tags": [
                     "Replays"
@@ -83476,6 +83604,7 @@
                     }
                 },
                 "x-endpoint-key": "replay_ban",
+                "x-rate-limit": "500 requests a minute, on every plan, rather than the usual 60.",
                 "x-site-page": "/Match/Single/{replayID}",
                 "tags": [
                     "Replays"
@@ -83622,6 +83751,7 @@
                     }
                 },
                 "x-endpoint-key": "replay_draft",
+                "x-rate-limit": "500 requests a minute, on every plan, rather than the usual 60.",
                 "x-site-page": "/Match/Single/{replayID}",
                 "tags": [
                     "Replays"
@@ -83782,6 +83912,7 @@
                     }
                 },
                 "x-endpoint-key": "replay_index",
+                "x-rate-limit": "200 requests a minute, on every plan, rather than the usual 60.",
                 "tags": [
                     "Replays"
                 ]

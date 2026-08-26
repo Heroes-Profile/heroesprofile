@@ -38,6 +38,31 @@ class GlobalCacheKey
     }
 
     /**
+     * The same key, for a different set of parameters.
+     *
+     * A key is `prefix|versions|hash`, and only the hash depends on the parameters
+     * — so one query's key can be rebuilt for a variation of it without knowing the
+     * prefix or resolving the game versions a second time. That is what lets a
+     * `group_by_map` fan-out land on exactly the keys the single-map query already
+     * writes, wherever it is called from.
+     *
+     * Safe because the format it takes apart is the one `for()` puts together, four
+     * lines up. Nothing outside this class assembles one.
+     *
+     * @param  array<string, mixed>  $parameters
+     */
+    public static function withParameters(string $key, array $parameters): string
+    {
+        $separator = strrpos($key, '|');
+
+        if ($separator === false) {
+            return $key;
+        }
+
+        return substr($key, 0, $separator + 1).hash('sha256', json_encode(self::normalize($parameters)));
+    }
+
+    /**
      * What identifies a query, as opposed to how it happened to be asked for.
      *
      * Null, empty string and absent all mean "not filtered" to these controllers

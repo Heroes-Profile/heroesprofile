@@ -167,6 +167,12 @@ class RouteServiceProvider extends ServiceProvider
             return $limits['anonymous'];
         }
 
+        // Checked before the plan, and returned rather than maxed: a fan-out is
+        // capped for everyone, including the tier whose plan limit is higher.
+        if ($this->isBatchRequest($request)) {
+            return $limits['batch'];
+        }
+
         $planLimit = in_array(3, $context->planIds, true)
             ? $limits['developer']
             : $limits['default'];
@@ -178,5 +184,24 @@ class RouteServiceProvider extends ServiceProvider
         $routeLimit = $limits['routes'][$request->route()?->getName()] ?? 0;
 
         return max($planLimit, $routeLimit);
+    }
+
+    /**
+     * Whether this request fans out into many queries rather than running one.
+     *
+     * Either because the endpoint always does, or because `group_by_map` asked it
+     * to. See `api.rate_limits.batch`.
+     */
+    private function isBatchRequest(Request $request): bool
+    {
+        if ($request->boolean('group_by_map')) {
+            return true;
+        }
+
+        return in_array(
+            $request->route()?->getName(),
+            config('api.rate_limits.batch_routes', []),
+            true
+        );
     }
 }

@@ -303,7 +303,24 @@ class GlobalStatsController extends Controller
         // handled another. Pass an explicit list only to override that.
         ?array $arrays = null
     ): Response {
-        $arrays ??= ApiSpecConfig::multiForRoute($request->route()?->getName());
+        $routeName = $request->route()?->getName();
+        $arrays ??= ApiSpecConfig::multiForRoute($routeName);
+
+        // `group_by_map` fans one request out into a query per playable map, so it
+        // is offered only where that is worth doing. Refused rather than ignored
+        // where it is not — the old API silently dropped it on some requests and
+        // answered a different question than the one asked.
+        if ($request->has('group_by_map') && ! ApiSpecConfig::declaresParameter($routeName, 'group_by_map')) {
+            return response()->json([
+                'error' => [
+                    'code' => 'group_by_map_unsupported',
+                    'message' => 'This endpoint does not group by map.'
+                        .' `heroes/maps` already reports one hero across every map,'
+                        .' and `heroes/talents/builds/all` is a query per hero already —'
+                        .' grouping that by map would be one call for every hero on every map.',
+                ],
+            ], 422);
+        }
 
         foreach ($requires as $parameter) {
             if (! $request->filled($parameter)) {

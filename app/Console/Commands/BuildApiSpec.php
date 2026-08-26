@@ -169,6 +169,10 @@ class BuildApiSpec extends Command
             $operation['x-endpoint-key'] = $registry;
         }
 
+        if ($rateLimit = $this->rateLimitNote($name)) {
+            $operation['x-rate-limit'] = $rateLimit;
+        }
+
         // The site page this endpoint answers for. Quicker than any description at
         // conveying what the data actually is — the reader can go look at it.
         if ($page = $endpoint['page'] ?? null) {
@@ -411,6 +415,37 @@ class BuildApiSpec extends Command
     }
 
     /** The `heroes_stats` in `api.quota:heroes_stats`, or null if absent. */
+    /**
+     * How this endpoint's per-minute limit differs from the plan's, if it does.
+     *
+     * The weekly allowance is per plan and lives in the registry, which is why it
+     * is a key here rather than a number. The per-minute limit is not per plan at
+     * all — it is decided per route in `config/api.php` — so it can be stated
+     * outright, and it needs to be: nothing else in this document mentions rate
+     * limiting, and two of these are an order of magnitude off the default.
+     */
+    private function rateLimitNote(string $routeName): ?string
+    {
+        $limits = config('api.rate_limits');
+
+        if (in_array($routeName, $limits['batch_routes'] ?? [], true)) {
+            return $limits['batch'].' requests a minute. One call runs a query per hero,'
+                .' so this is deliberately far below the usual limit.';
+        }
+
+        if (isset($limits['routes'][$routeName])) {
+            return $limits['routes'][$routeName].' requests a minute, on every plan,'
+                .' rather than the usual '.$limits['default'].'.';
+        }
+
+        if (ApiSpecConfig::declaresParameter($routeName, 'group_by_map')) {
+            return 'The usual '.$limits['default'].' requests a minute, dropping to '
+                .$limits['batch'].' when `group_by_map=true` — that form runs a query per playable map.';
+        }
+
+        return null;
+    }
+
     private function middlewareArgument(Route $route, string $alias): ?string
     {
         foreach ($route->gatherMiddleware() as $middleware) {

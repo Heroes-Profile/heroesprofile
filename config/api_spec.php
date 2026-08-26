@@ -550,6 +550,9 @@ return [
             'page' => '/Global/Hero',
             'uses' => ['globals'],
             'async' => true,
+            'parameters' => [
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
+            ],
         ],
 
         'api.external.heroes.matchups' => [
@@ -561,6 +564,7 @@ return [
             'except' => ['groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
             ],
         ],
@@ -587,6 +591,7 @@ return [
             'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
                 'ally_enemy' => ['required' => true, 'description' => 'The other hero, by name.', 'example' => 'Johanna'],
                 'type' => ['enum' => ['Enemy', 'Ally'], 'description' => 'Whether the other hero is an opponent or a team-mate. Defaults to `Enemy`.'],
@@ -602,6 +607,7 @@ return [
             'except' => ['role', 'groupsize'],
             'async' => true,
             'parameters' => [
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
             ],
         ],
@@ -615,6 +621,7 @@ return [
             'except' => ['role', 'groupsize'],
             'async' => true,
             'parameters' => [
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
                 'talentbuildtype' => [
                     'enum' => ['Popular', 'HP Algorithm', 'Unique Lvl 1', 'Unique Lvl 4', 'Unique Lvl 7', 'Unique Lvl 10', 'Unique Lvl 13', 'Unique Lvl 16', 'Unique Lvl 20'],
@@ -710,6 +717,7 @@ return [
             'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'minimum_games' => ['type' => 'integer', 'description' => 'Drop compositions below this many games. Defaults to 100.'],
             ],
         ],
@@ -723,6 +731,7 @@ return [
             'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'composition_id' => ['required' => true, 'type' => 'integer', 'description' => 'A `composition_id` from the `/compositions` response.', 'example' => 1],
                 'minimum_games' => ['type' => 'integer', 'description' => 'Defaults to 100.'],
             ],
@@ -737,6 +746,7 @@ return [
             'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
             ],
         ],
@@ -750,6 +760,7 @@ return [
             'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
+                'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'teamoneparty' => ['description' => 'Party combination for the first team.'],
                 'teamtwoparty' => ['description' => 'Party combination for the second team.'],
             ],

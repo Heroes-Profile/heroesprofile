@@ -79,6 +79,30 @@ return [
             'api.external.replay.draft' => 500,
             'api.external.replays.index' => 200,
         ],
+
+        /*
+        | A ceiling, not a floor: it beats the plan limit rather than raising it,
+        | Developer's 120 included.
+        |
+        | One of these requests is not one query. `group_by_map` is one per playable
+        | map, and `heroes/talents/builds/all` is one per hero — so the number that
+        | matters is this multiplied by `global.batch_max_in_flight`, which is how
+        | many heavy queries a single key can have running at once.
+        |
+        | Collection is unaffected. Polling happens on `/jobs/{id}`, a different
+        | route, so a batch already started is never slowed by this.
+        |
+        | Quota is untouched: a batch still costs one call however far it fans out.
+        | If that gets abused, charging by fan-out is the lever — `EnforceApiQuota`
+        | increments by one today and could increment by the child count instead.
+        */
+
+        'batch' => 1,
+
+        /* Routes that fan out on every call, with or without a parameter saying so. */
+        'batch_routes' => [
+            'api.external.heroes.talents.builds.all',
+        ],
     ],
 
 ];

@@ -131,6 +131,10 @@
               Counts against your <code class="text-lteal">{{ op.quotaKey }}</code> allowance.
             </p>
 
+            <p v-if="op.rateLimit" class="text-xs text-gray-medium mb-4">
+              {{ op.rateLimit }}
+            </p>
+
             <template v-if="op.parameters.length">
               <h3 class="text-sm uppercase tracking-wider text-lteal mb-2">Parameters</h3>
               <table class="min-w-0 w-full responsive-table mb-4">
@@ -336,6 +340,7 @@ export default {
             method,
             summary: op.summary || '',
             quotaKey: op['x-endpoint-key'] || null,
+            rateLimit: op['x-rate-limit'] || null,
             sitePage: op['x-site-page'] || null,
             // An empty security array on the operation overrides the document
             // default, which is how the keyless uploader routes are marked.
