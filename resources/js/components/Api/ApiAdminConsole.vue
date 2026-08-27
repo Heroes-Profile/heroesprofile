@@ -22,6 +22,14 @@
             <div class="text-2xl">{{ metrics.active_keys }}</div>
             <div class="text-gray-medium">Active keys</div>
           </div>
+          <div>
+            <div class="text-2xl">{{ metrics.active_subscribers }}</div>
+            <div class="text-gray-medium">Active subscribers</div>
+          </div>
+          <div>
+            <div class="text-2xl">${{ metrics.mrr }}</div>
+            <div class="text-gray-medium">Monthly revenue</div>
+          </div>
           <div v-for="(total, status) in metrics.subscriptions_by_status" :key="status">
             <div class="text-2xl">{{ total }}</div>
             <div class="text-gray-medium capitalize">{{ status.replace('_', ' ') }}</div>
