@@ -476,7 +476,7 @@ return [
             'page' => '/Player/{battletag}/{blizz_id}/{region}/FriendFoe',
             'uses' => ['player'],
             'parameters' => [
-                'type' => ['enum' => ['friend', 'enemy'], 'description' => 'Which side to report. Defaults to `friend`.'],
+                'type' => ['required' => true, 'enum' => ['friend', 'enemy'], 'description' => 'Which side to report: `friend` for team-mates, `enemy` for opponents. One call answers one side.'],
                 'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.', 'example' => 'Storm League'],
                 'hero' => ['description' => 'Restrict to one hero by name.'],
                 'season' => ['type' => 'integer'],

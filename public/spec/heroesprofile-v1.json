@@ -66789,7 +66789,7 @@
                     {
                         "name": "type",
                         "in": "query",
-                        "required": false,
+                        "required": true,
                         "schema": {
                             "type": "string",
                             "enum": [
@@ -66797,7 +66797,7 @@
                                 "enemy"
                             ]
                         },
-                        "description": "Which side to report. Defaults to `friend`."
+                        "description": "Which side to report: `friend` for team-mates, `enemy` for opponents. One call answers one side."
                     },
                     {
                         "name": "game_type",

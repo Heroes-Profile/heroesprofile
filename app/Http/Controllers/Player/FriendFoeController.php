@@ -83,7 +83,7 @@ class FriendFoeController extends Controller
             'season' => ['sometimes', 'nullable', new SeasonInputValidation],
             'game_map' => ['sometimes', 'nullable', new GameMapInputValidation],
             'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation],
-            'type' => 'sometimes|in:friend,enemy',
+            'type' => 'required|in:friend,enemy',
             'groupsize' => ['sometimes', 'nullable', new StackSizeInputValidation],
         ];
 
@@ -311,7 +311,7 @@ class FriendFoeController extends Controller
                 'hero' => $heroData['hero']['name'],
                 'hero_games' => $heroData['total_games_played'],
                 'region' => $region,
-                'hp_owner' => ($blizz_id == 67280 && $region = 1) ? true : false,
+                'hp_owner' => ($blizz_id == 67280 && $region == 1) ? true : false,
                 'patreon' => is_null($patreonAccount) || empty($patreonAccount) || count($patreonAccount) == 0 ? false : true,
                 'battletag' => explode('#', $data->first()->battletag)[0],
                 'total_wins' => $totalWins,
