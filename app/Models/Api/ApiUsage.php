@@ -36,4 +36,15 @@ class ApiUsage extends Model
         return $this->window_started_at === null
             || $this->window_started_at->lte(now()->subDays(self::WINDOW_DAYS));
     }
+
+    /**
+     * The table is keyed on (api_account_id, endpoint). Eloquent has no composite
+     * key support, so left alone every save and delete targets `where id is null`.
+     */
+    protected function setKeysForSaveQuery($query)
+    {
+        return $query
+            ->where('api_account_id', $this->getOriginal('api_account_id', $this->api_account_id))
+            ->where('endpoint', $this->getOriginal('endpoint', $this->endpoint));
+    }
 }
