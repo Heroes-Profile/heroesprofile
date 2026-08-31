@@ -10,6 +10,7 @@ use App\Models\Api\CashierSubscription;
 use App\Services\Api\ApiKeyResolver;
 use App\Services\Api\PlanService;
 use App\Services\Api\UsageService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -162,7 +163,7 @@ class AdminConsoleController extends Controller
     }
 
     /** Headline counts. Cheap aggregates only — nothing here scans a replay table. */
-    public function metrics()
+    public function metrics(PlanService $plans)
     {
         $byStatus = CashierSubscription::query()
             ->select('stripe_status', DB::raw('count(*) as total'))
@@ -175,7 +176,67 @@ class AdminConsoleController extends Controller
             'migrated' => ApiAccount::where('migrated', true)->count(),
             'subscriptions_by_status' => $byStatus,
             'active_keys' => ApiKey::whereNull('revoked_at')->count(),
+            'active_subscribers' => $this->activeSubscribers(),
+            'mrr' => $this->monthlyRevenue($plans),
         ]);
+    }
+
+    /**
+     * Accounts entitled to live data right now, cancellations still inside their paid
+     * period included.
+     *
+     * Same rule ApiKeyResolver applies per call, so this figure and what the API
+     * actually honours cannot drift apart. Distinct accounts rather than rows: a swap
+     * reuses the row, but nothing stops an account holding more than one.
+     */
+    private function activeSubscribers(): int
+    {
+        return $this->entitled()->distinct()->count('user_id');
+    }
+
+    /**
+     * Monthly recurring revenue, whole dollars.
+     *
+     * Narrower than the subscriber count on purpose — a cancellation riding out its
+     * paid period is entitled today but renews nothing, so a set `ends_at` drops it.
+     * Trialing stays in: it converts on its own, and no trial is sold here anyway.
+     *
+     * Amounts come from PlanService, which reads Stripe's own unit_amount and caches
+     * it per price. A price we no longer list resolves to no plan and adds nothing.
+     */
+    private function monthlyRevenue(PlanService $plans): int
+    {
+        $byPrice = $this->entitled()
+            ->whereNull('ends_at')
+            ->select('stripe_price', DB::raw('count(distinct user_id) as total'))
+            ->groupBy('stripe_price')
+            ->pluck('total', 'stripe_price');
+
+        $total = 0;
+
+        foreach ($byPrice as $stripePrice => $subscribers) {
+            $planId = $plans->planIdForPrice($stripePrice === '' ? null : (string) $stripePrice);
+
+            if ($planId === null) {
+                continue;
+            }
+
+            $total += (int) $plans->priceFor($planId) * (int) $subscribers;
+        }
+
+        return $total;
+    }
+
+    /**
+     * What Cashier would call valid: our subscription type, a live status, and an
+     * `ends_at` that has not passed. `past_due` is out, matching Cashier's default.
+     */
+    private function entitled(): Builder
+    {
+        return CashierSubscription::query()
+            ->where('type', ApiAccount::SUBSCRIPTION)
+            ->whereIn('stripe_status', ['active', 'trialing'])
+            ->where(fn (Builder $query) => $query->whereNull('ends_at')->orWhere('ends_at', '>', now()));
     }
 
     /** Tier name for a Stripe price, or the raw price when it is one we no longer list. */

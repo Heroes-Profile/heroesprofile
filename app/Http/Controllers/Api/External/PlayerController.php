@@ -109,13 +109,23 @@ class PlayerController extends Controller
         ], ['tabledata' => 'matchups']);
     }
 
-    /** Team-mates and opponents this player sees repeatedly. */
+    /**
+     * Team-mates and opponents this player sees repeatedly.
+     *
+     * One call answers one side. `type` is not defaulted: friend and enemy are
+     * different questions, and picking one returns data nobody asked for.
+     */
     public function friendFoe(Request $request): Response
     {
+        if (! $request->filled('type')) {
+            return $this->error(
+                'missing_type',
+                'This endpoint needs a type: `friend` for team-mates, `enemy` for opponents.',
+                422
+            );
+        }
+
         return $this->delegate($request, FriendFoeController::class, 'getFriendFoeData', [
-            // Absent, the controller reaches a count() on a null. The site's own
-            // page always sends one.
-            'type' => 'friend',
             // Required here, unlike `players/matchups`, which reads its absence as
             // every game type. This one puts it straight into a whereIn().
             'game_type' => self::DEFAULT_GAME_TYPE,
