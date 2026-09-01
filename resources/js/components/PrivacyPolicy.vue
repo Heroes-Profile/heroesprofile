@@ -36,7 +36,7 @@
     <p>
       Data for statistics and profiles is obtained from the Heroes Profile API, where users
       voluntarily upload their replay data from their computers. This data is stored in our site
-      database and is not of a personal nature. We claim ownership over the aggregated data used for the site.
+      database. We claim ownership over the aggregated data used for the site.
     </p>
     <br/>
 
