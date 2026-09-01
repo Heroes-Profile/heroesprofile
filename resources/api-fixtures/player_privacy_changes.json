@@ -1,0 +1,19 @@
+{
+    "changes": [
+        {
+            "battletag": "Zemill#1940",
+            "region": 1,
+            "state": "private",
+            "changed_at": "2026-08-30T14:12:05+00:00"
+        },
+        {
+            "battletag": "ExamplePlayer#2317",
+            "region": 2,
+            "state": "public",
+            "changed_at": "2026-08-31T09:44:51+00:00"
+        }
+    ],
+    "next_since": "2026-08-31T09:44:51+00:00",
+    "next_after_id": 48213,
+    "has_more": false
+}

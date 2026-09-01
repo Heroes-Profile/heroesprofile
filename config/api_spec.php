@@ -152,6 +152,7 @@ return [
             'api.external.players.mmr.history.heroes',
             'api.external.players.mmr.history.roles',
             'api.external.players.mmr.roles',
+            'api.external.players.privacy.changes',
             'api.external.players.roles',
             'api.external.players.roles.single',
             'api.external.players.talents.build',
@@ -482,6 +483,25 @@ return [
                 'season' => ['type' => 'integer'],
                 'game_map' => ['description' => 'Map name.'],
                 'groupsize' => ['enum' => ['All', 'Solo', 'Duo', '3 Players', '4 Players', '5 Players'], 'description' => 'Party size filter.'],
+            ],
+        ],
+
+        /*
+        | The privacy feed. Not identified by battletag: it answers with whoever
+        | changed, not with a player the caller named.
+        */
+
+        'api.external.players.privacy.changes' => [
+            'summary' => 'Players whose profile privacy has changed, so cached copies can be purged.',
+            'description' => 'Every other endpoint refuses a private player at the point of the call. This is the only way to reach a copy already stored in your own database. The terms of service require polling it at least daily and removing a player within 24 hours of them going private.
+
+Each account appears at most once, carrying its current state — the column holds one timestamp, overwritten on each change, so this is a snapshot rather than an event log. A player who went private and public again between two polls appears once, as public.
+
+Page with the cursor: pass `next_since` and `next_after_id` from one response as `since` and `after_id` on the next, and keep going while `has_more` is true. Both are needed because a timestamp alone cannot separate accounts that changed in the same second.',
+            'parameters' => [
+                'since' => ['description' => 'Only changes after this time. Omit for a first sync, which returns every account that has ever changed state.', 'example' => '2026-09-01T00:00:00+00:00'],
+                'after_id' => ['type' => 'integer', 'description' => 'Tie-breaker for `since`. Pass the `next_after_id` from the previous response.'],
+                'limit' => ['type' => 'integer', 'description' => 'Rows per page, 1 to 5000. Defaults to 1000.'],
             ],
         ],
 

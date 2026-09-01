@@ -129,6 +129,19 @@ Route::get('players/friendfoe', [PlayerController::class, 'friendFoe'])
     ->name('api.external.players.friendfoe');
 
 /*
+| Privacy feed. Every other endpoint refuses a private player at the point of the
+| call; this is the only way to reach a copy already cached in someone else's
+| database, and the terms of service require polling it daily.
+|
+| Not identified by battletag, unlike the rest of this block — it answers with
+| whoever changed, not with a player the caller named.
+*/
+
+Route::get('players/privacy/changes', [PlayerController::class, 'privacyChanges'])
+    ->middleware(['api.fixtures:player_privacy_changes', 'api.quota:player_privacy_changes'])
+    ->name('api.external.players.privacy.changes');
+
+/*
 | Match reads. `replayID` is a path segment rather than a query parameter — it
 | identifies the resource, and unlike a battletag it carries no characters that
 | need encoding.

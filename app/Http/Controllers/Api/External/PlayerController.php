@@ -12,8 +12,10 @@ use App\Http\Controllers\Player\PlayerMMRController;
 use App\Http\Controllers\Player\PlayerTalentsController;
 use App\Services\PlayerMmrService;
 use App\Support\ApiParameters;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -42,6 +44,11 @@ class PlayerController extends Controller
      * anonymous, so this is always the answer.
      */
     private const DEFAULT_GAME_TYPE = 'sl';
+
+    /** A day of changes fits comfortably; the ceiling bounds a first sync. */
+    private const PRIVACY_DEFAULT_LIMIT = 1000;
+
+    private const PRIVACY_MAX_LIMIT = 5000;
 
     /** Public parameter name => what the internal controller calls it. */
     private const SUBJECTS = [
@@ -473,5 +480,53 @@ class PlayerController extends Controller
         return response()->json([
             'error' => ['code' => $code, 'message' => $message],
         ], $status);
+    }
+
+    /**
+     * Privacy changes since a timestamp, so a caller can purge players who have
+     * gone private from data it cached while they were public.
+     *
+     * The rest of the API refuses a private player at the point of the call; this
+     * is the only way to reach a copy already sitting in someone else's database.
+     * The terms of service require polling it daily.
+     *
+     * `battletag` and `region` rather than blizz_id because that is the pair every
+     * other endpoint answers with — a caller has never seen a blizz_id to match on.
+     */
+    public function privacyChanges(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'since' => ['sometimes', 'date'],
+            'after_id' => ['sometimes', 'integer', 'min:0'],
+            'limit' => ['sometimes', 'integer', 'min:1', 'max:'.self::PRIVACY_MAX_LIMIT],
+            'mode' => ['sometimes', 'in:json,csv'],
+        ]);
+
+        $limit = (int) ($validated['limit'] ?? self::PRIVACY_DEFAULT_LIMIT);
+
+        // Omitted means everything, which is the first-sync case. The result is a
+        // snapshot rather than an event log, so reaching back to the beginning
+        // costs one row per account rather than one per change.
+        $since = isset($validated['since']) ? Carbon::parse($validated['since']) : null;
+
+        $changes = $this->globalDataService->getPrivacyChanges(
+            $since,
+            isset($validated['after_id']) ? (int) $validated['after_id'] : null,
+            $limit
+        );
+
+        $last = $changes->last();
+
+        // The cursor is the last row handed out, not "now" — a change written while
+        // this response was being built would otherwise be skipped forever. When
+        // nothing came back the caller keeps the cursor it already had.
+        return response()->json([
+            'changes' => $changes->map(fn ($change) => Arr::except($change, 'id'))->values(),
+            'next_since' => $last['changed_at'] ?? $since?->toIso8601String(),
+            'next_after_id' => $last['id'] ?? ($validated['after_id'] ?? null),
+            // A full page means ask again. It is not a promise there is more —
+            // the last page of an exact multiple comes back empty.
+            'has_more' => $changes->count() === $limit,
+        ]);
     }
 }
