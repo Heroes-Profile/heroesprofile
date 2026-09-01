@@ -25,6 +25,7 @@ use App\Support\GlobalCacheKey;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -91,6 +92,49 @@ class GlobalDataService
         });
 
         return $filteredAccounts;
+    }
+
+    /**
+     * Accounts whose privacy setting has changed, for the API privacy feed.
+     *
+     * `private_changed_at` holds one timestamp, overwritten on each flip, so this
+     * returns an account at most once carrying its current state — a snapshot, not
+     * an event log. A player who went private and public again between two polls
+     * appears once, as public. Nothing to replay in order, and no way to grow
+     * per-event, so `$since` can reach back as far as a caller likes.
+     *
+     * Keyset pagination on (timestamp, id) rather than the timestamp alone. The
+     * column is second-precision and the backfill stamps every account that was
+     * already private with one identical value, so a page boundary falling inside
+     * a tie would skip the rest of that second for good. `$afterId` breaks it.
+     *
+     * @return Collection<int, array{battletag: string, region: int, state: string, changed_at: string, id: int}>
+     */
+    public function getPrivacyChanges(?Carbon $since, ?int $afterId, int $limit)
+    {
+        return BattlenetAccount::query()
+            ->select('battlenet_accounts_id', 'battletag', 'region', 'private', 'private_changed_at')
+            ->whereNotNull('private_changed_at')
+            ->when($since !== null, function ($query) use ($since, $afterId) {
+                $query->where(function ($cursor) use ($since, $afterId) {
+                    $cursor->where('private_changed_at', '>', $since)
+                        ->orWhere(function ($tie) use ($since, $afterId) {
+                            $tie->where('private_changed_at', '=', $since)
+                                ->where('battlenet_accounts_id', '>', $afterId ?? 0);
+                        });
+                });
+            })
+            ->orderBy('private_changed_at')
+            ->orderBy('battlenet_accounts_id')
+            ->limit($limit)
+            ->get()
+            ->map(fn ($account) => [
+                'battletag' => $account->battletag,
+                'region' => (int) $account->region,
+                'state' => (int) $account->private === 1 ? 'private' : 'public',
+                'changed_at' => Carbon::parse($account->private_changed_at)->toIso8601String(),
+                'id' => (int) $account->battlenet_accounts_id,
+            ]);
     }
 
     /**

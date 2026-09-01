@@ -77060,6 +77060,116 @@
                 ]
             }
         },
+        "/players/privacy/changes": {
+            "get": {
+                "summary": "Players whose profile privacy has changed, so cached copies can be purged.",
+                "operationId": "api.external.players.privacy.changes",
+                "parameters": [
+                    {
+                        "name": "since",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only changes after this time. Omit for a first sync, which returns every account that has ever changed state.",
+                        "example": "2026-09-01T00:00:00+00:00"
+                    },
+                    {
+                        "name": "after_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "Tie-breaker for `since`. Pass the `next_after_id` from the previous response."
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "Rows per page, 1 to 5000. Defaults to 1000."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "changes": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "battletag": {
+                                                        "type": "string"
+                                                    },
+                                                    "region": {
+                                                        "type": "integer",
+                                                        "description": "Region id. 1 NA, 2 EU, 3 KR, 5 CN."
+                                                    },
+                                                    "state": {
+                                                        "type": "string"
+                                                    },
+                                                    "changed_at": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "battletag",
+                                                    "region",
+                                                    "state",
+                                                    "changed_at"
+                                                ]
+                                            }
+                                        },
+                                        "next_since": {
+                                            "type": "string"
+                                        },
+                                        "next_after_id": {
+                                            "type": "integer"
+                                        },
+                                        "has_more": {
+                                            "type": "boolean"
+                                        }
+                                    },
+                                    "required": [
+                                        "changes",
+                                        "next_since",
+                                        "next_after_id",
+                                        "has_more"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-endpoint-key": "player_privacy_changes",
+                "tags": [
+                    "Player Stats"
+                ]
+            }
+        },
         "/players/roles": {
             "get": {
                 "summary": "Per-role performance for one player.",
