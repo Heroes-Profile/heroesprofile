@@ -26,12 +26,17 @@ class CreateBattlenetAccountsTable extends Migration
             $table->longText('response')->nullable();
             $table->tinyInteger('private')->nullable();
 
+            // Cursor for the API privacy change feed. `updated_at` moves for token
+            // refreshes and flair changes too, so it cannot serve as one.
+            $table->timestamp('private_changed_at')->nullable();
+
             // Grants ad-free and site flair regardless of Patreon status.
             // Read by CheckIfPatreonSupporter and listed in BattlenetAccount::$fillable.
             $table->tinyInteger('flair_adfree_override')->default(0);
 
             // Indexes
             $table->index('battlenet_id');
+            $table->index('private_changed_at');
         });
     }
 

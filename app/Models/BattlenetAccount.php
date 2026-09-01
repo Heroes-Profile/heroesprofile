@@ -28,6 +28,7 @@ class BattlenetAccount extends Authenticatable
         'updated_at',
         'created_at',
         'private',
+        'private_changed_at',
         'flair_adfree_override',
     ];
 

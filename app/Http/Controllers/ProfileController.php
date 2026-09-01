@@ -237,8 +237,15 @@ class ProfileController extends Controller
             $value = $accountVisibility == 'true' ? 1 : 0;
 
             $user = BattlenetAccount::find($request['userid']);
-            $user->private = $value;
-            $user->save();
+
+            // Only stamp a real change. Saving the same value again would put the
+            // account back through the API privacy feed for no reason, and a null
+            // `private` is already public, so null -> 0 is not a change either.
+            if ((int) $user->private !== $value) {
+                $user->private = $value;
+                $user->private_changed_at = now();
+                $user->save();
+            }
 
         } catch (\Exception $e) {
             return ['status' => 'failure'];

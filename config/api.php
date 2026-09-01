@@ -45,7 +45,7 @@ return [
     | version. Bump it whenever the terms change materially.
     */
 
-    'terms_version' => env('API_TERMS_VERSION', '2026-08-22'),
+    'terms_version' => env('API_TERMS_VERSION', '2026-09-01'),
 
     'rate_limits' => [
         'default' => 60,
