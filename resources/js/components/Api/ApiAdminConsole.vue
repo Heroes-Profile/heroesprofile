@@ -117,6 +117,23 @@
                 </td>
               </tr>
               <tr>
+                <td class="py-2 px-3 text-sm">Project</td>
+                <td class="py-2 px-3">
+                  <!-- Linked only when it already starts with http(s). Whatever else
+                       they typed is shown as text: it is stored verbatim, and an
+                       href is not the place to find out what a stranger put in it. -->
+                  <a
+                    v-if="linkableWebsite"
+                    class="link"
+                    :href="linkableWebsite"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >{{ detail.account.website }}</a>
+                  <template v-else-if="detail.account.website">{{ detail.account.website }}</template>
+                  <template v-else>Not given</template>
+                </td>
+              </tr>
+              <tr>
                 <td class="py-2 px-3 text-sm">Data source</td>
                 <td class="py-2 px-3">{{ detail.account.receives_test_data ? 'Fixtures' : 'Live' }}</td>
               </tr>
@@ -142,6 +159,125 @@
               <tr>
                 <td class="py-2 px-3 text-sm">Stripe customer</td>
                 <td class="py-2 px-3">{{ detail.account.stripe_id || 'None' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="bg-lighten p-6 mb-8">
+          <h2 class="text-lg mb-1">Standing</h2>
+          <p class="text-sm text-gray-medium mb-4">
+            Warn first. A suspension with nothing on record behind it is our word against theirs.
+          </p>
+
+          <div v-if="detail.enforcement.suspended" class="border-l-4 border-red p-3 mb-4">
+            <p class="text-sm mb-1">
+              <strong>{{ detail.enforcement.terminated ? 'Closed' : 'Suspended' }}</strong>
+              since {{ detail.enforcement.since }}.
+            </p>
+            <p class="text-sm text-gray-medium">{{ detail.enforcement.reason }}</p>
+          </div>
+
+          <div v-else-if="detail.enforcement.open_warning" class="border-l-4 border-yellow p-3 mb-4">
+            <p class="text-sm mb-1">
+              <strong>Warned</strong> {{ detail.enforcement.open_warning.sent_at }} &middot; not read yet.
+              <span v-if="detail.enforcement.open_warning.respond_by">
+                Asked to fix by {{ detail.enforcement.open_warning.respond_by }}.
+              </span>
+              <span v-if="detail.enforcement.open_warning.overdue" class="text-yellow">Overdue.</span>
+            </p>
+            <p class="text-sm text-gray-medium">{{ detail.enforcement.open_warning.reason }}</p>
+          </div>
+
+          <p v-else class="text-sm mb-4">In good standing.</p>
+
+          <label class="block text-sm mb-1">What they are told</label>
+          <textarea
+            v-model="actionReason"
+            rows="3"
+            placeholder="Attribution on your overlay is in the About panel. Section 4 asks for it on the same screen as the data."
+            class="w-full p-2 bg-darken mb-3"
+          ></textarea>
+
+          <label class="block text-sm mb-1">
+            Internal notes <span class="text-gray-medium">— never shown to them</span>
+          </label>
+          <textarea
+            v-model="actionNotes"
+            rows="2"
+            placeholder="Where you saw it, call volumes, what was said and when."
+            class="w-full p-2 bg-darken mb-3"
+          ></textarea>
+
+          <label class="block text-sm mb-1">
+            Fix by <span class="text-gray-medium">— warnings only, optional</span>
+          </label>
+          <input v-model="actionRespondBy" type="date" class="p-2 bg-darken mb-4 block" />
+
+          <div class="flex flex-wrap gap-3">
+            <button
+              @click="act('warn')"
+              :disabled="busy"
+              class="transition-colors text-white rounded bg-yellow hover:bg-lyellow py-2 px-4 disabled:bg-gray-medium"
+            >
+              Warn
+            </button>
+            <button
+              v-if="!detail.enforcement.terminated"
+              @click="act('suspend')"
+              :disabled="busy"
+              class="transition-colors text-white rounded bg-red hover:bg-lred py-2 px-4 disabled:bg-gray-medium"
+            >
+              Suspend
+            </button>
+            <button
+              @click="act('terminate')"
+              :disabled="busy"
+              class="transition-colors text-white rounded bg-red hover:bg-lred py-2 px-4 disabled:bg-gray-medium"
+            >
+              Close account
+            </button>
+            <button
+              v-if="detail.enforcement.suspended"
+              @click="act('reinstate')"
+              :disabled="busy"
+              class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4 disabled:bg-gray-medium"
+            >
+              Reinstate
+            </button>
+          </div>
+
+          <p class="text-xs text-gray-medium mt-3">
+            A warning changes nothing about their access. Suspending stops their keys on both
+            sites and leaves billing running. Closing the account also cancels their
+            subscription, and that cannot be restarted for them — they would have to subscribe
+            again themselves.
+          </p>
+
+          <h3 class="text-base mt-6 mb-2">History</h3>
+
+          <p v-if="!detail.history.length" class="text-sm text-gray-medium">Nothing on record.</p>
+
+          <table v-else class="min-w-0 w-full responsive-table">
+            <thead>
+              <tr>
+                <th class="py-2 px-3 text-left text-sm">When</th>
+                <th class="py-2 px-3 text-left text-sm">Action</th>
+                <th class="py-2 px-3 text-left text-sm">Told them</th>
+                <th class="py-2 px-3 text-left text-sm">Notes</th>
+                <th class="py-2 px-3 text-left text-sm">By</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in detail.history" :key="row.id">
+                <td class="py-2 px-3">{{ row.at }}</td>
+                <td class="py-2 px-3">
+                  {{ row.action }}
+                  <span v-if="row.acknowledged_at" class="text-gray-medium">— read {{ row.acknowledged_at }}</span>
+                </td>
+                <td class="py-2 px-3">{{ row.reason || '—' }}</td>
+                <td class="py-2 px-3">{{ row.notes || '—' }}</td>
+                <td class="py-2 px-3">{{ row.by || '—' }}</td>
               </tr>
             </tbody>
           </table>
@@ -218,7 +354,17 @@ export default {
       busy: false,
       error: null,
       notice: null,
+      actionReason: '',
+      actionNotes: '',
+      actionRespondBy: '',
     }
+  },
+  computed: {
+    linkableWebsite(){
+      const website = this.detail?.account?.website;
+
+      return /^https?:\/\//i.test(website || '') ? website : null;
+    },
   },
   mounted(){
     this.loadMetrics();
@@ -261,6 +407,8 @@ export default {
     async load(id){
       this.error = null;
       this.notice = null;
+      // Text typed against the last account must not follow you to the next one.
+      this.clearAction();
 
       try {
         const response = await this.$axios.get('/api/v1/admin/accounts/' + id);
@@ -302,6 +450,73 @@ export default {
       } finally {
         this.busy = false;
       }
+    },
+    // Every rung takes effect the moment it is pressed, and closing an account
+    // cancels a subscription nobody here can restart — so each one asks first.
+    confirmationFor(action){
+      if(action === 'warn'){
+        return 'Send this warning? They get an email and a banner. Nothing about their access changes.';
+      }
+
+      if(action === 'suspend'){
+        return 'Suspend this account? Their keys stop working on both sites immediately. Billing keeps running.';
+      }
+
+      if(action === 'terminate'){
+        return 'Close this account? Their keys stop working and their subscription is cancelled immediately. You cannot restart it for them.';
+      }
+
+      return 'Reinstate this account? Their existing keys start working again.';
+    },
+    async act(action){
+      const reason = this.actionReason.trim();
+
+      if(action !== 'reinstate' && !reason){
+        this.error = 'Say what they are being told — the same words go in the email and on their account page.';
+        return;
+      }
+
+      if(!confirm(this.confirmationFor(action))){
+        return;
+      }
+
+      this.busy = true;
+      this.error = null;
+      this.notice = null;
+
+      const payload = { notes: this.actionNotes.trim() || null };
+
+      if(action !== 'reinstate'){
+        payload.reason = reason;
+      }
+
+      if(action === 'warn' && this.actionRespondBy){
+        payload.respond_by = this.actionRespondBy;
+      }
+
+      try {
+        const response = await this.$axios.post('/api/v1/admin/accounts/' + this.detail.account.id + '/' + action, payload);
+
+        this.detail.enforcement = response.data.enforcement;
+        this.detail.history = response.data.history;
+        this.clearAction();
+
+        this.notice = {
+          warn: 'Warning sent.',
+          suspend: 'Account suspended and told why.',
+          terminate: 'Account closed.',
+          reinstate: 'Account reinstated.',
+        }[action];
+      } catch (error) {
+        this.error = this.messageFrom(error);
+      } finally {
+        this.busy = false;
+      }
+    },
+    clearAction(){
+      this.actionReason = '';
+      this.actionNotes = '';
+      this.actionRespondBy = '';
     },
     messageFrom(error){
       return (error.response && error.response.data && error.response.data.error)

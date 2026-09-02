@@ -38,6 +38,20 @@ class EnforceApiQuota
             return $this->error('unauthenticated', 'A valid API key is required.', 401);
         }
 
+        // Ahead of everything else on purpose — ahead of the admin bypass, and ahead
+        // of the fixture path. A suspended account handed sample data would read the
+        // suspension as an outage, and this has to be an answer they cannot mistake
+        // for one. Its own code, too: `subscription_inactive` would tell an
+        // integrator to go and check their billing.
+        if ($context->isSuspended()) {
+            return $this->error(
+                $context->isTerminated() ? 'account_terminated' : 'account_suspended',
+                $context->suspensionMessage(),
+                403,
+                $endpoint
+            );
+        }
+
         // An admin exercising their grant is not metered: exercising every
         // endpoint to check it works would otherwise spend a real allowance, and
         // there is no one to bill. Entitlement, plan and quota are all skipped;

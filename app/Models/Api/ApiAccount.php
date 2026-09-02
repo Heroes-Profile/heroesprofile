@@ -26,6 +26,7 @@ class ApiAccount extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'timezone',
+        'website',
     ];
 
     protected $hidden = [
@@ -39,6 +40,7 @@ class ApiAccount extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
         'trial_ends_at' => 'datetime',
         'terms_accepted_at' => 'datetime',
+        'suspended_at' => 'datetime',
         'last_read_announcements_at' => 'datetime',
         'migrated' => 'boolean',
         'test_mode' => 'boolean',
@@ -49,6 +51,12 @@ class ApiAccount extends Authenticatable implements MustVerifyEmail
 
     /** Cashier subscription name. The old site used 'default' too. */
     public const SUBSCRIPTION = 'default';
+
+    /** Reversible. Access stops; billing keeps running. */
+    public const SUSPENSION = 'suspension';
+
+    /** Permanent. Access stops and the subscription is cancelled outright. */
+    public const TERMINATION = 'termination';
 
     /** Comped access flags, granted by hand per partner or esports org. */
     public const APPROVAL_COLUMNS = [
@@ -141,6 +149,37 @@ class ApiAccount extends Authenticatable implements MustVerifyEmail
         $cents = $this->patreonAccount?->currently_entitled_amount_cents;
 
         return $cents === null ? null : (int) $cents;
+    }
+
+    /**
+     * Access withdrawn, whether reversibly or not.
+     *
+     * Deliberately one question. Every gate treats the two the same — what differs
+     * is what the customer is told and whether they can be reinstated.
+     */
+    public function isSuspended(): bool
+    {
+        return $this->suspended_at !== null;
+    }
+
+    public function isTerminated(): bool
+    {
+        return $this->isSuspended() && $this->suspension_type === self::TERMINATION;
+    }
+
+    /** Every action ever taken against this account, newest first. */
+    public function actions()
+    {
+        return $this->hasMany(ApiAccountAction::class, 'api_account_id', 'id')->latest('created_at');
+    }
+
+    /** The warning still sitting on their account, if any. */
+    public function unacknowledgedWarning(): ?ApiAccountAction
+    {
+        return ApiAccountAction::where('api_account_id', $this->id)
+            ->unacknowledgedWarnings()
+            ->latest('created_at')
+            ->first();
     }
 
     /** Whether this account has been granted admin. Set in the database only. */

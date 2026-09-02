@@ -60,15 +60,27 @@ Route::prefix('v1')->middleware(['api', 'cloud.tasks'])->group(function () {
 });
 
 Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function () {
-    Route::post('account/keys', [ApiKeyController::class, 'store']);
+    // Handing a suspended account a working key, or taking its money for access it
+    // does not have, are the two things the portal must not do. Revoking a key,
+    // cancelling a subscription and reading invoices all stay open — see
+    // BlockSuspendedApiAccount.
+    Route::post('account/keys', [ApiKeyController::class, 'store'])->middleware('blockSuspendedApi');
     Route::post('account/keys/revoke', [ApiKeyController::class, 'revoke']);
-    Route::post('account/test-mode', [ApiAccountController::class, 'setTestMode']);
+    Route::post('account/test-mode', [ApiAccountController::class, 'setTestMode'])->middleware('blockSuspendedApi');
     Route::post('account/admin-mode', [ApiAccountController::class, 'setAdminMode']);
-    Route::post('account/migrate', [ApiAccountController::class, 'migrate']);
+    Route::post('account/migrate', [ApiAccountController::class, 'migrate'])->middleware('blockSuspendedApi');
+
+    // Dismissing the warning banner. The timestamp it writes is what shows notice
+    // was given, so it stays available to a suspended account too.
+    Route::post('account/warning/acknowledge', [ApiAccountController::class, 'acknowledgeWarning']);
+
+    // Not blocked while suspended: pointing us at the surface they have just fixed
+    // is part of getting reinstated.
+    Route::post('account/website', [ApiAccountController::class, 'setWebsite']);
 
     Route::post('account/billing/setup-intent', [BillingController::class, 'setupIntent']);
     Route::post('account/billing/payment-method', [BillingController::class, 'savePaymentMethod']);
-    Route::post('account/billing/subscribe', [BillingController::class, 'subscribe']);
+    Route::post('account/billing/subscribe', [BillingController::class, 'subscribe'])->middleware('blockSuspendedApi');
     Route::post('account/billing/cancel', [BillingController::class, 'cancel']);
     Route::post('account/billing/resume', [BillingController::class, 'resume']);
     Route::get('account/billing/invoices', [BillingController::class, 'invoices']);
@@ -78,6 +90,14 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
         Route::post('accounts/search', [AdminConsoleController::class, 'search']);
         Route::get('accounts/{id}', [AdminConsoleController::class, 'account']);
         Route::post('accounts/{id}/flag', [AdminConsoleController::class, 'setFlag']);
+
+        // The enforcement ladder. Separate routes rather than one action parameter:
+        // terminating cancels a subscription, and that is not something a mistyped
+        // string should be able to reach.
+        Route::post('accounts/{id}/warn', [AdminConsoleController::class, 'warn']);
+        Route::post('accounts/{id}/suspend', [AdminConsoleController::class, 'suspend']);
+        Route::post('accounts/{id}/terminate', [AdminConsoleController::class, 'terminate']);
+        Route::post('accounts/{id}/reinstate', [AdminConsoleController::class, 'reinstate']);
         Route::get('activity', [AdminConsoleController::class, 'activity']);
         Route::get('metrics', [AdminConsoleController::class, 'metrics']);
     });

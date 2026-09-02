@@ -101,6 +101,25 @@ return new class extends Migration
             // $10 supporter could supply as many keys as they cared to register.
             $table->unsignedBigInteger('patreon_accounts_id')->nullable();
             $table->unique('patreon_accounts_id', 'users_patreon_accounts_id_unique');
+
+            // Where the account's integration can be seen. Self-declared, optional,
+            // and stored exactly as typed — a note about where to look rather than a
+            // URL anything resolves. The only way to check an attribution complaint
+            // without asking them where to find it.
+            $table->string('website')->nullable();
+
+            // Enforcement state. Denormalised here rather than derived from
+            // `api_account_actions` because both sites read it on the hot path: the
+            // resolver already joins this table, and the old site asks for it in raw
+            // SQL on every request. The actions table holds the history.
+            //
+            // `suspension_type` is 'suspension' or 'termination'; the reason is shown
+            // to the customer verbatim, in the API error, the portal banner and the
+            // email, so the three cannot tell different stories.
+            $table->timestamp('suspended_at')->nullable()->index();
+            $table->string('suspension_type', 20)->nullable();
+            $table->text('suspension_reason')->nullable();
+            $table->unsignedInteger('suspended_by')->nullable();
         });
     }
 

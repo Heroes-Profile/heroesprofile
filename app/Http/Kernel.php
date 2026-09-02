@@ -4,6 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\BlockBannedIPs;
+use App\Http\Middleware\BlockSuspendedApiAccount;
 use App\Http\Middleware\CheckIfPatreonSupporter;
 use App\Http\Middleware\CheckIfPrivateProfilePage;
 use App\Http\Middleware\CommunitySupportRedirect;
@@ -139,6 +140,7 @@ class Kernel extends HttpKernel
         'ensureApiAccountAuth' => EnsureApiAccountAuthenticated::class,
         'ensureApiAdmin' => EnsureApiAdmin::class,
         'requireApiTerms' => RequireApiTermsAcceptance::class,
+        'blockSuspendedApi' => BlockSuspendedApiAccount::class,
         'api.quota' => EnforceApiQuota::class,
         'api.fixtures' => ServeApiFixtures::class,
         'api.ngs' => RequireNgsAccess::class,
