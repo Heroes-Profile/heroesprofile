@@ -5,13 +5,18 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Api\Account\ApiKeyController;
 use App\Http\Controllers\Controller;
 use App\Models\Api\ApiAccount;
+use App\Models\Api\ApiAccountAction;
 use App\Models\Api\ApiKey;
 use App\Models\Api\CashierSubscription;
+use App\Services\Api\AccountEnforcementService;
 use App\Services\Api\ApiKeyResolver;
 use App\Services\Api\PlanService;
 use App\Services\Api\UsageService;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class AdminConsoleController extends Controller
@@ -19,6 +24,8 @@ class AdminConsoleController extends Controller
     private const SEARCH_LIMIT = 25;
 
     private const ACTIVITY_LIMIT = 50;
+
+    private const HISTORY_LIMIT = 50;
 
     public function show()
     {
@@ -75,6 +82,9 @@ class AdminConsoleController extends Controller
                 'name' => $account->name,
                 'email' => $account->email,
                 'email_verified_at' => $account->email_verified_at?->toDateTimeString(),
+                // Whatever they typed. The console links it only if it already looks
+                // like an http(s) address, and shows it as text otherwise.
+                'website' => $account->website,
                 'migrated' => $account->hasMigrated(),
                 'test_mode' => $account->inTestMode(),
                 'receives_test_data' => $account->receivesTestData(),
@@ -101,7 +111,7 @@ class AdminConsoleController extends Controller
                 ->all(),
             'usage' => $usage->forAccount($account),
             'subscription_issue' => $context?->unresolvedMessage(),
-        ]);
+        ] + $this->standing($account));
     }
 
     /**
@@ -128,6 +138,168 @@ class AdminConsoleController extends Controller
         $keys->forgetAccount($account->id);
 
         return response()->json(['flags' => $this->flagsFor($account)]);
+    }
+
+    /**
+     * Notice, not enforcement. Their keys keep working — this is the rung for a
+     * licence condition being missed rather than abused, and the row it writes is
+     * what makes a later suspension defensible.
+     */
+    public function warn(Request $request, int $id, AccountEnforcementService $enforcement)
+    {
+        $validated = $request->validate([
+            'reason' => ['required', 'string', 'max:2000'],
+            'notes' => ['nullable', 'string', 'max:2000'],
+            'respond_by' => ['nullable', 'date', 'after:today'],
+        ]);
+
+        $account = $this->target($id);
+
+        if (! $account instanceof ApiAccount) {
+            return $account;
+        }
+
+        $enforcement->warn(
+            $account,
+            $validated['reason'],
+            $validated['notes'] ?? null,
+            isset($validated['respond_by']) ? Carbon::parse($validated['respond_by']) : null,
+            $this->actorId(),
+        );
+
+        return response()->json($this->standing($account->refresh()));
+    }
+
+    /** Reversible. Keys stop working on both sites; the subscription keeps running. */
+    public function suspend(Request $request, int $id, AccountEnforcementService $enforcement)
+    {
+        $validated = $request->validate([
+            'reason' => ['required', 'string', 'max:2000'],
+            'notes' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $account = $this->target($id);
+
+        if (! $account instanceof ApiAccount) {
+            return $account;
+        }
+
+        $enforcement->suspend($account, $validated['reason'], $validated['notes'] ?? null, $this->actorId());
+
+        return response()->json($this->standing($account->refresh()));
+    }
+
+    /**
+     * Permanent, and it cancels their subscription. Not reachable by passing a string
+     * to the suspend route for exactly that reason.
+     */
+    public function terminate(Request $request, int $id, AccountEnforcementService $enforcement)
+    {
+        $validated = $request->validate([
+            'reason' => ['required', 'string', 'max:2000'],
+            'notes' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $account = $this->target($id);
+
+        if (! $account instanceof ApiAccount) {
+            return $account;
+        }
+
+        $enforcement->terminate($account, $validated['reason'], $validated['notes'] ?? null, $this->actorId());
+
+        return response()->json($this->standing($account->refresh()));
+    }
+
+    public function reinstate(Request $request, int $id, AccountEnforcementService $enforcement)
+    {
+        $validated = $request->validate([
+            'notes' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $account = $this->target($id);
+
+        if (! $account instanceof ApiAccount) {
+            return $account;
+        }
+
+        if (! $account->isSuspended()) {
+            return response()->json(['error' => 'That account is not suspended.'], 409);
+        }
+
+        $enforcement->reinstate($account, $validated['notes'] ?? null, $this->actorId());
+
+        return response()->json($this->standing($account->refresh()));
+    }
+
+    /**
+     * The account an action names, or the response explaining why it cannot be
+     * actioned. Admins are refused: suspending one locks the console's own door, and
+     * an admin who needs disciplining needs their grant removed, not their key.
+     */
+    private function target(int $id): ApiAccount|JsonResponse
+    {
+        $account = ApiAccount::find($id);
+
+        if ($account === null) {
+            return response()->json(['error' => 'No such account.'], 404);
+        }
+
+        if ($account->isAdmin()) {
+            return response()->json(['error' => 'Administrator accounts cannot be actioned here.'], 422);
+        }
+
+        return $account;
+    }
+
+    /** The admin pressing the button, recorded on every action. */
+    private function actorId(): ?int
+    {
+        return Auth::guard('api_web')->id();
+    }
+
+    /**
+     * Where the account stands and how it got there. Returned by every action so the
+     * console shows the result without a second fetch.
+     */
+    private function standing(ApiAccount $account): array
+    {
+        $history = ApiAccountAction::where('api_account_id', $account->id)
+            ->orderByDesc('created_at')
+            ->limit(self::HISTORY_LIMIT)
+            ->get();
+
+        $actors = ApiAccount::whereIn('id', $history->pluck('performed_by')->filter()->unique())
+            ->pluck('name', 'id');
+
+        $warning = $account->unacknowledgedWarning();
+
+        return [
+            'enforcement' => [
+                'suspended' => $account->isSuspended(),
+                'terminated' => $account->isTerminated(),
+                'reason' => $account->suspension_reason,
+                'since' => $account->suspended_at?->toDateTimeString(),
+                // Open means sent and not yet dismissed. Overdue is informational —
+                // nothing escalates without someone pressing a button.
+                'open_warning' => $warning === null ? null : [
+                    'reason' => $warning->reason,
+                    'respond_by' => $warning->respond_by?->toDateString(),
+                    'overdue' => $warning->isOverdue(),
+                    'sent_at' => $warning->created_at?->toDateTimeString(),
+                ],
+            ],
+            'history' => $history->map(fn (ApiAccountAction $row) => [
+                'id' => $row->id,
+                'action' => $row->action,
+                'reason' => $row->reason,
+                'notes' => $row->notes,
+                'respond_by' => $row->respond_by?->toDateString(),
+                'acknowledged_at' => $row->acknowledged_at?->toDateTimeString(),
+                'by' => $actors[$row->performed_by] ?? null,
+                'at' => $row->created_at?->toDateTimeString(),
+            ])->all(),
+        ];
     }
 
     /**

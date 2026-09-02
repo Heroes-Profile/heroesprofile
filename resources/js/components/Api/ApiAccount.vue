@@ -3,6 +3,48 @@
     <page-heading :infoText1="infoText" heading="Account"></page-heading>
 
     <div class="mx-auto max-w-[1000px] p-4">
+      <!-- Above everything else: if access has been withdrawn, nothing further down
+           the page explains why the keys stopped working. -->
+      <div
+        v-if="currentStanding"
+        class="bg-lighten border-l-4 p-6 mb-8"
+        :class="currentStanding.type === 'warning' ? 'border-yellow' : 'border-red'"
+      >
+        <h2 class="text-lg mb-2">{{ standingHeading }}</h2>
+
+        <p class="text-sm mb-3">{{ currentStanding.reason }}</p>
+
+        <p v-if="currentStanding.respond_by" class="text-sm text-yellow mb-3">
+          Please sort this out by {{ currentStanding.respond_by }}.
+        </p>
+
+        <p v-if="currentStanding.type === 'warning'" class="text-sm text-gray-medium mb-3">
+          Nothing has been restricted. Your keys are working normally.
+        </p>
+        <p v-else-if="currentStanding.type === 'suspension'" class="text-sm text-gray-medium mb-3">
+          Your keys have stopped working. Your subscription is still running and nothing has
+          been deleted — access comes straight back once this is resolved.
+        </p>
+        <p v-else class="text-sm text-gray-medium mb-3">
+          Your keys have stopped working and your subscription has been cancelled. Section 3
+          of the terms asks you to stop using data you have already retrieved.
+        </p>
+
+        <p class="text-sm text-gray-medium">
+          Write to <a class="link" href="mailto:zemill@heroesprofile.com">zemill@heroesprofile.com</a>
+          if you think this is wrong, or you are not sure what we are asking for.
+        </p>
+
+        <button
+          v-if="currentStanding.dismissible"
+          @click="dismissStanding"
+          :disabled="dismissing"
+          class="mt-4 transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4 disabled:bg-gray-medium"
+        >
+          {{ dismissing ? 'Saving…' : 'Got it' }}
+        </button>
+      </div>
+
       <div v-if="receivesTestData" class="bg-lighten border-l-4 border-yellow p-4 mb-8">
         <h2 class="text-lg mb-2">You Are Receiving Test Data</h2>
         <p class="text-sm mb-2">
@@ -98,6 +140,35 @@
       <div v-if="linkerror" class="bg-red p-3 mb-4">{{ linkerror }}</div>
       <div v-if="notice" class="bg-teal p-3 mb-4">{{ notice }}</div>
       <div v-if="error" class="bg-red p-3 mb-4">{{ error }}</div>
+
+      <div class="bg-lighten p-6 mb-8">
+        <h2 class="text-lg mb-2">Your Project</h2>
+        <p class="text-sm text-gray-medium mb-4">
+          Where can we see what you have built? A site, an overlay, a bot's page — anywhere
+          our data ends up. Optional, and you can change it whenever. It helps us credit you,
+          and it means any question about attribution starts with us looking at the right
+          place rather than asking you where to find it.
+        </p>
+
+        <div class="flex flex-wrap gap-2">
+          <input
+            v-model="website"
+            @keyup.enter="saveWebsite"
+            type="text"
+            placeholder="https://your-project.com"
+            class="flex-1 min-w-[200px] p-2 bg-darken"
+          />
+          <button
+            @click="saveWebsite"
+            :disabled="savingWebsite"
+            class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4 disabled:bg-gray-medium"
+          >
+            {{ savingWebsite ? 'Saving…' : 'Save' }}
+          </button>
+        </div>
+
+        <p v-if="websiteSaved" class="text-sm text-lteal mt-2">Saved.</p>
+      </div>
 
       <div class="bg-lighten p-6 mb-8">
         <h2 class="text-lg mb-4">Patreon</h2>
@@ -217,6 +288,12 @@ export default {
       type: String,
       default: null,
     },
+    // A warning, suspension or termination — at most one, and null when the account
+    // is in good standing.
+    standing: {
+      type: Object,
+      default: null,
+    },
     linkerror: {
       type: String,
       default: null,
@@ -237,6 +314,11 @@ export default {
       receivesTestData: this.account.receives_test_data,
       migrated: this.account.migrated,
       activating: false,
+      currentStanding: this.standing,
+      dismissing: false,
+      website: this.account.website || '',
+      savingWebsite: false,
+      websiteSaved: false,
     }
   },
   computed: {
@@ -244,8 +326,51 @@ export default {
     activateHeading(){
       return this.account.has_legacy_token ? 'Migrate Account' : 'Activate Live Data';
     },
+    standingHeading(){
+      if(!this.currentStanding){
+        return '';
+      }
+
+      if(this.currentStanding.type === 'warning'){
+        return 'Action Needed';
+      }
+
+      return this.currentStanding.type === 'termination'
+        ? 'Your API Access Has Been Closed'
+        : 'Your API Access Is Suspended';
+    },
   },
   methods: {
+    async saveWebsite(){
+      this.savingWebsite = true;
+      this.error = null;
+      this.websiteSaved = false;
+
+      try {
+        const response = await this.$axios.post('/api/v1/account/website', { website: this.website });
+        // Echoed back so the box shows what was actually stored, trimming included.
+        this.website = response.data.website || '';
+        this.websiteSaved = true;
+      } catch (error) {
+        this.error = error.response?.data?.error || 'Could not save that. Please try again.';
+      } finally {
+        this.savingWebsite = false;
+      }
+    },
+    // Only warnings can be dismissed. The banner clears optimistically — a failed
+    // write means they see it again next visit, which is the harmless direction.
+    async dismissStanding(){
+      this.dismissing = true;
+
+      try {
+        await this.$axios.post('/api/v1/account/warning/acknowledge');
+        this.currentStanding = null;
+      } catch (error) {
+        this.error = 'Could not dismiss that. Please try again.';
+      } finally {
+        this.dismissing = false;
+      }
+    },
     async unlinkPatreon(){
       this.error = null;
 

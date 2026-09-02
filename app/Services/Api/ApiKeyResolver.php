@@ -53,6 +53,9 @@ class ApiKeyResolver
             // Coalesced: entries cached before these fields existed outlive a deploy.
             subscriptionUnresolved: $row['subscription_unresolved'] ?? false,
             unresolvedReason: $row['unresolved_reason'] ?? null,
+            suspended: $row['suspended'] ?? false,
+            suspensionType: $row['suspension_type'] ?? null,
+            suspensionReason: $row['suspension_reason'] ?? null,
         );
     }
 
@@ -91,6 +94,9 @@ class ApiKeyResolver
             // Coalesced: entries cached before these fields existed outlive a deploy.
             subscriptionUnresolved: $row['subscription_unresolved'] ?? false,
             unresolvedReason: $row['unresolved_reason'] ?? null,
+            suspended: $row['suspended'] ?? false,
+            suspensionType: $row['suspension_type'] ?? null,
+            suspensionReason: $row['suspension_reason'] ?? null,
         );
     }
 
@@ -190,6 +196,9 @@ class ApiKeyResolver
             ->select(array_merge([
                 'api_keys.id as key_id',
                 'users.id as account_id',
+                'users.suspended_at',
+                'users.suspension_type',
+                'users.suspension_reason',
                 // Distinguishes "no subscription at all" from "subscription whose
                 // plan did not resolve". `stripe_status` cannot do that job — a
                 // handful of legacy rows carry a null status.
@@ -273,6 +282,12 @@ class ApiKeyResolver
         return [
             'key_id' => $row->key_id,
             'account_id' => $row->account_id,
+            // Carried in the cached row rather than read off the account model, so a
+            // suspension costs the hot path nothing. `forgetAccount()` is what makes
+            // it take effect immediately; without that call it lags by the TTL.
+            'suspended' => $row->suspended_at !== null,
+            'suspension_type' => $row->suspension_type,
+            'suspension_reason' => $row->suspension_reason,
             'plan_ids' => array_values(array_unique($planIds)),
             'plan' => $planName,
             // Matches Cashier's own `valid()`: trialing counts, and past_due does

@@ -28,7 +28,45 @@ class ApiKeyContext
         public readonly bool $comped,
         public readonly bool $subscriptionUnresolved = false,
         public readonly ?string $unresolvedReason = null,
+        public readonly bool $suspended = false,
+        public readonly ?string $suspensionType = null,
+        public readonly ?string $suspensionReason = null,
     ) {}
+
+    /**
+     * Access withdrawn for conduct. Nothing to do with billing, and answered before
+     * entitlement is even looked at.
+     */
+    public function isSuspended(): bool
+    {
+        return $this->suspended;
+    }
+
+    public function isTerminated(): bool
+    {
+        return $this->suspended && $this->suspensionType === ApiAccount::TERMINATION;
+    }
+
+    /**
+     * What the caller is told, in the same words as the email and the portal banner.
+     *
+     * The reason is always included. A refusal that will not say why leaves the
+     * integrator to guess, and they guess "outage" and retry forever.
+     */
+    public function suspensionMessage(): ?string
+    {
+        if (! $this->suspended) {
+            return null;
+        }
+
+        $reason = trim((string) $this->suspensionReason);
+
+        $opening = $this->isTerminated()
+            ? 'This account has been closed for breaching the API terms.'
+            : 'This account is suspended for breaching the API terms.';
+
+        return trim($opening.' '.$reason).' Sign in at heroesprofile.com/Api/Account or write to zemill@heroesprofile.com.';
+    }
 
     /**
      * Why entitlement could not be read, in words a customer can act on.

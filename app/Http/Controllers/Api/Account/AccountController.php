@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Account;
 use App\Http\Controllers\Controller;
 use App\Models\Api\ApiAccount;
 use App\Models\Api\ApiKey;
+use App\Services\Api\AccountEnforcementService;
 use App\Services\Api\PlanService;
 use App\Services\Api\UsageService;
 use Illuminate\Http\Request;
@@ -37,6 +38,7 @@ class AccountController extends Controller
                 // whatever `test_mode` says, so offering the choice would be a lie.
                 'can_use_live_data' => $usage->planIdsFor($account) !== [],
                 'has_legacy_token' => $this->hasLegacyToken($account),
+                'website' => $account->website,
                 'admin' => $account->isAdmin(),
                 'admin_mode' => $account->actingAsAdmin(),
                 'patreon_linked' => $account->patreon_accounts_id !== null,
@@ -49,7 +51,75 @@ class AccountController extends Controller
             ],
             'keys' => $keys,
             'usage' => $usage->forAccount($account),
+            'standing' => $this->standingFor($account),
         ]);
+    }
+
+    /**
+     * Where their integration can be seen. Optional, and clearable by submitting an
+     * empty field.
+     *
+     * Stored exactly as typed — no scheme added, no format rejected. It is a note to
+     * us about where to look, not a URL we resolve, and an overlay or a bot may not
+     * have an address that satisfies a URL validator at all. The console decides for
+     * itself what is safe to turn into a link.
+     */
+    public function setWebsite(Request $request)
+    {
+        $validated = $request->validate([
+            'website' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $account = Auth::guard('api_web')->user();
+        $website = trim((string) ($validated['website'] ?? ''));
+
+        $account->forceFill(['website' => $website === '' ? null : $website])->save();
+
+        return response()->json(['website' => $account->website]);
+    }
+
+    /** Dismissing the warning banner. The timestamp is the evidence it was read. */
+    public function acknowledgeWarning(AccountEnforcementService $enforcement)
+    {
+        $account = Auth::guard('api_web')->user();
+
+        $enforcement->acknowledgeWarning($account);
+
+        return response()->json(['acknowledged' => true]);
+    }
+
+    /**
+     * What the account is being told, if anything. At most one: a withdrawal of
+     * access outranks a warning, and stacking the two would bury the one that
+     * actually stopped their keys working.
+     *
+     * The wording is the reason an admin typed, shown here exactly as it was sent by
+     * email, so the two cannot tell different stories.
+     */
+    private function standingFor(ApiAccount $account): ?array
+    {
+        if ($account->isSuspended()) {
+            return [
+                'type' => $account->isTerminated() ? 'termination' : 'suspension',
+                'reason' => $account->suspension_reason,
+                'since' => $account->suspended_at?->toFormattedDateString(),
+                'dismissible' => false,
+            ];
+        }
+
+        $warning = $account->unacknowledgedWarning();
+
+        if ($warning === null) {
+            return null;
+        }
+
+        return [
+            'type' => 'warning',
+            'reason' => $warning->reason,
+            'since' => $warning->created_at?->toFormattedDateString(),
+            'respond_by' => $warning->respond_by?->toFormattedDateString(),
+            'dismissible' => true,
+        ];
     }
 
     /**
