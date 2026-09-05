@@ -46,6 +46,11 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 # Enable site and Apache modules
 RUN a2ensite 000-default && a2enmod rewrite
 
+# PHP defaults to a 2M upload cap, well under the 10M the uploader advertises.
+# Over that, the file never reaches PHP and the request looks like it carried none.
+RUN echo "upload_max_filesize=10M" > /usr/local/etc/php/conf.d/custom.ini \
+    && echo "post_max_size=12M" >> /usr/local/etc/php/conf.d/custom.ini
+
 RUN echo "LimitRequestFieldSize 8192" >> /etc/apache2/apache2.conf
 
 # Open port 8000
