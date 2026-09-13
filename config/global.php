@@ -59,6 +59,8 @@ return [
     'xalatath_event' => [
         'enabled' => env('XALATATH_EVENT_ENABLED', false),
         'stage_thresholds' => env('XALATATH_EVENT_STAGE_THRESHOLDS', '1000,5000,15000,30000,50000'),
+        // Testing only (ignored in production): show the hidden eye on every page.
+        'eye_every_page' => env('XALATATH_EYE_EVERY_PAGE', false),
     ],
 
     /*

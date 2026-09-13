@@ -277,11 +277,14 @@ class GlobalDataService
             return null;
         }
 
-        if ($request->session()->get('void_eye_pending')) {
+        // Testing: XALATATH_EYE_EVERY_PAGE shows it on every page, even after it's been found. Never in production.
+        $everyPage = ! app()->isProduction() && filter_var(config('global.xalatath_event.eye_every_page'), FILTER_VALIDATE_BOOLEAN);
+
+        if (! $everyPage && $request->session()->get('void_eye_pending')) {
             return null;
         }
 
-        if (Auth::check() && $this->hasClaimedVoidEye(Auth::user())) {
+        if (! $everyPage && Auth::check() && $this->hasClaimedVoidEye(Auth::user())) {
             return null;
         }
 
@@ -291,7 +294,7 @@ class GlobalDataService
         $hash = hash_hmac('sha256', $visitor.'|'.$today.'|'.strtolower($path), config('app.key'));
 
         // Roughly 1 in 12 pages for this visitor today.
-        if (hexdec(substr($hash, 0, 6)) % 12 !== 0) {
+        if (! $everyPage && hexdec(substr($hash, 0, 6)) % 12 !== 0) {
             return null;
         }
 

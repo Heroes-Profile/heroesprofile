@@ -519,6 +519,13 @@ thead{border-color:transparent;}
 }
 .void-hidden-eye:hover{ opacity: 1; animation-play-state: paused; }
 .void-eye-found-icon{ color: #a855f7; text-shadow: 0 0 18px rgba(124, 58, 237, 0.9); }
+.void-eye-found-enter-active, .void-eye-found-leave-active{ transition: opacity 0.15s ease; }
+.void-eye-found-enter-from, .void-eye-found-leave-to{ opacity: 0; }
+@keyframes void-eye-claiming{
+  0%, 100%{ transform: scale(1); filter: brightness(1); }
+  50%{ transform: scale(1.08); filter: brightness(1.35); }
+}
+.void-eye-claiming{ animation: void-eye-claiming 0.9s ease-in-out infinite; }
 .void-eye-flair{ color: #a855f7; }
 /* The logo's eye as an icon, usable anywhere a Font Awesome class goes.
    The image URL is set in layouts/app.blade.php so it resolves against the site, not the Vite dev server. */
@@ -532,7 +539,8 @@ thead{border-color:transparent;}
 }
 
 /* Stage-up popup (VoidStageUp.vue) */
-.void-stage-up{ background: rgba(8, 3, 18, 0.85); backdrop-filter: blur(6px); }
+/* No backdrop blur: a full-screen blur under the animated reveal made the popup stutter */
+.void-stage-up{ background: rgba(8, 3, 18, 0.94); }
 .void-stage-up-card{
   background: radial-gradient(circle at 50% 30%, #3a1470 0%, #120726 75%);
   border: 1px solid #5b21b6;

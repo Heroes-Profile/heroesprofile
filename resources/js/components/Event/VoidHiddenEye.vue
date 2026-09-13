@@ -8,7 +8,7 @@
       aria-label="A strange eye"
       @click="claim"
     >
-      <img src="/images/event/xalatath/void-eye.svg" alt="" class="w-12 h-12 block" />
+      <img src="/images/event/xalatath/void-eye.svg" alt="" class="w-24 h-24 block" />
     </button>
     <void-eye-found v-if="result" :status="result" @closed="result = null"></void-eye-found>
   </div>
@@ -36,13 +36,15 @@ export default {
         return;
       }
       this.claiming = true;
+      // Respond on click; the popup fills in once the server answers.
+      this.found = true;
+      this.result = 'claiming';
       try {
         const response = await this.$axios.post('/Event/Xalatath/Eye', { token: this.spot.token });
-        this.found = true;
         this.result = response.data.status;
       } catch (error) {
-        // Expired or already used; let it vanish quietly.
-        this.found = true;
+        // Expired or already used; close quietly.
+        this.result = null;
       } finally {
         this.claiming = false;
       }

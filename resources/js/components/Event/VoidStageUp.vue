@@ -2,9 +2,10 @@
   <transition name="void-stage-up">
     <div v-if="visible" class="void-stage-up fixed inset-0 z-[9999] flex items-center justify-center px-6">
       <div :class="['void-stage-up-card relative text-center text-white rounded-lg px-8 py-8 max-w-lg w-full', { 'void-stage-up-shake': shaking }]">
-        <div class="void-stage-up-logo relative mx-auto mb-6 w-56 md:w-64">
-          <img class="block w-full" :src="frame(from)" alt="" />
-          <img :class="['absolute inset-0 block w-full void-stage-up-reveal', { 'is-revealed': revealed }]" :src="frame(to)" alt="" />
+        <!-- Fixed aspect box (frames are 1000x1042) so nothing jumps while the images load -->
+        <div class="void-stage-up-logo relative mx-auto mb-6 w-56 md:w-64 aspect-[1000/1042]">
+          <img class="absolute inset-0 block w-full h-full" :src="frame(from)" alt="" />
+          <img :class="['absolute inset-0 block w-full h-full void-stage-up-reveal', { 'is-revealed': revealed }]" :src="frame(to)" alt="" />
         </div>
         <p class="text-sm uppercase tracking-widest opacity-75 mb-2">{{ away ? 'While you were away' : 'The Void spreads' }}</p>
         <h2 class="font-logo text-3xl md:text-4xl mb-3">Stage {{ to }} of 5</h2>
@@ -68,7 +69,11 @@ export default {
     this.timers.forEach(clearTimeout);
   },
   methods: {
+    // PNG here: the reveal animates over two full frames, and the SVG glow is costly to redraw every frame.
     frame(stage) {
+      return `/images/event/xalatath/xalatath-logo-stage-${stage}.png`;
+    },
+    svgFrame(stage) {
       return `/images/event/xalatath/xalatath-logo-stage-${stage}.svg`;
     },
     onLiveStageUp(event) {
@@ -79,7 +84,7 @@ export default {
       }
       this.play(from, to, false);
     },
-    play(from, to, away) {
+    async play(from, to, away) {
       this.timers.forEach(clearTimeout);
       this.from = from;
       this.to = to;
@@ -88,6 +93,9 @@ export default {
       this.line = LINES[Math.floor(Math.random() * LINES.length)];
       this.visible = true;
 
+      // Don't start the reveal over images that haven't arrived yet.
+      await Promise.all([this.preload(this.frame(from)), this.preload(this.frame(to))]);
+
       const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       this.timers.push(setTimeout(() => {
         this.revealed = true;
@@ -95,7 +103,17 @@ export default {
           this.shaking = true;
           this.timers.push(setTimeout(() => { this.shaking = false; }, 600));
         }
-      }, 700));
+      }, 500));
+    },
+    preload(src) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        const done = () => resolve();
+        img.onload = done;
+        img.onerror = done;
+        setTimeout(done, 1500);
+        img.src = src;
+      });
     },
     close() {
       if (!this.visible) {
@@ -117,7 +135,7 @@ export default {
       this.remember(stage);
 
       document.querySelectorAll('.js-void-logo').forEach((img) => {
-        img.src = this.frame(stage);
+        img.src = this.svgFrame(stage);
       });
       document.querySelectorAll('link[data-void-favicon]').forEach((link) => {
         link.href = link.href.replace(/xalatath-logo-stage-\d/, `xalatath-logo-stage-${stage}`);
