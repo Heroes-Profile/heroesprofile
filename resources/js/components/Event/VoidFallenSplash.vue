@@ -12,19 +12,40 @@ const STORAGE_KEY = 'voidFallenSplashSeen';
 
 export default {
   name: 'VoidFallenSplash',
+  props: {
+    stage: {
+      type: Number,
+      default: 0,
+    },
+  },
   data() {
     return {
       visible: false,
     };
   },
   created() {
-    try {
-      this.visible = !localStorage.getItem(STORAGE_KEY);
-    } catch (e) {
-      this.visible = false;
-    }
+    this.show(this.stage);
+  },
+  mounted() {
+    window.addEventListener('void-stage-changed', this.onStageChanged);
+  },
+  beforeUnmount() {
+    window.removeEventListener('void-stage-changed', this.onStageChanged);
   },
   methods: {
+    onStageChanged(event) {
+      this.show(event.detail.stage);
+    },
+    show(stage) {
+      if (stage < 5) {
+        return;
+      }
+      try {
+        this.visible = !localStorage.getItem(STORAGE_KEY);
+      } catch (e) {
+        this.visible = false;
+      }
+    },
     dismiss() {
       try {
         localStorage.setItem(STORAGE_KEY, '1');

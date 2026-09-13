@@ -44,19 +44,39 @@ const WHISPERS = [
 
 export default {
   name: 'VoidWhispers',
+  props: {
+    stage: {
+      type: Number,
+      default: 0,
+    },
+  },
   data() {
     return {
       current: null,
       timers: [],
+      running: false,
     };
   },
   mounted() {
-    this.schedule(10000);
+    window.addEventListener('void-stage-changed', this.onStageChanged);
+    this.start(this.stage);
   },
   beforeUnmount() {
+    window.removeEventListener('void-stage-changed', this.onStageChanged);
     this.timers.forEach(clearTimeout);
   },
   methods: {
+    onStageChanged(event) {
+      this.start(event.detail.stage);
+    },
+    // Whispers begin at stage 2.
+    start(stage) {
+      if (this.running || stage < 2) {
+        return;
+      }
+      this.running = true;
+      this.schedule(5000);
+    },
     schedule(delay) {
       this.timers.push(setTimeout(() => {
         this.current = WHISPERS[Math.floor(Math.random() * WHISPERS.length)];
@@ -65,7 +85,7 @@ export default {
         this.timers.push(setTimeout(() => {
           this.current = null;
           window.dispatchEvent(new CustomEvent('void-whisper-hide'));
-          this.schedule(10000);
+          this.schedule(30000 + Math.random() * 10000);
         }, 5000));
       }, delay));
     },

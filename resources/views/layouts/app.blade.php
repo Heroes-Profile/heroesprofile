@@ -44,15 +44,15 @@
 
     <!-- Favicons -->
     @if($siteLogo)
-    <link rel="icon" type="image/svg+xml" href="{{ asset($siteLogo.'.svg') }}">
+    <link rel="icon" type="image/svg+xml" href="{{ asset($siteLogo.'.svg') }}" data-void-favicon>
     @else
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     @endif
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset($siteIcon) }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset($siteIcon) }}">
-    <link rel="icon" type="image/png" sizes="96x96" href="{{ asset($siteIcon) }}">
-    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset($siteIcon) }}">
-    <link rel="icon" type="image/png" sizes="512x512" href="{{ asset($siteIcon) }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset($siteIcon) }}" {{ $siteLogo ? 'data-void-favicon' : '' }}>
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset($siteIcon) }}" {{ $siteLogo ? 'data-void-favicon' : '' }}>
+    <link rel="icon" type="image/png" sizes="96x96" href="{{ asset($siteIcon) }}" {{ $siteLogo ? 'data-void-favicon' : '' }}>
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset($siteIcon) }}" {{ $siteLogo ? 'data-void-favicon' : '' }}>
+    <link rel="icon" type="image/png" sizes="512x512" href="{{ asset($siteIcon) }}" {{ $siteLogo ? 'data-void-favicon' : '' }}>
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/logo/heroesprofilelogo.png') }}">
     <meta name="msapplication-TileImage" content="{{ asset('images/logo/heroesprofilelogo.png') }}">
     <meta name="theme-color" content="#000000">
@@ -123,11 +123,11 @@
 
     @if($xalatathEvent)
       <xalatath-scoreboard :event="{{ json_encode($xalatathEvent) }}" :opt-out="{{ json_encode($voidOptOut) }}"></xalatath-scoreboard>
-      @if($voidStage >= 3)
-        <void-glitch></void-glitch>
-      @endif
-      @if($voidStage >= 5)
-        <void-fallen-splash></void-fallen-splash>
+      @if(! $voidOptOut)
+        {{-- Mounted at every stage so a live stage-up can switch them on without a reload. --}}
+        <void-glitch :stage="{{ json_encode($voidStage) }}"></void-glitch>
+        <void-fallen-splash :stage="{{ json_encode($voidStage) }}"></void-fallen-splash>
+        <void-stage-up :stage="{{ json_encode($voidStage) }}"></void-stage-up>
       @endif
     @endif
 
@@ -157,7 +157,7 @@
             <div class="logo ">
               <a class="text-blue-600 hover:text-blue-800 flex justify-center items-center font-logo text-2xl py-5 mx-auto text-center" href="/">
                 Heroes
-                <img class="w-10 mx-2 {{ $siteLogo ? '-translate-y-[8%]' : '' }}" src="{{ $navLogo }}" alt="Heroes Profile Logo" />
+                <img class="w-10 mx-2 {{ $siteLogo ? '-translate-y-[8%] js-void-logo' : '' }}" src="{{ $navLogo }}" alt="Heroes Profile Logo" />
                 Profile
               </a>
             </div>

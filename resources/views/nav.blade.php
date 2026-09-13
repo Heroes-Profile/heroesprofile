@@ -2,7 +2,7 @@
     <div class="flex p-2 px-4 justify-between">
 <a class=" flex items-center font-logo text-2xl md:hidden" href="/">
                 Heroes
-                <img class="w-10 mx-2 {{ !empty($siteLogo) ? '-translate-y-[8%]' : '' }}" src="{{ $navLogo ?? '/images/logo/heroesprofilelogo.png' }}" alt="Heroes Profile Logo" />
+                <img class="w-10 mx-2 {{ !empty($siteLogo) ? '-translate-y-[8%] js-void-logo' : '' }}" src="{{ $navLogo ?? '/images/logo/heroesprofilelogo.png' }}" alt="Heroes Profile Logo" />
                 Profile
         </a>
         <button  id="mobile-toggle" class="md:hidden bg-blue rounded-lg px-2 ">=</button>
@@ -19,7 +19,7 @@
              
             <a class=" flex items-center font-logo text-2xl" href="/">
                 Heroes
-                <img class="w-10 mx-2 {{ !empty($siteLogo) ? '-translate-y-[8%]' : '' }}" src="{{ $navLogo ?? '/images/logo/heroesprofilelogo.png' }}" alt="Heroes Profile Logo" />
+                <img class="w-10 mx-2 {{ !empty($siteLogo) ? '-translate-y-[8%] js-void-logo' : '' }}" src="{{ $navLogo ?? '/images/logo/heroesprofilelogo.png' }}" alt="Heroes Profile Logo" />
                 Profile
             </a>
             <div class="flex items-center justify-between flex-wrap  text-sm md:ml-auto max-md:flex-col">
@@ -230,8 +230,8 @@
     
 </div>
 <nav class="relative flex justify-end md:mr-8 alt-acct-nav max-md:flex-wrap  ">
-  @if(($voidStage ?? 0) >= 2)
-    <void-whispers></void-whispers>
+  @if(! empty($xalatathEvent) && ! ($voidOptOut ?? false))
+    <void-whispers :stage="{{ json_encode($voidStage ?? 0) }}"></void-whispers>
   @endif
   @foreach($altSearchAccounts as $index => $account)
     @if($account)

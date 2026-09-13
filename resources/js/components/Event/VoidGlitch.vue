@@ -13,14 +13,22 @@ const FADE_MS = 800;
 // Runs in step with VoidWhispers: every nav link turns to glyphs while a whisper is showing.
 export default {
   name: 'VoidGlitch',
+  props: {
+    stage: {
+      type: Number,
+      default: 0,
+    },
+  },
   data() {
     return {
       active: [],
       timers: [],
       intervals: [],
+      liveStage: this.stage,
     };
   },
   mounted() {
+    window.addEventListener('void-stage-changed', this.onStageChanged);
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       return;
     }
@@ -28,6 +36,7 @@ export default {
     window.addEventListener('void-whisper-hide', this.restoreAll);
   },
   beforeUnmount() {
+    window.removeEventListener('void-stage-changed', this.onStageChanged);
     window.removeEventListener('void-whisper-show', this.glitchAll);
     window.removeEventListener('void-whisper-hide', this.restoreAll);
     this.timers.forEach(clearTimeout);
@@ -61,7 +70,14 @@ export default {
       }
       return false;
     },
+    onStageChanged(event) {
+      this.liveStage = event.detail.stage;
+    },
     glitchAll() {
+      // Glyph glitch begins at stage 3.
+      if (this.liveStage < 3) {
+        return;
+      }
       this.cleanup();
       const entries = this.candidates().map((el) => this.createOverlay(el));
       if (!entries.length) {

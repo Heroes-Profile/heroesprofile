@@ -10,7 +10,7 @@
       <div v-if="xalatathEvent" class="flex items-center justify-center font-logo text-4xl md:text-8xl m-4 max-md:px-4">
         Heroes
         <!-- Hex side corners sit ~58% down the image, so nudge it up to line them up with the words -->
-        <img class="w-28 md:w-56 max-w-[320px] mx-3 md:mx-8 -translate-y-[8%]" :src="logoSrc" alt="Heroes Profile Logo"/>
+        <img class="w-28 md:w-56 max-w-[320px] mx-3 md:mx-8 -translate-y-[8%] js-void-logo" :src="logoSrc" alt="Heroes Profile Logo"/>
         Profile
       </div>
       <img v-else class="block m-4 mr-auto ml-auto max-md:px-4 md:w-2/5 md:max-w-6xl pl-25" :src="logoSrc" alt="Heroes Profile Logo"/>

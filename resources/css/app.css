@@ -506,6 +506,37 @@ thead{border-color:transparent;}
 .void-whisper-leave-active{ transition: opacity 0.8s ease; }
 .void-whisper-enter-from, .void-whisper-leave-to{ opacity: 0; }
 
+/* Stage-up popup (VoidStageUp.vue) */
+.void-stage-up{ background: rgba(8, 3, 18, 0.85); backdrop-filter: blur(6px); }
+.void-stage-up-card{
+  background: radial-gradient(circle at 50% 30%, #3a1470 0%, #120726 75%);
+  border: 1px solid #5b21b6;
+  box-shadow: 0 0 40px rgba(91, 33, 182, 0.5);
+}
+.void-stage-up-enter-active, .void-stage-up-leave-active{ transition: opacity 0.4s ease; }
+.void-stage-up-enter-from, .void-stage-up-leave-to{ opacity: 0; }
+
+/* New frame is uncovered from the eye outward */
+.void-stage-up-reveal{
+  clip-path: circle(0% at 50% 28%);
+  transition: clip-path 1.6s cubic-bezier(0.55, 0, 0.3, 1);
+}
+.void-stage-up-reveal.is-revealed{ clip-path: circle(150% at 50% 28%); }
+
+@keyframes void-stage-up-shake{
+  0%, 100%{ transform: translate(0, 0); }
+  20%{ transform: translate(-4px, 2px); }
+  40%{ transform: translate(4px, -2px); }
+  60%{ transform: translate(-3px, -1px); }
+  80%{ transform: translate(3px, 1px); }
+}
+.void-stage-up-shake{ animation: void-stage-up-shake 0.6s ease-in-out; }
+
+@media (prefers-reduced-motion: reduce){
+  .void-stage-up-reveal{ clip-path: none; opacity: 0; transition: opacity 0.8s ease; }
+  .void-stage-up-reveal.is-revealed{ clip-path: none; opacity: 1; }
+}
+
 .void-fallen-splash{
   background: radial-gradient(circle at center, rgb(58, 20, 112) 0%, rgb(8, 3, 18) 70%);
   backdrop-filter: blur(12px);

@@ -128,7 +128,11 @@ export default {
       try {
         const response = await this.$axios.get('/Event/Xalatath/Totals');
         if (response.status === 200 && response.data && response.data.totals) {
+          const previousStage = this.live.stage;
           this.live = response.data;
+          if (!this.optOut && response.data.stage > previousStage) {
+            window.dispatchEvent(new CustomEvent('void-stage-up', { detail: { from: previousStage, to: response.data.stage } }));
+          }
           this.countUp();
         } else if (response.status === 204) {
           clearInterval(this.pollTimer);
