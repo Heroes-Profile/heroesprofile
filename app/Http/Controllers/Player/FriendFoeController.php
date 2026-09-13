@@ -286,7 +286,10 @@ class FriendFoeController extends Controller
             });
         });
 
-        $patreonAccounts = BattlenetAccount::has('patreonAccount')->get();
+        // Same rule as checkIfSiteFlair: only Patreon accounts with site flair enabled.
+        $patreonAccounts = BattlenetAccount::without(['patreonAccount', 'userSettings'])
+            ->whereHas('patreonAccount', fn ($query) => $query->where('site_flair', 1))
+            ->get(['blizz_id', 'region']);
 
         $finalResults = $checkedData->map(function ($data, $blizz_id) use ($heroDataByID, $region, $patreonAccounts) {
             $totalWins = $data->where('winner', 1)->sum('total');
@@ -311,8 +314,9 @@ class FriendFoeController extends Controller
                 'hero' => $heroData['hero']['name'],
                 'hero_games' => $heroData['total_games_played'],
                 'region' => $region,
-                'hp_owner' => ($blizz_id == 67280 && $region == 1) ? true : false,
-                'patreon' => is_null($patreonAccount) || empty($patreonAccount) || count($patreonAccount) == 0 ? false : true,
+                'hp_owner' => $this->globalDataService->showOwnerFlair($blizz_id, $region),
+                'patreon' => ! (is_null($patreonAccount) || empty($patreonAccount) || count($patreonAccount) == 0)
+                    && ! $this->globalDataService->isFlairHidden('patreon', $blizz_id, $region),
                 'battletag' => explode('#', $data->first()->battletag)[0],
                 'total_wins' => $totalWins,
                 'total_losses' => $totalLosses,

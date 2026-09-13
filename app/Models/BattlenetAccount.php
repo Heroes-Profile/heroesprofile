@@ -41,4 +41,9 @@ class BattlenetAccount extends Authenticatable
     {
         return $this->hasMany(BattlenetUserSetting::class, 'battlenet_accounts_id', 'battlenet_accounts_id');
     }
+
+    public function flairs()
+    {
+        return $this->hasMany(BattlenetAccountFlair::class, 'battlenet_accounts_id', 'battlenet_accounts_id');
+    }
 }

@@ -506,6 +506,31 @@ thead{border-color:transparent;}
 .void-whisper-leave-active{ transition: opacity 0.8s ease; }
 .void-whisper-enter-from, .void-whisper-leave-to{ opacity: 0; }
 
+/* Hidden Xal'atath eye (VoidHiddenEye.vue) */
+@keyframes void-hidden-eye-blink{
+  0%, 90%, 100%{ transform: scaleY(1); }
+  94%{ transform: scaleY(0.1); }
+}
+.void-hidden-eye{
+  line-height: 0;
+  padding: 0;
+  animation: void-hidden-eye-blink 6s infinite;
+  cursor: pointer;
+}
+.void-hidden-eye:hover{ opacity: 1; animation-play-state: paused; }
+.void-eye-found-icon{ color: #a855f7; text-shadow: 0 0 18px rgba(124, 58, 237, 0.9); }
+.void-eye-flair{ color: #a855f7; }
+/* The logo's eye as an icon, usable anywhere a Font Awesome class goes.
+   The image URL is set in layouts/app.blade.php so it resolves against the site, not the Vite dev server. */
+.void-eye-img{
+  display: block;
+  width: 1.75em;
+  height: 1.75em;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
 /* Stage-up popup (VoidStageUp.vue) */
 .void-stage-up{ background: rgba(8, 3, 18, 0.85); backdrop-filter: blur(6px); }
 .void-stage-up-card{
@@ -568,4 +593,4 @@ thead{border-color:transparent;}
 :is(.void-stage-4, .void-stage-5) .bg-teal{ background-color: #5b21b6; }
 :is(.void-stage-4, .void-stage-5) .border-teal{ border-color: #7b3fe4; }
 :is(.void-stage-4, .void-stage-5) .bg-blue{ background-color: #3a1470; }
-:is(.void-stage-4, .void-stage-5) .text-teal, :is(.void-stage-4, .void-stage-5) .link{ color: #c084fc; }
+:is(.void-stage-4, .void-stage-5) .text-teal{ color: #c084fc; }

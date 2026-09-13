@@ -8,8 +8,10 @@ use App\Models\Hero;
 use App\Models\PatreonAccount;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
+use App\Services\GlobalDataService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class ProfileController extends Controller
@@ -22,6 +24,7 @@ class ProfileController extends Controller
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'user' => $user,
             'filters' => $this->globalDataService->getFilterData(),
+            'availableFlair' => $this->globalDataService->getAvailableFlair($user),
         ]);
     }
 
@@ -38,6 +41,9 @@ class ProfileController extends Controller
             'darkmode' => 'nullable|boolean',
             'playerhistorytable' => 'nullable|boolean',
             'customgames' => 'nullable|boolean',
+            'flair_hide_owner' => 'nullable|boolean',
+            'flair_hide_patreon' => 'nullable|boolean',
+            'flair_hide_void_eye' => 'nullable|boolean',
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -180,6 +186,23 @@ class ProfileController extends Controller
                 ['setting' => 'playerload'],
                 ['value' => $playerload]
             );
+        }
+
+        $flairChanged = false;
+        foreach (GlobalDataService::FLAIR_HIDE_SETTINGS as $setting) {
+            if (! is_null($request[$setting])) {
+                $user = BattlenetAccount::find($request['userid']);
+
+                $user->userSettings()->updateOrCreate(
+                    ['setting' => $setting],
+                    ['value' => $request[$setting] ? 1 : 0]
+                );
+                $flairChanged = true;
+            }
+        }
+
+        if ($flairChanged) {
+            Cache::forget('global_hidden_flair');
         }
 
         return ['success' => true];

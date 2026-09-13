@@ -107,10 +107,11 @@
     </script>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
+    <style>.void-eye-img{ background-image: url('{{ asset('images/event/xalatath/void-eye.svg') }}'); }</style>
+
 </head>
 <body class="bg-black text-white {{ $bladeGlobals ? $bladeGlobals['darkmode'] ? 'dark-mode' : 'light-mode' : 'light-mode' }} {{ $voidStage > 0 ? 'void-stage-'.$voidStage : '' }}">
-  <div id="app" class="flex flex-col align-stretch " style="min-height:100vh; ">
+  <div id="app" class="relative flex flex-col align-stretch " style="min-height:100vh; ">
   <div class="max-md:h-[75px]"></div>
     <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}" ></horizontal-banner-ad>
 
@@ -129,6 +130,14 @@
         <void-fallen-splash :stage="{{ json_encode($voidStage) }}"></void-fallen-splash>
         <void-stage-up :stage="{{ json_encode($voidStage) }}"></void-stage-up>
       @endif
+    @endif
+
+    {{-- Hidden Xal'atath eye: shown to everyone, including opted-out visitors. --}}
+    @if(! empty($bladeGlobals['voidEyeSpot']))
+      <void-hidden-eye :spot="{{ json_encode($bladeGlobals['voidEyeSpot']) }}"></void-hidden-eye>
+    @endif
+    @if(session('void_eye_awarded'))
+      <void-eye-found status="claimed"></void-eye-found>
     @endif
 
 

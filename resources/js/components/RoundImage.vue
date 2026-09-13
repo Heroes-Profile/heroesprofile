@@ -35,6 +35,9 @@
       <!-- {{ "Patreon Subscriber" }} -->
       <i class="fas fa-star" style="color:gold"></i>
     </div>
+    <div class="absolute z-10 bottom-0 -left-2 text-xl leading-none" v-if="voideye">
+      <void-eye-flair :force="true" :tooltip="false"></void-eye-flair>
+    </div>
     <div class="absolute z-10 -top-2 -right-2 w-8" v-if="party">
       <!--  {{ party }} -->
       <img :src="`/images/party_icons/ui_ingame_loadscreen_partylink_${party}.png`"/>
@@ -92,6 +95,7 @@
       }]">
         <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>
         <div class="bg-red" v-if="ispatreon">Patreon Subscriber</div>
+        <div class="bg-[#4c1d95]" v-if="voideye">Marked by the Void</div>
         <div class="bg-teal" v-if="award">{{award.title}}</div>
         <slot></slot>
       </div>
@@ -100,6 +104,7 @@
     <div v-if="!excludehover && !mobileClick" :class="[' md:hidden     text-s p-1    drop-shadow-md  rounded-md px-2 text-center   md:mb-4', {}]">
       <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>
       <div class="bg-red" v-else-if="ispatreon">Patreon Subscriber</div>
+      <div class="bg-[#4c1d95]" v-if="voideye">Marked by the Void</div>
       <slot></slot>
       <div class="bg-teal" v-if="award">{{award.title}}</div>
     </div>
@@ -123,6 +128,7 @@ export default {
     party: String,
     hpowner: Boolean,
     ispatreon: Boolean,
+    voideye: Boolean,
     icon: String,
     mobileClick: false,
     hidedelay: {

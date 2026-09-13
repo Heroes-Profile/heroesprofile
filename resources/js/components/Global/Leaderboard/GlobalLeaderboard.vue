@@ -171,7 +171,7 @@
                           </icon-with-hover>
          
                         </div>
-                        <div class="" v-else-if="row.patreonUser">
+                        <div class="" v-else-if="row.patreon">
                           <icon-with-hover class="mt-2"  size="small"    icon="fas fa-star"   title="info"  popupsize="small" style="color:rgba(216, 184, 0, 0.719);">
                               <slot>
                                 <div>
@@ -180,6 +180,7 @@
                               </slot>
                         </icon-with-hover>
                         </div>
+                        <void-eye-flair class="mt-2" :blizz-id="row.blizz_id" :region="row.region_id"></void-eye-flair>
                         <a class="link" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id, false)" :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`" >{{ row.split_battletag }}</a>
                       </div>
                     </td>

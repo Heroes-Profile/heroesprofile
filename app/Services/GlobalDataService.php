@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\BannedAccount;
 use App\Models\BattlenetAccount;
+use App\Models\BattlenetAccountFlair;
+use App\Models\BattlenetUserSetting;
 use App\Models\Battletag;
 use App\Models\CCL\CCLTeam;
 use App\Models\GameType;
@@ -29,6 +31,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 
 class GlobalDataService
@@ -150,6 +153,158 @@ class GlobalDataService
         }
 
         return $request->session()->get('void_stage_preview');
+    }
+
+    /**
+     * "blizz_id|region" keys of accounts that found the Xal'atath eye. Empty once the event is off.
+     */
+    public function getVoidEyeHolders(): array
+    {
+        if (! $this->getXalatathEvent()) {
+            return [];
+        }
+
+        $holders = Cache::remember('global_void_eye_holders', 60, function () {
+            return BattlenetAccountFlair::query()
+                ->join('battlenet_accounts', 'battlenet_accounts.battlenet_accounts_id', '=', 'battlenet_account_flair.battlenet_accounts_id')
+                ->where('battlenet_account_flair.flair', BattlenetAccountFlair::XALATATH_EYE)
+                ->whereNotNull('battlenet_accounts.blizz_id')
+                ->get(['battlenet_accounts.blizz_id', 'battlenet_accounts.region'])
+                ->map(fn ($row) => $row->blizz_id.'|'.$row->region)
+                ->unique()
+                ->values()
+                ->all();
+        });
+
+        $hidden = $this->getHiddenFlair()['void_eye'];
+
+        return array_values(array_filter($holders, fn ($key) => ! isset($hidden[$key])));
+    }
+
+    public const FLAIR_HIDE_SETTINGS = [
+        'owner' => 'flair_hide_owner',
+        'patreon' => 'flair_hide_patreon',
+        'void_eye' => 'flair_hide_void_eye',
+    ];
+
+    /**
+     * Flair players have turned off in Profile Settings: ['owner' => ['blizz_id|region' => true], ...].
+     */
+    public function getHiddenFlair(): array
+    {
+        return Cache::remember('global_hidden_flair', 60, function () {
+            $rows = BattlenetUserSetting::query()
+                ->join('battlenet_accounts', 'battlenet_accounts.battlenet_accounts_id', '=', 'battlenet_user_settings.battlenet_accounts_id')
+                ->whereIn('battlenet_user_settings.setting', array_values(self::FLAIR_HIDE_SETTINGS))
+                ->where('battlenet_user_settings.value', '1')
+                ->get(['battlenet_user_settings.setting', 'battlenet_accounts.blizz_id', 'battlenet_accounts.region']);
+
+            $hidden = array_fill_keys(array_keys(self::FLAIR_HIDE_SETTINGS), []);
+            $types = array_flip(self::FLAIR_HIDE_SETTINGS);
+            foreach ($rows as $row) {
+                $hidden[$types[$row->setting]][$row->blizz_id.'|'.$row->region] = true;
+            }
+
+            return $hidden;
+        });
+    }
+
+    public function isFlairHidden(string $type, $blizz_id, $region): bool
+    {
+        return isset($this->getHiddenFlair()[$type][$blizz_id.'|'.$region]);
+    }
+
+    public function showOwnerFlair($blizz_id, $region): bool
+    {
+        return $blizz_id == 67280 && $region == 1 && ! $this->isFlairHidden('owner', $blizz_id, $region);
+    }
+
+    /**
+     * Flair this account has earned, for the Profile Settings toggles.
+     */
+    public function getAvailableFlair(BattlenetAccount $account): array
+    {
+        $available = [];
+
+        if ($account->blizz_id == 67280 && $account->region == 1) {
+            $available[] = 'owner';
+        }
+        if ($account->patreonAccount && $account->patreonAccount->site_flair == 1) {
+            $available[] = 'patreon';
+        }
+        if ($this->hasClaimedVoidEye($account)) {
+            $available[] = 'void_eye';
+        }
+
+        return $available;
+    }
+
+    public function hasClaimedVoidEye(BattlenetAccount $account): bool
+    {
+        return BattlenetAccountFlair::where('battlenet_accounts_id', $account->battlenet_accounts_id)
+            ->where('flair', BattlenetAccountFlair::XALATATH_EYE)
+            ->exists();
+    }
+
+    public function awardVoidEye(BattlenetAccount $account): BattlenetAccountFlair
+    {
+        $flair = BattlenetAccountFlair::firstOrCreate(
+            ['battlenet_accounts_id' => $account->battlenet_accounts_id, 'flair' => BattlenetAccountFlair::XALATATH_EYE],
+            ['awarded_at' => now(), 'ad_free_until' => now()->addMonths(6)]
+        );
+
+        Cache::forget('global_void_eye_holders');
+
+        return $flair;
+    }
+
+    public function voidEyeVisitorKey(Request $request): string
+    {
+        return Auth::check()
+            ? 'acct:'.Auth::user()->battlenet_accounts_id
+            : 'sess:'.$request->session()->getId();
+    }
+
+    /**
+     * Where this visitor's hidden eye sits on this page today, or null if it isn't here.
+     * Each visitor gets their own pages and positions, rotating daily.
+     */
+    public function getVoidEyeSpot(bool $eventActive): ?array
+    {
+        $request = request();
+
+        if (! $eventActive || ! $request->isMethod('get') || $request->expectsJson() || ! $request->hasSession()) {
+            return null;
+        }
+
+        if ($request->session()->get('void_eye_pending')) {
+            return null;
+        }
+
+        if (Auth::check() && $this->hasClaimedVoidEye(Auth::user())) {
+            return null;
+        }
+
+        $visitor = $this->voidEyeVisitorKey($request);
+        $today = now()->toDateString();
+        $path = '/'.ltrim($request->path(), '/');
+        $hash = hash_hmac('sha256', $visitor.'|'.$today.'|'.strtolower($path), config('app.key'));
+
+        // Roughly 1 in 12 pages for this visitor today.
+        if (hexdec(substr($hash, 0, 6)) % 12 !== 0) {
+            return null;
+        }
+
+        $top = 15 + hexdec(substr($hash, 6, 4)) % 70;
+        $left = 4 + hexdec(substr($hash, 10, 4)) % 90;
+
+        $token = Crypt::encryptString(json_encode([
+            'visitor' => $visitor,
+            'path' => $path,
+            'expires' => now()->addHours(12)->timestamp,
+        ]));
+
+        return ['top' => $top, 'left' => $left, 'token' => $token];
     }
 
     private function fakeXalatathTotals(int $stage, Collection $thresholds): array
@@ -362,7 +517,8 @@ class GlobalDataService
             'headeralert' => $this->getHeaderAlert(),
             'heroes' => $this->getHeroes()->sortBy('name')->values(),
             'maps' => $this->getMaps(),
-            'xalatathEvent' => $this->getXalatathEvent(),
+            'xalatathEvent' => $xalatathEvent = $this->getXalatathEvent(),
+            'voidEyeSpot' => $this->getVoidEyeSpot((bool) $xalatathEvent),
         ];
 
     }
@@ -1460,7 +1616,7 @@ class GlobalDataService
         }
 
         if ($data->site_flair == 1) {
-            return true;
+            return ! $this->isFlairHidden('patreon', $blizz_id, $region);
         }
 
         return false;

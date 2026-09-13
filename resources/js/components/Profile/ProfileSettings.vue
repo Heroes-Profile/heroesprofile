@@ -153,6 +153,22 @@
         </div>
       </div>
 
+      <!-- Flair -->
+      <div v-if="activeTab === 'flair'" class="p-8">
+        <h2 class="text-xl font-bold mb-6 text-teal">Flair</h2>
+        <p class="text-sm text-gray-400 mb-6">Choose which flair shows next to your battletag. Hidden flair is hidden for everyone.</p>
+        <div class="space-y-6">
+          <div v-for="flair in flairOptions" :key="flair.key">
+            <h3 class="mb-1 flex items-center gap-2">
+              <i v-if="flair.icon" :class="flair.icon" :style="flair.iconStyle"></i>
+              {{ flair.label }}
+            </h3>
+            <p class="text-sm text-gray-400 mb-3">{{ flair.description }}</p>
+            <tab-button tab1text="Show" tab2text="Hide" :ignoreclick="true" @tab-click="(side) => flairsetting(flair.key, side)" :overridedefaultside="flairSides[flair.key]"></tab-button>
+          </div>
+        </div>
+      </div>
+
       <!-- Connections -->
       <div v-if="activeTab === 'connections'" class="p-8">
         <h2 class="text-xl font-bold mb-6 text-teal">Connections</h2>
@@ -201,6 +217,10 @@ export default {
   props: {
     user: Object,
     filters: Object,
+    availableFlair: {
+      type: Array,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -210,8 +230,12 @@ export default {
         { key: 'general',     label: 'General' },
         { key: 'global',      label: 'Global Pages' },
         { key: 'player',      label: 'Player' },
+        ...(this.availableFlair.length ? [{ key: 'flair', label: 'Flair' }] : []),
         { key: 'connections', label: 'Connections' },
       ],
+      // 'left' = show, 'right' = hide
+      flairSides: { owner: 'left', patreon: 'left', void_eye: 'left' },
+      flairHide: {},
 
       userhero: null,
       usergametype: null,
@@ -259,8 +283,20 @@ export default {
     this.playerhistorytable = this.defaultPlayerhistorytable;
     this.customgames = this.defaultCustomGames;
     this.playerload = this.defaultPlayerLoad;
+    ['owner', 'patreon', 'void_eye'].forEach((key) => {
+      const setting = this.user.user_settings.find(item => item.setting === `flair_hide_${key}`);
+      this.flairSides[key] = setting && setting.value == 1 ? 'right' : 'left';
+    });
   },
   computed: {
+    flairOptions() {
+      const all = [
+        { key: 'owner', label: 'Site Owner', description: 'The crown shown for the Heroes Profile owner.', icon: 'fas fa-crown', iconStyle: 'color:gold' },
+        { key: 'patreon', label: 'Patreon', description: 'The star shown for Patreon supporters.', icon: 'fas fa-star', iconStyle: 'color:gold' },
+        { key: 'void_eye', label: 'Mark of the Void', description: "Earned by finding Xal'atath's eye. Hiding it does not affect your ad-free time.", icon: 'void-eye-img' },
+      ];
+      return all.filter(flair => this.availableFlair.includes(flair.key));
+    },
     defaultMultiGameType() {
       if (this.user.user_settings.length > 0) {
         let setting = this.user.user_settings.find(item => item.setting === 'multi_game_type');
@@ -355,7 +391,9 @@ export default {
           playerload: this.playerload,
           customgames: this.customgames,
           playerhistorytable: playerhistorytableinput,
+          ...this.flairHide,
         });
+        this.flairHide = {};
         this.settingsSaved = true;
         setTimeout(() => { this.settingsSaved = false; }, 5000);
         this.usermultigametype = this.savemultigametype;
@@ -420,6 +458,11 @@ export default {
     },
     playermatchhistorystylesetting(side) {
       this.playerhistorytable = side;
+      this.saveSettings();
+    },
+    flairsetting(key, side) {
+      this.flairSides[key] = side;
+      this.flairHide = { [`flair_hide_${key}`]: side === 'right' };
       this.saveSettings();
     },
   },

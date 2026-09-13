@@ -11,6 +11,7 @@
       :awardicon="getAwardIcon()"
       :party="party"
       :ispatreon="ispatreon"
+      :voideye="voideye"
       popupsize="large"
     >
       <slot>
@@ -39,6 +40,7 @@ export default {
     hpowner: Boolean,
     party: String,
     ispatreon: Boolean,
+    voideye: Boolean,
     popupsize: String
   },
   data(){
