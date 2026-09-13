@@ -32,13 +32,27 @@
 
     </script>
 
+    @php
+      $xalatathEvent = $bladeGlobals['xalatathEvent'] ?? null;
+      $voidOptOut = $void_corruption_optout ?? false;
+      $voidStage = ($xalatathEvent && ! $voidOptOut) ? $xalatathEvent['stage'] : 0;
+      // Opted-out visitors keep the event logo but at its uncorrupted frame.
+      $siteLogo = $xalatathEvent ? "images/event/xalatath/xalatath-logo-stage-{$voidStage}" : null;
+      $siteIcon = $siteLogo ? "{$siteLogo}.png" : 'images/logo/heroesprofilelogo.png';
+      $navLogo = $siteLogo ? "/{$siteLogo}.svg" : '/images/logo/heroesprofilelogo.png';
+    @endphp
+
     <!-- Favicons -->
+    @if($siteLogo)
+    <link rel="icon" type="image/svg+xml" href="{{ asset($siteLogo.'.svg') }}">
+    @else
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/logo/heroesprofilelogo.png') }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('images/logo/heroesprofilelogo.png') }}">
-    <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('images/logo/heroesprofilelogo.png') }}">
-    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('images/logo/heroesprofilelogo.png') }}">
-    <link rel="icon" type="image/png" sizes="512x512" href="{{ asset('images/logo/heroesprofilelogo.png') }}">
+    @endif
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset($siteIcon) }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset($siteIcon) }}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{{ asset($siteIcon) }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset($siteIcon) }}">
+    <link rel="icon" type="image/png" sizes="512x512" href="{{ asset($siteIcon) }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('images/logo/heroesprofilelogo.png') }}">
     <meta name="msapplication-TileImage" content="{{ asset('images/logo/heroesprofilelogo.png') }}">
     <meta name="theme-color" content="#000000">
@@ -95,7 +109,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
 </head>
-<body class="bg-black text-white {{ $bladeGlobals ? $bladeGlobals['darkmode'] ? 'dark-mode' : 'light-mode' : 'light-mode' }}">
+<body class="bg-black text-white {{ $bladeGlobals ? $bladeGlobals['darkmode'] ? 'dark-mode' : 'light-mode' : 'light-mode' }} {{ $voidStage > 0 ? 'void-stage-'.$voidStage : '' }}">
   <div id="app" class="flex flex-col align-stretch " style="min-height:100vh; ">
   <div class="max-md:h-[75px]"></div>
     <horizontal-banner-ad :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}" ></horizontal-banner-ad>
@@ -105,6 +119,16 @@
       <div class="bg-red text-sm text-center p-1">
           {{ $headeralert }}
       </div>
+    @endif
+
+    @if($xalatathEvent)
+      <xalatath-scoreboard :event="{{ json_encode($xalatathEvent) }}" :opt-out="{{ json_encode($voidOptOut) }}"></xalatath-scoreboard>
+      @if($voidStage >= 3)
+        <void-glitch></void-glitch>
+      @endif
+      @if($voidStage >= 5)
+        <void-fallen-splash></void-fallen-splash>
+      @endif
     @endif
 
 
@@ -133,7 +157,7 @@
             <div class="logo ">
               <a class="text-blue-600 hover:text-blue-800 flex justify-center items-center font-logo text-2xl py-5 mx-auto text-center" href="/">
                 Heroes
-                <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
+                <img class="w-10 mx-2 {{ $siteLogo ? '-translate-y-[8%]' : '' }}" src="{{ $navLogo }}" alt="Heroes Profile Logo" />
                 Profile
               </a>
             </div>

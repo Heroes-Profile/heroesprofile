@@ -61,6 +61,7 @@ use App\Http\Controllers\TermsOfServiceController;
 use App\Http\Controllers\Tools\ActivityGraphsController;
 use App\Http\Controllers\Tools\RandomizeMeController;
 use App\Http\Controllers\UploadController;
+use App\Http\Controllers\XalatathEventController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -321,5 +322,8 @@ Route::redirect('https://{any}/ads.txt', 'https://adstxt.venatusmedia.com/60f587
 
 Route::get('/Animation/Deathwing', [AnimationsController::class, 'showDeathwing']);
 Route::get('/Animation/Tassadar', [AnimationsController::class, 'showTassadar']);
+
+// Polled by the header scoreboard every 30s; kept out of the logging group.
+Route::get('/Event/Xalatath/Totals', [XalatathEventController::class, 'totals'])->middleware('throttle:10,1');
 
 Route::get('/test/patreon-earnings', [MainPageController::class, 'testPatreonEarnings']);

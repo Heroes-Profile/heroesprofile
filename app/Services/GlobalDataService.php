@@ -21,6 +21,7 @@ use App\Models\Player;
 use App\Models\Replay;
 use App\Models\SeasonDate;
 use App\Models\SeasonGameVersion;
+use App\Models\XalatathData;
 use App\Support\GlobalCacheKey;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
@@ -78,6 +79,105 @@ class GlobalDataService
 
             return $text ?? null;
         });
+    }
+
+    public function getXalatathEvent()
+    {
+        $thresholds = collect(explode(',', (string) config('global.xalatath_event.stage_thresholds')))
+            ->map(fn ($threshold) => (int) trim($threshold))
+            ->filter(fn ($threshold) => $threshold > 0)
+            ->sort()
+            ->values()
+            ->take(5);
+
+        $previewStage = $this->getXalatathPreviewStage();
+
+        if ($previewStage !== null) {
+            $byGameType = [];
+            $totals = $this->fakeXalatathTotals($previewStage, $thresholds);
+        } elseif (! filter_var(config('global.xalatath_event.enabled'), FILTER_VALIDATE_BOOLEAN)) {
+            return null;
+        } else {
+            $byGameType = Cache::remember('global_xalatath_event', 30, function () {
+                return XalatathData::all()->keyBy('game_type')->toArray();
+            });
+
+            $totals = [];
+            foreach ($byGameType as $row) {
+                foreach ($row as $column => $value) {
+                    if ($column === 'game_type') {
+                        continue;
+                    }
+                    $totals[$column] = $column === 'highest_kill_streak'
+                        ? max($totals[$column] ?? 0, (int) $value)
+                        : ($totals[$column] ?? 0) + (int) $value;
+                }
+            }
+        }
+
+        // Bans spread the Void too.
+        $corruption = ($totals['games_played'] ?? 0) + ($totals['bans'] ?? 0);
+        $stage = $thresholds->filter(fn ($threshold) => $corruption >= $threshold)->count();
+
+        return [
+            'totals' => $totals,
+            'corruption' => $corruption,
+            'byGameType' => $byGameType,
+            'stage' => $stage,
+            'previousThreshold' => $stage > 0 ? $thresholds[$stage - 1] : 0,
+            'nextThreshold' => $thresholds[$stage] ?? null,
+        ];
+    }
+
+    /**
+     * Local testing: ?void_stage=0-5 fakes the event at that stage and sticks in the
+     * session until ?void_stage=off. Never available in production.
+     */
+    private function getXalatathPreviewStage(): ?int
+    {
+        $request = request();
+
+        if (app()->isProduction() || ! $request->hasSession()) {
+            return null;
+        }
+
+        $param = $request->query('void_stage');
+
+        if ($param === 'off') {
+            $request->session()->forget('void_stage_preview');
+        } elseif ($param !== null && ctype_digit((string) $param) && (int) $param <= 5) {
+            $request->session()->put('void_stage_preview', (int) $param);
+        }
+
+        return $request->session()->get('void_stage_preview');
+    }
+
+    private function fakeXalatathTotals(int $stage, Collection $thresholds): array
+    {
+        $floor = $stage > 0 ? ($thresholds[$stage - 1] ?? 0) : 0;
+        $ceiling = $thresholds[$stage] ?? $floor;
+        $corruption = $stage === 0 ? intdiv($ceiling, 2) : ($stage >= 5 ? $floor : intdiv($floor + $ceiling, 2));
+
+        $bans = intdiv($corruption, 4);
+        $games = $corruption - $bans;
+
+        return [
+            'games_played' => $games,
+            'wins' => intdiv($games * 47, 100),
+            'bans' => $bans,
+            'takedowns' => $games * 14,
+            'deaths' => $games * 5,
+            'siege_damage' => $games * 42000,
+            'spell_damage' => $games * 61000,
+            'multikill' => intdiv($games, 3),
+            'time_cc_enemy_heroes' => $games * 25,
+            'teamfight_hero_damage' => $games * 38000,
+            'on_fire_time' => $games * 90,
+            'highest_kill_streak' => 23,
+            'escapes' => $games * 2,
+            'outnumbered_deaths' => $games * 2,
+            'time_spent_dead' => $games * 140,
+        ];
     }
 
     public function getPrivateAccounts()
@@ -262,6 +362,7 @@ class GlobalDataService
             'headeralert' => $this->getHeaderAlert(),
             'heroes' => $this->getHeroes()->sortBy('name')->values(),
             'maps' => $this->getMaps(),
+            'xalatathEvent' => $this->getXalatathEvent(),
         ];
 
     }

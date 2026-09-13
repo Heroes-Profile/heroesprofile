@@ -486,3 +486,55 @@ div.phpdebugbar * {
 }
 
 thead{border-color:transparent;}
+
+/* Xal'atath Void Corruption event */
+.xalatath-scoreboard{
+  background: linear-gradient(90deg, #120726 0%, #3a1470 50%, #120726 100%);
+  border-bottom: 2px solid #7b3fe4;
+}
+.xalatath-title{ color: #c9a8ff; text-shadow: 0 0 8px #7b3fe4; }
+.xalatath-progress{ background: linear-gradient(90deg, #5b21b6, #c084fc); }
+
+.void-whisper{
+  background: rgba(18, 7, 38, 0.92);
+  border: 1px solid #7b3fe4;
+  color: #e3d2ff;
+  box-shadow: 0 0 18px rgba(123, 63, 228, 0.6);
+}
+/* Timed to match VoidGlitch's scramble in and fade out */
+.void-whisper-enter-active{ transition: opacity 0.3s ease; }
+.void-whisper-leave-active{ transition: opacity 0.8s ease; }
+.void-whisper-enter-from, .void-whisper-leave-to{ opacity: 0; }
+
+.void-fallen-splash{
+  background: radial-gradient(circle at center, rgb(58, 20, 112) 0%, rgb(8, 3, 18) 70%);
+  backdrop-filter: blur(12px);
+}
+
+/* Stage 1+: glow */
+:is(.void-stage-1, .void-stage-2, .void-stage-3, .void-stage-4, .void-stage-5) nav.bg-gray-dark{
+  box-shadow: 0 4px 22px rgba(123, 63, 228, 0.45);
+}
+:is(.void-stage-1, .void-stage-2, .void-stage-3, .void-stage-4, .void-stage-5) .xalatath-scoreboard{
+  box-shadow: 0 0 24px rgba(123, 63, 228, 0.55);
+}
+
+/* Stage 3+: text glitches into Void glyphs (VoidGlitch.vue) */
+.void-glyph-overlay{
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 60;
+  color: #d9c2ff;
+  text-shadow: 0 0 6px #7b3fe4, 0 0 14px rgba(123, 63, 228, 0.7);
+}
+
+/* Stage 4+: palette shift */
+:is(.void-stage-4, .void-stage-5){
+  background-color: #110822;
+  background-image: radial-gradient(ellipse at top, rgba(91, 33, 182, 0.35), transparent 60%);
+}
+:is(.void-stage-4, .void-stage-5) nav.bg-gray-dark{ background-color: #1d0f38; }
+:is(.void-stage-4, .void-stage-5) .bg-teal{ background-color: #5b21b6; }
+:is(.void-stage-4, .void-stage-5) .border-teal{ border-color: #7b3fe4; }
+:is(.void-stage-4, .void-stage-5) .bg-blue{ background-color: #3a1470; }
+:is(.void-stage-4, .void-stage-5) .text-teal, :is(.void-stage-4, .void-stage-5) .link{ color: #c084fc; }

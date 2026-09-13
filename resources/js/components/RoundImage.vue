@@ -81,8 +81,9 @@
         'right-full top-1/2 -translate-y-1/2 mr-2': tooltipPosition === 'left',
         
         'text-xs' : size === 'big',
-        'w-[12em]' : popupsize != 'large',
-        'w-[20em]' : popupsize == 'large'
+        'w-[12em]' : popupsize != 'large' && popupsize != 'xlarge',
+        'w-[20em]' : popupsize == 'large',
+        'w-[28em]' : popupsize == 'xlarge'
       }
 
       ]" >
@@ -165,7 +166,7 @@ export default {
       if (!this.$refs.container) return;
 
       const rect = this.$refs.container.getBoundingClientRect();
-      const tooltipWidth = this.popupsize === 'large' ? 320 : 192;
+      const tooltipWidth = this.popupsize === 'xlarge' ? 448 : this.popupsize === 'large' ? 320 : 192;
       const tooltipHeight = 120; // approximate height of tooltip popup
       const halfTooltip = tooltipWidth / 2;
       const screenWidth = window.innerWidth;

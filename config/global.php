@@ -48,6 +48,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Xal'atath Void Corruption event
+    |--------------------------------------------------------------------------
+    |
+    | Header scoreboard plus site corruption stages. Thresholds are total
+    | Xal'atath games played plus bans to reach stages 1 through 5.
+    |
+    */
+
+    'xalatath_event' => [
+        'enabled' => env('XALATATH_EVENT_ENABLED', false),
+        'stage_thresholds' => env('XALATATH_EVENT_STAGE_THRESHOLDS', '1000,5000,15000,30000,50000'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Google Cloud Tasks
     |--------------------------------------------------------------------------
     */
