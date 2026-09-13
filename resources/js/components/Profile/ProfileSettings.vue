@@ -379,7 +379,6 @@ export default {
 
       try {
         await this.$axios.post('/api/v1/profile/save/settings', {
-          userid: this.user.battlenet_accounts_id,
           userhero: this.userhero,
           usergametype: this.usergametype,
           mmrplayerusergametype: this.mmrplayerusergametype,
@@ -405,7 +404,6 @@ export default {
     async setAccountVisbility() {
       try {
         await this.$axios.post('/api/v1/profile/set/account/visibility', {
-          userid: this.user.battlenet_accounts_id,
           accountVisibility: this.accountVisibility,
         });
       } catch (error) {
@@ -415,7 +413,6 @@ export default {
     async removePatreon() {
       try {
         await this.$axios.post('/api/v1/profile/remove/patreon', {
-          userid: this.user.battlenet_accounts_id,
         });
         window.location.href = '/Profile/Settings';
       } catch (error) {

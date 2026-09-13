@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BattlenetAccount;
 use App\Models\GameType;
 use App\Models\Hero;
 use App\Models\PatreonAccount;
@@ -30,7 +29,11 @@ class ProfileController extends Controller
 
     public function saveSettings(Request $request)
     {
-        // return response()->json($request->all());
+        // Always the logged-in account; never an id from the request.
+        $user = Auth::user();
+        if (! $user) {
+            return response()->json(['status' => 'unauthenticated'], 401);
+        }
 
         $validationRules = [
             'userhero' => 'nullable|numeric',
@@ -66,8 +69,6 @@ class ProfileController extends Controller
                 return ['success' => false];
             }
 
-            $user = BattlenetAccount::find($request['userid']);
-
             $user->userSettings()->updateOrCreate(
                 ['setting' => 'hero'],
                 ['value' => $userhero]
@@ -75,8 +76,6 @@ class ProfileController extends Controller
         }
 
         if (! is_null($request['usergametype'])) {
-            $user = BattlenetAccount::find($request['userid']);
-
             $usergametype = $request['usergametype'];
 
             $user->userSettings()->updateOrCreate(
@@ -86,8 +85,6 @@ class ProfileController extends Controller
         }
 
         if (! is_null($request['mmrplayerusergametype'])) {
-            $user = BattlenetAccount::find($request['userid']);
-
             $usergametype = $request['mmrplayerusergametype'];
 
             $user->userSettings()->updateOrCreate(
@@ -97,8 +94,6 @@ class ProfileController extends Controller
         }
 
         if (! is_null($request['usermultigametype'])) {
-            $user = BattlenetAccount::find($request['userid']);
-
             $userGameTypes = $request['usermultigametype'];
             $existingGameTypes = GameType::whereIn('short_name', $userGameTypes)->pluck('short_name')->all();
             if (count($existingGameTypes) === count($userGameTypes)) {
@@ -114,8 +109,6 @@ class ProfileController extends Controller
         }
 
         if (! is_null($request['advancedfiltering'])) {
-            $user = BattlenetAccount::find($request['userid']);
-
             $advancedfiltering = $request['advancedfiltering'];
 
             $user->userSettings()->updateOrCreate(
@@ -125,8 +118,6 @@ class ProfileController extends Controller
         }
 
         if (! is_null($request['customgames'])) {
-            $user = BattlenetAccount::find($request['userid']);
-
             $customgames = $request['customgames'];
 
             $user->userSettings()->updateOrCreate(
@@ -136,8 +127,6 @@ class ProfileController extends Controller
         }
 
         if (! is_null($request['talentbuildtype'])) {
-            $user = BattlenetAccount::find($request['userid']);
-
             $talentbuildtype = $request['talentbuildtype'];
 
             $user->userSettings()->updateOrCreate(
@@ -147,8 +136,6 @@ class ProfileController extends Controller
         }
 
         if (! is_null($request['talentbuilderstyle'])) {
-            $user = BattlenetAccount::find($request['userid']);
-
             $user->userSettings()->updateOrCreate(
                 ['setting' => 'talentbuilderstyle'],
                 ['value' => $request['talentbuilderstyle']]
@@ -156,8 +143,6 @@ class ProfileController extends Controller
         }
 
         if (! is_null($request['darkmode'])) {
-            $user = BattlenetAccount::find($request['userid']);
-
             $darkmode = $request['darkmode'];
 
             $user->userSettings()->updateOrCreate(
@@ -167,8 +152,6 @@ class ProfileController extends Controller
         }
 
         if (! is_null($request['playerhistorytable'])) {
-            $user = BattlenetAccount::find($request['userid']);
-
             $playerhistorytable = $request['playerhistorytable'];
 
             $user->userSettings()->updateOrCreate(
@@ -178,8 +161,6 @@ class ProfileController extends Controller
         }
 
         if (! is_null($request['playerload'])) {
-            $user = BattlenetAccount::find($request['userid']);
-
             $playerload = $request['playerload'];
 
             $user->userSettings()->updateOrCreate(
@@ -191,8 +172,6 @@ class ProfileController extends Controller
         $flairChanged = false;
         foreach (GlobalDataService::FLAIR_HIDE_SETTINGS as $setting) {
             if (! is_null($request[$setting])) {
-                $user = BattlenetAccount::find($request['userid']);
-
                 $user->userSettings()->updateOrCreate(
                     ['setting' => $setting],
                     ['value' => $request[$setting] ? 1 : 0]
@@ -210,23 +189,13 @@ class ProfileController extends Controller
 
     public function removePatreon(Request $request)
     {
-        $validationRules = [
-            'userid' => 'required|numeric',
-        ];
-
-        $validator = Validator::make($request->all(), $validationRules);
-
-        if ($validator->fails()) {
-            return [
-                'data' => $request->all(),
-                'errors' => $validator->errors()->all(),
-                'status' => 'failure to validate inputs',
-            ];
+        $user = Auth::user();
+        if (! $user) {
+            return response()->json(['status' => 'unauthenticated'], 401);
         }
 
         try {
-            $userIdToDelete = $request['userid'];
-            $account = PatreonAccount::where('battlenet_accounts_id', $userIdToDelete)->first();
+            $account = PatreonAccount::where('battlenet_accounts_id', $user->battlenet_accounts_id)->first();
             if ($account) {
                 $account->delete();
             }
@@ -240,8 +209,12 @@ class ProfileController extends Controller
 
     public function setAccountVisibility(Request $request)
     {
+        $user = Auth::user();
+        if (! $user) {
+            return response()->json(['status' => 'unauthenticated'], 401);
+        }
+
         $validationRules = [
-            'userid' => 'required|numeric',
             'accountVisibility' => 'required|in:true,false',
         ];
 
@@ -258,8 +231,6 @@ class ProfileController extends Controller
         try {
             $accountVisibility = $request['accountVisibility'];
             $value = $accountVisibility == 'true' ? 1 : 0;
-
-            $user = BattlenetAccount::find($request['userid']);
 
             // Only stamp a real change. Saving the same value again would put the
             // account back through the API privacy feed for no reason, and a null
