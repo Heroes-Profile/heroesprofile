@@ -1,5 +1,22 @@
 <template>
-  <div class="xalatath-scoreboard text-white text-center px-4 py-3">
+  <!-- Minimized: a slim bar, remembered until the visitor reopens it -->
+  <div v-if="minimized" class="xalatath-scoreboard text-white px-4 py-2">
+    <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 max-w-[1500px] mx-auto text-sm">
+      <span class="font-logo text-base tracking-wide xalatath-title">Xal'atath</span>
+      <span class="opacity-80">Void Corruption: stage {{ live.stage }} of 5</span>
+      <div class="h-2 w-28 bg-darken rounded overflow-hidden max-md:hidden">
+        <div class="h-full xalatath-progress" :style="{ width: progress + '%' }"></div>
+      </div>
+      <button type="button" class="underline opacity-75 hover:opacity-100" @click="setMinimized(false)">
+        Show <i class="fas fa-chevron-down ml-1"></i>
+      </button>
+    </div>
+  </div>
+
+  <div v-else class="xalatath-scoreboard relative text-white text-center px-4 py-3">
+    <button type="button" class="absolute top-2 right-3 text-xs opacity-60 hover:opacity-100" title="Minimize" @click="setMinimized(true)">
+      Hide <i class="fas fa-chevron-up ml-1"></i>
+    </button>
     <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 max-w-[1500px] mx-auto">
       <div class="font-logo text-xl tracking-wide xalatath-title">Xal'atath</div>
 
@@ -48,6 +65,19 @@
 <script>
 import Cookies from 'js-cookie';
 
+const MINIMIZED_KEY = 'xalatathScoreboardMinimized';
+
+// '1' = minimized, '0' = opened by the visitor. With no choice yet, mobile starts minimized.
+function readMinimized() {
+  const mobileDefault = window.innerWidth < 768;
+  try {
+    const stored = localStorage.getItem(MINIMIZED_KEY);
+    return stored === null ? mobileDefault : stored === '1';
+  } catch (e) {
+    return mobileDefault;
+  }
+}
+
 export default {
   name: 'XalatathScoreboard',
   props: {
@@ -60,6 +90,8 @@ export default {
   data() {
     return {
       expanded: false,
+      // Read before first render so a minimized bar never flashes open.
+      minimized: readMinimized(),
       displayed: {},
       live: this.event,
       pollTimer: null,
@@ -157,6 +189,18 @@ export default {
         }
       };
       requestAnimationFrame(step);
+    },
+    setMinimized(value) {
+      this.minimized = value;
+      try {
+        localStorage.setItem(MINIMIZED_KEY, value ? '1' : '0');
+      } catch (e) {
+        // storage blocked; just applies to this page view
+      }
+      if (!value) {
+        this.displayed = {};
+        this.countUp();
+      }
     },
     toggleOptOut() {
       if (this.optOut) {

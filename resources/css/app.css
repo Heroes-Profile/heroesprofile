@@ -518,6 +518,8 @@ thead{border-color:transparent;}
   cursor: pointer;
 }
 .void-hidden-eye:hover{ opacity: 1; animation-play-state: paused; }
+.void-hidden-eye-appear-enter-active{ transition: opacity 0.8s ease; }
+.void-hidden-eye-appear-enter-from{ opacity: 0; }
 .void-eye-found-icon{ color: #a855f7; text-shadow: 0 0 18px rgba(124, 58, 237, 0.9); }
 .void-eye-found-enter-active, .void-eye-found-leave-active{ transition: opacity 0.15s ease; }
 .void-eye-found-enter-from, .void-eye-found-leave-to{ opacity: 0; }

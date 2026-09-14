@@ -1,20 +1,24 @@
 <template>
   <div>
-    <button
-      v-if="!found"
-      type="button"
-      class="void-hidden-eye absolute z-30"
-      :style="{ top: spot.top + '%', left: spot.left + '%' }"
-      aria-label="A strange eye"
-      @click="claim"
-    >
-      <img src="/images/event/xalatath/void-eye.svg" alt="" class="w-24 h-24 block" />
-    </button>
+    <transition name="void-hidden-eye-appear">
+      <button
+        v-if="ready && !found"
+        type="button"
+        class="void-hidden-eye absolute z-30"
+        :style="{ top: spot.top + '%', left: spot.left + '%' }"
+        aria-label="A strange eye"
+        @click="claim"
+      >
+        <img src="/images/event/xalatath/void-eye.svg" alt="" class="w-24 h-24 block" />
+      </button>
+    </transition>
     <void-eye-found v-if="result" :status="result" @closed="result = null"></void-eye-found>
   </div>
 </template>
 
 <script>
+import { whenPageSettled } from '../../pageActivity';
+
 export default {
   name: 'VoidHiddenEye',
   props: {
@@ -25,10 +29,16 @@ export default {
   },
   data() {
     return {
+      ready: false,
       found: false,
       result: null,
       claiming: false,
     };
+  },
+  async mounted() {
+    // Only appear once the page's own data has loaded.
+    await whenPageSettled();
+    this.ready = true;
   },
   methods: {
     async claim() {
