@@ -87,10 +87,7 @@
               </div>
 
               <div v-if="season == defaultseason" class="max-w-[1500px] max-md:mx-4 flex justify-end mb-2 items-center gap-4 ml-auto">
-                <div v-if="!patreonUser">
-                  <a class="link" href="/Authenticate/Battlenet" target="_blank">Log in</a> and subscribe to <a class="link" href="https://www.patreon.com/heroesprofile" target="_blank">Patreon</a> to use 
-                </div>
-                <custom-button @click="calculateHPRating(user)" text="Calculate my HP Rating" alt="Calculate my HP Rating" size="small" :ignoreclick="true" :disabled="!patreonUser" :loading="ratingLoading"></custom-button>
+                <custom-button @click="calculateHPRating(user)" text="Calculate my HP Rating" alt="Calculate my HP Rating" size="small" :ignoreclick="true" :disabled="!user" :title="user ? null : 'Log in with Battle.net to use'" :loading="ratingLoading"></custom-button>
                 <span v-if="playerRating">
                   {{ ratingText(playerRating, playerRatingGamesPlayed) }}
                 </span>
@@ -496,7 +493,7 @@ export default {
       return `Rating of ${playerRating} over ${playerRatingGamesPlayed} games`;
     },
     async calculateHPRating(user){
-      if(this.patreonUser){
+      if(user){
         this.playerRating = null;
         this.ratingLoading = true;
         
