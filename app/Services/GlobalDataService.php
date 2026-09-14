@@ -250,7 +250,7 @@ class GlobalDataService
     {
         $flair = BattlenetAccountFlair::firstOrCreate(
             ['battlenet_accounts_id' => $account->battlenet_accounts_id, 'flair' => BattlenetAccountFlair::XALATATH_EYE],
-            ['awarded_at' => now(), 'ad_free_until' => now()->addMonths(6)]
+            ['awarded_at' => now(), 'ad_free_until' => now()->addMonths(3)]
         );
 
         Cache::forget('global_void_eye_holders');

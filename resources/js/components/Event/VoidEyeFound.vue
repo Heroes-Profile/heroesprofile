@@ -11,13 +11,13 @@
 
         <template v-else-if="status === 'claimed'">
           <h2 class="font-logo text-3xl md:text-4xl mb-3">You Have Been Marked</h2>
-          <p class="mb-6">You found Xal'atath's eye. The Eye of the Void now shows beside your battletag, and Heroes Profile is ad-free for you for the next 6 months.</p>
+          <p class="mb-6">You found Xal'atath's eye. The Eye of the Void now shows beside your battletag, and Heroes Profile is ad-free for you for the next 3 months.</p>
           <custom-button :text="'Continue'" :size="'small'" :ignoreclick="true" class="px-8" @click="close"></custom-button>
         </template>
 
         <template v-else>
           <h2 class="font-logo text-3xl md:text-4xl mb-3">She Sees You</h2>
-          <p class="mb-6">You found Xal'atath's eye. Log in with Battle.net to claim the Eye of the Void flair beside your battletag and 6 months of ad-free Heroes Profile.</p>
+          <p class="mb-6">You found Xal'atath's eye. Log in with Battle.net to claim the Eye of the Void flair beside your battletag and 3 months of ad-free Heroes Profile.</p>
           <div class="flex gap-4 justify-center">
             <custom-button :href="'/Authenticate/Battlenet'" :text="'Log in with Battle.net'" :size="'small'" class="px-6"></custom-button>
             <custom-button :text="'Later'" :size="'small'" :ignoreclick="true" color="teal" class="px-6" @click="close"></custom-button>

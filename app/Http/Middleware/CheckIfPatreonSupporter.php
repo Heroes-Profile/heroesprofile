@@ -41,7 +41,7 @@ class CheckIfPatreonSupporter
                 session(['patreonSubscriberSiteFlair' => true]);
             }
 
-            // Event flair can grant a stretch of ad-free (e.g. 6 months for finding the Xal'atath eye).
+            // Event flair can grant a stretch of ad-free (e.g. 3 months for finding the Xal'atath eye).
             $adFreeFlair = BattlenetAccountFlair::where('battlenet_accounts_id', $user->battlenet_accounts_id)
                 ->where('ad_free_until', '>', now())
                 ->exists();
