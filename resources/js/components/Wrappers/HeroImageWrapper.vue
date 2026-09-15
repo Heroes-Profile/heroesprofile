@@ -12,6 +12,7 @@
       :party="party"
       :ispatreon="ispatreon"
       :voideye="voideye"
+      :mobileClick="mobileClick"
       popupsize="large"
     >
       <slot>
@@ -41,7 +42,8 @@ export default {
     party: String,
     ispatreon: Boolean,
     voideye: Boolean,
-    popupsize: String
+    popupsize: String,
+    mobileClick: Boolean,
   },
   data(){
     return {

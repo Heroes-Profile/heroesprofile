@@ -1,18 +1,18 @@
 <template>
   <div class=" w-auto inline-block m-1">
-    <h2 v-if="text" :class="['bg-' + color, 'rounded-t', 'p-2', 'text-sm', 'text-center', 'uppercase']">{{ text }}</h2>
-    <h2 v-else :class="['bg-' + color, 'rounded-t', 'p-2', 'text-sm', 'text-center', 'uppercase']">
+    <h2 v-if="text && !hideheader" :class="['bg-' + color, 'rounded-t', 'p-2', 'text-sm', 'text-center', 'uppercase']">{{ text }}</h2>
+    <h2 v-else-if="!hideheader" :class="['bg-' + color, 'rounded-t', 'p-2', 'text-sm', 'text-center', 'uppercase']">
       <a v-if="esport && esport != 'Other'" class="link" :href="`/Esports/${esport}/Team/${esportteamname}${ tournament ? '?tournament=' + tournament : ''}`">{{  esportteamname  }}</a>
       <a v-if="esport && esport == 'Other'" class="link" :href="`/Esports/${esport}/${series}/Team/${esportteamname}`">{{  esportteamname  }}</a>
       <span v-if="esport"> - </span>
       <span>{{ winnerloser }}</span>
     </h2>
 
-    <div class=" bg-black rounded-b  p-5 flex flex-wrap gap-5 justify-center max-md:gap-2 max-md:p-2">
+    <div v-if="!headeronly" class=" bg-black rounded-b  p-5 flex flex-wrap gap-5 justify-center max-md:gap-2 max-md:p-2">
       <template v-for="(item, index) in data" :key="index">
 
         <!-- Hero Section -->
-        <a v-if="!esport && match && playerlink && item.hero && !item.check" class="link cursor-pointer" @click="this.$redirectToProfile(item.battletag, item.blizz_id, item.region, false)" :href="`/Player/${item.battletag}/${item.blizz_id}/${item.region}`">
+        <a v-if="!esport && match && playerlink && item.hero && !item.check" class="cursor-pointer" @click="this.$redirectToProfile(item.battletag, item.blizz_id, item.region, false)" :href="`/Player/${item.battletag}/${item.blizz_id}/${item.region}`">
           <span>
             <hero-image-wrapper :size="'big'" :hero="item.hero" :award="item.match_award" :winner="winner" :hpowner="item.hp_owner" :party="item.party" :ispatreon="item.patreon_subscriber" :voideye="hasVoidEye(item.blizz_id, item.region)" popupsize="large">
               <image-hover-box 
@@ -127,6 +127,8 @@
       showpopup: true,
       series: String,
       tournament: String,
+      hideheader: Boolean,
+      headeronly: Boolean,
     },
     data(){
       return {

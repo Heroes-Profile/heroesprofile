@@ -19,7 +19,8 @@
         
       }
       ]"
-     @mouseover="showTooltip = true" @mouseleave="showTooltip = false">
+     ref="container"
+     @mouseover="handleMouseOver" @mouseleave="hideTooltip">
        
       <span class="bg-lighten border border-black text-sm rounded-full w-[1.7em] h-[1.7em]  flex justify-center pl-[1px] items-center bold " v-if="circle" >
         <i :class="icon" ></i>
@@ -30,30 +31,28 @@
     
    
      
-    <div v-show=" showTooltip " :class="[
-        'absolute hidden group-hover:block left-1/2   transform -translate-x-1/2 text-xs bottom-[1em] -translate-y-[2em]  z-30',
-      {
-        'bottom-[4.5em] -translate-y-[2em]': size === 'big',
-        'text-xs' : size === 'big',
-        'bottom-[6em] -translate-y-[3em]' : size == 'xl',
-        'w-[12em]' : popupsize != 'large',
-        'w-[20em]' : popupsize == 'large'
-        
-      }
+    <!-- Rendered under body so scrolling table wrappers can't clip it -->
+    <Teleport to="body">
+      <div v-if="showTooltip" :style="tooltipStyle" :class="[
+          'fixed text-xs z-50',
+        {
+          'w-[12em]' : popupsize != 'large',
+          'w-[20em]' : popupsize == 'large'
+        }
+        ]" >
+          <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 max-md:hidden', {
 
-      ]" >
-        <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 max-md:hidden', {
-          
-        }]">
-          
-          <slot></slot>
-        
+          }]">
 
-        </div>
+            <slot></slot>
 
 
-      <div class="popup-arrow max-md:hidden"></div>
-    </div>
+          </div>
+
+
+        <div class="popup-arrow max-md:hidden"></div>
+      </div>
+    </Teleport>
     <div v-if="!excludehover && !mobileClick" :class="[' md:hidden     text-s p-1    drop-shadow-md  rounded-md px-2 text-center   md:mb-4', {}]">
           
           <slot></slot>
@@ -90,12 +89,15 @@ export default {
   data(){
     return {
       showTooltip: false,
-      
+      tooltipStyle: {},
     }
   },
   created(){
   },
   mounted() {
+  },
+  beforeUnmount() {
+    window.removeEventListener('scroll', this.hideTooltip, true);
   },
   computed: {
 
@@ -105,6 +107,23 @@ export default {
   methods: {
      isSmallScreen() {
       return window.innerWidth <= 768; // You can adjust the threshold as needed
+    },
+    handleMouseOver() {
+      if (!this.showTooltip) {
+        // Fixed position goes stale once anything scrolls
+        window.addEventListener('scroll', this.hideTooltip, true);
+      }
+      const rect = this.$refs.container.getBoundingClientRect();
+      this.tooltipStyle = {
+        left: `${rect.left + (rect.width / 2)}px`,
+        bottom: `${window.innerHeight - rect.top + 8}px`,
+        transform: 'translateX(-50%)',
+      };
+      this.showTooltip = true;
+    },
+    hideTooltip() {
+      this.showTooltip = false;
+      window.removeEventListener('scroll', this.hideTooltip, true);
     }
   }
 }

@@ -26,10 +26,10 @@
           </span>
           <span>{{ data.game_length }}</span>
           <!-- Download requires login for all (esport and non-esport); blocked battletags get no control -->
-          <span v-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && user && !data.replay_download_blocked" class="link" @click="downloadReplay(data, replayid)">
+          <span v-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && user && !data.replay_download_blocked" class="link max-md:hidden" @click="downloadReplay(data, replayid)">
             Download Replay
           </span>
-          <span v-else-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && !user" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed">
+          <span v-else-if="(data.downloadable || (esport && (esport == 'CCL' || esport == 'Other'))) && !user" class="inline-flex items-center gap-1 opacity-60 cursor-not-allowed max-md:hidden">
             Download Replay
             <round-image size="small" icon="fas fa-info" title="Login required" popupsize="large">
               <slot>
@@ -42,9 +42,21 @@
 
 
       <div class=" mdp-10 text-center ">
+        <!-- Mobile: one row per player pair so both teams' cards line up -->
+        <div class="md:hidden grid grid-cols-2 max-sm:text-xs">
+          <group-box class="!block !mb-0" :headeronly="true" :esport="esport" :series="series" :tournament="tournament" :winnerloser="getWinnerLoser(0, data.winner)" :esportteamname="getEsportTeamName(0)" :color="data.winner == 0 ? 'teal' : 'red'"></group-box>
+          <group-box class="!block !mb-0" :headeronly="true" :esport="esport" :series="series" :tournament="tournament" :winnerloser="getWinnerLoser(1, data.winner)" :esportteamname="getEsportTeamName(1)" :color="data.winner == 1 ? 'teal' : 'red'"></group-box>
+          <template v-for="rowIndex in Math.max(data.players[0].length, data.players[1].length)" :key="rowIndex">
+            <template v-for="team in [0, 1]" :key="team">
+              <group-box v-if="data.players[team][rowIndex - 1]" class="!block !my-0 bg-black" :hideheader="true" :playerlink="true" :match="true" :esport="esport" :series="series" :tournament="tournament" :data="[data.players[team][rowIndex - 1]]" :winner="data.winner == team"></group-box>
+              <div v-else class="mx-1 bg-black"></div>
+            </template>
+          </template>
+        </div>
+
         <div class="flex  justify-center max-w-[1500px] mx-auto  md:gap-10">
           <div class=" max-w-[50%]  md:max-w-[600px]">
-            <group-box class="md:w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :series="series" :tournament="tournament" :winnerloser="getWinnerLoser(0, data.winner)" :esportteamname="getEsportTeamName(0)" popupsize="large" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
+            <group-box class="md:w-full max-sm:text-xs max-md:hidden":playerlink="true" :match="true" :esport="esport" :series="series" :tournament="tournament" :winnerloser="getWinnerLoser(0, data.winner)" :esportteamname="getEsportTeamName(0)" popupsize="large" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
 
 
             <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
@@ -52,6 +64,7 @@
               <div class="flex gap-2 justify-center mt-4">
                 <template v-for="(item, index) in data.replay_bans[0]" :key="index">
                   <hero-image-wrapper v-if="item.hero !== 0" :hero="item.hero" :size="'big'"></hero-image-wrapper>
+                  <round-image v-else :size="'big'" :image="'/images/talents/no-image.png'"><h2>No Ban</h2></round-image>
                 </template>
               </div>
             </div>
@@ -84,13 +97,14 @@
 
 
           <div class=" max-w-[50%]  md:max-w-[600px]">
-            <group-box class="md:w-full max-sm:text-xs" :playerlink="true" :match="true" :esport="esport" :series="series" :tournament="tournament" :winnerloser="getWinnerLoser(1, data.winner)" :esportteamname="getEsportTeamName(1)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'" :winner="data.winner == 1 ? true : false"></group-box>
+            <group-box class="md:w-full max-sm:text-xs max-md:hidden" :playerlink="true" :match="true" :esport="esport" :series="series" :tournament="tournament" :winnerloser="getWinnerLoser(1, data.winner)" :esportteamname="getEsportTeamName(1)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'" :winner="data.winner == 1 ? true : false"></group-box>
 
             <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
               {{ esport ? this.data.team_names.team_two.team_name : "Team 2" }} Bans
               <div class="flex gap-2 justify-center mt-4">
                 <template v-for="(item, index) in data.replay_bans[1]" :key="index">
                   <hero-image-wrapper v-if="item.hero !== 0" :hero="item.hero" :size="'big'"></hero-image-wrapper>
+                  <round-image v-else :size="'big'" :image="'/images/talents/no-image.png'"><h2>No Ban</h2></round-image>
                 </template>              
               </div>
             </div>
@@ -243,7 +257,9 @@
                 <div v-if="row.hero != 'No Pick'" class="flex gap-4 items-center">
                   <hero-image-wrapper :size="'medium'" :hero="row.hero"></hero-image-wrapper><span class="max-md:hidden">{{ row.hero.name }}</span>
                 </div>
-                <span v-else>No Pick</span>
+                <div v-else class="flex gap-4 items-center">
+                  <round-image :size="'medium'" :image="'/images/talents/no-image.png'"><h2>No Pick</h2></round-image><span class="max-md:hidden">No Pick</span>
+                </div>
               </td>
               <td width="25%">{{ row.pick_number + 1 }}</td>
               <td width="25%">{{ row.type == 0 ? "Ban" : "Pick" }}</td>
@@ -255,17 +271,17 @@
 
 
       <dynamic-banner-ad :patreon-user="patreonUser" :index="2" :mobile-override="false"></dynamic-banner-ad>
-      <div class="p-10  max-w-[1500px] mx-auto">
+      <div class="p-10 max-md:px-2 max-w-[1500px] mx-auto">
        <h2 class="text-3xl font-bold py-5">Talents</h2>
        <div class="flex flex-wrap gap-20 justify-around">
-        <div class="">
+        <div class="max-md:w-full">
           <div class="w-full  mb-10" v-for="(item, index) in data.players[0]" :key="index">
             
             <a class="flex  w-full"  :href="getPlayerProfileLink(item, true)">
               <hero-image-wrapper class="mr-5" :size="'big'" :hero="item.hero"></hero-image-wrapper>
-              <div>
+              <div class="min-w-0">
                 {{ item.battletag }} - {{ item.hero.name }}
-                <div class="flex  items-center gap-2 mb-2">
+                <div class="flex flex-wrap items-center gap-2 mb-2">
 
                   <talent-image-wrapper :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
                   <talent-image-wrapper :size="'medium'" :talent="item.talents.level_four"></talent-image-wrapper>
@@ -284,16 +300,16 @@
              <custom-button class="text-xs" @click="copyToClipboard(item)" text="COPY TO CLIPBOARD" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true">COPY TO CLIPBOARD</custom-button>
            </div>
          </div>
-         
+
        </div>
-       <div class="">
+       <div class="max-md:w-full">
         <div class="w-full  mb-10" v-for="(item, index) in data.players[1]" :key="index">
           
           <a class="flex  w-full"  :href="item.check ? 'javascript:void(0)' : esport ? '/Esports/' + esport + '/Player/' + item.battletag + '/' + item.blizz_id + '/Hero/' + item.hero.name : '/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/Hero/' + item.hero.name">
             <hero-image-wrapper class="mr-5" :size="'big'" :hero="item.hero"></hero-image-wrapper>
-            <div>
+            <div class="min-w-0">
               {{ item.battletag }} - {{ item.hero.name }}
-              <div class="flex  items-center gap-2 mb-2">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
                 
 
                 <talent-image-wrapper :size="'medium'" :talent="item.talents.level_one"></talent-image-wrapper>
@@ -334,19 +350,18 @@
 
   Team 1 Advanced HP MMR data
 
-  <div  ref="tablecontainer" class="table-container w-full overflow-x-auto 2xl:mx-auto" style=" " >
+  <scroll-hint-container class="2xl:mx-auto">
 
 
-  <table :class="['responsive-table', 'relative', { winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }]">
+  <table :class="['responsive-table', 'relative', 'auto-width-table', { winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }]">
     <thead>
       <tr >
-        <td class="color-cell bg-black " colspan="2"></td>
+        <td class="color-cell bg-black border-l border-black"></td>
         <td class="color-cell bg-yellow" colspan="3">Pre-Match</td>
         <td class="color-cell bg-blue" colspan="3">Post-Match</td>
       </tr>
       <tr>
         <td >Player</td>
-        <td >Hero</td>
         <td >HP Player MMR</td>
         <td >HP Hero MMR</td>
         <td >HP Role MMR</td>
@@ -357,8 +372,11 @@
     </thead>
     <tbody>
       <tr v-for="(item, index) in data.players[0]" :key="index">
-        <td class="bg-blue text-white border-white border"><a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'">{{ item.battletag }}</a></td>
-        <td>{{ item.hero.name }}</td>
+        <td class="bg-blue text-white border-white border">
+          <div class="flex gap-2 items-center">
+            <hero-image-wrapper :size="'medium'" :hero="item.hero" :mobileClick="true"></hero-image-wrapper><a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'">{{ item.battletag }}</a>
+          </div>
+        </td>
         <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
         <td>{{ Math.round(item.hero_mmr - item.hero_change) }}</td>
         <td>{{ Math.round(item.role_mmr - item.role_change)}}</td>
@@ -367,8 +385,7 @@
         <td>{{ item.role_mmr }} ({{ item.role_change }})</td>
       </tr>
       <tr>
-        <td class="bg-blue border-white border"></td>
-        <td class="color-cell bg-blue text-white">Average</td>
+        <td class="color-cell bg-blue text-white border-white border">Average</td>
         <td class="color-cell bg-blue text-white">{{ getAverageValue('prev_player_mmr', data.players[0]) }}</td>
         <td class="color-cell bg-blue text-white">{{ getAverageValue('prev_hero_mmr', data.players[0]) }}</td>
         <td class="color-cell bg-blue text-white">{{ getAverageValue('prev_role_mmr', data.players[0]) }}</td>
@@ -378,7 +395,7 @@
       </tr>
     </tbody>
   </table>
-</div>
+</scroll-hint-container>
 </div>
 
 
@@ -386,19 +403,18 @@
 
   Team 2 Advanced HP MMR data
 
-  <div  ref="tablecontainer" class="table-container w-full overflow-x-auto 2xl:mx-auto" style=" " >
+  <scroll-hint-container class="2xl:mx-auto">
 
 
-  <table :class="['responsive-table', 'relative', { winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }]">
+  <table :class="['responsive-table', 'relative', 'auto-width-table', { winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }]">
     <thead>
       <tr>
-       <td class="color-cell bg-black " colspan="2"></td>
+       <td class="color-cell bg-black border-l border-black"></td>
         <td class="color-cell bg-yellow" colspan="3">Pre-Match</td>
         <td class="color-cell bg-blue" colspan="3">Post-Match</td>
       </tr>
       <tr>
         <td>Player</td>
-        <td>Hero</td>
         <td>HP Player MMR</td>
         <td>HP Hero MMR</td>
         <td>HP Role MMR</td>
@@ -409,8 +425,11 @@
     </thead>
     <tbody>
       <tr v-for="(item, index) in data.players[1]" :key="index">
-        <td class="bg-blue text-white border-white border"><a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'">{{ item.battletag }}</a></td>
-        <td>{{ item.hero.name }}</td>
+        <td class="bg-blue text-white border-white border">
+          <div class="flex gap-2 items-center">
+            <hero-image-wrapper :size="'medium'" :hero="item.hero" :mobileClick="true"></hero-image-wrapper><a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'">{{ item.battletag }}</a>
+          </div>
+        </td>
         <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
         <td>{{ Math.round(item.hero_mmr - item.hero_change) }}</td>
         <td>{{ Math.round(item.role_mmr - item.role_change)}}</td>
@@ -419,7 +438,6 @@
         <td>{{ item.role_mmr }} ({{ item.role_change }})</td>
       </tr>
       <tr>
-        <td class="bg-blue text-white border-white border"></td>
         <td class="color-cell bg-blue text-white border-white border">Average</td>
         <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('prev_player_mmr', data.players[1]) }}</td>
         <td class="color-cell bg-blue text-white border-white border">{{ getAverageValue('prev_hero_mmr', data.players[1]) }}</td>
@@ -430,61 +448,98 @@
       </tr>
     </tbody>
   </table>
-</div>
+</scroll-hint-container>
 </div>
 
 <dynamic-banner-ad :patreon-user="patreonUser" :index="5" :mobile-override="false"></dynamic-banner-ad>
 
 <div class="max-sm:text-sm max-w-[1500px] mx-auto my-5">
-  Team 1 Advanced Stats
+  <custom-button class="mb-2" @click="flipAdvancedStats = !flipAdvancedStats" :text="flipAdvancedStats ? 'Show Stats as Rows' : 'Show Players as Rows'" :alt="'Flip Advanced Stats'" size="small" :ignoreclick="true"></custom-button>
+  <div>Team 1 Advanced Stats</div>
 
-  <div  ref="tablecontainer" class="table-container w-full overflow-x-auto 2xl:mx-auto" style=" " v-for="(section, sectionIndex) in sections" :key="sectionIndex">
+  <scroll-hint-container class="2xl:mx-auto" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
 
- 
-  <table :class="['responsive-table', 'relative', { winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1 }]" >
-    <thead>
+
+  <table :class="['responsive-table', 'relative', { winner: data.players[0][0].winner === 1, loser: data.players[0][0].winner !== 1, 'fixed-column-table': flipAdvancedStats }]" :style="flipAdvancedStats ? { width: flippedTableWidth(section) } : null" >
+    <thead v-if="!flipAdvancedStats">
       <tr>
         <td >{{ section.title }}</td>
         <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">
-          <a :href="getPlayerProfileLink(player, true)">{{ player.battletag }}</a>
+          <div class="flex gap-2 items-center">
+            <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)">{{ player.battletag }}</a>
+          </div>
         </td>
     </tr>
   </thead>
-  <tbody>
+  <thead v-else>
+    <tr>
+      <td class="bg-blue text-white border-white border">{{ section.title }}</td>
+      <td class="bg-blue text-white border-white border" v-for="(row, rowIndex) in section.rows" :key="rowIndex">{{ row.label }}</td>
+    </tr>
+  </thead>
+  <tbody v-if="!flipAdvancedStats">
     <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
       <td class="bg-blue text-white border-white border">{{ row.label }}</td>
       <td v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">{{ formatValue(player.score[row.key]) }}</td>
     </tr>
   </tbody>
+  <tbody v-else>
+    <tr v-for="(player, playerIndex) in data.players[0]" :key="playerIndex">
+      <td>
+        <div class="flex gap-2 items-center">
+          <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)">{{ player.battletag }}</a>
+        </div>
+      </td>
+      <td v-for="(row, rowIndex) in section.rows" :key="rowIndex">{{ formatValue(player.score[row.key]) }}</td>
+    </tr>
+  </tbody>
 </table>
-</div>
+</scroll-hint-container>
 </div>
 <div class="max-sm:text-sm max-w-[1500px] mx-auto my-5">
 <dynamic-banner-ad :patreon-user="patreonUser" :index="6" :mobile-override="false"></dynamic-banner-ad>
- 
+
   Team 2 Advanced Stats
-  <div  ref="tablecontainer" class="table-container w-full overflow-x-auto 2xl:mx-auto" style=" " v-for="(section, sectionIndex) in sections" :key="sectionIndex">
-  <table :id="'responsive-table-' +sectionIndex" :ref="'responsivetable'+sectionIndex" :class="['responsive-table', 'relative', { winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1 }]" >
-    <thead>
+  <scroll-hint-container class="2xl:mx-auto" v-for="(section, sectionIndex) in sections" :key="sectionIndex">
+  <table :id="'responsive-table-' +sectionIndex" :ref="'responsivetable'+sectionIndex" :class="['responsive-table', 'relative', { winner: data.players[1][0].winner === 1, loser: data.players[1][0].winner !== 1, 'fixed-column-table': flipAdvancedStats }]" :style="flipAdvancedStats ? { width: flippedTableWidth(section) } : null" >
+    <thead v-if="!flipAdvancedStats">
       <tr>
         <td class="bg-blue text-white border-white border">{{ section.title }}</td>
         <td
         v-for="(player, playerIndex) in data.players[1]"
         :key="playerIndex"
-        
+
         >
-        <a :href="getPlayerProfileLink(player, true)">{{ player.battletag }}</a>
+        <div class="flex gap-2 items-center">
+          <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)">{{ player.battletag }}</a>
+        </div>
       </td>
     </tr>
   </thead>
-  <tbody>
+  <thead v-else>
+    <tr>
+      <td class="bg-blue text-white border-white border">{{ section.title }}</td>
+      <td class="bg-blue text-white border-white border" v-for="(row, rowIndex) in section.rows" :key="rowIndex">{{ row.label }}</td>
+    </tr>
+  </thead>
+  <tbody v-if="!flipAdvancedStats">
     <tr v-for="(row, rowIndex) in section.rows" :key="rowIndex">
       <td class="bg-blue text-white border-white border">{{ row.label }}</td>
       <td v-for="(player, playerIndex) in data.players[1]" :key="playerIndex">{{ formatValue(player.score[row.key]) }}</td>
     </tr>
   </tbody>
+  <tbody v-else>
+    <tr v-for="(player, playerIndex) in data.players[1]" :key="playerIndex">
+      <td>
+        <div class="flex gap-2 items-center">
+          <hero-image-wrapper :size="'medium'" :hero="player.hero" :mobileClick="true"></hero-image-wrapper><a :href="getPlayerProfileLink(player, true)">{{ player.battletag }}</a>
+        </div>
+      </td>
+      <td v-for="(row, rowIndex) in section.rows" :key="rowIndex">{{ formatValue(player.score[row.key]) }}</td>
+    </tr>
+  </tbody>
 </table>
-</div>
+</scroll-hint-container>
 </div>
 
 
@@ -516,6 +571,7 @@
     data(){
       return {
         windowWidth: window.innerWidth,
+        flipAdvancedStats: false,
         cancelTokenSource: null,
         isLoading: false,
         userTimezone: moment.tz.guess(),
@@ -609,9 +665,19 @@
     },
     watch: {
       combinedPlayers(){
+      },
+      flipAdvancedStats(){
+        this.$nextTick(() => {
+          if(this.windowWidth < 1500){
+            this.resizeTables();
+          }
+        });
       }
     },
     methods: {
+      flippedTableWidth(section){
+        return `${18 + (section.rows.length * 10)}em`;
+      },
       resizeTables(){
         if(this.$el && this.$el.querySelectorAll('table')){
           const tables = this.$el.querySelectorAll('table');
@@ -619,7 +685,8 @@
             var tablewrapper = table.closest('.table-container');
             if(tablewrapper){
               // On mobile we prefer native horizontal scroll for readability.
-              if (this.windowWidth <= 768) {
+              // Fixed-column tables scroll too, so every section keeps the same column widths.
+              if (this.windowWidth <= 768 || table.classList.contains('fixed-column-table')) {
                 table.style.transformOrigin = '';
                 table.style.transform = '';
                 tablewrapper.style.height = '';
