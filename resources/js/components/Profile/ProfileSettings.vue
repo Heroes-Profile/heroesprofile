@@ -126,7 +126,7 @@
             <div class="flex flex-wrap gap-4 mt-4">
               <div v-for="example in matchHistoryStyleExamples" :key="example.side" class="max-w-[600px] w-full">
                 <p class="text-sm mb-1">{{ example.label }}</p>
-                <img :src="example.image" :alt="example.label + ' match history example'" :class="['w-full rounded border-2', playerhistorytable === example.side ? 'border-teal' : 'border-transparent opacity-60']" />
+                <img :src="example.image" :alt="example.label + ' match history example'" :class="['w-full rounded border-2', playerhistorytable === example.side ? 'border-teal' : 'border-gray-dark opacity-60']" />
               </div>
             </div>
           </div>

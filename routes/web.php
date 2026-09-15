@@ -44,6 +44,7 @@ use App\Http\Controllers\Global\GlobalTalentStatsController;
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\MatchPredictionGameController;
 use App\Http\Controllers\Player\FriendFoeController;
+use App\Http\Controllers\Player\PlayerAwardsController;
 use App\Http\Controllers\Player\PlayerController;
 use App\Http\Controllers\Player\PlayerHeroesController;
 use App\Http\Controllers\Player\PlayerMapsController;
@@ -173,6 +174,7 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('Player/{battletag}/{blizz_id}/{region}/Talents', [PlayerTalentsController::class, 'show'])->middleware('checkIfPrivateProfilePage');
     Route::get('Player/{battletag}/{blizz_id}/{region}/Talents/{hero}', [PlayerTalentsController::class, 'show'])->middleware('checkIfPrivateProfilePage');
     Route::get('Player/{battletag}/{blizz_id}/{region}/MMR', [PlayerMMRController::class, 'show'])->middleware('checkIfPrivateProfilePage');
+    Route::get('Player/{battletag}/{blizz_id}/{region}/Awards', [PlayerAwardsController::class, 'show'])->middleware('checkIfPrivateProfilePage');
     Route::get('Player/{battletag}/{blizz_id}/{region}/Match/History', [PlayerMatchHistory::class, 'show'])->middleware('checkIfPrivateProfilePage');
     Route::get('Player/{battletag}/{blizz_id}/{region}/Match/Latest', [PlayerMatchHistory::class, 'showLatest'])->middleware('checkIfPrivateProfilePage');
 
