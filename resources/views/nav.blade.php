@@ -12,7 +12,7 @@
 </div>
 
 <div id="main-menu" class="  main-navigation-wrapper"> <!-- max-md:hidden  - This needs to hide/show on click of the button but only on mobile - either detect mobile with vue, or have a class that is added/taken away that only applies to mobile -->
-    <nav class="bg-gray-dark text-white z-40 relative md:px-4 text-sm max-md:pt-2">
+    <nav class="bg-gray-dark text-white z-50 relative md:px-4 text-sm max-md:pt-2">
       <button  id="mobile-nav-close" class="hidden bg-blue rounded-lg px-2 py-1 ml-auto  mr-2">x</button>
        
         <div class="flex items-center justify-between flex-wrap  max-md:flex-col" >
