@@ -43,6 +43,7 @@ use App\Http\Controllers\Global\GlobalTalentBuilderController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\MatchPredictionGameController;
+use App\Http\Controllers\MatchSearchController;
 use App\Http\Controllers\Player\FriendFoeController;
 use App\Http\Controllers\Player\PlayerAwardsController;
 use App\Http\Controllers\Player\PlayerController;
@@ -177,6 +178,8 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('Player/{battletag}/{blizz_id}/{region}/Awards', [PlayerAwardsController::class, 'show'])->middleware('checkIfPrivateProfilePage');
     Route::get('Player/{battletag}/{blizz_id}/{region}/Match/History', [PlayerMatchHistory::class, 'show'])->middleware('checkIfPrivateProfilePage');
     Route::get('Player/{battletag}/{blizz_id}/{region}/Match/Latest', [PlayerMatchHistory::class, 'showLatest'])->middleware('checkIfPrivateProfilePage');
+
+    Route::get('Match/Search', [MatchSearchController::class, 'show']);
 
     Route::get('Match/Single/{replayID}', [SingleMatchController::class, 'showWithoutEsport']);
 

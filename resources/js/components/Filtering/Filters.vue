@@ -225,6 +225,61 @@
             @input-changed="handleInputChange"
           ></multi-select-filter>
 
+          <!-- Heroes Multiselect -->
+          <multi-select-filter v-if="includemultihero"
+            :values="filters.heroes"
+            :text="'Heroes'"
+            @input-changed="handleInputChange"
+          ></multi-select-filter>
+          <div v-if="includemultihero && selectedMultiFilters['Heroes'] && selectedMultiFilters['Heroes'].length > 1" class="flex flex-col text-sm font-medium p-2">
+            <span>Heroes Match</span>
+            <tab-button tab1text="OR" tab2text="AND" :ignoreclick="true"
+              @tab-click="(side) => handleInputChange({ field: 'Heroes Match', value: side === 'right' ? 'all' : 'any', type: 'single' })"
+              :overridedefaultside="selectedSingleFilters['Heroes Match'] === 'all' ? 'right' : 'left'"
+            ></tab-button>
+          </div>
+
+          <!-- HP MMR ranges and rank tiers (advanced) -->
+          <template v-if="includemmrranges && toggleExtraFilters">
+            <number-range-filter v-for="mmrType in ['HP Player MMR', 'HP Hero MMR', 'HP Role MMR']" :key="mmrType"
+              :text="mmrType"
+              @input-changed="handleInputChange"
+            ></number-range-filter>
+            <multi-select-filter
+              :values="rankTiersByMmr"
+              :text="'HP Player Rank'"
+              :showrankinfo="true"
+              @input-changed="handleInputChange"
+            ></multi-select-filter>
+            <!-- Hero tiers are per hero, so this needs heroes to look up -->
+            <multi-select-filter v-if="selectedMultiFilters['Heroes'] && selectedMultiFilters['Heroes'].length"
+              :values="rankTiersByMmr"
+              :text="'HP Hero Rank'"
+              :showrankinfo="true"
+              @input-changed="handleInputChange"
+            ></multi-select-filter>
+            <multi-select-filter
+              :values="rankTiersByMmr"
+              :text="'HP Role Rank'"
+              :showrankinfo="true"
+              @input-changed="handleInputChange"
+            ></multi-select-filter>
+          </template>
+
+          <!-- Players -->
+          <player-picker-filter v-if="includeplayerpicker"
+            :text="'Players'"
+            @input-changed="handleInputChange"
+            @searching="(searching) => onFfSearching && onFfSearching(searching)"
+          ></player-picker-filter>
+
+          <!-- Game Version Multiselect -->
+          <multi-select-filter v-if="includegameversion"
+            :values="filters.timeframes"
+            :text="'Game Version'"
+            @input-changed="handleInputChange"
+          ></multi-select-filter>
+
           <!-- Game Map Multiselect -->
           <multi-select-filter v-if="includegamemap" 
             :values="filters.game_maps" 
@@ -470,6 +525,10 @@
       includeseasonwithall: Boolean,
       includemultiseason: Boolean,
       includegamedaterange: Boolean,
+      includemultihero: Boolean,
+      includemmrranges: Boolean,
+      includeplayerpicker: Boolean,
+      includegameversion: Boolean,
       defaultseasons: Array,
       overrideGroupSizeRemoval: Boolean,
       includetimeframetypewithlastupdate: Boolean,
@@ -743,6 +802,10 @@
         }
         return "Show Advanced Filters";
       },
+      // Wood is decided by games played, not MMR
+      rankTiersByMmr() {
+        return this.filters.rank_tiers.filter(tier => tier.name !== 'Wood');
+      },
       seasonsWithAll() {
         const newValue = { code: 'All', name: 'All' };
         const updatedList = [...this.filters.seasons];
@@ -765,6 +828,16 @@
           delete this.selectedMultiFilters['Hero Rank'];
           delete this.selectedMultiFilters['Role Rank'];
           delete this.selectedMultiFilters['Mirror Matches'];
+
+          if(this.includemmrranges){
+            ['HP Player MMR', 'HP Hero MMR', 'HP Role MMR'].forEach(mmrType => {
+              delete this.selectedSingleFilters[mmrType + ' Min'];
+              delete this.selectedSingleFilters[mmrType + ' Max'];
+            });
+            delete this.selectedMultiFilters['HP Player Rank'];
+            delete this.selectedMultiFilters['HP Hero Rank'];
+            delete this.selectedMultiFilters['HP Role Rank'];
+          }
         }
       },
     },

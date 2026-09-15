@@ -76,6 +76,7 @@
                                 {{--<a href="/" class="block px-4 py-2 border-b border-darken hover:bg-lighten cursor-not-allowed pointer-events-none">Activity Graphs</a>--}}
                                 <a href="https://autobattler.setup.heroesprofile.com/" target="_blank" >Auto Battler</a>
                                 <a href="/Match/Prediction/Game" >Match Prediction Game</a>
+                                <a href="/Match/Search" >Replay Search</a>
                                 <a href="/Tools/RandomizeMe" >Randomize Me</a>
                                 <a href="/Tools/Activity" >Activity Graphs</a>
                                 <a href="/" >Find a Player</a>
