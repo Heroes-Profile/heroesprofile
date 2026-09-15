@@ -54,6 +54,8 @@ class ApiEndpointRegistrySeeder extends Seeder
         ['randomize_me', 'Tools/RandomizeMe', 'Tools', 9, 1, 1000000, 1000000, 1000000, 1000000, 0, 0],
         ['patches', 'Patches', 'General', 1, 1, 1000000, 1000000, 1000000, 1000000, 0, 0],
         ['player', 'Player', 'Player Data', 4, 1, 10000, 25000, 50000, 250000, 250000, 250000],
+        ['player_awards', 'Player/Awards', 'Player Data', 4, 15, 25, 500, 5000, 50000, 0, 0],
+        ['player_awards_games', 'Player/Awards/Games', 'Player Data', 4, 16, 25, 500, 5000, 50000, 0, 0],
         ['player_friendfoe', 'Player/FriendFoe', 'Player Data', 4, 13, 25, 500, 5000, 50000, 0, 0],
         ['player_hero_all', 'Player/Hero/All', 'Player Data', 4, 4, 25, 500, 5000, 50000, 0, 0],
         ['player_hero_single', 'Player/Hero/Single', 'Player Data', 4, 5, 25, 500, 5000, 50000, 0, 0],

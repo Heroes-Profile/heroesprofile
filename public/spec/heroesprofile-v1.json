@@ -60909,14 +60909,6 @@
                         "example": "hero_damage"
                     },
                     {
-                        "name": "season",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
                         "name": "mode",
                         "in": "query",
                         "required": false,
@@ -60994,14 +60986,6 @@
                         },
                         "description": "The statistic to rank by.",
                         "example": "hero_damage"
-                    },
-                    {
-                        "name": "season",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
                     },
                     {
                         "name": "mode",
@@ -61311,14 +61295,6 @@
                         },
                         "description": "Full battletag.",
                         "example": "Zemill#1940"
-                    },
-                    {
-                        "name": "season",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
                     },
                     {
                         "name": "division",
@@ -65132,6 +65108,55 @@
                         "example": "NA"
                     },
                     {
+                        "name": "season",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "style": "form",
+                        "explode": false,
+                        "description": "Season id, or several comma-separated. Ignored if `start_date` or `end_date` is sent. See Variables for season ids."
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or after this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-01-01"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or before this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-06-30"
+                    },
+                    {
+                        "name": "game_type",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        },
+                        "style": "form",
+                        "explode": false,
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Omit for every type.",
+                        "example": "Storm League"
+                    },
+                    {
                         "name": "mode",
                         "in": "query",
                         "required": false,
@@ -66751,6 +66776,806 @@
                 ]
             }
         },
+        "/players/awards": {
+            "get": {
+                "summary": "How often one player earns each end of match award, with their latest five.",
+                "operationId": "api.external.players.awards",
+                "parameters": [
+                    {
+                        "name": "battletag",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Full battletag including the discriminator.",
+                        "example": "Zemill#1940"
+                    },
+                    {
+                        "name": "region",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "NA",
+                                "EU",
+                                "KR",
+                                "CN",
+                                1,
+                                2,
+                                3,
+                                5
+                            ]
+                        },
+                        "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
+                        "example": "NA"
+                    },
+                    {
+                        "name": "season",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "style": "form",
+                        "explode": false,
+                        "description": "Season id, or several comma-separated. Ignored if `start_date` or `end_date` is sent. See Variables for season ids."
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or after this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-01-01"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or before this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-06-30"
+                    },
+                    {
+                        "name": "game_type",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.",
+                        "example": "Storm League"
+                    },
+                    {
+                        "name": "hero",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Restrict to one hero by name.",
+                        "example": "Anduin"
+                    },
+                    {
+                        "name": "role",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Restrict to one role by name.",
+                        "example": "Healer"
+                    },
+                    {
+                        "name": "game_map",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Filter to one map, or several comma-separated, by name.",
+                        "example": "Alterac Pass"
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "total_games": {
+                                            "type": "integer"
+                                        },
+                                        "awards": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "award_id": {
+                                                        "type": "integer"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "icon": {
+                                                        "type": "string"
+                                                    },
+                                                    "description": {
+                                                        "type": "string"
+                                                    },
+                                                    "count": {
+                                                        "type": "integer"
+                                                    },
+                                                    "rate": {
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "award_id",
+                                                    "title",
+                                                    "icon",
+                                                    "description",
+                                                    "count",
+                                                    "rate"
+                                                ]
+                                            }
+                                        },
+                                        "recent_awards": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "replayID": {
+                                                        "type": "integer",
+                                                        "description": "The match id. Pass it to `/matches/{replayID}` for full detail."
+                                                    },
+                                                    "game_date": {
+                                                        "type": "string",
+                                                        "description": "When the match was played, as `YYYY-MM-DD HH:MM:SS` UTC."
+                                                    },
+                                                    "game_type": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "type_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "no_space_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "short_name": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "type_id",
+                                                            "name",
+                                                            "no_space_name",
+                                                            "short_name"
+                                                        ]
+                                                    },
+                                                    "game_map": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "map_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "short_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": {
+                                                                "type": "string"
+                                                            },
+                                                            "ranked_rotation": {
+                                                                "type": "integer"
+                                                            },
+                                                            "playable": {
+                                                                "type": "integer"
+                                                            },
+                                                            "sanitized_map_name": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "map_id",
+                                                            "name",
+                                                            "short_name",
+                                                            "type",
+                                                            "ranked_rotation",
+                                                            "playable",
+                                                            "sanitized_map_name"
+                                                        ]
+                                                    },
+                                                    "hero": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "short_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "alt_name": {
+                                                                "type": "null"
+                                                            },
+                                                            "role": {
+                                                                "type": "string"
+                                                            },
+                                                            "new_role": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": {
+                                                                "type": "string"
+                                                            },
+                                                            "release_date": {
+                                                                "type": "string"
+                                                            },
+                                                            "rework_date": {
+                                                                "type": "null"
+                                                            },
+                                                            "last_change_patch_version": {
+                                                                "type": "string"
+                                                            },
+                                                            "attribute_id": {
+                                                                "type": "string"
+                                                            },
+                                                            "build_copy_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "last_updated": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "short_name",
+                                                            "alt_name",
+                                                            "role",
+                                                            "new_role",
+                                                            "type",
+                                                            "release_date",
+                                                            "rework_date",
+                                                            "last_change_patch_version",
+                                                            "attribute_id",
+                                                            "build_copy_name",
+                                                            "last_updated"
+                                                        ]
+                                                    },
+                                                    "winner": {
+                                                        "type": "integer"
+                                                    },
+                                                    "award": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "award_table_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "award_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "icon": {
+                                                                "type": "string"
+                                                            },
+                                                            "description": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "award_table_id",
+                                                            "award_id",
+                                                            "title",
+                                                            "icon",
+                                                            "description"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "replayID",
+                                                    "game_date",
+                                                    "game_type",
+                                                    "game_map",
+                                                    "hero",
+                                                    "winner",
+                                                    "award"
+                                                ]
+                                            }
+                                        }
+                                    },
+                                    "required": [
+                                        "total_games",
+                                        "awards",
+                                        "recent_awards"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "202": {
+                        "description": "The result was not cached. Poll the job for it — polling costs no quota.",
+                        "headers": {
+                            "Location": {
+                                "description": "Where to collect the result.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Retry-After": {
+                                "description": "Suggested seconds between polls.",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "job_id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "job_id"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-endpoint-key": "player_awards",
+                "x-site-page": "/Player/{battletag}/{blizz_id}/{region}/Awards",
+                "tags": [
+                    "Player Stats"
+                ]
+            }
+        },
+        "/players/awards/games": {
+            "get": {
+                "summary": "Every match in which one player earned a given award, newest first.",
+                "operationId": "api.external.players.awards.games",
+                "parameters": [
+                    {
+                        "name": "battletag",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Full battletag including the discriminator.",
+                        "example": "Zemill#1940"
+                    },
+                    {
+                        "name": "region",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "NA",
+                                "EU",
+                                "KR",
+                                "CN",
+                                1,
+                                2,
+                                3,
+                                5
+                            ]
+                        },
+                        "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
+                        "example": "NA"
+                    },
+                    {
+                        "name": "season",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "style": "form",
+                        "explode": false,
+                        "description": "Season id, or several comma-separated. Ignored if `start_date` or `end_date` is sent. See Variables for season ids."
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or after this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-01-01"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or before this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-06-30"
+                    },
+                    {
+                        "name": "award_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "The award, by `award_id` from `players/awards`.",
+                        "example": 1
+                    },
+                    {
+                        "name": "pagination_page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "Page of results, 100 per page. Defaults to 1."
+                    },
+                    {
+                        "name": "game_type",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.",
+                        "example": "Storm League"
+                    },
+                    {
+                        "name": "hero",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Restrict to one hero by name.",
+                        "example": "Anduin"
+                    },
+                    {
+                        "name": "role",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Restrict to one role by name.",
+                        "example": "Healer"
+                    },
+                    {
+                        "name": "game_map",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Filter to one map, or several comma-separated, by name.",
+                        "example": "Alterac Pass"
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "json",
+                                "csv"
+                            ]
+                        },
+                        "description": "Response format. `csv` returns the same data as a downloadable file, flattened to one row per record.",
+                        "example": "csv"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "current_page": {
+                                            "type": "integer"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "replayID": {
+                                                        "type": "integer",
+                                                        "description": "The match id. Pass it to `/matches/{replayID}` for full detail."
+                                                    },
+                                                    "game_date": {
+                                                        "type": "string",
+                                                        "description": "When the match was played, as `YYYY-MM-DD HH:MM:SS` UTC."
+                                                    },
+                                                    "game_type": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "type_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "no_space_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "short_name": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "type_id",
+                                                            "name",
+                                                            "no_space_name",
+                                                            "short_name"
+                                                        ]
+                                                    },
+                                                    "game_map": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "map_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "short_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": {
+                                                                "type": "string"
+                                                            },
+                                                            "ranked_rotation": {
+                                                                "type": "integer"
+                                                            },
+                                                            "playable": {
+                                                                "type": "integer"
+                                                            },
+                                                            "sanitized_map_name": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "map_id",
+                                                            "name",
+                                                            "short_name",
+                                                            "type",
+                                                            "ranked_rotation",
+                                                            "playable",
+                                                            "sanitized_map_name"
+                                                        ]
+                                                    },
+                                                    "hero": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "name": {
+                                                                "type": "string"
+                                                            },
+                                                            "short_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "alt_name": {
+                                                                "type": "null"
+                                                            },
+                                                            "role": {
+                                                                "type": "string"
+                                                            },
+                                                            "new_role": {
+                                                                "type": "string"
+                                                            },
+                                                            "type": {
+                                                                "type": "string"
+                                                            },
+                                                            "release_date": {
+                                                                "type": "string"
+                                                            },
+                                                            "rework_date": {
+                                                                "type": "null"
+                                                            },
+                                                            "last_change_patch_version": {
+                                                                "type": "string"
+                                                            },
+                                                            "attribute_id": {
+                                                                "type": "string"
+                                                            },
+                                                            "build_copy_name": {
+                                                                "type": "string"
+                                                            },
+                                                            "last_updated": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "id",
+                                                            "name",
+                                                            "short_name",
+                                                            "alt_name",
+                                                            "role",
+                                                            "new_role",
+                                                            "type",
+                                                            "release_date",
+                                                            "rework_date",
+                                                            "last_change_patch_version",
+                                                            "attribute_id",
+                                                            "build_copy_name",
+                                                            "last_updated"
+                                                        ]
+                                                    },
+                                                    "winner": {
+                                                        "type": "integer"
+                                                    },
+                                                    "award": {
+                                                        "type": "object",
+                                                        "properties": {
+                                                            "award_table_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "award_id": {
+                                                                "type": "integer"
+                                                            },
+                                                            "title": {
+                                                                "type": "string"
+                                                            },
+                                                            "icon": {
+                                                                "type": "string"
+                                                            },
+                                                            "description": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "required": [
+                                                            "award_table_id",
+                                                            "award_id",
+                                                            "title",
+                                                            "icon",
+                                                            "description"
+                                                        ]
+                                                    }
+                                                },
+                                                "required": [
+                                                    "replayID",
+                                                    "game_date",
+                                                    "game_type",
+                                                    "game_map",
+                                                    "hero",
+                                                    "winner",
+                                                    "award"
+                                                ]
+                                            }
+                                        },
+                                        "first_page_url": {
+                                            "type": "string"
+                                        },
+                                        "from": {
+                                            "type": "integer"
+                                        },
+                                        "last_page": {
+                                            "type": "integer"
+                                        },
+                                        "last_page_url": {
+                                            "type": "string"
+                                        },
+                                        "links": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "url": {
+                                                        "type": [
+                                                            "null",
+                                                            "string"
+                                                        ]
+                                                    },
+                                                    "label": {
+                                                        "type": "string"
+                                                    },
+                                                    "active": {
+                                                        "type": "boolean"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "url",
+                                                    "label",
+                                                    "active"
+                                                ]
+                                            }
+                                        },
+                                        "next_page_url": {
+                                            "type": "null"
+                                        },
+                                        "path": {
+                                            "type": "string"
+                                        },
+                                        "per_page": {
+                                            "type": "integer"
+                                        },
+                                        "prev_page_url": {
+                                            "type": "null"
+                                        },
+                                        "to": {
+                                            "type": "integer"
+                                        },
+                                        "total": {
+                                            "type": "integer"
+                                        }
+                                    },
+                                    "required": [
+                                        "current_page",
+                                        "data",
+                                        "first_page_url",
+                                        "from",
+                                        "last_page",
+                                        "last_page_url",
+                                        "links",
+                                        "next_page_url",
+                                        "path",
+                                        "per_page",
+                                        "prev_page_url",
+                                        "to",
+                                        "total"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-endpoint-key": "player_awards_games",
+                "x-site-page": "/Player/{battletag}/{blizz_id}/{region}/Awards",
+                "tags": [
+                    "Player Stats"
+                ]
+            }
+        },
         "/players/friendfoe": {
             "get": {
                 "summary": "Team-mates and opponents this player sees repeatedly.",
@@ -66787,6 +67612,40 @@
                         "example": "NA"
                     },
                     {
+                        "name": "season",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "style": "form",
+                        "explode": false,
+                        "description": "Season id, or several comma-separated. Ignored if `start_date` or `end_date` is sent. See Variables for season ids."
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or after this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-01-01"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or before this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-06-30"
+                    },
+                    {
                         "name": "type",
                         "in": "query",
                         "required": true,
@@ -66806,7 +67665,7 @@
                         "schema": {
                             "type": "string"
                         },
-                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.",
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.",
                         "example": "Storm League"
                     },
                     {
@@ -66817,14 +67676,6 @@
                             "type": "string"
                         },
                         "description": "Restrict to one hero by name."
-                    },
-                    {
-                        "name": "season",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
                     },
                     {
                         "name": "game_map",
@@ -67017,6 +67868,38 @@
                                 }
                             }
                         }
+                    },
+                    "202": {
+                        "description": "The result was not cached. Poll the job for it — polling costs no quota.",
+                        "headers": {
+                            "Location": {
+                                "description": "Where to collect the result.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Retry-After": {
+                                "description": "Suggested seconds between polls.",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "job_id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "job_id"
+                                    ]
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "player_friendfoe",
@@ -67062,22 +67945,48 @@
                         "example": "NA"
                     },
                     {
+                        "name": "season",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "style": "form",
+                        "explode": false,
+                        "description": "Season id, or several comma-separated. Ignored if `start_date` or `end_date` is sent. See Variables for season ids."
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or after this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-01-01"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or before this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-06-30"
+                    },
+                    {
                         "name": "game_type",
                         "in": "query",
                         "required": false,
                         "schema": {
                             "type": "string"
                         },
-                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.",
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.",
                         "example": "Storm League"
-                    },
-                    {
-                        "name": "season",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
                     },
                     {
                         "name": "minimumgames",
@@ -68117,6 +69026,38 @@
                                 }
                             }
                         }
+                    },
+                    "202": {
+                        "description": "The result was not cached. Poll the job for it — polling costs no quota.",
+                        "headers": {
+                            "Location": {
+                                "description": "Where to collect the result.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Retry-After": {
+                                "description": "Suggested seconds between polls.",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "job_id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "job_id"
+                                    ]
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "player_hero_all",
@@ -68162,6 +69103,40 @@
                         "example": "NA"
                     },
                     {
+                        "name": "season",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "style": "form",
+                        "explode": false,
+                        "description": "Season id, or several comma-separated. Ignored if `start_date` or `end_date` is sent. See Variables for season ids."
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or after this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-01-01"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or before this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-06-30"
+                    },
+                    {
                         "name": "hero",
                         "in": "query",
                         "required": true,
@@ -68178,16 +69153,8 @@
                         "schema": {
                             "type": "string"
                         },
-                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.",
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.",
                         "example": "Storm League"
-                    },
-                    {
-                        "name": "season",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
                     },
                     {
                         "name": "game_map",
@@ -70568,6 +71535,38 @@
                                 }
                             }
                         }
+                    },
+                    "202": {
+                        "description": "The result was not cached. Poll the job for it — polling costs no quota.",
+                        "headers": {
+                            "Location": {
+                                "description": "Where to collect the result.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Retry-After": {
+                                "description": "Suggested seconds between polls.",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "job_id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "job_id"
+                                    ]
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "player_hero_single",
@@ -70613,22 +71612,48 @@
                         "example": "NA"
                     },
                     {
+                        "name": "season",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "style": "form",
+                        "explode": false,
+                        "description": "Season id, or several comma-separated. Ignored if `start_date` or `end_date` is sent. See Variables for season ids."
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or after this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-01-01"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or before this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-06-30"
+                    },
+                    {
                         "name": "game_type",
                         "in": "query",
                         "required": false,
                         "schema": {
                             "type": "string"
                         },
-                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.",
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.",
                         "example": "Storm League"
-                    },
-                    {
-                        "name": "season",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
                     },
                     {
                         "name": "hero",
@@ -71472,6 +72497,38 @@
                                 }
                             }
                         }
+                    },
+                    "202": {
+                        "description": "The result was not cached. Poll the job for it — polling costs no quota.",
+                        "headers": {
+                            "Location": {
+                                "description": "Where to collect the result.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Retry-After": {
+                                "description": "Suggested seconds between polls.",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "job_id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "job_id"
+                                    ]
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "player_map_all",
@@ -71517,6 +72574,40 @@
                         "example": "NA"
                     },
                     {
+                        "name": "season",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "style": "form",
+                        "explode": false,
+                        "description": "Season id, or several comma-separated. Ignored if `start_date` or `end_date` is sent. See Variables for season ids."
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or after this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-01-01"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or before this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-06-30"
+                    },
+                    {
                         "name": "map",
                         "in": "query",
                         "required": true,
@@ -71533,16 +72624,8 @@
                         "schema": {
                             "type": "string"
                         },
-                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.",
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.",
                         "example": "Storm League"
-                    },
-                    {
-                        "name": "season",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
                     },
                     {
                         "name": "hero",
@@ -74102,6 +75185,38 @@
                                 }
                             }
                         }
+                    },
+                    "202": {
+                        "description": "The result was not cached. Poll the job for it — polling costs no quota.",
+                        "headers": {
+                            "Location": {
+                                "description": "Where to collect the result.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Retry-After": {
+                                "description": "Suggested seconds between polls.",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "job_id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "job_id"
+                                    ]
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "player_map_single",
@@ -74147,13 +75262,47 @@
                         "example": "NA"
                     },
                     {
+                        "name": "season",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "style": "form",
+                        "explode": false,
+                        "description": "Season id, or several comma-separated. Ignored if `start_date` or `end_date` is sent. See Variables for season ids."
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or after this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-01-01"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or before this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-06-30"
+                    },
+                    {
                         "name": "game_type",
                         "in": "query",
                         "required": false,
                         "schema": {
                             "type": "string"
                         },
-                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.",
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.",
                         "example": "Storm League"
                     },
                     {
@@ -74164,15 +75313,6 @@
                             "type": "string"
                         },
                         "description": "Restrict to one hero by name."
-                    },
-                    {
-                        "name": "season",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "Restrict to one season."
                     },
                     {
                         "name": "pagination_page",
@@ -75026,6 +76166,40 @@
                         "example": "NA"
                     },
                     {
+                        "name": "season",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "style": "form",
+                        "explode": false,
+                        "description": "Season id, or several comma-separated. Ignored if `start_date` or `end_date` is sent. See Variables for season ids."
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or after this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-01-01"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or before this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-06-30"
+                    },
+                    {
                         "name": "game_type",
                         "in": "query",
                         "required": false,
@@ -75043,14 +76217,6 @@
                             "type": "string"
                         },
                         "description": "Restrict to one hero by name."
-                    },
-                    {
-                        "name": "season",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
                     },
                     {
                         "name": "game_map",
@@ -76008,6 +77174,40 @@
                         "example": "NA"
                     },
                     {
+                        "name": "season",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "style": "form",
+                        "explode": false,
+                        "description": "Season id, or several comma-separated. Ignored if `start_date` or `end_date` is sent. See Variables for season ids."
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or after this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-01-01"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or before this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-06-30"
+                    },
+                    {
                         "name": "game_type",
                         "in": "query",
                         "required": false,
@@ -76016,14 +77216,6 @@
                         },
                         "description": "One game type, by short name or display name — `sl` and `Storm League` both work. Defaults to Storm League.",
                         "example": "Storm League"
-                    },
-                    {
-                        "name": "season",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
                     },
                     {
                         "name": "mode",
@@ -76279,6 +77471,40 @@
                         "example": "NA"
                     },
                     {
+                        "name": "season",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "style": "form",
+                        "explode": false,
+                        "description": "Season id, or several comma-separated. Ignored if `start_date` or `end_date` is sent. See Variables for season ids."
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or after this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-01-01"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or before this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-06-30"
+                    },
+                    {
                         "name": "hero",
                         "in": "query",
                         "required": true,
@@ -76297,14 +77523,6 @@
                         },
                         "description": "One game type, by short name or display name — `sl` and `Storm League` both work. Defaults to Storm League.",
                         "example": "Storm League"
-                    },
-                    {
-                        "name": "season",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
                     },
                     {
                         "name": "mode",
@@ -76557,6 +77775,40 @@
                         "example": "NA"
                     },
                     {
+                        "name": "season",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "style": "form",
+                        "explode": false,
+                        "description": "Season id, or several comma-separated. Ignored if `start_date` or `end_date` is sent. See Variables for season ids."
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or after this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-01-01"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or before this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-06-30"
+                    },
+                    {
                         "name": "role",
                         "in": "query",
                         "required": true,
@@ -76575,14 +77827,6 @@
                         },
                         "description": "One game type, by short name or display name — `sl` and `Storm League` both work. Defaults to Storm League.",
                         "example": "Storm League"
-                    },
-                    {
-                        "name": "season",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
                     },
                     {
                         "name": "mode",
@@ -77206,22 +78450,48 @@
                         "example": "NA"
                     },
                     {
+                        "name": "season",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "style": "form",
+                        "explode": false,
+                        "description": "Season id, or several comma-separated. Ignored if `start_date` or `end_date` is sent. See Variables for season ids."
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or after this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-01-01"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or before this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-06-30"
+                    },
+                    {
                         "name": "game_type",
                         "in": "query",
                         "required": false,
                         "schema": {
                             "type": "string"
                         },
-                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.",
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.",
                         "example": "Storm League"
-                    },
-                    {
-                        "name": "season",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
                     },
                     {
                         "name": "hero",
@@ -78066,6 +79336,38 @@
                                 }
                             }
                         }
+                    },
+                    "202": {
+                        "description": "The result was not cached. Poll the job for it — polling costs no quota.",
+                        "headers": {
+                            "Location": {
+                                "description": "Where to collect the result.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Retry-After": {
+                                "description": "Suggested seconds between polls.",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "job_id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "job_id"
+                                    ]
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "player_role_all",
@@ -78111,6 +79413,40 @@
                         "example": "NA"
                     },
                     {
+                        "name": "season",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "style": "form",
+                        "explode": false,
+                        "description": "Season id, or several comma-separated. Ignored if `start_date` or `end_date` is sent. See Variables for season ids."
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or after this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-01-01"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or before this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-06-30"
+                    },
+                    {
                         "name": "role",
                         "in": "query",
                         "required": true,
@@ -78127,16 +79463,8 @@
                         "schema": {
                             "type": "string"
                         },
-                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.",
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.",
                         "example": "Storm League"
-                    },
-                    {
-                        "name": "season",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
                     },
                     {
                         "name": "hero",
@@ -80829,6 +82157,38 @@
                                 }
                             }
                         }
+                    },
+                    "202": {
+                        "description": "The result was not cached. Poll the job for it — polling costs no quota.",
+                        "headers": {
+                            "Location": {
+                                "description": "Where to collect the result.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Retry-After": {
+                                "description": "Suggested seconds between polls.",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "job_id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "job_id"
+                                    ]
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "player_role_single",
@@ -80874,6 +82234,40 @@
                         "example": "NA"
                     },
                     {
+                        "name": "season",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            }
+                        },
+                        "style": "form",
+                        "explode": false,
+                        "description": "Season id, or several comma-separated. Ignored if `start_date` or `end_date` is sent. See Variables for season ids."
+                    },
+                    {
+                        "name": "start_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or after this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-01-01"
+                    },
+                    {
+                        "name": "end_date",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Only matches on or before this date, `YYYY-MM-DD`. Use instead of `season`.",
+                        "example": "2026-06-30"
+                    },
+                    {
                         "name": "hero",
                         "in": "query",
                         "required": true,
@@ -80890,16 +82284,8 @@
                         "schema": {
                             "type": "string"
                         },
-                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.",
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.",
                         "example": "Storm League"
-                    },
-                    {
-                        "name": "season",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
                     },
                     {
                         "name": "game_map",
@@ -80917,8 +82303,9 @@
                         "schema": {
                             "type": "string"
                         },
-                        "description": "Only matches on or after this date, `YYYY-MM-DD`.",
-                        "example": "2024-01-01"
+                        "description": "Deprecated: use `start_date`. Still accepted, and treated as `start_date` when that is not sent.",
+                        "example": "2024-01-01",
+                        "deprecated": true
                     },
                     {
                         "name": "mode",

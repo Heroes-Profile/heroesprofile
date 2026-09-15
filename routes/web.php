@@ -43,7 +43,9 @@ use App\Http\Controllers\Global\GlobalTalentBuilderController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\MatchPredictionGameController;
+use App\Http\Controllers\MatchSearchController;
 use App\Http\Controllers\Player\FriendFoeController;
+use App\Http\Controllers\Player\PlayerAwardsController;
 use App\Http\Controllers\Player\PlayerController;
 use App\Http\Controllers\Player\PlayerHeroesController;
 use App\Http\Controllers\Player\PlayerMapsController;
@@ -61,6 +63,7 @@ use App\Http\Controllers\TermsOfServiceController;
 use App\Http\Controllers\Tools\ActivityGraphsController;
 use App\Http\Controllers\Tools\RandomizeMeController;
 use App\Http\Controllers\UploadController;
+use App\Http\Controllers\XalatathEventController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -172,8 +175,11 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('Player/{battletag}/{blizz_id}/{region}/Talents', [PlayerTalentsController::class, 'show'])->middleware('checkIfPrivateProfilePage');
     Route::get('Player/{battletag}/{blizz_id}/{region}/Talents/{hero}', [PlayerTalentsController::class, 'show'])->middleware('checkIfPrivateProfilePage');
     Route::get('Player/{battletag}/{blizz_id}/{region}/MMR', [PlayerMMRController::class, 'show'])->middleware('checkIfPrivateProfilePage');
+    Route::get('Player/{battletag}/{blizz_id}/{region}/Awards', [PlayerAwardsController::class, 'show'])->middleware('checkIfPrivateProfilePage');
     Route::get('Player/{battletag}/{blizz_id}/{region}/Match/History', [PlayerMatchHistory::class, 'show'])->middleware('checkIfPrivateProfilePage');
     Route::get('Player/{battletag}/{blizz_id}/{region}/Match/Latest', [PlayerMatchHistory::class, 'showLatest'])->middleware('checkIfPrivateProfilePage');
+
+    Route::get('Match/Search', [MatchSearchController::class, 'show']);
 
     Route::get('Match/Single/{replayID}', [SingleMatchController::class, 'showWithoutEsport']);
 
@@ -321,5 +327,10 @@ Route::redirect('https://{any}/ads.txt', 'https://adstxt.venatusmedia.com/60f587
 
 Route::get('/Animation/Deathwing', [AnimationsController::class, 'showDeathwing']);
 Route::get('/Animation/Tassadar', [AnimationsController::class, 'showTassadar']);
+
+// Polled by the header scoreboard every 30s; kept out of the logging group.
+Route::get('/Event/Xalatath/Totals', [XalatathEventController::class, 'totals'])->middleware('throttle:10,1');
+Route::get('/Flair/State', [XalatathEventController::class, 'flairState'])->middleware('throttle:30,1');
+Route::post('/Event/Xalatath/Eye', [XalatathEventController::class, 'claimEye'])->middleware('throttle:10,1');
 
 Route::get('/test/patreon-earnings', [MainPageController::class, 'testPatreonEarnings']);

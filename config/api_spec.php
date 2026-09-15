@@ -139,6 +139,8 @@ return [
 
         'Player Stats' => [
             'api.external.players',
+            'api.external.players.awards',
+            'api.external.players.awards.games',
             'api.external.players.friendfoe',
             'api.external.players.heroes',
             'api.external.players.heroes.single',
@@ -231,6 +233,17 @@ return [
         'popularity' => 'Percentage of matches in which this appeared, 0 to 100.',
     ],
 
+    /* The time window player stats cover. Seasons or dates, not both. */
+    'player_dates' => [
+        'season' => [
+            'type' => 'integer',
+            'multi' => true,
+            'description' => 'Season id, or several comma-separated. Ignored if `start_date` or `end_date` is sent. See Variables for season ids.',
+        ],
+        'start_date' => ['description' => 'Only matches on or after this date, `YYYY-MM-DD`. Use instead of `season`.', 'example' => '2026-01-01'],
+        'end_date' => ['description' => 'Only matches on or before this date, `YYYY-MM-DD`. Use instead of `season`.', 'example' => '2026-06-30'],
+    ],
+
     /* Every player endpoint identifies its subject this way. */
     'player' => [
         'battletag' => [
@@ -290,17 +303,47 @@ return [
         'api.external.players' => [
             'summary' => 'Profile, ratings and career totals for one player.',
             'page' => '/Player/{battletag}/{blizz_id}/{region}',
-            'uses' => ['player'],
+            'uses' => ['player', 'player_dates'],
+            'parameters' => [
+                'game_type' => ['multi' => true, 'description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Omit for every type.', 'example' => 'Storm League'],
+            ],
+        ],
+
+        'api.external.players.awards' => [
+            'summary' => 'How often one player earns each end of match award, with their latest five.',
+            'description' => 'Only matches after award tracking began are counted. `rate` is the percentage of those matches in which the award was earned. Pass an `award_id` from here to `players/awards/games` for every match with that award.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/Awards',
+            'uses' => ['player', 'player_dates'],
+            'async' => true,
+            'parameters' => [
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.', 'example' => 'Storm League'],
+                'hero' => ['description' => 'Restrict to one hero by name.', 'example' => 'Anduin'],
+                'role' => ['description' => 'Restrict to one role by name.', 'example' => 'Healer'],
+                'game_map' => ['description' => 'Filter to one map, or several comma-separated, by name.', 'example' => 'Alterac Pass'],
+            ],
+        ],
+
+        'api.external.players.awards.games' => [
+            'summary' => 'Every match in which one player earned a given award, newest first.',
+            'page' => '/Player/{battletag}/{blizz_id}/{region}/Awards',
+            'uses' => ['player', 'player_dates'],
+            'parameters' => [
+                'award_id' => ['required' => true, 'type' => 'integer', 'description' => 'The award, by `award_id` from `players/awards`.', 'example' => 1],
+                'pagination_page' => ['type' => 'integer', 'description' => 'Page of results, 100 per page. Defaults to 1.'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.', 'example' => 'Storm League'],
+                'hero' => ['description' => 'Restrict to one hero by name.', 'example' => 'Anduin'],
+                'role' => ['description' => 'Restrict to one role by name.', 'example' => 'Healer'],
+                'game_map' => ['description' => 'Filter to one map, or several comma-separated, by name.', 'example' => 'Alterac Pass'],
+            ],
         ],
 
         'api.external.players.matches' => [
             'summary' => 'Match history, with the full stat line for each game.',
             'page' => '/Player/{battletag}/{blizz_id}/{region}/Match/History',
-            'uses' => ['player'],
+            'uses' => ['player', 'player_dates'],
             'parameters' => [
-                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.', 'example' => 'Storm League'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.', 'example' => 'Storm League'],
                 'hero' => ['description' => 'Restrict to one hero by name.'],
-                'season' => ['type' => 'integer', 'description' => 'Restrict to one season.'],
                 'pagination_page' => ['type' => 'integer', 'description' => 'Page of results. Defaults to 1.'],
                 'game_map' => ['description' => 'Filter to one map, or several comma-separated, by name.', 'example' => 'Alterac Pass'],
                 'role' => ['description' => 'Filter to one role, by name.', 'example' => 'Healer'],
@@ -311,10 +354,10 @@ return [
         'api.external.players.heroes' => [
             'summary' => 'Per-hero performance for one player.',
             'page' => '/Player/{battletag}/{blizz_id}/{region}/Hero',
-            'uses' => ['player'],
+            'uses' => ['player', 'player_dates'],
+            'async' => true,
             'parameters' => [
-                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.', 'example' => 'Storm League'],
-                'season' => ['type' => 'integer'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.', 'example' => 'Storm League'],
                 'minimumgames' => ['type' => 'integer', 'description' => 'Drop heroes below this many games.'],
                 'hero' => ['description' => 'Filter to one hero, by name.', 'example' => 'Anduin'],
                 'game_map' => ['description' => 'Filter to one map, or several comma-separated, by name.', 'example' => 'Alterac Pass'],
@@ -324,11 +367,11 @@ return [
         'api.external.players.heroes.single' => [
             'summary' => 'One hero, for one player.',
             'page' => '/Player/{battletag}/{blizz_id}/{region}/Hero/{hero}',
-            'uses' => ['player'],
+            'uses' => ['player', 'player_dates'],
+            'async' => true,
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
-                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.', 'example' => 'Storm League'],
-                'season' => ['type' => 'integer'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.', 'example' => 'Storm League'],
                 'game_map' => ['description' => 'Filter to one map, by name.', 'example' => 'Alterac Pass'],
             ],
         ],
@@ -336,10 +379,10 @@ return [
         'api.external.players.maps' => [
             'summary' => 'Per-map performance for one player.',
             'page' => '/Player/{battletag}/{blizz_id}/{region}/Map',
-            'uses' => ['player'],
+            'uses' => ['player', 'player_dates'],
+            'async' => true,
             'parameters' => [
-                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.', 'example' => 'Storm League'],
-                'season' => ['type' => 'integer'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.', 'example' => 'Storm League'],
                 'hero' => ['description' => 'Filter to one hero, by name.', 'example' => 'Anduin'],
                 'minimumgames' => ['type' => 'integer', 'description' => 'Drop rows below this many games.'],
             ],
@@ -348,11 +391,11 @@ return [
         'api.external.players.maps.single' => [
             'summary' => 'One map, for one player.',
             'page' => '/Player/{battletag}/{blizz_id}/{region}/Map/{map}',
-            'uses' => ['player'],
+            'uses' => ['player', 'player_dates'],
+            'async' => true,
             'parameters' => [
                 'map' => ['required' => true, 'description' => 'Map name.', 'example' => 'Alterac Pass'],
-                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.', 'example' => 'Storm League'],
-                'season' => ['type' => 'integer'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.', 'example' => 'Storm League'],
                 'hero' => ['description' => 'Filter to one hero, by name.', 'example' => 'Anduin'],
             ],
         ],
@@ -360,10 +403,10 @@ return [
         'api.external.players.roles' => [
             'summary' => 'Per-role performance for one player.',
             'page' => '/Player/{battletag}/{blizz_id}/{region}/Role',
-            'uses' => ['player'],
+            'uses' => ['player', 'player_dates'],
+            'async' => true,
             'parameters' => [
-                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.', 'example' => 'Storm League'],
-                'season' => ['type' => 'integer'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.', 'example' => 'Storm League'],
                 'hero' => ['description' => 'Filter to one hero, by name.', 'example' => 'Anduin'],
                 'game_map' => ['description' => 'Filter to one map, or several comma-separated, by name.', 'example' => 'Alterac Pass'],
                 'minimumgames' => ['type' => 'integer', 'description' => 'Drop rows below this many games.'],
@@ -373,11 +416,11 @@ return [
         'api.external.players.roles.single' => [
             'summary' => 'One role, for one player.',
             'page' => '/Player/{battletag}/{blizz_id}/{region}/Role/{role}',
-            'uses' => ['player'],
+            'uses' => ['player', 'player_dates'],
+            'async' => true,
             'parameters' => [
                 'role' => ['required' => true, 'description' => 'Role name.', 'example' => 'Healer'],
-                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.', 'example' => 'Storm League'],
-                'season' => ['type' => 'integer'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.', 'example' => 'Storm League'],
                 'hero' => ['description' => 'Filter to one hero, by name.', 'example' => 'Anduin'],
                 'game_map' => ['description' => 'Filter to one map, or several comma-separated, by name.', 'example' => 'Alterac Pass'],
             ],
@@ -396,10 +439,9 @@ return [
         'api.external.players.mmr.history' => [
             'summary' => 'Rating over time for the account, one entry per match.',
             'page' => '/Player/{battletag}/{blizz_id}/{region}/MMR',
-            'uses' => ['player'],
+            'uses' => ['player', 'player_dates'],
             'parameters' => [
                 'game_type' => ['description' => 'One game type, by short name or display name — `sl` and `Storm League` both work. Defaults to Storm League.', 'example' => 'Storm League'],
-                'season' => ['type' => 'integer'],
             ],
         ],
 
@@ -417,11 +459,10 @@ return [
         'api.external.players.mmr.history.heroes' => [
             'summary' => 'Rating over time on one hero, one entry per match.',
             'page' => '/Player/{battletag}/{blizz_id}/{region}/MMR',
-            'uses' => ['player'],
+            'uses' => ['player', 'player_dates'],
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
                 'game_type' => ['description' => 'One game type, by short name or display name — `sl` and `Storm League` both work. Defaults to Storm League.', 'example' => 'Storm League'],
-                'season' => ['type' => 'integer'],
             ],
         ],
 
@@ -439,35 +480,32 @@ return [
         'api.external.players.mmr.history.roles' => [
             'summary' => 'Rating over time in one role, one entry per match.',
             'page' => '/Player/{battletag}/{blizz_id}/{region}/MMR',
-            'uses' => ['player'],
+            'uses' => ['player', 'player_dates'],
             'parameters' => [
                 'role' => ['required' => true, 'description' => 'Role name.', 'example' => 'Healer'],
                 'game_type' => ['description' => 'One game type, by short name or display name — `sl` and `Storm League` both work. Defaults to Storm League.', 'example' => 'Storm League'],
-                'season' => ['type' => 'integer'],
             ],
         ],
 
         'api.external.players.talents.build' => [
             'summary' => 'A player, most played builds on one hero.',
             'page' => '/Player/{battletag}/{blizz_id}/{region}/Talents',
-            'uses' => ['player'],
+            'uses' => ['player', 'player_dates'],
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
-                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.', 'example' => 'Storm League'],
-                'season' => ['type' => 'integer'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.', 'example' => 'Storm League'],
                 'game_map' => ['description' => 'Map name.'],
-                'fromdate' => ['description' => 'Only matches on or after this date, `YYYY-MM-DD`.', 'example' => '2024-01-01'],
+                'fromdate' => ['deprecated' => true, 'description' => 'Deprecated: use `start_date`. Still accepted, and treated as `start_date` when that is not sent.', 'example' => '2024-01-01'],
             ],
         ],
 
         'api.external.players.matchups' => [
             'summary' => 'Opponents this player meets most, and how they fare.',
             'page' => '/Player/{battletag}/{blizz_id}/{region}/Matchups',
-            'uses' => ['player'],
+            'uses' => ['player', 'player_dates'],
             'parameters' => [
                 'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Omit for every type.', 'example' => 'Storm League'],
                 'hero' => ['description' => 'Restrict to one hero by name.'],
-                'season' => ['type' => 'integer'],
                 'game_map' => ['description' => 'Filter to one map, or several comma-separated, by name.', 'example' => 'Alterac Pass'],
             ],
         ],
@@ -475,12 +513,12 @@ return [
         'api.external.players.friendfoe' => [
             'summary' => 'Team-mates and opponents this player sees repeatedly.',
             'page' => '/Player/{battletag}/{blizz_id}/{region}/FriendFoe',
-            'uses' => ['player'],
+            'uses' => ['player', 'player_dates'],
+            'async' => true,
             'parameters' => [
                 'type' => ['required' => true, 'enum' => ['friend', 'enemy'], 'description' => 'Which side to report: `friend` for team-mates, `enemy` for opponents. One call answers one side.'],
-                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to Storm League.', 'example' => 'Storm League'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.', 'example' => 'Storm League'],
                 'hero' => ['description' => 'Restrict to one hero by name.'],
-                'season' => ['type' => 'integer'],
                 'game_map' => ['description' => 'Map name.'],
                 'groupsize' => ['enum' => ['All', 'Solo', 'Duo', '3 Players', '4 Players', '5 Players'], 'description' => 'Party size filter.'],
             ],
@@ -845,7 +883,6 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'page' => '/Esports/NGS',
             'parameters' => [
                 'battletag' => ['required' => true, 'description' => 'Full battletag.', 'example' => 'Zemill#1940'],
-                'season' => ['type' => 'integer'],
                 'division' => ['description' => 'Division name.'],
             ],
         ],
@@ -855,7 +892,6 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'page' => '/Esports/NGS',
             'parameters' => [
                 'stat' => ['required' => true, 'description' => 'The statistic to rank by.', 'example' => 'hero_damage'],
-                'season' => ['type' => 'integer'],
             ],
         ],
 
@@ -864,7 +900,6 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'page' => '/Esports/NGS',
             'parameters' => [
                 'stat' => ['required' => true, 'description' => 'The statistic to rank by.', 'example' => 'hero_damage'],
-                'season' => ['type' => 'integer'],
             ],
         ],
 

@@ -111,6 +111,11 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(3)->by($this->rateLimitKey($request));
         });
 
+        // Public replay search (POST api/v1/match/search). Each call can scan two seasons of replays
+        RateLimiter::for('match-search', function (Request $request) {
+            return Limit::perMinute(10)->by($this->rateLimitKey($request));
+        });
+
         // Archive replay pages (GET Match/Single/{id}, replayID < max - 1,000,000)
         RateLimiter::for('old-replay', function (Request $request) {
             return Limit::perMinute(15)->by($this->rateLimitKey($request));

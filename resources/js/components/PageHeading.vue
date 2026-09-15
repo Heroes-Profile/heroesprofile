@@ -15,7 +15,7 @@
     <h1 v-else class="text-xl md:text-3xl max-md:w-full">
       <div>
       <div class="flex items-center max-md:flex-col text-sm">
-        <div v-if="isOwner" class="text-[20px] height-auto">
+        <div v-if="isOwner && !ownerHidden" class="text-[20px] height-auto">
           <!-- Owner -->
           <icon-with-hover class="mt-2"  size="small"    icon="fas fa-crown"   title="info"  popupsize="small" style="color:gold">
                 <slot>
@@ -35,7 +35,10 @@
                   </div>
                 </slot>
           </icon-with-hover>
-          
+
+        </div>
+        <div v-if="battletag && !esport && voidEye" class="text-[20px] height-auto md:mr-1">
+          <void-eye-flair class="mt-2" :force="true"></void-eye-flair>
         </div>
 
         <a v-if="battletag" :href="`/Player/${battletag}/${blizzid}/${region}`" class="text-lg link ">{{ battletag }}({{ regionstring  }}) </a>
@@ -56,6 +59,7 @@
 
 <script>
 import { stringify } from 'postcss';
+import { hasVoidEye, ownerFlairHidden } from '../voidEye';
 
 export default {
   name: 'PageHeading',
@@ -93,6 +97,12 @@ export default {
     infoTextTotalCharacters() {
       const combinedText = (this.infoText1 || '') + (this.infoText2 || '');
       return combinedText.length;
+    },
+    voidEye() {
+      return hasVoidEye(this.blizzid, this.region);
+    },
+    ownerHidden() {
+      return this.isOwner && ownerFlairHidden();
     },
   },
   watch: {

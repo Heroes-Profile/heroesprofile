@@ -1,5 +1,6 @@
 import { createApp } from 'vue';
 import axios from 'axios';
+import './pageActivity';
 import { globalAsyncPost, formatLoadMeta, formatResponseHeaders, createLoadMeta } from './utils/globalAsyncPost';
 import Cookies from 'js-cookie';
 import { flare } from "@flareapp/flare-client";

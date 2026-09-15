@@ -1,0 +1,74 @@
+{
+    "current_page": 1,
+    "data": [
+        {
+            "replayID": 90000001,
+            "game_date": "2020-01-01 00:00:00",
+            "game_type": {
+                "type_id": 5,
+                "name": "Storm League",
+                "no_space_name": "StormLeague",
+                "short_name": "sl"
+            },
+            "game_map": {
+                "map_id": 11,
+                "name": "Tomb of the Spider Queen",
+                "short_name": "Crypts",
+                "type": "standard",
+                "ranked_rotation": 1,
+                "playable": 1,
+                "sanitized_map_name": "tomb_of_the_spider_queen"
+            },
+            "hero": {
+                "id": 52,
+                "name": "Stukov",
+                "short_name": "stukov",
+                "alt_name": null,
+                "role": "Support",
+                "new_role": "Healer",
+                "type": "Melee",
+                "release_date": "2017-07-11 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "STUK",
+                "build_copy_name": "Stukov",
+                "last_updated": "2024-02-06 18:32:51"
+            },
+            "winner": 1,
+            "award": {
+                "award_table_id": 1,
+                "award_id": 1,
+                "title": "MVP",
+                "icon": "storm_ui_mvp_mvp",
+                "description": "Highest overall performance score in the match."
+            }
+        }
+    ],
+    "first_page_url": "http://localhost/v1/players/awards/games?page=1",
+    "from": 1,
+    "last_page": 1,
+    "last_page_url": "http://localhost/v1/players/awards/games?page=1",
+    "links": [
+        {
+            "url": null,
+            "label": "&laquo; Previous",
+            "active": false
+        },
+        {
+            "url": "http://localhost/v1/players/awards/games?page=1",
+            "label": "1",
+            "active": true
+        },
+        {
+            "url": null,
+            "label": "Next &raquo;",
+            "active": false
+        }
+    ],
+    "next_page_url": null,
+    "path": "http://localhost/v1/players/awards/games",
+    "per_page": 100,
+    "prev_page_url": null,
+    "to": 1,
+    "total": 1
+}

@@ -15,9 +15,10 @@ use App\Models\MasterMMRDataTL;
 use App\Models\MasterMMRDataUD;
 use App\Models\MMRTypeID;
 use App\Models\Player;
+use App\Models\PlayerStatsCache;
 use App\Models\ProfilePage;
 use App\Models\Replay;
-use App\Models\SeasonDate;
+use App\Rules\DateInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\SeasonInputValidation;
 use Illuminate\Http\Request;
@@ -61,7 +62,7 @@ class PlayerController extends Controller
             'blizz_id' => $blizz_id,
             'region' => $region,
             'season' => $season,
-            'gametypedefault' => null, // $this->globalDataService->getGameTypeDefault('single'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'gametypedefault' => $this->globalDataService->getPlayerGameTypeDefault(),
 
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
@@ -79,6 +80,8 @@ class PlayerController extends Controller
             'region' => 'required|integer',
             'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation],
             'season' => ['sometimes', 'nullable', new SeasonInputValidation],
+            'start_date' => ['sometimes', 'nullable', new DateInputValidation],
+            'end_date' => ['sometimes', 'nullable', new DateInputValidation],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -94,8 +97,46 @@ class PlayerController extends Controller
         $battletag = $request['battletag'];
         $blizz_id = $request['blizz_id'];
         $region = $request['region'];
-        $game_type = $request['game_type'] ? GameType::where('short_name', $request['game_type'])->pluck('type_id')->first() : null;
-        $season = $request['season'];
+        $gameTypeIds = $request['game_type'] ? GameType::whereIn('short_name', (array) $request['game_type'])->pluck('type_id')->sort()->values() : collect();
+        $allGameTypeIds = GameType::whereIn('short_name', ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'])->pluck('type_id');
+        // profile_page rows are one game type, or null for every type
+        if ($gameTypeIds->isEmpty() || $allGameTypeIds->diff($gameTypeIds)->isEmpty()) {
+            $game_type = null;
+        } elseif ($gameTypeIds->count() === 1) {
+            $game_type = $gameTypeIds->first();
+        } else {
+            $game_type = $gameTypeIds->all();
+        }
+        $startDate = $request['start_date'];
+        $endDate = $request['end_date'];
+        $seasonIds = collect((array) $request['season'])
+            ->reject(fn ($season) => is_null($season) || $season === 'All')
+            ->sort()
+            ->values();
+
+        $latestReplayID = Replay::select('replay.replayID')
+            ->join('player', 'player.replayID', '=', 'replay.replayID')
+            ->where('blizz_id', $blizz_id)
+            ->where('region', $region)
+            ->when(! is_null($game_type), function ($query) use ($game_type) {
+                return $query->whereIn('game_type', (array) $game_type);
+            })
+            ->tap(function ($query) use ($seasonIds, $startDate, $endDate) {
+                $this->globalDataService->applySeasonsOrDateRange($query, $seasonIds->all(), $startDate, $endDate);
+            })
+            ->orderBy('replayID', 'DESC')
+            ->limit(1)
+            ->first()
+            ->replayID ?? null;
+
+        // profile_page only holds totals for one season (or all) and one game type (or all)
+        if ($startDate || $endDate || $seasonIds->count() > 1 || is_array($game_type)) {
+            $cachedData = $this->getCustomProfile($blizz_id, $region, $game_type, $seasonIds->all(), $startDate, $endDate, $latestReplayID);
+
+            return $cachedData ? $this->formatProfile($cachedData, $blizz_id, $region, $battletag) : null;
+        }
+
+        $season = $seasonIds->first();
 
         $cachedData = ProfilePage::filterByBlizzID($blizz_id)
             ->filterByRegion($region)
@@ -122,27 +163,6 @@ class PlayerController extends Controller
                 ->first();
         }
 
-        $latestReplayID = Replay::select('replay.replayID')
-            ->join('player', 'player.replayID', '=', 'replay.replayID')
-            ->where('blizz_id', $blizz_id)
-            ->where('region', $region)
-            ->when(! is_null($game_type), function ($query) use ($game_type) {
-                return $query->where('game_type', $game_type);
-            })
-            ->when(! is_null($season), function ($query) use ($season) {
-                $seasonDate = SeasonDate::find($season);
-                if ($seasonDate) {
-                    return $query->where('game_date', '>=', $seasonDate->start_date)
-                        ->where('game_date', '<', $seasonDate->end_date);
-                }
-
-                return $query;
-            })
-            ->orderBy('replayID', 'DESC')
-            ->limit(1)
-            ->first()
-            ->replayID ?? null;
-
         if (($latestReplayID && $cachedData) && $cachedData->latest_replayID < $latestReplayID) {
             $this->calculateProfile($blizz_id, $region, $game_type, $season, $cachedData);
             $cachedData = ProfilePage::filterByBlizzID($blizz_id)
@@ -153,19 +173,68 @@ class PlayerController extends Controller
         }
 
         if ($cachedData) {
-            $isOwner = Auth::check()
-                && Auth::user()->blizz_id == $blizz_id
-                && Auth::user()->region == $region;
-
-            $cachedData->weekday_data = $isOwner ? $cachedData->weekday_data : null;
-
-            return $this->formatCache($cachedData, $blizz_id, $region, $battletag);
+            return $this->formatProfile($cachedData, $blizz_id, $region, $battletag);
         }
 
         return null;
     }
 
-    private function calculateProfile($blizz_id, $region, $game_type, $season, $cachedData = null)
+    private function formatProfile($cachedData, $blizz_id, $region, $battletag)
+    {
+        $isOwner = Auth::check()
+            && Auth::user()->blizz_id == $blizz_id
+            && Auth::user()->region == $region;
+
+        $cachedData->weekday_data = $isOwner ? $cachedData->weekday_data : null;
+
+        return $this->formatCache($cachedData, $blizz_id, $region, $battletag);
+    }
+
+    /**
+     * Several seasons or a date range. Computed in full and kept in player_stats_cache
+     * until the player has a newer replay in that window.
+     */
+    private function getCustomProfile($blizz_id, $region, $game_type, $seasons, $startDate, $endDate, $latestReplayID)
+    {
+        $paramsHash = hash('sha256', json_encode([
+            'page' => 'profile',
+            'blizz_id' => $blizz_id,
+            'region' => $region,
+            'game_type' => $game_type,
+            'season' => $seasons,
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+        ]));
+
+        $dbCache = PlayerStatsCache::where('params_hash', $paramsHash)->first();
+
+        if ($dbCache && (! $latestReplayID || $dbCache->latest_replayID >= $latestReplayID)) {
+            $payload = $dbCache->data;
+        } else {
+            $profile = $this->calculateProfile($blizz_id, $region, $game_type, $seasons, null, $startDate, $endDate, false);
+
+            if (! $profile) {
+                return null;
+            }
+
+            $payload = json_encode($profile->getAttributes());
+
+            PlayerStatsCache::updateOrCreate(
+                ['params_hash' => $paramsHash],
+                [
+                    'blizz_id' => $blizz_id,
+                    'region' => $region,
+                    'latest_replayID' => $latestReplayID ?? 0,
+                    'data' => $payload,
+                ]
+            );
+        }
+
+        // Round trip so matches/hero_data are plain arrays, the same shape a profile_page row gives formatCache
+        return (new ProfilePage)->forceFill(json_decode($payload, true));
+    }
+
+    private function calculateProfile($blizz_id, $region, $game_type, $season, $cachedData = null, $startDate = null, $endDate = null, $persist = true)
     {
 
         $result = DB::table('replay')
@@ -215,17 +284,11 @@ class PlayerController extends Controller
                 if (is_null($game_type)) {
                     $query->whereNot('game_type', 0);
                 } else {
-                    $query->where('game_type', $game_type);
+                    $query->whereIn('game_type', (array) $game_type);
                 }
             })
-            ->when(! is_null($season), function ($query) use ($season) {
-                $seasonDate = SeasonDate::find($season);
-                if ($seasonDate) {
-                    return $query->where('game_date', '>=', $seasonDate->start_date)
-                        ->where('game_date', '<', $seasonDate->end_date);
-                }
-
-                return $query;
+            ->tap(function ($query) use ($season, $startDate, $endDate) {
+                $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);
             })
             // ->where("replay.replayID", "<=", 46984901) //testing
             ->when($cachedData, function ($query, $cachedData) {
@@ -441,7 +504,9 @@ class PlayerController extends Controller
             $dataToSave->game_type = $game_type;
             $dataToSave->season = $season;
 
-            $dataToSave->save();
+            if ($persist) {
+                $dataToSave->save();
+            }
         } else {
             $dataToSave = $cachedData;
         }
@@ -491,7 +556,9 @@ class PlayerController extends Controller
         $dataToSave->map_data = $mapData;
         $dataToSave->weekday_data = json_encode($weekdayData);
 
-        $dataToSave->save();
+        if ($persist) {
+            $dataToSave->save();
+        }
 
         return $dataToSave;
     }

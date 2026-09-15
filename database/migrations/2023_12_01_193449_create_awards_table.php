@@ -18,6 +18,7 @@ class CreateAwardsTable extends Migration
             $table->integer('award_id');
             $table->string('title')->collation('utf8mb4_0900_ai_ci');
             $table->string('icon')->collation('utf8mb4_0900_ai_ci');
+            $table->string('description')->collation('utf8mb4_0900_ai_ci')->nullable();
             $table->unique(['award_id', 'title', 'icon'], 'UNIQUE');
         });
     }

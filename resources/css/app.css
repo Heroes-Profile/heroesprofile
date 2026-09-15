@@ -445,7 +445,33 @@ h1{
 .match-page table td{
   width:16%;
 }
-.match-page table.loser thead td:not(.color-cell){
+.match-page table.auto-width-table{
+  table-layout:auto;
+  width:auto;
+  min-width:100%;
+}
+.match-page table.auto-width-table td{
+  width:auto;
+  min-width:8em;
+}
+.match-page table.auto-width-table td:first-child{
+  white-space:nowrap;
+}
+/* Same column widths in every section; table width is set inline from the column count */
+.match-page table.fixed-column-table{
+  table-layout:fixed;
+  min-width:0;
+  margin-left:0;
+}
+.match-page table.fixed-column-table td{
+  width:10em;
+}
+.match-page table.fixed-column-table td:first-child{
+  width:18em;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}.match-page table.loser thead td:not(.color-cell){
   @apply bg-red;
 }
 .match-page table.winner thead td:not(.color-cell){
@@ -486,3 +512,121 @@ div.phpdebugbar * {
 }
 
 thead{border-color:transparent;}
+
+/* Xal'atath Void Corruption event */
+.xalatath-scoreboard{
+  background: linear-gradient(90deg, #120726 0%, #3a1470 50%, #120726 100%);
+  border-bottom: 2px solid #7b3fe4;
+}
+.xalatath-title{ color: #c9a8ff; text-shadow: 0 0 8px #7b3fe4; }
+.xalatath-progress{ background: linear-gradient(90deg, #5b21b6, #c084fc); }
+
+.void-whisper{
+  background: rgba(18, 7, 38, 0.92);
+  border: 1px solid #7b3fe4;
+  color: #e3d2ff;
+  box-shadow: 0 0 18px rgba(123, 63, 228, 0.6);
+}
+/* Timed to match VoidGlitch's scramble in and fade out */
+.void-whisper-enter-active{ transition: opacity 0.3s ease; }
+.void-whisper-leave-active{ transition: opacity 0.8s ease; }
+.void-whisper-enter-from, .void-whisper-leave-to{ opacity: 0; }
+
+/* Hidden Xal'atath eye (VoidHiddenEye.vue) */
+@keyframes void-hidden-eye-blink{
+  0%, 90%, 100%{ transform: scaleY(1); }
+  94%{ transform: scaleY(0.1); }
+}
+.void-hidden-eye{
+  line-height: 0;
+  padding: 0;
+  animation: void-hidden-eye-blink 6s infinite;
+  cursor: pointer;
+}
+.void-hidden-eye:hover{ opacity: 1; animation-play-state: paused; }
+.void-hidden-eye-appear-enter-active{ transition: opacity 0.8s ease; }
+.void-hidden-eye-appear-enter-from{ opacity: 0; }
+.void-eye-found-icon{ color: #a855f7; text-shadow: 0 0 18px rgba(124, 58, 237, 0.9); }
+.void-eye-found-enter-active, .void-eye-found-leave-active{ transition: opacity 0.15s ease; }
+.void-eye-found-enter-from, .void-eye-found-leave-to{ opacity: 0; }
+@keyframes void-eye-claiming{
+  0%, 100%{ transform: scale(1); filter: brightness(1); }
+  50%{ transform: scale(1.08); filter: brightness(1.35); }
+}
+.void-eye-claiming{ animation: void-eye-claiming 0.9s ease-in-out infinite; }
+.void-eye-flair{ color: #a855f7; }
+/* The logo's eye as an icon, usable anywhere a Font Awesome class goes.
+   The image URL is set in layouts/app.blade.php so it resolves against the site, not the Vite dev server. */
+.void-eye-img{
+  display: block;
+  width: 1.75em;
+  height: 1.75em;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+/* Stage-up popup (VoidStageUp.vue) */
+/* No backdrop blur: a full-screen blur under the animated reveal made the popup stutter */
+.void-stage-up{ background: rgba(8, 3, 18, 0.94); }
+.void-stage-up-card{
+  background: radial-gradient(circle at 50% 30%, #3a1470 0%, #120726 75%);
+  border: 1px solid #5b21b6;
+  box-shadow: 0 0 40px rgba(91, 33, 182, 0.5);
+}
+.void-stage-up-enter-active, .void-stage-up-leave-active{ transition: opacity 0.4s ease; }
+.void-stage-up-enter-from, .void-stage-up-leave-to{ opacity: 0; }
+
+/* New frame is uncovered from the eye outward */
+.void-stage-up-reveal{
+  clip-path: circle(0% at 50% 28%);
+  transition: clip-path 1.6s cubic-bezier(0.55, 0, 0.3, 1);
+}
+.void-stage-up-reveal.is-revealed{ clip-path: circle(150% at 50% 28%); }
+
+@keyframes void-stage-up-shake{
+  0%, 100%{ transform: translate(0, 0); }
+  20%{ transform: translate(-4px, 2px); }
+  40%{ transform: translate(4px, -2px); }
+  60%{ transform: translate(-3px, -1px); }
+  80%{ transform: translate(3px, 1px); }
+}
+.void-stage-up-shake{ animation: void-stage-up-shake 0.6s ease-in-out; }
+
+@media (prefers-reduced-motion: reduce){
+  .void-stage-up-reveal{ clip-path: none; opacity: 0; transition: opacity 0.8s ease; }
+  .void-stage-up-reveal.is-revealed{ clip-path: none; opacity: 1; }
+}
+
+.void-fallen-splash{
+  background: radial-gradient(circle at center, rgb(58, 20, 112) 0%, rgb(8, 3, 18) 70%);
+  backdrop-filter: blur(12px);
+}
+
+/* Stage 1+: glow */
+:is(.void-stage-1, .void-stage-2, .void-stage-3, .void-stage-4, .void-stage-5) nav.bg-gray-dark{
+  box-shadow: 0 4px 22px rgba(123, 63, 228, 0.45);
+}
+:is(.void-stage-1, .void-stage-2, .void-stage-3, .void-stage-4, .void-stage-5) .xalatath-scoreboard{
+  box-shadow: 0 0 24px rgba(123, 63, 228, 0.55);
+}
+
+/* Stage 3+: text glitches into Void glyphs (VoidGlitch.vue) */
+.void-glyph-overlay{
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 60;
+  color: #d9c2ff;
+  text-shadow: 0 0 6px #7b3fe4, 0 0 14px rgba(123, 63, 228, 0.7);
+}
+
+/* Stage 4+: palette shift */
+:is(.void-stage-4, .void-stage-5){
+  background-color: #110822;
+  background-image: radial-gradient(ellipse at top, rgba(91, 33, 182, 0.35), transparent 60%);
+}
+:is(.void-stage-4, .void-stage-5) nav.bg-gray-dark{ background-color: #1d0f38; }
+:is(.void-stage-4, .void-stage-5) .bg-teal{ background-color: #5b21b6; }
+:is(.void-stage-4, .void-stage-5) .border-teal{ border-color: #7b3fe4; }
+:is(.void-stage-4, .void-stage-5) .bg-blue{ background-color: #3a1470; }
+:is(.void-stage-4, .void-stage-5) .text-teal{ color: #c084fc; }

@@ -6,8 +6,9 @@
 
 
     <div class="flex justify-center max-w-[1500px] mx-auto">
-      <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="!modifiedgametype ? 'All' : modifiedgametype" :disabled="disableFilterInput"></single-select-filter>
-      <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" @dropdown-closed="handleDropdownClosed" :trackclosure="true" :defaultValue="'All'" :disabled="disableFilterInput"></single-select-filter>
+      <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametypedefault"></multi-select-filter>
+      <multi-select-filter :values="filters.seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="seasonselection"></multi-select-filter>
+      <date-range-filter :startDate="startdate" :endDate="enddate" @input-changed="handleInputChange"></date-range-filter>
       <button :disabled="disableFilterInput" @click="applyFilter"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
           Filter
       </button>
@@ -143,6 +144,9 @@ export default {
       inputmap: null,
       modifiedgametype: null,
       modifiedseason: null,
+      seasonselection: [],
+      startdate: null,
+      enddate: null,
       data: null,
       disableFilterInput: null,
     }
@@ -150,7 +154,7 @@ export default {
   created(){
     this.inputmap = this.map;
     if(this.gametypedefault && this.gametypedefault.length > 0){
-      this.modifiedgametype = this.gametypedefault[0];
+      this.modifiedgametype = [...this.gametypedefault];
     }
   },
   mounted() {
@@ -200,6 +204,8 @@ export default {
           region: this.region,
           game_type: this.modifiedgametype,
           season: this.modifiedseason,
+          start_date: this.startdate,
+          end_date: this.enddate,
           type: "single",
           page: "map",
           game_map: this.map,
@@ -233,18 +239,30 @@ export default {
     },
     handleInputChange(eventPayload) {
       if(eventPayload.field == "Game Type"){
-        if(eventPayload.value == "All"){
-          this.modifiedgametype = null;
-        }else{
-          this.modifiedgametype = eventPayload.value;
+        this.modifiedgametype = eventPayload.value.length ? [...eventPayload.value] : null;
+      }
+
+      this.handleSeasonOrDateChange(eventPayload);
+    },
+    // Seasons and the date range are one or the other
+    handleSeasonOrDateChange(eventPayload) {
+      if(eventPayload.field == "Season"){
+        this.modifiedseason = eventPayload.value.length ? [...eventPayload.value] : null;
+        if(eventPayload.value.length){
+          this.startdate = null;
+          this.enddate = null;
         }
       }
 
-      if(eventPayload.field == "Season"){
-        if(eventPayload.value == "All"){
-          this.modifiedseason = null;
+      if(eventPayload.field == "From Date" || eventPayload.field == "To Date"){
+        if(eventPayload.field == "From Date"){
+          this.startdate = eventPayload.value;
         }else{
-          this.modifiedseason = eventPayload.value;
+          this.enddate = eventPayload.value;
+        }
+        if(eventPayload.value && this.modifiedseason){
+          this.modifiedseason = null;
+          this.seasonselection = [];
         }
       }
     },

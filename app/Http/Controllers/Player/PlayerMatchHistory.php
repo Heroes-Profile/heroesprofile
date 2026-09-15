@@ -6,14 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Models\GameType;
 use App\Models\HeroesDataTalent;
 use App\Models\Map;
-use App\Models\SeasonDate;
+use App\Rules\DateInputValidation;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
 use App\Rules\RoleInputValidation;
 use App\Rules\SeasonInputValidation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -78,12 +77,8 @@ class PlayerMatchHistory extends Controller
             }
         }
 
-        $gametypedefault = ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'];
-        $showcustomgames = false;
-        if ($this->globalDataService->showcustomgames($battletag, $blizz_id, $region)) {
-            array_push($gametypedefault, 'cu');
-            $showcustomgames = true;
-        }
+        $showcustomgames = $this->globalDataService->showcustomgames($battletag, $blizz_id, $region);
+        $gametypedefault = $this->globalDataService->getPlayerGameTypeDefault();
 
         return view('Player.matchHistory')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
@@ -93,7 +88,7 @@ class PlayerMatchHistory extends Controller
             'blizz_id' => $blizz_id,
             'region' => $region,
             'filters' => $this->globalDataService->getFilterData(),
-            'gametypedefault' => $gametypedefault, // $this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'gametypedefault' => $gametypedefault,
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
             'showcustomgames' => $showcustomgames,
             'urlparameters' => $request->query(),
@@ -150,6 +145,8 @@ class PlayerMatchHistory extends Controller
             'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation],
             'game_map' => ['sometimes', 'nullable', new GameMapInputValidation],
             'season' => ['sometimes', 'nullable', new SeasonInputValidation],
+            'start_date' => ['sometimes', 'nullable', new DateInputValidation],
+            'end_date' => ['sometimes', 'nullable', new DateInputValidation],
             'stack_size' => ['sometimes', 'nullable', 'string', 'in:All,Solo,Duo,3 Players,4 Players,5 Players'],
             'pagination_page' => 'required:integer',
         ];
@@ -173,6 +170,8 @@ class PlayerMatchHistory extends Controller
         $hero = $request['hero'];
         $game_map = $request['game_map'] ? Map::whereIn('name', $request['game_map'])->pluck('map_id')->toArray() : null;
         $season = $request['season'];
+        $startDate = $request['start_date'];
+        $endDate = $request['end_date'];
         $stack_size = match ($request['stack_size'] ?? null) {
             'Solo' => [0, 1],
             'Duo' => 2,
@@ -234,14 +233,8 @@ class PlayerMatchHistory extends Controller
             ->where('blizz_id', $blizz_id)
             ->whereIn('game_type', $game_type)
             ->where('region', $region)
-            ->when(! is_null($season), function ($query) use ($season) {
-                $seasonDate = Cache::remember('season_date_'.$season, 3600, fn () => SeasonDate::find($season));
-                if ($seasonDate) {
-                    return $query->where('game_date', '>=', $seasonDate->start_date)
-                        ->where('game_date', '<', $seasonDate->end_date);
-                }
-
-                return $query;
+            ->tap(function ($query) use ($season, $startDate, $endDate) {
+                $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);
             })
             ->when(! is_null($game_map), function ($query) use ($game_map) {
                 return $query->whereIn('game_map', $game_map);

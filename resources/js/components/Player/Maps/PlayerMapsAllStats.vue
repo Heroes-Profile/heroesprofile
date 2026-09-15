@@ -11,7 +11,8 @@
       :includegametypefull="true"
       :includeminimumgames="true"
       :hideadvancedfilteringbutton="true"
-      :includeseasonwithall="true"
+      :includemultiseason="true"
+      :includegamedaterange="true"
       :includehero="true"
       >
     </filters>
@@ -137,7 +138,9 @@ export default {
       hero: null,
       minimumgames: 0,
       searchQuery: '',
-      season: Number,
+      season: null,
+      startdate: null,
+      enddate: null,
       stats: [
         { name: "Avg Assists", value: 'avg_assists', selected: false, flash: false},
         { name: "Avg Clutch Heals", value: 'avg_clutch_heals', selected: false, flash: false},
@@ -285,6 +288,8 @@ export default {
           page: "map",
           game_map: this.map,
           season: this.season,
+          start_date: this.startdate,
+          end_date: this.enddate,
         },
         {
           cancelToken: this.cancelTokenSource.token,
@@ -326,10 +331,9 @@ export default {
         const hero = this.filters.heroes.find(h => h.code === filteredData.single.Heroes);
         this.hero = hero ? hero.name : null;
       }
-      this.season = filteredData.single.Season ? filteredData.single.Season : null;
-      if(this.season == "All"){
-        this.season = null;
-      }
+      this.season = filteredData.multi.Season ? Array.from(filteredData.multi.Season) : null;
+      this.startdate = filteredData.single["From Date"] || null;
+      this.enddate = filteredData.single["To Date"] || null;
       this.data = null;
       this.sortKey = '';
       this.sortDir ='asc';

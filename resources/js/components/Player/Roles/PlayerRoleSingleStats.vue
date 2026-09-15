@@ -7,8 +7,9 @@
     </page-heading>
 
     <div class="flex justify-center max-w-[1500px] mx-auto flex-wrap max-md:flex-col max-md:items-center">
-      <single-select-filter :values="gameTypesWithAll" :text="'Game Type'" @input-changed="handleInputChange" :trackclosure="true" :defaultValue="!modifiedgametype ? 'All' : modifiedgametype" :disabled="disableFilterInput"></single-select-filter>
-      <single-select-filter :values="seasonsWithAll" :text="'Season'" @input-changed="handleInputChange" :trackclosure="true" :defaultValue="'All'" :disabled="disableFilterInput"></single-select-filter>
+      <multi-select-filter :values="filters.game_types_full" :text="'Game Type'" @input-changed="handleInputChange" :defaultValue="gametypedefault"></multi-select-filter>
+      <multi-select-filter :values="filters.seasons" :text="'Season'" @input-changed="handleInputChange" :defaultValue="seasonselection"></multi-select-filter>
+      <date-range-filter :startDate="startdate" :endDate="enddate" @input-changed="handleInputChange"></date-range-filter>
       <single-select-filter :values="gameMapWithAll" :text="'Game Map'" @input-changed="handleInputChange" :trackclosure="true" :defaultValue="'All'" :disabled="disableFilterInput"></single-select-filter>
       <button :disabled="disableFilterInput" @click="applyFilter"  :class="{'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disableFilterInput, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disableFilterInput}">
           Filter
@@ -166,6 +167,9 @@
         data: null,
         modifiedgametype: null,
         modifiedseason: null,
+        seasonselection: [],
+        startdate: null,
+        enddate: null,
         modifiedgamemap: null,
         disableFilterInput: null,
       }
@@ -173,7 +177,7 @@
     created(){
       this.inputrole = this.hero;
       if(this.gametypedefault && this.gametypedefault.length > 0){
-        this.modifiedgametype = this.gametypedefault[0];
+        this.modifiedgametype = [...this.gametypedefault];
       }
     },
     mounted() {
@@ -229,6 +233,8 @@
             region: this.region,
             game_type: this.modifiedgametype,
             season: this.modifiedseason,
+            start_date: this.startdate,
+            end_date: this.enddate,
             game_map: this.modifiedgamemap,
             type: "single",
             page: "role",
@@ -260,26 +266,38 @@
       },
       handleInputChange(eventPayload) {
         if(eventPayload.field == "Game Type"){
-          if(eventPayload.value == "All"){
-            this.modifiedgametype = null;
-          }else{
-            this.modifiedgametype = eventPayload.value;
-          }
+          this.modifiedgametype = eventPayload.value.length ? [...eventPayload.value] : null;
         }
 
-        if(eventPayload.field == "Season"){
-          if(eventPayload.value == "All"){
-            this.modifiedseason = null;
-          }else{
-            this.modifiedseason = eventPayload.value;
-          }
-        }
+        this.handleSeasonOrDateChange(eventPayload);
 
         if(eventPayload.field == "Game Map"){
           if(eventPayload.value == "All"){
             this.modifiedgamemap = null;
           }else{
             this.modifiedgamemap = eventPayload.value;
+          }
+        }
+      },
+      // Seasons and the date range are one or the other
+      handleSeasonOrDateChange(eventPayload) {
+        if(eventPayload.field == "Season"){
+          this.modifiedseason = eventPayload.value.length ? [...eventPayload.value] : null;
+          if(eventPayload.value.length){
+            this.startdate = null;
+            this.enddate = null;
+          }
+        }
+
+        if(eventPayload.field == "From Date" || eventPayload.field == "To Date"){
+          if(eventPayload.field == "From Date"){
+            this.startdate = eventPayload.value;
+          }else{
+            this.enddate = eventPayload.value;
+          }
+          if(eventPayload.value && this.modifiedseason){
+            this.modifiedseason = null;
+            this.seasonselection = [];
           }
         }
       },

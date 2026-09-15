@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Award;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -30,10 +31,15 @@ class FaqController extends Controller
 
         $patchHistory = array_reverse($patchHistory);
 
+        $awards = Award::orderBy('award_id')
+            ->orderBy('title')
+            ->get(['award_id', 'title', 'icon', 'description']);
+
         return view('faq')->with([
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'recaptchaSiteKey' => config('services.recaptcha.site_key'),
             'patchHistory' => $patchHistory,
+            'awards' => $awards,
         ]);
     }
 }

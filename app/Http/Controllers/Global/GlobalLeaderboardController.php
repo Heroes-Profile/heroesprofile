@@ -137,7 +137,11 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                 return HeroesDataTalent::all()->keyBy('talent_id');
             });
 
-            $patreonAccounts = BattlenetAccount::has('patreonAccount')->get()->keyBy(fn ($a) => $a->blizz_id.'|'.$a->region);
+            // Same rule as checkIfSiteFlair: only Patreon accounts with site flair enabled.
+            $patreonAccounts = BattlenetAccount::without(['patreonAccount', 'userSettings'])
+                ->whereHas('patreonAccount', fn ($query) => $query->where('site_flair', 1))
+                ->get(['blizz_id', 'region'])
+                ->keyBy(fn ($a) => $a->blizz_id.'|'.$a->region);
             $bannedAccounts = BannedAccount::get()->keyBy(fn ($b) => $b->blizz_id.'|'.$b->region);
             $bannedLeaderboardAccounts = BannedLeaderboardAccounts::where('season', $season)->get()->keyBy(fn ($b) => $b->blizz_id.'|'.$b->region);
             $privateAccounts = BattlenetAccount::where('private', 1)->get()->keyBy(fn ($a) => $a->blizz_id.'|'.$a->region);
@@ -178,8 +182,8 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                     }
                 }
 
-                $item->patreon = ! is_null($patreonAccount);
-                $item->hp_owner = ($item->blizz_id == 67280 && $item->region == 1) ? true : false;
+                $item->patreon = ! is_null($patreonAccount) && ! $this->globalDataService->isFlairHidden('patreon', $item->blizz_id, $item->region);
+                $item->hp_owner = $this->globalDataService->showOwnerFlair($item->blizz_id, $item->region);
                 $item->mmr = round(1800 + 40 * $item->conservative_rating);
                 $item->win_rate = round($item->win_rate, 2);
                 $item->rating = round($item->rating, 2);

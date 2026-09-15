@@ -71,6 +71,12 @@ class BattleNetController extends Controller
 
         Auth::login($battlenetAccount, true);
 
+        // Found the Xal'atath eye while logged out.
+        if ($request->session()->pull('void_eye_pending')) {
+            $this->globalDataService->awardVoidEye($battlenetAccount);
+            $request->session()->flash('void_eye_awarded', true);
+        }
+
         return redirect('/Profile/Settings'); // Redirect to desired location
     }
 

@@ -30,7 +30,9 @@ use App\Http\Controllers\Global\GlobalTalentBuilderController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
 use App\Http\Controllers\MainPageController;
 use App\Http\Controllers\MatchPredictionGameController;
+use App\Http\Controllers\MatchSearchController;
 use App\Http\Controllers\Player\FriendFoeController;
+use App\Http\Controllers\Player\PlayerAwardsController;
 use App\Http\Controllers\Player\PlayerController;
 use App\Http\Controllers\Player\PlayerHeroesMapsRolesController;
 use App\Http\Controllers\Player\PlayerMatchHistory;
@@ -173,6 +175,8 @@ Route::prefix('v1')->middleware('web')->group(function () {
     Route::post('player/talents/build', [PlayerTalentsController::class, 'getPlayerTalentData']);
 
     Route::post('player/mmr', [PlayerMMRController::class, 'getData']);
+    Route::post('player/awards', [PlayerAwardsController::class, 'getData']);
+    Route::post('player/awards/games', [PlayerAwardsController::class, 'getAwardGames']);
 
     Route::post('match/single', [SingleMatchController::class, 'getData']);
     Route::post('prematch', [PreMatchController::class, 'getData']);
@@ -247,6 +251,7 @@ Route::prefix('v1')->middleware('web')->group(function () {
     Route::post('contact', [ContactController::class, 'submitMessage'])->middleware('throttle:contact');
 
     Route::post('match/prediction/game', [MatchPredictionGameController::class, 'getReplayData']);
+    Route::post('match/search', [MatchSearchController::class, 'getData'])->middleware('throttle:match-search');
     Route::post('match/prediction/game/choose/winner', [MatchPredictionGameController::class, 'chooseWinner']);
 
 });

@@ -54,6 +54,14 @@ Route::get('players', [PlayerController::class, 'profile'])
     ->middleware(['api.fixtures:player', 'api.quota:player'])
     ->name('api.external.players');
 
+Route::get('players/awards', [PlayerController::class, 'awards'])
+    ->middleware(['api.fixtures:player_awards', 'api.quota:player_awards'])
+    ->name('api.external.players.awards');
+
+Route::get('players/awards/games', [PlayerController::class, 'awardGames'])
+    ->middleware(['api.fixtures:player_awards_games', 'api.quota:player_awards_games'])
+    ->name('api.external.players.awards.games');
+
 Route::get('players/matches', [PlayerController::class, 'matches'])
     ->middleware(['api.fixtures:player_match_history', 'api.quota:player_match_history'])
     ->name('api.external.players.matches');

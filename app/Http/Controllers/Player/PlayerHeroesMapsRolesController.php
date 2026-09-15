@@ -16,6 +16,7 @@ use App\Models\MMRTypeID;
 use App\Models\PlayerStatsCache;
 use App\Models\Replay;
 use App\Models\SeasonDate;
+use App\Rules\DateInputValidation;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputValidation;
@@ -44,6 +45,8 @@ class PlayerHeroesMapsRolesController extends Controller
             'role' => ['sometimes', 'nullable', new RoleInputValidation],
             'game_map' => ['sometimes', 'nullable', new GameMapInputValidation],
             'season' => ['sometimes', 'nullable', new SeasonInputValidation],
+            'start_date' => ['sometimes', 'nullable', new DateInputValidation],
+            'end_date' => ['sometimes', 'nullable', new DateInputValidation],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -73,6 +76,8 @@ class PlayerHeroesMapsRolesController extends Controller
             'role' => $request['role'],
             'game_map' => $request['game_map'],
             'season' => $request['season'],
+            'start_date' => $request['start_date'],
+            'end_date' => $request['end_date'],
             'minimumgames' => $request['minimumgames'],
         ]));
 
@@ -83,7 +88,9 @@ class PlayerHeroesMapsRolesController extends Controller
                 $request['blizz_id'],
                 $request['region'],
                 $request['game_type'],
-                $request['season']
+                $request['season'],
+                $request['start_date'],
+                $request['end_date']
             );
 
             if (! $latestReplayId || $dbCache->latest_replayID >= $latestReplayId) {
@@ -109,11 +116,7 @@ class PlayerHeroesMapsRolesController extends Controller
         $region = $request['region'];
         $type = $request['type'];
         $season = $request['season'];
-        if ($type == 'all') {
-            $game_type = $request['game_type'] ? GameType::whereIn('short_name', $request['game_type'])->pluck('type_id')->toArray() : null;
-        } else {
-            $game_type = $request['game_type'] ? GameType::where('short_name', $request['game_type'])->pluck('type_id')->first() : null;
-        }
+        $game_type = $request['game_type'] ? GameType::whereIn('short_name', (array) $request['game_type'])->pluck('type_id')->toArray() : null;
 
         $hero = $request['hero'] ? $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id : null;
 
@@ -126,6 +129,8 @@ class PlayerHeroesMapsRolesController extends Controller
             $game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->first() : null;
         }
         $season = $request['season'];
+        $startDate = $request['start_date'];
+        $endDate = $request['end_date'];
 
         $result = Replay::join('player', 'player.replayID', '=', 'replay.replayID')
             ->join('scores', function ($join) {
@@ -138,15 +143,11 @@ class PlayerHeroesMapsRolesController extends Controller
             })
             ->join('heroes', 'heroes.id', '=', 'player.hero')
             ->where('region', $region)
-            ->where(function ($query) use ($game_type, $type) {
+            ->where(function ($query) use ($game_type) {
                 if (is_null($game_type)) {
                     $query->whereNot('game_type', 0);
                 } else {
-                    if ($type == 'all') {
-                        $query->whereIn('game_type', $game_type);
-                    } else {
-                        $query->where('game_type', $game_type);
-                    }
+                    $query->whereIn('game_type', $game_type);
                 }
             })
             ->where('blizz_id', $blizz_id)
@@ -163,14 +164,8 @@ class PlayerHeroesMapsRolesController extends Controller
                     return $query->where('game_map', $game_map);
                 }
             })
-            ->when(! is_null($season), function ($query) use ($season) {
-                $seasonDate = SeasonDate::find($season);
-                if ($seasonDate) {
-                    return $query->where('game_date', '>=', $seasonDate->start_date)
-                        ->where('game_date', '<', $seasonDate->end_date);
-                }
-
-                return $query;
+            ->tap(function ($query) use ($season, $startDate, $endDate) {
+                $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);
             })
             ->select([
                 'replay.replayID',
@@ -865,6 +860,8 @@ class PlayerHeroesMapsRolesController extends Controller
             'role' => $request['role'],
             'game_map' => $request['game_map'],
             'season' => $request['season'],
+            'start_date' => $request['start_date'],
+            'end_date' => $request['end_date'],
             'minimumgames' => $request['minimumgames'],
         ]));
 
@@ -872,7 +869,9 @@ class PlayerHeroesMapsRolesController extends Controller
             $request['blizz_id'],
             $request['region'],
             $request['game_type'],
-            $request['season']
+            $request['season'],
+            $request['start_date'],
+            $request['end_date']
         );
 
         PlayerStatsCache::updateOrCreate(
@@ -888,7 +887,7 @@ class PlayerHeroesMapsRolesController extends Controller
         return $returnData;
     }
 
-    private function getLatestReplayId($blizz_id, $region, $game_type, $season): ?int
+    private function getLatestReplayId($blizz_id, $region, $game_type, $season, $startDate = null, $endDate = null): ?int
     {
         $gameTypeIds = $game_type
             ? GameType::whereIn('short_name', (array) $game_type)->pluck('type_id')->toArray()
@@ -899,12 +898,8 @@ class PlayerHeroesMapsRolesController extends Controller
             ->where('player.blizz_id', $blizz_id)
             ->where('replay.region', $region)
             ->when($gameTypeIds, fn ($q) => $q->whereIn('game_type', $gameTypeIds))
-            ->when(! is_null($season), function ($q) use ($season) {
-                $seasonDate = SeasonDate::find($season);
-                if ($seasonDate) {
-                    $q->where('game_date', '>=', $seasonDate->start_date)
-                        ->where('game_date', '<', $seasonDate->end_date);
-                }
+            ->tap(function ($q) use ($season, $startDate, $endDate) {
+                $this->globalDataService->applySeasonsOrDateRange($q, $season, $startDate, $endDate);
             })
             ->max('replay.replayID');
     }

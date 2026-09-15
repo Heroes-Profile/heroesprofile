@@ -15,7 +15,8 @@
       :roleinput="role"
       :includegametypefull="showcustomgames ? false : true"
       :includegametypefullcustom="showcustomgames"
-      :includeseason="true"
+      :includemultiseason="true"
+      :includegamedaterange="true"
       :includegamemap="true"
       :includegroupsize="true"
       :groupSizeDefaultValue="'All'"
@@ -172,6 +173,8 @@ export default {
       hero: null,
       gamemap: null,
       season: null,
+      startdate: null,
+      enddate: null,
       stack_size: null,
       sortKey: '',
       sortDir: 'desc',
@@ -249,6 +252,8 @@ export default {
           game_map: this.gamemap,
           pagination_page: page,
           season: this.season,
+          start_date: this.startdate,
+          end_date: this.enddate,
           stack_size: this.stack_size,
           ff_blizzid: this.ffBlizzid,
           ff_region: this.ffRegion,
@@ -290,7 +295,9 @@ export default {
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
       this.hero = this.hero ? this.filters.heroes.find(h => h.code === this.hero)?.name : null;
-      this.season = filteredData.single.Season ? filteredData.single.Season : null;
+      this.season = filteredData.multi.Season ? Array.from(filteredData.multi.Season) : null;
+      this.startdate = filteredData.single["From Date"] || null;
+      this.enddate = filteredData.single["To Date"] || null;
       this.stack_size = filteredData.single["Group Size"] ? filteredData.single["Group Size"] : null;
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;

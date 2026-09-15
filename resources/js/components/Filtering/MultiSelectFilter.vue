@@ -116,6 +116,9 @@
       if(this.trackclosure && !newVal){
           this.$emit('dropdown-closed', newVal);
         }
+      if(this.trackclosure && newVal){
+        this.$emit('dropdown-opened');
+      }
       },
     },
     methods: {
