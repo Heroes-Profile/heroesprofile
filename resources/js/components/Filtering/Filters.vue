@@ -217,6 +217,14 @@
             :defaultValue="defaultSeason"
           ></single-select-filter>
 
+          <!-- Seasons Multiselect -->
+          <multi-select-filter v-if="includemultiseason"
+            :values="seasons"
+            :text="'Season'"
+            :defaultValue="multiSeasonValue"
+            @input-changed="handleInputChange"
+          ></multi-select-filter>
+
           <!-- Game Map Multiselect -->
           <multi-select-filter v-if="includegamemap" 
             :values="filters.game_maps" 
@@ -361,6 +369,13 @@
             </div>
           </div>
 
+          <!-- Game Date Range -->
+          <date-range-filter v-if="includegamedaterange"
+            :startDate="selectedStartDate"
+            :endDate="selectedEndDate"
+            @input-changed="handleDateRangeChange"
+          ></date-range-filter>
+
           <!-- Group Size (advanced, global pages) -->
           <single-select-filter v-if="modifiedincludegroupsize && groupsizeadvanced && toggleExtraFilters && !groupsizemulti"
             :values="filters.group_size"
@@ -453,6 +468,9 @@
       includegamedate: Boolean,
       hideadvancedfilteringbutton: Boolean,
       includeseasonwithall: Boolean,
+      includemultiseason: Boolean,
+      includegamedaterange: Boolean,
+      defaultseasons: Array,
       overrideGroupSizeRemoval: Boolean,
       includetimeframetypewithlastupdate: Boolean,
       includetier: Boolean,
@@ -519,6 +537,9 @@
         modifiedminimumgamedefault: null,
         modifiedincludeheroes: null,
         selectedGameDate: null,
+        selectedStartDate: null,
+        selectedEndDate: null,
+        multiSeasonValue: [],
         toggleExtraFilters: null,
         modifiedincluderole: null,
         modifiedincludegroupsize: null,
@@ -587,6 +608,11 @@
       this.modifiedincludegroupsize = this.includegroupsize;
       this.modifiedincludetier = this.includetier;
       this.modifiedincludeseason = this.includeseason;
+
+      if(this.includemultiseason && this.defaultseasons){
+        this.multiSeasonValue = [...this.defaultseasons];
+        this.selectedMultiFilters["Season"] = [...this.defaultseasons];
+      }
 
       if(this.groupSizeDefaultValue){
         this.modifiedGroupSizeDefaultValue = this.groupSizeDefaultValue;
@@ -917,14 +943,22 @@
           }
         }
 
-        if(eventPayload.field == "Season" && this.includegroupsize){
+        if(eventPayload.field == "Season" && eventPayload.type === 'single' && this.includegroupsize){
           if(!this.overrideGroupSizeRemoval){
             this.modifiedincludegroupsize = (eventPayload.value >= 20);
           }
         }
-        
-        if(eventPayload.field == "Season"){
+
+        if(eventPayload.field == "Season" && eventPayload.type === 'single'){
           this.seasonvalue = eventPayload.value;
+        }
+
+        // Seasons and the date range are one or the other
+        if(eventPayload.field == "Season" && eventPayload.type === 'multi' && eventPayload.value.length > 0 && this.includegamedaterange){
+          this.selectedStartDate = null;
+          this.selectedEndDate = null;
+          delete this.selectedSingleFilters["From Date"];
+          delete this.selectedSingleFilters["To Date"];
         }
 
 
@@ -937,6 +971,25 @@
           this.selectedGameDate = null;
         }
         this.selectedSingleFilters["From Date"] = this.selectedGameDate;
+      },
+      handleDateRangeChange({ field, value }) {
+        if(field == "From Date"){
+          this.selectedStartDate = value;
+        }else{
+          this.selectedEndDate = value;
+        }
+
+        if(value){
+          this.selectedSingleFilters[field] = value;
+
+          if(this.includemultiseason && this.selectedMultiFilters["Season"]){
+            // New array so the season dropdown's watcher clears its selection
+            this.multiSeasonValue = [];
+            delete this.selectedMultiFilters["Season"];
+          }
+        }else{
+          delete this.selectedSingleFilters[field];
+        }
       },
       resetGameDate(){
         this.selectedGameDate = null;

@@ -11,7 +11,8 @@
       :hideadvancedfilteringbutton="true"
       :rolerequired="true"
       :herorequired="true"
-      :includeseasonwithall="true"
+      :includemultiseason="true"
+      :includegamedaterange="true"
       >
     </filters>
     
@@ -156,6 +157,8 @@ export default {
       isLoading: false,
       gametype: null,
       season: null,
+      startdate: null,
+      enddate: null,
       data: null,
       sortKey: '',
       sortDir: 'desc',
@@ -221,7 +224,9 @@ export default {
           hero: this.hero,
           role: this.role,
           season: this.season,
-        }, 
+          start_date: this.startdate,
+          end_date: this.enddate,
+        },
         {
           cancelToken: this.cancelTokenSource.token,
         });
@@ -255,8 +260,9 @@ export default {
       this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
       this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
       this.type = filteredData.single["Type"] ? filteredData.single["Type"] : "Player";
-      this.season = filteredData.single.Season ? filteredData.single.Season : null;
-      if (this.season == "All") this.season = null;
+      this.season = filteredData.multi.Season ? Array.from(filteredData.multi.Season) : null;
+      this.startdate = filteredData.single["From Date"] || null;
+      this.enddate = filteredData.single["To Date"] || null;
 
       this.data = null;
       this.sortKey = '';

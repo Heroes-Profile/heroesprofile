@@ -12,7 +12,8 @@
     :includeminimumgames="true"
     :hideadvancedfilteringbutton="true"
     :includegamemap="true"
-    :includeseasonwithall="true"
+    :includemultiseason="true"
+    :includegamedaterange="true"
     :includehero="true"
     >
   </filters>
@@ -137,7 +138,9 @@
         minimumgames: 0,
         searchQuery: '',
         gamemap: null,
-        season: Number,
+        season: null,
+        startdate: null,
+        enddate: null,
         stats: [
           { name: "Avg Assists", value: 'avg_assists', selected: false, flash: false},
           { name: "Avg Clutch Heals", value: 'avg_clutch_heals', selected: false, flash: false},
@@ -286,6 +289,8 @@ methods: {
         page: "role",
         game_map: this.gamemap,
         season: this.season,
+        start_date: this.startdate,
+        end_date: this.enddate,
       },
       {
         cancelToken: this.cancelTokenSource.token,
@@ -326,10 +331,9 @@ methods: {
     this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
     this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
     this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
-    this.season = filteredData.single.Season ? filteredData.single.Season : null;
-    if(this.season == "All"){
-      this.season = null;
-    }
+    this.season = filteredData.multi.Season ? Array.from(filteredData.multi.Season) : null;
+    this.startdate = filteredData.single["From Date"] || null;
+    this.enddate = filteredData.single["To Date"] || null;
 
     this.data = null;
     this.sortKey = '';

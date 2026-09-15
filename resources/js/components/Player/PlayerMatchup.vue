@@ -14,7 +14,8 @@
     :includegametypefull="true"
     :hideadvancedfilteringbutton="true"
     :includehero="true"
-    :includeseasonwithall="true"
+    :includemultiseason="true"
+    :includegamedaterange="true"
     >
   </filters>
   <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
@@ -105,7 +106,9 @@
         sortDir: 'desc',
         topfiveheroes: [],
         topfiveenemies: [],
-        season: Number,
+        season: null,
+        startdate: null,
+        enddate: null,
       }
     },
     created(){
@@ -157,7 +160,9 @@
             game_map: this.gamemap,
             hero: this.hero,
             season: this.season,
-          }, 
+            start_date: this.startdate,
+            end_date: this.enddate,
+          },
           {
             cancelToken: this.cancelTokenSource.token,
           });
@@ -188,10 +193,9 @@
         this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
         this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
         this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
-        this.season = filteredData.single.Season ? filteredData.single.Season : null;
-        if(this.season == "All"){
-          this.season = null;
-        }
+        this.season = filteredData.multi.Season ? Array.from(filteredData.multi.Season) : null;
+        this.startdate = filteredData.single["From Date"] || null;
+        this.enddate = filteredData.single["To Date"] || null;
 
         this.data = null;
         this.topfiveheroes = null;

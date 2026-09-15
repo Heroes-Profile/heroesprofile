@@ -15,6 +15,10 @@ class SeasonInputValidation implements Rule
             return true;
         }
 
+        if (is_array($value)) {
+            return collect($value)->every(fn ($season) => in_array($season, $validSeasons));
+        }
+
         return in_array($value, $validSeasons);
     }
 

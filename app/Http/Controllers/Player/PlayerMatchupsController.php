@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Player;
 use App\Http\Controllers\Controller;
 use App\Models\GameType;
 use App\Models\Map;
-use App\Models\SeasonDate;
+use App\Rules\DateInputValidation;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
@@ -46,7 +46,7 @@ class PlayerMatchupsController extends Controller
             'region' => $region,
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
-            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'], // $this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'gametypedefault' => $this->globalDataService->getPlayerGameTypeDefault(),
 
         ]);
     }
@@ -68,6 +68,8 @@ class PlayerMatchupsController extends Controller
             'region' => 'required|integer',
             'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation],
             'season' => ['sometimes', 'nullable', new SeasonInputValidation],
+            'start_date' => ['sometimes', 'nullable', new DateInputValidation],
+            'end_date' => ['sometimes', 'nullable', new DateInputValidation],
             'game_map' => ['sometimes', 'nullable', new GameMapInputValidation],
             'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation],
         ];
@@ -87,6 +89,8 @@ class PlayerMatchupsController extends Controller
         $battletag = $request['battletag'];
         $game_type = $request['game_type'] ? GameType::whereIn('short_name', $request['game_type'])->pluck('type_id')->toArray() : null;
         $season = $request['season'];
+        $startDate = $request['start_date'];
+        $endDate = $request['end_date'];
         $gameMap = $request['game_map'] ? Map::whereIn('name', $request['game_map'])->pluck('map_id')->toArray() : null;
         $inputhero = $request['hero'];
 
@@ -125,14 +129,8 @@ class PlayerMatchupsController extends Controller
                 ->when(! is_null($gameMap), function ($query) use ($gameMap) {
                     return $query->whereIn('game_map', $gameMap);
                 })
-                ->when(! is_null($season), function ($query) use ($season) {
-                    $seasonDate = SeasonDate::find($season);
-                    if ($seasonDate) {
-                        return $query->where('game_date', '>=', $seasonDate->start_date)
-                            ->where('game_date', '<', $seasonDate->end_date);
-                    }
-
-                    return $query;
+                ->tap(function ($query) use ($season, $startDate, $endDate) {
+                    $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);
                 })
                 ->select('player.replayID');
 
@@ -191,7 +189,7 @@ class PlayerMatchupsController extends Controller
             ->sortBy('enemy_win_rate')
             ->take(5)
             ->map(function ($item) {
-                $item['win_rate'] = 100 - $item['enemy_win_rate'];
+                $item['win_rate'] = round(100 - $item['enemy_win_rate'], 2);
                 $item['games_played'] = $item['enemy_games_played'];
 
                 return $item;

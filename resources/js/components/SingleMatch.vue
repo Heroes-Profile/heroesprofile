@@ -59,7 +59,7 @@
             <group-box class="md:w-full max-sm:text-xs max-md:hidden":playerlink="true" :match="true" :esport="esport" :series="series" :tournament="tournament" :winnerloser="getWinnerLoser(0, data.winner)" :esportteamname="getEsportTeamName(0)" popupsize="large" :data="data.players[0]" :color="data.winner == 0 ? 'teal' : 'red'" :winner="data.winner == 0 ? true : false"></group-box>
 
 
-            <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
+            <div v-if="showBans" class="mb-10">
               {{ esport ? this.data.team_names.team_one.team_name : "Team 1" }} Bans
               <div class="flex gap-2 justify-center mt-4">
                 <template v-for="(item, index) in data.replay_bans[0]" :key="index">
@@ -99,7 +99,7 @@
           <div class=" max-w-[50%]  md:max-w-[600px]">
             <group-box class="md:w-full max-sm:text-xs max-md:hidden" :playerlink="true" :match="true" :esport="esport" :series="series" :tournament="tournament" :winnerloser="getWinnerLoser(1, data.winner)" :esportteamname="getEsportTeamName(1)" :data="data.players[1]" :color="data.winner == 1 ? 'teal' : 'red'" :winner="data.winner == 1 ? true : false"></group-box>
 
-            <div v-if="data.replay_bans && data.replay_bans.length > 0" class="mb-10">
+            <div v-if="showBans" class="mb-10">
               {{ esport ? this.data.team_names.team_two.team_name : "Team 2" }} Bans
               <div class="flex gap-2 justify-center mt-4">
                 <template v-for="(item, index) in data.replay_bans[1]" :key="index">
@@ -662,6 +662,15 @@
     mounted() {
     },
     computed: {
+      // Non-draft modes still have replay_bans rows, all hero 0
+      showBans(){
+        if(!this.data.replay_bans || this.data.replay_bans.length == 0){
+          return false;
+        }
+        const hasDraft = this.data.draft_order && this.data.draft_order.length > 0;
+        const hasRealBan = Object.values(this.data.replay_bans).some(team => team.some(ban => ban.hero !== 0));
+        return hasDraft || hasRealBan;
+      },
     },
     watch: {
       combinedPlayers(){

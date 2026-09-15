@@ -88,7 +88,7 @@
               <div class="rounded-md bg-red w-full text-center px-4 py-2" v-if="userchoiceteam == 0 && userchoiceresult && userchoiceresult.data == 0">WRONG</div>
             </div>
           </div>
-          <div class="px-2" v-if="data.replayBans?.[0]?.length">
+          <div class="px-2" v-if="data.draftData && data.replayBans?.[0]?.length">
             <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 1 Bans</h2>
             <div class="flex justify-center gap-5 p-4 max-md:flex-col">
               <template v-for="(item, index) in data.replayBans[0]" :key="index">
@@ -117,7 +117,7 @@
               <div class="rounded-md bg-red w-full text-center px-4 py-2" v-if="userchoiceteam == 1 && userchoiceresult && userchoiceresult.data == 0">WRONG</div>
             </div>
           </div>
-          <div class="px-2" v-if="data.replayBans?.[1]?.length">
+          <div class="px-2" v-if="data.draftData && data.replayBans?.[1]?.length">
             <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 2 Bans</h2>
             <div class="flex justify-center gap-5 p-4 max-md:flex-col">
             <template v-for="(item, index) in data.replayBans[1]" :key="index">

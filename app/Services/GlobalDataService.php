@@ -922,6 +922,45 @@ class GlobalDataService
         return clone $this->cachedSeasonsData;
     }
 
+    /**
+     * Seasons and a date range are one or the other; the range wins if both are sent.
+     * `$seasons` may be null, 'All', one season id or an array of them.
+     * `$endDate` is inclusive.
+     */
+    public function applySeasonsOrDateRange($query, $seasons, $startDate = null, $endDate = null, $column = 'game_date')
+    {
+        if ($startDate || $endDate) {
+            return $query
+                ->when($startDate, function ($query) use ($column, $startDate) {
+                    return $query->where($column, '>=', $startDate);
+                })
+                ->when($endDate, function ($query) use ($column, $endDate) {
+                    return $query->where($column, '<', Carbon::parse($endDate)->addDay()->toDateString());
+                });
+        }
+
+        $seasonIds = collect((array) $seasons)->reject(fn ($season) => is_null($season) || $season === 'All');
+
+        if ($seasonIds->isEmpty()) {
+            return $query;
+        }
+
+        $seasonDates = $this->getSeasonsData()->whereIn('id', $seasonIds->all());
+
+        if ($seasonDates->isEmpty()) {
+            return $query;
+        }
+
+        return $query->where(function ($query) use ($column, $seasonDates) {
+            foreach ($seasonDates as $seasonDate) {
+                $query->orWhere(function ($query) use ($column, $seasonDate) {
+                    $query->where($column, '>=', $seasonDate->start_date)
+                        ->where($column, '<', $seasonDate->end_date);
+                });
+            }
+        });
+    }
+
     public function getSeasonFromDate($date)
     {
         return SeasonDate::select('id')->where('start_date', '<=', $date)->where('end_date', '>=', $date)->first()->id;
@@ -978,15 +1017,32 @@ class GlobalDataService
         return 'vertical';
     }
 
+    /**
+     * Game types preselected on player pages: the user's saved default, otherwise every type.
+     * Never includes custom games; match history only offers them as an option.
+     */
+    public function getPlayerGameTypeDefault()
+    {
+        $gameTypes = ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'];
+
+        if (Auth::check()) {
+            $gameTypeSetting = Auth::user()->userSettings->firstWhere('setting', 'player_multi_game_type');
+            if ($gameTypeSetting && trim($gameTypeSetting->value) !== '') {
+                $gameTypes = explode(',', $gameTypeSetting->value);
+            }
+        }
+
+        return $gameTypes;
+    }
+
+    // MMR is one game type at a time
     public function getMMRGameTypeDefault()
     {
         if (Auth::check()) {
-            $user = Auth::user();
-            $gameTypeSetting = $user->userSettings->firstWhere('setting', 'mmr_player_game_type');
-            if ($gameTypeSetting) {
-                return [$gameTypeSetting->value];
+            $gameTypeSetting = Auth::user()->userSettings->firstWhere('setting', 'player_multi_game_type');
+            if ($gameTypeSetting && trim($gameTypeSetting->value) !== '') {
+                return [explode(',', $gameTypeSetting->value)[0]];
             }
-
         }
 
         return ['sl'];

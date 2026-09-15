@@ -38,7 +38,7 @@ class ProfileController extends Controller
         $validationRules = [
             'userhero' => 'nullable|numeric',
             'usergametype' => ['sometimes', 'nullable', new GameTypeInputValidation],
-            'mmrplayerusergametype' => ['sometimes', 'nullable', new GameTypeInputValidation],
+            'playermultigametype' => 'sometimes|nullable|array',
             'talentbuildtype' => ['sometimes', 'nullable', new TalentBuildTypeInputValidation],
             'talentbuilderstyle' => 'nullable|in:vertical,horizontal',
             'darkmode' => 'nullable|boolean',
@@ -84,13 +84,27 @@ class ProfileController extends Controller
             );
         }
 
-        if (! is_null($request['mmrplayerusergametype'])) {
-            $usergametype = $request['mmrplayerusergametype'];
+        if ($request->has('playermultigametype')) {
+            $playerGameTypes = (array) $request['playermultigametype'];
 
-            $user->userSettings()->updateOrCreate(
-                ['setting' => 'mmr_player_game_type'],
-                ['value' => $usergametype]
-            );
+            // Nothing ticked means every game type
+            if (empty($playerGameTypes)) {
+                $user->userSettings()->where('setting', 'player_multi_game_type')->delete();
+            } else {
+                $validPlayerGameTypes = GameType::whereIn('short_name', ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'])
+                    ->whereIn('short_name', $playerGameTypes)
+                    ->pluck('short_name')
+                    ->all();
+
+                if (count($validPlayerGameTypes) !== count($playerGameTypes)) {
+                    return ['success' => false];
+                }
+
+                $user->userSettings()->updateOrCreate(
+                    ['setting' => 'player_multi_game_type'],
+                    ['value' => implode(',', $playerGameTypes)]
+                );
+            }
         }
 
         if (! is_null($request['usermultigametype'])) {

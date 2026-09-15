@@ -14,10 +14,10 @@
         :isLoading="isLoading"
         :gametypedefault="gametype"
         :includegametypefull="true"
-        :includeseason="true"
+        :includemultiseason="true"
         :includegamemap="true"
         :hideadvancedfilteringbutton="true"
-        :includegamedate="true"
+        :includegamedaterange="true"
         >
       </filters>
       <dynamic-banner-ad :patreon-user="patreonUser"></dynamic-banner-ad>
@@ -79,7 +79,8 @@ export default {
       talentbuilddata: null,
       season: null,
       gamemap: null,
-      fromdate: null,
+      startdate: null,
+      enddate: null,
     }
   },
   created(){
@@ -121,7 +122,8 @@ export default {
           game_type: this.gametype,
           season: this.season,
           game_map: this.gamemap,
-          fromdate: this.fromdate,
+          start_date: this.startdate,
+          end_date: this.enddate,
         }, 
         {
           cancelToken: this.cancelTokenSource.token,
@@ -150,9 +152,10 @@ export default {
     },
     filterData(filteredData){
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
-      this.season = filteredData.single["Season"] ? filteredData.single["Season"] : null;
+      this.season = filteredData.multi.Season ? Array.from(filteredData.multi.Season) : null;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
-      this.fromdate = filteredData.single["From Date"] ? filteredData.single["From Date"] : null;
+      this.startdate = filteredData.single["From Date"] || null;
+      this.enddate = filteredData.single["To Date"] || null;
 
 
       this.talentdetaildata = null;
