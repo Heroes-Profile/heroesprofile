@@ -72,6 +72,31 @@
         </div>
       </div>
 
+      <!-- Match Awards -->
+      <div id="awards" class="mt-10 mb-8">
+        <h2 class="bg-teal px-4 py-3 rounded-t-lg text-lg font-semibold">Match Awards</h2>
+        <div class="bg-lighten rounded-b-lg p-4">
+          <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
+            <thead>
+              <tr>
+                <th style="padding:4px 8px; text-align:left;">Award</th>
+                <th style="padding:4px 8px; text-align:left;">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="award in awards" :key="award.award_id + '-' + award.title">
+                <td style="padding:3px 8px; white-space:nowrap;">
+                  <div class="flex items-center gap-2">
+                    <img :src="`/images/awards/${award.icon}_blue.png`" :alt="award.title" class="w-8 h-8" />{{ award.title }}
+                  </div>
+                </td>
+                <td style="padding:3px 8px;">{{ award.description }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- Ask a Question -->
       <div class="mt-12 mb-8">
         <h2 class="bg-teal px-4 py-3 rounded-t-lg text-lg font-semibold">Still have a question?</h2>
@@ -143,6 +168,10 @@ export default {
       default: ''
     },
     patchHistory: {
+      type: Array,
+      default: () => []
+    },
+    awards: {
       type: Array,
       default: () => []
     },
@@ -287,6 +316,10 @@ export default {
             {
               q: 'What is the Friends & Foes page?',
               a: 'The Friends &amp; Foes page on your player profile shows your win rate when playing <em>with</em> or <em>against</em> specific players. For example, see <a href="/Player/Zemill/67280/1/FriendFoe" class="link">Zemill\'s Friends &amp; Foes</a>. Upload your replays and check the Friends &amp; Foes section of your own profile to see yours.',
+            },
+            {
+              q: 'What is the Awards page?',
+              a: 'The Awards page on your player profile shows how often you earn each end of match award, such as MVP, Painbringer or Main Healer, as a percentage of your games. For example, see <a href="/Player/Zemill/67280/1/Awards" class="link">Zemill\'s Awards</a>. Click an award to list every game where you earned it. Awards are only counted for games played after Heroes Profile began tracking them, so very old replays are not included. Every award and what it is given for is listed under <a href="#awards" class="link">Match Awards</a> below.',
             },
             {
               q: 'What is the Match Prediction Game?',
