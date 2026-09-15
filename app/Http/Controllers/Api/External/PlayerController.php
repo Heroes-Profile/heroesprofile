@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\External;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Player\FriendFoeController;
+use App\Http\Controllers\Player\PlayerAwardsController;
 use App\Http\Controllers\Player\PlayerController as InternalPlayerController;
 use App\Http\Controllers\Player\PlayerHeroesMapsRolesController;
 use App\Http\Controllers\Player\PlayerMatchHistory;
@@ -39,11 +40,17 @@ use Symfony\Component\HttpFoundation\Response;
 class PlayerController extends Controller
 {
     /**
-     * What the site itself sends for a visitor who is not logged in — see
-     * `GlobalDataService::getGameTypeDefault()`. The public API is always
+     * What player pages show a visitor who is not logged in — see
+     * `GlobalDataService::getPlayerGameTypeDefault()`. The public API is always
      * anonymous, so this is always the answer.
      */
-    private const DEFAULT_GAME_TYPE = 'sl';
+    private const DEFAULT_GAME_TYPES = ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'];
+
+    /** Rating history is one game type at a time, so it keeps a single default. */
+    private const MMR_DEFAULT_GAME_TYPE = 'sl';
+
+    /** Suggested seconds between polls, the same as the global stats endpoints. */
+    private const POLL_INTERVAL = 10;
 
     /** A day of changes fits comfortably; the ceiling bounds a first sync. */
     private const PRIVACY_DEFAULT_LIMIT = 1000;
@@ -59,15 +66,44 @@ class PlayerController extends Controller
 
     public function profile(Request $request): Response
     {
-        return $this->delegate($request, InternalPlayerController::class, 'getPlayerData');
+        // No game_type default: the controller reads its absence as every type.
+        return $this->delegate($request, InternalPlayerController::class, 'getPlayerData', [], [
+            'game_type' => 'array',
+            'season' => 'array',
+        ]);
     }
 
     public function matches(Request $request): Response
     {
         return $this->delegate($request, PlayerMatchHistory::class, 'getData', [
             'pagination_page' => 1,
-            'game_type' => self::DEFAULT_GAME_TYPE,
-        ], ['hero' => 'id', 'game_type' => 'array', 'game_map' => 'array']);
+            'game_type' => self::DEFAULT_GAME_TYPES,
+        ], ['hero' => 'id', 'game_type' => 'array', 'game_map' => 'array', 'season' => 'array']);
+    }
+
+    /**
+     * How often this player earns each end of match award, plus the latest five.
+     */
+    public function awards(Request $request): Response
+    {
+        return $this->delegate($request, PlayerAwardsController::class, 'getData', [
+            'game_type' => self::DEFAULT_GAME_TYPES,
+        ], ['hero' => 'id', 'game_type' => 'array', 'game_map' => 'array', 'season' => 'array']);
+    }
+
+    /**
+     * Every game where this player earned one award, newest first, 100 a page.
+     */
+    public function awardGames(Request $request): Response
+    {
+        if (! $request->filled('award_id')) {
+            return $this->error('missing_award_id', 'This endpoint needs an award_id. `players/awards` lists them.', 422);
+        }
+
+        return $this->delegate($request, PlayerAwardsController::class, 'getAwardGames', [
+            'pagination_page' => 1,
+            'game_type' => self::DEFAULT_GAME_TYPES,
+        ], ['hero' => 'id', 'game_type' => 'array', 'game_map' => 'array', 'season' => 'array']);
     }
 
     public function heroes(Request $request): Response
@@ -113,6 +149,7 @@ class PlayerController extends Controller
             'game_type' => 'array',
             // Reaches Map::whereIn('name', …).
             'game_map' => 'array',
+            'season' => 'array',
         ], ['tabledata' => 'matchups']);
     }
 
@@ -135,10 +172,11 @@ class PlayerController extends Controller
         return $this->delegate($request, FriendFoeController::class, 'getFriendFoeData', [
             // Required here, unlike `players/matchups`, which reads its absence as
             // every game type. This one puts it straight into a whereIn().
-            'game_type' => self::DEFAULT_GAME_TYPE,
+            'game_type' => self::DEFAULT_GAME_TYPES,
         ], [
             'hero' => 'id',
             'game_type' => 'array',
+            'season' => 'array',
         ]);
     }
 
@@ -270,7 +308,7 @@ class PlayerController extends Controller
             }
         }
 
-        $expects = ['game_type' => 'array'];
+        $expects = ['game_type' => 'array', 'season' => 'array'];
 
         // The same internal method reads `game_map` two ways, chosen by `$type`:
         // `all` puts it through getGameMapFilterValues() (whereIn, wants an array),
@@ -284,9 +322,8 @@ class PlayerController extends Controller
             'page' => $page,
             'type' => $type,
             // Not optional in practice: the internal controller resolves this to
-            // null when absent and then calls in_array() on it. `sl` is what the
-            // site sends for a visitor who is not logged in.
-            'game_type' => self::DEFAULT_GAME_TYPE,
+            // null when absent and then calls in_array() on it.
+            'game_type' => self::DEFAULT_GAME_TYPES,
         ], $expects);
     }
 
@@ -314,8 +351,8 @@ class PlayerController extends Controller
             // Scalar here, unlike the breakdown endpoints: this controller looks
             // the short name up with `where`, not `whereIn`. Absent, it resolves
             // to null and the query then matches no rows at all.
-            'game_type' => self::DEFAULT_GAME_TYPE,
-        ], ['hero' => 'id'], [
+            'game_type' => self::MMR_DEFAULT_GAME_TYPE,
+        ], ['hero' => 'id', 'season' => 'array'], [
             // `tableData` is the per-match rating history; `leagueData` is the tier
             // bands it sits within. Both named after the components that render
             // them on the site rather than after what they hold.
@@ -332,9 +369,15 @@ class PlayerController extends Controller
             return $this->error('missing_hero', 'This endpoint needs a hero to report builds for.', 422);
         }
 
+        // `fromdate` was this endpoint's only date filter before start_date/end_date.
+        // Kept so existing callers still get the range they asked for.
+        if ($request->filled('fromdate') && ! $request->filled('start_date')) {
+            $request->merge(['start_date' => $request->input('fromdate')]);
+        }
+
         return $this->delegate($request, PlayerTalentsController::class, 'getPlayerTalentData', [
-            'game_type' => self::DEFAULT_GAME_TYPE,
-        ], ['game_type' => 'array', 'game_map' => 'array']);
+            'game_type' => self::DEFAULT_GAME_TYPES,
+        ], ['game_type' => 'array', 'game_map' => 'array', 'season' => 'array']);
     }
 
     /**
@@ -440,6 +483,17 @@ class PlayerController extends Controller
         // response in response()->json() serialises the object itself, so the
         // caller receives {"headers":…,"original":…} instead of the payload.
         if ($result instanceof Response) {
+            // A cold breakdown, friendfoe or awards query becomes a job. Point the
+            // caller at it the way the global stats endpoints do.
+            if ($result instanceof JsonResponse && $result->getStatusCode() === 202) {
+                $jobId = $result->getData(true)['job_id'] ?? null;
+
+                if ($jobId !== null) {
+                    $result->header('Retry-After', self::POLL_INTERVAL)
+                        ->header('Location', url('/v1/jobs/'.$jobId));
+                }
+            }
+
             return $result;
         }
 

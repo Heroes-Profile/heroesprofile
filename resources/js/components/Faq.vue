@@ -72,6 +72,31 @@
         </div>
       </div>
 
+      <!-- Match Awards -->
+      <div id="awards" class="mt-10 mb-8">
+        <h2 class="bg-teal px-4 py-3 rounded-t-lg text-lg font-semibold">Match Awards</h2>
+        <div class="bg-lighten rounded-b-lg p-4">
+          <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
+            <thead>
+              <tr>
+                <th style="padding:4px 8px; text-align:left;">Award</th>
+                <th style="padding:4px 8px; text-align:left;">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="award in awards" :key="award.award_id + '-' + award.title">
+                <td style="padding:3px 8px; white-space:nowrap;">
+                  <div class="flex items-center gap-2">
+                    <img :src="`/images/awards/${award.icon}_blue.png`" :alt="award.title" class="w-8 h-8" />{{ award.title }}
+                  </div>
+                </td>
+                <td style="padding:3px 8px;">{{ award.description }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- Ask a Question -->
       <div class="mt-12 mb-8">
         <h2 class="bg-teal px-4 py-3 rounded-t-lg text-lg font-semibold">Still have a question?</h2>
@@ -143,6 +168,10 @@ export default {
       default: ''
     },
     patchHistory: {
+      type: Array,
+      default: () => []
+    },
+    awards: {
       type: Array,
       default: () => []
     },
@@ -287,6 +316,30 @@ export default {
             {
               q: 'What is the Friends & Foes page?',
               a: 'The Friends &amp; Foes page on your player profile shows your win rate when playing <em>with</em> or <em>against</em> specific players. For example, see <a href="/Player/Zemill/67280/1/FriendFoe" class="link">Zemill\'s Friends &amp; Foes</a>. Upload your replays and check the Friends &amp; Foes section of your own profile to see yours.',
+            },
+            {
+              q: 'What is the Awards page?',
+              a: 'The Awards page on your player profile shows how often you earn each end of match award, such as MVP, Painbringer or Main Healer, as a percentage of your games. For example, see <a href="/Player/Zemill/67280/1/Awards" class="link">Zemill\'s Awards</a>. Click an award to list every game where you earned it. Awards are only counted for games played after Heroes Profile began tracking them, so very old replays are not included. Every award and what it is given for is listed under <a href="#awards" class="link">Match Awards</a> below.',
+            },
+            {
+              q: 'What is Replay Search and how do I use it?',
+              a: '<a href="/Match/Search" class="link">Replay Search</a> finds recent games uploaded to Heroes Profile. Pick your filters, press Filter, and each result links to its full match page.'
+                + '<p class="mt-2"><b>What it searches</b></p><ul class="list-disc list-inside mt-1 space-y-1">'
+                + '<li>Games played in the current and previous season, newest first.</li>'
+                + '<li>Quick Match, Storm League and ARAM. Unranked Draft, Hero League and Team League have no games in that window.</li>'
+                + '<li>Results come 1000 at a time. Use <b>Load 1000 More</b> to see older games.</li></ul>'
+                + '<p class="mt-2"><b>Filters</b></p><ul class="list-disc list-inside mt-1 space-y-1">'
+                + '<li><b>Game Type, Regions, Map, Game Version, From/To Date</b>: narrow to those games. Game Version only lists patches from the search window.</li>'
+                + '<li><b>Heroes</b>: pick one or more. With several, the <b>OR / AND</b> switch chooses between games with any of them or games with every one of them, on either team.</li>'
+                + '<li><b>Players</b>: type a battletag and press Add. If several accounts match, choose the right one. Private profiles cannot be searched for. With several players, <b>OR / AND</b> works the same way as heroes.</li></ul>'
+                + '<p class="mt-2"><b>Advanced Filters</b></p><ul class="list-disc list-inside mt-1 space-y-1">'
+                + '<li><b>HP Player, Hero and Role MMR</b> minimum and maximum, using the rating each player had in that game.</li>'
+                + '<li><b>HP Player, Hero and Role Rank</b> (Bronze to Master). Ranks use the current league boundaries for each game type. HP Hero Rank appears once you pick a hero, since each hero has its own boundaries.</li>'
+                + '<li>Every MMR and rank filter must hold for the <em>same</em> player. With no heroes picked, that can be anyone in the game. With heroes on OR, it is the player on one of those heroes. With heroes on AND, the player on every chosen hero has to meet them.</li></ul>'
+                + '<p class="mt-2"><b>Why does it say "Keep Searching"?</b></p>'
+                + '<p class="mt-1">Rare combinations, like several heroes all at Master, can take a long time to find. Replay Search looks through a few seconds\' worth of games at a time, shows what it found so far and how far back it has searched, and lets you press <b>Keep Searching</b> to continue. "No replays match those filters" only appears once the whole search window has been checked.</p>'
+                + '<p class="mt-2"><b>Limits</b></p>'
+                + '<p class="mt-1">To keep the site fast for everyone, searches are limited to 10 per minute, and each Load More or Keep Searching counts as one. If you hit the limit, wait a minute and try again.</p>',
             },
             {
               q: 'What is the Match Prediction Game?',

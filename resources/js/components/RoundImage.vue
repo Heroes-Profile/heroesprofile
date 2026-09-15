@@ -23,17 +23,21 @@
   
   @mouseover="handleMouseOver" @mouseleave="scheduleHide">
 
-    <div class="absolute z-10 bottom-0 right-0 w-9"  v-if="award">
+    <!-- On mobile the inline text block below shows these icons beside their labels instead -->
+    <div :class="['absolute z-10 bottom-0 right-0 w-9', { 'max-md:hidden': hasMobileText }]"  v-if="award">
       <img :src="awardicon"/>
     </div>
-    <div class="absolute -top-2 left-0 z-10" v-if="hpowner">
+    <div :class="['absolute -top-2 left-0 z-10', { 'max-md:hidden': hasMobileText }]" v-if="hpowner">
       <!-- {{ "HP Owner" }} -->
       <i class="fas fa-crown text" style="color:gold;"></i>
     </div>
 
-    <div class="absolute z-10 -top-2 left-0" v-else-if="ispatreon">
+    <div :class="['absolute z-10 -top-2 left-0', { 'max-md:hidden': hasMobileText }]" v-else-if="ispatreon">
       <!-- {{ "Patreon Subscriber" }} -->
       <i class="fas fa-star" style="color:gold"></i>
+    </div>
+    <div :class="['absolute z-10 bottom-0 -left-2 text-xl leading-none', { 'max-md:hidden': hasMobileText }]" v-if="voideye">
+      <void-eye-flair :force="true" :tooltip="false"></void-eye-flair>
     </div>
     <div class="absolute z-10 -top-2 -right-2 w-8" v-if="party">
       <!--  {{ party }} -->
@@ -63,44 +67,34 @@
       :src="image" 
       :alt="title">
     
-    <div v-show="showTooltip" @mouseover="handleMouseOver" @mouseleave="scheduleHide" :class="[
-        'absolute text-xs z-40',
-      {
-        // Default top positioning
-        'left-1/2 transform -translate-x-1/2 bottom-[1em] -translate-y-[2em]': tooltipPosition === 'top',
-        'bottom-[4.5em] -translate-y-[2em]': tooltipPosition === 'top' && size === 'big',
-        'bottom-[6em] -translate-y-[3em]': tooltipPosition === 'top' && size === 'xl',
+    <!-- Rendered under body so scrolling table wrappers can't clip it -->
+    <Teleport to="body">
+      <div v-if="showTooltip" @mouseover="handleMouseOver" @mouseleave="scheduleHide" :style="tooltipStyle" :class="[
+          'fixed text-xs z-50',
+        {
+          'w-[12em]' : popupsize != 'large' && popupsize != 'xlarge',
+          'w-[20em]' : popupsize == 'large',
+          'w-[28em]' : popupsize == 'xlarge'
+        }
+        ]" >
+        <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 ', {
 
-        // Bottom positioning (when too close to top of viewport)
-        'left-1/2 transform -translate-x-1/2 top-[1em] translate-y-[2em]': tooltipPosition === 'bottom',
-
-        // Right positioning (when too close to left edge)
-        'left-full top-1/2 -translate-y-1/2 ml-2': tooltipPosition === 'right',
-
-        // Left positioning (when too close to right edge)
-        'right-full top-1/2 -translate-y-1/2 mr-2': tooltipPosition === 'left',
-        
-        'text-xs' : size === 'big',
-        'w-[12em]' : popupsize != 'large',
-        'w-[20em]' : popupsize == 'large'
-      }
-
-      ]" >
-      <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 ', {
-        
-      }]">
-        <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>
-        <div class="bg-red" v-if="ispatreon">Patreon Subscriber</div>
-        <div class="bg-teal" v-if="award">{{award.title}}</div>
-        <slot></slot>
+        }]">
+          <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>
+          <div class="bg-red" v-if="ispatreon">Patreon Subscriber</div>
+          <div class="bg-[#4c1d95]" v-if="voideye">Marked by the Void</div>
+          <div class="bg-teal" v-if="award">{{award.title}}</div>
+          <slot></slot>
+        </div>
+        <div v-if="!excludehover && tooltipPosition === 'top'" class="popup-arrow max-md:hidden"></div>
       </div>
-      <div v-if="!excludehover && tooltipPosition === 'top'" class="popup-arrow max-md:hidden"></div>
-    </div>
-    <div v-if="!excludehover && !mobileClick" :class="[' md:hidden     text-s p-1    drop-shadow-md  rounded-md px-2 text-center   md:mb-4', {}]">
-      <div class="bg-yellow" v-if="hpowner">Heroes Profile Owner</div>
-      <div class="bg-red" v-else-if="ispatreon">Patreon Subscriber</div>
+    </Teleport>
+    <div v-if="hasMobileText" :class="[' md:hidden     text-s p-1    drop-shadow-md  rounded-md px-2 text-center   md:mb-4', {}]">
+      <div class="bg-yellow flex items-center justify-center gap-2" v-if="hpowner"><i class="fas fa-crown" style="color:gold;"></i>Heroes Profile Owner</div>
+      <div class="bg-red flex items-center justify-center gap-2" v-else-if="ispatreon"><i class="fas fa-star" style="color:gold"></i>Patreon Subscriber</div>
+      <div class="bg-[#4c1d95] flex items-center justify-center gap-2" v-if="voideye"><void-eye-flair :force="true" :tooltip="false"></void-eye-flair>Marked by the Void</div>
       <slot></slot>
-      <div class="bg-teal" v-if="award">{{award.title}}</div>
+      <div class="bg-teal flex items-center justify-center gap-2" v-if="award"><img v-if="awardicon" :src="awardicon" class="w-7 h-7" alt="" />{{award.title}}</div>
     </div>
   </div>
 </template>
@@ -122,6 +116,7 @@ export default {
     party: String,
     hpowner: Boolean,
     ispatreon: Boolean,
+    voideye: Boolean,
     icon: String,
     mobileClick: false,
     hidedelay: {
@@ -134,6 +129,7 @@ export default {
     return {
       showTooltip: false,
       tooltipPosition: 'top',
+      tooltipStyle: {},
       hideTimer: null,
     }
   },
@@ -141,7 +137,15 @@ export default {
   },
   mounted() {
   },
+  beforeUnmount() {
+    clearTimeout(this.hideTimer);
+    window.removeEventListener('scroll', this.hideTooltip, true);
+  },
   computed: {
+    // Mobile shows the hover text inline under the image.
+    hasMobileText() {
+      return !this.excludehover && !this.mobileClick;
+    },
   },
   watch: {
   },
@@ -151,13 +155,24 @@ export default {
     },
     scheduleHide() {
       if (this.hidedelay === 0) {
-        this.showTooltip = false;
+        this.hideTooltip();
       } else {
-        this.hideTimer = setTimeout(() => { this.showTooltip = false; }, this.hidedelay);
+        this.hideTimer = setTimeout(() => { this.hideTooltip(); }, this.hidedelay);
       }
     },
+    hideTooltip() {
+      this.showTooltip = false;
+      window.removeEventListener('scroll', this.hideTooltip, true);
+    },
     handleMouseOver() {
+      // Mobile already shows this text under the image
+      if (this.hasMobileText && this.isSmallScreen()) return;
+
       clearTimeout(this.hideTimer);
+      if (!this.showTooltip) {
+        // Fixed position goes stale once anything scrolls
+        window.addEventListener('scroll', this.hideTooltip, true);
+      }
       this.showTooltip = true;
       this.calculateTooltipPosition();
     },
@@ -165,7 +180,7 @@ export default {
       if (!this.$refs.container) return;
 
       const rect = this.$refs.container.getBoundingClientRect();
-      const tooltipWidth = this.popupsize === 'large' ? 320 : 192;
+      const tooltipWidth = this.popupsize === 'xlarge' ? 448 : this.popupsize === 'large' ? 320 : 192;
       const tooltipHeight = 120; // approximate height of tooltip popup
       const halfTooltip = tooltipWidth / 2;
       const screenWidth = window.innerWidth;
@@ -183,6 +198,20 @@ export default {
         this.tooltipPosition = 'left';
       } else {
         this.tooltipPosition = 'top';
+      }
+
+      const gap = 8;
+      const centerX = rect.left + (rect.width / 2);
+      const centerY = rect.top + (rect.height / 2);
+
+      if (this.tooltipPosition === 'top') {
+        this.tooltipStyle = { left: `${centerX}px`, bottom: `${window.innerHeight - rect.top + gap}px`, transform: 'translateX(-50%)' };
+      } else if (this.tooltipPosition === 'bottom') {
+        this.tooltipStyle = { left: `${centerX}px`, top: `${rect.bottom + gap}px`, transform: 'translateX(-50%)' };
+      } else if (this.tooltipPosition === 'right') {
+        this.tooltipStyle = { left: `${rect.right + gap}px`, top: `${centerY}px`, transform: 'translateY(-50%)' };
+      } else {
+        this.tooltipStyle = { right: `${screenWidth - rect.left + gap}px`, top: `${centerY}px`, transform: 'translateY(-50%)' };
       }
     }
   }

@@ -54,6 +54,7 @@ class ViewServiceProvider extends ServiceProvider
             $view->with('alt_search_account1', $alt_search_account1);
             $view->with('alt_search_account2', $alt_search_account2);
             $view->with('alt_search_account3', $alt_search_account3);
+            $view->with('void_corruption_optout', request()->cookie('void_corruption_optout') === '1');
         });
     }
 }

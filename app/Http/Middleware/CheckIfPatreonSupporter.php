@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Models\BattlenetAccount;
+use App\Models\BattlenetAccountFlair;
 use App\Models\PatreonAccount;
 use Closure;
 use Illuminate\Http\Request;
@@ -38,6 +39,15 @@ class CheckIfPatreonSupporter
             if ($user->flair_adfree_override == 1) {
                 session(['patreonSubscriberAdFree' => true]);
                 session(['patreonSubscriberSiteFlair' => true]);
+            }
+
+            // Event flair can grant a stretch of ad-free (e.g. 3 months for finding the Xal'atath eye).
+            $adFreeFlair = BattlenetAccountFlair::where('battlenet_accounts_id', $user->battlenet_accounts_id)
+                ->where('ad_free_until', '>', now())
+                ->exists();
+
+            if ($adFreeFlair) {
+                session(['patreonSubscriberAdFree' => true]);
             }
         }
 

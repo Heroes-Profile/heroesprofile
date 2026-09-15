@@ -7,7 +7,7 @@ use App\Models\BattlenetAccount;
 use App\Models\FriendFoeCache;
 use App\Models\GameType;
 use App\Models\Map;
-use App\Models\SeasonDate;
+use App\Rules\DateInputValidation;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
@@ -67,7 +67,7 @@ class FriendFoeController extends Controller
             'season' => $season,
             'game_type' => $game_type,
             'game_map' => $game_map,
-            'gametypedefault' => $this->globalDataService->getGameTypeDefault('single'), // Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'gametypedefault' => $this->globalDataService->getPlayerGameTypeDefault(),
             'filters' => $this->globalDataService->getFilterData(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
         ]);
@@ -81,6 +81,8 @@ class FriendFoeController extends Controller
             'region' => 'required|integer',
             'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation],
             'season' => ['sometimes', 'nullable', new SeasonInputValidation],
+            'start_date' => ['sometimes', 'nullable', new DateInputValidation],
+            'end_date' => ['sometimes', 'nullable', new DateInputValidation],
             'game_map' => ['sometimes', 'nullable', new GameMapInputValidation],
             'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation],
             'type' => 'required|in:friend,enemy',
@@ -107,6 +109,8 @@ class FriendFoeController extends Controller
             'type' => $request['type'],
             'game_type' => $request['game_type'],
             'season' => $request['season'],
+            'start_date' => $request['start_date'],
+            'end_date' => $request['end_date'],
             'hero' => $request['hero'],
             'game_map' => $request['game_map'],
             'groupsize' => $request['groupsize'],
@@ -119,7 +123,9 @@ class FriendFoeController extends Controller
                 $request['blizz_id'],
                 $request['region'],
                 $request['game_type'],
-                $request['season']
+                $request['season'],
+                $request['start_date'],
+                $request['end_date']
             );
 
             if (! $latestReplayId || $dbCache->latest_replayID >= $latestReplayId) {
@@ -145,6 +151,8 @@ class FriendFoeController extends Controller
         $gameType = GameType::whereIn('short_name', $request['game_type'])->pluck('type_id')->toArray();
 
         $season = $request['season'];
+        $startDate = $request['start_date'];
+        $endDate = $request['end_date'];
         $type = $request['type'];
         $teamValue = $type == 'friend' ? 0 : 1;
         $gameMap = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id') : null;
@@ -169,14 +177,8 @@ class FriendFoeController extends Controller
             ->where('player.blizz_id', $blizz_id)
             ->where('replay.region', $region)
             ->whereIn('game_type', $gameType)
-            ->when(! is_null($season), function ($query) use ($season) {
-                $data = SeasonDate::where('id', $season)->first();
-                if ($data) {
-                    $query->where('game_date', '>=', $data->start_date)
-                        ->where('game_date', '<', $data->end_date);
-                }
-
-                return $query;
+            ->tap(function ($query) use ($season, $startDate, $endDate) {
+                $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);
             })
             ->when(! is_null($gameMap), function ($query) use ($gameMap) {
                 return $query->whereIn('game_map', $gameMap);
@@ -224,14 +226,8 @@ class FriendFoeController extends Controller
             ->where('player.blizz_id', $blizz_id)
             ->where('replay.region', $region)
             ->whereIn('game_type', $gameType)
-            ->when(! is_null($season), function ($query) use ($season) {
-                $data = SeasonDate::where('id', $season)->first();
-                if ($data) {
-                    $query->where('game_date', '>=', $data->start_date)
-                        ->where('game_date', '<', $data->end_date);
-                }
-
-                return $query;
+            ->tap(function ($query) use ($season, $startDate, $endDate) {
+                $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);
             })
             ->when(! is_null($gameMap), function ($query) use ($gameMap) {
                 return $query->whereIn('game_map', $gameMap);
@@ -286,7 +282,10 @@ class FriendFoeController extends Controller
             });
         });
 
-        $patreonAccounts = BattlenetAccount::has('patreonAccount')->get();
+        // Same rule as checkIfSiteFlair: only Patreon accounts with site flair enabled.
+        $patreonAccounts = BattlenetAccount::without(['patreonAccount', 'userSettings'])
+            ->whereHas('patreonAccount', fn ($query) => $query->where('site_flair', 1))
+            ->get(['blizz_id', 'region']);
 
         $finalResults = $checkedData->map(function ($data, $blizz_id) use ($heroDataByID, $region, $patreonAccounts) {
             $totalWins = $data->where('winner', 1)->sum('total');
@@ -311,8 +310,9 @@ class FriendFoeController extends Controller
                 'hero' => $heroData['hero']['name'],
                 'hero_games' => $heroData['total_games_played'],
                 'region' => $region,
-                'hp_owner' => ($blizz_id == 67280 && $region == 1) ? true : false,
-                'patreon' => is_null($patreonAccount) || empty($patreonAccount) || count($patreonAccount) == 0 ? false : true,
+                'hp_owner' => $this->globalDataService->showOwnerFlair($blizz_id, $region),
+                'patreon' => ! (is_null($patreonAccount) || empty($patreonAccount) || count($patreonAccount) == 0)
+                    && ! $this->globalDataService->isFlairHidden('patreon', $blizz_id, $region),
                 'battletag' => explode('#', $data->first()->battletag)[0],
                 'total_wins' => $totalWins,
                 'total_losses' => $totalLosses,
@@ -333,7 +333,9 @@ class FriendFoeController extends Controller
             $blizz_id,
             $region,
             $request['game_type'],
-            $request['season']
+            $request['season'],
+            $request['start_date'],
+            $request['end_date']
         );
 
         $paramsHash = hash('sha256', json_encode([
@@ -342,6 +344,8 @@ class FriendFoeController extends Controller
             'type' => $type,
             'game_type' => $request['game_type'],
             'season' => $request['season'],
+            'start_date' => $request['start_date'],
+            'end_date' => $request['end_date'],
             'hero' => $request['hero'],
             'game_map' => $request['game_map'],
             'groupsize' => $request['groupsize'],
@@ -361,7 +365,7 @@ class FriendFoeController extends Controller
         return $finalResults;
     }
 
-    private function getLatestReplayId($blizz_id, $region, $game_type, $season): ?int
+    private function getLatestReplayId($blizz_id, $region, $game_type, $season, $startDate = null, $endDate = null): ?int
     {
         $gameTypeIds = $game_type
             ? GameType::whereIn('short_name', (array) $game_type)->pluck('type_id')->toArray()
@@ -372,12 +376,8 @@ class FriendFoeController extends Controller
             ->where('player.blizz_id', $blizz_id)
             ->where('replay.region', $region)
             ->when($gameTypeIds, fn ($q) => $q->whereIn('game_type', $gameTypeIds))
-            ->when(! is_null($season), function ($q) use ($season) {
-                $seasonDate = SeasonDate::find($season);
-                if ($seasonDate) {
-                    $q->where('game_date', '>=', $seasonDate->start_date)
-                        ->where('game_date', '<', $seasonDate->end_date);
-                }
+            ->tap(function ($q) use ($season, $startDate, $endDate) {
+                $this->globalDataService->applySeasonsOrDateRange($q, $season, $startDate, $endDate);
             });
 
         return $query->max('replay.replayID');

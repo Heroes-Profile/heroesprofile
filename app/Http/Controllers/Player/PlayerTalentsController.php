@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\GameType;
 use App\Models\HeroesDataTalent;
 use App\Models\Map;
-use App\Models\SeasonDate;
 use App\Rules\DateInputValidation;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
@@ -58,7 +57,7 @@ class PlayerTalentsController extends Controller
             'talentimages' => $this->globalDataService->getPreloadTalentImageUrls(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),
             'heroes' => $this->globalDataService->getHeroes(),
-            'gametypedefault' => ['qm', 'ud', 'hl', 'tl', 'sl', 'ar'], // $this->globalDataService->getGameTypeDefault('multi'), //Removing user defined setting.  Doesnt make sense to me not to show ALL data for player profile pages to start
+            'gametypedefault' => $this->globalDataService->getPlayerGameTypeDefault(),
         ]);
     }
 
@@ -74,7 +73,8 @@ class PlayerTalentsController extends Controller
             'hero' => ['required', new HeroInputValidation],
             'season' => ['sometimes', 'nullable', new SeasonInputValidation],
             'game_map' => ['sometimes', 'nullable', new GameMapInputValidation],
-            'fromdate' => ['sometimes', 'nullable', new DateInputValidation],
+            'start_date' => ['sometimes', 'nullable', new DateInputValidation],
+            'end_date' => ['sometimes', 'nullable', new DateInputValidation],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -94,7 +94,8 @@ class PlayerTalentsController extends Controller
         $hero = $this->globalDataService->getHeroes()->keyBy('name')[$request['hero']]->id;
         $season = $request['season'];
         $game_map = $request['game_map'] ? Map::whereIn('name', $request['game_map'])->pluck('map_id')->toArray() : null;
-        $fromdate = $request['fromdate'];
+        $startDate = $request['start_date'];
+        $endDate = $request['end_date'];
 
         $result = DB::table('replay')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
@@ -117,20 +118,11 @@ class PlayerTalentsController extends Controller
             ->where('hero', $hero)
             ->whereIn('game_type', $gameType)
             ->where('region', $region)
-            ->when(! is_null($season), function ($query) use ($season) {
-                $seasonDate = SeasonDate::find($season);
-                if ($seasonDate) {
-                    return $query->where('game_date', '>=', $seasonDate->start_date)
-                        ->where('game_date', '<', $seasonDate->end_date);
-                }
-
-                return $query;
+            ->tap(function ($query) use ($season, $startDate, $endDate) {
+                $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);
             })
             ->when(! is_null($game_map), function ($query) use ($game_map) {
                 return $query->whereIn('game_map', $game_map);
-            })
-            ->when(! is_null($fromdate), function ($query) use ($fromdate) {
-                return $query->where('game_date', '>=', $fromdate);
             })
             // ->toSql();
             ->get();

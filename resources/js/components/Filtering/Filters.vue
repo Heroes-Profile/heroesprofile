@@ -217,6 +217,69 @@
             :defaultValue="defaultSeason"
           ></single-select-filter>
 
+          <!-- Seasons Multiselect -->
+          <multi-select-filter v-if="includemultiseason"
+            :values="seasons"
+            :text="'Season'"
+            :defaultValue="multiSeasonValue"
+            @input-changed="handleInputChange"
+          ></multi-select-filter>
+
+          <!-- Heroes Multiselect -->
+          <multi-select-filter v-if="includemultihero"
+            :values="filters.heroes"
+            :text="'Heroes'"
+            @input-changed="handleInputChange"
+          ></multi-select-filter>
+          <div v-if="includemultihero && selectedMultiFilters['Heroes'] && selectedMultiFilters['Heroes'].length > 1" class="flex flex-col text-sm font-medium p-2">
+            <span>Heroes Match</span>
+            <tab-button tab1text="OR" tab2text="AND" :ignoreclick="true"
+              @tab-click="(side) => handleInputChange({ field: 'Heroes Match', value: side === 'right' ? 'all' : 'any', type: 'single' })"
+              :overridedefaultside="selectedSingleFilters['Heroes Match'] === 'all' ? 'right' : 'left'"
+            ></tab-button>
+          </div>
+
+          <!-- HP MMR ranges and rank tiers (advanced) -->
+          <template v-if="includemmrranges && toggleExtraFilters">
+            <number-range-filter v-for="mmrType in ['HP Player MMR', 'HP Hero MMR', 'HP Role MMR']" :key="mmrType"
+              :text="mmrType"
+              @input-changed="handleInputChange"
+            ></number-range-filter>
+            <multi-select-filter
+              :values="rankTiersByMmr"
+              :text="'HP Player Rank'"
+              :showrankinfo="true"
+              @input-changed="handleInputChange"
+            ></multi-select-filter>
+            <!-- Hero tiers are per hero, so this needs heroes to look up -->
+            <multi-select-filter v-if="selectedMultiFilters['Heroes'] && selectedMultiFilters['Heroes'].length"
+              :values="rankTiersByMmr"
+              :text="'HP Hero Rank'"
+              :showrankinfo="true"
+              @input-changed="handleInputChange"
+            ></multi-select-filter>
+            <multi-select-filter
+              :values="rankTiersByMmr"
+              :text="'HP Role Rank'"
+              :showrankinfo="true"
+              @input-changed="handleInputChange"
+            ></multi-select-filter>
+          </template>
+
+          <!-- Players -->
+          <player-picker-filter v-if="includeplayerpicker"
+            :text="'Players'"
+            @input-changed="handleInputChange"
+            @searching="(searching) => onFfSearching && onFfSearching(searching)"
+          ></player-picker-filter>
+
+          <!-- Game Version Multiselect -->
+          <multi-select-filter v-if="includegameversion"
+            :values="filters.timeframes"
+            :text="'Game Version'"
+            @input-changed="handleInputChange"
+          ></multi-select-filter>
+
           <!-- Game Map Multiselect -->
           <multi-select-filter v-if="includegamemap" 
             :values="filters.game_maps" 
@@ -361,6 +424,13 @@
             </div>
           </div>
 
+          <!-- Game Date Range -->
+          <date-range-filter v-if="includegamedaterange"
+            :startDate="selectedStartDate"
+            :endDate="selectedEndDate"
+            @input-changed="handleDateRangeChange"
+          ></date-range-filter>
+
           <!-- Group Size (advanced, global pages) -->
           <single-select-filter v-if="modifiedincludegroupsize && groupsizeadvanced && toggleExtraFilters && !groupsizemulti"
             :values="filters.group_size"
@@ -453,6 +523,13 @@
       includegamedate: Boolean,
       hideadvancedfilteringbutton: Boolean,
       includeseasonwithall: Boolean,
+      includemultiseason: Boolean,
+      includegamedaterange: Boolean,
+      includemultihero: Boolean,
+      includemmrranges: Boolean,
+      includeplayerpicker: Boolean,
+      includegameversion: Boolean,
+      defaultseasons: Array,
       overrideGroupSizeRemoval: Boolean,
       includetimeframetypewithlastupdate: Boolean,
       includetier: Boolean,
@@ -519,6 +596,9 @@
         modifiedminimumgamedefault: null,
         modifiedincludeheroes: null,
         selectedGameDate: null,
+        selectedStartDate: null,
+        selectedEndDate: null,
+        multiSeasonValue: [],
         toggleExtraFilters: null,
         modifiedincluderole: null,
         modifiedincludegroupsize: null,
@@ -587,6 +667,11 @@
       this.modifiedincludegroupsize = this.includegroupsize;
       this.modifiedincludetier = this.includetier;
       this.modifiedincludeseason = this.includeseason;
+
+      if(this.includemultiseason && this.defaultseasons){
+        this.multiSeasonValue = [...this.defaultseasons];
+        this.selectedMultiFilters["Season"] = [...this.defaultseasons];
+      }
 
       if(this.groupSizeDefaultValue){
         this.modifiedGroupSizeDefaultValue = this.groupSizeDefaultValue;
@@ -717,6 +802,10 @@
         }
         return "Show Advanced Filters";
       },
+      // Wood is decided by games played, not MMR
+      rankTiersByMmr() {
+        return this.filters.rank_tiers.filter(tier => tier.name !== 'Wood');
+      },
       seasonsWithAll() {
         const newValue = { code: 'All', name: 'All' };
         const updatedList = [...this.filters.seasons];
@@ -739,6 +828,16 @@
           delete this.selectedMultiFilters['Hero Rank'];
           delete this.selectedMultiFilters['Role Rank'];
           delete this.selectedMultiFilters['Mirror Matches'];
+
+          if(this.includemmrranges){
+            ['HP Player MMR', 'HP Hero MMR', 'HP Role MMR'].forEach(mmrType => {
+              delete this.selectedSingleFilters[mmrType + ' Min'];
+              delete this.selectedSingleFilters[mmrType + ' Max'];
+            });
+            delete this.selectedMultiFilters['HP Player Rank'];
+            delete this.selectedMultiFilters['HP Hero Rank'];
+            delete this.selectedMultiFilters['HP Role Rank'];
+          }
         }
       },
     },
@@ -917,14 +1016,22 @@
           }
         }
 
-        if(eventPayload.field == "Season" && this.includegroupsize){
+        if(eventPayload.field == "Season" && eventPayload.type === 'single' && this.includegroupsize){
           if(!this.overrideGroupSizeRemoval){
             this.modifiedincludegroupsize = (eventPayload.value >= 20);
           }
         }
-        
-        if(eventPayload.field == "Season"){
+
+        if(eventPayload.field == "Season" && eventPayload.type === 'single'){
           this.seasonvalue = eventPayload.value;
+        }
+
+        // Seasons and the date range are one or the other
+        if(eventPayload.field == "Season" && eventPayload.type === 'multi' && eventPayload.value.length > 0 && this.includegamedaterange){
+          this.selectedStartDate = null;
+          this.selectedEndDate = null;
+          delete this.selectedSingleFilters["From Date"];
+          delete this.selectedSingleFilters["To Date"];
         }
 
 
@@ -937,6 +1044,25 @@
           this.selectedGameDate = null;
         }
         this.selectedSingleFilters["From Date"] = this.selectedGameDate;
+      },
+      handleDateRangeChange({ field, value }) {
+        if(field == "From Date"){
+          this.selectedStartDate = value;
+        }else{
+          this.selectedEndDate = value;
+        }
+
+        if(value){
+          this.selectedSingleFilters[field] = value;
+
+          if(this.includemultiseason && this.selectedMultiFilters["Season"]){
+            // New array so the season dropdown's watcher clears its selection
+            this.multiSeasonValue = [];
+            delete this.selectedMultiFilters["Season"];
+          }
+        }else{
+          delete this.selectedSingleFilters[field];
+        }
       },
       resetGameDate(){
         this.selectedGameDate = null;

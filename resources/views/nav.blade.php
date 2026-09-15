@@ -2,7 +2,7 @@
     <div class="flex p-2 px-4 justify-between">
 <a class=" flex items-center font-logo text-2xl md:hidden" href="/">
                 Heroes
-                <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
+                <img class="w-10 mx-2 {{ !empty($siteLogo) ? '-translate-y-[8%] js-void-logo' : '' }}" src="{{ $navLogo ?? '/images/logo/heroesprofilelogo.png' }}" alt="Heroes Profile Logo" />
                 Profile
         </a>
         <button  id="mobile-toggle" class="md:hidden bg-blue rounded-lg px-2 ">=</button>
@@ -19,7 +19,7 @@
              
             <a class=" flex items-center font-logo text-2xl" href="/">
                 Heroes
-                <img class="w-10 mx-2" src="/images/logo/heroesprofilelogo.png" alt="Heroes Profile Logo" />
+                <img class="w-10 mx-2 {{ !empty($siteLogo) ? '-translate-y-[8%] js-void-logo' : '' }}" src="{{ $navLogo ?? '/images/logo/heroesprofilelogo.png' }}" alt="Heroes Profile Logo" />
                 Profile
             </a>
             <div class="flex items-center justify-between flex-wrap  text-sm md:ml-auto max-md:flex-col">
@@ -76,6 +76,7 @@
                                 {{--<a href="/" class="block px-4 py-2 border-b border-darken hover:bg-lighten cursor-not-allowed pointer-events-none">Activity Graphs</a>--}}
                                 <a href="https://autobattler.setup.heroesprofile.com/" target="_blank" >Auto Battler</a>
                                 <a href="/Match/Prediction/Game" >Match Prediction Game</a>
+                                <a href="/Match/Search" >Replay Search</a>
                                 <a href="/Tools/RandomizeMe" >Randomize Me</a>
                                 <a href="/Tools/Activity" >Activity Graphs</a>
                                 <a href="/" >Find a Player</a>
@@ -177,6 +178,7 @@
                                         :all-label="'All Talents'"
                                     ></nav-search-flyout>
                                     <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/MMR" >HP MMR Breakdown</a>
+                                    <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Awards" >Awards</a>
                                     <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Match/History" >Match History</a>
                                     <a href="/Player/{{ $mainSearchAccount['battletag'] }}/{{ $mainSearchAccount['blizz_id'] }}/{{ $mainSearchAccount['region'] }}/Match/Latest" >Latest Match</a>
                                 </div>
@@ -229,7 +231,10 @@
     </nav>
     
 </div>
-<nav class="flex justify-end md:mr-8 alt-acct-nav max-md:flex-wrap  ">
+<nav class="relative flex justify-end md:mr-8 alt-acct-nav max-md:flex-wrap  ">
+  @if(! empty($xalatathEvent) && ! ($voidOptOut ?? false))
+    <void-whispers :stage="{{ json_encode($voidStage ?? 0) }}"></void-whispers>
+  @endif
   @foreach($altSearchAccounts as $index => $account)
     @if($account)
       <div class="relative group inline-block  md:p-4 md:mx-4 text-sm  ">
@@ -282,6 +287,7 @@
                 :all-label="'All Talents'"
               ></nav-search-flyout>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/MMR">HP MMR Breakdown</a>
+              <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Awards">Awards</a>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Match/History">Match History</a>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/Match/Latest">Latest Match</a>
               <a href="#" class="remove-account text-right bg-gray-dark hover:bg-gray-md">

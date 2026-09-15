@@ -211,6 +211,7 @@ class MatchPredictionGameController extends Controller
             'replayData' => $replayData,
             'playerData' => $groupedPlayerData,
             'draftData' => $groupedDraftData && ! $groupedDraftData->isEmpty() ? $groupedDraftData : null,
+            'replayBans' => $this->globalDataService->getReplayBans($replayID),
             'firstPick' => $firstPick,
             'rank' => ucfirst($rankTierName),
         ];

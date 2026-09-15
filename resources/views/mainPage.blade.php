@@ -9,6 +9,8 @@
     :maxreplayid="{{ json_encode($maxReplayID) }}"
     :latestpatch="{{ json_encode($latestPatch) }}"
     :latestgamedate="{{ json_encode($latestGameDate) }}"
+    :xalatath-event="{{ json_encode(! empty($bladeGlobals['xalatathEvent'])) }}"
+    :void-stage="{{ json_encode(! empty($bladeGlobals['xalatathEvent']) && ! ($void_corruption_optout ?? false) ? $bladeGlobals['xalatathEvent']['stage'] : 0) }}"
   >
   </main-page>
 @endsection

@@ -9,8 +9,9 @@
       :gametypedefault="gametype"
       :includehero="true"
       :includegamemap="true"
-      :includesinglegametype="true"
-      :includeseasonwithall="true"
+      :includegametypefull="true"
+      :includemultiseason="true"
+      :includegamedaterange="true"
       :includegroupsize="true"
       :hideadvancedfilteringbutton="true"
       :groupSizeDefaultValue="'All'"
@@ -57,6 +58,7 @@
                   <div class="" v-else-if="row.patreon">
                     <i class="fas fa-star" style="color:gold"></i>
                   </div>
+                  <void-eye-flair class="mr-1" :blizz-id="row.blizz_id" :region="row.region" :tooltip="false"></void-eye-flair>
                   <a class="link" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
 
                 </div>
@@ -109,6 +111,7 @@
                   <div class="" v-else-if="row.patreon">
                     <i class="fas fa-star" style="color:gold"></i>
                   </div>
+                  <void-eye-flair class="mr-1" :blizz-id="row.blizz_id" :region="row.region" :tooltip="false"></void-eye-flair>
                   <a class="link" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
 
                 </div>
@@ -174,6 +177,8 @@ export default {
       gametype: null,
       gamemap: null,
       season: null,
+      startdate: null,
+      enddate: null,
       friendCancelTokenSource: null,
       enemyCancelTokenSource: null,
       groupsize: null,
@@ -261,6 +266,8 @@ export default {
             region: this.region,
             game_type: this.gametype,
             season: this.season,
+            start_date: this.startdate,
+            end_date: this.enddate,
             hero: this.hero,
             game_map: this.gamemap,
             groupsize: this.groupsize,
@@ -299,10 +306,11 @@ export default {
     },
     filterData(filteredData){
       this.hero = filteredData.single["Heroes"] ? filteredData.single["Heroes"] : null;
-      //this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametypedefault;
-      this.gametype = filteredData.single["Game Type"] ? [filteredData.single["Game Type"]] : this.gametype;
+      this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
-      this.season = filteredData.single["Season"] ? filteredData.single["Season"] : null;
+      this.season = filteredData.multi.Season ? Array.from(filteredData.multi.Season) : null;
+      this.startdate = filteredData.single["From Date"] || null;
+      this.enddate = filteredData.single["To Date"] || null;
       this.groupsize = filteredData.single["Group Size"] && (filteredData.single["Group Size"] != 'All') ? filteredData.single["Group Size"] : null;
 
       this.frienddata = null;

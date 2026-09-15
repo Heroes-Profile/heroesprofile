@@ -450,7 +450,7 @@ class SingleMatchController extends Controller
                         'region' => $this->esport ? $region : ($containsAccount ? null : $region),
                         'battletag' => $this->esport ? explode('#', $row->battletag)[0] : ($containsAccount ? null : $this->displayBattletag($row->battletag)),
                         'blizz_id' => $blizz_id,
-                        'hp_owner' => ($row->battletag == 'Zemill#1940' && $region == 1 && $blizz_id == '67280') ? true : false,
+                        'hp_owner' => $row->battletag == 'Zemill#1940' && $this->globalDataService->showOwnerFlair($blizz_id, $region),
                         'winner' => $row->winner,
                         'team' => $row->team,
                         'party' => ! $this->esport ? $row->party : null,

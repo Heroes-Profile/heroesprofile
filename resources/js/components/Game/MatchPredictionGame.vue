@@ -88,11 +88,12 @@
               <div class="rounded-md bg-red w-full text-center px-4 py-2" v-if="userchoiceteam == 0 && userchoiceresult && userchoiceresult.data == 0">WRONG</div>
             </div>
           </div>
-          <div class="px-2" v-if="data.draftData">
+          <div class="px-2" v-if="data.draftData && data.replayBans?.[0]?.length">
             <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 1 Bans</h2>
             <div class="flex justify-center gap-5 p-4 max-md:flex-col">
-              <template v-for="(item, index) in data.draftData[0].bans" :key="index">
-                <hero-image-wrapper v-if="item.hero" :hero="item.hero" size="big" ></hero-image-wrapper >
+              <template v-for="(item, index) in data.replayBans[0]" :key="index">
+                <hero-image-wrapper v-if="item.hero !== 0" :hero="item.hero" size="big" ></hero-image-wrapper >
+                <round-image v-else size="big" image="/images/talents/no-image.png"><h2>No Ban</h2></round-image>
               </template>
             </div>
           </div>
@@ -116,12 +117,12 @@
               <div class="rounded-md bg-red w-full text-center px-4 py-2" v-if="userchoiceteam == 1 && userchoiceresult && userchoiceresult.data == 0">WRONG</div>
             </div>
           </div>
-          <div class="px-2" v-if="data.draftData">
+          <div class="px-2" v-if="data.draftData && data.replayBans?.[1]?.length">
             <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Team 2 Bans</h2>
             <div class="flex justify-center gap-5 p-4 max-md:flex-col">
-            <template v-for="(item, index) in data.draftData[1].bans" :key="index">
-              
-              <hero-image-wrapper :hero="item.hero" size="big" ></hero-image-wrapper >
+            <template v-for="(item, index) in data.replayBans[1]" :key="index">
+              <hero-image-wrapper v-if="item.hero !== 0" :hero="item.hero" size="big" ></hero-image-wrapper >
+              <round-image v-else size="big" image="/images/talents/no-image.png"><h2>No Ban</h2></round-image>
             </template>
           </div>
         </div>

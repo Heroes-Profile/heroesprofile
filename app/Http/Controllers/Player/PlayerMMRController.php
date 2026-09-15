@@ -7,13 +7,12 @@ use App\Models\GameType;
 use App\Models\Hero;
 use App\Models\LeagueBreakdown;
 use App\Models\MMRTypeID;
-use App\Models\SeasonDate;
+use App\Rules\DateInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
 use App\Rules\RoleInputValidation;
 use App\Rules\SeasonInputValidation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -66,6 +65,8 @@ class PlayerMMRController extends Controller
             'hero' => ['required_if:type,Hero', 'nullable', new HeroInputByIDValidation],
             'role' => ['required_if:type,Role', 'nullable', new RoleInputValidation],
             'season' => ['sometimes', 'nullable', new SeasonInputValidation],
+            'start_date' => ['sometimes', 'nullable', new DateInputValidation],
+            'end_date' => ['sometimes', 'nullable', new DateInputValidation],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -85,6 +86,8 @@ class PlayerMMRController extends Controller
         $type = $request['type'];
         $role = $request['role'];
         $season = $request['season'];
+        $startDate = $request['start_date'];
+        $endDate = $request['end_date'];
 
         if ($type == 'Hero' && $hero == null) {
             return [
@@ -128,14 +131,8 @@ class PlayerMMRController extends Controller
             ->when(! is_null($role), function ($query) use ($role) {
                 return $query->whereIn('hero', Hero::select('id')->where('new_role', $role)->get()->toArray());
             })
-            ->when(! is_null($season), function ($query) use ($season) {
-                $seasonDate = Cache::remember('season_date_'.$season, 3600, fn () => SeasonDate::find($season));
-                if ($seasonDate) {
-                    return $query->where('game_date', '>=', $seasonDate->start_date)
-                        ->where('game_date', '<', $seasonDate->end_date);
-                }
-
-                return $query;
+            ->tap(function ($query) use ($season, $startDate, $endDate) {
+                $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);
             })
             // ->toSql();
             ->orderByDesc('mmr_date_parsed')

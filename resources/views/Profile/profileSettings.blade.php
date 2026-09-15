@@ -6,6 +6,7 @@
   <profile-settings 
     :user="{{ json_encode(Auth::user()) }}" 
     :filters="{{ json_encode($filters) }}"
+    :available-flair="{{ json_encode($availableFlair) }}"
   >
   </profile-settings>
 @endsection
