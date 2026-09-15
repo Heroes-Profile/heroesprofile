@@ -322,6 +322,26 @@ export default {
               a: 'The Awards page on your player profile shows how often you earn each end of match award, such as MVP, Painbringer or Main Healer, as a percentage of your games. For example, see <a href="/Player/Zemill/67280/1/Awards" class="link">Zemill\'s Awards</a>. Click an award to list every game where you earned it. Awards are only counted for games played after Heroes Profile began tracking them, so very old replays are not included. Every award and what it is given for is listed under <a href="#awards" class="link">Match Awards</a> below.',
             },
             {
+              q: 'What is Replay Search and how do I use it?',
+              a: '<a href="/Match/Search" class="link">Replay Search</a> finds recent games uploaded to Heroes Profile. Pick your filters, press Filter, and each result links to its full match page.'
+                + '<p class="mt-2"><b>What it searches</b></p><ul class="list-disc list-inside mt-1 space-y-1">'
+                + '<li>Games played in the current and previous season, newest first.</li>'
+                + '<li>Quick Match, Storm League and ARAM. Unranked Draft, Hero League and Team League have no games in that window.</li>'
+                + '<li>Results come 1000 at a time. Use <b>Load 1000 More</b> to see older games.</li></ul>'
+                + '<p class="mt-2"><b>Filters</b></p><ul class="list-disc list-inside mt-1 space-y-1">'
+                + '<li><b>Game Type, Regions, Map, Game Version, From/To Date</b>: narrow to those games. Game Version only lists patches from the search window.</li>'
+                + '<li><b>Heroes</b>: pick one or more. With several, the <b>OR / AND</b> switch chooses between games with any of them or games with every one of them, on either team.</li>'
+                + '<li><b>Players</b>: type a battletag and press Add. If several accounts match, choose the right one. Private profiles cannot be searched for. With several players, <b>OR / AND</b> works the same way as heroes.</li></ul>'
+                + '<p class="mt-2"><b>Advanced Filters</b></p><ul class="list-disc list-inside mt-1 space-y-1">'
+                + '<li><b>HP Player, Hero and Role MMR</b> minimum and maximum, using the rating each player had in that game.</li>'
+                + '<li><b>HP Player, Hero and Role Rank</b> (Bronze to Master). Ranks use the current league boundaries for each game type. HP Hero Rank appears once you pick a hero, since each hero has its own boundaries.</li>'
+                + '<li>Every MMR and rank filter must hold for the <em>same</em> player. With no heroes picked, that can be anyone in the game. With heroes on OR, it is the player on one of those heroes. With heroes on AND, the player on every chosen hero has to meet them.</li></ul>'
+                + '<p class="mt-2"><b>Why does it say "Keep Searching"?</b></p>'
+                + '<p class="mt-1">Rare combinations, like several heroes all at Master, can take a long time to find. Replay Search looks through a few seconds\' worth of games at a time, shows what it found so far and how far back it has searched, and lets you press <b>Keep Searching</b> to continue. "No replays match those filters" only appears once the whole search window has been checked.</p>'
+                + '<p class="mt-2"><b>Limits</b></p>'
+                + '<p class="mt-1">To keep the site fast for everyone, searches are limited to 10 per minute, and each Load More or Keep Searching counts as one. If you hit the limit, wait a minute and try again.</p>',
+            },
+            {
               q: 'What is the Match Prediction Game?',
               a: 'The Match Prediction Game lets you look at a draft and try to predict which team will win before seeing the result. It\'s a fun way to test your game knowledge and see how your predictions compare to the actual outcome.',
             },
