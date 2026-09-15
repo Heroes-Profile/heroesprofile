@@ -31,6 +31,7 @@
         <div v-for="award in filteredAwards" :key="award.award_id" @click="selectAward(award)" :class="['bg-gray-dark rounded p-4 w-[12em] max-md:w-[45%] flex flex-col items-center text-center cursor-pointer border-2 hover:border-lteal', selectedAward && selectedAward.award_id == award.award_id ? 'border-teal' : 'border-gray-dark']">
           <img :src="`/images/awards/${award.icon}_blue.png`" :alt="award.title" class="w-14 h-14" />
           <span class="mt-2">{{ award.title }}</span>
+          <span v-if="award.description" class="text-xs opacity-75 mb-1">{{ award.description }}</span>
           <span class="text-2xl font-bold">{{ award.rate.toFixed(2) }}%</span>
           <span class="text-sm">{{ award.count.toLocaleString('en-US') }} games</span>
         </div>
@@ -158,7 +159,7 @@
         if(!search){
           return this.data.awards;
         }
-        return this.data.awards.filter(award => award.title.toLowerCase().includes(search));
+        return this.data.awards.filter(award => award.title.toLowerCase().includes(search) || (award.description || '').toLowerCase().includes(search));
       },
       tableRows(){
         if(this.selectedAward){

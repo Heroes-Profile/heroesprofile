@@ -159,6 +159,7 @@ class PlayerAwardsController extends Controller
                 'award_id' => $award->award_id,
                 'title' => $award->title,
                 'icon' => $award->icon,
+                'description' => $award->description,
                 'count' => $count,
                 'rate' => $totalGames > 0 ? round(($count / $totalGames) * 100, 2) : 0,
             ];

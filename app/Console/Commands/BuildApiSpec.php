@@ -258,6 +258,10 @@ class BuildApiSpec extends Command
             $parameter['example'] = $spec['example'];
         }
 
+        if ($spec['deprecated'] ?? false) {
+            $parameter['deprecated'] = true;
+        }
+
         return $parameter;
     }
 
