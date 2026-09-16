@@ -23,13 +23,18 @@
         <div class="bg-teal p-[1em] pl-[2em] ">
           <ol v-if="leaderboardtype != 'Match Prediction'" class="list-disc max-md:text-sm">
             <li>Account level must be greater than or equal to 250.</li>
-            <li> Must have played at least {{ weeksSinceStartScalar }} times the number of weeks since the season started. (Currently that is {{ weekssincestart * weeksSinceStartScalar }} games).  Note:  If there are less than 10 players meeting these requirements, then the number of games required are reduced until 10 players are found.</li>
+            <li> Must have played at least {{ weeksSinceStartScalar }} times the number of weeks since the season started. (Currently that is {{ weekssincestart * weeksSinceStartScalar }} games).</li>
             <li>Must have a win rate greater than or equal to 50%.</li>
           </ol>
           <ol v-else>
             <!--<li> Must have predicted at least {{ matchPredictionWeeksSinceStartScalar }} times the number of weeks since the season started. (Currently that is {{ weekssincestart * matchPredictionWeeksSinceStartScalar }} games)</li>-->
             <li>Must have predicted 20 games in the game type and season</li>
           </ol>
+        </div>
+        <div v-if="leaderboardtype != 'Match Prediction'" class="bg-teal p-[1em] pl-[2em] max-w-[1000px] max-md:text-sm">
+          <h4 class="font-bold uppercase pb-1">Leaderboard groups</h4>
+          <p class="pb-2">If fewer than 50 players meet the games played requirement, it is lowered by one game per week at a time until at least 50 players qualify, down to a minimum of 5 games. Each step down is a new group: Group A met the full requirement, Group B met the next step down, and so on. Each group shows the games it required.</p>
+          <p>Everyone in Group A ranks above everyone in Group B, even with a lower Heroes Profile Rating, so players who met the full requirement are never passed by players who have played fewer games. Within a group, players are ranked by Heroes Profile Rating.</p>
         </div>
         <h3 v-if="leaderboardtype != 'Match Prediction'" class="font-bold text-2xl uppercase pb-2 max-md:text-base">Heroes Profile Rating formula</h3>
         <img v-if="leaderboardtype != 'Match Prediction'" class="max-w-[1000px] w-full" :src="'/images/miscellaneous/leaderboard_rating_calculation.png'"/>
@@ -98,7 +103,14 @@
             </div>
 
 
-            <table id="responsive-table" class="responsive-table  relative " ref="responsivetable">
+            <!-- Shrinks to fit the screen like a single table would (wrapping cell text first), and every group
+                 table stretches to the same width so headings line up and the small-screen scaling covers them all -->
+            <div ref="responsivetable" class="grid mx-auto" style="width: fit-content">
+            <template v-for="group in groupedData" :key="group.group">
+            <h3 v-if="showGroupHeadings" class="stack-header !mx-0 mt-6 first:mt-0 mb-2">
+              {{ groupName(group.group) }}<span v-if="group.minGamesRequired !== null">&nbsp;- At least {{ group.minGamesRequired.toLocaleString('en-US') }} games played</span>
+            </h3>
+            <table class="responsive-table w-full relative ">
               <thead class=" top-0 w-full  z-40">
                 <tr class="">
                   <th @click="sortTable('rank')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
@@ -148,14 +160,14 @@
                 </tr>
               </thead>
               <tbody>
-                <template v-for="(row, index) in filteredData">
-                  <tr v-if="!patreonUser && index != 0 && index % 50 === 0">
+                <template v-for="(row, index) in group.rows">
+                  <tr v-if="!patreonUser && group.offset + index != 0 && (group.offset + index) % 50 === 0">
                     <td colspan="10" class="align-content-center">
-                      <dynamic-banner-ad :patreon-user="patreonUser" :index="index + 3" :mobile-override="true"></dynamic-banner-ad>
+                      <dynamic-banner-ad :patreon-user="patreonUser" :index="group.offset + index + 3" :mobile-override="true"></dynamic-banner-ad>
                     </td>
                   </tr>
                   <tr>
-                    <td><div class="flex gap-1"><div v-if="rankchange" class="bg-blue text-white min-w-[2em] p-1 rounded-md text-center"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  data.length - index }}</span></div><span class="p-1">{{ row.rank }}</span></div></td>
+                    <td><div class="flex gap-1"><div v-if="rankchange" class="bg-blue text-white min-w-[2em] p-1 rounded-md text-center"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  group.rows.length - index }}</span></div><span class="p-1">{{ row.rank }}</span></div></td>
                     <td>
                       <div class="flex items-center">
                         <div class="" v-if="row.hp_owner">
@@ -227,6 +239,8 @@
                 </template>
               </tbody>
             </table>
+            </template>
+            </div>
           </div>
       </div>
     </div>
@@ -344,6 +358,29 @@ export default {
     filteredData() {
       const searchTerm = this.searchTerm.toLowerCase();
       return this.sortedData.filter(row => row.battletag.toLowerCase().includes(searchTerm));
+    },
+    // Splits rows into leaderboard groups (0 = Group A), keeping the current sort and search within each group.
+    // Match Prediction and boards calculated before groups existed come back as a single Group A.
+    groupedData() {
+      const groups = new Map();
+      this.filteredData.forEach(row => {
+        const key = row.leaderboard_group ?? 0;
+        if (!groups.has(key)) {
+          groups.set(key, { group: key, minGamesRequired: row.min_games_required ?? null, rows: [] });
+        }
+        groups.get(key).rows.push(row);
+      });
+
+      const sorted = [...groups.values()].sort((a, b) => a.group - b.group);
+      let offset = 0;
+      sorted.forEach(group => {
+        group.offset = offset;
+        offset += group.rows.length;
+      });
+      return sorted;
+    },
+    showGroupHeadings() {
+      return this.groupedData.length > 1 || this.groupedData.some(group => group.minGamesRequired !== null);
     },
     patreonUser(){
       if(this.user && this.user.patreon == 1){
@@ -483,12 +520,15 @@ export default {
       }).catch(function(err) {
       });
     },
+    groupName(group){
+      return `Group ${String.fromCharCode(65 + group)}`;
+    },
     ratingText(playerRating, playerRatingGamesPlayed){
       let scalar = this.weekssincestart * this.weeksSinceStartScalar;
       if(playerRatingGamesPlayed < scalar){
         let gameDifference = scalar - playerRatingGamesPlayed;
 
-        return `Rating of ${playerRating} over ${playerRatingGamesPlayed} games.  ${gameDifference} more games to rank.`;
+        return `Rating of ${playerRating} over ${playerRatingGamesPlayed} games.  ${gameDifference} more games to reach Group A.`;
       }
       return `Rating of ${playerRating} over ${playerRatingGamesPlayed} games`;
     },

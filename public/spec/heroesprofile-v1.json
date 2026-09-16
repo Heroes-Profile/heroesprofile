@@ -60271,6 +60271,14 @@
                                             "rank": {
                                                 "type": "integer"
                                             },
+                                            "leaderboard_group": {
+                                                "type": "integer",
+                                                "description": "Leaderboard group, 0 = Group A. Players in a lower number always rank above players in a higher one; each group needs fewer games played than the group above it."
+                                            },
+                                            "min_games_required": {
+                                                "type": "integer",
+                                                "description": "Games played needed to be in this leaderboard group. Null for rows calculated before groups existed."
+                                            },
                                             "battletag": {
                                                 "type": "string"
                                             },
@@ -60361,6 +60369,8 @@
                                         },
                                         "required": [
                                             "rank",
+                                            "leaderboard_group",
+                                            "min_games_required",
                                             "battletag",
                                             "split_battletag",
                                             "blizz_id",

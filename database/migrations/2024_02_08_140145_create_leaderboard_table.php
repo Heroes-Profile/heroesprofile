@@ -20,6 +20,12 @@ class CreateLeaderboardTable extends Migration
             $table->integer('type');
             $table->integer('stack_size')->default(0);
             $table->integer('rank');
+            // Leaderboard group written by CalculateLeaderboards: 0 = Group A, which met the full games-played
+            // requirement; each later group met a requirement one game per week lower. Not named `grouping`,
+            // which is reserved in MySQL 8.
+            $table->unsignedTinyInteger('leaderboard_group')->default(0);
+            // Games played needed to be in this row's group
+            $table->unsignedInteger('min_games_required')->nullable();
             $table->string('split_battletag', 255)->nullable();
             $table->string('battletag', 255);
             $table->unsignedInteger('blizz_id');

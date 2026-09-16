@@ -231,6 +231,8 @@ return [
         'downloadable' => 'Whether the replay file is still within the retention window and can be fetched from `/replays/download`.',
         'win_rate' => 'Percentage, 0 to 100.',
         'popularity' => 'Percentage of matches in which this appeared, 0 to 100.',
+        'leaderboard_group' => 'Leaderboard group, 0 = Group A. Players in a lower number always rank above players in a higher one; each group needs fewer games played than the group above it.',
+        'min_games_required' => 'Games played needed to be in this leaderboard group. Null for rows calculated before groups existed.',
     ],
 
     /* The time window player stats cover. Seasons or dates, not both. */
