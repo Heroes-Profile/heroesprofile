@@ -29,7 +29,7 @@
     <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->
     <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg expandable-dropdown z-50">
       <div class="space-y-2 p-2">
-        <div>
+        <div class="whitespace-nowrap">
           <input 
           type="checkbox" 
           id="select-all" 
@@ -40,7 +40,7 @@
           <label for="select-all" class="ml-2 text-sm variable-text">Select All</label>
         </div>
         <div class="max-h-80 overflow-y-auto"> 
-          <div v-for="value in values" :key="value.code">
+          <div v-for="value in values" :key="value.code" class="whitespace-nowrap">
             <input 
             type="checkbox" 
             :id="value.code" 
