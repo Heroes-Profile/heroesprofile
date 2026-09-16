@@ -1,6 +1,8 @@
 [
     {
         "rank": 1,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer1#0000",
         "split_battletag": "ExamplePlayer1",
         "blizz_id": 9000001,
@@ -43,6 +45,8 @@
     },
     {
         "rank": 2,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer2#0000",
         "split_battletag": "ExamplePlayer2",
         "blizz_id": 9000002,
@@ -85,6 +89,8 @@
     },
     {
         "rank": 3,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer3#0000",
         "split_battletag": "ExamplePlayer3",
         "blizz_id": 9000003,
@@ -127,6 +133,8 @@
     },
     {
         "rank": 4,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer4#0000",
         "split_battletag": "ExamplePlayer4",
         "blizz_id": 9000004,
@@ -169,6 +177,8 @@
     },
     {
         "rank": 5,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer5#0000",
         "split_battletag": "ExamplePlayer5",
         "blizz_id": 9000005,
@@ -211,6 +221,8 @@
     },
     {
         "rank": 6,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer6#0000",
         "split_battletag": "ExamplePlayer6",
         "blizz_id": 9000006,
@@ -253,6 +265,8 @@
     },
     {
         "rank": 7,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer7#0000",
         "split_battletag": "ExamplePlayer7",
         "blizz_id": 9000007,
@@ -295,6 +309,8 @@
     },
     {
         "rank": 8,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer8#0000",
         "split_battletag": "ExamplePlayer8",
         "blizz_id": 9000008,
@@ -337,6 +353,8 @@
     },
     {
         "rank": 9,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer9#0000",
         "split_battletag": "ExamplePlayer9",
         "blizz_id": 9000009,
@@ -379,6 +397,8 @@
     },
     {
         "rank": 10,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer10#0000",
         "split_battletag": "ExamplePlayer10",
         "blizz_id": 9000010,
@@ -421,6 +441,8 @@
     },
     {
         "rank": 11,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer11#0000",
         "split_battletag": "ExamplePlayer11",
         "blizz_id": 9000011,
@@ -463,6 +485,8 @@
     },
     {
         "rank": 12,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer12#0000",
         "split_battletag": "ExamplePlayer12",
         "blizz_id": 9000012,
@@ -505,6 +529,8 @@
     },
     {
         "rank": 13,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer13#0000",
         "split_battletag": "ExamplePlayer13",
         "blizz_id": 9000013,
@@ -547,6 +573,8 @@
     },
     {
         "rank": 14,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer14#0000",
         "split_battletag": "ExamplePlayer14",
         "blizz_id": 9000014,
@@ -589,6 +617,8 @@
     },
     {
         "rank": 15,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer15#0000",
         "split_battletag": "ExamplePlayer15",
         "blizz_id": 9000015,
@@ -631,6 +661,8 @@
     },
     {
         "rank": 16,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer16#0000",
         "split_battletag": "ExamplePlayer16",
         "blizz_id": 9000016,
@@ -673,6 +705,8 @@
     },
     {
         "rank": 17,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer17#0000",
         "split_battletag": "ExamplePlayer17",
         "blizz_id": 9000017,
@@ -715,6 +749,8 @@
     },
     {
         "rank": 18,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer18#0000",
         "split_battletag": "ExamplePlayer18",
         "blizz_id": 9000018,
@@ -757,6 +793,8 @@
     },
     {
         "rank": 19,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer19#0000",
         "split_battletag": "ExamplePlayer19",
         "blizz_id": 9000019,
@@ -799,6 +837,8 @@
     },
     {
         "rank": 20,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer20#0000",
         "split_battletag": "ExamplePlayer20",
         "blizz_id": 9000020,
@@ -841,6 +881,8 @@
     },
     {
         "rank": 21,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer21#0000",
         "split_battletag": "ExamplePlayer21",
         "blizz_id": 9000021,
@@ -883,6 +925,8 @@
     },
     {
         "rank": 22,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer22#0000",
         "split_battletag": "ExamplePlayer22",
         "blizz_id": 9000022,
@@ -911,6 +955,8 @@
     },
     {
         "rank": 23,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer23#0000",
         "split_battletag": "ExamplePlayer23",
         "blizz_id": 9000023,
@@ -953,6 +999,8 @@
     },
     {
         "rank": 24,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer24#0000",
         "split_battletag": "ExamplePlayer24",
         "blizz_id": 9000024,
@@ -995,6 +1043,8 @@
     },
     {
         "rank": 25,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer25#0000",
         "split_battletag": "ExamplePlayer25",
         "blizz_id": 9000025,
@@ -1037,6 +1087,8 @@
     },
     {
         "rank": 26,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer26#0000",
         "split_battletag": "ExamplePlayer26",
         "blizz_id": 9000026,
@@ -1079,6 +1131,8 @@
     },
     {
         "rank": 27,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer27#0000",
         "split_battletag": "ExamplePlayer27",
         "blizz_id": 9000027,
@@ -1121,6 +1175,8 @@
     },
     {
         "rank": 28,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer28#0000",
         "split_battletag": "ExamplePlayer28",
         "blizz_id": 9000028,
@@ -1163,6 +1219,8 @@
     },
     {
         "rank": 29,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer29#0000",
         "split_battletag": "ExamplePlayer21",
         "blizz_id": 9000029,
@@ -1205,6 +1263,8 @@
     },
     {
         "rank": 30,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer30#0000",
         "split_battletag": "ExamplePlayer29",
         "blizz_id": 9000030,
@@ -1247,6 +1307,8 @@
     },
     {
         "rank": 31,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer31#0000",
         "split_battletag": "ExamplePlayer30",
         "blizz_id": 9000031,
@@ -1289,6 +1351,8 @@
     },
     {
         "rank": 32,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer32#0000",
         "split_battletag": "ExamplePlayer31",
         "blizz_id": 9000032,
@@ -1331,6 +1395,8 @@
     },
     {
         "rank": 33,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer33#0000",
         "split_battletag": "ExamplePlayer32",
         "blizz_id": 9000033,
@@ -1373,6 +1439,8 @@
     },
     {
         "rank": 34,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer34#0000",
         "split_battletag": "ExamplePlayer33",
         "blizz_id": 9000034,
@@ -1415,6 +1483,8 @@
     },
     {
         "rank": 35,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer35#0000",
         "split_battletag": "ExamplePlayer34",
         "blizz_id": 9000035,
@@ -1457,6 +1527,8 @@
     },
     {
         "rank": 36,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer36#0000",
         "split_battletag": "ExamplePlayer35",
         "blizz_id": 9000036,
@@ -1499,6 +1571,8 @@
     },
     {
         "rank": 37,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer37#0000",
         "split_battletag": "ExamplePlayer36",
         "blizz_id": 9000037,
@@ -1541,6 +1615,8 @@
     },
     {
         "rank": 38,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer38#0000",
         "split_battletag": "ExamplePlayer37",
         "blizz_id": 9000038,
@@ -1583,6 +1659,8 @@
     },
     {
         "rank": 39,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer39#0000",
         "split_battletag": "ExamplePlayer21",
         "blizz_id": 9000039,
@@ -1625,6 +1703,8 @@
     },
     {
         "rank": 40,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer40#0000",
         "split_battletag": "ExamplePlayer38",
         "blizz_id": 9000040,
@@ -1653,6 +1733,8 @@
     },
     {
         "rank": 41,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer41#0000",
         "split_battletag": "ExamplePlayer39",
         "blizz_id": 9000041,
@@ -1695,6 +1777,8 @@
     },
     {
         "rank": 42,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer42#0000",
         "split_battletag": "ExamplePlayer40",
         "blizz_id": 9000042,
@@ -1737,6 +1821,8 @@
     },
     {
         "rank": 43,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer43#0000",
         "split_battletag": "ExamplePlayer41",
         "blizz_id": 9000043,
@@ -1779,6 +1865,8 @@
     },
     {
         "rank": 44,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer44#0000",
         "split_battletag": "ExamplePlayer42",
         "blizz_id": 9000044,
@@ -1821,6 +1909,8 @@
     },
     {
         "rank": 45,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer45#0000",
         "split_battletag": "ExamplePlayer43",
         "blizz_id": 9000045,
@@ -1863,6 +1953,8 @@
     },
     {
         "rank": 46,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer46#0000",
         "split_battletag": "ExamplePlayer44",
         "blizz_id": 9000046,
@@ -1905,6 +1997,8 @@
     },
     {
         "rank": 47,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer47#0000",
         "split_battletag": "ExamplePlayer45",
         "blizz_id": 9000047,
@@ -1947,6 +2041,8 @@
     },
     {
         "rank": 48,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer48#0000",
         "split_battletag": "ExamplePlayer46",
         "blizz_id": 9000048,
@@ -1989,6 +2085,8 @@
     },
     {
         "rank": 49,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer49#0000",
         "split_battletag": "ExamplePlayer47",
         "blizz_id": 9000049,
@@ -2031,6 +2129,8 @@
     },
     {
         "rank": 50,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer50#0000",
         "split_battletag": "ExamplePlayer48",
         "blizz_id": 9000050,
@@ -2073,6 +2173,8 @@
     },
     {
         "rank": 51,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer51#0000",
         "split_battletag": "ExamplePlayer49",
         "blizz_id": 9000051,
@@ -2115,6 +2217,8 @@
     },
     {
         "rank": 52,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer52#0000",
         "split_battletag": "ExamplePlayer50",
         "blizz_id": 9000052,
@@ -2143,6 +2247,8 @@
     },
     {
         "rank": 53,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer53#0000",
         "split_battletag": "ExamplePlayer51",
         "blizz_id": 9000053,
@@ -2185,6 +2291,8 @@
     },
     {
         "rank": 54,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer54#0000",
         "split_battletag": "ExamplePlayer52",
         "blizz_id": 9000054,
@@ -2227,6 +2335,8 @@
     },
     {
         "rank": 55,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer55#0000",
         "split_battletag": "ExamplePlayer53",
         "blizz_id": 9000055,
@@ -2269,6 +2379,8 @@
     },
     {
         "rank": 56,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer56#0000",
         "split_battletag": "ExamplePlayer54",
         "blizz_id": 9000056,
@@ -2311,6 +2423,8 @@
     },
     {
         "rank": 57,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer57#0000",
         "split_battletag": "ExamplePlayer55",
         "blizz_id": 9000057,
@@ -2353,6 +2467,8 @@
     },
     {
         "rank": 58,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer58#0000",
         "split_battletag": "ExamplePlayer56",
         "blizz_id": 9000058,
@@ -2395,6 +2511,8 @@
     },
     {
         "rank": 59,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer59#0000",
         "split_battletag": "ExamplePlayer57",
         "blizz_id": 9000059,
@@ -2423,6 +2541,8 @@
     },
     {
         "rank": 60,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer60#0000",
         "split_battletag": "ExamplePlayer58",
         "blizz_id": 9000060,
@@ -2465,6 +2585,8 @@
     },
     {
         "rank": 61,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer61#0000",
         "split_battletag": "ExamplePlayer59",
         "blizz_id": 9000061,
@@ -2507,6 +2629,8 @@
     },
     {
         "rank": 62,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer62#0000",
         "split_battletag": "ExamplePlayer60",
         "blizz_id": 9000062,
@@ -2549,6 +2673,8 @@
     },
     {
         "rank": 63,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer63#0000",
         "split_battletag": "ExamplePlayer61",
         "blizz_id": 9000063,
@@ -2591,6 +2717,8 @@
     },
     {
         "rank": 64,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer64#0000",
         "split_battletag": "ExamplePlayer62",
         "blizz_id": 9000064,
@@ -2633,6 +2761,8 @@
     },
     {
         "rank": 65,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer65#0000",
         "split_battletag": "ExamplePlayer63",
         "blizz_id": 9000065,
@@ -2675,6 +2805,8 @@
     },
     {
         "rank": 66,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer66#0000",
         "split_battletag": "ExamplePlayer64",
         "blizz_id": 9000066,
@@ -2717,6 +2849,8 @@
     },
     {
         "rank": 67,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer67#0000",
         "split_battletag": "ExamplePlayer65",
         "blizz_id": 9000067,
@@ -2759,6 +2893,8 @@
     },
     {
         "rank": 68,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer68#0000",
         "split_battletag": "ExamplePlayer66",
         "blizz_id": 9000068,
@@ -2801,6 +2937,8 @@
     },
     {
         "rank": 69,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer69#0000",
         "split_battletag": "ExamplePlayer67",
         "blizz_id": 9000069,
@@ -2843,6 +2981,8 @@
     },
     {
         "rank": 70,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer70#0000",
         "split_battletag": "ExamplePlayer68",
         "blizz_id": 9000070,
@@ -2871,6 +3011,8 @@
     },
     {
         "rank": 71,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer71#0000",
         "split_battletag": "ExamplePlayer69",
         "blizz_id": 9000071,
@@ -2913,6 +3055,8 @@
     },
     {
         "rank": 72,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer72#0000",
         "split_battletag": "ExamplePlayer70",
         "blizz_id": 9000072,
@@ -2941,6 +3085,8 @@
     },
     {
         "rank": 73,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer73#0000",
         "split_battletag": "ExamplePlayer71",
         "blizz_id": 9000073,
@@ -2983,6 +3129,8 @@
     },
     {
         "rank": 74,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer74#0000",
         "split_battletag": "ExamplePlayer72",
         "blizz_id": 9000074,
@@ -3025,6 +3173,8 @@
     },
     {
         "rank": 75,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer75#0000",
         "split_battletag": "ExamplePlayer73",
         "blizz_id": 9000075,
@@ -3067,6 +3217,8 @@
     },
     {
         "rank": 76,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer76#0000",
         "split_battletag": "ExamplePlayer74",
         "blizz_id": 9000076,
@@ -3109,6 +3261,8 @@
     },
     {
         "rank": 77,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer77#0000",
         "split_battletag": "ExamplePlayer75",
         "blizz_id": 9000077,
@@ -3137,6 +3291,8 @@
     },
     {
         "rank": 78,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer78#0000",
         "split_battletag": "ExamplePlayer76",
         "blizz_id": 9000078,
@@ -3165,6 +3321,8 @@
     },
     {
         "rank": 79,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer79#0000",
         "split_battletag": "ExamplePlayer77",
         "blizz_id": 9000079,
@@ -3207,6 +3365,8 @@
     },
     {
         "rank": 80,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer80#0000",
         "split_battletag": "ExamplePlayer78",
         "blizz_id": 9000080,
@@ -3235,6 +3395,8 @@
     },
     {
         "rank": 81,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer81#0000",
         "split_battletag": "ExamplePlayer79",
         "blizz_id": 9000081,
@@ -3277,6 +3439,8 @@
     },
     {
         "rank": 82,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer82#0000",
         "split_battletag": "ExamplePlayer80",
         "blizz_id": 9000082,
@@ -3319,6 +3483,8 @@
     },
     {
         "rank": 83,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer83#0000",
         "split_battletag": "ExamplePlayer81",
         "blizz_id": 9000083,
@@ -3361,6 +3527,8 @@
     },
     {
         "rank": 84,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer84#0000",
         "split_battletag": "ExamplePlayer82",
         "blizz_id": 9000084,
@@ -3403,6 +3571,8 @@
     },
     {
         "rank": 85,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer85#0000",
         "split_battletag": "ExamplePlayer83",
         "blizz_id": 9000085,
@@ -3445,6 +3615,8 @@
     },
     {
         "rank": 86,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer86#0000",
         "split_battletag": "ExamplePlayer84",
         "blizz_id": 9000086,
@@ -3487,6 +3659,8 @@
     },
     {
         "rank": 87,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer87#0000",
         "split_battletag": "ExamplePlayer85",
         "blizz_id": 9000087,
@@ -3529,6 +3703,8 @@
     },
     {
         "rank": 88,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer88#0000",
         "split_battletag": "ExamplePlayer86",
         "blizz_id": 9000088,
@@ -3571,6 +3747,8 @@
     },
     {
         "rank": 89,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer89#0000",
         "split_battletag": "ExamplePlayer87",
         "blizz_id": 9000089,
@@ -3613,6 +3791,8 @@
     },
     {
         "rank": 90,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer90#0000",
         "split_battletag": "ExamplePlayer88",
         "blizz_id": 9000090,
@@ -3655,6 +3835,8 @@
     },
     {
         "rank": 91,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer91#0000",
         "split_battletag": "ExamplePlayer89",
         "blizz_id": 9000091,
@@ -3697,6 +3879,8 @@
     },
     {
         "rank": 92,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer92#0000",
         "split_battletag": "ExamplePlayer90",
         "blizz_id": 9000092,
@@ -3725,6 +3909,8 @@
     },
     {
         "rank": 93,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer93#0000",
         "split_battletag": "ExamplePlayer91",
         "blizz_id": 9000093,
@@ -3767,6 +3953,8 @@
     },
     {
         "rank": 94,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer94#0000",
         "split_battletag": "ExamplePlayer92",
         "blizz_id": 9000094,
@@ -3809,6 +3997,8 @@
     },
     {
         "rank": 95,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer95#0000",
         "split_battletag": "ExamplePlayer93",
         "blizz_id": 9000095,
@@ -3851,6 +4041,8 @@
     },
     {
         "rank": 96,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer96#0000",
         "split_battletag": "ExamplePlayer21",
         "blizz_id": 9000096,
@@ -3893,6 +4085,8 @@
     },
     {
         "rank": 97,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer97#0000",
         "split_battletag": "ExamplePlayer94",
         "blizz_id": 9000097,
@@ -3935,6 +4129,8 @@
     },
     {
         "rank": 98,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer98#0000",
         "split_battletag": "ExamplePlayer95",
         "blizz_id": 9000098,
@@ -3977,6 +4173,8 @@
     },
     {
         "rank": 99,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer99#0000",
         "split_battletag": "ExamplePlayer96",
         "blizz_id": 9000099,
@@ -4019,6 +4217,8 @@
     },
     {
         "rank": 100,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer100#0000",
         "split_battletag": "ExamplePlayer97",
         "blizz_id": 9000100,
@@ -4061,6 +4261,8 @@
     },
     {
         "rank": 101,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer101#0000",
         "split_battletag": "ExamplePlayer98",
         "blizz_id": 9000101,
@@ -4089,6 +4291,8 @@
     },
     {
         "rank": 102,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer102#0000",
         "split_battletag": "ExamplePlayer99",
         "blizz_id": 9000102,
@@ -4117,6 +4321,8 @@
     },
     {
         "rank": 103,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer103#0000",
         "split_battletag": "ExamplePlayer100",
         "blizz_id": 9000103,
@@ -4145,6 +4351,8 @@
     },
     {
         "rank": 104,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer104#0000",
         "split_battletag": "ExamplePlayer101",
         "blizz_id": 9000104,
@@ -4173,6 +4381,8 @@
     },
     {
         "rank": 105,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer105#0000",
         "split_battletag": "ExamplePlayer102",
         "blizz_id": 9000105,
@@ -4201,6 +4411,8 @@
     },
     {
         "rank": 106,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer106#0000",
         "split_battletag": "ExamplePlayer103",
         "blizz_id": 9000106,
@@ -4229,6 +4441,8 @@
     },
     {
         "rank": 107,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer107#0000",
         "split_battletag": "ExamplePlayer104",
         "blizz_id": 9000107,
@@ -4257,6 +4471,8 @@
     },
     {
         "rank": 108,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer108#0000",
         "split_battletag": "ExamplePlayer105",
         "blizz_id": 9000108,
@@ -4285,6 +4501,8 @@
     },
     {
         "rank": 109,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer109#0000",
         "split_battletag": "ExamplePlayer106",
         "blizz_id": 9000109,
@@ -4313,6 +4531,8 @@
     },
     {
         "rank": 110,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer110#0000",
         "split_battletag": "ExamplePlayer107",
         "blizz_id": 9000110,
@@ -4341,6 +4561,8 @@
     },
     {
         "rank": 111,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer111#0000",
         "split_battletag": "ExamplePlayer108",
         "blizz_id": 9000111,
@@ -4369,6 +4591,8 @@
     },
     {
         "rank": 112,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer112#0000",
         "split_battletag": "ExamplePlayer109",
         "blizz_id": 9000112,
@@ -4397,6 +4621,8 @@
     },
     {
         "rank": 113,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer113#0000",
         "split_battletag": "ExamplePlayer110",
         "blizz_id": 9000113,
@@ -4425,6 +4651,8 @@
     },
     {
         "rank": 114,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer114#0000",
         "split_battletag": "ExamplePlayer111",
         "blizz_id": 9000114,
@@ -4453,6 +4681,8 @@
     },
     {
         "rank": 115,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer115#0000",
         "split_battletag": "ExamplePlayer112",
         "blizz_id": 9000115,
@@ -4481,6 +4711,8 @@
     },
     {
         "rank": 116,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer116#0000",
         "split_battletag": "ExamplePlayer113",
         "blizz_id": 9000116,
@@ -4509,6 +4741,8 @@
     },
     {
         "rank": 117,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer117#0000",
         "split_battletag": "ExamplePlayer114",
         "blizz_id": 9000117,
@@ -4537,6 +4771,8 @@
     },
     {
         "rank": 118,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer118#0000",
         "split_battletag": "ExamplePlayer115",
         "blizz_id": 9000118,
@@ -4565,6 +4801,8 @@
     },
     {
         "rank": 119,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer119#0000",
         "split_battletag": "ExamplePlayer116",
         "blizz_id": 9000119,
@@ -4593,6 +4831,8 @@
     },
     {
         "rank": 120,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer120#0000",
         "split_battletag": "ExamplePlayer117",
         "blizz_id": 9000120,
@@ -4621,6 +4861,8 @@
     },
     {
         "rank": 121,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer121#0000",
         "split_battletag": "ExamplePlayer118",
         "blizz_id": 9000121,
@@ -4649,6 +4891,8 @@
     },
     {
         "rank": 122,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer122#0000",
         "split_battletag": "ExamplePlayer119",
         "blizz_id": 9000122,
@@ -4677,6 +4921,8 @@
     },
     {
         "rank": 123,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer123#0000",
         "split_battletag": "ExamplePlayer120",
         "blizz_id": 9000123,
@@ -4705,6 +4951,8 @@
     },
     {
         "rank": 124,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer124#0000",
         "split_battletag": "ExamplePlayer121",
         "blizz_id": 9000124,
@@ -4733,6 +4981,8 @@
     },
     {
         "rank": 125,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer125#0000",
         "split_battletag": "ExamplePlayer122",
         "blizz_id": 9000125,
@@ -4761,6 +5011,8 @@
     },
     {
         "rank": 126,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer126#0000",
         "split_battletag": "ExamplePlayer123",
         "blizz_id": 9000126,
@@ -4789,6 +5041,8 @@
     },
     {
         "rank": 127,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer127#0000",
         "split_battletag": "ExamplePlayer124",
         "blizz_id": 9000127,
@@ -4817,6 +5071,8 @@
     },
     {
         "rank": 128,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer128#0000",
         "split_battletag": "ExamplePlayer125",
         "blizz_id": 9000128,
@@ -4845,6 +5101,8 @@
     },
     {
         "rank": 129,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer129#0000",
         "split_battletag": "ExamplePlayer126",
         "blizz_id": 9000129,
@@ -4873,6 +5131,8 @@
     },
     {
         "rank": 130,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer130#0000",
         "split_battletag": "ExamplePlayer127",
         "blizz_id": 9000130,
@@ -4901,6 +5161,8 @@
     },
     {
         "rank": 131,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer131#0000",
         "split_battletag": "ExamplePlayer128",
         "blizz_id": 9000131,
@@ -4929,6 +5191,8 @@
     },
     {
         "rank": 132,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer132#0000",
         "split_battletag": "ExamplePlayer129",
         "blizz_id": 9000132,
@@ -4957,6 +5221,8 @@
     },
     {
         "rank": 133,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer133#0000",
         "split_battletag": "ExamplePlayer130",
         "blizz_id": 9000133,
@@ -4985,6 +5251,8 @@
     },
     {
         "rank": 134,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer134#0000",
         "split_battletag": "ExamplePlayer44",
         "blizz_id": 9000134,
@@ -5013,6 +5281,8 @@
     },
     {
         "rank": 135,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer135#0000",
         "split_battletag": "ExamplePlayer131",
         "blizz_id": 9000135,
@@ -5041,6 +5311,8 @@
     },
     {
         "rank": 136,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer136#0000",
         "split_battletag": "ExamplePlayer132",
         "blizz_id": 9000136,
@@ -5069,6 +5341,8 @@
     },
     {
         "rank": 137,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer137#0000",
         "split_battletag": "ExamplePlayer133",
         "blizz_id": 9000137,
@@ -5097,6 +5371,8 @@
     },
     {
         "rank": 138,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer138#0000",
         "split_battletag": "ExamplePlayer21",
         "blizz_id": 9000138,
@@ -5125,6 +5401,8 @@
     },
     {
         "rank": 139,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer139#0000",
         "split_battletag": "ExamplePlayer134",
         "blizz_id": 9000139,
@@ -5153,6 +5431,8 @@
     },
     {
         "rank": 140,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer140#0000",
         "split_battletag": "ExamplePlayer135",
         "blizz_id": 9000140,
@@ -5181,6 +5461,8 @@
     },
     {
         "rank": 141,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer141#0000",
         "split_battletag": "ExamplePlayer136",
         "blizz_id": 9000141,
@@ -5209,6 +5491,8 @@
     },
     {
         "rank": 142,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer142#0000",
         "split_battletag": "ExamplePlayer137",
         "blizz_id": 9000142,
@@ -5237,6 +5521,8 @@
     },
     {
         "rank": 143,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer143#0000",
         "split_battletag": "ExamplePlayer138",
         "blizz_id": 9000143,
@@ -5265,6 +5551,8 @@
     },
     {
         "rank": 144,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer144#0000",
         "split_battletag": "ExamplePlayer139",
         "blizz_id": 9000144,
@@ -5293,6 +5581,8 @@
     },
     {
         "rank": 145,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer145#0000",
         "split_battletag": "ExamplePlayer140",
         "blizz_id": 9000145,
@@ -5321,6 +5611,8 @@
     },
     {
         "rank": 146,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer146#0000",
         "split_battletag": "ExamplePlayer141",
         "blizz_id": 9000146,
@@ -5349,6 +5641,8 @@
     },
     {
         "rank": 147,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer147#0000",
         "split_battletag": "ExamplePlayer142",
         "blizz_id": 9000147,
@@ -5377,6 +5671,8 @@
     },
     {
         "rank": 148,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer148#0000",
         "split_battletag": "ExamplePlayer143",
         "blizz_id": 9000148,
@@ -5405,6 +5701,8 @@
     },
     {
         "rank": 149,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer149#0000",
         "split_battletag": "ExamplePlayer144",
         "blizz_id": 9000149,
@@ -5433,6 +5731,8 @@
     },
     {
         "rank": 150,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer150#0000",
         "split_battletag": "ExamplePlayer145",
         "blizz_id": 9000150,
@@ -5461,6 +5761,8 @@
     },
     {
         "rank": 151,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer151#0000",
         "split_battletag": "ExamplePlayer146",
         "blizz_id": 9000151,
@@ -5489,6 +5791,8 @@
     },
     {
         "rank": 152,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer152#0000",
         "split_battletag": "ExamplePlayer147",
         "blizz_id": 9000152,
@@ -5517,6 +5821,8 @@
     },
     {
         "rank": 153,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer153#0000",
         "split_battletag": "ExamplePlayer148",
         "blizz_id": 9000153,
@@ -5545,6 +5851,8 @@
     },
     {
         "rank": 154,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer154#0000",
         "split_battletag": "ExamplePlayer149",
         "blizz_id": 9000154,
@@ -5573,6 +5881,8 @@
     },
     {
         "rank": 155,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer155#0000",
         "split_battletag": "ExamplePlayer150",
         "blizz_id": 9000155,
@@ -5601,6 +5911,8 @@
     },
     {
         "rank": 156,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer156#0000",
         "split_battletag": "ExamplePlayer151",
         "blizz_id": 9000156,
@@ -5629,6 +5941,8 @@
     },
     {
         "rank": 157,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer157#0000",
         "split_battletag": "ExamplePlayer152",
         "blizz_id": 9000157,
@@ -5657,6 +5971,8 @@
     },
     {
         "rank": 158,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer158#0000",
         "split_battletag": "ExamplePlayer21",
         "blizz_id": 9000158,
@@ -5685,6 +6001,8 @@
     },
     {
         "rank": 159,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer159#0000",
         "split_battletag": "ExamplePlayer153",
         "blizz_id": 9000159,
@@ -5713,6 +6031,8 @@
     },
     {
         "rank": 160,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer160#0000",
         "split_battletag": "ExamplePlayer154",
         "blizz_id": 9000160,
@@ -5741,6 +6061,8 @@
     },
     {
         "rank": 161,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer161#0000",
         "split_battletag": "ExamplePlayer155",
         "blizz_id": 9000161,
@@ -5769,6 +6091,8 @@
     },
     {
         "rank": 162,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer162#0000",
         "split_battletag": "ExamplePlayer156",
         "blizz_id": 9000162,
@@ -5797,6 +6121,8 @@
     },
     {
         "rank": 163,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer163#0000",
         "split_battletag": "ExamplePlayer157",
         "blizz_id": 9000163,
@@ -5825,6 +6151,8 @@
     },
     {
         "rank": 164,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer164#0000",
         "split_battletag": "ExamplePlayer158",
         "blizz_id": 9000164,
@@ -5853,6 +6181,8 @@
     },
     {
         "rank": 165,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer165#0000",
         "split_battletag": "ExamplePlayer159",
         "blizz_id": 9000165,
@@ -5881,6 +6211,8 @@
     },
     {
         "rank": 166,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer166#0000",
         "split_battletag": "ExamplePlayer160",
         "blizz_id": 9000166,
@@ -5909,6 +6241,8 @@
     },
     {
         "rank": 167,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer167#0000",
         "split_battletag": "ExamplePlayer161",
         "blizz_id": 9000167,
@@ -5937,6 +6271,8 @@
     },
     {
         "rank": 168,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer168#0000",
         "split_battletag": "ExamplePlayer162",
         "blizz_id": 9000168,
@@ -5965,6 +6301,8 @@
     },
     {
         "rank": 169,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer169#0000",
         "split_battletag": "ExamplePlayer163",
         "blizz_id": 9000169,
@@ -5993,6 +6331,8 @@
     },
     {
         "rank": 170,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer170#0000",
         "split_battletag": "ExamplePlayer164",
         "blizz_id": 9000170,
@@ -6021,6 +6361,8 @@
     },
     {
         "rank": 171,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer171#0000",
         "split_battletag": "ExamplePlayer165",
         "blizz_id": 9000171,
@@ -6049,6 +6391,8 @@
     },
     {
         "rank": 172,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer172#0000",
         "split_battletag": "ExamplePlayer166",
         "blizz_id": 9000172,
@@ -6077,6 +6421,8 @@
     },
     {
         "rank": 173,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer173#0000",
         "split_battletag": "ExamplePlayer167",
         "blizz_id": 9000173,
@@ -6105,6 +6451,8 @@
     },
     {
         "rank": 174,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer174#0000",
         "split_battletag": "ExamplePlayer168",
         "blizz_id": 9000174,
@@ -6133,6 +6481,8 @@
     },
     {
         "rank": 175,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer175#0000",
         "split_battletag": "ExamplePlayer169",
         "blizz_id": 9000175,
@@ -6161,6 +6511,8 @@
     },
     {
         "rank": 176,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer176#0000",
         "split_battletag": "ExamplePlayer21",
         "blizz_id": 9000176,
@@ -6189,6 +6541,8 @@
     },
     {
         "rank": 177,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer177#0000",
         "split_battletag": "ExamplePlayer21",
         "blizz_id": 9000177,
@@ -6217,6 +6571,8 @@
     },
     {
         "rank": 178,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer178#0000",
         "split_battletag": "ExamplePlayer170",
         "blizz_id": 9000178,
@@ -6245,6 +6601,8 @@
     },
     {
         "rank": 179,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer179#0000",
         "split_battletag": "ExamplePlayer171",
         "blizz_id": 9000179,
@@ -6273,6 +6631,8 @@
     },
     {
         "rank": 180,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer180#0000",
         "split_battletag": "ExamplePlayer172",
         "blizz_id": 9000180,
@@ -6301,6 +6661,8 @@
     },
     {
         "rank": 181,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer181#0000",
         "split_battletag": "ExamplePlayer173",
         "blizz_id": 9000181,
@@ -6329,6 +6691,8 @@
     },
     {
         "rank": 182,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer182#0000",
         "split_battletag": "ExamplePlayer174",
         "blizz_id": 9000182,
@@ -6357,6 +6721,8 @@
     },
     {
         "rank": 183,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer183#0000",
         "split_battletag": "ExamplePlayer175",
         "blizz_id": 9000183,
@@ -6385,6 +6751,8 @@
     },
     {
         "rank": 184,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer184#0000",
         "split_battletag": "ExamplePlayer176",
         "blizz_id": 9000184,
@@ -6413,6 +6781,8 @@
     },
     {
         "rank": 185,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer185#0000",
         "split_battletag": "ExamplePlayer177",
         "blizz_id": 9000185,
@@ -6441,6 +6811,8 @@
     },
     {
         "rank": 186,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer186#0000",
         "split_battletag": "ExamplePlayer178",
         "blizz_id": 9000186,
@@ -6469,6 +6841,8 @@
     },
     {
         "rank": 187,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer187#0000",
         "split_battletag": "ExamplePlayer179",
         "blizz_id": 9000187,
@@ -6497,6 +6871,8 @@
     },
     {
         "rank": 188,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer188#0000",
         "split_battletag": "ExamplePlayer180",
         "blizz_id": 9000188,
@@ -6525,6 +6901,8 @@
     },
     {
         "rank": 189,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer189#0000",
         "split_battletag": "ExamplePlayer181",
         "blizz_id": 9000189,
@@ -6553,6 +6931,8 @@
     },
     {
         "rank": 190,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer190#0000",
         "split_battletag": "ExamplePlayer182",
         "blizz_id": 9000190,
@@ -6581,6 +6961,8 @@
     },
     {
         "rank": 191,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer191#0000",
         "split_battletag": "ExamplePlayer183",
         "blizz_id": 9000191,
@@ -6609,6 +6991,8 @@
     },
     {
         "rank": 192,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer192#0000",
         "split_battletag": "ExamplePlayer184",
         "blizz_id": 9000192,
@@ -6637,6 +7021,8 @@
     },
     {
         "rank": 193,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer193#0000",
         "split_battletag": "ExamplePlayer21",
         "blizz_id": 9000193,
@@ -6665,6 +7051,8 @@
     },
     {
         "rank": 194,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer194#0000",
         "split_battletag": "ExamplePlayer185",
         "blizz_id": 9000194,
@@ -6693,6 +7081,8 @@
     },
     {
         "rank": 195,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer195#0000",
         "split_battletag": "ExamplePlayer186",
         "blizz_id": 9000195,
@@ -6721,6 +7111,8 @@
     },
     {
         "rank": 196,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer196#0000",
         "split_battletag": "ExamplePlayer187",
         "blizz_id": 9000196,
@@ -6749,6 +7141,8 @@
     },
     {
         "rank": 197,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer197#0000",
         "split_battletag": "ExamplePlayer26",
         "blizz_id": 9000197,
@@ -6777,6 +7171,8 @@
     },
     {
         "rank": 198,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer198#0000",
         "split_battletag": "ExamplePlayer188",
         "blizz_id": 9000198,
@@ -6805,6 +7201,8 @@
     },
     {
         "rank": 199,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer199#0000",
         "split_battletag": "ExamplePlayer189",
         "blizz_id": 9000199,
@@ -6833,6 +7231,8 @@
     },
     {
         "rank": 200,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer200#0000",
         "split_battletag": "ExamplePlayer190",
         "blizz_id": 9000200,
@@ -6861,6 +7261,8 @@
     },
     {
         "rank": 201,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer201#0000",
         "split_battletag": "ExamplePlayer191",
         "blizz_id": 9000201,
@@ -6889,6 +7291,8 @@
     },
     {
         "rank": 202,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer202#0000",
         "split_battletag": "ExamplePlayer192",
         "blizz_id": 9000202,
@@ -6917,6 +7321,8 @@
     },
     {
         "rank": 203,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer203#0000",
         "split_battletag": "ExamplePlayer193",
         "blizz_id": 9000203,
@@ -6945,6 +7351,8 @@
     },
     {
         "rank": 204,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer204#0000",
         "split_battletag": "ExamplePlayer194",
         "blizz_id": 9000204,
@@ -6973,6 +7381,8 @@
     },
     {
         "rank": 205,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer205#0000",
         "split_battletag": "ExamplePlayer195",
         "blizz_id": 9000205,
@@ -7001,6 +7411,8 @@
     },
     {
         "rank": 206,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer206#0000",
         "split_battletag": "ExamplePlayer196",
         "blizz_id": 9000206,
@@ -7029,6 +7441,8 @@
     },
     {
         "rank": 207,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer207#0000",
         "split_battletag": "ExamplePlayer197",
         "blizz_id": 9000207,
@@ -7057,6 +7471,8 @@
     },
     {
         "rank": 208,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer208#0000",
         "split_battletag": "ExamplePlayer198",
         "blizz_id": 9000208,
@@ -7085,6 +7501,8 @@
     },
     {
         "rank": 209,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer209#0000",
         "split_battletag": "ExamplePlayer199",
         "blizz_id": 9000209,
@@ -7113,6 +7531,8 @@
     },
     {
         "rank": 210,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer210#0000",
         "split_battletag": "ExamplePlayer200",
         "blizz_id": 9000210,
@@ -7141,6 +7561,8 @@
     },
     {
         "rank": 211,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer211#0000",
         "split_battletag": "ExamplePlayer201",
         "blizz_id": 9000211,
@@ -7169,6 +7591,8 @@
     },
     {
         "rank": 212,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer212#0000",
         "split_battletag": "ExamplePlayer202",
         "blizz_id": 9000212,
@@ -7197,6 +7621,8 @@
     },
     {
         "rank": 213,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer213#0000",
         "split_battletag": "ExamplePlayer203",
         "blizz_id": 9000213,
@@ -7225,6 +7651,8 @@
     },
     {
         "rank": 214,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer214#0000",
         "split_battletag": "ExamplePlayer204",
         "blizz_id": 9000214,
@@ -7253,6 +7681,8 @@
     },
     {
         "rank": 215,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer215#0000",
         "split_battletag": "ExamplePlayer205",
         "blizz_id": 9000215,
@@ -7281,6 +7711,8 @@
     },
     {
         "rank": 216,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer216#0000",
         "split_battletag": "ExamplePlayer206",
         "blizz_id": 9000216,
@@ -7309,6 +7741,8 @@
     },
     {
         "rank": 217,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer217#0000",
         "split_battletag": "ExamplePlayer207",
         "blizz_id": 9000217,
@@ -7337,6 +7771,8 @@
     },
     {
         "rank": 218,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer218#0000",
         "split_battletag": "ExamplePlayer208",
         "blizz_id": 9000218,
@@ -7365,6 +7801,8 @@
     },
     {
         "rank": 219,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer219#0000",
         "split_battletag": "ExamplePlayer209",
         "blizz_id": 9000219,
@@ -7393,6 +7831,8 @@
     },
     {
         "rank": 220,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer220#0000",
         "split_battletag": "ExamplePlayer210",
         "blizz_id": 9000220,
@@ -7421,6 +7861,8 @@
     },
     {
         "rank": 221,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer221#0000",
         "split_battletag": "ExamplePlayer211",
         "blizz_id": 9000221,
@@ -7449,6 +7891,8 @@
     },
     {
         "rank": 222,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer222#0000",
         "split_battletag": "ExamplePlayer212",
         "blizz_id": 9000222,
@@ -7477,6 +7921,8 @@
     },
     {
         "rank": 223,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer223#0000",
         "split_battletag": "ExamplePlayer213",
         "blizz_id": 9000223,
@@ -7505,6 +7951,8 @@
     },
     {
         "rank": 224,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer224#0000",
         "split_battletag": "ExamplePlayer214",
         "blizz_id": 9000224,
@@ -7533,6 +7981,8 @@
     },
     {
         "rank": 225,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer225#0000",
         "split_battletag": "ExamplePlayer215",
         "blizz_id": 9000225,
@@ -7561,6 +8011,8 @@
     },
     {
         "rank": 226,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer226#0000",
         "split_battletag": "ExamplePlayer216",
         "blizz_id": 9000226,
@@ -7589,6 +8041,8 @@
     },
     {
         "rank": 227,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer227#0000",
         "split_battletag": "ExamplePlayer217",
         "blizz_id": 9000227,
@@ -7617,6 +8071,8 @@
     },
     {
         "rank": 228,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer228#0000",
         "split_battletag": "ExamplePlayer218",
         "blizz_id": 9000228,
@@ -7645,6 +8101,8 @@
     },
     {
         "rank": 229,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer229#0000",
         "split_battletag": "ExamplePlayer219",
         "blizz_id": 9000229,
@@ -7673,6 +8131,8 @@
     },
     {
         "rank": 230,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer230#0000",
         "split_battletag": "ExamplePlayer220",
         "blizz_id": 9000230,
@@ -7701,6 +8161,8 @@
     },
     {
         "rank": 231,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer231#0000",
         "split_battletag": "ExamplePlayer221",
         "blizz_id": 9000231,
@@ -7729,6 +8191,8 @@
     },
     {
         "rank": 232,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer232#0000",
         "split_battletag": "ExamplePlayer222",
         "blizz_id": 9000232,
@@ -7757,6 +8221,8 @@
     },
     {
         "rank": 233,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer233#0000",
         "split_battletag": "ExamplePlayer223",
         "blizz_id": 9000233,
@@ -7785,6 +8251,8 @@
     },
     {
         "rank": 234,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer234#0000",
         "split_battletag": "ExamplePlayer224",
         "blizz_id": 9000234,
@@ -7813,6 +8281,8 @@
     },
     {
         "rank": 235,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer235#0000",
         "split_battletag": "ExamplePlayer225",
         "blizz_id": 9000235,
@@ -7841,6 +8311,8 @@
     },
     {
         "rank": 236,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer236#0000",
         "split_battletag": "ExamplePlayer226",
         "blizz_id": 9000236,
@@ -7869,6 +8341,8 @@
     },
     {
         "rank": 237,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer237#0000",
         "split_battletag": "ExamplePlayer227",
         "blizz_id": 9000237,
@@ -7897,6 +8371,8 @@
     },
     {
         "rank": 238,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer238#0000",
         "split_battletag": "ExamplePlayer228",
         "blizz_id": 9000238,
@@ -7925,6 +8401,8 @@
     },
     {
         "rank": 239,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer239#0000",
         "split_battletag": "ExamplePlayer229",
         "blizz_id": 9000239,
@@ -7953,6 +8431,8 @@
     },
     {
         "rank": 240,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer240#0000",
         "split_battletag": "ExamplePlayer230",
         "blizz_id": 9000240,
@@ -7981,6 +8461,8 @@
     },
     {
         "rank": 241,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer241#0000",
         "split_battletag": "ExamplePlayer231",
         "blizz_id": 9000241,
@@ -8009,6 +8491,8 @@
     },
     {
         "rank": 242,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer242#0000",
         "split_battletag": "ExamplePlayer232",
         "blizz_id": 9000242,
@@ -8037,6 +8521,8 @@
     },
     {
         "rank": 243,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer243#0000",
         "split_battletag": "ExamplePlayer233",
         "blizz_id": 9000243,
@@ -8065,6 +8551,8 @@
     },
     {
         "rank": 244,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer244#0000",
         "split_battletag": "ExamplePlayer234",
         "blizz_id": 9000244,
@@ -8093,6 +8581,8 @@
     },
     {
         "rank": 245,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer245#0000",
         "split_battletag": "ExamplePlayer235",
         "blizz_id": 9000245,
@@ -8121,6 +8611,8 @@
     },
     {
         "rank": 246,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer246#0000",
         "split_battletag": "ExamplePlayer236",
         "blizz_id": 9000246,
@@ -8149,6 +8641,8 @@
     },
     {
         "rank": 247,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer247#0000",
         "split_battletag": "ExamplePlayer237",
         "blizz_id": 9000247,
@@ -8177,6 +8671,8 @@
     },
     {
         "rank": 248,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer248#0000",
         "split_battletag": "ExamplePlayer238",
         "blizz_id": 9000248,
@@ -8205,6 +8701,8 @@
     },
     {
         "rank": 249,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer249#0000",
         "split_battletag": "ExamplePlayer239",
         "blizz_id": 9000249,
@@ -8233,6 +8731,8 @@
     },
     {
         "rank": 250,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer250#0000",
         "split_battletag": "ExamplePlayer240",
         "blizz_id": 9000250,
@@ -8261,6 +8761,8 @@
     },
     {
         "rank": 251,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer251#0000",
         "split_battletag": "ExamplePlayer241",
         "blizz_id": 9000251,
@@ -8289,6 +8791,8 @@
     },
     {
         "rank": 252,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer252#0000",
         "split_battletag": "ExamplePlayer242",
         "blizz_id": 9000252,
@@ -8317,6 +8821,8 @@
     },
     {
         "rank": 253,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer253#0000",
         "split_battletag": "ExamplePlayer243",
         "blizz_id": 9000253,
@@ -8345,6 +8851,8 @@
     },
     {
         "rank": 254,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer254#0000",
         "split_battletag": "ExamplePlayer244",
         "blizz_id": 9000254,
@@ -8373,6 +8881,8 @@
     },
     {
         "rank": 255,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer255#0000",
         "split_battletag": "ExamplePlayer245",
         "blizz_id": 9000255,
@@ -8401,6 +8911,8 @@
     },
     {
         "rank": 256,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer256#0000",
         "split_battletag": "ExamplePlayer246",
         "blizz_id": 9000256,
@@ -8429,6 +8941,8 @@
     },
     {
         "rank": 257,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer257#0000",
         "split_battletag": "ExamplePlayer247",
         "blizz_id": 9000257,
@@ -8457,6 +8971,8 @@
     },
     {
         "rank": 258,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer258#0000",
         "split_battletag": "ExamplePlayer248",
         "blizz_id": 9000258,
@@ -8485,6 +9001,8 @@
     },
     {
         "rank": 259,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer259#0000",
         "split_battletag": "ExamplePlayer249",
         "blizz_id": 9000259,
@@ -8513,6 +9031,8 @@
     },
     {
         "rank": 260,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer260#0000",
         "split_battletag": "ExamplePlayer250",
         "blizz_id": 9000260,
@@ -8541,6 +9061,8 @@
     },
     {
         "rank": 261,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer261#0000",
         "split_battletag": "ExamplePlayer251",
         "blizz_id": 9000261,
@@ -8569,6 +9091,8 @@
     },
     {
         "rank": 262,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer262#0000",
         "split_battletag": "ExamplePlayer252",
         "blizz_id": 9000262,
@@ -8597,6 +9121,8 @@
     },
     {
         "rank": 263,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer263#0000",
         "split_battletag": "ExamplePlayer253",
         "blizz_id": 9000263,
@@ -8625,6 +9151,8 @@
     },
     {
         "rank": 264,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer264#0000",
         "split_battletag": "ExamplePlayer254",
         "blizz_id": 9000264,
@@ -8653,6 +9181,8 @@
     },
     {
         "rank": 265,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer265#0000",
         "split_battletag": "ExamplePlayer255",
         "blizz_id": 9000265,
@@ -8681,6 +9211,8 @@
     },
     {
         "rank": 266,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer266#0000",
         "split_battletag": "ExamplePlayer256",
         "blizz_id": 9000266,
@@ -8709,6 +9241,8 @@
     },
     {
         "rank": 267,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer267#0000",
         "split_battletag": "ExamplePlayer257",
         "blizz_id": 9000267,
@@ -8737,6 +9271,8 @@
     },
     {
         "rank": 268,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer268#0000",
         "split_battletag": "ExamplePlayer258",
         "blizz_id": 9000268,
@@ -8765,6 +9301,8 @@
     },
     {
         "rank": 269,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer269#0000",
         "split_battletag": "ExamplePlayer259",
         "blizz_id": 9000269,
@@ -8793,6 +9331,8 @@
     },
     {
         "rank": 270,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer270#0000",
         "split_battletag": "ExamplePlayer260",
         "blizz_id": 9000270,
@@ -8821,6 +9361,8 @@
     },
     {
         "rank": 271,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer271#0000",
         "split_battletag": "ExamplePlayer261",
         "blizz_id": 9000271,
@@ -8849,6 +9391,8 @@
     },
     {
         "rank": 272,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer272#0000",
         "split_battletag": "ExamplePlayer262",
         "blizz_id": 9000272,
@@ -8877,6 +9421,8 @@
     },
     {
         "rank": 273,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer273#0000",
         "split_battletag": "ExamplePlayer263",
         "blizz_id": 9000273,
@@ -8905,6 +9451,8 @@
     },
     {
         "rank": 274,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer274#0000",
         "split_battletag": "ExamplePlayer264",
         "blizz_id": 9000274,
@@ -8933,6 +9481,8 @@
     },
     {
         "rank": 275,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer275#0000",
         "split_battletag": "ExamplePlayer265",
         "blizz_id": 9000275,
@@ -8961,6 +9511,8 @@
     },
     {
         "rank": 276,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer276#0000",
         "split_battletag": "ExamplePlayer266",
         "blizz_id": 9000276,
@@ -8989,6 +9541,8 @@
     },
     {
         "rank": 277,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer277#0000",
         "split_battletag": "ExamplePlayer267",
         "blizz_id": 9000277,
@@ -9017,6 +9571,8 @@
     },
     {
         "rank": 278,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer278#0000",
         "split_battletag": "ExamplePlayer268",
         "blizz_id": 9000278,
@@ -9045,6 +9601,8 @@
     },
     {
         "rank": 279,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer279#0000",
         "split_battletag": "ExamplePlayer269",
         "blizz_id": 9000279,
@@ -9073,6 +9631,8 @@
     },
     {
         "rank": 280,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer280#0000",
         "split_battletag": "ExamplePlayer270",
         "blizz_id": 9000280,
@@ -9101,6 +9661,8 @@
     },
     {
         "rank": 281,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer281#0000",
         "split_battletag": "ExamplePlayer271",
         "blizz_id": 9000281,
@@ -9129,6 +9691,8 @@
     },
     {
         "rank": 282,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer282#0000",
         "split_battletag": "ExamplePlayer272",
         "blizz_id": 9000282,
@@ -9157,6 +9721,8 @@
     },
     {
         "rank": 283,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer283#0000",
         "split_battletag": "ExamplePlayer273",
         "blizz_id": 9000283,
@@ -9185,6 +9751,8 @@
     },
     {
         "rank": 284,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer284#0000",
         "split_battletag": "ExamplePlayer274",
         "blizz_id": 9000284,
@@ -9213,6 +9781,8 @@
     },
     {
         "rank": 285,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer285#0000",
         "split_battletag": "ExamplePlayer275",
         "blizz_id": 9000285,
@@ -9241,6 +9811,8 @@
     },
     {
         "rank": 286,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer286#0000",
         "split_battletag": "ExamplePlayer276",
         "blizz_id": 9000286,
@@ -9269,6 +9841,8 @@
     },
     {
         "rank": 287,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer287#0000",
         "split_battletag": "ExamplePlayer277",
         "blizz_id": 9000287,
@@ -9297,6 +9871,8 @@
     },
     {
         "rank": 288,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer288#0000",
         "split_battletag": "ExamplePlayer278",
         "blizz_id": 9000288,
@@ -9325,6 +9901,8 @@
     },
     {
         "rank": 289,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer289#0000",
         "split_battletag": "ExamplePlayer279",
         "blizz_id": 9000289,
@@ -9353,6 +9931,8 @@
     },
     {
         "rank": 290,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer290#0000",
         "split_battletag": "ExamplePlayer280",
         "blizz_id": 9000290,
@@ -9381,6 +9961,8 @@
     },
     {
         "rank": 291,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer291#0000",
         "split_battletag": "ExamplePlayer281",
         "blizz_id": 9000291,
@@ -9409,6 +9991,8 @@
     },
     {
         "rank": 292,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer292#0000",
         "split_battletag": "ExamplePlayer282",
         "blizz_id": 9000292,
@@ -9437,6 +10021,8 @@
     },
     {
         "rank": 293,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer293#0000",
         "split_battletag": "ExamplePlayer283",
         "blizz_id": 9000293,
@@ -9465,6 +10051,8 @@
     },
     {
         "rank": 294,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer237#0000",
         "split_battletag": "ExamplePlayer227",
         "blizz_id": 9000294,
@@ -9493,6 +10081,8 @@
     },
     {
         "rank": 295,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer294#0000",
         "split_battletag": "ExamplePlayer284",
         "blizz_id": 9000295,
@@ -9521,6 +10111,8 @@
     },
     {
         "rank": 296,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer295#0000",
         "split_battletag": "ExamplePlayer28",
         "blizz_id": 9000296,
@@ -9549,6 +10141,8 @@
     },
     {
         "rank": 297,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer296#0000",
         "split_battletag": "ExamplePlayer285",
         "blizz_id": 9000297,
@@ -9577,6 +10171,8 @@
     },
     {
         "rank": 298,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer297#0000",
         "split_battletag": "ExamplePlayer286",
         "blizz_id": 9000298,
@@ -9605,6 +10201,8 @@
     },
     {
         "rank": 299,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer298#0000",
         "split_battletag": "ExamplePlayer287",
         "blizz_id": 9000299,
@@ -9633,6 +10231,8 @@
     },
     {
         "rank": 300,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer299#0000",
         "split_battletag": "ExamplePlayer288",
         "blizz_id": 9000300,
@@ -9661,6 +10261,8 @@
     },
     {
         "rank": 301,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer300#0000",
         "split_battletag": "ExamplePlayer289",
         "blizz_id": 9000301,
@@ -9689,6 +10291,8 @@
     },
     {
         "rank": 302,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer301#0000",
         "split_battletag": "ExamplePlayer290",
         "blizz_id": 9000302,
@@ -9717,6 +10321,8 @@
     },
     {
         "rank": 303,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer302#0000",
         "split_battletag": "ExamplePlayer291",
         "blizz_id": 9000303,
@@ -9745,6 +10351,8 @@
     },
     {
         "rank": 304,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer303#0000",
         "split_battletag": "ExamplePlayer292",
         "blizz_id": 9000304,
@@ -9773,6 +10381,8 @@
     },
     {
         "rank": 305,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer304#0000",
         "split_battletag": "ExamplePlayer293",
         "blizz_id": 9000305,
@@ -9801,6 +10411,8 @@
     },
     {
         "rank": 306,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer305#0000",
         "split_battletag": "ExamplePlayer294",
         "blizz_id": 9000306,
@@ -9829,6 +10441,8 @@
     },
     {
         "rank": 307,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer306#0000",
         "split_battletag": "ExamplePlayer295",
         "blizz_id": 9000307,
@@ -9857,6 +10471,8 @@
     },
     {
         "rank": 308,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer307#0000",
         "split_battletag": "ExamplePlayer296",
         "blizz_id": 9000308,
@@ -9885,6 +10501,8 @@
     },
     {
         "rank": 309,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer308#0000",
         "split_battletag": "ExamplePlayer297",
         "blizz_id": 9000309,
@@ -9913,6 +10531,8 @@
     },
     {
         "rank": 310,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer309#0000",
         "split_battletag": "ExamplePlayer298",
         "blizz_id": 9000310,
@@ -9941,6 +10561,8 @@
     },
     {
         "rank": 311,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer310#0000",
         "split_battletag": "ExamplePlayer299",
         "blizz_id": 9000311,
@@ -9969,6 +10591,8 @@
     },
     {
         "rank": 312,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer311#0000",
         "split_battletag": "ExamplePlayer300",
         "blizz_id": 9000312,
@@ -9997,6 +10621,8 @@
     },
     {
         "rank": 313,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer312#0000",
         "split_battletag": "ExamplePlayer301",
         "blizz_id": 9000313,
@@ -10025,6 +10651,8 @@
     },
     {
         "rank": 314,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer313#0000",
         "split_battletag": "ExamplePlayer302",
         "blizz_id": 9000314,
@@ -10053,6 +10681,8 @@
     },
     {
         "rank": 315,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer314#0000",
         "split_battletag": "ExamplePlayer303",
         "blizz_id": 9000315,
@@ -10081,6 +10711,8 @@
     },
     {
         "rank": 316,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer315#0000",
         "split_battletag": "ExamplePlayer304",
         "blizz_id": 9000316,
@@ -10109,6 +10741,8 @@
     },
     {
         "rank": 317,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer316#0000",
         "split_battletag": "ExamplePlayer305",
         "blizz_id": 9000317,
@@ -10137,6 +10771,8 @@
     },
     {
         "rank": 318,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer317#0000",
         "split_battletag": "ExamplePlayer306",
         "blizz_id": 9000318,
@@ -10165,6 +10801,8 @@
     },
     {
         "rank": 319,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer318#0000",
         "split_battletag": "ExamplePlayer307",
         "blizz_id": 9000319,
@@ -10193,6 +10831,8 @@
     },
     {
         "rank": 320,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer319#0000",
         "split_battletag": "ExamplePlayer308",
         "blizz_id": 9000320,
@@ -10221,6 +10861,8 @@
     },
     {
         "rank": 321,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer320#0000",
         "split_battletag": "ExamplePlayer309",
         "blizz_id": 9000321,
@@ -10249,6 +10891,8 @@
     },
     {
         "rank": 322,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer321#0000",
         "split_battletag": "ExamplePlayer310",
         "blizz_id": 9000322,
@@ -10277,6 +10921,8 @@
     },
     {
         "rank": 323,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer322#0000",
         "split_battletag": "ExamplePlayer311",
         "blizz_id": 9000323,
@@ -10305,6 +10951,8 @@
     },
     {
         "rank": 324,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer323#0000",
         "split_battletag": "ExamplePlayer312",
         "blizz_id": 9000324,
@@ -10333,6 +10981,8 @@
     },
     {
         "rank": 325,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer324#0000",
         "split_battletag": "ExamplePlayer313",
         "blizz_id": 9000325,
@@ -10361,6 +11011,8 @@
     },
     {
         "rank": 326,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer325#0000",
         "split_battletag": "ExamplePlayer314",
         "blizz_id": 9000326,
@@ -10389,6 +11041,8 @@
     },
     {
         "rank": 327,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer326#0000",
         "split_battletag": "ExamplePlayer315",
         "blizz_id": 9000327,
@@ -10417,6 +11071,8 @@
     },
     {
         "rank": 328,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer327#0000",
         "split_battletag": "ExamplePlayer316",
         "blizz_id": 9000328,
@@ -10445,6 +11101,8 @@
     },
     {
         "rank": 329,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer328#0000",
         "split_battletag": "ExamplePlayer317",
         "blizz_id": 9000329,
@@ -10473,6 +11131,8 @@
     },
     {
         "rank": 330,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer329#0000",
         "split_battletag": "ExamplePlayer318",
         "blizz_id": 9000330,
@@ -10501,6 +11161,8 @@
     },
     {
         "rank": 331,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer330#0000",
         "split_battletag": "ExamplePlayer319",
         "blizz_id": 9000331,
@@ -10529,6 +11191,8 @@
     },
     {
         "rank": 332,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer331#0000",
         "split_battletag": "ExamplePlayer320",
         "blizz_id": 9000332,
@@ -10557,6 +11221,8 @@
     },
     {
         "rank": 333,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer332#0000",
         "split_battletag": "ExamplePlayer321",
         "blizz_id": 9000333,
@@ -10585,6 +11251,8 @@
     },
     {
         "rank": 334,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer333#0000",
         "split_battletag": "ExamplePlayer322",
         "blizz_id": 9000334,
@@ -10613,6 +11281,8 @@
     },
     {
         "rank": 335,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer334#0000",
         "split_battletag": "ExamplePlayer323",
         "blizz_id": 9000335,
@@ -10641,6 +11311,8 @@
     },
     {
         "rank": 336,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer335#0000",
         "split_battletag": "ExamplePlayer324",
         "blizz_id": 9000336,
@@ -10669,6 +11341,8 @@
     },
     {
         "rank": 337,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer336#0000",
         "split_battletag": "ExamplePlayer325",
         "blizz_id": 9000337,
@@ -10697,6 +11371,8 @@
     },
     {
         "rank": 338,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer337#0000",
         "split_battletag": "ExamplePlayer326",
         "blizz_id": 9000338,
@@ -10725,6 +11401,8 @@
     },
     {
         "rank": 339,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer338#0000",
         "split_battletag": "ExamplePlayer327",
         "blizz_id": 9000339,
@@ -10753,6 +11431,8 @@
     },
     {
         "rank": 340,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer339#0000",
         "split_battletag": "ExamplePlayer328",
         "blizz_id": 9000340,
@@ -10781,6 +11461,8 @@
     },
     {
         "rank": 341,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer340#0000",
         "split_battletag": "ExamplePlayer329",
         "blizz_id": 9000341,
@@ -10809,6 +11491,8 @@
     },
     {
         "rank": 342,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer341#0000",
         "split_battletag": "ExamplePlayer330",
         "blizz_id": 9000342,
@@ -10837,6 +11521,8 @@
     },
     {
         "rank": 343,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer342#0000",
         "split_battletag": "ExamplePlayer331",
         "blizz_id": 9000343,
@@ -10865,6 +11551,8 @@
     },
     {
         "rank": 344,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer343#0000",
         "split_battletag": "ExamplePlayer332",
         "blizz_id": 9000344,
@@ -10893,6 +11581,8 @@
     },
     {
         "rank": 345,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer344#0000",
         "split_battletag": "ExamplePlayer140",
         "blizz_id": 9000345,
@@ -10921,6 +11611,8 @@
     },
     {
         "rank": 346,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer345#0000",
         "split_battletag": "ExamplePlayer333",
         "blizz_id": 9000346,
@@ -10949,6 +11641,8 @@
     },
     {
         "rank": 347,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer346#0000",
         "split_battletag": "ExamplePlayer334",
         "blizz_id": 9000347,
@@ -10977,6 +11671,8 @@
     },
     {
         "rank": 348,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer347#0000",
         "split_battletag": "ExamplePlayer335",
         "blizz_id": 9000348,
@@ -11005,6 +11701,8 @@
     },
     {
         "rank": 349,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer348#0000",
         "split_battletag": "ExamplePlayer336",
         "blizz_id": 9000349,
@@ -11033,6 +11731,8 @@
     },
     {
         "rank": 350,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer349#0000",
         "split_battletag": "ExamplePlayer337",
         "blizz_id": 9000350,
@@ -11061,6 +11761,8 @@
     },
     {
         "rank": 351,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer350#0000",
         "split_battletag": "ExamplePlayer338",
         "blizz_id": 9000351,
@@ -11089,6 +11791,8 @@
     },
     {
         "rank": 352,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer351#0000",
         "split_battletag": "ExamplePlayer339",
         "blizz_id": 9000352,
@@ -11117,6 +11821,8 @@
     },
     {
         "rank": 353,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer352#0000",
         "split_battletag": "ExamplePlayer340",
         "blizz_id": 9000353,
@@ -11145,6 +11851,8 @@
     },
     {
         "rank": 354,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer353#0000",
         "split_battletag": "ExamplePlayer341",
         "blizz_id": 9000354,
@@ -11173,6 +11881,8 @@
     },
     {
         "rank": 355,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer354#0000",
         "split_battletag": "ExamplePlayer342",
         "blizz_id": 9000355,
@@ -11201,6 +11911,8 @@
     },
     {
         "rank": 356,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer355#0000",
         "split_battletag": "ExamplePlayer343",
         "blizz_id": 9000356,
@@ -11229,6 +11941,8 @@
     },
     {
         "rank": 357,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer356#0000",
         "split_battletag": "ExamplePlayer344",
         "blizz_id": 9000357,
@@ -11257,6 +11971,8 @@
     },
     {
         "rank": 358,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer357#0000",
         "split_battletag": "ExamplePlayer345",
         "blizz_id": 9000358,
@@ -11285,6 +12001,8 @@
     },
     {
         "rank": 359,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer358#0000",
         "split_battletag": "ExamplePlayer181",
         "blizz_id": 9000359,
@@ -11313,6 +12031,8 @@
     },
     {
         "rank": 360,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer359#0000",
         "split_battletag": "ExamplePlayer346",
         "blizz_id": 9000360,
@@ -11341,6 +12061,8 @@
     },
     {
         "rank": 361,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer360#0000",
         "split_battletag": "ExamplePlayer347",
         "blizz_id": 9000361,
@@ -11369,6 +12091,8 @@
     },
     {
         "rank": 362,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer361#0000",
         "split_battletag": "ExamplePlayer348",
         "blizz_id": 9000362,
@@ -11397,6 +12121,8 @@
     },
     {
         "rank": 363,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer362#0000",
         "split_battletag": "ExamplePlayer349",
         "blizz_id": 9000363,
@@ -11425,6 +12151,8 @@
     },
     {
         "rank": 364,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer363#0000",
         "split_battletag": "ExamplePlayer350",
         "blizz_id": 9000364,
@@ -11453,6 +12181,8 @@
     },
     {
         "rank": 365,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer364#0000",
         "split_battletag": "ExamplePlayer351",
         "blizz_id": 9000365,
@@ -11481,6 +12211,8 @@
     },
     {
         "rank": 366,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer365#0000",
         "split_battletag": "ExamplePlayer352",
         "blizz_id": 9000366,
@@ -11509,6 +12241,8 @@
     },
     {
         "rank": 367,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer366#0000",
         "split_battletag": "ExamplePlayer353",
         "blizz_id": 9000367,
@@ -11537,6 +12271,8 @@
     },
     {
         "rank": 368,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer367#0000",
         "split_battletag": "ExamplePlayer354",
         "blizz_id": 9000368,
@@ -11565,6 +12301,8 @@
     },
     {
         "rank": 369,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer368#0000",
         "split_battletag": "ExamplePlayer355",
         "blizz_id": 9000369,
@@ -11593,6 +12331,8 @@
     },
     {
         "rank": 370,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer369#0000",
         "split_battletag": "ExamplePlayer356",
         "blizz_id": 9000370,
@@ -11621,6 +12361,8 @@
     },
     {
         "rank": 371,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer370#0000",
         "split_battletag": "ExamplePlayer357",
         "blizz_id": 9000371,
@@ -11649,6 +12391,8 @@
     },
     {
         "rank": 372,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer371#0000",
         "split_battletag": "ExamplePlayer358",
         "blizz_id": 9000372,
@@ -11677,6 +12421,8 @@
     },
     {
         "rank": 373,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer372#0000",
         "split_battletag": "ExamplePlayer359",
         "blizz_id": 9000373,
@@ -11705,6 +12451,8 @@
     },
     {
         "rank": 374,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer373#0000",
         "split_battletag": "ExamplePlayer360",
         "blizz_id": 9000374,
@@ -11733,6 +12481,8 @@
     },
     {
         "rank": 375,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer374#0000",
         "split_battletag": "ExamplePlayer361",
         "blizz_id": 9000375,
@@ -11761,6 +12511,8 @@
     },
     {
         "rank": 376,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer375#0000",
         "split_battletag": "ExamplePlayer362",
         "blizz_id": 9000376,
@@ -11789,6 +12541,8 @@
     },
     {
         "rank": 377,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer376#0000",
         "split_battletag": "ExamplePlayer363",
         "blizz_id": 9000377,
@@ -11817,6 +12571,8 @@
     },
     {
         "rank": 378,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer377#0000",
         "split_battletag": "ExamplePlayer364",
         "blizz_id": 9000378,
@@ -11845,6 +12601,8 @@
     },
     {
         "rank": 379,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer378#0000",
         "split_battletag": "ExamplePlayer365",
         "blizz_id": 9000379,
@@ -11873,6 +12631,8 @@
     },
     {
         "rank": 380,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer379#0000",
         "split_battletag": "ExamplePlayer366",
         "blizz_id": 9000380,
@@ -11901,6 +12661,8 @@
     },
     {
         "rank": 381,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer380#0000",
         "split_battletag": "ExamplePlayer367",
         "blizz_id": 9000381,
@@ -11929,6 +12691,8 @@
     },
     {
         "rank": 382,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer381#0000",
         "split_battletag": "ExamplePlayer368",
         "blizz_id": 9000382,
@@ -11957,6 +12721,8 @@
     },
     {
         "rank": 383,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer382#0000",
         "split_battletag": "ExamplePlayer369",
         "blizz_id": 9000383,
@@ -11985,6 +12751,8 @@
     },
     {
         "rank": 384,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer383#0000",
         "split_battletag": "ExamplePlayer370",
         "blizz_id": 9000384,
@@ -12013,6 +12781,8 @@
     },
     {
         "rank": 385,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer384#0000",
         "split_battletag": "ExamplePlayer371",
         "blizz_id": 9000385,
@@ -12041,6 +12811,8 @@
     },
     {
         "rank": 386,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer385#0000",
         "split_battletag": "ExamplePlayer372",
         "blizz_id": 9000386,
@@ -12069,6 +12841,8 @@
     },
     {
         "rank": 387,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer386#0000",
         "split_battletag": "ExamplePlayer373",
         "blizz_id": 9000387,
@@ -12097,6 +12871,8 @@
     },
     {
         "rank": 388,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer387#0000",
         "split_battletag": "ExamplePlayer374",
         "blizz_id": 9000388,
@@ -12125,6 +12901,8 @@
     },
     {
         "rank": 389,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer388#0000",
         "split_battletag": "ExamplePlayer375",
         "blizz_id": 9000389,
@@ -12153,6 +12931,8 @@
     },
     {
         "rank": 390,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer389#0000",
         "split_battletag": "ExamplePlayer376",
         "blizz_id": 9000390,
@@ -12181,6 +12961,8 @@
     },
     {
         "rank": 391,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer390#0000",
         "split_battletag": "ExamplePlayer377",
         "blizz_id": 9000391,
@@ -12209,6 +12991,8 @@
     },
     {
         "rank": 392,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer391#0000",
         "split_battletag": "ExamplePlayer378",
         "blizz_id": 9000392,
@@ -12237,6 +13021,8 @@
     },
     {
         "rank": 393,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer392#0000",
         "split_battletag": "ExamplePlayer379",
         "blizz_id": 9000393,
@@ -12265,6 +13051,8 @@
     },
     {
         "rank": 394,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer393#0000",
         "split_battletag": "ExamplePlayer380",
         "blizz_id": 9000394,
@@ -12293,6 +13081,8 @@
     },
     {
         "rank": 395,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer394#0000",
         "split_battletag": "ExamplePlayer381",
         "blizz_id": 9000395,
@@ -12321,6 +13111,8 @@
     },
     {
         "rank": 396,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer395#0000",
         "split_battletag": "ExamplePlayer382",
         "blizz_id": 9000396,
@@ -12349,6 +13141,8 @@
     },
     {
         "rank": 397,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer396#0000",
         "split_battletag": "ExamplePlayer383",
         "blizz_id": 9000397,
@@ -12377,6 +13171,8 @@
     },
     {
         "rank": 398,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer397#0000",
         "split_battletag": "ExamplePlayer384",
         "blizz_id": 9000398,
@@ -12405,6 +13201,8 @@
     },
     {
         "rank": 399,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer398#0000",
         "split_battletag": "ExamplePlayer385",
         "blizz_id": 9000399,
@@ -12433,6 +13231,8 @@
     },
     {
         "rank": 400,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer399#0000",
         "split_battletag": "ExamplePlayer386",
         "blizz_id": 9000400,
@@ -12461,6 +13261,8 @@
     },
     {
         "rank": 401,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer400#0000",
         "split_battletag": "ExamplePlayer387",
         "blizz_id": 9000401,
@@ -12489,6 +13291,8 @@
     },
     {
         "rank": 402,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer401#0000",
         "split_battletag": "ExamplePlayer388",
         "blizz_id": 9000402,
@@ -12517,6 +13321,8 @@
     },
     {
         "rank": 403,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer402#0000",
         "split_battletag": "ExamplePlayer389",
         "blizz_id": 9000403,
@@ -12545,6 +13351,8 @@
     },
     {
         "rank": 404,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer403#0000",
         "split_battletag": "ExamplePlayer390",
         "blizz_id": 9000404,
@@ -12573,6 +13381,8 @@
     },
     {
         "rank": 405,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer404#0000",
         "split_battletag": "ExamplePlayer21",
         "blizz_id": 9000405,
@@ -12601,6 +13411,8 @@
     },
     {
         "rank": 406,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer405#0000",
         "split_battletag": "ExamplePlayer391",
         "blizz_id": 9000406,
@@ -12629,6 +13441,8 @@
     },
     {
         "rank": 407,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer406#0000",
         "split_battletag": "ExamplePlayer392",
         "blizz_id": 9000407,
@@ -12657,6 +13471,8 @@
     },
     {
         "rank": 408,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer407#0000",
         "split_battletag": "ExamplePlayer393",
         "blizz_id": 9000408,
@@ -12685,6 +13501,8 @@
     },
     {
         "rank": 409,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer408#0000",
         "split_battletag": "ExamplePlayer394",
         "blizz_id": 9000409,
@@ -12713,6 +13531,8 @@
     },
     {
         "rank": 410,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer409#0000",
         "split_battletag": "ExamplePlayer395",
         "blizz_id": 9000410,
@@ -12741,6 +13561,8 @@
     },
     {
         "rank": 411,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer410#0000",
         "split_battletag": "ExamplePlayer396",
         "blizz_id": 9000411,
@@ -12769,6 +13591,8 @@
     },
     {
         "rank": 412,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer411#0000",
         "split_battletag": "ExamplePlayer397",
         "blizz_id": 9000412,
@@ -12797,6 +13621,8 @@
     },
     {
         "rank": 413,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer412#0000",
         "split_battletag": "ExamplePlayer398",
         "blizz_id": 9000413,
@@ -12825,6 +13651,8 @@
     },
     {
         "rank": 414,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer413#0000",
         "split_battletag": "ExamplePlayer399",
         "blizz_id": 9000414,
@@ -12853,6 +13681,8 @@
     },
     {
         "rank": 415,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer414#0000",
         "split_battletag": "ExamplePlayer400",
         "blizz_id": 9000415,
@@ -12881,6 +13711,8 @@
     },
     {
         "rank": 416,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer415#0000",
         "split_battletag": "ExamplePlayer401",
         "blizz_id": 9000416,
@@ -12909,6 +13741,8 @@
     },
     {
         "rank": 417,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer416#0000",
         "split_battletag": "ExamplePlayer402",
         "blizz_id": 9000417,
@@ -12937,6 +13771,8 @@
     },
     {
         "rank": 418,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer417#0000",
         "split_battletag": "ExamplePlayer403",
         "blizz_id": 9000418,
@@ -12965,6 +13801,8 @@
     },
     {
         "rank": 419,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer418#0000",
         "split_battletag": "ExamplePlayer404",
         "blizz_id": 9000419,
@@ -12993,6 +13831,8 @@
     },
     {
         "rank": 420,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer419#0000",
         "split_battletag": "ExamplePlayer405",
         "blizz_id": 9000420,
@@ -13021,6 +13861,8 @@
     },
     {
         "rank": 421,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer420#0000",
         "split_battletag": "ExamplePlayer406",
         "blizz_id": 9000421,
@@ -13049,6 +13891,8 @@
     },
     {
         "rank": 422,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer421#0000",
         "split_battletag": "ExamplePlayer407",
         "blizz_id": 9000422,
@@ -13077,6 +13921,8 @@
     },
     {
         "rank": 423,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer422#0000",
         "split_battletag": "ExamplePlayer408",
         "blizz_id": 9000423,
@@ -13105,6 +13951,8 @@
     },
     {
         "rank": 424,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer423#0000",
         "split_battletag": "ExamplePlayer409",
         "blizz_id": 9000424,
@@ -13133,6 +13981,8 @@
     },
     {
         "rank": 425,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer424#0000",
         "split_battletag": "ExamplePlayer410",
         "blizz_id": 9000425,
@@ -13161,6 +14011,8 @@
     },
     {
         "rank": 426,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer425#0000",
         "split_battletag": "ExamplePlayer411",
         "blizz_id": 9000426,
@@ -13189,6 +14041,8 @@
     },
     {
         "rank": 427,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer426#0000",
         "split_battletag": "ExamplePlayer412",
         "blizz_id": 9000427,
@@ -13217,6 +14071,8 @@
     },
     {
         "rank": 428,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer427#0000",
         "split_battletag": "ExamplePlayer413",
         "blizz_id": 9000428,
@@ -13245,6 +14101,8 @@
     },
     {
         "rank": 429,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer428#0000",
         "split_battletag": "ExamplePlayer414",
         "blizz_id": 9000429,
@@ -13273,6 +14131,8 @@
     },
     {
         "rank": 430,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer429#0000",
         "split_battletag": "ExamplePlayer415",
         "blizz_id": 9000430,
@@ -13301,6 +14161,8 @@
     },
     {
         "rank": 431,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer430#0000",
         "split_battletag": "ExamplePlayer416",
         "blizz_id": 9000431,
@@ -13329,6 +14191,8 @@
     },
     {
         "rank": 432,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer431#0000",
         "split_battletag": "ExamplePlayer417",
         "blizz_id": 9000432,
@@ -13357,6 +14221,8 @@
     },
     {
         "rank": 433,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer432#0000",
         "split_battletag": "ExamplePlayer418",
         "blizz_id": 9000433,
@@ -13385,6 +14251,8 @@
     },
     {
         "rank": 434,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer433#0000",
         "split_battletag": "ExamplePlayer419",
         "blizz_id": 9000434,
@@ -13413,6 +14281,8 @@
     },
     {
         "rank": 435,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer434#0000",
         "split_battletag": "ExamplePlayer420",
         "blizz_id": 9000435,
@@ -13441,6 +14311,8 @@
     },
     {
         "rank": 436,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer435#0000",
         "split_battletag": "ExamplePlayer421",
         "blizz_id": 9000436,
@@ -13469,6 +14341,8 @@
     },
     {
         "rank": 437,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer436#0000",
         "split_battletag": "ExamplePlayer422",
         "blizz_id": 9000437,
@@ -13497,6 +14371,8 @@
     },
     {
         "rank": 438,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer437#0000",
         "split_battletag": "ExamplePlayer423",
         "blizz_id": 9000438,
@@ -13525,6 +14401,8 @@
     },
     {
         "rank": 439,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer438#0000",
         "split_battletag": "ExamplePlayer424",
         "blizz_id": 9000439,
@@ -13553,6 +14431,8 @@
     },
     {
         "rank": 440,
+        "leaderboard_group": 0,
+        "min_games_required": 60,
         "battletag": "ExamplePlayer439#0000",
         "split_battletag": "ExamplePlayer425",
         "blizz_id": 9000440,
@@ -13581,6 +14461,8 @@
     },
     {
         "rank": 441,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer440#0000",
         "split_battletag": "ExamplePlayer426",
         "blizz_id": 9000441,
@@ -13609,6 +14491,8 @@
     },
     {
         "rank": 442,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer441#0000",
         "split_battletag": "ExamplePlayer427",
         "blizz_id": 9000442,
@@ -13637,6 +14521,8 @@
     },
     {
         "rank": 443,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer442#0000",
         "split_battletag": "ExamplePlayer428",
         "blizz_id": 9000443,
@@ -13665,6 +14551,8 @@
     },
     {
         "rank": 444,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer443#0000",
         "split_battletag": "ExamplePlayer429",
         "blizz_id": 9000444,
@@ -13693,6 +14581,8 @@
     },
     {
         "rank": 445,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer444#0000",
         "split_battletag": "ExamplePlayer430",
         "blizz_id": 9000445,
@@ -13721,6 +14611,8 @@
     },
     {
         "rank": 446,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer445#0000",
         "split_battletag": "ExamplePlayer431",
         "blizz_id": 9000446,
@@ -13749,6 +14641,8 @@
     },
     {
         "rank": 447,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer446#0000",
         "split_battletag": "ExamplePlayer432",
         "blizz_id": 9000447,
@@ -13777,6 +14671,8 @@
     },
     {
         "rank": 448,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer447#0000",
         "split_battletag": "ExamplePlayer433",
         "blizz_id": 9000448,
@@ -13805,6 +14701,8 @@
     },
     {
         "rank": 449,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer448#0000",
         "split_battletag": "ExamplePlayer434",
         "blizz_id": 9000449,
@@ -13833,6 +14731,8 @@
     },
     {
         "rank": 450,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer449#0000",
         "split_battletag": "ExamplePlayer435",
         "blizz_id": 9000450,
@@ -13861,6 +14761,8 @@
     },
     {
         "rank": 451,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer450#0000",
         "split_battletag": "ExamplePlayer436",
         "blizz_id": 9000451,
@@ -13889,6 +14791,8 @@
     },
     {
         "rank": 452,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer451#0000",
         "split_battletag": "ExamplePlayer437",
         "blizz_id": 9000452,
@@ -13917,6 +14821,8 @@
     },
     {
         "rank": 453,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer452#0000",
         "split_battletag": "ExamplePlayer438",
         "blizz_id": 9000453,
@@ -13945,6 +14851,8 @@
     },
     {
         "rank": 454,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer453#0000",
         "split_battletag": "ExamplePlayer439",
         "blizz_id": 9000454,
@@ -13973,6 +14881,8 @@
     },
     {
         "rank": 455,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer454#0000",
         "split_battletag": "ExamplePlayer440",
         "blizz_id": 9000455,
@@ -14001,6 +14911,8 @@
     },
     {
         "rank": 456,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer455#0000",
         "split_battletag": "ExamplePlayer441",
         "blizz_id": 9000456,
@@ -14029,6 +14941,8 @@
     },
     {
         "rank": 457,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer456#0000",
         "split_battletag": "ExamplePlayer442",
         "blizz_id": 9000457,
@@ -14057,6 +14971,8 @@
     },
     {
         "rank": 458,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer457#0000",
         "split_battletag": "ExamplePlayer443",
         "blizz_id": 9000458,
@@ -14085,6 +15001,8 @@
     },
     {
         "rank": 459,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer458#0000",
         "split_battletag": "ExamplePlayer444",
         "blizz_id": 9000459,
@@ -14113,6 +15031,8 @@
     },
     {
         "rank": 460,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer459#0000",
         "split_battletag": "ExamplePlayer445",
         "blizz_id": 9000460,
@@ -14141,6 +15061,8 @@
     },
     {
         "rank": 461,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer460#0000",
         "split_battletag": "ExamplePlayer446",
         "blizz_id": 9000461,
@@ -14169,6 +15091,8 @@
     },
     {
         "rank": 462,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer461#0000",
         "split_battletag": "ExamplePlayer447",
         "blizz_id": 9000462,
@@ -14197,6 +15121,8 @@
     },
     {
         "rank": 463,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer462#0000",
         "split_battletag": "ExamplePlayer448",
         "blizz_id": 9000463,
@@ -14225,6 +15151,8 @@
     },
     {
         "rank": 464,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer463#0000",
         "split_battletag": "ExamplePlayer449",
         "blizz_id": 9000464,
@@ -14253,6 +15181,8 @@
     },
     {
         "rank": 465,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer464#0000",
         "split_battletag": "ExamplePlayer450",
         "blizz_id": 9000465,
@@ -14281,6 +15211,8 @@
     },
     {
         "rank": 466,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer465#0000",
         "split_battletag": "ExamplePlayer451",
         "blizz_id": 9000466,
@@ -14309,6 +15241,8 @@
     },
     {
         "rank": 467,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer466#0000",
         "split_battletag": "ExamplePlayer452",
         "blizz_id": 9000467,
@@ -14337,6 +15271,8 @@
     },
     {
         "rank": 468,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer467#0000",
         "split_battletag": "ExamplePlayer453",
         "blizz_id": 9000468,
@@ -14365,6 +15301,8 @@
     },
     {
         "rank": 469,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer468#0000",
         "split_battletag": "ExamplePlayer454",
         "blizz_id": 9000469,
@@ -14393,6 +15331,8 @@
     },
     {
         "rank": 470,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer469#0000",
         "split_battletag": "ExamplePlayer455",
         "blizz_id": 9000470,
@@ -14421,6 +15361,8 @@
     },
     {
         "rank": 471,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer470#0000",
         "split_battletag": "ExamplePlayer456",
         "blizz_id": 9000471,
@@ -14449,6 +15391,8 @@
     },
     {
         "rank": 472,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer471#0000",
         "split_battletag": "ExamplePlayer457",
         "blizz_id": 9000472,
@@ -14477,6 +15421,8 @@
     },
     {
         "rank": 473,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer472#0000",
         "split_battletag": "ExamplePlayer458",
         "blizz_id": 9000473,
@@ -14505,6 +15451,8 @@
     },
     {
         "rank": 474,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer473#0000",
         "split_battletag": "ExamplePlayer459",
         "blizz_id": 9000474,
@@ -14533,6 +15481,8 @@
     },
     {
         "rank": 475,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer474#0000",
         "split_battletag": "ExamplePlayer460",
         "blizz_id": 9000475,
@@ -14561,6 +15511,8 @@
     },
     {
         "rank": 476,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer475#0000",
         "split_battletag": "ExamplePlayer461",
         "blizz_id": 9000476,
@@ -14589,6 +15541,8 @@
     },
     {
         "rank": 477,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer476#0000",
         "split_battletag": "ExamplePlayer462",
         "blizz_id": 9000477,
@@ -14617,6 +15571,8 @@
     },
     {
         "rank": 478,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer477#0000",
         "split_battletag": "ExamplePlayer463",
         "blizz_id": 9000478,
@@ -14645,6 +15601,8 @@
     },
     {
         "rank": 479,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer478#0000",
         "split_battletag": "ExamplePlayer464",
         "blizz_id": 9000479,
@@ -14673,6 +15631,8 @@
     },
     {
         "rank": 480,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer479#0000",
         "split_battletag": "ExamplePlayer465",
         "blizz_id": 9000480,
@@ -14701,6 +15661,8 @@
     },
     {
         "rank": 481,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer480#0000",
         "split_battletag": "ExamplePlayer466",
         "blizz_id": 9000481,
@@ -14729,6 +15691,8 @@
     },
     {
         "rank": 482,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer481#0000",
         "split_battletag": "ExamplePlayer467",
         "blizz_id": 9000482,
@@ -14757,6 +15721,8 @@
     },
     {
         "rank": 483,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer482#0000",
         "split_battletag": "ExamplePlayer468",
         "blizz_id": 9000483,
@@ -14785,6 +15751,8 @@
     },
     {
         "rank": 484,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer483#0000",
         "split_battletag": "ExamplePlayer469",
         "blizz_id": 9000484,
@@ -14813,6 +15781,8 @@
     },
     {
         "rank": 485,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer484#0000",
         "split_battletag": "ExamplePlayer470",
         "blizz_id": 9000485,
@@ -14841,6 +15811,8 @@
     },
     {
         "rank": 486,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer485#0000",
         "split_battletag": "ExamplePlayer471",
         "blizz_id": 9000486,
@@ -14869,6 +15841,8 @@
     },
     {
         "rank": 487,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer486#0000",
         "split_battletag": "ExamplePlayer472",
         "blizz_id": 9000487,
@@ -14897,6 +15871,8 @@
     },
     {
         "rank": 488,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer487#0000",
         "split_battletag": "ExamplePlayer473",
         "blizz_id": 9000488,
@@ -14925,6 +15901,8 @@
     },
     {
         "rank": 489,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer488#0000",
         "split_battletag": "ExamplePlayer474",
         "blizz_id": 9000489,
@@ -14953,6 +15931,8 @@
     },
     {
         "rank": 490,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer489#0000",
         "split_battletag": "ExamplePlayer475",
         "blizz_id": 9000490,
@@ -14981,6 +15961,8 @@
     },
     {
         "rank": 491,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer490#0000",
         "split_battletag": "ExamplePlayer476",
         "blizz_id": 9000491,
@@ -15009,6 +15991,8 @@
     },
     {
         "rank": 492,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer491#0000",
         "split_battletag": "ExamplePlayer477",
         "blizz_id": 9000492,
@@ -15037,6 +16021,8 @@
     },
     {
         "rank": 493,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer492#0000",
         "split_battletag": "ExamplePlayer478",
         "blizz_id": 9000493,
@@ -15065,6 +16051,8 @@
     },
     {
         "rank": 494,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer493#0000",
         "split_battletag": "ExamplePlayer479",
         "blizz_id": 9000494,
@@ -15093,6 +16081,8 @@
     },
     {
         "rank": 495,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer494#0000",
         "split_battletag": "ExamplePlayer480",
         "blizz_id": 9000495,
@@ -15121,6 +16111,8 @@
     },
     {
         "rank": 496,
+        "leaderboard_group": 1,
+        "min_games_required": 48,
         "battletag": "ExamplePlayer495#0000",
         "split_battletag": "ExamplePlayer481",
         "blizz_id": 9000496,
