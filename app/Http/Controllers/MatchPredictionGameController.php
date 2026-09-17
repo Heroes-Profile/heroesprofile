@@ -13,14 +13,22 @@ use App\Models\ReplayDraftOrder;
 use App\Models\ReplayFingerprint;
 use App\Models\Talent;
 use App\Rules\GameTypeInputValidation;
-use App\Rules\UserAccountValidation;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class MatchPredictionGameController extends Controller
 {
+    private const SEASON = 1;
+
+    private const PRACTICE_GAMES = 10;
+
+    /** The replay last served to this session, the only one that can be answered. */
+    private const PENDING_SESSION_KEY = 'match_prediction_pending';
+
     public function show(Request $request)
     {
         $gametypes = GameType::whereIn('type_id', [1, 5, 6])
@@ -35,7 +43,7 @@ class MatchPredictionGameController extends Controller
 
         $user = Auth::user();
 
-        $season = 1;
+        $season = self::SEASON;
 
         if ($user) {
             $predicitionStats = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
@@ -206,6 +214,11 @@ class MatchPredictionGameController extends Controller
 
         $firstPick = $this->determineFirstPick($replayBans, $draftData);
 
+        $request->session()->put(self::PENDING_SESSION_KEY, [
+            'replayID' => $replayID,
+            'game_type' => $gameType,
+        ]);
+
         return [
             'fingerprint' => Crypt::encryptString(ReplayFingerprint::where('replayID', $replayID)->value('fingerprint')),
             'replayData' => $replayData,
@@ -219,23 +232,10 @@ class MatchPredictionGameController extends Controller
 
     public function chooseWinner(Request $request)
     {
-
-        $validationRules = [
+        $validator = Validator::make($request->all(), [
             'team' => 'required|integer',
             'fingerprint' => 'required|string',
-            'gametype' => ['required', new GameTypeInputValidation],
-            'practicemode' => 'required|boolean',
-            'season' => 'required|integer',
-            'practicemodegamesplayed' => 'required|integer',
-        ];
-
-        if ($request->has('user') && ! is_null($request->input('user'))) {
-            $validationRules['user'] = ['sometimes', new UserAccountValidation];
-        } else {
-            $validationRules['user'] = 'nullable';
-        }
-
-        $validator = Validator::make($request->all(), $validationRules);
+        ]);
 
         if ($validator->fails()) {
             return [
@@ -244,55 +244,76 @@ class MatchPredictionGameController extends Controller
                 'status' => 'failure to validate inputs',
             ];
         }
-        $user = $request['user'];
-        $game_type = GameType::where('short_name', $request['gametype'])->pluck('type_id')->first();
-        $practiceMode = $request['practicemode'];
-        $practiceModeGamesPlayed = $request['practicemodegamesplayed'];
 
-        $replayID = ReplayFingerprint::where('fingerprint', Crypt::decryptString($request['fingerprint']))->value('replayID');
-        $season = $request['season'];
+        // One answer per served replay, taken from this session: pull() removes it, so a
+        // fingerprint can't be scored twice, and one that wasn't served here isn't scored.
+        $pending = $request->session()->pull(self::PENDING_SESSION_KEY);
+
+        try {
+            $fingerprint = Crypt::decryptString($request['fingerprint']);
+        } catch (DecryptException $e) {
+            $fingerprint = null;
+        }
+
+        $replayID = $fingerprint === null ? null : ReplayFingerprint::where('fingerprint', $fingerprint)->value('replayID');
+
+        if (! $pending || $replayID === null || (int) $pending['replayID'] !== (int) $replayID) {
+            return response()->json(['status' => 'expired'], 409);
+        }
 
         $data = Player::select('winner')
             ->where('replayID', $replayID)
             ->where('team', $request['team'])
             ->first();
 
-        if ($user) {
-            $existingRecord = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user['battlenet_accounts_id'])
-                ->where('season', $practiceMode ? 0 : $season)
-                ->where('game_type', $game_type)
-                ->first();
-
-            if ($existingRecord) {
-                if ($data->winner == 1) {
-                    $existingRecord->increment('win');
-                } else {
-                    $existingRecord->increment('loss');
-                }
-            } else {
-                MatchPredictionPlayerStat::insert([
-                    'battlenet_accounts_id' => $user['battlenet_accounts_id'],
-                    'season' => $practiceMode ? 0 : $season,
-                    'game_type' => $game_type,
-                    'win' => ($data->winner == 1 ? 1 : 0),
-                    'loss' => ($data->winner == 0 ? 1 : 0),
-                ]);
-            }
+        if ($data === null) {
+            return response()->json(['status' => 'expired'], 409);
         }
 
-        $predicitionStats = null;
+        // The account is the signed-in user, never one named in the request. Guests
+        // play without anything being recorded.
+        $user = Auth::user();
 
-        if ($practiceMode && $practiceModeGamesPlayed == 10) {
-            $practiceMode = false;
+        if ($user === null) {
+            return ['replayID' => $replayID, 'data' => $data->winner, 'predictionstats' => [], 'practicemode' => true];
         }
 
-        if ($user) {
-            $predicitionStats = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user['battlenet_accounts_id'])
-                ->where('season', $practiceMode ? 0 : $season)
-                ->get();
+        $game_type = $pending['game_type'];
+        $practiceMode = $this->practiceGamesPlayed($user->battlenet_accounts_id) < self::PRACTICE_GAMES;
+        $season = $practiceMode ? 0 : self::SEASON;
+
+        $existingRecord = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
+            ->where('season', $season)
+            ->where('game_type', $game_type)
+            ->first();
+
+        if ($existingRecord) {
+            $existingRecord->increment($data->winner == 1 ? 'win' : 'loss');
+        } else {
+            MatchPredictionPlayerStat::insert([
+                'battlenet_accounts_id' => $user->battlenet_accounts_id,
+                'season' => $season,
+                'game_type' => $game_type,
+                'win' => ($data->winner == 1 ? 1 : 0),
+                'loss' => ($data->winner == 0 ? 1 : 0),
+            ]);
         }
 
-        return ['replayID' => $replayID, 'data' => $data->winner, 'predictionstats' => $predicitionStats];
+        return [
+            'replayID' => $replayID,
+            'data' => $data->winner,
+            'predictionstats' => MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
+                ->where('season', $season)
+                ->get(),
+            'practicemode' => $this->practiceGamesPlayed($user->battlenet_accounts_id) < self::PRACTICE_GAMES,
+        ];
+    }
+
+    private function practiceGamesPlayed(int $battlenetAccountsId): int
+    {
+        return (int) MatchPredictionPlayerStat::where('battlenet_accounts_id', $battlenetAccountsId)
+            ->where('season', 0)
+            ->sum(DB::raw('win + loss'));
     }
 
     private function determineFirstPick($replayBans, $draftData)
