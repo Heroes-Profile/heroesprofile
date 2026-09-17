@@ -20,6 +20,9 @@ class GlobalQueryService
      */
     private const MAX_ATTEMPTS = 3;
 
+    /** How long a batch result holding a failed child is kept, so it is retried soon. */
+    private const PARTIAL_RESULT_TTL_SECONDS = 300;
+
     /** Children of one batch running at once. See `config/global.php`. */
     private function batchMaxInFlight(): int
     {
@@ -398,6 +401,11 @@ class GlobalQueryService
         }
 
         if ($job['status'] === 'failed') {
+            // Cloud Tasks has another attempt coming, so the job is still running.
+            if (($job['attempts'] ?? self::MAX_ATTEMPTS) < self::MAX_ATTEMPTS) {
+                return $this->acceptedResponse($jobId, 'processing');
+            }
+
             return response()->json([
                 'async' => true,
                 'status' => 'failed',
@@ -515,6 +523,19 @@ class GlobalQueryService
         $job['error'] = $error;
         $job['attempts'] = $attempt;
         $cache->put($this->jobKey($jobId), $job, self::STATUS_TTL_SECONDS);
+
+        // Cloud Tasks retries up to MAX_ATTEMPTS. Until the last one the job is still in
+        // flight, so its index stays and a fresh request waits for it instead of starting
+        // a duplicate.
+        if ($attempt < self::MAX_ATTEMPTS) {
+            $cache->put($this->cacheIndexKey($job['cache_key']), [
+                'job_id' => $jobId,
+                'status' => 'processing',
+            ], self::STATUS_TTL_SECONDS);
+
+            return;
+        }
+
         $cache->forget($this->cacheIndexKey($job['cache_key']));
     }
 
@@ -754,7 +775,13 @@ class GlobalQueryService
         }
 
         $results = $this->batchResults($job['children'], $states);
-        $ttl = max(60, (int) ($job['cache_ttl_seconds'] ?? 3600));
+
+        // A failed child is usually transient; keeping its error for the data TTL would
+        // show it to everyone for weeks. Briefly, so a later request retries just that one.
+        $failed = in_array('failed', array_column($states, 'status'), true);
+        $ttl = $failed
+            ? self::PARTIAL_RESULT_TTL_SECONDS
+            : max(60, (int) ($job['cache_ttl_seconds'] ?? 3600));
         $cache->put($job['cache_key'], $results, $ttl);
 
         $job['status'] = 'complete';

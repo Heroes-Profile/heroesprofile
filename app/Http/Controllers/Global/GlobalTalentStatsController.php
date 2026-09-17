@@ -12,6 +12,7 @@ use App\Rules\HeroInputValidation;
 use App\Rules\StatFilterInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
 use App\Services\GlobalQueryService;
+use App\Support\GlobalCacheKey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
@@ -416,11 +417,10 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ];
         }
 
-        $parentRequest = $request->all();
-        ksort($parentRequest);
-
+        // Built like every other global key: transport parameters (api_token, mode) are
+        // ignored, and the version ids are part of it so a new patch gets a new batch.
         return app(GlobalQueryService::class)->dispatchBatch(
-            'GlobalHeroTalentStatsBuildsAllFiltered|'.hash('sha256', json_encode($parentRequest)),
+            GlobalCacheKey::for('GlobalHeroTalentStatsBuildsAllFiltered', $sharedVersionIds ?? [], $request->all()),
             $children,
             static::class,
             'executeGlobalHeroTalentBuildData',
