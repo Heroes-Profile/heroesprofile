@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BannedAccount;
 use App\Models\Battletag;
 use App\Models\Map;
-use App\Models\Replay;
 use App\Rules\BattletagInputProhibitCharacters;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class BattletagSearchController extends Controller
@@ -83,136 +82,98 @@ class BattletagSearchController extends Controller
 
     private function searchForBattletag($input, ?int $region = null)
     {
-        if (strpos($input, '#') !== false) {
-            $data = Battletag::select('blizz_id', 'battletag', 'region', 'latest_game')
-                ->where('battletag', $input)
-                ->when($region, fn ($q) => $q->where('region', $region))
-                ->get();
-        } else {
-            $data = Battletag::select('blizz_id', 'battletag', 'region', 'latest_game')
-                ->where('battletag', 'LIKE', $input.'#%')
-                ->when($region, fn ($q) => $q->where('region', $region))
-                ->get();
-        }
+        $rows = Battletag::select('blizz_id', 'battletag', 'region', 'latest_game')
+            ->when(
+                str_contains($input, '#'),
+                fn ($q) => $q->where('battletag', $input),
+                fn ($q) => $q->where('battletag', 'LIKE', $input.'#%')
+            )
+            ->when($region, fn ($q) => $q->where('region', $region))
+            ->orderByDesc('latest_game')
+            ->limit(500)
+            ->get();
 
-        $returnData = [];
-        $counter = 0;
-        $uniqueBlizzIDRegion = [];
+        $restricted = $this->globalDataService->restrictedAccountKeys();
+        $accounts = [];
 
-        $privateAccounts = $this->globalDataService->getPrivateAccounts();
-        $bannedAccounts = BannedAccount::get();
+        foreach ($rows as $row) {
+            $key = $row->blizz_id.'|'.$row->region;
 
-        foreach ($data as $row) {
-            $blizz_id = $row['blizz_id'];
-            $region = $row['region'];
-
-            $containsAccount = $privateAccounts->contains(function ($account) use ($blizz_id, $region) {
-                return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
-            });
-            $existingBan = $bannedAccounts->contains(function ($account) use ($blizz_id, $region) {
-                return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
-            });
-
-            if (! $containsAccount && ! $existingBan) {
-
-                if (array_key_exists($row['blizz_id'].'|'.$row['region'], $uniqueBlizzIDRegion)) {
-                    if ($row['latest_game'] > $uniqueBlizzIDRegion[$row['blizz_id'].'|'.$row['region']]) {
-                        $returnData[$row['blizz_id'].'|'.$row['region']] = $row;
-                    }
-                } else {
-                    $uniqueBlizzIDRegion[$row['blizz_id'].'|'.$row['region']] = $row['latest_game'];
-                    $returnData[$row['blizz_id'].'|'.$row['region']] = $row;
-                    $counter++;
-                }
+            // Newest first, so the first row seen for an account is its current battletag.
+            if (isset($restricted[$key]) || isset($accounts[$key])) {
+                continue;
             }
 
-            if ($counter == 50) {
+            $accounts[$key] = $row;
+
+            if (count($accounts) === 50) {
                 break;
             }
         }
 
-        $heroData = $this->globalDataService->getHeroes();
-        $heroData = $heroData->keyBy('id');
+        if ($accounts === []) {
+            return [];
+        }
 
-        $maps = Map::all();
-        $maps = $maps->keyBy('map_id');
+        $matchesAccounts = function ($query, array $extra = []) use ($accounts) {
+            $query->where(function ($q) use ($accounts, $extra) {
+                foreach ($accounts as $key => $account) {
+                    $q->orWhere(function ($w) use ($account, $extra, $key) {
+                        $w->where('player.blizz_id', $account->blizz_id)
+                            ->where('replay.region', $account->region);
 
+                        if (isset($extra[$key])) {
+                            $w->where('replay.game_date', $extra[$key]);
+                        }
+                    });
+                }
+            });
+        };
+
+        $stats = DB::connection('heroesprofile')->table('player')
+            ->join('replay', 'replay.replayID', '=', 'player.replayID')
+            ->where('replay.game_type', '<>', 0) // Exclude custom games
+            ->tap(fn ($q) => $matchesAccounts($q))
+            ->groupBy('player.blizz_id', 'replay.region')
+            ->select('player.blizz_id', 'replay.region', DB::raw('COUNT(*) AS games'), DB::raw('MAX(replay.game_date) AS latest'))
+            ->get()
+            ->keyBy(fn ($row) => $row->blizz_id.'|'.$row->region);
+
+        $latestDates = $stats->map(fn ($row) => $row->latest)->all();
+
+        $latest = DB::connection('heroesprofile')->table('player')
+            ->join('replay', 'replay.replayID', '=', 'player.replayID')
+            ->where('replay.game_type', '<>', 0)
+            ->tap(fn ($q) => $matchesAccounts($q, $latestDates))
+            ->select('player.blizz_id', 'replay.region', 'player.hero', 'replay.game_map')
+            ->get()
+            ->unique(fn ($row) => $row->blizz_id.'|'.$row->region)
+            ->keyBy(fn ($row) => $row->blizz_id.'|'.$row->region);
+
+        $heroData = $this->globalDataService->getHeroes()->keyBy('id');
+        $maps = Map::all()->keyBy('map_id');
         $regions = $this->globalDataService->getRegionIDtoString();
 
-        foreach ($returnData as $item) {
-            $blizzId = $item->blizz_id;
-            $battletag = $item->battletag;
-            $battletagShort = explode('#', $item->battletag)[0];
-            $region = $item->region;
-            $regionName = $regions[$item->region];
-            $latestGame = $item->latest_game;
+        $returnData = [];
 
-            $totalGamesPlayed = $this->getTotalGamesPlayedForPlayer($blizzId, $region);
-            $latestMap = $this->getLatestMapPlayedForPlayer($blizzId, $region);
-            $latestHero = $this->getLatestHeroPlayedForPlayer($blizzId, $region);
+        foreach ($accounts as $key => $item) {
+            $games = (int) ($stats[$key]->games ?? 0);
 
-            $item->totalGamesPlayed = $totalGamesPlayed;
-            $item->latestMap = $latestMap ? $maps[$latestMap] : null;
-            $item->latestHero = $latestHero ? $heroData[$latestHero] : null;
+            if ($games === 0) {
+                continue;
+            }
 
-            $item->battletagShort = $battletagShort;
-            $item->regionName = $regionName;
+            $item->totalGamesPlayed = $games;
+            $item->latestMap = $maps[$latest[$key]->game_map ?? null] ?? null;
+            $item->latestHero = $heroData[$latest[$key]->hero ?? null] ?? null;
+            $item->battletagShort = explode('#', $item->battletag)[0];
+            $item->regionName = $regions[$item->region] ?? null;
 
+            $returnData[] = $item;
         }
 
-        $returnData = array_filter($returnData, function ($item) {
-            return $item->totalGamesPlayed > 0;
-        });
-
-        usort($returnData, function ($a, $b) {
-            return $b->totalGamesPlayed - $a->totalGamesPlayed;
-        });
+        usort($returnData, fn ($a, $b) => $b->totalGamesPlayed - $a->totalGamesPlayed);
 
         return $returnData;
-    }
-
-    private function getTotalGamesPlayedForPlayer($blizzId, $region, $gameType = null)
-    {
-        $count = Replay::whereHas('players', function ($query) use ($blizzId, $region) {
-            $query->where('blizz_id', $blizzId)
-                ->where('region', $region);
-        })
-            ->when($gameType, function ($query, $gameType) {
-                return $query->where('game_type', $gameType);
-            })
-            ->where('game_type', '<>', 0) // Exclude custom games
-            ->count();
-
-        return $count;
-    }
-
-    private function getLatestMapPlayedForPlayer($blizzId, $region, $gameType = null)
-    {
-        $lastReplayMap = Replay::whereHas('players', function ($query) use ($blizzId, $region) {
-            $query->where('blizz_id', $blizzId)
-                ->where('region', $region);
-        })
-            ->where('game_type', '<>', 0) // Exclude custom games
-            ->orderBy('game_date', 'desc')
-            ->value('replay.game_map');
-
-        return $lastReplayMap;
-    }
-
-    private function getLatestHeroPlayedForPlayer($blizzId, $region, $gameType = null)
-    {
-        $latestHero = Replay::select('hero')
-            ->join('player', 'player.replayID', '=', 'replay.replayID')
-            ->where('blizz_id', $blizzId)
-            ->where('region', $region)
-            ->where('game_type', '<>', 0) // Exclude custom games
-            ->orderBy('game_date', 'desc')
-            ->first();
-
-        if ($latestHero) {
-            return $latestHero->hero;
-        }
-
-        return null;
     }
 }

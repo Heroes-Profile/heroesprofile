@@ -110,6 +110,11 @@ class RouteServiceProvider extends ServiceProvider
             );
         });
 
+        // Battletag lookup: each search is a grouped scan over replay history.
+        RateLimiter::for('battletag-search', function (Request $request) {
+            return Limit::perMinute(20)->by($this->rateLimitKey($request));
+        });
+
         RateLimiter::for('contact', function (Request $request) {
             return Limit::perMinute(3)->by($this->rateLimitKey($request));
         });

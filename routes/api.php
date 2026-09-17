@@ -111,7 +111,7 @@ Route::prefix('v1')->middleware('web')->group(function () {
 
     Route::post('main/header/data', [MainPageController::class, 'getHeaderAlertData']);
 
-    Route::post('battletag/search', [BattletagSearchController::class, 'battletagSearch']);
+    Route::post('battletag/search', [BattletagSearchController::class, 'battletagSearch'])->middleware('throttle:battletag-search');
 
     Route::post('global/hero', [GlobalHeroStatsController::class, 'getGlobalHeroData']);
 
@@ -147,7 +147,7 @@ Route::prefix('v1')->middleware('web')->group(function () {
     Route::post('player', [PlayerController::class, 'getPlayerData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
     Route::post('player/friendfoe', [FriendFoeController::class, 'getFriendFoeData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
-    Route::post('player/friendfoe/search', [BattletagSearchController::class, 'friendFoeSearch']);
+    Route::post('player/friendfoe/search', [BattletagSearchController::class, 'friendFoeSearch'])->middleware('throttle:battletag-search');
 
     Route::post('player/matchups', [PlayerMatchupsController::class, 'getMatchupData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
