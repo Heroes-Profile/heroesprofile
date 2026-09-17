@@ -239,6 +239,8 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
             ->filterByHero($hero)
             ->filterByAllyEnemy($allyEnemy)
             ->filterByLeagueTier($leagueTier)
+            // The talent rows below are map-filtered; the headline has to match them.
+            ->filterByGameMap($gameMap)
             ->excludeMirror(0)
             ->groupBy('win_loss')
             ->get();
