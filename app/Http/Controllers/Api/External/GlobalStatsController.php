@@ -386,6 +386,12 @@ class GlobalStatsController extends Controller
             ], 422);
         }
 
+        // Past the support check above, and the batch rate limit has applied. The site's
+        // own routes never set this, so they never fan out.
+        if ($request->boolean('group_by_map')) {
+            $request->attributes->set(GlobalQueryService::GROUP_BY_MAP_ALLOWED, true);
+        }
+
         foreach ($requires as $parameter) {
             if (! $request->filled($parameter)) {
                 return response()->json([

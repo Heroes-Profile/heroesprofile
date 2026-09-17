@@ -20,6 +20,13 @@ class GlobalQueryService
      */
     private const MAX_ATTEMPTS = 3;
 
+    /**
+     * Request attribute set only by the public API, after its own support check and
+     * batch rate limit. Without it `group_by_map` is ignored, so the site's anonymous
+     * routes can't be made to fan one request out into a query per map.
+     */
+    public const GROUP_BY_MAP_ALLOWED = 'global.group_by_map_allowed';
+
     /** How long a batch result holding a failed child is kept, so it is retried soon. */
     private const PARTIAL_RESULT_TTL_SECONDS = 300;
 
