@@ -66,6 +66,9 @@ class ApiEndpointRegistrySeeder extends Seeder
         ['player_mmr', 'Player/MMR', 'Player MMR Data', 5, 1, 10000, 25000, 50000, 250000, 100000, 100000],
         ['player_mmr_hero', 'Player/MMR/Hero', 'Player MMR Data', 5, 2, 10000, 25000, 50000, 250000, 100000, 100000],
         ['player_mmr_role', 'Player/MMR/Role', 'Player MMR Data', 5, 3, 10000, 25000, 50000, 250000, 100000, 100000],
+        ['player_mmr_history', 'Player/MMR History', 'Player MMR Data', 5, 2, 10000, 25000, 50000, 250000, 100000, 100000],
+        ['player_mmr_history_hero', 'Player/MMR/Hero History', 'Player MMR Data', 5, 3, 10000, 25000, 50000, 250000, 100000, 100000],
+        ['player_mmr_history_role', 'Player/MMR/Role History', 'Player MMR Data', 5, 4, 10000, 25000, 50000, 250000, 100000, 100000],
         ['player_prematch', 'Player/PreMatch', 'Player Miscellaneous', 6, 1, 1000, 10000, 25000, 100000, 0, 0],
         // Generous on every plan, NGS and Heroes Lounge included: polling this is
         // an obligation the terms impose, so no tier should be rate-limited out of
