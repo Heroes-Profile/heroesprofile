@@ -143,6 +143,7 @@
         selectedAward: null,
         awardGames: null,
         awardGamesLoading: false,
+        awardGamesRequestId: 0,
       }
     },
     created(){
@@ -222,6 +223,8 @@
         }
 
         this.awardGamesLoading = true;
+        // Bumped whenever the selected award changes, so a slower response for the previous award is dropped.
+        const requestId = this.awardGamesRequestId;
 
         if (this.cancelTokenSource) {
           this.cancelTokenSource.cancel('Request canceled');
@@ -247,12 +250,15 @@
             cancelToken: this.cancelTokenSource.token,
           });
 
+          if (requestId !== this.awardGamesRequestId) return;
           this.awardGames = response.data;
         }catch(error){
           //Do something here
         }finally {
-          this.cancelTokenSource = null;
-          this.awardGamesLoading = false;
+          if (requestId === this.awardGamesRequestId) {
+            this.cancelTokenSource = null;
+            this.awardGamesLoading = false;
+          }
         }
       },
       selectAward(award){
@@ -262,6 +268,8 @@
         }
         this.selectedAward = award;
         this.awardGames = null;
+        this.awardGamesRequestId++;
+        this.awardGamesLoading = false;
         this.getAwardGames(1);
         this.$nextTick(() => {
           this.$refs.gamestable?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -270,6 +278,8 @@
       clearAward(){
         this.selectedAward = null;
         this.awardGames = null;
+        this.awardGamesRequestId++;
+        this.awardGamesLoading = false;
       },
       cancelAxiosRequest() {
         if (this.cancelTokenSource) {

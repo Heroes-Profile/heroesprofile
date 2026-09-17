@@ -822,12 +822,16 @@
     watch: {
       toggleExtraFilters(value){
         if(!value){
+          // Only filters that disappear with the advanced section; Map stays visible.
           delete this.selectedMultiFilters['Stat Filter'];
           delete this.selectedMultiFilters['Hero Level'];
-          delete this.selectedMultiFilters['Map'];
-          delete this.selectedMultiFilters['Hero Rank'];
-          delete this.selectedMultiFilters['Role Rank'];
-          delete this.selectedMultiFilters['Mirror Matches'];
+          delete this.selectedMultiFilters['HP Hero Rank'];
+          delete this.selectedMultiFilters['HP Role Rank'];
+          delete this.selectedSingleFilters['Mirror Matches'];
+          if(this.groupsizeadvanced){
+            delete this.selectedSingleFilters['Group Size'];
+            delete this.selectedMultiFilters['Group Size'];
+          }
 
           if(this.includemmrranges){
             ['HP Player MMR', 'HP Hero MMR', 'HP Role MMR'].forEach(mmrType => {

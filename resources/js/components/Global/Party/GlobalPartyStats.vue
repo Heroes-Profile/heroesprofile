@@ -17,6 +17,7 @@
       :gamemapinput="gamemap"
       :playerrankinput="playerrank"
       :herorankinput="herorank"
+      :rolerankinput="rolerank"
       :teamonepartyinput="teamoneparty"      
       :teamtwopartyinput="teamtwoparty"      
 

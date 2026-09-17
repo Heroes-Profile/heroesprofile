@@ -87,7 +87,8 @@ export default {
         {
           cancelToken: this.cancelTokenSource.token,
         });
-        this.battletagresponse = response.data;
+        // A validation failure answers an object rather than a list.
+        this.battletagresponse = Array.isArray(response.data) ? response.data : [];
         if(this.isBattletagReponseValid) {
           if(this.battletagresponse.length == 1){
             this.redirectToProfile(this.battletagresponse[0].battletagShort, this.battletagresponse[0].blizz_id, this.battletagresponse[0].region);
@@ -96,7 +97,7 @@ export default {
           //Do something here
         }
       }catch(error){
-        this.battletagresponse = "Invalid input: '%', '?' and ' ' are invalid inputs";
+        this.battletagresponse = [];
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;

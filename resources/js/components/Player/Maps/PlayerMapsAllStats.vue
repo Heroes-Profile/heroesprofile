@@ -287,6 +287,7 @@ export default {
           type: "all",
           page: "map",
           game_map: this.map,
+          minimumgames: this.minimumgames,
           season: this.season,
           start_date: this.startdate,
           end_date: this.enddate,
@@ -330,7 +331,10 @@ export default {
       if (filteredData.single.Heroes) {
         const hero = this.filters.heroes.find(h => h.code === filteredData.single.Heroes);
         this.hero = hero ? hero.name : null;
+      } else {
+        this.hero = null;
       }
+      this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
       this.season = filteredData.multi.Season ? Array.from(filteredData.multi.Season) : null;
       this.startdate = filteredData.single["From Date"] || null;
       this.enddate = filteredData.single["To Date"] || null;

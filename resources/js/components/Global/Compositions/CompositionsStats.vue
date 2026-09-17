@@ -274,6 +274,9 @@
           cancelToken: this.cancelTokenSource.token,
         });
 
+        if (response.data?.status === "failure to validate inputs") {
+          throw new Error("Failure to validate inputs");
+        }
         this.compositiondata = response.data;
         this.loadingStates = this.sortedData.map(() => false);
       }catch(error){
