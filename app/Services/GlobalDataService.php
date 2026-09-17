@@ -807,8 +807,12 @@ class GlobalDataService
 
     private function resolveCacheTimeInSeconds(array $timeframe): int
     {
-        if (count($timeframe) == 1 && $timeframe[0] == $this->getLatestPatch()) {
-            $date = SeasonGameVersion::where('game_version', min($timeframe))->value('date_added');
+        $latestPatch = $this->getLatestPatch();
+
+        // Any timeframe that includes the live patch is still receiving games: a major
+        // patch or a multi-build selection included, not only the latest build on its own.
+        if (in_array($latestPatch, $timeframe, true)) {
+            $date = SeasonGameVersion::where('game_version', $latestPatch)->value('date_added');
             $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
 
             if ($changeInMinutes < 1440) {  // 1 day
@@ -819,12 +823,13 @@ class GlobalDataService
                 return 24 * 60 * 60;
             } elseif ($changeInMinutes < (1440 * 14)) { // 2 weeks
                 return 7 * 24 * 60 * 60;
-            } else {
-                return 14 * 24 * 60 * 60;
             }
+
+            return 14 * 24 * 60 * 60;
         }
 
-        $date = SeasonGameVersion::where('game_version', min($timeframe))->value('date_added');
+        // Oldest by the date it was added: comparing version strings puts 2.55.10 before 2.55.9.
+        $date = SeasonGameVersion::whereIn('game_version', $timeframe)->min('date_added');
         $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
 
         return max(60, (int) $changeInMinutes * 60);
