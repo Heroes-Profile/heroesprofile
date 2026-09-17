@@ -59,32 +59,44 @@ class ValidateApiPostOrigin
         return false;
     }
 
+    /**
+     * Exact origin comparison. A prefix match let look-alikes through:
+     * `https://www.heroesprofile.com.evil.example` and `https://www.heroesprofile.com@evil.example`.
+     */
     protected function matchesAllowedSite(string $value): bool
     {
-        foreach ($this->allowedOriginPrefixes() as $prefix) {
-            if (str_starts_with($value, $prefix)) {
-                return true;
-            }
-        }
+        $origin = $this->originOf($value);
 
-        return false;
+        return $origin !== null && in_array($origin, $this->allowedOrigins(), true);
     }
 
     /**
      * @return array<int, string>
      */
-    protected function allowedOriginPrefixes(): array
+    protected function allowedOrigins(): array
     {
         $origins = config('cors.allowed_origins', []);
+        $origins[] = (string) config('app.url');
 
-        $appUrl = rtrim((string) config('app.url'), '/');
-        if ($appUrl !== '') {
-            $origins[] = $appUrl;
+        return array_values(array_unique(array_filter(array_map(
+            fn (string $origin) => $this->originOf($origin),
+            $origins
+        ))));
+    }
+
+    /** `scheme://host[:port]` of an http(s) URL, or null for anything else. */
+    private function originOf(string $url): ?string
+    {
+        $parts = parse_url($url);
+
+        if ($parts === false
+            || ! isset($parts['scheme'], $parts['host'])
+            || isset($parts['user'])
+            || ! in_array(strtolower($parts['scheme']), ['http', 'https'], true)) {
+            return null;
         }
 
-        return array_values(array_unique(array_map(
-            fn (string $origin) => rtrim($origin, '/'),
-            $origins
-        )));
+        return strtolower($parts['scheme']).'://'.strtolower($parts['host'])
+            .(isset($parts['port']) ? ':'.$parts['port'] : '');
     }
 }
