@@ -36,7 +36,7 @@
               <template v-for="(row, index) in data[0].players">
                 <tr>
                   <td>
-                    <a class="link cursor-pointer text-lg text-teal block text-center font-bold" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`">{{ row.battletag }}</a>
+                    <a v-if="!row.hidden" class="link cursor-pointer text-lg text-teal block text-center font-bold" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`">{{ row.battletag }}</a>
                     <h4 class="text-center">Account Level</h4>
                     <span class="text-lg text-teal block text-center font-bold">{{ row.account_level }}</span>
                     <h4 class="text-center">Top 3 Heroes </h4>  
@@ -176,7 +176,7 @@
               <tr>
                 <td>
 
-                  <a class="link cursor-pointer text-lg text-teal block text-center font-bold" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`">{{ row.battletag }}</a>
+                  <a v-if="!row.hidden" class="link cursor-pointer text-lg text-teal block text-center font-bold" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`">{{ row.battletag }}</a>
                     <h4 class="text-center">Account Level</h4>
                     <span class="text-lg text-teal block text-center font-bold">{{ row.account_level }}</span>
                     <h4 class="text-center">Top 3 Heroes </h4>  
