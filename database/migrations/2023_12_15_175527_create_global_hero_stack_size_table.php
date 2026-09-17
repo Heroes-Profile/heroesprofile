@@ -10,7 +10,7 @@ class CreateGlobalHeroStackSizeTable extends Migration
     {
         Schema::connection('heroesprofile_globals')->create('global_hero_stack_size', function (Blueprint $table) {
             $table->increments('global_hero_stack_size_id');
-            $table->string('game_version', 45);
+            $table->integer('game_version');
             $table->tinyInteger('game_type');
             $table->tinyInteger('league_tier');
             $table->tinyInteger('hero_league_tier')->default(0);

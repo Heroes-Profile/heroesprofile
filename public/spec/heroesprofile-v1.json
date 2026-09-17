@@ -4750,6 +4750,19 @@
                         "description": "Role league tier id. Every id must be recognised."
                     },
                     {
+                        "name": "mirror",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "0",
+                                "1"
+                            ]
+                        },
+                        "description": "Include mirror matches."
+                    },
+                    {
                         "name": "selectedtalents[1]",
                         "in": "query",
                         "required": false,
@@ -6290,6 +6303,19 @@
                         "description": "Role league tier id. Every id must be recognised."
                     },
                     {
+                        "name": "mirror",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "0",
+                                "1"
+                            ]
+                        },
+                        "description": "Include mirror matches."
+                    },
+                    {
                         "name": "statfilter",
                         "in": "query",
                         "required": false,
@@ -7228,6 +7254,19 @@
                         "style": "form",
                         "explode": false,
                         "description": "Role league tier id. Every id must be recognised."
+                    },
+                    {
+                        "name": "mirror",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "0",
+                                "1"
+                            ]
+                        },
+                        "description": "Include mirror matches."
                     },
                     {
                         "name": "statfilter",

@@ -28,6 +28,7 @@ use App\Support\GlobalCacheKey;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -1833,7 +1834,14 @@ class GlobalDataService
         $hero = $this->getHeroFilterValue($request['hero']);
         $role = $request['role'];
 
-        $cacheKey = GlobalCacheKey::for('GlobalHeroStats', $gameVersionIDs, $request->all());
+        // Its own prefix: the Hero Stats page caches a different shape under GlobalHeroStats,
+        // and the two collided whenever the filters matched. Hero and role are not part of
+        // the query, so they are left out of the key and every hero's matchups page shares it.
+        $cacheKey = GlobalCacheKey::for(
+            'GlobalHeroWinRatesAll',
+            $gameVersionIDs,
+            Arr::except($request->all(), ['hero', 'role'])
+        );
 
         $data = Cache::store('database')->remember($cacheKey, $this->calculateCacheTimeInSeconds($gameVersion), function () use (
             $gameVersionIDs,

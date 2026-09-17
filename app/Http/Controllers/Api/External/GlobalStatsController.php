@@ -471,7 +471,14 @@ class GlobalStatsController extends Controller
      */
     private function rejectUnqueryableTimeframe(Request $request): ?Response
     {
-        $timeframes = (array) $request->input('timeframe', []);
+        $input = $request->input('timeframe', []);
+
+        // Runs before the list is split for the controllers, so a comma string is split
+        // here. Checked whole, `a,b` matched no build and every multi-patch call failed.
+        $timeframes = array_values(array_filter(
+            array_map('trim', is_array($input) ? $input : explode(',', (string) $input)),
+            fn ($timeframe) => $timeframe !== ''
+        ));
 
         if ($timeframes === []) {
             return null;

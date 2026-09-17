@@ -154,6 +154,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         $roleLeagueTier = $request['role_league_tier'];
         $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
         $heroLevel = $request['hero_level'];
+        $mirror = $request['mirror'];
         $region = $this->globalDataService->getRegionFilterValues($request['region']);
         $talentData = HeroesDataTalent::all()->keyBy('talent_id');
 
@@ -192,6 +193,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
             ->filterByRoleLeagueTier($roleLeagueTier)
             ->filterByGameMap($gameMap)
             ->filterByHeroLevel($heroLevel)
+            ->excludeMirror($mirror)
             ->filterByRegion($region)
             ->when(! is_null($level_one), function ($query) use ($level_one) {
                 return $query->where('level_one', $level_one);
@@ -307,6 +309,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
             ->filterByRoleLeagueTier($roleLeagueTier)
             ->filterByGameMap($gameMap)
             ->filterByHeroLevel($heroLevel)
+            ->excludeMirror($mirror)
             ->filterByRegion($region)
             ->when(! is_null($level_one), function ($query) use ($level_one) {
                 return $query->where('level_one', $level_one);
