@@ -23,18 +23,6 @@
 
 
     <div class="flex   md:p-20 bg-lighten flex-wrap justify-center items-between max-md:py-4">
-      <!--
-      <a href="/Compare" class="text-center md:w-[30%] mb-20 mx-5 flex flex-col justify-stretch">
-
-        <i class="fas fa-users" style="font-size: 100px;"></i>
-
-        <h3 class="text-2xl mb-10 mt-2">Player comparison</h3>
-        <p>See how you compare to other players or to a certain league tier. You can compare up to four players at one time.</p>
-        
-        <custom-button  :href="'/Compare'" :text="'Compare'" :alt="'Compare players'" :size="'big'" class="mt-auto"></custom-button>
-      </a>
-
-      -->
 
 
 

@@ -5,7 +5,6 @@ use App\Http\Controllers\Api\Account\ApiKeyController;
 use App\Http\Controllers\Api\Account\BillingController;
 use App\Http\Controllers\Api\Admin\AdminConsoleController;
 use App\Http\Controllers\BattletagSearchController;
-use App\Http\Controllers\CompareController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Esports\CCL\CCLController;
 use App\Http\Controllers\Esports\EsportsController;
@@ -240,8 +239,6 @@ Route::prefix('v1')->middleware('web')->group(function () {
     Route::post('esports/heroesinternational/hero/talents/stats', [EsportsController::class, 'getOverallTalentStats']);
 
     Route::post('esports/other/teams', [EsportOtherController::class, 'getTeamData']);
-
-    Route::post('compare', [CompareController::class, 'getData'])->middleware(['checkIfPrivateProfileData:player1,player2,player3,player4,player5', 'restrictCustomGames:never']);
 
     Route::post('contact', [ContactController::class, 'submitMessage'])->middleware('throttle:contact');
 

@@ -18,7 +18,6 @@ use App\Http\Controllers\Api\TryItController as ApiTryItController;
 use App\Http\Controllers\Auth\BattleNetController;
 use App\Http\Controllers\Auth\PatreonController;
 use App\Http\Controllers\BattletagSearchController;
-use App\Http\Controllers\CompareController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Esports\CCL\CCLController;
 use App\Http\Controllers\Esports\EsportsController;
@@ -114,9 +113,6 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/Github/Change/Log', [GithubChangeController::class, 'show']);
 
     Route::get('/battletag/searched/{userinput}/{type}', [BattletagSearchController::class, 'show']);
-
-    // Route::get('/Compare', [CompareController::class, 'show']);
-    // Route::get('/Compare/{hero}', [CompareController::class, 'show']);
 
     // Login
     Route::get('/Authenticate/Battlenet', [BattleNetController::class, 'show']);
