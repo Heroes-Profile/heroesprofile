@@ -375,7 +375,11 @@ export default {
     filterData(filteredData){
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
-      this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
+      // The filter gives a hero id; the server takes the name.
+      const hero = filteredData.single.Heroes
+        ? this.filters.heroes.find(h => h.code === filteredData.single.Heroes)
+        : null;
+      this.hero = hero ? hero.name : null;
       this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
 

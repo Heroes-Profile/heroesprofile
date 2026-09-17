@@ -1598,9 +1598,6 @@ class GlobalDataService
 
         $result = '';
 
-        $counter = 4;
-        $multiply = 1;
-
         foreach ($rankTiers as $key => $tierInfo) {
             $minMmr = $tierInfo['min_mmr'] ?? 0;
             $maxMmr = $tierInfo['max_mmr'] ?? '';
@@ -1618,17 +1615,12 @@ class GlobalDataService
                         continue;
                     }
 
-                    if ($mmr < ($minMmr + $split)) {
-                        $result = $tierNames[$key].' '.$counter;
-                    } else {
-                        for ($i = ($minMmr + $split); $i < $maxMmr; $i += $split) {
-                            if ($mmr >= $i) {
+                    // Five even divisions of this tier's range, as the breakdowns are built:
+                    // bottom is 5, top is 1.
+                    $index = (int) floor(($mmr - $minMmr) / $split);
+                    $index = max(0, min(4, $index));
 
-                                $result = $tierNames[$key].' '.$counter;
-                                $counter--;
-                            }
-                        }
-                    }
+                    $result = $tierNames[$key].' '.(5 - $index);
                 } else {
                     $result = 'Master';
                 }
@@ -1637,6 +1629,12 @@ class GlobalDataService
                     $result = 'Master';
                 }
             }
+        }
+
+        // Below the lowest rating when the breakdowns were last calculated: no range
+        // holds it, but it is still the bottom of Bronze.
+        if ($result === '' && isset($rankTiers['bronze']) && $mmr < ($rankTiers['bronze']['min_mmr'] ?? 0)) {
+            $result = 'Bronze 5';
         }
 
         return $result;
