@@ -12,6 +12,9 @@ class PlanService
 {
     private const PRICE_CACHE_SECONDS = 86400;
 
+    /** How long a failed price lookup falls back to the configured price before Stripe is asked again. */
+    private const PRICE_FAILURE_CACHE_SECONDS = 300;
+
     /** @return array<int, array<string, mixed>> keyed by plan id */
     public function all(): array
     {
@@ -124,24 +127,25 @@ class PlanService
             return 0;
         }
 
-        $fromStripe = Cache::remember(
-            'stripe_price_amount:'.$plan['stripe_price'],
-            self::PRICE_CACHE_SECONDS,
-            function () use ($plan) {
-                try {
-                    $price = Cashier::stripe()->prices->retrieve($plan['stripe_price']);
+        $cacheKey = 'stripe_price_amount:'.$plan['stripe_price'];
+        $fromStripe = Cache::get($cacheKey);
 
-                    return (int) round($price->unit_amount / 100);
-                } catch (Throwable $e) {
-                    Log::warning('Stripe price lookup failed', [
-                        'stripe_price' => $plan['stripe_price'],
-                        'error' => $e->getMessage(),
-                    ]);
+        if ($fromStripe === null) {
+            try {
+                $price = Cashier::stripe()->prices->retrieve($plan['stripe_price']);
+                $fromStripe = (int) round($price->unit_amount / 100);
+                Cache::put($cacheKey, $fromStripe, self::PRICE_CACHE_SECONDS);
+            } catch (Throwable $e) {
+                Log::warning('Stripe price lookup failed', [
+                    'stripe_price' => $plan['stripe_price'],
+                    'error' => $e->getMessage(),
+                ]);
 
-                    return false;
-                }
+                // Remembered briefly so an outage is not retried per request, but not for the full day.
+                $fromStripe = false;
+                Cache::put($cacheKey, $fromStripe, self::PRICE_FAILURE_CACHE_SECONDS);
             }
-        );
+        }
 
         return $fromStripe === false ? $plan['price'] : $fromStripe;
     }

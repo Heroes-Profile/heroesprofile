@@ -578,10 +578,10 @@ export default {
       return url;
     },
     getValueFixed(value){
-      return value ? value.toFixed(2) : "";
+      return value != null && value !== "" && !isNaN(value) ? Number(value).toFixed(2) : "";
     },
     getValueLocal(value){
-      return value ? value.toLocaleString('en-US') : "";
+      return value != null && value !== "" ? value.toLocaleString('en-US') : "";
     },
     getHeroID(){
       if(this.hero){

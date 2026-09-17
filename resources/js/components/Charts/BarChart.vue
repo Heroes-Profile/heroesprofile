@@ -56,6 +56,9 @@ export default {
   },
   watch: {
   },
+  beforeUnmount() {
+    this.chart?.destroy();
+  },
   methods: {
   }
 }

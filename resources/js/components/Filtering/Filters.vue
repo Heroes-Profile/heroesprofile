@@ -845,7 +845,7 @@
         }
       },
     },
-    destroyed(){
+    unmounted(){
       window.removeEventListener('resize', this.checkScreenWidth);
     },
     methods: {

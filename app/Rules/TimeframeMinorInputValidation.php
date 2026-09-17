@@ -28,7 +28,8 @@ class TimeframeMinorInputValidation implements Rule
             }
         } elseif ($this->timeframeType === 'major' || $this->timeframeType === 'major_grouped') {
             foreach ($value as $timeframeValue) {
-                $matchingVersions = SeasonGameVersion::where('game_version', 'like', trim($timeframeValue).'%')
+                // Escaped so `%` or `_` cannot match every patch.
+                $matchingVersions = SeasonGameVersion::where('game_version', 'like', addcslashes(trim($timeframeValue), '%_\\').'%')
                     ->where('valid_globals', 1)
                     ->count();
                 if ($matchingVersions === 0) {

@@ -374,7 +374,7 @@
       <tr v-for="(item, index) in data.players[0]" :key="index">
         <td class="bg-blue text-white border-white border">
           <div class="flex gap-2 items-center">
-            <hero-image-wrapper :size="'medium'" :hero="item.hero" :mobileClick="true"></hero-image-wrapper><a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'">{{ item.battletag }}</a>
+            <hero-image-wrapper :size="'medium'" :hero="item.hero" :mobileClick="true"></hero-image-wrapper><a v-if="!item.check" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'">{{ item.battletag }}</a><span v-else>Hidden</span>
           </div>
         </td>
         <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>
@@ -427,7 +427,7 @@
       <tr v-for="(item, index) in data.players[1]" :key="index">
         <td class="bg-blue text-white border-white border">
           <div class="flex gap-2 items-center">
-            <hero-image-wrapper :size="'medium'" :hero="item.hero" :mobileClick="true"></hero-image-wrapper><a :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'">{{ item.battletag }}</a>
+            <hero-image-wrapper :size="'medium'" :hero="item.hero" :mobileClick="true"></hero-image-wrapper><a v-if="!item.check" :href="'/Player/' + item.battletag + '/' + item.blizz_id + '/' + data.region + '/MMR'">{{ item.battletag }}</a><span v-else>Hidden</span>
           </div>
         </td>
         <td>{{ Math.round(item.player_mmr - item.player_change)  }}</td>

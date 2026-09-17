@@ -43,11 +43,15 @@ class RateLimitLoggingService
         $headers = $exception->getHeaders();
         $limit = isset($headers['X-RateLimit-Limit']) ? (int) $headers['X-RateLimit-Limit'] : null;
 
+        // The exception does not name its limiter, so it is inferred from the limit. Keep in step with RouteServiceProvider.
         return match ($limit) {
-            15 => 'old-replay',
-            180 => 'api',
-            120 => 'global',
             3 => 'contact',
+            10 => 'match-search',
+            15 => 'old-replay',
+            20 => 'battletag-search',
+            30 => 'docs-try',
+            40 => 'global',
+            60 => 'api',
             default => $request->is('api/*') ? 'api' : 'global',
         };
     }

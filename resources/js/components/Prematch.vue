@@ -318,11 +318,6 @@ export default {
       //Do something here
       }finally {
         this.isLoading = false;
-        this.$nextTick(() => {
-          if(this.windowWidth < 1500){
-            this.resizeTables();
-          }
-        });
       }
     },
   }
