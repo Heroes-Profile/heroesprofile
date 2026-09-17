@@ -8,6 +8,7 @@ use App\Models\LeagueTier;
 use App\Models\Map;
 use App\Models\SeasonDate;
 use App\Rules\StackSizeInputValidation;
+use App\Rules\StatFilterInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
 use App\Services\GlobalDataService;
 
@@ -34,13 +35,13 @@ class ApiVariables
                 'name' => 'game_map',
                 'also' => 'map',
                 'used_by' => 'Global statistics, player breakdowns',
-                'summary' => 'A map name. `players/maps/single` calls it `map`; everywhere else it is `game_map`.',
-                'values' => Map::orderBy('name')->pluck('name')->all(),
+                'summary' => 'A map name, case-insensitive. `players/maps/single` calls it `map`; everywhere else it is `game_map`. Only playable maps are listed and accepted, except by `replays`, which also takes retired ones.',
+                'values' => Map::where('playable', '<>', 0)->orderBy('name')->pluck('name')->all(),
             ],
             [
                 'name' => 'game_type',
                 'used_by' => 'Nearly everything',
-                'summary' => 'Either form works — `Storm League` or `sl`, case-insensitive. Comma-separated for endpoints that accept several. Defaults to `sl` where it is required and you omit it.',
+                'summary' => 'Either form works — `Storm League` or `sl`, case-insensitive. Comma-separated for endpoints that accept several. Required by the global statistics endpoints. Player endpoints default to every type, except rating history, which defaults to `sl`. Leaderboards also default to `sl`.',
                 'pairs' => GameType::whereIn('short_name', ApiParameters::GAME_TYPES)
                     ->orderBy('type_id')->get()->mapWithKeys(
                         fn ($type) => [$type->short_name => $type->name]
@@ -76,8 +77,8 @@ class ApiVariables
             [
                 'name' => 'timeframe_type',
                 'used_by' => 'Every global statistics endpoint',
-                'summary' => 'How `timeframe` is read. `minor` is one build, `major` a patch line, `major_grouped` several patches together. `last_update` needs no `timeframe` at all.',
-                'values' => ['minor', 'major', 'major_grouped', 'last_update'],
+                'summary' => 'How `timeframe` is read. `minor` is one build, `major` a patch line, `major_grouped` several patches together.',
+                'values' => ['minor', 'major', 'major_grouped'],
             ],
             [
                 'name' => 'timeframe',
@@ -93,7 +94,7 @@ class ApiVariables
             ],
             [
                 'name' => 'groupsize',
-                'used_by' => 'Leaderboards, party statistics, friend/foe',
+                'used_by' => 'heroes/stats, leaderboards, players/friendfoe',
                 'summary' => 'Party size, by name rather than number.',
                 'values' => array_keys((new StackSizeInputValidation)->allowed()),
             ],
@@ -109,6 +110,12 @@ class ApiVariables
                 'used_by' => 'heroes/talents/builds',
                 'summary' => 'Which ranking decides the builds returned. Defaults to `Popular`.',
                 'values' => (new TalentBuildTypeInputValidation)->allowed(),
+            ],
+            [
+                'name' => 'statfilter',
+                'used_by' => 'heroes/stats, heroes/talents/details, heroes/talents/builds, heroes/talents/builds/all',
+                'summary' => 'Which statistic to report. Defaults to `win_rate`. Anything else needs `timeframe_type=minor` and at most five timeframes.',
+                'values' => StatFilterInputValidation::VALID_STAT_CODES,
             ],
             [
                 'name' => 'mirror',

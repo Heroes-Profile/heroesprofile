@@ -133,7 +133,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                 $losses = $hero ? $group->where('win_loss', 0)->sum('games_played') : $group->where('win_loss', 0)->sum('games_played') / 5;
                 $gamesPlayed = ($wins + $losses);
 
-                if ($gamesPlayed <= $minimumGames) {
+                if ($gamesPlayed < $minimumGames) {
                     return null;
                 }
                 $winRate = 0;

@@ -14,10 +14,13 @@ use App\Http\Controllers\Global\GlobalLeaderboardController;
 use App\Http\Controllers\Global\GlobalPartyStatsController;
 use App\Http\Controllers\Global\GlobalTalentBuilderController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
+use App\Models\LeagueTier;
+use App\Models\MatchPredictionSeason;
 use App\Services\GlobalDataService;
 use App\Services\GlobalQueryService;
 use App\Support\ApiParameters;
 use App\Support\ApiSpecConfig;
+use App\Support\HeroLevelBands;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -119,6 +122,49 @@ class GlobalStatsController extends Controller
      */
     public function leaderboard(Request $request): Response
     {
+        $type = $request->input('type', 'player');
+
+        // The controller interpolates it into a cache key and a `where`, so a list
+        // is a 500 there rather than a refusal.
+        if ($request->filled('game_type') && (is_array($request->input('game_type')) || str_contains($request->input('game_type'), ','))) {
+            return response()->json([
+                'error' => ['code' => 'single_game_type_only', 'message' => 'This endpoint takes one game type.'],
+            ], 422);
+        }
+
+        // Without these the board has nothing to rank by and answers empty.
+        foreach (['hero', 'role'] as $subject) {
+            if ($type === $subject && ! $request->filled($subject)) {
+                return response()->json([
+                    'error' => ['code' => 'missing_'.$subject, 'message' => 'A `'.$subject.'` board needs a '.$subject.'.'],
+                ], 422);
+            }
+        }
+
+        if ($type === 'match prediction') {
+            // That board ranks prediction accuracy across everyone, so none of these
+            // narrow it. Refused rather than silently ignored.
+            foreach (['groupsize', 'region', 'tierrank', 'hero', 'role'] as $parameter) {
+                if ($request->has($parameter)) {
+                    return $this->unsupported($parameter, 'The match prediction board does not filter by it.');
+                }
+            }
+
+            if ($request->filled('season')
+                && ! MatchPredictionSeason::where('match_prediction_season_id', $request->input('season'))->exists()) {
+                return response()->json([
+                    'error' => ['code' => 'unknown_season', 'message' => 'Not a match prediction season.'],
+                ], 422);
+            }
+
+            return $this->delegate($request, GlobalLeaderboardController::class, 'getLeaderboardData', [
+                'season' => $this->globalDataService->getDefaultMatchPredictionSeason(),
+                'game_type' => 'sl',
+                // Required by the shared validation, read by nothing on this board.
+                'groupsize' => 'Solo',
+            ]);
+        }
+
         // Alone among the global endpoints, this one validates `hero` by id. The
         // public contract is a name everywhere, so translate before delegating.
         if ($request->filled('hero')) {
@@ -150,6 +196,11 @@ class GlobalStatsController extends Controller
     /** One hero's win rate per map. */
     public function heroMaps(Request $request): Response
     {
+        // Already one row per map; the controller never reads it.
+        if ($request->has('game_map')) {
+            return $this->unsupported('game_map', 'This endpoint already reports every map.');
+        }
+
         return $this->delegate($request, GlobalHeroMapStatsController::class, 'getHeroStatMapData', [], ['hero']);
     }
 
@@ -322,7 +373,8 @@ class GlobalStatsController extends Controller
         // is offered only where that is worth doing. Refused rather than ignored
         // where it is not — the old API silently dropped it on some requests and
         // answered a different question than the one asked.
-        if ($request->has('group_by_map') && ! ApiSpecConfig::declaresParameter($routeName, 'group_by_map')) {
+        // `false` asks for nothing, so only a request to group is refused.
+        if ($request->boolean('group_by_map') && ! ApiSpecConfig::declaresParameter($routeName, 'group_by_map')) {
             return response()->json([
                 'error' => [
                     'code' => 'group_by_map_unsupported',
@@ -351,6 +403,13 @@ class GlobalStatsController extends Controller
             }
         }
 
+        // The site's talent pages offer it; the API does not.
+        if ($request->input('timeframe_type') === 'last_update') {
+            return response()->json([
+                'error' => ['code' => 'invalid_parameters', 'message' => 'One or more parameters are invalid.', 'errors' => ['`timeframe_type` must be one of minor, major, major_grouped.']],
+            ], 422);
+        }
+
         if ($rejection = $this->rejectUnqueryableTimeframe($request)) {
             return $rejection;
         }
@@ -372,6 +431,10 @@ class GlobalStatsController extends Controller
                     $parameter => explode(',', $request->input($parameter)),
                 ]);
             }
+        }
+
+        if ($rejection = $this->rejectUnknownFilterValues($request)) {
+            return $rejection;
         }
 
         $target = $controller instanceof Controller ? $controller : app($controller);
@@ -410,7 +473,7 @@ class GlobalStatsController extends Controller
     {
         $timeframes = (array) $request->input('timeframe', []);
 
-        if ($timeframes === [] || $request->input('timeframe_type') === 'last_update') {
+        if ($timeframes === []) {
             return null;
         }
 
@@ -434,6 +497,60 @@ class GlobalStatsController extends Controller
         }
 
         return null;
+    }
+
+    /**
+     * The site's rules pass a list when any one entry is valid and drop the rest,
+     * so `Alterac Pass,Alteracc Pass` would quietly answer for one map. Every entry
+     * has to be recognised here. Map names are matched case-insensitively and
+     * passed on as the site spells them, which its rules compare exactly.
+     */
+    private function rejectUnknownFilterValues(Request $request): ?Response
+    {
+        $checks = [
+            'game_map' => null,
+            'hero_level' => fn () => array_map('strval', array_keys(HeroLevelBands::all())),
+            'league_tier' => fn () => LeagueTier::pluck('tier_id')->map(fn ($id) => (string) $id)->all(),
+            'hero_league_tier' => fn () => LeagueTier::pluck('tier_id')->map(fn ($id) => (string) $id)->all(),
+            'role_league_tier' => fn () => LeagueTier::pluck('tier_id')->map(fn ($id) => (string) $id)->all(),
+        ];
+
+        foreach ($checks as $parameter => $allowed) {
+            if (! $request->filled($parameter)) {
+                continue;
+            }
+
+            $input = $request->input($parameter);
+            $values = array_map('trim', is_array($input) ? $input : explode(',', (string) $input));
+
+            if ($parameter === 'game_map') {
+                [$names, $unknown] = ApiParameters::playableMapNames($values);
+
+                if ($unknown === []) {
+                    $request->merge(['game_map' => is_array($input) ? $names : implode(',', $names)]);
+                }
+            } else {
+                $unknown = array_values(array_diff($values, $allowed()));
+            }
+
+            if ($unknown !== []) {
+                return response()->json([
+                    'error' => [
+                        'code' => 'unknown_'.$parameter,
+                        'message' => 'Not a recognised '.str_replace('_', ' ', $parameter).': '.implode(', ', $unknown).'. The Variables section of the docs lists them.',
+                    ],
+                ], 422);
+            }
+        }
+
+        return null;
+    }
+
+    private function unsupported(string $parameter, string $why): Response
+    {
+        return response()->json([
+            'error' => ['code' => 'unsupported_parameter', 'message' => '`'.$parameter.'` is not accepted here. '.$why],
+        ], 422);
     }
 
     /** Tells the caller where to collect the result and how often to ask. */

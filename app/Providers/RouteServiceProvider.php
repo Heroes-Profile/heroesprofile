@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Auth\ApiKeyGuard;
 use App\Services\ClientIpService;
+use App\Support\ApiSpecConfig;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -201,7 +202,10 @@ class RouteServiceProvider extends ServiceProvider
      */
     private function isBatchRequest(Request $request): bool
     {
-        if ($request->boolean('group_by_map')) {
+        // Only where it is offered: elsewhere the request is refused before any
+        // query runs, so it should not cost the caller the batch ceiling.
+        if ($request->boolean('group_by_map')
+            && ApiSpecConfig::declaresParameter($request->route()?->getName(), 'group_by_map')) {
             return true;
         }
 

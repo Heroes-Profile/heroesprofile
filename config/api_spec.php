@@ -71,14 +71,14 @@ return [
     'globals' => [
         'timeframe_type' => [
             'required' => true,
-            'enum' => ['minor', 'major', 'major_grouped', 'last_update'],
-            'description' => 'How `timeframe` is read. `minor` is a build, `major` a patch.',
+            'enum' => ['minor', 'major', 'major_grouped'],
+            'description' => 'How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.',
             'example' => 'minor',
         ],
         'timeframe' => [
             'required' => true,
             'multi' => true,
-            'description' => 'One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.',
+            'description' => 'One patch or build, or several comma-separated.',
             'example' => '2.55.17.97771',
         ],
         'game_type' => [
@@ -91,14 +91,18 @@ return [
         'region' => ['multi' => true, 'description' => 'Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.', 'example' => 'NA'],
         'hero' => ['description' => 'Hero name.', 'example' => 'Anduin'],
         'role' => ['description' => 'Role name.', 'example' => 'Healer'],
-        'game_map' => ['multi' => true, 'description' => 'Map name.', 'example' => 'Alterac Pass'],
-        'hero_level' => ['multi' => true, 'description' => 'Hero level band, not a level. One of the band codes — see Variables.', 'example' => '25'],
-        'league_tier' => ['multi' => true, 'description' => 'Player league tier id.'],
-        'hero_league_tier' => ['multi' => true, 'description' => 'Hero league tier id.'],
-        'role_league_tier' => ['multi' => true, 'description' => 'Role league tier id.'],
+        'game_map' => ['multi' => true, 'description' => 'Playable map name, case-insensitive, or several comma-separated. Every name must be recognised.', 'example' => 'Alterac Pass'],
+        'hero_level' => ['multi' => true, 'description' => 'Hero level band, not a level. One of the band codes — see Variables. Every code must be recognised.', 'example' => '25'],
+        'league_tier' => ['multi' => true, 'description' => 'Player league tier id. Every id must be recognised.'],
+        'hero_league_tier' => ['multi' => true, 'description' => 'Hero league tier id. Every id must be recognised.'],
+        'role_league_tier' => ['multi' => true, 'description' => 'Role league tier id. Every id must be recognised.'],
         'mirror' => ['enum' => ['0', '1'], 'description' => 'Include mirror matches.'],
         'groupsize' => ['multi' => true, 'enum' => ['Solo', 'Duo', '3 Players', '4 Players', '5 Players'], 'description' => 'Party sizes to report on, comma-separated for several. Omit for every game regardless of party size, which is also the only form carrying ban and win rate change data.'],
-        'statfilter' => ['description' => 'Statistic to filter on.'],
+        'statfilter' => [
+            'enum' => ['win_rate', 'game_time', 'kills', 'takedowns', 'deaths', 'siege_damage', 'hero_damage', 'healing', 'damage_taken', 'experience_contribution', 'assists', 'highest_kill_streak', 'structure_damage', 'minion_damage', 'creep_damage', 'summon_damage', 'self_healing', 'town_kills', 'time_spent_dead', 'merc_camp_captures', 'watch_tower_captures', 'protection_Allies', 'silencing_enemies', 'rooting_enemies', 'stunning_enemies', 'clutch_heals', 'escapes', 'vengeance', 'outnumbered_deaths', 'teamfight_escapes', 'teamfight_healing', 'teamfight_damage_taken', 'teamfight_hero_damage', 'multikill', 'physical_damage', 'spell_damage', 'regen_globes'],
+            'description' => 'Which statistic to report. Defaults to `win_rate`. Anything other than `win_rate` needs `timeframe_type=minor` and at most five timeframes.',
+            'example' => 'win_rate',
+        ],
     ],
 
     /*
@@ -605,6 +609,11 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'uses' => ['globals'],
             'async' => true,
             'parameters' => [
+                'statfilter' => [
+                    'enum' => ['win_rate', 'game_time', 'kills', 'takedowns', 'deaths', 'siege_damage', 'hero_damage', 'healing', 'damage_taken', 'experience_contribution', 'assists', 'highest_kill_streak', 'structure_damage', 'minion_damage', 'creep_damage', 'summon_damage', 'self_healing', 'town_kills', 'time_spent_dead', 'merc_camp_captures', 'watch_tower_captures', 'protection_Allies', 'silencing_enemies', 'rooting_enemies', 'stunning_enemies', 'clutch_heals', 'escapes', 'vengeance', 'outnumbered_deaths', 'teamfight_escapes', 'teamfight_healing', 'teamfight_damage_taken', 'teamfight_hero_damage', 'multikill', 'physical_damage', 'spell_damage', 'regen_globes'],
+                    'description' => 'Which statistic to report. Defaults to `win_rate`. Anything other than `win_rate` needs `timeframe_type=minor` and at most five timeframes, and is ignored when `groupsize` is sent — party-size data carries win rate only.',
+                    'example' => 'win_rate',
+                ],
                 'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
             ],
         ],
@@ -629,7 +638,8 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'uses' => ['globals'],
             // Validated by the shared globals rules, read by nothing here. Leaving them
             // documented would advertise a filter that silently does nothing.
-            'except' => ['role', 'groupsize', 'statfilter'],
+            // `game_map` is refused outright: the answer is already one row per map.
+            'except' => ['role', 'groupsize', 'statfilter', 'game_map'],
             'async' => true,
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
@@ -642,7 +652,7 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'uses' => ['globals'],
             // Validated by the shared globals rules, read by nothing here. Leaving them
             // documented would advertise a filter that silently does nothing.
-            'except' => ['role', 'groupsize', 'statfilter'],
+            'except' => ['role', 'groupsize', 'statfilter', 'region', 'hero_level', 'hero_league_tier', 'role_league_tier', 'mirror'],
             'async' => true,
             'parameters' => [
                 'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
@@ -672,7 +682,7 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'uses' => ['globals'],
             // Validated by the shared globals rules, read by nothing here. Leaving them
             // documented would advertise a filter that silently does nothing.
-            'except' => ['role', 'groupsize'],
+            'except' => ['role', 'groupsize', 'mirror'],
             'async' => true,
             'parameters' => [
                 'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
@@ -693,7 +703,7 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             // `hero` is the parameter this endpoint exists in order not to need.
             // Role and party size are validated by the shared rules and read by
             // nothing here.
-            'except' => ['hero', 'role', 'groupsize'],
+            'except' => ['hero', 'role', 'groupsize', 'mirror'],
             'async' => true,
             'parameters' => [
                 // Redeclared rather than inherited from the set, which marks these
@@ -701,8 +711,8 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
                 // the filters were added, so every one of them has to stay optional
                 // or a caller relying on that would break.
                 'timeframe_type' => [
-                    'enum' => ['minor', 'major', 'major_grouped', 'last_update'],
-                    'description' => 'How `timeframe` is read. `minor` is a build, `major` a patch. Defaults to the site\'s own current timeframe.',
+                    'enum' => ['minor', 'major', 'major_grouped'],
+                    'description' => 'How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together. Defaults to `minor`.',
                     'example' => 'minor',
                 ],
                 'timeframe' => [
@@ -730,8 +740,8 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'page' => '/Global/Talents/Builder',
             'uses' => ['globals'],
             // The builder page offers no role, party-size or stat filter, and the
-            // controller reads none of them.
-            'except' => ['role', 'groupsize', 'statfilter'],
+            // controller reads none of them, nor `mirror`.
+            'except' => ['role', 'groupsize', 'statfilter', 'mirror'],
             'async' => true,
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
@@ -746,11 +756,11 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
         ],
 
         'api.external.heroes.talents.builder.replays' => [
-            'summary' => 'The replays behind a talent-builder result. Send at least one selected talent — with none, it returns the full talent list for that hero rather than replays.',
+            'summary' => 'The replays behind a talent-builder result. Send at least one selected talent — with none, it returns the full talent list for that hero rather than replays. Always answers directly, never with a job.',
             'page' => '/Global/Talents/Builder',
             'uses' => ['globals'],
-            'except' => ['role', 'groupsize', 'statfilter'],
-            'async' => true,
+            // The replay query filters only by version, game type, hero, map and region.
+            'except' => ['role', 'groupsize', 'statfilter', 'league_tier', 'hero_league_tier', 'role_league_tier', 'hero_level', 'mirror'],
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
                 'selectedtalents[1]' => ['type' => 'integer', 'description' => 'Talent chosen at level 1. Each value is a `talent_id` from `/heroes/talents` — that endpoint lists every talent for a hero with its `talent_id` and the `level` it belongs to. Send only the levels you have picked; the rest are treated as open.'],
@@ -782,12 +792,11 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'uses' => ['globals'],
             // Validated by the shared globals rules, read by nothing here. Leaving them
             // documented would advertise a filter that silently does nothing.
-            'except' => ['role', 'groupsize', 'statfilter'],
+            'except' => ['role', 'groupsize', 'statfilter', 'hero'],
             'async' => true,
             'parameters' => [
                 'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
                 'composition_id' => ['required' => true, 'type' => 'integer', 'description' => 'A `composition_id` from the `/compositions` response.', 'example' => 1],
-                'minimum_games' => ['type' => 'integer', 'description' => 'Defaults to 100.'],
             ],
         ],
 
@@ -797,7 +806,7 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'uses' => ['globals'],
             // Validated by the shared globals rules, read by nothing here. Leaving them
             // documented would advertise a filter that silently does nothing.
-            'except' => ['role', 'groupsize', 'statfilter'],
+            'except' => ['role', 'groupsize', 'statfilter', 'mirror'],
             'async' => true,
             'parameters' => [
                 'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
@@ -815,8 +824,8 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'async' => true,
             'parameters' => [
                 'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
-                'teamoneparty' => ['description' => 'Party combination for the first team.'],
-                'teamtwoparty' => ['description' => 'Party combination for the second team.'],
+                'teamoneparty' => ['description' => 'Party combination code for the first team — see Variables.', 'example' => '00005'],
+                'teamtwoparty' => ['description' => 'Party combination code for the second team — see Variables.', 'example' => '00005'],
             ],
         ],
 
@@ -824,14 +833,14 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'summary' => 'Season leaderboards by player, hero or role.',
             'page' => '/Global/Leaderboard',
             'parameters' => [
-                'season' => ['type' => 'integer', 'description' => 'Season id. Defaults to the current season.'],
+                'season' => ['type' => 'integer', 'description' => 'Season id. Defaults to the current season — the current match prediction season when `type` is `match prediction`.'],
                 'game_type' => ['description' => 'One game type, by short name or display name — `sl` and `Storm League` both work. Defaults to Storm League.', 'example' => 'Storm League'],
-                'type' => ['enum' => ['player', 'hero', 'role', 'match prediction'], 'description' => 'What the board ranks. Defaults to `player`.'],
+                'type' => ['enum' => ['player', 'hero', 'role', 'match prediction'], 'description' => 'What the board ranks. Defaults to `player`. `match prediction` takes only `season` and `game_type`; anything else is refused.'],
                 'groupsize' => ['enum' => ['All', 'Solo', 'Duo', '3 Players', '4 Players', '5 Players'], 'description' => 'Party size. Defaults to `Solo`.'],
-                'hero' => ['description' => 'Hero name, when `type` is `hero`.'],
-                'role' => ['description' => 'Role name, when `type` is `role`.'],
-                'region' => ['type' => 'integer', 'description' => 'Region id.'],
-                'tierrank' => ['description' => 'League tier id.'],
+                'hero' => ['description' => 'Hero name. Required when `type` is `hero`.'],
+                'role' => ['description' => 'Role name. Required when `type` is `role`.'],
+                'region' => ['description' => 'Region, by name or id — `NA` and `1` both work.', 'example' => 'NA'],
+                'tierrank' => ['description' => 'League tier id — see Variables.'],
             ],
         ],
 

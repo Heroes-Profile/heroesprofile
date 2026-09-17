@@ -210,7 +210,7 @@ class GlobalHeroMapStatsController extends GlobalsInputValidationController
                 });
                 $bans = $matchingBan ? round($matchingBan['bans']) : 0;
 
-                $gameMapData = $gamesPlayedPerMap->where('game_map', 1)->first();
+                $gameMapData = $gamesPlayedPerMap->where('game_map', $firstItem['map_id'])->first();
                 $totalGamesForThisMap = $gameMapData ? $gameMapData->games_played / 10 : 0;
 
                 return [

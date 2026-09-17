@@ -102,11 +102,10 @@
                             "enum": [
                                 "minor",
                                 "major",
-                                "major_grouped",
-                                "last_update"
+                                "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
                         "example": "minor"
                     },
                     {
@@ -121,7 +120,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
+                        "description": "One patch or build, or several comma-separated.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -184,7 +183,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Map name.",
+                        "description": "Playable map name, case-insensitive, or several comma-separated. Every name must be recognised.",
                         "example": "Alterac Pass"
                     },
                     {
@@ -199,7 +198,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
+                        "description": "Hero level band, not a level. One of the band codes — see Variables. Every code must be recognised.",
                         "example": "25"
                     },
                     {
@@ -214,7 +213,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Player league tier id."
+                        "description": "Player league tier id. Every id must be recognised."
                     },
                     {
                         "name": "hero_league_tier",
@@ -228,7 +227,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero league tier id."
+                        "description": "Hero league tier id. Every id must be recognised."
                     },
                     {
                         "name": "role_league_tier",
@@ -242,7 +241,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Role league tier id."
+                        "description": "Role league tier id. Every id must be recognised."
                     },
                     {
                         "name": "mirror",
@@ -553,11 +552,10 @@
                             "enum": [
                                 "minor",
                                 "major",
-                                "major_grouped",
-                                "last_update"
+                                "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
                         "example": "minor"
                     },
                     {
@@ -572,7 +570,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
+                        "description": "One patch or build, or several comma-separated.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -614,16 +612,6 @@
                         "example": "NA"
                     },
                     {
-                        "name": "hero",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "Hero name.",
-                        "example": "Anduin"
-                    },
-                    {
                         "name": "game_map",
                         "in": "query",
                         "required": false,
@@ -635,7 +623,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Map name.",
+                        "description": "Playable map name, case-insensitive, or several comma-separated. Every name must be recognised.",
                         "example": "Alterac Pass"
                     },
                     {
@@ -650,7 +638,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
+                        "description": "Hero level band, not a level. One of the band codes — see Variables. Every code must be recognised.",
                         "example": "25"
                     },
                     {
@@ -665,7 +653,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Player league tier id."
+                        "description": "Player league tier id. Every id must be recognised."
                     },
                     {
                         "name": "hero_league_tier",
@@ -679,7 +667,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero league tier id."
+                        "description": "Hero league tier id. Every id must be recognised."
                     },
                     {
                         "name": "role_league_tier",
@@ -693,7 +681,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Role league tier id."
+                        "description": "Role league tier id. Every id must be recognised."
                     },
                     {
                         "name": "mirror",
@@ -730,15 +718,6 @@
                         },
                         "description": "A `composition_id` from the `/compositions` response.",
                         "example": 1
-                    },
-                    {
-                        "name": "minimum_games",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        },
-                        "description": "Defaults to 100."
                     },
                     {
                         "name": "mode",
@@ -1332,11 +1311,10 @@
                             "enum": [
                                 "minor",
                                 "major",
-                                "major_grouped",
-                                "last_update"
+                                "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
                         "example": "minor"
                     },
                     {
@@ -1351,7 +1329,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
+                        "description": "One patch or build, or several comma-separated.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -1414,7 +1392,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Map name.",
+                        "description": "Playable map name, case-insensitive, or several comma-separated. Every name must be recognised.",
                         "example": "Alterac Pass"
                     },
                     {
@@ -1429,7 +1407,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
+                        "description": "Hero level band, not a level. One of the band codes — see Variables. Every code must be recognised.",
                         "example": "25"
                     },
                     {
@@ -1444,7 +1422,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Player league tier id."
+                        "description": "Player league tier id. Every id must be recognised."
                     },
                     {
                         "name": "hero_league_tier",
@@ -1458,7 +1436,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero league tier id."
+                        "description": "Hero league tier id. Every id must be recognised."
                     },
                     {
                         "name": "role_league_tier",
@@ -1472,20 +1450,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Role league tier id."
-                    },
-                    {
-                        "name": "mirror",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "0",
-                                "1"
-                            ]
-                        },
-                        "description": "Include mirror matches."
+                        "description": "Role league tier id. Every id must be recognised."
                     },
                     {
                         "name": "group_by_map",
@@ -1853,11 +1818,10 @@
                             "enum": [
                                 "minor",
                                 "major",
-                                "major_grouped",
-                                "last_update"
+                                "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
                         "example": "minor"
                     },
                     {
@@ -1872,7 +1836,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
+                        "description": "One patch or build, or several comma-separated.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -1924,21 +1888,6 @@
                         "example": "Anduin"
                     },
                     {
-                        "name": "game_map",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "style": "form",
-                        "explode": false,
-                        "description": "Map name.",
-                        "example": "Alterac Pass"
-                    },
-                    {
                         "name": "hero_level",
                         "in": "query",
                         "required": false,
@@ -1950,7 +1899,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
+                        "description": "Hero level band, not a level. One of the band codes — see Variables. Every code must be recognised.",
                         "example": "25"
                     },
                     {
@@ -1965,7 +1914,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Player league tier id."
+                        "description": "Player league tier id. Every id must be recognised."
                     },
                     {
                         "name": "hero_league_tier",
@@ -1979,7 +1928,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero league tier id."
+                        "description": "Hero league tier id. Every id must be recognised."
                     },
                     {
                         "name": "role_league_tier",
@@ -1993,7 +1942,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Role league tier id."
+                        "description": "Role league tier id. Every id must be recognised."
                     },
                     {
                         "name": "mirror",
@@ -2212,11 +2161,10 @@
                             "enum": [
                                 "minor",
                                 "major",
-                                "major_grouped",
-                                "last_update"
+                                "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
                         "example": "minor"
                     },
                     {
@@ -2231,7 +2179,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
+                        "description": "One patch or build, or several comma-separated.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -2304,7 +2252,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Map name.",
+                        "description": "Playable map name, case-insensitive, or several comma-separated. Every name must be recognised.",
                         "example": "Alterac Pass"
                     },
                     {
@@ -2319,7 +2267,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
+                        "description": "Hero level band, not a level. One of the band codes — see Variables. Every code must be recognised.",
                         "example": "25"
                     },
                     {
@@ -2334,7 +2282,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Player league tier id."
+                        "description": "Player league tier id. Every id must be recognised."
                     },
                     {
                         "name": "hero_league_tier",
@@ -2348,7 +2296,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero league tier id."
+                        "description": "Hero league tier id. Every id must be recognised."
                     },
                     {
                         "name": "role_league_tier",
@@ -2362,7 +2310,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Role league tier id."
+                        "description": "Role league tier id. Every id must be recognised."
                     },
                     {
                         "name": "mirror",
@@ -2903,11 +2851,10 @@
                             "enum": [
                                 "minor",
                                 "major",
-                                "major_grouped",
-                                "last_update"
+                                "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
                         "example": "minor"
                     },
                     {
@@ -2922,7 +2869,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
+                        "description": "One patch or build, or several comma-separated.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -2949,21 +2896,6 @@
                         "example": "Storm League"
                     },
                     {
-                        "name": "region",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "style": "form",
-                        "explode": false,
-                        "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
-                        "example": "NA"
-                    },
-                    {
                         "name": "hero",
                         "in": "query",
                         "required": true,
@@ -2985,23 +2917,8 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Map name.",
+                        "description": "Playable map name, case-insensitive, or several comma-separated. Every name must be recognised.",
                         "example": "Alterac Pass"
-                    },
-                    {
-                        "name": "hero_level",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "style": "form",
-                        "explode": false,
-                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
-                        "example": "25"
                     },
                     {
                         "name": "league_tier",
@@ -3015,48 +2932,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Player league tier id."
-                    },
-                    {
-                        "name": "hero_league_tier",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "style": "form",
-                        "explode": false,
-                        "description": "Hero league tier id."
-                    },
-                    {
-                        "name": "role_league_tier",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "style": "form",
-                        "explode": false,
-                        "description": "Role league tier id."
-                    },
-                    {
-                        "name": "mirror",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "0",
-                                "1"
-                            ]
-                        },
-                        "description": "Include mirror matches."
+                        "description": "Player league tier id. Every id must be recognised."
                     },
                     {
                         "name": "group_by_map",
@@ -4071,11 +3947,10 @@
                             "enum": [
                                 "minor",
                                 "major",
-                                "major_grouped",
-                                "last_update"
+                                "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
                         "example": "minor"
                     },
                     {
@@ -4090,7 +3965,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
+                        "description": "One patch or build, or several comma-separated.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -4163,7 +4038,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Map name.",
+                        "description": "Playable map name, case-insensitive, or several comma-separated. Every name must be recognised.",
                         "example": "Alterac Pass"
                     },
                     {
@@ -4178,7 +4053,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
+                        "description": "Hero level band, not a level. One of the band codes — see Variables. Every code must be recognised.",
                         "example": "25"
                     },
                     {
@@ -4193,7 +4068,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Player league tier id."
+                        "description": "Player league tier id. Every id must be recognised."
                     },
                     {
                         "name": "hero_league_tier",
@@ -4207,7 +4082,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero league tier id."
+                        "description": "Hero league tier id. Every id must be recognised."
                     },
                     {
                         "name": "role_league_tier",
@@ -4221,7 +4096,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Role league tier id."
+                        "description": "Role league tier id. Every id must be recognised."
                     },
                     {
                         "name": "mirror",
@@ -4262,9 +4137,49 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "win_rate",
+                                "game_time",
+                                "kills",
+                                "takedowns",
+                                "deaths",
+                                "siege_damage",
+                                "hero_damage",
+                                "healing",
+                                "damage_taken",
+                                "experience_contribution",
+                                "assists",
+                                "highest_kill_streak",
+                                "structure_damage",
+                                "minion_damage",
+                                "creep_damage",
+                                "summon_damage",
+                                "self_healing",
+                                "town_kills",
+                                "time_spent_dead",
+                                "merc_camp_captures",
+                                "watch_tower_captures",
+                                "protection_Allies",
+                                "silencing_enemies",
+                                "rooting_enemies",
+                                "stunning_enemies",
+                                "clutch_heals",
+                                "escapes",
+                                "vengeance",
+                                "outnumbered_deaths",
+                                "teamfight_escapes",
+                                "teamfight_healing",
+                                "teamfight_damage_taken",
+                                "teamfight_hero_damage",
+                                "multikill",
+                                "physical_damage",
+                                "spell_damage",
+                                "regen_globes"
+                            ]
                         },
-                        "description": "Statistic to filter on."
+                        "description": "Which statistic to report. Defaults to `win_rate`. Anything other than `win_rate` needs `timeframe_type=minor` and at most five timeframes, and is ignored when `groupsize` is sent — party-size data carries win rate only.",
+                        "example": "win_rate"
                     },
                     {
                         "name": "group_by_map",
@@ -4693,11 +4608,10 @@
                             "enum": [
                                 "minor",
                                 "major",
-                                "major_grouped",
-                                "last_update"
+                                "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
                         "example": "minor"
                     },
                     {
@@ -4712,7 +4626,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
+                        "description": "One patch or build, or several comma-separated.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -4775,7 +4689,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Map name.",
+                        "description": "Playable map name, case-insensitive, or several comma-separated. Every name must be recognised.",
                         "example": "Alterac Pass"
                     },
                     {
@@ -4790,7 +4704,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
+                        "description": "Hero level band, not a level. One of the band codes — see Variables. Every code must be recognised.",
                         "example": "25"
                     },
                     {
@@ -4805,7 +4719,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Player league tier id."
+                        "description": "Player league tier id. Every id must be recognised."
                     },
                     {
                         "name": "hero_league_tier",
@@ -4819,7 +4733,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero league tier id."
+                        "description": "Hero league tier id. Every id must be recognised."
                     },
                     {
                         "name": "role_league_tier",
@@ -4833,20 +4747,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Role league tier id."
-                    },
-                    {
-                        "name": "mirror",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "0",
-                                "1"
-                            ]
-                        },
-                        "description": "Include mirror matches."
+                        "description": "Role league tier id. Every id must be recognised."
                     },
                     {
                         "name": "selectedtalents[1]",
@@ -5614,7 +5515,7 @@
         },
         "/heroes/talents/builder/replays": {
             "get": {
-                "summary": "The replays behind a talent-builder result. Send at least one selected talent — with none, it returns the full talent list for that hero rather than replays.",
+                "summary": "The replays behind a talent-builder result. Send at least one selected talent — with none, it returns the full talent list for that hero rather than replays. Always answers directly, never with a job.",
                 "operationId": "api.external.heroes.talents.builder.replays",
                 "parameters": [
                     {
@@ -5626,11 +5527,10 @@
                             "enum": [
                                 "minor",
                                 "major",
-                                "major_grouped",
-                                "last_update"
+                                "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
                         "example": "minor"
                     },
                     {
@@ -5645,7 +5545,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
+                        "description": "One patch or build, or several comma-separated.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -5708,78 +5608,8 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Map name.",
+                        "description": "Playable map name, case-insensitive, or several comma-separated. Every name must be recognised.",
                         "example": "Alterac Pass"
-                    },
-                    {
-                        "name": "hero_level",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "style": "form",
-                        "explode": false,
-                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
-                        "example": "25"
-                    },
-                    {
-                        "name": "league_tier",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "style": "form",
-                        "explode": false,
-                        "description": "Player league tier id."
-                    },
-                    {
-                        "name": "hero_league_tier",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "style": "form",
-                        "explode": false,
-                        "description": "Hero league tier id."
-                    },
-                    {
-                        "name": "role_league_tier",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        },
-                        "style": "form",
-                        "explode": false,
-                        "description": "Role league tier id."
-                    },
-                    {
-                        "name": "mirror",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "0",
-                                "1"
-                            ]
-                        },
-                        "description": "Include mirror matches."
                     },
                     {
                         "name": "selectedtalents[1]",
@@ -6236,38 +6066,6 @@
                             }
                         }
                     },
-                    "202": {
-                        "description": "The result was not cached. Poll the job for it — polling costs no quota.",
-                        "headers": {
-                            "Location": {
-                                "description": "Where to collect the result.",
-                                "schema": {
-                                    "type": "string"
-                                }
-                            },
-                            "Retry-After": {
-                                "description": "Suggested seconds between polls.",
-                                "schema": {
-                                    "type": "integer"
-                                }
-                            }
-                        },
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "job_id": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "job_id"
-                                    ]
-                                }
-                            }
-                        }
-                    },
                     "401": {
                         "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
                         "content": {
@@ -6350,11 +6148,10 @@
                             "enum": [
                                 "minor",
                                 "major",
-                                "major_grouped",
-                                "last_update"
+                                "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
                         "example": "minor"
                     },
                     {
@@ -6369,7 +6166,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
+                        "description": "One patch or build, or several comma-separated.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -6432,7 +6229,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Map name.",
+                        "description": "Playable map name, case-insensitive, or several comma-separated. Every name must be recognised.",
                         "example": "Alterac Pass"
                     },
                     {
@@ -6447,7 +6244,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
+                        "description": "Hero level band, not a level. One of the band codes — see Variables. Every code must be recognised.",
                         "example": "25"
                     },
                     {
@@ -6462,7 +6259,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Player league tier id."
+                        "description": "Player league tier id. Every id must be recognised."
                     },
                     {
                         "name": "hero_league_tier",
@@ -6476,7 +6273,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero league tier id."
+                        "description": "Hero league tier id. Every id must be recognised."
                     },
                     {
                         "name": "role_league_tier",
@@ -6490,29 +6287,56 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Role league tier id."
-                    },
-                    {
-                        "name": "mirror",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "0",
-                                "1"
-                            ]
-                        },
-                        "description": "Include mirror matches."
+                        "description": "Role league tier id. Every id must be recognised."
                     },
                     {
                         "name": "statfilter",
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "win_rate",
+                                "game_time",
+                                "kills",
+                                "takedowns",
+                                "deaths",
+                                "siege_damage",
+                                "hero_damage",
+                                "healing",
+                                "damage_taken",
+                                "experience_contribution",
+                                "assists",
+                                "highest_kill_streak",
+                                "structure_damage",
+                                "minion_damage",
+                                "creep_damage",
+                                "summon_damage",
+                                "self_healing",
+                                "town_kills",
+                                "time_spent_dead",
+                                "merc_camp_captures",
+                                "watch_tower_captures",
+                                "protection_Allies",
+                                "silencing_enemies",
+                                "rooting_enemies",
+                                "stunning_enemies",
+                                "clutch_heals",
+                                "escapes",
+                                "vengeance",
+                                "outnumbered_deaths",
+                                "teamfight_escapes",
+                                "teamfight_healing",
+                                "teamfight_damage_taken",
+                                "teamfight_hero_damage",
+                                "multikill",
+                                "physical_damage",
+                                "spell_damage",
+                                "regen_globes"
+                            ]
                         },
-                        "description": "Statistic to filter on."
+                        "description": "Which statistic to report. Defaults to `win_rate`. Anything other than `win_rate` needs `timeframe_type=minor` and at most five timeframes.",
+                        "example": "win_rate"
                     },
                     {
                         "name": "group_by_map",
@@ -7274,11 +7098,10 @@
                             "enum": [
                                 "minor",
                                 "major",
-                                "major_grouped",
-                                "last_update"
+                                "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch. Defaults to the site's own current timeframe.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together. Defaults to `minor`.",
                         "example": "minor"
                     },
                     {
@@ -7346,7 +7169,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Map name.",
+                        "description": "Playable map name, case-insensitive, or several comma-separated. Every name must be recognised.",
                         "example": "Alterac Pass"
                     },
                     {
@@ -7361,7 +7184,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
+                        "description": "Hero level band, not a level. One of the band codes — see Variables. Every code must be recognised.",
                         "example": "25"
                     },
                     {
@@ -7376,7 +7199,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Player league tier id."
+                        "description": "Player league tier id. Every id must be recognised."
                     },
                     {
                         "name": "hero_league_tier",
@@ -7390,7 +7213,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero league tier id."
+                        "description": "Hero league tier id. Every id must be recognised."
                     },
                     {
                         "name": "role_league_tier",
@@ -7404,29 +7227,56 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Role league tier id."
-                    },
-                    {
-                        "name": "mirror",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "0",
-                                "1"
-                            ]
-                        },
-                        "description": "Include mirror matches."
+                        "description": "Role league tier id. Every id must be recognised."
                     },
                     {
                         "name": "statfilter",
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "win_rate",
+                                "game_time",
+                                "kills",
+                                "takedowns",
+                                "deaths",
+                                "siege_damage",
+                                "hero_damage",
+                                "healing",
+                                "damage_taken",
+                                "experience_contribution",
+                                "assists",
+                                "highest_kill_streak",
+                                "structure_damage",
+                                "minion_damage",
+                                "creep_damage",
+                                "summon_damage",
+                                "self_healing",
+                                "town_kills",
+                                "time_spent_dead",
+                                "merc_camp_captures",
+                                "watch_tower_captures",
+                                "protection_Allies",
+                                "silencing_enemies",
+                                "rooting_enemies",
+                                "stunning_enemies",
+                                "clutch_heals",
+                                "escapes",
+                                "vengeance",
+                                "outnumbered_deaths",
+                                "teamfight_escapes",
+                                "teamfight_healing",
+                                "teamfight_damage_taken",
+                                "teamfight_hero_damage",
+                                "multikill",
+                                "physical_damage",
+                                "spell_damage",
+                                "regen_globes"
+                            ]
                         },
-                        "description": "Statistic to filter on."
+                        "description": "Which statistic to report. Defaults to `win_rate`. Anything other than `win_rate` needs `timeframe_type=minor` and at most five timeframes.",
+                        "example": "win_rate"
                     },
                     {
                         "name": "talentbuildtype",
@@ -59878,11 +59728,10 @@
                             "enum": [
                                 "minor",
                                 "major",
-                                "major_grouped",
-                                "last_update"
+                                "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
                         "example": "minor"
                     },
                     {
@@ -59897,7 +59746,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
+                        "description": "One patch or build, or several comma-separated.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -59960,7 +59809,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Map name.",
+                        "description": "Playable map name, case-insensitive, or several comma-separated. Every name must be recognised.",
                         "example": "Alterac Pass"
                     },
                     {
@@ -59975,7 +59824,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
+                        "description": "Hero level band, not a level. One of the band codes — see Variables. Every code must be recognised.",
                         "example": "25"
                     },
                     {
@@ -59990,7 +59839,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Player league tier id."
+                        "description": "Player league tier id. Every id must be recognised."
                     },
                     {
                         "name": "hero_league_tier",
@@ -60004,7 +59853,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero league tier id."
+                        "description": "Hero league tier id. Every id must be recognised."
                     },
                     {
                         "name": "role_league_tier",
@@ -60018,7 +59867,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Role league tier id."
+                        "description": "Role league tier id. Every id must be recognised."
                     },
                     {
                         "name": "mirror",
@@ -60038,9 +59887,49 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                                "win_rate",
+                                "game_time",
+                                "kills",
+                                "takedowns",
+                                "deaths",
+                                "siege_damage",
+                                "hero_damage",
+                                "healing",
+                                "damage_taken",
+                                "experience_contribution",
+                                "assists",
+                                "highest_kill_streak",
+                                "structure_damage",
+                                "minion_damage",
+                                "creep_damage",
+                                "summon_damage",
+                                "self_healing",
+                                "town_kills",
+                                "time_spent_dead",
+                                "merc_camp_captures",
+                                "watch_tower_captures",
+                                "protection_Allies",
+                                "silencing_enemies",
+                                "rooting_enemies",
+                                "stunning_enemies",
+                                "clutch_heals",
+                                "escapes",
+                                "vengeance",
+                                "outnumbered_deaths",
+                                "teamfight_escapes",
+                                "teamfight_healing",
+                                "teamfight_damage_taken",
+                                "teamfight_hero_damage",
+                                "multikill",
+                                "physical_damage",
+                                "spell_damage",
+                                "regen_globes"
+                            ]
                         },
-                        "description": "Statistic to filter on."
+                        "description": "Which statistic to report. Defaults to `win_rate`. Anything other than `win_rate` needs `timeframe_type=minor` and at most five timeframes.",
+                        "example": "win_rate"
                     },
                     {
                         "name": "group_by_map",
@@ -61120,7 +61009,7 @@
                         "schema": {
                             "type": "integer"
                         },
-                        "description": "Season id. Defaults to the current season."
+                        "description": "Season id. Defaults to the current season — the current match prediction season when `type` is `match prediction`."
                     },
                     {
                         "name": "game_type",
@@ -61145,7 +61034,7 @@
                                 "match prediction"
                             ]
                         },
-                        "description": "What the board ranks. Defaults to `player`."
+                        "description": "What the board ranks. Defaults to `player`. `match prediction` takes only `season` and `game_type`; anything else is refused."
                     },
                     {
                         "name": "groupsize",
@@ -61171,7 +61060,7 @@
                         "schema": {
                             "type": "string"
                         },
-                        "description": "Hero name, when `type` is `hero`."
+                        "description": "Hero name. Required when `type` is `hero`."
                     },
                     {
                         "name": "role",
@@ -61180,16 +61069,17 @@
                         "schema": {
                             "type": "string"
                         },
-                        "description": "Role name, when `type` is `role`."
+                        "description": "Role name. Required when `type` is `role`."
                     },
                     {
                         "name": "region",
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "description": "Region id."
+                        "description": "Region, by name or id — `NA` and `1` both work.",
+                        "example": "NA"
                     },
                     {
                         "name": "tierrank",
@@ -61198,7 +61088,7 @@
                         "schema": {
                             "type": "string"
                         },
-                        "description": "League tier id."
+                        "description": "League tier id — see Variables."
                     },
                     {
                         "name": "mode",
@@ -61963,11 +61853,10 @@
                             "enum": [
                                 "minor",
                                 "major",
-                                "major_grouped",
-                                "last_update"
+                                "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
                         "example": "minor"
                     },
                     {
@@ -61982,7 +61871,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated. Not required when `timeframe_type` is `last_update`.",
+                        "description": "One patch or build, or several comma-separated.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -62045,7 +61934,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Map name.",
+                        "description": "Playable map name, case-insensitive, or several comma-separated. Every name must be recognised.",
                         "example": "Alterac Pass"
                     },
                     {
@@ -62060,7 +61949,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero level band, not a level. One of the band codes — see Variables.",
+                        "description": "Hero level band, not a level. One of the band codes — see Variables. Every code must be recognised.",
                         "example": "25"
                     },
                     {
@@ -62075,7 +61964,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Player league tier id."
+                        "description": "Player league tier id. Every id must be recognised."
                     },
                     {
                         "name": "hero_league_tier",
@@ -62089,7 +61978,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Hero league tier id."
+                        "description": "Hero league tier id. Every id must be recognised."
                     },
                     {
                         "name": "role_league_tier",
@@ -62103,7 +61992,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "Role league tier id."
+                        "description": "Role league tier id. Every id must be recognised."
                     },
                     {
                         "name": "mirror",
@@ -62138,7 +62027,8 @@
                         "schema": {
                             "type": "string"
                         },
-                        "description": "Party combination for the first team."
+                        "description": "Party combination code for the first team — see Variables.",
+                        "example": "00005"
                     },
                     {
                         "name": "teamtwoparty",
@@ -62147,7 +62037,8 @@
                         "schema": {
                             "type": "string"
                         },
-                        "description": "Party combination for the second team."
+                        "description": "Party combination code for the second team — see Variables.",
+                        "example": "00005"
                     },
                     {
                         "name": "mode",

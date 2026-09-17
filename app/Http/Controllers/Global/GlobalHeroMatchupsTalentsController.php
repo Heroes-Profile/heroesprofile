@@ -159,7 +159,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
             $allyEnemy = $temp;
         }
 
-        $firstHeroWinRateData = $this->calculateWinRateData($hero, $allyEnemy, $type, $gameVersion, $gameType, $leagueTier, $gameMap);
+        $firstHeroWinRateData = $this->calculateWinRateData($hero, $allyEnemy, $type, $gameVersionIDs, $gameType, $leagueTier, $gameMap);
         $secondHeroWinRate = $type == 'Ally' ? round($firstHeroWinRateData, 2) : round(100 - $firstHeroWinRateData, 2);
         $firstHeroWinRateData = round($firstHeroWinRateData, 2);
 
@@ -227,14 +227,14 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
         return ['first_win_rate' => $firstHeroWinRateData, 'second_win_rate' => $secondHeroWinRate, 'data' => $data];
     }
 
-    private function calculateWinRateData($hero, $allyEnemy, $type, $gameVersion, $gameType, $leagueTier, $gameMap)
+    private function calculateWinRateData($hero, $allyEnemy, $type, $gameVersionIDs, $gameType, $leagueTier, $gameMap)
     {
         $model = $type === 'Ally' ? GlobalHeromatchupsAlly::class : GlobalHeromatchupsEnemy::class;
 
         $data = $model::query()
             ->select('win_loss')
             ->selectRaw('SUM(games_played) as games_played')
-            ->filterByGameVersion($gameVersion)
+            ->filterByGameVersion($gameVersionIDs)
             ->filterByGameType($gameType)
             ->filterByHero($hero)
             ->filterByAllyEnemy($allyEnemy)
