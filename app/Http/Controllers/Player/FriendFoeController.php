@@ -271,13 +271,10 @@ class FriendFoeController extends Controller
         $heroDataByID = $this->globalDataService->getHeroes();
         $heroDataByID = $heroDataByID->keyBy('id');
 
-        $privateAccounts = $this->globalDataService->getPrivateAccounts();
-        $checkedData = $groupedResultsByBlizzId->reject(function ($group) use ($privateAccounts, $region) {
-            $blizzId = $group->first()->blizz_id;
-
-            return $privateAccounts->contains(function ($account) use ($blizzId, $region) {
-                return $account['blizz_id'] == $blizzId && $account['region'] == $region;
-            });
+        // Private and banned team-mates and opponents are left out entirely. No viewer
+        // exception: this runs in the async worker and the result is shared by everyone.
+        $checkedData = $groupedResultsByBlizzId->reject(function ($group) use ($region) {
+            return $this->globalDataService->isHiddenFrom($group->first()->blizz_id, $region);
         });
 
         // Same rule as checkIfSiteFlair: only Patreon accounts with site flair enabled.

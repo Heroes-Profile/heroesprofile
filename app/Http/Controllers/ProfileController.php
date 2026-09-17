@@ -253,6 +253,8 @@ class ProfileController extends Controller
                 $user->private = $value;
                 $user->private_changed_at = now();
                 $user->save();
+
+                $this->globalDataService->forgetRestrictedAccount($user->blizz_id, $user->region);
             }
 
         } catch (\Exception $e) {
