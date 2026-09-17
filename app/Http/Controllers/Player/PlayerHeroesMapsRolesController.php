@@ -123,10 +123,12 @@ class PlayerHeroesMapsRolesController extends Controller
         $minimum_games = $request['minimumgames'];
         $page = $request['page'];
         $role = $request['role'];
-        if ($type == 'all') {
-            $game_map = $this->globalDataService->getGameMapFilterValues($request['game_map']);
-        } else {
+        // The single map page names its one map; every other page's map filter is a
+        // multi-select.
+        if ($type == 'single' && $page == 'map') {
             $game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->first() : null;
+        } else {
+            $game_map = $request['game_map'] ? $this->globalDataService->getGameMapFilterValues((array) $request['game_map']) : null;
         }
         $season = $request['season'];
         $startDate = $request['start_date'];
@@ -157,12 +159,10 @@ class PlayerHeroesMapsRolesController extends Controller
             ->when($type == 'single' && $page == 'role', function ($query) use ($role) {
                 return $query->where('new_role', $role);
             })
-            ->when($game_map, function ($query) use ($game_map, $type) {
-                if ($type == 'all') {
-                    $query->whereIn('game_map', $game_map);
-                } else {
-                    return $query->where('game_map', $game_map);
-                }
+            ->when($game_map, function ($query) use ($game_map) {
+                return is_array($game_map)
+                    ? $query->whereIn('game_map', $game_map)
+                    : $query->where('game_map', $game_map);
             })
             ->tap(function ($query) use ($season, $startDate, $endDate) {
                 $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);

@@ -64026,10 +64026,10 @@
                                 "EU",
                                 "KR",
                                 "CN",
-                                1,
-                                2,
-                                3,
-                                5
+                                "1",
+                                "2",
+                                "3",
+                                "5"
                             ]
                         },
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
@@ -65790,10 +65790,10 @@
                                 "EU",
                                 "KR",
                                 "CN",
-                                1,
-                                2,
-                                3,
-                                5
+                                "1",
+                                "2",
+                                "3",
+                                "5"
                             ]
                         },
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
@@ -66241,10 +66241,10 @@
                                 "EU",
                                 "KR",
                                 "CN",
-                                1,
-                                2,
-                                3,
-                                5
+                                "1",
+                                "2",
+                                "3",
+                                "5"
                             ]
                         },
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
@@ -66710,10 +66710,10 @@
                                 "EU",
                                 "KR",
                                 "CN",
-                                1,
-                                2,
-                                3,
-                                5
+                                "1",
+                                "2",
+                                "3",
+                                "5"
                             ]
                         },
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
@@ -66790,9 +66790,15 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
-                        "description": "Map name."
+                        "style": "form",
+                        "explode": false,
+                        "description": "Filter to one map, or several comma-separated, by name.",
+                        "example": "Alterac Pass"
                     },
                     {
                         "name": "groupsize",
@@ -66809,7 +66815,7 @@
                                 "5 Players"
                             ]
                         },
-                        "description": "Party size filter."
+                        "description": "Party size the player queued at. `All`, or omitted, for every party size."
                     },
                     {
                         "name": "mode",
@@ -67103,10 +67109,10 @@
                                 "EU",
                                 "KR",
                                 "CN",
-                                1,
-                                2,
-                                3,
-                                5
+                                "1",
+                                "2",
+                                "3",
+                                "5"
                             ]
                         },
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
@@ -68321,10 +68327,10 @@
                                 "EU",
                                 "KR",
                                 "CN",
-                                1,
-                                2,
-                                3,
-                                5
+                                "1",
+                                "2",
+                                "3",
+                                "5"
                             ]
                         },
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
@@ -68389,9 +68395,14 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
-                        "description": "Filter to one map, by name.",
+                        "style": "form",
+                        "explode": false,
+                        "description": "Filter to one map, or several comma-separated, by name.",
                         "example": "Alterac Pass"
                     },
                     {
@@ -70890,10 +70901,10 @@
                                 "EU",
                                 "KR",
                                 "CN",
-                                1,
-                                2,
-                                3,
-                                5
+                                "1",
+                                "2",
+                                "3",
+                                "5"
                             ]
                         },
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
@@ -71912,10 +71923,10 @@
                                 "EU",
                                 "KR",
                                 "CN",
-                                1,
-                                2,
-                                3,
-                                5
+                                "1",
+                                "2",
+                                "3",
+                                "5"
                             ]
                         },
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
@@ -71974,16 +71985,6 @@
                         },
                         "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.",
                         "example": "Storm League"
-                    },
-                    {
-                        "name": "hero",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "Filter to one hero, by name.",
-                        "example": "Anduin"
                     },
                     {
                         "name": "mode",
@@ -74660,10 +74661,10 @@
                                 "EU",
                                 "KR",
                                 "CN",
-                                1,
-                                2,
-                                3,
-                                5
+                                "1",
+                                "2",
+                                "3",
+                                "5"
                             ]
                         },
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
@@ -75624,10 +75625,10 @@
                                 "EU",
                                 "KR",
                                 "CN",
-                                1,
-                                2,
-                                3,
-                                5
+                                "1",
+                                "2",
+                                "3",
+                                "5"
                             ]
                         },
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
@@ -76222,10 +76223,10 @@
                                 "EU",
                                 "KR",
                                 "CN",
-                                1,
-                                2,
-                                3,
-                                5
+                                "1",
+                                "2",
+                                "3",
+                                "5"
                             ]
                         },
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
@@ -76536,10 +76537,10 @@
                                 "EU",
                                 "KR",
                                 "CN",
-                                1,
-                                2,
-                                3,
-                                5
+                                "1",
+                                "2",
+                                "3",
+                                "5"
                             ]
                         },
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
@@ -76812,10 +76813,10 @@
                                 "EU",
                                 "KR",
                                 "CN",
-                                1,
-                                2,
-                                3,
-                                5
+                                "1",
+                                "2",
+                                "3",
+                                "5"
                             ]
                         },
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
@@ -76862,7 +76863,7 @@
                         "schema": {
                             "type": "string"
                         },
-                        "description": "One game type, by short name or display name — `sl` and `Storm League` both work. Defaults to Storm League.",
+                        "description": "One game type, by short name or display name — `sl` and `Storm League` both work. Defaults to Storm League. A list is refused.",
                         "example": "Storm League"
                     },
                     {
@@ -77169,10 +77170,10 @@
                                 "EU",
                                 "KR",
                                 "CN",
-                                1,
-                                2,
-                                3,
-                                5
+                                "1",
+                                "2",
+                                "3",
+                                "5"
                             ]
                         },
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
@@ -77533,10 +77534,10 @@
                                 "EU",
                                 "KR",
                                 "CN",
-                                1,
-                                2,
-                                3,
-                                5
+                                "1",
+                                "2",
+                                "3",
+                                "5"
                             ]
                         },
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
@@ -77894,10 +77895,10 @@
                                 "EU",
                                 "KR",
                                 "CN",
-                                1,
-                                2,
-                                3,
-                                5
+                                "1",
+                                "2",
+                                "3",
+                                "5"
                             ]
                         },
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
@@ -78388,10 +78389,10 @@
                                 "EU",
                                 "KR",
                                 "CN",
-                                1,
-                                2,
-                                3,
-                                5
+                                "1",
+                                "2",
+                                "3",
+                                "5"
                             ]
                         },
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
@@ -79411,10 +79412,10 @@
                                 "EU",
                                 "KR",
                                 "CN",
-                                1,
-                                2,
-                                3,
-                                5
+                                "1",
+                                "2",
+                                "3",
+                                "5"
                             ]
                         },
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
@@ -79475,22 +79476,17 @@
                         "example": "Storm League"
                     },
                     {
-                        "name": "hero",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "Filter to one hero, by name.",
-                        "example": "Anduin"
-                    },
-                    {
                         "name": "game_map",
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
+                        "style": "form",
+                        "explode": false,
                         "description": "Filter to one map, or several comma-separated, by name.",
                         "example": "Alterac Pass"
                     },
@@ -82292,10 +82288,10 @@
                                 "EU",
                                 "KR",
                                 "CN",
-                                1,
-                                2,
-                                3,
-                                5
+                                "1",
+                                "2",
+                                "3",
+                                "5"
                             ]
                         },
                         "description": "Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.",
@@ -82360,9 +82356,15 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
                         },
-                        "description": "Map name."
+                        "style": "form",
+                        "explode": false,
+                        "description": "Filter to one map, or several comma-separated, by name.",
+                        "example": "Alterac Pass"
                     },
                     {
                         "name": "fromdate",

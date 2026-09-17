@@ -148,7 +148,7 @@ class PlayerMatchHistory extends Controller
             'start_date' => ['sometimes', 'nullable', new DateInputValidation],
             'end_date' => ['sometimes', 'nullable', new DateInputValidation],
             'stack_size' => ['sometimes', 'nullable', 'string', 'in:All,Solo,Duo,3 Players,4 Players,5 Players'],
-            'pagination_page' => 'required:integer',
+            'pagination_page' => 'required|integer|min:1',
         ];
 
         $validator = Validator::make($request->all(), $validationRules);

@@ -250,7 +250,7 @@ return [
         ],
         'region' => [
             'required' => true,
-            'enum' => ['NA', 'EU', 'KR', 'CN', 1, 2, 3, 5],
+            'enum' => ['NA', 'EU', 'KR', 'CN', '1', '2', '3', '5'],
             'description' => 'Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.',
             'example' => 'NA',
         ],
@@ -372,7 +372,7 @@ return [
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
                 'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.', 'example' => 'Storm League'],
-                'game_map' => ['description' => 'Filter to one map, by name.', 'example' => 'Alterac Pass'],
+                'game_map' => ['multi' => true, 'description' => 'Filter to one map, or several comma-separated, by name.', 'example' => 'Alterac Pass'],
             ],
         ],
 
@@ -396,7 +396,6 @@ return [
             'parameters' => [
                 'map' => ['required' => true, 'description' => 'Map name.', 'example' => 'Alterac Pass'],
                 'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.', 'example' => 'Storm League'],
-                'hero' => ['description' => 'Filter to one hero, by name.', 'example' => 'Anduin'],
             ],
         ],
 
@@ -421,8 +420,7 @@ return [
             'parameters' => [
                 'role' => ['required' => true, 'description' => 'Role name.', 'example' => 'Healer'],
                 'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.', 'example' => 'Storm League'],
-                'hero' => ['description' => 'Filter to one hero, by name.', 'example' => 'Anduin'],
-                'game_map' => ['description' => 'Filter to one map, or several comma-separated, by name.', 'example' => 'Alterac Pass'],
+                'game_map' => ['multi' => true, 'description' => 'Filter to one map, or several comma-separated, by name.', 'example' => 'Alterac Pass'],
             ],
         ],
 
@@ -441,7 +439,7 @@ return [
             'page' => '/Player/{battletag}/{blizz_id}/{region}/MMR',
             'uses' => ['player', 'player_dates'],
             'parameters' => [
-                'game_type' => ['description' => 'One game type, by short name or display name — `sl` and `Storm League` both work. Defaults to Storm League.', 'example' => 'Storm League'],
+                'game_type' => ['description' => 'One game type, by short name or display name — `sl` and `Storm League` both work. Defaults to Storm League. A list is refused.', 'example' => 'Storm League'],
             ],
         ],
 
@@ -494,7 +492,7 @@ return [
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
                 'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.', 'example' => 'Storm League'],
-                'game_map' => ['description' => 'Map name.'],
+                'game_map' => ['multi' => true, 'description' => 'Filter to one map, or several comma-separated, by name.', 'example' => 'Alterac Pass'],
                 'fromdate' => ['deprecated' => true, 'description' => 'Deprecated: use `start_date`. Still accepted, and treated as `start_date` when that is not sent.', 'example' => '2024-01-01'],
             ],
         ],
@@ -519,8 +517,8 @@ return [
                 'type' => ['required' => true, 'enum' => ['friend', 'enemy'], 'description' => 'Which side to report: `friend` for team-mates, `enemy` for opponents. One call answers one side.'],
                 'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.', 'example' => 'Storm League'],
                 'hero' => ['description' => 'Restrict to one hero by name.'],
-                'game_map' => ['description' => 'Map name.'],
-                'groupsize' => ['enum' => ['All', 'Solo', 'Duo', '3 Players', '4 Players', '5 Players'], 'description' => 'Party size filter.'],
+                'game_map' => ['multi' => true, 'description' => 'Filter to one map, or several comma-separated, by name.', 'example' => 'Alterac Pass'],
+                'groupsize' => ['enum' => ['All', 'Solo', 'Duo', '3 Players', '4 Players', '5 Players'], 'description' => 'Party size the player queued at. `All`, or omitted, for every party size.'],
             ],
         ],
 

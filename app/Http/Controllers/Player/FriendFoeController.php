@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\BattlenetAccount;
 use App\Models\FriendFoeCache;
 use App\Models\GameType;
-use App\Models\Map;
 use App\Rules\DateInputValidation;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
@@ -155,7 +154,8 @@ class FriendFoeController extends Controller
         $endDate = $request['end_date'];
         $type = $request['type'];
         $teamValue = $type == 'friend' ? 0 : 1;
-        $gameMap = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id') : null;
+        // The page's map filter is a multi-select.
+        $gameMap = $request['game_map'] ? $this->globalDataService->getGameMapFilterValues((array) $request['game_map']) : null;
         $hero = $request['hero'];
         $groupSize = $request['groupsize'];
 
@@ -169,6 +169,8 @@ class FriendFoeController extends Controller
             $groupSize = 4;
         } elseif ($groupSize == '5 Players') {
             $groupSize = 5;
+        } elseif ($groupSize == 'All') {
+            $groupSize = null;
         }
 
         $innerQuery = DB::table('replay')
