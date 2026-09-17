@@ -17,7 +17,7 @@
             <hero-image-wrapper :size="'big'" :hero="item.hero" :award="item.match_award" :winner="winner" :hpowner="item.hp_owner" :party="item.party" :ispatreon="item.patreon_subscriber" :voideye="hasVoidEye(item.blizz_id, item.region)" popupsize="large">
               <image-hover-box 
                 :title="item.hero.name" 
-                :paragraph-one="`Played by : <b>${item.battletag}</b>`" 
+                :played-by="item.battletag" 
                 :paragraph-two="`Account Level: ${item.account_level}`"
                 :paragraph-three="`HP Player MMR: ${item.player_mmr}`"
                 :paragraph-four="`HP Hero MMR: ${item.hero_mmr}`"

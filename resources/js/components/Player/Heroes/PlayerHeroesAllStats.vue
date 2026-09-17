@@ -115,6 +115,9 @@
     <div v-if="matchIsLoading">
       <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
+    <div v-if="matchNotFound" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-red text-white px-4 py-2 rounded z-50">
+      Couldn't find the match for that value.
+    </div>
   </div>
 </template>
 
@@ -147,6 +150,7 @@ export default {
       isLoading: false,
       asyncLoading: false,
       matchIsLoading: false,
+      matchNotFound: false,
       cancelTokenSource: null,
       infoText: "Select a hero below to view detailed stats for that hero. Use the search box above to filter the list of heroes. Or scroll down to the advanced section for table view.",
       gametype: null,
@@ -408,6 +412,12 @@ export default {
             inputStat.flash = false;
           }, 1000);
     },
+    showMatchNotFound() {
+      this.matchNotFound = true;
+      setTimeout(() => {
+        this.matchNotFound = false;
+      }, 3000);
+    },
     statContainsMax(stat) {
       return stat.value.toLowerCase().includes('max');
     },
@@ -428,10 +438,16 @@ export default {
           value: value,
           type: "all",
         });
-        window.location.href = `/Match/Single/${response.data}`
+        // A replay id, or null (or a failure body) when no match holds that value.
+        const replayID = Number(response.data);
 
+        if (Number.isInteger(replayID) && replayID > 0) {
+          window.location.href = `/Match/Single/${replayID}`;
+        } else {
+          this.showMatchNotFound();
+        }
       }catch(error){
-        //Do something here
+        this.showMatchNotFound();
       }
       this.matchIsLoading = false;
     },

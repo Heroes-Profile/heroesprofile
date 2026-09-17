@@ -28,12 +28,17 @@ class ContactController extends Controller
             return 'success';
         }
 
-        // Validate reCAPTCHA
-        $recaptchaToken = $request->input('recaptcha_token');
-        if ($recaptchaToken) {
-            $recaptchaResult = $recaptchaService->verify($recaptchaToken, 'contact_form', $request);
+        // Always verified where reCAPTCHA is set up. Leaving the token out used to skip the
+        // check entirely, which is exactly what a bot posting directly does. Unconfigured
+        // (local development) it is skipped, since verify() would fail every request.
+        if (config('services.recaptcha.secret_key')) {
+            $recaptchaToken = (string) $request->input('recaptcha_token');
+            $recaptchaResult = $recaptchaToken === ''
+                ? ['success' => false]
+                : $recaptchaService->verify($recaptchaToken, 'contact_form', $request);
+
             if (! $recaptchaResult['success']) {
-                return response()->json(['error' => 'reCAPTCHA verification failed'], 400);
+                return response()->json(['error' => 'recaptcha_failed'], 400);
             }
         }
 
