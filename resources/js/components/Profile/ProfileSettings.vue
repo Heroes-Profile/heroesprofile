@@ -257,7 +257,6 @@ export default {
       flairSides: { owner: 'left', patreon: 'left', void_eye: 'left' },
       flairHide: {},
 
-      userhero: null,
       usergametype: null,
       playermultigametype: null,
       saveplayermultigametype: null,
@@ -406,7 +405,6 @@ export default {
 
       try {
         await this.$axios.post('/api/v1/profile/save/settings', {
-          userhero: this.userhero,
           usergametype: this.usergametype,
           playermultigametype: this.saveplayermultigametype,
           usermultigametype: this.savemultigametype,
@@ -450,9 +448,7 @@ export default {
     handleInputChange(eventPayload) {
       if (eventPayload.type === 'single') {
         const { field, value } = eventPayload;
-        if (field === 'Heroes') {
-          this.userhero = this.filters.heroes.find(h => h.code === value)?.name;
-        } else if (field === 'Advanced Filtering') {
+        if (field === 'Advanced Filtering') {
           this.advancedfiltering = value;
         } else if (field === 'Account Visibility') {
           this.accountVisibility = value;

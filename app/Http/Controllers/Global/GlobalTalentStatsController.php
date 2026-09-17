@@ -12,6 +12,7 @@ use App\Rules\HeroInputValidation;
 use App\Rules\StatFilterInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
 use App\Services\GlobalQueryService;
+use App\Support\GlobalCacheKey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
@@ -95,23 +96,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ];
         }
 
-        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
-
-        if ($request['timeframe_type'] == 'last_update') {
-            $gameVersion = $this->globalDataService->getTimeframeFilterValuesLastUpdate($hero);
-        } else {
-            $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
-        }
-
-        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
-        $leagueTier = $request['league_tier'];
-        $heroLeagueTier = $request['hero_league_tier'];
-        $roleLeagueTier = $request['role_league_tier'];
-        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
-        $heroLevel = $request['hero_level'];
-        $region = $this->globalDataService->getRegionFilterValues($request['region']);
-        $statFilter = $this->normalizeStatFilter($request['statfilter'] ?? null);
-        $mirror = $request['mirror'];
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
 
         $cacheKey = $this->globalCacheKey('GlobalHeroTalentStats', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all());
 
@@ -122,11 +107,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
     {
         $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
 
-        if ($request['timeframe_type'] == 'last_update') {
-            $gameVersion = $this->globalDataService->getTimeframeFilterValuesLastUpdate($hero);
-        } else {
-            $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
-        }
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
 
         $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
         $leagueTier = $request['league_tier'];
@@ -254,27 +235,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ];
         }
 
-        $heroModel = $this->globalDataService->getHeroModel($request['hero']);
-        $hero = $heroModel->id;
-
-        if ($request['timeframe_type'] == 'last_update') {
-            $gameVersion = $this->globalDataService->getTimeframeFilterValuesLastUpdate($hero);
-        } else {
-            $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
-        }
-
-        $gameTypeRecords = GameType::whereIn('short_name', $request['game_type'])->get();
-        $gameType = $gameTypeRecords->pluck('type_id')->toArray();
-
-        $leagueTier = $request['league_tier'];
-        $heroLeagueTier = $request['hero_league_tier'];
-        $roleLeagueTier = $request['role_league_tier'];
-        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
-        $heroLevel = $request['hero_level'];
-        $region = $this->globalDataService->getRegionFilterValues($request['region']);
-        $statFilter = $this->normalizeStatFilter($request['statfilter'] ?? null);
-        $mirror = $request['mirror'];
-        $talentbuildType = $request['talentbuildtype'];
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
 
         $cacheKey = $this->globalCacheKey('GlobalHeroTalentStatsBuilds', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all());
 
@@ -301,9 +262,9 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         }
 
         $gameTypes = ['qm', 'sl', 'ar'];
-        $gameVersion = $timeframeType === 'last_update'
-            ? null
-            : $this->globalDataService->getTimeframeFilterValues($timeframeType, $timeframe);
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($timeframeType, $timeframe);
+        // The same for every hero and game type: one lookup rather than ~270.
+        $versionIds = $this->gameVersionIds($gameVersion);
 
         $result = [];
         $hasMisses = false;
@@ -328,11 +289,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                     'mirror' => '0',
                 ]);
 
-                $resolvedGameVersion = $timeframeType === 'last_update'
-                    ? $this->globalDataService->getTimeframeFilterValuesLastUpdate($heroModel->id)
-                    : $gameVersion;
-
-                $cacheKey = $this->globalCacheKey('GlobalHeroTalentStatsBuilds', SeasonGameVersion::select('id')->whereIn('game_version', $resolvedGameVersion)->pluck('id')->toArray(), $heroRequest->all());
+                $cacheKey = $this->globalCacheKey('GlobalHeroTalentStatsBuilds', $versionIds, $heroRequest->all());
 
                 $cached = $cache->get($cacheKey);
 
@@ -346,16 +303,14 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                         static::class,
                         'executeGlobalHeroTalentBuildData',
                         $heroRequest->all(),
-                        $this->globalDataService->calculateCacheTimeInSeconds($resolvedGameVersion)
+                        $this->globalDataService->calculateCacheTimeInSeconds($gameVersion)
                     );
                 }
             }
         }
 
         if (! $hasMisses) {
-            $cacheTtlSeconds = $this->globalDataService->calculateCacheTimeInSeconds(
-                $gameVersion ?? $this->globalDataService->getTimeframeFilterValues($timeframeType, $timeframe)
-            );
+            $cacheTtlSeconds = $this->globalDataService->calculateCacheTimeInSeconds($gameVersion);
             $cache->put($allCacheKey, $result, $cacheTtlSeconds);
         }
 
@@ -390,24 +345,14 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ];
         }
 
-        $lastUpdate = $request['timeframe_type'] == 'last_update';
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
 
-        $gameVersion = $lastUpdate
-            ? null
-            : $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
-
-        // Same for every hero unless the timeframe is `last_update`, which resolves
-        // per hero. Hoisted so this is one query rather than ninety.
-        $sharedVersionIds = $lastUpdate ? null : $this->gameVersionIds($gameVersion);
+        // The same for every hero. Hoisted so this is one query rather than ninety.
+        $versionIds = $this->gameVersionIds($gameVersion);
 
         $children = [];
 
         foreach ($this->globalDataService->getHeroes() as $heroModel) {
-            $resolvedGameVersion = $lastUpdate
-                ? $this->globalDataService->getTimeframeFilterValuesLastUpdate($heroModel->id)
-                : $gameVersion;
-
-            $versionIds = $sharedVersionIds ?? $this->gameVersionIds($resolvedGameVersion);
             $childRequest = $this->talentBuildChildRequest($request, $heroModel->name);
 
             $children[$heroModel->name] = [
@@ -416,20 +361,14 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ];
         }
 
-        $parentRequest = $request->all();
-        ksort($parentRequest);
-
+        // Built like every other global key: transport parameters (api_token, mode) are
+        // ignored, and the version ids are part of it so a new patch gets a new batch.
         return app(GlobalQueryService::class)->dispatchBatch(
-            'GlobalHeroTalentStatsBuildsAllFiltered|'.hash('sha256', json_encode($parentRequest)),
+            GlobalCacheKey::for('GlobalHeroTalentStatsBuildsAllFiltered', $versionIds, $request->all()),
             $children,
             static::class,
             'executeGlobalHeroTalentBuildData',
-            $this->globalDataService->calculateCacheTimeInSeconds(
-                $gameVersion ?? $this->globalDataService->getTimeframeFilterValues(
-                    $this->globalDataService->getDefaultTimeframeType(),
-                    [$this->globalDataService->getDefaultTimeframe()]
-                )
-            ),
+            $this->globalDataService->calculateCacheTimeInSeconds($gameVersion),
         );
     }
 
@@ -492,11 +431,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $heroModel = $this->globalDataService->getHeroModel($request['hero']);
         $hero = $heroModel->id;
 
-        if ($request['timeframe_type'] == 'last_update') {
-            $gameVersion = $this->globalDataService->getTimeframeFilterValuesLastUpdate($hero);
-        } else {
-            $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
-        }
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
 
         $gameType = GameType::whereIn('short_name', $request['game_type'])->pluck('type_id')->toArray();
         $leagueTier = $request['league_tier'];
@@ -597,6 +532,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ->filterByRoleLeagueTier($roleLeagueTier)
             ->filterByGameMap($gameMap)
             ->filterByHeroLevel($heroLevel)
+            ->excludeMirror($mirror)
             ->filterByRegion($region)
             ->where('level_twenty', '!=', 0)
             ->groupBy('global_hero_talents.hero', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
@@ -642,6 +578,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ->filterByRoleLeagueTier($roleLeagueTier)
             ->filterByGameMap($gameMap)
             ->filterByHeroLevel($heroLevel)
+            ->excludeMirror($mirror)
             ->filterByRegion($region)
             ->where('level_twenty', '!=', 0)
             ->groupBy('global_hero_talents.hero', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
@@ -710,6 +647,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ->filterByRoleLeagueTier($roleLeagueTier)
             ->filterByGameMap($gameMap)
             ->filterByHeroLevel($heroLevel)
+            ->excludeMirror($mirror)
             ->filterByRegion($region)
             ->where('level_twenty', '!=', 0)
             ->groupBy('global_hero_talents.hero', 'level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty')
@@ -768,6 +706,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ->filterByRoleLeagueTier($roleLeagueTier)
             ->filterByGameMap($gameMap)
             ->filterByHeroLevel($heroLevel)
+            ->excludeMirror($mirror)
             ->filterByRegion($region)
             ->where(function ($outerQuery) use ($builds) {
                 foreach ($builds as $build) {
@@ -860,72 +799,6 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         }
 
         return $buildDataMap;
-    }
-
-    private function getTopBuildsData($build, $win_loss, $hero, $gameVersion, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region, $statFilter)
-    {
-        $statFilter = $this->normalizeStatFilter($statFilter);
-
-        $buildStages = [
-            ['thirteen' => 0, 'sixteen' => 0, 'twenty' => 0],      // Levels 1-10
-            ['thirteen' => $build->level_thirteen, 'sixteen' => 0, 'twenty' => 0],  // Levels 1-13
-            ['thirteen' => $build->level_thirteen, 'sixteen' => $build->level_sixteen, 'twenty' => 0],  // Levels 1-16
-            ['thirteen' => $build->level_thirteen, 'sixteen' => $build->level_sixteen, 'twenty' => $build->level_twenty],  // Full build
-        ];
-
-        $transformedData = [
-            'wins' => 0,
-            'losses' => 0,
-            'total_filter_type' => 0,
-        ];
-
-        $baseQuery = GlobalHeroTalents::query()
-            ->join('heroesprofile_globals.talent_combinations as talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
-            ->select('win_loss', 'level_thirteen', 'level_sixteen', 'level_twenty')
-            ->selectRaw('SUM(games_played) AS games_played')
-            ->when($statFilter !== 'win_rate', function ($query) use ($statFilter) {
-                $column = str_replace('`', '``', $statFilter);
-
-                return $query->selectRaw("SUM(`global_hero_talents`.`{$column}`) as total_filter_type");
-            })
-            ->filterByGameVersion($gameVersion)
-            ->filterByGameType($gameType)
-            ->filterByHero($hero)
-            ->filterByLeagueTier($leagueTier)
-            ->filterByHeroLeagueTier($heroLeagueTier)
-            ->filterByRoleLeagueTier($roleLeagueTier)
-            ->filterByGameMap($gameMap)
-            ->filterByHeroLevel($heroLevel)
-            ->filterByRegion($region)
-            ->where('level_one', $build->level_one)
-            ->where('level_four', $build->level_four)
-            ->where('level_seven', $build->level_seven)
-            ->where('level_ten', $build->level_ten)
-            ->where(function ($query) use ($buildStages) {
-                foreach ($buildStages as $stage) {
-                    $query->orWhere(function ($q) use ($stage) {
-                        $q->where('level_thirteen', $stage['thirteen'])
-                            ->where('level_sixteen', $stage['sixteen'])
-                            ->where('level_twenty', $stage['twenty']);
-                    });
-                }
-            })
-            ->groupBy('win_loss', 'level_thirteen', 'level_sixteen', 'level_twenty')
-            ->get();
-
-        foreach ($baseQuery as $row) {
-            $wins = $row->win_loss == 1 ? $row->games_played : 0;
-            $losses = $row->win_loss == 0 ? $row->games_played : 0;
-
-            $transformedData['wins'] += $wins;
-            $transformedData['losses'] += $losses;
-            $transformedData['total_filter_type'] += $statFilter !== 'win_rate' ? ($row->total_filter_type ?? 0) : 0;
-        }
-
-        $transformedData['wins'] = round($transformedData['wins']);
-        $transformedData['losses'] = round($transformedData['losses']);
-
-        return $transformedData;
     }
 
     private function normalizeStatFilter($statFilter): string

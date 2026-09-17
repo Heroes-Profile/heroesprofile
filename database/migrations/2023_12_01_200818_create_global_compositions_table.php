@@ -15,7 +15,7 @@ class CreateGlobalCompositionsTable extends Migration
     {
         Schema::connection('heroesprofile_globals')->create('global_compositions', function (Blueprint $table) {
             $table->increments('global_compositions_id');
-            $table->string('game_version');
+            $table->integer('game_version');
             $table->tinyInteger('game_type');
             $table->tinyInteger('league_tier');
             $table->tinyInteger('hero_league_tier')->default(0);

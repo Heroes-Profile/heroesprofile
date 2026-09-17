@@ -34,6 +34,16 @@ class VerifyCloudTasksRequest
             abort(403, 'Invalid task token.');
         }
 
+        // Any Google account can mint a token for our audience; only tokens issued to
+        // the queue's own service account may run jobs.
+        $expected = config('global.cloud_tasks.service_account');
+
+        if (! $expected
+            || ($payload['email'] ?? null) !== $expected
+            || ($payload['email_verified'] ?? false) !== true) {
+            abort(403, 'Invalid task token.');
+        }
+
         return $next($request);
     }
 }

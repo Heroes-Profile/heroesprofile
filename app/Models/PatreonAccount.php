@@ -12,6 +12,14 @@ class PatreonAccount extends Model
 
     protected $connection = 'heroesprofile';
 
+    /** Serialized into page HTML along with the user; see BattlenetAccount::$hidden. */
+    protected $hidden = [
+        'access_token',
+        'remember_token',
+        'expires_in',
+        'email',
+    ];
+
     protected $fillable = [
         'battlenet_accounts_id',
         'patreon_id',

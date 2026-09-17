@@ -26,7 +26,7 @@ class LogIPAndUserAgent
 
         try {
             Cookie::queue(Cookie::forget('additional-battletags'));
-            $ip = ClientIpService::getClientIp($request);
+            $ip = substr((string) ClientIpService::getClientIp($request), 0, 45);
 
             $page = substr($request->path(), 0, 500);
             $userAgent = $request->header('User-Agent');
@@ -36,8 +36,9 @@ class LogIPAndUserAgent
                 'page' => $page,
                 'user_agent' => $userAgent,
             ]);
-        } catch (Exception $e) {
-            // Handle any exceptions if necessary
+        } catch (\Throwable $e) {
+            // A failed log line shouldn't take the page down with it.
+            report($e);
         }
 
         return $next($request);

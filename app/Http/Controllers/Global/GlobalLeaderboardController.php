@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Global;
 
-use App\Models\BannedAccount;
 use App\Models\BannedLeaderboardAccounts;
 use App\Models\BattlenetAccount;
 use App\Models\HeroesDataTalent;
@@ -144,13 +143,11 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                 ->whereHas('patreonAccount', fn ($query) => $query->where('site_flair', 1))
                 ->get(['blizz_id', 'region'])
                 ->keyBy(fn ($a) => $a->blizz_id.'|'.$a->region);
-            $bannedAccounts = BannedAccount::get()->keyBy(fn ($b) => $b->blizz_id.'|'.$b->region);
             $bannedLeaderboardAccounts = BannedLeaderboardAccounts::where('season', $season)->get()->keyBy(fn ($b) => $b->blizz_id.'|'.$b->region);
-            $privateAccounts = BattlenetAccount::where('private', 1)->get()->keyBy(fn ($a) => $a->blizz_id.'|'.$a->region);
             $authenticatedUser = Auth::user();
 
             $blizzIDRegionMapping = [];
-            $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber, $patreonAccounts, &$blizzIDRegionMapping, $tierrank, $bannedAccounts, $bannedLeaderboardAccounts, $privateAccounts, $authenticatedUser) {
+            $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber, $patreonAccounts, &$blizzIDRegionMapping, $tierrank, $bannedLeaderboardAccounts, $authenticatedUser) {
                 $key = $item->blizz_id.'|'.$item->region;
 
                 if (array_key_exists($key, $blizzIDRegionMapping)) {
@@ -160,28 +157,16 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
                 $patreonAccount = $patreonAccounts->get($key);
 
-                if ($bannedAccounts->has($key)) {
-                    $this->rankModifier++;
-
-                    return null;
-                }
-
                 if ($bannedLeaderboardAccounts->has($key)) {
                     $this->rankModifier++;
 
                     return null;
                 }
 
-                $isPrivate = $privateAccounts->get($key);
+                if ($this->globalDataService->isHiddenFrom($item->blizz_id, $item->region, $authenticatedUser)) {
+                    $this->rankModifier++;
 
-                if ($isPrivate) {
-                    // Only show if user is authenticated AND viewing their own account
-                    if (! $authenticatedUser ||
-                        ($authenticatedUser->blizz_id != $item->blizz_id || $authenticatedUser->region != $item->region)) {
-                        $this->rankModifier++;
-
-                        return null;
-                    }
+                    return null;
                 }
 
                 $item->patreon = ! is_null($patreonAccount) && ! $this->globalDataService->isFlairHidden('patreon', $item->blizz_id, $item->region);
@@ -227,32 +212,14 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
             // $weeksDifference = $this->globalDataService->matchPredictionGetWeeksSinceSeasonStart();
 
-            $bannedAccounts = BannedAccount::get()->keyBy(fn ($b) => $b->blizz_id.'|'.$b->region);
-            $privateAccounts = BattlenetAccount::where('private', 1)->get()->keyBy(fn ($a) => $a->blizz_id.'|'.$a->region);
             $authenticatedUser = Auth::user();
 
-            $filteredLeaderboard = $leaderboard->filter(function ($item) use ($bannedAccounts, $privateAccounts, $authenticatedUser) {
+            $filteredLeaderboard = $leaderboard->filter(function ($item) use ($authenticatedUser) {
                 if ($item->games_played < 20) {
                     return false;
                 }
 
-                $key = $item->blizz_id.'|'.$item->region;
-
-                if ($bannedAccounts->has($key)) {
-                    return false;
-                }
-
-                $isPrivate = $privateAccounts->get($key);
-
-                if ($isPrivate) {
-                    // Only show if user is authenticated AND viewing their own account
-                    if (! $authenticatedUser ||
-                        ($authenticatedUser->blizz_id != $item->blizz_id || $authenticatedUser->region != $item->region)) {
-                        return false;
-                    }
-                }
-
-                return true;
+                return ! $this->globalDataService->isHiddenFrom($item->blizz_id, $item->region, $authenticatedUser);
             })->values();
 
             $sortedLeaderboard = $filteredLeaderboard->sortByDesc('rating');
@@ -275,7 +242,13 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
     public function getLeaderboardRating(Request $request)
     {
-        // return response()->json($request->all());
+        // Only ever the signed-in user's own rating. The account is never taken from
+        // the request, which would let anyone look up anyone, private players included.
+        $user = Auth::user();
+
+        if ($user === null) {
+            return ['rating' => 0, 'games_played' => 0];
+        }
 
         $validationRules = [
             'season' => ['required', new SeasonInputValidation],
@@ -283,9 +256,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             'type' => 'required|in:player,hero,role',
             'groupsize' => ['required', new StackSizeInputValidation],
             'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation],
-            'region' => 'required|integer',
             'role' => ['sometimes', 'nullable', new RoleInputValidation],
-            'blizz_id' => 'required|integer',
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -297,13 +268,13 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                 'status' => 'failure to validate inputs',
             ];
         }
-        $blizz_id = $request['blizz_id'];
+        $blizz_id = $user->blizz_id;
         $hero = $request['hero'];
         $role = $this->globalDataService->getMMRTypeValue($request['role']);
 
         $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
         $season = $request['season'];
-        $region = $request['region'];
+        $region = $user->region;
 
         $type = $request['type'];
         $typeNumber = 0;

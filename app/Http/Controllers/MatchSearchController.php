@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BannedAccount;
 use App\Models\GameType;
 use App\Models\LeagueTier;
 use App\Models\Map;
@@ -48,7 +47,8 @@ class MatchSearchController extends Controller
     public function getData(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'game_type' => ['required', new GameTypeInputValidation],
+            // A list, so the per-item rule below always applies; a plain string skipped it.
+            'game_type' => ['required', 'array', new GameTypeInputValidation],
             'game_type.*' => 'in:'.implode(',', self::GAME_TYPES),
             'game_map' => ['sometimes', 'nullable', new GameMapInputValidation],
             'region' => ['sometimes', 'nullable', new RegionInputValidation],
@@ -349,14 +349,9 @@ class MatchSearchController extends Controller
 
     private function containsRestrictedPlayer($players): bool
     {
-        $privateAccounts = $this->globalDataService->getPrivateAccounts();
-        $bannedAccounts = BannedAccount::get();
+        $restricted = $this->globalDataService->restrictedAccountKeys();
 
-        return $players->contains(function ($player) use ($privateAccounts, $bannedAccounts) {
-            $matches = fn ($account) => $account['blizz_id'] == $player['blizz_id'] && $account['region'] == $player['region'];
-
-            return $privateAccounts->contains($matches) || $bannedAccounts->contains($matches);
-        });
+        return $players->contains(fn ($player) => isset($restricted[$player['blizz_id'].'|'.$player['region']]));
     }
 
     /**

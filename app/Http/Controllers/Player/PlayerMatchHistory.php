@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
 use App\Models\GameType;
-use App\Models\HeroesDataTalent;
 use App\Models\Map;
 use App\Rules\DateInputValidation;
 use App\Rules\GameMapInputValidation;
@@ -13,6 +12,7 @@ use App\Rules\HeroInputByIDValidation;
 use App\Rules\RoleInputValidation;
 use App\Rules\SeasonInputValidation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
@@ -122,6 +122,8 @@ class PlayerMatchHistory extends Controller
             ])
             ->where('blizz_id', $blizz_id)
             ->where('region', $region)
+            // Custom game pages are for opted-in participants only.
+            ->where('game_type', '<>', 0)
             ->orderByDesc('game_date')
             ->first();
         if ($latest_replay) {
@@ -149,6 +151,8 @@ class PlayerMatchHistory extends Controller
             'end_date' => ['sometimes', 'nullable', new DateInputValidation],
             'stack_size' => ['sometimes', 'nullable', 'string', 'in:All,Solo,Duo,3 Players,4 Players,5 Players'],
             'pagination_page' => 'required|integer|min:1',
+            'ff_blizzid' => 'sometimes|nullable|integer',
+            'ff_region' => 'sometimes|nullable|integer',
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -184,13 +188,11 @@ class PlayerMatchHistory extends Controller
         $ff_blizzid = $request['ff_blizzid'] ?? null;
         $ff_region = $request['ff_region'] ?? null;
 
-        $ff_replay_ids = null;
-        if ($ff_blizzid && $ff_region) {
-            $ff_replay_ids = DB::table('replay')
-                ->join('player', 'player.replayID', '=', 'replay.replayID')
-                ->where('player.blizz_id', $ff_blizzid)
-                ->where('replay.region', $ff_region)
-                ->pluck('replay.replayID');
+        // Filtering by a second account reveals which games they were in, so they are
+        // held to the same privacy rule as the player.
+        if ($ff_blizzid && $ff_region
+            && $this->globalDataService->isHiddenFrom($ff_blizzid, $ff_region, Auth::user())) {
+            return response()->json(['status' => 'private'], 403);
         }
 
         $pagination_page = $request['pagination_page'];
@@ -250,8 +252,12 @@ class PlayerMatchHistory extends Controller
                     ? $query->whereIn('stack_size', $stack_size)
                     : $query->where('stack_size', $stack_size);
             })
-            ->when(! is_null($ff_replay_ids), function ($query) use ($ff_replay_ids) {
-                return $query->whereIn('replay.replayID', $ff_replay_ids);
+            ->when($ff_blizzid && $ff_region, function ($query) use ($ff_blizzid, $ff_region) {
+                return $query->where('replay.region', $ff_region)
+                    ->whereExists(fn ($sub) => $sub->select(DB::raw(1))
+                        ->from('player as ff')
+                        ->whereColumn('ff.replayID', 'replay.replayID')
+                        ->where('ff.blizz_id', $ff_blizzid));
             })
             ->orderByDesc('game_date')
             ->paginate($perPage, ['*'], 'page', $pagination_page);
@@ -259,11 +265,9 @@ class PlayerMatchHistory extends Controller
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
-        $talentData = HeroesDataTalent::withAllStatuses()->get();
-        $talentData = $talentData->keyBy('talent_id');
+        $talentData = $this->globalDataService->getAllTalentsKeyed();
 
-        $maps = Map::all();
-        $maps = $maps->keyBy('map_id');
+        $maps = $this->globalDataService->getAllMapsKeyed();
 
         $modifiedResult = $result->map(function ($item) use ($heroData, $talentData, $maps) {
             $item->hero_id = $item->hero;

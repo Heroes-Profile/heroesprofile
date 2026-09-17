@@ -19,6 +19,8 @@ class CreateReplayDownloadsNotApiTable extends Migration
             $table->unsignedInteger('user_id')->nullable();
             $table->string('battletag', 255)->nullable();
             $table->dateTime('date_pulled')->nullable();
+
+            $table->index(['battletag', 'date_pulled'], 'replay_downloads_not_api_battletag_date_pulled');
         });
     }
 

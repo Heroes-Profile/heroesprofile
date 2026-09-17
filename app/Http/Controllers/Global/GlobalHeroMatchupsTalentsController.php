@@ -125,13 +125,6 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
                 'status' => 'failure to validate inputs',
             ];
         }
-        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
-        $allyEnemy = $this->globalDataService->getHeroes()->keyBy('name')[$request['ally_enemy']]->id;
-        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
-        $leagueTier = $request['league_tier'];
-        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
-        $type = $request['type'];
-        $talentView = $request['talent_view'];
 
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
@@ -239,6 +232,8 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
             ->filterByHero($hero)
             ->filterByAllyEnemy($allyEnemy)
             ->filterByLeagueTier($leagueTier)
+            // The talent rows below are map-filtered; the headline has to match them.
+            ->filterByGameMap($gameMap)
             ->excludeMirror(0)
             ->groupBy('win_loss')
             ->get();

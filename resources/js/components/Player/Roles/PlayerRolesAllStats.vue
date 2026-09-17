@@ -172,7 +172,6 @@
           { name: "Avg Takedowns", value: 'avg_takedowns', selected: false, flash: false},
           { name: "Avg Teamfight Damage Taken", value: 'avg_teamfight_damage_taken', selected: false, flash: false},
           { name: "Avg Teamfight Escapes", value: 'avg_teamfight_escapes', selected: false, flash: false},
-          { name: "Avg Teamfight Escapes", value: 'avg_teamfight_escapes', selected: false, flash: false},
           { name: "Avg Teamfight Healing", value: 'avg_teamfight_healing', selected: false, flash: false},
           { name: "Avg Teamfight Hero Damage", value: 'avg_teamfight_hero_damage', selected: false, flash: false},
           { name: "Avg Time CC Enemy Heroes", value: 'avg_time_cc_enemy_heroes', selected: false, flash: false},
@@ -182,7 +181,6 @@
           { name: "Avg Vengeance", value: 'avg_vengeance', selected: false, flash: false},
           { name: "Avg Watch Tower Captures", value: 'avg_watch_tower_captures', selected: false, flash: false},
           { name: "Avg Total Healing", value: 'combined_healing', selected: true, flash: false},
-          { name: "Hero", value: 'hero', selected: false, flash: false},
           { name: "KDA", value: 'kda', selected: false, flash: false},
           { name: "KDR", value: 'kdr', selected: false, flash: false},
           { name: "Losses", value: 'losses', selected: false, flash: false},
@@ -328,7 +326,11 @@ methods: {
   filterData(filteredData){
     this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
     this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
-    this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
+    // The filter gives a hero id; the server takes the name.
+    const hero = filteredData.single.Heroes
+      ? this.filters.heroes.find(h => h.code === filteredData.single.Heroes)
+      : null;
+    this.hero = hero ? hero.name : null;
     this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
     this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
     this.season = filteredData.multi.Season ? Array.from(filteredData.multi.Season) : null;

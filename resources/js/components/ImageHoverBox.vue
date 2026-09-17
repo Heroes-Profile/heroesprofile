@@ -1,7 +1,9 @@
 <template>
   <div class="imageHoverBox flex flex-col gap-2 my-2 text-bold">
     <h2>{{ title }}</h2>
-    <p v-html="paragraphOne" v-if="paragraphOne"></p>
+    <!-- Plain text only: battletags and team names come from uploaded replays. -->
+    <p v-if="playedBy">Played by : <b>{{ playedBy }}</b></p>
+    <p v-if="paragraphOne">{{ paragraphOne }}</p>
     <p v-if="hpOwner">{{ hpOwner }}</p>
     <p v-if="paragraphTwo">{{ paragraphTwo }}</p>
     <p v-if="paragraphThree">{{ paragraphThree }}</p>
@@ -18,6 +20,7 @@ export default {
   },
   props: {
     title: String,
+    playedBy: String,
     paragraphOne: String,
     paragraphTwo: String,
     paragraphThree: String,

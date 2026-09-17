@@ -25,13 +25,13 @@ class ThrottleOldReplayRequests
             return $next($request);
         }
 
-        $ip = ClientIpService::getClientIp($request);
-
-        if (WhitelistedIPsService::isWhitelisted($ip)) {
+        if (! $this->isReplayWebPath($request->path())) {
             return $next($request);
         }
 
-        if (! $this->isReplayWebPath($request->path())) {
+        $ip = ClientIpService::getClientIp($request);
+
+        if (WhitelistedIPsService::isWhitelisted($ip)) {
             return $next($request);
         }
 

@@ -128,7 +128,14 @@ class FriendFoeController extends Controller
             );
 
             if (! $latestReplayId || $dbCache->latest_replayID >= $latestReplayId) {
-                return response()->json(json_decode($dbCache->data, true));
+                // Stored before anyone on it may have gone private or been banned, so the
+                // privacy rule is applied again on the way out.
+                $rows = array_values(array_filter(
+                    json_decode($dbCache->data, true) ?? [],
+                    fn ($row) => ! $this->globalDataService->isHiddenFrom($row['blizz_id'], $row['region'])
+                ));
+
+                return response()->json($rows);
             }
         }
 
@@ -271,13 +278,10 @@ class FriendFoeController extends Controller
         $heroDataByID = $this->globalDataService->getHeroes();
         $heroDataByID = $heroDataByID->keyBy('id');
 
-        $privateAccounts = $this->globalDataService->getPrivateAccounts();
-        $checkedData = $groupedResultsByBlizzId->reject(function ($group) use ($privateAccounts, $region) {
-            $blizzId = $group->first()->blizz_id;
-
-            return $privateAccounts->contains(function ($account) use ($blizzId, $region) {
-                return $account['blizz_id'] == $blizzId && $account['region'] == $region;
-            });
+        // Private and banned team-mates and opponents are left out entirely. No viewer
+        // exception: this runs in the async worker and the result is shared by everyone.
+        $checkedData = $groupedResultsByBlizzId->reject(function ($group) use ($region) {
+            return $this->globalDataService->isHiddenFrom($group->first()->blizz_id, $region);
         });
 
         // Same rule as checkIfSiteFlair: only Patreon accounts with site flair enabled.

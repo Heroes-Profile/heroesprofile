@@ -58,7 +58,7 @@
         this.$emit('cancel-request');
       },
     },
-    beforeDestroy() {
+    beforeUnmount() {
       // Clear the timer interval to prevent memory leaks when the component is destroyed
       clearInterval(this.timerInterval);
     },

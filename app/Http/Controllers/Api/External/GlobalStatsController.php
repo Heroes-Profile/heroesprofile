@@ -386,6 +386,12 @@ class GlobalStatsController extends Controller
             ], 422);
         }
 
+        // Past the support check above, and the batch rate limit has applied. The site's
+        // own routes never set this, so they never fan out.
+        if ($request->boolean('group_by_map')) {
+            $request->attributes->set(GlobalQueryService::GROUP_BY_MAP_ALLOWED, true);
+        }
+
         foreach ($requires as $parameter) {
             if (! $request->filled($parameter)) {
                 return response()->json([
@@ -401,13 +407,6 @@ class GlobalStatsController extends Controller
             if (! $request->has($key)) {
                 $request->merge([$key => $value]);
             }
-        }
-
-        // The site's talent pages offer it; the API does not.
-        if ($request->input('timeframe_type') === 'last_update') {
-            return response()->json([
-                'error' => ['code' => 'invalid_parameters', 'message' => 'One or more parameters are invalid.', 'errors' => ['`timeframe_type` must be one of minor, major, major_grouped.']],
-            ], 422);
         }
 
         if ($rejection = $this->rejectUnqueryableTimeframe($request)) {
@@ -471,7 +470,14 @@ class GlobalStatsController extends Controller
      */
     private function rejectUnqueryableTimeframe(Request $request): ?Response
     {
-        $timeframes = (array) $request->input('timeframe', []);
+        $input = $request->input('timeframe', []);
+
+        // Runs before the list is split for the controllers, so a comma string is split
+        // here. Checked whole, `a,b` matched no build and every multi-patch call failed.
+        $timeframes = array_values(array_filter(
+            array_map('trim', is_array($input) ? $input : explode(',', (string) $input)),
+            fn ($timeframe) => $timeframe !== ''
+        ));
 
         if ($timeframes === []) {
             return null;

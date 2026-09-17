@@ -1,18 +1,16 @@
 <template>
   <div class="grid grid-cols-2 gap-4 max-w-[1500px] mx-auto">
-    <div class="col-span-1">
-      <h2 class="text-2xl">Master Branch Commits</h2>
-      <ul>
-        <li v-for="commit in masterCommits" :key="commit.sha" class="commit-item ">
-          <span class="text-xs block"><a class="link" :href="`https://github.com/${commit.author.login}`" target="_blank">{{ commit.author.login }}</a> committed <a class="link" :href="`https://github.com/Heroes-Profile/heroesprofile/commit/${commit.sha}`" target="_blank">{{ truncateSha(commit.sha) }}</a> on {{ formatDate(commit.commit.author.date) }}: </span><span class="border p-1 block bg-blue">{{ commit.commit.message }} </span>
-        </li>
-      </ul>
-    </div>
-    <div class="col-span-1">
-      <h2 class="text-2xl">Develop Branch Commits</h2>
-      <ul>
-        <li v-for="commit in developerCommits" :key="commit.sha" class="commit-item">
-          <span class="text-xs block"><a class="link" :href="`https://github.com/${commit.author.login}`" target="_blank">{{ commit.author.login }}</a> committed <a class="link" :href="`https://github.com/Heroes-Profile/heroesprofile/commit/${commit.sha}`" target="_blank">{{ truncateSha(commit.sha) }}</a> on {{ formatDate(commit.commit.author.date) }}: </span><span class="border p-1 block bg-gray-dark">{{ commit.commit.message }} </span>
+    <div v-for="column in columns" :key="column.title" class="col-span-1">
+      <h2 class="text-2xl">{{ column.title }}</h2>
+      <p v-if="column.commits === null" class="text-sm">Couldn't load commits from GitHub. Try again in a few minutes.</p>
+      <ul v-else>
+        <li v-for="commit in column.commits" :key="commit.sha" class="commit-item">
+          <span class="text-xs block">
+            <a v-if="commit.author_login" class="link" :href="`https://github.com/${commit.author_login}`" target="_blank">{{ commit.author_login }}</a>
+            <template v-else>{{ commit.author_name }}</template>
+            committed <a class="link" :href="commit.url" target="_blank">{{ commit.short_sha }}</a> on {{ formatDate(commit.date) }}:
+          </span>
+          <span class="border p-1 block" :class="column.background">{{ commit.message }}</span>
         </li>
       </ul>
     </div>
@@ -21,67 +19,34 @@
 
 <style scoped>
 .commit-item {
-  margin-bottom: 10px; /* Adjust the value as needed for the desired space */
+  margin-bottom: 10px;
 }
 </style>
-
 
 <script>
 import moment from 'moment-timezone';
 
 export default {
   name: 'GithubChanges',
-  components: {
-  },
   props: {
-    access_token: String,
+    masterCommits: { type: Array, default: null },
+    developCommits: { type: Array, default: null },
   },
-  data() {
-    return {
-      masterCommits: [],
-      developerCommits: [],
-    };
-  },
-  mounted() {
-    const owner = 'Heroes-Profile';
-    const repo = 'heroesprofile';
-
-    // Fetch commits for the master branch
-    this.fetchCommits(owner, repo, 'master', this.access_token)
-      .then(response => {
-        this.masterCommits = response.data;
-      })
-      .catch(error => {
-        console.error('Error fetching GitHub commits for the master branch:', error);
-      });
-
-    // Fetch commits for the developer branch
-    this.fetchCommits(owner, repo, 'develop', this.access_token)
-      .then(response => {
-        this.developerCommits = response.data;
-      })
-      .catch(error => {
-        console.error('Error fetching GitHub commits for the developer branch:', error);
-      });
+  computed: {
+    columns() {
+      return [
+        { title: 'Master Branch Commits', commits: this.masterCommits, background: 'bg-blue' },
+        { title: 'Develop Branch Commits', commits: this.developCommits, background: 'bg-gray-dark' },
+      ];
+    },
   },
   methods: {
-    fetchCommits(owner, repo, branch, token) {
-      const apiUrl = `https://api.github.com/repos/${owner}/${repo}/commits?sha=${branch}`;
-
-      return this.$axios.get(apiUrl, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-    },
     formatDate(dateString) {
-      const originalDate = moment.tz(dateString, 'Atlantic/Reykjavik'); // Assuming date strings are in UTC
-      const localDate = originalDate.clone().tz(moment.tz.guess());
+      if (!dateString) {
+        return '';
+      }
 
-      return localDate.format('MM/DD/YYYY h:mm:ss a');
-    },
-    truncateSha(sha) {
-      return sha.slice(0, 7);
+      return moment.utc(dateString).tz(moment.tz.guess()).format('MM/DD/YYYY h:mm:ss a');
     },
   },
 };

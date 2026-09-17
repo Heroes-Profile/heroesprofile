@@ -3,9 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Award;
+use App\Models\BattlenetAccount;
 use App\Models\BattletagNotAllowedDownloadReplay;
-use App\Models\HeroesDataTalent;
-use App\Models\Map;
 use App\Models\ReplayExperienceBreakdownBlob;
 use App\Rules\ReplayIDValidation;
 use Carbon\Carbon;
@@ -129,7 +128,6 @@ class SingleMatchController extends Controller
                 Rule::requiredIf(fn () => $request->input('esport') === 'HeroesInternational'),
                 'in:main,nationscup',
             ],
-            'user' => 'nullable',
             'replayID' => [
                 'required',
                 'integer',
@@ -301,26 +299,12 @@ class SingleMatchController extends Controller
             // ->toSql();
             ->get();
 
-        $talentData = HeroesDataTalent::withAllStatuses()->get();
-        $talentData = $talentData->keyBy('talent_id');
+        $talentData = $this->globalDataService->getAllTalentsKeyed();
 
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
-        $maps = Map::all();
-        $maps = $maps->keyBy('map_id');
-
-        $privateAccounts = $this->globalDataService->getPrivateAccounts();
-        $user = $request['user'];
-
-        if ($user) {
-            $userBlizzId = $user['blizz_id'];
-            $userRegion = $user['region'];
-
-            $privateAccounts = $privateAccounts->reject(function ($item) use ($userBlizzId, $userRegion) {
-                return $item['blizz_id'] === $userBlizzId && $item['region'] === $userRegion;
-            });
-        }
+        $maps = $this->globalDataService->getAllMapsKeyed();
 
         $replayDownloadBlocked = false;
         if (Auth::check()) {
@@ -332,7 +316,7 @@ class SingleMatchController extends Controller
             }
         }
 
-        $groupedData = $result->groupBy('replayID')->map(function ($replayGroup) use ($privateAccounts, $result, $talentData, $heroData, $maps, $replayID, $replayDownloadBlocked) {
+        $groupedData = $result->groupBy('replayID')->map(function ($replayGroup) use ($result, $talentData, $heroData, $maps, $replayID, $replayDownloadBlocked) {
             $totalSeconds = $replayGroup[0]->game_length - 70;
             $minutes = floor($totalSeconds / 60);
             $seconds = $totalSeconds % 60;
@@ -369,8 +353,18 @@ class SingleMatchController extends Controller
                 'match_games' => $this->esport ? $this->getMatchGames($replayID, $maps) : null,
             ];
 
-            $replayDetails['players'] = $replayGroup->groupBy('team')->map(function ($teamGroup) use ($privateAccounts, $heroData, $talentData, $region) {
-                return $teamGroup->map(function ($row) use ($privateAccounts, $heroData, $talentData, $region) {
+            // Looked up once for the ten players rather than per player.
+            $awards = $this->esport ? collect() : Award::whereIn('award_id', $replayGroup->pluck('match_award')->filter()->unique())->get()->keyBy('award_id');
+            $siteFlairIds = $this->esport ? [] : BattlenetAccount::without(['patreonAccount', 'userSettings'])
+                ->where('region', $region)
+                ->whereIn('blizz_id', $replayGroup->pluck('blizz_id')->unique())
+                ->whereHas('patreonAccount', fn ($query) => $query->where('site_flair', 1))
+                ->pluck('blizz_id')
+                ->flip()
+                ->all();
+
+            $replayDetails['players'] = $replayGroup->groupBy('team')->map(function ($teamGroup) use ($heroData, $talentData, $region, $awards, $siteFlairIds) {
+                return $teamGroup->map(function ($row) use ($heroData, $talentData, $region, $awards, $siteFlairIds) {
                     $hero_level_calculated = $row->hero_level;
                     $avg_hero_level = $row->hero_level;
 
@@ -397,9 +391,7 @@ class SingleMatchController extends Controller
                     }
                     $blizz_id = $row->blizz_id;
 
-                    $containsAccount = $privateAccounts->contains(function ($account) use ($blizz_id, $region) {
-                        return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
-                    });
+                    $containsAccount = $this->globalDataService->isHiddenFrom($blizz_id, $region, Auth::user());
 
                     if ($row->level_one) {
                         if ($row->level_one != 0) {
@@ -455,8 +447,10 @@ class SingleMatchController extends Controller
                         'team' => $row->team,
                         'party' => ! $this->esport ? $row->party : null,
                         'hero' => $heroData[$row->hero],
-                        'patreon_subscriber' => ! $this->esport ? $this->globalDataService->checkIfSiteFlair($blizz_id, $region) : null,
-                        'match_award' => ! $this->esport ? Award::where('award_id', $row->match_award)->first() : null,
+                        'patreon_subscriber' => ! $this->esport
+                            ? $blizz_id !== null && isset($siteFlairIds[$blizz_id]) && ! $this->globalDataService->isFlairHidden('patreon', $blizz_id, $region)
+                            : null,
+                        'match_award' => ! $this->esport ? $awards->get($row->match_award) : null,
                         'hero_level' => $containsAccount ? null : $hero_level_calculated,
                         'avg_hero_level' => $containsAccount ? null : $avg_hero_level,
                         'account_level' => ($this->esport || $containsAccount) ? null : $row->account_level,

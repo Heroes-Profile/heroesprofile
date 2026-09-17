@@ -16,6 +16,8 @@ return new class extends Migration
             $table->integer('whitelist_ips_id')->autoIncrement();
             $table->string('ip', 45)->nullable()->collation('utf8mb4_0900_ai_ci');
             $table->string('reason', 45)->nullable()->collation('utf8mb4_0900_ai_ci');
+
+            $table->index('ip', 'whitelist_ips_ip');
         });
 
         DB::statement('ALTER TABLE `heroesprofile_logs`.`whitelist_ips` ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci');

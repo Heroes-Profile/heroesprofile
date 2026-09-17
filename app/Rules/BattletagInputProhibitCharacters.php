@@ -6,38 +6,17 @@ use Illuminate\Contracts\Validation\Rule;
 
 class BattletagInputProhibitCharacters implements Rule
 {
-    // Block common SQL injection and XSS characters
-    protected $prohibitedCharacters = [' ', '?', '%', '\'', '"', '(', ')', ';', '--', '/*', '*/', '<', '>', '=', '|', '\\', '*'];
-
-    // Also check for common SQL injection patterns
-    protected $prohibitedPatterns = [
-        '/(\bOR\b|\bAND\b)/i', // OR/AND keywords
-        '/\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|EXEC|EXECUTE)\b/i', // SQL keywords
-        '/\bwaitfor\b/i', // SQL Server time delay
-        '/\bsleep\b/i', // MySQL time delay
-        '/\bpg_sleep\b/i', // PostgreSQL time delay
-        '/DBMS_PIPE/i', // Oracle time delay
-        '/\bif\s*\(/i', // Conditional statements
-        '/\bXOR\b/i', // XOR operations
-    ];
+    /**
+     * What a battletag can contain: letters in any script, digits, and an optional
+     * #discriminator (partial while typing). Allowlisted rather than blocklisted:
+     * queries are parameterised, and the old SQL-keyword list refused real names
+     * (Or, Drop, Sleep) while letting the LIKE wildcard _ through.
+     */
+    private const PATTERN = '/^[\p{L}\p{M}\p{N}]+(#\d*)?$/u';
 
     public function passes($attribute, $value)
     {
-        // Check for prohibited characters
-        foreach ($this->prohibitedCharacters as $character) {
-            if (strpos($value, $character) !== false) {
-                return false;
-            }
-        }
-
-        // Check for prohibited patterns
-        foreach ($this->prohibitedPatterns as $pattern) {
-            if (preg_match($pattern, $value)) {
-                return false;
-            }
-        }
-
-        return true;
+        return is_string($value) && preg_match(self::PATTERN, $value) === 1;
     }
 
     public function message()

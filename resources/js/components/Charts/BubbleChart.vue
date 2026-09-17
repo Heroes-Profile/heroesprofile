@@ -54,7 +54,10 @@
             ]
           }));
 
-          new Chart(ctx, {
+          // The images can finish loading after the page has moved on.
+          if (this.unmounted) return;
+
+          this.chart = new Chart(ctx, {
             type: 'bubble',
             data: {
               labels: "",
@@ -99,6 +102,10 @@
             }
           });
         });
+      },
+      beforeUnmount() {
+        this.unmounted = true;
+        this.chart?.destroy();
       },
       methods: {
         calculateRadius(hero) {

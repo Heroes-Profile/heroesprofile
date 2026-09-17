@@ -37,6 +37,8 @@ class CreateBattlenetAccountsTable extends Migration
             // Indexes
             $table->index('battlenet_id');
             $table->index('private_changed_at');
+            $table->index(['blizz_id', 'region'], 'battlenet_accounts_blizz_id_region');
+            $table->index('private', 'battlenet_accounts_private');
         });
     }
 

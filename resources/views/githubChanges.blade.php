@@ -1,12 +1,12 @@
-@extends('layouts.app', $bladeGlobals)    
+@extends('layouts.app', $bladeGlobals)
 @section('title', 'Github Changes')
 @section('meta_keywords', 'Github Changes')
 @section('meta_description', 'Github Changes')
 @section('content')
-  <github-changes 
-    :user="{{ json_encode(Auth::user()) }}"
+  <github-changes
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
-    :access_token="{{ json_encode($access_token) }}"
+    :master-commits="{{ json_encode($masterCommits) }}"
+    :develop-commits="{{ json_encode($developCommits) }}"
   >
   </github-changes >
 @endsection

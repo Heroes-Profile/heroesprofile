@@ -680,7 +680,7 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'uses' => ['globals'],
             // Validated by the shared globals rules, read by nothing here. Leaving them
             // documented would advertise a filter that silently does nothing.
-            'except' => ['role', 'groupsize', 'mirror'],
+            'except' => ['role', 'groupsize'],
             'async' => true,
             'parameters' => [
                 'group_by_map' => ['enum' => ['true', 'false'], 'description' => 'Report one result set per playable map rather than one across all of them, keyed by map name. Answers with a job id like any other global query, and counts as one call however many maps it covers — a multiplier may be applied later if that turns out to be abused.'],
@@ -701,7 +701,7 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             // `hero` is the parameter this endpoint exists in order not to need.
             // Role and party size are validated by the shared rules and read by
             // nothing here.
-            'except' => ['hero', 'role', 'groupsize', 'mirror'],
+            'except' => ['hero', 'role', 'groupsize'],
             'async' => true,
             'parameters' => [
                 // Redeclared rather than inherited from the set, which marks these
@@ -738,8 +738,8 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'page' => '/Global/Talents/Builder',
             'uses' => ['globals'],
             // The builder page offers no role, party-size or stat filter, and the
-            // controller reads none of them, nor `mirror`.
-            'except' => ['role', 'groupsize', 'statfilter', 'mirror'],
+            // controller reads none of them.
+            'except' => ['role', 'groupsize', 'statfilter'],
             'async' => true,
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],

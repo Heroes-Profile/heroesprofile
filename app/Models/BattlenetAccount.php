@@ -17,6 +17,16 @@ class BattlenetAccount extends Authenticatable
 
     protected $connection = 'heroesprofile';
 
+    /**
+     * Pages pass json_encode(Auth::user()) to Vue, which writes every attribute into
+     * the HTML. Credentials and the raw OAuth response never go there.
+     */
+    protected $hidden = [
+        'battlenet_access_token',
+        'remember_token',
+        'response',
+    ];
+
     protected $fillable = [
         'battlenet_accounts_id',
         'battlenet_id',

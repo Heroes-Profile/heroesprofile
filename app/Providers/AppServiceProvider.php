@@ -34,6 +34,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         if (config('app.env') === 'production') {
+            // Links in emails and redirects come from this deploy's APP_URL, never
+            // from the request's host.
+            \URL::forceRootUrl(config('app.url'));
             \URL::forceScheme('https');
         }
 

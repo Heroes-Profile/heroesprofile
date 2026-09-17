@@ -22,6 +22,9 @@
       <div v-if="emailSent" class="mx-auto max-w-[1500px] bg-teal p-4 text-center">
         <p>Email Sent Successfully!</p>
       </div>
+      <div v-if="sendError" class="mx-auto max-w-[1500px] bg-red p-4 text-center">
+        <p>{{ sendError }}</p>
+      </div>
 
     </div>
 
@@ -29,6 +32,8 @@
 </template>
 
 <script>
+const RECAPTCHA_MESSAGE = "We couldn't verify this message with reCAPTCHA. Please allow reCAPTCHA (google.com) in your browser or blocker and try again, or email contact@heroesprofile.com directly.";
+
 export default {
   name: 'ExampleComponent',
   components: {
@@ -52,6 +57,7 @@ export default {
       },
       infoText1: "If you find an issue on the website, or have general questions, please use the contact form below or email us directly at ZEMILL@heroesprofile.com",
       emailSent: false,
+      sendError: null,
     }
   },
   created(){
@@ -96,6 +102,7 @@ export default {
     async submitForm() {
       this.isLoading = true;
       this.emailSent = false;
+      this.sendError = null;
 
       if (this.cancelTokenSource) {
         this.cancelTokenSource.cancel('Request canceled');
@@ -105,6 +112,12 @@ export default {
         // Get reCAPTCHA token
         const recaptchaToken = await this.getRecaptchaToken();
         this.formData.recaptcha_token = recaptchaToken;
+
+        // reCAPTCHA is required; a blocked script means no token and the server would refuse.
+        if (this.recaptchaSiteKey && !recaptchaToken) {
+          this.sendError = RECAPTCHA_MESSAGE;
+          return;
+        }
 
         const response = await this.$axios.post("/api/v1/contact", {
           battletag: this.formData.battletag,
@@ -123,7 +136,9 @@ export default {
           this.emailSent = true;
         }
       }catch(error){
-        //Do something here
+        if (error.response?.data?.error === 'recaptcha_failed') {
+          this.sendError = RECAPTCHA_MESSAGE;
+        }
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;

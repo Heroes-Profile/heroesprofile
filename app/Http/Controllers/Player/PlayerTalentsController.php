@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
 use App\Models\GameType;
-use App\Models\HeroesDataTalent;
 use App\Models\Map;
 use App\Rules\DateInputValidation;
 use App\Rules\GameMapInputValidation;
@@ -127,8 +126,7 @@ class PlayerTalentsController extends Controller
             // ->toSql();
             ->get();
 
-        $talentData = HeroesDataTalent::withAllStatuses()->get();
-        $talentData = $talentData->keyBy('talent_id');
+        $talentData = $this->globalDataService->getAllTalentsKeyed();
 
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');

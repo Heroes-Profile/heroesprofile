@@ -44,8 +44,14 @@
             <th @click="sortTable('name')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Map
             </th>    
-            <th @click="sortTable('win_rate')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Games
+            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <span @click="sortTable('win_rate')">
+                Win Rate
+              </span>
+              |
+              <span @click="sortTable('games_played')">
+                Total Games
+              </span>
             </th>
             <th @click="sortTable('kda')" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               <div class="">
@@ -172,7 +178,6 @@ export default {
         { name: "Avg Takedowns", value: 'avg_takedowns', selected: false, flash: false},
         { name: "Avg Teamfight Damage Taken", value: 'avg_teamfight_damage_taken', selected: false, flash: false},
         { name: "Avg Teamfight Escapes", value: 'avg_teamfight_escapes', selected: false, flash: false},
-        { name: "Avg Teamfight Escapes", value: 'avg_teamfight_escapes', selected: false, flash: false},
         { name: "Avg Teamfight Healing", value: 'avg_teamfight_healing', selected: false, flash: false},
         { name: "Avg Teamfight Hero Damage", value: 'avg_teamfight_hero_damage', selected: false, flash: false},
         { name: "Avg Time CC Enemy Heroes", value: 'avg_time_cc_enemy_heroes', selected: false, flash: false},
@@ -182,7 +187,6 @@ export default {
         { name: "Avg Vengeance", value: 'avg_vengeance', selected: false, flash: false},
         { name: "Avg Watch Tower Captures", value: 'avg_watch_tower_captures', selected: false, flash: false},
         { name: "Avg Total Healing", value: 'combined_healing', selected: true, flash: false},
-        { name: "Hero", value: 'hero', selected: false, flash: false},
         { name: "KDA", value: 'kda', selected: false, flash: false},
         { name: "KDR", value: 'kdr', selected: false, flash: false},
         { name: "Losses", value: 'losses', selected: false, flash: false},
@@ -287,6 +291,7 @@ export default {
           type: "all",
           page: "map",
           game_map: this.map,
+          minimumgames: this.minimumgames,
           season: this.season,
           start_date: this.startdate,
           end_date: this.enddate,
@@ -330,7 +335,10 @@ export default {
       if (filteredData.single.Heroes) {
         const hero = this.filters.heroes.find(h => h.code === filteredData.single.Heroes);
         this.hero = hero ? hero.name : null;
+      } else {
+        this.hero = null;
       }
+      this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
       this.season = filteredData.multi.Season ? Array.from(filteredData.multi.Season) : null;
       this.startdate = filteredData.single["From Date"] || null;
       this.enddate = filteredData.single["To Date"] || null;
