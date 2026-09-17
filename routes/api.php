@@ -84,7 +84,7 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
     Route::post('account/billing/payment-method', [BillingController::class, 'savePaymentMethod']);
     Route::post('account/billing/subscribe', [BillingController::class, 'subscribe'])->middleware('blockSuspendedApi');
     Route::post('account/billing/cancel', [BillingController::class, 'cancel']);
-    Route::post('account/billing/resume', [BillingController::class, 'resume']);
+    Route::post('account/billing/resume', [BillingController::class, 'resume'])->middleware('blockSuspendedApi');
     Route::get('account/billing/invoices', [BillingController::class, 'invoices']);
 
     // Admin console. Same session guard as the rest of the portal, plus the grant.

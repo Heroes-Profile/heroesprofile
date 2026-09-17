@@ -216,13 +216,10 @@ class ApiKeyResolver
 
         $lapsed = $row->ends_at !== null && now()->gte($row->ends_at);
 
-        $comped = false;
-        foreach ($approvals as $column) {
-            if ((bool) ($row->{$column} ?? false)) {
-                $comped = true;
-                break;
-            }
-        }
+        // Matches Cashier's own `valid()`: trialing counts, and past_due does not,
+        // because Cashier deactivates it by default. Diverging here is what would deny
+        // a trial the billing page shows as fine.
+        $subscriptionActive = in_array($row->stripe_status, ['active', 'trialing'], true) && ! $lapsed;
 
         // Resolved from config, the same map the billing page and usage table use.
         // Reading the plan from a second place is what let the two disagree.
@@ -234,12 +231,16 @@ class ApiKeyResolver
         $planIds = [];
         $planName = null;
 
-        if ($purchasedPlanId !== null) {
+        // A cancelled or lapsed purchase grants nothing. Counting it anyway let an account
+        // with any other entitlement keep the paid allowance for free.
+        if ($purchasedPlanId !== null && $subscriptionActive) {
             $planIds[] = $purchasedPlanId;
             $planName = config("api_plans.plans.{$purchasedPlanId}.key");
         }
 
-        foreach ($this->plansFromApprovalFlags($row) as $compedPlanId) {
+        $compedPlanIds = $this->plansFromApprovalFlags($row);
+
+        foreach ($compedPlanIds as $compedPlanId) {
             $planIds[] = $compedPlanId;
             $planName ??= config("api_plans.plans.{$compedPlanId}.key");
         }
@@ -290,11 +291,9 @@ class ApiKeyResolver
             'suspension_reason' => $row->suspension_reason,
             'plan_ids' => array_values(array_unique($planIds)),
             'plan' => $planName,
-            // Matches Cashier's own `valid()`: trialing counts, and past_due does
-            // not, because Cashier deactivates it by default. Diverging here is what
-            // would deny a trial the billing page shows as fine.
-            'subscription_active' => in_array($row->stripe_status, ['active', 'trialing'], true) && ! $lapsed,
-            'comped' => $comped || $patreonPlanId !== null,
+            'subscription_active' => $subscriptionActive,
+            // Comped means a plan was actually granted, not that some approval flag is set.
+            'comped' => $compedPlanIds !== [] || $patreonPlanId !== null,
             'subscription_unresolved' => $unresolvedReason !== null,
             'unresolved_reason' => $unresolvedReason,
         ];
