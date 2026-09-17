@@ -773,9 +773,8 @@ class GlobalDataService
 
     public function shouldBypassGlobalCache(): bool
     {
-        $host = request()->getHost();
-        $allowed = str_contains($host, 'develop')
-            || in_array($host, ['localhost', '127.0.0.1'], true)
+        // The deploy's own APP_URL, not the request's host: see GlobalDebugController.
+        $allowed = str_contains((string) config('app.url'), 'develop')
             || ! app()->environment('production');
 
         if (! $allowed) {
