@@ -116,16 +116,7 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
             return ['talentData' => $this->formatTalentData($talents, [])];
         }
 
-        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
-        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
-        $leagueTier = $request['league_tier'];
-        $heroLeagueTier = $request['hero_league_tier'];
-        $roleLeagueTier = $request['role_league_tier'];
-        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
-        $heroLevel = $request['hero_level'];
-        $region = $this->globalDataService->getRegionFilterValues($request['region']);
-        $mirror = $request['mirror'];
         $cacheKey = $this->globalCacheKey('GlobalTalentsBuilder', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all());
 
         return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeTalentBuilderData');

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
 use App\Models\GameType;
-use App\Models\HeroesDataTalent;
 use App\Models\Map;
 use App\Models\MasterMMRDataAR;
 use App\Models\MasterMMRDataHL;
@@ -249,11 +248,9 @@ class PlayerHeroesMapsRolesController extends Controller
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
-        $maps = Map::all();
-        $maps = $maps->keyBy('map_id');
+        $maps = $this->globalDataService->getAllMapsKeyed();
 
-        $talentData = HeroesDataTalent::withAllStatuses()->get();
-        $talentData = $talentData->keyBy('talent_id');
+        $talentData = $this->globalDataService->getAllTalentsKeyed();
 
         $gameTypes = $this->globalDataService->getGameTypeIDtoString();
 

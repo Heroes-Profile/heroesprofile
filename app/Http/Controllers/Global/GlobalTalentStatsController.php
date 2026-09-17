@@ -96,19 +96,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ];
         }
 
-        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
-
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
-
-        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
-        $leagueTier = $request['league_tier'];
-        $heroLeagueTier = $request['hero_league_tier'];
-        $roleLeagueTier = $request['role_league_tier'];
-        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
-        $heroLevel = $request['hero_level'];
-        $region = $this->globalDataService->getRegionFilterValues($request['region']);
-        $statFilter = $this->normalizeStatFilter($request['statfilter'] ?? null);
-        $mirror = $request['mirror'];
 
         $cacheKey = $this->globalCacheKey('GlobalHeroTalentStats', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all());
 
@@ -247,23 +235,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             ];
         }
 
-        $heroModel = $this->globalDataService->getHeroModel($request['hero']);
-        $hero = $heroModel->id;
-
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
-
-        $gameTypeRecords = GameType::whereIn('short_name', $request['game_type'])->get();
-        $gameType = $gameTypeRecords->pluck('type_id')->toArray();
-
-        $leagueTier = $request['league_tier'];
-        $heroLeagueTier = $request['hero_league_tier'];
-        $roleLeagueTier = $request['role_league_tier'];
-        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
-        $heroLevel = $request['hero_level'];
-        $region = $this->globalDataService->getRegionFilterValues($request['region']);
-        $statFilter = $this->normalizeStatFilter($request['statfilter'] ?? null);
-        $mirror = $request['mirror'];
-        $talentbuildType = $request['talentbuildtype'];
 
         $cacheKey = $this->globalCacheKey('GlobalHeroTalentStatsBuilds', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all());
 
@@ -827,73 +799,6 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         }
 
         return $buildDataMap;
-    }
-
-    private function getTopBuildsData($build, $win_loss, $hero, $gameVersion, $gameType, $leagueTier, $heroLeagueTier, $roleLeagueTier, $gameMap, $heroLevel, $mirror, $region, $statFilter)
-    {
-        $statFilter = $this->normalizeStatFilter($statFilter);
-
-        $buildStages = [
-            ['thirteen' => 0, 'sixteen' => 0, 'twenty' => 0],      // Levels 1-10
-            ['thirteen' => $build->level_thirteen, 'sixteen' => 0, 'twenty' => 0],  // Levels 1-13
-            ['thirteen' => $build->level_thirteen, 'sixteen' => $build->level_sixteen, 'twenty' => 0],  // Levels 1-16
-            ['thirteen' => $build->level_thirteen, 'sixteen' => $build->level_sixteen, 'twenty' => $build->level_twenty],  // Full build
-        ];
-
-        $transformedData = [
-            'wins' => 0,
-            'losses' => 0,
-            'total_filter_type' => 0,
-        ];
-
-        $baseQuery = GlobalHeroTalents::query()
-            ->join('heroesprofile_globals.talent_combinations as talent_combinations', 'talent_combinations.talent_combination_id', '=', 'global_hero_talents.talent_combination_id')
-            ->select('win_loss', 'level_thirteen', 'level_sixteen', 'level_twenty')
-            ->selectRaw('SUM(games_played) AS games_played')
-            ->when($statFilter !== 'win_rate', function ($query) use ($statFilter) {
-                $column = str_replace('`', '``', $statFilter);
-
-                return $query->selectRaw("SUM(`global_hero_talents`.`{$column}`) as total_filter_type");
-            })
-            ->filterByGameVersion($gameVersion)
-            ->filterByGameType($gameType)
-            ->filterByHero($hero)
-            ->filterByLeagueTier($leagueTier)
-            ->filterByHeroLeagueTier($heroLeagueTier)
-            ->filterByRoleLeagueTier($roleLeagueTier)
-            ->filterByGameMap($gameMap)
-            ->filterByHeroLevel($heroLevel)
-            ->excludeMirror($mirror)
-            ->filterByRegion($region)
-            ->where('level_one', $build->level_one)
-            ->where('level_four', $build->level_four)
-            ->where('level_seven', $build->level_seven)
-            ->where('level_ten', $build->level_ten)
-            ->where(function ($query) use ($buildStages) {
-                foreach ($buildStages as $stage) {
-                    $query->orWhere(function ($q) use ($stage) {
-                        $q->where('level_thirteen', $stage['thirteen'])
-                            ->where('level_sixteen', $stage['sixteen'])
-                            ->where('level_twenty', $stage['twenty']);
-                    });
-                }
-            })
-            ->groupBy('win_loss', 'level_thirteen', 'level_sixteen', 'level_twenty')
-            ->get();
-
-        foreach ($baseQuery as $row) {
-            $wins = $row->win_loss == 1 ? $row->games_played : 0;
-            $losses = $row->win_loss == 0 ? $row->games_played : 0;
-
-            $transformedData['wins'] += $wins;
-            $transformedData['losses'] += $losses;
-            $transformedData['total_filter_type'] += $statFilter !== 'win_rate' ? ($row->total_filter_type ?? 0) : 0;
-        }
-
-        $transformedData['wins'] = round($transformedData['wins']);
-        $transformedData['losses'] = round($transformedData['losses']);
-
-        return $transformedData;
     }
 
     private function normalizeStatFilter($statFilter): string

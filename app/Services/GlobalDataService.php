@@ -826,6 +826,18 @@ class GlobalDataService
         return clone $this->cachedHeroes;
     }
 
+    /** Every talent, playable or not, keyed by talent_id. Old builds reference retired talents. */
+    public function getAllTalentsKeyed()
+    {
+        return Cache::remember('heroes_data_talents_all_statuses_keyed', 3600, fn () => HeroesDataTalent::withAllStatuses()->get()->keyBy('talent_id'));
+    }
+
+    /** Every map, playable or not, keyed by map_id. */
+    public function getAllMapsKeyed()
+    {
+        return Cache::remember('maps_all_keyed', 3600, fn () => Map::all()->keyBy('map_id'));
+    }
+
     public function getMaps()
     {
         if ($this->cachedMaps === null) {

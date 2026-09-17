@@ -5,14 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Award;
 use App\Models\BattlenetAccount;
 use App\Models\BattletagNotAllowedDownloadReplay;
-use App\Models\HeroesDataTalent;
-use App\Models\Map;
 use App\Models\ReplayExperienceBreakdownBlob;
 use App\Rules\ReplayIDValidation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -302,16 +299,12 @@ class SingleMatchController extends Controller
             // ->toSql();
             ->get();
 
-        $talentData = Cache::remember('heroes_data_talents_all_statuses_keyed', 3600, function () {
-            return HeroesDataTalent::withAllStatuses()->get()->keyBy('talent_id');
-        });
+        $talentData = $this->globalDataService->getAllTalentsKeyed();
 
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
-        $maps = Cache::remember('maps_all_keyed', 3600, function () {
-            return Map::all()->keyBy('map_id');
-        });
+        $maps = $this->globalDataService->getAllMapsKeyed();
 
         $replayDownloadBlocked = false;
         if (Auth::check()) {

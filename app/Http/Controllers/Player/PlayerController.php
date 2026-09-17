@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Player;
 use App\Http\Controllers\Controller;
 use App\Models\Battletag;
 use App\Models\GameType;
-use App\Models\HeroesDataTalent;
-use App\Models\Map;
 use App\Models\MasterMMRDataAR;
 use App\Models\MasterMMRDataHL;
 use App\Models\MasterMMRDataQM;
@@ -623,11 +621,9 @@ class PlayerController extends Controller
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
-        $maps = Map::all();
-        $maps = $maps->keyBy('map_id');
+        $maps = $this->globalDataService->getAllMapsKeyed();
 
-        $talentData = HeroesDataTalent::withAllStatuses()->get();
-        $talentData = $talentData->keyBy('talent_id');
+        $talentData = $this->globalDataService->getAllTalentsKeyed();
 
         foreach ($gamePlayedThresholds as $threshold) {
             $filtered_hero_data = $hero_data->filter(function ($item) use ($threshold) {

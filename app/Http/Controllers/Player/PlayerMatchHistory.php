@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
 use App\Models\GameType;
-use App\Models\HeroesDataTalent;
 use App\Models\Map;
 use App\Rules\DateInputValidation;
 use App\Rules\GameMapInputValidation;
@@ -266,11 +265,9 @@ class PlayerMatchHistory extends Controller
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
-        $talentData = HeroesDataTalent::withAllStatuses()->get();
-        $talentData = $talentData->keyBy('talent_id');
+        $talentData = $this->globalDataService->getAllTalentsKeyed();
 
-        $maps = Map::all();
-        $maps = $maps->keyBy('map_id');
+        $maps = $this->globalDataService->getAllMapsKeyed();
 
         $modifiedResult = $result->map(function ($item) use ($heroData, $talentData, $maps) {
             $item->hero_id = $item->hero;

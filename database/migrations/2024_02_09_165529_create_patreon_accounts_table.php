@@ -30,6 +30,8 @@ class CreatePatreonAccountsTable extends Migration
             $table->string('remember_token')->nullable();
             $table->integer('expires_in')->nullable();
             $table->timestamps(); // Add this line if you want timestamps
+
+            $table->index('battlenet_accounts_id', 'patreon_accounts_battlenet_accounts_id');
         });
     }
 
