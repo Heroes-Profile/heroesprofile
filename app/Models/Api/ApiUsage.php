@@ -22,12 +22,14 @@ class ApiUsage extends Model
         'endpoint',
         'calls',
         'egress_bytes',
+        'compute_ms',
         'window_started_at',
     ];
 
     protected $casts = [
         'calls' => 'integer',
         'egress_bytes' => 'integer',
+        'compute_ms' => 'integer',
         'window_started_at' => 'datetime',
     ];
 

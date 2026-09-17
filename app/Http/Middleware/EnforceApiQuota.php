@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Auth\ApiKeyGuard;
 use App\Models\Api\ApiEndpoint;
 use App\Models\Api\ApiUsage;
+use App\Support\ResponseBytes;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -29,6 +30,9 @@ class EnforceApiQuota
     private const HEADER_PREFIX = 'X-HP-Quota-';
 
     private const QUOTA_CACHE_SECONDS = 300;
+
+    /** Where handle() leaves what terminate() needs. */
+    private const TIMING_ATTRIBUTE = 'apiQuotaTiming';
 
     public function handle(Request $request, Closure $next, string $endpoint): Response
     {
@@ -122,6 +126,19 @@ class EnforceApiQuota
                 ->header(self::HEADER_PREFIX.'Reset', $this->secondsUntilReset($usage));
         }
 
+        // Handed to terminate(), which runs after the response has been sent and so
+        // is the only place that can see how long a streamed download actually took.
+        // It cannot read `$endpoint` or `$context` for itself: terminate() is passed
+        // no middleware parameters, and the container builds it a fresh instance.
+        $request->attributes->set(self::TIMING_ATTRIBUTE, [
+            'account_id' => $context->account->id,
+            'endpoint' => $endpoint,
+            // LARAVEL_START covers framework boot as well, which is instance time we
+            // are billed for too. Absent under artisan and in tests, hence the fall
+            // back to now — which merely undercounts, rather than breaking.
+            'started_at' => defined('LARAVEL_START') ? LARAVEL_START : microtime(true),
+        ]);
+
         $response = $next($request);
 
         // Charged only for an answer: a 200, or a 202 whose job will deliver one.
@@ -207,9 +224,46 @@ class EnforceApiQuota
         return $usage;
     }
 
+    /**
+     * Records how long the request held a container.
+     *
+     * Runs after the response has been sent, which is the whole point: a replay
+     * download answers with a StreamedResponse, and its bytes do not move until
+     * `send()`. Measured from inside handle() the download looks instant, when in
+     * fact the container is pinned for as long as the client takes to receive the
+     * file — and that time is what Cloud Run bills.
+     *
+     * Only requests that reached the endpoint are counted. A quota refusal, the
+     * admin bypass and the fixture path all return before handle() sets the
+     * attribute, so none of them leave a row here.
+     */
+    public function terminate(Request $request, Response $response): void
+    {
+        $timing = $request->attributes->get(self::TIMING_ATTRIBUTE);
+
+        if (! is_array($timing)) {
+            return;
+        }
+
+        $elapsedMs = (int) round((microtime(true) - $timing['started_at']) * 1000);
+
+        if ($elapsedMs <= 0) {
+            return;
+        }
+
+        DB::connection('heroesprofile_api')
+            ->table('api_usage')
+            ->where('api_account_id', $timing['account_id'])
+            ->where('endpoint', $timing['endpoint'])
+            ->increment('compute_ms', $elapsedMs);
+    }
+
     private function recordEgress(int $accountId, string $endpoint, Response $response): void
     {
-        $bytes = strlen((string) $response->getContent());
+        // Measured through ResponseBytes so the streamed replay download is counted
+        // at all. Reading getContent() directly had it at zero on the one endpoint
+        // whose egress is worth measuring.
+        $bytes = ResponseBytes::of($response);
 
         if ($bytes <= 0) {
             return;

@@ -24,6 +24,19 @@
         </tbody>
       </table>
 
+      <div v-if="totals.cost > 0" class="mb-3">
+        <p class="text-sm text-gray-medium">
+          Served {{ formatBytes(totals.bytes) }} this window, costing roughly
+          <span class="text-lteal">{{ formatCost(totals.cost) }}</span> to deliver.
+        </p>
+
+        <p class="text-xs text-gray-medium mt-1">
+          <span class="text-lteal">Beta</span> — cost reporting is new and may not be
+          accurate. It is a rough guide to what your usage costs us to serve, not a bill,
+          and nothing is charged against it.
+        </p>
+      </div>
+
       <a href="/Api/Account/Billing" class="text-sm underline hover:text-lteal">
         View every endpoint limit
       </a>
@@ -33,6 +46,30 @@
       <p v-if="!usage.length" class="text-sm text-gray-medium">
         No endpoints are registered yet.
       </p>
+
+      <div v-if="totals.cost > 0" class="bg-darken p-4 mb-6">
+        <div class="flex flex-wrap gap-x-8 gap-y-2 mb-2">
+          <div>
+            <div class="text-xs text-gray-medium">Data Transferred</div>
+            <div class="text-lteal">{{ formatBytes(totals.bytes) }}</div>
+          </div>
+          <div>
+            <div class="text-xs text-gray-medium">Server Time</div>
+            <div class="text-lteal">{{ formatDuration(totals.computeMs) }}</div>
+          </div>
+          <div>
+            <div class="text-xs text-gray-medium">Estimated Cost</div>
+            <div class="text-lteal">{{ formatCost(totals.cost) }}</div>
+          </div>
+        </div>
+
+        <p class="text-xs text-gray-medium">
+          <span class="text-lteal">Beta</span> — cost reporting is new and may not be
+          accurate. Across the current window, and a generous estimate at that: server
+          time is counted per request, but requests share a container, so the real figure
+          is lower. A guide to what the usage costs to serve, not a bill.
+        </p>
+      </div>
 
       <div v-for="group in usage" :key="group.title" class="mb-6">
         <h3 class="text-lteal mb-2">{{ group.title }}</h3>
@@ -45,6 +82,7 @@
               <th class="py-2 px-3 text-left text-sm">Calls Left</th>
               <th class="py-2 px-3 text-left text-sm">Available Calls</th>
               <th class="py-2 px-3 text-left text-sm">Calls Reset</th>
+              <th class="py-2 px-3 text-left text-sm">Cost</th>
             </tr>
           </thead>
           <tbody>
@@ -56,9 +94,10 @@
                 <td class="py-2 px-3">{{ format(row.remaining) }}</td>
                 <td class="py-2 px-3">{{ format(row.limit) }}</td>
                 <td class="py-2 px-3">{{ row.resets_at || 'Not started' }}</td>
+                <td class="py-2 px-3">{{ row.cost_usd > 0 ? formatCost(row.cost_usd) : '—' }}</td>
               </template>
 
-              <td v-else class="py-2 px-3" colspan="4">Not included in your plan</td>
+              <td v-else class="py-2 px-3" colspan="5">Not included in your plan</td>
             </tr>
           </tbody>
         </table>
@@ -91,10 +130,54 @@ export default {
         .sort((a, b) => b.used - a.used)
         .slice(0, 5);
     },
+    // Every row, not just the five the compact view lists, so the figure means the
+    // window rather than the busiest handful of it.
+    totals(){
+      return this.usage
+        .flatMap(group => group.endpoints)
+        .reduce((carry, row) => ({
+          bytes: carry.bytes + (row.egress_bytes || 0),
+          computeMs: carry.computeMs + (row.compute_ms || 0),
+          cost: carry.cost + (row.cost_usd || 0),
+        }), { bytes: 0, computeMs: 0, cost: 0 });
+    },
   },
   methods: {
     format(value){
       return Number(value).toLocaleString();
+    },
+    formatBytes(bytes){
+      if(!bytes){
+        return '0 MB';
+      }
+
+      const mb = bytes / 1024 / 1024;
+
+      return mb < 1024
+        ? `${mb.toFixed(mb < 10 ? 2 : 1)} MB`
+        : `${(mb / 1024).toFixed(2)} GB`;
+    },
+    formatDuration(ms){
+      const seconds = (ms || 0) / 1000;
+
+      if(seconds < 60){
+        return `${seconds.toFixed(1)}s`;
+      }
+
+      if(seconds < 3600){
+        return `${Math.floor(seconds / 60)}m ${Math.round(seconds % 60)}s`;
+      }
+
+      return `${Math.floor(seconds / 3600)}h ${Math.round((seconds % 3600) / 60)}m`;
+    },
+    // Rounding a real cost to $0.00 reads as free rather than as small, so anything
+    // under a cent keeps enough places to stay a number.
+    formatCost(cost){
+      if(!cost){
+        return '$0.00';
+      }
+
+      return cost < 0.01 ? `$${cost.toFixed(4)}` : `$${cost.toFixed(2)}`;
     },
   },
 }

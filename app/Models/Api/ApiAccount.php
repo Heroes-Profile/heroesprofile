@@ -58,9 +58,21 @@ class ApiAccount extends Authenticatable implements MustVerifyEmail
     /** Permanent. Access stops and the subscription is cancelled outright. */
     public const TERMINATION = 'termination';
 
-    /** Comped access flags, granted by hand per partner or esports org. */
+    /**
+     * Hand-granted access flags. This is the list the admin console offers as
+     * toggles and the only one `setFlag` will write, so a flag missing from here
+     * cannot be set from the console at all.
+     *
+     * Not every one of them comps anything, despite the name: `d_approved` makes
+     * the Developer tier selectable without granting it, and `do_approved` raises
+     * the replay download allowance on top of a plan the account still pays for.
+     * `hasComptedAccess()` below reads the whole list and would count both — it has
+     * no callers today, but anything new leaning on it should check the flag it
+     * actually means.
+     */
     public const APPROVAL_COLUMNS = [
         'd_approved',
+        'do_approved',
         'p_approved',
         'n_approved',
         'n_upload_approved',

@@ -32,6 +32,10 @@ return new class extends Migration
             $table->string('endpoint');
             $table->integer('calls')->default(0);
             $table->bigInteger('egress_bytes')->default(0);
+            // Wall-clock time the app spent on these calls. Cloud Run bills instance
+            // time, and on the replay download that time is mostly the client pulling
+            // bytes — so egress alone understates what an account costs.
+            $table->unsignedBigInteger('compute_ms')->default(0);
             $table->timestamp('window_started_at')->nullable();
 
             $table->decimal('egress_mb', 12, 4)

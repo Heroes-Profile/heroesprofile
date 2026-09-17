@@ -145,6 +145,26 @@ class ApiKeyResolver
         return $planIds;
     }
 
+    /**
+     * Plans stacked on by an additive flag, which raise an allowance without
+     * granting a tier. Kept apart from plansFromApprovalFlags() because that one
+     * feeds entitlement and this one must not.
+     *
+     * @return array<int, int>
+     */
+    private function plansFromAdditiveFlags(object $row): array
+    {
+        $planIds = [];
+
+        foreach (config('api_plans.additive_flags', []) as $column => $planId) {
+            if ((bool) ($row->{$column} ?? false)) {
+                $planIds[] = $planId;
+            }
+        }
+
+        return $planIds;
+    }
+
     /** Throttled to one write per key per 5 minutes rather than one per request. */
     private function touchLastUsed(int $keyId): void
     {
@@ -253,6 +273,20 @@ class ApiKeyResolver
         if ($patreonPlanId !== null) {
             $planIds[] = $patreonPlanId;
             $planName ??= config("api_plans.plans.{$patreonPlanId}.key");
+        }
+
+        // Raises an allowance rather than granting a tier, so it goes in the plan
+        // list but nowhere else: not into $compedPlanIds, which decides entitlement,
+        // and not into $planName, which is the tier the account is told it has.
+        //
+        // Only once something else has granted a plan. Additive means added to
+        // something, and an account holding nothing else is mid-evaluation — it is
+        // served fixtures on the strength of an empty plan list, and quietly filling
+        // that list would swap its sample data for a 403 saying it had not subscribed.
+        if ($planIds !== []) {
+            foreach ($this->plansFromAdditiveFlags($row) as $additivePlanId) {
+                $planIds[] = $additivePlanId;
+            }
         }
 
         // Neither of these may fall through to the no-plan fixture path. That path

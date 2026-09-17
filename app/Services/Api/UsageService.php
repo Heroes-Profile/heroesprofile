@@ -5,6 +5,7 @@ namespace App\Services\Api;
 use App\Models\Api\ApiAccount;
 use App\Models\Api\ApiEndpoint;
 use App\Models\Api\ApiUsage;
+use App\Support\ApiCost;
 
 /**
  * Per-endpoint call usage for an account, reported the same way EnforceApiQuota
@@ -78,6 +79,11 @@ class UsageService
             }
         }
 
+        // Additive flags last, under the same condition the resolver applies, or this
+        // page would quote a different limit from the one being enforced — and the
+        // gap would only show on the endpoint the flag exists to raise.
+        $planIds = array_merge($planIds, $this->plans->additiveTo($account, $planIds !== []));
+
         return array_values(array_unique($planIds));
     }
 
@@ -91,6 +97,9 @@ class UsageService
         $counted = $usage !== null && ! $usage->windowHasExpired();
         $used = $counted ? $usage->calls : 0;
 
+        $bytes = $counted ? (int) $usage->egress_bytes : 0;
+        $computeMs = $counted ? (int) $usage->compute_ms : 0;
+
         return [
             'endpoint' => $endpoint->endpoint,
             'name' => $endpoint->name,
@@ -101,6 +110,13 @@ class UsageService
             'resets_at' => $counted
                 ? $usage->window_started_at->copy()->addDays(ApiUsage::WINDOW_DAYS)->toDateString()
                 : null,
+            // What serving this endpoint cost, over the same window as the calls
+            // beside it. Reported per endpoint rather than as one number because
+            // almost all of it comes from one of them — the replay download is
+            // megabytes a call where the rest are kilobytes.
+            'egress_bytes' => $bytes,
+            'compute_ms' => $computeMs,
+            'cost_usd' => round(ApiCost::total($bytes, $computeMs, $used), 6),
         ];
     }
 }

@@ -64,6 +64,11 @@ return new class extends Migration
 
             // Comped access, granted by hand alongside Stripe subscriptions.
             $table->tinyInteger('d_approved')->default(0);
+
+            // Sits with d_approved because it pairs with it: that one lets the account
+            // buy Developer, this one raises the replay download allowance once it
+            // has. Neither comps anything on its own, unlike the rest of the block.
+            $table->tinyInteger('do_approved')->default(0);
             $table->tinyInteger('p_approved')->default(0);
             $table->tinyInteger('n_approved')->default(0);
             $table->tinyInteger('n_upload_approved')->default(0);
