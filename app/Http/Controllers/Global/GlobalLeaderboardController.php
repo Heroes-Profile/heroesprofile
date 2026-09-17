@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Global;
 
-use App\Models\BannedAccount;
 use App\Models\BannedLeaderboardAccounts;
 use App\Models\BattlenetAccount;
 use App\Models\HeroesDataTalent;
@@ -144,13 +143,11 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                 ->whereHas('patreonAccount', fn ($query) => $query->where('site_flair', 1))
                 ->get(['blizz_id', 'region'])
                 ->keyBy(fn ($a) => $a->blizz_id.'|'.$a->region);
-            $bannedAccounts = BannedAccount::get()->keyBy(fn ($b) => $b->blizz_id.'|'.$b->region);
             $bannedLeaderboardAccounts = BannedLeaderboardAccounts::where('season', $season)->get()->keyBy(fn ($b) => $b->blizz_id.'|'.$b->region);
-            $privateAccounts = BattlenetAccount::where('private', 1)->get()->keyBy(fn ($a) => $a->blizz_id.'|'.$a->region);
             $authenticatedUser = Auth::user();
 
             $blizzIDRegionMapping = [];
-            $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber, $patreonAccounts, &$blizzIDRegionMapping, $tierrank, $bannedAccounts, $bannedLeaderboardAccounts, $privateAccounts, $authenticatedUser) {
+            $data = $data->map(function ($item) use ($heroData, $rankTiers, $talentData, $type, $typeNumber, $patreonAccounts, &$blizzIDRegionMapping, $tierrank, $bannedLeaderboardAccounts, $authenticatedUser) {
                 $key = $item->blizz_id.'|'.$item->region;
 
                 if (array_key_exists($key, $blizzIDRegionMapping)) {
@@ -160,28 +157,16 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
                 $patreonAccount = $patreonAccounts->get($key);
 
-                if ($bannedAccounts->has($key)) {
-                    $this->rankModifier++;
-
-                    return null;
-                }
-
                 if ($bannedLeaderboardAccounts->has($key)) {
                     $this->rankModifier++;
 
                     return null;
                 }
 
-                $isPrivate = $privateAccounts->get($key);
+                if ($this->globalDataService->isHiddenFrom($item->blizz_id, $item->region, $authenticatedUser)) {
+                    $this->rankModifier++;
 
-                if ($isPrivate) {
-                    // Only show if user is authenticated AND viewing their own account
-                    if (! $authenticatedUser ||
-                        ($authenticatedUser->blizz_id != $item->blizz_id || $authenticatedUser->region != $item->region)) {
-                        $this->rankModifier++;
-
-                        return null;
-                    }
+                    return null;
                 }
 
                 $item->patreon = ! is_null($patreonAccount) && ! $this->globalDataService->isFlairHidden('patreon', $item->blizz_id, $item->region);
@@ -227,32 +212,14 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
             // $weeksDifference = $this->globalDataService->matchPredictionGetWeeksSinceSeasonStart();
 
-            $bannedAccounts = BannedAccount::get()->keyBy(fn ($b) => $b->blizz_id.'|'.$b->region);
-            $privateAccounts = BattlenetAccount::where('private', 1)->get()->keyBy(fn ($a) => $a->blizz_id.'|'.$a->region);
             $authenticatedUser = Auth::user();
 
-            $filteredLeaderboard = $leaderboard->filter(function ($item) use ($bannedAccounts, $privateAccounts, $authenticatedUser) {
+            $filteredLeaderboard = $leaderboard->filter(function ($item) use ($authenticatedUser) {
                 if ($item->games_played < 20) {
                     return false;
                 }
 
-                $key = $item->blizz_id.'|'.$item->region;
-
-                if ($bannedAccounts->has($key)) {
-                    return false;
-                }
-
-                $isPrivate = $privateAccounts->get($key);
-
-                if ($isPrivate) {
-                    // Only show if user is authenticated AND viewing their own account
-                    if (! $authenticatedUser ||
-                        ($authenticatedUser->blizz_id != $item->blizz_id || $authenticatedUser->region != $item->region)) {
-                        return false;
-                    }
-                }
-
-                return true;
+                return ! $this->globalDataService->isHiddenFrom($item->blizz_id, $item->region, $authenticatedUser);
             })->values();
 
             $sortedLeaderboard = $filteredLeaderboard->sortByDesc('rating');

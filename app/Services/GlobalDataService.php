@@ -393,21 +393,6 @@ class GlobalDataService
     public function forgetRestrictedAccount($blizzId, $region): void
     {
         Cache::forget('restricted_account_keys');
-        Cache::forget('restricted_account|'.$blizzId.'|'.$region);
-    }
-
-    public function getPrivateAccounts()
-    {
-        $privateAccounts = BattlenetAccount::select('battletag', 'blizz_id', 'region')->where('private', 1)->get();
-        $filteredAccounts = $privateAccounts->map(function ($account) {
-            return [
-                'battletag' => $account->battletag,
-                'blizz_id' => $account->blizz_id,
-                'region' => $account->region,
-            ];
-        });
-
-        return $filteredAccounts;
     }
 
     /**
@@ -462,23 +447,7 @@ class GlobalDataService
      */
     public function isRestrictedAccount($blizz_id, $region): bool
     {
-        return Cache::remember(
-            'restricted_account|'.$blizz_id.'|'.$region,
-            300,
-            function () use ($blizz_id, $region) {
-                $isPrivate = $this->getPrivateAccounts()->contains(
-                    fn ($account) => $account['blizz_id'] == $blizz_id && $account['region'] == $region
-                );
-
-                if ($isPrivate) {
-                    return true;
-                }
-
-                return BannedAccount::where('blizz_id', $blizz_id)
-                    ->where('region', $region)
-                    ->exists();
-            }
-        );
+        return isset($this->restrictedAccountKeys()[$blizz_id.'|'.$region]);
     }
 
     public function calculateMaxReplayNumber()
