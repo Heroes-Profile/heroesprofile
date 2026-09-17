@@ -6,6 +6,7 @@ use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\BlockBannedIPs;
 use App\Http\Middleware\BlockSuspendedApiAccount;
 use App\Http\Middleware\CheckIfPatreonSupporter;
+use App\Http\Middleware\CheckIfPrivateProfileData;
 use App\Http\Middleware\CheckIfPrivateProfilePage;
 use App\Http\Middleware\CommunitySupportRedirect;
 use App\Http\Middleware\ConvertResponseToCsv;
@@ -147,6 +148,7 @@ class Kernel extends HttpKernel
         'api.ngs' => RequireNgsAccess::class,
         'api.ngs.upload.validate' => ValidateNgsUpload::class,
         'checkIfPrivateProfilePage' => CheckIfPrivateProfilePage::class,
+        'checkIfPrivateProfileData' => CheckIfPrivateProfileData::class,
         'logIpAndUserAgent' => LogIPAndUserAgent::class,
         'communitySupportRedirect' => CommunitySupportRedirect::class,
         'requireWebsiteAuthForAll' => RequireWebsiteAuthForAll::class,
