@@ -297,15 +297,17 @@ class PreMatchController extends Controller
         });
 
         $groupedDataWithAverages = $groupedData->map(function ($teamData, $team) use ($rankTiersQM, $rankTiersSL, $rankTiersAR) {
-            $totalAccountLevel = $teamData['players']->sum('account_level');
-            $totalQMMMR = $teamData['players']->sum('qm_mmr');
-            $totalSLMMR = $teamData['players']->sum('sl_mmr');
-            $totalARMMR = $teamData['players']->sum('ar_mmr');
+            // Only players with a value: hidden slots and unrated players are not zeros.
+            $average = function (string $field) use ($teamData) {
+                $values = $teamData['players']->pluck($field)->filter(fn ($value) => $value !== null);
 
-            $averageAccountLevel = round($totalAccountLevel / 5);
-            $averageQMMMR = round($totalQMMMR / 5);
-            $averageSLMMR = round($totalSLMMR / 5);
-            $averageARMMR = round($totalARMMR / 5);
+                return $values->isEmpty() ? null : round($values->avg());
+            };
+
+            $averageAccountLevel = $average('account_level');
+            $averageQMMMR = $average('qm_mmr');
+            $averageSLMMR = $average('sl_mmr');
+            $averageARMMR = $average('ar_mmr');
 
             $playerWithHighestAccountLevel = $teamData['players']->sortByDesc('account_level')->first();
 
@@ -317,13 +319,13 @@ class PreMatchController extends Controller
                 'players' => $teamData['players'],
                 'average_account_level' => $averageAccountLevel,
                 'average_qm_mmr' => $averageQMMMR,
-                'average_qm_rank' => $this->globalDataService->calculateSubTier($rankTiersQM, $averageQMMMR),
+                'average_qm_rank' => $averageQMMMR === null ? null : $this->globalDataService->calculateSubTier($rankTiersQM, $averageQMMMR),
 
                 'average_sl_mmr' => $averageSLMMR,
-                'average_sl_rank' => $this->globalDataService->calculateSubTier($rankTiersSL, $averageSLMMR),
+                'average_sl_rank' => $averageSLMMR === null ? null : $this->globalDataService->calculateSubTier($rankTiersSL, $averageSLMMR),
 
                 'average_ar_mmr' => $averageARMMR,
-                'average_ar_rank' => $this->globalDataService->calculateSubTier($rankTiersAR, $averageARMMR),
+                'average_ar_rank' => $averageARMMR === null ? null : $this->globalDataService->calculateSubTier($rankTiersAR, $averageARMMR),
 
                 'highest_account_level_battletag' => $playerWithHighestAccountLevel ? $playerWithHighestAccountLevel['battletag'] : null,
                 'highest_qm_mmr_battletag' => $bestQMRank ? $bestQMRank['battletag'] : null,

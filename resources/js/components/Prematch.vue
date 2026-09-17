@@ -6,9 +6,9 @@
         <div class="flex flex-wrap ">
           <div class="flex w-full justify-stretch gap-2">
           <stat-box class="flex-1" v-if="!esport" :title="'Avg. Account Level'" :value="data[0].average_account_level" :color="'teal'"></stat-box>
-          <stat-box class="flex-1" v-if="!esport" :title="'Avg. QM HP MMR'" :value="data[0].average_qm_mmr + '|' + data[0].average_qm_rank" :color="'teal'"></stat-box>
-          <stat-box class="flex-1" v-if="!esport" :title="'Avg. SL HP MMR'" :value="data[0].average_sl_mmr + '|' + data[0].average_sl_rank" :color="'teal'"></stat-box>
-          <stat-box class="flex-1" v-if="!esport" :title="'Avg. AR HP MMR'" :value="data[0].average_ar_mmr + '|' + data[0].average_ar_rank" :color="'teal'"></stat-box>
+          <stat-box class="flex-1" v-if="!esport" :title="'Avg. QM HP MMR'" :value="data[0].average_qm_mmr === null ? '' : data[0].average_qm_mmr + '|' + data[0].average_qm_rank" :color="'teal'"></stat-box>
+          <stat-box class="flex-1" v-if="!esport" :title="'Avg. SL HP MMR'" :value="data[0].average_sl_mmr === null ? '' : data[0].average_sl_mmr + '|' + data[0].average_sl_rank" :color="'teal'"></stat-box>
+          <stat-box class="flex-1" v-if="!esport" :title="'Avg. AR HP MMR'" :value="data[0].average_ar_mmr === null ? '' : data[0].average_ar_mmr + '|' + data[0].average_ar_rank" :color="'teal'"></stat-box>
           </div>
           <div class="flex w-full justify-between gap-2">
           <stat-box class="flex-1" v-if="!esport" :title="'Top ACC. Level'" :value="data[0].highest_account_level_battletag" :color="'blue'"></stat-box>
@@ -146,9 +146,9 @@
 
 
         <stat-box class="flex-1" v-if="!esport" :title="'Avg. Account Level'" :value="data[1].average_account_level" :color="'teal'"></stat-box>
-        <stat-box class="flex-1" v-if="!esport" :title="'Avg. QM HP MMR'" :value="data[1].average_qm_mmr + '|' + data[1].average_qm_rank" :color="'teal'"></stat-box>
-        <stat-box class="flex-1" v-if="!esport" :title="'Avg. SL HP MMR'" :value="data[1].average_sl_mmr + '|' + data[1].average_sl_rank" :color="'teal'"></stat-box>
-        <stat-box class="flex-1" v-if="!esport" :title="'Avg. AR HP MMR'" :value="data[1].average_ar_mmr + '|' + data[1].average_ar_rank" :color="'teal'"></stat-box>
+        <stat-box class="flex-1" v-if="!esport" :title="'Avg. QM HP MMR'" :value="data[1].average_qm_mmr === null ? '' : data[1].average_qm_mmr + '|' + data[1].average_qm_rank" :color="'teal'"></stat-box>
+        <stat-box class="flex-1" v-if="!esport" :title="'Avg. SL HP MMR'" :value="data[1].average_sl_mmr === null ? '' : data[1].average_sl_mmr + '|' + data[1].average_sl_rank" :color="'teal'"></stat-box>
+        <stat-box class="flex-1" v-if="!esport" :title="'Avg. AR HP MMR'" :value="data[1].average_ar_mmr === null ? '' : data[1].average_ar_mmr + '|' + data[1].average_ar_rank" :color="'teal'"></stat-box>
           </div>
           <div class="flex w-full justify-between gap-2">
         <stat-box class="flex-1" v-if="!esport" :title="'Top ACC. Level'" :value="data[1].highest_account_level_battletag" :color="'blue'"></stat-box>
