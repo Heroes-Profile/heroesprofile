@@ -639,8 +639,9 @@ class PlayerHeroesMapsRolesController extends Controller
 
             $combined_healing = $heroStats->avg('healing') + $heroStats->avg('self_healing');
 
-            $stack_size_one_wins = $heroStats->whereNotNull('stack_size')->where('stack_size', 0)->where('winner', 1)->count();
-            $stack_size_one_losses = $heroStats->whereNotNull('stack_size')->where('stack_size', 0)->where('winner', 0)->count();
+            // Solo is stored as stack_size 0 or 1.
+            $stack_size_one_wins = $heroStats->whereIn('stack_size', [0, 1])->where('winner', 1)->count();
+            $stack_size_one_losses = $heroStats->whereIn('stack_size', [0, 1])->where('winner', 0)->count();
             $stack_size_one_total = $stack_size_one_wins + $stack_size_one_losses;
 
             $stack_size_two_wins = $heroStats->where('stack_size', 2)->where('winner', 1)->count();

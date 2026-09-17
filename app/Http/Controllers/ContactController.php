@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Mail\ContactFormMail;
-use App\Rules\BattletagInputProhibitCharacters;
 use App\Services\RecaptchaService;
 use Illuminate\Http\Request;
 use Mail;
@@ -43,7 +42,8 @@ class ContactController extends Controller
         }
 
         $data = $request->validate([
-            'battletag' => ['required', 'string', new BattletagInputProhibitCharacters],
+            // Free text: someone writing in may not have, or know, a battletag.
+            'battletag' => ['required', 'string', 'max:100'],
             'email' => 'required|email',
             'message' => 'required|string',
             'website' => 'nullable|string', // Honeypot field - should be empty
