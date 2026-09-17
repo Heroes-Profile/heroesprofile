@@ -21,14 +21,4 @@ class BattlenetUserSetting extends Model
     {
         return $this->belongsTo(BattlenetAccount::class, 'battlenet_accounts_id', 'battlenet_accounts_id');
     }
-
-    public function getValueAttribute($value)
-    {
-        $setting = $this->attributes['setting'];
-        if ($setting == 'hero') {
-            return Hero::where('name', $value)->first()->id;
-        }
-
-        return $value;
-    }
 }

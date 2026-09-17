@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\GameType;
-use App\Models\Hero;
 use App\Models\PatreonAccount;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
@@ -36,7 +35,6 @@ class ProfileController extends Controller
         }
 
         $validationRules = [
-            'userhero' => 'nullable|numeric',
             'usergametype' => ['sometimes', 'nullable', new GameTypeInputValidation],
             'playermultigametype' => 'sometimes|nullable|array',
             'talentbuildtype' => ['sometimes', 'nullable', new TalentBuildTypeInputValidation],
@@ -59,21 +57,7 @@ class ProfileController extends Controller
             ];
         }
 
-        $userhero = null;
         $usergametype = null;
-
-        if (! is_null($request['userhero'])) {
-            if (Hero::where('name', $request['userhero'])->exists()) {
-                $userhero = $request['userhero'];
-            } else {
-                return ['success' => false];
-            }
-
-            $user->userSettings()->updateOrCreate(
-                ['setting' => 'hero'],
-                ['value' => $userhero]
-            );
-        }
 
         if (! is_null($request['usergametype'])) {
             $usergametype = $request['usergametype'];
