@@ -20,6 +20,9 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class PreMatchController extends Controller
 {
+    /** A lobby is ten players; anything bigger is not from the uploader. */
+    private const MAX_PLAYERS = 10;
+
     public function store(Request $request, PreMatchService $prematch): Response
     {
         $raw = $request->input('data');
@@ -32,7 +35,7 @@ class PreMatchController extends Controller
 
         $players = json_decode($raw, true);
 
-        if (! is_array($players) || $players === []) {
+        if (! is_array($players) || $players === [] || count($players) > self::MAX_PLAYERS) {
             return $this->text('Invalid player data', 400);
         }
 

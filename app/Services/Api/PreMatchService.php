@@ -23,19 +23,23 @@ class PreMatchService
      */
     public function store(array $players): ?int
     {
-        $rows = [];
-
-        foreach ($players as $player) {
-            $row = $this->row($player);
-
-            if ($row !== null) {
-                $rows[] = $row;
-            }
-        }
+        $rows = array_values(array_filter(array_map(fn ($player) => $this->row($player), $players)));
 
         if ($rows === []) {
             return null;
         }
+
+        // One lookup for the lobby rather than one per player.
+        $blizzIds = Battletag::whereIn('battletag', array_column($rows, 'battletag'))
+            ->whereIn('region', array_unique(array_column($rows, 'region')))
+            ->get(['battletag', 'region', 'blizz_id'])
+            ->reverse()
+            ->mapWithKeys(fn ($row) => [$row->battletag.'|'.$row->region => $row->blizz_id]);
+
+        foreach ($rows as &$row) {
+            $row['blizz_id'] = $blizzIds[$row['battletag'].'|'.$row['region']] ?? null;
+        }
+        unset($row);
 
         return DB::connection(self::CONNECTION)->transaction(function () use ($rows) {
             // Locked because the id is derived from the current maximum. Two
@@ -74,18 +78,20 @@ class PreMatchService
 
         // `BattleNetId` has to be present but is never used: the blizz_id comes
         // from our own battletags rather than from whatever the client claims.
-        if ($name === null || $tag === null || ($player['BattleNetId'] ?? null) === null
-            || $region === null || $team === null) {
+        if (! is_scalar($name) || ! is_scalar($tag) || ($player['BattleNetId'] ?? null) === null
+            || ! ctype_digit((string) $region) || ! ctype_digit((string) $team)) {
             return null;
         }
 
         $battletag = $name.'#'.$tag;
 
+        // The width of `prematch.battletag`.
+        if (mb_strlen($battletag) > 45) {
+            return null;
+        }
+
         return [
             'battletag' => $battletag,
-            'blizz_id' => Battletag::where('battletag', $battletag)
-                ->where('region', (int) $region)
-                ->value('blizz_id'),
             'region' => (int) $region,
             'team' => (int) $team,
         ];
