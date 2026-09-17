@@ -159,19 +159,15 @@ class FriendFoeController extends Controller
         $hero = $request['hero'];
         $groupSize = $request['groupsize'];
 
-        if ($groupSize == 'Solo') {
-            $groupSize = 0;
-        } elseif ($groupSize == 'Duo') {
-            $groupSize = 2;
-        } elseif ($groupSize == '3 Players') {
-            $groupSize = 3;
-        } elseif ($groupSize == '4 Players') {
-            $groupSize = 4;
-        } elseif ($groupSize == '5 Players') {
-            $groupSize = 5;
-        } elseif ($groupSize == 'All') {
-            $groupSize = null;
-        }
+        // A solo player is stored as stack_size 0 or 1.
+        $groupSize = match ($groupSize) {
+            'Solo' => [0, 1],
+            'Duo' => [2],
+            '3 Players' => [3],
+            '4 Players' => [4],
+            '5 Players' => [5],
+            default => null,
+        };
 
         $innerQuery = DB::table('replay')
             ->select('replay.replayID', 'player.party')
@@ -189,7 +185,7 @@ class FriendFoeController extends Controller
                 return $query->where('hero', $hero);
             })
             ->when(! is_null($groupSize), function ($query) use ($groupSize) {
-                return $query->where('stack_size', $groupSize);
+                return $query->whereIn('stack_size', $groupSize);
             })
             ->where('team', $teamValue)
             ->get();
@@ -238,7 +234,7 @@ class FriendFoeController extends Controller
                 return $query->where('hero', $hero);
             })
             ->when(! is_null($groupSize), function ($query) use ($groupSize) {
-                return $query->where('stack_size', $groupSize);
+                return $query->whereIn('stack_size', $groupSize);
             })
             ->where('team', $teamValue);
 

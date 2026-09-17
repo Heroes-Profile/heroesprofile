@@ -351,7 +351,7 @@ class PlayerController extends Controller
         })->sum('time_on_fire');
 
         $stack_one_wins = $result->sum(function ($item) {
-            return (isset($item->stack_size) && $item->stack_size !== '' && isset($item->winner) && $item->winner !== '' && $item->stack_size == 0 && $item->winner == 1) ? 1 : 0;
+            return (isset($item->stack_size) && $item->stack_size !== '' && isset($item->winner) && $item->winner !== '' && in_array((int) $item->stack_size, [0, 1], true) && $item->winner == 1) ? 1 : 0;
         });
 
         $stack_two_wins = $result->sum(function ($item) {
@@ -371,7 +371,7 @@ class PlayerController extends Controller
         });
 
         $stack_one_losses = $result->sum(function ($item) {
-            return (isset($item->stack_size) && $item->stack_size !== '' && isset($item->winner) && $item->winner !== '' && $item->stack_size == 0 && $item->winner == 0) ? 1 : 0;
+            return (isset($item->stack_size) && $item->stack_size !== '' && isset($item->winner) && $item->winner !== '' && in_array((int) $item->stack_size, [0, 1], true) && $item->winner == 0) ? 1 : 0;
         });
 
         $stack_two_losses = $result->sum(function ($item) {

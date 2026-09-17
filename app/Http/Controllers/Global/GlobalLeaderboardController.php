@@ -316,84 +316,78 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             $typeNumber = $role;
         }
 
-        $groupsize = -1;
-        if ($request['groupsize'] == 'Solo') {
-            $groupsize = 0;
-        } elseif ($request['groupsize'] == 'Duo') {
-            $groupsize = 2;
-        } elseif ($request['groupsize'] == '3 Players') {
-            $groupsize = 3;
-        } elseif ($request['groupsize'] == '4 Players') {
-            $groupsize = 4;
-        } elseif ($request['groupsize'] == '5 Players') {
-            $groupsize = 5;
-        } elseif ($request['groupsize'] == 'All') {
-            $groupsize = 0;
-        }
+        // Mirrors CalculateLeaderboards (Calculate.getPlayers), so the estimate is the
+        // rating the board would give. `All` reads the ungrouped table; Solo takes
+        // stack_size 0 and 1, and like the board scores each row on its own and keeps
+        // the best rather than adding them together.
+        $stackSizes = match ($request['groupsize']) {
+            'Solo' => [0, 1],
+            'Duo' => [2],
+            '3 Players' => [3],
+            '4 Players' => [4],
+            '5 Players' => [5],
+            default => [0],
+        };
 
-        $table = MasterGamesPlayedData::class;
-        if ($request['groupsize'] != 'All') {
-            $table = MasterGamesPlayedDataGroups::class;
-        }
+        $table = $request['groupsize'] == 'All' ? MasterGamesPlayedData::class : MasterGamesPlayedDataGroups::class;
+        $season = $this->globalDataService->getDefaultSeason();
+        $weeks = $this->globalDataService->getWeeksSinceSeasonStart();
 
-        $playerData = $table::select('win_leaderboard', 'loss_leaderboard', 'games_played_leaderboard')
+        $board = fn () => $table::query()
             ->where('type_value', $typeNumber)
-            ->where('stack_size', $groupsize)
-            ->where('season', $this->globalDataService->getDefaultSeason())
-            ->where('game_type', $gameType)
+            ->whereIn('stack_size', $stackSizes)
+            ->where('season', $season)
+            ->where('game_type', $gameType);
+
+        $playerRows = $board()
             ->where('blizz_id', $blizz_id)
             ->where('region', $region)
-            ->first();
+            ->get(['win_leaderboard', 'loss_leaderboard', 'games_played_leaderboard']);
 
-        if (! $playerData || empty($playerData)) {
+        if ($playerRows->isEmpty()) {
             return ['rating' => 0, 'games_played' => 0];
         }
 
-        $weeksSinceStart = $this->globalDataService->getWeeksSinceSeasonStart();
-        $maxGamesPlayed = $table::select('games_played_leaderboard')
-            ->where('type_value', $typeNumber)
-            ->where('stack_size', $groupsize)
-            ->where('season', $this->globalDataService->getDefaultSeason())
-            ->where('game_type', $gameType)
-            ->orderByDesc('games_played_leaderboard')
-            ->limit($weeksSinceStart)
-            ->get()
-            ->avg('games_played_leaderboard');
+        // The average of the top `weeks` players' games, and the fewest games among
+        // the top `weeks * 20`: the divisor and the cap in the formula below.
+        $topAverage = $board()->orderByDesc('games_played_leaderboard')->limit($weeks)->pluck('games_played_leaderboard')->avg();
+        $maxGamesPlayed = $topAverage === null ? 1 : (int) floor($topAverage);
+        $maxMinGamesPlayed = (int) ($board()->orderByDesc('games_played_leaderboard')->limit($weeks * 20)->pluck('games_played_leaderboard')->min() ?? 0);
 
-        $gamesPlayedForFormula = $playerData->games_played_leaderboard;
+        $mmrTable = match ((int) $gameType) {
+            1 => MasterMMRDataQM::class,
+            2 => MasterMMRDataUD::class,
+            3 => MasterMMRDataHL::class,
+            4 => MasterMMRDataTL::class,
+            5 => MasterMMRDataSL::class,
+            6 => MasterMMRDataAR::class,
+            default => null,
+        };
 
-        if (! $maxGamesPlayed) {
-            $maxGamesPlayed = 0;
-        }
-        if ($maxGamesPlayed < $playerData->games_played_leaderboard) {
-            $gamesPlayedForFormula = $maxGamesPlayed;
-        }
-
-        $mmrTable = '';
-
-        if ($gameType == 1) {
-            $mmrTable = MasterMMRDataQM::class;
-        } elseif ($gameType == 2) {
-            $mmrTable = MasterMMRDataUD::class;
-        } elseif ($gameType == 3) {
-            $mmrTable = MasterMMRDataHL::class;
-        } elseif ($gameType == 4) {
-            $mmrTable = MasterMMRDataTL::class;
-        } elseif ($gameType == 5) {
-            $mmrTable = MasterMMRDataSL::class;
-        } elseif ($gameType == 6) {
-            $mmrTable = MasterMMRDataAR::class;
-        }
-        $playerMMR = $mmrTable::select('conservative_rating')
-            ->where('type_value', $typeNumber)
+        $conservativeRating = $mmrTable === null ? null : $mmrTable::where('type_value', $typeNumber)
             ->where('game_type', $gameType)
             ->where('blizz_id', $blizz_id)
             ->where('region', $region)
-            ->first();
+            ->value('conservative_rating');
 
-        $winRate = $playerData->games_played_leaderboard > 0 ? ($playerData->win_leaderboard / $playerData->games_played_leaderboard) * 100 : 0;
-        $rating = $maxGamesPlayed > 0 ? (50 + ($winRate - 50) * ($gamesPlayedForFormula / $maxGamesPlayed)) + ($playerMMR->conservative_rating / 10) : (50 + ($winRate - 50) * ($gamesPlayedForFormula)) + ($playerMMR->conservative_rating / 10);
+        // The board inner-joins the rating, so a player without one is not on it.
+        if ($conservativeRating === null) {
+            return ['rating' => 0, 'games_played' => (int) $playerRows->max('games_played_leaderboard')];
+        }
 
-        return ['rating' => round($rating, 2), 'games_played' => $playerData->games_played_leaderboard];
+        $best = null;
+
+        foreach ($playerRows as $row) {
+            $decided = $row->win_leaderboard + $row->loss_leaderboard;
+            $winRate = $decided > 0 ? ($row->win_leaderboard / $decided) * 100 : 0;
+            $cappedGames = min($row->games_played_leaderboard, $maxMinGamesPlayed);
+            $rating = 50 + ($winRate - 50) * ($cappedGames / $maxGamesPlayed) + ($conservativeRating / 10);
+
+            if ($best === null || $rating > $best['rating']) {
+                $best = ['rating' => $rating, 'games_played' => (int) $row->games_played_leaderboard];
+            }
+        }
+
+        return ['rating' => round($best['rating'], 2), 'games_played' => $best['games_played']];
     }
 }
