@@ -102,6 +102,11 @@ class Handler extends ExceptionHandler
 
     public function shouldReport(Throwable $e)
     {
+        // The exclusions below keep Flare quiet in production; everywhere else, report everything.
+        if (! app()->isProduction()) {
+            return parent::shouldReport($e);
+        }
+
         if ($e instanceof ThrottleRequestsException) {
             return false;
         }

@@ -17,7 +17,6 @@ use App\Http\Controllers\Esports\Other\EsportOtherController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDebugController;
 use App\Http\Controllers\Global\GlobalDraftController;
-use App\Http\Controllers\Global\GlobalExtraStats;
 use App\Http\Controllers\Global\GlobalHeroMapStatsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupsTalentsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupStatsController;
@@ -144,10 +143,6 @@ Route::prefix('v1')->middleware('web')->group(function () {
     Route::post('global/draft', [GlobalDraftController::class, 'getDraftData']);
 
     Route::post('global/party', [GlobalPartyStatsController::class, 'getPartyStats']);
-
-    Route::post('global/extra/account/level', [GlobalExtraStats::class, 'getAccountLevelStats']);
-
-    Route::post('global/extra/hero/level', [GlobalExtraStats::class, 'getHeroLevelStats']);
 
     Route::post('player', [PlayerController::class, 'getPlayerData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 

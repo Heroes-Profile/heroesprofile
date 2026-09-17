@@ -8,7 +8,9 @@ use App\Models\PatreonAccount;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\InvalidStateException;
 
 class PatreonController extends Controller
 {
@@ -40,7 +42,6 @@ class PatreonController extends Controller
             );
 
             $battlenetAccount = BattlenetAccount::find($currentBattlenetId);
-            $data = $battlenetAccount->patreonAccount;
 
             if ($this->getUserDataCheckIfSubscribed($user->token)) {
                 $battlenetAccount->patreon = 1;
@@ -79,7 +80,7 @@ class PatreonController extends Controller
             ],
         ]);
 
-        return $this->checkActivePatron(json_decode($response->getBody(), true), env('PATREON_CAMPAIGN_ID'));
+        return $this->checkActivePatron(json_decode($response->getBody(), true), config('services.patreon.campaign_id'));
     }
 
     private function checkActivePatron($api_return, $campaign_id)
