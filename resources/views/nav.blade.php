@@ -32,19 +32,19 @@
                                 {{-- ... (Global Hero Stats dropdown items) --}}
                                 <a href="/Global/Hero" >Hero Stats</a>
                                 <nav-search-flyout
-                                    :items="{{ json_encode($heroes) }}"
+                                    list="heroes"
                                     :label="'Talent Stats'"
                                     :all-label="'All Heroes'"
                                     :base-url-override="'/Global/Talents'"
                                 ></nav-search-flyout>
                                 <nav-search-flyout
-                                    :items="{{ json_encode($heroes) }}"
+                                    list="heroes"
                                     :label="'Map Stats'"
                                     :all-label="'All Heroes'"
                                     :base-url-override="'/Global/Hero/Maps'"
                                 ></nav-search-flyout>
                                 <nav-search-flyout
-                                    :items="{{ json_encode($heroes) }}"
+                                    list="heroes"
                                     :label="'Matchup Stats'"
                                     :all-label="'All Heroes'"
                                     :base-url-override="'/Global/Matchups'"
@@ -52,7 +52,7 @@
                                 <a href="/Global/Matchups/Talents" >Matchup Talent Stats</a>
                                 <a href="/Global/Compositions" >Compositional Stats</a>
                                 <nav-search-flyout
-                                    :items="{{ json_encode($heroes) }}"
+                                    list="heroes"
                                     :label="'Draft Stats'"
                                     :all-label="'All Heroes'"
                                     :base-url-override="'/Global/Draft'"
@@ -139,7 +139,7 @@
                                         :battletag="'{{ $mainSearchAccount['battletag'] }}'"
                                         :blizz-id="{{ $mainSearchAccount['blizz_id'] }}"
                                         :region="{{ $mainSearchAccount['region'] }}"
-                                        :items="{{ json_encode($heroes) }}"
+                                        list="heroes"
                                         :label="'Heroes'"
                                         :subpath="'Hero'"
                                         :all-label="'All Heroes'"
@@ -162,7 +162,7 @@
                                         :battletag="'{{ $mainSearchAccount['battletag'] }}'"
                                         :blizz-id="{{ $mainSearchAccount['blizz_id'] }}"
                                         :region="{{ $mainSearchAccount['region'] }}"
-                                        :items="{{ json_encode($maps) }}"
+                                        list="maps"
                                         :label="'Maps'"
                                         :subpath="'Map'"
                                         :all-label="'All Maps'"
@@ -172,7 +172,7 @@
                                         :battletag="'{{ $mainSearchAccount['battletag'] }}'"
                                         :blizz-id="{{ $mainSearchAccount['blizz_id'] }}"
                                         :region="{{ $mainSearchAccount['region'] }}"
-                                        :items="{{ json_encode($heroes) }}"
+                                        list="heroes"
                                         :label="'Talents'"
                                         :subpath="'Talents'"
                                         :all-label="'All Talents'"
@@ -248,7 +248,7 @@
                 :battletag="'{{ $account['battletag'] }}'"
                 :blizz-id="{{ $account['blizz_id'] }}"
                 :region="{{ $account['region'] }}"
-                :items="{{ json_encode($heroes) }}"
+                list="heroes"
                 :label="'Heroes'"
                 :subpath="'Hero'"
                 :all-label="'All Heroes'"
@@ -271,7 +271,7 @@
                 :battletag="'{{ $account['battletag'] }}'"
                 :blizz-id="{{ $account['blizz_id'] }}"
                 :region="{{ $account['region'] }}"
-                :items="{{ json_encode($maps) }}"
+                list="maps"
                 :label="'Maps'"
                 :subpath="'Map'"
                 :all-label="'All Maps'"
@@ -281,7 +281,7 @@
                 :battletag="'{{ $account['battletag'] }}'"
                 :blizz-id="{{ $account['blizz_id'] }}"
                 :region="{{ $account['region'] }}"
-                :items="{{ json_encode($heroes) }}"
+                list="heroes"
                 :label="'Talents'"
                 :subpath="'Talents'"
                 :all-label="'All Talents'"
