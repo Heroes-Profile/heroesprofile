@@ -45,7 +45,7 @@ class EnforceApiQuota
         // integrator to go and check their billing.
         if ($context->isSuspended()) {
             return $this->error(
-                $context->isTerminated() ? 'account_terminated' : 'account_suspended',
+                $context->suspensionCode(),
                 $context->suspensionMessage(),
                 403,
                 $endpoint
@@ -122,13 +122,19 @@ class EnforceApiQuota
                 ->header(self::HEADER_PREFIX.'Reset', $this->secondsUntilReset($usage));
         }
 
-        DB::connection('heroesprofile_api')
-            ->table('api_usage')
-            ->where('api_account_id', $context->account->id)
-            ->where('endpoint', $endpoint)
-            ->increment('calls');
-
         $response = $next($request);
+
+        // Charged only for an answer: a 200, or a 202 whose job will deliver one.
+        // A refused or failed call costs nothing.
+        $charged = $response->isSuccessful();
+
+        if ($charged) {
+            DB::connection('heroesprofile_api')
+                ->table('api_usage')
+                ->where('api_account_id', $context->account->id)
+                ->where('endpoint', $endpoint)
+                ->increment('calls');
+        }
 
         $this->recordEgress($context->account->id, $endpoint, $response);
 
@@ -136,7 +142,7 @@ class EnforceApiQuota
         // helper, and the replay download answers with a Symfony StreamedResponse that
         // does not have it. Same for the fixture path, which answers a file.
         $response->headers->set(self::HEADER_PREFIX.'Limit', (string) $limit);
-        $response->headers->set(self::HEADER_PREFIX.'Remaining', (string) max(0, $limit - ($usage->calls + 1)));
+        $response->headers->set(self::HEADER_PREFIX.'Remaining', (string) max(0, $limit - ($usage->calls + ($charged ? 1 : 0))));
         $response->headers->set(self::HEADER_PREFIX.'Reset', (string) $this->secondsUntilReset($usage));
 
         return $response;

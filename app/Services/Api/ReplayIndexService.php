@@ -27,15 +27,18 @@ class ReplayIndexService
     public function __construct(private readonly GlobalDataService $globalDataService) {}
 
     /**
-     * @param  array<string, mixed>  $filters  after, timeframe_type, timeframe, game_type, game_map
+     * @param  array<string, mixed>  $filters  after, timeframe_type, timeframe, game_type
+     *                                         (short codes), game_map (map ids)
      * @return array<string, mixed>
      */
     public function page(array $filters): array
     {
         $after = (int) ($filters['after'] ?? 0);
 
-        $gameTypes = $this->gameTypeIds($filters['game_type'] ?? null);
-        $gameMaps = $this->gameMapIds($filters['game_map'] ?? null);
+        $gameTypes = isset($filters['game_type'])
+            ? GameType::whereIn('short_name', $filters['game_type'])->pluck('type_id')->all()
+            : null;
+        $gameMaps = $filters['game_map'] ?? null;
 
         $rows = DB::table('replay')
             ->join('replay_fingerprints', 'replay_fingerprints.replayID', '=', 'replay.replayID')
@@ -56,6 +59,8 @@ class ReplayIndexService
             // it saw, and gets what follows rather than that row again.
             ->where('replay.replayID', '>', $after)
             ->where('replay_fingerprints.valid', 1)
+            // Custom games are downloadable by id, but never listed.
+            ->where('replay.game_type', '<>', 0)
             ->when($gameTypes !== null, fn ($query) => $query->whereIn('replay.game_type', $gameTypes))
             ->when($gameMaps !== null, fn ($query) => $query->whereIn('replay.game_map', $gameMaps))
             ->when(
@@ -97,29 +102,5 @@ class ReplayIndexService
             'next_after' => $replays->count() === self::PAGE_SIZE ? $last['replayID'] : null,
             'max_replay_id' => (int) DB::table('replay')->max('replayID'),
         ];
-    }
-
-    /** @return array<int, int>|null null meaning every type */
-    private function gameTypeIds(mixed $shortNames): ?array
-    {
-        if (! is_string($shortNames) || $shortNames === '') {
-            return null;
-        }
-
-        $ids = GameType::whereIn('short_name', explode(',', $shortNames))->pluck('type_id')->all();
-
-        return $ids === [] ? null : $ids;
-    }
-
-    /** @return array<int, int>|null null meaning every map */
-    private function gameMapIds(mixed $names): ?array
-    {
-        if (! is_string($names) || $names === '') {
-            return null;
-        }
-
-        $ids = Map::whereIn('name', explode(',', $names))->pluck('map_id')->all();
-
-        return $ids === [] ? null : $ids;
     }
 }

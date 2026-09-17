@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Player;
 use App\Http\Controllers\Controller;
 use App\Models\Battletag;
 use App\Models\GameType;
-use App\Models\HeroesDataTalent;
-use App\Models\Map;
 use App\Models\MasterMMRDataAR;
 use App\Models\MasterMMRDataHL;
 use App\Models\MasterMMRDataQM;
@@ -118,8 +116,12 @@ class PlayerController extends Controller
             ->join('player', 'player.replayID', '=', 'replay.replayID')
             ->where('blizz_id', $blizz_id)
             ->where('region', $region)
+            // Same exclusion the profile query applies when no game type is chosen, or a
+            // newest custom game would look like new data on every load.
             ->when(! is_null($game_type), function ($query) use ($game_type) {
                 return $query->whereIn('game_type', (array) $game_type);
+            }, function ($query) {
+                return $query->where('game_type', '<>', 0);
             })
             ->tap(function ($query) use ($seasonIds, $startDate, $endDate) {
                 $this->globalDataService->applySeasonsOrDateRange($query, $seasonIds->all(), $startDate, $endDate);
@@ -351,7 +353,7 @@ class PlayerController extends Controller
         })->sum('time_on_fire');
 
         $stack_one_wins = $result->sum(function ($item) {
-            return (isset($item->stack_size) && $item->stack_size !== '' && isset($item->winner) && $item->winner !== '' && $item->stack_size == 0 && $item->winner == 1) ? 1 : 0;
+            return (isset($item->stack_size) && $item->stack_size !== '' && isset($item->winner) && $item->winner !== '' && in_array((int) $item->stack_size, [0, 1], true) && $item->winner == 1) ? 1 : 0;
         });
 
         $stack_two_wins = $result->sum(function ($item) {
@@ -371,7 +373,7 @@ class PlayerController extends Controller
         });
 
         $stack_one_losses = $result->sum(function ($item) {
-            return (isset($item->stack_size) && $item->stack_size !== '' && isset($item->winner) && $item->winner !== '' && $item->stack_size == 0 && $item->winner == 0) ? 1 : 0;
+            return (isset($item->stack_size) && $item->stack_size !== '' && isset($item->winner) && $item->winner !== '' && in_array((int) $item->stack_size, [0, 1], true) && $item->winner == 0) ? 1 : 0;
         });
 
         $stack_two_losses = $result->sum(function ($item) {
@@ -619,11 +621,9 @@ class PlayerController extends Controller
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
-        $maps = Map::all();
-        $maps = $maps->keyBy('map_id');
+        $maps = $this->globalDataService->getAllMapsKeyed();
 
-        $talentData = HeroesDataTalent::withAllStatuses()->get();
-        $talentData = $talentData->keyBy('talent_id');
+        $talentData = $this->globalDataService->getAllTalentsKeyed();
 
         foreach ($gamePlayedThresholds as $threshold) {
             $filtered_hero_data = $hero_data->filter(function ($item) use ($threshold) {

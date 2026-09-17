@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\External;
 
+use App\Http\Controllers\Api\External\Concerns\TranslatesInternalFailures;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Player\FriendFoeController;
 use App\Http\Controllers\Player\PlayerAwardsController;
@@ -16,6 +17,7 @@ use App\Support\ApiParameters;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -39,6 +41,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class PlayerController extends Controller
 {
+    use TranslatesInternalFailures;
+
     /**
      * What player pages show a visitor who is not logged in — see
      * `GlobalDataService::getPlayerGameTypeDefault()`. The public API is always
@@ -176,6 +180,7 @@ class PlayerController extends Controller
         ], [
             'hero' => 'id',
             'game_type' => 'array',
+            'game_map' => 'array',
             'season' => 'array',
         ]);
     }
@@ -262,7 +267,16 @@ class PlayerController extends Controller
         );
 
         if ($blizzId === null) {
-            return $this->error('unknown_player', 'No player by that battletag in that region.', 404);
+            return $this->error('player_not_found', 'No player found for that battletag and region.', 404);
+        }
+
+        if ($this->globalDataService->isRestrictedAccount($blizzId, $validated['region'])) {
+            return $this->error('player_unavailable', 'That player has made their profile private.', 403);
+        }
+
+        // An unknown name would otherwise read as a player with no rating.
+        if ($subjectParam !== null && $this->globalDataService->getMMRTypeValue($request->input($subjectParam)) === null) {
+            return $this->error('unknown_'.$subjectParam, 'Not a recognised '.$subjectParam.': '.$request->input($subjectParam).'.', 422);
         }
 
         $ratings = app(PlayerMmrService::class)->summary(
@@ -293,6 +307,12 @@ class PlayerController extends Controller
         if ($type === 'single') {
             $internal = self::SUBJECTS[$page];
 
+            // The site offers a hero filter only on the "all" pages. Here the
+            // controller would ignore it for the matches and swap the rating shown.
+            if ($page !== 'hero' && $request->has('hero')) {
+                return $this->error('unsupported_parameter', '`hero` is not accepted here. Use the "all" endpoint to filter by hero.', 422);
+            }
+
             // Without it the internal controller reads a property off a null
             // lookup. A missing subject is a bad request, not a 500.
             if (! $request->filled($page) && ! $request->filled($internal)) {
@@ -310,11 +330,9 @@ class PlayerController extends Controller
 
         $expects = ['game_type' => 'array', 'season' => 'array'];
 
-        // The same internal method reads `game_map` two ways, chosen by `$type`:
-        // `all` puts it through getGameMapFilterValues() (whereIn, wants an array),
-        // `single` through Map::where() (wants a scalar). Declaring it either way
-        // for both would break the other half.
-        if ($type === 'all') {
+        // A list everywhere except the single map page, where `game_map` is the map
+        // itself and read with Map::where().
+        if (! ($type === 'single' && $page === 'map')) {
             $expects['game_map'] = 'array';
         }
 
@@ -346,6 +364,12 @@ class PlayerController extends Controller
             );
         }
 
+        // History is one game type at a time; the controller would quietly use the
+        // first of several.
+        if ($request->filled('game_type') && count(ApiParameters::gameTypes($request->input('game_type'))[0]) > 1) {
+            return $this->error('single_game_type_only', 'This endpoint takes one game type.', 422);
+        }
+
         return $this->delegate($request, PlayerMMRController::class, 'getData', [
             'type' => $type,
             // Scalar here, unlike the breakdown endpoints: this controller looks
@@ -358,7 +382,7 @@ class PlayerController extends Controller
             // them on the site rather than after what they hold.
             'tableData' => 'history',
             'leagueData' => 'league_tiers',
-        ]);
+        ], ['history' => [], 'league_tiers' => []]);
     }
 
     public function talentBuild(Request $request): Response
@@ -391,8 +415,12 @@ class PlayerController extends Controller
         string $method,
         array $defaults = [],
         array $expects = [],
-        array $rename = []
+        array $rename = [],
+        ?array $whenEmpty = null
     ): Response {
+        // Before any merge: on a GET, merge() writes into the query bag.
+        $callerQuery = Arr::except($request->query(), ['api_token', 'pagination_page']);
+
         // Names in, ids out — the mirror of the global endpoints, which want region
         // names. `NA` and `1` both work here, and `Storm League` alongside `sl`.
         // Runs before validation, which is what enforces the id form.
@@ -447,8 +475,9 @@ class PlayerController extends Controller
             );
         }
 
+        // `game_type=` arrives as null; treat it as not sent.
         foreach ($defaults as $key => $value) {
-            if (! $request->has($key)) {
+            if (! $request->filled($key)) {
                 $request->merge([$key => $value]);
             }
         }
@@ -478,6 +507,21 @@ class PlayerController extends Controller
         }
 
         $result = app()->call([app($controller), $method], ['request' => $request]);
+
+        if ($failure = $this->internalFailure($result)) {
+            return $failure;
+        }
+
+        // The site's paginator links to its own page parameter with none of the
+        // caller's filters, so following one silently dropped them.
+        if ($result instanceof LengthAwarePaginator) {
+            $result->setPageName('pagination_page');
+            $result->withPath($request->url())->appends($callerQuery);
+        }
+
+        if ($result === null && $whenEmpty !== null) {
+            $result = $whenEmpty;
+        }
 
         // Some of these return an array, others a response object. Wrapping a
         // response in response()->json() serialises the object itself, so the

@@ -30,12 +30,9 @@ return [
     */
 
     'ngs' => [
+        // Allowed hosts are derived from this: `s3.amazonaws.com/{bucket}` and
+        // `{bucket}.s3.amazonaws.com`. See NgsReplayUrlValidation.
         'replay_bucket' => env('NGS_REPLAY_BUCKET', 'ngs-replay-storage'),
-
-        'replay_hosts' => [
-            's3.amazonaws.com',
-            'ngs-replay-storage.s3.amazonaws.com',
-        ],
 
         'storage_disk' => 'gcs-ngs',
     ],
@@ -102,6 +99,20 @@ return [
         /* Routes that fan out on every call, with or without a parameter saying so. */
         'batch_routes' => [
             'api.external.heroes.talents.builds.all',
+        ],
+
+        /*
+        | The uploader's keyless routes, per IP. The ceilings their old routes had.
+        | The fingerprint check is generous because the client makes one per replay
+        | before deciding whether to upload at all.
+        */
+
+        'uploader' => [
+            'upload_per_minute' => 60,
+            'upload_per_day' => 20000,
+            'fingerprints_per_minute' => 5000,
+            'parsed_per_minute' => 60,
+            'prematch_per_minute' => 120,
         ],
     ],
 

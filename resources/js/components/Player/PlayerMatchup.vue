@@ -53,10 +53,10 @@
             </a>
           </td>
            <td class="py-2 px-3 ">
-            {{ row.ally_win_rate ? row.ally_win_rate.toFixed(2) : "No data" }}
+            {{ row.ally_games_played ? (row.ally_win_rate ?? 0).toFixed(2) : "No data" }}
           </td>
           <td class="py-2 px-3 ">
-            {{ row.enemy_win_rate ? row.enemy_win_rate.toFixed(2) : "No data" }}
+            {{ row.enemy_games_played ? (row.enemy_win_rate ?? 0).toFixed(2) : "No data" }}
           </td>
           <td class="py-2 px-3 ">
             {{ row.ally_games_played ? row.ally_games_played.toLocaleString('en-US') : "No data" }}

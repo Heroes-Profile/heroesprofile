@@ -67,5 +67,8 @@ export default {
       }
     });
   },
+  beforeUnmount() {
+    this.chart?.destroy();
+  },
 }
 </script>

@@ -16,7 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
  * means a new endpoint supports CSV the day it is routed, without being asked to.
  *
  * Deliberately not applied to:
- *   - anything that is not a 2xx, so an error stays a readable JSON envelope
+ *   - anything that is not a 200, so an error stays a readable JSON envelope and a
+ *     202 keeps the job id and polling headers the caller needs to collect it
  *   - anything not answering JSON: the replay download is a file, and two uploader
  *     endpoints answer plain text that deployed clients string-compare
  */
@@ -36,11 +37,8 @@ class ConvertResponseToCsv
             return $response;
         }
 
-        $rows = CsvResponse::rowsFromPayload($payload);
-
-        if ($rows === null) {
-            return $response;
-        }
+        // Nothing tabular is still a CSV: a caller asked for a file.
+        $rows = CsvResponse::rowsFromPayload($payload) ?? [];
 
         $csv = CsvResponse::stream($rows, $this->filename($request));
 
@@ -63,8 +61,7 @@ class ConvertResponseToCsv
     private function convertible(Response $response): bool
     {
         return $response instanceof JsonResponse
-            && $response->getStatusCode() >= 200
-            && $response->getStatusCode() < 300;
+            && $response->getStatusCode() === 200;
     }
 
     /** Named after the endpoint, so several downloads do not all land as the same file. */

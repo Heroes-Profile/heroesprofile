@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Models\GameType;
+use App\Models\Map;
 use Illuminate\Support\Facades\Cache;
 
 /**
@@ -121,6 +122,66 @@ class ApiParameters
 
             return $lookup;
         });
+    }
+
+    /**
+     * Map ids for one or more map names, matched case-insensitively. Every map,
+     * not just playable ones: replays exist on retired maps too.
+     *
+     * @return array{0: array<int, int>, 1: array<int, string>} [ids, unknown]
+     */
+    public static function mapIds(string|array $input): array
+    {
+        $lookup = Cache::remember('api_map_lookup', self::CACHE_SECONDS, function () {
+            return Map::pluck('map_id', 'name')
+                ->mapWithKeys(fn ($id, $name) => [mb_strtolower($name) => (int) $id])
+                ->all();
+        });
+
+        $ids = [];
+        $unknown = [];
+
+        foreach (self::split($input) as $value) {
+            $key = mb_strtolower($value);
+
+            if (isset($lookup[$key])) {
+                $ids[] = $lookup[$key];
+            } else {
+                $unknown[] = $value;
+            }
+        }
+
+        return [array_values(array_unique($ids)), $unknown];
+    }
+
+    /**
+     * Canonical names for playable maps, matched case-insensitively — what the
+     * global statistics rules accept.
+     *
+     * @return array{0: array<int, string>, 1: array<int, string>} [names, unknown]
+     */
+    public static function playableMapNames(string|array $input): array
+    {
+        $lookup = Cache::remember('api_playable_map_lookup', self::CACHE_SECONDS, function () {
+            return Map::where('playable', '<>', 0)->pluck('name')
+                ->mapWithKeys(fn ($name) => [mb_strtolower($name) => $name])
+                ->all();
+        });
+
+        $names = [];
+        $unknown = [];
+
+        foreach (self::split($input) as $value) {
+            $key = mb_strtolower($value);
+
+            if (isset($lookup[$key])) {
+                $names[] = $lookup[$key];
+            } else {
+                $unknown[] = $value;
+            }
+        }
+
+        return [array_values(array_unique($names)), $unknown];
     }
 
     /** @return array<int, string> */

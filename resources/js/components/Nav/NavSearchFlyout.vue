@@ -35,7 +35,9 @@ export default {
     battletag: { type: String, default: '' },
     blizzId: { type: Number, default: 0 },
     region: { type: Number, default: 0 },
-    items: { type: Array, required: true },
+    // Either a list name from window.navLists (set once in the layout) or the items themselves.
+    list: { type: String, default: '' },
+    items: { type: Array, default: () => [] },
     label: { type: String, default: '' },
     subpath: { type: String, default: '' },
     allLabel: { type: String, default: '' },
@@ -61,10 +63,14 @@ export default {
       if (this.baseUrlOverride) return this.baseUrlOverride;
       return `/Player/${this.battletag}/${this.blizzId}/${this.region}/${this.subpath}`;
     },
+    sourceItems() {
+      if (this.list) return (window.navLists && window.navLists[this.list]) || [];
+      return this.items;
+    },
     filteredItems() {
       const q = this.normalize(this.search.trim());
-      if (!q) return this.items;
-      return this.items.filter(item => this.normalize(item.name).includes(q));
+      if (!q) return this.sourceItems;
+      return this.sourceItems.filter(item => this.normalize(item.name).includes(q));
     },
   },
 };

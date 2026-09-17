@@ -111,8 +111,8 @@
         <tr><td class="py-2 px-3">/Replay/Parsed</td><td class="py-2 px-3">/v1/replays/parsed</td><td class="py-2 px-3">Unchanged. Still plain text, still keyless</td></tr>
         <tr><td class="py-2 px-3">/Replay/Min_id</td><td class="py-2 px-3">/v1/replays</td><td class="py-2 px-3">Now <code>{replays, next_after, max_replay_id}</code>. Cursor is exclusive — see below</td></tr>
         <tr><td class="py-2 px-3">/Replay/Max</td><td class="py-2 px-3">/v1/replays</td><td class="py-2 px-3">Folded in as <code>max_replay_id</code>. No separate call</td></tr>
-        <tr><td class="py-2 px-3">/NGS/*</td><td class="py-2 px-3">/v1/ngs/*</td><td class="py-2 px-3">Same six reads, lowercased. Each is an object rather than a row array</td></tr>
-        <tr><td class="py-2 px-3">/openApi/PreMatch</td><td class="py-2 px-3">/v1/prematch</td><td class="py-2 px-3">Unchanged. Still a bare integer, still keyless</td></tr>
+        <tr><td class="py-2 px-3">/NGS/* reads</td><td class="py-2 px-3">—</td><td class="py-2 px-3"><strong>Removed.</strong> The API no longer serves NGS or other esports data</td></tr>
+        <tr><td class="py-2 px-3">/NGS/Games/Upload</td><td class="py-2 px-3">/v1/ngs/games/upload</td><td class="py-2 px-3">POST only. Needs NGS upload access</td></tr>
         <tr><td class="py-2 px-3">/replays/fingerprints/{fp}</td><td class="py-2 px-3">/v1/replays/fingerprints/{fp}</td><td class="py-2 px-3">Unchanged. Still keyless</td></tr>
         <tr><td class="py-2 px-3">/upload/heroesprofile/{source}</td><td class="py-2 px-3">/v1/upload/heroesprofile/{source}</td><td class="py-2 px-3">Unchanged contract</td></tr>
       </tbody>
@@ -208,8 +208,10 @@
     <pre class="bg-darken p-3 text-xs overflow-x-auto mb-3">{"error":{"code":"quota_exceeded","message":"Weekly limit of 1,000 calls reached for this endpoint."}}</pre>
     <p class="text-sm mb-6">
       <code class="text-lteal">401</code> no key, <code class="text-lteal">403</code> not in
-      your plan, <code class="text-lteal">422</code> a bad parameter,
-      <code class="text-lteal">429</code> out of quota or rate limited.
+      your plan, <code class="text-lteal">404</code> nothing found,
+      <code class="text-lteal">422</code> a bad parameter (with an <code>errors</code> list saying what),
+      <code class="text-lteal">429</code> out of quota or rate limited. A call that answers with an
+      error is not charged against your allowance.
     </p>
 
     <h3 class="text-lg mb-2">Global statistics may answer 202 instead of data</h3>
@@ -242,7 +244,8 @@ Retry-After: 10
     <p class="text-sm mb-4">
       <code>Location</code> is where to collect it and <code>Retry-After</code> is how long
       to wait between attempts, in seconds. <strong>Your quota is charged here</strong>,
-      once, when the job is created.
+      once, when the job is created. With <code>mode=csv</code> this answer is still JSON;
+      the CSV comes from the job.
     </p>
 
     <h4 class="text-sm uppercase tracking-wider text-lteal mb-2">2. Poll the job until it is ready</h4>

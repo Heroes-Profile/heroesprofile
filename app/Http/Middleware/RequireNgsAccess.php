@@ -12,11 +12,10 @@ use Symfony\Component\HttpFoundation\Response;
  * weekly quota — access is the permission, and there is nothing to price because
  * it is not sold. Only the per-key throttle applies.
  *
- * This is stricter than the old API, where the five NGS read endpoints were open
- * to any subscriber and only upload and delete checked the flags.
+ * The API serves no NGS reads, so upload is the only route left behind this.
  *
- * ->middleware('api.ngs')        reads: either flag
- * ->middleware('api.ngs:upload') writes: both flags
+ * ->middleware('api.ngs')        either flag
+ * ->middleware('api.ngs:upload') both flags
  */
 class RequireNgsAccess
 {
@@ -26,6 +25,11 @@ class RequireNgsAccess
 
         if ($context === null) {
             return $this->error('unauthenticated', 'A valid API key is required.', 401);
+        }
+
+        // No quota middleware on these routes, so suspension is refused here.
+        if ($context->isSuspended()) {
+            return $this->error($context->suspensionCode(), $context->suspensionMessage(), 403);
         }
 
         $permitted = $mode === 'upload'

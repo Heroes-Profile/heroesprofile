@@ -151,6 +151,7 @@
               </button>
               <span v-if="emailSent" class="text-teal-400">Message sent! We'll be in touch.</span>
             </div>
+            <p v-if="sendError" class="bg-red p-3 rounded">{{ sendError }}</p>
           </form>
         </div>
       </div>
@@ -160,6 +161,8 @@
 </template>
 
 <script>
+const RECAPTCHA_MESSAGE = "We couldn't verify this message with reCAPTCHA. Please allow reCAPTCHA (google.com) in your browser or blocker and try again, or email contact@heroesprofile.com directly.";
+
 export default {
   name: 'FAQ',
   props: {
@@ -182,6 +185,7 @@ export default {
       openItems: {},
       isLoading: false,
       emailSent: false,
+      sendError: null,
       formData: {
         battletag: '',
         email: '',
@@ -467,9 +471,16 @@ export default {
     async submitQuestion() {
       this.isLoading = true;
       this.emailSent = false;
+      this.sendError = null;
       try {
         const recaptchaToken = await this.getRecaptchaToken();
         this.formData.recaptcha_token = recaptchaToken;
+
+        // reCAPTCHA is required; a blocked script means no token and the server would refuse.
+        if (this.recaptchaSiteKey && !recaptchaToken) {
+          this.sendError = RECAPTCHA_MESSAGE;
+          return;
+        }
 
         const response = await this.$axios.post('/api/v1/contact', {
           battletag: this.formData.battletag,
@@ -486,7 +497,9 @@ export default {
           this.formData.message = '';
         }
       } catch (e) {
-        // silent
+        if (e.response?.data?.error === 'recaptcha_failed') {
+          this.sendError = RECAPTCHA_MESSAGE;
+        }
       } finally {
         this.isLoading = false;
       }

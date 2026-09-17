@@ -30,6 +30,14 @@ class ReplayDownloadController extends Controller
         'replay_unavailable' => ['That replay is not currently available for download.', 404],
     ];
 
+    /** The heading shown for each status, so a missing replay does not read as "Access Denied". */
+    private const TITLES = [
+        403 => 'Access Denied',
+        404 => 'Not Found',
+        410 => 'No Longer Available',
+        429 => 'Too Many Downloads',
+    ];
+
     public function __invoke(Request $request, int $replayID, SiteReplayDownloadService $replays): Response
     {
         $validated = $request->validate([
@@ -54,6 +62,10 @@ class ReplayDownloadController extends Controller
 
         [$message, $status] = self::REASONS[$result] ?? ['That replay could not be downloaded.', 404];
 
-        return response()->view('errors.403', ['message' => $message], $status);
+        return response()->view('errors.403', [
+            'message' => $message,
+            'errorCode' => $status,
+            'errorTitle' => self::TITLES[$status] ?? 'Access Denied',
+        ], $status);
     }
 }

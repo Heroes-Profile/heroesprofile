@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Api\External;
 
+use App\Http\Controllers\Api\External\Concerns\TranslatesInternalFailures;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SingleMatchController;
+use App\Models\Replay;
 use App\Services\Api\ReplayDownloadService;
 use App\Services\Api\ReplayIndexService;
+use App\Support\ApiParameters;
 use App\Support\GameLength;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -17,11 +20,12 @@ use Symfony\Component\HttpFoundation\Response;
  * and `patreon_subscriber`. The public API is stateless, so callers always get
  * the anonymous shape.
  *
- * Esports matches are out of scope here: CCL and MastersClash are being dropped,
- * and NGS has its own endpoints.
+ * Esports matches are out of scope: the API serves no esports data.
  */
 class MatchController extends Controller
 {
+    use TranslatesInternalFailures;
+
     /** Why a replay could not be served, in words a caller can act on. */
     private const DOWNLOAD_ERRORS = [
         'replay_deleted' => 'That replay is no longer stored.',
@@ -31,7 +35,14 @@ class MatchController extends Controller
 
     public function show(Request $request, int $replayID): Response
     {
-        $request->merge(['replayID' => $replayID]);
+        if ($refusal = $this->refuseUnviewable($replayID)) {
+            return $refusal;
+        }
+
+        // A fresh request carrying only the id. The site controller also reads
+        // `esport`, `tournament` and `user`, which switch it to the esports schemas
+        // and unmask private accounts — none of that is the API's to offer.
+        $internal = Request::create($request->path(), 'GET', ['replayID' => $replayID]);
 
         // The site page shows `Zemill`; an API caller needs `Zemill#1940`, since
         // that is what every player endpoint takes as input and the only form that
@@ -39,11 +50,19 @@ class MatchController extends Controller
         // entirely, before this ever applies.
         $result = app()->call(
             [app(SingleMatchController::class)->withFullBattletags(), 'getData'],
-            ['request' => $request]
+            ['request' => $internal]
         );
 
+        if ($failure = $this->internalFailure($result)) {
+            return $failure;
+        }
+
+        // Fewer than ten players stored, or nothing joined: the site's own 404
+        // bodies, which carry only a `status`.
         if ($result instanceof Response) {
-            return $result;
+            return $result->getStatusCode() === 404
+                ? $this->error('replay_incomplete', 'That replay is not fully stored, so there is no match detail to return.', 404)
+                : $result;
         }
 
         // The site formats length for display; every other endpoint reports it as
@@ -63,10 +82,28 @@ class MatchController extends Controller
         $validated = $request->validate([
             'after' => ['sometimes', 'integer', 'min:0'],
             'timeframe_type' => ['sometimes', 'in:minor,major'],
-            'timeframe' => ['sometimes', 'string', 'max:32'],
+            'timeframe' => ['required_with:timeframe_type', 'string', 'max:32'],
             'game_type' => ['sometimes', 'string', 'max:64'],
             'game_map' => ['sometimes', 'string', 'max:255'],
         ]);
+
+        // Resolved here so an unrecognised value is refused. Left to the query, a
+        // value matching nothing reads as no filter and returns every type or map.
+        if (isset($validated['game_type'])) {
+            [$validated['game_type'], $unknown] = ApiParameters::gameTypes($validated['game_type']);
+
+            if ($unknown !== []) {
+                return $this->error('unknown_game_type', 'Not a recognised game type: '.implode(', ', $unknown).'.', 422);
+            }
+        }
+
+        if (isset($validated['game_map'])) {
+            [$validated['game_map'], $unknown] = ApiParameters::mapIds($validated['game_map']);
+
+            if ($unknown !== []) {
+                return $this->error('unknown_game_map', 'Not a recognised map: '.implode(', ', $unknown).'.', 422);
+            }
+        }
 
         return response()->json($replays->page($validated));
     }
@@ -101,6 +138,10 @@ class MatchController extends Controller
      */
     public function bans(int $replayID): Response
     {
+        if ($refusal = $this->refuseUnviewable($replayID)) {
+            return $refusal;
+        }
+
         return response()->json([
             'replayID' => $replayID,
             'bans' => $this->globalDataService->getReplayBans($replayID),
@@ -116,9 +157,39 @@ class MatchController extends Controller
      */
     public function draft(int $replayID): Response
     {
+        if ($refusal = $this->refuseUnviewable($replayID)) {
+            return $refusal;
+        }
+
         return response()->json([
             'replayID' => $replayID,
             'draft' => $this->globalDataService->getReplayDraftOrder($replayID),
         ]);
+    }
+
+    /**
+     * Unknown replays and custom games. The API is stateless, so the site's
+     * signed-in custom game opt-in never applies and custom games are never served.
+     */
+    private function refuseUnviewable(int $replayID): ?Response
+    {
+        $gameType = Replay::where('replayID', $replayID)->value('game_type');
+
+        if ($gameType === null) {
+            return $this->error('replay_not_found', self::DOWNLOAD_ERRORS['replay_not_found'], 404);
+        }
+
+        if ((int) $gameType === 0) {
+            return $this->error('custom_match_unavailable', 'Custom games are not available through the API.', 403);
+        }
+
+        return null;
+    }
+
+    private function error(string $code, string $message, int $status): Response
+    {
+        return response()->json([
+            'error' => ['code' => $code, 'message' => $message],
+        ], $status);
     }
 }

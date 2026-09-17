@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Models\BattlenetAccount;
 use App\Models\FriendFoeCache;
 use App\Models\GameType;
-use App\Models\Map;
 use App\Rules\DateInputValidation;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
@@ -129,7 +128,14 @@ class FriendFoeController extends Controller
             );
 
             if (! $latestReplayId || $dbCache->latest_replayID >= $latestReplayId) {
-                return response()->json(json_decode($dbCache->data, true));
+                // Stored before anyone on it may have gone private or been banned, so the
+                // privacy rule is applied again on the way out.
+                $rows = array_values(array_filter(
+                    json_decode($dbCache->data, true) ?? [],
+                    fn ($row) => ! $this->globalDataService->isHiddenFrom($row['blizz_id'], $row['region'])
+                ));
+
+                return response()->json($rows);
             }
         }
 
@@ -155,21 +161,20 @@ class FriendFoeController extends Controller
         $endDate = $request['end_date'];
         $type = $request['type'];
         $teamValue = $type == 'friend' ? 0 : 1;
-        $gameMap = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id') : null;
+        // The page's map filter is a multi-select.
+        $gameMap = $request['game_map'] ? $this->globalDataService->getGameMapFilterValues((array) $request['game_map']) : null;
         $hero = $request['hero'];
         $groupSize = $request['groupsize'];
 
-        if ($groupSize == 'Solo') {
-            $groupSize = 0;
-        } elseif ($groupSize == 'Duo') {
-            $groupSize = 2;
-        } elseif ($groupSize == '3 Players') {
-            $groupSize = 3;
-        } elseif ($groupSize == '4 Players') {
-            $groupSize = 4;
-        } elseif ($groupSize == '5 Players') {
-            $groupSize = 5;
-        }
+        // A solo player is stored as stack_size 0 or 1.
+        $groupSize = match ($groupSize) {
+            'Solo' => [0, 1],
+            'Duo' => [2],
+            '3 Players' => [3],
+            '4 Players' => [4],
+            '5 Players' => [5],
+            default => null,
+        };
 
         $innerQuery = DB::table('replay')
             ->select('replay.replayID', 'player.party')
@@ -187,7 +192,7 @@ class FriendFoeController extends Controller
                 return $query->where('hero', $hero);
             })
             ->when(! is_null($groupSize), function ($query) use ($groupSize) {
-                return $query->where('stack_size', $groupSize);
+                return $query->whereIn('stack_size', $groupSize);
             })
             ->where('team', $teamValue)
             ->get();
@@ -236,7 +241,7 @@ class FriendFoeController extends Controller
                 return $query->where('hero', $hero);
             })
             ->when(! is_null($groupSize), function ($query) use ($groupSize) {
-                return $query->where('stack_size', $groupSize);
+                return $query->whereIn('stack_size', $groupSize);
             })
             ->where('team', $teamValue);
 
@@ -273,13 +278,10 @@ class FriendFoeController extends Controller
         $heroDataByID = $this->globalDataService->getHeroes();
         $heroDataByID = $heroDataByID->keyBy('id');
 
-        $privateAccounts = $this->globalDataService->getPrivateAccounts();
-        $checkedData = $groupedResultsByBlizzId->reject(function ($group) use ($privateAccounts, $region) {
-            $blizzId = $group->first()->blizz_id;
-
-            return $privateAccounts->contains(function ($account) use ($blizzId, $region) {
-                return $account['blizz_id'] == $blizzId && $account['region'] == $region;
-            });
+        // Private and banned team-mates and opponents are left out entirely. No viewer
+        // exception: this runs in the async worker and the result is shared by everyone.
+        $checkedData = $groupedResultsByBlizzId->reject(function ($group) use ($region) {
+            return $this->globalDataService->isHiddenFrom($group->first()->blizz_id, $region);
         });
 
         // Same rule as checkIfSiteFlair: only Patreon accounts with site flair enabled.

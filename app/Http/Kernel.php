@@ -6,6 +6,7 @@ use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\BlockBannedIPs;
 use App\Http\Middleware\BlockSuspendedApiAccount;
 use App\Http\Middleware\CheckIfPatreonSupporter;
+use App\Http\Middleware\CheckIfPrivateProfileData;
 use App\Http\Middleware\CheckIfPrivateProfilePage;
 use App\Http\Middleware\CommunitySupportRedirect;
 use App\Http\Middleware\ConvertResponseToCsv;
@@ -21,6 +22,7 @@ use App\Http\Middleware\RequireApiTermsAcceptance;
 use App\Http\Middleware\RequireNgsAccess;
 use App\Http\Middleware\RequireWebsiteAuthForAll;
 use App\Http\Middleware\ResolveApiKey;
+use App\Http\Middleware\RestrictCustomGames;
 use App\Http\Middleware\ServeApiFixtures;
 use App\Http\Middleware\SetGlobalDataValues;
 use App\Http\Middleware\ThrottleNonApiRequests;
@@ -29,6 +31,7 @@ use App\Http\Middleware\TrackSlowRequests;
 use App\Http\Middleware\TrimStrings;
 use App\Http\Middleware\TrustProxies;
 use App\Http\Middleware\ValidateApiPostOrigin;
+use App\Http\Middleware\ValidateNgsUpload;
 use App\Http\Middleware\ValidateSignature;
 use App\Http\Middleware\VerifyCloudTasksRequest;
 use App\Http\Middleware\VerifyCsrfToken;
@@ -144,7 +147,10 @@ class Kernel extends HttpKernel
         'api.quota' => EnforceApiQuota::class,
         'api.fixtures' => ServeApiFixtures::class,
         'api.ngs' => RequireNgsAccess::class,
+        'api.ngs.upload.validate' => ValidateNgsUpload::class,
         'checkIfPrivateProfilePage' => CheckIfPrivateProfilePage::class,
+        'checkIfPrivateProfileData' => CheckIfPrivateProfileData::class,
+        'restrictCustomGames' => RestrictCustomGames::class,
         'logIpAndUserAgent' => LogIPAndUserAgent::class,
         'communitySupportRedirect' => CommunitySupportRedirect::class,
         'requireWebsiteAuthForAll' => RequireWebsiteAuthForAll::class,

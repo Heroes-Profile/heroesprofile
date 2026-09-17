@@ -19,7 +19,7 @@ trait HandlesAsyncGlobalQueries
         $bypassCache = $this->globalDataService->shouldBypassGlobalCache();
         $cache = Cache::store('database');
 
-        if ($request->boolean('group_by_map')) {
+        if ($request->boolean('group_by_map') && $request->attributes->get(GlobalQueryService::GROUP_BY_MAP_ALLOWED)) {
             return $this->groupedByMapResponse($request, $cacheKey, $gameVersion, $executeMethod);
         }
 

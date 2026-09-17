@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Rules\BattletagInputProhibitCharacters;
+use App\Services\GlobalDataService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -22,26 +24,23 @@ class ViewServiceProvider extends ServiceProvider
     public function boot()
     {
         View::composer('*', function ($view) {
-            $main_search_account = request()->cookie('main_search_account');
-            $alt_search_account1 = request()->cookie('alt_search_account1');
-            $alt_search_account2 = request()->cookie('alt_search_account2');
-            $alt_search_account3 = request()->cookie('alt_search_account3');
+            // These cookies are plain JSON the browser controls; anything malformed is dropped rather than rendered.
+            $regions = app(GlobalDataService::class)->getRegionIDtoString();
+            $searchAccount = function ($raw) use ($regions) {
+                $account = $raw ? json_decode($raw, true) : null;
 
-            if ($main_search_account) {
-                $main_search_account = json_decode($main_search_account, true);
-            }
+                $valid = is_array($account)
+                    && (new BattletagInputProhibitCharacters)->passes('battletag', $account['battletag'] ?? null)
+                    && ctype_digit((string) ($account['blizz_id'] ?? ''))
+                    && isset($regions[(int) ($account['region'] ?? 0)]);
 
-            if ($alt_search_account1) {
-                $alt_search_account1 = json_decode($alt_search_account1, true);
-            }
+                return $valid ? $account : null;
+            };
 
-            if ($alt_search_account2) {
-                $alt_search_account2 = json_decode($alt_search_account2, true);
-            }
-
-            if ($alt_search_account3) {
-                $alt_search_account3 = json_decode($alt_search_account3, true);
-            }
+            $main_search_account = $searchAccount(request()->cookie('main_search_account'));
+            $alt_search_account1 = $searchAccount(request()->cookie('alt_search_account1'));
+            $alt_search_account2 = $searchAccount(request()->cookie('alt_search_account2'));
+            $alt_search_account3 = $searchAccount(request()->cookie('alt_search_account3'));
 
             if (Auth::check()) {
                 $user = Auth::user();

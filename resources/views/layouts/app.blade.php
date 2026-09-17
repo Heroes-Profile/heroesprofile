@@ -106,6 +106,16 @@
     }
     </script>
 
+    {{-- The nav flyouts' lists, once per page rather than inline in every flyout. --}}
+    @php
+      $navLists = [
+        'heroes' => collect($bladeGlobals['heroes'] ?? [])->map(fn ($hero) => ['id' => $hero->id, 'name' => $hero->name])->values(),
+        'maps' => collect($bladeGlobals['maps'] ?? [])->map(fn ($map) => ['id' => $map->map_id, 'name' => $map->name])->values(),
+      ];
+    @endphp
+    <script>
+      window.navLists = {!! json_encode($navLists, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!};
+    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>.void-eye-img{ background-image: url('{{ asset('images/event/xalatath/void-eye.svg') }}'); }</style>
 
@@ -148,8 +158,6 @@
     'mainSearchAccount' => $main_search_account,
     'altSearchAccounts' => [$alt_search_account1, $alt_search_account2, $alt_search_account3],
     'regions' => $bladeGlobals["regions"],
-    'heroes' => $bladeGlobals["heroes"],
-    'maps' => $bladeGlobals["maps"],
     ])
     
 

@@ -83,7 +83,7 @@
     mounted() {
       document.addEventListener("click", this.handleClickOutside);
     },
-    beforeDestroy() {
+    beforeUnmount() {
       document.removeEventListener("click", this.handleClickOutside);
     },
     computed: {

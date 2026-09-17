@@ -21,7 +21,7 @@ class GlobalsInputValidationController extends Controller
     public function globalValidationRulesURLParam($timeframeType, $timeframe)
     {
         return [
-            'timeframe_type' => 'sometimes|in:minor,major,major_grouped,last_update',
+            'timeframe_type' => 'sometimes|in:minor,major,major_grouped',
             'timeframe' => ['sometimes', 'nullable', new TimeframeMinorInputValidation($timeframeType)],
             'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation],
             'region' => ['sometimes', 'nullable', new RegionInputValidation],
@@ -42,8 +42,8 @@ class GlobalsInputValidationController extends Controller
     public function globalsValidationRules($timeframeType, $timeframe)
     {
         return [
-            'timeframe_type' => 'required|in:minor,major,major_grouped,last_update',
-            'timeframe' => $timeframeType !== 'last_update' ? ['required', new TimeframeMinorInputValidation($timeframeType)] : 'nullable',
+            'timeframe_type' => 'required|in:minor,major,major_grouped',
+            'timeframe' => ['required', new TimeframeMinorInputValidation($timeframeType)],
             'game_type' => ['required', new GameTypeInputValidation],
             'region' => ['sometimes', 'nullable', new RegionInputValidation],
             'statfilter' => ['sometimes', 'nullable', new StatFilterInputValidation($timeframeType, $timeframe)],

@@ -28,6 +28,7 @@ use App\Support\GlobalCacheKey;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -178,7 +179,13 @@ class GlobalDataService
 
         $hidden = $this->getHiddenFlair()['void_eye'];
 
-        return array_values(array_filter($holders, fn ($key) => ! isset($hidden[$key])));
+        // Public list of blizz_id|region pairs, so private and banned holders are left
+        // out, except a private owner's own entry.
+        return array_values(array_filter($holders, function ($key) use ($hidden) {
+            [$blizzId, $region] = explode('|', $key);
+
+            return ! isset($hidden[$key]) && ! $this->isHiddenFrom($blizzId, $region, Auth::user());
+        }));
     }
 
     public const FLAIR_HIDE_SETTINGS = [
@@ -338,18 +345,54 @@ class GlobalDataService
         ];
     }
 
-    public function getPrivateAccounts()
-    {
-        $privateAccounts = BattlenetAccount::select('battletag', 'blizz_id', 'region')->where('private', 1)->get();
-        $filteredAccounts = $privateAccounts->map(function ($account) {
-            return [
-                'battletag' => $account->battletag,
-                'blizz_id' => $account->blizz_id,
-                'region' => $account->region,
-            ];
-        });
+    /** How long the restricted set is trusted. Bans are written outside this app, so nothing else clears it. */
+    private const RESTRICTED_KEYS_SECONDS = 300;
 
-        return $filteredAccounts;
+    /**
+     * Every private or banned account, keyed `blizz_id|region`, valued 'private' or
+     * 'banned'. One cached lookup instead of a table scan per check.
+     *
+     * @return array<string, string>
+     */
+    public function restrictedAccountKeys(): array
+    {
+        return Cache::remember('restricted_account_keys', self::RESTRICTED_KEYS_SECONDS, function () {
+            $keys = [];
+
+            foreach (BattlenetAccount::without(['patreonAccount', 'userSettings'])->where('private', 1)->get(['blizz_id', 'region']) as $account) {
+                $keys[$account->blizz_id.'|'.$account->region] = 'private';
+            }
+
+            // After private, so an account that is both reads as banned.
+            foreach (BannedAccount::get(['blizz_id', 'region']) as $account) {
+                $keys[$account->blizz_id.'|'.$account->region] = 'banned';
+            }
+
+            return $keys;
+        });
+    }
+
+    /**
+     * Whether this account's data must be withheld from the viewer. Private accounts
+     * are shown to their signed-in owner; banned accounts are shown to no one.
+     */
+    public function isHiddenFrom($blizzId, $region, $viewer = null): bool
+    {
+        $state = $this->restrictedAccountKeys()[$blizzId.'|'.$region] ?? null;
+
+        if ($state === null) {
+            return false;
+        }
+
+        $isOwner = $viewer !== null && $viewer->blizz_id == $blizzId && $viewer->region == $region;
+
+        return ! ($state === 'private' && $isOwner);
+    }
+
+    /** Called when an account's privacy changes, so it takes effect immediately. */
+    public function forgetRestrictedAccount($blizzId, $region): void
+    {
+        Cache::forget('restricted_account_keys');
     }
 
     /**
@@ -404,23 +447,7 @@ class GlobalDataService
      */
     public function isRestrictedAccount($blizz_id, $region): bool
     {
-        return Cache::remember(
-            'restricted_account|'.$blizz_id.'|'.$region,
-            300,
-            function () use ($blizz_id, $region) {
-                $isPrivate = $this->getPrivateAccounts()->contains(
-                    fn ($account) => $account['blizz_id'] == $blizz_id && $account['region'] == $region
-                );
-
-                if ($isPrivate) {
-                    return true;
-                }
-
-                return BannedAccount::where('blizz_id', $blizz_id)
-                    ->where('region', $region)
-                    ->exists();
-            }
-        );
+        return isset($this->restrictedAccountKeys()[$blizz_id.'|'.$region]);
     }
 
     public function calculateMaxReplayNumber()
@@ -716,9 +743,8 @@ class GlobalDataService
 
     public function shouldBypassGlobalCache(): bool
     {
-        $host = request()->getHost();
-        $allowed = str_contains($host, 'develop')
-            || in_array($host, ['localhost', '127.0.0.1'], true)
+        // The deploy's own APP_URL, not the request's host: see GlobalDebugController.
+        $allowed = str_contains((string) config('app.url'), 'develop')
             || ! app()->environment('production');
 
         if (! $allowed) {
@@ -750,8 +776,12 @@ class GlobalDataService
 
     private function resolveCacheTimeInSeconds(array $timeframe): int
     {
-        if (count($timeframe) == 1 && $timeframe[0] == $this->getLatestPatch()) {
-            $date = SeasonGameVersion::where('game_version', min($timeframe))->value('date_added');
+        $latestPatch = $this->getLatestPatch();
+
+        // Any timeframe that includes the live patch is still receiving games: a major
+        // patch or a multi-build selection included, not only the latest build on its own.
+        if (in_array($latestPatch, $timeframe, true)) {
+            $date = SeasonGameVersion::where('game_version', $latestPatch)->value('date_added');
             $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
 
             if ($changeInMinutes < 1440) {  // 1 day
@@ -762,12 +792,13 @@ class GlobalDataService
                 return 24 * 60 * 60;
             } elseif ($changeInMinutes < (1440 * 14)) { // 2 weeks
                 return 7 * 24 * 60 * 60;
-            } else {
-                return 14 * 24 * 60 * 60;
             }
+
+            return 14 * 24 * 60 * 60;
         }
 
-        $date = SeasonGameVersion::where('game_version', min($timeframe))->value('date_added');
+        // Oldest by the date it was added: comparing version strings puts 2.55.10 before 2.55.9.
+        $date = SeasonGameVersion::whereIn('game_version', $timeframe)->min('date_added');
         $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
 
         return max(60, (int) $changeInMinutes * 60);
@@ -793,6 +824,18 @@ class GlobalDataService
         }
 
         return clone $this->cachedHeroes;
+    }
+
+    /** Every talent, playable or not, keyed by talent_id. Old builds reference retired talents. */
+    public function getAllTalentsKeyed()
+    {
+        return Cache::remember('heroes_data_talents_all_statuses_keyed', 3600, fn () => HeroesDataTalent::withAllStatuses()->get()->keyBy('talent_id'));
+    }
+
+    /** Every map, playable or not, keyed by map_id. */
+    public function getAllMapsKeyed()
+    {
+        return Cache::remember('maps_all_keyed', 3600, fn () => Map::all()->keyBy('map_id'));
     }
 
     public function getMaps()
@@ -1536,9 +1579,6 @@ class GlobalDataService
 
         $result = '';
 
-        $counter = 4;
-        $multiply = 1;
-
         foreach ($rankTiers as $key => $tierInfo) {
             $minMmr = $tierInfo['min_mmr'] ?? 0;
             $maxMmr = $tierInfo['max_mmr'] ?? '';
@@ -1556,17 +1596,12 @@ class GlobalDataService
                         continue;
                     }
 
-                    if ($mmr < ($minMmr + $split)) {
-                        $result = $tierNames[$key].' '.$counter;
-                    } else {
-                        for ($i = ($minMmr + $split); $i < $maxMmr; $i += $split) {
-                            if ($mmr >= $i) {
+                    // Five even divisions of this tier's range, as the breakdowns are built:
+                    // bottom is 5, top is 1.
+                    $index = (int) floor(($mmr - $minMmr) / $split);
+                    $index = max(0, min(4, $index));
 
-                                $result = $tierNames[$key].' '.$counter;
-                                $counter--;
-                            }
-                        }
-                    }
+                    $result = $tierNames[$key].' '.(5 - $index);
                 } else {
                     $result = 'Master';
                 }
@@ -1575,6 +1610,12 @@ class GlobalDataService
                     $result = 'Master';
                 }
             }
+        }
+
+        // Below the lowest rating when the breakdowns were last calculated: no range
+        // holds it, but it is still the bottom of Bronze.
+        if ($result === '' && isset($rankTiers['bronze']) && $mmr < ($rankTiers['bronze']['min_mmr'] ?? 0)) {
+            $result = 'Bronze 5';
         }
 
         return $result;
@@ -1704,16 +1745,6 @@ class GlobalDataService
         return $timeframes;
     }
 
-    public function getTimeFrameFilterValuesLastUpdate($hero)
-    {
-        $game_version = Hero::select('last_change_patch_version')->where('id', $hero)->first()->last_change_patch_version;
-
-        $query = SeasonGameVersion::select('game_version');
-        $gameVersion = $this->applyVersionFilter($query, $game_version)->get()->pluck('game_version')->toArray();
-
-        return $gameVersion;
-    }
-
     public function getRegionFilterValues($regions)
     {
         if (is_null($regions)) {
@@ -1777,7 +1808,14 @@ class GlobalDataService
         $hero = $this->getHeroFilterValue($request['hero']);
         $role = $request['role'];
 
-        $cacheKey = GlobalCacheKey::for('GlobalHeroStats', $gameVersionIDs, $request->all());
+        // Its own prefix: the Hero Stats page caches a different shape under GlobalHeroStats,
+        // and the two collided whenever the filters matched. Hero and role are not part of
+        // the query, so they are left out of the key and every hero's matchups page shares it.
+        $cacheKey = GlobalCacheKey::for(
+            'GlobalHeroWinRatesAll',
+            $gameVersionIDs,
+            Arr::except($request->all(), ['hero', 'role'])
+        );
 
         $data = Cache::store('database')->remember($cacheKey, $this->calculateCacheTimeInSeconds($gameVersion), function () use (
             $gameVersionIDs,

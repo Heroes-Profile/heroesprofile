@@ -41,6 +41,18 @@ class ServeApiFixtures
             return $next($request);
         }
 
+        // Runs before the quota middleware, so the suspension refusal has to be
+        // made here too — sample data would read as the API working.
+        if ($context->isSuspended()) {
+            return response()->json([
+                'error' => [
+                    'code' => $context->suspensionCode(),
+                    'message' => $context->suspensionMessage(),
+                    'endpoint' => $endpoint,
+                ],
+            ], 403);
+        }
+
         if ($binary = $this->binaryFixture($endpoint)) {
             // Headers passed in, not chained: download() answers with a plain Symfony
             // BinaryFileResponse, which has none of Laravel's response helpers.
@@ -66,12 +78,8 @@ class ServeApiFixtures
         // `?mode=csv` has to work here too, or an account on fixtures asks for CSV
         // and silently gets JSON — a difference that disappears on activation.
         if ($request->input('mode') === 'csv') {
-            $rows = CsvResponse::rowsFromPayload($fixture);
-
-            if ($rows !== null) {
-                return CsvResponse::stream($rows, $endpoint)
-                    ->withHeaders([self::HEADER => 'fixture']);
-            }
+            return CsvResponse::stream(CsvResponse::rowsFromPayload($fixture) ?? [], $endpoint)
+                ->withHeaders([self::HEADER => 'fixture']);
         }
 
         // Otherwise served verbatim. The body must be shape-identical to the live

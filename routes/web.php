@@ -18,7 +18,6 @@ use App\Http\Controllers\Api\TryItController as ApiTryItController;
 use App\Http\Controllers\Auth\BattleNetController;
 use App\Http\Controllers\Auth\PatreonController;
 use App\Http\Controllers\BattletagSearchController;
-use App\Http\Controllers\CompareController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Esports\CCL\CCLController;
 use App\Http\Controllers\Esports\EsportsController;
@@ -32,7 +31,6 @@ use App\Http\Controllers\FaqController;
 use App\Http\Controllers\GithubChangeController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
-use App\Http\Controllers\Global\GlobalExtraStats;
 use App\Http\Controllers\Global\GlobalHeroMapStatsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupsTalentsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupStatsController;
@@ -116,9 +114,6 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
 
     Route::get('/battletag/searched/{userinput}/{type}', [BattletagSearchController::class, 'show']);
 
-    // Route::get('/Compare', [CompareController::class, 'show']);
-    // Route::get('/Compare/{hero}', [CompareController::class, 'show']);
-
     // Login
     Route::get('/Authenticate/Battlenet', [BattleNetController::class, 'show']);
     Route::get('/Battlenet/Logout', [BattleNetController::class, 'logout']);
@@ -127,8 +122,8 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/authenticate/battlenet/success', [BattleNetController::class, 'handleProviderCallback']);
     Route::get('/Authenticate/Battlenet/Failed', [BattleNetController::class, 'handleProviderCallbackFailed']);
 
-    Route::get('/authenticate/patreon', [PatreonController::class, 'redirectToProvider']);
-    Route::get('/authenticate/patreon/success', [PatreonController::class, 'handleProviderCallback']);
+    Route::get('/authenticate/patreon', [PatreonController::class, 'redirectToProvider'])->middleware('ensureBattlenetAuth');
+    Route::get('/authenticate/patreon/success', [PatreonController::class, 'handleProviderCallback'])->middleware('ensureBattlenetAuth');
     Route::get('/Authenticate/Patreon/Failed', [PatreonController::class, 'handleProviderCallbackFailed']);
 
     Route::get('/Community/Support', [MainPageController::class, 'showSupport']);
@@ -156,8 +151,6 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/Global/Compositions', [GlobalCompositionsController::class, 'show']);
 
     Route::get('/Global/Party', [GlobalPartyStatsController::class, 'show']);
-
-    // Route::get('/Global/Extra', [GlobalExtraStats::class, 'show']); //Not sure if I want to keep this for rewrite.  Taking it out for now
 
     // Logged in User Settings
     Route::get('Profile/Settings', [ProfileController::class, 'showSettings'])->middleware('ensureBattlenetAuth');
@@ -332,5 +325,3 @@ Route::get('/Animation/Tassadar', [AnimationsController::class, 'showTassadar'])
 Route::get('/Event/Xalatath/Totals', [XalatathEventController::class, 'totals'])->middleware('throttle:10,1');
 Route::get('/Flair/State', [XalatathEventController::class, 'flairState'])->middleware('throttle:30,1');
 Route::post('/Event/Xalatath/Eye', [XalatathEventController::class, 'claimEye'])->middleware('throttle:10,1');
-
-Route::get('/test/patreon-earnings', [MainPageController::class, 'testPatreonEarnings']);

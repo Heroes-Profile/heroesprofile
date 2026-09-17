@@ -40,6 +40,10 @@ class BuildApiSpec extends Command
         'api.external.upload',
         'api.external.replays.fingerprint',
         'api.external.replays.parsed',
+    ];
+
+    /** Routed for the uploader, but not part of the documented API. */
+    private const UNDOCUMENTED = [
         'api.external.prematch',
     ];
 
@@ -94,6 +98,23 @@ class BuildApiSpec extends Command
             'info' => $config['info'],
             'servers' => $config['servers'],
             'components' => [
+                'schemas' => [
+                    'Error' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'error' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'code' => ['type' => 'string', 'description' => 'Stable, machine-readable. Branch on this, not on the message.'],
+                                    'message' => ['type' => 'string'],
+                                    'errors' => ['type' => 'array', 'items' => ['type' => 'string'], 'description' => 'Present on `invalid_parameters`: what was wrong with each.'],
+                                ],
+                                'required' => ['code', 'message'],
+                            ],
+                        ],
+                        'required' => ['error'],
+                    ],
+                ],
                 'securitySchemes' => [
                     'apiKey' => [
                         'type' => 'http',
@@ -158,12 +179,22 @@ class BuildApiSpec extends Command
             $responses['202'] = $this->jobAccepted();
         }
 
+        // Declared responses win; errors fill in whatever a config entry did not say.
+        if (! in_array($name, self::KEYLESS, true)) {
+            $responses += $this->errorResponses($name);
+            ksort($responses);
+        }
+
         $operation = [
             'summary' => $endpoint['summary'] ?? '',
             'operationId' => $name,
             'parameters' => $this->parameters($route, $endpoint, $config),
             'responses' => $responses,
         ];
+
+        if (isset($endpoint['request_body'])) {
+            $operation['requestBody'] = $endpoint['request_body'];
+        }
 
         if ($registry = $this->middlewareArgument($route, 'api.quota')) {
             $operation['x-endpoint-key'] = $registry;
@@ -298,6 +329,88 @@ class BuildApiSpec extends Command
     }
 
     /**
+     * The error answers a keyed endpoint can give, each in the one envelope. Codes
+     * listed per status so a caller knows what to branch on.
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    private function errorResponses(string $name): array
+    {
+        $isPlayer = str_starts_with($name, 'api.external.players.') || $name === 'api.external.players';
+        $isReplay = str_starts_with($name, 'api.external.replay.');
+        $isJob = $name === 'api.external.jobs';
+        $isNgs = str_starts_with($name, 'api.external.ngs.');
+
+        $forbidden = ['account_suspended', 'account_terminated'];
+
+        if ($isNgs) {
+            $forbidden[] = 'ngs_access_required';
+        } elseif (! $isJob) {
+            array_push($forbidden, 'subscription_inactive', 'plan_unresolved', 'endpoint_not_in_plan');
+        }
+
+        if ($isPlayer && $name !== 'api.external.players.privacy.changes') {
+            $forbidden[] = 'player_unavailable';
+        }
+
+        if ($isReplay && $name !== 'api.external.replay.download') {
+            $forbidden[] = 'custom_match_unavailable';
+        }
+
+        $notFound = ['not_found'];
+
+        if ($isPlayer && $name !== 'api.external.players.privacy.changes') {
+            $notFound[] = 'player_not_found';
+        }
+
+        if ($isReplay) {
+            array_push($notFound, 'replay_not_found', 'replay_incomplete');
+        }
+
+        if ($isJob) {
+            $notFound[] = 'job_not_found';
+        }
+
+        $invalid = ['invalid_parameters', 'missing_*', 'unknown_*'];
+
+        if (ApiSpecConfig::declaresParameter($name, 'timeframe')) {
+            array_push($invalid, 'timeframe_unavailable', 'group_by_map_unsupported');
+        }
+
+        $responses = [
+            '401' => $this->errorResponse('No key, or a key that is not recognised.', ['unauthenticated']),
+            '403' => $this->errorResponse('The key is valid but may not make this call.', $forbidden),
+            '404' => $this->errorResponse('Nothing found for what was asked.', $notFound),
+            '422' => $this->errorResponse('A parameter is missing or not accepted.', $invalid),
+            '429' => $this->errorResponse('Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`.', ['rate_limited', 'quota_exceeded']),
+            '500' => $this->errorResponse('Failed on our side. Not charged.', $isJob ? ['server_error', 'job_failed'] : ['server_error']),
+        ];
+
+        // Polling runs no key checks: the job id is what identifies the work.
+        if ($isJob) {
+            unset($responses['401'], $responses['403'], $responses['422']);
+        }
+
+        return $responses;
+    }
+
+    /**
+     * @param  array<int, string>  $codes
+     * @return array<string, mixed>
+     */
+    private function errorResponse(string $description, array $codes): array
+    {
+        return [
+            'description' => $description.' Codes: `'.implode('`, `', $codes).'`.',
+            'content' => [
+                'application/json' => [
+                    'schema' => ['$ref' => '#/components/schemas/Error'],
+                ],
+            ],
+        ];
+    }
+
+    /**
      * @return array<string, mixed>|string the responses, or why there are none
      */
     private function responsesFromFixture(Route $route): array|string
@@ -400,7 +513,7 @@ class BuildApiSpec extends Command
         foreach (Router::getRoutes() as $route) {
             $name = $route->getName();
 
-            if ($name === null || ! str_starts_with($name, 'api.external.')) {
+            if ($name === null || ! str_starts_with($name, 'api.external.') || in_array($name, self::UNDOCUMENTED, true)) {
                 continue;
             }
 
@@ -431,6 +544,19 @@ class BuildApiSpec extends Command
     private function rateLimitNote(string $routeName): ?string
     {
         $limits = config('api.rate_limits');
+        $uploader = $limits['uploader'];
+
+        $perIp = match ($routeName) {
+            'api.external.upload' => $uploader['upload_per_minute'].' uploads a minute and '
+                .number_format($uploader['upload_per_day']).' a day',
+            'api.external.replays.fingerprint' => $uploader['fingerprints_per_minute'].' requests a minute',
+            'api.external.replays.parsed' => $uploader['parsed_per_minute'].' requests a minute',
+            default => null,
+        };
+
+        if ($perIp !== null) {
+            return $perIp.', per IP address. No key is involved.';
+        }
 
         if (in_array($routeName, $limits['batch_routes'] ?? [], true)) {
             return $limits['batch'].' requests a minute. One call runs a query per hero,'

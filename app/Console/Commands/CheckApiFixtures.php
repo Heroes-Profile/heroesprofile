@@ -46,6 +46,12 @@ class CheckApiFixtures extends Command
         'ngs_single_player',
         'ngs_division_single',
         'ngs_team_match_history',
+        // Removed: the API serves no esports data. Only `ngs_games_upload` stays.
+        'ngs_match',
+        'ngs_hero_stat',
+        'ngs_player_profile',
+        'ngs_leaderboard_highest_average_stat',
+        'ngs_leaderboard_highest_total_stat',
         // Superseded, not missing: `players/matches` carries the stat line the
         // old `/Player/Replays` returned, now that its scores join is restored.
         'player_replays',

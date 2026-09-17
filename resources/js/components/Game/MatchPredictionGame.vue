@@ -282,12 +282,7 @@ export default {
       try{
         const response = await this.$axios.post("/api/v1/match/prediction/game/choose/winner", {
           team: team, 
-          fingerprint: this.data.fingerprint, 
-          gametype: this.gametype,
-          user: this.user,
-          practicemode: this.practicemode,
-          practicemodegamesplayed: this.totalGamesPlayedPractice,
-          season: this.season,
+          fingerprint: this.data.fingerprint,
         });
 
         if(response.data.status == "failure to validate inputs"){
@@ -297,15 +292,22 @@ export default {
         this.userchoiceresult = response.data;
 
         
+        const stats = response.data.predictionstats ?? [];
+
         if(this.practicemode){
-          this.practicemode = response.data.predictionstats.reduce((total, stat) => total + stat.games_played, 0) >= 10 || response.data.predictionstats.length == 0 ? false : true;
-          this.totalGamesPlayedPractice = response.data.predictionstats.reduce((total, stat) => total + stat.games_played, 0);
+          this.totalGamesPlayedPractice = stats.reduce((total, stat) => total + stat.games_played, 0);
         }else{
-          this.predictionstatsupdated = response.data.predictionstats;
+          this.predictionstatsupdated = stats;
         }
+        // The server decides when practice is over.
+        this.practicemode = response.data.practicemode;
         this.isLoading = false;
       }catch(error){
-        //Do something here
+        // This replay can no longer be answered (answered already, or a newer one was
+        // served in another tab): move on to a fresh one.
+        if(error.response?.status === 409){
+          this.applyFilter();
+        }
       }finally {
         this.isLoading = false;
       }

@@ -32,19 +32,19 @@
                                 {{-- ... (Global Hero Stats dropdown items) --}}
                                 <a href="/Global/Hero" >Hero Stats</a>
                                 <nav-search-flyout
-                                    :items="{{ json_encode($heroes) }}"
+                                    list="heroes"
                                     :label="'Talent Stats'"
                                     :all-label="'All Heroes'"
                                     :base-url-override="'/Global/Talents'"
                                 ></nav-search-flyout>
                                 <nav-search-flyout
-                                    :items="{{ json_encode($heroes) }}"
+                                    list="heroes"
                                     :label="'Map Stats'"
                                     :all-label="'All Heroes'"
                                     :base-url-override="'/Global/Hero/Maps'"
                                 ></nav-search-flyout>
                                 <nav-search-flyout
-                                    :items="{{ json_encode($heroes) }}"
+                                    list="heroes"
                                     :label="'Matchup Stats'"
                                     :all-label="'All Heroes'"
                                     :base-url-override="'/Global/Matchups'"
@@ -52,7 +52,7 @@
                                 <a href="/Global/Matchups/Talents" >Matchup Talent Stats</a>
                                 <a href="/Global/Compositions" >Compositional Stats</a>
                                 <nav-search-flyout
-                                    :items="{{ json_encode($heroes) }}"
+                                    list="heroes"
                                     :label="'Draft Stats'"
                                     :all-label="'All Heroes'"
                                     :base-url-override="'/Global/Draft'"
@@ -70,7 +70,6 @@
                         <div class="nav-dropdown ">
                             <div class=" nav-dropdown-inner-wrapper ">
                                 <a href="/Global/Talents/Builder" >Talent Builder</a>
-                                <!--<a href="/Compare" >Compare</a>-->
                                 <a href="https://drafter.heroesprofile.com/Drafter" target="_blank" >Drafter</a>
                                 <a href="/Upload" >Replay Uploader</a>
                                 {{--<a href="/" class="block px-4 py-2 border-b border-darken hover:bg-lighten cursor-not-allowed pointer-events-none">Activity Graphs</a>--}}
@@ -139,7 +138,7 @@
                                         :battletag="'{{ $mainSearchAccount['battletag'] }}'"
                                         :blizz-id="{{ $mainSearchAccount['blizz_id'] }}"
                                         :region="{{ $mainSearchAccount['region'] }}"
-                                        :items="{{ json_encode($heroes) }}"
+                                        list="heroes"
                                         :label="'Heroes'"
                                         :subpath="'Hero'"
                                         :all-label="'All Heroes'"
@@ -162,7 +161,7 @@
                                         :battletag="'{{ $mainSearchAccount['battletag'] }}'"
                                         :blizz-id="{{ $mainSearchAccount['blizz_id'] }}"
                                         :region="{{ $mainSearchAccount['region'] }}"
-                                        :items="{{ json_encode($maps) }}"
+                                        list="maps"
                                         :label="'Maps'"
                                         :subpath="'Map'"
                                         :all-label="'All Maps'"
@@ -172,7 +171,7 @@
                                         :battletag="'{{ $mainSearchAccount['battletag'] }}'"
                                         :blizz-id="{{ $mainSearchAccount['blizz_id'] }}"
                                         :region="{{ $mainSearchAccount['region'] }}"
-                                        :items="{{ json_encode($heroes) }}"
+                                        list="heroes"
                                         :label="'Talents'"
                                         :subpath="'Talents'"
                                         :all-label="'All Talents'"
@@ -238,17 +237,17 @@
   @foreach($altSearchAccounts as $index => $account)
     @if($account)
       <div class="relative group inline-block  md:p-4 md:mx-4 text-sm  ">
-        <a data-battletag="{{ $account['battletag'] }}" class="mobile-secondary-nav-open cursor-pointer">{{ $account['battletag'] }} ({{ $regions[$account['region']] }})</a>
+        <a data-battletag="{{ $account['battletag'] }}" class="mobile-secondary-nav-open cursor-pointer">{{ $account['battletag'] }}@if(isset($regions[$account['region']])) ({{ $regions[$account['region']] }})@endif</a>
         <div data-battletag="{{ $account['battletag'] }}" class="nav-dropdown absolute  hidden z-50 md:pt-3 absolute md:right-0 md:min-w-[200px] max-md:top-0 max-md:fixed max-md:w-full nav-dropdown-secondary-nav max-md:bg-gray-dark max-md:h-full">
             <div class="nav-dropdown-inner-wrapper rounded-none">
-              <div  class="mobile-secondary-nav-name flex justify-between md:hidden max-md:text-xs md:p-3 bg-teal">{{ $account['battletag'] }} ({{ $regions[$account['region']] }}) <button class="close-secondary-nav">x</button></div>
+              <div  class="mobile-secondary-nav-name flex justify-between md:hidden max-md:text-xs md:p-3 bg-teal">{{ $account['battletag'] }}@if(isset($regions[$account['region']])) ({{ $regions[$account['region']] }})@endif <button class="close-secondary-nav">x</button></div>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}" >Profile</a>
               <a href="/Player/{{ $account['battletag'] }}/{{ $account['blizz_id'] }}/{{ $account['region'] }}/FriendFoe" >Friends and Foes</a>
               <nav-search-flyout
                 :battletag="'{{ $account['battletag'] }}'"
                 :blizz-id="{{ $account['blizz_id'] }}"
                 :region="{{ $account['region'] }}"
-                :items="{{ json_encode($heroes) }}"
+                list="heroes"
                 :label="'Heroes'"
                 :subpath="'Hero'"
                 :all-label="'All Heroes'"
@@ -271,7 +270,7 @@
                 :battletag="'{{ $account['battletag'] }}'"
                 :blizz-id="{{ $account['blizz_id'] }}"
                 :region="{{ $account['region'] }}"
-                :items="{{ json_encode($maps) }}"
+                list="maps"
                 :label="'Maps'"
                 :subpath="'Map'"
                 :all-label="'All Maps'"
@@ -281,7 +280,7 @@
                 :battletag="'{{ $account['battletag'] }}'"
                 :blizz-id="{{ $account['blizz_id'] }}"
                 :region="{{ $account['region'] }}"
-                :items="{{ json_encode($heroes) }}"
+                list="heroes"
                 :label="'Talents'"
                 :subpath="'Talents'"
                 :all-label="'All Talents'"

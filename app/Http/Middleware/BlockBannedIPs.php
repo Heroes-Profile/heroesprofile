@@ -29,9 +29,9 @@ class BlockBannedIPs
                 return $next($request);
             }
 
-            if (BannedIPs::isBanned($ip)) {
-                $banDetails = BannedIPs::getBanDetails($ip);
+            $banDetails = BannedIPs::getBanDetails($ip);
 
+            if ($banDetails !== null) {
                 return response()->view('errors.403', [
                     'message' => 'Access denied. Your IP address has been banned.',
                     'ban_reason' => $banDetails->reason ?? 'No reason provided',

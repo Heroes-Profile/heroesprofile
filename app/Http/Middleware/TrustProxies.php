@@ -23,8 +23,10 @@ class TrustProxies extends Middleware
      * @var int
      */
     protected $headers =
+        // Not X-Forwarded-Host: the load balancer preserves Host, and with every
+        // client trusted as a proxy that header would let anyone set the host that
+        // generated links (password reset emails included) are built from.
         Request::HEADER_X_FORWARDED_FOR |
-        Request::HEADER_X_FORWARDED_HOST |
         Request::HEADER_X_FORWARDED_PORT |
         Request::HEADER_X_FORWARDED_PROTO |
         Request::HEADER_X_FORWARDED_AWS_ELB;

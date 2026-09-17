@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Access Denied - Heroes Profile</title>
+    <title>{{ $errorTitle ?? 'Access Denied' }} - Heroes Profile</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -66,8 +66,8 @@
 </head>
 <body>
     <div class="container">
-        <div class="error-code">403</div>
-        <div class="error-title">Access Denied</div>
+        <div class="error-code">{{ $errorCode ?? 403 }}</div>
+        <div class="error-title">{{ $errorTitle ?? 'Access Denied' }}</div>
         <div class="error-message">
             {{ $message ?? 'Your IP address has been banned from accessing this site.' }}
         </div>

@@ -94,8 +94,8 @@ export default {
       if (!build) return;
       const key = this.copyKey(heroName, gt);
       navigator.clipboard.writeText(this.getCopyBuildToGame(build)).then(() => {
-        this.$set(this.copiedState, key, true);
-        setTimeout(() => this.$set(this.copiedState, key, false), 2000);
+        this.copiedState[key] = true;
+        setTimeout(() => { this.copiedState[key] = false; }, 2000);
       });
     },
   },

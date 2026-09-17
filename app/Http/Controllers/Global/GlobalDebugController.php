@@ -9,11 +9,13 @@ class GlobalDebugController extends Controller
 {
     public function config(): JsonResponse
     {
-        $host = request()->getHost();
-        $debugAllowed = str_contains($host, 'develop')
-            || in_array($host, ['localhost', '127.0.0.1'], true);
+        // Decided by this deploy's own configuration, not the request's host, which a
+        // caller can influence. The develop deploy runs as production, so its APP_URL
+        // is what identifies it.
+        $debugAllowed = str_contains((string) config('app.url'), 'develop')
+            || app()->environment(['local', 'development', 'staging']);
 
-        if (! $debugAllowed && ! app()->environment(['local', 'development', 'staging'])) {
+        if (! $debugAllowed) {
             abort(404);
         }
 

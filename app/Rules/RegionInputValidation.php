@@ -19,12 +19,8 @@ class RegionInputValidation implements Rule
             $value = explode(',', $value);
         }
 
-        $filteredRegions = array_intersect($value, array_keys($this->validRegions));
-        if (empty($filteredRegions)) {
-            return false;
-        }
-
-        return true;
+        // Every entry must be a region: one bad value crashes the region-to-id lookup downstream.
+        return $value !== [] && array_diff($value, array_keys($this->validRegions)) === [];
     }
 
     public function message()

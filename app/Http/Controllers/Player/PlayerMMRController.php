@@ -166,7 +166,12 @@ class PlayerMMRController extends Controller
             $item->x_label = $item->game_date;
 
             return $item;
-        })->filter();
+        })->filter()->values();
+
+        // Every match still waiting on its rating: nothing to place.
+        if ($modifiedResult->isEmpty()) {
+            return;
+        }
 
         $mmrType = 0;
         if ($type == 'Player') {

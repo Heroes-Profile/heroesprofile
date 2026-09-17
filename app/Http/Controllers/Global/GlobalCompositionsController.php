@@ -69,20 +69,8 @@ class GlobalCompositionsController extends GlobalsInputValidationController
             ];
         }
 
-        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
-        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
-        $leagueTier = $request['league_tier'];
-        $heroLeagueTier = $request['hero_league_tier'];
-        $roleLeagueTier = $request['role_league_tier'];
-        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
-        $heroLevel = $request['hero_level'];
-        $region = $this->globalDataService->getRegionFilterValues($request['region']);
-        $statFilter = $request['statfilter'];
-        $mirror = $request['mirror'];
-        $talentbuildType = $request['talentbuildtype'];
-        $minimumGames = $request['minimum_games'];
 
         $cacheKey = $this->globalCacheKey('GlobalCompositionStats', $gameVersionIDs, $request->all());
 
@@ -133,7 +121,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
                 $losses = $hero ? $group->where('win_loss', 0)->sum('games_played') : $group->where('win_loss', 0)->sum('games_played') / 5;
                 $gamesPlayed = ($wins + $losses);
 
-                if ($gamesPlayed <= $minimumGames) {
+                if ($gamesPlayed < $minimumGames) {
                     return null;
                 }
                 $winRate = 0;
@@ -193,26 +181,8 @@ class GlobalCompositionsController extends GlobalsInputValidationController
             ];
         }
 
-        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
-
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
-
-        $gameTypeRecords = GameType::whereIn('short_name', $request['game_type'])->get();
-        $gameType = $gameTypeRecords->pluck('type_id')->toArray();
-
-        $leagueTier = $request['league_tier'];
-        $heroLeagueTier = $request['hero_league_tier'];
-        $roleLeagueTier = $request['role_league_tier'];
-        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
-        $heroLevel = $request['hero_level'];
-        $region = $this->globalDataService->getRegionFilterValues($request['region']);
-        $statFilter = $request['statfilter'];
-        $mirror = $request['mirror'];
-        $talentbuildType = $request['talentbuildtype'];
-        $minimumGames = $request['minimum_games'];
-
-        $compositionID = $request['composition_id'];
 
         $cacheKey = $this->globalCacheKey('GlobalCompositionTopHeroes', $gameVersionIDs, $request->all());
 

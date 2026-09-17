@@ -96,7 +96,12 @@ class GlobalCacheKey
                 continue;
             }
 
-            $normalized[$key] = is_array($value) ? self::sorted($value) : $value;
+            // The same question arrives as 0, "0" (URLs, the API) or true: one key for all of them.
+            $normalized[$key] = match (true) {
+                is_array($value) => self::sorted($value),
+                is_bool($value) => $value ? '1' : '0',
+                default => (string) $value,
+            };
         }
 
         if (array_is_list($normalized)) {

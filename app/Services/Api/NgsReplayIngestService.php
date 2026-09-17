@@ -131,7 +131,8 @@ class NgsReplayIngestService
             throw new RuntimeException('Invalid replay URL');
         }
 
-        $response = (new Client)->get($url, ['http_errors' => false]);
+        // No redirects: a redirect is a second, unvalidated URL.
+        $response = (new Client)->get($url, ['http_errors' => false, 'allow_redirects' => false]);
 
         if ($response->getStatusCode() !== 200) {
             throw new RuntimeException('Could not fetch the replay from that URL');

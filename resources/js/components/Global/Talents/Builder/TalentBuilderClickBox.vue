@@ -6,7 +6,7 @@
       <div class="flex flex-col items-center justify-center text-center">
         <h3 :class="horizontal ? 'min-h-[80px]' : 'pb-4'"> {{ talent.title }}</h3>
         <talent-image-wrapper :talent="talent" :size="'medium'" :class="horizontal ? 'mb-10' : ''"></talent-image-wrapper>
-        <span v-if="talent.win_rate">{{ talent.win_rate.toFixed(2) }}%</span>
+        <span v-if="talent.games_played">{{ (talent.win_rate ?? 0).toFixed(2) }}%</span>
         <span v-if="talent.games_played" class="text-xs">{{ talent.games_played.toLocaleString('en-US') }} games</span>
       </div>
     </div>

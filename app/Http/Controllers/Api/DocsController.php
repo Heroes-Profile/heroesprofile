@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Support\ApiVariables;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class DocsController extends Controller
 {
@@ -20,7 +21,8 @@ class DocsController extends Controller
             'spec' => $this->spec(),
             // Alongside the endpoints rather than on a page of its own: the values a
             // parameter accepts are wanted while reading the endpoint that takes it.
-            'variables' => ApiVariables::all(),
+            // Heroes, maps and patches change with a release, not between page loads.
+            'variables' => Cache::remember('api_docs_variables', 3600, fn () => ApiVariables::all()),
             // Admins get the data switch and the admin toggle inline, so checking
             // an endpoint against live data does not mean a trip to the account
             // page and back.

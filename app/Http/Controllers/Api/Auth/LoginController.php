@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
+use App\Http\Controllers\Api\Admin\ImpersonationController;
 use App\Http\Controllers\Controller;
 use App\Services\ClientIpService;
 use Illuminate\Http\Request;
@@ -50,6 +51,9 @@ class LoginController extends Controller
 
         RateLimiter::clear($throttleKey);
 
+        // A marker left by an admin who logged out mid-swap must not ride into this login.
+        ImpersonationController::forget($request);
+
         $request->session()->regenerate();
 
         return redirect()->intended('/Api/Account');
@@ -58,6 +62,9 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         Auth::guard('api_web')->logout();
+
+        // Logging out ends any impersonation outright; Stop is only for returning from one.
+        ImpersonationController::forget($request);
 
         // Not invalidate() — that would also sign them out of the main site.
         $request->session()->regenerateToken();

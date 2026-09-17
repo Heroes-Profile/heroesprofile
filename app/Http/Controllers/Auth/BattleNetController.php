@@ -42,9 +42,9 @@ class BattleNetController extends Controller
         }
 
         try {
-            $clientId = env('BATTLENET_KEY', false);
-            $clientSecret = env('BATTLENET_SECRET', false);
-            $redirectUrl = env('BATTLENET_REDIRECT_URI', false);
+            $clientId = config('services.battlenet.client_id');
+            $clientSecret = config('services.battlenet.client_secret');
+            $redirectUrl = config('services.battlenet.redirect');
             $additionalProviderConfig = ['region' => 'us'];
             $config = new Config($clientId, $clientSecret, $redirectUrl, $additionalProviderConfig);
 

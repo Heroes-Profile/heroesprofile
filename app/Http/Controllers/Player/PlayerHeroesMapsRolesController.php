@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Player;
 
 use App\Http\Controllers\Controller;
 use App\Models\GameType;
-use App\Models\HeroesDataTalent;
 use App\Models\Map;
 use App\Models\MasterMMRDataAR;
 use App\Models\MasterMMRDataHL;
@@ -26,10 +25,24 @@ use App\Services\GlobalQueryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class PlayerHeroesMapsRolesController extends Controller
 {
     private const CACHE_TTL_SECONDS = 1200;
+
+    /** The Max columns the player pages offer, and the only columns findMatch may search. */
+    private const FINDABLE_STATS = [
+        'assists', 'clutch_heals', 'creep_damage', 'damage_taken', 'deaths', 'escapes',
+        'experience_contribution', 'first_to_ten', 'game_length', 'healing', 'hero_damage',
+        'highest_kill_streak', 'kills', 'merc_camp_captures', 'minion_damage', 'multikill',
+        'outnumbered_deaths', 'physical_damage', 'protection_allies', 'regen_globes',
+        'rooting_enemies', 'self_healing', 'siege_damage', 'silencing_enemies', 'spell_damage',
+        'structure_damage', 'stunning_enemies', 'summon_damage', 'takedowns',
+        'teamfight_damage_taken', 'teamfight_escapes', 'teamfight_healing',
+        'teamfight_hero_damage', 'time_cc_enemy_heroes', 'time_on_fire', 'time_spent_dead',
+        'town_kills', 'vengeance', 'watch_tower_captures',
+    ];
 
     public function getData(Request $request)
     {
@@ -123,10 +136,12 @@ class PlayerHeroesMapsRolesController extends Controller
         $minimum_games = $request['minimumgames'];
         $page = $request['page'];
         $role = $request['role'];
-        if ($type == 'all') {
-            $game_map = $this->globalDataService->getGameMapFilterValues($request['game_map']);
-        } else {
+        // The single map page names its one map; every other page's map filter is a
+        // multi-select.
+        if ($type == 'single' && $page == 'map') {
             $game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->first() : null;
+        } else {
+            $game_map = $request['game_map'] ? $this->globalDataService->getGameMapFilterValues((array) $request['game_map']) : null;
         }
         $season = $request['season'];
         $startDate = $request['start_date'];
@@ -157,12 +172,10 @@ class PlayerHeroesMapsRolesController extends Controller
             ->when($type == 'single' && $page == 'role', function ($query) use ($role) {
                 return $query->where('new_role', $role);
             })
-            ->when($game_map, function ($query) use ($game_map, $type) {
-                if ($type == 'all') {
-                    $query->whereIn('game_map', $game_map);
-                } else {
-                    return $query->where('game_map', $game_map);
-                }
+            ->when($game_map, function ($query) use ($game_map) {
+                return is_array($game_map)
+                    ? $query->whereIn('game_map', $game_map)
+                    : $query->where('game_map', $game_map);
             })
             ->tap(function ($query) use ($season, $startDate, $endDate) {
                 $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);
@@ -235,11 +248,9 @@ class PlayerHeroesMapsRolesController extends Controller
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
 
-        $maps = Map::all();
-        $maps = $maps->keyBy('map_id');
+        $maps = $this->globalDataService->getAllMapsKeyed();
 
-        $talentData = HeroesDataTalent::withAllStatuses()->get();
-        $talentData = $talentData->keyBy('talent_id');
+        $talentData = $this->globalDataService->getAllTalentsKeyed();
 
         $gameTypes = $this->globalDataService->getGameTypeIDtoString();
 
@@ -625,8 +636,9 @@ class PlayerHeroesMapsRolesController extends Controller
 
             $combined_healing = $heroStats->avg('healing') + $heroStats->avg('self_healing');
 
-            $stack_size_one_wins = $heroStats->whereNotNull('stack_size')->where('stack_size', 0)->where('winner', 1)->count();
-            $stack_size_one_losses = $heroStats->whereNotNull('stack_size')->where('stack_size', 0)->where('winner', 0)->count();
+            // Solo is stored as stack_size 0 or 1.
+            $stack_size_one_wins = $heroStats->whereIn('stack_size', [0, 1])->where('winner', 1)->count();
+            $stack_size_one_losses = $heroStats->whereIn('stack_size', [0, 1])->where('winner', 0)->count();
             $stack_size_one_total = $stack_size_one_wins + $stack_size_one_losses;
 
             $stack_size_two_wins = $heroStats->where('stack_size', 2)->where('winner', 1)->count();
@@ -946,7 +958,8 @@ class PlayerHeroesMapsRolesController extends Controller
             'hero' => ['sometimes', 'nullable', new HeroInputValidation],
             'game_map' => ['sometimes', 'nullable', new GameMapInputValidation],
             'season' => ['sometimes', 'nullable', new SeasonInputValidation],
-            'stat' => 'required|string',
+            // Used as a column name, so only the stats the page offers.
+            'stat' => ['required', 'string', Rule::in(array_map(fn ($stat) => 'max_'.$stat, self::FINDABLE_STATS))],
             'value' => 'required|integer',
         ];
 
@@ -977,9 +990,13 @@ class PlayerHeroesMapsRolesController extends Controller
         $role = $request['role'];
         $game_map = $request['game_map'] ? Map::where('name', $request['game_map'])->pluck('map_id')->first() : null;
         $season = $request['season'];
-        $stat = $request['stat'];
-        $value = $request['value'];
-        $stat = str_replace('max_', '', $stat);
+        $stat = str_replace('max_', '', $request['stat']);
+        $value = (int) $request['value'];
+
+        // Pages show game length 70 seconds shorter than stored (see the select above).
+        if ($stat === 'game_length') {
+            $value += 70;
+        }
 
         $result = Replay::join('player', 'player.replayID', '=', 'replay.replayID')
             ->join('scores', function ($join) {

@@ -125,13 +125,6 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
                 'status' => 'failure to validate inputs',
             ];
         }
-        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
-        $allyEnemy = $this->globalDataService->getHeroes()->keyBy('name')[$request['ally_enemy']]->id;
-        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
-        $leagueTier = $request['league_tier'];
-        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
-        $type = $request['type'];
-        $talentView = $request['talent_view'];
 
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
@@ -159,7 +152,7 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
             $allyEnemy = $temp;
         }
 
-        $firstHeroWinRateData = $this->calculateWinRateData($hero, $allyEnemy, $type, $gameVersion, $gameType, $leagueTier, $gameMap);
+        $firstHeroWinRateData = $this->calculateWinRateData($hero, $allyEnemy, $type, $gameVersionIDs, $gameType, $leagueTier, $gameMap);
         $secondHeroWinRate = $type == 'Ally' ? round($firstHeroWinRateData, 2) : round(100 - $firstHeroWinRateData, 2);
         $firstHeroWinRateData = round($firstHeroWinRateData, 2);
 
@@ -227,18 +220,20 @@ class GlobalHeroMatchupsTalentsController extends GlobalsInputValidationControll
         return ['first_win_rate' => $firstHeroWinRateData, 'second_win_rate' => $secondHeroWinRate, 'data' => $data];
     }
 
-    private function calculateWinRateData($hero, $allyEnemy, $type, $gameVersion, $gameType, $leagueTier, $gameMap)
+    private function calculateWinRateData($hero, $allyEnemy, $type, $gameVersionIDs, $gameType, $leagueTier, $gameMap)
     {
         $model = $type === 'Ally' ? GlobalHeromatchupsAlly::class : GlobalHeromatchupsEnemy::class;
 
         $data = $model::query()
             ->select('win_loss')
             ->selectRaw('SUM(games_played) as games_played')
-            ->filterByGameVersion($gameVersion)
+            ->filterByGameVersion($gameVersionIDs)
             ->filterByGameType($gameType)
             ->filterByHero($hero)
             ->filterByAllyEnemy($allyEnemy)
             ->filterByLeagueTier($leagueTier)
+            // The talent rows below are map-filtered; the headline has to match them.
+            ->filterByGameMap($gameMap)
             ->excludeMirror(0)
             ->groupBy('win_loss')
             ->get();

@@ -510,7 +510,7 @@ export default {
       this.herorank = filteredData.multi["HP Hero Rank"] ? Array.from(filteredData.multi["HP Hero Rank"]) : null;
       this.rolerank = filteredData.multi["HP Role Rank"] ? Array.from(filteredData.multi["HP Role Rank"]) : null;
       this.mirrormatch = filteredData.single["Mirror Matches"] ? filteredData.single["Mirror Matches"] : this.mirrormatch;
-      this.groupsize = filteredData.multi["Group Size"] ? Array.from(filteredData.multi["Group Size"]) : this.groupsize;
+      this.groupsize = filteredData.multi["Group Size"] ? Array.from(filteredData.multi["Group Size"]) : [];
       this.talentbuildtype = filteredData.single["Talent Build Type"] ? filteredData.single["Talent Build Type"] : this.talentbuildtype;
 
       if(this.groupSizeActive && this.statfilter != 'win_rate'){
@@ -578,10 +578,10 @@ export default {
       return url;
     },
     getValueFixed(value){
-      return value ? value.toFixed(2) : "";
+      return value != null && value !== "" && !isNaN(value) ? Number(value).toFixed(2) : "";
     },
     getValueLocal(value){
-      return value ? value.toLocaleString('en-US') : "";
+      return value != null && value !== "" ? value.toLocaleString('en-US') : "";
     },
     getHeroID(){
       if(this.hero){

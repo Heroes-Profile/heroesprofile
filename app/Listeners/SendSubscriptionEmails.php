@@ -95,6 +95,15 @@ class SendSubscriptionEmails
             return;
         }
 
+        // A card that needed bank confirmation: `created` saw it incomplete and sent nothing.
+        if (($previous['status'] ?? null) === 'incomplete' && in_array($object['status'] ?? null, ['active', 'trialing'], true)) {
+            $this->tellAdmin('Subscription started', $account, $this->planName($object), null);
+
+            $account->notify(new SubscriptionStarted($this->planName($object)));
+
+            return;
+        }
+
         // A swap rewrites the items collection. Resumes also arrive as `updated`, and
         // deliberately get nothing.
         if (array_key_exists('items', $previous) || array_key_exists('plan', $previous)) {
@@ -169,7 +178,8 @@ class SendSubscriptionEmails
 
     private function endOfPeriod(array $object): ?Carbon
     {
-        $end = $object['current_period_end'] ?? null;
+        // Moved onto the subscription item in Stripe API 2025-03-31.basil.
+        $end = $object['items']['data'][0]['current_period_end'] ?? $object['current_period_end'] ?? null;
 
         return is_int($end) ? Carbon::createFromTimestamp($end) : null;
     }

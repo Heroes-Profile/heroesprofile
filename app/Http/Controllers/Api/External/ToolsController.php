@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Api\External;
 
+use App\Http\Controllers\Api\External\Concerns\TranslatesInternalFailures;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Tools\ActivityGraphsController;
 use App\Http\Controllers\Tools\RandomizeMeController;
+use App\Support\ApiParameters;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -14,6 +17,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ToolsController extends Controller
 {
+    use TranslatesInternalFailures;
+
     /**
      * A random talent build for one hero.
      *
@@ -36,20 +41,58 @@ class ToolsController extends Controller
             ['request' => $request]
         );
 
+        if ($failure = $this->internalFailure($result)) {
+            return $failure;
+        }
+
         return $result instanceof Response ? $result : response()->json($result);
     }
 
     /**
      * Unique players seen per month, optionally filtered by `game_type` and
-     * `region`. Both are optional and absence means everything.
+     * `region`. Both are optional and absence means everything. One of each, as
+     * the site's own page offers.
      */
     public function uniquePlayers(Request $request): Response
     {
+        // The controller looks both up by exact key: a display name or a region id
+        // reaches it as an undefined index, and an unknown game type as no filter.
+        foreach (['game_type', 'region'] as $parameter) {
+            if (! $request->filled($parameter)) {
+                continue;
+            }
+
+            [$resolved, $unknown] = $parameter === 'game_type'
+                ? ApiParameters::gameTypes($request->input($parameter))
+                : ApiParameters::regionNames($request->input($parameter));
+
+            if ($unknown !== []) {
+                return $this->error('unknown_'.$parameter, 'Not a recognised '.str_replace('_', ' ', $parameter).': '.implode(', ', $unknown).'.');
+            }
+
+            if (count($resolved) !== 1) {
+                return $this->error('single_'.$parameter.'_only', 'This endpoint takes one '.str_replace('_', ' ', $parameter).'.');
+            }
+
+            $request->merge([$parameter => $resolved[0]]);
+        }
+
         $result = app()->call(
             [app(ActivityGraphsController::class), 'getUniquePlayersPerMonth'],
             ['request' => $request]
         );
 
+        if ($failure = $this->internalFailure($result)) {
+            return $failure;
+        }
+
         return $result instanceof Response ? $result : response()->json($result);
+    }
+
+    private function error(string $code, string $message): JsonResponse
+    {
+        return response()->json([
+            'error' => ['code' => $code, 'message' => $message],
+        ], 422);
     }
 }

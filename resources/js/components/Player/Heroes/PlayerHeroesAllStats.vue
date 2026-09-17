@@ -115,6 +115,9 @@
     <div v-if="matchIsLoading">
       <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
+    <div v-if="matchNotFound" class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-red text-white px-4 py-2 rounded z-50">
+      Couldn't find the match for that value.
+    </div>
   </div>
 </template>
 
@@ -147,6 +150,7 @@ export default {
       isLoading: false,
       asyncLoading: false,
       matchIsLoading: false,
+      matchNotFound: false,
       cancelTokenSource: null,
       infoText: "Select a hero below to view detailed stats for that hero. Use the search box above to filter the list of heroes. Or scroll down to the advanced section for table view.",
       gametype: null,
@@ -193,7 +197,6 @@ export default {
         { name: "Avg Takedowns", value: 'avg_takedowns', selected: false, flash: false},
         { name: "Avg Teamfight Damage Taken", value: 'avg_teamfight_damage_taken', selected: false, flash: false},
         { name: "Avg Teamfight Escapes", value: 'avg_teamfight_escapes', selected: false, flash: false},
-        { name: "Avg Teamfight Escapes", value: 'avg_teamfight_escapes', selected: false, flash: false},
         { name: "Avg Teamfight Healing", value: 'avg_teamfight_healing', selected: false, flash: false},
         { name: "Avg Teamfight Hero Damage", value: 'avg_teamfight_hero_damage', selected: false, flash: false},
         { name: "Avg Time CC Enemy Heroes", value: 'avg_time_cc_enemy_heroes', selected: false, flash: false},
@@ -203,7 +206,6 @@ export default {
         { name: "Avg Vengeance", value: 'avg_vengeance', selected: false, flash: false},
         { name: "Avg Watch Tower Captures", value: 'avg_watch_tower_captures', selected: false, flash: false},
         { name: "Avg Total Healing", value: 'combined_healing', selected: true, flash: false},
-        { name: "Hero", value: 'hero', selected: false, flash: false},
         { name: "KDA", value: 'kda', selected: false, flash: false},
         { name: "KDR", value: 'kdr', selected: false, flash: false},
         { name: "Losses", value: 'losses', selected: false, flash: false},
@@ -271,7 +273,7 @@ export default {
       this.getData();
     }
   },
-  beforeDestroy() {
+  beforeUnmount() {
     this.cancelAxiosRequest();
   },
 
@@ -371,7 +373,11 @@ export default {
     filterData(filteredData){
       this.gametype = filteredData.multi["Game Type"] ? Array.from(filteredData.multi["Game Type"]) : this.gametype;
       this.role = filteredData.single["Role"] ? filteredData.single["Role"] : null;
-      this.hero = filteredData.single.Heroes ? filteredData.single.Heroes : null;
+      // The filter gives a hero id; the server takes the name.
+      const hero = filteredData.single.Heroes
+        ? this.filters.heroes.find(h => h.code === filteredData.single.Heroes)
+        : null;
+      this.hero = hero ? hero.name : null;
       this.minimumgames = filteredData.single["Minimum Games"] ? filteredData.single["Minimum Games"] : 0;
       this.gamemap = filteredData.multi.Map ? Array.from(filteredData.multi.Map) : null;
 
@@ -408,6 +414,12 @@ export default {
             inputStat.flash = false;
           }, 1000);
     },
+    showMatchNotFound() {
+      this.matchNotFound = true;
+      setTimeout(() => {
+        this.matchNotFound = false;
+      }, 3000);
+    },
     statContainsMax(stat) {
       return stat.value.toLowerCase().includes('max');
     },
@@ -428,10 +440,16 @@ export default {
           value: value,
           type: "all",
         });
-        window.location.href = `/Match/Single/${response.data}`
+        // A replay id, or null (or a failure body) when no match holds that value.
+        const replayID = Number(response.data);
 
+        if (Number.isInteger(replayID) && replayID > 0) {
+          window.location.href = `/Match/Single/${replayID}`;
+        } else {
+          this.showMatchNotFound();
+        }
       }catch(error){
-        //Do something here
+        this.showMatchNotFound();
       }
       this.matchIsLoading = false;
     },
