@@ -126,17 +126,19 @@ class EnforceApiQuota
                 ->header(self::HEADER_PREFIX.'Reset', $this->secondsUntilReset($usage));
         }
 
-        // Handed to terminate(), which runs after the response has been sent and so
-        // is the only place that can see how long a streamed download actually took.
-        // It cannot read `$endpoint` or `$context` for itself: terminate() is passed
-        // no middleware parameters, and the container builds it a fresh instance.
+        // A cursor rather than a start time: it is moved forward once the response is
+        // built, so terminate() adds only what happened after that — the send. Handed
+        // over on the request because terminate() is passed no middleware parameters
+        // and the container builds it a fresh instance.
+        //
+        // Measured from here rather than from LARAVEL_START. That constant belongs to
+        // whichever request booted the process, which for an internally dispatched
+        // call is the page that dispatched it — on the docs Try It console it would
+        // have charged the whole page load to the endpoint.
         $request->attributes->set(self::TIMING_ATTRIBUTE, [
             'account_id' => $context->account->id,
             'endpoint' => $endpoint,
-            // LARAVEL_START covers framework boot as well, which is instance time we
-            // are billed for too. Absent under artisan and in tests, hence the fall
-            // back to now — which merely undercounts, rather than breaking.
-            'started_at' => defined('LARAVEL_START') ? LARAVEL_START : microtime(true),
+            'since' => microtime(true),
         ]);
 
         $response = $next($request);
@@ -154,6 +156,12 @@ class EnforceApiQuota
         }
 
         $this->recordEgress($context->account->id, $endpoint, $response);
+
+        // Time spent building the answer, banked here rather than left to terminate().
+        // Not every call reaches terminate(): the docs Try It console dispatches
+        // through `app()->handle()` and stops there, so anything measured only on the
+        // way out would read zero for it while calls and bytes climbed.
+        $this->recordCompute($request, $context->account->id, $endpoint);
 
         // Set on the header bag rather than chained: `header()` is a Laravel response
         // helper, and the replay download answers with a Symfony StreamedResponse that
@@ -209,6 +217,7 @@ class EnforceApiQuota
                 'endpoint' => $endpoint,
                 'calls' => 0,
                 'egress_bytes' => 0,
+                'compute_ms' => 0,
                 'window_started_at' => now(),
             ]);
         }
@@ -217,6 +226,7 @@ class EnforceApiQuota
             $usage->forceFill([
                 'calls' => 0,
                 'egress_bytes' => 0,
+                'compute_ms' => 0,
                 'window_started_at' => now(),
             ])->save();
         }
@@ -241,11 +251,31 @@ class EnforceApiQuota
     {
         $timing = $request->attributes->get(self::TIMING_ATTRIBUTE);
 
+        if (is_array($timing)) {
+            $this->recordCompute($request, $timing['account_id'], $timing['endpoint']);
+        }
+    }
+
+    /**
+     * Banks the time since the cursor was last moved, and moves it to now.
+     *
+     * Called twice for a request served over HTTP — once when the response is built,
+     * once when it has been sent — so the two add up to the whole without either
+     * counting the other's share. On a JSON endpoint the second is sub-millisecond
+     * and writes nothing; on the replay download it is the entire transfer.
+     */
+    private function recordCompute(Request $request, int $accountId, string $endpoint): void
+    {
+        $timing = $request->attributes->get(self::TIMING_ATTRIBUTE);
+
         if (! is_array($timing)) {
             return;
         }
 
-        $elapsedMs = (int) round((microtime(true) - $timing['started_at']) * 1000);
+        $now = microtime(true);
+        $elapsedMs = (int) round(($now - $timing['since']) * 1000);
+
+        $request->attributes->set(self::TIMING_ATTRIBUTE, ['since' => $now] + $timing);
 
         if ($elapsedMs <= 0) {
             return;
@@ -253,8 +283,8 @@ class EnforceApiQuota
 
         DB::connection('heroesprofile_api')
             ->table('api_usage')
-            ->where('api_account_id', $timing['account_id'])
-            ->where('endpoint', $timing['endpoint'])
+            ->where('api_account_id', $accountId)
+            ->where('endpoint', $endpoint)
             ->increment('compute_ms', $elapsedMs);
     }
 
