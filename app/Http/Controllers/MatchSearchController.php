@@ -48,7 +48,8 @@ class MatchSearchController extends Controller
     public function getData(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'game_type' => ['required', new GameTypeInputValidation],
+            // A list, so the per-item rule below always applies; a plain string skipped it.
+            'game_type' => ['required', 'array', new GameTypeInputValidation],
             'game_type.*' => 'in:'.implode(',', self::GAME_TYPES),
             'game_map' => ['sometimes', 'nullable', new GameMapInputValidation],
             'region' => ['sometimes', 'nullable', new RegionInputValidation],

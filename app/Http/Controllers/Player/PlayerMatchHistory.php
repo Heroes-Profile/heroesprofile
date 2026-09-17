@@ -123,6 +123,8 @@ class PlayerMatchHistory extends Controller
             ])
             ->where('blizz_id', $blizz_id)
             ->where('region', $region)
+            // Custom game pages are for opted-in participants only.
+            ->where('game_type', '<>', 0)
             ->orderByDesc('game_date')
             ->first();
         if ($latest_replay) {

@@ -149,34 +149,34 @@ Route::prefix('v1')->middleware('web')->group(function () {
 
     Route::post('global/extra/hero/level', [GlobalExtraStats::class, 'getHeroLevelStats']);
 
-    Route::post('player', [PlayerController::class, 'getPlayerData'])->middleware('checkIfPrivateProfileData');
+    Route::post('player', [PlayerController::class, 'getPlayerData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
-    Route::post('player/friendfoe', [FriendFoeController::class, 'getFriendFoeData'])->middleware('checkIfPrivateProfileData');
+    Route::post('player/friendfoe', [FriendFoeController::class, 'getFriendFoeData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
     Route::post('player/friendfoe/search', [BattletagSearchController::class, 'friendFoeSearch']);
 
-    Route::post('player/matchups', [PlayerMatchupsController::class, 'getMatchupData'])->middleware('checkIfPrivateProfileData');
+    Route::post('player/matchups', [PlayerMatchupsController::class, 'getMatchupData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
-    Route::post('player/heroes/all', [PlayerHeroesMapsRolesController::class, 'getData'])->middleware('checkIfPrivateProfileData');
+    Route::post('player/heroes/all', [PlayerHeroesMapsRolesController::class, 'getData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
-    Route::post('player/heroes/single', [PlayerHeroesMapsRolesController::class, 'getData'])->middleware('checkIfPrivateProfileData');
+    Route::post('player/heroes/single', [PlayerHeroesMapsRolesController::class, 'getData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
-    Route::post('player/roles/all/', [PlayerHeroesMapsRolesController::class, 'getData'])->middleware('checkIfPrivateProfileData');
+    Route::post('player/roles/all/', [PlayerHeroesMapsRolesController::class, 'getData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
-    Route::post('/player/role/single', [PlayerHeroesMapsRolesController::class, 'getData'])->middleware('checkIfPrivateProfileData');
+    Route::post('/player/role/single', [PlayerHeroesMapsRolesController::class, 'getData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
-    Route::post('player/maps/all/', [PlayerHeroesMapsRolesController::class, 'getData'])->middleware('checkIfPrivateProfileData');
+    Route::post('player/maps/all/', [PlayerHeroesMapsRolesController::class, 'getData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
-    Route::post('player/maps/single', [PlayerHeroesMapsRolesController::class, 'getData'])->middleware('checkIfPrivateProfileData');
+    Route::post('player/maps/single', [PlayerHeroesMapsRolesController::class, 'getData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
-    Route::post('player/find/max/stat/match', [PlayerHeroesMapsRolesController::class, 'findMatch'])->middleware('checkIfPrivateProfileData');
+    Route::post('player/find/max/stat/match', [PlayerHeroesMapsRolesController::class, 'findMatch'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
-    Route::post('player/talents/', [PlayerTalentsController::class, 'getPlayerTalentData'])->middleware('checkIfPrivateProfileData');
+    Route::post('player/talents/', [PlayerTalentsController::class, 'getPlayerTalentData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
-    Route::post('player/talents/build', [PlayerTalentsController::class, 'getPlayerTalentData'])->middleware('checkIfPrivateProfileData');
+    Route::post('player/talents/build', [PlayerTalentsController::class, 'getPlayerTalentData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
-    Route::post('player/mmr', [PlayerMMRController::class, 'getData'])->middleware('checkIfPrivateProfileData');
-    Route::post('player/awards', [PlayerAwardsController::class, 'getData'])->middleware('checkIfPrivateProfileData');
-    Route::post('player/awards/games', [PlayerAwardsController::class, 'getAwardGames'])->middleware('checkIfPrivateProfileData');
+    Route::post('player/mmr', [PlayerMMRController::class, 'getData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
+    Route::post('player/awards', [PlayerAwardsController::class, 'getData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
+    Route::post('player/awards/games', [PlayerAwardsController::class, 'getAwardGames'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
     Route::post('match/single', [SingleMatchController::class, 'getData']);
     Route::post('prematch', [PreMatchController::class, 'getData']);
@@ -185,9 +185,9 @@ Route::prefix('v1')->middleware('web')->group(function () {
     Route::post('profile/remove/patreon', [ProfileController::class, 'removePatreon']);
     Route::post('profile/set/account/visibility', [ProfileController::class, 'setAccountVisibility']);
 
-    Route::post('player/match/history', [PlayerMatchHistory::class, 'getData'])->middleware('checkIfPrivateProfileData');
+    Route::post('player/match/history', [PlayerMatchHistory::class, 'getData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
-    Route::post('player/match/history', [PlayerMatchHistory::class, 'getData'])->middleware('checkIfPrivateProfileData');
+    Route::post('player/match/history', [PlayerMatchHistory::class, 'getData'])->middleware(['checkIfPrivateProfileData', 'restrictCustomGames']);
 
     Route::post('esports/ngs/standings', [NGSController::class, 'getStandingData']);
     Route::post('esports/ngs/divisions', [NGSController::class, 'getDivisionData']);
@@ -246,12 +246,12 @@ Route::prefix('v1')->middleware('web')->group(function () {
 
     Route::post('esports/other/teams', [EsportOtherController::class, 'getTeamData']);
 
-    Route::post('compare', [CompareController::class, 'getData'])->middleware('checkIfPrivateProfileData:player1,player2,player3,player4,player5');
+    Route::post('compare', [CompareController::class, 'getData'])->middleware(['checkIfPrivateProfileData:player1,player2,player3,player4,player5', 'restrictCustomGames:never']);
 
     Route::post('contact', [ContactController::class, 'submitMessage'])->middleware('throttle:contact');
 
     Route::post('match/prediction/game', [MatchPredictionGameController::class, 'getReplayData']);
-    Route::post('match/search', [MatchSearchController::class, 'getData'])->middleware('throttle:match-search');
+    Route::post('match/search', [MatchSearchController::class, 'getData'])->middleware(['throttle:match-search', 'restrictCustomGames:never']);
     Route::post('match/prediction/game/choose/winner', [MatchPredictionGameController::class, 'chooseWinner']);
 
 });

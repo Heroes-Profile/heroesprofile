@@ -205,6 +205,7 @@ class BattletagSearchController extends Controller
             ->join('player', 'player.replayID', '=', 'replay.replayID')
             ->where('blizz_id', $blizzId)
             ->where('region', $region)
+            ->where('game_type', '<>', 0) // Exclude custom games
             ->orderBy('game_date', 'desc')
             ->first();
 

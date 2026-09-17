@@ -22,6 +22,7 @@ use App\Http\Middleware\RequireApiTermsAcceptance;
 use App\Http\Middleware\RequireNgsAccess;
 use App\Http\Middleware\RequireWebsiteAuthForAll;
 use App\Http\Middleware\ResolveApiKey;
+use App\Http\Middleware\RestrictCustomGames;
 use App\Http\Middleware\ServeApiFixtures;
 use App\Http\Middleware\SetGlobalDataValues;
 use App\Http\Middleware\ThrottleNonApiRequests;
@@ -149,6 +150,7 @@ class Kernel extends HttpKernel
         'api.ngs.upload.validate' => ValidateNgsUpload::class,
         'checkIfPrivateProfilePage' => CheckIfPrivateProfilePage::class,
         'checkIfPrivateProfileData' => CheckIfPrivateProfileData::class,
+        'restrictCustomGames' => RestrictCustomGames::class,
         'logIpAndUserAgent' => LogIPAndUserAgent::class,
         'communitySupportRedirect' => CommunitySupportRedirect::class,
         'requireWebsiteAuthForAll' => RequireWebsiteAuthForAll::class,

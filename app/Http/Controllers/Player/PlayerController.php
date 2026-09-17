@@ -118,8 +118,12 @@ class PlayerController extends Controller
             ->join('player', 'player.replayID', '=', 'replay.replayID')
             ->where('blizz_id', $blizz_id)
             ->where('region', $region)
+            // Same exclusion the profile query applies when no game type is chosen, or a
+            // newest custom game would look like new data on every load.
             ->when(! is_null($game_type), function ($query) use ($game_type) {
                 return $query->whereIn('game_type', (array) $game_type);
+            }, function ($query) {
+                return $query->where('game_type', '<>', 0);
             })
             ->tap(function ($query) use ($seasonIds, $startDate, $endDate) {
                 $this->globalDataService->applySeasonsOrDateRange($query, $seasonIds->all(), $startDate, $endDate);

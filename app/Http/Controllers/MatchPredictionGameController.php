@@ -12,7 +12,6 @@ use App\Models\ReplayBan;
 use App\Models\ReplayDraftOrder;
 use App\Models\ReplayFingerprint;
 use App\Models\Talent;
-use App\Rules\GameTypeInputValidation;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -69,7 +68,8 @@ class MatchPredictionGameController extends Controller
     public function getReplayData(Request $request)
     {
         $validationRules = [
-            'gametype' => ['required', new GameTypeInputValidation],
+            // The page offers these three; custom games are never served.
+            'gametype' => ['required', 'in:qm,sl,ar'],
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
