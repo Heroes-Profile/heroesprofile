@@ -100,6 +100,20 @@ return [
         'batch_routes' => [
             'api.external.heroes.talents.builds.all',
         ],
+
+        /*
+        | The uploader's keyless routes, per IP. The ceilings their old routes had.
+        | The fingerprint check is generous because the client makes one per replay
+        | before deciding whether to upload at all.
+        */
+
+        'uploader' => [
+            'upload_per_minute' => 60,
+            'upload_per_day' => 20000,
+            'fingerprints_per_minute' => 5000,
+            'parsed_per_minute' => 60,
+            'prematch_per_minute' => 120,
+        ],
     ],
 
 ];

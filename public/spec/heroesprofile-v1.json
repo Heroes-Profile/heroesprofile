@@ -1666,6 +1666,26 @@
                 "operationId": "api.external.heroes",
                 "parameters": [
                     {
+                        "name": "hero",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Restrict to one hero, by name or short name.",
+                        "example": "Anduin"
+                    },
+                    {
+                        "name": "role",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        },
+                        "description": "Restrict to one role, by name.",
+                        "example": "Healer"
+                    },
+                    {
                         "name": "mode",
                         "in": "query",
                         "required": false,
@@ -5851,7 +5871,7 @@
                                         "properties": {
                                             "replayID": {
                                                 "type": "integer",
-                                                "description": "The match id. Pass it to `/matches/{replayID}` for full detail."
+                                                "description": "The match id. Pass it to `/replay/{replayID}` for full detail."
                                             },
                                             "level_one": {
                                                 "type": "object",
@@ -61560,7 +61580,7 @@
                         "schema": {
                             "type": "string"
                         },
-                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work.",
+                        "description": "One game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive.",
                         "example": "Storm League"
                     },
                     {
@@ -61570,7 +61590,7 @@
                         "schema": {
                             "type": "integer"
                         },
-                        "description": "The rating to place.",
+                        "description": "The rating to place. A whole number.",
                         "example": 2400
                     },
                     {
@@ -65131,7 +65151,7 @@
                                                 "properties": {
                                                     "replayID": {
                                                         "type": "integer",
-                                                        "description": "The match id. Pass it to `/matches/{replayID}` for full detail."
+                                                        "description": "The match id. Pass it to `/replay/{replayID}` for full detail."
                                                     },
                                                     "game_type": {
                                                         "type": "object",
@@ -66029,7 +66049,7 @@
                                                 "properties": {
                                                     "replayID": {
                                                         "type": "integer",
-                                                        "description": "The match id. Pass it to `/matches/{replayID}` for full detail."
+                                                        "description": "The match id. Pass it to `/replay/{replayID}` for full detail."
                                                     },
                                                     "game_date": {
                                                         "type": "string",
@@ -66465,7 +66485,7 @@
                                                 "properties": {
                                                     "replayID": {
                                                         "type": "integer",
-                                                        "description": "The match id. Pass it to `/matches/{replayID}` for full detail."
+                                                        "description": "The match id. Pass it to `/replay/{replayID}` for full detail."
                                                     },
                                                     "game_date": {
                                                         "type": "string",
@@ -70076,7 +70096,7 @@
                                                     "properties": {
                                                         "replayID": {
                                                             "type": "integer",
-                                                            "description": "The match id. Pass it to `/matches/{replayID}` for full detail."
+                                                            "description": "The match id. Pass it to `/replay/{replayID}` for full detail."
                                                         },
                                                         "hero": {
                                                             "type": "object",
@@ -73843,7 +73863,7 @@
                                                     "properties": {
                                                         "replayID": {
                                                             "type": "integer",
-                                                            "description": "The match id. Pass it to `/matches/{replayID}` for full detail."
+                                                            "description": "The match id. Pass it to `/replay/{replayID}` for full detail."
                                                         },
                                                         "hero": {
                                                             "type": "object",
@@ -74890,7 +74910,7 @@
                                                 "properties": {
                                                     "replayID": {
                                                         "type": "integer",
-                                                        "description": "The match id. Pass it to `/matches/{replayID}` for full detail."
+                                                        "description": "The match id. Pass it to `/replay/{replayID}` for full detail."
                                                     },
                                                     "game_type": {
                                                         "type": "object",
@@ -76984,7 +77004,7 @@
                                                 "properties": {
                                                     "replayID": {
                                                         "type": "integer",
-                                                        "description": "The match id. Pass it to `/matches/{replayID}` for full detail."
+                                                        "description": "The match id. Pass it to `/replay/{replayID}` for full detail."
                                                     },
                                                     "game_date": {
                                                         "type": "string",
@@ -77351,7 +77371,7 @@
                                                 "properties": {
                                                     "replayID": {
                                                         "type": "integer",
-                                                        "description": "The match id. Pass it to `/matches/{replayID}` for full detail."
+                                                        "description": "The match id. Pass it to `/replay/{replayID}` for full detail."
                                                     },
                                                     "game_date": {
                                                         "type": "string",
@@ -77715,7 +77735,7 @@
                                                 "properties": {
                                                     "replayID": {
                                                         "type": "integer",
-                                                        "description": "The match id. Pass it to `/matches/{replayID}` for full detail."
+                                                        "description": "The match id. Pass it to `/replay/{replayID}` for full detail."
                                                     },
                                                     "game_date": {
                                                         "type": "string",
@@ -81475,7 +81495,7 @@
                                                     "properties": {
                                                         "replayID": {
                                                             "type": "integer",
-                                                            "description": "The match id. Pass it to `/matches/{replayID}` for full detail."
+                                                            "description": "The match id. Pass it to `/replay/{replayID}` for full detail."
                                                         },
                                                         "hero": {
                                                             "type": "object",
@@ -83974,39 +83994,6 @@
                 ]
             }
         },
-        "/prematch": {
-            "post": {
-                "summary": "Record the players in a game that is starting.",
-                "operationId": "api.external.prematch",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": "A bare integer as plain text, the pre-match id. Not JSON: the uploader runs Int32.TryParse over the body.",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "integer"
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Plain text describing what was wrong with `data`.",
-                        "content": {
-                            "text/plain": {
-                                "schema": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                },
-                "security": [],
-                "tags": [
-                    "Uploading Replays"
-                ]
-            }
-        },
         "/replay/{replayID}": {
             "get": {
                 "summary": "Full detail for one match, including every stat line.",
@@ -84050,7 +84037,7 @@
                                         },
                                         "downloadable": {
                                             "type": "boolean",
-                                            "description": "Whether the replay file is still within the retention window and can be fetched from `/replays/download`."
+                                            "description": "Whether the replay file is still within the retention window and can be fetched from `/download/replay`."
                                         },
                                         "replay_download_blocked": {
                                             "type": "boolean"
@@ -85049,7 +85036,7 @@
                                                     },
                                                     "replayID": {
                                                         "type": "integer",
-                                                        "description": "The match id. Pass it to `/matches/{replayID}` for full detail."
+                                                        "description": "The match id. Pass it to `/replay/{replayID}` for full detail."
                                                     },
                                                     "pick_number": {
                                                         "type": "integer"
@@ -85282,7 +85269,7 @@
                                     "properties": {
                                         "replayID": {
                                             "type": "integer",
-                                            "description": "The match id. Pass it to `/matches/{replayID}` for full detail."
+                                            "description": "The match id. Pass it to `/replay/{replayID}` for full detail."
                                         },
                                         "bans": {
                                             "type": "array",
@@ -85484,7 +85471,7 @@
                                     "properties": {
                                         "replayID": {
                                             "type": "integer",
-                                            "description": "The match id. Pass it to `/matches/{replayID}` for full detail."
+                                            "description": "The match id. Pass it to `/replay/{replayID}` for full detail."
                                         },
                                         "draft": {
                                             "type": "array",
@@ -85678,7 +85665,7 @@
                                 "major"
                             ]
                         },
-                        "description": "How `timeframe` is read."
+                        "description": "How `timeframe` is read. Needs `timeframe`."
                     },
                     {
                         "name": "timeframe",
@@ -85687,7 +85674,7 @@
                         "schema": {
                             "type": "string"
                         },
-                        "description": "One patch or build.",
+                        "description": "One patch or build. Read as a build unless `timeframe_type` is `major`.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -85697,7 +85684,7 @@
                         "schema": {
                             "type": "string"
                         },
-                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Omit for every type.",
+                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several. Omit for every type. An unrecognised value is refused.",
                         "example": "Storm League"
                     },
                     {
@@ -85707,7 +85694,8 @@
                         "schema": {
                             "type": "string"
                         },
-                        "description": "Map names, comma-separated. Omit for every map."
+                        "description": "Map names, case-insensitive, comma-separated. Omit for every map. An unrecognised name is refused.",
+                        "example": "Cursed Hollow"
                     },
                     {
                         "name": "mode",
@@ -85739,7 +85727,7 @@
                                                 "properties": {
                                                     "replayID": {
                                                         "type": "integer",
-                                                        "description": "The match id. Pass it to `/matches/{replayID}` for full detail."
+                                                        "description": "The match id. Pass it to `/replay/{replayID}` for full detail."
                                                     },
                                                     "region": {
                                                         "type": "integer",
@@ -85769,7 +85757,7 @@
                                                     },
                                                     "downloadable": {
                                                         "type": "boolean",
-                                                        "description": "Whether the replay file is still within the retention window and can be fetched from `/replays/download`."
+                                                        "description": "Whether the replay file is still within the retention window and can be fetched from `/download/replay`."
                                                     }
                                                 },
                                                 "required": [
@@ -85907,6 +85895,7 @@
                         }
                     }
                 },
+                "x-rate-limit": "5000 requests a minute, per IP address. No key is involved.",
                 "security": [],
                 "tags": [
                     "Uploading Replays"
@@ -85930,7 +85919,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "The literal word `true` or `false`, as plain text. Not JSON: the uploader compares the body as a string, and an envelope stops the post-match page opening, silently.",
+                        "description": "The literal word `true` or `false`, as plain text. Not JSON: the uploader compares the body as a string, and an envelope stops the post-match page opening, silently. A missing or non-numeric `replayID` answers `false` rather than an error.",
                         "content": {
                             "text/plain": {
                                 "schema": {
@@ -85944,6 +85933,7 @@
                         }
                     }
                 },
+                "x-rate-limit": "60 requests a minute, per IP address. No key is involved.",
                 "security": [],
                 "tags": [
                     "Uploading Replays"
@@ -85962,7 +85952,7 @@
                         "schema": {
                             "type": "string"
                         },
-                        "description": "Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Omit for every type.",
+                        "description": "One game type, by short name or display name — `sl` and `Storm League` both work. Omit for every type.",
                         "example": "Storm League"
                     },
                     {
@@ -85970,9 +85960,10 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "integer"
+                            "type": "string"
                         },
-                        "description": "Region id. Omit for every region."
+                        "description": "One region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5. Omit for every region.",
+                        "example": "NA"
                     },
                     {
                         "name": "mode",
@@ -86738,7 +86729,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "A frozen three-field body. `status` is `Success`, `Duplicate`, or a failure string. Deployed clients read nothing else.",
+                        "description": "A frozen three-field body. `status` is `Success`, `Duplicate`, or a failure string. Deployed clients read nothing else. When no file arrives, or it is over 10 MB, the body is instead `{\"success\": false, \"Error\": \"...\"}`, still with 200.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -86764,6 +86755,27 @@
                         }
                     }
                 },
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "file": {
+                                        "type": "string",
+                                        "format": "binary",
+                                        "description": "The .StormReplay file. 10 MB at most."
+                                    }
+                                },
+                                "required": [
+                                    "file"
+                                ]
+                            }
+                        }
+                    }
+                },
+                "x-rate-limit": "60 uploads a minute and 20,000 a day, per IP address. No key is involved.",
                 "x-site-page": "/Upload",
                 "security": [],
                 "tags": [

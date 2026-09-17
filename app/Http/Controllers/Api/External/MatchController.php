@@ -8,6 +8,7 @@ use App\Http\Controllers\SingleMatchController;
 use App\Models\Replay;
 use App\Services\Api\ReplayDownloadService;
 use App\Services\Api\ReplayIndexService;
+use App\Support\ApiParameters;
 use App\Support\GameLength;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -81,10 +82,28 @@ class MatchController extends Controller
         $validated = $request->validate([
             'after' => ['sometimes', 'integer', 'min:0'],
             'timeframe_type' => ['sometimes', 'in:minor,major'],
-            'timeframe' => ['sometimes', 'string', 'max:32'],
+            'timeframe' => ['required_with:timeframe_type', 'string', 'max:32'],
             'game_type' => ['sometimes', 'string', 'max:64'],
             'game_map' => ['sometimes', 'string', 'max:255'],
         ]);
+
+        // Resolved here so an unrecognised value is refused. Left to the query, a
+        // value matching nothing reads as no filter and returns every type or map.
+        if (isset($validated['game_type'])) {
+            [$validated['game_type'], $unknown] = ApiParameters::gameTypes($validated['game_type']);
+
+            if ($unknown !== []) {
+                return $this->error('unknown_game_type', 'Not a recognised game type: '.implode(', ', $unknown).'.', 422);
+            }
+        }
+
+        if (isset($validated['game_map'])) {
+            [$validated['game_map'], $unknown] = ApiParameters::mapIds($validated['game_map']);
+
+            if ($unknown !== []) {
+                return $this->error('unknown_game_map', 'Not a recognised map: '.implode(', ', $unknown).'.', 422);
+            }
+        }
 
         return response()->json($replays->page($validated));
     }

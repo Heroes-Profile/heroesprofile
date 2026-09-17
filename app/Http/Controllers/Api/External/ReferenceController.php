@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Api\External;
 
 use App\Http\Controllers\Controller;
-use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputValidation;
 use App\Rules\RoleInputValidation;
+use App\Support\ApiParameters;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
@@ -108,9 +109,21 @@ class ReferenceController extends Controller
     public function mmrTier(Request $request)
     {
         $validated = $request->validate([
-            'game_type' => ['required', new GameTypeInputValidation],
-            'mmr' => ['required', 'numeric', 'min:0'],
+            'game_type' => ['required', 'string'],
+            'mmr' => ['required', 'integer', 'min:0'],
         ]);
+
+        [$codes, $unknown] = ApiParameters::gameTypes($validated['game_type']);
+
+        if ($unknown !== []) {
+            return $this->error('unknown_game_type', 'Not a recognised game type: '.implode(', ', $unknown).'.', 422);
+        }
+
+        if (count($codes) !== 1) {
+            return $this->error('single_game_type_only', 'This endpoint takes one game type.', 422);
+        }
+
+        $validated['game_type'] = $codes[0];
 
         $gameTypeId = $this->globalDataService->getGameTypeFilterValues($validated['game_type']);
         $rankTiers = $this->globalDataService->getRankTiers($gameTypeId, self::OVERALL_TIER_TYPE);
@@ -120,5 +133,12 @@ class ReferenceController extends Controller
             'mmr' => (int) $validated['mmr'],
             'tier' => $this->globalDataService->calculateSubTier($rankTiers, $validated['mmr']),
         ]);
+    }
+
+    private function error(string $code, string $message, int $status): JsonResponse
+    {
+        return response()->json([
+            'error' => ['code' => $code, 'message' => $message],
+        ], $status);
     }
 }

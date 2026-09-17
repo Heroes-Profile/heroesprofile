@@ -40,6 +40,10 @@ class BuildApiSpec extends Command
         'api.external.upload',
         'api.external.replays.fingerprint',
         'api.external.replays.parsed',
+    ];
+
+    /** Routed for the uploader, but not part of the documented API. */
+    private const UNDOCUMENTED = [
         'api.external.prematch',
     ];
 
@@ -187,6 +191,10 @@ class BuildApiSpec extends Command
             'parameters' => $this->parameters($route, $endpoint, $config),
             'responses' => $responses,
         ];
+
+        if (isset($endpoint['request_body'])) {
+            $operation['requestBody'] = $endpoint['request_body'];
+        }
 
         if ($registry = $this->middlewareArgument($route, 'api.quota')) {
             $operation['x-endpoint-key'] = $registry;
@@ -505,7 +513,7 @@ class BuildApiSpec extends Command
         foreach (Router::getRoutes() as $route) {
             $name = $route->getName();
 
-            if ($name === null || ! str_starts_with($name, 'api.external.')) {
+            if ($name === null || ! str_starts_with($name, 'api.external.') || in_array($name, self::UNDOCUMENTED, true)) {
                 continue;
             }
 
@@ -536,6 +544,19 @@ class BuildApiSpec extends Command
     private function rateLimitNote(string $routeName): ?string
     {
         $limits = config('api.rate_limits');
+        $uploader = $limits['uploader'];
+
+        $perIp = match ($routeName) {
+            'api.external.upload' => $uploader['upload_per_minute'].' uploads a minute and '
+                .number_format($uploader['upload_per_day']).' a day',
+            'api.external.replays.fingerprint' => $uploader['fingerprints_per_minute'].' requests a minute',
+            'api.external.replays.parsed' => $uploader['parsed_per_minute'].' requests a minute',
+            default => null,
+        };
+
+        if ($perIp !== null) {
+            return $perIp.', per IP address. No key is involved.';
+        }
 
         if (in_array($routeName, $limits['batch_routes'] ?? [], true)) {
             return $limits['batch'].' requests a minute. One call runs a query per hero,'

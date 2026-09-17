@@ -113,7 +113,6 @@
         <tr><td class="py-2 px-3">/Replay/Max</td><td class="py-2 px-3">/v1/replays</td><td class="py-2 px-3">Folded in as <code>max_replay_id</code>. No separate call</td></tr>
         <tr><td class="py-2 px-3">/NGS/* reads</td><td class="py-2 px-3">—</td><td class="py-2 px-3"><strong>Removed.</strong> The API no longer serves NGS or other esports data</td></tr>
         <tr><td class="py-2 px-3">/NGS/Games/Upload</td><td class="py-2 px-3">/v1/ngs/games/upload</td><td class="py-2 px-3">POST only. Needs NGS upload access</td></tr>
-        <tr><td class="py-2 px-3">/openApi/PreMatch</td><td class="py-2 px-3">/v1/prematch</td><td class="py-2 px-3">Unchanged. Still a bare integer, still keyless</td></tr>
         <tr><td class="py-2 px-3">/replays/fingerprints/{fp}</td><td class="py-2 px-3">/v1/replays/fingerprints/{fp}</td><td class="py-2 px-3">Unchanged. Still keyless</td></tr>
         <tr><td class="py-2 px-3">/upload/heroesprofile/{source}</td><td class="py-2 px-3">/v1/upload/heroesprofile/{source}</td><td class="py-2 px-3">Unchanged contract</td></tr>
       </tbody>

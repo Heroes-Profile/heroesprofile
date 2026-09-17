@@ -214,12 +214,12 @@ return [
         'time_cc_enemy_heroes' => 'Seconds of crowd control applied to enemy heroes.',
         'time_on_fire' => 'Seconds spent on fire.',
         'game_date' => 'When the match was played, as `YYYY-MM-DD HH:MM:SS` UTC.',
-        'replayID' => 'The match id. Pass it to `/matches/{replayID}` for full detail.',
+        'replayID' => 'The match id. Pass it to `/replay/{replayID}` for full detail.',
         'blizz_id' => 'Blizzard account id. Stable per region, and not a battletag.',
         'region' => 'Region id. 1 NA, 2 EU, 3 KR, 5 CN.',
         'next_after' => 'Pass as `after` to get the following page. Null once you have caught up.',
         'max_replay_id' => 'The highest replay id stored, so you know how far there is to go.',
-        'downloadable' => 'Whether the replay file is still within the retention window and can be fetched from `/replays/download`.',
+        'downloadable' => 'Whether the replay file is still within the retention window and can be fetched from `/download/replay`.',
         'win_rate' => 'Percentage, 0 to 100.',
         'popularity' => 'Percentage of matches in which this appeared, 0 to 100.',
         'leaderboard_group' => 'Leaderboard group, 0 = Group A. Players in a lower number always rank above players in a higher one; each group needs fewer games played than the group above it.',
@@ -265,7 +265,10 @@ return [
 
         'api.external.heroes' => [
             'summary' => 'Every hero, with role, type and release date.',
-            'parameters' => [],
+            'parameters' => [
+                'hero' => ['description' => 'Restrict to one hero, by name or short name.', 'example' => 'Anduin'],
+                'role' => ['description' => 'Restrict to one role, by name.', 'example' => 'Healer'],
+            ],
         ],
 
         'api.external.heroes.talents' => [
@@ -283,8 +286,8 @@ return [
         'api.external.mmr.tier' => [
             'summary' => 'The league tier a rating falls in.',
             'parameters' => [
-                'game_type' => ['required' => true, 'description' => 'Game type, by short name or display name — `sl` and `Storm League` both work.', 'example' => 'Storm League'],
-                'mmr' => ['required' => true, 'type' => 'integer', 'description' => 'The rating to place.', 'example' => 2400],
+                'game_type' => ['required' => true, 'description' => 'One game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive.', 'example' => 'Storm League'],
+                'mmr' => ['required' => true, 'type' => 'integer', 'description' => 'The rating to place. A whole number.', 'example' => 2400],
             ],
         ],
 
@@ -568,10 +571,10 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'summary' => 'A page of replays, for building a local copy of the data. Paged by replay id: pass the `next_after` from one response as the `after` of the next, and stop when it comes back null.',
             'parameters' => [
                 'after' => ['type' => 'integer', 'description' => 'Return replays with an id greater than this. Omit to start from the beginning.', 'example' => 0],
-                'timeframe_type' => ['enum' => ['minor', 'major'], 'description' => 'How `timeframe` is read.'],
-                'timeframe' => ['description' => 'One patch or build.', 'example' => '2.55.17.97771'],
-                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Omit for every type.', 'example' => 'Storm League'],
-                'game_map' => ['description' => 'Map names, comma-separated. Omit for every map.'],
+                'timeframe_type' => ['enum' => ['minor', 'major'], 'description' => 'How `timeframe` is read. Needs `timeframe`.'],
+                'timeframe' => ['description' => 'One patch or build. Read as a build unless `timeframe_type` is `major`.', 'example' => '2.55.17.97771'],
+                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work, case-insensitive. Comma-separated for several. Omit for every type. An unrecognised value is refused.', 'example' => 'Storm League'],
+                'game_map' => ['description' => 'Map names, case-insensitive, comma-separated. Omit for every map. An unrecognised name is refused.', 'example' => 'Cursed Hollow'],
             ],
         ],
 
@@ -901,8 +904,8 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'summary' => 'Unique players seen per month.',
             'page' => '/Tools/Activity',
             'parameters' => [
-                'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Omit for every type.', 'example' => 'Storm League'],
-                'region' => ['type' => 'integer', 'description' => 'Region id. Omit for every region.'],
+                'game_type' => ['description' => 'One game type, by short name or display name — `sl` and `Storm League` both work. Omit for every type.', 'example' => 'Storm League'],
+                'region' => ['description' => 'One region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5. Omit for every region.', 'example' => 'NA'],
             ],
         ],
 
@@ -924,9 +927,19 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
                 'version' => ['description' => 'Uploader version.'],
                 'compiled' => ['description' => 'Uploader build number.'],
             ],
+            'request_body' => [
+                'required' => true,
+                'content' => ['multipart/form-data' => ['schema' => [
+                    'type' => 'object',
+                    'properties' => [
+                        'file' => ['type' => 'string', 'format' => 'binary', 'description' => 'The .StormReplay file. 10 MB at most.'],
+                    ],
+                    'required' => ['file'],
+                ]]],
+            ],
             'responses' => [
                 '200' => [
-                    'description' => 'A frozen three-field body. `status` is `Success`, `Duplicate`, or a failure string. Deployed clients read nothing else.',
+                    'description' => 'A frozen three-field body. `status` is `Success`, `Duplicate`, or a failure string. Deployed clients read nothing else. When no file arrives, or it is over 10 MB, the body is instead `{"success": false, "Error": "..."}`, still with 200.',
                     'content' => ['application/json' => ['schema' => [
                         'type' => 'object',
                         'properties' => [
@@ -964,7 +977,7 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             ],
             'responses' => [
                 '200' => [
-                    'description' => 'The literal word `true` or `false`, as plain text. Not JSON: the uploader compares the body as a string, and an envelope stops the post-match page opening, silently.',
+                    'description' => 'The literal word `true` or `false`, as plain text. Not JSON: the uploader compares the body as a string, and an envelope stops the post-match page opening, silently. A missing or non-numeric `replayID` answers `false` rather than an error.',
                     'content' => ['text/plain' => ['schema' => ['type' => 'string', 'enum' => ['true', 'false']]]],
                 ],
             ],

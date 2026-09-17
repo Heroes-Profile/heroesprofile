@@ -62,29 +62,31 @@ class RouteServiceProvider extends ServiceProvider
                 ->by($this->rateLimitKey($request));
         });
 
-        // Replay ingestion, per IP: the uploaders send no key to bucket by. Both
-        // ceilings are the ones the old upload route carried.
+        // The uploader's keyless routes, per IP: they send no key to bucket by.
+        // Ceilings live in `api.rate_limits.uploader`, which the spec also reads.
         RateLimiter::for('upload', function (Request $request) {
-            return Limit::perMinute(60)->by(ClientIpService::getClientIp($request));
+            return Limit::perMinute(config('api.rate_limits.uploader.upload_per_minute'))
+                ->by(ClientIpService::getClientIp($request));
         });
 
         RateLimiter::for('upload-daily', function (Request $request) {
-            return Limit::perMinutes(1440, 20000)->by(ClientIpService::getClientIp($request));
+            return Limit::perMinutes(1440, config('api.rate_limits.uploader.upload_per_day'))
+                ->by(ClientIpService::getClientIp($request));
         });
 
-        // The uploader's remaining calls, at the ceilings their old routes had.
-        // The fingerprint check is generous because the client makes one per
-        // replay before deciding whether to upload at all.
         RateLimiter::for('replay-fingerprints', function (Request $request) {
-            return Limit::perMinute(5000)->by(ClientIpService::getClientIp($request));
+            return Limit::perMinute(config('api.rate_limits.uploader.fingerprints_per_minute'))
+                ->by(ClientIpService::getClientIp($request));
         });
 
         RateLimiter::for('replay-parsed', function (Request $request) {
-            return Limit::perMinute(60)->by(ClientIpService::getClientIp($request));
+            return Limit::perMinute(config('api.rate_limits.uploader.parsed_per_minute'))
+                ->by(ClientIpService::getClientIp($request));
         });
 
         RateLimiter::for('prematch', function (Request $request) {
-            return Limit::perMinute(120)->by(ClientIpService::getClientIp($request));
+            return Limit::perMinute(config('api.rate_limits.uploader.prematch_per_minute'))
+                ->by(ClientIpService::getClientIp($request));
         });
 
         /*
