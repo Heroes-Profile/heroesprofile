@@ -1766,16 +1766,6 @@ class GlobalDataService
         return $timeframes;
     }
 
-    public function getTimeFrameFilterValuesLastUpdate($hero)
-    {
-        $game_version = Hero::select('last_change_patch_version')->where('id', $hero)->first()->last_change_patch_version;
-
-        $query = SeasonGameVersion::select('game_version');
-        $gameVersion = $this->applyVersionFilter($query, $game_version)->get()->pluck('game_version')->toArray();
-
-        return $gameVersion;
-    }
-
     public function getRegionFilterValues($regions)
     {
         if (is_null($regions)) {

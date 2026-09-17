@@ -11,6 +11,7 @@ use App\Models\Talent;
 use App\Rules\HeroInputValidation;
 use App\Rules\SelectedTalentInputValidation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalTalentBuilderController extends GlobalsInputValidationController
@@ -424,8 +425,19 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
         $heroLevel = $request['hero_level'];
         $region = $this->globalDataService->getRegionFilterValues($request['region']);
         $mirror = $request['mirror'];
-        $cacheKey = $this->globalCacheKey('GlobalTalentsBuilder', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all());
+        // Its own prefix: GlobalTalentsBuilder holds the builder's win rates, a different shape.
+        $cacheKey = $this->globalCacheKey('GlobalTalentsBuilderReplays', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all());
 
+        return Cache::store('database')->remember(
+            $cacheKey,
+            $this->globalDataService->calculateCacheTimeInSeconds($gameVersion),
+            fn () => $this->replayData($hero, $hero_name, $gameVersion, $gameType, $gameMap, $region, $level_one, $level_four, $level_seven, $level_ten, $level_thirteen, $level_sixteen, $level_twenty)
+        );
+    }
+
+    /** The replays behind a talent-builder result, newest first. */
+    private function replayData($hero, $hero_name, $gameVersion, $gameType, $gameMap, $region, $level_one, $level_four, $level_seven, $level_ten, $level_thirteen, $level_sixteen, $level_twenty)
+    {
         // Every status: older patches' builds still use talents that were since reworked or removed.
         $talentData = HeroesDataTalent::withAllStatuses()
             ->where('hero_name', $hero_name)
@@ -489,7 +501,8 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
             return $replay;
         });
 
-        return $replayTalents;
+        // Plain arrays, so the cached value is the JSON shape rather than serialized models.
+        return $replayTalents->values()->toArray();
     }
 
     private function formatTalentData($talents, $transformedData)

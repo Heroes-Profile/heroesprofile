@@ -403,13 +403,6 @@ class GlobalStatsController extends Controller
             }
         }
 
-        // The site's talent pages offer it; the API does not.
-        if ($request->input('timeframe_type') === 'last_update') {
-            return response()->json([
-                'error' => ['code' => 'invalid_parameters', 'message' => 'One or more parameters are invalid.', 'errors' => ['`timeframe_type` must be one of minor, major, major_grouped.']],
-            ], 422);
-        }
-
         if ($rejection = $this->rejectUnqueryableTimeframe($request)) {
             return $rejection;
         }
