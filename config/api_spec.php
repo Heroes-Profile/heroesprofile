@@ -172,15 +172,6 @@ return [
             'api.external.replays.index',
         ],
 
-        'NGS Stats' => [
-            'api.external.ngs.hero.stat',
-            'api.external.ngs.leaderboard.average',
-            'api.external.ngs.leaderboard.total',
-            'api.external.ngs.match',
-            'api.external.ngs.player.profile',
-            'api.external.ngs.replay.data',
-        ],
-
         'NGS Replay Upload' => [
             'api.external.ngs.games.upload',
         ],
@@ -854,68 +845,8 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
         ],
 
         /*
-        | NGS. Granted access rather than a purchased tier: restricted to accounts
-        | holding the NGS flags, and charged no quota.
-        */
-
-        'api.external.ngs.match' => [
-            'summary' => 'One NGS match.',
-            'page' => '/Esports/NGS',
-            'parameters' => [
-                'season' => ['required' => true, 'type' => 'integer', 'description' => 'NGS season.'],
-                'division' => ['required' => true, 'description' => 'Division name.'],
-                'team' => ['required' => true, 'description' => 'Team name.'],
-                'round' => ['required' => true, 'type' => 'integer', 'description' => 'Round number.'],
-            ],
-        ],
-
-        'api.external.ngs.hero.stat' => [
-            'summary' => 'Hero statistics within one NGS division.',
-            'page' => '/Esports/NGS',
-            'parameters' => [
-                'season' => ['required' => true, 'type' => 'integer'],
-                'division' => ['required' => true, 'description' => 'Division name.'],
-                'hero' => ['required' => true, 'description' => 'Hero name.'],
-                'battletag' => ['description' => 'Restrict to one player.'],
-            ],
-        ],
-
-        'api.external.ngs.player.profile' => [
-            'summary' => 'One NGS player.',
-            'page' => '/Esports/NGS',
-            'parameters' => [
-                'battletag' => ['required' => true, 'description' => 'Full battletag.', 'example' => 'Zemill#1940'],
-                'division' => ['description' => 'Division name.'],
-            ],
-        ],
-
-        'api.external.ngs.leaderboard.average' => [
-            'summary' => 'NGS leaderboard by highest average of one statistic.',
-            'page' => '/Esports/NGS',
-            'parameters' => [
-                'stat' => ['required' => true, 'description' => 'The statistic to rank by.', 'example' => 'hero_damage'],
-            ],
-        ],
-
-        'api.external.ngs.leaderboard.total' => [
-            'summary' => 'NGS leaderboard by highest total of one statistic.',
-            'page' => '/Esports/NGS',
-            'parameters' => [
-                'stat' => ['required' => true, 'description' => 'The statistic to rank by.', 'example' => 'hero_damage'],
-            ],
-        ],
-
-        'api.external.ngs.replay.data' => [
-            'summary' => 'Full detail for one NGS match by replay id.',
-            'page' => '/Esports/NGS',
-            'parameters' => [
-                'replayID' => ['required' => true, 'type' => 'integer', 'description' => 'Heroes Profile match ID.'],
-            ],
-        ],
-
-        /*
-        | NGS ingestion. Both need `n_approved` and `n_upload_approved`, where the
-        | NGS reads above need only one of the two.
+        | NGS ingestion. Needs both `n_approved` and `n_upload_approved`. The API
+        | serves no NGS or other esports data.
         */
 
         'api.external.ngs.games.upload' => [

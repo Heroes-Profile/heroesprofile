@@ -9,7 +9,6 @@ use App\Models\Map;
 use App\Models\SeasonDate;
 use App\Rules\StackSizeInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
-use App\Services\Api\NgsLeaderboardService;
 use App\Services\GlobalDataService;
 
 /**
@@ -110,12 +109,6 @@ class ApiVariables
                 'used_by' => 'heroes/talents/builds',
                 'summary' => 'Which ranking decides the builds returned. Defaults to `Popular`.',
                 'values' => (new TalentBuildTypeInputValidation)->allowed(),
-            ],
-            [
-                'name' => 'stat',
-                'used_by' => 'The two NGS leaderboards',
-                'summary' => 'Which statistic to rank by. Checked against this list rather than trusted — the old API concatenated it straight into the query.',
-                'values' => NgsLeaderboardService::STATS,
             ],
             [
                 'name' => 'mirror',
