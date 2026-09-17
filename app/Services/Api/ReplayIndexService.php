@@ -59,6 +59,8 @@ class ReplayIndexService
             // it saw, and gets what follows rather than that row again.
             ->where('replay.replayID', '>', $after)
             ->where('replay_fingerprints.valid', 1)
+            // Custom games are downloadable by id, but never listed.
+            ->where('replay.game_type', '<>', 0)
             ->when($gameTypes !== null, fn ($query) => $query->whereIn('replay.game_type', $gameTypes))
             ->when($gameMaps !== null, fn ($query) => $query->whereIn('replay.game_map', $gameMaps))
             ->when(
