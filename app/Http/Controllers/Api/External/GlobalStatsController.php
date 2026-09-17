@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\External;
 
+use App\Http\Controllers\Api\External\Concerns\TranslatesInternalFailures;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
@@ -29,7 +30,7 @@ use Symfony\Component\HttpFoundation\Response;
  * caller to poll. Holding the request open would burn a worker and still exceed
  * most clients' own timeouts.
  *
- * Polling is free — quota is charged once, when the job is created.
+ * Polling is free. Quota is charged once, for the call that answered 200 or 202.
  *
  * Inputs match the site's own globals validation: `timeframe_type`, `timeframe`
  * and `game_type` are required, everything else filters. `timeframe` is accepted
@@ -39,6 +40,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class GlobalStatsController extends Controller
 {
+    use TranslatesInternalFailures;
+
     /** Suggested seconds between polls. A cold query is minutes, not seconds. */
     private const POLL_INTERVAL = 10;
 
@@ -225,9 +228,18 @@ class GlobalStatsController extends Controller
     {
         $response = $queries->poll($jobId);
 
-        return $response->getStatusCode() === 202
-            ? $this->describeJob($response, $jobId)
-            : $response;
+        // The service's own bodies are shaped for the site's poller, and a failed
+        // job carries the exception text. Neither belongs in an API answer.
+        return match ($response->getStatusCode()) {
+            202 => $this->describeJob($response, $jobId),
+            404 => response()->json([
+                'error' => ['code' => 'job_not_found', 'message' => 'No job with that id. Jobs expire once collected or after they age out.'],
+            ], 404),
+            500 => response()->json([
+                'error' => ['code' => 'job_failed', 'message' => 'The query behind this job failed. Make the original call again to start a new one.'],
+            ], 500),
+            default => $response,
+        };
     }
 
     /**
@@ -365,6 +377,10 @@ class GlobalStatsController extends Controller
         $target = $controller instanceof Controller ? $controller : app($controller);
 
         $result = app()->call([$target, $method], ['request' => $request]);
+
+        if ($failure = $this->internalFailure($result)) {
+            return $failure;
+        }
 
         if (! $result instanceof JsonResponse) {
             return response()->json($result);

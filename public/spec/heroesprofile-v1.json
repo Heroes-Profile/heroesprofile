@@ -12,6 +12,39 @@
         }
     ],
     "components": {
+        "schemas": {
+            "Error": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "object",
+                        "properties": {
+                            "code": {
+                                "type": "string",
+                                "description": "Stable, machine-readable. Branch on this, not on the message."
+                            },
+                            "message": {
+                                "type": "string"
+                            },
+                            "errors": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string"
+                                },
+                                "description": "Present on `invalid_parameters`: what was wrong with each."
+                            }
+                        },
+                        "required": [
+                            "code",
+                            "message"
+                        ]
+                    }
+                },
+                "required": [
+                    "error"
+                ]
+            }
+        },
         "securitySchemes": {
             "apiKey": {
                 "type": "http",
@@ -433,6 +466,66 @@
                                     "required": [
                                         "job_id"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -1074,6 +1167,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "global_compositions_heroes",
@@ -1111,11 +1264,51 @@
                             }
                         }
                     },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
                     "403": {
                         "description": "Outside the retention window, or otherwise unavailable."
                     },
                     "404": {
                         "description": "No replay with that id."
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "replay_download",
@@ -1397,6 +1590,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "global_draft",
@@ -1495,6 +1748,66 @@
                                     "required": [
                                         "heroes"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -1793,6 +2106,66 @@
                                     "required": [
                                         "job_id"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -2423,6 +2796,66 @@
                                     "required": [
                                         "job_id"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -3534,6 +3967,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "heroes_matchups_talents",
@@ -3902,6 +4395,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "heroes_stats",
@@ -4035,6 +4588,66 @@
                                     "required": [
                                         "talents"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -4910,6 +5523,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "talent_builder",
@@ -5571,6 +6244,66 @@
                                     "required": [
                                         "job_id"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -6434,6 +7167,66 @@
                                     "required": [
                                         "job_id"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -58981,6 +59774,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "heroes_talents_builds_all",
@@ -60093,6 +60946,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "heroes_talents_details",
@@ -60140,7 +61053,34 @@
                         "description": "Still running. Poll again."
                     },
                     "404": {
-                        "description": "No such job, or it has expired."
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `job_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`, `job_failed`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -60398,6 +61338,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "leaderboard",
@@ -60480,6 +61480,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "maps",
@@ -60551,6 +61611,66 @@
                                         "mmr",
                                         "tier"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -60749,8 +61869,58 @@
                             }
                         }
                     },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `ngs_access_required`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
                     "422": {
                         "description": "The replay could not be ingested — not a custom game, an unknown map, or a named player absent from it."
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-site-page": "/Esports/NGS",
@@ -62693,6 +63863,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "global_party",
@@ -62788,6 +64018,66 @@
                                     "required": [
                                         "patches"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -64494,6 +65784,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "player",
@@ -64882,6 +66232,66 @@
                                     "required": [
                                         "job_id"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -65294,6 +66704,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "player_awards_games",
@@ -65624,6 +67094,66 @@
                                     "required": [
                                         "job_id"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -66782,6 +68312,66 @@
                                     "required": [
                                         "job_id"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -69294,6 +70884,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "player_hero_single",
@@ -70253,6 +71903,66 @@
                                     "required": [
                                         "job_id"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -72944,6 +74654,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "player_map_single",
@@ -73848,6 +75618,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "player_match_history",
@@ -74386,6 +76216,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "player_matchups",
@@ -74640,6 +76530,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "player_mmr",
@@ -74853,6 +76803,66 @@
                                         "region",
                                         "ratings"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -75150,6 +77160,66 @@
                                         "history",
                                         "league_tiers"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -75457,6 +77527,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "player_mmr_history_hero",
@@ -75758,6 +77888,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "player_mmr_history_role",
@@ -76022,6 +78212,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "player_mmr_role",
@@ -76130,6 +78380,66 @@
                                         "next_after_id",
                                         "has_more"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -77092,6 +79402,66 @@
                                     "required": [
                                         "job_id"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -79916,6 +82286,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "player_role_single",
@@ -81475,6 +83905,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `player_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `player_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "player_talents_build",
@@ -82683,6 +85173,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `custom_match_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `replay_not_found`, `replay_incomplete`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "replay_data",
@@ -82822,6 +85372,66 @@
                                         "replayID",
                                         "bans"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `custom_match_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `replay_not_found`, `replay_incomplete`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -82969,6 +85579,66 @@
                                         "replayID",
                                         "draft"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`, `custom_match_unavailable`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`, `replay_not_found`, `replay_incomplete`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -83133,6 +85803,66 @@
                                 }
                             }
                         }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
                     }
                 },
                 "x-endpoint-key": "replay_index",
@@ -83281,6 +86011,66 @@
                                             "unique_players"
                                         ]
                                     }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }
@@ -83831,6 +86621,66 @@
                                     "required": [
                                         "build"
                                     ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `subscription_inactive`, `plan_unresolved`, `endpoint_not_in_plan`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
                                 }
                             }
                         }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\External;
 
+use App\Http\Controllers\Api\External\Concerns\TranslatesInternalFailures;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Tools\ActivityGraphsController;
 use App\Http\Controllers\Tools\RandomizeMeController;
@@ -14,6 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ToolsController extends Controller
 {
+    use TranslatesInternalFailures;
+
     /**
      * A random talent build for one hero.
      *
@@ -36,6 +39,10 @@ class ToolsController extends Controller
             ['request' => $request]
         );
 
+        if ($failure = $this->internalFailure($result)) {
+            return $failure;
+        }
+
         return $result instanceof Response ? $result : response()->json($result);
     }
 
@@ -49,6 +56,10 @@ class ToolsController extends Controller
             [app(ActivityGraphsController::class), 'getUniquePlayersPerMonth'],
             ['request' => $request]
         );
+
+        if ($failure = $this->internalFailure($result)) {
+            return $failure;
+        }
 
         return $result instanceof Response ? $result : response()->json($result);
     }

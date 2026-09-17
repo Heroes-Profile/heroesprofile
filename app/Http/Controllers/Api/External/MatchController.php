@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\External;
 
+use App\Http\Controllers\Api\External\Concerns\TranslatesInternalFailures;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SingleMatchController;
 use App\Models\Replay;
@@ -22,6 +23,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class MatchController extends Controller
 {
+    use TranslatesInternalFailures;
+
     /** Why a replay could not be served, in words a caller can act on. */
     private const DOWNLOAD_ERRORS = [
         'replay_deleted' => 'That replay is no longer stored.',
@@ -49,8 +52,16 @@ class MatchController extends Controller
             ['request' => $internal]
         );
 
+        if ($failure = $this->internalFailure($result)) {
+            return $failure;
+        }
+
+        // Fewer than ten players stored, or nothing joined: the site's own 404
+        // bodies, which carry only a `status`.
         if ($result instanceof Response) {
-            return $result;
+            return $result->getStatusCode() === 404
+                ? $this->error('replay_incomplete', 'That replay is not fully stored, so there is no match detail to return.', 404)
+                : $result;
         }
 
         // The site formats length for display; every other endpoint reports it as

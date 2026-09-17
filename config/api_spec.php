@@ -840,7 +840,6 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
             'responses' => [
                 '200' => ['description' => 'The finished result, in the shape the originating endpoint documents.'],
                 '202' => ['description' => 'Still running. Poll again.'],
-                '404' => ['description' => 'No such job, or it has expired.'],
             ],
         ],
 

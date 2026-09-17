@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\External;
 
+use App\Http\Controllers\Api\External\Concerns\TranslatesInternalFailures;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Player\FriendFoeController;
 use App\Http\Controllers\Player\PlayerAwardsController;
@@ -39,6 +40,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class PlayerController extends Controller
 {
+    use TranslatesInternalFailures;
+
     /**
      * What player pages show a visitor who is not logged in — see
      * `GlobalDataService::getPlayerGameTypeDefault()`. The public API is always
@@ -262,7 +265,7 @@ class PlayerController extends Controller
         );
 
         if ($blizzId === null) {
-            return $this->error('unknown_player', 'No player by that battletag in that region.', 404);
+            return $this->error('player_not_found', 'No player found for that battletag and region.', 404);
         }
 
         if ($this->globalDataService->isRestrictedAccount($blizzId, $validated['region'])) {
@@ -482,6 +485,10 @@ class PlayerController extends Controller
         }
 
         $result = app()->call([app($controller), $method], ['request' => $request]);
+
+        if ($failure = $this->internalFailure($result)) {
+            return $failure;
+        }
 
         // Some of these return an array, others a response object. Wrapping a
         // response in response()->json() serialises the object itself, so the

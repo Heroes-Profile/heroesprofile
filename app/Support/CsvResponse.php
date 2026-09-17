@@ -43,7 +43,9 @@ class CsvResponse
         return response()->streamDownload(function () use ($flat, $headings) {
             $handle = fopen('php://output', 'w');
 
-            fputcsv($handle, $headings);
+            if ($headings !== []) {
+                fputcsv($handle, $headings);
+            }
 
             foreach ($flat as $row) {
                 // Keyed by the headings so a row with extra or missing fields cannot
