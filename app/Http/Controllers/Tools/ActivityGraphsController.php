@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Tools;
 
 use App\Http\Controllers\Global\GlobalsInputValidationController;
+use App\Rules\GameTypeInputValidation;
+use App\Rules\RegionInputValidation;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class ActivityGraphsController extends GlobalsInputValidationController
 {
@@ -15,6 +18,9 @@ class ActivityGraphsController extends GlobalsInputValidationController
     // A month is only final once we are this far past its end - replays for it
     // can still arrive late. Until then it gets queried live.
     private const SETTLE_DAYS = 7;
+
+    // Unsettled months are still moving, but not by the minute.
+    private const LIVE_CACHE_SECONDS = 1800;
 
     public function show(Request $request)
     {
@@ -28,11 +34,31 @@ class ActivityGraphsController extends GlobalsInputValidationController
 
     public function getUniquePlayersPerMonth(Request $request)
     {
-        $gameTypeRaw = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
-        $gameType = is_null($gameTypeRaw) ? null : (array) $gameTypeRaw;
+        $input = array_filter(
+            $request->only(['game_type', 'region']),
+            fn ($value) => $value !== null && $value !== '' && $value !== []
+        );
 
-        $regionRaw = $this->globalDataService->getRegionFilterValues($request['region']);
-        $region = is_null($regionRaw) ? null : (array) $regionRaw;
+        $validator = Validator::make($input, [
+            'game_type' => ['sometimes', new GameTypeInputValidation],
+            'region' => ['sometimes', new RegionInputValidation],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()], 422);
+        }
+
+        // Sorted and deduplicated so the same selection always hashes to the same key.
+        $gameType = isset($input['game_type'])
+            ? $this->normalizedIds($this->globalDataService->getGameTypeFilterValues(is_array($input['game_type']) ? $input['game_type'] : explode(',', $input['game_type'])))
+            : null;
+
+        $region = isset($input['region'])
+            ? $this->normalizedIds(array_values(array_intersect_key(
+                $this->globalDataService->getRegionStringToID(),
+                array_flip(is_array($input['region']) ? $input['region'] : explode(',', $input['region']))
+            )))
+            : null;
 
         $filterHash = hash('sha256', json_encode(['game_type' => $gameType, 'region' => $region]));
         $allCacheKey = 'ActivityGraph|UniquePlayersByMonth|All|'.$filterHash;
@@ -52,15 +78,29 @@ class ActivityGraphsController extends GlobalsInputValidationController
 
         $month = $firstUnsettled->copy();
         while ($month->lessThanOrEqualTo($now)) {
+            $monthKey = $month->format('Y-m');
+
             $result[] = [
-                'x_label' => $month->format('Y-m'),
-                'unique_players' => $this->queryUniquePlayersForMonth($month, $gameType, $region),
+                'x_label' => $monthKey,
+                'unique_players' => $cache->remember(
+                    'ActivityGraph|UniquePlayersByMonth|Live|'.$monthKey.'|'.$filterHash,
+                    self::LIVE_CACHE_SECONDS,
+                    fn () => $this->queryUniquePlayersForMonth($month, $gameType, $region)
+                ),
             ];
 
             $month->addMonth();
         }
 
         return response()->json($result);
+    }
+
+    private function normalizedIds(array $ids): array
+    {
+        $ids = array_values(array_unique(array_map('intval', $ids)));
+        sort($ids);
+
+        return $ids;
     }
 
     private function appendSettledMonths($cache, array $settled, Carbon $firstUnsettled, ?array $gameType, ?array $region, string $filterHash): array
