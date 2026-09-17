@@ -338,6 +338,57 @@ class GlobalDataService
         ];
     }
 
+    /** How long the restricted set is trusted. Bans are written outside this app, so nothing else clears it. */
+    private const RESTRICTED_KEYS_SECONDS = 300;
+
+    /**
+     * Every private or banned account, keyed `blizz_id|region`, valued 'private' or
+     * 'banned'. One cached lookup instead of a table scan per check.
+     *
+     * @return array<string, string>
+     */
+    public function restrictedAccountKeys(): array
+    {
+        return Cache::remember('restricted_account_keys', self::RESTRICTED_KEYS_SECONDS, function () {
+            $keys = [];
+
+            foreach (BattlenetAccount::without(['patreonAccount', 'userSettings'])->where('private', 1)->get(['blizz_id', 'region']) as $account) {
+                $keys[$account->blizz_id.'|'.$account->region] = 'private';
+            }
+
+            // After private, so an account that is both reads as banned.
+            foreach (BannedAccount::get(['blizz_id', 'region']) as $account) {
+                $keys[$account->blizz_id.'|'.$account->region] = 'banned';
+            }
+
+            return $keys;
+        });
+    }
+
+    /**
+     * Whether this account's data must be withheld from the viewer. Private accounts
+     * are shown to their signed-in owner; banned accounts are shown to no one.
+     */
+    public function isHiddenFrom($blizzId, $region, $viewer = null): bool
+    {
+        $state = $this->restrictedAccountKeys()[$blizzId.'|'.$region] ?? null;
+
+        if ($state === null) {
+            return false;
+        }
+
+        $isOwner = $viewer !== null && $viewer->blizz_id == $blizzId && $viewer->region == $region;
+
+        return ! ($state === 'private' && $isOwner);
+    }
+
+    /** Called when an account's privacy changes, so it takes effect immediately. */
+    public function forgetRestrictedAccount($blizzId, $region): void
+    {
+        Cache::forget('restricted_account_keys');
+        Cache::forget('restricted_account|'.$blizzId.'|'.$region);
+    }
+
     public function getPrivateAccounts()
     {
         $privateAccounts = BattlenetAccount::select('battletag', 'blizz_id', 'region')->where('private', 1)->get();

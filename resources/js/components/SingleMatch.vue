@@ -729,7 +729,6 @@
         const response = await this.$axios.post("/api/v1/match/single", {
           esport: this.esport,
           replayID: this.replayid,
-          user: this.user,
           tournament: this.tournament,
         }, 
         {
