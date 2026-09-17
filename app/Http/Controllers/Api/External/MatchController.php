@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\External;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SingleMatchController;
+use App\Models\Replay;
 use App\Services\Api\ReplayDownloadService;
 use App\Services\Api\ReplayIndexService;
 use App\Support\GameLength;
@@ -17,8 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
  * and `patreon_subscriber`. The public API is stateless, so callers always get
  * the anonymous shape.
  *
- * Esports matches are out of scope here: CCL and MastersClash are being dropped,
- * and NGS has its own endpoints.
+ * Esports matches are out of scope: the API serves no esports data.
  */
 class MatchController extends Controller
 {
@@ -31,7 +31,14 @@ class MatchController extends Controller
 
     public function show(Request $request, int $replayID): Response
     {
-        $request->merge(['replayID' => $replayID]);
+        if ($refusal = $this->refuseUnviewable($replayID)) {
+            return $refusal;
+        }
+
+        // A fresh request carrying only the id. The site controller also reads
+        // `esport`, `tournament` and `user`, which switch it to the esports schemas
+        // and unmask private accounts — none of that is the API's to offer.
+        $internal = Request::create($request->path(), 'GET', ['replayID' => $replayID]);
 
         // The site page shows `Zemill`; an API caller needs `Zemill#1940`, since
         // that is what every player endpoint takes as input and the only form that
@@ -39,7 +46,7 @@ class MatchController extends Controller
         // entirely, before this ever applies.
         $result = app()->call(
             [app(SingleMatchController::class)->withFullBattletags(), 'getData'],
-            ['request' => $request]
+            ['request' => $internal]
         );
 
         if ($result instanceof Response) {
@@ -101,6 +108,10 @@ class MatchController extends Controller
      */
     public function bans(int $replayID): Response
     {
+        if ($refusal = $this->refuseUnviewable($replayID)) {
+            return $refusal;
+        }
+
         return response()->json([
             'replayID' => $replayID,
             'bans' => $this->globalDataService->getReplayBans($replayID),
@@ -116,9 +127,39 @@ class MatchController extends Controller
      */
     public function draft(int $replayID): Response
     {
+        if ($refusal = $this->refuseUnviewable($replayID)) {
+            return $refusal;
+        }
+
         return response()->json([
             'replayID' => $replayID,
             'draft' => $this->globalDataService->getReplayDraftOrder($replayID),
         ]);
+    }
+
+    /**
+     * Unknown replays and custom games. The API is stateless, so the site's
+     * signed-in custom game opt-in never applies and custom games are never served.
+     */
+    private function refuseUnviewable(int $replayID): ?Response
+    {
+        $gameType = Replay::where('replayID', $replayID)->value('game_type');
+
+        if ($gameType === null) {
+            return $this->error('replay_not_found', self::DOWNLOAD_ERRORS['replay_not_found'], 404);
+        }
+
+        if ((int) $gameType === 0) {
+            return $this->error('custom_match_unavailable', 'Custom games are not available through the API.', 403);
+        }
+
+        return null;
+    }
+
+    private function error(string $code, string $message, int $status): Response
+    {
+        return response()->json([
+            'error' => ['code' => $code, 'message' => $message],
+        ], $status);
     }
 }

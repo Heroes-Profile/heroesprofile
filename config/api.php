@@ -30,12 +30,9 @@ return [
     */
 
     'ngs' => [
+        // Allowed hosts are derived from this: `s3.amazonaws.com/{bucket}` and
+        // `{bucket}.s3.amazonaws.com`. See NgsReplayUrlValidation.
         'replay_bucket' => env('NGS_REPLAY_BUCKET', 'ngs-replay-storage'),
-
-        'replay_hosts' => [
-            's3.amazonaws.com',
-            'ngs-replay-storage.s3.amazonaws.com',
-        ],
 
         'storage_disk' => 'gcs-ngs',
     ],

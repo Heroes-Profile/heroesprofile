@@ -14,6 +14,8 @@ use Illuminate\Contracts\Validation\Rule;
  */
 class NgsReplayUrlValidation implements Rule
 {
+    private const PATH_STYLE_HOST = 's3.amazonaws.com';
+
     public function passes($attribute, $value)
     {
         if (! is_string($value)) {
@@ -26,11 +28,25 @@ class NgsReplayUrlValidation implements Rule
             return false;
         }
 
-        if (! in_array($parts['host'], config('api.ngs.replay_hosts'), true)) {
+        $bucket = config('api.ngs.replay_bucket');
+
+        // Both forms follow the one bucket setting, so changing it cannot leave a
+        // stale host allowed.
+        if (! in_array($parts['host'], [self::PATH_STYLE_HOST, $bucket.'.'.self::PATH_STYLE_HOST], true)) {
             return false;
         }
 
-        $segments = array_values(array_filter(explode('/', $parts['path'])));
+        // Raw segments, empty ones kept: `..` and `.` would let a path-style URL
+        // walk out of the bucket once the HTTP client normalises it.
+        $raw = explode('/', ltrim($parts['path'], '/'));
+
+        foreach ($raw as $segment) {
+            if (in_array(rawurldecode($segment), ['.', '..'], true)) {
+                return false;
+            }
+        }
+
+        $segments = array_values(array_filter($raw, fn ($segment) => $segment !== ''));
 
         if ($segments === []) {
             return false;
@@ -38,8 +54,8 @@ class NgsReplayUrlValidation implements Rule
 
         // Path-style URLs carry the bucket as the first segment; the virtual-host
         // form has it in the hostname already.
-        if ($parts['host'] === 's3.amazonaws.com') {
-            return array_shift($segments) === config('api.ngs.replay_bucket') && $segments !== [];
+        if ($parts['host'] === self::PATH_STYLE_HOST) {
+            return array_shift($segments) === $bucket && $segments !== [];
         }
 
         return true;

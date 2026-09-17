@@ -47,6 +47,15 @@ class ApiKeyContext
         return $this->suspended && $this->suspensionType === ApiAccount::TERMINATION;
     }
 
+    public function suspensionCode(): ?string
+    {
+        if (! $this->suspended) {
+            return null;
+        }
+
+        return $this->isTerminated() ? 'account_terminated' : 'account_suspended';
+    }
+
     /**
      * What the caller is told, in the same words as the email and the portal banner.
      *

@@ -28,6 +28,11 @@ class RequireNgsAccess
             return $this->error('unauthenticated', 'A valid API key is required.', 401);
         }
 
+        // No quota middleware on these routes, so suspension is refused here.
+        if ($context->isSuspended()) {
+            return $this->error($context->suspensionCode(), $context->suspensionMessage(), 403);
+        }
+
         $permitted = $mode === 'upload'
             ? $context->account->hasNgsUploadAccess()
             : $context->account->hasNgsAccess();

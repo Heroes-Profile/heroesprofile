@@ -265,6 +265,10 @@ class PlayerController extends Controller
             return $this->error('unknown_player', 'No player by that battletag in that region.', 404);
         }
 
+        if ($this->globalDataService->isRestrictedAccount($blizzId, $validated['region'])) {
+            return $this->error('player_unavailable', 'That player has made their profile private.', 403);
+        }
+
         $ratings = app(PlayerMmrService::class)->summary(
             (int) $blizzId,
             (int) $validated['region'],

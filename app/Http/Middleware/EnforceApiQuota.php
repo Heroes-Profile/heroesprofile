@@ -45,7 +45,7 @@ class EnforceApiQuota
         // integrator to go and check their billing.
         if ($context->isSuspended()) {
             return $this->error(
-                $context->isTerminated() ? 'account_terminated' : 'account_suspended',
+                $context->suspensionCode(),
                 $context->suspensionMessage(),
                 403,
                 $endpoint
