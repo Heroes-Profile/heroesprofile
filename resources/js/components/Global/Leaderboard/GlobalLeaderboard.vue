@@ -545,8 +545,6 @@ export default {
             groupsize: this.groupsize,
             hero: this.hero,
             role: this.role,
-            region: user.region,
-            blizz_id: user.blizz_id
           }, 
           {
           });

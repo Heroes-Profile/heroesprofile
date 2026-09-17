@@ -275,7 +275,13 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
 
     public function getLeaderboardRating(Request $request)
     {
-        // return response()->json($request->all());
+        // Only ever the signed-in user's own rating. The account is never taken from
+        // the request, which would let anyone look up anyone, private players included.
+        $user = Auth::user();
+
+        if ($user === null) {
+            return ['rating' => 0, 'games_played' => 0];
+        }
 
         $validationRules = [
             'season' => ['required', new SeasonInputValidation],
@@ -283,9 +289,7 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
             'type' => 'required|in:player,hero,role',
             'groupsize' => ['required', new StackSizeInputValidation],
             'hero' => ['sometimes', 'nullable', new HeroInputByIDValidation],
-            'region' => 'required|integer',
             'role' => ['sometimes', 'nullable', new RoleInputValidation],
-            'blizz_id' => 'required|integer',
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -297,13 +301,13 @@ class GlobalLeaderboardController extends GlobalsInputValidationController
                 'status' => 'failure to validate inputs',
             ];
         }
-        $blizz_id = $request['blizz_id'];
+        $blizz_id = $user->blizz_id;
         $hero = $request['hero'];
         $role = $this->globalDataService->getMMRTypeValue($request['role']);
 
         $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
         $season = $request['season'];
-        $region = $request['region'];
+        $region = $user->region;
 
         $type = $request['type'];
         $typeNumber = 0;

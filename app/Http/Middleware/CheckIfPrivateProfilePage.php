@@ -2,49 +2,29 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\BannedAccount;
-use App\Models\BattlenetAccount;
 use App\Services\GlobalDataService;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Player pages of private accounts are for their signed-in owner only; banned
+ * accounts are for no one.
+ */
 class CheckIfPrivateProfilePage
 {
     public function handle(Request $request, Closure $next): Response
     {
-        $globalDataService = new GlobalDataService;
+        // Route parameters, not $request['blizz_id']: that reads the query string
+        // first, so ?blizz_id=<any public id> would have been checked instead.
+        $blizzId = $request->route('blizz_id');
+        $region = $request->route('region');
 
-        $user = Auth::user();
-        $blizz_id = $request['blizz_id'];
-        $region = $request['region'];
-        $privateAccounts = $globalDataService->getPrivateAccounts();
-        $containsAccount = $privateAccounts->contains(function ($account) use ($blizz_id, $region) {
-            return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
-        });
-
-        $bannedAccounts = BannedAccount::get();
-        $existingBan = $bannedAccounts->contains(function ($account) use ($blizz_id, $region) {
-            return $account['blizz_id'] == $blizz_id && $account['region'] == $region;
-        });
-
-        if ($existingBan) {
+        if (app(GlobalDataService::class)->isHiddenFrom($blizzId, $region, Auth::user())) {
             return redirect('/');
         }
 
-        // $user = BattlenetAccount::find(1);
-        // Auth::login($user);
-
-        if ($containsAccount) {
-            if (! Auth::check()) {
-                return redirect('/');
-            } elseif (($user->blizz_id.'|'.$user->region) != ($blizz_id.'|'.$region)) {
-                return redirect('/');
-            }
-        }
-
         return $next($request);
-
     }
 }

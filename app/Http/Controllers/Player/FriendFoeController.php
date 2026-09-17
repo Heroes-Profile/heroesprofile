@@ -128,7 +128,14 @@ class FriendFoeController extends Controller
             );
 
             if (! $latestReplayId || $dbCache->latest_replayID >= $latestReplayId) {
-                return response()->json(json_decode($dbCache->data, true));
+                // Stored before anyone on it may have gone private or been banned, so the
+                // privacy rule is applied again on the way out.
+                $rows = array_values(array_filter(
+                    json_decode($dbCache->data, true) ?? [],
+                    fn ($row) => ! $this->globalDataService->isHiddenFrom($row['blizz_id'], $row['region'])
+                ));
+
+                return response()->json($rows);
             }
         }
 

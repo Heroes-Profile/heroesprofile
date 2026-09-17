@@ -178,7 +178,13 @@ class GlobalDataService
 
         $hidden = $this->getHiddenFlair()['void_eye'];
 
-        return array_values(array_filter($holders, fn ($key) => ! isset($hidden[$key])));
+        // Public list of blizz_id|region pairs, so private and banned holders are left
+        // out, except a private owner's own entry.
+        return array_values(array_filter($holders, function ($key) use ($hidden) {
+            [$blizzId, $region] = explode('|', $key);
+
+            return ! isset($hidden[$key]) && ! $this->isHiddenFrom($blizzId, $region, Auth::user());
+        }));
     }
 
     public const FLAIR_HIDE_SETTINGS = [

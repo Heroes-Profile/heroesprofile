@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\BannedAccount;
 use App\Services\GlobalDataService;
 use Closure;
 use Illuminate\Http\Request;
@@ -27,17 +26,9 @@ class CheckIfPrivateProfileData
         $user = Auth::user();
 
         foreach ($this->accounts($request, $playerKeys) as [$blizzId, $region]) {
-            if (! $service->isRestrictedAccount($blizzId, $region)) {
-                continue;
+            if ($service->isHiddenFrom($blizzId, $region, $user)) {
+                return response()->json(['status' => 'private'], 403);
             }
-
-            $isOwner = $user !== null && $user->blizz_id == $blizzId && $user->region == $region;
-
-            if ($isOwner && ! BannedAccount::where('blizz_id', $blizzId)->where('region', $region)->exists()) {
-                continue;
-            }
-
-            return response()->json(['status' => 'private'], 403);
         }
 
         return $next($request);
