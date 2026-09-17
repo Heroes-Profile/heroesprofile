@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Auth\ApiKeyContext;
 use App\Auth\ApiKeyGuard;
 use App\Services\ClientIpService;
 use App\Support\ApiSpecConfig;
@@ -196,7 +197,34 @@ class RouteServiceProvider extends ServiceProvider
         // replays quickly. See `config/api.php`.
         $routeLimit = $limits['routes'][$request->route()?->getName()] ?? 0;
 
-        return max($planLimit, $routeLimit);
+        return max($planLimit, $routeLimit, $this->downloadGrantPerMinute($request, $context, $limits));
+    }
+
+    /**
+     * The raised pace a bulk download grant carries, or zero for everyone else.
+     *
+     * Narrow on both axes deliberately. Only the download route, because the grant
+     * is one endpoint turned up and has no business raising the pace on the
+     * analytical queries. And only accounts actually holding it, so this is the same
+     * answer as the weekly allowance rather than a second rule that can disagree
+     * with it.
+     *
+     * Read from the flag's own plan id rather than a literal, so moving the plan is
+     * a config edit in one place.
+     *
+     * @param  array<string, mixed>  $limits
+     */
+    private function downloadGrantPerMinute(Request $request, ApiKeyContext $context, array $limits): int
+    {
+        $planId = config('api_plans.additive_flags.do_approved');
+
+        if ($planId === null || ! $request->routeIs('api.external.replay.download')) {
+            return 0;
+        }
+
+        return in_array($planId, $context->planIds, true)
+            ? (int) $limits['download_approved']
+            : 0;
     }
 
     /**

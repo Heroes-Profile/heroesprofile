@@ -58,6 +58,35 @@ class PlanService
     }
 
     /**
+     * Plans stacked on by an additive flag — a raised allowance on top of whatever
+     * the account pays for, not a tier it holds.
+     *
+     * Deliberately not folded into grantedTo(). That answers "which tiers does this
+     * account have", which the billing page uses to stop offering them for sale and
+     * to list special access; an endpoint turned up is neither.
+     *
+     * Mirrors the guard in ApiKeyResolver: nothing to add to means nothing added.
+     *
+     * @return array<int, int> plan ids
+     */
+    public function additiveTo(ApiAccount $account, bool $holdsAPlan = true): array
+    {
+        if (! $holdsAPlan) {
+            return [];
+        }
+
+        $planIds = [];
+
+        foreach (config('api_plans.additive_flags', []) as $flag => $planId) {
+            if ((bool) $account->{$flag}) {
+                $planIds[] = $planId;
+            }
+        }
+
+        return $planIds;
+    }
+
+    /**
      * Comped tiers this account has been granted. Shown as special access rather
      * than something to buy, and held alongside any purchased plan.
      */

@@ -69,6 +69,23 @@ return [
             'stripe_price' => 'h_789502431',
             'paid' => false,
         ],
+
+        /*
+        | Not a tier anyone holds. It exists to carry a single row in
+        | `api_endpoint_quotas` — the raised `replay_download` allowance — and is
+        | attached to an account by `do_approved` through `additive_flags` below.
+        |
+        | `paid => false` keeps it off the pricing page and out of selectableBy().
+        | It has no Stripe price because it is never sold; the placeholder id is
+        | there only because the other rows have one.
+        */
+        11 => [
+            'key' => 'bulk_download',
+            'name' => 'Bulk Download',
+            'price' => 0,
+            'stripe_price' => 'bd_789502431',
+            'paid' => false,
+        ],
     ],
 
     /*
@@ -92,6 +109,32 @@ return [
         'p_approved' => 4,
         'n_approved' => 5,
         'h_approved' => 6,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Additive Access
+    |--------------------------------------------------------------------------
+    |
+    | Flag on `users` => a plan id stacked on top of whatever the account already
+    | holds. Deliberately separate from `comped_flags`, which is the list that
+    | decides entitlement: a plan granted here does NOT make `isEntitled()` true
+    | and does NOT become the account's plan name.
+    |
+    | So `do_approved` alone buys nothing — the account is still refused with
+    | `subscription_inactive` until it pays for a real tier. Set alongside a
+    | Developer subscription it raises one allowance and changes nothing else,
+    | because EnforceApiQuota takes the highest limit per endpoint across the
+    | plans held and plan 11 carries a row for exactly one endpoint.
+    |
+    | The reason for the split is that a comped flag is a free tier, and this is
+    | not one. Putting `do_approved` in the list above would hand anyone flagged
+    | for a bulk download a working API account for nothing.
+    |
+    */
+
+    'additive_flags' => [
+        'do_approved' => 11,
     ],
 
     /*
