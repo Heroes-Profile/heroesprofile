@@ -21,6 +21,15 @@ class ImpersonationController extends Controller
     /** Session key holding the real admin's id while a swap is in effect. */
     public const SESSION_KEY = 'api_impersonator';
 
+    /** Session key holding the impersonated account's id, so Stop only works from inside the swap. */
+    public const TARGET_SESSION_KEY = 'api_impersonated';
+
+    /** Ends any swap marker. Called on stop, logout and login so a stale one can't be reused. */
+    public static function forget(Request $request): void
+    {
+        $request->session()->forget([self::SESSION_KEY, self::TARGET_SESSION_KEY]);
+    }
+
     public function start(Request $request, int $id)
     {
         $admin = Auth::guard('api_web')->user();
@@ -50,6 +59,7 @@ class ImpersonationController extends Controller
 
         // After the login, not before: the guard migrates the session as it logs in.
         $request->session()->put(self::SESSION_KEY, $admin->id);
+        $request->session()->put(self::TARGET_SESSION_KEY, $target->id);
 
         return response()->json(['ok' => true, 'redirect' => '/Api/Account']);
     }
@@ -61,8 +71,14 @@ class ImpersonationController extends Controller
     public function stop(Request $request)
     {
         $adminId = $request->session()->get(self::SESSION_KEY);
+        $targetId = $request->session()->get(self::TARGET_SESSION_KEY);
+        $current = Auth::guard('api_web')->user();
 
-        if ($adminId === null) {
+        // The swap is only undone from inside it: the signed-in account must be the one
+        // that was impersonated. Anything else is a stale marker, which is discarded.
+        if ($adminId === null || $targetId === null || $current === null || (int) $current->id !== (int) $targetId) {
+            self::forget($request);
+
             return redirect('/Api/Account');
         }
 
@@ -80,7 +96,7 @@ class ImpersonationController extends Controller
 
         Auth::guard('api_web')->login($admin);
 
-        $request->session()->forget(self::SESSION_KEY);
+        self::forget($request);
 
         return redirect('/Api/Admin');
     }
