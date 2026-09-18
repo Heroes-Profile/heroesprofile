@@ -59,6 +59,7 @@ use App\Http\Controllers\ReplayDownloadController;
 use App\Http\Controllers\SingleMatchController;
 use App\Http\Controllers\TermsOfServiceController;
 use App\Http\Controllers\Tools\ActivityGraphsController;
+use App\Http\Controllers\Tools\AutoBattlerController;
 use App\Http\Controllers\Tools\RandomizeMeController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\XalatathEventController;
@@ -226,6 +227,7 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
 
     Route::get('Tools/RandomizeMe', [RandomizeMeController::class, 'show']);
     Route::get('Tools/Activity', [ActivityGraphsController::class, 'show']);
+    Route::get('Tools/AutoBattler', [AutoBattlerController::class, 'show']);
 
     Route::get('/PreMatch/Results/', function (Request $request) {
         $prematchID = $request->query('prematchID');
