@@ -81,8 +81,53 @@
         </p>
       </div>
 
+      <div class="bg-lighten p-6 mb-8">
+        <h2 class="text-lg mb-1">Usage This Window</h2>
+        <p class="text-sm text-gray-medium mb-4">
+          Each account's current 7-day window, summed across endpoints. Cost is an upper-bound estimate.
+        </p>
+
+        <p v-if="!usage.length" class="text-sm text-gray-medium">No usage in the current window.</p>
+
+        <div v-else class="overflow-x-auto">
+          <table class="min-w-0 w-full responsive-table">
+            <thead>
+              <tr>
+                <th v-for="column in usageColumns" :key="column.key" @click="sortUsage(column.key)" class="py-2 px-3 text-left text-sm">
+                  {{ column.label }}
+                  <span v-if="usageSortKey === column.key">{{ usageSortDir === 'asc' ? '▲' : '▼' }}</span>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="row in sortedUsage"
+                :key="row.id"
+                @click="load(row.id, true)"
+                class="cursor-pointer"
+                :class="{ '!bg-teal !text-white': selectedUsageId === row.id }"
+              >
+                <td class="py-2 px-3">
+                  {{ row.email || 'id ' + row.id }}
+                  <img
+                    v-if="loadingId === row.id"
+                    src="/images/logo/heroesprofilelogo.png"
+                    alt="Loading"
+                    class="inline-block w-5 h-5 ml-2 align-middle animate-spin"
+                  />
+                </td>
+                <td class="py-2 px-3">{{ formatNumber(row.calls) }}</td>
+                <td class="py-2 px-3">{{ formatBytes(row.egress_bytes) }}</td>
+                <td class="py-2 px-3">{{ formatDuration(row.compute_ms) }}</td>
+                <td class="py-2 px-3">{{ formatCost(row.cost_usd) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <template v-if="detail">
-        <div class="bg-lighten p-6 mb-8">
+        <div ref="detail" class="bg-lighten p-6 mb-8">
           <h2 class="text-lg mb-1">{{ detail.account.email }}</h2>
           <p class="text-sm text-gray-medium mb-4">{{ detail.account.name }} &middot; id {{ detail.account.id }}</p>
 
@@ -313,32 +358,36 @@
 
         <p v-if="!activity.length" class="text-sm text-gray-medium">Nothing yet.</p>
 
-        <table v-else class="min-w-0 w-full responsive-table">
-          <thead>
-            <tr>
-              <th class="py-2 px-3 text-left text-sm">Email</th>
-              <th class="py-2 px-3 text-left text-sm">Status</th>
-              <th class="py-2 px-3 text-left text-sm">Started</th>
-              <th class="py-2 px-3 text-left text-sm">Last change</th>
-              <th class="py-2 px-3 text-left text-sm">Ends</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="row in activity" :key="row.id">
-              <td class="py-2 px-3">{{ row.email }}</td>
-              <td class="py-2 px-3">{{ row.status }}</td>
-              <td class="py-2 px-3">{{ row.started_at }}</td>
-              <td class="py-2 px-3">{{ row.changed_at }}</td>
-              <td class="py-2 px-3">{{ row.ends_at || '—' }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <div v-else class="overflow-x-auto">
+          <table class="min-w-0 w-full responsive-table">
+            <thead>
+              <tr>
+                <th class="py-2 px-3 text-left text-sm">Email</th>
+                <th class="py-2 px-3 text-left text-sm">Status</th>
+                <th class="py-2 px-3 text-left text-sm">Started</th>
+                <th class="py-2 px-3 text-left text-sm">Last change</th>
+                <th class="py-2 px-3 text-left text-sm">Ends</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in activity" :key="row.id">
+                <td class="py-2 px-3">{{ row.email }}</td>
+                <td class="py-2 px-3">{{ row.status }}</td>
+                <td class="py-2 px-3">{{ row.started_at }}</td>
+                <td class="py-2 px-3">{{ row.changed_at }}</td>
+                <td class="py-2 px-3">{{ row.ends_at || '—' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { formatNumber, formatBytes, formatDuration, formatCost } from '../../utils/apiFormat';
+
 export default {
   name: 'ApiAdminConsole',
   data(){
@@ -350,6 +399,17 @@ export default {
       searched: false,
       detail: null,
       activity: [],
+      usage: [],
+      usageColumns: [
+        { key: 'email', label: 'Email' },
+        { key: 'calls', label: 'Calls' },
+        { key: 'egress_bytes', label: 'Egress' },
+        { key: 'compute_ms', label: 'Compute' },
+        { key: 'cost_usd', label: 'Cost' },
+      ],
+      usageSortKey: 'cost_usd',
+      usageSortDir: 'desc',
+      loadingId: null,
       metrics: null,
       busy: false,
       error: null,
@@ -365,12 +425,49 @@ export default {
 
       return /^https?:\/\//i.test(website || '') ? website : null;
     },
+    // The row being loaded takes the highlight straight away, not after the fetch.
+    selectedUsageId(){
+      return this.loadingId ?? this.detail?.account?.id ?? null;
+    },
+    sortedUsage(){
+      const key = this.usageSortKey;
+      const direction = this.usageSortDir === 'asc' ? 1 : -1;
+
+      return this.usage.slice().sort((a, b) => {
+        const valA = key === 'email' ? (a.email || '').toLowerCase() : a[key];
+        const valB = key === 'email' ? (b.email || '').toLowerCase() : b[key];
+
+        return valA < valB ? -direction : valA > valB ? direction : 0;
+      });
+    },
   },
   mounted(){
     this.loadMetrics();
+    this.loadUsage();
     this.loadActivity();
   },
   methods: {
+    formatNumber,
+    formatBytes,
+    formatDuration,
+    formatCost,
+    async loadUsage(){
+      try {
+        const response = await this.$axios.get('/api/v1/admin/usage');
+        this.usage = response.data.usage;
+      } catch (error) {
+        // As with metrics.
+      }
+    },
+    sortUsage(key){
+      if(key === this.usageSortKey){
+        this.usageSortDir = this.usageSortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        this.usageSortDir = key === 'email' ? 'asc' : 'desc';
+      }
+
+      this.usageSortKey = key;
+    },
     async loadMetrics(){
       try {
         const response = await this.$axios.get('/api/v1/admin/metrics');
@@ -404,17 +501,28 @@ export default {
         this.error = this.messageFrom(error);
       }
     },
-    async load(id){
+    async load(id, scroll = false){
       this.error = null;
       this.notice = null;
       // Text typed against the last account must not follow you to the next one.
       this.clearAction();
+      this.loadingId = id;
 
       try {
         const response = await this.$axios.get('/api/v1/admin/accounts/' + id);
         this.detail = response.data;
+
+        // The usage list can be long enough to push the detail off screen.
+        if(scroll){
+          this.$nextTick(() => this.$refs.detail?.scrollIntoView({ behavior: 'smooth' }));
+        }
       } catch (error) {
         this.error = this.messageFrom(error);
+      } finally {
+        // A slower earlier click must not clear the spinner of a later one.
+        if(this.loadingId === id){
+          this.loadingId = null;
+        }
       }
     },
     async impersonate(){

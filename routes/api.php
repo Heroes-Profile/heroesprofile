@@ -102,6 +102,7 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
         Route::post('accounts/{id}/reinstate', [AdminConsoleController::class, 'reinstate']);
         Route::get('activity', [AdminConsoleController::class, 'activity']);
         Route::get('metrics', [AdminConsoleController::class, 'metrics']);
+        Route::get('usage', [AdminConsoleController::class, 'usage']);
     });
 });
 
