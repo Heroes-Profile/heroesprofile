@@ -7,11 +7,13 @@ use App\Http\Controllers\Controller;
 use App\Models\Api\ApiAccount;
 use App\Models\Api\ApiAccountAction;
 use App\Models\Api\ApiKey;
+use App\Models\Api\ApiUsage;
 use App\Models\Api\CashierSubscription;
 use App\Services\Api\AccountEnforcementService;
 use App\Services\Api\ApiKeyResolver;
 use App\Services\Api\PlanService;
 use App\Services\Api\UsageService;
+use App\Support\ApiCost;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -331,6 +333,51 @@ class AdminConsoleController extends Controller
                     'ends_at' => $row->ends_at?->toDateTimeString(),
                 ];
             })->all(),
+        ]);
+    }
+
+    /**
+     * Every account with usage in its current window, summed across endpoints. Not
+     * limited: the console sorts it client-side, so it needs the whole list.
+     *
+     * Expired windows are skipped rather than zeroed, matching what UsageService
+     * shows the account itself.
+     */
+    public function usage()
+    {
+        $rows = DB::connection('heroesprofile_api')->table('api_usage')
+            ->where('window_started_at', '>', now()->subDays(ApiUsage::WINDOW_DAYS))
+            ->groupBy('api_account_id')
+            ->select(
+                'api_account_id',
+                DB::raw('sum(calls) as calls'),
+                DB::raw('sum(egress_bytes) as egress_bytes'),
+                DB::raw('sum(compute_ms) as compute_ms'),
+            )
+            ->havingRaw('sum(calls) > 0 or sum(egress_bytes) > 0 or sum(compute_ms) > 0')
+            ->get();
+
+        $accounts = ApiAccount::whereIn('id', $rows->pluck('api_account_id'))
+            ->get()
+            ->keyBy('id');
+
+        return response()->json([
+            'usage' => $rows->map(function ($row) use ($accounts) {
+                $account = $accounts->get($row->api_account_id);
+                $calls = (int) $row->calls;
+                $bytes = (int) $row->egress_bytes;
+                $computeMs = (int) $row->compute_ms;
+
+                return [
+                    'id' => (int) $row->api_account_id,
+                    'name' => $account?->name,
+                    'email' => $account?->email,
+                    'calls' => $calls,
+                    'egress_bytes' => $bytes,
+                    'compute_ms' => $computeMs,
+                    'cost_usd' => round(ApiCost::total($bytes, $computeMs, $calls), 6),
+                ];
+            })->values()->all(),
         ]);
     }
 
