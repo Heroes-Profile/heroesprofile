@@ -16,6 +16,7 @@ use App\Http\Controllers\Esports\Other\EsportOtherController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDebugController;
 use App\Http\Controllers\Global\GlobalDraftController;
+use App\Http\Controllers\Global\GlobalDrafterController;
 use App\Http\Controllers\Global\GlobalHeroMapStatsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupsTalentsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupStatsController;
@@ -142,6 +143,8 @@ Route::prefix('v1')->middleware('web')->group(function () {
     Route::post('global/compositions/heroes', [GlobalCompositionsController::class, 'getTopHeroData']);
 
     Route::post('global/draft', [GlobalDraftController::class, 'getDraftData']);
+    Route::post('drafter/draft-order', [GlobalDrafterController::class, 'getDraftOrderData']);
+    Route::post('drafter/composition', [GlobalDrafterController::class, 'getCompositionData']);
 
     Route::post('global/party', [GlobalPartyStatsController::class, 'getPartyStats']);
 

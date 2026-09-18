@@ -31,6 +31,7 @@ use App\Http\Controllers\FaqController;
 use App\Http\Controllers\GithubChangeController;
 use App\Http\Controllers\Global\GlobalCompositionsController;
 use App\Http\Controllers\Global\GlobalDraftController;
+use App\Http\Controllers\Global\GlobalDrafterController;
 use App\Http\Controllers\Global\GlobalHeroMapStatsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupsTalentsController;
 use App\Http\Controllers\Global\GlobalHeroMatchupStatsController;
@@ -140,6 +141,7 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/Global/Matchups/{hero}', [GlobalHeroMatchupStatsController::class, 'show']);
 
     Route::get('/Global/Draft', [GlobalDraftController::class, 'show']);
+    Route::get('/Drafter', [GlobalDrafterController::class, 'show']);
     Route::get('/Global/Draft/{hero}', [GlobalDraftController::class, 'show']);
 
     Route::get('/Global/Talents/', [GlobalTalentStatsController::class, 'show']);

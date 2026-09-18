@@ -70,7 +70,7 @@
                         <div class="nav-dropdown ">
                             <div class=" nav-dropdown-inner-wrapper ">
                                 <a href="/Global/Talents/Builder" >Talent Builder</a>
-                                <a href="https://drafter.heroesprofile.com/Drafter" target="_blank" >Drafter</a>
+                                <a href="/Drafter" >Drafter</a>
                                 <a href="/Upload" >Replay Uploader</a>
                                 {{--<a href="/" class="block px-4 py-2 border-b border-darken hover:bg-lighten cursor-not-allowed pointer-events-none">Activity Graphs</a>--}}
                                 <a href="/Tools/AutoBattler" >Auto Battler</a>
