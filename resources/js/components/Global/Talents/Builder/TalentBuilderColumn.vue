@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- Horizontal layout: fixed-width column, header on top, talents stack vertically -->
-    <div v-if="horizontal" class="w-[170px] inline-block m-1 bg-gray-light rounded-2xl">
+    <div v-if="horizontal" :class="[compact ? 'w-[150px]' : 'w-[170px]', 'inline-block m-1 bg-gray-light rounded-2xl']">
       <h2 class="bg-blue rounded-t-2xl p-2 text-sm text-center uppercase relative">Level {{ level }}
         <div @click="removeAnySelections" class="absolute right-0 top-0 text-bold p-2 rounded hover:bg-teal">
           <i class="fa-solid fa-xmark"></i>
@@ -47,6 +47,7 @@ export default {
     data: Object,
     clickedData: Object,
     horizontal: { type: Boolean, default: false },
+    compact: { type: Boolean, default: false },
   },
   data(){
     return {
