@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use RuntimeException;
+use Throwable;
 
 /**
  * Replay ingestion for the desktop and electron uploaders.
@@ -240,10 +241,23 @@ class ReplayUploadService
                 $parsed = $this->parser->parse($scratch, $bucket, 'fingerprintOnly');
             }
         } finally {
-            $disk->delete($scratch);
+            $this->deleteScratch($disk, $scratch);
         }
 
         return $parsed;
+    }
+
+    /**
+     * GCS returns the odd transient 503 on delete. A leftover scratch object is not
+     * worth failing the upload over, or hiding a parser exception behind.
+     */
+    private function deleteScratch(Filesystem $disk, string $scratch): void
+    {
+        try {
+            retry(2, fn () => $disk->delete($scratch), 250);
+        } catch (Throwable $e) {
+            report($e);
+        }
     }
 
     /**
