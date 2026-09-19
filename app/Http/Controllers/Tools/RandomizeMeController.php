@@ -52,6 +52,9 @@ class RandomizeMeController extends GlobalsInputValidationController
             )
             ->where('player.hero', $heroId)
             ->where('replay.game_type', '!=', 0)
+            // player.hero has no index, so without a floor a rarely played hero walks
+            // replay by date through the entire history.
+            ->where('replay.game_date', '>=', now()->subDays(30))
             ->orderByDesc('replay.game_date')
             ->limit(1000)
             ->get();
