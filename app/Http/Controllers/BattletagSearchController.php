@@ -115,40 +115,35 @@ class BattletagSearchController extends Controller
             return [];
         }
 
-        $matchesAccounts = function ($query, array $extra = []) use ($accounts) {
-            $query->where(function ($q) use ($accounts, $extra) {
-                foreach ($accounts as $key => $account) {
-                    $q->orWhere(function ($w) use ($account, $extra, $key) {
-                        $w->where('player.blizz_id', $account->blizz_id)
-                            ->where('replay.region', $account->region);
-
-                        if (isset($extra[$key])) {
-                            $w->where('replay.game_date', $extra[$key]);
-                        }
-                    });
-                }
-            });
-        };
+        // Separate whereIn lists rather than OR'd (blizz_id, region) pairs, so MySQL can
+        // seek player.blizzid_hero. That can match pairs outside $accounts; they are
+        // dropped once the rows are keyed.
+        $blizzIds = array_values(array_unique(array_map(fn ($a) => $a->blizz_id, $accounts)));
+        $regionIds = array_values(array_unique(array_map(fn ($a) => $a->region, $accounts)));
+        $rowKey = fn ($row) => $row->blizz_id.'|'.$row->region;
 
         $stats = DB::connection('heroesprofile')->table('player')
             ->join('replay', 'replay.replayID', '=', 'player.replayID')
+            ->whereIn('player.blizz_id', $blizzIds)
+            ->whereIn('replay.region', $regionIds)
             ->where('replay.game_type', '<>', 0) // Exclude custom games
-            ->tap(fn ($q) => $matchesAccounts($q))
             ->groupBy('player.blizz_id', 'replay.region')
             ->select('player.blizz_id', 'replay.region', DB::raw('COUNT(*) AS games'), DB::raw('MAX(replay.game_date) AS latest'))
             ->get()
-            ->keyBy(fn ($row) => $row->blizz_id.'|'.$row->region);
+            ->keyBy($rowKey)
+            ->intersectByKeys($accounts);
 
-        $latestDates = $stats->map(fn ($row) => $row->latest)->all();
-
-        $latest = DB::connection('heroesprofile')->table('player')
+        $latest = $stats->isEmpty() ? collect() : DB::connection('heroesprofile')->table('player')
             ->join('replay', 'replay.replayID', '=', 'player.replayID')
+            ->whereIn('player.blizz_id', $blizzIds)
+            ->whereIn('replay.region', $regionIds)
+            ->whereIn('replay.game_date', $stats->pluck('latest')->unique()->values()->all())
             ->where('replay.game_type', '<>', 0)
-            ->tap(fn ($q) => $matchesAccounts($q, $latestDates))
-            ->select('player.blizz_id', 'replay.region', 'player.hero', 'replay.game_map')
+            ->select('player.blizz_id', 'replay.region', 'replay.game_date', 'player.hero', 'replay.game_map')
             ->get()
-            ->unique(fn ($row) => $row->blizz_id.'|'.$row->region)
-            ->keyBy(fn ($row) => $row->blizz_id.'|'.$row->region);
+            ->filter(fn ($row) => isset($stats[$rowKey($row)]) && $row->game_date == $stats[$rowKey($row)]->latest)
+            ->unique($rowKey)
+            ->keyBy($rowKey);
 
         $heroData = $this->globalDataService->getHeroes()->keyBy('id');
         $maps = Map::all()->keyBy('map_id');
