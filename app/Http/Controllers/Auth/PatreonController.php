@@ -36,8 +36,9 @@ class PatreonController extends Controller
             ];
             $currentBattlenetId = Auth::id();
 
+            // A null email would match any row with no email.
             $patreonAccount = PatreonAccount::updateOrCreate(
-                ['email' => $user->email],
+                $user->email ? ['email' => $user->email] : ['patreon_id' => $user->id],
                 array_merge($patreonData, ['battlenet_accounts_id' => $currentBattlenetId])
             );
 
