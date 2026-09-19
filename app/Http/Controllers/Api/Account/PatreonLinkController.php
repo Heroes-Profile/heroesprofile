@@ -94,8 +94,9 @@ class PatreonLinkController extends Controller
      */
     private function patreonRecord($patreonUser): PatreonAccount
     {
+        // A null email would become `WHERE email IS NULL` and grab someone else's row.
         $record = PatreonAccount::where('patreon_id', $patreonUser->id)->first()
-            ?? PatreonAccount::where('email', $patreonUser->email)->first()
+            ?? ($patreonUser->email ? PatreonAccount::where('email', $patreonUser->email)->first() : null)
             ?? new PatreonAccount;
 
         $record->fill([
