@@ -37,9 +37,11 @@ class ReplayParserClient
     ) {}
 
     /**
+     * @param  float  $timeout  Seconds, 0 for none. Set per request: the container
+     *                          injects a bare client, so constructor defaults never apply.
      * @return array<string, mixed> the parsed replay, or `error` describing why not
      */
-    public function parse(string $key, string $bucket, string $parseType = 'default', string $fingerprint = ''): array
+    public function parse(string $key, string $bucket, string $parseType = 'default', string $fingerprint = '', float $timeout = 0): array
     {
         $endpoint = (string) config('services.replay_parser.url');
 
@@ -47,7 +49,7 @@ class ReplayParserClient
             return ['error' => 'No replay parser configured.'];
         }
 
-        $response = $this->client->post($endpoint, [
+        $options = [
             'http_errors' => false,
             'headers' => $this->authHeaders(self::audienceFor($endpoint)),
             'json' => [
@@ -56,7 +58,14 @@ class ReplayParserClient
                 'parseType' => $parseType,
                 'bucket' => $bucket,
             ],
-        ]);
+        ];
+
+        if ($timeout > 0) {
+            $options['timeout'] = $timeout;
+            $options['connect_timeout'] = min(5, $timeout);
+        }
+
+        $response = $this->client->post($endpoint, $options);
 
         $status = $response->getStatusCode();
         $body = (string) $response->getBody();
