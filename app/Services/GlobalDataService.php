@@ -1730,16 +1730,19 @@ class GlobalDataService
     public function getTimeframeFilterValues($timeframeType, $timeframes)
     {
         if ($timeframeType == 'major' || $timeframeType == 'major_grouped') {
-            $query = SeasonGameVersion::select('game_version');
+            // Lowest floor: the validator has already held each user to theirs, and a
+            // queued job runs with no user to ask.
+            $queryable = $this->queryableGameVersions(self::MINIMUM_GLOBALS_PATCH_PRIVILEGED);
 
-            foreach ($timeframes as $timeframe) {
-                $query->orWhere('game_version', 'like', $timeframe.'%');
-            }
-            $gameVersion = $query->get()
-                ->pluck('game_version')
-                ->toArray();
+            return array_values(array_filter($queryable, function ($version) use ($timeframes) {
+                foreach ($timeframes as $timeframe) {
+                    if (str_starts_with($version, $timeframe.'.')) {
+                        return true;
+                    }
+                }
 
-            return $gameVersion;
+                return false;
+            }));
         }
 
         return $timeframes;
