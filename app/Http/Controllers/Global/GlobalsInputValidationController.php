@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\SeasonGameVersion;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
+use App\Rules\GlobalTimeframeInputValidation;
 use App\Rules\HeroInputValidation;
 use App\Rules\HeroLevelInputValidation;
 use App\Rules\RegionInputValidation;
@@ -14,7 +15,6 @@ use App\Rules\StackSizeInputValidation;
 use App\Rules\StatFilterInputValidation;
 use App\Rules\TierInputByIDValidation;
 use App\Rules\TierInputByNameValidation;
-use App\Rules\TimeframeMinorInputValidation;
 
 class GlobalsInputValidationController extends Controller
 {
@@ -22,7 +22,7 @@ class GlobalsInputValidationController extends Controller
     {
         return [
             'timeframe_type' => 'sometimes|in:minor,major,major_grouped',
-            'timeframe' => ['sometimes', 'nullable', new TimeframeMinorInputValidation($timeframeType)],
+            'timeframe' => ['sometimes', 'nullable', new GlobalTimeframeInputValidation($timeframeType)],
             'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation],
             'region' => ['sometimes', 'nullable', new RegionInputValidation],
             'statfilter' => ['sometimes', 'nullable', new StatFilterInputValidation($timeframeType, $timeframe)],
@@ -43,7 +43,7 @@ class GlobalsInputValidationController extends Controller
     {
         return [
             'timeframe_type' => 'required|in:minor,major,major_grouped',
-            'timeframe' => ['required', new TimeframeMinorInputValidation($timeframeType)],
+            'timeframe' => ['required', new GlobalTimeframeInputValidation($timeframeType)],
             'game_type' => ['required', new GameTypeInputValidation],
             'region' => ['sometimes', 'nullable', new RegionInputValidation],
             'statfilter' => ['sometimes', 'nullable', new StatFilterInputValidation($timeframeType, $timeframe)],

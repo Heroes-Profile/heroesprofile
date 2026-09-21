@@ -18,6 +18,15 @@
         <span v-if="variable.also" class="text-xs text-gray-medium">also {{ variable.also }}</span>
       </div>
 
+      <div v-if="linkedFrom[variable.name]" class="flex flex-wrap gap-x-4 gap-y-1 text-xs mb-2">
+        <a
+          v-for="op in linkedFrom[variable.name]"
+          :key="op.id"
+          :href="'#' + op.id"
+          class="link"
+        >&larr; Back to {{ op.path }}</a>
+      </div>
+
       <p class="text-xs text-gray-medium mb-2">{{ variable.used_by }}</p>
       <p class="text-sm mb-4">{{ variable.summary }}</p>
 
@@ -69,6 +78,10 @@ export default {
     variables: {
       type: Array,
       default: () => [],
+    },
+    linkedFrom: {
+      type: Object,
+      default: () => ({}),
     },
   },
   data() {

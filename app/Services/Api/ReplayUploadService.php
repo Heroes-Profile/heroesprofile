@@ -8,6 +8,9 @@ use App\Models\UploadAttempt;
 use App\Models\UploadAttemptLog;
 use App\Models\UploadedReplayData;
 use App\Models\UploaderSourceChange;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\UploadedFile;
@@ -58,6 +61,11 @@ class ReplayUploadService
      * checking first.
      */
     private const CHECK_SOURCE = 'desktop';
+
+    /** Per fingerprint call. Two of them stay under the 120s slow-request line. */
+    private const PARSER_TIMEOUT_SECONDS = 45;
+
+    private const CURL_TIMED_OUT = 28;
 
     /**
      * Outcomes that settle a file for good. A `Failure` or `Error` row is not one:
@@ -232,17 +240,46 @@ class ReplayUploadService
         $this->store($disk, $file, $scratch);
 
         try {
-            $parsed = $this->parser->parse($scratch, $bucket, 'fingerprintOnly');
+            $parsed = $this->requestFingerprint($scratch, $bucket);
 
             // The old site retried too, but deleted the object first, so its second
             // attempt parsed something that was no longer there and never once
-            // succeeded.
-            if (! isset($parsed['fingerprint'])) {
-                $parsed = $this->parser->parse($scratch, $bucket, 'fingerprintOnly');
+            // succeeded. Only worth it for a parser or network fault: an unreadable
+            // replay fails the same way twice, and a timeout would just double the wait.
+            if (! isset($parsed['fingerprint']) && ($parsed['retryable'] ?? false)) {
+                $parsed = $this->requestFingerprint($scratch, $bucket);
             }
         } finally {
             $this->deleteScratch($disk, $scratch);
         }
+
+        return $parsed;
+    }
+
+    /**
+     * One fingerprint call. A transport failure comes back as an `error` like any
+     * other, so the caller gets the usual failure status rather than a 500.
+     *
+     * @return array<string, mixed>
+     */
+    private function requestFingerprint(string $scratch, string $bucket): array
+    {
+        try {
+            $parsed = $this->parser->parse($scratch, $bucket, 'fingerprintOnly', '', self::PARSER_TIMEOUT_SECONDS);
+        } catch (GuzzleException $e) {
+            report($e);
+
+            $context = $e instanceof ConnectException || $e instanceof RequestException
+                ? $e->getHandlerContext()
+                : [];
+
+            return [
+                'error' => $e->getMessage(),
+                'retryable' => ($context['errno'] ?? null) !== self::CURL_TIMED_OUT,
+            ];
+        }
+
+        $parsed['retryable'] = ($parsed['status'] ?? 0) >= 500;
 
         return $parsed;
     }
