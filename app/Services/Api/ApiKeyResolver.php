@@ -5,6 +5,7 @@ namespace App\Services\Api;
 use App\Auth\ApiKeyContext;
 use App\Models\Api\ApiAccount;
 use App\Models\Api\ApiKey;
+use App\Services\Twitch\TwitchEntitlementService;
 use Closure;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\Cache;
@@ -124,6 +125,10 @@ class ApiKeyResolver
         ApiKey::where('api_account_id', $accountId)
             ->pluck('secret_hash')
             ->each(fn (string $hash) => $this->forgetHash($hash));
+
+        // Any API plan includes the Twitch extension, and every place a plan changes
+        // already calls this — so the extension's cached plan is dropped here too.
+        TwitchEntitlementService::forgetAccount($accountId);
     }
 
     /**

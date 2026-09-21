@@ -130,6 +130,20 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(15)->by($this->rateLimitKey($request));
         });
 
+        // One uploader posting a snapshot per game event. Keyed by channel, which
+        // AuthenticateTwitchUploaderKey has resolved by the time this runs.
+        RateLimiter::for('twitch-snapshot', function (Request $request) {
+            $channel = $request->attributes->get('twitch_channel');
+
+            return Limit::perMinute(config('twitch.snapshots_per_minute'))
+                ->by('twitch-snapshot:'.($channel?->id ?? ClientIpService::getClientIp($request)));
+        });
+
+        // The broadcaster's config view. One person, so a small ceiling.
+        RateLimiter::for('twitch-broadcaster', function (Request $request) {
+            return Limit::perMinute(30)->by('twitch-broadcaster:'.ClientIpService::getClientIp($request));
+        });
+
         $this->routes(function () {
             // First, so nothing added to routes/api.php can shadow a legacy path by
             // accident. Domain-scoped, so it only exists once DNS points here.
@@ -147,6 +161,10 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware('api.external')
                 ->prefix(config('api.path'))
                 ->group(base_path('routes/api-external.php'));
+
+            Route::middleware('twitch')
+                ->prefix('api/twitch/v1')
+                ->group(base_path('routes/twitch.php'));
 
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));

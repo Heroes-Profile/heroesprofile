@@ -78,6 +78,7 @@
                                 <a href="/Match/Search" >Replay Search</a>
                                 <a href="/Tools/RandomizeMe" >Randomize Me</a>
                                 <a href="/Tools/Activity" >Activity Graphs</a>
+                                <a href="/Twitch" >Twitch Streamers</a>
                                 <a href="/" >Find a Player</a>
 
 

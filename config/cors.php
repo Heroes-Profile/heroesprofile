@@ -25,7 +25,11 @@ return [
         'https://develop.heroesprofile.com',
     ],
 
-    'allowed_origins_patterns' => [],
+    // The Twitch extension is served from <client id>.ext-twitch.tv. Only its
+    // broadcaster config view calls us; viewers never do.
+    'allowed_origins_patterns' => array_filter([
+        env('TWITCH_EXTENSION_CLIENT_ID') ? '#^https://'.preg_quote(env('TWITCH_EXTENSION_CLIENT_ID'), '#').'\.ext-twitch\.tv$#' : null,
+    ]),
 
     'allowed_headers' => ['*'],
 
