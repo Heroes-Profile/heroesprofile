@@ -15,6 +15,7 @@ use App\Http\Middleware\EnforceApiQuota;
 use App\Http\Middleware\EnsureApiAccountAuthenticated;
 use App\Http\Middleware\EnsureApiAdmin;
 use App\Http\Middleware\EnsureBattlenetAuthenticated;
+use App\Http\Middleware\LogApiRequest;
 use App\Http\Middleware\LogIPAndUserAgent;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
@@ -111,6 +112,8 @@ class Kernel extends HttpKernel
          */
         'api.external' => [
             ResolveApiKey::class,
+            // Before the throttle, so a 429 is logged too.
+            LogApiRequest::class,
             ThrottleRequests::class.':api-external',
             SubstituteBindings::class,
             // Last in the group, so on the way back it runs before the others but
