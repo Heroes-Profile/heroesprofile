@@ -28,7 +28,7 @@ class RouteServiceProvider extends ServiceProvider
      * Keyless routes the desktop and electron uploaders call. Each has its own
      * per-IP limiter, so none of them belong in the shared per-key bucket.
      */
-    private const UPLOADER_ROUTES = [
+    public const UPLOADER_ROUTES = [
         'api.external.upload',
         'api.external.replays.fingerprint',
         'api.external.replays.parsed',

@@ -89,7 +89,11 @@
 
         <p v-if="!groups.length" class="text-sm text-gray-medium">Nothing matches "{{ search }}".</p>
 
-        <api-variables v-if="variables.length && !search" :variables="variables"></api-variables>
+        <api-variables
+          v-if="variables.length && !search"
+          :variables="variables"
+          :linked-from="linkedFrom"
+        ></api-variables>
 
         <section v-for="group in groups" :key="group.name" class="mb-10">
           <h2 class="text-2xl mb-4">{{ group.name }}</h2>
@@ -156,7 +160,13 @@
                     <td class="py-2 px-3">{{ p.in }}</td>
                     <td class="py-2 px-3">
                       {{ p.schema && p.schema.type }}
-                      <div v-if="p.schema && p.schema.enum" class="text-xs break-all">{{ p.schema.enum.join(', ') }}</div>
+                      <template v-if="p.schema && p.schema.enum">
+                        <a
+                          v-if="listedInVariables(p)"
+                          :href="'#variable-' + p.name"
+                          class="link block text-xs"                        >{{ p.schema.enum.length }} values — see Variables</a>
+                        <div v-else class="text-xs break-all max-w-[240px]">{{ p.schema.enum.join(', ') }}</div>
+                      </template>
                     </td>
                     <td class="py-2 px-3">
                       {{ p.description }}
@@ -166,7 +176,7 @@
                       <select
                         v-if="p.schema && p.schema.enum"
                         v-model="values[op.id][p.name]"
-                        class="form-control w-full text-black rounded p-1 text-sm"
+                        class="form-control w-full min-w-[200px] text-black rounded p-1 text-sm"
                       >
                         <option value=""></option>
                         <option v-for="choice in p.schema.enum" :key="choice" :value="choice">{{ choice }}</option>
@@ -176,7 +186,7 @@
                         v-model="values[op.id][p.name]"
                         type="text"
                         :placeholder="p.example !== undefined ? String(p.example) : ''"
-                        class="form-control w-full text-black rounded p-1 text-sm"
+                        class="form-control w-full min-w-[200px] text-black rounded p-1 text-sm"
                       />
                     </td>
                   </tr>
@@ -319,6 +329,23 @@ export default {
     });
   },
   computed: {
+    // Endpoints that link to each variable, so Variables can link back to all of them.
+    linkedFrom() {
+      const linked = {};
+
+      this.operations.forEach(op => {
+        op.parameters
+          .filter(p => p.schema && p.schema.enum && this.listedInVariables(p))
+          .forEach(p => {
+            (linked[p.name] = linked[p.name] || []).push({ id: op.id, path: op.path });
+          });
+      });
+
+      Object.values(linked).forEach(ops => ops.sort((a, b) => a.path.localeCompare(b.path)));
+
+      return linked;
+    },
+
     operations() {
       if (!this.spec || !this.spec.paths) return [];
 
@@ -383,6 +410,11 @@ export default {
     },
   },
   methods: {
+    // Long enums are listed once in Variables instead of in every table.
+    listedInVariables(p) {
+      return p.schema.enum.length > 10 && this.variables.some(variable => variable.name === p.name);
+    },
+
     /*
      * The call is made by the portal, not the browser: keys are hashed, so there
      * is nothing here to send. The server resolves the account's own key, charges
