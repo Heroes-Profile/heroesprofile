@@ -258,10 +258,18 @@
         </table>
       </div>
 
-      <div class="bg-lighten p-6">
+      <div class="bg-lighten p-6 mb-8">
         <h2 class="text-lg mb-4">This Week's Usage</h2>
         <api-usage-table :usage="usage" :compact="true"></api-usage-table>
       </div>
+
+      <api-twitch-settings
+        :initialchannel="twitch.channel"
+        :regions="twitch.regions"
+        :maxdelay="twitch.max_delay"
+        :notice="twitchnotice"
+        :linkerror="twitcherror"
+      ></api-twitch-settings>
     </div>
   </div>
 </template>
@@ -295,6 +303,19 @@ export default {
       default: null,
     },
     linkerror: {
+      type: String,
+      default: null,
+    },
+    // The Twitch extension section: channel, regions and delay ceiling.
+    twitch: {
+      type: Object,
+      default: () => ({ channel: null, regions: {}, max_delay: 900 }),
+    },
+    twitchnotice: {
+      type: String,
+      default: null,
+    },
+    twitcherror: {
       type: String,
       default: null,
     },

@@ -46,6 +46,14 @@ return [
         'redirect' => env('BATTLENET_REDIRECT_URI'),
     ],
 
+    // "Connect Twitch" in the API portal. The extension's own app; the redirect is
+    // set per request (/Api/Twitch/Callback) and must be registered on that app.
+    'twitch' => [
+        'client_id' => env('TWITCH_EXTENSION_CLIENT_ID'),
+        'client_secret' => env('TWITCH_EXTENSION_CLIENT_SECRET'),
+        'redirect' => env('APP_URL').'/Api/Twitch/Callback',
+    ],
+
     'patreon' => [
         'client_id' => env('PATREON_CLIENT_ID'),
         'client_secret' => env('PATREON_CLIENT_SECRET'),

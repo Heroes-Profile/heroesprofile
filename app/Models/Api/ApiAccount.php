@@ -163,6 +163,12 @@ class ApiAccount extends Authenticatable implements MustVerifyEmail
         return $cents === null ? null : (int) $cents;
     }
 
+    /** The Twitch channel this account runs the extension on, if any. */
+    public function twitchChannel()
+    {
+        return $this->hasOne(TwitchChannel::class, 'user_id', 'id');
+    }
+
     /**
      * Access withdrawn, whether reversibly or not.
      *
