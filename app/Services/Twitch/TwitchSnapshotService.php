@@ -104,7 +104,11 @@ class TwitchSnapshotService
 
         foreach ($snapshot['players'] as $index => $player) {
             $known = $roster['players'][$index] ?? null;
-            $heroId = $this->gameData->heroId($player['hero'] ?? null);
+            // The name from the game's details file first: in ARAM the attribute id
+            // names whatever the player was last on. It is only used when the name
+            // does not resolve, which is a client running in another language.
+            $heroId = $this->gameData->heroId($player['hero'] ?? null)
+                ?? $this->gameData->heroId($player['hero_attribute'] ?? null);
             // Private and banned players keep their hero and talents — those are on
             // the stream anyway — and nothing that identifies them.
             $hidden = (bool) ($known['hidden'] ?? false);

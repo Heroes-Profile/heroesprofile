@@ -8,6 +8,7 @@ use App\Models\Api\ApiKey;
 use App\Services\Api\AccountEnforcementService;
 use App\Services\Api\PlanService;
 use App\Services\Api\UsageService;
+use App\Services\Twitch\TwitchAccess;
 use App\Services\Twitch\TwitchEntitlementService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -53,7 +54,8 @@ class AccountController extends Controller
             'keys' => $keys,
             'usage' => $usage->forAccount($account),
             'standing' => $this->standingFor($account),
-            'twitch' => TwitchController::section($account, $twitchEntitlements),
+            // Null while the extension is ours alone: the section does not render.
+            'twitch' => TwitchAccess::visible() ? TwitchController::section($account, $twitchEntitlements) : null,
         ]);
     }
 

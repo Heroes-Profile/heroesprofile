@@ -264,6 +264,7 @@
       </div>
 
       <api-twitch-settings
+        v-if="twitch"
         :initialchannel="twitch.channel"
         :regions="twitch.regions"
         :maxdelay="twitch.max_delay"
@@ -306,10 +307,11 @@ export default {
       type: String,
       default: null,
     },
-    // The Twitch extension section: channel, regions and delay ceiling.
+    // The Twitch extension section: channel, regions and delay ceiling. Null while
+    // the extension is not open to everyone, which hides the section.
     twitch: {
       type: Object,
-      default: () => ({ channel: null, regions: {}, max_delay: 900 }),
+      default: null,
     },
     twitchnotice: {
       type: String,
