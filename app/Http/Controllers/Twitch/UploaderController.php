@@ -59,6 +59,7 @@ class UploaderController extends Controller
             'players.*.region' => ['required', 'integer', 'min:1', 'max:5'],
             'players.*.team' => ['required', 'integer', 'in:0,1'],
             'players.*.hero' => ['nullable', 'string', 'max:64'],
+            'players.*.hero_attribute' => ['nullable', 'string', 'max:64'],
             'players.*.talents' => ['nullable', 'array', 'max:7'],
             'players.*.talents.*' => ['nullable', 'string', 'max:128'],
             'players.*.ai' => ['nullable', 'boolean'],

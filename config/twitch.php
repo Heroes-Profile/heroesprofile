@@ -38,6 +38,11 @@ return [
     // Version of the extension released on Twitch, for Set Required Configuration.
     'extension_version' => env('TWITCH_EXTENSION_VERSION', '2.0.0'),
 
+    // Until Twitch has approved the extension nobody else can add it to a channel,
+    // so the public page and the portal's setup section are admins only. Endpoints
+    // stay open, so a channel already set up keeps working.
+    'public_enabled' => env('TWITCH_PUBLIC_ENABLED', false),
+
     // Free trial, once per Twitch channel, starting at the first accepted snapshot.
     'trial_days' => 30,
 
