@@ -3,7 +3,18 @@
     <global-async-debug-banner page-label="Global Talents" />
 
     <div class="grid gap-5 grid-cols-1">
-      <page-heading :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Talent Statistics' : 'Hero Talent Statistics'">
+      <header v-if="selectedHero && localLayout === 'compact'" class="flex flex-wrap items-center gap-4 bg-lighten px-4 py-3 md:px-8">
+        <hero-image-wrapper :hero="selectedHero" :excludehover="true" class="shrink-0"></hero-image-wrapper>
+        <div class="min-w-0">
+          <h1 class="text-lg font-bold">Talent Statistics</h1>
+          <select class="bg-blue text-white rounded px-2 py-1 max-w-full" aria-label="Change Hero"
+            :value="selectedHero.id" @change="handleInputChange({ value: Number($event.target.value) })">
+            <option v-for="hero in heroes" :key="hero.id" :value="hero.id">{{ hero.name }}</option>
+          </select>
+        </div>
+        <p class="text-sm flex-1 min-w-[200px]">{{ infoText }}</p>
+      </header>
+      <page-heading v-else :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Talent Statistics' : 'Hero Talent Statistics'">
         <div v-if="selectedHero" class="relative" @mouseleave="heroDropdownOpen = false">
           <hero-image-wrapper :hero="selectedHero" :size="'big'" :includehover="false" class="cursor-pointer" @click.native="heroDropdownOpen = !heroDropdownOpen"></hero-image-wrapper>
           <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 220px; max-height: 340px; overflow-y: auto;">
@@ -40,10 +51,14 @@
         </div>
 
         <div v-else>
+          <div class="flex justify-end max-w-[1500px] mx-auto px-4 mb-3">
+            <tab-button tab1text="Table" tab2text="Compact" :ignoreclick="true" :overridedefaultside="localLayout === 'compact' ? 'right' : 'left'" @tab-click="localLayout = $event === 'right' ? 'compact' : 'table'"></tab-button>
+          </div>
           <filters 
           :onFilter="filterData" 
           :filters="filters" 
           :isLoading="isTalentsLoading || isBuildsLoading"
+          :compact="localLayout === 'compact'"
 
           :timeframetypeinput="timeframetype"
           :timeframeinput="timeframe"
@@ -80,8 +95,8 @@
 
   
         <div v-if="talentdetaildata" class="mx-auto  md:px-4">
-          <div class="flex justify-between items-start max-w-[1500px] mx-auto">
-            <span class="flex gap-4 mb-2"> 
+          <div class="flex flex-wrap justify-between items-start gap-2 mb-2 max-w-[1500px] mx-auto">
+            <span v-if="localLayout !== 'compact'" class="flex gap-4 mb-2">
               <single-select-filter
                 :values="filters.heroes" 
                 :text="'Change Hero'" 
@@ -96,7 +111,8 @@
           </div>
 
           <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
-          <global-talent-details-section class="mx-auto" :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
+          <compact-talent-grid v-if="localLayout === 'compact'" :talent-data="talentdetaildata" :stat-filter="statfilter"></compact-talent-grid>
+          <global-talent-details-section v-else class="mx-auto" :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
         </div>
         <div v-else-if="isTalentsLoading">
           <loading-component v-if="determineIfVeryLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Very large amount of data.<br/>Compiling can take 5-10 minutes.<br/>Please be patient.<br/>Loading Data...</loading-component>
@@ -111,10 +127,19 @@
 
 
         <div v-if="talentbuilddata" class="flex justify-between max-w-[1500px] mx-auto md:px-4">
-          <div id="builds" class="">
-            <single-select-filter :values="buildtypes" :text="'Talent Build Type'" :defaultValue="this.talentbuildtype" @input-changed="buildtypechange"></single-select-filter>
-            {{ this.selectedHero.name }} {{ "Talent Builds"}}
-            <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
+          <div id="builds" class="w-full min-w-0">
+            <div v-if="localLayout === 'compact'" class="flex flex-wrap items-center gap-3 mb-3">
+              <h2 class="text-lg font-bold">{{ selectedHero.name }} Builds</h2>
+              <select class="bg-blue text-white rounded px-3 py-2" aria-label="Talent Build Type" :value="talentbuildtype" @change="buildtypechange({ value: $event.target.value })">
+                <option v-for="buildType in buildtypes" :key="buildType.code" :value="buildType.code">{{ buildType.name }}</option>
+              </select>
+            </div>
+            <template v-else>
+              <single-select-filter :values="buildtypes" :text="'Talent Build Type'" :defaultValue="talentbuildtype" @input-changed="buildtypechange"></single-select-filter>
+              {{ selectedHero.name }} Talent Builds
+            </template>
+            <compact-talent-builds v-if="localLayout === 'compact'" :build-data="talentbuilddata" :stat-filter="statfilter"></compact-talent-builds>
+            <global-talent-builds-section v-else :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
             <div class="mt-4">
               Create your own builds at
               <a :href="'/Global/Talents/Builder/' + selectedHero.name" class="link" target="_blank">
@@ -138,9 +163,14 @@
 </template>
 
 <script>
+  import CompactTalentGrid from './CompactTalentGrid.vue';
+  import CompactTalentBuilds from './CompactTalentBuilds.vue';
+
   export default {
     name: 'GlobalTalentsStats',
     components: {
+      CompactTalentGrid,
+      CompactTalentBuilds,
     },
     props: {
       filters: Object,
@@ -154,10 +184,12 @@
       advancedfiltering: Boolean,
       patreonUser: Boolean,
       urlparameters: Object,
+      talentStatsLayout: { type: String, default: 'table' },
 
     },
     data(){
       return {
+        localLayout: this.talentStatsLayout,
         dataError: false,
        windowWidth: window.innerWidth,
        isTalentsLoading: false,

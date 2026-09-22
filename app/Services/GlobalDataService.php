@@ -1047,6 +1047,16 @@ class GlobalDataService
         return ['sl'];
     }
 
+    public function getTalentStatsLayout(): string
+    {
+        if (Auth::check()) {
+            return Auth::user()->userSettings->firstWhere('setting', 'talentStatsLayout')?->value === 'compact'
+                ? 'compact' : 'table';
+        }
+
+        return 'table';
+    }
+
     public function getTalentBuilderStyle(): string
     {
         if (Auth::check()) {
