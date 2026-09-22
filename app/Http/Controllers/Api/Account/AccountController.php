@@ -8,13 +8,14 @@ use App\Models\Api\ApiKey;
 use App\Services\Api\AccountEnforcementService;
 use App\Services\Api\PlanService;
 use App\Services\Api\UsageService;
+use App\Services\Twitch\TwitchEntitlementService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class AccountController extends Controller
 {
-    public function index(UsageService $usage)
+    public function index(UsageService $usage, TwitchEntitlementService $twitchEntitlements)
     {
         $account = Auth::guard('api_web')->user();
 
@@ -52,6 +53,7 @@ class AccountController extends Controller
             'keys' => $keys,
             'usage' => $usage->forAccount($account),
             'standing' => $this->standingFor($account),
+            'twitch' => TwitchController::section($account, $twitchEntitlements),
         ]);
     }
 

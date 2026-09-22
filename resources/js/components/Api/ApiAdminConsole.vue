@@ -353,6 +353,8 @@
         </div>
       </template>
 
+      <api-admin-twitch class="mb-8"></api-admin-twitch>
+
       <div class="bg-lighten p-6">
         <h2 class="text-lg mb-4">Recent Subscription Activity</h2>
 

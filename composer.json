@@ -7,6 +7,7 @@
     "require": {
         "php": "^8.1",
         "ext-bcmath": "*",
+        "firebase/php-jwt": "^7.1",
         "google/cloud-tasks": "^2.0",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/cashier": "^16.7",
