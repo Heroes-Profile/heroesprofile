@@ -6,6 +6,10 @@
       Show your viewers the lobby, heroes, talents and player stats of the game you are playing,
       live on your Twitch stream. Included with any paid plan, with a free month to try it.
     </p>
+    <p class="text-sm text-gray-medium mb-4">
+      The data comes from temporary files the game writes as you play, so it is not 100% real time:
+      talent picks can lag behind what is actually happening in the game.
+    </p>
 
     <div>
       <div v-if="error" class="bg-red p-3 mb-4">{{ error }}</div>
@@ -157,7 +161,7 @@
 
           <label class="flex items-center gap-2 mb-6 text-sm">
             <input type="checkbox" v-model="showStats" />
-            Show MMR, rank, win rate and account level for each player
+            Show win rate and account level for each player
           </label>
 
           <button

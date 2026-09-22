@@ -77,10 +77,13 @@ class TwitchGameData
             ];
         }
 
+        $heroIdsByName = $this->heroes()->pluck('id', 'name');
+
         $talents = [];
 
         foreach ($this->globalDataService->getAllTalentsKeyed() as $talent) {
             $talents[$talent->talent_id] = [
+                'e' => $heroIdsByName[$talent->hero_name] ?? null,
                 't' => $talent->title,
                 'd' => $talent->description,
                 'i' => $talent->icon,

@@ -11,13 +11,14 @@ class TwitchPayloadTest extends TestCase
 
     public function test_a_full_lobby_with_stats_fits_in_one_twitch_message(): void
     {
-        $json = TwitchPayload::encode('3f2b8c1e-8a7d-4c52-9d1e-0b6f5a4c3e21', 42, 'in_game', 'Storm League', 'Braxis Holdout', $this->lobby(), self::LIMIT);
+        $json = TwitchPayload::encode('3f2b8c1e-8a7d-4c52-9d1e-0b6f5a4c3e21', 42, 'in_game', 'Storm League', 'Braxis Holdout', $this->lobby(), self::LIMIT, 'AVeryLongTwitchName_');
 
         $this->assertLessThanOrEqual(self::LIMIT, strlen($json));
 
         $decoded = json_decode($json, true);
         $this->assertSame(TwitchPayload::VERSION, $decoded['v']);
         $this->assertCount(10, $decoded['pl']);
+        $this->assertSame('AVeryLongTwitchName_', $decoded['c']);
         $this->assertNotNull($decoded['pl'][0][6], 'stats should survive at normal size');
     }
 
@@ -57,6 +58,17 @@ class TwitchPayloadTest extends TestCase
         $this->assertSame([2710, 'Diamond 2', 53.5, 900], $stats['q']);
         $this->assertArrayNotHasKey('s', $stats);
         $this->assertSame([null, null, 50.0, 12], $stats['a']);
+    }
+
+    public function test_only_ai_players_carry_the_ai_flag(): void
+    {
+        $players = $this->lobby();
+        $players[3]['ai'] = true;
+
+        $decoded = json_decode(TwitchPayload::encode('g', 1, 'in_game', null, null, $players, self::LIMIT), true);
+
+        $this->assertSame(1, $decoded['pl'][3][7]);
+        $this->assertCount(7, $decoded['pl'][0]);
     }
 
     public function test_inactive_message_is_tiny(): void

@@ -56,6 +56,7 @@ class TwitchSnapshotService
             map: $snapshot['map'] ?? null,
             players: $players,
             maxBytes: (int) config('twitch.max_payload_bytes'),
+            channelName: $channel->twitch_display_name ?: $channel->twitch_login,
         );
 
         Cache::put(self::liveKey($channel), [
@@ -108,6 +109,7 @@ class TwitchSnapshotService
                 'hero_id' => $heroId,
                 'talents' => $this->talentIds($heroId, $player['talents'] ?? []),
                 'stats' => $channel->show_stats ? ($known['stats'] ?? null) : null,
+                'ai' => (bool) ($player['ai'] ?? false),
             ];
         }
 
@@ -127,7 +129,7 @@ class TwitchSnapshotService
      */
     private function roster(TwitchChannel $channel, string $gameId, array $players): array
     {
-        $signature = md5(json_encode(array_map(fn ($p) => [$p['name'], $p['battletag'], $p['region'], $p['team']], $players)));
+        $signature = md5(json_encode(array_map(fn ($p) => [$p['name'], $p['battletag'], $p['region'], $p['team'], $p['ai'] ?? false], $players)));
         $cacheKey = 'twitch_roster:'.$channel->twitch_user_id.':'.$gameId;
         $cached = Cache::get($cacheKey);
 
@@ -145,7 +147,7 @@ class TwitchSnapshotService
 
         $identities = collect($players)->map(fn ($p, $i) => (object) [
             'index' => $i,
-            'blizz_id' => $blizzIds[$p['name'].'#'.$p['battletag'].'|'.$p['region']] ?? null,
+            'blizz_id' => ($p['ai'] ?? false) ? null : ($blizzIds[$p['name'].'#'.$p['battletag'].'|'.$p['region']] ?? null),
             'region' => (int) $p['region'],
             'team' => (int) $p['team'],
         ]);

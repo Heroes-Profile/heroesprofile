@@ -61,6 +61,7 @@ class UploaderController extends Controller
             'players.*.hero' => ['nullable', 'string', 'max:64'],
             'players.*.talents' => ['nullable', 'array', 'max:7'],
             'players.*.talents.*' => ['nullable', 'string', 'max:128'],
+            'players.*.ai' => ['nullable', 'boolean'],
         ]);
 
         $channel = $this->channel($request);

@@ -11,10 +11,11 @@ namespace App\Services\Twitch;
  *
  * Shape (version 1):
  *
- *   { v: 1, g: game_id, s: seq, p: phase, t: game mode, m: map, pl: [player…] }
+ *   { v: 1, g: game_id, s: seq, p: phase, t: game mode, m: map, c: channel name, pl: [player…] }
  *
  *   player: [team, name|null, blizz_id|null, region|null, hero_id|null,
- *            [7 talent ids, 0 = not picked yet], stats|null]
+ *            [7 talent ids, 0 = not picked yet], stats|null, 1 if an A.I.]
+ *            (the last element is only present for A.I. players)
  *
  *   stats:  { l: account level, q|s|a: [mmr, rank, win rate, games] }  (quick match,
  *           storm league, aram; a mode the player has no rating in is omitted)
@@ -28,7 +29,7 @@ final class TwitchPayload
     /**
      * @param  array<int, array<string, mixed>>  $players  normalised players, see TwitchSnapshotService
      */
-    public static function encode(string $gameId, int $seq, string $phase, ?string $mode, ?string $map, array $players, int $maxBytes): string
+    public static function encode(string $gameId, int $seq, string $phase, ?string $mode, ?string $map, array $players, int $maxBytes, ?string $channelName = null): string
     {
         $message = [
             'v' => self::VERSION,
@@ -37,7 +38,9 @@ final class TwitchPayload
             'p' => $phase,
             't' => $mode,
             'm' => $map,
-            'pl' => array_map(fn ($player) => [
+            // Names the streamer's team in the extension.
+            'c' => $channelName,
+            'pl' => array_map(fn ($player) => array_merge([
                 $player['team'],
                 $player['name'],
                 $player['blizz_id'],
@@ -45,7 +48,7 @@ final class TwitchPayload
                 $player['hero_id'],
                 array_pad(array_slice(array_map('intval', $player['talents']), 0, 7), 7, 0),
                 $player['stats'],
-            ], $players),
+            ], ($player['ai'] ?? false) ? [1] : []), $players),
         ];
 
         $json = self::json($message);

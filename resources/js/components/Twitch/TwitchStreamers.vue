@@ -65,8 +65,10 @@
         <h2 class="text-lg mb-2">Stream Heroes of the Storm?</h2>
         <p class="mb-2">
           The Heroes Profile Twitch extension shows your viewers everyone in your game — heroes,
-          talents as they are picked, MMR and win rates — without you lifting a finger. It is included
+          talents as they are picked, win rates and account levels — without you lifting a finger. It is included
           with any Heroes Profile API plan, and every channel gets a free month to try it.
+          It reads temporary files the game writes as it goes, so it is not 100% real time and
+          talent picks can lag behind the game.
         </p>
         <p>
           <a href="/Api/Account#twitch" class="link">Set it up</a> ·
