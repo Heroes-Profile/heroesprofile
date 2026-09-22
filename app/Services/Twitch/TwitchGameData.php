@@ -40,6 +40,14 @@ class TwitchGameData
         return $this->heroes()->firstWhere('id', $heroId)?->name;
     }
 
+    /** "Hero: Title", for messages about a talent id. */
+    public function talentLabel(int $talentId): ?string
+    {
+        $talent = $this->globalDataService->getAllTalentsKeyed()->get($talentId);
+
+        return $talent !== null ? $talent->hero_name.': '.$talent->title : null;
+    }
+
     /** Talent id from the internal talent name the game's tracker events use. */
     public function talentId(string $heroName, string $talentName): ?int
     {

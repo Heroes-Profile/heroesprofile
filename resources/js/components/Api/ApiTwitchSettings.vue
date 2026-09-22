@@ -134,6 +134,16 @@
             Set it to match or exceed the delay on your stream. Your own config view on
             Twitch always shows it live.
           </p>
+          <p class="text-sm text-gray-medium mb-3">
+            Twitch's own stream delay only delays the video, not the extension. With a 10 minute
+            delay on Twitch and none here, viewers would see your picks 10 minutes before they
+            happen on stream.
+          </p>
+          <p class="text-sm text-gray-medium mb-3">
+            Everything is held for the full delay, including for viewers who open the extension
+            mid-game: with 10 minutes set, they see the game as it was 10 minutes ago. When one
+            game ends and you queue again, viewers may still be watching the last one.
+          </p>
 
           <div class="flex flex-wrap gap-2 mb-3">
             <button

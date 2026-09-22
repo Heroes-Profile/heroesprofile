@@ -55,10 +55,13 @@ return [
     'listing_terms_version' => 1,
 
     // Static hero/talent data the extension resolves ids from, written by
-    // `php artisan twitch:game-data` after each patch. The extension bundles a copy
-    // (served free from Twitch's CDN) and only fetches this one when a payload names
-    // a hero or talent its bundle does not have yet.
+    // `php artisan twitch:game-data` after each patch. The extension's build copies
+    // it into the bundle; viewers never fetch it from here.
     'game_data_path' => 'static/twitch/game-data.json',
+
+    // What the last extension release bundled, written by its `npm run release`.
+    // `twitch:check-extension` and the snapshot ingest compare the site against it.
+    'extension_manifest_path' => 'resources/twitch/extension-manifest.json',
 
     // Cloud Tasks queue for the delayed viewer push. Shares the project, service
     // account and audience with the global query queue in `global.cloud_tasks`.

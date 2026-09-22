@@ -2,10 +2,13 @@
 
 namespace App\Services\Twitch;
 
+use App\Mail\Twitch\ExtensionOutdated;
 use App\Models\Api\TwitchChannel;
 use App\Models\Battletag;
 use App\Services\PlayerLobbyStatsService;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
+use Throwable;
 
 /**
  * Turns an uploader snapshot into the message viewers see, and schedules it.
@@ -22,10 +25,14 @@ class TwitchSnapshotService
     /** uploader_last_seen_at is written at most this often. */
     private const SEEN_WRITE_SECONDS = 60;
 
+    /** A hero or talent missing from the extension is reported once per release, within this. */
+    private const UNKNOWN_REPORT_SECONDS = 2592000;
+
     public function __construct(
         private readonly TwitchGameData $gameData,
         private readonly PlayerLobbyStatsService $lobbyStats,
         private readonly TwitchPushService $push,
+        private readonly TwitchExtensionManifest $manifest,
     ) {}
 
     /**
@@ -47,6 +54,8 @@ class TwitchSnapshotService
         $this->touchLastSeen($channel);
 
         $players = $this->players($channel, $gameId, $snapshot);
+
+        $this->reportMissingFromExtension($channel, $players);
 
         $payload = TwitchPayload::encode(
             gameId: $gameId,
@@ -199,6 +208,56 @@ class TwitchSnapshotService
                 : 0,
             array_slice($talentNames, 0, 7)
         );
+    }
+
+    /**
+     * Emails the admin address about heroes and talents this game uses that the
+     * released extension does not bundle, so viewers are seeing "not available".
+     * Once per id per extension version, after the response.
+     *
+     * @param  array<int, array<string, mixed>>  $players
+     */
+    private function reportMissingFromExtension(TwitchChannel $channel, array $players): void
+    {
+        $address = config('mail.admin_address');
+        $version = $this->manifest->version();
+
+        if (! $address || $version === null) {
+            return;
+        }
+
+        $heroes = [];
+        $talents = [];
+
+        foreach ($players as $player) {
+            $heroId = $player['hero_id'];
+
+            if ($heroId !== null && ! $this->manifest->hasHero($heroId)
+                && Cache::add('twitch_unknown:'.$version.':hero:'.$heroId, true, self::UNKNOWN_REPORT_SECONDS)) {
+                $heroes[] = ($this->gameData->heroName($heroId) ?? 'Hero').' ('.$heroId.')';
+            }
+
+            foreach ($player['talents'] as $talentId) {
+                if ($talentId !== 0 && ! $this->manifest->hasTalent($talentId)
+                    && Cache::add('twitch_unknown:'.$version.':talent:'.$talentId, true, self::UNKNOWN_REPORT_SECONDS)) {
+                    $talents[] = ($this->gameData->talentLabel($talentId) ?? 'Talent').' ('.$talentId.')';
+                }
+            }
+        }
+
+        if ($heroes === [] && $talents === []) {
+            return;
+        }
+
+        $channelName = (string) ($channel->twitch_display_name ?: $channel->twitch_login);
+
+        app()->terminating(function () use ($address, $channelName, $version, $heroes, $talents) {
+            try {
+                Mail::to($address)->send(new ExtensionOutdated($channelName, $version, $heroes, $talents));
+            } catch (Throwable $e) {
+                report($e);
+            }
+        });
     }
 
     private function touchLastSeen(TwitchChannel $channel): void

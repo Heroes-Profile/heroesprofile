@@ -39,6 +39,11 @@ jobs:
         cp .env.example .env
         php artisan key:generate
 
+    # Warns, never fails: after a patch the extension shows placeholders until a new
+    # release clears Twitch review. See the extension's README.
+    - name: Twitch extension bundle matches the site's images
+      run: php artisan twitch:check-extension
+
     - name: Every routed endpoint has a fixture
       run: php artisan api:check-fixtures
 
