@@ -3,6 +3,11 @@
     <page-heading :heading="'Streamers on Twitch'" :infoText1="infoText"></page-heading>
 
     <div class="mx-auto max-w-[1200px] px-4 mt-6">
+      <div class="bg-lighten border-l-4 border-yellow rounded p-3 mb-6 text-sm">
+        <strong>Beta:</strong> the Heroes Profile Twitch extension is still in testing and you may encounter
+        issues. Report problems at <a href="/Contact" class="link">heroesprofile.com/Contact</a> or zemill@heroesprofile.com.
+      </div>
+
       <h2 class="bg-teal px-4 py-3 rounded-t-lg text-lg font-semibold flex items-center gap-2">
         <span class="inline-block w-2 h-2 rounded-full bg-red"></span>
         Live Now

@@ -1,7 +1,11 @@
 <template>
   <!-- A section of /Api/Account; the connect flows return to #twitch. -->
   <div id="twitch" class="bg-lighten p-6 mb-8 scroll-mt-4">
-    <h2 class="text-lg mb-2">Twitch Extension</h2>
+    <h2 class="text-lg mb-2">Twitch Extension <span class="ml-1 px-2 py-0.5 rounded bg-yellow text-xs font-semibold align-middle">BETA</span></h2>
+    <div class="bg-darken border-l-4 border-yellow p-3 mb-4 text-sm">
+      <strong>Beta:</strong> this tool is still in testing and you may encounter issues. Report problems
+      at <a href="/Contact" class="link">heroesprofile.com/Contact</a> or zemill@heroesprofile.com.
+    </div>
     <p class="text-sm text-gray-medium mb-4">
       Show your viewers the lobby, heroes, talents and player stats of the game you are playing,
       live on your Twitch stream. Included with any paid plan, with a free month to try it.
