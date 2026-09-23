@@ -55,6 +55,14 @@
         affect your monthly subscription costs.
       </p>
       <p class="mb-3">
+        Before subscribing you must describe, on your account page, the project you will use the
+        API for: its name, what it does and who uses it. That description is the project the
+        licence in section 3 is granted for. Keep it accurate, and update it before your project
+        changes significantly — for example before it becomes publicly available, or before you
+        start charging its users. API calls from an account without a project description may be
+        refused.
+      </p>
+      <p class="mb-3">
         By making payment to us for a subscription plan, you authorize us to charge your payment
         method monthly at the subscription cost for the plan you chose. Your subscription will
         auto-renew until terminated. You can cancel your membership at any time from the
@@ -100,10 +108,17 @@
           Pass your access on. The licence is granted to you for the project you registered, and
           cannot be assigned or shared with another party without our written agreement.
         </li>
+        <li>
+          Charge for access to it. Putting Heroes Profile data, or statistics, analysis or features
+          derived from it, behind a paywall, subscription, paid tier or any other fee requires our
+          written agreement.
+        </li>
       </ul>
       <p class="mb-6">
-        Aggregate statistics you compute from our data, and your own commentary, remain yours. This
-        restriction is on passing on our data, not on your having a view about it.
+        Statistics and analysis you compute from our data — win rates, tier lists, builds, matchups,
+        ratings and the like — are covered by this licence in the same way as the data itself. You
+        may display them while the licence is in force, and not after it ends. Your own commentary
+        and opinions remain yours.
       </p>
 
       <h3 class="text-xl mb-2">4. Attribution</h3>
@@ -121,6 +136,12 @@
           Appear on the same page or screen as the data itself, and be visible without the reader
           having to open a menu, hover, scroll past unrelated content or visit a separate credits or
           about page.
+        </li>
+        <li>
+          Be at least as prominent as the ordinary text around it. The attribution text must be no
+          smaller than the page's main body text, in a colour that clearly contrasts with its
+          background, and must not be styled as fine print or made less noticeable than the content
+          around it.
         </li>
         <li>
           Accompany the data wherever it goes. If your surface offers the data to your own users as
@@ -233,11 +254,10 @@
         your subscription ends, whether you cancel it or we do.
       </p>
       <p class="mb-6">
-        Within 30 days of the licence ending you must stop displaying Heroes Profile data on every
-        surface you operate and delete the data you retrieved from our API from your systems,
-        including caches and backups, so far as your systems allow. Aggregate statistics you had
-        already computed, which do not identify an individual player and from which our underlying
-        data cannot be reconstructed, may be kept. Sections 5, 8, 10, 11 and 12 survive termination.
+        Within 30 days of the licence ending you must stop displaying Heroes Profile data, and the
+        statistics and analysis derived from it, on every surface you operate, and delete the data
+        you retrieved from our API from your systems, including caches and backups, so far as your
+        systems allow. Sections 5, 8, 10, 11 and 12 survive termination.
       </p>
 
       <h3 class="text-xl mb-2">10. Indemnification</h3>
@@ -304,7 +324,8 @@
         Heroes Profile (Skill Tree Development, LLC) may revise these terms of service at any time
         without notice. By using the API you are agreeing to be bound by the then current version of
         these terms of service. Where the change is material we may require you to accept the revised
-        terms in the developer portal before you can carry on using your account.
+        terms in the developer portal before you can carry on using your account, and calls made with
+        your API keys will be refused until you have.
       </p>
 
       <h3 class="text-xl mb-2">16. Governing Law</h3>

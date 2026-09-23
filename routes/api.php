@@ -80,7 +80,7 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
 
     // Not blocked while suspended: pointing us at the surface they have just fixed
     // is part of getting reinstated.
-    Route::post('account/website', [ApiAccountController::class, 'setWebsite']);
+    Route::post('account/project', [ApiAccountController::class, 'setProject']);
 
     Route::post('account/billing/setup-intent', [BillingController::class, 'setupIntent']);
     Route::post('account/billing/payment-method', [BillingController::class, 'savePaymentMethod']);

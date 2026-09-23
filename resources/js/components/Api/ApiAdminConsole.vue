@@ -47,7 +47,7 @@
             v-model="term"
             @keyup.enter="search"
             type="text"
-            placeholder="Email or name"
+            placeholder="Email, name or ID"
             class="flex-1 min-w-[200px] p-2 bg-darken"
           />
           <custom-button @click="search" :text="'Search'" :alt="'Search accounts'" :size="'small'" :ignoreclick="true"></custom-button>
@@ -163,6 +163,17 @@
               </tr>
               <tr>
                 <td class="py-2 px-3 text-sm">Project</td>
+                <td class="py-2 px-3">
+                  <template v-if="detail.account.project_name">
+                    <strong>{{ detail.account.project_name }}</strong>
+                    <span class="text-sm text-gray-medium">— updated {{ detail.account.project_updated_at }}</span>
+                    <p class="text-sm whitespace-pre-line mt-1">{{ detail.account.project_description }}</p>
+                  </template>
+                  <template v-else>Not described</template>
+                </td>
+              </tr>
+              <tr>
+                <td class="py-2 px-3 text-sm">Website</td>
                 <td class="py-2 px-3">
                   <!-- Linked only when it already starts with http(s). Whatever else
                        they typed is shown as text: it is stored verbatim, and an
@@ -487,8 +498,9 @@ export default {
       }
     },
     async search(){
-      if(this.term.trim().length < 2){
-        this.error = 'Enter at least two characters.';
+      const term = this.term.trim();
+      if(term.length < 2 && !/^\d+$/.test(term)){
+        this.error = 'Enter at least two characters, or an account ID.';
         return;
       }
 

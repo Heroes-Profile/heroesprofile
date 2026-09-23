@@ -568,6 +568,6 @@ class GlobalStatsController extends Controller
 
         return $response
             ->header('Retry-After', self::POLL_INTERVAL)
-            ->header('Location', url('/v1/jobs/'.$jobId));
+            ->header('Location', route('api.external.jobs', ['jobId' => $jobId]));
     }
 }

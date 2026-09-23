@@ -346,7 +346,7 @@ class BuildApiSpec extends Command
         if ($isNgs) {
             $forbidden[] = 'ngs_access_required';
         } elseif (! $isJob) {
-            array_push($forbidden, 'subscription_inactive', 'plan_unresolved', 'endpoint_not_in_plan');
+            array_push($forbidden, 'terms_not_accepted', 'subscription_inactive', 'project_details_required', 'plan_unresolved', 'endpoint_not_in_plan');
         }
 
         if ($isPlayer && $name !== 'api.external.players.privacy.changes') {

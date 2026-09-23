@@ -42,7 +42,16 @@ return [
     | version. Bump it whenever the terms change materially.
     */
 
-    'terms_version' => env('API_TERMS_VERSION', '2026-09-01'),
+    'terms_version' => env('API_TERMS_VERSION', '2026-09-23'),
+
+    /*
+    | API keys keep working for accounts that have not accepted the current
+    | version, or have not described their project, until this date (YYYY-MM-DD,
+    | app timezone). The portal asks for both straight away. Unset means keys are
+    | refused immediately.
+    */
+
+    'terms_enforce_from' => env('API_TERMS_ENFORCE_FROM'),
 
     /*
     | What serving an account actually costs, for the figures shown on their usage

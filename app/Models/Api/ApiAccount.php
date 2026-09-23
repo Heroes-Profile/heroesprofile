@@ -40,6 +40,7 @@ class ApiAccount extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
         'trial_ends_at' => 'datetime',
         'terms_accepted_at' => 'datetime',
+        'project_updated_at' => 'datetime',
         'suspended_at' => 'datetime',
         'last_read_announcements_at' => 'datetime',
         'migrated' => 'boolean',
@@ -198,6 +199,12 @@ class ApiAccount extends Authenticatable implements MustVerifyEmail
             ->unacknowledgedWarnings()
             ->latest('created_at')
             ->first();
+    }
+
+    /** Whether they have told us what they are building. Required before subscribing. */
+    public function hasProjectDetails(): bool
+    {
+        return filled($this->project_name) && filled($this->project_description);
     }
 
     /** Whether this account has been granted admin. Set in the database only. */

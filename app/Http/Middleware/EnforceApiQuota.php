@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Auth\ApiKeyGuard;
 use App\Models\Api\ApiEndpoint;
 use App\Models\Api\ApiUsage;
+use App\Support\ApiTermsDeadline;
 use App\Support\ResponseBytes;
 use Closure;
 use Illuminate\Http\Request;
@@ -64,6 +65,21 @@ class EnforceApiQuota
             return $next($request);
         }
 
+        // A key never visits the portal, so the terms page alone would let an
+        // integration run on terms its owner never accepted.
+        $termsVersion = config('api.terms_version');
+
+        if ($termsVersion
+            && $context->account->terms_version_accepted !== $termsVersion
+            && ApiTermsDeadline::passed()) {
+            return $this->error(
+                'terms_not_accepted',
+                'The API terms of service have changed. Sign in at '.url('/Api/Terms').' and accept them to carry on using the API.',
+                403,
+                $endpoint
+            );
+        }
+
         // Fixtures cost nothing: no registry lookup, no usage read or write. Only
         // the route's rate limiter applies.
         if ($context->servesFixtures()) {
@@ -95,6 +111,16 @@ class EnforceApiQuota
             return $this->error(
                 'subscription_inactive',
                 'Your subscription is not active.',
+                403,
+                $endpoint
+            );
+        }
+
+        // After entitlement, so an account without a plan is told about the plan.
+        if (! $context->account->hasProjectDetails() && ApiTermsDeadline::passed()) {
+            return $this->error(
+                'project_details_required',
+                'Describe the project you use the API for at '.url('/Api/Account').' to carry on using the API.',
                 403,
                 $endpoint
             );

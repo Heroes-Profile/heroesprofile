@@ -13,6 +13,14 @@
         </p>
       </div>
 
+      <div v-if="projectmissing" class="bg-lighten border-l-4 border-yellow p-4 mb-8">
+        <p class="text-sm">
+          <strong>Tell us about your project before subscribing.</strong>
+          A name and a short description of what you are building, on your
+          <a href="/Api/Account#project" class="underline hover:text-lteal">account page</a>.
+        </p>
+      </div>
+
       <div v-if="servesfixtures" class="bg-lighten border-l-4 border-yellow p-4 mb-8">
         <p class="text-sm">
           <strong>Your API calls are returning example data.</strong>
@@ -184,6 +192,10 @@ export default {
     subscriptionissue: {
       type: String,
       default: null,
+    },
+    projectmissing: {
+      type: Boolean,
+      default: false,
     },
   },
   data(){

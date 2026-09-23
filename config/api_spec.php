@@ -341,6 +341,7 @@ return [
             'summary' => 'Match history, with the full stat line for each game.',
             'page' => '/Player/{battletag}/{blizz_id}/{region}/Match/History',
             'uses' => ['player', 'player_dates'],
+            'async' => true,
             'parameters' => [
                 'game_type' => ['description' => 'Game type, by short name or display name — `sl` and `Storm League` both work. Comma-separated for several. Defaults to every game type.', 'example' => 'Storm League'],
                 'hero' => ['description' => 'Restrict to one hero by name.'],

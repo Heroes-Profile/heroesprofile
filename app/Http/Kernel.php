@@ -20,6 +20,7 @@ use App\Http\Middleware\LogApiRequest;
 use App\Http\Middleware\LogIPAndUserAgent;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\RequireApiProjectDetails;
 use App\Http\Middleware\RequireApiTermsAcceptance;
 use App\Http\Middleware\RequireNgsAccess;
 use App\Http\Middleware\RequireWebsiteAuthForAll;
@@ -157,6 +158,7 @@ class Kernel extends HttpKernel
         'ensureApiAccountAuth' => EnsureApiAccountAuthenticated::class,
         'ensureApiAdmin' => EnsureApiAdmin::class,
         'requireApiTerms' => RequireApiTermsAcceptance::class,
+        'requireApiProject' => RequireApiProjectDetails::class,
         'blockSuspendedApi' => BlockSuspendedApiAccount::class,
         'api.quota' => EnforceApiQuota::class,
         'api.fixtures' => ServeApiFixtures::class,

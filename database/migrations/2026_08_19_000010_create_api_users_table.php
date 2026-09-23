@@ -93,9 +93,10 @@ return new class extends Migration
             // `admin` is the grant, set by hand — an account that could grant
             // itself admin is not a permission. `admin_mode` is whether the grant
             // is being exercised: an admin turns it off to see what a customer
-            // sees, and the grant is still there to turn it back on.
+            // sees, and the grant is still there to turn it back on. Granting admin
+            // means setting both.
             $table->boolean('admin')->default(false);
-            $table->boolean('admin_mode')->default(true);
+            $table->boolean('admin_mode')->default(false);
 
             // Links to `heroesprofile.patreon_accounts`, whose own key is a BIGINT.
             // The existing `patreon_accounts.battlenet_accounts_id` points at a
@@ -112,6 +113,13 @@ return new class extends Migration
             // URL anything resolves. The only way to check an attribution complaint
             // without asking them where to find it.
             $table->string('website')->nullable();
+
+            // What they told us they are building. Required before subscribing, and
+            // the project section 3 of the terms licenses. Updated in place, so the
+            // timestamp is when the current wording was written.
+            $table->string('project_name', 100)->nullable();
+            $table->text('project_description')->nullable();
+            $table->timestamp('project_updated_at')->nullable();
 
             // Enforcement state. Denormalised here rather than derived from
             // `api_account_actions` because both sites read it on the hot path: the
