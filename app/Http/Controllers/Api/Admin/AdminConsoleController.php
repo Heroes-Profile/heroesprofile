@@ -35,21 +35,29 @@ class AdminConsoleController extends Controller
     }
 
     /**
-     * Email or name, substring, case-insensitive. Deliberately not paginated: an
-     * admin looking someone up knows roughly who they want, and an unbounded list
-     * of every customer is not a feature.
+     * Email or name, substring, case-insensitive, or an exact account id when the
+     * term is all digits. Deliberately not paginated: an admin looking someone up
+     * knows roughly who they want, and an unbounded list of every customer is not
+     * a feature.
      */
     public function search(Request $request)
     {
+        // An id can be a single digit; a name or email that short matches everyone.
+        $isId = ctype_digit(trim((string) $request->input('term')));
+
         $validated = $request->validate([
-            'term' => ['required', 'string', 'min:2', 'max:255'],
+            'term' => ['required', 'string', $isId ? 'min:1' : 'min:2', 'max:255'],
         ]);
 
+        $raw = trim($validated['term']);
+
         // Escaped, or a term containing % matches every account.
-        $term = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\%', '\_'], $validated['term']).'%';
+        $term = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\%', '\_'], $raw).'%';
 
         $accounts = ApiAccount::where('email', 'like', $term)
             ->orWhere('name', 'like', $term)
+            ->when($isId, fn ($query) => $query->orWhere('id', (int) $raw)
+                ->orderByRaw('id = ? DESC', [(int) $raw]))
             ->orderBy('email')
             ->limit(self::SEARCH_LIMIT)
             ->get();
@@ -87,6 +95,9 @@ class AdminConsoleController extends Controller
                 // Whatever they typed. The console links it only if it already looks
                 // like an http(s) address, and shows it as text otherwise.
                 'website' => $account->website,
+                'project_name' => $account->project_name,
+                'project_description' => $account->project_description,
+                'project_updated_at' => $account->project_updated_at?->toDateTimeString(),
                 'migrated' => $account->hasMigrated(),
                 'test_mode' => $account->inTestMode(),
                 'receives_test_data' => $account->receivesTestData(),

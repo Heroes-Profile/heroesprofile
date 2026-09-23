@@ -10,6 +10,7 @@ use App\Services\Api\PlanService;
 use App\Services\Api\UsageService;
 use App\Services\Twitch\TwitchAccess;
 use App\Services\Twitch\TwitchEntitlementService;
+use App\Support\ApiTermsDeadline;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -41,6 +42,12 @@ class AccountController extends Controller
                 'can_use_live_data' => $usage->planIdsFor($account) !== [],
                 'has_legacy_token' => $this->hasLegacyToken($account),
                 'website' => $account->website,
+                'project_name' => $account->project_name,
+                'project_description' => $account->project_description,
+                // Held here until it is filled in, once they hold a plan.
+                'project_required' => ! $account->hasProjectDetails() && $usage->planIdsFor($account) !== [],
+                // The same grace date as the terms. Null once it has passed.
+                'project_enforce_from' => ApiTermsDeadline::graceEndsOn(),
                 'admin' => $account->isAdmin(),
                 'admin_mode' => $account->actingAsAdmin(),
                 'patreon_linked' => $account->patreon_accounts_id !== null,
@@ -60,26 +67,39 @@ class AccountController extends Controller
     }
 
     /**
-     * Where their integration can be seen. Optional, and clearable by submitting an
-     * empty field.
+     * What they are building. Name and description are required; the website is
+     * optional and clearable by submitting an empty field.
      *
-     * Stored exactly as typed — no scheme added, no format rejected. It is a note to
-     * us about where to look, not a URL we resolve, and an overlay or a bot may not
-     * have an address that satisfies a URL validator at all. The console decides for
-     * itself what is safe to turn into a link.
+     * The website is stored exactly as typed — no scheme added, no format rejected.
+     * It is a note to us about where to look, not a URL we resolve, and an overlay or
+     * a bot may not have an address that satisfies a URL validator at all. The
+     * console decides for itself what is safe to turn into a link.
      */
-    public function setWebsite(Request $request)
+    public function setProject(Request $request)
     {
         $validated = $request->validate([
+            'project_name' => ['required', 'string', 'max:100'],
+            'project_description' => ['required', 'string', 'min:50', 'max:2000'],
             'website' => ['nullable', 'string', 'max:255'],
+        ], [
+            'project_description.min' => 'Tell us a little more: at least 50 characters on what it does and who uses it.',
         ]);
 
         $account = Auth::guard('api_web')->user();
         $website = trim((string) ($validated['website'] ?? ''));
 
-        $account->forceFill(['website' => $website === '' ? null : $website])->save();
+        $account->forceFill([
+            'project_name' => trim($validated['project_name']),
+            'project_description' => trim($validated['project_description']),
+            'website' => $website === '' ? null : $website,
+            'project_updated_at' => now(),
+        ])->save();
 
-        return response()->json(['website' => $account->website]);
+        return response()->json([
+            'project_name' => $account->project_name,
+            'project_description' => $account->project_description,
+            'website' => $account->website,
+        ]);
     }
 
     /** Dismissing the warning banner. The timestamp is the evidence it was read. */

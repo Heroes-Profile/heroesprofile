@@ -286,7 +286,7 @@ Route::middleware(['logIpAndUserAgent'])->prefix('Api')->group(function () {
     Route::get('/Password/Reset/{token}', [ApiPasswordResetController::class, 'showResetForm'])->name('api.password.reset');
     Route::post('/Password/Reset', [ApiPasswordResetController::class, 'reset'])->middleware('throttle:contact');
 
-    Route::middleware(['ensureApiAccountAuth', 'requireApiTerms'])->group(function () {
+    Route::middleware(['ensureApiAccountAuth', 'requireApiTerms', 'requireApiProject'])->group(function () {
         // Executes one public endpoint for the signed-in account, charged to its
         // own key. Behind the portal guard: it acts as the account.
         Route::post('/Docs/Try', ApiTryItController::class)->middleware('throttle:docs-try');

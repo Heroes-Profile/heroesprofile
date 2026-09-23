@@ -12,6 +12,7 @@
     :usage="{{ json_encode($usage) }}"
     :servesfixtures="{{ json_encode($servesFixtures) }}"
     :subscriptionissue="{{ json_encode($subscriptionIssue) }}"
+    :projectmissing="{{ json_encode($projectMissing) }}"
   >
   </api-billing>
 @endsection

@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Player;
 use App\Http\Controllers\Controller;
 use App\Models\GameType;
 use App\Models\Map;
+use App\Models\PlayerStatsCache;
 use App\Rules\DateInputValidation;
 use App\Rules\GameMapInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\HeroInputByIDValidation;
 use App\Rules\RoleInputValidation;
 use App\Rules\SeasonInputValidation;
+use App\Services\GlobalQueryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +20,8 @@ use Illuminate\Support\Facades\Validator;
 
 class PlayerMatchHistory extends Controller
 {
+    private const CACHE_TTL_SECONDS = 1200;
+
     /**
      * Every stat column on `scores`.
      *
@@ -153,6 +157,9 @@ class PlayerMatchHistory extends Controller
             'pagination_page' => 'required|integer|min:1',
             'ff_blizzid' => 'sometimes|nullable|integer',
             'ff_region' => 'sometimes|nullable|integer',
+            'links' => 'sometimes|array',
+            'links.path' => 'required_with:links|string',
+            'links.query' => 'sometimes|array',
         ];
 
         $validator = Validator::make($request->all(), $validationRules);
@@ -165,6 +172,43 @@ class PlayerMatchHistory extends Controller
             ];
         }
 
+        $ff_blizzid = $request['ff_blizzid'] ?? null;
+        $ff_region = $request['ff_region'] ?? null;
+
+        // Filtering by a second account reveals which games they were in, so they are
+        // held to the same privacy rule as the player.
+        if ($ff_blizzid && $ff_region
+            && $this->globalDataService->isHiddenFrom($ff_blizzid, $ff_region, Auth::user())) {
+            return response()->json(['status' => 'private'], 403);
+        }
+
+        if (config('app.env') !== 'production') {
+            return response()->json($this->executeGetData($request));
+        }
+
+        $paramsHash = $this->paramsHash($request);
+
+        $dbCache = PlayerStatsCache::where('params_hash', $paramsHash)->first();
+
+        if ($dbCache) {
+            $latestReplayId = $this->getLatestReplayId($request);
+
+            if (! $latestReplayId || $dbCache->latest_replayID >= $latestReplayId) {
+                return response()->json(json_decode($dbCache->data, true));
+            }
+        }
+
+        return app(GlobalQueryService::class)->dispatchAsync(
+            'PlayerMatchHistory|'.$paramsHash,
+            static::class,
+            'executeGetData',
+            $request->all(),
+            self::CACHE_TTL_SECONDS
+        );
+    }
+
+    public function executeGetData(Request $request)
+    {
         $battletag = $request['battletag'];
         $blizz_id = $request['blizz_id'];
         $region = $request['region'];
@@ -187,13 +231,6 @@ class PlayerMatchHistory extends Controller
 
         $ff_blizzid = $request['ff_blizzid'] ?? null;
         $ff_region = $request['ff_region'] ?? null;
-
-        // Filtering by a second account reveals which games they were in, so they are
-        // held to the same privacy rule as the player.
-        if ($ff_blizzid && $ff_region
-            && $this->globalDataService->isHiddenFrom($ff_blizzid, $ff_region, Auth::user())) {
-            return response()->json(['status' => 'private'], 403);
-        }
 
         $pagination_page = $request['pagination_page'];
         $perPage = 100;
@@ -332,6 +369,63 @@ class PlayerMatchHistory extends Controller
             return $item;
         });
 
-        return $result;
+        // Built in the worker, where the current URL is the worker's own. The public
+        // API passes its path and the caller's filters so its page links keep them.
+        if ($request['links']) {
+            $result->setPageName('pagination_page');
+            $result->withPath($request['links']['path'])->appends($request['links']['query'] ?? []);
+        } else {
+            $result->withPath(url('/api/v1/player/match/history'));
+        }
+
+        $returnData = $result->toArray();
+
+        PlayerStatsCache::updateOrCreate(
+            ['params_hash' => $this->paramsHash($request)],
+            [
+                'blizz_id' => $request['blizz_id'],
+                'region' => $request['region'],
+                'latest_replayID' => $this->getLatestReplayId($request) ?? 0,
+                'data' => json_encode($returnData),
+            ]
+        );
+
+        return $returnData;
+    }
+
+    private function paramsHash(Request $request): string
+    {
+        return hash('sha256', json_encode([
+            'page' => 'match_history',
+            'blizz_id' => $request['blizz_id'],
+            'region' => $request['region'],
+            'game_type' => $request['game_type'],
+            'role' => $request['role'],
+            'hero' => $request['hero'],
+            'game_map' => $request['game_map'],
+            'season' => $request['season'],
+            'start_date' => $request['start_date'],
+            'end_date' => $request['end_date'],
+            'stack_size' => $request['stack_size'],
+            'ff_blizzid' => $request['ff_blizzid'],
+            'ff_region' => $request['ff_region'],
+            'pagination_page' => $request['pagination_page'],
+            'links' => $request['links'],
+        ]));
+    }
+
+    private function getLatestReplayId(Request $request): ?int
+    {
+        $gameTypeIds = GameType::whereIn('short_name', (array) $request['game_type'])->pluck('type_id')->toArray();
+
+        return DB::table('replay')
+            ->join('player', 'player.replayID', '=', 'replay.replayID')
+            ->where('player.blizz_id', $request['blizz_id'])
+            ->where('replay.region', $request['region'])
+            ->whereIn('game_type', $gameTypeIds)
+            ->tap(function ($query) use ($request) {
+                $this->globalDataService->applySeasonsOrDateRange($query, $request['season'], $request['start_date'], $request['end_date']);
+            })
+            ->max('replay.replayID');
     }
 }

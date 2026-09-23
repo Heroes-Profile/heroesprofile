@@ -47,6 +47,7 @@ class BillingController extends Controller
             // Their key is being refused. They will otherwise only meet this as a
             // 403 inside their own integration, where nobody is looking.
             'subscriptionIssue' => $context?->unresolvedMessage(),
+            'projectMissing' => ! $account->hasProjectDetails(),
         ]);
     }
 
@@ -88,6 +89,13 @@ class BillingController extends Controller
         ]);
 
         $account = $this->account();
+
+        if (! $account->hasProjectDetails()) {
+            return response()->json([
+                'error' => 'Tell us about your project on your account page before subscribing.',
+            ], 422);
+        }
+
         $selectable = $plans->selectableBy($account);
 
         $plan = $selectable[$validated['plan_id']] ?? null;
