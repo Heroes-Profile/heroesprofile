@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Http\Middleware\LimitApiConcurrency;
 use App\Models\RateLimitLog;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
 use Illuminate\Http\Request;
@@ -42,11 +41,6 @@ class RateLimitLoggingService
     protected function resolveLimiter(Request $request, ThrottleRequestsException $exception): string
     {
         $headers = $exception->getHeaders();
-
-        if (isset($headers[LimitApiConcurrency::LIMIT_HEADER])) {
-            return 'api-concurrency';
-        }
-
         $limit = isset($headers['X-RateLimit-Limit']) ? (int) $headers['X-RateLimit-Limit'] : null;
 
         // The exception does not name its limiter, so it is inferred from the limit. Keep in step with RouteServiceProvider.
