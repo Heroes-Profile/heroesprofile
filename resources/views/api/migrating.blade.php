@@ -210,8 +210,7 @@
       <code class="text-lteal">401</code> no key, <code class="text-lteal">403</code> not in
       your plan, <code class="text-lteal">404</code> nothing found,
       <code class="text-lteal">422</code> a bad parameter (with an <code>errors</code> list saying what),
-      <code class="text-lteal">429</code> out of quota, rate limited, or more than five requests
-      in flight at once on one key. A call that answers with an
+      <code class="text-lteal">429</code> out of quota or rate limited. A call that answers with an
       error is not charged against your allowance.
     </p>
 

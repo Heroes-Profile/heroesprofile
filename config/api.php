@@ -104,9 +104,6 @@ return [
         'developer' => 120,
         'anonymous' => 20,
 
-        // Requests one key may have in flight at once, on every plan. See LimitApiConcurrency.
-        'concurrent' => 5,
-
         /*
         | The pace a bulk download grant is allowed to run at, on the download route
         | and for `do_approved` accounts only.

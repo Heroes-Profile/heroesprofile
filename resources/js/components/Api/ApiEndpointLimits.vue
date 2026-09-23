@@ -18,14 +18,6 @@
           far fewer.
         </p>
         <p class="text-sm mt-2">
-          Every key can also have at most 5 requests in flight at once, on every tier. The API
-          runs on the same servers as heroesprofile.com, and this keeps a burst of API traffic
-          from slowing the main site down. A sixth request sent while five are still running
-          gets <code class="text-lteal">429</code> with <code class="text-lteal">Retry-After: 1</code>
-          and <code class="text-lteal">X-HP-Concurrency-Limit</code>; send it again once one of
-          the five has finished.
-        </p>
-        <p class="text-sm mt-2">
           Responses carry
           <code class="text-lteal">X-HP-Quota-Limit</code>,
           <code class="text-lteal">X-HP-Quota-Remaining</code> and

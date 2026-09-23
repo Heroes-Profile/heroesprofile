@@ -16,7 +16,6 @@ use App\Http\Middleware\EnforceApiQuota;
 use App\Http\Middleware\EnsureApiAccountAuthenticated;
 use App\Http\Middleware\EnsureApiAdmin;
 use App\Http\Middleware\EnsureBattlenetAuthenticated;
-use App\Http\Middleware\LimitApiConcurrency;
 use App\Http\Middleware\LogApiRequest;
 use App\Http\Middleware\LogIPAndUserAgent;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
@@ -119,8 +118,6 @@ class Kernel extends HttpKernel
             // Before the throttle, so a 429 is logged too.
             LogApiRequest::class,
             ThrottleRequests::class.':api-external',
-            // After the throttle, so a request already over the minute takes no slot.
-            LimitApiConcurrency::class,
             SubstituteBindings::class,
             // Last in the group, so on the way back it runs before the others but
             // still outside the route middleware — which is what matters, since it
