@@ -510,7 +510,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1188,7 +1188,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1270,7 +1270,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1597,7 +1597,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1778,7 +1778,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2120,7 +2120,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2809,7 +2809,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3905,7 +3905,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -4372,7 +4372,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -4568,7 +4568,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -5499,7 +5499,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -6120,7 +6120,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -7082,7 +7082,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -59725,7 +59725,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -60936,7 +60936,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -61011,7 +61011,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -61329,7 +61329,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -61471,7 +61471,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -61605,7 +61605,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -61852,7 +61852,7 @@
                         "description": "The replay could not be ingested — not a custom game, an unknown map, or a named player absent from it."
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -63855,7 +63855,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -64013,7 +64013,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -65776,7 +65776,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -66227,7 +66227,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -66696,7 +66696,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -67095,7 +67095,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -68313,7 +68313,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -70887,7 +70887,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -71909,7 +71909,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -74647,7 +74647,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -75643,7 +75643,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -76241,7 +76241,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -76555,7 +76555,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -76831,7 +76831,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -77188,7 +77188,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -77552,7 +77552,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -77913,7 +77913,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -78237,7 +78237,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -78408,7 +78408,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -79430,7 +79430,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -82306,7 +82306,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -83931,7 +83931,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -85166,7 +85166,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -85368,7 +85368,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -85575,7 +85575,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -85797,7 +85797,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -86011,7 +86011,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -86621,7 +86621,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "description": "Too many requests: the per-minute limit, more than 5 requests in flight at once on one key, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
                         "content": {
                             "application/json": {
                                 "schema": {

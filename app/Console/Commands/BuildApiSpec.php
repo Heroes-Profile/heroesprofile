@@ -382,7 +382,7 @@ class BuildApiSpec extends Command
             '403' => $this->errorResponse('The key is valid but may not make this call.', $forbidden),
             '404' => $this->errorResponse('Nothing found for what was asked.', $notFound),
             '422' => $this->errorResponse('A parameter is missing or not accepted.', $invalid),
-            '429' => $this->errorResponse('Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`.', ['rate_limited', 'quota_exceeded']),
+            '429' => $this->errorResponse('Too many requests: the per-minute limit, more than '.config('api.rate_limits.concurrent').' requests in flight at once on one key, or the weekly allowance. See `Retry-After`.', ['rate_limited', 'quota_exceeded']),
             '500' => $this->errorResponse('Failed on our side. Not charged.', $isJob ? ['server_error', 'job_failed'] : ['server_error']),
         ];
 
