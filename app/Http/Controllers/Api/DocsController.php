@@ -12,13 +12,19 @@ class DocsController extends Controller
     /** Where `api:build-spec` writes. */
     public const SPEC = 'spec/heroesprofile-v1.json';
 
+    /** The admin-only paths. Outside public/, so it is never served as a file. */
+    public static function adminSpecPath(): string
+    {
+        return resource_path('spec/heroesprofile-v1-admin.json');
+    }
+
     public function index()
     {
         $account = Auth::guard('api_web')->user();
 
         return view('api.docs', [
             'authenticated' => $account !== null,
-            'spec' => $this->spec(),
+            'spec' => $this->spec($account?->actingAsAdmin() ?? false),
             // Alongside the endpoints rather than on a page of its own: the values a
             // parameter accepts are wanted while reading the endpoint that takes it.
             // Heroes, maps and patches change with a release, not between page loads.
@@ -43,10 +49,24 @@ class DocsController extends Controller
      *
      * @return array<string, mixed>|null
      */
-    private function spec(): ?array
+    private function spec(bool $withAdmin): ?array
     {
-        $path = public_path(self::SPEC);
+        $spec = $this->readJson(public_path(self::SPEC));
 
+        if ($spec === null || ! $withAdmin) {
+            return $spec;
+        }
+
+        foreach ($this->readJson(self::adminSpecPath())['paths'] ?? [] as $path => $operations) {
+            $spec['paths'][$path] = array_merge($spec['paths'][$path] ?? [], $operations);
+        }
+
+        return $spec;
+    }
+
+    /** @return array<string, mixed>|null */
+    private function readJson(string $path): ?array
+    {
         if (! is_file($path)) {
             return null;
         }

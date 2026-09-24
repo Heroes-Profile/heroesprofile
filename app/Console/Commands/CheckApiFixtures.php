@@ -33,20 +33,12 @@ class CheckApiFixtures extends Command
     private const UNROUTED_PENDING = [];
 
     /**
-     * Registry rows that are deliberately not routed. The old API exposed seven
-     * NGS endpoints; these seven keys it never routed are sunset candidates,
-     * recorded in the plan rather than built. Everything else missing a route is
-     * a gap, not a decision.
+     * Registry rows that are deliberately not routed. Everything else missing a
+     * route is a gap, not a decision.
      */
     private const UNROUTED_BY_DESIGN = [
-        'ngs_standings',
-        'ngs_divisions',
-        'ngs_teams',
-        'ngs_single_team',
-        'ngs_single_player',
-        'ngs_division_single',
-        'ngs_team_match_history',
-        // Removed: the API serves no esports data. Only `ngs_games_upload` stays.
+        // The old API's own NGS reads. The NGS endpoints now mirror the site's NGS
+        // pages instead, and these keys stay unused while the old API serves them.
         'ngs_match',
         'ngs_hero_stat',
         'ngs_player_profile',

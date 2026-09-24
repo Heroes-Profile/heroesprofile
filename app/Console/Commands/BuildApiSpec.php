@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Controllers\Api\DocsController;
 use App\Http\Middleware\ServeApiFixtures;
 use App\Support\ApiSpecConfig;
 use App\Support\JsonSchemaFromSample;
@@ -47,11 +48,21 @@ class BuildApiSpec extends Command
         'api.external.prematch',
     ];
 
+    /**
+     * Documented only to admins in admin mode. Written to a file outside public/,
+     * which DocsController merges in for them, so the published spec never
+     * mentions these.
+     */
+    public const ADMIN_ONLY = [
+        'api.external.ngs.games.delete',
+    ];
+
     public function handle(): int
     {
         $config = config('api_spec');
         $problems = [];
         $paths = [];
+        $adminPaths = [];
 
         foreach ($this->publicRoutes() as $name => $route) {
             $endpoint = $config['endpoints'][$name] ?? null;
@@ -81,7 +92,12 @@ class BuildApiSpec extends Command
             $operation['tags'] = [$group];
 
             $path = '/'.$this->specPath($route);
-            $paths[$path][strtolower($route->methods()[0])] = $operation;
+
+            if (in_array($name, self::ADMIN_ONLY, true)) {
+                $adminPaths[$path][strtolower($route->methods()[0])] = $operation;
+            } else {
+                $paths[$path][strtolower($route->methods()[0])] = $operation;
+            }
         }
 
         if ($problems !== []) {
@@ -92,6 +108,7 @@ class BuildApiSpec extends Command
         }
 
         ksort($paths);
+        ksort($adminPaths);
 
         $document = [
             'openapi' => '3.1.0',
@@ -134,7 +151,7 @@ class BuildApiSpec extends Command
         ];
 
         if ($this->option('check')) {
-            $this->info(count($paths).' paths documented. Nothing written.');
+            $this->info(count($paths).' paths documented, plus '.count($adminPaths).' admin only. Nothing written.');
 
             return self::SUCCESS;
         }
@@ -144,6 +161,11 @@ class BuildApiSpec extends Command
         File::put($out, json_encode($document, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
 
         $this->info(count($paths).' paths written to '.$out);
+
+        File::ensureDirectoryExists(dirname(DocsController::adminSpecPath()));
+        File::put(DocsController::adminSpecPath(), json_encode(['paths' => $adminPaths], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+
+        $this->info(count($adminPaths).' admin-only paths written to '.DocsController::adminSpecPath());
 
         return self::SUCCESS;
     }
@@ -339,12 +361,15 @@ class BuildApiSpec extends Command
         $isPlayer = str_starts_with($name, 'api.external.players.') || $name === 'api.external.players';
         $isReplay = str_starts_with($name, 'api.external.replay.');
         $isJob = $name === 'api.external.jobs';
-        $isNgs = str_starts_with($name, 'api.external.ngs.');
+        $isAdmin = in_array($name, self::ADMIN_ONLY, true);
+        $isNgsPlayer = str_starts_with($name, 'api.external.ngs.player');
 
         $forbidden = ['account_suspended', 'account_terminated'];
 
-        if ($isNgs) {
+        if ($name === 'api.external.ngs.games.upload') {
             $forbidden[] = 'ngs_access_required';
+        } elseif ($isAdmin) {
+            $forbidden[] = 'test_mode';
         } elseif (! $isJob) {
             array_push($forbidden, 'terms_not_accepted', 'subscription_inactive', 'project_details_required', 'plan_unresolved', 'endpoint_not_in_plan');
         }
@@ -367,11 +392,23 @@ class BuildApiSpec extends Command
             array_push($notFound, 'replay_not_found', 'replay_incomplete');
         }
 
+        if ($name === 'api.external.ngs.replay') {
+            $notFound[] = 'replay_not_found';
+        }
+
+        if ($isNgsPlayer && $name !== 'api.external.ngs.players.search') {
+            $notFound[] = 'player_not_found';
+        }
+
         if ($isJob) {
             $notFound[] = 'job_not_found';
         }
 
         $invalid = ['invalid_parameters', 'missing_*', 'unknown_*'];
+
+        if ($isNgsPlayer && $name !== 'api.external.ngs.players.search') {
+            array_push($invalid, 'invalid_blizz_id', 'ambiguous_player');
+        }
 
         if (ApiSpecConfig::declaresParameter($name, 'timeframe')) {
             array_push($invalid, 'timeframe_unavailable', 'group_by_map_unsupported');
