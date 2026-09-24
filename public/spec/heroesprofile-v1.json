@@ -61636,7 +61636,7 @@
         },
         "/ngs/division": {
             "get": {
-                "summary": "One division: totals, top players and teams, heroes and maps.",
+                "summary": "One division: totals, recent matches, teams, and hero and map win rates.",
                 "operationId": "api.external.ngs.division",
                 "parameters": [
                     {

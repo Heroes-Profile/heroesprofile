@@ -64,11 +64,13 @@
       strings end up in server logs, browser history and referrer headers.
     </p>
     <p class="text-sm mb-8">
-      Four endpoints that used to answer anonymously now need a key —
-      <code>/Patches</code>, <code>/Heroes</code>, <code>/Heroes/Talents</code> and
-      <code>/Maps</code>. They cost effectively nothing against your allowance, but an
-      unauthenticated call now returns <code class="text-lteal">401</code>. The uploader
-      endpoints are unaffected and stay anonymous permanently.
+      The <code>/openApi</code> endpoints that answered anonymously now need a key —
+      <code>/Patches</code>, <code>/Heroes</code>, <code>/Heroes/Talents</code>,
+      <code>/Maps</code>, <code>/Replay/Download</code>, <code>/Replay/Max</code> and
+      <code>/Replay/Min_id</code>. The reference four cost effectively nothing against your
+      allowance, but an unauthenticated call now returns <code class="text-lteal">401</code>.
+      The uploader endpoints, <code>/Replay/Parsed</code> included, are unaffected and stay
+      anonymous permanently.
     </p>
 
     <h2 class="text-2xl mb-3">Where each endpoint went</h2>
@@ -111,8 +113,11 @@
         <tr><td class="py-2 px-3">/Replay/Parsed</td><td class="py-2 px-3">/v1/replays/parsed</td><td class="py-2 px-3">Unchanged. Still plain text, still keyless</td></tr>
         <tr><td class="py-2 px-3">/Replay/Min_id</td><td class="py-2 px-3">/v1/replays</td><td class="py-2 px-3">Now <code>{replays, next_after, max_replay_id}</code>. Cursor is exclusive — see below</td></tr>
         <tr><td class="py-2 px-3">/Replay/Max</td><td class="py-2 px-3">/v1/replays</td><td class="py-2 px-3">Folded in as <code>max_replay_id</code>. No separate call</td></tr>
-        <tr><td class="py-2 px-3">/NGS/* reads</td><td class="py-2 px-3">/v1/ngs/*</td><td class="py-2 px-3"><strong>Rebuilt around the site's NGS pages</strong> — standings, teams, divisions, players, match histories and single matches. Metered like any other read, on every plan. The old leaderboard, player profile, hero stat and match reads are not carried over</td></tr>
-        <tr><td class="py-2 px-3">/NGS/Games/Upload</td><td class="py-2 px-3">/v1/ngs/games/upload</td><td class="py-2 px-3">POST only. Needs NGS upload access</td></tr>
+        <tr><td class="py-2 px-3">/NGS/Replay/Data</td><td class="py-2 px-3">/v1/ngs/replay/{replayID}</td><td class="py-2 px-3">The same changes as <code>/Replay/Data</code>: one match object, and the id is a path segment</td></tr>
+        <tr><td class="py-2 px-3">/NGS/Player/Profile</td><td class="py-2 px-3">/v1/ngs/player</td><td class="py-2 px-3">Still takes a <code>battletag</code> on its own, or a <code>blizz_id</code>. Now returns what the site's NGS player page shows — heroes, maps, teams and talents — rather than one row of totals. A name without the <code>#1234</code> works only if one NGS player has it</td></tr>
+        <tr><td class="py-2 px-3">/NGS/Hero/Stat</td><td class="py-2 px-3">/v1/ngs/heroes/stats, /v1/ngs/player/hero</td><td class="py-2 px-3">Split in two. League-wide numbers for every hero come from <code>ngs/heroes/stats</code>; one player on one hero, the old <code>battletag</code> form, from <code>ngs/player/hero</code></td></tr>
+        <tr><td class="py-2 px-3">/NGS/Match</td><td class="py-2 px-3">/v1/ngs/team/matches</td><td class="py-2 px-3">A team's matches, newest first and <strong>paginated</strong>. Filter by <code>season</code> and <code>division</code>; there is no <code>round</code> filter, but every row carries its <code>round</code></td></tr>
+        <tr><td class="py-2 px-3">/NGS/Games/Upload</td><td class="py-2 px-3">/v1/ngs/games/upload</td><td class="py-2 px-3"><strong>POST only</strong> — the GET form is gone. Needs an account granted NGS upload access, and the key goes in the header like every other call rather than in the body. The four map-ban fields are now required</td></tr>
         <tr><td class="py-2 px-3">/replays/fingerprints/{fp}</td><td class="py-2 px-3">/v1/replays/fingerprints/{fp}</td><td class="py-2 px-3">Unchanged. Still keyless</td></tr>
         <tr><td class="py-2 px-3">/upload/heroesprofile/{source}</td><td class="py-2 px-3">/v1/upload/heroesprofile/{source}</td><td class="py-2 px-3">Unchanged contract</td></tr>
       </tbody>
@@ -120,7 +125,8 @@
     <p class="text-sm text-gray-medium mb-8">
       v1 also adds endpoints the old API never had — compositions, draft, party, per-map
       and per-role player breakdowns, friend/foe, matchups, leaderboards and the talent
-      builder. The <a href="/Api/Docs" class="link">docs</a> list them all.
+      builder, and for NGS standings, teams, divisions, player search and match histories.
+      The <a href="/Api/Docs" class="link">docs</a> list them all.
     </p>
 
     <h2 class="text-2xl mb-3">New in v1</h2>
@@ -189,6 +195,18 @@
         <tr>
           <td class="py-2 px-3">/openApi/Parse/Replay</td>
           <td class="py-2 px-3">Fetched an arbitrary URL server-side. Not reproduced, deliberately. Upload the file instead.</td>
+        </tr>
+        <tr>
+          <td class="py-2 px-3">/NGS/Leaderboard/Highest/Average/Stat, /NGS/Leaderboard/Highest/Total/Stat</td>
+          <td class="py-2 px-3">Nothing on the site's NGS pages ranks players by a single stat, so there is no equivalent.</td>
+        </tr>
+        <tr>
+          <td class="py-2 px-3">/NGS/Games/Delete</td>
+          <td class="py-2 px-3">No longer available with an NGS key. If a game needs removing, <a href="#missing" class="link">get in touch</a>.</td>
+        </tr>
+        <tr>
+          <td class="py-2 px-3">/ML/Games/Upload</td>
+          <td class="py-2 px-3">No replacement.</td>
         </tr>
         <tr>
           <td class="py-2 px-3">/CCL/*, /HI/*</td>
@@ -339,8 +357,9 @@ HTTP/1.1 200 OK              done — this is the data
       from your <a href="/Api/Account" class="link">account page</a>.
     </p>
     <p class="text-sm mb-8">
-      Every endpoint can also be run from the <a href="/Api/Docs" class="link">docs</a>
-      with your own key, which is the quickest way to see a real response shape.
+      Every read endpoint can also be run from the <a href="/Api/Docs" class="link">docs</a>
+      with your own key, which is the quickest way to see a real response shape. The ones
+      that change data — uploads — cannot.
     </p>
 
     <h2 id="missing" class="text-2xl mb-3">If something you need is missing</h2>

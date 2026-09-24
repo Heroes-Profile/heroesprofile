@@ -949,7 +949,7 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
         ],
 
         'api.external.ngs.division' => [
-            'summary' => 'One division: totals, top players and teams, heroes and maps.',
+            'summary' => 'One division: totals, recent matches, teams, and hero and map win rates.',
             'page' => '/Esports/NGS/Division/{division}',
             'uses' => ['ngs'],
             'parameters' => [
