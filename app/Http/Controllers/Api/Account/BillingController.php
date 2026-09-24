@@ -23,15 +23,24 @@ class BillingController extends Controller
         $account = $this->account();
         $subscription = $account->subscription(self::SUBSCRIPTION);
         $context = $keys->resolveForAccount($account->id);
+        $patreonPlanId = $plans->planIdForPatreonCents($account->patreonPledgeCents());
 
         return view('api.account.billing', [
             'stripeKey' => config('cashier.key'),
             'plans' => $plans->present($plans->selectableBy($account)),
-            'granted' => $plans->present($plans->grantedTo($account)),
+            // Patreon access lasts only as long as the pledge, unlike a flag, so the
+            // page has to say which is which.
+            'granted' => array_map(
+                fn (array $plan) => $plan + ['source' => $plan['id'] === $patreonPlanId ? 'patreon' : 'comped'],
+                $plans->present($plans->grantedTo($account))
+            ),
+            // The newest subscription, whatever its state — one that ended long ago
+            // is still returned. `valid` is what says whether it is current.
             'subscription' => $subscription ? [
                 'plan_id' => $plans->planIdForPrice($subscription->stripe_price),
                 'stripe_price' => $subscription->stripe_price,
                 'status' => $subscription->stripe_status,
+                'valid' => $subscription->valid(),
                 'on_grace_period' => $subscription->onGracePeriod(),
                 'ends_at' => $subscription->ends_at?->toDateString(),
                 'cancelled' => $subscription->canceled(),
