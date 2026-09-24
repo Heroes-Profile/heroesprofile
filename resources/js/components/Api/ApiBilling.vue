@@ -13,14 +13,6 @@
         </p>
       </div>
 
-      <div v-if="projectmissing" class="bg-lighten border-l-4 border-yellow p-4 mb-8">
-        <p class="text-sm">
-          <strong>Tell us about your project before subscribing.</strong>
-          A name and a short description of what you are building, on your
-          <a href="/Api/Account#project" class="underline hover:text-lteal">account page</a>.
-        </p>
-      </div>
-
       <div v-if="servesfixtures" class="bg-lighten border-l-4 border-yellow p-4 mb-8">
         <p class="text-sm">
           <strong>Your API calls are returning example data.</strong>
@@ -62,11 +54,19 @@
       <div v-if="granted.length" class="bg-lighten border-l-4 border-teal p-6 mb-8">
         <h2 class="text-lg mb-2">Special Access</h2>
         <p class="text-sm text-gray-medium mb-3">
-          Granted to your account at no charge. There is nothing to pay and nothing to
-          cancel. You can still buy a plan below if you want access beyond this.
+          Access you hold without a subscription here. You can still buy a higher plan
+          below if you want more than this.
         </p>
-        <ul class="text-sm list-disc list-inside">
-          <li v-for="plan in granted" :key="plan.id">{{ plan.name }}</li>
+        <ul class="text-sm list-disc list-inside space-y-1">
+          <li v-for="plan in granted" :key="plan.id">
+            <strong>{{ plan.name }}</strong>
+            <span v-if="plan.source === 'patreon'" class="text-gray-medium">
+              — through your Patreon pledge. It lasts as long as the pledge does, and changes with it.
+            </span>
+            <span v-else class="text-gray-medium">
+              — granted to your account at no charge. Nothing to pay or cancel.
+            </span>
+          </li>
         </ul>
       </div>
 
@@ -78,24 +78,42 @@
         </loading-component>
 
         <template v-else>
-        <div v-if="current" class="mb-4 text-sm">
+        <div v-if="projectmissing" class="bg-darken border-l-4 border-yellow p-4 mb-4">
+          <p class="text-sm">
+            <strong>Tell us about your project before subscribing.</strong>
+            A name and a short description of what you are building.
+          </p>
+          <a href="/Api/Account#project" class="inline-block mt-3 transition-colors text-white rounded bg-blue hover:bg-lblue py-2 px-4 text-sm">
+            Add project details
+          </a>
+        </div>
+
+        <div v-if="active" class="mb-4 text-sm">
           <div>
             Current plan: <strong>{{ planName(current.plan_id) }}</strong>
-            <span class="text-gray-medium">({{ current.status }})</span>
           </div>
           <div v-if="current.on_grace_period" class="text-yellow mt-1">
             Cancels on {{ current.ends_at }}. You keep access until then.
           </div>
         </div>
+        <div v-else-if="current" class="mb-4 text-sm text-gray-medium">
+          Your {{ planName(current.plan_id) }} subscription
+          <template v-if="current.ends_at">ended on {{ current.ends_at }}.</template>
+          <template v-else>is no longer active.</template>
+          Choose a plan below to subscribe again.
+        </div>
 
-        <div class="grid gap-4 md:grid-cols-3 mb-4">
+        <div class="grid gap-4 md:grid-cols-3 mb-4" :class="{ 'opacity-50 pointer-events-none select-none': projectmissing }">
           <div v-for="plan in plans" :key="plan.id" class="bg-darken p-4 text-center flex flex-col">
             <div class="text-lg mb-1">{{ plan.name }}</div>
             <div class="text-2xl mb-4">
               ${{ plan.price }} <span class="text-sm text-gray-medium">/ mo</span>
             </div>
             <div class="mt-auto">
-              <span v-if="current && current.plan_id === plan.id" class="text-sm text-lteal">Current plan</span>
+              <span v-if="active && current.plan_id === plan.id" class="text-sm text-lteal">Current plan</span>
+              <span v-else-if="plan.granted" class="text-sm text-lteal">
+                {{ grantedSource(plan.id) === 'patreon' ? 'Included with your Patreon pledge' : 'Included with your account' }}
+              </span>
               <a
                 v-else-if="!plan.purchasable"
                 href="/Api/DeveloperTier"
@@ -105,11 +123,11 @@
               </a>
               <button
                 v-else
-                :disabled="!card || busy"
+                :disabled="!card || busy || projectmissing"
                 @click="subscribe(plan)"
                 class="transition-colors text-white rounded bg-blue hover:bg-lblue py-2 px-4 w-full disabled:bg-gray-medium"
               >
-                {{ current ? 'Switch' : 'Subscribe' }}
+                {{ active ? 'Switch' : 'Subscribe' }}
               </button>
             </div>
           </div>
@@ -117,10 +135,10 @@
 
         <p v-if="!card" class="text-sm text-gray-medium">Add a card above before choosing a plan.</p>
 
-        <div v-if="current && !current.on_grace_period" class="mt-4">
+        <div v-if="active && !current.on_grace_period" class="mt-4">
           <custom-button @click="cancel" :text="'Cancel Subscription'" :alt="'Cancel subscription'" :size="'small'" :color="'red'" :ignoreclick="true"></custom-button>
         </div>
-        <div v-if="current && current.on_grace_period" class="mt-4">
+        <div v-if="active && current.on_grace_period" class="mt-4">
           <custom-button @click="resume" :text="'Resume Subscription'" :alt="'Resume subscription'" :size="'small'" :color="'teal'" :ignoreclick="true"></custom-button>
         </div>
         </template>
@@ -214,6 +232,13 @@ export default {
       notice: null,
     }
   },
+  computed: {
+    // The newest subscription comes through whatever its state; one that ended is
+    // history, not a plan.
+    active(){
+      return !!(this.current && this.current.valid);
+    },
+  },
   mounted(){
     this.loadInvoices();
 
@@ -225,6 +250,10 @@ export default {
     planName(planId){
       const plan = this.plans.find(p => p.id === planId);
       return plan ? plan.name : 'Unknown';
+    },
+    grantedSource(planId){
+      const plan = this.granted.find(p => p.id === planId);
+      return plan ? plan.source : null;
     },
     async loadInvoices(){
       try {
@@ -298,7 +327,7 @@ export default {
       this.savingCard = false;
     },
     async subscribe(plan){
-      this.busyText = this.current
+      this.busyText = this.active
         ? 'Switching to ' + plan.name + '...'
         : 'Starting your ' + plan.name + ' subscription...';
       this.busy = true;
