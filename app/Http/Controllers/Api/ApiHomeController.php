@@ -52,9 +52,10 @@ class ApiHomeController extends Controller
 
         $endpoints = ApiEndpoint::query()
             ->with(['quotas' => fn ($query) => $query->whereIn('subscription_plan', array_keys($plans))])
-            ->excludingEsports()
+            ->excludingComped()
             ->ordered()
-            ->get();
+            ->get()
+            ->whereIn('endpoint', $this->routedEndpoints());
 
         $groups = [];
 
@@ -142,6 +143,26 @@ class ApiHomeController extends Controller
         return $notes;
     }
 
+    /**
+     * Endpoint keys with a live route. The registry also holds retired rows and the
+     * old API's own reads, which cannot be called here, so a page listing the
+     * registry alone advertises endpoints that answer 404.
+     *
+     * @return array<int, string>
+     */
+    private function routedEndpoints(): array
+    {
+        $keys = [];
+
+        foreach (Route::getRoutes() as $route) {
+            if ($endpoint = $this->middlewareArgument($route, 'api.quota')) {
+                $keys[] = $endpoint;
+            }
+        }
+
+        return array_values(array_unique($keys));
+    }
+
     /** The endpoint key a route is metered under, from its `api.quota:` middleware. */
     private function middlewareArgument($route, string $alias): ?string
     {
@@ -172,9 +193,10 @@ class ApiHomeController extends Controller
 
         $endpoints = ApiEndpoint::query()
             ->with(['quotas' => fn ($query) => $query->whereIn('subscription_plan', array_keys($plans))])
-            ->excludingEsports()
+            ->excludingComped()
             ->ordered()
-            ->get();
+            ->get()
+            ->whereIn('endpoint', $this->routedEndpoints());
 
         $groups = [];
 
