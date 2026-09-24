@@ -448,12 +448,13 @@
           ></multi-select-filter>
         </div>
         <button :disabled="disabledFilter" @click="applyFilter" :class="compact ? 'bg-teal rounded text-white px-5 py-2 h-10 disabled:opacity-50 hover:bg-blue' : {'bg-teal rounded text-white md:ml-10 px-4 py-2 md:mt-auto mb-2 hover:bg-lteal max-md:mb-auto max-md:w-full max-md:mt-10': !disabledFilter, 'bg-gray-md rounded text-white md:ml-10 px-4 py-2 mt-auto mb-2 hover:bg-gray-md max-md:mt-auto max-md:w-full': disabledFilter}">
-          {{ compact ? 'Apply' : 'Filter' }}
+          Filter
         </button>
 
         
       </div>
-      <div class="flex justify-end max-md:mb-auto">
+      <div class="flex max-md:mb-auto" :class="compact && $slots['compact-footer'] ? 'justify-between items-start' : 'justify-end'">
+        <div v-if="compact && $slots['compact-footer']" class="mt-2"><slot name="compact-footer"></slot></div>
         <button class="m-l-auto underline" :class="{ 'text-sm mt-2': compact }" v-if="!hideadvancedfilteringbutton" :aria-expanded="!!toggleExtraFilters" @click="toggleExtraFilters = !toggleExtraFilters" >{{toggleButtonText}}</button>
       </div>
     </div>

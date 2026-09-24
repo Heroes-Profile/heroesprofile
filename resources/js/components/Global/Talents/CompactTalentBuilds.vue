@@ -1,24 +1,19 @@
 <template>
   <section aria-label="Talent builds">
-    <div v-if="buildData.length > 5" class="flex justify-end mb-2">
-      <button type="button" class="link text-sm" :aria-expanded="showAll" @click="showAll = !showAll">
-        {{ showAll ? 'Show Top 5 ↑' : 'View More Builds →' }}
-      </button>
-    </div>
     <div v-if="buildData.length" class="overflow-x-auto">
       <table class="w-full text-sm">
         <thead>
           <tr>
             <th scope="col" class="p-2 text-left">#</th>
-            <th scope="col" class="p-2 text-left">Talent Build</th>
+            <th scope="col" class="p-2 text-left"><slot name="build-heading">Talent Build</slot></th>
             <th scope="col" class="p-2 text-left">Total Games</th>
             <th scope="col" class="p-2 text-left">Win Chance</th>
-            <th v-if="statFilter && statFilter !== 'win_rate'" scope="col" class="p-2 text-left">Avg {{ statFilter.replace(/_/g, ' ') }}</th>
+            <th v-if="statFilter && statFilter !== 'win_rate'" scope="col" class="p-2 text-left">{{ statFilterLabel(statFilter) }}</th>
             <th scope="col" class="p-2 text-left">Copy</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(build, index) in visibleBuilds" :key="copyCode(build)">
+          <tr v-for="(build, index) in buildData" :key="copyCode(build)">
             <td class="p-2">{{ index + 1 }}</td>
             <td class="p-2">
               <div class="flex gap-2 w-max">
@@ -38,13 +33,18 @@
         </tbody>
       </table>
     </div>
-    <p v-else class="p-4 text-center bg-lighten">No talent builds match these filters.</p>
+    <template v-else>
+      <div class="p-2 text-sm font-bold"><slot name="build-heading">Talent Build</slot></div>
+      <p class="p-4 text-center bg-lighten">No talent builds match these filters.</p>
+    </template>
     <p v-if="copyError" role="alert" class="mt-2">Could not copy. Copy this code manually: <code class="select-all">{{ copyError }}</code></p>
     <span class="sr-only" role="status">{{ copiedCode ? 'Build copied to clipboard' : '' }}</span>
   </section>
 </template>
 
 <script>
+import { statFilterLabel } from '../../../utils/statFilterLabel';
+
 export default {
   props: {
     buildData: { type: Array, required: true },
@@ -52,25 +52,19 @@ export default {
   },
   data() {
     return {
-      showAll: false,
       copiedCode: null,
       copyError: null,
       buildLevels: ['level_one', 'level_four', 'level_seven', 'level_ten', 'level_thirteen', 'level_sixteen', 'level_twenty'],
     };
   },
-  computed: {
-    visibleBuilds() {
-      return this.showAll ? this.buildData : this.buildData.slice(0, 5);
-    },
-  },
   watch: {
     buildData() {
-      this.showAll = false;
       this.copiedCode = null;
       this.copyError = null;
     },
   },
   methods: {
+    statFilterLabel,
     copyCode(build) {
       return `[T${this.buildLevels.map(level => build[level]?.sort ?? 0).join('')},${build.hero.build_copy_name}]`;
     },

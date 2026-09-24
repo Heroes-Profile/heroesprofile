@@ -24,7 +24,7 @@
               Win Chance %
             </th>        
             <th v-if="statfilter && statfilter != 'win_rate'" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Avg {{ statfilter.charAt(0).toUpperCase() + statfilter.slice(1) }}
+              {{ statFilterLabel(statfilter) }}
             </th>                           
           </tr>
         </thead>
@@ -58,6 +58,8 @@
 </template>
 
 <script>
+import { statFilterLabel } from '../../../utils/statFilterLabel';
+
 export default {
   name: 'GlobalTalentBuildsSection',
   components: {
@@ -105,6 +107,7 @@ export default {
   watch: {
   },
   methods: {
+    statFilterLabel,
     getCopyBuildToGame(level_one, level_four, level_seven, level_ten, level_thirteen, level_sixteen, level_twenty, hero) {
       return "[T" + 
         (level_one ? level_one.sort : '0') + 
