@@ -30,9 +30,9 @@ class ApiEndpoint extends Model
         return $query->orderBy('group_sort')->orderBy('sort');
     }
 
-    /** Esports groups are comped and not part of the public pricing tiers. */
-    public function scopeExcludingEsports($query)
+    /** NGS upload is comped and not part of the public pricing tiers. NGS reads are. */
+    public function scopeExcludingComped($query)
     {
-        return $query->where('group_name', 'NOT LIKE', '%NGS%');
+        return $query->where('group_name', '!=', 'NGS Replay Upload');
     }
 }
