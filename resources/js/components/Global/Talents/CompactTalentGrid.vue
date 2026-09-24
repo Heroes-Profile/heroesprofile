@@ -14,17 +14,32 @@
         </div>
       </div>
       <div v-for="talent in tier.talents" :key="talent.talentInfo.talent_id"
-        class="flex items-center gap-2 p-2 min-h-[96px] border-t border-lighten"
+        class="flex items-center gap-2 p-2 min-h-24 border-t border-lighten"
         :class="{ 'bg-teal/20': talent.games_played > 0 && talent[tier.highlightKey] === tier.highestValue }">
         <talent-image-wrapper class="shrink-0" :talent="talent.talentInfo"></talent-image-wrapper>
         <div class="min-w-0 flex-1">
-          <h3 class="text-sm font-bold leading-tight mb-2">{{ talent.talentInfo.title }}</h3>
-          <dl class="grid grid-cols-[auto_1fr] gap-x-3 text-xs">
-            <dt>Win Rate</dt><dd class="font-bold text-right">{{ formatPercent(talent.win_rate) }}</dd>
-            <dt>Popularity</dt><dd class="font-bold text-right">{{ formatPercent(talent.popularity) }}</dd>
-            <dt>Games Played</dt><dd class="font-bold text-right">{{ formatNumber(talent.games_played) }}</dd>
+          <h3 class="text-sm font-bold leading-tight mb-1.5">{{ talent.talentInfo.title }}</h3>
+          <dl class="grid grid-cols-[max-content_minmax(0,1fr)_max-content] items-center gap-x-1.5 gap-y-1 text-xs">
+            <dt><span aria-hidden="true">WR</span><span class="sr-only">Win rate</span></dt>
+            <dd class="h-2 overflow-hidden rounded-full bg-black/30" aria-hidden="true">
+              <span class="block h-full rounded-full bg-green" :style="{ width: percentWidth(talent.win_rate) }"></span>
+            </dd>
+            <dd class="font-bold text-right whitespace-nowrap tabular-nums">{{ formatPercent(talent.win_rate) }}</dd>
+
+            <dt><span aria-hidden="true">Pop</span><span class="sr-only">Popularity</span></dt>
+            <dd class="h-2 overflow-hidden rounded-full bg-black/30" aria-hidden="true">
+              <span class="block h-full rounded-full bg-purple" :style="{ width: percentWidth(talent.popularity) }"></span>
+            </dd>
+            <dd class="font-bold text-right whitespace-nowrap tabular-nums">{{ formatPercent(talent.popularity) }}</dd>
+
+            <dt>
+              <i class="fa-solid fa-gamepad text-xs text-white/70" aria-hidden="true"></i>
+              <span class="sr-only">Games played</span>
+            </dt>
+            <dd class="col-span-2">{{ formatGames(talent.games_played) }}</dd>
             <template v-if="statFilter && statFilter !== 'win_rate'">
-              <dt>{{ statFilterLabel(statFilter) }}</dt><dd class="font-bold text-right">{{ formatNumber(talent.total_filter_type) }}</dd>
+              <dt class="col-span-2">{{ statFilterLabel(statFilter) }}</dt>
+              <dd class="font-bold text-right">{{ formatNumber(talent.total_filter_type) }}</dd>
             </template>
           </dl>
         </div>
@@ -80,7 +95,18 @@ export default {
   methods: {
     statFilterLabel,
     formatPercent(value) {
-      return Number(value || 0).toFixed(2) + '%';
+      const number = Number(value) || 0;
+      return `${number.toLocaleString('en-US', {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+      })}%`;
+    },
+    percentWidth(value) {
+      return `${Math.min(100, Math.max(0, Number(value) || 0))}%`;
+    },
+    formatGames(value) {
+      const games = Number(value) || 0;
+      return `${games.toLocaleString('en-US')} ${games === 1 ? 'game' : 'games'}`;
     },
     formatNumber(value) {
       return value == null ? '—' : Number(value).toLocaleString('en-US');
