@@ -12,7 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
  * weekly quota — access is the permission, and there is nothing to price because
  * it is not sold. Only the per-key throttle applies.
  *
- * The API serves no NGS reads, so upload is the only route left behind this.
+ * NGS reads are metered like any other read, so upload is the only route behind
+ * this.
  *
  * ->middleware('api.ngs')        either flag
  * ->middleware('api.ngs:upload') both flags

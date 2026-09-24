@@ -1,0 +1,116 @@
+{
+    "paths": {
+        "/ngs/games/{replayID}": {
+            "delete": {
+                "summary": "Remove one NGS game. Admin only.",
+                "operationId": "api.external.ngs.games.delete",
+                "parameters": [
+                    {
+                        "name": "replayID",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        },
+                        "description": "NGS replay id."
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "prod",
+                                "dev"
+                            ]
+                        },
+                        "description": "Which NGS schema to delete from.",
+                        "example": "dev"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The game and its players, talents, scores, bans and draft are gone.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "deleted": {
+                                            "type": "integer",
+                                            "description": "The replay id removed."
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No key, or a key that is not recognised. Codes: `unauthenticated`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "The key is valid but may not make this call. Codes: `account_suspended`, `account_terminated`, `test_mode`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Nothing found for what was asked. Codes: `not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "429": {
+                        "description": "Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Failed on our side. Not charged. Codes: `server_error`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "NGS Replay Upload"
+                ]
+            }
+        }
+    }
+}

@@ -20,6 +20,7 @@ use App\Http\Middleware\LogApiRequest;
 use App\Http\Middleware\LogIPAndUserAgent;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\RequireApiAdmin;
 use App\Http\Middleware\RequireApiProjectDetails;
 use App\Http\Middleware\RequireApiTermsAcceptance;
 use App\Http\Middleware\RequireNgsAccess;
@@ -163,6 +164,7 @@ class Kernel extends HttpKernel
         'api.quota' => EnforceApiQuota::class,
         'api.fixtures' => ServeApiFixtures::class,
         'api.ngs' => RequireNgsAccess::class,
+        'api.admin' => RequireApiAdmin::class,
         'api.ngs.upload.validate' => ValidateNgsUpload::class,
         'checkIfPrivateProfilePage' => CheckIfPrivateProfilePage::class,
         'checkIfPrivateProfileData' => CheckIfPrivateProfileData::class,

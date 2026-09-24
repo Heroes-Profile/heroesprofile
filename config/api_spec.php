@@ -62,6 +62,7 @@ return [
         'api.external.prematch',
         'api.external.upload',
         'api.external.ngs.games.upload',
+        'api.external.ngs.games.delete',
     ],
 
     /*
@@ -176,7 +177,27 @@ return [
             'api.external.replays.index',
         ],
 
+        'NGS' => [
+            'api.external.ngs.division',
+            'api.external.ngs.division.matches',
+            'api.external.ngs.divisions',
+            'api.external.ngs.heroes.stats',
+            'api.external.ngs.heroes.talents.stats',
+            'api.external.ngs.matches',
+            'api.external.ngs.player',
+            'api.external.ngs.player.hero',
+            'api.external.ngs.player.map',
+            'api.external.ngs.player.matches',
+            'api.external.ngs.players.search',
+            'api.external.ngs.replay',
+            'api.external.ngs.standings',
+            'api.external.ngs.team',
+            'api.external.ngs.team.matches',
+            'api.external.ngs.teams',
+        ],
+
         'NGS Replay Upload' => [
+            'api.external.ngs.games.delete',
             'api.external.ngs.games.upload',
         ],
 
@@ -254,6 +275,22 @@ return [
             'description' => 'Region, by name or id — `NA` and `1` both work. NA/1, EU/2, KR/3, CN/5.',
             'example' => 'NA',
         ],
+    ],
+
+    /*
+    | Shared by the NGS endpoints. Values for both are listed under Variables.
+    */
+    'ngs' => [
+        'season' => ['type' => 'integer', 'description' => 'NGS season number. Defaults to the latest.'],
+        'division' => ['description' => 'NGS division name, as NGS spells it. Omit for every division.'],
+    ],
+
+    /*
+    | NGS players, by battletag or blizz_id. One of the two is required.
+    */
+    'ngs_player' => [
+        'battletag' => ['description' => 'Full battletag, or the name before the `#` if only one NGS player has it. Needed unless `blizz_id` is sent.', 'example' => 'Zemill#1940'],
+        'blizz_id' => ['type' => 'integer', 'description' => 'Blizzard account id, from `ngs/players/search`. Takes precedence over `battletag`.'],
     ],
 
     'endpoints' => [
@@ -855,9 +892,171 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
         ],
 
         /*
-        | NGS ingestion. Needs both `n_approved` and `n_upload_approved`. The API
-        | serves no NGS or other esports data.
+        | NGS reads, one per section of the site's NGS pages. Metered like any
+        | other read.
         */
+
+        'api.external.ngs.standings' => [
+            'summary' => 'League standings, grouped by division.',
+            'page' => '/Esports/NGS',
+            'uses' => ['ngs'],
+        ],
+
+        'api.external.ngs.divisions' => [
+            'summary' => 'Every division in a season, with its game count.',
+            'page' => '/Esports/NGS',
+            'uses' => ['ngs'],
+            'except' => ['division'],
+        ],
+
+        'api.external.ngs.teams' => [
+            'summary' => 'Teams with their record and win rate.',
+            'page' => '/Esports/NGS',
+            'uses' => ['ngs'],
+        ],
+
+        'api.external.ngs.players.search' => [
+            'summary' => 'Find NGS players by battletag.',
+            'page' => '/Esports/NGS',
+            'parameters' => [
+                'battletag' => ['required' => true, 'description' => 'A full battletag, or just the part before the `#` to match every discriminator.', 'example' => 'Zemill'],
+            ],
+        ],
+
+        'api.external.ngs.matches' => [
+            'summary' => 'Recent matches, newest first, with the heroes in each.',
+            'page' => '/Esports/NGS',
+            'uses' => ['ngs'],
+            'parameters' => [
+                'hero' => ['description' => 'Only matches this hero played in, by name.', 'example' => 'Anduin'],
+                'pagination_page' => ['type' => 'integer', 'description' => 'Page of results. Defaults to 1.'],
+            ],
+        ],
+
+        'api.external.ngs.heroes.stats' => [
+            'summary' => 'Win, ban and popularity rates per hero.',
+            'page' => '/Esports/NGS',
+            'uses' => ['ngs'],
+        ],
+
+        'api.external.ngs.heroes.talents.stats' => [
+            'summary' => 'Talent pick and win rates, and the top builds, for one hero.',
+            'page' => '/Esports/NGS',
+            'uses' => ['ngs'],
+            'parameters' => [
+                'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
+            ],
+        ],
+
+        'api.external.ngs.division' => [
+            'summary' => 'One division: totals, top players and teams, heroes and maps.',
+            'page' => '/Esports/NGS/Division/{division}',
+            'uses' => ['ngs'],
+            'parameters' => [
+                'division' => ['required' => true, 'description' => 'NGS division name, as NGS spells it.'],
+            ],
+        ],
+
+        'api.external.ngs.division.matches' => [
+            'summary' => 'Every match played in one division.',
+            'page' => '/Esports/NGS/Division/{division}/Match/History',
+            'uses' => ['ngs'],
+            'parameters' => [
+                'division' => ['required' => true, 'description' => 'NGS division name, as NGS spells it.'],
+            ],
+        ],
+
+        'api.external.ngs.team' => [
+            'summary' => 'One team: roster, heroes, maps, and the teams it lost to.',
+            'page' => '/Esports/NGS/Team/{team}',
+            'uses' => ['ngs'],
+            'parameters' => [
+                'team' => ['required' => true, 'description' => 'Team name, exactly as `ngs/teams` returns it.'],
+                'season' => ['type' => 'integer', 'description' => 'NGS season number. Omit for every season.'],
+            ],
+        ],
+
+        'api.external.ngs.team.matches' => [
+            'summary' => 'One team\'s matches, newest first.',
+            'page' => '/Esports/NGS/Team/{team}/Match/History',
+            'uses' => ['ngs'],
+            'parameters' => [
+                'team' => ['required' => true, 'description' => 'Team name, exactly as `ngs/teams` returns it.'],
+                'season' => ['type' => 'integer', 'description' => 'NGS season number. Omit for every season.'],
+                'pagination_page' => ['type' => 'integer', 'description' => 'Page of results, 100 per page. Defaults to 1.'],
+            ],
+        ],
+
+        'api.external.ngs.player' => [
+            'summary' => 'One player\'s NGS record: heroes, maps, teams and talents.',
+            'page' => '/Esports/NGS/Player/{battletag}/{blizz_id}',
+            'uses' => ['ngs_player', 'ngs'],
+            'parameters' => [
+                'season' => ['type' => 'integer', 'description' => 'NGS season number. Omit for every season.'],
+            ],
+        ],
+
+        'api.external.ngs.player.hero' => [
+            'summary' => 'One player\'s NGS record on one hero.',
+            'page' => '/Esports/NGS/Player/{battletag}/{blizz_id}/Hero/{hero}',
+            'uses' => ['ngs_player', 'ngs'],
+            'parameters' => [
+                'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
+                'season' => ['type' => 'integer', 'description' => 'NGS season number. Omit for every season.'],
+            ],
+        ],
+
+        'api.external.ngs.player.map' => [
+            'summary' => 'One player\'s NGS record on one map.',
+            'page' => '/Esports/NGS/Player/{battletag}/{blizz_id}/Map/{game_map}',
+            'uses' => ['ngs_player', 'ngs'],
+            'parameters' => [
+                'game_map' => ['required' => true, 'description' => 'Map name.', 'example' => 'Alterac Pass'],
+                'season' => ['type' => 'integer', 'description' => 'NGS season number. Omit for every season.'],
+            ],
+        ],
+
+        'api.external.ngs.player.matches' => [
+            'summary' => 'One player\'s NGS matches, newest first, with talents.',
+            'page' => '/Esports/NGS/Player/{battletag}/{blizz_id}/Match/History',
+            'uses' => ['ngs_player'],
+            'parameters' => [
+                'pagination_page' => ['type' => 'integer', 'description' => 'Page of results, 100 per page. Defaults to 1.'],
+            ],
+        ],
+
+        'api.external.ngs.replay' => [
+            'summary' => 'Full detail for one NGS match.',
+            'page' => '/Esports/NGS/Match/Single/{replayID}',
+            'parameters' => [
+                'replayID' => ['type' => 'integer', 'description' => 'NGS replay id, as the match endpoints return it.'],
+            ],
+        ],
+
+        /*
+        | NGS ingestion. Upload needs both `n_approved` and `n_upload_approved`.
+        | Delete is admin only, and is left out of the published spec — only an
+        | admin in admin mode sees it on the docs page.
+        */
+
+        'api.external.ngs.games.delete' => [
+            'summary' => 'Remove one NGS game. Admin only.',
+            'parameters' => [
+                'replayID' => ['type' => 'integer', 'description' => 'NGS replay id.'],
+                'mode' => ['required' => true, 'enum' => ['prod', 'dev'], 'description' => 'Which NGS schema to delete from.', 'example' => 'dev'],
+            ],
+            'responses' => [
+                '200' => [
+                    'description' => 'The game and its players, talents, scores, bans and draft are gone.',
+                    'content' => ['application/json' => ['schema' => [
+                        'type' => 'object',
+                        'properties' => [
+                            'deleted' => ['type' => 'integer', 'description' => 'The replay id removed.'],
+                        ],
+                    ]]],
+                ],
+            ],
+        ],
 
         'api.external.ngs.games.upload' => [
             'summary' => 'Ingest one NGS custom game.',

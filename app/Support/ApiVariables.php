@@ -6,6 +6,7 @@ use App\Models\GameType;
 use App\Models\Hero;
 use App\Models\LeagueTier;
 use App\Models\Map;
+use App\Models\NGS\NGSTeam;
 use App\Models\SeasonDate;
 use App\Rules\StackSizeInputValidation;
 use App\Rules\StatFilterInputValidation;
@@ -91,6 +92,18 @@ class ApiVariables
                 'used_by' => 'Leaderboards, player endpoints',
                 'summary' => 'A season id. Omit it on player endpoints for a career total.',
                 'values' => SeasonDate::orderByDesc('id')->pluck('id')->map(fn ($id) => (string) $id)->all(),
+            ],
+            [
+                'name' => 'season (NGS)',
+                'used_by' => 'NGS endpoints',
+                'summary' => 'An NGS season number — not the same thing as a ranked season id. The NGS page endpoints default to the latest; team and player endpoints treat its absence as every season.',
+                'values' => NGSTeam::distinct()->orderByDesc('season')->pluck('season')->map(fn ($season) => (string) $season)->all(),
+            ],
+            [
+                'name' => 'division',
+                'used_by' => 'NGS endpoints',
+                'summary' => 'An NGS division, spelled exactly as here.',
+                'values' => NGSTeam::distinct()->orderBy('division')->pluck('division')->all(),
             ],
             [
                 'name' => 'groupsize',

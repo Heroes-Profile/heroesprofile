@@ -1,0 +1,719 @@
+{
+    "wins": 0,
+    "losses": 1,
+    "win_rate": 0,
+    "kdr": 1,
+    "kda": 11,
+    "takedowns": 11,
+    "kills": 1,
+    "assists": 10,
+    "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Little_Buff_Boyz_5788.png",
+    "time_spent_dead": "0 hours, 0 minutes, 54 seconds",
+    "deaths": 1,
+    "total_games": 1,
+    "matches": [
+        {
+            "replayID": 90000001,
+            "game_date": "2020-01-01 00:00:00",
+            "game_map": {
+                "map_id": 12,
+                "name": "Towers of Doom",
+                "short_name": "TowersOfDoom",
+                "type": "standard",
+                "ranked_rotation": 1,
+                "playable": 1,
+                "sanitized_map_name": "towers_of_doom"
+            },
+            "game": 2,
+            "round": "7",
+            "team_0_name": "Little Buff Boyz",
+            "team_1_name": "Tricky Gooses",
+            "winner": 1,
+            "heroes": [
+                {
+                    "hero": {
+                        "id": 86,
+                        "name": "Imperius",
+                        "short_name": "imperius",
+                        "alt_name": null,
+                        "role": "Warrior",
+                        "new_role": "Bruiser",
+                        "type": "Melee",
+                        "release_date": "2019-01-08 00:00:00",
+                        "rework_date": null,
+                        "last_change_patch_version": "2.55.4.91769",
+                        "attribute_id": "IMPE",
+                        "build_copy_name": "Imperius",
+                        "last_updated": "2024-02-06 18:32:51"
+                    }
+                }
+            ]
+        }
+    ],
+    "heroes": [
+        {
+            "hero_id": 86,
+            "hero": {
+                "id": 86,
+                "name": "Imperius",
+                "short_name": "imperius",
+                "alt_name": null,
+                "role": "Warrior",
+                "new_role": "Bruiser",
+                "type": "Melee",
+                "release_date": "2019-01-08 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "IMPE",
+                "build_copy_name": "Imperius",
+                "last_updated": "2024-02-06 18:32:51"
+            },
+            "name": "Imperius",
+            "wins": 0,
+            "losses": 1,
+            "win_rate": 0,
+            "games_played": 1,
+            "battletag": "ExamplePlayer1#0000",
+            "blizz_id": 9000001,
+            "season": "22",
+            "division": null,
+            "link": "/Esports/NGS/Player/Topgun707#1875/2215383/Hero/Imperius?season=22"
+        }
+    ],
+    "hero_top_three_most_played": [
+        {
+            "hero_id": 86,
+            "hero": {
+                "id": 86,
+                "name": "Imperius",
+                "short_name": "imperius",
+                "alt_name": null,
+                "role": "Warrior",
+                "new_role": "Bruiser",
+                "type": "Melee",
+                "release_date": "2019-01-08 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "IMPE",
+                "build_copy_name": "Imperius",
+                "last_updated": "2024-02-06 18:32:51"
+            },
+            "name": "Imperius",
+            "wins": 0,
+            "losses": 1,
+            "win_rate": 0,
+            "games_played": 1,
+            "battletag": "ExamplePlayer1#0000",
+            "blizz_id": 9000001,
+            "season": "22",
+            "division": null,
+            "link": "/Esports/NGS/Player/Topgun707#1875/2215383/Hero/Imperius?season=22"
+        }
+    ],
+    "hero_top_three_highest_win_rate": [
+        {
+            "hero_id": 86,
+            "hero": {
+                "id": 86,
+                "name": "Imperius",
+                "short_name": "imperius",
+                "alt_name": null,
+                "role": "Warrior",
+                "new_role": "Bruiser",
+                "type": "Melee",
+                "release_date": "2019-01-08 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "IMPE",
+                "build_copy_name": "Imperius",
+                "last_updated": "2024-02-06 18:32:51"
+            },
+            "name": "Imperius",
+            "wins": 0,
+            "losses": 1,
+            "win_rate": 0,
+            "games_played": 1,
+            "battletag": "ExamplePlayer1#0000",
+            "blizz_id": 9000001,
+            "season": "22",
+            "division": null,
+            "link": "/Esports/NGS/Player/Topgun707#1875/2215383/Hero/Imperius?season=22"
+        }
+    ],
+    "hero_top_three_lowest_win_rate": [
+        {
+            "hero_id": 86,
+            "hero": {
+                "id": 86,
+                "name": "Imperius",
+                "short_name": "imperius",
+                "alt_name": null,
+                "role": "Warrior",
+                "new_role": "Bruiser",
+                "type": "Melee",
+                "release_date": "2019-01-08 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "IMPE",
+                "build_copy_name": "Imperius",
+                "last_updated": "2024-02-06 18:32:51"
+            },
+            "name": "Imperius",
+            "wins": 0,
+            "losses": 1,
+            "win_rate": 0,
+            "games_played": 1,
+            "battletag": "ExamplePlayer1#0000",
+            "blizz_id": 9000001,
+            "season": "22",
+            "division": null,
+            "link": "/Esports/NGS/Player/Topgun707#1875/2215383/Hero/Imperius?season=22"
+        }
+    ],
+    "maps": [
+        {
+            "map_id": 12,
+            "map": {
+                "map_id": 12,
+                "name": "Towers of Doom",
+                "short_name": "TowersOfDoom",
+                "type": "standard",
+                "ranked_rotation": 1,
+                "playable": 1,
+                "sanitized_map_name": "towers_of_doom"
+            },
+            "game_map": {
+                "map_id": 12,
+                "name": "Towers of Doom",
+                "short_name": "TowersOfDoom",
+                "type": "standard",
+                "ranked_rotation": 1,
+                "playable": 1,
+                "sanitized_map_name": "towers_of_doom"
+            },
+            "name": "Towers of Doom",
+            "wins": 0,
+            "losses": 1,
+            "win_rate": 0,
+            "games_played": 1,
+            "battletag": "ExamplePlayer1#0000",
+            "blizz_id": 9000001,
+            "season": "22",
+            "division": null,
+            "link": "/Esports/NGS/Player/Topgun707#1875/2215383/Map/Towers of Doom?season=22"
+        }
+    ],
+    "map_top_three_most_played": [
+        {
+            "map_id": 12,
+            "map": {
+                "map_id": 12,
+                "name": "Towers of Doom",
+                "short_name": "TowersOfDoom",
+                "type": "standard",
+                "ranked_rotation": 1,
+                "playable": 1,
+                "sanitized_map_name": "towers_of_doom"
+            },
+            "game_map": {
+                "map_id": 12,
+                "name": "Towers of Doom",
+                "short_name": "TowersOfDoom",
+                "type": "standard",
+                "ranked_rotation": 1,
+                "playable": 1,
+                "sanitized_map_name": "towers_of_doom"
+            },
+            "name": "Towers of Doom",
+            "wins": 0,
+            "losses": 1,
+            "win_rate": 0,
+            "games_played": 1,
+            "battletag": "ExamplePlayer1#0000",
+            "blizz_id": 9000001,
+            "season": "22",
+            "division": null,
+            "link": "/Esports/NGS/Player/Topgun707#1875/2215383/Map/Towers of Doom?season=22"
+        }
+    ],
+    "map_top_three_highest_win_rate": [
+        {
+            "map_id": 12,
+            "map": {
+                "map_id": 12,
+                "name": "Towers of Doom",
+                "short_name": "TowersOfDoom",
+                "type": "standard",
+                "ranked_rotation": 1,
+                "playable": 1,
+                "sanitized_map_name": "towers_of_doom"
+            },
+            "game_map": {
+                "map_id": 12,
+                "name": "Towers of Doom",
+                "short_name": "TowersOfDoom",
+                "type": "standard",
+                "ranked_rotation": 1,
+                "playable": 1,
+                "sanitized_map_name": "towers_of_doom"
+            },
+            "name": "Towers of Doom",
+            "wins": 0,
+            "losses": 1,
+            "win_rate": 0,
+            "games_played": 1,
+            "battletag": "ExamplePlayer1#0000",
+            "blizz_id": 9000001,
+            "season": "22",
+            "division": null,
+            "link": "/Esports/NGS/Player/Topgun707#1875/2215383/Map/Towers of Doom?season=22"
+        }
+    ],
+    "map_top_three_lowest_win_rate": [
+        {
+            "map_id": 12,
+            "map": {
+                "map_id": 12,
+                "name": "Towers of Doom",
+                "short_name": "TowersOfDoom",
+                "type": "standard",
+                "ranked_rotation": 1,
+                "playable": 1,
+                "sanitized_map_name": "towers_of_doom"
+            },
+            "game_map": {
+                "map_id": 12,
+                "name": "Towers of Doom",
+                "short_name": "TowersOfDoom",
+                "type": "standard",
+                "ranked_rotation": 1,
+                "playable": 1,
+                "sanitized_map_name": "towers_of_doom"
+            },
+            "name": "Towers of Doom",
+            "wins": 0,
+            "losses": 1,
+            "win_rate": 0,
+            "games_played": 1,
+            "battletag": "ExamplePlayer1#0000",
+            "blizz_id": 9000001,
+            "season": "22",
+            "division": null,
+            "link": "/Esports/NGS/Player/Topgun707#1875/2215383/Map/Towers of Doom?season=22"
+        }
+    ],
+    "seasons": [
+        {
+            "code": null,
+            "name": "All"
+        },
+        {
+            "code": "22",
+            "name": "22"
+        },
+        {
+            "code": "21",
+            "name": "21"
+        },
+        {
+            "code": "20",
+            "name": "20"
+        },
+        {
+            "code": "19",
+            "name": "19"
+        },
+        {
+            "code": "18",
+            "name": "18"
+        },
+        {
+            "code": "17",
+            "name": "17"
+        },
+        {
+            "code": "15",
+            "name": "15"
+        },
+        {
+            "code": "12",
+            "name": "12"
+        }
+    ],
+    "divisions": [
+        {
+            "code": null,
+            "name": "All"
+        },
+        {
+            "code": "B SouthEast",
+            "name": "B SouthEast"
+        },
+        {
+            "code": "A",
+            "name": "A"
+        },
+        {
+            "code": "B",
+            "name": "B"
+        },
+        {
+            "code": "Nexus",
+            "name": "Nexus"
+        }
+    ],
+    "players": {
+        "ExamplePlayer1#0000": {
+            "battletag": "ExamplePlayer2#0000",
+            "blizz_id": 9000001,
+            "most_played_hero": {
+                "id": 86,
+                "name": "Imperius",
+                "short_name": "imperius",
+                "alt_name": null,
+                "role": "Warrior",
+                "new_role": "Bruiser",
+                "type": "Melee",
+                "release_date": "2019-01-08 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "IMPE",
+                "build_copy_name": "Imperius",
+                "last_updated": "2024-02-06 18:32:51"
+            },
+            "win_rate_on_hero": 0,
+            "most_played_role": "Bruiser",
+            "games_played": 1,
+            "playerlink": "/Esports/NGS/Player/ExamplePlayer1/9000001",
+            "herolink": "/Esports/NGS/Player/ExamplePlayer7/9000007"
+        }
+    },
+    "heroes_lost_against": [
+        {
+            "hero": {
+                "id": 86,
+                "name": "Imperius",
+                "short_name": "imperius",
+                "alt_name": null,
+                "role": "Warrior",
+                "new_role": "Bruiser",
+                "type": "Melee",
+                "release_date": "2019-01-08 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "IMPE",
+                "build_copy_name": "Imperius",
+                "last_updated": "2024-02-06 18:32:51"
+            },
+            "total": 1,
+            "inputhover": "Lost against a team with Imperius 1 times (500% of all games lost as )"
+        },
+        {
+            "hero": {
+                "id": 8,
+                "name": "Brightwing",
+                "short_name": "brightwing",
+                "alt_name": "FaerieDragon",
+                "role": "Support",
+                "new_role": "Healer",
+                "type": "Ranged",
+                "release_date": "2014-04-15 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Faer",
+                "build_copy_name": "Brightwing",
+                "last_updated": "2024-02-06 18:32:51"
+            },
+            "total": 1,
+            "inputhover": "Lost against a team with Brightwing 1 times (500% of all games lost as )"
+        },
+        {
+            "hero": {
+                "id": 19,
+                "name": "Garrosh",
+                "short_name": "garrosh",
+                "alt_name": null,
+                "role": "Warrior",
+                "new_role": "Tank",
+                "type": "Melee",
+                "release_date": "2017-08-08 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Garr",
+                "build_copy_name": "Garrosh",
+                "last_updated": "2024-02-06 18:32:51"
+            },
+            "total": 1,
+            "inputhover": "Lost against a team with Garrosh 1 times (500% of all games lost as )"
+        },
+        {
+            "hero": {
+                "id": 50,
+                "name": "Sonya",
+                "short_name": "sonya",
+                "alt_name": "Barbarian",
+                "role": "Warrior",
+                "new_role": "Bruiser",
+                "type": "Melee",
+                "release_date": "2014-03-13 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91368",
+                "attribute_id": "Barb",
+                "build_copy_name": "Sonya",
+                "last_updated": "2024-02-02 15:34:06"
+            },
+            "total": 1,
+            "inputhover": "Lost against a team with Sonya 1 times (500% of all games lost as )"
+        },
+        {
+            "hero": {
+                "id": 62,
+                "name": "Uther",
+                "short_name": "uther",
+                "alt_name": null,
+                "role": "Support",
+                "new_role": "Healer",
+                "type": "Melee",
+                "release_date": "2014-03-13 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91368",
+                "attribute_id": "Uthe",
+                "build_copy_name": "Uther",
+                "last_updated": "2024-02-02 15:34:06"
+            },
+            "total": 1,
+            "inputhover": "Lost against a team with Uther 1 times (500% of all games lost as )"
+        },
+        {
+            "hero": {
+                "id": 6,
+                "name": "Auriel",
+                "short_name": "auriel",
+                "alt_name": null,
+                "role": "Support",
+                "new_role": "Healer",
+                "type": "Ranged",
+                "release_date": "2016-08-09 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Auri",
+                "build_copy_name": "Auriel",
+                "last_updated": "2024-02-06 18:32:51"
+            },
+            "total": 1,
+            "inputhover": "Lost against a team with Auriel 1 times (500% of all games lost as )"
+        },
+        {
+            "hero": {
+                "id": 14,
+                "name": "Dehaka",
+                "short_name": "dehaka",
+                "alt_name": null,
+                "role": "Warrior",
+                "new_role": "Bruiser",
+                "type": "Melee",
+                "release_date": "2016-03-29 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Deha",
+                "build_copy_name": "Dehaka",
+                "last_updated": "2024-02-06 18:32:51"
+            },
+            "total": 1,
+            "inputhover": "Lost against a team with Dehaka 1 times (500% of all games lost as )"
+        },
+        {
+            "hero": {
+                "id": 70,
+                "name": "Zul'jin",
+                "short_name": "zuljin",
+                "alt_name": "Zuljin",
+                "role": "Assassin",
+                "new_role": "Ranged Assassin",
+                "type": "Ranged",
+                "release_date": "2017-01-04 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "ZULJ",
+                "build_copy_name": "Zuljin",
+                "last_updated": "2024-02-06 18:32:51"
+            },
+            "total": 1,
+            "inputhover": "Lost against a team with Zul'jin 1 times (500% of all games lost as )"
+        },
+        {
+            "hero": {
+                "id": 60,
+                "name": "Tyrael",
+                "short_name": "tyrael",
+                "alt_name": null,
+                "role": "Warrior",
+                "new_role": "Tank",
+                "type": "Melee",
+                "release_date": "2014-03-13 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91368",
+                "attribute_id": "Tyrl",
+                "build_copy_name": "Tyrael",
+                "last_updated": "2024-02-02 15:34:06"
+            },
+            "total": 1,
+            "inputhover": "Lost against a team with Tyrael 1 times (500% of all games lost as )"
+        },
+        {
+            "hero": {
+                "id": 59,
+                "name": "Tychus",
+                "short_name": "tychus",
+                "alt_name": null,
+                "role": "Assassin",
+                "new_role": "Ranged Assassin",
+                "type": "Ranged",
+                "release_date": "2014-03-18 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91368",
+                "attribute_id": "Tych",
+                "build_copy_name": "Tychus",
+                "last_updated": "2024-02-02 15:34:06"
+            },
+            "total": 1,
+            "inputhover": "Lost against a team with Tychus 1 times (500% of all games lost as )"
+        }
+    ],
+    "heroes_won_against": [],
+    "enemy_teams": [
+        {
+            "team": "Little Buff Boyz",
+            "total": 1,
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Little_Buff_Boyz_5788.png",
+            "inputhover": "Lost against team Little Buff Boyz 1 times (500% of all games lost as )",
+            "enemy_link": "/Esports/NGS/Team/Little Buff Boyz?season=22"
+        },
+        {
+            "team": "Tricky Gooses",
+            "total": 1,
+            "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Tricky_Gooses_3573.png",
+            "inputhover": "Lost against team Tricky Gooses 1 times (500% of all games lost as )",
+            "enemy_link": "/Esports/NGS/Team/Tricky Gooses?season=22"
+        }
+    ],
+    "team_ban_date": [
+        {
+            "hero": {
+                "id": 26,
+                "name": "Johanna",
+                "short_name": "johanna",
+                "alt_name": "Crusader",
+                "role": "Warrior",
+                "new_role": "Tank",
+                "type": "Melee",
+                "release_date": "2015-06-02 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91368",
+                "attribute_id": "Crus",
+                "build_copy_name": "Johanna",
+                "last_updated": "2024-02-02 15:34:06"
+            },
+            "bans": 1,
+            "inputhover": "Times Banned: 1"
+        },
+        {
+            "hero": {
+                "id": 53,
+                "name": "Sylvanas",
+                "short_name": "sylvanas",
+                "alt_name": null,
+                "role": "Specialist",
+                "new_role": "Ranged Assassin",
+                "type": "Ranged",
+                "release_date": "2015-03-24 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Sylv",
+                "build_copy_name": "Sylvanas",
+                "last_updated": "2024-02-06 18:32:51"
+            },
+            "bans": 1,
+            "inputhover": "Times Banned: 1"
+        },
+        {
+            "hero": {
+                "id": 87,
+                "name": "Anduin",
+                "short_name": "anduin",
+                "alt_name": "",
+                "role": "Healer",
+                "new_role": "Healer",
+                "type": "Ranged",
+                "release_date": "2019-04-30 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Andu",
+                "build_copy_name": "Anduin",
+                "last_updated": "2024-02-06 18:32:51"
+            },
+            "bans": 1,
+            "inputhover": "Times Banned: 1"
+        }
+    ],
+    "enemy_ban_date": [
+        {
+            "hero": {
+                "id": 3,
+                "name": "Anub'arak",
+                "short_name": "anubarak",
+                "alt_name": "Anubarak",
+                "role": "Warrior",
+                "new_role": "Tank",
+                "type": "Melee",
+                "release_date": "2014-10-07 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91368",
+                "attribute_id": "Anub",
+                "build_copy_name": "Anubarak",
+                "last_updated": "2024-02-02 15:34:06"
+            },
+            "bans": 1,
+            "inputhover": "Times Banned: 1"
+        },
+        {
+            "hero": {
+                "id": 17,
+                "name": "Falstad",
+                "short_name": "falstad",
+                "alt_name": null,
+                "role": "Assassin",
+                "new_role": "Ranged Assassin",
+                "type": "Ranged",
+                "release_date": "2014-03-13 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Fals",
+                "build_copy_name": "Falstad",
+                "last_updated": "2024-02-06 18:32:51"
+            },
+            "bans": 1,
+            "inputhover": "Times Banned: 1"
+        },
+        {
+            "hero": {
+                "id": 51,
+                "name": "Stitches",
+                "short_name": "stitches",
+                "alt_name": null,
+                "role": "Warrior",
+                "new_role": "Tank",
+                "type": "Melee",
+                "release_date": "2014-03-13 00:00:00",
+                "rework_date": null,
+                "last_change_patch_version": "2.55.4.91769",
+                "attribute_id": "Stit",
+                "build_copy_name": "Stitches",
+                "last_updated": "2024-02-06 18:32:51"
+            },
+            "bans": 1,
+            "inputhover": "Times Banned: 1"
+        }
+    ],
+    "maps_banned": []
+}
