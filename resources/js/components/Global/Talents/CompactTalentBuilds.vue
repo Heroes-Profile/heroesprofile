@@ -1,7 +1,7 @@
 <template>
   <section aria-label="Talent builds">
     <div v-if="buildData.length" class="overflow-x-auto">
-      <table class="w-full text-sm">
+      <table class="min-w-0 w-full responsive-table text-sm">
         <thead>
           <tr>
             <th scope="col" class="p-2 text-left">#</th>
