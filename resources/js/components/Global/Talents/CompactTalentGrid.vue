@@ -19,26 +19,28 @@
         <talent-image-wrapper class="shrink-0" :talent="talent.talentInfo"></talent-image-wrapper>
         <div class="min-w-0 flex-1">
           <h3 class="text-sm font-bold leading-tight mb-1.5">{{ talent.talentInfo.title }}</h3>
-          <dl class="grid grid-cols-[max-content_minmax(0,1fr)_max-content] items-center gap-x-1.5 gap-y-1 text-xs">
+          <dl class="grid grid-cols-[max-content_minmax(0,1fr)] items-center gap-x-1.5 gap-y-1 text-xs">
             <dt><span aria-hidden="true">WR</span><span class="sr-only">Win rate</span></dt>
-            <dd class="h-2 overflow-hidden rounded-full bg-black/30" aria-hidden="true">
-              <span class="block h-full rounded-full bg-green" :style="{ width: percentWidth(talent.win_rate) }"></span>
+            <dd>
+              <stat-bar :value="talent.win_rate" :display-text="formatPercent(talent.win_rate)"
+                color="teal" :divider="false"
+                class="text-xs font-bold leading-5"></stat-bar>
             </dd>
-            <dd class="font-bold text-right whitespace-nowrap tabular-nums">{{ formatPercent(talent.win_rate) }}</dd>
 
             <dt><span aria-hidden="true">Pop</span><span class="sr-only">Popularity</span></dt>
-            <dd class="h-2 overflow-hidden rounded-full bg-black/30" aria-hidden="true">
-              <span class="block h-full rounded-full bg-purple" :style="{ width: percentWidth(talent.popularity) }"></span>
+            <dd>
+              <stat-bar :value="talent.popularity" :display-text="formatPercent(talent.popularity)"
+                color="purple" :divider="false"
+                class="text-xs font-bold leading-5"></stat-bar>
             </dd>
-            <dd class="font-bold text-right whitespace-nowrap tabular-nums">{{ formatPercent(talent.popularity) }}</dd>
 
             <dt>
               <i class="fa-solid fa-gamepad text-xs text-white/70" aria-hidden="true"></i>
               <span class="sr-only">Games played</span>
             </dt>
-            <dd class="col-span-2">{{ formatGames(talent.games_played) }}</dd>
+            <dd>{{ formatGames(talent.games_played) }}</dd>
             <template v-if="statFilter && statFilter !== 'win_rate'">
-              <dt class="col-span-2">{{ statFilterLabel(statFilter) }}</dt>
+              <dt>{{ statFilterLabel(statFilter) }}</dt>
               <dd class="font-bold text-right">{{ formatNumber(talent.total_filter_type) }}</dd>
             </template>
           </dl>
@@ -50,9 +52,13 @@
 </template>
 
 <script>
+import StatBar from '../../StatBar.vue';
 import { statFilterLabel } from '../../../utils/statFilterLabel';
 
 export default {
+  components: {
+    StatBar,
+  },
   props: {
     talentData: { type: Object, required: true },
     statFilter: { type: String, default: 'win_rate' },
@@ -100,9 +106,6 @@ export default {
         minimumFractionDigits: 0,
         maximumFractionDigits: 2,
       })}%`;
-    },
-    percentWidth(value) {
-      return `${Math.min(100, Math.max(0, Number(value) || 0))}%`;
     },
     formatGames(value) {
       const games = Number(value) || 0;

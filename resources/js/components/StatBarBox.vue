@@ -1,8 +1,6 @@
 <template>
-  <div :class="['w-auto inline-block m-1  items-center   min-w-[5em] ',
+  <div :class="['inline-block m-1 items-center min-w-[5em]', widthClass,
   {
-      'w-full': size === 'big',
-      'w-[10em]': size != 'big',
       'text-right items-right' : align === 'right',
       'text-left' : align === 'left',
       'text-center' : align === 'center'
@@ -10,44 +8,29 @@
   ]">
        <h2 class="rounded  px-2 py-1 text-sm  uppercase "> {{ title }}</h2>
     
-    <div :class=" [' variable-background  rounded rounded-l-lg ring-inset ring-[1px]  variable-ring',
-     {
-      'w-full': size === 'big',
-      'w-[10em]': size != 'big',
-      'w-full text-left': size === 'full',
-      'text-right ml-auto' : align === 'right',
-      'text-left' : align === 'left',
-      'text-center' : align === 'center'
-
-
-    }
-    ]">
-      <div :class="[
-        'stat-bar bg-blue rounded-l  ',
-        bgColor,
+    <stat-bar :value="value" :display-text="displaytext ? displaytext : value"
+      :suffix="displaytext ? '' : '%'" suffix-class="text-xs"
+      :color="color" :divider="true"
+      :class="[
+        'rounded-l-lg',
+        widthClass,
         {
-          'w-full': size === 'full',
-          'border-r-2 border-black': value != 0 && value != 100,
-          'rounded-r': value == 100
+          'text-left': align === 'left' || (size === 'full' && align !== 'right' && align !== 'center'),
+          'text-right ml-auto': align === 'right',
+          'text-center': align === 'center',
+          'py-2': size === 'big',
         }
-        
-        ]"
-          :style="{ width: this.value +'%' }">
-        <span :class="[
-        ' px-2 flex items-center text-white ',
-        {
-          'py-2' : size === 'big',
-        }
-        ]"><span v-if="displaytext">{{displaytext}}</span><span v-else>{{ value }}<span class="text-xs">%</span></span></span>
-      </div>
-    </div>
+      ]"></stat-bar>
   </div>
 </template>
 
 <script>
+import StatBar from './StatBar.vue';
+
 export default {
   name: 'StatBarBox',
   components: {
+    StatBar,
   },
   props: {
     title: {
@@ -63,32 +46,10 @@ export default {
       type: [String, Number]
     },
   },
-  data(){
-    return {
-    }
-  },
-  created(){
-  },
-  mounted() {
-  },
   computed: {
-    barWidth(){
-      return "w-[${this.value}%]"
-
+    widthClass() {
+      return this.size === 'big' || this.size === 'full' ? 'w-full' : 'w-[10em]';
     },
-    bgColor() {
-
-        if(this.color){
-          return `bg-${this.color}`;
-        }
-        else{
-          return 'bg-blue';
-        }
-      },
   },
-  watch: {
-  },
-  methods: {
-  }
 }
 </script>
