@@ -26,7 +26,7 @@
             </dd>
 
             <dt>
-              <i class="fa-solid fa-gamepad text-xs text-white/70" aria-hidden="true"></i>
+              <i class="fa-solid text-xs text-white/70" :class="iconTrial[tier.level]" aria-hidden="true"></i>
               <span class="sr-only">Games played</span>
             </dt>
             <dd>{{ formatGames(talent.games_played) }}</dd>
@@ -53,6 +53,20 @@ export default {
   props: {
     talentData: { type: Object, required: true },
     statFilter: { type: String, default: 'win_rate' },
+  },
+  data() {
+    return {
+      // TEMP: one candidate icon per talent tier so they can be compared side by side
+      iconTrial: {
+        1: 'fa-layer-group',
+        4: 'fa-hashtag',
+        7: 'fa-gamepad',
+        10: 'fa-flag-checkered',
+        13: 'fa-dice',
+        16: 'fa-list-ol',
+        20: 'fa-chart-simple',
+      },
+    };
   },
   computed: {
     tiers() {
