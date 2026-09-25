@@ -17,9 +17,9 @@
     <button type="button" class="absolute top-2 right-3 text-xs opacity-60 hover:opacity-100" title="Minimize" @click="setMinimized(true)">
       Hide <i class="fas fa-chevron-up ml-1"></i>
     </button>
-    <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 max-w-[1500px] mx-auto">
-      <div class="font-logo text-xl tracking-wide xalatath-title">Xal'atath</div>
+    <div class="font-logo text-3xl tracking-wide xalatath-title mb-2">Xal'atath</div>
 
+    <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 max-w-[1500px] mx-auto">
       <div v-for="tile in tiles" :key="tile.label" class="flex flex-col min-w-[110px]">
         <span class="text-xs uppercase flex items-center justify-center gap-1">
           <span class="opacity-75">{{ tile.label }}</span>
