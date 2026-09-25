@@ -2,12 +2,15 @@
 
 namespace App\Services;
 
+use App\Http\Middleware\TrackSlowRequests;
 use App\Support\DatabaseCacheReader;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Spatie\LaravelIgnition\Facades\Flare;
 
 class GlobalQueryService
 {
@@ -76,6 +79,7 @@ class GlobalQueryService
             'handler_method' => $handlerMethod,
             'request' => $requestData,
             'cache_ttl_seconds' => $cacheTtlSeconds,
+            'origin' => $this->origin(),
             'error' => null,
         ];
 
@@ -124,6 +128,7 @@ class GlobalQueryService
             'handler_method' => $handlerMethod,
             'request' => $requestData,
             'cache_ttl_seconds' => $cacheTtlSeconds,
+            'origin' => $this->origin(),
             'error' => null,
         ];
 
@@ -169,6 +174,7 @@ class GlobalQueryService
             'handler_method' => $handlerMethod,
             'request' => $requestData,
             'cache_ttl_seconds' => $cacheTtlSeconds,
+            'origin' => $this->origin(),
             'error' => null,
         ];
 
@@ -257,6 +263,7 @@ class GlobalQueryService
             'handler_class' => $handlerClass,
             'handler_method' => $handlerMethod,
             'children' => $seeded,
+            'origin' => $this->origin(),
             'cache_ttl_seconds' => $cacheTtlSeconds,
             'error' => null,
         ], self::STATUS_TTL_SECONDS);
@@ -452,6 +459,16 @@ class GlobalQueryService
 
         $this->markProcessing($jobId, $job);
 
+        // The worker's own request body is only the job id. Set before running so a
+        // crash, out-of-memory included, is reported with what was actually asked.
+        $input = Arr::except($job['request'] ?? [], TrackSlowRequests::HIDDEN_INPUT);
+        Flare::context('job_handler', $job['handler_class'].'@'.$job['handler_method']);
+        Flare::context('job_origin', $job['origin'] ?? 'unknown');
+        Flare::context('job_input', $input);
+        Flare::context('job_attempt', $attempt);
+
+        $start = microtime(true);
+
         try {
             $handler = app($job['handler_class']);
 
@@ -463,6 +480,16 @@ class GlobalQueryService
             $data = $handler->{$job['handler_method']}($request);
 
             $this->markComplete($jobId, $job, $data);
+
+            $seconds = round(microtime(true) - $start, 2);
+
+            if ($seconds >= TrackSlowRequests::THRESHOLD_SECONDS) {
+                Flare::context('duration_seconds', $seconds);
+                Flare::reportMessage(
+                    "Slow job ({$seconds}s): ".class_basename($job['handler_class']).'@'.$job['handler_method'],
+                    'error'
+                );
+            }
 
             Log::info('Global query job complete', [
                 'job_id' => $jobId,
@@ -482,6 +509,21 @@ class GlobalQueryService
         }
 
         $this->topUpParent($job);
+    }
+
+    /**
+     * Who created the job. Keys are shared, so anyone asking the same question
+     * afterwards waits on this job rather than starting their own.
+     */
+    private function origin(): string
+    {
+        $request = request();
+
+        if ($request->hasHeader('X-CloudTasks-TaskName')) {
+            return 'worker';
+        }
+
+        return str_starts_with($request->route()?->getName() ?? '', 'api.external.') ? 'api' : 'site';
     }
 
     public function jobKey(string $jobId): string
@@ -702,6 +744,7 @@ class GlobalQueryService
             'handler_method' => $parent['handler_method'],
             'request' => $child['request'],
             'cache_ttl_seconds' => $parent['cache_ttl_seconds'],
+            'origin' => $parent['origin'] ?? null,
             'parent_job_id' => $parentJobId,
             'label' => $label,
             'attempts' => 0,

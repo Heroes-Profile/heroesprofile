@@ -22,6 +22,7 @@ use App\Rules\HeroInputValidation;
 use App\Rules\RoleInputValidation;
 use App\Rules\SeasonInputValidation;
 use App\Services\GlobalQueryService;
+use App\Support\GlobalCacheKey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -79,7 +80,7 @@ class PlayerHeroesMapsRolesController extends Controller
             return response()->json($this->executeGetData($request));
         }
 
-        $paramsHash = hash('sha256', json_encode([
+        $paramsHash = hash('sha256', json_encode(GlobalCacheKey::normalize([
             'blizz_id' => $request['blizz_id'],
             'region' => $request['region'],
             'type' => $request['type'],
@@ -92,7 +93,7 @@ class PlayerHeroesMapsRolesController extends Controller
             'start_date' => $request['start_date'],
             'end_date' => $request['end_date'],
             'minimumgames' => $request['minimumgames'],
-        ]));
+        ])));
 
         $dbCache = PlayerStatsCache::where('params_hash', $paramsHash)->first();
 
@@ -862,7 +863,7 @@ class PlayerHeroesMapsRolesController extends Controller
             $returnData = array_values($filteredData);
         }
 
-        $paramsHash = hash('sha256', json_encode([
+        $paramsHash = hash('sha256', json_encode(GlobalCacheKey::normalize([
             'blizz_id' => $request['blizz_id'],
             'region' => $request['region'],
             'type' => $request['type'],
@@ -875,7 +876,7 @@ class PlayerHeroesMapsRolesController extends Controller
             'start_date' => $request['start_date'],
             'end_date' => $request['end_date'],
             'minimumgames' => $request['minimumgames'],
-        ]));
+        ])));
 
         $latestReplayId = $this->getLatestReplayId(
             $request['blizz_id'],

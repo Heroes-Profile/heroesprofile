@@ -74,6 +74,10 @@ class GlobalDataService
 
     private $cachedSeasonsData = null;
 
+    private ?array $cachedHiddenFlair = null;
+
+    private ?array $cachedRestrictedKeys = null;
+
     public function __construct() {}
 
     public function getHeaderAlert()
@@ -199,7 +203,7 @@ class GlobalDataService
      */
     public function getHiddenFlair(): array
     {
-        return Cache::remember('global_hidden_flair', 60, function () {
+        return $this->cachedHiddenFlair ??= Cache::remember('global_hidden_flair', 60, function () {
             $rows = BattlenetUserSetting::query()
                 ->join('battlenet_accounts', 'battlenet_accounts.battlenet_accounts_id', '=', 'battlenet_user_settings.battlenet_accounts_id')
                 ->whereIn('battlenet_user_settings.setting', array_values(self::FLAIR_HIDE_SETTINGS))
@@ -356,7 +360,7 @@ class GlobalDataService
      */
     public function restrictedAccountKeys(): array
     {
-        return Cache::remember('restricted_account_keys', self::RESTRICTED_KEYS_SECONDS, function () {
+        return $this->cachedRestrictedKeys ??= Cache::remember('restricted_account_keys', self::RESTRICTED_KEYS_SECONDS, function () {
             $keys = [];
 
             foreach (BattlenetAccount::without(['patreonAccount', 'userSettings'])->where('private', 1)->get(['blizz_id', 'region']) as $account) {
@@ -392,6 +396,7 @@ class GlobalDataService
     /** Called when an account's privacy changes, so it takes effect immediately. */
     public function forgetRestrictedAccount($blizzId, $region): void
     {
+        $this->cachedRestrictedKeys = null;
         Cache::forget('restricted_account_keys');
     }
 

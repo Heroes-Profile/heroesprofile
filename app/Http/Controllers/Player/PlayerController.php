@@ -18,6 +18,7 @@ use App\Models\Replay;
 use App\Rules\DateInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\SeasonInputValidation;
+use App\Support\GlobalCacheKey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -201,7 +202,7 @@ class PlayerController extends Controller
      */
     private function getCustomProfile($blizz_id, $region, $game_type, $seasons, $startDate, $endDate, $latestReplayID)
     {
-        $paramsHash = hash('sha256', json_encode([
+        $paramsHash = hash('sha256', json_encode(GlobalCacheKey::normalize([
             'page' => 'profile',
             'blizz_id' => $blizz_id,
             'region' => $region,
@@ -209,7 +210,7 @@ class PlayerController extends Controller
             'season' => $seasons,
             'start_date' => $startDate,
             'end_date' => $endDate,
-        ]));
+        ])));
 
         $dbCache = PlayerStatsCache::where('params_hash', $paramsHash)->first();
 

@@ -14,6 +14,7 @@ use App\Rules\HeroInputByIDValidation;
 use App\Rules\RoleInputValidation;
 use App\Rules\SeasonInputValidation;
 use App\Services\GlobalQueryService;
+use App\Support\GlobalCacheKey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -249,7 +250,7 @@ class PlayerAwardsController extends Controller
 
     private function paramsHash(Request $request): string
     {
-        return hash('sha256', json_encode([
+        return hash('sha256', json_encode(GlobalCacheKey::normalize([
             'page' => 'awards',
             'blizz_id' => $request['blizz_id'],
             'region' => $request['region'],
@@ -260,7 +261,7 @@ class PlayerAwardsController extends Controller
             'season' => $request['season'],
             'start_date' => $request['start_date'],
             'end_date' => $request['end_date'],
-        ]));
+        ])));
     }
 
     private function getLatestReplayId(Request $request): ?int
