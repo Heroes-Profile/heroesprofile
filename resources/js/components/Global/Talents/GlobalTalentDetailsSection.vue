@@ -17,16 +17,16 @@
               Talent
             </th>
             <th @click="sortTable('win_rate', level)" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Win Rate
+              Win Rate %
             </th>
             <th @click="sortTable('popularity', level)" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Popularity
+              Popularity %
             </th>                
             <th @click="sortTable('games_played', level)" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Games Played
             </th>     
             <th v-if="statfilter && statfilter != 'win_rate'" @click="sortTable('total_filter_type', level)" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Avg {{ statfilter.charAt(0).toUpperCase() + statfilter.slice(1) }}
+              {{ statFilterLabel(statfilter) }}
             </th>                            
           </tr>
         </thead>
@@ -52,6 +52,8 @@
 </template>
 
 <script>
+import { statFilterLabel } from '../../../utils/statFilterLabel';
+
 export default {
   name: 'GlobalTalentDetailsSection',
   components: {
@@ -80,6 +82,7 @@ export default {
   watch: {
   },
   methods: {
+    statFilterLabel,
     sortTable(columnKey, level) {
       if(!this.esport){
         if (!this.sortOrders[level]) {

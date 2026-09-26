@@ -39,6 +39,7 @@ class ProfileController extends Controller
             'playermultigametype' => 'sometimes|nullable|array',
             'talentbuildtype' => ['sometimes', 'nullable', new TalentBuildTypeInputValidation],
             'talentbuilderstyle' => 'nullable|in:vertical,horizontal',
+            'talentStatsLayout' => 'nullable|in:table,compact',
             'darkmode' => 'nullable|boolean',
             'playerhistorytable' => 'nullable|boolean',
             'customgames' => 'nullable|boolean',
@@ -137,6 +138,13 @@ class ProfileController extends Controller
             $user->userSettings()->updateOrCreate(
                 ['setting' => 'talentbuilderstyle'],
                 ['value' => $request['talentbuilderstyle']]
+            );
+        }
+
+        if (! is_null($request['talentStatsLayout'])) {
+            $user->userSettings()->updateOrCreate(
+                ['setting' => 'talentStatsLayout'],
+                ['value' => $request['talentStatsLayout']]
             );
         }
 

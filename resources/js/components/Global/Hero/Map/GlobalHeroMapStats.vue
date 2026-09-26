@@ -2,7 +2,7 @@
   <div>
     <global-async-debug-banner page-label="Global Hero Maps" />
 
-    <page-heading :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Map Statistics' : 'Hero Map Statistics'">
+    <page-heading :infoText1="infoText" :heading="selectedHero ? 'Map Statistics' : 'Hero Map Statistics'">
       <div v-if="selectedHero" class="relative" @mouseleave="heroDropdownOpen = false">
         <hero-image-wrapper :hero="selectedHero" :size="'big'" :includehover="false" class="cursor-pointer" @click.native="heroDropdownOpen = !heroDropdownOpen"></hero-image-wrapper>
         <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 220px; max-height: 340px; overflow-y: auto;">
@@ -13,6 +13,9 @@
           </div>
         </div>
       </div>
+      <template v-if="selectedHero" #aboveHeading>
+        <hero-heading-select :heroes="heroes" :value="selectedHero.id" @hero-changed="handleInputChange({ value: $event })"></hero-heading-select>
+      </template>
     </page-heading>
     <div v-if="!selectedHero">
       <hero-selection :heroes="heroes"></hero-selection>

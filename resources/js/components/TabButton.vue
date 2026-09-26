@@ -54,10 +54,10 @@
       ignoreclick: Boolean,
       loading: false,
       overridedefaultside: String,
+      small: Boolean,
     },
     data(){
       return {
-        staticClasses: 'transition-colors text-white  py-2 px-4 text-lg inline-block',
         selectedSide: 'left'
       }
     },
@@ -69,7 +69,9 @@
     mounted() {
     },
     computed: {
-    
+      staticClasses() {
+        return 'transition-colors text-white inline-block ' + (this.small ? 'py-1 px-2 text-sm' : 'py-2 px-4 text-lg');
+      },
     },
     watch: {
     },
