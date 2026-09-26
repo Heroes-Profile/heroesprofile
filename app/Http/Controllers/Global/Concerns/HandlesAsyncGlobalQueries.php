@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Global\Concerns;
 
 use App\Services\GlobalQueryService;
+use App\Support\GlobalCacheFreshness;
 use App\Support\GlobalCacheKey;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -27,22 +28,35 @@ trait HandlesAsyncGlobalQueries
             $cache->forget($cacheKey);
         }
 
+        $window = $this->globalDataService->calculateCacheWindow($gameVersion);
+        $cacheTtlSeconds = $window->ttl;
+
         if (! $bypassCache) {
             $cached = $cache->get($cacheKey);
             if ($cached !== null) {
-                return $this->jsonCacheHitResponse($cached);
+                if (! $this->globalDataService->isGlobalAsyncEnabled() || ! GlobalCacheFreshness::isStale($cacheKey, $window)) {
+                    return $this->jsonCacheHitResponse($cached);
+                }
+
+                app(GlobalQueryService::class)->dispatchIfNotPending(
+                    $cacheKey,
+                    static::class,
+                    $executeMethod,
+                    $request->all(),
+                    $cacheTtlSeconds
+                );
+
+                return $this->jsonCacheHitResponse($cached, 'stale');
             }
         }
 
-        $cacheTtlSeconds = $this->globalDataService->calculateCacheTimeInSeconds($gameVersion);
-
         if (! $this->globalDataService->isGlobalAsyncEnabled()) {
+            $data = app(static::class)->{$executeMethod}($request);
 
-            $data = $bypassCache
-                ? app(static::class)->{$executeMethod}($request)
-                : $cache->remember($cacheKey, $cacheTtlSeconds, function () use ($request, $executeMethod) {
-                    return app(static::class)->{$executeMethod}($request);
-                });
+            if (! $bypassCache) {
+                $cache->put($cacheKey, $data, $cacheTtlSeconds);
+                GlobalCacheFreshness::stamp($cacheKey, $cacheTtlSeconds);
+            }
 
             $response = response()->json($data)
                 ->header('X-Global-Async-Mode', 'sync');
@@ -104,14 +118,14 @@ trait HandlesAsyncGlobalQueries
             $children,
             static::class,
             $executeMethod,
-            $this->globalDataService->calculateCacheTimeInSeconds($gameVersion),
+            $this->globalDataService->calculateCacheWindow($gameVersion),
         );
     }
 
-    protected function jsonCacheHitResponse(mixed $data): JsonResponse
+    protected function jsonCacheHitResponse(mixed $data, string $status = 'fresh'): JsonResponse
     {
         return response()->json($data)
-            ->header('X-Global-Cache-Status', 'fresh')
+            ->header('X-Global-Cache-Status', $status)
             ->header('X-Global-Async-Mode', 'cache-hit');
     }
 

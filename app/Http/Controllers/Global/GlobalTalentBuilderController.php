@@ -11,7 +11,6 @@ use App\Models\Talent;
 use App\Rules\HeroInputValidation;
 use App\Rules\SelectedTalentInputValidation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Validator;
 
 class GlobalTalentBuilderController extends GlobalsInputValidationController
@@ -406,23 +405,41 @@ class GlobalTalentBuilderController extends GlobalsInputValidationController
             return ['talentData' => $this->formatTalentData($talents, [])];
         }
 
-        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
-        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
-        $leagueTier = $request['league_tier'];
-        $heroLeagueTier = $request['hero_league_tier'];
-        $roleLeagueTier = $request['role_league_tier'];
-        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
-        $heroLevel = $request['hero_level'];
-        $region = $this->globalDataService->getRegionFilterValues($request['region']);
-        $mirror = $request['mirror'];
         // Its own prefix: GlobalTalentsBuilder holds the builder's win rates, a different shape.
         $cacheKey = $this->globalCacheKey('GlobalTalentsBuilderReplays', SeasonGameVersion::select('id')->whereIn('game_version', $gameVersion)->pluck('id')->toArray(), $request->all());
 
-        return Cache::store('database')->remember(
-            $cacheKey,
-            $this->globalDataService->calculateCacheTimeInSeconds($gameVersion),
-            fn () => $this->replayData($hero, $hero_name, $gameVersion, $gameType, $gameMap, $region, $level_one, $level_four, $level_seven, $level_ten, $level_thirteen, $level_sixteen, $level_twenty)
+        return $this->asyncGlobalResponse($request, $cacheKey, $gameVersion, 'executeReplayData');
+    }
+
+    public function executeReplayData(Request $request)
+    {
+        $hero_name = $request['hero'];
+        $selectedtalents = $request->input('selectedtalents');
+        if (! is_array($selectedtalents)) {
+            $selectedtalents = [];
+        }
+
+        $hero = $this->globalDataService->getHeroFilterValue($request['hero']);
+        $gameVersion = $this->globalDataService->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
+        $gameType = $this->globalDataService->getGameTypeFilterValues($request['game_type']);
+        $gameMap = $this->globalDataService->getGameMapFilterValues($request['game_map']);
+        $region = $this->globalDataService->getRegionFilterValues($request['region']);
+
+        return $this->replayData(
+            $hero,
+            $hero_name,
+            $gameVersion,
+            $gameType,
+            $gameMap,
+            $region,
+            $selectedtalents[1] ?? null,
+            $selectedtalents[4] ?? null,
+            $selectedtalents[7] ?? null,
+            $selectedtalents[10] ?? null,
+            $selectedtalents[13] ?? null,
+            $selectedtalents[16] ?? null,
+            $selectedtalents[20] ?? null,
         );
     }
 

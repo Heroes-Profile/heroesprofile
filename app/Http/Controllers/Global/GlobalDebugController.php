@@ -20,7 +20,7 @@ class GlobalDebugController extends Controller
         }
 
         $cloudTasks = config('global.cloud_tasks');
-        $sampleTimeframe = [$this->globalDataService->getLatestPatch()];
+        $sampleWindow = $this->globalDataService->calculateCacheWindow([$this->globalDataService->getLatestPatch()]);
 
         return response()->json([
             'app_env' => config('app.env'),
@@ -34,7 +34,8 @@ class GlobalDebugController extends Controller
             'global_bypass_cache_runtime' => $this->globalDataService->shouldBypassGlobalCache(),
             'global_bypass_cache_config' => (bool) config('global.bypass_cache'),
             'global_bypass_cache_getenv' => getenv('GLOBAL_BYPASS_CACHE') !== false ? getenv('GLOBAL_BYPASS_CACHE') : null,
-            'cache_fresh_seconds_sample' => $this->globalDataService->calculateCacheTimeInSeconds($sampleTimeframe),
+            'cache_ttl_seconds_sample' => $sampleWindow->ttl,
+            'cache_fresh_seconds_sample' => $sampleWindow->fresh,
             'config_cached' => app()->configurationIsCached(),
             'php_max_execution_time' => ini_get('max_execution_time'),
             'cloud_tasks' => [

@@ -792,11 +792,12 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
         ],
 
         'api.external.heroes.talents.builder.replays' => [
-            'summary' => 'The replays behind a talent-builder result. Send at least one selected talent — with none, it returns the full talent list for that hero rather than replays. Always answers directly, never with a job.',
+            'summary' => 'The replays behind a talent-builder result. Send at least one selected talent — with none, it returns the full talent list for that hero rather than replays.',
             'page' => '/Global/Talents/Builder',
             'uses' => ['globals'],
             // The replay query filters only by version, game type, hero, map and region.
             'except' => ['role', 'groupsize', 'statfilter', 'league_tier', 'hero_league_tier', 'role_league_tier', 'hero_level', 'mirror'],
+            'async' => true,
             'parameters' => [
                 'hero' => ['required' => true, 'description' => 'Hero name.', 'example' => 'Anduin'],
                 'selectedtalents[1]' => ['type' => 'integer', 'description' => 'Talent chosen at level 1. Each value is a `talent_id` from `/heroes/talents` — that endpoint lists every talent for a hero with its `talent_id` and the `level` it belongs to. Send only the levels you have picked; the rest are treated as open.'],

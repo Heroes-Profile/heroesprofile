@@ -12,6 +12,7 @@ use App\Rules\HeroInputValidation;
 use App\Rules\StatFilterInputValidation;
 use App\Rules\TalentBuildTypeInputValidation;
 use App\Services\GlobalQueryService;
+use App\Support\GlobalCacheFreshness;
 use App\Support\GlobalCacheKey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -265,6 +266,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $gameVersion = $this->globalDataService->getTimeframeFilterValues($timeframeType, $timeframe);
         // The same for every hero and game type: one lookup rather than ~270.
         $versionIds = $this->gameVersionIds($gameVersion);
+        $window = $this->globalDataService->calculateCacheWindow($gameVersion);
 
         $result = [];
         $hasMisses = false;
@@ -292,26 +294,26 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                 $cacheKey = $this->globalCacheKey('GlobalHeroTalentStatsBuilds', $versionIds, $heroRequest->all());
 
                 $cached = $cache->get($cacheKey);
+                $result[$heroModel->name][$gameType] = $cached;
 
-                if ($cached !== null) {
-                    $result[$heroModel->name][$gameType] = $cached;
-                } else {
+                // Stale is served like a hit but refreshed like a miss, and keeps the
+                // combined result uncached until the refresh lands.
+                if ($cached === null || GlobalCacheFreshness::isStale($cacheKey, $window)) {
                     $hasMisses = true;
-                    $result[$heroModel->name][$gameType] = null;
                     app(GlobalQueryService::class)->dispatchIfNotPending(
                         $cacheKey,
                         static::class,
                         'executeGlobalHeroTalentBuildData',
                         $heroRequest->all(),
-                        $this->globalDataService->calculateCacheTimeInSeconds($gameVersion)
+                        $window->ttl
                     );
                 }
             }
         }
 
+        // Only as long as its children stay fresh, so it is rebuilt from their refreshes.
         if (! $hasMisses) {
-            $cacheTtlSeconds = $this->globalDataService->calculateCacheTimeInSeconds($gameVersion);
-            $cache->put($allCacheKey, $result, $cacheTtlSeconds);
+            $cache->put($allCacheKey, $result, $window->fresh ?? $window->ttl);
         }
 
         return $result;
@@ -368,7 +370,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
             $children,
             static::class,
             'executeGlobalHeroTalentBuildData',
-            $this->globalDataService->calculateCacheTimeInSeconds($gameVersion),
+            $this->globalDataService->calculateCacheWindow($gameVersion),
         );
     }
 
