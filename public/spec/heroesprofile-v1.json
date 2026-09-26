@@ -5531,7 +5531,7 @@
         },
         "/heroes/talents/builder/replays": {
             "get": {
-                "summary": "The replays behind a talent-builder result. Send at least one selected talent — with none, it returns the full talent list for that hero rather than replays. Always answers directly, never with a job.",
+                "summary": "The replays behind a talent-builder result. Send at least one selected talent — with none, it returns the full talent list for that hero rather than replays.",
                 "operationId": "api.external.heroes.talents.builder.replays",
                 "parameters": [
                     {
@@ -6078,6 +6078,38 @@
                                             "level_twenty"
                                         ]
                                     }
+                                }
+                            }
+                        }
+                    },
+                    "202": {
+                        "description": "The result was not cached. Poll the job for it — polling costs no quota.",
+                        "headers": {
+                            "Location": {
+                                "description": "Where to collect the result.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            },
+                            "Retry-After": {
+                                "description": "Suggested seconds between polls.",
+                                "schema": {
+                                    "type": "integer"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "job_id": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "job_id"
+                                    ]
                                 }
                             }
                         }
