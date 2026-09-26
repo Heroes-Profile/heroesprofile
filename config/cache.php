@@ -108,4 +108,16 @@ return [
 
     'prefix' => env('CACHE_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_cache_'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Use Cache Outside Production
+    |--------------------------------------------------------------------------
+    |
+    | Off by default: local rebuilds global stats and filter data on every
+    | request. Turn on to read and write the cache the same way production does.
+    |
+    */
+
+    'use_locally' => env('USE_CACHE_LOCALLY', false),
+
 ];

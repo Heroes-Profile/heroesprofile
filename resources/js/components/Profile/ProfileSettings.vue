@@ -102,6 +102,10 @@
             <tab-button tab1text="Vertical" tab2text="Horizontal" :ignoreclick="true" @tab-click="talentbuilderstylesetting" :overridedefaultside="talentbuilderstyle"></tab-button>
           </div>
           <div>
+            <h3 class="mb-2">Talent Statistics Layout</h3>
+            <tab-button tab1text="Table" tab2text="Compact" :ignoreclick="true" @tab-click="setTalentStatsLayout" :overridedefaultside="talentStatsLayout"></tab-button>
+          </div>
+          <div>
             <h3 class="mb-2">Show Advanced Filtering Options</h3>
             <single-select-filter class="w-fit"
               :values="advancedfilteringoptions"
@@ -266,6 +270,7 @@ export default {
       talentBuildType: null,
       darkmode: 'left',
       talentbuilderstyle: 'left',
+      talentStatsLayout: 'left',
       playerhistorytable: 'left',
       playerload: 'true',
       customgames: false,
@@ -306,6 +311,7 @@ export default {
     this.talentBuildType = this.defaultBuildType;
     this.darkmode = this.defaultDarkMode;
     this.talentbuilderstyle = this.defaultTalentBuilderStyle;
+    this.talentStatsLayout = this.user.user_settings.some(item => item.setting === 'talentStatsLayout' && item.value === 'compact') ? 'right' : 'left';
     this.playerhistorytable = this.defaultPlayerhistorytable;
     this.customgames = this.defaultCustomGames;
     this.playerload = this.defaultPlayerLoad;
@@ -411,6 +417,7 @@ export default {
           advancedfiltering: this.advancedfiltering,
           talentbuildtype: this.talentBuildType,
           talentbuilderstyle: this.talentbuilderstyle === 'right' ? 'horizontal' : 'vertical',
+          talentStatsLayout: this.talentStatsLayout === 'right' ? 'compact' : 'table',
           darkmode: darkmodeinput,
           playerload: this.playerload,
           customgames: this.customgames,
@@ -475,6 +482,10 @@ export default {
     },
     talentbuilderstylesetting(side) {
       this.talentbuilderstyle = side;
+      this.saveSettings();
+    },
+    setTalentStatsLayout(side) {
+      this.talentStatsLayout = side;
       this.saveSettings();
     },
     playermatchhistorystylesetting(side) {

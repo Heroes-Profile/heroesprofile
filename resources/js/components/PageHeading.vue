@@ -43,6 +43,7 @@
 
         <a v-if="battletag" :href="`/Player/${battletag}/${blizzid}/${region}`" class="text-lg link ">{{ battletag }}({{ regionstring  }}) </a>
         </div>
+        <slot name="aboveHeading"></slot>
         <div class="heading">{{ heading }}</div>
       </div>
     </h1>

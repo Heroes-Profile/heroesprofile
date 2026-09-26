@@ -15,6 +15,8 @@ module.exports = {
       'blue' : '#213d7a',
       'lblue' : '#315bb6',
       'teal' : '#008b8b',
+      'green' : '#22c55e',
+      'purple' : '#a855f7',
       
       'lteal' : '#00d5d5',
       /*'yellow' : '#ffc93e',*/
