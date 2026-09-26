@@ -78,6 +78,9 @@
                                 <a href="/Match/Search" >Replay Search</a>
                                 <a href="/Tools/RandomizeMe" >Randomize Me</a>
                                 <a href="/Tools/Activity" >Activity Graphs</a>
+                                @if (\App\Services\Twitch\TwitchAccess::visible())
+                                <a href="/Twitch" >Twitch Streamers (Beta)</a>
+                                @endif
                                 <a href="/" >Find a Player</a>
 
 

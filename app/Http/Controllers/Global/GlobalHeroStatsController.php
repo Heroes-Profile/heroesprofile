@@ -29,7 +29,13 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
 
         $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
 
-        $validator = Validator::make($request->all(), $validationRules);
+        // The URL carries group sizes comma-joined.
+        $input = $request->all();
+        if (isset($input['group_size']) && is_string($input['group_size'])) {
+            $input['group_size'] = explode(',', $input['group_size']);
+        }
+
+        $validator = Validator::make($input, $validationRules);
 
         if ($validator->fails()) {
             if (config('app.env') === 'production') {
@@ -182,14 +188,18 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
      *
      * Null is not just "do not filter" — it sends the caller to global_hero_stats
      * instead of global_hero_stack_size, which is the only table carrying ban and
-     * change data. `All` therefore means the same as selecting nothing, and wins
-     * over anything picked alongside it.
+     * change data. `All`, or every size picked, therefore means the same as
+     * selecting nothing.
      */
     private function getGroupSizeFilterValues($groupsize)
     {
         $selected = array_filter((array) $groupsize, fn ($value) => $value !== null && $value !== '');
 
         if ($selected === [] || in_array('All', $selected, true)) {
+            return null;
+        }
+
+        if (array_diff(array_keys(self::STACK_SIZES), $selected) === []) {
             return null;
         }
 

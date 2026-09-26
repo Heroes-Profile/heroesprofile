@@ -3,7 +3,9 @@
 use App\Http\Controllers\Api\Account\AccountController as ApiAccountController;
 use App\Http\Controllers\Api\Account\ApiKeyController;
 use App\Http\Controllers\Api\Account\BillingController;
+use App\Http\Controllers\Api\Account\TwitchController;
 use App\Http\Controllers\Api\Admin\AdminConsoleController;
+use App\Http\Controllers\Api\Admin\TwitchAdminController;
 use App\Http\Controllers\BattletagSearchController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\Esports\CCL\CCLController;
@@ -78,7 +80,7 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
 
     // Not blocked while suspended: pointing us at the surface they have just fixed
     // is part of getting reinstated.
-    Route::post('account/website', [ApiAccountController::class, 'setWebsite']);
+    Route::post('account/project', [ApiAccountController::class, 'setProject']);
 
     Route::post('account/billing/setup-intent', [BillingController::class, 'setupIntent']);
     Route::post('account/billing/payment-method', [BillingController::class, 'savePaymentMethod']);
@@ -86,6 +88,13 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
     Route::post('account/billing/cancel', [BillingController::class, 'cancel']);
     Route::post('account/billing/resume', [BillingController::class, 'resume'])->middleware('blockSuspendedApi');
     Route::get('account/billing/invoices', [BillingController::class, 'invoices']);
+
+    // Twitch extension. A new uploader key and a public listing are both refused
+    // while suspended; turning things off and disconnecting are not.
+    Route::post('account/twitch/key', [TwitchController::class, 'rotateKey'])->middleware('blockSuspendedApi');
+    Route::post('account/twitch/settings', [TwitchController::class, 'saveSettings']);
+    Route::post('account/twitch/listing', [TwitchController::class, 'saveListing'])->middleware('blockSuspendedApi');
+    Route::post('account/twitch/unlink', [TwitchController::class, 'unlink']);
 
     // Admin console. Same session guard as the rest of the portal, plus the grant.
     Route::middleware('ensureApiAdmin')->prefix('admin')->group(function () {
@@ -103,6 +112,12 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
         Route::get('activity', [AdminConsoleController::class, 'activity']);
         Route::get('metrics', [AdminConsoleController::class, 'metrics']);
         Route::get('usage', [AdminConsoleController::class, 'usage']);
+
+        // Twitch extension channels: listing moderation, suspension and comps.
+        Route::get('twitch', [TwitchAdminController::class, 'index']);
+        Route::post('twitch/{id}/listing', [TwitchAdminController::class, 'setListingHidden'])->whereNumber('id');
+        Route::post('twitch/{id}/suspend', [TwitchAdminController::class, 'setSuspended'])->whereNumber('id');
+        Route::post('twitch/{id}/comp', [TwitchAdminController::class, 'setComp'])->whereNumber('id');
     });
 });
 

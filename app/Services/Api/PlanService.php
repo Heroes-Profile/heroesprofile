@@ -49,7 +49,11 @@ class PlanService
                 ? (bool) $account->d_approved
                 : true;
 
-            if (array_key_exists($planId, $granted)) {
+            // Kept apart from `purchasable` so the page can say it is already held
+            // rather than showing the Developer approval route.
+            $plans[$planId]['granted'] = array_key_exists($planId, $granted);
+
+            if ($plans[$planId]['granted']) {
                 $plans[$planId]['purchasable'] = false;
             }
         }

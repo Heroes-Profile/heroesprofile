@@ -4,6 +4,7 @@ use App\Http\Controllers\AnimationsController;
 use App\Http\Controllers\Api\Account\AccountController as ApiAccountController;
 use App\Http\Controllers\Api\Account\BillingController as ApiBillingController;
 use App\Http\Controllers\Api\Account\PatreonLinkController as ApiPatreonLinkController;
+use App\Http\Controllers\Api\Account\TwitchController as ApiTwitchController;
 use App\Http\Controllers\Api\Admin\AdminConsoleController as ApiAdminConsoleController;
 use App\Http\Controllers\Api\Admin\ImpersonationController as ApiImpersonationController;
 use App\Http\Controllers\Api\ApiHomeController;
@@ -62,6 +63,7 @@ use App\Http\Controllers\TermsOfServiceController;
 use App\Http\Controllers\Tools\ActivityGraphsController;
 use App\Http\Controllers\Tools\AutoBattlerController;
 use App\Http\Controllers\Tools\RandomizeMeController;
+use App\Http\Controllers\TwitchPageController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\XalatathEventController;
 use Illuminate\Http\Request;
@@ -99,6 +101,10 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/Terms/Of/Service', [TermsOfServiceController::class, 'show']);
 
     Route::get('/FAQ', [FaqController::class, 'show']);
+
+    // Streamers using the Twitch extension, and the code of conduct they agree to.
+    Route::get('/Twitch', [TwitchPageController::class, 'index']);
+    Route::get('/Twitch/Guidelines', [TwitchPageController::class, 'guidelines']);
 
     // The page posts to the public API's ingestion endpoint, which is where the
     // upload actually happens — nothing is uploaded through this route.
@@ -280,7 +286,7 @@ Route::middleware(['logIpAndUserAgent'])->prefix('Api')->group(function () {
     Route::get('/Password/Reset/{token}', [ApiPasswordResetController::class, 'showResetForm'])->name('api.password.reset');
     Route::post('/Password/Reset', [ApiPasswordResetController::class, 'reset'])->middleware('throttle:contact');
 
-    Route::middleware(['ensureApiAccountAuth', 'requireApiTerms'])->group(function () {
+    Route::middleware(['ensureApiAccountAuth', 'requireApiTerms', 'requireApiProject'])->group(function () {
         // Executes one public endpoint for the signed-in account, charged to its
         // own key. Behind the portal guard: it acts as the account.
         Route::post('/Docs/Try', ApiTryItController::class)->middleware('throttle:docs-try');
@@ -294,6 +300,14 @@ Route::middleware(['logIpAndUserAgent'])->prefix('Api')->group(function () {
 
         Route::get('/Account', [ApiAccountController::class, 'index']);
         Route::get('/Account/Billing', [ApiBillingController::class, 'show']);
+
+        // Twitch extension setup, shown as a section of /Api/Account. Both callbacks
+        // are separate redirect URIs, which have to be registered on the Twitch
+        // extension app and the Blizzard app.
+        Route::get('/Twitch/Link', [ApiTwitchController::class, 'redirectToTwitch']);
+        Route::get('/Twitch/Callback', [ApiTwitchController::class, 'handleTwitchCallback']);
+        Route::get('/Twitch/Battlenet/Link', [ApiTwitchController::class, 'redirectToBattlenet']);
+        Route::get('/Twitch/Battlenet/Callback', [ApiTwitchController::class, 'handleBattlenetCallback']);
 
         // Gated on the grant rather than on admin mode, so an admin looking at the
         // site as a customer keeps the door back. See EnsureApiAdmin.

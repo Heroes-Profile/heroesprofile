@@ -11,7 +11,6 @@ use App\Models\MasterMMRDataQM;
 use App\Models\MasterMMRDataSL;
 use App\Models\MasterMMRDataTL;
 use App\Models\MasterMMRDataUD;
-use App\Models\MMRTypeID;
 use App\Models\Player;
 use App\Models\PlayerStatsCache;
 use App\Models\ProfilePage;
@@ -19,6 +18,7 @@ use App\Models\Replay;
 use App\Rules\DateInputValidation;
 use App\Rules\GameTypeInputValidation;
 use App\Rules\SeasonInputValidation;
+use App\Support\GlobalCacheKey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -175,6 +175,10 @@ class PlayerController extends Controller
         }
 
         if ($cachedData) {
+            if ($this->refreshPendingRatings($cachedData, $blizz_id)) {
+                $cachedData->save();
+            }
+
             return $this->formatProfile($cachedData, $blizz_id, $region, $battletag);
         }
 
@@ -198,7 +202,7 @@ class PlayerController extends Controller
      */
     private function getCustomProfile($blizz_id, $region, $game_type, $seasons, $startDate, $endDate, $latestReplayID)
     {
-        $paramsHash = hash('sha256', json_encode([
+        $paramsHash = hash('sha256', json_encode(GlobalCacheKey::normalize([
             'page' => 'profile',
             'blizz_id' => $blizz_id,
             'region' => $region,
@@ -206,7 +210,7 @@ class PlayerController extends Controller
             'season' => $seasons,
             'start_date' => $startDate,
             'end_date' => $endDate,
-        ]));
+        ])));
 
         $dbCache = PlayerStatsCache::where('params_hash', $paramsHash)->first();
 
@@ -233,31 +237,82 @@ class PlayerController extends Controller
         }
 
         // Round trip so matches/hero_data are plain arrays, the same shape a profile_page row gives formatCache
-        return (new ProfilePage)->forceFill(json_decode($payload, true));
+        $profile = (new ProfilePage)->forceFill(json_decode($payload, true));
+
+        if ($this->refreshPendingRatings($profile, $blizz_id)) {
+            PlayerStatsCache::where('params_hash', $paramsHash)
+                ->update(['data' => json_encode($profile->getAttributes())]);
+        }
+
+        return $profile;
     }
 
     private function calculateProfile($blizz_id, $region, $game_type, $season, $cachedData = null, $startDate = null, $endDate = null, $persist = true)
     {
+        $games = function () use ($blizz_id, $region, $game_type, $season, $startDate, $endDate, $cachedData) {
+            return DB::table('replay')
+                ->join('player', 'player.replayID', '=', 'replay.replayID')
+                ->join('scores', function ($join) {
+                    $join->on('scores.replayID', '=', 'replay.replayID')
+                        ->on('scores.battletag', '=', 'player.battletag');
+                })
+                ->join('heroes', 'heroes.id', '=', 'player.hero')
+                ->where('blizz_id', $blizz_id)
+                ->where('region', $region)
+                ->where(function ($query) use ($game_type) {
+                    if (is_null($game_type)) {
+                        $query->whereNot('game_type', 0);
+                    } else {
+                        $query->whereIn('game_type', (array) $game_type);
+                    }
+                })
+                ->tap(function ($query) use ($season, $startDate, $endDate) {
+                    $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);
+                })
+                ->when($cachedData, function ($query, $cachedData) {
+                    return $query->where('replay.replayID', '>', $cachedData->latest_replayID);
+                });
+        };
 
-        $result = DB::table('replay')
-            ->join('player', 'player.replayID', '=', 'replay.replayID')
-            ->join('scores', function ($join) {
-                $join->on('scores.replayID', '=', 'replay.replayID')
-                    ->on('scores.battletag', '=', 'player.battletag');
-            })
+        // Talents are only shown for the latest matches, but a game without a talents
+        // row has never been counted, so the totals keep that rule.
+        $counted = fn () => $games()->whereExists(function ($query) {
+            $query->select(DB::raw(1))
+                ->from('talents')
+                ->whereColumn('talents.replayID', 'replay.replayID')
+                ->whereColumn('talents.battletag', 'player.battletag');
+        });
+
+        $counters = $this->profileCounters();
+
+        $totals = $counted()
+            ->selectRaw(collect($counters)
+                ->map(fn ($expression, $column) => "COALESCE(SUM({$expression}), 0) AS {$column}")
+                ->push('COUNT(*) AS games', 'MAX(replay.replayID) AS latest_replayID')
+                ->implode(', '))
+            ->first();
+
+        if ((int) $totals->games === 0) {
+            return $cachedData;
+        }
+
+        $account_level = Battletag::where('blizz_id', $blizz_id)
+            ->where('region', $region)
+            ->max('account_level');
+
+        $latest_replayID = (int) $totals->latest_replayID;
+
+        $matches = $games()
             ->join('talents', function ($join) {
                 $join->on('talents.replayID', '=', 'replay.replayID')
                     ->on('talents.battletag', '=', 'player.battletag');
             })
-            ->join('heroes', 'heroes.id', '=', 'player.hero')
             ->select([
                 'replay.replayID AS replayID',
                 'replay.game_type AS game_type',
                 'replay.game_date as game_date',
                 'replay.game_map AS game_map',
-                'replay.game_length AS game_length',
                 'player.winner AS winner',
-                'player.stack_size AS stack_size',
                 'player.hero AS hero',
                 'player.player_conservative_rating AS player_conservative_rating',
                 'player.player_change AS player_change',
@@ -265,13 +320,6 @@ class PlayerController extends Controller
                 'player.hero_change AS hero_change',
                 'player.role_conservative_rating AS role_conservative_rating',
                 'player.role_change AS role_change',
-                'scores.first_to_ten AS first_to_ten',
-                'scores.kills AS kills',
-                'scores.deaths AS deaths',
-                'scores.time_on_fire AS time_on_fire',
-                'scores.takedowns AS takedowns',
-                'scores.match_award AS match_award',
-                'heroes.new_role as role',
                 'talents.level_one AS level_one',
                 'talents.level_four AS level_four',
                 'talents.level_seven AS level_seven',
@@ -280,134 +328,9 @@ class PlayerController extends Controller
                 'talents.level_sixteen AS level_sixteen',
                 'talents.level_twenty AS level_twenty',
             ])
-            ->where('blizz_id', $blizz_id)
-            ->where('region', $region)
-            ->where(function ($query) use ($game_type) {
-                if (is_null($game_type)) {
-                    $query->whereNot('game_type', 0);
-                } else {
-                    $query->whereIn('game_type', (array) $game_type);
-                }
-            })
-            ->tap(function ($query) use ($season, $startDate, $endDate) {
-                $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);
-            })
-            // ->where("replay.replayID", "<=", 46984901) //testing
-            ->when($cachedData, function ($query, $cachedData) {
-                return $query->where('replay.replayID', '>', $cachedData->latest_replayID);
-            })
-            // ->toSql();
+            ->orderByDesc('replay.game_date')
+            ->limit(5)
             ->get();
-
-        if ($result->isEmpty()) {
-            return $cachedData;
-        }
-
-        $wins = $result->where('winner', 1)->count();
-        $losses = $result->where('winner', 0)->count();
-
-        $kills = $result->sum('kills');
-        $deaths = $result->sum('deaths');
-        $takedowns = $result->sum('takedowns');
-
-        $first_to_ten_wins = $result->where('winner', 1)->where('first_to_ten', 1)->count();
-        $first_to_ten_losses = $result->where('winner', 0)->where('first_to_ten', 1)->count();
-
-        $second_to_ten_wins = $result->where('winner', 1)->where('first_to_ten', 0)->whereNotNull('first_to_ten')->count();
-        $second_to_ten_losses = $result->where('winner', 0)->where('first_to_ten', 0)->whereNotNull('first_to_ten')->count();
-
-        $bruiser_wins = $result->where('winner', 1)->where('role', 'Bruiser')->count();
-        $bruiser_losses = $result->where('winner', 0)->where('role', 'Bruiser')->count();
-
-        $support_wins = $result->where('winner', 1)->where('role', 'Support')->count();
-        $support_losses = $result->where('winner', 0)->where('role', 'Support')->count();
-
-        $ranged_assassin_wins = $result->where('winner', 1)->where('role', 'Ranged Assassin')->count();
-        $ranged_assassin_losses = $result->where('winner', 0)->where('role', 'Ranged Assassin')->count();
-
-        $melee_assassin_wins = $result->where('winner', 1)->where('role', 'Melee Assassin')->count();
-        $melee_assassin_losses = $result->where('winner', 0)->where('role', 'Melee Assassin')->count();
-
-        $healer_wins = $result->where('winner', 1)->where('role', 'Healer')->count();
-        $healer_losses = $result->where('winner', 0)->where('role', 'Healer')->count();
-
-        $tank_wins = $result->where('winner', 1)->where('role', 'Tank')->count();
-        $tank_losses = $result->where('winner', 0)->where('role', 'Tank')->count();
-
-        $total_time_played = $result->sum('game_length');
-
-        $account_level = Battletag::where('blizz_id', $blizz_id)
-            ->where('region', $region)
-            ->max('account_level');
-
-        // 10355545 is the replayID where we started tracking mvp
-        $mvp_games = $result->where('replayID', '>', 10355545)->count();
-        $games_mvp = $result->where('match_award', 1)->count();
-
-        $time_on_fire_games = $result->filter(function ($item) {
-            return ! is_null($item->time_on_fire);
-        })->count();
-
-        $time_on_fire_total = $result->filter(function ($item) {
-            return ! is_null($item->time_on_fire);
-        })->sum('time_on_fire');
-
-        $stack_one_wins = $result->sum(function ($item) {
-            return (isset($item->stack_size) && $item->stack_size !== '' && isset($item->winner) && $item->winner !== '' && in_array((int) $item->stack_size, [0, 1], true) && $item->winner == 1) ? 1 : 0;
-        });
-
-        $stack_two_wins = $result->sum(function ($item) {
-            return ($item->stack_size == 2 && $item->winner == 1) ? 1 : 0;
-        });
-
-        $stack_three_wins = $result->sum(function ($item) {
-            return ($item->stack_size == 3 && $item->winner == 1) ? 1 : 0;
-        });
-
-        $stack_four_wins = $result->sum(function ($item) {
-            return ($item->stack_size == 4 && $item->winner == 1) ? 1 : 0;
-        });
-
-        $stack_five_wins = $result->sum(function ($item) {
-            return ($item->stack_size == 5 && $item->winner == 1) ? 1 : 0;
-        });
-
-        $stack_one_losses = $result->sum(function ($item) {
-            return (isset($item->stack_size) && $item->stack_size !== '' && isset($item->winner) && $item->winner !== '' && in_array((int) $item->stack_size, [0, 1], true) && $item->winner == 0) ? 1 : 0;
-        });
-
-        $stack_two_losses = $result->sum(function ($item) {
-            return ($item->stack_size == 2 && $item->winner == 0) ? 1 : 0;
-        });
-
-        $stack_three_losses = $result->sum(function ($item) {
-            return ($item->stack_size == 3 && $item->winner == 0) ? 1 : 0;
-        });
-
-        $stack_four_losses = $result->sum(function ($item) {
-            return ($item->stack_size == 4 && $item->winner == 0) ? 1 : 0;
-        });
-
-        $stack_five_losses = $result->sum(function ($item) {
-            return ($item->stack_size == 5 && $item->winner == 0) ? 1 : 0;
-        });
-
-        $latest_replayID = $result->max('replayID');
-
-        $matches = $result->sortByDesc('game_date')->take(5);
-        $matches = $matches->map(function ($item) {
-            unset($item->game_length);
-            unset($item->stack_size);
-            unset($item->kills);
-            unset($item->deaths);
-            unset($item->time_on_fire);
-            unset($item->takedowns);
-            unset($item->match_award);
-            unset($item->first_to_ten);
-            unset($item->role);
-
-            return $item;
-        });
 
         if ($cachedData) {
             $existingMatches = collect(json_decode($cachedData->matches, true));
@@ -415,19 +338,9 @@ class PlayerController extends Controller
             $matches = $mergedMatches->sortByDesc('game_date')->take(5);
         }
 
-        $heroData = $result->groupBy('hero')->map(function ($items, $hero) {
-            $wins = $items->where('winner', 1)->count();
-            $losses = $items->where('winner', 0)->count();
-            $games_played = $wins + $losses;
-            $latest_game_date = $items->max('game_date');
+        $matches = $matches->values();
 
-            return [
-                'wins' => $wins,
-                'losses' => $losses,
-                'games_played' => $games_played,
-                'game_date' => $latest_game_date,
-            ];
-        });
+        $heroData = $this->winLossBy($counted(), 'player.hero');
 
         if ($cachedData) {
             $existingHeroData = json_decode($cachedData->hero_data, true);
@@ -444,19 +357,7 @@ class PlayerController extends Controller
             $heroData = $existingHeroData;
         }
 
-        $mapData = $result->groupBy('game_map')->map(function ($items, $game_map) {
-            $wins = $items->where('winner', 1)->count();
-            $losses = $items->where('winner', 0)->count();
-            $games_played = $wins + $losses;
-            $latest_game_date = $items->max('game_date');
-
-            return [
-                'wins' => $wins,
-                'losses' => $losses,
-                'games_played' => $games_played,
-                'game_date' => $latest_game_date,
-            ];
-        });
+        $mapData = $this->winLossBy($counted(), 'replay.game_map');
 
         if ($cachedData) {
             $existingMapData = json_decode($cachedData->map_data, true);
@@ -475,16 +376,16 @@ class PlayerController extends Controller
 
         // Bucket by UTC hour-of-week (0–167): (dayOfWeek-1)*24 + hourOfDay
         // The frontend shifts these buckets by the user's local timezone offset to get local days.
-        $weekdayData = $result->groupBy(function ($item) {
-            $ts = strtotime($item->game_date);
-
-            return ((int) date('N', $ts) - 1) * 24 + (int) date('G', $ts);
-        })->map(function ($items) {
-            return [
-                'wins' => $items->where('winner', 1)->count(),
-                'losses' => $items->where('winner', 0)->count(),
-            ];
-        })->toArray();
+        $weekdayData = $counted()
+            ->selectRaw('WEEKDAY(replay.game_date) * 24 + HOUR(replay.game_date) AS bucket')
+            ->selectRaw('SUM(player.winner = 1) AS wins, SUM(player.winner = 0) AS losses')
+            ->groupBy('bucket')
+            ->get()
+            ->mapWithKeys(fn ($row) => [(int) $row->bucket => [
+                'wins' => (int) $row->wins,
+                'losses' => (int) $row->losses,
+            ]])
+            ->toArray();
 
         if ($cachedData && $cachedData->weekday_data) {
             $existingWeekdayData = json_decode($cachedData->weekday_data, true);
@@ -513,42 +414,9 @@ class PlayerController extends Controller
             $dataToSave = $cachedData;
         }
 
-        $dataToSave->wins += $wins;
-        $dataToSave->losses += $losses;
-        $dataToSave->kills += $kills;
-        $dataToSave->deaths += $deaths;
-        $dataToSave->takedowns += $takedowns;
-        $dataToSave->first_to_ten_wins += $first_to_ten_wins;
-        $dataToSave->first_to_ten_losses += $first_to_ten_losses;
-        $dataToSave->second_to_ten_wins += $second_to_ten_wins;
-        $dataToSave->second_to_ten_losses += $second_to_ten_losses;
-        $dataToSave->bruiser_wins += $bruiser_wins;
-        $dataToSave->bruiser_losses += $bruiser_losses;
-        $dataToSave->support_wins += $support_wins;
-        $dataToSave->support_losses += $support_losses;
-        $dataToSave->ranged_assassin_wins += $ranged_assassin_wins;
-        $dataToSave->ranged_assassin_losses += $ranged_assassin_losses;
-        $dataToSave->melee_assassin_wins += $melee_assassin_wins;
-        $dataToSave->melee_assassin_losses += $melee_assassin_losses;
-        $dataToSave->healer_wins += $healer_wins;
-        $dataToSave->healer_losses += $healer_losses;
-        $dataToSave->tank_wins += $tank_wins;
-        $dataToSave->tank_losses += $tank_losses;
-        $dataToSave->mvp_games += $mvp_games;
-        $dataToSave->games_mvp += $games_mvp;
-        $dataToSave->time_on_fire_games += $time_on_fire_games;
-        $dataToSave->time_on_fire_total += $time_on_fire_total;
-        $dataToSave->stack_one_wins += $stack_one_wins;
-        $dataToSave->stack_two_wins += $stack_two_wins;
-        $dataToSave->stack_three_wins += $stack_three_wins;
-        $dataToSave->stack_four_wins += $stack_four_wins;
-        $dataToSave->stack_five_wins += $stack_five_wins;
-        $dataToSave->stack_one_losses += $stack_one_losses;
-        $dataToSave->stack_two_losses += $stack_two_losses;
-        $dataToSave->stack_three_losses += $stack_three_losses;
-        $dataToSave->stack_four_losses += $stack_four_losses;
-        $dataToSave->stack_five_losses += $stack_five_losses;
-        $dataToSave->total_time_played += $total_time_played;
+        foreach (array_keys($counters) as $column) {
+            $dataToSave->{$column} += (int) $totals->{$column};
+        }
 
         $dataToSave->account_level = $account_level;
         $dataToSave->latest_replayID = $latest_replayID;
@@ -563,6 +431,77 @@ class PlayerController extends Controller
         }
 
         return $dataToSave;
+    }
+
+    /**
+     * Column => the per-game condition or value it sums.
+     *
+     * @return array<string, string>
+     */
+    private function profileCounters(): array
+    {
+        $counters = [
+            'wins' => 'player.winner = 1',
+            'losses' => 'player.winner = 0',
+            'kills' => 'scores.kills',
+            'deaths' => 'scores.deaths',
+            'takedowns' => 'scores.takedowns',
+            'first_to_ten_wins' => 'player.winner = 1 AND scores.first_to_ten = 1',
+            'first_to_ten_losses' => 'player.winner = 0 AND scores.first_to_ten = 1',
+            'second_to_ten_wins' => 'player.winner = 1 AND scores.first_to_ten = 0',
+            'second_to_ten_losses' => 'player.winner = 0 AND scores.first_to_ten = 0',
+            // 10355545 is the replayID where we started tracking mvp
+            'mvp_games' => 'replay.replayID > 10355545',
+            'games_mvp' => 'scores.match_award = 1',
+            'time_on_fire_games' => 'scores.time_on_fire IS NOT NULL',
+            'time_on_fire_total' => 'scores.time_on_fire',
+            'total_time_played' => 'replay.game_length',
+        ];
+
+        $roles = [
+            'bruiser' => 'Bruiser',
+            'support' => 'Support',
+            'ranged_assassin' => 'Ranged Assassin',
+            'melee_assassin' => 'Melee Assassin',
+            'healer' => 'Healer',
+            'tank' => 'Tank',
+        ];
+
+        foreach ($roles as $key => $role) {
+            $counters["{$key}_wins"] = "player.winner = 1 AND heroes.new_role = '{$role}'";
+            $counters["{$key}_losses"] = "player.winner = 0 AND heroes.new_role = '{$role}'";
+        }
+
+        // Solo queue is stored as 0 or 1.
+        $stacks = [
+            'one' => "IN ('0', '1')",
+            'two' => '= 2',
+            'three' => '= 3',
+            'four' => '= 4',
+            'five' => '= 5',
+        ];
+
+        foreach ($stacks as $key => $condition) {
+            $counters["stack_{$key}_wins"] = "player.winner = 1 AND player.stack_size {$condition}";
+            $counters["stack_{$key}_losses"] = "player.winner = 0 AND player.stack_size {$condition}";
+        }
+
+        return $counters;
+    }
+
+    private function winLossBy($query, string $column)
+    {
+        return $query
+            ->selectRaw("{$column} AS grouping_key")
+            ->selectRaw('SUM(player.winner = 1) AS wins, SUM(player.winner = 0) AS losses, MAX(replay.game_date) AS game_date')
+            ->groupBy($column)
+            ->get()
+            ->mapWithKeys(fn ($row) => [$row->grouping_key => [
+                'wins' => (int) $row->wins,
+                'losses' => (int) $row->losses,
+                'games_played' => (int) $row->wins + (int) $row->losses,
+                'game_date' => $row->game_date,
+            ]]);
     }
 
     private function formatCache($data, $blizz_id, $region, $battletag)
@@ -690,8 +629,6 @@ class PlayerController extends Controller
         })->sortByDesc('game_date')->take(3)->values()->all();
 
         $returnData->heroes_three_latest_played = $top_three_latest_played_heroes;
-
-        $type = MMRTypeID::select('mmr_type_id')->filterByName('player')->first()->mmr_type_id;
 
         $qm_mmr_data = MasterMMRDataQM::select('conservative_rating', 'win', 'loss')->filterByType(10000)->filterByGametype(1)->filterByBlizzID($blizz_id)->filterByRegion($region)->first();
         if ($qm_mmr_data) {
@@ -836,7 +773,7 @@ class PlayerController extends Controller
             $matches = $data->matches;
         }
 
-        $returnData->matchData = collect($matches)->sortByDesc('game_date')->map(function ($match) use ($maps, $heroData, $talentData, $blizz_id) {
+        $returnData->matchData = collect($matches)->sortByDesc('game_date')->map(function ($match) use ($maps, $heroData, $talentData) {
             $match['game_type'] = $this->globalDataService->getGameTypeIDtoString()[$match['game_type']];
             $match['game_map'] = $maps[$match['game_map']];
             $match['hero'] = $heroData[$match['hero']];
@@ -888,24 +825,12 @@ class PlayerController extends Controller
                 }
             }
 
-            $updatedMMRValuesChecker = false;
-            $updatedMMRValues = null;
-            if (round(1800 + 40 * $match['player_conservative_rating']) == 1800) {
-                $updatedMMRValuesChecker = true;
-                $updatedMMRValues = $this->getUpdatedMMRValues($match['replayID'], $blizz_id);
+            foreach (['player', 'hero', 'role'] as $type) {
+                $rating = $match["{$type}_conservative_rating"];
+                $match["{$type}_conservative_rating"] = round($rating, 2);
+                $match["{$type}_mmr"] = round(1800 + 40 * $rating);
+                $match["{$type}_change"] = round($match["{$type}_change"], 2);
             }
-
-            $match['player_conservative_rating'] = $updatedMMRValuesChecker ? round($updatedMMRValues['player_conservative_rating'], 2) : round($match['player_conservative_rating'], 2);
-            $match['player_mmr'] = $updatedMMRValuesChecker ? round(1800 + 40 * $updatedMMRValues['player_conservative_rating']) : round(1800 + 40 * $match['player_conservative_rating']);
-            $match['player_change'] = $updatedMMRValuesChecker ? round($updatedMMRValues['player_change'], 2) : round($match['player_change'], 2);
-
-            $match['hero_conservative_rating'] = $updatedMMRValuesChecker ? round($updatedMMRValues['hero_conservative_rating'], 2) : round($match['hero_conservative_rating'], 2);
-            $match['hero_mmr'] = $updatedMMRValuesChecker ? round(1800 + 40 * $updatedMMRValues['hero_conservative_rating']) : round(1800 + 40 * $match['hero_conservative_rating']);
-            $match['hero_change'] = $updatedMMRValuesChecker ? round($updatedMMRValues['hero_change'], 2) : round($match['hero_change'], 2);
-
-            $match['role_conservative_rating'] = $updatedMMRValuesChecker ? round($updatedMMRValues['role_conservative_rating'], 2) : round($match['role_conservative_rating'], 2);
-            $match['role_mmr'] = $updatedMMRValuesChecker ? round(1800 + 40 * $updatedMMRValues['role_conservative_rating']) : round(1800 + 40 * $match['role_conservative_rating']);
-            $match['role_change'] = $updatedMMRValuesChecker ? round($updatedMMRValues['role_change'], 2) : round($match['role_change'], 2);
 
             return $match;
         })->values();
@@ -913,6 +838,42 @@ class PlayerController extends Controller
         $returnData->weekday_data = $data->weekday_data ? json_decode($data->weekday_data, true) : null;
 
         return $returnData;
+    }
+
+    /**
+     * Recent matches can be stored before their MMR is calculated, at 1800. Swaps in
+     * the calculated ratings once they exist, so each is looked up until it lands
+     * rather than on every load forever. Returns whether anything changed.
+     */
+    private function refreshPendingRatings($data, $blizz_id): bool
+    {
+        $matches = json_decode(is_string($data->matches) ? $data->matches : json_encode($data->matches), true) ?? [];
+        $changed = false;
+
+        foreach ($matches as $key => $match) {
+            if (round(1800 + 40 * $match['player_conservative_rating']) != 1800) {
+                continue;
+            }
+
+            $updated = $this->getUpdatedMMRValues($match['replayID'], $blizz_id);
+
+            if (! $updated || round(1800 + 40 * $updated->player_conservative_rating) == 1800) {
+                continue;
+            }
+
+            foreach (['player', 'hero', 'role'] as $type) {
+                $matches[$key]["{$type}_conservative_rating"] = $updated->{"{$type}_conservative_rating"};
+                $matches[$key]["{$type}_change"] = $updated->{"{$type}_change"};
+            }
+
+            $changed = true;
+        }
+
+        if ($changed) {
+            $data->matches = json_encode($matches);
+        }
+
+        return $changed;
     }
 
     private function getUpdatedMMRValues($replayID, $blizz_id)

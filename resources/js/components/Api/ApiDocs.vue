@@ -199,6 +199,11 @@
                 <a href="/Api/Login" class="link">Sign in</a> to run this endpoint from here.
               </div>
 
+              <!-- The Try endpoint only issues GET. -->
+              <div v-else-if="op.method !== 'get'" class="text-sm text-gray-medium">
+                This endpoint changes data, so it cannot be run from here.
+              </div>
+
               <template v-else>
                 <div class="flex flex-wrap items-center gap-3 mb-2">
                   <custom-button

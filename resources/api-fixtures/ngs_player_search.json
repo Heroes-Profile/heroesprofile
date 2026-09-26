@@ -1,0 +1,34 @@
+[
+    {
+        "blizz_id": 9000001,
+        "battletag": "ExamplePlayer1#0000",
+        "region": 1,
+        "totalGamesPlayed": 233,
+        "latestMap": {
+            "map_id": 12,
+            "name": "Towers of Doom",
+            "short_name": "TowersOfDoom",
+            "type": "standard",
+            "ranked_rotation": 1,
+            "playable": 1,
+            "sanitized_map_name": "towers_of_doom"
+        },
+        "latestHero": {
+            "id": 86,
+            "name": "Imperius",
+            "short_name": "imperius",
+            "alt_name": null,
+            "role": "Warrior",
+            "new_role": "Bruiser",
+            "type": "Melee",
+            "release_date": "2019-01-08 00:00:00",
+            "rework_date": null,
+            "last_change_patch_version": "2.55.4.91769",
+            "attribute_id": "IMPE",
+            "build_copy_name": "Imperius",
+            "last_updated": "2024-02-06 18:32:51"
+        },
+        "battletagShort": "ExamplePlayer1",
+        "regionName": "NA"
+    }
+]

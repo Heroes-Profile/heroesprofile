@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Listeners\ClearApiEntitlementCache;
 use App\Listeners\SendSubscriptionEmails;
 use App\Socialite\Patreon\PatreonExtendSocialite;
+use App\Socialite\Twitch\TwitchExtendSocialite;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -27,6 +28,7 @@ class EventServiceProvider extends ServiceProvider
         SocialiteWasCalled::class => [
             BattlenetExtendSocialite::class.'@handle',
             PatreonExtendSocialite::class.'@handle',
+            TwitchExtendSocialite::class.'@handle',
         ],
         WebhookHandled::class => [
             ClearApiEntitlementCache::class,

@@ -79,6 +79,13 @@ class PlayerController extends Controller
 
     public function matches(Request $request): Response
     {
+        // Built inside a job, which cannot see this request, so the page links are
+        // handed over rather than fixed up below.
+        $request->merge(['links' => [
+            'path' => $request->url(),
+            'query' => Arr::except($request->query(), ['api_token', 'pagination_page', 'links']),
+        ]]);
+
         return $this->delegate($request, PlayerMatchHistory::class, 'getData', [
             'pagination_page' => 1,
             'game_type' => self::DEFAULT_GAME_TYPES,
@@ -534,7 +541,7 @@ class PlayerController extends Controller
 
                 if ($jobId !== null) {
                     $result->header('Retry-After', self::POLL_INTERVAL)
-                        ->header('Location', url('/v1/jobs/'.$jobId));
+                        ->header('Location', route('api.external.jobs', ['jobId' => $jobId]));
                 }
             }
 

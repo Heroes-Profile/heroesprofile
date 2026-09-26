@@ -1,0 +1,279 @@
+<?php
+
+namespace App\Services\Twitch;
+
+use App\Mail\Twitch\ExtensionOutdated;
+use App\Models\Api\TwitchChannel;
+use App\Models\Battletag;
+use App\Services\PlayerLobbyStatsService;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Mail;
+use Throwable;
+
+/**
+ * Turns an uploader snapshot into the message viewers see, and schedules it.
+ *
+ * Each snapshot is the whole game so far — lobby, heroes, every talent picked —
+ * so a viewer who misses one is still right after the next. The database is only
+ * touched once per game, for player identities and stats; every later snapshot in
+ * that game is heroes and talents resolved from cached lookup tables.
+ */
+class TwitchSnapshotService
+{
+    private const TTL_SECONDS = 10800;
+
+    /** uploader_last_seen_at is written at most this often. */
+    private const SEEN_WRITE_SECONDS = 60;
+
+    /** A hero or talent missing from the extension is reported once per release, within this. */
+    private const UNKNOWN_REPORT_SECONDS = 2592000;
+
+    public function __construct(
+        private readonly TwitchGameData $gameData,
+        private readonly PlayerLobbyStatsService $lobbyStats,
+        private readonly TwitchPushService $push,
+        private readonly TwitchExtensionManifest $manifest,
+    ) {}
+
+    /**
+     * @param  array<string, mixed>  $snapshot  validated request body
+     * @return array{accepted: bool, seq: int}
+     */
+    public function ingest(TwitchChannel $channel, array $snapshot): array
+    {
+        $gameId = (string) $snapshot['game_id'];
+        $seq = (int) $snapshot['seq'];
+        $latest = Cache::get(self::liveKey($channel));
+
+        // Out of order or repeated: an older full state carries nothing new.
+        if (is_array($latest) && $latest['game_id'] === $gameId && $seq <= $latest['seq']) {
+            return ['accepted' => false, 'seq' => (int) $latest['seq']];
+        }
+
+        $channel->startTrialIfUnstarted();
+        $this->touchLastSeen($channel);
+
+        $players = $this->players($channel, $gameId, $snapshot);
+
+        $this->reportMissingFromExtension($channel, $players);
+
+        $payload = TwitchPayload::encode(
+            gameId: $gameId,
+            seq: $seq,
+            phase: (string) $snapshot['phase'],
+            mode: $snapshot['game_mode'] ?? null,
+            map: $snapshot['map'] ?? null,
+            players: $players,
+            maxBytes: (int) config('twitch.max_payload_bytes'),
+            channelName: $channel->twitch_display_name ?: $channel->twitch_login,
+        );
+
+        Cache::put(self::liveKey($channel), [
+            'game_id' => $gameId,
+            'seq' => $seq,
+            'received_at' => now()->toIso8601String(),
+            'payload' => $payload,
+        ], self::TTL_SECONDS);
+
+        // The delay is applied here, before anything leaves the building. There is
+        // no endpoint serving viewers early data to go around it.
+        $this->push->schedule($channel, $gameId, $seq, $payload, (int) $channel->delay_seconds);
+
+        return ['accepted' => true, 'seq' => $seq];
+    }
+
+    /** The newest snapshot, undelayed, for the broadcaster's own view. */
+    public function latest(TwitchChannel $channel): ?array
+    {
+        $latest = Cache::get(self::liveKey($channel));
+
+        return is_array($latest) ? $latest : null;
+    }
+
+    /**
+     * Normalised players with heroes and talents for this snapshot. Identity and
+     * stats come from the per-game cache after the first snapshot of a game.
+     *
+     * @return array<int, array<string, mixed>>
+     */
+    private function players(TwitchChannel $channel, string $gameId, array $snapshot): array
+    {
+        $roster = $this->roster($channel, $gameId, $snapshot['players']);
+
+        $players = [];
+
+        foreach ($snapshot['players'] as $index => $player) {
+            $known = $roster['players'][$index] ?? null;
+            // The name from the game's details file first: in ARAM the attribute id
+            // names whatever the player was last on. It is only used when the name
+            // does not resolve, which is a client running in another language.
+            $heroId = $this->gameData->heroId($player['hero'] ?? null)
+                ?? $this->gameData->heroId($player['hero_attribute'] ?? null);
+            // Private and banned players keep their hero and talents — those are on
+            // the stream anyway — and nothing that identifies them.
+            $hidden = (bool) ($known['hidden'] ?? false);
+
+            $players[] = [
+                // Flipped so the streamer's team is always first.
+                'team' => $roster['flip'] ? 1 - (int) $player['team'] : (int) $player['team'],
+                'name' => $hidden ? null : $player['name'],
+                'blizz_id' => $hidden ? null : ($known['blizz_id'] ?? null),
+                'region' => $hidden ? null : ($known['region'] ?? null),
+                'hero_id' => $heroId,
+                'talents' => $this->talentIds($heroId, $player['talents'] ?? []),
+                'stats' => $channel->show_stats ? ($known['stats'] ?? null) : null,
+                'ai' => (bool) ($player['ai'] ?? false),
+            ];
+        }
+
+        // Streamer's team first, then the order the game lists them in.
+        usort($players, fn ($a, $b) => $a['team'] <=> $b['team']);
+
+        return $players;
+    }
+
+    /**
+     * Who is in the lobby, resolved once per game: blizz ids from our own
+     * battletags (never the client's), privacy, stats, and which side the streamer
+     * is on. A lobby does not change mid-game, so every later snapshot reuses this.
+     *
+     * @param  array<int, array<string, mixed>>  $players
+     * @return array{flip: bool, players: array<int, array<string, mixed>>}
+     */
+    private function roster(TwitchChannel $channel, string $gameId, array $players): array
+    {
+        $signature = md5(json_encode(array_map(fn ($p) => [$p['name'], $p['battletag'], $p['region'], $p['team'], $p['ai'] ?? false], $players)));
+        $cacheKey = 'twitch_roster:'.$channel->twitch_user_id.':'.$gameId;
+        $cached = Cache::get($cacheKey);
+
+        if (is_array($cached) && $cached['signature'] === $signature) {
+            return $cached['roster'];
+        }
+
+        $battletags = array_map(fn ($p) => $p['name'].'#'.$p['battletag'], $players);
+
+        $blizzIds = Battletag::whereIn('battletag', $battletags)
+            ->whereIn('region', array_unique(array_column($players, 'region')))
+            ->orderBy('latest_game')
+            ->get(['battletag', 'region', 'blizz_id'])
+            ->mapWithKeys(fn ($row) => [$row->battletag.'|'.$row->region => (int) $row->blizz_id]);
+
+        $identities = collect($players)->map(fn ($p, $i) => (object) [
+            'index' => $i,
+            'blizz_id' => ($p['ai'] ?? false) ? null : ($blizzIds[$p['name'].'#'.$p['battletag'].'|'.$p['region']] ?? null),
+            'region' => (int) $p['region'],
+            'team' => (int) $p['team'],
+        ]);
+
+        $known = $identities->filter(fn ($p) => $p->blizz_id !== null)->values();
+
+        ['stats' => $stats, 'hidden' => $hidden] = $known->isEmpty()
+            ? ['stats' => [], 'hidden' => []]
+            : $this->lobbyStats->forPlayers($known);
+
+        $roster = ['flip' => false, 'players' => []];
+
+        foreach ($identities as $identity) {
+            $key = PlayerLobbyStatsService::key($identity);
+            $row = $identity->blizz_id !== null ? ($stats[$key] ?? null) : null;
+
+            $roster['players'][$identity->index] = [
+                'blizz_id' => $identity->blizz_id,
+                'region' => $identity->blizz_id !== null ? $identity->region : null,
+                'hidden' => isset($hidden[$key]),
+                'stats' => $row !== null && ! isset($hidden[$key])
+                    ? TwitchPayload::stats($row, $this->lobbyStats->ranks($row))
+                    : null,
+            ];
+
+            if ($channel->hasPlayerLinked()
+                && $identity->blizz_id === $channel->blizz_id
+                && $identity->region === $channel->region) {
+                $roster['flip'] = $identity->team === 1;
+            }
+        }
+
+        Cache::put($cacheKey, ['signature' => $signature, 'roster' => $roster], self::TTL_SECONDS);
+
+        return $roster;
+    }
+
+    /**
+     * @param  array<int, string|null>  $talentNames  in tier order
+     * @return array<int, int>
+     */
+    private function talentIds(?int $heroId, array $talentNames): array
+    {
+        $heroName = $heroId !== null ? $this->gameData->heroName($heroId) : null;
+
+        return array_map(
+            fn ($name) => ($heroName !== null && is_string($name) && $name !== '')
+                ? ($this->gameData->talentId($heroName, $name) ?? 0)
+                : 0,
+            array_slice($talentNames, 0, 7)
+        );
+    }
+
+    /**
+     * Emails the admin address about heroes and talents this game uses that the
+     * released extension does not bundle, so viewers are seeing "not available".
+     * Once per id per extension version, after the response.
+     *
+     * @param  array<int, array<string, mixed>>  $players
+     */
+    private function reportMissingFromExtension(TwitchChannel $channel, array $players): void
+    {
+        $address = config('mail.admin_address');
+        $version = $this->manifest->version();
+
+        if (! $address || $version === null) {
+            return;
+        }
+
+        $heroes = [];
+        $talents = [];
+
+        foreach ($players as $player) {
+            $heroId = $player['hero_id'];
+
+            if ($heroId !== null && ! $this->manifest->hasHero($heroId)
+                && Cache::add('twitch_unknown:'.$version.':hero:'.$heroId, true, self::UNKNOWN_REPORT_SECONDS)) {
+                $heroes[] = ($this->gameData->heroName($heroId) ?? 'Hero').' ('.$heroId.')';
+            }
+
+            foreach ($player['talents'] as $talentId) {
+                if ($talentId !== 0 && ! $this->manifest->hasTalent($talentId)
+                    && Cache::add('twitch_unknown:'.$version.':talent:'.$talentId, true, self::UNKNOWN_REPORT_SECONDS)) {
+                    $talents[] = ($this->gameData->talentLabel($talentId) ?? 'Talent').' ('.$talentId.')';
+                }
+            }
+        }
+
+        if ($heroes === [] && $talents === []) {
+            return;
+        }
+
+        $channelName = (string) ($channel->twitch_display_name ?: $channel->twitch_login);
+
+        app()->terminating(function () use ($address, $channelName, $version, $heroes, $talents) {
+            try {
+                Mail::to($address)->send(new ExtensionOutdated($channelName, $version, $heroes, $talents));
+            } catch (Throwable $e) {
+                report($e);
+            }
+        });
+    }
+
+    private function touchLastSeen(TwitchChannel $channel): void
+    {
+        if ($channel->uploader_last_seen_at === null
+            || $channel->uploader_last_seen_at->lt(now()->subSeconds(self::SEEN_WRITE_SECONDS))) {
+            $channel->forceFill(['uploader_last_seen_at' => now()])->save();
+        }
+    }
+
+    private static function liveKey(TwitchChannel $channel): string
+    {
+        return 'twitch_live:'.$channel->twitch_user_id;
+    }
+}

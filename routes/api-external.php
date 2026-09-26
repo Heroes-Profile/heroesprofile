@@ -260,8 +260,78 @@ Route::get('jobs/{jobId}', [GlobalStatsController::class, 'job'])
     ->name('api.external.jobs');
 
 /*
-| NGS ingestion. The API serves no esports data, so this write is the only NGS
-| route. `api.ngs:upload` demands both NGS flags; no quota.
+| NGS reads. One per section of the site's NGS pages, metered like any other read.
+| `season` defaults to the latest on the NGS pages' endpoints; on the shared
+| esports pages' (team, player, replay) absence means every season, as on the site.
+*/
+
+Route::get('ngs/standings', [NgsController::class, 'standings'])
+    ->middleware(['api.fixtures:ngs_standings', 'api.quota:ngs_standings'])
+    ->name('api.external.ngs.standings');
+
+Route::get('ngs/divisions', [NgsController::class, 'divisions'])
+    ->middleware(['api.fixtures:ngs_divisions', 'api.quota:ngs_divisions'])
+    ->name('api.external.ngs.divisions');
+
+Route::get('ngs/teams', [NgsController::class, 'teams'])
+    ->middleware(['api.fixtures:ngs_teams', 'api.quota:ngs_teams'])
+    ->name('api.external.ngs.teams');
+
+Route::get('ngs/players/search', [NgsController::class, 'playerSearch'])
+    ->middleware(['api.fixtures:ngs_player_search', 'api.quota:ngs_player_search'])
+    ->name('api.external.ngs.players.search');
+
+Route::get('ngs/matches', [NgsController::class, 'matches'])
+    ->middleware(['api.fixtures:ngs_recent_matches', 'api.quota:ngs_recent_matches'])
+    ->name('api.external.ngs.matches');
+
+Route::get('ngs/heroes/stats', [NgsController::class, 'heroStats'])
+    ->middleware(['api.fixtures:ngs_heroes_stats', 'api.quota:ngs_heroes_stats'])
+    ->name('api.external.ngs.heroes.stats');
+
+Route::get('ngs/heroes/talents/stats', [NgsController::class, 'heroTalentStats'])
+    ->middleware(['api.fixtures:ngs_heroes_talents_stats', 'api.quota:ngs_heroes_talents_stats'])
+    ->name('api.external.ngs.heroes.talents.stats');
+
+Route::get('ngs/division', [NgsController::class, 'division'])
+    ->middleware(['api.fixtures:ngs_division_single', 'api.quota:ngs_division_single'])
+    ->name('api.external.ngs.division');
+
+Route::get('ngs/division/matches', [NgsController::class, 'divisionMatches'])
+    ->middleware(['api.fixtures:ngs_division_match_history', 'api.quota:ngs_division_match_history'])
+    ->name('api.external.ngs.division.matches');
+
+Route::get('ngs/team', [NgsController::class, 'team'])
+    ->middleware(['api.fixtures:ngs_single_team', 'api.quota:ngs_single_team'])
+    ->name('api.external.ngs.team');
+
+Route::get('ngs/team/matches', [NgsController::class, 'teamMatches'])
+    ->middleware(['api.fixtures:ngs_team_match_history', 'api.quota:ngs_team_match_history'])
+    ->name('api.external.ngs.team.matches');
+
+Route::get('ngs/player', [NgsController::class, 'player'])
+    ->middleware(['api.fixtures:ngs_single_player', 'api.quota:ngs_single_player'])
+    ->name('api.external.ngs.player');
+
+Route::get('ngs/player/hero', [NgsController::class, 'playerHero'])
+    ->middleware(['api.fixtures:ngs_single_player_hero', 'api.quota:ngs_single_player_hero'])
+    ->name('api.external.ngs.player.hero');
+
+Route::get('ngs/player/map', [NgsController::class, 'playerMap'])
+    ->middleware(['api.fixtures:ngs_single_player_map', 'api.quota:ngs_single_player_map'])
+    ->name('api.external.ngs.player.map');
+
+Route::get('ngs/player/matches', [NgsController::class, 'playerMatches'])
+    ->middleware(['api.fixtures:ngs_player_match_history', 'api.quota:ngs_player_match_history'])
+    ->name('api.external.ngs.player.matches');
+
+Route::get('ngs/replay/{replayID}', [NgsController::class, 'replay'])
+    ->whereNumber('replayID')
+    ->middleware(['api.fixtures:ngs_replay_data', 'api.quota:ngs_replay_data'])
+    ->name('api.external.ngs.replay');
+
+/*
+| NGS ingestion. `api.ngs:upload` demands both NGS flags; no quota.
 |
 | The old route answered GET as well as POST — a replay upload behind a URL anyone
 | could paste. POST only here.
@@ -269,13 +339,18 @@ Route::get('jobs/{jobId}', [GlobalStatsController::class, 'job'])
 | Validation runs ahead of the fixtures gate, so a test-mode caller gets the same
 | 422s as a live one, and the example payload instead of a write to the NGS schema.
 |
-| Deletion is deliberately absent. The old API exposed it here, which made a key the
-| only thing between a caller and removing a match; it lives in the admin console now.
+| The old API let any NGS key delete a match. Here deletion is admin only, and left
+| out of the published spec.
 */
 
 Route::post('ngs/games/upload', [NgsController::class, 'uploadGames'])
     ->middleware(['api.ngs:upload', 'api.ngs.upload.validate', 'api.fixtures:ngs_games_upload'])
     ->name('api.external.ngs.games.upload');
+
+Route::delete('ngs/games/{replayID}', [NgsController::class, 'deleteGames'])
+    ->whereNumber('replayID')
+    ->middleware('api.admin')
+    ->name('api.external.ngs.games.delete');
 
 /*
 | Ingestion. Anonymous permanently, so no key, no fixtures, and no quota —

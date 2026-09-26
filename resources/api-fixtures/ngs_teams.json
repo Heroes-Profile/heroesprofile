@@ -1,0 +1,506 @@
+[
+    {
+        "team_name": "Anomaly",
+        "division": "C West",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Anomaly_4965.png",
+        "wins": 1,
+        "losses": 12,
+        "games_played": 13,
+        "win_rate": 7.69
+    },
+    {
+        "team_name": "BG I Need My Caster Role",
+        "division": "A",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/BG_I_Need_My_Caster_Role_3785.png",
+        "wins": 6,
+        "losses": 2,
+        "games_played": 8,
+        "win_rate": 75
+    },
+    {
+        "team_name": "Blackheart's Booty",
+        "division": "Heroic",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Blackheart%27s_Booty_8491.png",
+        "wins": 7,
+        "losses": 4,
+        "games_played": 11,
+        "win_rate": 63.64
+    },
+    {
+        "team_name": "Boogans Forever",
+        "division": "Nexus",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Boogans+Forever0737_logo.png",
+        "wins": 5,
+        "losses": 10,
+        "games_played": 15,
+        "win_rate": 33.33
+    },
+    {
+        "team_name": "Bork Side of the Moon",
+        "division": "B West",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Bork_Side_of_the_Moon_7657.png",
+        "wins": 3,
+        "losses": 10,
+        "games_played": 13,
+        "win_rate": 23.08
+    },
+    {
+        "team_name": "Braincellmates",
+        "division": "A",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Braincellmates_8660.png",
+        "wins": 6,
+        "losses": 6,
+        "games_played": 12,
+        "win_rate": 50
+    },
+    {
+        "team_name": "Bunker Fun Time",
+        "division": "B West",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Bunker+Fun+Time5988_logo.png",
+        "wins": 10,
+        "losses": 5,
+        "games_played": 15,
+        "win_rate": 66.67
+    },
+    {
+        "team_name": "COSMOS",
+        "division": "C West",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/COSMOS_2496.png",
+        "wins": 10,
+        "losses": 3,
+        "games_played": 13,
+        "win_rate": 76.92
+    },
+    {
+        "team_name": "Can't Connect Stuns",
+        "division": "A",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Can%27t+Connect+Stuns3163_logo.png",
+        "wins": 5,
+        "losses": 8,
+        "games_played": 13,
+        "win_rate": 38.46
+    },
+    {
+        "team_name": "Can't Counterpick Stupid",
+        "division": "C West",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Cant_Counterpick_Stupid_2512.png",
+        "wins": 10,
+        "losses": 5,
+        "games_played": 15,
+        "win_rate": 66.67
+    },
+    {
+        "team_name": "Cats On My Saddle",
+        "division": "B East",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Cats_On_My_Saddle_9536.png",
+        "wins": 5,
+        "losses": 13,
+        "games_played": 18,
+        "win_rate": 27.78
+    },
+    {
+        "team_name": "Citrus Colored Squash",
+        "division": "Nexus",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Citrus_Colored_Squash_5184.png",
+        "wins": 2,
+        "losses": 9,
+        "games_played": 11,
+        "win_rate": 18.18
+    },
+    {
+        "team_name": "Cream Team",
+        "division": "C East",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Cream_Team_2051.png",
+        "wins": 4,
+        "losses": 7,
+        "games_played": 11,
+        "win_rate": 36.36
+    },
+    {
+        "team_name": "Crimson Cyber Squad",
+        "division": "C East",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Crimson_Cyber_Squad_6562.png",
+        "wins": 10,
+        "losses": 2,
+        "games_played": 12,
+        "win_rate": 83.33
+    },
+    {
+        "team_name": "Crit Kickers",
+        "division": "Heroic",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Crit_Kickers_4773.png",
+        "wins": 6,
+        "losses": 5,
+        "games_played": 11,
+        "win_rate": 54.55
+    },
+    {
+        "team_name": "Crowd Control Syndicate",
+        "division": "B East",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Crowd_Control_Syndicate_0992.png",
+        "wins": 14,
+        "losses": 11,
+        "games_played": 25,
+        "win_rate": 56
+    },
+    {
+        "team_name": "Durotan's Couch",
+        "division": "Nexus",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Durotan%27s+Couch9326_logo.png",
+        "wins": 9,
+        "losses": 6,
+        "games_played": 15,
+        "win_rate": 60
+    },
+    {
+        "team_name": "FC Hong Kong",
+        "division": "B East",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/FC+Hong+Kong4990_logo.png",
+        "wins": 4,
+        "losses": 12,
+        "games_played": 16,
+        "win_rate": 25
+    },
+    {
+        "team_name": "Fake Taxi",
+        "division": "Heroic",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Banana_Fever_7200.png",
+        "wins": 4,
+        "losses": 2,
+        "games_played": 6,
+        "win_rate": 66.67
+    },
+    {
+        "team_name": "Frank's Furters",
+        "division": "C East",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Almost+Legends+Obsidian0599_logo.png",
+        "wins": 6,
+        "losses": 4,
+        "games_played": 10,
+        "win_rate": 60
+    },
+    {
+        "team_name": "Gen.M Esports",
+        "division": "A",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Gen.M_Esports_1350.png",
+        "wins": 8,
+        "losses": 9,
+        "games_played": 17,
+        "win_rate": 47.06
+    },
+    {
+        "team_name": "Good Lordy",
+        "division": "C West",
+        "icon_url": "/images/NGS/no-image-clipped.png",
+        "wins": 6,
+        "losses": 4,
+        "games_played": 10,
+        "win_rate": 60
+    },
+    {
+        "team_name": "Good Players, Bad Decisions",
+        "division": "Heroic",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Good_Players%252C_Bad_Decisions_8759.png",
+        "wins": 0,
+        "losses": 12,
+        "games_played": 12,
+        "win_rate": 0
+    },
+    {
+        "team_name": "Hat saika and r",
+        "division": "Heroic",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/null",
+        "wins": 8,
+        "losses": 2,
+        "games_played": 10,
+        "win_rate": 80
+    },
+    {
+        "team_name": "Heavy Hitterz",
+        "division": "Nexus",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Heavy_Hitterz_9227.png",
+        "wins": 4,
+        "losses": 8,
+        "games_played": 12,
+        "win_rate": 33.33
+    },
+    {
+        "team_name": "Heretics and Heathens",
+        "division": "Heroic",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Heathens_and_Heretics_2687.png",
+        "wins": 0,
+        "losses": 2,
+        "games_played": 2,
+        "win_rate": 0
+    },
+    {
+        "team_name": "Hot(s) Dads",
+        "division": "A",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Hot%28s%29_Dads_7283.png",
+        "wins": 10,
+        "losses": 6,
+        "games_played": 16,
+        "win_rate": 62.5
+    },
+    {
+        "team_name": "Is Shoopufff Inting Still",
+        "division": "Heroic",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Four_Blatant_Inters_0856.png",
+        "wins": 2,
+        "losses": 8,
+        "games_played": 10,
+        "win_rate": 20
+    },
+    {
+        "team_name": "LTK - Shaken, Not Tilted",
+        "division": "Nexus",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/LTK_-_Shaken%252C_Not_Tilted_9928.png",
+        "wins": 5,
+        "losses": 10,
+        "games_played": 15,
+        "win_rate": 33.33
+    },
+    {
+        "team_name": "Lightwell",
+        "division": "Nexus",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Lightwell_2523.png",
+        "wins": 12,
+        "losses": 1,
+        "games_played": 13,
+        "win_rate": 92.31
+    },
+    {
+        "team_name": "Little Buff Boyz",
+        "division": "A",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Little_Buff_Boyz_5788.png",
+        "wins": 8,
+        "losses": 6,
+        "games_played": 14,
+        "win_rate": 57.14
+    },
+    {
+        "team_name": "Macro Machines",
+        "division": "B West",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Macro_Machines_9158.png",
+        "wins": 9,
+        "losses": 6,
+        "games_played": 15,
+        "win_rate": 60
+    },
+    {
+        "team_name": "Magnitude: Oblivion",
+        "division": "Nexus",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Magnitude%253A_Oblivion_8072.png",
+        "wins": 6,
+        "losses": 10,
+        "games_played": 16,
+        "win_rate": 37.5
+    },
+    {
+        "team_name": "Mango Fever",
+        "division": "Heroic",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Mango_Fever_9462.png",
+        "wins": 2,
+        "losses": 8,
+        "games_played": 10,
+        "win_rate": 20
+    },
+    {
+        "team_name": "Micro & Macro",
+        "division": "Nexus",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Micro_%2526_Macro_5396.png",
+        "wins": 9,
+        "losses": 4,
+        "games_played": 13,
+        "win_rate": 69.23
+    },
+    {
+        "team_name": "NO CC NO PROBLEM",
+        "division": "B West",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/NO_CC_NO_PROBLEM_0383.png",
+        "wins": 9,
+        "losses": 5,
+        "games_played": 14,
+        "win_rate": 64.29
+    },
+    {
+        "team_name": "Objective Optional",
+        "division": "B West",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Objective_Optional_8731.png",
+        "wins": 10,
+        "losses": 4,
+        "games_played": 14,
+        "win_rate": 71.43
+    },
+    {
+        "team_name": "PUNishment",
+        "division": "A",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/PUNishment_6229.png",
+        "wins": 2,
+        "losses": 10,
+        "games_played": 12,
+        "win_rate": 16.67
+    },
+    {
+        "team_name": "Pending",
+        "division": "Heroic",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/null",
+        "wins": 6,
+        "losses": 0,
+        "games_played": 6,
+        "win_rate": 100
+    },
+    {
+        "team_name": "Pepegas on Ice",
+        "division": "B East",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Pepegas_on_Ice_4385.png",
+        "wins": 16,
+        "losses": 6,
+        "games_played": 22,
+        "win_rate": 72.73
+    },
+    {
+        "team_name": "Phoenix Rising Amethyst",
+        "division": "C West",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Phoenix_Rising_Amethyst_9442.png",
+        "wins": 10,
+        "losses": 7,
+        "games_played": 17,
+        "win_rate": 58.82
+    },
+    {
+        "team_name": "Protectors of Aiur",
+        "division": "B East",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Protectors_of_Aiur_2627.png",
+        "wins": 12,
+        "losses": 4,
+        "games_played": 16,
+        "win_rate": 75
+    },
+    {
+        "team_name": "Protectors of Shakuras",
+        "division": "B East",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Protectors_of_Shakuras_6077.png",
+        "wins": 3,
+        "losses": 10,
+        "games_played": 13,
+        "win_rate": 23.08
+    },
+    {
+        "team_name": "Randy Newman",
+        "division": "B West",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Randy_Newman_%28Withdrawn%29_0417.png",
+        "wins": 0,
+        "losses": 11,
+        "games_played": 11,
+        "win_rate": 0
+    },
+    {
+        "team_name": "Roll1Esports",
+        "division": "C West",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Roll1Esports_8311.png",
+        "wins": 3,
+        "losses": 9,
+        "games_played": 12,
+        "win_rate": 25
+    },
+    {
+        "team_name": "Spooky Ghosts",
+        "division": "A",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Spooky+Ghosts7527_logo.png",
+        "wins": 3,
+        "losses": 7,
+        "games_played": 10,
+        "win_rate": 30
+    },
+    {
+        "team_name": "Stormblessed",
+        "division": "Heroic",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Stormblessed_3562.png",
+        "wins": 8,
+        "losses": 0,
+        "games_played": 8,
+        "win_rate": 100
+    },
+    {
+        "team_name": "Tactical Feed",
+        "division": "B East",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Tactical_Feed_2804.png",
+        "wins": 8,
+        "losses": 6,
+        "games_played": 14,
+        "win_rate": 57.14
+    },
+    {
+        "team_name": "The Negotiators",
+        "division": "Nexus",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/The_Negotiators_9973.png",
+        "wins": 8,
+        "losses": 9,
+        "games_played": 17,
+        "win_rate": 47.06
+    },
+    {
+        "team_name": "The Part Timers",
+        "division": "A",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/The_Part_Timers_5594.png",
+        "wins": 2,
+        "losses": 11,
+        "games_played": 13,
+        "win_rate": 15.38
+    },
+    {
+        "team_name": "Toxic Lizards",
+        "division": "C East",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Toxic_Lizards_1731.png",
+        "wins": 7,
+        "losses": 5,
+        "games_played": 12,
+        "win_rate": 58.33
+    },
+    {
+        "team_name": "Tricky Gooses",
+        "division": "A",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Tricky_Gooses_3573.png",
+        "wins": 12,
+        "losses": 3,
+        "games_played": 15,
+        "win_rate": 80
+    },
+    {
+        "team_name": "Uncle Chens House of Blues",
+        "division": "Nexus",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/It%27s_Ya_Boi_King_Andrew_5477.png",
+        "wins": 10,
+        "losses": 3,
+        "games_played": 13,
+        "win_rate": 76.92
+    },
+    {
+        "team_name": "Xul Gin Distillery",
+        "division": "B East",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/Xul+Gin+Distillery4504_logo.png",
+        "wins": 10,
+        "losses": 10,
+        "games_played": 20,
+        "win_rate": 50
+    },
+    {
+        "team_name": "YCMYCCaST:Rebels oftheMeta",
+        "division": "C East",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/YCMYCCST5%3AYavapaiSwimsBack_8818.png",
+        "wins": 1,
+        "losses": 10,
+        "games_played": 11,
+        "win_rate": 9.09
+    },
+    {
+        "team_name": "gillyShark at !Bingo night",
+        "division": "A",
+        "icon_url": "https://s3.amazonaws.com/ngs-image-storage/gillyShark5564_logo.png",
+        "wins": 11,
+        "losses": 5,
+        "games_played": 16,
+        "win_rate": 68.75
+    }
+]

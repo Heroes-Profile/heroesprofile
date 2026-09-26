@@ -3,6 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Http\Middleware\ServeApiFixtures;
+use App\Models\Hero;
+use App\Models\Map;
+use App\Models\NGS\Battletag as NgsBattletag;
+use App\Models\NGS\Player as NgsPlayer;
+use App\Models\NGS\Replay as NgsReplay;
 use Illuminate\Console\Command;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route;
@@ -61,6 +66,11 @@ class CaptureApiSamples extends Command
         'next_after' => 'replay',
         // Identifies one real match, and names its object in the bucket.
         'fingerprint' => 'fingerprint',
+        // NGS player search's display name, and the esports page links that
+        // embed name and blizz_id.
+        'battletagShort' => 'name',
+        'playerlink' => 'link',
+        'herolink' => 'link',
         // Player activity. Reference dates — `release_date`, `last_updated` on a
         // hero — are not listed and stay real, because they describe the game
         // rather than a person.
@@ -72,6 +82,12 @@ class CaptureApiSamples extends Command
 
     /** @var array<string, array<string, mixed>> original value => replacement, per field */
     private array $replacements = [];
+
+    /** @var array<string, mixed> the query the last capture was made with */
+    private array $lastQuery = [];
+
+    /** Fields whose values also turn up inside links and paginator URLs. */
+    private const EMBEDDED_FIELDS = ['battletag', 'split_battletag', 'battletagShort', 'blizz_id'];
 
     /** Endpoints that need parameters before they will answer at all. */
     private const DEFAULT_QUERY = [
@@ -129,6 +145,16 @@ class CaptureApiSamples extends Command
 
             if (! $this->option('raw')) {
                 $payload = $this->scrub($payload);
+
+                // The player this capture asked about, even if no field returned
+                // them — paginator URLs repeat the caller's query.
+                foreach (['battletag', 'blizz_id'] as $field) {
+                    if (isset($this->lastQuery[$field])) {
+                        $this->scrub($this->lastQuery[$field], $field);
+                    }
+                }
+
+                $payload = $this->scrubEmbedded($payload);
             }
 
             // Promoting means this file ships as the documented shape of the
@@ -227,6 +253,7 @@ class CaptureApiSamples extends Command
     private function capture(Route $route, string $endpoint): mixed
     {
         $query = array_merge($this->defaultsFor($endpoint), $this->queryOverrides());
+        $this->lastQuery = $query;
 
         $request = Request::create('/'.ltrim($route->uri(), '/'), 'GET', $query);
         app()->instance('request', $request);
@@ -277,7 +304,12 @@ class CaptureApiSamples extends Command
             $scrubbed = [];
 
             foreach ($value as $childKey => $child) {
-                $scrubbed[$childKey] = $this->scrub($child, is_string($childKey) ? $childKey : $key);
+                // Some payloads key a list by battletag — `ngs/team`'s `players`.
+                $outKey = is_string($childKey) && preg_match('/^[^#\s]+#\d+$/u', $childKey)
+                    ? $this->scrub($childKey, 'battletag')
+                    : $childKey;
+
+                $scrubbed[$outKey] = $this->scrub($child, is_string($childKey) ? $childKey : $key);
             }
 
             return $scrubbed;
@@ -306,10 +338,51 @@ class CaptureApiSamples extends Command
             'replay' => 90000000 + $index,
             'fingerprint' => sprintf('%08x-0000-4000-8000-%012d', $index, $index),
             'date' => self::PLACEHOLDER_DATE,
+            'link' => '/Esports/NGS/Player/ExamplePlayer'.$index.'/'.(9000000 + $index),
             default => 9000000 + $index,
         };
 
         return $this->replacements[$key][$original] = $replacement;
+    }
+
+    /**
+     * Replaces already-anonymised battletags and blizz_ids where they sit inside a
+     * URL — site page links, and paginator links carrying the caller's query.
+     * Longest first, so a full battletag goes before the name inside it.
+     */
+    private function scrubEmbedded(mixed $value): mixed
+    {
+        if (is_array($value)) {
+            return array_map(fn ($child) => $this->scrubEmbedded($child), $value);
+        }
+
+        if (! is_string($value) || ! str_contains($value, '/')) {
+            return $value;
+        }
+
+        $pairs = [];
+
+        foreach (self::EMBEDDED_FIELDS as $field) {
+            foreach ($this->replacements[$field] ?? [] as $original => $replacement) {
+                $original = (string) $original;
+                $replacement = (string) $replacement;
+                $pairs[$original] = $replacement;
+                $pairs[rawurlencode($original)] = rawurlencode($replacement);
+                $pairs[urlencode($original)] = urlencode($replacement);
+            }
+        }
+
+        uksort($pairs, fn ($a, $b) => strlen($b) <=> strlen($a));
+
+        foreach ($pairs as $original => $replacement) {
+            if ($original === '') {
+                continue;
+            }
+
+            $value = preg_replace('/(?<![\w%])'.preg_quote($original, '/').'(?![\w])/u', $replacement, $value);
+        }
+
+        return $value;
     }
 
     private function reportReplacements(): void
@@ -331,13 +404,50 @@ class CaptureApiSamples extends Command
     }
 
     /**
-     * Parameters an endpoint needs before it will answer.
+     * Parameters an endpoint needs before it will answer. NGS needs a season,
+     * division, team and player that actually played, so they are read off the
+     * latest NGS replay rather than making the caller know a valid combination.
      *
      * @return array<string, mixed>
      */
     private function defaultsFor(string $endpoint): array
     {
-        return self::DEFAULT_QUERY[$endpoint] ?? [];
+        if (! str_starts_with($endpoint, 'ngs_') || $endpoint === 'ngs_games_upload') {
+            return self::DEFAULT_QUERY[$endpoint] ?? [];
+        }
+
+        $replay = NgsReplay::orderByDesc('replayID')->first();
+
+        if ($replay === null) {
+            return [];
+        }
+
+        $player = NgsPlayer::where('replayID', $replay->replayID)->first();
+        $battletag = $player === null ? null : NgsBattletag::find($player->battletag);
+
+        $season = ['season' => $replay->season];
+        $division = ['division' => $replay->division_0];
+        $team = ['team' => $replay->team_0_name];
+        $identity = ['battletag' => $battletag?->battletag, 'blizz_id' => $battletag?->blizz_id];
+        $hero = ['hero' => $player === null ? null : Hero::where('id', $player->hero)->value('name')];
+
+        $defaults = match ($endpoint) {
+            'ngs_standings', 'ngs_divisions', 'ngs_teams', 'ngs_heroes_stats' => $season,
+            'ngs_recent_matches', 'ngs_division_single', 'ngs_division_match_history' => $season + $division,
+            'ngs_heroes_talents_stats' => $season + $division + $hero,
+            'ngs_single_team', 'ngs_team_match_history' => $team + $season,
+            'ngs_single_player' => $identity + $season,
+            'ngs_single_player_hero' => $identity + $season + $hero,
+            'ngs_single_player_map' => $identity + $season + ['game_map' => Map::where('map_id', $replay->game_map)->value('name')],
+            'ngs_player_match_history' => $identity,
+            'ngs_player_search' => ['battletag' => explode('#', (string) $battletag?->battletag)[0]],
+            'ngs_replay_data' => ['replayID' => $replay->replayID],
+            default => [],
+        };
+
+        $this->line('  <comment>using</comment> '.json_encode($defaults));
+
+        return $defaults;
     }
 
     /** @return array<string, string> */

@@ -141,33 +141,63 @@
       <div v-if="notice" class="bg-teal p-3 mb-4">{{ notice }}</div>
       <div v-if="error" class="bg-red p-3 mb-4">{{ error }}</div>
 
-      <div class="bg-lighten p-6 mb-8">
+      <div id="project" class="bg-lighten p-6 mb-8" :class="{ 'border-l-4 border-yellow': projectRequired }">
         <h2 class="text-lg mb-2">Your Project</h2>
+        <p v-if="projectRequired" class="mb-4">
+          Tell us about your project to carry on using the API.
+          <template v-if="account.project_enforce_from">
+            From {{ account.project_enforce_from }}, calls from accounts without a project
+            description are refused.
+          </template>
+          <template v-else>Until you do, calls made with your keys are refused.</template>
+        </p>
         <p class="text-sm text-gray-medium mb-4">
-          Where can we see what you have built? A site, an overlay, a bot's page — anywhere
-          our data ends up. Optional, and you can change it whenever. It helps us credit you,
-          and it means any question about attribution starts with us looking at the right
-          place rather than asking you where to find it.
+          What you are building with the API. Required before subscribing, and it is the project
+          the licence in our <a class="link" href="/Api/Terms">terms</a> covers — if it changes
+          significantly, update it here. The website is optional: a site, an overlay, a bot's
+          page — anywhere our data ends up.
         </p>
 
-        <div class="flex flex-wrap gap-2">
-          <input
-            v-model="website"
-            @keyup.enter="saveWebsite"
-            type="text"
-            placeholder="https://your-project.com"
-            class="flex-1 min-w-[200px] p-2 bg-darken"
-          />
-          <button
-            @click="saveWebsite"
-            :disabled="savingWebsite"
-            class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4 disabled:bg-gray-medium"
-          >
-            {{ savingWebsite ? 'Saving…' : 'Save' }}
-          </button>
-        </div>
+        <label class="block text-sm mb-1" for="project-name">Project name</label>
+        <input
+          id="project-name"
+          v-model="projectName"
+          type="text"
+          maxlength="100"
+          class="w-full p-2 bg-darken mb-4"
+        />
 
-        <p v-if="websiteSaved" class="text-sm text-lteal mt-2">Saved.</p>
+        <label class="block text-sm mb-1" for="project-description">
+          What it does, who uses it, and how it uses our data
+        </label>
+        <textarea
+          id="project-description"
+          v-model="projectDescription"
+          rows="5"
+          maxlength="2000"
+          placeholder="For example: a Discord bot for our team's server that posts each member's recent Storm League matches after they play. Around 15 users, no ads, no paid features."
+          class="w-full p-2 bg-darken mb-4"
+        ></textarea>
+
+        <label class="block text-sm mb-1" for="project-website">Website (optional)</label>
+        <input
+          id="project-website"
+          v-model="website"
+          type="text"
+          placeholder="https://your-project.com"
+          class="w-full p-2 bg-darken mb-4"
+        />
+
+        <button
+          @click="saveProject"
+          :disabled="savingProject"
+          class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4 disabled:bg-gray-medium"
+        >
+          {{ savingProject ? 'Saving…' : 'Save' }}
+        </button>
+
+        <p v-if="projectError" class="text-sm text-red mt-2">{{ projectError }}</p>
+        <p v-if="projectSaved" class="text-sm text-lteal mt-2">Saved.</p>
       </div>
 
       <div class="bg-lighten p-6 mb-8">
@@ -258,10 +288,19 @@
         </table>
       </div>
 
-      <div class="bg-lighten p-6">
+      <div class="bg-lighten p-6 mb-8">
         <h2 class="text-lg mb-4">This Week's Usage</h2>
         <api-usage-table :usage="usage" :compact="true"></api-usage-table>
       </div>
+
+      <api-twitch-settings
+        v-if="twitch"
+        :initialchannel="twitch.channel"
+        :regions="twitch.regions"
+        :maxdelay="twitch.max_delay"
+        :notice="twitchnotice"
+        :linkerror="twitcherror"
+      ></api-twitch-settings>
     </div>
   </div>
 </template>
@@ -298,6 +337,20 @@ export default {
       type: String,
       default: null,
     },
+    // The Twitch extension section: channel, regions and delay ceiling. Null while
+    // the extension is not open to everyone, which hides the section.
+    twitch: {
+      type: Object,
+      default: null,
+    },
+    twitchnotice: {
+      type: String,
+      default: null,
+    },
+    twitcherror: {
+      type: String,
+      default: null,
+    },
   },
   data(){
     return {
@@ -317,8 +370,12 @@ export default {
       currentStanding: this.standing,
       dismissing: false,
       website: this.account.website || '',
-      savingWebsite: false,
-      websiteSaved: false,
+      projectName: this.account.project_name || '',
+      projectDescription: this.account.project_description || '',
+      projectRequired: this.account.project_required,
+      savingProject: false,
+      projectSaved: false,
+      projectError: null,
     }
   },
   computed: {
@@ -341,20 +398,30 @@ export default {
     },
   },
   methods: {
-    async saveWebsite(){
-      this.savingWebsite = true;
-      this.error = null;
-      this.websiteSaved = false;
+    async saveProject(){
+      this.savingProject = true;
+      this.projectError = null;
+      this.projectSaved = false;
 
       try {
-        const response = await this.$axios.post('/api/v1/account/website', { website: this.website });
-        // Echoed back so the box shows what was actually stored, trimming included.
+        const response = await this.$axios.post('/api/v1/account/project', {
+          project_name: this.projectName,
+          project_description: this.projectDescription,
+          website: this.website,
+        });
+        // Echoed back so the boxes show what was actually stored, trimming included.
+        this.projectName = response.data.project_name || '';
+        this.projectDescription = response.data.project_description || '';
         this.website = response.data.website || '';
-        this.websiteSaved = true;
+        this.projectRequired = false;
+        this.projectSaved = true;
       } catch (error) {
-        this.error = error.response?.data?.error || 'Could not save that. Please try again.';
+        const errors = error.response?.data?.errors;
+        this.projectError = errors
+          ? Object.values(errors).flat()[0]
+          : (error.response?.data?.error || 'Could not save that. Please try again.');
       } finally {
-        this.savingWebsite = false;
+        this.savingProject = false;
       }
     },
     // Only warnings can be dismissed. The banner clears optimistically — a failed

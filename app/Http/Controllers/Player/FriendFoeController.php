@@ -13,6 +13,7 @@ use App\Rules\HeroInputByIDValidation;
 use App\Rules\SeasonInputValidation;
 use App\Rules\StackSizeInputValidation;
 use App\Services\GlobalQueryService;
+use App\Support\GlobalCacheKey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -102,7 +103,7 @@ class FriendFoeController extends Controller
             return response()->json($this->executeFriendFoeData($request));
         }
 
-        $paramsHash = hash('sha256', json_encode([
+        $paramsHash = hash('sha256', json_encode(GlobalCacheKey::normalize([
             'blizz_id' => $request['blizz_id'],
             'region' => $request['region'],
             'type' => $request['type'],
@@ -113,7 +114,7 @@ class FriendFoeController extends Controller
             'hero' => $request['hero'],
             'game_map' => $request['game_map'],
             'groupsize' => $request['groupsize'],
-        ]));
+        ])));
 
         $dbCache = FriendFoeCache::where('params_hash', $paramsHash)->first();
 
@@ -271,65 +272,75 @@ class FriendFoeController extends Controller
             ->groupBy('hero', 'team', 'winner', 'player.blizz_id', 'battletag')
             ->get();
 
-        $combinedResults = $result_team_zero->merge($result_team_one);
+        // Totals as plain integers in one pass. A long career has thousands of
+        // team-mates and opponents, and only the top 50 get the full row.
+        $players = [];
+        foreach ([$result_team_zero, $result_team_one] as $rows) {
+            foreach ($rows as $row) {
+                $result = $row->winner == 1 ? 'wins' : 'losses';
 
-        $groupedResultsByBlizzId = $combinedResults->groupBy('blizz_id');
-
-        $heroDataByID = $this->globalDataService->getHeroes();
-        $heroDataByID = $heroDataByID->keyBy('id');
+                $players[$row->blizz_id]['battletag'] ??= $row->battletag;
+                $players[$row->blizz_id]['wins'] ??= 0;
+                $players[$row->blizz_id]['losses'] ??= 0;
+                $players[$row->blizz_id][$result] += $row->total;
+                $players[$row->blizz_id]['heroes'][$row->hero]['wins'] ??= 0;
+                $players[$row->blizz_id]['heroes'][$row->hero]['losses'] ??= 0;
+                $players[$row->blizz_id]['heroes'][$row->hero][$result] += $row->total;
+            }
+        }
+        unset($result_team_zero, $result_team_one, $rows);
 
         // Private and banned team-mates and opponents are left out entirely. No viewer
         // exception: this runs in the async worker and the result is shared by everyone.
-        $checkedData = $groupedResultsByBlizzId->reject(function ($group) use ($region) {
-            return $this->globalDataService->isHiddenFrom($group->first()->blizz_id, $region);
-        });
+        $players = array_filter($players, function ($player, $playerId) use ($blizz_id, $region) {
+            return $playerId != $blizz_id && ! $this->globalDataService->isHiddenFrom($playerId, $region);
+        }, ARRAY_FILTER_USE_BOTH);
+
+        uasort($players, fn ($a, $b) => ($b['wins'] + $b['losses']) <=> ($a['wins'] + $a['losses']));
+        $players = array_slice($players, 0, 50, true);
+
+        $heroDataByID = $this->globalDataService->getHeroes()->keyBy('id');
 
         // Same rule as checkIfSiteFlair: only Patreon accounts with site flair enabled.
         $patreonAccounts = BattlenetAccount::without(['patreonAccount', 'userSettings'])
             ->whereHas('patreonAccount', fn ($query) => $query->where('site_flair', 1))
-            ->get(['blizz_id', 'region']);
+            ->get(['blizz_id', 'region'])
+            ->keyBy(fn ($a) => $a->blizz_id.'|'.$a->region);
 
-        $finalResults = $checkedData->map(function ($data, $blizz_id) use ($heroDataByID, $region, $patreonAccounts) {
-            $totalWins = $data->where('winner', 1)->sum('total');
-            $totalLosses = $data->where('winner', 0)->sum('total');
+        $finalResults = [];
+        foreach ($players as $playerId => $player) {
+            $heroData = null;
+            foreach ($player['heroes'] as $hero => $totals) {
+                $heroGames = $totals['wins'] + $totals['losses'];
 
-            $heroData = $data->groupBy('hero')->map(function ($heroData, $hero) use ($heroDataByID) {
-                $totalWins = $heroData->where('winner', 1)->sum('total');
-                $totalLosses = $heroData->where('winner', 0)->sum('total');
+                if ($heroData === null || $heroGames > $heroData['total_games_played']) {
+                    $heroData = [
+                        'hero' => $heroDataByID[$hero],
+                        'total_wins' => $totals['wins'],
+                        'total_losses' => $totals['losses'],
+                        'total_games_played' => $heroGames,
+                    ];
+                }
+            }
 
-                return [
-                    'hero' => $heroDataByID[$hero],
-                    'total_wins' => $totalWins,
-                    'total_losses' => $totalLosses,
-                    'total_games_played' => $totalWins + $totalLosses,
-                ];
-            })->sortByDesc('total_games_played')->first();
-            $gamesPlayed = $totalWins + $totalLosses;
-            $patreonAccount = $patreonAccounts->where('blizz_id', $blizz_id)->where('region', $region);
+            $gamesPlayed = $player['wins'] + $player['losses'];
 
-            return [
-                'blizz_id' => $blizz_id,
+            $finalResults[] = [
+                'blizz_id' => $playerId,
                 'hero' => $heroData['hero']['name'],
                 'hero_games' => $heroData['total_games_played'],
                 'region' => $region,
-                'hp_owner' => $this->globalDataService->showOwnerFlair($blizz_id, $region),
-                'patreon' => ! (is_null($patreonAccount) || empty($patreonAccount) || count($patreonAccount) == 0)
-                    && ! $this->globalDataService->isFlairHidden('patreon', $blizz_id, $region),
-                'battletag' => explode('#', $data->first()->battletag)[0],
-                'total_wins' => $totalWins,
-                'total_losses' => $totalLosses,
+                'hp_owner' => $this->globalDataService->showOwnerFlair($playerId, $region),
+                'patreon' => $patreonAccounts->has($playerId.'|'.$region)
+                    && ! $this->globalDataService->isFlairHidden('patreon', $playerId, $region),
+                'battletag' => explode('#', $player['battletag'])[0],
+                'total_wins' => $player['wins'],
+                'total_losses' => $player['losses'],
                 'total_games_played' => $gamesPlayed,
-                'win_rate' => $gamesPlayed ? round(($totalWins / $gamesPlayed) * 100, 2) : 0,
+                'win_rate' => $gamesPlayed ? round(($player['wins'] / $gamesPlayed) * 100, 2) : 0,
                 'heroData' => $heroData,
             ];
-        })
-            ->filter(function ($data) use ($blizz_id) {
-                return $data['blizz_id'] != $blizz_id;
-            })
-            ->sortByDesc('total_games_played')
-            ->take(50)
-            ->values()
-            ->toArray();
+        }
 
         $latestReplayId = $this->getLatestReplayId(
             $blizz_id,
@@ -340,7 +351,7 @@ class FriendFoeController extends Controller
             $request['end_date']
         );
 
-        $paramsHash = hash('sha256', json_encode([
+        $paramsHash = hash('sha256', json_encode(GlobalCacheKey::normalize([
             'blizz_id' => $blizz_id,
             'region' => $region,
             'type' => $type,
@@ -351,7 +362,7 @@ class FriendFoeController extends Controller
             'hero' => $request['hero'],
             'game_map' => $request['game_map'],
             'groupsize' => $request['groupsize'],
-        ]));
+        ])));
 
         FriendFoeCache::updateOrCreate(
             ['params_hash' => $paramsHash],

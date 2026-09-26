@@ -48,8 +48,10 @@ RUN a2ensite 000-default && a2enmod rewrite
 
 # PHP defaults to a 2M upload cap, well under the 10M the uploader advertises.
 # Over that, the file never reaches PHP and the request looks like it carried none.
+# The 128M default runs out on whole-career player queries in the async worker.
 RUN echo "upload_max_filesize=10M" > /usr/local/etc/php/conf.d/custom.ini \
-    && echo "post_max_size=12M" >> /usr/local/etc/php/conf.d/custom.ini
+    && echo "post_max_size=12M" >> /usr/local/etc/php/conf.d/custom.ini \
+    && echo "memory_limit=512M" >> /usr/local/etc/php/conf.d/custom.ini
 
 RUN echo "LimitRequestFieldSize 16384" >> /etc/apache2/apache2.conf
 

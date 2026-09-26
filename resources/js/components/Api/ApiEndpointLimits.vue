@@ -53,7 +53,7 @@
       </div>
 
       <p class="text-sm text-gray-medium">
-        Esports endpoints are granted per organisation rather than sold, so they are not listed here.
+        NGS replay upload is granted per organisation rather than sold, so it is not listed here.
         <a class="link" href="/Api">Back to plans</a>.
       </p>
     </div>

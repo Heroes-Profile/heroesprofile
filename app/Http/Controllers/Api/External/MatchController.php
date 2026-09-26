@@ -20,7 +20,7 @@ use Symfony\Component\HttpFoundation\Response;
  * and `patreon_subscriber`. The public API is stateless, so callers always get
  * the anonymous shape.
  *
- * Esports matches are out of scope: the API serves no esports data.
+ * NGS matches are served by `ngs/replay/{replayID}` in NgsController.
  */
 class MatchController extends Controller
 {

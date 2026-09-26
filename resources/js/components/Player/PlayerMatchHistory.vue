@@ -128,6 +128,9 @@
         </ul>
       </div>
     </div>
+    <div v-else-if="asyncLoading">
+      <loading-component :textoverride="true">This is taking longer than expected.<br/>A background task is computing your results.<br/>Please be patient.</loading-component>
+    </div>
     <div v-else-if="isLoading">
       <loading-component @cancel-request="cancelAxiosRequest"></loading-component>
     </div>
@@ -168,6 +171,7 @@ export default {
       cancelTokenSource: null,
       userTimezone: moment.tz.guess(),
       isLoading: false,
+      asyncLoading: false,
       data: null,
       role: null,
       hero: null,
@@ -242,7 +246,7 @@ export default {
       }
       this.cancelTokenSource = this.$axios.CancelToken.source();
       try{
-        const response = await this.$axios.post("/api/v1/player/match/history", {
+        const response = await this.$globalAsyncPost("/api/v1/player/match/history", {
           battletag: this.battletag,
           blizz_id: this.blizzid,
           region: this.region,
@@ -260,6 +264,11 @@ export default {
         }, 
         {
           cancelToken: this.cancelTokenSource.token,
+          onLoadStatus: (status, meta) => {
+            if (meta.phase === 'polling') {
+              this.asyncLoading = true;
+            }
+          },
         });
         this.data = response.data;
       }catch(error){
@@ -267,6 +276,7 @@ export default {
       }finally {
         this.cancelTokenSource = null;
         this.isLoading = false;
+        this.asyncLoading = false;
         this.$nextTick(() => {
         const responsivetable = this.$refs.responsivetable;
           if (responsivetable && this.windowWidth < 1500) {

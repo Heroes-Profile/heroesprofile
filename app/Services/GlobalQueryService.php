@@ -2,12 +2,17 @@
 
 namespace App\Services;
 
+use App\Http\Middleware\TrackSlowRequests;
 use App\Support\DatabaseCacheReader;
+use App\Support\GlobalCacheFreshness;
+use App\Support\GlobalCacheWindow;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Spatie\LaravelIgnition\Facades\Flare;
 
 class GlobalQueryService
 {
@@ -76,6 +81,7 @@ class GlobalQueryService
             'handler_method' => $handlerMethod,
             'request' => $requestData,
             'cache_ttl_seconds' => $cacheTtlSeconds,
+            'origin' => $this->origin(),
             'error' => null,
         ];
 
@@ -124,6 +130,7 @@ class GlobalQueryService
             'handler_method' => $handlerMethod,
             'request' => $requestData,
             'cache_ttl_seconds' => $cacheTtlSeconds,
+            'origin' => $this->origin(),
             'error' => null,
         ];
 
@@ -169,6 +176,7 @@ class GlobalQueryService
             'handler_method' => $handlerMethod,
             'request' => $requestData,
             'cache_ttl_seconds' => $cacheTtlSeconds,
+            'origin' => $this->origin(),
             'error' => null,
         ];
 
@@ -209,10 +217,11 @@ class GlobalQueryService
         array $children,
         string $handlerClass,
         string $handlerMethod,
-        int $cacheTtlSeconds
+        GlobalCacheWindow $window
     ): JsonResponse {
         $cache = Cache::store('database');
         $bypassCache = app(GlobalDataService::class)->shouldBypassGlobalCache();
+        $asyncEnabled = app(GlobalDataService::class)->isGlobalAsyncEnabled();
         $parentIndexKey = $this->cacheIndexKey($parentCacheKey);
 
         if ($bypassCache) {
@@ -223,8 +232,15 @@ class GlobalQueryService
         if (! $bypassCache) {
             $cached = $cache->get($parentCacheKey);
             if ($cached !== null) {
+                $status = 'fresh';
+
+                if ($asyncEnabled && GlobalCacheFreshness::isStale($parentCacheKey, $window)) {
+                    $status = 'stale';
+                    $this->refreshBatch($parentCacheKey, $children, $handlerClass, $handlerMethod, $window);
+                }
+
                 return response()->json($cached)
-                    ->header('X-Global-Cache-Status', 'fresh')
+                    ->header('X-Global-Cache-Status', $status)
                     ->header('X-Global-Async-Mode', 'cache-hit');
             }
 
@@ -239,10 +255,61 @@ class GlobalQueryService
         // Cloud Tasks is configured on the deployed service only. Without this a
         // batch run anywhere else dispatches nothing and reports 0 of 90 forever.
         // The single-query path makes the same choice — see HandlesAsyncGlobalQueries.
-        if (! app(GlobalDataService::class)->isGlobalAsyncEnabled()) {
-            return $this->runBatchInline($parentCacheKey, $children, $handlerClass, $handlerMethod, $cacheTtlSeconds, $bypassCache);
+        if (! $asyncEnabled) {
+            return $this->runBatchInline($parentCacheKey, $children, $handlerClass, $handlerMethod, $window->ttl, $bypassCache);
         }
 
+        $jobId = $this->startBatch($parentCacheKey, $children, $handlerClass, $handlerMethod, $window->ttl, null);
+
+        return $this->withBypassHeader($this->batchAccepted($jobId), $bypassCache);
+    }
+
+    /**
+     * Rerun a stale batch's stale children behind the result being served.
+     *
+     * Nobody polls a refresh, so `topUp()` assembles it once the last child
+     * resolves. Never allowed to fail the request serving the stale result.
+     *
+     * @param  array<string, array{cache_key: string, request: array<string, mixed>}>  $children
+     */
+    private function refreshBatch(
+        string $parentCacheKey,
+        array $children,
+        string $handlerClass,
+        string $handlerMethod,
+        GlobalCacheWindow $window
+    ): void {
+        try {
+            $existing = Cache::store('database')->get($this->cacheIndexKey($parentCacheKey));
+
+            if ($existing && in_array($existing['status'], ['pending', 'processing'], true)) {
+                $this->topUp($existing['job_id']);
+
+                return;
+            }
+
+            $this->startBatch($parentCacheKey, $children, $handlerClass, $handlerMethod, $window->ttl, time() - $window->fresh);
+        } catch (\Throwable $exception) {
+            Log::warning('Stale batch refresh failed', [
+                'cache_key' => $parentCacheKey,
+                'error' => $exception->getMessage(),
+            ]);
+        }
+    }
+
+    /**
+     * @param  array<string, array{cache_key: string, request: array<string, mixed>}>  $children
+     * @param  ?int  $refreshBefore  Children computed before this time are rerun. Null for a new batch.
+     */
+    private function startBatch(
+        string $parentCacheKey,
+        array $children,
+        string $handlerClass,
+        string $handlerMethod,
+        int $cacheTtlSeconds,
+        ?int $refreshBefore
+    ): string {
+        $cache = Cache::store('database');
         $jobId = (string) Str::uuid();
         $seeded = [];
 
@@ -257,18 +324,20 @@ class GlobalQueryService
             'handler_class' => $handlerClass,
             'handler_method' => $handlerMethod,
             'children' => $seeded,
+            'origin' => $this->origin(),
             'cache_ttl_seconds' => $cacheTtlSeconds,
+            'refresh_before' => $refreshBefore,
             'error' => null,
         ], self::STATUS_TTL_SECONDS);
 
-        $cache->put($parentIndexKey, [
+        $cache->put($this->cacheIndexKey($parentCacheKey), [
             'job_id' => $jobId,
             'status' => 'pending',
         ], self::STATUS_TTL_SECONDS);
 
         $this->topUp($jobId);
 
-        return $this->withBypassHeader($this->batchAccepted($jobId), $bypassCache);
+        return $jobId;
     }
 
     /**
@@ -309,6 +378,7 @@ class GlobalQueryService
             try {
                 $data = $handler->{$handlerMethod}(new Request($child['request']));
                 $cache->put($child['cache_key'], $data, $ttl);
+                GlobalCacheFreshness::stamp($child['cache_key'], $ttl);
                 $results[$label] = $data;
             } catch (\Throwable $exception) {
                 Log::error('Inline batch child failed', [
@@ -321,6 +391,7 @@ class GlobalQueryService
         }
 
         $cache->put($parentCacheKey, $results, $ttl);
+        GlobalCacheFreshness::stamp($parentCacheKey, $ttl);
 
         return response()->json($results)
             ->header('X-Global-Async-Mode', 'sync');
@@ -348,13 +419,22 @@ class GlobalQueryService
 
         $queued = [];
         $inFlight = 0;
+        $states = $this->childStates($job['children'], $job['refresh_before'] ?? null);
 
-        foreach ($this->childStates($job['children']) as $label => $state) {
+        foreach ($states as $label => $state) {
             if ($state['status'] === 'running') {
                 $inFlight++;
             } elseif ($state['status'] === 'queued') {
                 $queued[] = $label;
             }
+        }
+
+        // Every child resolved: assemble here rather than waiting on a poll, which a
+        // background refresh never gets.
+        if ($queued === [] && $inFlight === 0) {
+            $this->assembleBatch($parentJobId, $job, $states);
+
+            return;
         }
 
         $slots = $this->batchMaxInFlight() - $inFlight;
@@ -452,6 +532,16 @@ class GlobalQueryService
 
         $this->markProcessing($jobId, $job);
 
+        // The worker's own request body is only the job id. Set before running so a
+        // crash, out-of-memory included, is reported with what was actually asked.
+        $input = Arr::except($job['request'] ?? [], TrackSlowRequests::HIDDEN_INPUT);
+        Flare::context('job_handler', $job['handler_class'].'@'.$job['handler_method']);
+        Flare::context('job_origin', $job['origin'] ?? 'unknown');
+        Flare::context('job_input', $input);
+        Flare::context('job_attempt', $attempt);
+
+        $start = microtime(true);
+
         try {
             $handler = app($job['handler_class']);
 
@@ -463,6 +553,16 @@ class GlobalQueryService
             $data = $handler->{$job['handler_method']}($request);
 
             $this->markComplete($jobId, $job, $data);
+
+            $seconds = round(microtime(true) - $start, 2);
+
+            if ($seconds >= TrackSlowRequests::THRESHOLD_SECONDS) {
+                Flare::context('duration_seconds', $seconds);
+                Flare::reportMessage(
+                    "Slow job ({$seconds}s): ".class_basename($job['handler_class']).'@'.$job['handler_method'],
+                    'error'
+                );
+            }
 
             Log::info('Global query job complete', [
                 'job_id' => $jobId,
@@ -482,6 +582,21 @@ class GlobalQueryService
         }
 
         $this->topUpParent($job);
+    }
+
+    /**
+     * Who created the job. Keys are shared, so anyone asking the same question
+     * afterwards waits on this job rather than starting their own.
+     */
+    private function origin(): string
+    {
+        $request = request();
+
+        if ($request->hasHeader('X-CloudTasks-TaskName')) {
+            return 'worker';
+        }
+
+        return str_starts_with($request->route()?->getName() ?? '', 'api.external.') ? 'api' : 'site';
     }
 
     public function jobKey(string $jobId): string
@@ -512,6 +627,7 @@ class GlobalQueryService
         $ttl = max(60, (int) ($job['cache_ttl_seconds'] ?? 3600));
 
         $cache->put($job['cache_key'], $data, $ttl);
+        GlobalCacheFreshness::stamp($job['cache_key'], $ttl);
 
         $job['status'] = 'complete';
         $job['error'] = null;
@@ -580,10 +696,13 @@ class GlobalQueryService
      * themselves are whole query outputs and are read once, at assembly, by
      * `batchResults()`.
      *
+     * A refresh adds one query for the stamps of the children that have a result: a
+     * result computed before `$refreshBefore` is not complete, it is due a rerun.
+     *
      * @param  array<string, array{cache_key: string, request: array<string, mixed>, job_id: ?string}>  $children
      * @return array<string, array{status: string, error?: string}>
      */
-    private function childStates(array $children): array
+    private function childStates(array $children, ?int $refreshBefore = null): array
     {
         $resultKeys = [];
 
@@ -592,6 +711,22 @@ class GlobalQueryService
         }
 
         $complete = DatabaseCacheReader::existing(array_keys($resultKeys));
+
+        if ($refreshBefore !== null) {
+            $stampKeys = [];
+
+            foreach ($complete as $key => $exists) {
+                if ($exists) {
+                    $stampKeys[GlobalCacheFreshness::key($key)] = true;
+                }
+            }
+
+            $stamps = DatabaseCacheReader::many(array_keys($stampKeys));
+
+            foreach ($complete as $key => $exists) {
+                $complete[$key] = $exists && (int) ($stamps[GlobalCacheFreshness::key($key)] ?? 0) >= $refreshBefore;
+            }
+        }
 
         $jobKeys = [];
 
@@ -615,30 +750,39 @@ class GlobalQueryService
     /**
      * A finished batch's payload, reading each child's result once.
      *
+     * A refresh that failed keeps the result it was refreshing rather than
+     * swapping good data for an error.
+     *
      * @param  array<string, array{cache_key: string, request: array<string, mixed>, job_id: ?string}>  $children
      * @param  array<string, array{status: string, error?: string}>  $states
-     * @return array<string, mixed>
+     * @return array{0: array<string, mixed>, 1: bool} The payload, and whether any label is an error.
      */
     private function batchResults(array $children, array $states): array
     {
         $keys = [];
 
-        foreach ($children as $label => $child) {
-            if (($states[$label]['status'] ?? null) === 'complete') {
-                $keys[$child['cache_key']] = true;
-            }
+        foreach ($children as $child) {
+            $keys[$child['cache_key']] = true;
         }
 
         $results = DatabaseCacheReader::many(array_keys($keys));
         $payload = [];
+        $hasErrors = false;
 
         foreach ($children as $label => $child) {
-            $payload[$label] = $states[$label]['status'] === 'complete'
-                ? $results[$child['cache_key']] ?? null
-                : ['error' => $states[$label]['error'] ?? 'Query failed.'];
+            $result = $results[$child['cache_key']] ?? null;
+
+            if ($states[$label]['status'] === 'complete' || $result !== null) {
+                $payload[$label] = $result;
+
+                continue;
+            }
+
+            $payload[$label] = ['error' => $states[$label]['error'] ?? 'Query failed.'];
+            $hasErrors = true;
         }
 
-        return $payload;
+        return [$payload, $hasErrors];
     }
 
     /**
@@ -702,6 +846,7 @@ class GlobalQueryService
             'handler_method' => $parent['handler_method'],
             'request' => $child['request'],
             'cache_ttl_seconds' => $parent['cache_ttl_seconds'],
+            'origin' => $parent['origin'] ?? null,
             'parent_job_id' => $parentJobId,
             'label' => $label,
             'attempts' => 0,
@@ -770,26 +915,42 @@ class GlobalQueryService
             ], 404);
         }
 
-        $states = $this->childStates($job['children']);
+        // `topUp()` assembles the batch once every child has resolved.
+        if ($job['status'] === 'complete') {
+            $data = $cache->get($job['cache_key']);
+
+            if ($data !== null) {
+                return response()->json($data)
+                    ->header('X-Global-Cache-Status', 'fresh');
+            }
+        }
+
+        $states = $this->childStates($job['children'], $job['refresh_before'] ?? null);
         $resolved = count(array_filter(
             $states,
             static fn ($state) => in_array($state['status'], ['complete', 'failed'], true)
         ));
-        $total = count($job['children']);
 
-        if ($resolved < $total) {
-            return $this->batchAccepted($jobId, $resolved, $total);
-        }
+        return $this->batchAccepted($jobId, $resolved, count($job['children']));
+    }
 
-        $results = $this->batchResults($job['children'], $states);
+    /**
+     * @param  array<string, mixed>  $job
+     * @param  array<string, array{status: string, error?: string}>  $states
+     */
+    private function assembleBatch(string $jobId, array $job, array $states): void
+    {
+        $cache = Cache::store('database');
+
+        [$results, $hasErrors] = $this->batchResults($job['children'], $states);
 
         // A failed child is usually transient; keeping its error for the data TTL would
         // show it to everyone for weeks. Briefly, so a later request retries just that one.
-        $failed = in_array('failed', array_column($states, 'status'), true);
-        $ttl = $failed
+        $ttl = $hasErrors
             ? self::PARTIAL_RESULT_TTL_SECONDS
             : max(60, (int) ($job['cache_ttl_seconds'] ?? 3600));
         $cache->put($job['cache_key'], $results, $ttl);
+        GlobalCacheFreshness::stamp($job['cache_key'], $ttl);
 
         $job['status'] = 'complete';
         $job['error'] = null;
@@ -798,9 +959,6 @@ class GlobalQueryService
             'job_id' => $jobId,
             'status' => 'complete',
         ], self::STATUS_TTL_SECONDS);
-
-        return response()->json($results)
-            ->header('X-Global-Cache-Status', 'fresh');
     }
 
     private function batchAccepted(string $jobId, ?int $completed = null, ?int $total = null): JsonResponse

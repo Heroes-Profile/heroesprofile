@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\AuthenticateTwitchUploaderKey;
 use App\Http\Middleware\BlockBannedIPs;
 use App\Http\Middleware\BlockSuspendedApiAccount;
 use App\Http\Middleware\CheckIfPatreonSupporter;
@@ -19,6 +20,8 @@ use App\Http\Middleware\LogApiRequest;
 use App\Http\Middleware\LogIPAndUserAgent;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
 use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\RequireApiAdmin;
+use App\Http\Middleware\RequireApiProjectDetails;
 use App\Http\Middleware\RequireApiTermsAcceptance;
 use App\Http\Middleware\RequireNgsAccess;
 use App\Http\Middleware\RequireWebsiteAuthForAll;
@@ -37,6 +40,7 @@ use App\Http\Middleware\ValidateSignature;
 use App\Http\Middleware\VerifyCloudTasksRequest;
 use App\Http\Middleware\VerifyCsrfToken;
 use App\Http\Middleware\VerifyStripeWebhookSecretConfigured;
+use App\Http\Middleware\VerifyTwitchExtensionJwt;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Auth\Middleware\EnsureEmailIsVerified;
@@ -121,6 +125,15 @@ class Kernel extends HttpKernel
             // has to see fixture output as well as live output.
             ConvertResponseToCsv::class,
         ],
+
+        /*
+         * Twitch extension. Stateless like the external API, but without its key
+         * guard: the uploader authenticates with its own key, the extension with
+         * a Twitch JWT, and Cloud Tasks with an OIDC token — each per route.
+         */
+        'twitch' => [
+            SubstituteBindings::class,
+        ],
     ];
 
     /**
@@ -146,10 +159,12 @@ class Kernel extends HttpKernel
         'ensureApiAccountAuth' => EnsureApiAccountAuthenticated::class,
         'ensureApiAdmin' => EnsureApiAdmin::class,
         'requireApiTerms' => RequireApiTermsAcceptance::class,
+        'requireApiProject' => RequireApiProjectDetails::class,
         'blockSuspendedApi' => BlockSuspendedApiAccount::class,
         'api.quota' => EnforceApiQuota::class,
         'api.fixtures' => ServeApiFixtures::class,
         'api.ngs' => RequireNgsAccess::class,
+        'api.admin' => RequireApiAdmin::class,
         'api.ngs.upload.validate' => ValidateNgsUpload::class,
         'checkIfPrivateProfilePage' => CheckIfPrivateProfilePage::class,
         'checkIfPrivateProfileData' => CheckIfPrivateProfileData::class,
@@ -158,5 +173,7 @@ class Kernel extends HttpKernel
         'communitySupportRedirect' => CommunitySupportRedirect::class,
         'requireWebsiteAuthForAll' => RequireWebsiteAuthForAll::class,
         'cloud.tasks' => VerifyCloudTasksRequest::class,
+        'twitch.uploader' => AuthenticateTwitchUploaderKey::class,
+        'twitch.jwt' => VerifyTwitchExtensionJwt::class,
     ];
 }
