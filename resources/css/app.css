@@ -164,6 +164,23 @@ nav .search-component{
 
 }
 
+.stat-bar-light,
+.dark-mode .stat-bar-light{
+  @apply bg-gray-light;
+}
+.stat-bar-light .variable-text,
+.dark-mode .stat-bar-light .variable-text{
+  @apply text-black;
+}
+
+.talent-card-row-highlight,
+.dark-mode .talent-card-row-highlight{
+  @apply bg-teal text-white;
+}
+.dark-mode .talent-card-row{
+  @apply bg-darken;
+}
+
 .variable-ring{
   @apply ring-gray-medium;
 }

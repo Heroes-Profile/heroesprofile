@@ -12,6 +12,7 @@
     :hero="{{ json_encode($hero) }}" 
     :regionsmap="{{ json_encode($bladeGlobals['regions']) }}"
     :heroobject="{{ json_encode($heroObject) }}"
+    :heroes="{{ json_encode($heroes) }}"
     :is-patreon="{{ json_encode($patreon) }}"
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
     :gametypedefault="{{ json_encode($gametypedefault) }}" 

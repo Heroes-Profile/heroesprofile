@@ -3,18 +3,7 @@
     <global-async-debug-banner page-label="Global Talents" />
 
     <div class="grid gap-5 grid-cols-1">
-      <header v-if="selectedHero && isCompact" class="flex flex-wrap items-center gap-4 bg-lighten px-4 py-3 md:px-8">
-        <hero-image-wrapper :hero="selectedHero" :excludehover="true" class="shrink-0"></hero-image-wrapper>
-        <div class="min-w-0">
-          <select class="bg-blue text-white rounded px-2 py-1 max-w-full" aria-label="Change Hero"
-            :value="selectedHero.id" @change="handleInputChange({ value: Number($event.target.value) })">
-            <option v-for="hero in heroes" :key="hero.id" :value="hero.id">{{ hero.name }}</option>
-          </select>
-          <h1 class="text-lg font-bold">Talent Statistics</h1>
-        </div>
-        <p class="text-sm flex-1 min-w-[200px]">{{ infoText }}</p>
-      </header>
-      <page-heading v-else :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Talent Statistics' : 'Hero Talent Statistics'">
+      <page-heading :infoText1="infoText" :heading="selectedHero ? 'Talent Statistics' : 'Hero Talent Statistics'">
         <div v-if="selectedHero" class="relative" @mouseleave="heroDropdownOpen = false">
           <hero-image-wrapper :hero="selectedHero" :size="'big'" :includehover="false" class="cursor-pointer" @click.native="heroDropdownOpen = !heroDropdownOpen"></hero-image-wrapper>
           <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 220px; max-height: 340px; overflow-y: auto;">
@@ -30,6 +19,9 @@
             </div>
           </div>
         </div>
+        <template v-if="selectedHero" #aboveHeading>
+          <hero-heading-select :heroes="heroes" :value="selectedHero.id" @hero-changed="handleInputChange({ value: $event })"></hero-heading-select>
+        </template>
       </page-heading>
 
 
@@ -55,7 +47,6 @@
           :onFilter="filterData" 
           :filters="filters" 
           :isLoading="isTalentsLoading || isBuildsLoading"
-          :compact="isCompact"
 
           :timeframetypeinput="timeframetype"
           :timeframeinput="timeframe"
@@ -87,36 +78,19 @@
           :advancedfiltering="advancedfiltering"
 
           >
-          <template #compact-footer>
-            <div class="flex items-center gap-2">
-              <tab-button small tab1text="Table" tab2text="Compact" :ignoreclick="true" overridedefaultside="right" @tab-click="setLayout"></tab-button>
-              <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
-                <p class="max-sm:text-xs">Your default layout can be set in your <a href="/Profile/Settings" class="link">Profile Settings</a>.</p>
-              </round-image>
-              <custom-button v-if="talentdetaildata && patchNotesUrl" class="ml-2" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
-            </div>
-          </template>
         </filters>
         <dynamic-banner-ad :patreon-user="patreonUser" :index="3" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
   
         <div v-if="talentdetaildata" class="mx-auto  md:px-4">
-          <div v-if="!isCompact" class="flex flex-wrap justify-between items-start gap-2 mb-2 max-w-[1500px] mx-auto">
-            <span class="flex gap-4 mb-2">
-              <single-select-filter
-                :values="filters.heroes" 
-                :text="'Change Hero'" 
-                :defaultValue="selectedHero.id"
-                @input-changed="handleInputChange"
-              ></single-select-filter>
-            </span>
-            <div class="flex flex-col items-end gap-2">
-              <span class="flex gap-2">
-                <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
-                <custom-button @click="scrollToBuilds" :text="'Scroll To Builds'" :alt="'Scroll To Builds'" size="small" :ignoreclick="true"></custom-button>
-              </span>
+          <div class="flex flex-wrap justify-between items-center gap-2 mb-2 max-w-[1500px] mx-auto">
+            <div>
+              <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
+            </div>
+            <div class="flex items-center gap-4">
+              <button type="button" class="underline text-sm" @click="scrollToBuilds">Scroll To Builds</button>
               <div class="flex items-center gap-2 max-md:hidden">
-                <tab-button tab1text="Table" tab2text="Compact" :ignoreclick="true" overridedefaultside="left" @tab-click="setLayout"></tab-button>
+                <tab-button tab1text="Table" tab2text="Compact" :ignoreclick="true" :overridedefaultside="isCompact ? 'right' : 'left'" @tab-click="setLayout"></tab-button>
                 <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
                   <p class="max-sm:text-xs">Your default layout can be set in your <a href="/Profile/Settings" class="link">Profile Settings</a>.</p>
                 </round-image>
@@ -140,14 +114,11 @@
         <dynamic-banner-ad :patreon-user="patreonUser" :index="4" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
 
-        <div v-if="talentbuilddata" class="flex justify-between max-w-[1500px] mx-auto md:px-4" :class="{ 'mt-6': isCompact }">
+        <div v-if="talentbuilddata" class="flex justify-between max-w-[1500px] mx-auto mt-6">
           <div id="builds" class="w-full min-w-0">
-            <template v-if="!isCompact">
-              <single-select-filter :values="buildtypes" :text="'Talent Build Type'" :defaultValue="talentbuildtype" @input-changed="buildtypechange"></single-select-filter>
-              {{ selectedHero.name }} Talent Builds
-            </template>
-            <compact-talent-builds v-if="isCompact" :build-data="talentbuilddata" :stat-filter="statfilter">
-              <template #build-heading>
+            <h2 v-if="!isCompact" class="heading mb-4 text-center">Talent Builds</h2>
+            <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]">
+              <template #heading>
                 <span class="flex flex-wrap items-center gap-2">
                   {{ selectedHero.name }}
                   <select class="bg-blue text-white rounded px-2 py-1" aria-label="Talent Build Type" :value="talentbuildtype" @change="buildtypechange({ value: $event.target.value })">
@@ -156,8 +127,7 @@
                   Talent Builds
                 </span>
               </template>
-            </compact-talent-builds>
-            <global-talent-builds-section v-else :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
+            </global-talent-builds-section>
             <div class="mt-4">
               Create your own builds at
               <a :href="'/Global/Talents/Builder/' + selectedHero.name" class="link" target="_blank">
@@ -182,13 +152,11 @@
 
 <script>
   import CompactTalentGrid from './CompactTalentGrid.vue';
-  import CompactTalentBuilds from './CompactTalentBuilds.vue';
 
   export default {
     name: 'GlobalTalentsStats',
     components: {
       CompactTalentGrid,
-      CompactTalentBuilds,
     },
     props: {
       filters: Object,

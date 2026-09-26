@@ -1,7 +1,10 @@
 <template>
   <div>
-    <page-heading :infoText1="hero + ' stats for ' + battletag" :heading="'Hero Stats: '+hero" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
+    <page-heading :infoText1="hero + ' stats for ' + battletag" heading="Hero Stats" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
       <hero-image-wrapper :hero="heroobject" :size="'big'"></hero-image-wrapper>
+      <template #aboveHeading>
+        <hero-heading-select :heroes="heroes" :value="heroobject.id" @hero-changed="changeHero($event)"></hero-heading-select>
+      </template>
     </page-heading>
 
     <div class="flex justify-center max-w-[1500px] mx-auto flex-wrap max-md:flex-col max-md:items-center">
@@ -216,6 +219,7 @@
       },
       hero: String,
       heroobject: Object,
+      heroes: Array,
       battletag: String,
       blizzid: {
         type: [String, Number]
@@ -405,6 +409,10 @@
         if (this.cancelTokenSource) {
           this.cancelTokenSource.cancel('Request canceled by user');
         }
+      },
+      changeHero(heroId) {
+        const hero = this.heroes.find(h => h.id === heroId);
+        window.location.href = `/Player/${this.battletag}/${this.blizzid}/${this.region}/Hero/${hero.name}`;
       },
       handleInputChange(eventPayload) {
         if(eventPayload.field == "Game Type"){

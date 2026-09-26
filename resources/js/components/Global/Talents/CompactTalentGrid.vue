@@ -1,40 +1,31 @@
 <template>
   <section v-if="tiers.some(tier => tier.talents.length)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-7 gap-2" aria-label="Talent statistics">
-    <article v-for="tier in tiers" :key="tier.level" class="min-w-0 bg-lighten rounded border border-lighten">
-      <div class="bg-teal text-white px-3 py-2 rounded-t">
-        <h2 class="font-bold">Level {{ tier.level }}</h2>
-      </div>
-      <div v-for="talent in tier.talents" :key="talent.talentInfo.talent_id"
-        class="flex items-center gap-2 p-2 min-h-24 border-t border-lighten"
-        :class="{ 'bg-teal/20': talent.games_played > 0 && talent.win_rate === tier.highestWinRate }">
-        <talent-image-wrapper class="shrink-0" :talent="talent.talentInfo"></talent-image-wrapper>
-        <div class="min-w-0 flex-1">
-          <h3 class="text-sm font-bold leading-tight mb-1.5">{{ talent.talentInfo.title }}</h3>
-          <dl class="grid grid-cols-[max-content_minmax(0,1fr)] items-center gap-x-1.5 gap-y-1 text-xs">
-            <dt><span aria-hidden="true">WR</span><span class="sr-only">Win rate</span></dt>
+    <article v-for="tier in tiers" :key="tier.level" class="min-w-0">
+      <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase">Level {{ tier.level }}</h2>
+      <div class="rounded-b overflow-hidden variable-background variable-text">
+        <div v-for="talent in tier.talents" :key="talent.talentInfo.talent_id"
+          class="py-2 px-3 border-b border-white last:border-b-0"
+          :class="talent.games_played > 0 && talent.win_rate === tier.highestWinRate ? 'talent-card-row-highlight' : 'talent-card-row'">
+          <div class="flex items-center gap-2">
+            <talent-image-wrapper class="shrink-0" :talent="talent.talentInfo"></talent-image-wrapper>
+            <h3 class="text-sm">{{ talent.talentInfo.title }}</h3>
+          </div>
+          <dl class="grid grid-cols-[max-content_minmax(0,1fr)] items-center gap-x-2 gap-y-1 mt-2">
+            <dt class="text-[10px] uppercase">Win Rate</dt>
             <dd>
-              <stat-bar :value="talent.win_rate" :display-text="formatPercent(talent.win_rate)"
-                color="teal" :divider="false"
-                class="text-xs font-bold leading-5"></stat-bar>
+              <stat-bar :value="talent.win_rate" :display-text="talent.win_rate.toFixed(2)" suffix="%"
+                color="blue" class="stat-bar-light rounded-l-lg w-full text-xs"></stat-bar>
             </dd>
-
-            <dt><span aria-hidden="true">Pop</span><span class="sr-only">Popularity</span></dt>
+            <dt class="text-[10px] uppercase">Popularity</dt>
             <dd>
-              <stat-bar :value="talent.popularity" :display-text="formatPercent(talent.popularity)"
-                color="purple" :divider="false"
-                class="text-xs font-bold leading-5"></stat-bar>
+              <stat-bar :value="talent.popularity" :display-text="talent.popularity.toFixed(2)" suffix="%"
+                color="red" class="stat-bar-light rounded-l-lg w-full text-xs"></stat-bar>
             </dd>
-
-            <dt>
-              <i class="fa-solid text-xs text-white/70" :class="iconTrial[tier.level]" aria-hidden="true"></i>
-              <span class="sr-only">Games played</span>
-            </dt>
-            <dd>{{ formatGames(talent.games_played) }}</dd>
-            <template v-if="statFilter && statFilter !== 'win_rate'">
-              <dt>{{ statFilterLabel(statFilter) }}</dt>
-              <dd class="font-bold text-right">{{ formatNumber(talent.total_filter_type) }}</dd>
-            </template>
           </dl>
+          <div class="flex justify-between gap-2 mt-1 text-[10px]">
+            <span v-if="statFilter && statFilter !== 'win_rate'">{{ statFilterLabel(statFilter) }}: {{ formatNumber(talent.total_filter_type) }}</span>
+            <span class="ml-auto">{{ formatGames(talent.games_played) }}</span>
+          </div>
         </div>
       </div>
     </article>
@@ -54,20 +45,6 @@ export default {
     talentData: { type: Object, required: true },
     statFilter: { type: String, default: 'win_rate' },
   },
-  data() {
-    return {
-      // TEMP: one candidate icon per talent tier so they can be compared side by side
-      iconTrial: {
-        1: 'fa-layer-group',
-        4: 'fa-hashtag',
-        7: 'fa-gamepad',
-        10: 'fa-flag-checkered',
-        13: 'fa-dice',
-        16: 'fa-list-ol',
-        20: 'fa-chart-simple',
-      },
-    };
-  },
   computed: {
     tiers() {
       return [1, 4, 7, 10, 13, 16, 20].map(level => {
@@ -82,13 +59,6 @@ export default {
   },
   methods: {
     statFilterLabel,
-    formatPercent(value) {
-      const number = Number(value) || 0;
-      return `${number.toLocaleString('en-US', {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2,
-      })}%`;
-    },
     formatGames(value) {
       const games = Number(value) || 0;
       return `${games.toLocaleString('en-US')} ${games === 1 ? 'game' : 'games'}`;

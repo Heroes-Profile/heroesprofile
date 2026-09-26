@@ -2,6 +2,9 @@
   <div>
     <page-heading heading="Talent Statistics" :infoText1="selectedHero ? selectedHero.name + ' talent stats and builds player by ' + battletag : ' talent stats and builds player by ' + battletag" :battletag="battletag" :region="region" :blizzid="blizzid" :regionstring="regionsmap[region]" :isPatreon="isPatreon" :isOwner="isOwner">
       <hero-image-wrapper v-if="selectedHero" :hero="selectedHero" :size="'big'"></hero-image-wrapper>
+      <template v-if="selectedHero" #aboveHeading>
+        <hero-heading-select :heroes="heroes" :value="selectedHero.id" @hero-changed="changeHero($event)"></hero-heading-select>
+      </template>
     </page-heading>
     
     <div v-if="!selectedHero">
@@ -148,6 +151,14 @@ export default {
 
       let currentPath = window.location.pathname;
       history.pushState(null, null, `${currentPath}/${this.selectedHero.name}`);
+      this.getData();
+    },
+    changeHero(heroId) {
+      this.selectedHero = this.heroes.find(hero => hero.id === heroId);
+      this.preloadTalentImages(this.selectedHero);
+      history.pushState(null, null, `/Player/${this.battletag}/${this.blizzid}/${this.region}/Talents/${this.selectedHero.name}`);
+      this.talentdetaildata = null;
+      this.talentbuilddata = null;
       this.getData();
     },
     filterData(filteredData){

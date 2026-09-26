@@ -84,6 +84,7 @@ class PlayerHeroesController extends Controller
             'region' => $region,
             'hero' => $hero,
             'heroObject' => $this->globalDataService->getHeroModel($hero),
+            'heroes' => $this->globalDataService->getHeroes(),
             'filters' => $this->globalDataService->getFilterData(),
             'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
             'patreon' => $this->globalDataService->checkIfSiteFlair($blizz_id, $region),

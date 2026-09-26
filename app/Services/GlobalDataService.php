@@ -527,14 +527,15 @@ class GlobalDataService
 
     public function getBladeGlobals()
     {
-        $darkModeValue = null;
+        $darkModeCookie = request()->cookie('darkmode') === '1' ? '1' : '0';
+        $darkModeValue = $darkModeCookie;
 
         if (Auth::check()) {
             $user = Auth::user();
 
             $darkmode = $user->userSettings->firstWhere('setting', 'darkmode');
 
-            $darkModeValue = $darkmode ? $darkmode->value : '0';
+            $darkModeValue = $darkmode ? $darkmode->value : $darkModeCookie;
         }
 
         $regions = $this->getRegionIDtoString();
@@ -766,6 +767,11 @@ class GlobalDataService
         return (bool) config('global.bypass_cache');
     }
 
+    public function usesProductionCaching(): bool
+    {
+        return app()->environment('production') || (bool) config('cache.use_locally');
+    }
+
     public function calculateCacheTimeInSeconds($timeframe)
     {
         return $this->calculateCacheWindow($timeframe)->ttl;
@@ -773,7 +779,7 @@ class GlobalDataService
 
     public function calculateCacheWindow(array $timeframe): GlobalCacheWindow
     {
-        if (! app()->environment('production')) {
+        if (! $this->usesProductionCaching()) {
             return new GlobalCacheWindow(0, null);
         }
 
@@ -1241,7 +1247,7 @@ class GlobalDataService
             $filtersMinimumPatch = $defaultPatchVersion;
         }
 
-        $ttl = app()->environment('production') ? 600 : 0;
+        $ttl = $this->usesProductionCaching() ? 600 : 0;
         $cacheKey = 'filter_data_'.str_replace('.', '_', $filtersMinimumPatch);
 
         return Cache::remember($cacheKey, $ttl, function () use ($filtersMinimumPatch) {
