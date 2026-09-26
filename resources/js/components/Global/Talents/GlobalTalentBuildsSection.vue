@@ -1,8 +1,8 @@
 <template>
   <div>
     <div id="table-container2" ref="tablecontainer2" class=" max-md:overflow-hidden max-md:w-full min-w-0 max-sm:text-xs  2xl:mx-auto " style=" ">
-      <table class="min-w-0 ml-0 max-sm:text-xs w-full max-w-[1500px]" ref="responsivetable2">
-          <thead>
+      <table class="min-w-0 w-auto mx-auto max-sm:text-xs" ref="responsivetable2">
+          <thead v-if="!$slots.heading">
             <tr>
               <th :colspan="statfilter ? 5 : 4" class="text-center py-2 px-3 ">
                 Builds
@@ -11,27 +11,27 @@
           </thead>
         <thead>
           <tr>
-            <th class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Talents
+            <th class="text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              <slot name="heading">Talents</slot>
             </th>
-            <th class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Copy Build top Game
-            </th>
-            <th class=" text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Total
+            <th class="whitespace-nowrap text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              Games
             </th>                
-            <th class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+            <th class="whitespace-nowrap py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
               Win Chance %
             </th>        
-            <th v-if="statfilter && statfilter != 'win_rate'" class="py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
-              Avg {{ statfilter.charAt(0).toUpperCase() + statfilter.slice(1) }}
+            <th v-if="statfilter && statfilter != 'win_rate'" class="whitespace-nowrap py-2 px-3  text-left text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              {{ statFilterLabel(statfilter) }}
             </th>                           
+            <th class="text-right text-sm leading-4 text-gray-500 tracking-wider cursor-pointer">
+              Copy Build top Game
+            </th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(row, index) in talentbuilddata" :key="row">
-            <td class="py-2 px-3 ">
-              <div class="flex flex-wrap gap-4">
+            <td class="py-2 px-3">
+              <div class="flex flex-wrap md:flex-nowrap gap-4">
                 <talent-image-wrapper :talent="row.level_one"></talent-image-wrapper>
                 <talent-image-wrapper :talent="row.level_four"></talent-image-wrapper>
                 <talent-image-wrapper :talent="row.level_seven"></talent-image-wrapper>
@@ -41,15 +41,15 @@
                 <talent-image-wrapper :talent="row.level_twenty"></talent-image-wrapper>
               </div>
             </td>
+            <td class="py-2 px-3 whitespace-nowrap">{{ getValueLocal(row.games_played) }}</td>
+            <td class="py-2 px-3 whitespace-nowrap">{{ row.win_rate ? row.win_rate.toFixed(2) : 0 }}</td>
+            <td v-if="statfilter && statfilter != 'win_rate'" class="py-2 px-3 whitespace-nowrap">{{ getValueLocal(row.total_filter_type) }}</td>
             <td class="py-2 px-3 ">
-              <div class="flex flex-wrap flex-col md:flex-row">
-            <span> {{ this.getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, row.hero) }}</span>
-              <custom-button class="max-sm:text-xs max-sm:p-0" @click="copyToClipboard(index, row)" :text="buildCopyText[index]" alt="COPY TO CLIPBOARD" size="small" :ignoreclick="true" :color="buildCopyColor[index]">{{ buildCopyText[index] }}</custom-button>
+              <div class="flex items-center justify-end gap-2">
+                <span class="text-xs text-right">{{ getCopyBuildToGame(row.level_one, row.level_four, row.level_seven, row.level_ten, row.level_thirteen, row.level_sixteen, row.level_twenty, row.hero) }}</span>
+                <custom-button class="max-sm:text-xs max-sm:p-0" @click="copyToClipboard(index, row)" :text="buildCopyText[index]" alt="COPY" size="small" :ignoreclick="true" :color="buildCopyColor[index]">{{ buildCopyText[index] }}</custom-button>
               </div>
             </td>
-            <td class="py-2 px-3 ">{{ getValueLocal(row.games_played) }}</td>
-            <td class="py-2 px-3 ">{{ row.win_rate ? row.win_rate.toFixed(2) : 0 }}</td>
-            <td v-if="statfilter && statfilter != 'win_rate'" class="py-2 px-3 ">{{ getValueLocal(row.total_filter_type) }}</td>
           </tr>
         </tbody>
       </table>
@@ -58,6 +58,8 @@
 </template>
 
 <script>
+import { statFilterLabel } from '../../../utils/statFilterLabel';
+
 export default {
   name: 'GlobalTalentBuildsSection',
   components: {
@@ -79,7 +81,7 @@ export default {
   },
   created() {
     for (let i = 0; i < this.talentbuilddata.length; i++) {
-      this.buildCopyText[i] = "COPY TO CLIPBOARD";
+      this.buildCopyText[i] = "COPY";
     }
     for (let i = 0; i < this.talentbuilddata.length; i++) {
       this.buildCopyColor[i] = "blue";
@@ -105,6 +107,7 @@ export default {
   watch: {
   },
   methods: {
+    statFilterLabel,
     getCopyBuildToGame(level_one, level_four, level_seven, level_ten, level_thirteen, level_sixteen, level_twenty, hero) {
       return "[T" + 
         (level_one ? level_one.sort : '0') + 
@@ -117,11 +120,11 @@ export default {
         "," + hero.build_copy_name + "]"
     },
     copyToClipboard(index, row) {
-      this.buildCopyText[index] = "COPIED TO CLIPBOARD";
+      this.buildCopyText[index] = "COPIED";
       this.buildCopyColor[index] = "teal";
       for (let i = 0; i < this.talentbuilddata.length; i++) {
         if(i != index){
-          this.buildCopyText[i] = "COPY TO CLIPBOARD";
+          this.buildCopyText[i] = "COPY";
         }
         if(i != index){
           this.buildCopyColor[i] = "blue";

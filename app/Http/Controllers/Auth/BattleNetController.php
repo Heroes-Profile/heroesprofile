@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\BattlenetAccount;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
@@ -70,6 +71,16 @@ class BattleNetController extends Controller
         $battlenetAccount->save();
 
         Auth::login($battlenetAccount, true);
+
+        // Light/dark toggled while logged out.
+        $darkmode = $request->cookie('darkmode');
+        if ($request->cookie('darkmode_pending') === '1' && in_array($darkmode, ['0', '1'], true)) {
+            $battlenetAccount->userSettings()->updateOrCreate(
+                ['setting' => 'darkmode'],
+                ['value' => $darkmode]
+            );
+            Cookie::queue(Cookie::forget('darkmode_pending'));
+        }
 
         // Found the Xal'atath eye while logged out.
         if ($request->session()->pull('void_eye_pending')) {

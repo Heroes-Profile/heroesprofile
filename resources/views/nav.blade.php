@@ -198,6 +198,8 @@
                 </div>
 
 
+                <dark-mode-toggle class="md:ml-4 max-md:my-4" :darkmode="{{ json_encode(! empty($bladeGlobals['darkmode'])) }}" :authenticated="{{ json_encode($isAuthenticated) }}"></dark-mode-toggle>
+
                 @if($isAuthenticated)
                     <div class="relative group inline-block  md:ml-5 max-md:my-4 max-md:flex items-center">
                             <div class="flex items-center cursor-pointer md:mr-5">

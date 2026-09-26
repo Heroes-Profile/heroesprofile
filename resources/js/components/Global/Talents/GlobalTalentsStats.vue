@@ -3,7 +3,7 @@
     <global-async-debug-banner page-label="Global Talents" />
 
     <div class="grid gap-5 grid-cols-1">
-      <page-heading :infoText1="infoText" :heading="selectedHero ? selectedHero.name + ' Talent Statistics' : 'Hero Talent Statistics'">
+      <page-heading :infoText1="infoText" :heading="selectedHero ? 'Talent Statistics' : 'Hero Talent Statistics'">
         <div v-if="selectedHero" class="relative" @mouseleave="heroDropdownOpen = false">
           <hero-image-wrapper :hero="selectedHero" :size="'big'" :includehover="false" class="cursor-pointer" @click.native="heroDropdownOpen = !heroDropdownOpen"></hero-image-wrapper>
           <div v-if="heroDropdownOpen" class="absolute left-0 top-full z-50 bg-gray-dark border border-white/20 rounded shadow-lg" style="width: 220px; max-height: 340px; overflow-y: auto;">
@@ -19,6 +19,9 @@
             </div>
           </div>
         </div>
+        <template v-if="selectedHero" #aboveHeading>
+          <hero-heading-select :heroes="heroes" :value="selectedHero.id" @hero-changed="handleInputChange({ value: $event })"></hero-heading-select>
+        </template>
       </page-heading>
 
 
@@ -80,23 +83,24 @@
 
   
         <div v-if="talentdetaildata" class="mx-auto  md:px-4">
-          <div class="flex justify-between items-start max-w-[1500px] mx-auto">
-            <span class="flex gap-4 mb-2"> 
-              <single-select-filter
-                :values="filters.heroes" 
-                :text="'Change Hero'" 
-                :defaultValue="selectedHero.id"
-                @input-changed="handleInputChange"
-              ></single-select-filter>
-            </span>
-            <span class="flex gap-2">
+          <div class="flex flex-wrap justify-between items-center gap-2 mb-2 max-w-[1500px] mx-auto">
+            <div>
               <custom-button v-if="patchNotesUrl" @click="togglePatchNotes" :text="timeframe[0] + ' Patch Notes'" :alt="timeframe[0] + ' Patch Notes'" size="small" :ignoreclick="true"></custom-button>
-              <custom-button @click="scrollToBuilds" :text="'Scroll To Builds'" :alt="'Scroll To Builds'" size="small" :ignoreclick="true"></custom-button>
-            </span>
+            </div>
+            <div class="flex items-center gap-4">
+              <button type="button" class="underline text-sm" @click="scrollToBuilds">Scroll To Builds</button>
+              <div class="flex items-center gap-2 max-md:hidden">
+                <tab-button tab1text="Table" tab2text="Compact" :ignoreclick="true" :overridedefaultside="isCompact ? 'right' : 'left'" @tab-click="setLayout"></tab-button>
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <p class="max-sm:text-xs">Your default layout can be set in your <a href="/Profile/Settings" class="link">Profile Settings</a>.</p>
+                </round-image>
+              </div>
+            </div>
           </div>
 
-          <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :version="timeframe[0]"></patch-notes-panel>
-          <global-talent-details-section class="mx-auto" :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
+          <patch-notes-panel v-if="showPatchNotes && patchNotesUrl" :class="{ '!max-w-none': isCompact }" :version="timeframe[0]"></patch-notes-panel>
+          <compact-talent-grid v-if="isCompact" :talent-data="talentdetaildata" :stat-filter="statfilter"></compact-talent-grid>
+          <global-talent-details-section v-else class="mx-auto" :talentdetaildata="talentdetaildata" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-details-section>
         </div>
         <div v-else-if="isTalentsLoading">
           <loading-component v-if="determineIfVeryLargeData()" @cancel-request="cancelAxiosRequest" :textoverride="true">Very large amount of data.<br/>Compiling can take 5-10 minutes.<br/>Please be patient.<br/>Loading Data...</loading-component>
@@ -110,11 +114,20 @@
         <dynamic-banner-ad :patreon-user="patreonUser" :index="4" :mobile-override="false" ref="dynamicAddPlacement"></dynamic-banner-ad>
 
 
-        <div v-if="talentbuilddata" class="flex justify-between max-w-[1500px] mx-auto md:px-4">
-          <div id="builds" class="">
-            <single-select-filter :values="buildtypes" :text="'Talent Build Type'" :defaultValue="this.talentbuildtype" @input-changed="buildtypechange"></single-select-filter>
-            {{ this.selectedHero.name }} {{ "Talent Builds"}}
-            <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]"></global-talent-builds-section>
+        <div v-if="talentbuilddata" class="flex justify-between max-w-[1500px] mx-auto mt-6">
+          <div id="builds" class="w-full min-w-0">
+            <h2 v-if="!isCompact" class="heading mb-4 text-center">Talent Builds</h2>
+            <global-talent-builds-section :talentbuilddata="talentbuilddata" :buildtype="talentbuildtype" :statfilter="statfilter" :talentimages="talentimages[selectedHero.name]">
+              <template #heading>
+                <span class="flex flex-wrap items-center gap-2">
+                  {{ selectedHero.name }}
+                  <select class="bg-blue text-white rounded px-2 py-1" aria-label="Talent Build Type" :value="talentbuildtype" @change="buildtypechange({ value: $event.target.value })">
+                    <option v-for="buildType in buildtypes" :key="buildType.code" :value="buildType.code">{{ buildType.name }}</option>
+                  </select>
+                  Talent Builds
+                </span>
+              </template>
+            </global-talent-builds-section>
             <div class="mt-4">
               Create your own builds at
               <a :href="'/Global/Talents/Builder/' + selectedHero.name" class="link" target="_blank">
@@ -138,9 +151,12 @@
 </template>
 
 <script>
+  import CompactTalentGrid from './CompactTalentGrid.vue';
+
   export default {
     name: 'GlobalTalentsStats',
     components: {
+      CompactTalentGrid,
     },
     props: {
       filters: Object,
@@ -154,10 +170,12 @@
       advancedfiltering: Boolean,
       patreonUser: Boolean,
       urlparameters: Object,
+      talentStatsLayout: { type: String, default: 'table' },
 
     },
     data(){
       return {
+        localLayout: this.storedLayout() || this.talentStatsLayout,
         dataError: false,
        windowWidth: window.innerWidth,
        isTalentsLoading: false,
@@ -225,11 +243,18 @@
     }
    },
     mounted() {
+      window.addEventListener('resize', this.updateWindowWidth);
       if(!this.inputhero){
         this.getTalentBuildDataAll();
       }
     },
+    beforeUnmount() {
+      window.removeEventListener('resize', this.updateWindowWidth);
+    },
     computed: {
+      isCompact() {
+        return this.localLayout === 'compact' && this.windowWidth >= 768;
+      },
       filteredDropdownHeroes() {
         const q = this.heroDropdownSearch.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
         if (!q) return this.heroes;
@@ -252,6 +277,23 @@
     watch: {
     },
     methods: {
+      storedLayout() {
+        try {
+          const layout = sessionStorage.getItem('talent-stats-layout');
+          return ['table', 'compact'].includes(layout) ? layout : null;
+        } catch {
+          return null;
+        }
+      },
+      setLayout(side) {
+        this.localLayout = side === 'right' ? 'compact' : 'table';
+        try {
+          sessionStorage.setItem('talent-stats-layout', this.localLayout);
+        } catch {}
+      },
+      updateWindowWidth() {
+        this.windowWidth = window.innerWidth;
+      },
       clickedHero(hero) {
         this.selectedHero = hero;
         this.talentdetaildata = null;

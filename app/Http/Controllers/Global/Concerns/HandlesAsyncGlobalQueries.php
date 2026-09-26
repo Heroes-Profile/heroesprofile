@@ -24,7 +24,7 @@ trait HandlesAsyncGlobalQueries
             return $this->groupedByMapResponse($request, $cacheKey, $gameVersion, $executeMethod);
         }
 
-        if ($bypassCache || config('app.env') !== 'production') {
+        if ($bypassCache || ! $this->globalDataService->usesProductionCaching()) {
             $cache->forget($cacheKey);
         }
 
