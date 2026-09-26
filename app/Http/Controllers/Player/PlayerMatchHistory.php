@@ -13,6 +13,7 @@ use App\Rules\HeroInputByIDValidation;
 use App\Rules\RoleInputValidation;
 use App\Rules\SeasonInputValidation;
 use App\Services\GlobalQueryService;
+use App\Support\GlobalCacheKey;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -395,7 +396,7 @@ class PlayerMatchHistory extends Controller
 
     private function paramsHash(Request $request): string
     {
-        return hash('sha256', json_encode([
+        return hash('sha256', json_encode(GlobalCacheKey::normalize([
             'page' => 'match_history',
             'blizz_id' => $request['blizz_id'],
             'region' => $request['region'],
@@ -411,7 +412,7 @@ class PlayerMatchHistory extends Controller
             'ff_region' => $request['ff_region'],
             'pagination_page' => $request['pagination_page'],
             'links' => $request['links'],
-        ]));
+        ])));
     }
 
     private function getLatestReplayId(Request $request): ?int

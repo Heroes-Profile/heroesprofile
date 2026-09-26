@@ -283,10 +283,10 @@ export default {
       return false;
     },
     groupSizeActive(){
-      // `All` is the unfiltered table rather than a stack size, so it reads as no
-      // filter even when it is picked alongside real sizes.
+      // `All`, or every size picked, is the unfiltered table rather than a stack size.
       const selected = Array.isArray(this.groupsize) ? this.groupsize : (this.groupsize ? [this.groupsize] : []);
-      return selected.length > 0 && !selected.includes("All");
+      const allSizes = ["Solo", "Duo", "3 Players", "4 Players", "5 Players"];
+      return selected.length > 0 && !selected.includes("All") && !allSizes.every(size => selected.includes(size));
     },
     patchNotesUrl() {
       if (this.timeframetype !== 'minor' || !this.timeframe || this.timeframe.length !== 1) {

@@ -9,7 +9,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class TrackSlowRequests
 {
-    private const THRESHOLD_SECONDS = 120;
+    public const THRESHOLD_SECONDS = 120;
+
+    /** Never sent to Flare. */
+    public const HIDDEN_INPUT = ['api_token', 'password', 'password_confirmation', 'current_password'];
 
     public function handle(Request $request, Closure $next): Response
     {
@@ -35,7 +38,7 @@ class TrackSlowRequests
         }
 
         $seconds = round($duration, 2);
-        $url = $request->fullUrl();
+        $url = $request->fullUrlWithoutQuery(self::HIDDEN_INPUT);
         $method = $request->method();
         $route = optional($request->route())->getName() ?? $request->path();
         $status = $response->getStatusCode();
@@ -45,6 +48,7 @@ class TrackSlowRequests
         Flare::context('route', $route);
         Flare::context('duration_seconds', $seconds);
         Flare::context('response_status', $status);
+        Flare::context('input', $request->except(self::HIDDEN_INPUT));
 
         Flare::reportMessage(
             "Slow request ({$seconds}s): {$method} {$url}",

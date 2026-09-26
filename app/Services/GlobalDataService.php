@@ -24,7 +24,9 @@ use App\Models\Replay;
 use App\Models\SeasonDate;
 use App\Models\SeasonGameVersion;
 use App\Models\XalatathData;
+use App\Support\GlobalCacheFreshness;
 use App\Support\GlobalCacheKey;
+use App\Support\GlobalCacheWindow;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
@@ -73,6 +75,10 @@ class GlobalDataService
     private $cachedGameTypes = null;
 
     private $cachedSeasonsData = null;
+
+    private ?array $cachedHiddenFlair = null;
+
+    private ?array $cachedRestrictedKeys = null;
 
     public function __construct() {}
 
@@ -199,7 +205,7 @@ class GlobalDataService
      */
     public function getHiddenFlair(): array
     {
-        return Cache::remember('global_hidden_flair', 60, function () {
+        return $this->cachedHiddenFlair ??= Cache::remember('global_hidden_flair', 60, function () {
             $rows = BattlenetUserSetting::query()
                 ->join('battlenet_accounts', 'battlenet_accounts.battlenet_accounts_id', '=', 'battlenet_user_settings.battlenet_accounts_id')
                 ->whereIn('battlenet_user_settings.setting', array_values(self::FLAIR_HIDE_SETTINGS))
@@ -356,7 +362,7 @@ class GlobalDataService
      */
     public function restrictedAccountKeys(): array
     {
-        return Cache::remember('restricted_account_keys', self::RESTRICTED_KEYS_SECONDS, function () {
+        return $this->cachedRestrictedKeys ??= Cache::remember('restricted_account_keys', self::RESTRICTED_KEYS_SECONDS, function () {
             $keys = [];
 
             foreach (BattlenetAccount::without(['patreonAccount', 'userSettings'])->where('private', 1)->get(['blizz_id', 'region']) as $account) {
@@ -392,6 +398,7 @@ class GlobalDataService
     /** Called when an account's privacy changes, so it takes effect immediately. */
     public function forgetRestrictedAccount($blizzId, $region): void
     {
+        $this->cachedRestrictedKeys = null;
         Cache::forget('restricted_account_keys');
     }
 
@@ -761,47 +768,71 @@ class GlobalDataService
 
     public function calculateCacheTimeInSeconds($timeframe)
     {
+        return $this->calculateCacheWindow($timeframe)->ttl;
+    }
+
+    public function calculateCacheWindow(array $timeframe): GlobalCacheWindow
+    {
         if (! app()->environment('production')) {
-            return 0;
+            return new GlobalCacheWindow(0, null);
         }
 
         $normalized = array_values($timeframe);
         sort($normalized);
-        $cacheKey = 'global_cache_ttl_seconds|'.hash('sha256', json_encode($normalized));
+        $cacheKey = 'global_cache_window|'.hash('sha256', json_encode($normalized));
 
-        return (int) Cache::remember($cacheKey, 60, function () use ($timeframe) {
-            return $this->resolveCacheTimeInSeconds($timeframe);
+        [$ttl, $fresh] = Cache::remember($cacheKey, 60, function () use ($timeframe) {
+            $window = $this->resolveCacheWindow($timeframe);
+
+            return [$window->ttl, $window->fresh];
         });
+
+        return new GlobalCacheWindow($ttl, $fresh);
     }
 
-    private function resolveCacheTimeInSeconds(array $timeframe): int
+    private function resolveCacheWindow(array $timeframe): GlobalCacheWindow
     {
         $latestPatch = $this->getLatestPatch();
+        $latestAdded = SeasonGameVersion::where('game_version', $latestPatch)->value('date_added');
+        $sinceLatest = Carbon::now()->diffInMinutes(new Carbon($latestAdded));
 
         // Any timeframe that includes the live patch is still receiving games: a major
         // patch or a multi-build selection included, not only the latest build on its own.
         if (in_array($latestPatch, $timeframe, true)) {
-            $date = SeasonGameVersion::where('game_version', $latestPatch)->value('date_added');
-            $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
+            return $this->recentPatchWindow($sinceLatest);
+        }
 
-            if ($changeInMinutes < 1440) {  // 1 day
-                return 15 * 60;
-            } elseif ($changeInMinutes < (1440 * 3.5)) { // half week
-                return 6 * 60 * 60;
-            } elseif ($changeInMinutes < (1440 * 7)) { // 1 week
-                return 24 * 60 * 60;
-            } elseif ($changeInMinutes < (1440 * 14)) { // 2 weeks
-                return 7 * 24 * 60 * 60;
+        // The build it replaced keeps getting late uploads for a while. Found from the
+        // same latest patch, so the two can't disagree while their caches turn over.
+        if ($sinceLatest < 1440 * 7) {
+            $previousPatch = SeasonGameVersion::where('game_version', '!=', $latestPatch)
+                ->orderBy('id', 'desc')
+                ->value('game_version');
+
+            if (in_array($previousPatch, $timeframe, true)) {
+                return $this->recentPatchWindow($sinceLatest);
             }
-
-            return 14 * 24 * 60 * 60;
         }
 
         // Oldest by the date it was added: comparing version strings puts 2.55.10 before 2.55.9.
         $date = SeasonGameVersion::whereIn('game_version', $timeframe)->min('date_added');
         $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
 
-        return max(60, (int) $changeInMinutes * 60);
+        return new GlobalCacheWindow(max(60, (int) $changeInMinutes * 60), null);
+    }
+
+    /** @param  int  $minutes  Since the latest patch was added. */
+    private function recentPatchWindow(int $minutes): GlobalCacheWindow
+    {
+        if ($minutes < 1440) { // 1 day
+            return new GlobalCacheWindow(60 * 60, 15 * 60);
+        } elseif ($minutes < 1440 * 3.5) { // half week
+            return new GlobalCacheWindow(24 * 60 * 60, 60 * 60);
+        } elseif ($minutes < 1440 * 14) { // 2 weeks
+            return new GlobalCacheWindow(7 * 24 * 60 * 60, 6 * 60 * 60);
+        }
+
+        return new GlobalCacheWindow(7 * 24 * 60 * 60, 24 * 60 * 60);
     }
 
     public function getGameTypes()
@@ -1800,61 +1831,57 @@ class GlobalDataService
     {
         $gameVersion = $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']);
         $gameVersionIDs = SeasonGameVersion::whereIn('game_version', $gameVersion)->pluck('id')->toArray();
-        $gameType = $this->getGameTypeFilterValues($request['game_type']);
-        $leagueTier = $request['league_tier'];
-        $heroLeagueTier = $request['hero_league_tier'];
-        $roleLeagueTier = $request['role_league_tier'];
-        $gameMap = $this->getGameMapFilterValues($request['game_map']);
-        $heroLevel = $request['hero_level'];
-        $mirror = $request['mirror'];
-        $region = $this->getRegionFilterValues($request['region']);
-        $hero = $this->getHeroFilterValue($request['hero']);
-        $role = $request['role'];
+        // Hero and role are not part of the query, so every hero's matchups page shares it.
+        $parameters = Arr::except($request->all(), ['hero', 'role']);
 
         // Its own prefix: the Hero Stats page caches a different shape under GlobalHeroStats,
-        // and the two collided whenever the filters matched. Hero and role are not part of
-        // the query, so they are left out of the key and every hero's matchups page shares it.
-        $cacheKey = GlobalCacheKey::for(
-            'GlobalHeroWinRatesAll',
-            $gameVersionIDs,
-            Arr::except($request->all(), ['hero', 'role'])
-        );
+        // and the two collided whenever the filters matched.
+        $cacheKey = GlobalCacheKey::for('GlobalHeroWinRatesAll', $gameVersionIDs, $parameters);
 
-        $data = Cache::store('database')->remember($cacheKey, $this->calculateCacheTimeInSeconds($gameVersion), function () use (
-            $gameVersionIDs,
-            $gameType,
-            $leagueTier,
-            $heroLeagueTier,
-            $roleLeagueTier,
-            $gameMap,
-            $heroLevel,
-            $region,
-            $mirror
-        ) {
-            $data = GlobalHeroStats::query()
-                ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stats.hero')
-                ->select('heroes.name', 'heroes.short_name', 'heroes.id as hero_id', 'global_hero_stats.win_loss', 'heroes.new_role as role')
-                ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
-                ->filterByGameVersion($gameVersionIDs)
-                ->filterByGameType($gameType)
-                ->filterByLeagueTier($leagueTier)
-                ->filterByHeroLeagueTier($heroLeagueTier)
-                ->filterByRoleLeagueTier($roleLeagueTier)
-                ->filterByGameMap($gameMap)
-                ->filterByHeroLevel($heroLevel)
-                ->excludeMirror($mirror)
-                ->filterByRegion($region)
-                ->groupBy('global_hero_stats.hero', 'global_hero_stats.win_loss')
-                ->get();
+        $cache = Cache::store('database');
+        $window = $this->calculateCacheWindow($gameVersion);
+        $data = $cache->get($cacheKey);
 
-            $sorted = $data->sortBy(function ($item) {
-                return [$item->name, $item->win_loss];
-            })->values();
-
-            return $this->combineData($sorted);
-        });
+        if ($data === null) {
+            $data = $this->executeAllHeroesGlobalWinRates(new Request($parameters));
+            $cache->put($cacheKey, $data, $window->ttl);
+            GlobalCacheFreshness::stamp($cacheKey, $window->ttl);
+        } elseif ($this->isGlobalAsyncEnabled() && GlobalCacheFreshness::isStale($cacheKey, $window)) {
+            app(GlobalQueryService::class)->dispatchIfNotPending(
+                $cacheKey,
+                self::class,
+                'executeAllHeroesGlobalWinRates',
+                $parameters,
+                $window->ttl
+            );
+        }
 
         return $data;
+    }
+
+    public function executeAllHeroesGlobalWinRates(Request $request)
+    {
+        $data = GlobalHeroStats::query()
+            ->join('heroesprofile.heroes as heroes', 'heroes.id', '=', 'global_hero_stats.hero')
+            ->select('heroes.name', 'heroes.short_name', 'heroes.id as hero_id', 'global_hero_stats.win_loss', 'heroes.new_role as role')
+            ->selectRaw('SUM(global_hero_stats.games_played) as games_played')
+            ->filterByGameVersion(SeasonGameVersion::whereIn('game_version', $this->getTimeframeFilterValues($request['timeframe_type'], $request['timeframe']))->pluck('id')->toArray())
+            ->filterByGameType($this->getGameTypeFilterValues($request['game_type']))
+            ->filterByLeagueTier($request['league_tier'])
+            ->filterByHeroLeagueTier($request['hero_league_tier'])
+            ->filterByRoleLeagueTier($request['role_league_tier'])
+            ->filterByGameMap($this->getGameMapFilterValues($request['game_map']))
+            ->filterByHeroLevel($request['hero_level'])
+            ->excludeMirror($request['mirror'])
+            ->filterByRegion($this->getRegionFilterValues($request['region']))
+            ->groupBy('global_hero_stats.hero', 'global_hero_stats.win_loss')
+            ->get();
+
+        $sorted = $data->sortBy(function ($item) {
+            return [$item->name, $item->win_loss];
+        })->values();
+
+        return $this->combineData($sorted);
     }
 
     private function combineData($data)
