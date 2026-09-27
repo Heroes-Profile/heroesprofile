@@ -86,6 +86,11 @@ class RouteServiceProvider extends ServiceProvider
                 ->by(ClientIpService::getClientIp($request));
         });
 
+        RateLimiter::for('rank-samples', function (Request $request) {
+            return Limit::perHour(config('api.rate_limits.uploader.rank_samples_per_hour'))
+                ->by(ClientIpService::getClientIp($request));
+        });
+
         RateLimiter::for('prematch', function (Request $request) {
             return Limit::perMinute(config('api.rate_limits.uploader.prematch_per_minute'))
                 ->by(ClientIpService::getClientIp($request));

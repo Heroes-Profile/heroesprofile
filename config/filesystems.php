@@ -85,6 +85,21 @@ return [
             'throw' => true,
         ],
 
+        /*
+         * Loading-screen samples from the uploader's opt-in rank reader, while it's being built (see
+         * RankSampleService). A private place of their own: a bucket, or a folder inside one via the
+         * prefix. Unset bucket = not collecting.
+         */
+        'gcs-rank-samples' => [
+            'driver' => 'gcs',
+            'project_id' => env('GOOGLE_CLOUD_PROJECT_ID'),
+            'bucket' => env('GOOGLE_CLOUD_RANK_SAMPLES_BUCKET'),
+            'path_prefix' => env('GOOGLE_CLOUD_RANK_SAMPLES_PREFIX', ''),
+            'key_file_path' => env('GOOGLE_CLOUD_KEY_FILE'),
+            'visibility' => 'private',
+            'throw' => true,
+        ],
+
         /* NGS replays live in their own bucket, separate from uploader replays. */
         'gcs-ngs' => [
             'driver' => 'gcs',
