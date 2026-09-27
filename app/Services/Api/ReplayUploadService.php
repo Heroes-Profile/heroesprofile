@@ -163,24 +163,33 @@ class ReplayUploadService
     }
 
     /**
-     * Whether a replay with this fingerprint is already stored.
+     * The replayID stored under this fingerprint, or null when there is none.
      *
      * The desktop client asks before uploading and skips the upload entirely when
-     * the answer is true, so the upload path's source promotion never runs for a
+     * there is one, so the upload path's source promotion never runs for a
      * replay somebody else already sent. This is the only place it can happen,
      * which is why a read has a write in it.
      */
-    public function fingerprintExists(string $fingerprint): bool
+    public function fingerprintReplayID(string $fingerprint): ?int
     {
         $replayID = ReplayFingerprint::where('fingerprint', $fingerprint)->value('replayID');
 
         if ($replayID === null) {
-            return false;
+            return null;
         }
 
         $this->recordSourceChange((int) $replayID, self::CHECK_SOURCE);
 
-        return true;
+        return (int) $replayID;
+    }
+
+    /**
+     * Whether a replay with this fingerprint is already stored - see
+     * fingerprintReplayID(), whose source promotion this shares.
+     */
+    public function fingerprintExists(string $fingerprint): bool
+    {
+        return $this->fingerprintReplayID($fingerprint) !== null;
     }
 
     /**
