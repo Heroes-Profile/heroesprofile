@@ -186,7 +186,27 @@ return [
             'fingerprints_per_minute' => 5000,
             'parsed_per_minute' => 60,
             'prematch_per_minute' => 120,
+            // One sample per Storm League game, so an hour of play is a handful; this only stops floods.
+            'rank_samples_per_hour' => 30,
         ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Rank reader samples
+    |--------------------------------------------------------------------------
+    |
+    | Loading-screen samples from the uploader's opt-in rank reader while it's
+    | being built (RankSampleService). RANK_SAMPLES_COLLECT=false stops the
+    | uploaders sending any more, with no app release needed.
+    |
+    */
+
+    'rank_samples' => [
+        'collect' => env('RANK_SAMPLES_COLLECT', true),
+        'max_frames' => 12,
+        'max_frame_kb' => 8192,
+        'max_meta_kb' => 64,
     ],
 
 ];

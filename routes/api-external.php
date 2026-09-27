@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\External\MatchController;
 use App\Http\Controllers\Api\External\NgsController;
 use App\Http\Controllers\Api\External\PlayerController;
 use App\Http\Controllers\Api\External\PreMatchController;
+use App\Http\Controllers\Api\External\RankSampleController;
 use App\Http\Controllers\Api\External\ReferenceController;
 use App\Http\Controllers\Api\External\ToolsController;
 use App\Http\Controllers\Api\External\UploadController;
@@ -382,3 +383,13 @@ Route::get('replays/parsed', [UploadController::class, 'parsed'])
 Route::post('prematch', [PreMatchController::class, 'store'])
     ->middleware('throttle:prematch')
     ->name('api.external.prematch');
+
+/*
+| Loading-screen samples from the uploader's opt-in rank reader (its "Ranks"
+| build), only while that reader is being built. Private storage, strict
+| throttle; RANK_SAMPLES_COLLECT=false turns collection off.
+*/
+
+Route::post('rank-samples', [RankSampleController::class, 'store'])
+    ->middleware('throttle:rank-samples')
+    ->name('api.external.rank-samples');

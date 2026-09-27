@@ -46,6 +46,7 @@ class BuildApiSpec extends Command
     /** Routed for the uploader, but not part of the documented API. */
     private const UNDOCUMENTED = [
         'api.external.prematch',
+        'api.external.rank-samples',
     ];
 
     /**
