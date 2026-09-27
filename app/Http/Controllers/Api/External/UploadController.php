@@ -55,14 +55,19 @@ class UploadController extends Controller
     }
 
     /**
-     * Whether a replay with this fingerprint is already stored.
+     * Whether a replay with this fingerprint is already stored, and its replayID.
      *
      * The client parses this as JSON and reads `exists` as a bool, so this one
-     * keeps an envelope. It also promotes the replay's source — see the service.
+     * keeps an envelope; clients from 3.0 also read `replayID` (null when it
+     * doesn't exist) to link the duplicate to its match page. Older clients
+     * ignore the extra field. It also promotes the replay's source — see the
+     * service.
      */
     public function fingerprint(ReplayUploadService $uploads, string $fingerprint): Response
     {
-        return response()->json(['exists' => $uploads->fingerprintExists($fingerprint)]);
+        $replayID = $uploads->fingerprintReplayID($fingerprint);
+
+        return response()->json(['exists' => $replayID !== null, 'replayID' => $replayID]);
     }
 
     /**
