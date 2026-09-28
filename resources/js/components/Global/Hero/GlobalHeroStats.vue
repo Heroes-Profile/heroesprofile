@@ -317,8 +317,9 @@ export default {
 
     },
     sortedData() {
-      if (!this.sortKey) return this.data.data;
-      return this.data.data.slice().sort((a, b) => {
+      const rows = Array.isArray(this.data?.data) ? this.data.data.filter(row => row) : [];
+      if (!this.sortKey) return rows;
+      return rows.sort((a, b) => {
         const valA = a[this.sortKey];
         const valB = b[this.sortKey];
         if (this.sortDir === 'asc') {

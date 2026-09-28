@@ -1,0 +1,145 @@
+{
+  "version": "2.57.0.98285",
+  "date": "September 28, 2026",
+  "title": "Live Patch",
+  "blizzard_url": "https://news.blizzard.com/en-us/article/24303007/heroes-of-the-storm-live-patch-notes-september-28-2026",
+  "general": [
+    { "type": "new", "note": "New Hero: Xal'atath." },
+    { "type": "new", "note": "New Bundle: Dark Twilight Xal'atath Bundle (Xal'atath, Twilight Xal'atath Skin, Sin'dorei Phoenix Mount)." },
+    { "type": "new", "note": "Added the ability to ping your Healing Fountain cooldown." },
+    { "type": "change", "note": "Updated Homescreen and Startup Music." }
+  ],
+  "maps": [
+    {
+      "map": "Garden of Terror",
+      "image": "bg_garden_of_terror.jpg",
+      "type": "change",
+      "notes": ["Shambler Health and damage now begin 25% below their previous values and gradually return to their previous values over the course of the match."]
+    }
+  ],
+  "heroes": [
+    {
+      "name": "Xal'atath",
+      "short_name": "xalatath",
+      "type": "new",
+      "notes": [
+        "Shadow Mark [Q]: Void Orb that deals 75 damage, plus 150 in the center. Heroes and Structures hit by the center are Marked for 4 seconds, Revealed, and draw the Dark Heart and Void Minions toward them.",
+        "Dark Heart Ritual [W]: Summon the Dark Heart for 8 seconds, pulsing 50 damage per second. It moves to Shadow Mark's impact and detonates on Marked targets for 305 damage, plus 150 to the Marked target.",
+        "Void Step [E]: Teleport 3 times in a triangle. Each teleport adds 10% Basic Attack damage while active, up to 30%. Reactivate to end early.",
+        "Void Volley [Trait]: After 5 Basic Attacks, fire 6 Void Orbs at a location for 90 damage each. Quest: hit Heroes to gain stacks, with rewards at 20, 60 and 100 stacks (Mythic: +50% Basic Attack and Void Volley damage, projectiles Pierce).",
+        "Void Eruption [R]: Channel a growing Void Orb that Blinds enemies it touches and explodes at the end of its path for up to 700 damage.",
+        "Void Convergence [R]: After a 2 second channel, summon a Void Portal that Slows nearby enemies and spawns up to 3 Void Minions for 12 seconds."
+      ]
+    },
+    {
+      "name": "Abathur",
+      "short_name": "abathur",
+      "type": "change",
+      "notes": [
+        "Bombard Strain (Level 13): Health decay reduction lowered from 50% to 40%.",
+        "Survival Instincts (Level 16): Now provides 50% damage reduction against non-Heroes, instead of +100% Health."
+      ]
+    },
+    {
+      "name": "Alexstrasza",
+      "short_name": "alexstrasza",
+      "type": "mixed",
+      "notes": [
+        "Health increased from 1698 to 1780.",
+        "Flames of Fury (Level 1): Mythic Reward requirement reduced from 40 extra hits without dying to 30.",
+        "Overprotective (Level 16): Shield reduced from 70% of healing to 50%."
+      ]
+    },
+    {
+      "name": "Garrosh",
+      "short_name": "garrosh",
+      "type": "mixed",
+      "notes": [
+        "Unrivaled Strength (Level 1): Damage bonus reduced from 125% to 75%.",
+        "In For The Kill (Level 4): Damage bonus increased from 70% to 100%.",
+        "Oppressor (Level 7): Spell Power reduction decreased from 30% to 25%.",
+        "Bloodcraze (Level 13): Heal duration increased from 3 to 4 seconds. Total healing remains the same.",
+        "Double Up (Level 13): Armor duration increased from 3 to 5 seconds."
+      ]
+    },
+    {
+      "name": "Mal'Ganis",
+      "short_name": "malganis",
+      "type": "buff",
+      "notes": [
+        "Night Rush [E]: Cast time reduced from 0.75 to 0.625 seconds.",
+        "Vampiric Touch [D]: Healing from damage against Heroes increased from 45% to 50%, and against non-Heroes from 10% to 15%."
+      ]
+    },
+    {
+      "name": "Qhira",
+      "short_name": "qhira",
+      "type": "mixed",
+      "notes": [
+        "Blood Rage [W]: Damage bonus per stack decreased from 0.25% to 0.2%. Base damage per tick lowered from 8 to 7.",
+        "Fatal Wounds (Level 1): Damage bonus against low Health targets increased from 50% to 70%.",
+        "Pulsing Pain (Level 13): Damage increased from 135 to 150.",
+        "Lingering Ailment (Level 16): Armor reduction decreased from 35 to 25."
+      ]
+    },
+    {
+      "name": "Whitemane",
+      "short_name": "whitemane",
+      "type": "mixed",
+      "notes": [
+        "Desperate Plea [Q]: Base Mana cost increased from 40 to 45. Mana scaling with each use is unchanged.",
+        "Intercession (Level 7): Cooldown increased from 60 to 75 seconds.",
+        "Radiance (Level 16): Healing increased from 175 to 190."
+      ]
+    },
+    {
+      "name": "Yrel",
+      "short_name": "yrel",
+      "type": "mixed",
+      "notes": [
+        "Vindication [Q]: Mana cost increased from 50 to 65.",
+        "Aldor Peacekeeper (Level 13): Damage reduction increased from 40% to 50%, and its duration from 3 to 4 seconds.",
+        "Velen's Chosen (Level 13): Damage bonus per stack decreased from 10% to 8%. Stacks increased from 3 to 4.",
+        "Seraphim (Level 20): Cooldown increased from 20 to 30 seconds."
+      ]
+    }
+  ],
+  "bug_fixes": {
+    "general": [],
+    "maps": [
+      {
+        "map": "Volskaya Foundry",
+        "image": "bg_volskaya_foundry.jpg",
+        "notes": ["Fixed an issue where the fort walls on one side had more Health than the other."]
+      }
+    ],
+    "heroes": [
+      {
+        "name": "Anduin",
+        "short_name": "anduin",
+        "notes": ["Leap of Faith: fixed an issue that caused it to be delayed when cast on Rooted Heroes."]
+      },
+      {
+        "name": "Malfurion",
+        "short_name": "malfurion",
+        "notes": [
+          "Entangling Roots: fixed an issue where it would not continuously Root enemies within its area.",
+          "Entangling Roots: fixed an issue that prevented it from applying on first contact."
+        ]
+      },
+      {
+        "name": "Ragnaros",
+        "short_name": "ragnaros",
+        "notes": [
+          "Heroic Difficulty: fixed an issue that granted 25% more damage and duration.",
+          "Heroic Difficulty: Molten Core's cooldown when selected decreased from 90 to 70 seconds."
+        ]
+      },
+      {
+        "name": "Xul",
+        "short_name": "xul",
+        "notes": ["Fixed an issue where Xul's skeletons were sometimes not dealing damage."]
+      }
+    ]
+  }
+}
