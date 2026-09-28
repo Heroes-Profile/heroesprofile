@@ -30,17 +30,21 @@ class RankSampleService
     }
 
     /**
-     * Stores one game's frames and description under `<date>/<random id>/`. The reporter is kept only as a
-     * salted hash of the IP, to spot one source flooding the folder.
+     * Stores frames and the game's description under `<date>/<sample id>/`. A game's frames can arrive in
+     * several requests (the uploader sends one frame per request, to stay under PHP's post_max_size), all
+     * carrying the same `$sampleId`, so they land in one folder; without one, a new id is made. The meta is
+     * the same in each request and simply rewritten. The reporter is kept only as a salted hash of the IP,
+     * to spot one source flooding the folder.
      *
      * @param  array<string, mixed>  $meta
      * @param  array<int, UploadedFile>  $frames
      * @return string The folder it went into.
      */
-    public function store(array $meta, array $frames, string $ip): string
+    public function store(array $meta, array $frames, string $ip, ?string $sampleId = null): string
     {
         $disk = Storage::disk(self::DISK);
-        $folder = now()->utc()->format('Y-m-d').'/'.Str::uuid()->toString();
+        $id = $sampleId !== null && Str::isUuid($sampleId) ? strtolower($sampleId) : Str::uuid()->toString();
+        $folder = now()->utc()->format('Y-m-d').'/'.$id;
 
         foreach (array_values($frames) as $i => $frame) {
             $name = $frame->getClientOriginalName();
