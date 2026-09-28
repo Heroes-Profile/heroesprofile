@@ -28,8 +28,9 @@
           class="form-control w-full text-black rounded p-2 text-sm mb-3"
         />
 
-        <ul v-if="variables.length && !search" class="text-sm mb-4">
-          <li><a href="#variables" class="hover:text-lteal">Variables</a></li>
+        <ul v-if="!search" class="text-sm mb-4 space-y-1">
+          <li><a href="#getting-started" class="hover:text-lteal">Getting started</a></li>
+          <li v-if="variables.length"><a href="#variables" class="hover:text-lteal">Variables</a></li>
         </ul>
 
         <div v-for="group in groups" :key="group.name" class="mb-4">
@@ -89,6 +90,31 @@
 
         <p v-if="!groups.length" class="text-sm text-gray-medium">Nothing matches "{{ search }}".</p>
 
+        <section v-if="!search" id="getting-started" class="bg-lighten p-6 mb-10 scroll-mt-4">
+          <h2 class="text-2xl mb-4">Getting started</h2>
+
+          <h3 class="text-sm uppercase tracking-wider text-lteal mb-2">Base URL</h3>
+          <p class="text-sm mb-2">
+            Every endpoint on this page is relative to
+            <code class="text-lteal break-all">{{ baseUrl }}</code>.
+          </p>
+          <p class="text-sm mb-4">
+            <code>/heroes</code> means <code class="break-all">{{ baseUrl }}/heroes</code> — not
+            <code>https://www.heroesprofile.com/heroes</code>, which is the website.
+          </p>
+
+          <h3 class="text-sm uppercase tracking-wider text-lteal mb-2">Authentication</h3>
+          <p class="text-sm mb-4">
+            Create a key on your <a href="/Api/Account" class="link">account page</a> and send it
+            with every call as <code class="text-lteal">Authorization: Bearer &lt;key&gt;</code>.
+            Endpoints marked <span class="bg-yellow text-black rounded px-2 py-1 text-xs">no key needed</span>
+            are the exception.
+          </p>
+
+          <h3 class="text-sm uppercase tracking-wider text-lteal mb-2">Example</h3>
+          <pre class="bg-darken p-3 text-xs overflow-x-auto">curl -H "Authorization: Bearer &lt;key&gt;"   "{{ baseUrl }}/heroes"</pre>
+        </section>
+
         <api-variables
           v-if="variables.length && !search"
           :variables="variables"
@@ -106,7 +132,7 @@
           >
             <div class="flex flex-wrap items-baseline gap-3 mb-2">
               <span class="bg-teal text-white rounded px-2 py-1 text-xs uppercase">{{ op.method }}</span>
-              <code class="text-lg break-all">{{ op.path }}</code>
+              <code class="text-lg break-all">{{ baseUrl }}{{ op.path }}</code>
               <span v-if="!op.secured" class="bg-yellow text-black rounded px-2 py-1 text-xs">no key needed</span>
             </div>
 
@@ -349,6 +375,12 @@ export default {
       Object.values(linked).forEach(ops => ops.sort((a, b) => a.path.localeCompare(b.path)));
 
       return linked;
+    },
+
+    baseUrl() {
+      const server = this.spec && this.spec.servers && this.spec.servers[0];
+
+      return server ? server.url.replace(/\/+$/, '') : '';
     },
 
     operations() {
