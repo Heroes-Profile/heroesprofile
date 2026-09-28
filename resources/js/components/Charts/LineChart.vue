@@ -1,10 +1,11 @@
 <template>
   <div>
-    <canvas id="myChart" width="1500" height="750"></canvas>
+    <canvas ref="canvas" width="1500" height="750"></canvas>
   </div>
 </template>
 
 <script>
+import { markRaw } from 'vue';
 import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
 
@@ -27,8 +28,7 @@ export default {
     const labels = this.data.map(item => item.x_label);
     const totals = this.data.map(item => item[this.dataAttribute]); 
 
-    const ctx = document.getElementById('myChart').getContext('2d');
-    this.chart = new Chart(ctx, {
+    this.chart = markRaw(new Chart(this.$refs.canvas.getContext('2d'), {
       type: 'line',
       data: {
         labels: labels,
@@ -65,7 +65,17 @@ export default {
           }
         }
       }
-    });
+    }));
+  },
+  watch: {
+    data(newData) {
+      if (!this.chart) {
+        return;
+      }
+      this.chart.data.labels = newData.map(item => item.x_label);
+      this.chart.data.datasets[0].data = newData.map(item => item[this.dataAttribute]);
+      this.chart.update();
+    },
   },
   beforeUnmount() {
     this.chart?.destroy();

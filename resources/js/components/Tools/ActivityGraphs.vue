@@ -49,7 +49,6 @@
           </button>
         </div>
         <line-chart
-          :key="chartKey"
           :data="filteredData"
           :dataAttribute="'unique_players'"
           :title="'Unique Players per Month'"
@@ -94,9 +93,6 @@ export default {
     },
     filteredData() {
       return this.data.filter(d => this.activeYears.includes(d.x_label.split('-')[0]));
-    },
-    chartKey() {
-      return this.activeYears.join(',');
     },
   },
   mounted() {
