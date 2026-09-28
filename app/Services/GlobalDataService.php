@@ -1086,25 +1086,24 @@ class GlobalDataService
 
     public function getTalentStatsLayout(): string
     {
-        if (Auth::check()) {
-            return Auth::user()->userSettings->firstWhere('setting', 'talentStatsLayout')?->value === 'compact'
-                ? 'compact' : 'table';
-        }
+        $value = Auth::check()
+            ? Auth::user()->userSettings->firstWhere('setting', 'talentStatsLayout')?->value
+            : null;
 
-        return 'table';
+        $value ??= request()->cookie('talentStatsLayout');
+
+        return $value === 'compact' ? 'compact' : 'table';
     }
 
     public function getTalentBuilderStyle(): string
     {
-        if (Auth::check()) {
-            $user = Auth::user();
-            $setting = $user->userSettings->firstWhere('setting', 'talentbuilderstyle');
-            if ($setting) {
-                return $setting->value;
-            }
-        }
+        $value = Auth::check()
+            ? Auth::user()->userSettings->firstWhere('setting', 'talentbuilderstyle')?->value
+            : null;
 
-        return 'vertical';
+        $value ??= request()->cookie('talentbuilderstyle');
+
+        return $value === 'horizontal' ? 'horizontal' : 'vertical';
     }
 
     /**

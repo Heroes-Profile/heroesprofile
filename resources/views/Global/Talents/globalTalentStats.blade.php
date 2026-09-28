@@ -17,6 +17,7 @@
     :gametypedefault="{{ json_encode($gametypedefault) }}" 
     :defaultbuildtype="{{ json_encode($defaultbuildtype) }}" 
     :talent-stats-layout="{{ json_encode($talentStatsLayout) }}"
+    :authenticated="{{ json_encode(auth()->check()) }}"
     :defaulttimeframetype="{{ json_encode($defaulttimeframetype) }}" 
     :talentimages="{{ json_encode($talentimages) }}" 
     :advancedfiltering="{{ json_encode($advancedfiltering) }}"
