@@ -1246,10 +1246,14 @@ class GlobalDataService
             $filtersMinimumPatch = $defaultPatchVersion;
         }
 
-        $ttl = $this->usesProductionCaching() ? 600 : 0;
+        // remember() with a 0 TTL still returns an existing entry, and local shares prod's cache table
+        if (! $this->usesProductionCaching()) {
+            return $this->buildFilterData($filtersMinimumPatch);
+        }
+
         $cacheKey = 'filter_data_'.str_replace('.', '_', $filtersMinimumPatch);
 
-        return Cache::remember($cacheKey, $ttl, function () use ($filtersMinimumPatch) {
+        return Cache::remember($cacheKey, 600, function () use ($filtersMinimumPatch) {
             return $this->buildFilterData($filtersMinimumPatch);
         });
     }
