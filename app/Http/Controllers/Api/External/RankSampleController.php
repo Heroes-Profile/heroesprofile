@@ -50,7 +50,8 @@ class RankSampleController extends Controller
             }
         }
 
-        $samples->store($meta, $frames, ClientIpService::getClientIp($request));
+        $sample = $request->input('sample');
+        $samples->store($meta, $frames, ClientIpService::getClientIp($request), is_string($sample) ? $sample : null);
 
         return $this->answer(true);
     }

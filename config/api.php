@@ -186,8 +186,9 @@ return [
             'fingerprints_per_minute' => 5000,
             'parsed_per_minute' => 60,
             'prematch_per_minute' => 120,
-            // One sample per Storm League game, so an hour of play is a handful; this only stops floods.
-            'rank_samples_per_hour' => 30,
+            // A Storm League game sends a handful of requests (one per frame), and an hour of play is two
+            // or three games; this only stops floods.
+            'rank_samples_per_hour' => 60,
         ],
     ],
 
