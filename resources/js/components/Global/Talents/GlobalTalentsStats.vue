@@ -151,6 +151,7 @@
 </template>
 
 <script>
+  import Cookies from 'js-cookie';
   import CompactTalentGrid from './CompactTalentGrid.vue';
 
   export default {
@@ -171,11 +172,11 @@
       patreonUser: Boolean,
       urlparameters: Object,
       talentStatsLayout: { type: String, default: 'table' },
-
+      authenticated: Boolean,
     },
     data(){
       return {
-        localLayout: this.storedLayout() || this.talentStatsLayout,
+        localLayout: this.talentStatsLayout,
         dataError: false,
        windowWidth: window.innerWidth,
        isTalentsLoading: false,
@@ -277,19 +278,13 @@
     watch: {
     },
     methods: {
-      storedLayout() {
-        try {
-          const layout = sessionStorage.getItem('talent-stats-layout');
-          return ['table', 'compact'].includes(layout) ? layout : null;
-        } catch {
-          return null;
-        }
-      },
       setLayout(side) {
         this.localLayout = side === 'right' ? 'compact' : 'table';
-        try {
-          sessionStorage.setItem('talent-stats-layout', this.localLayout);
-        } catch {}
+        Cookies.set('talentStatsLayout', this.localLayout, { expires: 365, path: '/' });
+
+        if (this.authenticated) {
+          this.$axios.post('/api/v1/profile/save/settings', { talentStatsLayout: this.localLayout }).catch(() => {});
+        }
       },
       updateWindowWidth() {
         this.windowWidth = window.innerWidth;

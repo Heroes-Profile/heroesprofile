@@ -20,5 +20,7 @@ class EncryptCookies extends Middleware
         'void_corruption_optout',
         'darkmode',
         'darkmode_pending',
+        'talentbuilderstyle',
+        'talentStatsLayout',
     ];
 }

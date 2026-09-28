@@ -175,6 +175,8 @@
 </template>
 
 <script>
+  import Cookies from 'js-cookie';
+
   export default {
     name: 'GlobalTalentsBuilder',
     components: {
@@ -192,6 +194,7 @@
       patreonUser: Boolean,
       urlparameters: Object,
       talentbuilderstyle: { type: String, default: 'vertical' },
+      authenticated: Boolean,
     },
     data(){
       return {
@@ -278,6 +281,11 @@
     methods: {
       layoutStyleSelected(side) {
         this.localStyle = side === 'right' ? 'horizontal' : 'vertical';
+        Cookies.set('talentbuilderstyle', this.localStyle, { expires: 365, path: '/' });
+
+        if (this.authenticated) {
+          this.$axios.post('/api/v1/profile/save/settings', { talentbuilderstyle: this.localStyle }).catch(() => {});
+        }
       },
       async getData(){
         if(this.showReplayList){
