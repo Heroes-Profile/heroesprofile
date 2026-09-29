@@ -341,7 +341,6 @@ class GlobalDataService
             'siege_damage' => $games * 42000,
             'spell_damage' => $games * 61000,
             'multikill' => intdiv($games, 3),
-            'time_cc_enemy_heroes' => $games * 25,
             'teamfight_hero_damage' => $games * 38000,
             'on_fire_time' => $games * 90,
             'highest_kill_streak' => 23,
