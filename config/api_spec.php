@@ -58,7 +58,6 @@ return [
     'csv_exempt' => [
         'api.external.replay.download',
         'api.external.replays.parsed',
-        'api.external.replays.fingerprint',
         'api.external.prematch',
         'api.external.upload',
         'api.external.ngs.games.upload',
@@ -210,7 +209,6 @@ return [
 
         'Uploading Replays' => [
             'api.external.prematch',
-            'api.external.replays.fingerprint',
             'api.external.replays.parsed',
             'api.external.upload',
         ],
@@ -1156,23 +1154,6 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
                             'status' => ['type' => 'string'],
                         ],
                         'required' => ['fingerprint', 'status'],
-                    ]]],
-                ],
-            ],
-        ],
-
-        'api.external.replays.fingerprint' => [
-            'summary' => 'Whether a replay with this fingerprint is already stored.',
-            'parameters' => [
-                'fingerprint' => ['description' => 'The replay fingerprint.'],
-            ],
-            'responses' => [
-                '200' => [
-                    'description' => 'Whether the replay is known.',
-                    'content' => ['application/json' => ['schema' => [
-                        'type' => 'object',
-                        'properties' => ['exists' => ['type' => 'boolean']],
-                        'required' => ['exists'],
                     ]]],
                 ],
             ],

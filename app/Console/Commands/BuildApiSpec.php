@@ -39,7 +39,6 @@ class BuildApiSpec extends Command
     /** Routes that answer without a key, and so carry no security requirement. */
     private const KEYLESS = [
         'api.external.upload',
-        'api.external.replays.fingerprint',
         'api.external.replays.parsed',
     ];
 
@@ -47,6 +46,8 @@ class BuildApiSpec extends Command
     private const UNDOCUMENTED = [
         'api.external.prematch',
         'api.external.rank-samples',
+        // Promotes the replay's source to desktop on every read, so only the desktop client may call it.
+        'api.external.replays.fingerprint',
     ];
 
     /**
@@ -587,7 +588,6 @@ class BuildApiSpec extends Command
         $perIp = match ($routeName) {
             'api.external.upload' => $uploader['upload_per_minute'].' uploads a minute and '
                 .number_format($uploader['upload_per_day']).' a day',
-            'api.external.replays.fingerprint' => $uploader['fingerprints_per_minute'].' requests a minute',
             'api.external.replays.parsed' => $uploader['parsed_per_minute'].' requests a minute',
             default => null,
         };

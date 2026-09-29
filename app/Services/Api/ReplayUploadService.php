@@ -53,7 +53,7 @@ class ReplayUploadService
     private const EXTENSION = '.StormReplay';
 
     /** Uploaders that own a replay's source; anything else defers to them. */
-    private const PRIMARY_SOURCES = ['desktop', 'electron'];
+    public const PRIMARY_SOURCES = ['desktop', 'electron'];
 
     /**
      * What a fingerprint check promotes a replay to. Hardcoded because the
