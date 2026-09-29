@@ -201,7 +201,7 @@ class RouteServiceProvider extends ServiceProvider
         }
 
         if ($request->user()) {
-            return 'user:'.$request->user()->id;
+            return 'user:'.$request->user()->getAuthIdentifier();
         }
 
         return ClientIpService::getClientIp($request);
