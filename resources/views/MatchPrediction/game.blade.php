@@ -10,8 +10,8 @@
     :gametypes="{{ json_encode($gametypes) }}" 
     :season="{{ json_encode($season) }}" 
     :user="{{ json_encode(Auth::user()) }}" 
-    :predictionstats=" {{ json_encode($predictionstats) }} "
     :predictionstatspractice=" {{ json_encode($predictionstatspractice) }} "
+    :predictionstatsall=" {{ json_encode($predictionstatsall) }} "
     :patreon-user="{{ json_encode(session('patreonSubscriberAdFree')) }}"
 
   >

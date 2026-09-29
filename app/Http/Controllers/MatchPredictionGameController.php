@@ -35,21 +35,19 @@ class MatchPredictionGameController extends Controller
                 return ['code' => $gameType->short_name, 'name' => $gameType->name];
             });
 
-        $predicitionStats = null;
         $predicitionStatsPractice = null;
+        $predicitionStatsAll = null;
 
         $user = Auth::user();
 
         $season = $this->globalDataService->getDefaultMatchPredictionSeason();
 
         if ($user) {
-            $predicitionStats = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
-                ->where('season', $season)
-                ->get();
-
             $predicitionStatsPractice = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
                 ->where('season', 0)
                 ->get();
+
+            $predicitionStatsAll = $this->allSeasonStats($user->battlenet_accounts_id);
         }
 
         return view('MatchPrediction.game')->with([
@@ -57,8 +55,8 @@ class MatchPredictionGameController extends Controller
             'filters' => $this->globalDataService->getFilterData(),
             'gametypes' => $gametypes,
             'season' => $season,
-            'predictionstats' => $predicitionStats,
             'predictionstatspractice' => $predicitionStatsPractice,
+            'predictionstatsall' => $predicitionStatsAll,
         ]);
 
     }
@@ -303,8 +301,18 @@ class MatchPredictionGameController extends Controller
             'predictionstats' => MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
                 ->where('season', $season)
                 ->get(),
+            'predictionstatsall' => $this->allSeasonStats($user->battlenet_accounts_id),
+            'season' => $this->globalDataService->getDefaultMatchPredictionSeason(),
             'practicemode' => $this->practiceGamesPlayed($user->battlenet_accounts_id) < self::PRACTICE_GAMES,
         ];
+    }
+
+    /** Every season's rows, practice left out. */
+    private function allSeasonStats(int $battlenetAccountsId)
+    {
+        return MatchPredictionPlayerStat::where('battlenet_accounts_id', $battlenetAccountsId)
+            ->where('season', '>', 0)
+            ->get();
     }
 
     private function practiceGamesPlayed(int $battlenetAccountsId): int

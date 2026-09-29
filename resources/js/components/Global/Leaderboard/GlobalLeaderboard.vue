@@ -579,6 +579,8 @@ export default {
 
       if(this.urlparameters["season"]){
         this.season = Number(this.urlparameters["season"]);
+      }else if(this.leaderboardtype == "Match Prediction"){
+        this.season = this.matchpredictionseason;
       }
 
       if(this.urlparameters["game_type"]){
