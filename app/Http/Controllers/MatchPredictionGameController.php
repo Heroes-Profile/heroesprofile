@@ -21,8 +21,6 @@ use Illuminate\Support\Facades\Validator;
 
 class MatchPredictionGameController extends Controller
 {
-    private const SEASON = 1;
-
     private const PRACTICE_GAMES = 10;
 
     /** The replay last served to this session, the only one that can be answered. */
@@ -42,7 +40,7 @@ class MatchPredictionGameController extends Controller
 
         $user = Auth::user();
 
-        $season = self::SEASON;
+        $season = $this->globalDataService->getDefaultMatchPredictionSeason();
 
         if ($user) {
             $predicitionStats = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
@@ -280,7 +278,7 @@ class MatchPredictionGameController extends Controller
 
         $game_type = $pending['game_type'];
         $practiceMode = $this->practiceGamesPlayed($user->battlenet_accounts_id) < self::PRACTICE_GAMES;
-        $season = $practiceMode ? 0 : self::SEASON;
+        $season = $practiceMode ? 0 : $this->globalDataService->getDefaultMatchPredictionSeason();
 
         $existingRecord = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
             ->where('season', $season)
