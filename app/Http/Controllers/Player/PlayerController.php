@@ -165,6 +165,17 @@ class PlayerController extends Controller
                 ->first();
         }
 
+        // A half-written row can't be added to; rebuild it in full.
+        if ($cachedData && is_null($cachedData->latest_replayID)) {
+            $cachedData->delete();
+            $this->calculateProfile($blizz_id, $region, $game_type, $season);
+            $cachedData = ProfilePage::filterByBlizzID($blizz_id)
+                ->filterByRegion($region)
+                ->where('game_type', $game_type)
+                ->where('season', $season)
+                ->first();
+        }
+
         if (($latestReplayID && $cachedData) && $cachedData->latest_replayID < $latestReplayID) {
             $this->calculateProfile($blizz_id, $region, $game_type, $season, $cachedData);
             $cachedData = ProfilePage::filterByBlizzID($blizz_id)
@@ -406,10 +417,6 @@ class PlayerController extends Controller
             $dataToSave->region = $region;
             $dataToSave->game_type = $game_type;
             $dataToSave->season = $season;
-
-            if ($persist) {
-                $dataToSave->save();
-            }
         } else {
             $dataToSave = $cachedData;
         }

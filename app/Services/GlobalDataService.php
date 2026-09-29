@@ -1734,6 +1734,11 @@ class GlobalDataService
         $maxMmr = $tier['max_mmr'];
         $split = $tier['split'];
 
+        // No range to divide (no league breakdowns); the loop would never advance.
+        if ($split <= 0) {
+            return $result;
+        }
+
         if ($maxMmr == '') {
             $maxMmr = $minMmr + $split;
         }
