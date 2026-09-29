@@ -53,8 +53,11 @@ export default {
         const response = await this.$axios.post('/Event/Xalatath/Eye', { token: this.spot.token });
         this.result = response.data.status;
       } catch (error) {
-        // Expired or already used; close quietly.
         this.result = null;
+        // Throttled: put the eye back so it can be clicked again. Otherwise expired or used.
+        if (error.response && error.response.status === 429) {
+          this.found = false;
+        }
       } finally {
         this.claiming = false;
       }
