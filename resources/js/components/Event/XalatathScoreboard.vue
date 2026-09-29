@@ -23,7 +23,7 @@
       <div v-for="tile in tiles" :key="tile.label" class="flex flex-col min-w-[110px]">
         <span class="text-xs uppercase flex items-center justify-center gap-1">
           <span class="opacity-75">{{ tile.label }}</span>
-          <round-image size="small" icon="fas fa-info" title="info" popupsize="xlarge" class="scale-75 normal-case hover:z-50"><slot><p class="text-base p-2">{{ tile.info }}</p></slot></round-image>
+          <round-image size="small" icon="fas fa-info" title="info" popupsize="xlarge" class="max-md:hidden scale-75 normal-case hover:z-50"><slot><p class="text-base p-2">{{ tile.info }}</p></slot></round-image>
         </span>
         <span class="text-lg font-bold tabular-nums">{{ format(displayed[tile.label]) }}</span>
       </div>
@@ -37,7 +37,7 @@
       <div v-for="tile in extraTiles" :key="tile.label" class="flex flex-col min-w-[110px]">
         <span class="text-xs uppercase flex items-center justify-center gap-1">
           <span class="opacity-75">{{ tile.label }}</span>
-          <round-image size="small" icon="fas fa-info" title="info" popupsize="xlarge" class="scale-75 normal-case hover:z-50"><slot><p class="text-base p-2">{{ tile.info }}</p></slot></round-image>
+          <round-image size="small" icon="fas fa-info" title="info" popupsize="xlarge" class="max-md:hidden scale-75 normal-case hover:z-50"><slot><p class="text-base p-2">{{ tile.info }}</p></slot></round-image>
         </span>
         <span class="font-bold tabular-nums">{{ format(tile.value) }}</span>
       </div>
@@ -47,7 +47,7 @@
       <div class="flex justify-between mb-1">
         <span class="flex items-center gap-1">
           Void Corruption: stage {{ live.stage }} of 5
-          <round-image size="small" icon="fas fa-info" title="info" popupsize="xlarge" class="scale-75 hover:z-50"><slot><p class="text-base p-2">Every Xal'atath game played and every time she is banned in draft spreads the Void. The site grows more corrupted at each stage. Counts replays uploaded to Heroes Profile.</p></slot></round-image>
+          <round-image size="small" icon="fas fa-info" title="info" popupsize="xlarge" class="max-md:hidden scale-75 hover:z-50"><slot><p class="text-base p-2">Every Xal'atath game played and every time she is banned in draft spreads the Void. The site grows more corrupted at each stage. Counts replays uploaded to Heroes Profile.</p></slot></round-image>
         </span>
         <span v-if="live.nextThreshold">{{ format(live.corruption) }} / {{ format(live.nextThreshold) }} games + bans</span>
         <span v-else>The Nexus has fallen</span>
@@ -119,7 +119,6 @@ export default {
       return [
         { label: 'Games Played', value: this.gamesPlayed, info: 'Games played as Xal\'atath.' },
         { label: 'Victories', value: this.stat('wins'), info: 'Games won as Xal\'atath.' },
-        { label: 'Minds Enthralled (hrs)', value: this.hours(this.stat('time_cc_enemy_heroes')), info: 'Time spent crowd controlling enemy heroes, in hours.' },
         { label: 'Void Unleashed in Battle', value: this.stat('teamfight_hero_damage'), info: 'Team fight hero damage by Xal\'atath.' },
         { label: 'Hours Ablaze', value: this.hours(this.stat('on_fire_time')), info: 'Time spent on fire, in hours.' },
         { label: 'Longest Rampage', value: this.stat('highest_kill_streak'), info: 'Highest kill streak in a single game.' },
