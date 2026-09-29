@@ -35,6 +35,9 @@ class GlobalQueryService
     /** How long a batch result holding a failed child is kept, so it is retried soon. */
     private const PARTIAL_RESULT_TTL_SECONDS = 300;
 
+    /** Worker jobs past this are reported to Flare as a warning. */
+    private const SLOW_JOB_SECONDS = 600;
+
     /** Children of one batch running at once. See `config/global.php`. */
     private function batchMaxInFlight(): int
     {
@@ -556,14 +559,6 @@ class GlobalQueryService
 
             $seconds = round(microtime(true) - $start, 2);
 
-            if ($seconds >= TrackSlowRequests::THRESHOLD_SECONDS) {
-                Flare::context('duration_seconds', $seconds);
-                Flare::reportMessage(
-                    "Slow job ({$seconds}s): ".class_basename($job['handler_class']).'@'.$job['handler_method'],
-                    'error'
-                );
-            }
-
             Log::info('Global query job complete', [
                 'job_id' => $jobId,
                 'cache_key' => $job['cache_key'],
@@ -582,6 +577,16 @@ class GlobalQueryService
         }
 
         $this->topUpParent($job);
+
+        // Outside the try: the job is already complete, and a reporting failure must
+        // not mark it failed.
+        if ($seconds >= self::SLOW_JOB_SECONDS) {
+            Flare::context('duration_seconds', $seconds);
+            Flare::reportMessage(
+                "Slow job ({$seconds}s): ".class_basename($job['handler_class']).'@'.$job['handler_method'],
+                'warning'
+            );
+        }
     }
 
     /**
