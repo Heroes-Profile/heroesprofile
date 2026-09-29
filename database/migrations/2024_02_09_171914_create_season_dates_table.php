@@ -17,8 +17,12 @@ class CreateSeasonDatesTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('year');
             $table->double('season', 10, 2)->unsigned();
-            $table->dateTime('start_date');
-            $table->dateTime('end_date');
+            // Entered in Eastern time. start_date/end_date are the UTC values every
+            // system compares game_date (UTC) against.
+            $table->dateTime('start_date_est');
+            $table->dateTime('end_date_est');
+            $table->dateTime('start_date')->storedAs("CONVERT_TZ(start_date_est, 'America/New_York', 'UTC')");
+            $table->dateTime('end_date')->storedAs("CONVERT_TZ(end_date_est, 'America/New_York', 'UTC')");
         });
     }
 
