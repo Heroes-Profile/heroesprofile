@@ -5,8 +5,7 @@
     <div class="mx-auto max-w-[900px] px-4 mt-6 mb-10 space-y-6">
       <div class="bg-lighten rounded-lg p-6 text-sm space-y-4">
         <p>
-          Players often can't find themselves on a Heroes of the Storm fan site because none of their games have been
-          uploaded yet. You can put the Heroes Profile web uploader on your own site with an iframe:
+          You can put the Heroes Profile web uploader on your own site with an iframe:
           replays go straight from the visitor's browser to Heroes Profile, and your page is told how
           each one went.
         </p>
@@ -19,7 +18,13 @@
         <h2 class="text-lg">Live demo</h2>
         <p>This is the widget exactly as it appears on another site. Replays dropped here are really uploaded.</p>
 
-        <iframe src="/Upload/Embed" class="w-full border-0 bg-black" style="height: 520px" title="Heroes Profile replay uploader"></iframe>
+        <iframe
+          ref="demo"
+          src="/Upload/Embed"
+          class="w-full border-0"
+          :style="{ height: demoHeight + 'px' }"
+          title="Heroes Profile replay uploader"
+        ></iframe>
 
         <div>
           <h3 class="mb-2">Messages this page received</h3>
@@ -29,7 +34,7 @@
       </div>
 
       <div class="bg-lighten rounded-lg p-6 text-sm space-y-4">
-        <h2 class="text-lg">1. Add the iframe</h2>
+        <h2 class="text-lg">1. Add the iframe and script</h2>
         <pre class="bg-darken p-3 text-xs overflow-x-auto">{{ iframeSnippet }}</pre>
 
         <p>
@@ -41,8 +46,9 @@
           <li><code>desktop</code> and <code>electron</code> belong to the Heroes Profile uploaders and can't be used.</li>
         </ul>
         <p>
-          The widget grows as replays are added and scrolls inside the frame once it's full, so give it
-          500 to 700 pixels of height.
+          The script sizes the frame to fit the widget and grows it as replays are added. Without it
+          the frame stays at the height you give it and scrolls once it's full, and any space below the
+          widget is left see-through.
         </p>
       </div>
 
@@ -76,6 +82,11 @@
               <td class="py-2 px-3"><code>heroesprofile:upload-complete</code></td>
               <td class="py-2 px-3">When the queue empties</td>
               <td class="py-2 px-3"><code>uploaded</code>, <code>duplicates</code>, <code>failed</code>, all counts.</td>
+            </tr>
+            <tr>
+              <td class="py-2 px-3"><code>heroesprofile:resize</code></td>
+              <td class="py-2 px-3">When the widget's height changes</td>
+              <td class="py-2 px-3"><code>height</code> in pixels. The step 1 script already handles it.</td>
             </tr>
           </tbody>
         </table>
@@ -113,15 +124,23 @@ export default {
       // What partners embed, whichever environment is serving this page.
       siteUrl: 'https://www.heroesprofile.com',
       events: [],
+      demoHeight: 520,
     }
   },
   computed: {
     iframeSnippet() {
       return `<iframe
+  id="heroesprofile-uploader"
   src="${this.siteUrl}/Upload/Embed?source=yoursite"
-  style="width: 100%; height: 600px; border: 0"
+  style="width: 100%; height: 520px; border: 0"
   title="Upload replays to Heroes Profile"
-></iframe>`;
+></iframe>
+<script>
+  window.addEventListener('message', (event) => {
+    if (event.origin !== '${this.siteUrl}' || event.data.type !== 'heroesprofile:resize') return;
+    document.getElementById('heroesprofile-uploader').style.height = event.data.height + 'px';
+  });
+<\/script>`;
     },
     listenerSnippet() {
       return `window.addEventListener('message', (event) => {
@@ -149,8 +168,12 @@ export default {
   },
   methods: {
     onMessage(event) {
-      if (event.origin !== window.location.origin || !event.data || typeof event.data.type !== 'string') return;
-      if (!event.data.type.startsWith('heroesprofile:')) return;
+      if (event.source !== this.$refs.demo.contentWindow || !event.data) return;
+
+      if (event.data.type === 'heroesprofile:resize') {
+        this.demoHeight = event.data.height;
+        return;
+      }
 
       this.events.push(JSON.stringify(event.data));
     },
