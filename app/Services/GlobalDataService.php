@@ -68,6 +68,8 @@ class GlobalDataService
 
     private $cachedWeeksSinceSeasonStart = null;
 
+    private $cachedMatchPredictionSeason = null;
+
     private $cachedHeroes = null;
 
     private $cachedMaps = null;
@@ -1141,9 +1143,38 @@ class GlobalDataService
         return SeasonDate::select('id')->orderBy('id', 'DESC')->first()->id;
     }
 
+    /**
+     * The running prediction season. Opens a new one the first time it's asked for
+     * after a new season_dates row starts, and closes the previous one.
+     */
     public function getDefaultMatchPredictionSeason()
     {
-        return MatchPredictionSeason::select('match_prediction_season_id')->orderBy('match_prediction_season_id', 'DESC')->first()->match_prediction_season_id;
+        if (! is_null($this->cachedMatchPredictionSeason)) {
+            return $this->cachedMatchPredictionSeason;
+        }
+
+        $gameSeason = SeasonDate::where('start_date', '<=', now())->orderBy('id', 'desc')->first(['id', 'start_date']);
+        $latest = MatchPredictionSeason::orderBy('match_prediction_season_id', 'desc')->first();
+
+        if ($gameSeason && $latest && $gameSeason->start_date > $latest->start_date
+            && ! MatchPredictionSeason::where('season_dates_id', $gameSeason->id)->exists()) {
+            $startDate = Carbon::parse($gameSeason->start_date);
+
+            // Unique on season_dates_id, so a concurrent request can't open it twice.
+            $opened = DB::connection('heroesprofile')->table('match_prediction_season')->insertOrIgnore([
+                'season' => $latest->season + 1,
+                'season_dates_id' => $gameSeason->id,
+                'start_date' => $startDate,
+            ]);
+
+            if ($opened) {
+                MatchPredictionSeason::where('match_prediction_season_id', $latest->match_prediction_season_id)
+                    ->whereNull('end_date')
+                    ->update(['end_date' => $startDate->copy()->subSecond()]);
+            }
+        }
+
+        return $this->cachedMatchPredictionSeason = MatchPredictionSeason::orderBy('match_prediction_season_id', 'desc')->value('match_prediction_season_id');
     }
 
     /**

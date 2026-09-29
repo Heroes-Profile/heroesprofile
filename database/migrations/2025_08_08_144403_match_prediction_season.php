@@ -16,6 +16,8 @@ return new class extends Migration
             $table->integer('season')->nullable();
             $table->dateTime('start_date')->nullable();
             $table->dateTime('end_date')->nullable();
+            // The game season that opened it; a new season_dates row opens the next one.
+            $table->unsignedInteger('season_dates_id')->nullable()->unique();
         });
     }
 

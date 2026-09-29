@@ -23,8 +23,17 @@
       
       <div v-if="practicemode" class="bg-red p-4" >PRACTICE MODE ({{ 10 - totalGamesPlayedPractice }} practices left)</div>
       <div v-else>
-        <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase"> {{ truncatedBattletag }}</h2>
+        <h2 class="bg-blue rounded-t p-2 text-sm text-center uppercase"> {{ truncatedBattletag }} - {{ seasonLabel(statsSeason) }}</h2>
         <div class="bg-gray-dark p-4">
+          <div class="flex justify-center">
+            <single-select-filter
+              :values="statsSeasons"
+              :text="'Stats Season'"
+              @input-changed="handleStatsSeasonChange"
+              :defaultValue="season"
+            ></single-select-filter>
+          </div>
+          <p class="text-sm text-center mb-4">Every match you predict counts toward the current season, {{ seasonLabel(currentSeason) }}. The filter only changes which stats are shown.</p>
           <span ><stat-bar-box class="w-full" size="full" :title="'Quick Match Prediction Rate (Out of '+getPredictionGames(1)+' Games)'" :value="getPredictionRate(1)"></stat-bar-box> </span>
           <span ><stat-bar-box color="teal" class="w-full" size="full" :title="'Storm League Prediction Rate (Out of '+getPredictionGames(5)+' Games)'" :value="getPredictionRate(5)"></stat-bar-box> </span>
           <span ><stat-bar-box color="red" class="w-full" size="full" :title="'ARAM Prediction Rate (Out of '+getPredictionGames(6)+' Games)'" :value="getPredictionRate(6)"></stat-bar-box></span>
@@ -35,7 +44,7 @@
 
     <div class="max-w-[1000px] mx-auto">
       <div class="bg-gray-dark p-4">
-        Leaderboards can be found at <a class="link" href="/Global/Leaderboard" target="_blank">Leaderboards</a>
+        Leaderboards can be found at <a class="link" :href="'/Global/Leaderboard?type=Match%20Prediction&season=' + currentSeason" target="_blank">Leaderboards</a>
       </div>
     </div>
 
@@ -193,8 +202,8 @@ export default {
     },
     gametypes: Array,
     user: Object,
-    predictionstats: Object,
     predictionstatspractice: Object,
+    predictionstatsall: Array,
     patreonUser: Boolean,
     season: Number,
   },
@@ -207,13 +216,15 @@ export default {
       userchoiceresult: null,
       disableWinnerSelect: false,
       userchoiceteam: null,
-      predictionstatsupdated: null,
       totalGamesPlayedPractice: null,
       practicemode: null,
+      predictionstatsallupdated: [],
+      currentSeason: this.season,
+      statsSeason: this.season,
     }
   },
   created(){
-    this.predictionstatsupdated = this.predictionstats;
+    this.predictionstatsallupdated = this.predictionstatsall ?? [];
     this.totalGamesPlayedPractice = this.predictionstatspractice ? this.predictionstatspractice.reduce((total, stat) => total + stat.games_played, 0): 0;
     this.practicemode = this.predictionstatspractice ? this.predictionstatspractice.reduce((total, stat) => total + stat.games_played, 0) >= 10 ? false : true : true;
   },
@@ -237,6 +248,9 @@ export default {
         return this.data.draftData[1].picks;
       }
       return this.data.playerData[1];
+    },
+    statsSeasons(){
+      return [{ code: 'All', name: 'All Seasons' }, ...(this.filters.match_prediction_seasons ?? [])];
     },
     truncatedBattletag(){
       return this.user.battletag.split('#')[0];
@@ -296,9 +310,9 @@ export default {
 
         if(this.practicemode){
           this.totalGamesPlayedPractice = stats.reduce((total, stat) => total + stat.games_played, 0);
-        }else{
-          this.predictionstatsupdated = stats;
         }
+        this.predictionstatsallupdated = response.data.predictionstatsall ?? this.predictionstatsallupdated;
+        this.currentSeason = response.data.season ?? this.currentSeason;
         // The server decides when practice is over.
         this.practicemode = response.data.practicemode;
         this.isLoading = false;
@@ -312,13 +326,34 @@ export default {
         this.isLoading = false;
       }
     },
+    handleStatsSeasonChange(eventPayload){
+      this.statsSeason = eventPayload.value || this.currentSeason;
+    },
+    seasonLabel(season){
+      if(season === 'All'){
+        return 'All Seasons';
+      }
+      const match = this.statsSeasons.find(item => item.code == season);
+      return match ? match.name : 'Season ' + season;
+    },
+    shownStat(gameType){
+      const rows = this.predictionstatsallupdated.filter(stat => stat.game_type === gameType
+        && (this.statsSeason === 'All' || stat.season == this.statsSeason));
+      if(!rows.length){
+        return null;
+      }
+      // Rate weighted by games, so it holds whatever scale win_rate is stored in.
+      const games = rows.reduce((total, stat) => total + stat.games_played, 0);
+      const weighted = rows.reduce((total, stat) => total + Number(stat.win_rate) * stat.games_played, 0);
+      return { games_played: games, win_rate: games ? weighted / games : 0 };
+    },
     getPredictionRate(gameType) {
-      const stat = this.predictionstatsupdated.find(stat => stat.game_type === gameType);
-      return stat ? stat.win_rate.toFixed(2) : 0; 
+      const stat = this.shownStat(gameType);
+      return stat ? Number(stat.win_rate).toFixed(2) : 0;
     },
     getPredictionGames(gameType){
-      const stat = this.predictionstatsupdated.find(stat => stat.game_type === gameType);
-      return stat ? stat.games_played : 0; 
+      const stat = this.shownStat(gameType);
+      return stat ? stat.games_played : 0;
     },
   }
 }

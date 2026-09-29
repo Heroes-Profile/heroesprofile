@@ -21,8 +21,6 @@ use Illuminate\Support\Facades\Validator;
 
 class MatchPredictionGameController extends Controller
 {
-    private const SEASON = 1;
-
     private const PRACTICE_GAMES = 10;
 
     /** The replay last served to this session, the only one that can be answered. */
@@ -37,21 +35,19 @@ class MatchPredictionGameController extends Controller
                 return ['code' => $gameType->short_name, 'name' => $gameType->name];
             });
 
-        $predicitionStats = null;
         $predicitionStatsPractice = null;
+        $predicitionStatsAll = null;
 
         $user = Auth::user();
 
-        $season = self::SEASON;
+        $season = $this->globalDataService->getDefaultMatchPredictionSeason();
 
         if ($user) {
-            $predicitionStats = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
-                ->where('season', $season)
-                ->get();
-
             $predicitionStatsPractice = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
                 ->where('season', 0)
                 ->get();
+
+            $predicitionStatsAll = $this->allSeasonStats($user->battlenet_accounts_id);
         }
 
         return view('MatchPrediction.game')->with([
@@ -59,8 +55,8 @@ class MatchPredictionGameController extends Controller
             'filters' => $this->globalDataService->getFilterData(),
             'gametypes' => $gametypes,
             'season' => $season,
-            'predictionstats' => $predicitionStats,
             'predictionstatspractice' => $predicitionStatsPractice,
+            'predictionstatsall' => $predicitionStatsAll,
         ]);
 
     }
@@ -280,7 +276,7 @@ class MatchPredictionGameController extends Controller
 
         $game_type = $pending['game_type'];
         $practiceMode = $this->practiceGamesPlayed($user->battlenet_accounts_id) < self::PRACTICE_GAMES;
-        $season = $practiceMode ? 0 : self::SEASON;
+        $season = $practiceMode ? 0 : $this->globalDataService->getDefaultMatchPredictionSeason();
 
         $existingRecord = MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
             ->where('season', $season)
@@ -305,8 +301,18 @@ class MatchPredictionGameController extends Controller
             'predictionstats' => MatchPredictionPlayerStat::where('battlenet_accounts_id', $user->battlenet_accounts_id)
                 ->where('season', $season)
                 ->get(),
+            'predictionstatsall' => $this->allSeasonStats($user->battlenet_accounts_id),
+            'season' => $this->globalDataService->getDefaultMatchPredictionSeason(),
             'practicemode' => $this->practiceGamesPlayed($user->battlenet_accounts_id) < self::PRACTICE_GAMES,
         ];
+    }
+
+    /** Every season's rows, practice left out. */
+    private function allSeasonStats(int $battlenetAccountsId)
+    {
+        return MatchPredictionPlayerStat::where('battlenet_accounts_id', $battlenetAccountsId)
+            ->where('season', '>', 0)
+            ->get();
     }
 
     private function practiceGamesPlayed(int $battlenetAccountsId): int
