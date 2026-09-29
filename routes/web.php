@@ -342,6 +342,6 @@ Route::get('/Animation/Deathwing', [AnimationsController::class, 'showDeathwing'
 Route::get('/Animation/Tassadar', [AnimationsController::class, 'showTassadar']);
 
 // Polled by the header scoreboard every 30s; kept out of the logging group.
-Route::get('/Event/Xalatath/Totals', [XalatathEventController::class, 'totals'])->middleware('throttle:10,1');
-Route::get('/Flair/State', [XalatathEventController::class, 'flairState'])->middleware('throttle:30,1');
-Route::post('/Event/Xalatath/Eye', [XalatathEventController::class, 'claimEye'])->middleware('throttle:10,1');
+Route::get('/Event/Xalatath/Totals', [XalatathEventController::class, 'totals'])->middleware('throttle:xalatath-totals');
+Route::get('/Flair/State', [XalatathEventController::class, 'flairState'])->middleware('throttle:flair-state');
+Route::post('/Event/Xalatath/Eye', [XalatathEventController::class, 'claimEye'])->middleware('throttle:xalatath-eye');
