@@ -72,6 +72,30 @@
         </div>
       </div>
 
+      <!-- Season Dates -->
+      <div id="season-dates" class="mt-10 mb-8">
+        <h2 class="bg-teal px-4 py-3 rounded-t-lg text-lg font-semibold">Season Dates</h2>
+        <div class="bg-lighten rounded-b-lg p-4">
+          <p class="text-sm text-gray-300 mb-3">Shown in your time zone.</p>
+          <table class="patch-history-table" style="border-collapse:collapse; font-size:0.875rem; width:100%;">
+            <thead>
+              <tr>
+                <th style="padding:4px 8px; text-align:left;">Season</th>
+                <th style="padding:4px 8px; text-align:left; white-space:nowrap;">Start Date</th>
+                <th style="padding:4px 8px; text-align:left; white-space:nowrap;">End Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in seasonDates" :key="row.id">
+                <td style="padding:3px 8px;">{{ row.year }} Season {{ row.season }}</td>
+                <td style="padding:3px 8px;"><format-date :input="row.start_date"></format-date></td>
+                <td style="padding:3px 8px;"><format-date v-if="row.end_date" :input="row.end_date"></format-date></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       <!-- Match Awards -->
       <div id="awards" class="mt-10 mb-8">
         <h2 class="bg-teal px-4 py-3 rounded-t-lg text-lg font-semibold">Match Awards</h2>
@@ -175,6 +199,10 @@ export default {
       default: () => []
     },
     awards: {
+      type: Array,
+      default: () => []
+    },
+    seasonDates: {
       type: Array,
       default: () => []
     },
@@ -414,6 +442,10 @@ export default {
             {
               q: 'Why can I filter leaderboards by party size?',
               a: 'A 5-stack premade team has a significant coordination advantage over solo players. Putting them on the same leaderboard makes it hard for solo players to compete at the top. Filtering by party size (Solo, 2-Stack, 3-Stack, etc.) lets you see how you rank against players who queued under the same conditions as you.',
+            },
+            {
+              q: 'When do seasons start and end?',
+              a: 'Leaderboards are split by season, using the start and end date of each one. See <a href="#season-dates" class="link">Season Dates</a> below for every season so far.',
             },
             {
               q: 'When are leaderboards updated?',

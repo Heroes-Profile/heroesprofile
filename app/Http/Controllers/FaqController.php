@@ -31,6 +31,18 @@ class FaqController extends Controller
 
         $patchHistory = array_reverse($patchHistory);
 
+        // The current season has no real end date yet, so it's left off.
+        $seasonDates = $this->globalDataService->getSeasonsData()
+            ->values()
+            ->map(fn ($season, $i) => [
+                'id' => $season->id,
+                'year' => $season->year,
+                'season' => rtrim(rtrim(number_format((float) $season->season, 2, '.', ''), '0'), '.'),
+                // UTC; the page converts to the reader's time zone.
+                'start_date' => (string) $season->start_date,
+                'end_date' => $i === 0 ? null : (string) $season->end_date,
+            ]);
+
         $awards = Award::orderBy('award_id')
             ->orderBy('title')
             ->get(['award_id', 'title', 'icon', 'description']);
@@ -40,6 +52,7 @@ class FaqController extends Controller
             'recaptchaSiteKey' => config('services.recaptcha.site_key'),
             'patchHistory' => $patchHistory,
             'awards' => $awards,
+            'seasonDates' => $seasonDates,
         ]);
     }
 }
