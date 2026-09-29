@@ -48,7 +48,7 @@
         <replay-upload-dropzone :upload-url="uploadUrl" :max-bytes="maxBytes"></replay-upload-dropzone>
 
         <p class="text-xs text-gray-medium mt-4">
-          Run a Heroes of the Storm fan site? <a class="link" href="/Upload/Widget">Embed this uploader</a> on it.
+          <a class="link" href="/Upload/Widget">Embed this uploader</a>
         </p>
       </div>
     </div>

@@ -36,10 +36,15 @@ class UploadController extends Controller
             $source = self::SOURCE;
         }
 
+        // Null outside the event. Opted-out visitors keep the event logo at its uncorrupted frame, as on the site.
+        $event = $this->globalDataService->getXalatathEvent();
+        $voidStage = $event === null ? null : ($request->cookie('void_corruption_optout') === '1' ? 0 : $event['stage']);
+
         return response()
             ->view('upload-embed', [
                 'uploadUrl' => $this->uploadUrl($source),
                 'maxBytes' => ReplayUploadService::MAX_BYTES,
+                'voidStage' => $voidStage,
             ])
             ->header('Content-Security-Policy', 'frame-ancestors *');
     }
