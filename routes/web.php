@@ -109,6 +109,8 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     // The page posts to the public API's ingestion endpoint, which is where the
     // upload actually happens — nothing is uploaded through this route.
     Route::get('/Upload', [UploadController::class, 'show']);
+    Route::get('/Upload/Embed', [UploadController::class, 'embed']);
+    Route::get('/Upload/Widget', [UploadController::class, 'widget']);
 
     // The match page's download button. Battlenet auth, a per-person daily limit,
     // and no API key — the public API's replays/download is a separate thing for

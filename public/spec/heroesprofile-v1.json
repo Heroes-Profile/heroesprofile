@@ -102155,48 +102155,6 @@
                 ]
             }
         },
-        "/replays/fingerprints/{fingerprint}": {
-            "get": {
-                "summary": "Whether a replay with this fingerprint is already stored.",
-                "operationId": "api.external.replays.fingerprint",
-                "parameters": [
-                    {
-                        "name": "fingerprint",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "The replay fingerprint."
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Whether the replay is known.",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "exists": {
-                                            "type": "boolean"
-                                        }
-                                    },
-                                    "required": [
-                                        "exists"
-                                    ]
-                                }
-                            }
-                        }
-                    }
-                },
-                "x-rate-limit": "5000 requests a minute, per IP address. No key is involved.",
-                "security": [],
-                "tags": [
-                    "Uploading Replays"
-                ]
-            }
-        },
         "/replays/parsed": {
             "get": {
                 "summary": "Whether a replay has been parsed and stored yet.",
