@@ -11,6 +11,7 @@ use App\Models\Replay;
 use App\Models\ReplayBan;
 use App\Models\ReplayDraftOrder;
 use App\Models\ReplayFingerprint;
+use App\Models\SeasonGameVersion;
 use App\Models\Talent;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
@@ -22,6 +23,8 @@ use Illuminate\Support\Facades\Validator;
 class MatchPredictionGameController extends Controller
 {
     private const PRACTICE_GAMES = 10;
+
+    private const REPLAY_POOL_SIZE = 1000;
 
     /** The replay last served to this session, the only one that can be answered. */
     private const PENDING_SESSION_KEY = 'match_prediction_pending';
@@ -80,14 +83,16 @@ class MatchPredictionGameController extends Controller
 
         $gameType = GameType::where('short_name', $request['gametype'])->pluck('type_id')->first();
 
+        $gameVersions = $this->replayPoolVersions($gameType);
+
         $max = Replay::select('replayID')
             ->where('game_type', $gameType)
-            ->where('game_version', $this->globalDataService->getDefaultTimeframe())
+            ->whereIn('game_version', $gameVersions)
             ->max('replayID');
 
         $min = Replay::select('replayID')
             ->where('game_type', $gameType)
-            ->where('game_version', $this->globalDataService->getDefaultTimeframe())
+            ->whereIn('game_version', $gameVersions)
             ->min('replayID');
 
         $randomNumbers = [];
@@ -98,6 +103,8 @@ class MatchPredictionGameController extends Controller
         $replayData = Replay::select('replayID', 'game_length', 'game_map', 'region')
             ->whereIn('replayID', $randomNumbers)
             ->where('game_type', $gameType)
+            ->whereIn('game_version', $gameVersions)
+            ->inRandomOrder()
             ->first();
 
         // $replayID = 51977960;
@@ -305,6 +312,36 @@ class MatchPredictionGameController extends Controller
             'season' => $this->globalDataService->getDefaultMatchPredictionSeason(),
             'practicemode' => $this->practiceGamesPlayed($user->battlenet_accounts_id) < self::PRACTICE_GAMES,
         ];
+    }
+
+    /** Newest patches first, as many as it takes to reach REPLAY_POOL_SIZE replays of this type. */
+    private function replayPoolVersions(int $gameType): array
+    {
+        $versions = SeasonGameVersion::where('valid_globals', 1)
+            ->orderBy('major', 'DESC')
+            ->orderBy('minor', 'DESC')
+            ->orderBy('patch', 'DESC')
+            ->orderBy('build', 'DESC')
+            ->pluck('game_version');
+
+        $pool = [];
+        $found = 0;
+
+        foreach ($versions as $version) {
+            $pool[] = $version;
+
+            $found += Replay::where('game_type', $gameType)
+                ->where('game_version', $version)
+                ->limit(self::REPLAY_POOL_SIZE - $found)
+                ->pluck('replayID')
+                ->count();
+
+            if ($found >= self::REPLAY_POOL_SIZE) {
+                break;
+            }
+        }
+
+        return $pool;
     }
 
     /** Every season's rows, practice left out. */
