@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api\External;
 
 use App\Http\Controllers\Api\External\Concerns\TranslatesInternalFailures;
 use App\Http\Controllers\Controller;
-use App\Http\Middleware\ServeApiFixtures;
 use App\Http\Controllers\Tools\ActivityGraphsController;
 use App\Http\Controllers\Tools\RandomizeMeController;
+use App\Http\Middleware\ServeApiFixtures;
 use App\Support\ApiParameters;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

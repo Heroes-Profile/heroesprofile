@@ -350,7 +350,7 @@ class NgsController extends Controller
             return ServeApiFixtures::validated();
         }
 
-        $input =array_filter($request->only($keys), fn ($value) => $value !== null && $value !== '');
+        $input = array_filter($request->only($keys), fn ($value) => $value !== null && $value !== '');
 
         if ($defaultSeason && ! isset($input['season'])) {
             $input['season'] = NGSTeam::max('season');
