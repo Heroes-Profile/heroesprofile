@@ -27,7 +27,7 @@
       </span>
     </div>
     <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->
-    <div v-if="showOptions" class="absolute left-0 mt-2 w-full min-w-max bg-white border border-gray-300 rounded shadow-lg expandable-dropdown z-50">
+    <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg expandable-dropdown z-50">
       <div class="space-y-2 p-2">
         <div class="whitespace-nowrap">
           <input 
@@ -40,7 +40,7 @@
           <label for="select-all" class="ml-2 text-sm variable-text">Select All</label>
         </div>
         <div class="max-h-80 overflow-y-auto"> 
-          <div v-for="value in values" :key="value.code" class="whitespace-nowrap flex items-center">
+          <div v-for="value in values" :key="value.code" class="whitespace-nowrap" :class="{ 'md:flex md:items-center md:py-[3px]': hasPatchDates }">
             <input
             type="checkbox"
             :id="value.code"
@@ -49,7 +49,7 @@
             class="form-checkbox h-5 w-5 text-indigo-600"
             >
             <label :for="value.code" class="ml-2 text-sm variable-text">{{ value.name }}</label>
-            <span v-if="value.date_added" class="ml-auto pl-4 pr-1 text-xs variable-text opacity-60" :title="'Added ' + patchDate(value.date_added)">{{ patchAge(value.date_added) }}</span>
+            <span v-if="value.date_added" class="max-md:hidden ml-auto pl-4 pr-1 text-xs variable-text opacity-60" :title="'Added ' + patchDate(value.date_added)">{{ patchAge(value.date_added) }}</span>
           </div>
         </div>
       </div>
@@ -104,6 +104,9 @@
           }
         }
         return false;
+      },
+      hasPatchDates() {
+        return (this.values || []).some(value => value.date_added);
       },
       inputWidth() {
         return this.selectedOptions.length > 3 ? 'auto' : '200px';
