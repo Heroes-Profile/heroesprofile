@@ -40,15 +40,16 @@
           <label for="select-all" class="ml-2 text-sm variable-text">Select All</label>
         </div>
         <div class="max-h-80 overflow-y-auto"> 
-          <div v-for="value in values" :key="value.code" class="whitespace-nowrap">
-            <input 
-            type="checkbox" 
-            :id="value.code" 
-            :value="value.code" 
+          <div v-for="value in values" :key="value.code" class="whitespace-nowrap" :class="{ 'md:flex md:items-center md:py-[3px]': hasPatchDates }">
+            <input
+            type="checkbox"
+            :id="value.code"
+            :value="value.code"
             v-model="selectedOptions"
             class="form-checkbox h-5 w-5 text-indigo-600"
             >
             <label :for="value.code" class="ml-2 text-sm variable-text">{{ value.name }}</label>
+            <span v-if="value.date_added" class="max-md:hidden ml-auto pl-4 pr-1 text-xs variable-text opacity-60" :title="'Added ' + patchDate(value.date_added)">{{ patchAge(value.date_added) }}</span>
           </div>
         </div>
       </div>
@@ -57,6 +58,8 @@
 </template>
 
 <script>
+  import { patchAge, patchDate } from '../../utils/patchAge';
+
   export default {
     name: 'MultiSelectFilter',
     components: {
@@ -102,6 +105,9 @@
         }
         return false;
       },
+      hasPatchDates() {
+        return (this.values || []).some(value => value.date_added);
+      },
       inputWidth() {
         return this.selectedOptions.length > 3 ? 'auto' : '200px';
       },
@@ -123,6 +129,8 @@
       },
     },
     methods: {
+      patchAge,
+      patchDate,
       handleClickOutside(event) {
         const dropdown = this.$el;
         if (dropdown && !dropdown.contains(event.target)) {

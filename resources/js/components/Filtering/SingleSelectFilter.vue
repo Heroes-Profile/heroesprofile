@@ -20,8 +20,8 @@
         <!-- Search Input -->
         <input v-model="searchQuery" type="text" placeholder="Search" class="w-full p-2 variable-text"/>
       </div>
-      <div class="max-h-80 overflow-y-auto"> 
-        <div class="space-y-2 p-2">
+      <div class="max-h-80 overflow-y-auto">
+        <div class="space-y-2 p-2" :class="{ 'pr-6 whitespace-nowrap': text === 'Stat Filter' }">
           <div v-for="value in filteredValues" :key="value.code">
             <input 
               type="radio" 
