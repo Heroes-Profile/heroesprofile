@@ -46,6 +46,9 @@ RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
 # Enable site and Apache modules
 RUN a2ensite 000-default && a2enmod rewrite
 
+# Cloud Run already logs every request; Apache's copy on stdout only doubles the bill.
+RUN a2disconf other-vhosts-access-log
+
 # PHP defaults to a 2M upload cap, well under the 10M the uploader advertises.
 # Over that, the file never reaches PHP and the request looks like it carried none.
 # The 128M default runs out on whole-career player queries in the async worker.
