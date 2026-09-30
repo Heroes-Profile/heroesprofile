@@ -502,6 +502,19 @@ export default {
           return;
         }
 
+        // A page of HTML is not from us: a browser check in front of the site stopped
+        // the request, and only a full page load can pass it.
+        if (typeof body === 'string' && /^\s*<(!doctype|html)/i.test(body)) {
+          this.results[op.id] = {
+            status: error.response.status,
+            headers: {},
+            body: 'Reload the page and try again.',
+            public_url: null,
+          };
+
+          return;
+        }
+
         // Our own errors use `error`; Laravel's use `message` — a 500 from the
         // delegated controller, a 422 from validation. Showing only the first turned
         // both into one unhelpful sentence, hiding the actual cause. Fall through to
