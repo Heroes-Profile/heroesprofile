@@ -33,22 +33,24 @@
           <input 
           type="checkbox" 
           id="select-all" 
-          :checked="selectedOptions.length === values.length"
+          :checked="selectedOptions.length === selectableValues.length"
           @click="toggleAll"
           class="form-checkbox h-5 w-5 text-indigo-600"
           >
           <label for="select-all" class="ml-2 text-sm variable-text">Select All</label>
         </div>
         <div class="max-h-80 overflow-y-auto"> 
-          <div v-for="value in values" :key="value.code" class="whitespace-nowrap">
-            <input 
-            type="checkbox" 
-            :id="value.code" 
-            :value="value.code" 
+          <div v-for="value in values" :key="value.code" class="whitespace-nowrap" :class="{ 'md:flex md:items-center md:py-[3px]': hasPatchDates, 'opacity-40': !isSelectable(value.code) }">
+            <input
+            type="checkbox"
+            :id="value.code"
+            :value="value.code"
             v-model="selectedOptions"
+            :disabled="!isSelectable(value.code)"
             class="form-checkbox h-5 w-5 text-indigo-600"
             >
             <label :for="value.code" class="ml-2 text-sm variable-text">{{ value.name }}</label>
+            <span v-if="value.date_added" class="max-md:hidden ml-auto pl-4 pr-1 text-xs variable-text opacity-60" :title="'Added ' + patchDate(value.date_added)">{{ patchAge(value.date_added) }}</span>
           </div>
         </div>
       </div>
@@ -57,6 +59,8 @@
 </template>
 
 <script>
+  import { patchAge, patchDate } from '../../utils/patchAge';
+
   export default {
     name: 'MultiSelectFilter',
     components: {
@@ -69,6 +73,8 @@
       trackclosure: Boolean,
       showrankinfo: Boolean,
       infolink: String,
+      // Returns an option's group from its code. Once one is picked, the other groups grey out.
+      groupby: Function,
     },
     data(){
       return {
@@ -102,6 +108,16 @@
         }
         return false;
       },
+      hasPatchDates() {
+        return (this.values || []).some(value => value.date_added);
+      },
+      selectableValues() {
+        if(!this.groupby || this.selectedOptions.length === 0){
+          return this.values;
+        }
+
+        return this.valuesInGroup(this.groupby(this.selectedOptions[0]));
+      },
       inputWidth() {
         return this.selectedOptions.length > 3 ? 'auto' : '200px';
       },
@@ -123,17 +139,32 @@
       },
     },
     methods: {
+      patchAge,
+      patchDate,
       handleClickOutside(event) {
         const dropdown = this.$el;
         if (dropdown && !dropdown.contains(event.target)) {
           this.showOptions = false;
         }
       },
+      valuesInGroup(group) {
+        return this.values.filter(value => this.groupby(value.code) === group);
+      },
+      isSelectable(code) {
+        return this.selectableValues.some(value => value.code === code);
+      },
       toggleAll() {
-        if (this.selectedOptions.length === this.values.length) {
+        let selectable = this.selectableValues;
+
+        // Nothing picked yet, so Select All takes the first option's group
+        if(this.groupby && this.selectedOptions.length === 0 && this.values.length > 0){
+          selectable = this.valuesInGroup(this.groupby(this.values[0].code));
+        }
+
+        if (this.selectedOptions.length === selectable.length) {
           this.selectedOptions = [];
         } else {
-          this.selectedOptions = this.values.map(value => value.code);
+          this.selectedOptions = selectable.map(value => value.code);
         }
       },
     }

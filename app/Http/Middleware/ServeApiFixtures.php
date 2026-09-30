@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use App\Auth\ApiKeyGuard;
 use App\Support\CsvResponse;
 use Closure;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,8 +15,10 @@ use Symfony\Component\HttpFoundation\Response;
  * or has test mode switched on, so a customer can build against the new API
  * without pulling live data from both sites and without spending quota.
  *
- * Runs in front of the endpoint controller rather than inside it: no database
- * work happens at all, and a new endpoint cannot forget the gate.
+ * The controller still runs, but only to check the parameters: it sees
+ * `validating()` and stops before any live work. A 422 from it is returned as is,
+ * so test mode refuses the same input live mode does. Anything else is thrown away
+ * for the fixture, so a new endpoint cannot forget the gate.
  *
  * Takes the registry key, same as the quota middleware:
  * ->middleware('api.fixtures:heroes_stats')
@@ -25,6 +28,9 @@ class ServeApiFixtures
     public const HEADER = 'X-HP-Data-Source';
 
     public const DIRECTORY = 'api-fixtures';
+
+    /** Request attribute telling the controller to check its input and go no further. */
+    public const VALIDATE_ONLY = 'api.fixtures.validate_only';
 
     /**
      * Endpoints that answer with a file rather than JSON. The fixture is the file
@@ -51,6 +57,15 @@ class ServeApiFixtures
                     'endpoint' => $endpoint,
                 ],
             ], 403);
+        }
+
+        $request->attributes->set(self::VALIDATE_ONLY, true);
+        $checked = $next($request);
+
+        if ($checked->getStatusCode() === 422) {
+            $checked->headers->set(self::HEADER, 'fixture');
+
+            return $checked;
         }
 
         if ($binary = $this->binaryFixture($endpoint)) {
@@ -88,6 +103,18 @@ class ServeApiFixtures
         return response()
             ->json($fixture)
             ->header(self::HEADER, 'fixture');
+    }
+
+    /** Whether this request is only having its parameters checked. */
+    public static function validating(?Request $request = null): bool
+    {
+        return (bool) ($request ?? request())->attributes->get(self::VALIDATE_ONLY);
+    }
+
+    /** What a controller answers once the parameters pass. The body is never sent. */
+    public static function validated(): JsonResponse
+    {
+        return new JsonResponse(null, 204);
     }
 
     public static function path(string $endpoint): string

@@ -9,6 +9,7 @@ use App\Http\Controllers\Esports\EsportsController;
 use App\Http\Controllers\Esports\NGS\NGSController as SiteNgsController;
 use App\Http\Controllers\Esports\NGS\NGSSingleDivisionController;
 use App\Http\Controllers\SingleMatchController;
+use App\Http\Middleware\ServeApiFixtures;
 use App\Models\NGS\Battletag as NgsBattletag;
 use App\Models\NGS\NGSTeam;
 use App\Rules\NgsReplayUrlValidation;
@@ -214,6 +215,11 @@ class NgsController extends Controller
     {
         $validated = $request->validate(self::uploadRules());
 
+        // Test mode must never reach the ingest.
+        if (ServeApiFixtures::validating($request)) {
+            return ServeApiFixtures::validated();
+        }
+
         $validated['tournament'] ??= 'NGS';
         $validated['team_one_division'] ??= 'NGS';
         $validated['team_two_division'] ??= 'NGS';
@@ -275,6 +281,9 @@ class NgsController extends Controller
             }
 
             $blizzId = (string) $request->input('blizz_id');
+        } elseif ($request->filled('battletag') && ServeApiFixtures::validating($request)) {
+            // Test mode never looks the player up.
+            return ServeApiFixtures::validated();
         } elseif ($request->filled('battletag')) {
             $matches = $this->ngsBlizzIds((string) $request->input('battletag'));
 
@@ -336,6 +345,11 @@ class NgsController extends Controller
      */
     private function delegate(Request $request, string $controller, string $method, array $keys, array $set = [], bool $defaultSeason = false): Response
     {
+        // Test mode: what each endpoint requires has been checked, and nothing is queried.
+        if (ServeApiFixtures::validating($request)) {
+            return ServeApiFixtures::validated();
+        }
+
         $input = array_filter($request->only($keys), fn ($value) => $value !== null && $value !== '');
 
         if ($defaultSeason && ! isset($input['season'])) {

@@ -4,10 +4,15 @@ One JSON file per public endpoint, named after its `api_endpoints.endpoint` key 
 `heroes_stats` becomes `heroes_stats.json`.
 
 These are served instead of live data whenever an account has not activated live
-data or has test mode switched on. `ServeApiFixtures` returns the file verbatim
-before the controller runs, so no database work happens and no quota is consumed.
+data or has test mode switched on. The controller runs only far enough to check
+the parameters: a bad request gets the same 422 it would live, and a good one gets
+the file verbatim. No live data is queried and no quota is consumed.
 
 Rules:
+
+- **Stop before live work.** A controller behind the gate returns
+  `ServeApiFixtures::validated()` when `ServeApiFixtures::validating()` is true,
+  once its parameters pass and before it queries anything.
 
 - **Real shape, obviously fake values.** Fixed battletags, round numbers, a stable
   patch. Nobody should mistake one for production data.

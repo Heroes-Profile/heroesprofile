@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\External;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\ServeApiFixtures;
 use App\Rules\HeroInputValidation;
 use App\Rules\RoleInputValidation;
 use App\Support\ApiParameters;
@@ -40,6 +41,10 @@ class ReferenceController extends Controller
             'mode' => ['sometimes', 'in:json,csv'],
         ]);
 
+        if (ServeApiFixtures::validating()) {
+            return ServeApiFixtures::validated();
+        }
+
         // `?mode=csv` is handled by ConvertResponseToCsv for every endpoint, so
         // nothing here branches on it.
         return response()->json(['maps' => $this->globalDataService->getMaps()->values()]);
@@ -56,6 +61,10 @@ class ReferenceController extends Controller
             'role' => ['sometimes', new RoleInputValidation],
             'mode' => ['sometimes', 'in:json,csv'],
         ]);
+
+        if (ServeApiFixtures::validating()) {
+            return ServeApiFixtures::validated();
+        }
 
         $heroes = $this->globalDataService->getHeroes();
 
@@ -85,20 +94,30 @@ class ReferenceController extends Controller
             'hero' => ['sometimes', new HeroInputValidation],
         ]);
 
+        if (ServeApiFixtures::validating()) {
+            return ServeApiFixtures::validated();
+        }
+
         return response()->json([
             'talents' => $this->globalDataService->getPlayableHeroesTalents($validated['hero'] ?? null),
         ]);
     }
 
     /**
-     * Only patches global statistics will accept — the same set `timeframe`
-     * validates against, so this cannot list one that then returns
-     * `timeframe_unavailable`. Already ordered newest first by the query.
+     * Every patch some global statistics endpoint will accept, newest first, and
+     * the oldest each endpoint takes — they differ, because each page's data starts
+     * at a different patch. An endpoint accepts its oldest patch and everything
+     * listed after it.
      */
     public function patches()
     {
+        if (ServeApiFixtures::validating()) {
+            return ServeApiFixtures::validated();
+        }
+
         return response()->json([
             'patches' => $this->globalDataService->getQueryablePatches(),
+            'oldest_patch' => GlobalStatsController::oldestPatchesByPath(),
         ]);
     }
 
@@ -124,6 +143,10 @@ class ReferenceController extends Controller
         }
 
         $validated['game_type'] = $codes[0];
+
+        if (ServeApiFixtures::validating()) {
+            return ServeApiFixtures::validated();
+        }
 
         $gameTypeId = $this->globalDataService->getGameTypeFilterValues($validated['game_type']);
         $rankTiers = $this->globalDataService->getRankTiers($gameTypeId, self::OVERALL_TIER_TYPE);

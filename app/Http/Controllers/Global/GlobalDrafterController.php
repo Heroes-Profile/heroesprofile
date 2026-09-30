@@ -15,13 +15,15 @@ class GlobalDrafterController extends GlobalsInputValidationController
 {
     use HandlesAsyncGlobalQueries;
 
+    public const MINIMUM_PATCH = '2.52.0.81700';
+
     public function show(Request $request)
     {
         return view('Drafter.drafter')
             ->with([
                 'heroes' => $this->globalDataService->getHeroes(),
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
-                'filters' => $this->globalDataService->getFilterData(),
+                'filters' => $this->globalDataService->getFilterData(true, self::MINIMUM_PATCH),
                 'gametypedefault' => ['sl'],
                 'defaulttimeframe' => [$this->globalDataService->getDefaultTimeframe()],
             ]);

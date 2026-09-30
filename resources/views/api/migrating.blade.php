@@ -344,8 +344,9 @@ HTTP/1.1 200 OK              done — this is the data
     <h3 class="text-lg mb-2">Older patches are no longer queryable</h3>
     <p class="text-sm mb-8">
       Global statistics accept patches back to <code class="text-lteal">{{ $minimumPatch }}</code>
-      — the same limit the site applies to its own filters. Older data exists but predates
-      changes that make it not worth comparing against, and asking for it returns
+      at the furthest. Each endpoint starts where its own data does — the same limit the
+      site applies to that page's filters — and <code>/v1/patches</code> lists the oldest
+      patch for each under <code>oldest_patch</code>. Asking for an older one returns
       <code>422 timeframe_unavailable</code>.
     </p>
 

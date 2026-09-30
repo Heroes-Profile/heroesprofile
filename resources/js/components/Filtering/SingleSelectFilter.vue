@@ -20,19 +20,20 @@
         <!-- Search Input -->
         <input v-model="searchQuery" type="text" placeholder="Search" class="w-full p-2 variable-text"/>
       </div>
-      <div class="max-h-80 overflow-y-auto"> 
-        <div class="space-y-2 p-2">
-          <div v-for="value in filteredValues" :key="value.code">
-            <input 
-              type="radio" 
-              :id="value.code" 
-              :value="value.code" 
+      <div class="max-h-80 overflow-y-auto">
+        <div class="space-y-2 p-2" :class="{ 'pr-6 whitespace-nowrap': text === 'Stat Filter' }">
+          <div v-for="value in filteredValues" :key="value.code" :class="{ 'whitespace-nowrap md:flex md:items-center': hasPatchDates }">
+            <input
+              type="radio"
+              :id="value.code"
+              :value="value.code"
               :checked="isChecked(value.code)"
               @click="toggleSelectedOptions(value.code)"
               class="form-checkbox h-5 w-5 text-indigo-600"
               :disabled="disabled"
             >
             <label :for="value.code" class="ml-2 text-sm variable-text">{{ value.name }}</label>
+            <span v-if="value.date_added" class="max-md:hidden ml-auto pl-4 pr-1 text-xs variable-text opacity-60" :title="'Added ' + patchDate(value.date_added)">{{ patchAge(value.date_added) }}</span>
           </div>
         </div>
       </div>
@@ -42,6 +43,8 @@
 
 
 <script>
+import { patchAge, patchDate } from '../../utils/patchAge';
+
 export default {
   name: 'SingleSelectFilter',
   components: {
@@ -98,7 +101,9 @@ export default {
         return false;
       });
     },
-
+    hasPatchDates() {
+      return (this.values || []).some(value => value.date_added);
+    },
   },
   watch: {
     selectedOptions: function (newVal) {
@@ -114,6 +119,8 @@ export default {
     }
   },
   methods: {
+    patchAge,
+    patchDate,
     isChecked(value){
       if(value === this.selectedOptions){
         return true;

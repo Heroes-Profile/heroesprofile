@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\External;
 use App\Http\Controllers\Api\External\Concerns\TranslatesInternalFailures;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\SingleMatchController;
+use App\Http\Middleware\ServeApiFixtures;
 use App\Models\Replay;
 use App\Services\Api\ReplayDownloadService;
 use App\Services\Api\ReplayIndexService;
@@ -105,6 +106,10 @@ class MatchController extends Controller
             }
         }
 
+        if (ServeApiFixtures::validating($request)) {
+            return ServeApiFixtures::validated();
+        }
+
         return response()->json($replays->page($validated));
     }
 
@@ -116,6 +121,10 @@ class MatchController extends Controller
         $validated = $request->validate([
             'replayID' => ['required', 'integer'],
         ]);
+
+        if (ServeApiFixtures::validating($request)) {
+            return ServeApiFixtures::validated();
+        }
 
         $result = $replays->download((int) $validated['replayID']);
 
@@ -173,6 +182,11 @@ class MatchController extends Controller
      */
     private function refuseUnviewable(int $replayID): ?Response
     {
+        // Test mode: the id is a number, and the replay is never looked up.
+        if (ServeApiFixtures::validating()) {
+            return ServeApiFixtures::validated();
+        }
+
         $gameType = Replay::where('replayID', $replayID)->value('game_type');
 
         if ($gameType === null) {
