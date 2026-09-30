@@ -462,6 +462,7 @@
 </template>
 
 <script>
+  import { earliestPatchDate } from '../../utils/patchAge';
 
   export default {
     name: 'Filters',
@@ -787,9 +788,9 @@
         if(this.timeframetype == "minor" || this.timeframetype == "last_update"){
           return this.filters.timeframes;
         }else if(this.timeframetype == "major"){
-          return this.filters.timeframes_grouped;
+          return this.withPatchDates(this.filters.timeframes_grouped);
         }else if(this.timeframetype == "major_grouped"){
-          return this.filters.timeframes_sub_grouped;
+          return this.withPatchDates(this.filters.timeframes_sub_grouped);
         }
       },
       seasons(){
@@ -851,6 +852,13 @@
       window.removeEventListener('resize', this.checkScreenWidth);
     },
     methods: {
+      // Patch groups carry no date of their own; they date from their earliest build.
+      withPatchDates(groups){
+        return (groups || []).map(group => ({
+          ...group,
+          date_added: earliestPatchDate(group.code, this.filters.timeframes),
+        }));
+      },
       // Whether a Group Size selection actually narrows anything. `All` means the
       // unfiltered table rather than a stack size, so it counts as no filter even
       // when picked alongside real sizes. Takes the string the single select emits

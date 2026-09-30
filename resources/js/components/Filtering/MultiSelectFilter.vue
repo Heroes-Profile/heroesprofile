@@ -27,7 +27,7 @@
       </span>
     </div>
     <!-- I added a z-index here to make sure the dropdown was selectable, in case this breaks something later for you -->
-    <div v-if="showOptions" class="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded shadow-lg expandable-dropdown z-50">
+    <div v-if="showOptions" class="absolute left-0 mt-2 w-full min-w-max bg-white border border-gray-300 rounded shadow-lg expandable-dropdown z-50">
       <div class="space-y-2 p-2">
         <div class="whitespace-nowrap">
           <input 
@@ -40,15 +40,16 @@
           <label for="select-all" class="ml-2 text-sm variable-text">Select All</label>
         </div>
         <div class="max-h-80 overflow-y-auto"> 
-          <div v-for="value in values" :key="value.code" class="whitespace-nowrap">
-            <input 
-            type="checkbox" 
-            :id="value.code" 
-            :value="value.code" 
+          <div v-for="value in values" :key="value.code" class="whitespace-nowrap flex items-center">
+            <input
+            type="checkbox"
+            :id="value.code"
+            :value="value.code"
             v-model="selectedOptions"
             class="form-checkbox h-5 w-5 text-indigo-600"
             >
             <label :for="value.code" class="ml-2 text-sm variable-text">{{ value.name }}</label>
+            <span v-if="value.date_added" class="ml-auto pl-4 pr-1 text-xs variable-text opacity-60" :title="'Added ' + patchDate(value.date_added)">{{ patchAge(value.date_added) }}</span>
           </div>
         </div>
       </div>
@@ -57,6 +58,8 @@
 </template>
 
 <script>
+  import { patchAge, patchDate } from '../../utils/patchAge';
+
   export default {
     name: 'MultiSelectFilter',
     components: {
@@ -123,6 +126,8 @@
       },
     },
     methods: {
+      patchAge,
+      patchDate,
       handleClickOutside(event) {
         const dropdown = this.$el;
         if (dropdown && !dropdown.contains(event.target)) {
