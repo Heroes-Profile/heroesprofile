@@ -108,7 +108,7 @@
                                 "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch such as 2.55, `major_grouped` a sub patch such as 2.55.17.",
                         "example": "minor"
                     },
                     {
@@ -123,7 +123,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated.",
+                        "description": "One patch or build, or several comma-separated. One request covers at most one major patch: a single `major` timeframe, or builds and sub patches that all belong to the same one. For two months after a new major patch, it can be combined with the one before it. The oldest patch this endpoint accepts is `2.47.0.75589`; `patches` lists the rest.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -503,7 +503,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -558,7 +558,7 @@
                                 "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch such as 2.55, `major_grouped` a sub patch such as 2.55.17.",
                         "example": "minor"
                     },
                     {
@@ -573,7 +573,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated.",
+                        "description": "One patch or build, or several comma-separated. One request covers at most one major patch: a single `major` timeframe, or builds and sub patches that all belong to the same one. For two months after a new major patch, it can be combined with the one before it. The oldest patch this endpoint accepts is `2.47.0.75589`; `patches` lists the rest.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -1181,7 +1181,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1317,7 +1317,7 @@
                                 "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch such as 2.55, `major_grouped` a sub patch such as 2.55.17.",
                         "example": "minor"
                     },
                     {
@@ -1332,7 +1332,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated.",
+                        "description": "One patch or build, or several comma-separated. One request covers at most one major patch: a single `major` timeframe, or builds and sub patches that all belong to the same one. For two months after a new major patch, it can be combined with the one before it. The oldest patch this endpoint accepts is `2.52.0.81700`; `patches` lists the rest.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -1590,7 +1590,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1824,7 +1824,7 @@
                                 "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch such as 2.55, `major_grouped` a sub patch such as 2.55.17.",
                         "example": "minor"
                     },
                     {
@@ -1839,7 +1839,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated.",
+                        "description": "One patch or build, or several comma-separated. One request covers at most one major patch: a single `major` timeframe, or builds and sub patches that all belong to the same one. For two months after a new major patch, it can be combined with the one before it. The oldest patch this endpoint accepts is `2.47.0.75589`; `patches` lists the rest.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -2113,7 +2113,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2167,7 +2167,7 @@
                                 "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch such as 2.55, `major_grouped` a sub patch such as 2.55.17.",
                         "example": "minor"
                     },
                     {
@@ -2182,7 +2182,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated.",
+                        "description": "One patch or build, or several comma-separated. One request covers at most one major patch: a single `major` timeframe, or builds and sub patches that all belong to the same one. For two months after a new major patch, it can be combined with the one before it. The oldest patch this endpoint accepts is `2.47.0.75589`; `patches` lists the rest.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -2802,7 +2802,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2857,7 +2857,7 @@
                                 "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch such as 2.55, `major_grouped` a sub patch such as 2.55.17.",
                         "example": "minor"
                     },
                     {
@@ -2872,7 +2872,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated.",
+                        "description": "One patch or build, or several comma-separated. One request covers at most one major patch: a single `major` timeframe, or builds and sub patches that all belong to the same one. For two months after a new major patch, it can be combined with the one before it. The oldest patch this endpoint accepts is `2.55.12.94786`; `patches` lists the rest.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -3898,7 +3898,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3953,7 +3953,7 @@
                                 "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch such as 2.55, `major_grouped` a sub patch such as 2.55.17.",
                         "example": "minor"
                     },
                     {
@@ -3968,7 +3968,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated.",
+                        "description": "One patch or build, or several comma-separated. One request covers at most one major patch: a single `major` timeframe, or builds and sub patches that all belong to the same one. For two months after a new major patch, it can be combined with the one before it. The oldest patch this endpoint accepts is `2.47.0.75589`; `patches` lists the rest.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -4365,7 +4365,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -4614,7 +4614,7 @@
                                 "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch such as 2.55, `major_grouped` a sub patch such as 2.55.17.",
                         "example": "minor"
                     },
                     {
@@ -4629,7 +4629,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated.",
+                        "description": "One patch or build, or several comma-separated. One request covers at most one major patch: a single `major` timeframe, or builds and sub patches that all belong to the same one. For two months after a new major patch, it can be combined with the one before it. The oldest patch this endpoint accepts is `2.47.0.75589`; `patches` lists the rest.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -5492,7 +5492,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -5546,7 +5546,7 @@
                                 "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch such as 2.55, `major_grouped` a sub patch such as 2.55.17.",
                         "example": "minor"
                     },
                     {
@@ -5561,7 +5561,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated.",
+                        "description": "One patch or build, or several comma-separated. One request covers at most one major patch: a single `major` timeframe, or builds and sub patches that all belong to the same one. For two months after a new major patch, it can be combined with the one before it. The oldest patch this endpoint accepts is `2.47.0.75589`; `patches` lists the rest.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -6145,7 +6145,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -6199,7 +6199,7 @@
                                 "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch such as 2.55, `major_grouped` a sub patch such as 2.55.17.",
                         "example": "minor"
                     },
                     {
@@ -6214,7 +6214,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated.",
+                        "description": "One patch or build, or several comma-separated. One request covers at most one major patch: a single `major` timeframe, or builds and sub patches that all belong to the same one. For two months after a new major patch, it can be combined with the one before it. The oldest patch this endpoint accepts is `2.50.0.79155`; `patches` lists the rest.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -7107,7 +7107,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -7162,7 +7162,7 @@
                                 "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together. Defaults to `minor`.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch such as 2.55, `major_grouped` a sub patch such as 2.55.17. Defaults to `minor`.",
                         "example": "minor"
                     },
                     {
@@ -7177,7 +7177,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated. Defaults to the current patch.",
+                        "description": "One patch or build, or several comma-separated, all within one major patch. Defaults to the current patch. The oldest patch this endpoint accepts is `2.50.0.79155`; `patches` lists the rest.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -59750,7 +59750,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -59805,7 +59805,7 @@
                                 "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch such as 2.55, `major_grouped` a sub patch such as 2.55.17.",
                         "example": "minor"
                     },
                     {
@@ -59820,7 +59820,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated.",
+                        "description": "One patch or build, or several comma-separated. One request covers at most one major patch: a single `major` timeframe, or builds and sub patches that all belong to the same one. For two months after a new major patch, it can be combined with the one before it. The oldest patch this endpoint accepts is `2.50.0.79155`; `patches` lists the rest.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -60961,7 +60961,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -78226,7 +78226,7 @@
                                 "major_grouped"
                             ]
                         },
-                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.",
+                        "description": "How `timeframe` is read. `minor` is a build, `major` a patch such as 2.55, `major_grouped` a sub patch such as 2.55.17.",
                         "example": "minor"
                     },
                     {
@@ -78241,7 +78241,7 @@
                         },
                         "style": "form",
                         "explode": false,
-                        "description": "One patch or build, or several comma-separated.",
+                        "description": "One patch or build, or several comma-separated. One request covers at most one major patch: a single `major` timeframe, or builds and sub patches that all belong to the same one. For two months after a new major patch, it can be combined with the one before it. The oldest patch this endpoint accepts is `2.53.0.83004`; `patches` lists the rest.",
                         "example": "2.55.17.97771"
                     },
                     {
@@ -80176,7 +80176,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -80216,7 +80216,7 @@
         },
         "/patches": {
             "get": {
-                "summary": "Game versions, with the season each belongs to.",
+                "summary": "Game versions, with the season each belongs to, and the oldest patch each global statistics endpoint accepts.",
                 "operationId": "api.external.patches",
                 "parameters": [
                     {
@@ -80294,10 +80294,70 @@
                                                     "patch_notes_url"
                                                 ]
                                             }
+                                        },
+                                        "oldest_patch": {
+                                            "type": "object",
+                                            "properties": {
+                                                "heroes/stats": {
+                                                    "type": "string"
+                                                },
+                                                "heroes/maps": {
+                                                    "type": "string"
+                                                },
+                                                "heroes/matchups": {
+                                                    "type": "string"
+                                                },
+                                                "heroes/matchups/talents": {
+                                                    "type": "string"
+                                                },
+                                                "heroes/talents/details": {
+                                                    "type": "string"
+                                                },
+                                                "heroes/talents/builds": {
+                                                    "type": "string"
+                                                },
+                                                "heroes/talents/builds/all": {
+                                                    "type": "string"
+                                                },
+                                                "heroes/talents/builder": {
+                                                    "type": "string"
+                                                },
+                                                "heroes/talents/builder/replays": {
+                                                    "type": "string"
+                                                },
+                                                "compositions": {
+                                                    "type": "string"
+                                                },
+                                                "compositions/heroes": {
+                                                    "type": "string"
+                                                },
+                                                "draft": {
+                                                    "type": "string"
+                                                },
+                                                "party": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "heroes/stats",
+                                                "heroes/maps",
+                                                "heroes/matchups",
+                                                "heroes/matchups/talents",
+                                                "heroes/talents/details",
+                                                "heroes/talents/builds",
+                                                "heroes/talents/builds/all",
+                                                "heroes/talents/builder",
+                                                "heroes/talents/builder/replays",
+                                                "compositions",
+                                                "compositions/heroes",
+                                                "draft",
+                                                "party"
+                                            ]
                                         }
                                     },
                                     "required": [
-                                        "patches"
+                                        "patches",
+                                        "oldest_patch"
                                     ]
                                 }
                             }
@@ -102118,7 +102178,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
                         "content": {
                             "application/json": {
                                 "schema": {
