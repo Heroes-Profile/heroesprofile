@@ -19,7 +19,7 @@ class MigratingController extends Controller
         return view('api.migrating', [
             'authenticated' => Auth::guard('api_web')->check(),
             'domain' => config('api.domain'),
-            'minimumPatch' => GlobalDataService::MINIMUM_GLOBALS_PATCH,
+            'minimumPatch' => GlobalDataService::MINIMUM_GLOBALS_PATCH_OLDEST,
         ]);
     }
 }

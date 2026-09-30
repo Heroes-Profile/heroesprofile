@@ -72,13 +72,13 @@ return [
         'timeframe_type' => [
             'required' => true,
             'enum' => ['minor', 'major', 'major_grouped'],
-            'description' => 'How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together.',
+            'description' => 'How `timeframe` is read. `minor` is a build, `major` a patch such as 2.55, `major_grouped` a sub patch such as 2.55.17.',
             'example' => 'minor',
         ],
         'timeframe' => [
             'required' => true,
             'multi' => true,
-            'description' => 'One patch or build, or several comma-separated.',
+            'description' => 'One patch or build, or several comma-separated. One request covers at most one major patch: a single `major` timeframe, or builds and sub patches that all belong to the same one. For two months after a new major patch, it can be combined with the one before it.',
             'example' => '2.55.17.97771',
         ],
         'game_type' => [
@@ -318,7 +318,7 @@ return [
         ],
 
         'api.external.patches' => [
-            'summary' => 'Game versions, with the season each belongs to.',
+            'summary' => 'Game versions, with the season each belongs to, and the oldest patch each global statistics endpoint accepts.',
             'parameters' => [],
         ],
 
@@ -746,12 +746,12 @@ Page with the cursor: pass `next_since` and `next_after_id` from one response as
                 // or a caller relying on that would break.
                 'timeframe_type' => [
                     'enum' => ['minor', 'major', 'major_grouped'],
-                    'description' => 'How `timeframe` is read. `minor` is a build, `major` a patch, `major_grouped` several patches together. Defaults to `minor`.',
+                    'description' => 'How `timeframe` is read. `minor` is a build, `major` a patch such as 2.55, `major_grouped` a sub patch such as 2.55.17. Defaults to `minor`.',
                     'example' => 'minor',
                 ],
                 'timeframe' => [
                     'multi' => true,
-                    'description' => 'One patch or build, or several comma-separated. Defaults to the current patch.',
+                    'description' => 'One patch or build, or several comma-separated, all within one major patch. Defaults to the current patch.',
                     'example' => '2.55.17.97771',
                 ],
                 'game_type' => [

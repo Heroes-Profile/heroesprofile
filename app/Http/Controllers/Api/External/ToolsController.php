@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\External;
 
 use App\Http\Controllers\Api\External\Concerns\TranslatesInternalFailures;
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\ServeApiFixtures;
 use App\Http\Controllers\Tools\ActivityGraphsController;
 use App\Http\Controllers\Tools\RandomizeMeController;
 use App\Support\ApiParameters;
@@ -34,6 +35,10 @@ class ToolsController extends Controller
                     'message' => 'This endpoint needs a hero to build for.',
                 ],
             ], 422);
+        }
+
+        if (ServeApiFixtures::validating()) {
+            return ServeApiFixtures::validated();
         }
 
         $result = app()->call(
@@ -75,6 +80,10 @@ class ToolsController extends Controller
             }
 
             $request->merge([$parameter => $resolved[0]]);
+        }
+
+        if (ServeApiFixtures::validating()) {
+            return ServeApiFixtures::validated();
         }
 
         $result = app()->call(

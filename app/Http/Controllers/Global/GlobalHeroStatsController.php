@@ -24,6 +24,8 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
 
     use HandlesAsyncGlobalQueries;
 
+    public const MINIMUM_PATCH = '2.47.0.75589';
+
     public function show(Request $request)
     {
 
@@ -52,7 +54,7 @@ class GlobalHeroStatsController extends GlobalsInputValidationController
         return view('Global.Hero.globalHeroStats')
             ->with([
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
-                'filters' => $this->globalDataService->getFilterData(),
+                'filters' => $this->globalDataService->getFilterData(true, self::MINIMUM_PATCH),
                 'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
                 'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),

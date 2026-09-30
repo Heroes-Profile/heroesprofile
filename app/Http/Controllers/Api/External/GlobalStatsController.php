@@ -12,10 +12,13 @@ use App\Http\Controllers\Global\GlobalHeroMatchupStatsController;
 use App\Http\Controllers\Global\GlobalHeroStatsController;
 use App\Http\Controllers\Global\GlobalLeaderboardController;
 use App\Http\Controllers\Global\GlobalPartyStatsController;
+use App\Http\Controllers\Global\GlobalsInputValidationController;
 use App\Http\Controllers\Global\GlobalTalentBuilderController;
 use App\Http\Controllers\Global\GlobalTalentStatsController;
+use App\Http\Middleware\ServeApiFixtures;
 use App\Models\LeagueTier;
 use App\Models\MatchPredictionSeason;
+use App\Rules\GlobalTimeframeInputValidation;
 use App\Services\GlobalDataService;
 use App\Services\GlobalQueryService;
 use App\Support\ApiParameters;
@@ -23,6 +26,7 @@ use App\Support\ApiSpecConfig;
 use App\Support\HeroLevelBands;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -50,6 +54,52 @@ class GlobalStatsController extends Controller
 
     /** What the site's own composition pages send. Required by the controller. */
     private const DEFAULT_MINIMUM_GAMES = 100;
+
+    /**
+     * The site controller behind each patch-scoped route. Its `MINIMUM_PATCH` is the
+     * oldest patch that route accepts, so the floor is stated once, on the page.
+     */
+    private const TARGETS = [
+        'api.external.heroes.stats' => GlobalHeroStatsController::class,
+        'api.external.heroes.maps' => GlobalHeroMapStatsController::class,
+        'api.external.heroes.matchups' => GlobalHeroMatchupStatsController::class,
+        'api.external.heroes.matchups.talents' => GlobalHeroMatchupsTalentsController::class,
+        'api.external.heroes.talents.details' => GlobalTalentStatsController::class,
+        'api.external.heroes.talents.builds' => GlobalTalentStatsController::class,
+        'api.external.heroes.talents.builds.all' => GlobalTalentStatsController::class,
+        'api.external.heroes.talents.builder' => GlobalTalentBuilderController::class,
+        'api.external.heroes.talents.builder.replays' => GlobalTalentBuilderController::class,
+        'api.external.compositions' => GlobalCompositionsController::class,
+        'api.external.compositions.heroes' => GlobalCompositionsController::class,
+        'api.external.draft' => GlobalDraftController::class,
+        'api.external.party' => GlobalPartyStatsController::class,
+    ];
+
+    /**
+     * The oldest patch each patch-scoped route accepts, by route name.
+     *
+     * @return array<string, string>
+     */
+    public static function oldestPatches(): array
+    {
+        return array_map(fn ($controller) => $controller::MINIMUM_PATCH, self::TARGETS);
+    }
+
+    /**
+     * The same, keyed by endpoint path: `heroes/talents/details`.
+     *
+     * @return array<string, string>
+     */
+    public static function oldestPatchesByPath(): array
+    {
+        $byPath = [];
+
+        foreach (self::oldestPatches() as $route => $patch) {
+            $byPath[str_replace('.', '/', substr($route, strlen('api.external.')))] = $patch;
+        }
+
+        return $byPath;
+    }
 
     public function heroStats(Request $request): Response
     {
@@ -409,7 +459,9 @@ class GlobalStatsController extends Controller
             }
         }
 
-        if ($rejection = $this->rejectUnqueryableTimeframe($request)) {
+        $target = $controller instanceof Controller ? $controller : app($controller);
+
+        if ($rejection = $this->rejectUnqueryableTimeframe($request, $target::MINIMUM_PATCH)) {
             return $rejection;
         }
 
@@ -436,7 +488,11 @@ class GlobalStatsController extends Controller
             return $rejection;
         }
 
-        $target = $controller instanceof Controller ? $controller : app($controller);
+        // Test mode stops here, before the query. The target would run these rules
+        // itself, but only on its way to starting one.
+        if (ServeApiFixtures::validating($request)) {
+            return $this->sharedRulesFailure($request, $target) ?? ServeApiFixtures::validated();
+        }
 
         $result = app()->call([$target, $method], ['request' => $request]);
 
@@ -458,17 +514,31 @@ class GlobalStatsController extends Controller
     }
 
     /**
-     * Refuses a patch older than the site's own filters offer.
-     *
-     * The shared globals rules only check `valid_globals`, so older data passes
-     * validation — the site simply never offers it in a dropdown. The API has no
-     * dropdown, so without this a caller could query patches the site itself
-     * considers not worth comparing against, and get answers nobody stands behind.
+     * The globals rules every target but the leaderboard validates with, which is
+     * scoped by season and carries its own.
+     */
+    private function sharedRulesFailure(Request $request, GlobalsInputValidationController $target): ?Response
+    {
+        if ($target instanceof GlobalLeaderboardController) {
+            return null;
+        }
+
+        $validator = Validator::make(
+            $request->all(),
+            $target->globalsValidationRules($request['timeframe_type'], $request['timeframe'])
+        );
+
+        return $validator->fails() ? $this->invalidParameters($validator->errors()->all()) : null;
+    }
+
+    /**
+     * Refuses a patch older than the matching site page offers, which is where
+     * that page's data starts.
      *
      * `major` and `major_grouped` are prefixes rather than whole versions, so they
      * are judged by whether any queryable build starts with them.
      */
-    private function rejectUnqueryableTimeframe(Request $request): ?Response
+    private function rejectUnqueryableTimeframe(Request $request, string $minimumPatch): ?Response
     {
         $input = $request->input('timeframe', []);
 
@@ -483,7 +553,7 @@ class GlobalStatsController extends Controller
             return null;
         }
 
-        $queryable = $this->globalDataService->queryableGameVersions();
+        $queryable = $this->globalDataService->queryableGameVersions($minimumPatch);
         $exact = $request->input('timeframe_type', 'minor') === 'minor';
 
         foreach ($timeframes as $timeframe) {
@@ -495,11 +565,22 @@ class GlobalStatsController extends Controller
                 return response()->json([
                     'error' => [
                         'code' => 'timeframe_unavailable',
-                        'message' => 'That patch is not available for global statistics. The oldest queryable patch is '
-                            .GlobalDataService::MINIMUM_GLOBALS_PATCH.'. The Variables section of the docs lists them all.',
+                        'message' => 'That patch is not available on this endpoint. The oldest it accepts is '
+                            .$minimumPatch.'. `patches` lists every patch, and the oldest for each endpoint.',
                     ],
                 ], 422);
             }
+        }
+
+        if (! GlobalTimeframeInputValidation::withinOneMajorPatch($timeframes, $this->globalDataService->combinableMajorPatches())) {
+            return response()->json([
+                'error' => [
+                    'code' => 'timeframe_too_wide',
+                    'message' => 'One request covers at most one major patch, such as 2.55. Send a single `major` timeframe,'
+                        .' or builds and sub patches that all belong to the same major patch.'
+                        .' For two months after a new major patch, it can be combined with the one before it.',
+                ],
+            ], 422);
         }
 
         return null;

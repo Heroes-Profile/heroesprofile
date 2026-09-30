@@ -12,6 +12,7 @@ use App\Http\Controllers\Player\PlayerMatchHistory;
 use App\Http\Controllers\Player\PlayerMatchupsController;
 use App\Http\Controllers\Player\PlayerMMRController;
 use App\Http\Controllers\Player\PlayerTalentsController;
+use App\Http\Middleware\ServeApiFixtures;
 use App\Services\PlayerMmrService;
 use App\Support\ApiParameters;
 use Carbon\Carbon;
@@ -268,22 +269,29 @@ class PlayerController extends Controller
             }
         }
 
-        $blizzId = $this->globalDataService->getBlizzIDGivenFullBattletag(
+        // Test mode checks the parameters and never looks the player up.
+        $validating = ServeApiFixtures::validating($request);
+
+        $blizzId = $validating ? null : $this->globalDataService->getBlizzIDGivenFullBattletag(
             $validated['battletag'],
             $validated['region']
         );
 
-        if ($blizzId === null) {
+        if (! $validating && $blizzId === null) {
             return $this->error('player_not_found', 'No player found for that battletag and region.', 404);
         }
 
-        if ($this->globalDataService->isRestrictedAccount($blizzId, $validated['region'])) {
+        if (! $validating && $this->globalDataService->isRestrictedAccount($blizzId, $validated['region'])) {
             return $this->error('player_unavailable', 'That player has made their profile private.', 403);
         }
 
         // An unknown name would otherwise read as a player with no rating.
         if ($subjectParam !== null && $this->globalDataService->getMMRTypeValue($request->input($subjectParam)) === null) {
             return $this->error('unknown_'.$subjectParam, 'Not a recognised '.$subjectParam.': '.$request->input($subjectParam).'.', 422);
+        }
+
+        if ($validating) {
+            return ServeApiFixtures::validated();
         }
 
         $ratings = app(PlayerMmrService::class)->summary(
@@ -461,12 +469,15 @@ class PlayerController extends Controller
             'region' => ['required', 'integer', 'in:1,2,3,5'],
         ]);
 
-        $blizzId = $this->globalDataService->getBlizzIDGivenFullBattletag(
+        // Test mode checks the parameters and never looks the player up.
+        $validating = ServeApiFixtures::validating($request);
+
+        $blizzId = $validating ? null : $this->globalDataService->getBlizzIDGivenFullBattletag(
             $validated['battletag'],
             $validated['region']
         );
 
-        if ($blizzId === null) {
+        if (! $validating && $blizzId === null) {
             return $this->error(
                 'player_not_found',
                 'No player found for that battletag and region.',
@@ -474,7 +485,7 @@ class PlayerController extends Controller
             );
         }
 
-        if ($this->globalDataService->isRestrictedAccount($blizzId, $validated['region'])) {
+        if (! $validating && $this->globalDataService->isRestrictedAccount($blizzId, $validated['region'])) {
             return $this->error(
                 'player_unavailable',
                 'That player has made their profile private.',
@@ -511,6 +522,10 @@ class PlayerController extends Controller
             if ($kind === 'array' && $request->filled($key) && is_string($request->input($key))) {
                 $request->merge([$key => explode(',', (string) $request->input($key))]);
             }
+        }
+
+        if ($validating) {
+            return ServeApiFixtures::validated();
         }
 
         $result = app()->call([app($controller), $method], ['request' => $request]);
@@ -606,6 +621,10 @@ class PlayerController extends Controller
             'limit' => ['sometimes', 'integer', 'min:1', 'max:'.self::PRIVACY_MAX_LIMIT],
             'mode' => ['sometimes', 'in:json,csv'],
         ]);
+
+        if (ServeApiFixtures::validating($request)) {
+            return ServeApiFixtures::validated();
+        }
 
         $limit = (int) ($validated['limit'] ?? self::PRIVACY_DEFAULT_LIMIT);
 

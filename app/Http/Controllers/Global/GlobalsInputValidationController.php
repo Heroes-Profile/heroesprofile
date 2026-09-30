@@ -15,14 +15,18 @@ use App\Rules\StackSizeInputValidation;
 use App\Rules\StatFilterInputValidation;
 use App\Rules\TierInputByIDValidation;
 use App\Rules\TierInputByNameValidation;
+use App\Services\GlobalDataService;
 
 class GlobalsInputValidationController extends Controller
 {
+    /** Oldest patch a page offers. Each page overrides it with where its own data starts. */
+    public const MINIMUM_PATCH = GlobalDataService::MINIMUM_GLOBALS_PATCH;
+
     public function globalValidationRulesURLParam($timeframeType, $timeframe)
     {
         return [
             'timeframe_type' => 'sometimes|in:minor,major,major_grouped',
-            'timeframe' => ['sometimes', 'nullable', new GlobalTimeframeInputValidation($timeframeType)],
+            'timeframe' => ['sometimes', 'nullable', new GlobalTimeframeInputValidation($timeframeType, static::MINIMUM_PATCH)],
             'game_type' => ['sometimes', 'nullable', new GameTypeInputValidation],
             'region' => ['sometimes', 'nullable', new RegionInputValidation],
             'statfilter' => ['sometimes', 'nullable', new StatFilterInputValidation($timeframeType, $timeframe)],
@@ -43,7 +47,7 @@ class GlobalsInputValidationController extends Controller
     {
         return [
             'timeframe_type' => 'required|in:minor,major,major_grouped',
-            'timeframe' => ['required', new GlobalTimeframeInputValidation($timeframeType)],
+            'timeframe' => ['required', new GlobalTimeframeInputValidation($timeframeType, static::MINIMUM_PATCH)],
             'game_type' => ['required', new GameTypeInputValidation],
             'region' => ['sometimes', 'nullable', new RegionInputValidation],
             'statfilter' => ['sometimes', 'nullable', new StatFilterInputValidation($timeframeType, $timeframe)],

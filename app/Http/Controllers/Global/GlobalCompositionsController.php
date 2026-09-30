@@ -15,6 +15,8 @@ class GlobalCompositionsController extends GlobalsInputValidationController
 {
     use HandlesAsyncGlobalQueries;
 
+    public const MINIMUM_PATCH = '2.47.0.75589';
+
     public function show(Request $request)
     {
         $validationRules = $this->globalValidationRulesURLParam($request['timeframe_type'], $request['timeframe']);
@@ -36,7 +38,7 @@ class GlobalCompositionsController extends GlobalsInputValidationController
         return view('Global.Compositions.compositionsStats')
             ->with([
                 'bladeGlobals' => $this->globalDataService->getBladeGlobals(),
-                'filters' => $this->globalDataService->getFilterData(),
+                'filters' => $this->globalDataService->getFilterData(true, self::MINIMUM_PATCH),
                 'gametypedefault' => $this->globalDataService->getGameTypeDefault('multi'),
                 'advancedfiltering' => $this->globalDataService->getAdvancedFilterShowDefault(),
                 'defaulttimeframetype' => $this->globalDataService->getDefaultTimeframeType(),

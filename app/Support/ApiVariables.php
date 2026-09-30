@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Http\Controllers\Api\External\GlobalStatsController;
 use App\Models\GameType;
 use App\Models\Hero;
 use App\Models\LeagueTier;
@@ -78,14 +79,20 @@ class ApiVariables
             [
                 'name' => 'timeframe_type',
                 'used_by' => 'Every global statistics endpoint',
-                'summary' => 'How `timeframe` is read. `minor` is one build, `major` a patch line, `major_grouped` several patches together.',
+                'summary' => 'How `timeframe` is read. `minor` is one build, `major` a patch line, `major_grouped` a sub patch such as 2.55.17.',
                 'values' => ['minor', 'major', 'major_grouped'],
             ],
             [
                 'name' => 'timeframe',
                 'used_by' => 'Every global statistics endpoint',
-                'summary' => 'A build (`2.55.17.97771`) when `timeframe_type` is `minor`, or a patch (`2.55`) when it is `major`. This is every patch that can be queried: older data exists but is not offered, the same limit the site applies to its own filters.',
-                'values' => app(GlobalDataService::class)->queryableGameVersions(),
+                'summary' => 'A build (`2.55.17.97771`) when `timeframe_type` is `minor`, a sub patch (`2.55.17`) when it is `major_grouped`, or a patch (`2.55`) when it is `major`. One request covers one major patch. This is every build some endpoint accepts; each endpoint starts at its own oldest patch, listed next.',
+                'values' => app(GlobalDataService::class)->queryableGameVersions(GlobalDataService::MINIMUM_GLOBALS_PATCH_OLDEST),
+            ],
+            [
+                'name' => 'timeframe (oldest per endpoint)',
+                'used_by' => 'Every global statistics endpoint',
+                'summary' => 'The oldest patch each endpoint accepts, which is where its data starts. Anything older answers `timeframe_unavailable`.',
+                'pairs' => GlobalStatsController::oldestPatchesByPath(),
             ],
             [
                 'name' => 'season',

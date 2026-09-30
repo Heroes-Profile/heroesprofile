@@ -81,7 +81,15 @@
           ></single-select-filter>
 
           <!-- Timeframes -->
-          <multi-select-filter :compact="compact" v-if="includetimeframemodified"
+          <single-select-filter :compact="compact" v-if="includetimeframemodified && timeframetype == 'major' && !combinableMajorPatches.length"
+            :values="timeframes"
+            :text="'Timeframes'"
+            :defaultValue="timeframe[0]"
+            :disabledeselectfilters="true"
+            @input-changed="handleInputChange"
+          ></single-select-filter>
+          <multi-select-filter :compact="compact" v-else-if="includetimeframemodified"
+            :groupby="timeframeGroupOf"
             :values="timeframes"
             :text="'Timeframes'"
             :defaultValue="timeframe"
@@ -662,6 +670,10 @@
       this.selectedSingleFilters["Timeframe Type"] = this.timeframetype;
       this.selectedMultiFilters["Game Type"] = this.gametype;
       this.selectedMultiFilters["Timeframes"] = this.getDefaultMinorBasedOnTimeframeType();
+      // The single select does not emit its starting value
+      if(this.timeframetype == "major"){
+        this.selectedMultiFilters["Timeframes"] = this.timeframe;
+      }
       this.selectedSingleFilters["Stat Filter"] = this.defaultStatType;
 
       this.toggleExtraFilters = this.advancedfiltering;
@@ -755,6 +767,9 @@
         const updatedTimeframeTypes = [...this.filters.timeframe_type];
         //updatedTimeframeTypes.push({ code: 'last_update', name: 'Last Update' });
         return updatedTimeframeTypes;
+      },
+      combinableMajorPatches(){
+        return this.filters.combinable_major_patches || [];
       },
       defaultTimeFrameType(){
         return this.filters.timeframe_type[1].code;
@@ -942,8 +957,14 @@
           }else{
             this.timeframetype = eventPayload.value;
             this.timeframe = this.getDefaultMinorBasedOnTimeframeType();
+            this.selectedMultiFilters["Timeframes"] = this.timeframe;
             this.includetimeframemodified = true;
           }
+        }
+
+        // A major patch is picked one at a time, but pages read Timeframes as a list
+        if(eventPayload.field == "Timeframes" && eventPayload.type === 'single'){
+          eventPayload = { field: "Timeframes", value: eventPayload.value === '' ? [] : [eventPayload.value], type: 'multi' };
         }
 
         if(eventPayload.type === 'single') {
@@ -1081,6 +1102,13 @@
       resetGameDate(){
         this.selectedGameDate = null;
         delete this.selectedSingleFilters["From Date"];
+      },
+      // Timeframes can only be picked together within one major patch. While a major
+      // patch is new, it and the one before it count as one group.
+      timeframeGroupOf(timeframe) {
+        const major = String(timeframe).split('.').slice(0, 2).join('.');
+
+        return this.combinableMajorPatches.includes(major) ? this.combinableMajorPatches.join('+') : major;
       },
       getDefaultMinorBasedOnTimeframeType() {
         if(this.timeframetype == "minor"){

@@ -58,6 +58,9 @@ class GlobalDataService
     /** The floor for site flair holders and the owner, who see further back. */
     public const MINIMUM_GLOBALS_PATCH_PRIVILEGED = '2.52.0.81700';
 
+    /** The furthest back any page reaches. Each page sets its own `MINIMUM_PATCH`. */
+    public const MINIMUM_GLOBALS_PATCH_OLDEST = '2.47.0.75589';
+
     /**
      * Hour (America/New_York) at/after which the leaderboard "weeks since season start" value
      * rolls over to the new day. The CalculateLeaderboards batch runs ~4am-12pm EST and freezes
@@ -823,6 +826,12 @@ class GlobalDataService
 
         // Oldest by the date it was added: comparing version strings puts 2.55.10 before 2.55.9.
         $date = SeasonGameVersion::whereIn('game_version', $timeframe)->min('date_added');
+
+        // The oldest patches have no date recorded. Carbon would read that as now.
+        if ($date === null) {
+            return new GlobalCacheWindow(365 * 24 * 60 * 60, null);
+        }
+
         $changeInMinutes = Carbon::now()->diffInMinutes(new Carbon($date));
 
         return new GlobalCacheWindow(max(60, (int) $changeInMinutes * 60), null);
@@ -1217,17 +1226,17 @@ class GlobalDataService
     /**
      * Patches that global statistics will actually accept, as full rows.
      *
-     * Same filter as queryableGameVersions() — the floor plus `valid_globals` —
-     * so the public `/patches` endpoint cannot advertise a patch that `timeframe`
-     * then rejects with `timeframe_unavailable`. getPatches() stays unfiltered for
-     * the site's own use.
+     * Back to the oldest any endpoint accepts, plus `valid_globals`. Endpoints
+     * differ in how far back they go, so the public `/patches` endpoint lists each
+     * one's oldest patch beside this. getPatches() stays unfiltered for the site's
+     * own use.
      */
     public function getQueryablePatches()
     {
-        return Cache::remember('global_patches_queryable', 600, function () {
+        return Cache::remember('global_patches_queryable_oldest', 600, function () {
             return $this->applyVersionFilter(
                 SeasonGameVersion::where('valid_globals', 1),
-                self::MINIMUM_GLOBALS_PATCH
+                self::MINIMUM_GLOBALS_PATCH_OLDEST
             )
                 ->orderBy('major', 'DESC')
                 ->orderBy('minor', 'DESC')
@@ -1286,6 +1295,53 @@ class GlobalDataService
         return Cache::remember($cacheKey, 600, function () use ($filtersMinimumPatch) {
             return $this->buildFilterData($filtersMinimumPatch);
         });
+    }
+
+    /**
+     * The two major patches one globals request may span together, or none.
+     *
+     * @return array<int, string>
+     */
+    public function combinableMajorPatches(): array
+    {
+        return $this->getFilterData()->combinable_major_patches ?? [];
+    }
+
+    /**
+     * A new major patch starts with little data, so for two months after its first
+     * build it can be combined with the major patch it replaced.
+     *
+     * @param  iterable<int, array{code: string, date_added: ?string}>  $timeframes  Newest first.
+     * @return array<int, string>
+     */
+    private function resolveCombinableMajorPatches(iterable $timeframes): array
+    {
+        $firstSeen = [];
+
+        foreach ($timeframes as $timeframe) {
+            $major = implode('.', array_slice(explode('.', $timeframe['code']), 0, 2));
+            $firstSeen[$major] ??= null;
+
+            if (empty($timeframe['date_added'])) {
+                continue;
+            }
+
+            $added = Carbon::parse($timeframe['date_added']);
+
+            if ($firstSeen[$major] === null || $added->lt($firstSeen[$major])) {
+                $firstSeen[$major] = $added;
+            }
+        }
+
+        $majors = array_keys($firstSeen);
+
+        if (count($majors) < 2 || $firstSeen[$majors[0]] === null) {
+            return [];
+        }
+
+        return $firstSeen[$majors[0]]->gt(Carbon::now()->subMonths(2))
+            ? [$majors[0], $majors[1]]
+            : [];
     }
 
     private function buildFilterData(string $filtersMinimumPatch): \stdClass
@@ -1369,6 +1425,8 @@ class GlobalDataService
 
                 return ['code' => $code, 'name' => $code];  // Use the first three segments
             });
+
+        $filterData->combinable_major_patches = $this->resolveCombinableMajorPatches($filterData->timeframes);
 
         $filterData->regions = [
             ['code' => 'NA', 'name' => 'NA'],
@@ -1822,7 +1880,7 @@ class GlobalDataService
         if ($timeframeType == 'major' || $timeframeType == 'major_grouped') {
             // Lowest floor: the validator has already held each user to theirs, and a
             // queued job runs with no user to ask.
-            $queryable = $this->queryableGameVersions(self::MINIMUM_GLOBALS_PATCH_PRIVILEGED);
+            $queryable = $this->queryableGameVersions(self::MINIMUM_GLOBALS_PATCH_OLDEST);
 
             return array_values(array_filter($queryable, function ($version) use ($timeframes) {
                 foreach ($timeframes as $timeframe) {

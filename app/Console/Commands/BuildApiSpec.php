@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Http\Controllers\Api\DocsController;
+use App\Http\Controllers\Api\External\GlobalStatsController;
 use App\Http\Middleware\ServeApiFixtures;
 use App\Support\ApiSpecConfig;
 use App\Support\JsonSchemaFromSample;
@@ -257,6 +258,14 @@ class BuildApiSpec extends Command
         // than rejecting them, because the caller believes the result is filtered.
         $declared = ApiSpecConfig::resolve($endpoint, $config);
 
+        // Each endpoint reaches back a different distance, so the shared description
+        // cannot say how far.
+        $oldestPatch = GlobalStatsController::oldestPatches()[$route->getName()] ?? null;
+
+        if ($oldestPatch !== null && isset($declared['timeframe']['description'])) {
+            $declared['timeframe']['description'] .= ' The oldest patch this endpoint accepts is `'.$oldestPatch.'`; `patches` lists the rest.';
+        }
+
         // Applied by middleware across the board, so declaring it per endpoint would
         // be fifty copies of one line that drift apart. Exempt endpoints are the ones
         // that do not answer JSON.
@@ -413,7 +422,7 @@ class BuildApiSpec extends Command
         }
 
         if (ApiSpecConfig::declaresParameter($name, 'timeframe')) {
-            array_push($invalid, 'timeframe_unavailable', 'group_by_map_unsupported');
+            array_push($invalid, 'timeframe_unavailable', 'timeframe_too_wide', 'group_by_map_unsupported');
         }
 
         $responses = [
