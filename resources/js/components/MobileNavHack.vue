@@ -17,6 +17,36 @@ export default {
   return window.innerWidth <= 768; // You can adjust the threshold as needed
 }
 
+      // Dropdowns open to the right, and their flyouts to the right of that. Near the
+      // edge of the window either can run off screen, so that one opens leftwards.
+      function keepOnScreen(panel, flipClass) {
+        if(!panel || isSmallScreen()){
+          return;
+        }
+
+        panel.classList.remove(flipClass);
+
+        const rect = panel.getBoundingClientRect();
+        if(rect.width > 0 && rect.right > document.documentElement.clientWidth){
+          panel.classList.add(flipClass);
+        }
+      }
+
+      // mouseenter does not bubble, so it is caught on the way down
+      document.addEventListener('mouseenter', function (event) {
+        const target = event.target;
+        if(!target.classList){
+          return;
+        }
+
+        // A frame later, once the panel has been shown and can be measured
+        if(target.classList.contains('nav-item')){
+          requestAnimationFrame(() => keepOnScreen(target.querySelector('.nav-dropdown'), 'nav-dropdown-flip'));
+        }else if(target.classList.contains('nav-flyout-wrapper')){
+          requestAnimationFrame(() => keepOnScreen(target.querySelector('.nav-flyout'), 'nav-flyout-flip'));
+        }
+      }, true);
+
       document.addEventListener('DOMContentLoaded', function () {
             // Get the button and the element to toggle
             var toggleButton = document.getElementById('mobile-toggle');

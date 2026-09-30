@@ -59,6 +59,17 @@ body{
 .nav-flyout-wrapper:hover .nav-flyout {
   display: block;
 }
+/* Set by MobileNavHack when the panel would run off the right edge */
+.nav-flyout.nav-flyout-flip {
+  left: auto;
+  right: 100%;
+  padding-left: 0;
+  padding-right: 2px;
+}
+.nav-dropdown.nav-dropdown-flip {
+  left: auto;
+  right: 0;
+}
 @media (max-width: 768px) {
   .nav-flyout {
     display: none !important;
@@ -89,11 +100,25 @@ body{
 }
 
 @media (min-width:768px){
+  /* The bar is centred on the label, so it stays put when a label wraps to two lines */
+  .main-navigation-wrapper .nav-item{
+    display:flex;
+    align-items:center;
+  }
+  /* A flex parent would centre the dropdown over the label. Under it, inside the item's bottom padding. */
+  .main-navigation-wrapper .nav-item > .nav-dropdown{
+    top:calc(100% - 10px);
+  }
   .nav-item:not(:first-child)::before{
-   content: '|';
-   padding-right:20px;
-   height:100%;
-   font-size:1.5em;
+   content: '';
+   flex:none;
+   box-sizing:content-box;
+   width:2px;
+   height:1.75em;
+   padding:0;
+   margin-right:20px;
+   font-size:1em;
+   background:currentColor;
   }
   .nav-dropdown{
       @apply group-hover:block;
