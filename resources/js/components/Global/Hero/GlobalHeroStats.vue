@@ -136,7 +136,7 @@
                 <round-image class="hidden md:block" size="small" icon="fas fa-info" title="info" popupsize="large">
                   <slot>
                     <div>
-                      <p>Influence is an integer scaled from -1000 to 1000 that combines Win Rate, Games Played, Pick Rate, and Ban Rate to determine the impact a hero will have on a particular team.</p>
+                      <p>Influence is an integer scaled from -5000 to 5000 that combines Win Rate, Pick Rate, and Ban Rate to determine the impact a hero will have on a particular team.</p>
                     </div>
                   </slot>
                 </round-image>
