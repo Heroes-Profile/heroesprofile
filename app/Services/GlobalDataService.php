@@ -1557,7 +1557,7 @@ class GlobalDataService
         });
 
         $filterData->match_prediction_seasons = MatchPredictionSeason::select('match_prediction_season_id', 'season', 'start_date')->orderBy('match_prediction_season_id', 'DESC')->get()->map(function ($data) {
-            return ['code' => $data->match_prediction_season_id, 'name' => 'Season '.$data->season];
+            return ['code' => $data->match_prediction_season_id, 'name' => $data->season == 1 ? 'Preseason' : 'Season '.$data->season];
         });
 
         $filterData->hero_role = [
