@@ -17,7 +17,7 @@
         </form>
       </div>
 
-      <p class="text-sm text-gray-medium mb-6">Last updated: September 2026</p>
+      <p class="text-sm text-gray-medium mb-6">Last updated: October 2026</p>
 
       <p class="mb-6">
         Skill Tree Development, LLC (referred to as Heroes Profile in this document) operates the
@@ -118,7 +118,8 @@
         Statistics and analysis you compute from our data — win rates, tier lists, builds, matchups,
         ratings and the like — are covered by this licence in the same way as the data itself. You
         may display them while the licence is in force, and not after it ends. Your own commentary
-        and opinions remain yours.
+        and opinions remain yours. Research projects have different rules for published results,
+        set out in section 10.
       </p>
 
       <h3 class="text-xl mb-2">4. Attribution</h3>
@@ -257,10 +258,60 @@
         Within 30 days of the licence ending you must stop displaying Heroes Profile data, and the
         statistics and analysis derived from it, on every surface you operate, and delete the data
         you retrieved from our API from your systems, including caches and backups, so far as your
-        systems allow. Sections 5, 8, 10, 11 and 12 survive termination.
+        systems allow. Research projects may keep their data as set out in section 10. Sections 5,
+        8, 10, 11, 12 and 13 survive termination.
       </p>
 
-      <h3 class="text-xl mb-2">10. Indemnification</h3>
+      <h3 class="text-xl mb-2">10. Research Use</h3>
+      <p class="mb-3">
+        This section applies when the project description on your account page (section 2) says
+        the project is non-commercial research, for example academic study, a thesis or
+        dissertation, or a paper for publication. Non-commercial means the research, its data and
+        its results are not sold or used in a paid product. Publishing in a journal, conference or
+        book that charges its readers does not make research commercial. Where this section differs
+        from sections 3, 4, 5 and 9, this section applies to your research.
+      </p>
+      <p class="mb-3">
+        <strong>Published results.</strong> You may publish aggregate statistics and analysis
+        derived from Heroes Profile data in papers, theses, preprints, posters and talks, and in
+        the tables and figures they contain. These results may stay published permanently, and you
+        may publish them after your licence has ended. They must not identify individual players,
+        so battletags, account IDs and player-level rows must not appear in them.
+      </p>
+      <p class="mb-3">
+        <strong>Attribution.</strong> In place of section 4, a research publication must cite
+        Heroes Profile, with a link to https://www.heroesprofile.com/, as the source of the data
+        in its data or methods section. Any table or figure built from the data must also credit
+        Heroes Profile in its caption or source note.
+      </p>
+      <p class="mb-3">
+        <strong>Replication material.</strong> You may publish your code, analysis scripts and
+        aggregate results, including on OSF or a similar repository. You may not publish or share
+        row-level data retrieved from the API, such as match, replay or player data, without our
+        written agreement. Anyone reproducing your work can retrieve the data from the API under
+        their own account.
+      </p>
+      <p class="mb-3">
+        <strong>Private players.</strong> Data that you hold only for research and never display
+        does not have to be deleted when a player goes private. Instead, within 24 hours of the
+        privacy change feed reporting the change, you must replace that player's battletag, account
+        ID and any other identifier with a random identifier, and keep no lookup table or any other
+        means of reversing the replacement. Takedown requests are handled the same way, within 7
+        days. Data you display on any surface remains fully subject to section 5.
+      </p>
+      <p class="mb-6">
+        <strong>Keeping your data.</strong> When your subscription is cancelled or lapses, you may
+        keep the data you have already retrieved in place of deleting it under section 9, and keep
+        using it for non-commercial research. You must still never redistribute it, and the rules
+        above on published results, attribution and replication material continue to apply. After
+        the subscription ends you no longer have to follow the privacy change feed. If you
+        subscribe again and resume pulling data, you must first check your retained data against
+        the feed and handle any player who went private in the meantime, as set out above. This
+        does not apply if we terminate your licence because you breached these terms. In that case
+        section 9 applies in full.
+      </p>
+
+      <h3 class="text-xl mb-2">11. Indemnification</h3>
       <p class="mb-6">
         You agree to indemnify and hold harmless Heroes Profile (Skill Tree Development, LLC), and
         anyone working on it, from any claim, demand, loss, liability or expense — including
@@ -270,7 +321,7 @@
         party about intellectual property used in your project.
       </p>
 
-      <h3 class="text-xl mb-2">11. Disclaimer</h3>
+      <h3 class="text-xl mb-2">12. Disclaimer</h3>
       <p class="mb-3">
         The data provided with the API and on our website are provided on an "as is" basis.
         Heroes Profile makes no warranties, expressed or implied, and hereby disclaims and negates all
@@ -289,7 +340,7 @@
         availability of the data we provide.
       </p>
 
-      <h3 class="text-xl mb-2">12. Limitations</h3>
+      <h3 class="text-xl mb-2">13. Limitations</h3>
       <p class="mb-6">
         In no event shall Heroes Profile (Skill Tree Development, LLC) be liable for any damages
         (including, without limitation, damages for loss of data or profit, or due to business
@@ -301,7 +352,7 @@
         incidental damages, these limitations may not apply to you.
       </p>
 
-      <h3 class="text-xl mb-2">13. Accuracy of Materials</h3>
+      <h3 class="text-xl mb-2">14. Accuracy of Materials</h3>
       <p class="mb-6">
         The materials appearing on www.heroesprofile.com could include technical, typographical, or
         photographic errors. Heroes Profile (Skill Tree Development, LLC) does not warrant that any of
@@ -311,7 +362,7 @@
         commitment to update the materials. We may change the functionality of the API at any time.
       </p>
 
-      <h3 class="text-xl mb-2">14. Links</h3>
+      <h3 class="text-xl mb-2">15. Links</h3>
       <p class="mb-6">
         Heroes Profile (Skill Tree Development, LLC) has not reviewed all of the sites linked to its
         website and is not responsible for the contents of any such linked site. The inclusion of any
@@ -319,7 +370,7 @@
         Use of any such linked website is at the user's own risk.
       </p>
 
-      <h3 class="text-xl mb-2">15. Modifications</h3>
+      <h3 class="text-xl mb-2">16. Modifications</h3>
       <p class="mb-6">
         Heroes Profile (Skill Tree Development, LLC) may revise these terms of service at any time
         without notice. By using the API you are agreeing to be bound by the then current version of
@@ -328,7 +379,7 @@
         your API keys will be refused until you have.
       </p>
 
-      <h3 class="text-xl mb-2">16. Governing Law</h3>
+      <h3 class="text-xl mb-2">17. Governing Law</h3>
       <p class="mb-6">
         These terms and conditions are governed by and construed in accordance with the laws of MI,
         USA and you irrevocably submit to the exclusive jurisdiction of the courts in that State or
