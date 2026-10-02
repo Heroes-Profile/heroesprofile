@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\GoogleIdToken;
 use Closure;
-use Google\Auth\AccessToken;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -27,10 +27,9 @@ class VerifyCloudTasksRequest
             abort(503, 'Cloud Tasks handler URL not configured.');
         }
 
-        $accessToken = new AccessToken;
-        $payload = $accessToken->verify($token, ['audience' => $audience]);
+        $payload = GoogleIdToken::verify($token, $audience);
 
-        if ($payload === false) {
+        if ($payload === null) {
             abort(403, 'Invalid task token.');
         }
 
