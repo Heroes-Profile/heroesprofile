@@ -24,18 +24,21 @@ class AccountReinstated extends Notification
 
     public function toMail($notifiable): MailMessage
     {
-        $message = (new MailMessage)
-            ->subject('Your Heroes Profile API access has been restored')
-            ->greeting('You are back')
-            ->line('Your API keys work again. The same keys as before — nothing needs regenerating on your side.');
-
-        if ($this->wasTerminated) {
-            $message->line('One thing we could not undo: your subscription was cancelled when the account was closed, and we cannot restart it for you. Subscribe again from the billing page whenever you are ready.')
-                ->action('Billing', url('/Api/Account/Billing'));
-        } else {
-            $message->action('View your account', url('/Api/Account'));
-        }
-
-        return $message->line('Thanks for putting it right.');
+        return StandingMail::make(
+            subject: 'Your Heroes Profile API access has been restored',
+            headline: 'You are back',
+            intro: array_filter([
+                'Your API keys work again. The same keys as before — nothing needs regenerating on your side.',
+                $this->wasTerminated
+                    ? 'One thing we could not undo: your subscription was cancelled when the account was closed, and we cannot restart it for you. Subscribe again from the billing page whenever you are ready.'
+                    : null,
+            ]),
+            reason: null,
+            outro: [],
+            button: $this->wasTerminated
+                ? ['text' => 'Billing', 'url' => url('/Api/Account/Billing')]
+                : ['text' => 'View your account', 'url' => url('/Api/Account')],
+            closing: 'We appreciate you putting it right.',
+        );
     }
 }

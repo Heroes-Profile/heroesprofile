@@ -27,20 +27,19 @@ class AccountTerminated extends Notification
 
     public function toMail($notifiable): MailMessage
     {
-        $message = (new MailMessage)
-            ->subject('Your Heroes Profile API access has been closed')
-            ->greeting('Your API access has been closed')
-            ->line('Your API keys have stopped working and your licence to use Heroes Profile data has ended. Here is why:')
-            ->line($this->reason);
-
-        if ($this->subscriptionCancelled) {
-            $message->line('Your subscription has been cancelled, so you will not be charged again. As set out in section 9 of the terms, the current period is not refunded.');
-        } else {
-            $message->line('If you hold a subscription with us, contact us and we will make sure it is not charged again.');
-        }
-
-        return $message
-            ->line('Section 3 of the terms requires you to stop using data you retrieved from us and delete what you have cached.')
-            ->line('If you believe this is wrong, write to zemill@heroesprofile.com. You can still sign in to read this.');
+        return StandingMail::make(
+            subject: 'Your Heroes Profile API access has been closed',
+            headline: 'Your API access has been closed',
+            intro: ['Your API keys have stopped working and your licence to use Heroes Profile data has ended. Here is why:'],
+            reason: $this->reason,
+            outro: [
+                $this->subscriptionCancelled
+                    ? 'Your subscription has been cancelled, so you will not be charged again. As set out in section 9 of the terms, the current period is not refunded.'
+                    : 'If you hold a subscription with us, contact us and we will make sure it is not charged again.',
+                'Section 3 of the terms requires you to stop using data you retrieved from us and delete what you have cached.',
+            ],
+            button: null,
+            closing: 'If you believe this is wrong, reply to this email. You can still sign in to read this.',
+        );
     }
 }

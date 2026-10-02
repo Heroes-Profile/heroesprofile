@@ -231,7 +231,7 @@
               <strong>{{ detail.enforcement.terminated ? 'Closed' : 'Suspended' }}</strong>
               since {{ detail.enforcement.since }}.
             </p>
-            <p class="text-sm text-gray-medium">{{ detail.enforcement.reason }}</p>
+            <div class="text-sm text-gray-medium standing-text" v-html="detail.enforcement.reason"></div>
           </div>
 
           <div v-else-if="detail.enforcement.open_warning" class="border-l-4 border-yellow p-3 mb-4">
@@ -242,18 +242,13 @@
               </span>
               <span v-if="detail.enforcement.open_warning.overdue" class="text-yellow">Overdue.</span>
             </p>
-            <p class="text-sm text-gray-medium">{{ detail.enforcement.open_warning.reason }}</p>
+            <div class="text-sm text-gray-medium standing-text" v-html="detail.enforcement.open_warning.reason"></div>
           </div>
 
           <p v-else class="text-sm mb-4">In good standing.</p>
 
           <label class="block text-sm mb-1">What they are told</label>
-          <textarea
-            v-model="actionReason"
-            rows="3"
-            placeholder="Attribution on your overlay is in the About panel. Section 4 asks for it on the same screen as the data."
-            class="w-full p-2 bg-darken mb-3"
-          ></textarea>
+          <standing-editor v-model="actionReason"></standing-editor>
 
           <label class="block text-sm mb-1">
             Internal notes <span class="text-gray-medium">— never shown to them</span>
@@ -262,8 +257,15 @@
             v-model="actionNotes"
             rows="2"
             placeholder="Where you saw it, call volumes, what was said and when."
-            class="w-full p-2 bg-darken mb-3"
+            class="w-full p-2 bg-darken mb-2"
           ></textarea>
+          <button
+            @click="saveNote"
+            :disabled="busy || !actionNotes.trim()"
+            class="transition-colors text-white rounded bg-blue hover:bg-lblue py-1 px-3 text-sm mb-4 disabled:bg-gray-medium"
+          >
+            Save note only
+          </button>
 
           <label class="block text-sm mb-1">
             Fix by <span class="text-gray-medium">— warnings only, optional</span>
@@ -331,7 +333,10 @@
                   {{ row.action }}
                   <span v-if="row.acknowledged_at" class="text-gray-medium">— read {{ row.acknowledged_at }}</span>
                 </td>
-                <td class="py-2 px-3">{{ row.reason || '—' }}</td>
+                <td class="py-2 px-3">
+                  <div v-if="row.reason" class="standing-text" v-html="row.reason"></div>
+                  <template v-else>—</template>
+                </td>
                 <td class="py-2 px-3">{{ row.notes || '—' }}</td>
                 <td class="py-2 px-3">{{ row.by || '—' }}</td>
               </tr>
@@ -399,10 +404,15 @@
 </template>
 
 <script>
+import { defineAsyncComponent } from 'vue';
 import { formatNumber, formatBytes, formatDuration, formatCost } from '../../utils/apiFormat';
 
 export default {
   name: 'ApiAdminConsole',
+  components: {
+    // Outside components/ so the editor ships with this page only, not every page.
+    StandingEditor: defineAsyncComponent(() => import('../../admin/StandingEditor.vue')),
+  },
   data(){
     return {
       infoText: "Look up an account, grant comped access, and see what subscriptions have moved recently.",
@@ -629,6 +639,26 @@ export default {
           terminate: 'Account closed.',
           reinstate: 'Account reinstated.',
         }[action];
+      } catch (error) {
+        this.error = this.messageFrom(error);
+      } finally {
+        this.busy = false;
+      }
+    },
+    async saveNote(){
+      this.busy = true;
+      this.error = null;
+      this.notice = null;
+
+      try {
+        const response = await this.$axios.post('/api/v1/admin/accounts/' + this.detail.account.id + '/note', {
+          notes: this.actionNotes.trim(),
+        });
+
+        this.detail.enforcement = response.data.enforcement;
+        this.detail.history = response.data.history;
+        this.actionNotes = '';
+        this.notice = 'Note saved. Nothing was sent.';
       } catch (error) {
         this.error = this.messageFrom(error);
       } finally {

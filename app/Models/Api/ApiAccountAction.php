@@ -18,6 +18,9 @@ class ApiAccountAction extends Model
 
     public const REINSTATE = 'reinstate';
 
+    /** Internal only. Nothing is sent and standing does not change. */
+    public const NOTE = 'note';
+
     /** Actions that withdraw access. Both set `users.suspended_at`. */
     public const ENFORCEMENT = [self::SUSPEND, self::TERMINATE];
 

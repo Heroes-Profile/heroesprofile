@@ -27,18 +27,14 @@ class AccountWarned extends Notification
 
     public function toMail($notifiable): MailMessage
     {
-        $message = (new MailMessage)
-            ->subject('Action needed on your Heroes Profile API account')
-            ->greeting('Something needs your attention')
-            ->line('Your API access is working normally and nothing has been restricted. We do need you to put something right:')
-            ->line($this->reason);
-
-        if ($this->respondBy !== null) {
-            $message->line('Please sort this out by '.$this->respondBy->toFormattedDateString().'.');
-        }
-
-        return $message
-            ->action('View your account', url('/Api/Account'))
-            ->line('If you think this is a mistake, or you are not sure what we are asking for, reply to this email or write to zemill@heroesprofile.com and we will work it out.');
+        return StandingMail::make(
+            subject: 'Action needed on your Heroes Profile API account',
+            headline: 'Something needs your attention',
+            intro: ['Your API access is working normally and nothing has been restricted. We do need you to put something right:'],
+            reason: $this->reason,
+            outro: $this->respondBy === null ? [] : ['Please sort this out by '.$this->respondBy->toFormattedDateString().'.'],
+            button: ['text' => 'View your account', 'url' => url('/Api/Account')],
+            closing: 'If you think this is a mistake, or you are not sure what we are asking for, reply to this email and we will work it out.',
+        );
     }
 }

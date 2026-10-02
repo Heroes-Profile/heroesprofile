@@ -11,6 +11,7 @@ use App\Services\Api\UsageService;
 use App\Services\Twitch\TwitchAccess;
 use App\Services\Twitch\TwitchEntitlementService;
 use App\Support\ApiTermsDeadline;
+use App\Support\StandingText;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -125,7 +126,7 @@ class AccountController extends Controller
         if ($account->isSuspended()) {
             return [
                 'type' => $account->isTerminated() ? 'termination' : 'suspension',
-                'reason' => $account->suspension_reason,
+                'reason' => StandingText::html($account->suspension_reason),
                 'since' => $account->suspended_at?->toFormattedDateString(),
                 'dismissible' => false,
             ];
@@ -139,7 +140,7 @@ class AccountController extends Controller
 
         return [
             'type' => 'warning',
-            'reason' => $warning->reason,
+            'reason' => StandingText::html($warning->reason),
             'since' => $warning->created_at?->toFormattedDateString(),
             'respond_by' => $warning->respond_by?->toFormattedDateString(),
             'dismissible' => true,

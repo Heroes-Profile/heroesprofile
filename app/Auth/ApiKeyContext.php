@@ -3,6 +3,7 @@
 namespace App\Auth;
 
 use App\Models\Api\ApiAccount;
+use App\Support\StandingText;
 
 /**
  * What the guard resolved from a key. Carries entitlement but decides nothing —
@@ -68,7 +69,7 @@ class ApiKeyContext
             return null;
         }
 
-        $reason = trim((string) $this->suspensionReason);
+        $reason = StandingText::plain($this->suspensionReason);
 
         $opening = $this->isTerminated()
             ? 'This account has been closed for breaching the API terms.'
