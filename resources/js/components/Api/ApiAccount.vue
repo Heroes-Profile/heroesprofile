@@ -301,6 +301,19 @@
         :notice="twitchnotice"
         :linkerror="twitcherror"
       ></api-twitch-settings>
+
+      <div v-else class="bg-lighten border-l-4 border-yellow p-6 mb-8">
+        <h2 class="text-lg mb-2">Twitch Extension — Coming Soon</h2>
+        <p class="text-sm mb-2">
+          Our Twitch extension is waiting on review by Twitch before it can go live.
+          Please do not subscribe just for the extension until we announce it, or until
+          its settings appear in this section.
+        </p>
+        <p class="text-sm text-gray-medium">
+          The extension comes with a free trial, so once it is live you will be able to
+          try it from here before paying.
+        </p>
+      </div>
     </div>
   </div>
 </template>
