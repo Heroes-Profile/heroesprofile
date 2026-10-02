@@ -160,6 +160,17 @@ class AccountEnforcementService
         ]);
     }
 
+    /** An admin has looked the account over. The customer never sees it. */
+    public function review(ApiAccount $account, ?string $notes = null, ?int $performedBy = null): ApiAccountAction
+    {
+        return ApiAccountAction::create([
+            'api_account_id' => $account->id,
+            'action' => ApiAccountAction::REVIEW,
+            'notes' => $notes,
+            'performed_by' => $performedBy,
+        ]);
+    }
+
     /** Dismissing the banner. The timestamp is what proves the warning landed. */
     public function acknowledgeWarning(ApiAccount $account): ?ApiAccountAction
     {

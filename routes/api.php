@@ -111,6 +111,7 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
         Route::post('accounts/{id}/terminate', [AdminConsoleController::class, 'terminate']);
         Route::post('accounts/{id}/reinstate', [AdminConsoleController::class, 'reinstate']);
         Route::post('accounts/{id}/note', [AdminConsoleController::class, 'note']);
+        Route::post('accounts/{id}/review', [AdminConsoleController::class, 'review']);
         Route::get('activity', [AdminConsoleController::class, 'activity']);
         Route::get('metrics', [AdminConsoleController::class, 'metrics']);
         Route::get('usage', [AdminConsoleController::class, 'usage']);

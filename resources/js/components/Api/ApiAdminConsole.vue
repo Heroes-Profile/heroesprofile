@@ -120,6 +120,7 @@
                 <td class="py-2 px-3">{{ formatBytes(row.egress_bytes) }}</td>
                 <td class="py-2 px-3">{{ formatDuration(row.compute_ms) }}</td>
                 <td class="py-2 px-3">{{ formatCost(row.cost_usd) }}</td>
+                <td class="py-2 px-3" :class="{ 'text-gray-medium': !row.reviewed_at }">{{ row.reviewed_at || 'Never' }}</td>
               </tr>
             </tbody>
           </table>
@@ -246,6 +247,23 @@
           </div>
 
           <p v-else class="text-sm mb-4">In good standing.</p>
+
+          <div class="flex flex-wrap items-center gap-3 mb-4">
+            <span class="text-sm">
+              <template v-if="detail.last_review">
+                Last reviewed {{ detail.last_review.at }}<template v-if="detail.last_review.by"> by {{ detail.last_review.by }}</template>.
+              </template>
+              <span v-else class="text-gray-medium">Never reviewed.</span>
+            </span>
+            <button
+              @click="markReviewed"
+              :disabled="busy"
+              title="Records today's date. Anything in Internal notes is saved with it. Nothing is sent."
+              class="transition-colors text-white rounded bg-blue hover:bg-lblue py-1 px-3 text-sm disabled:bg-gray-medium"
+            >
+              Mark reviewed
+            </button>
+          </div>
 
           <label class="block text-sm mb-1">What they are told</label>
           <standing-editor v-model="actionReason"></standing-editor>
@@ -437,6 +455,7 @@ export default {
         { key: 'egress_bytes', label: 'Egress' },
         { key: 'compute_ms', label: 'Compute' },
         { key: 'cost_usd', label: 'Cost' },
+        { key: 'reviewed_at', label: 'Reviewed' },
       ],
       usageSortKey: 'cost_usd',
       usageSortDir: 'desc',
@@ -464,9 +483,14 @@ export default {
       const key = this.usageSortKey;
       const direction = this.usageSortDir === 'asc' ? 1 : -1;
 
+      // Never reviewed sorts as oldest.
+      const value = (row) => key === 'email' ? (row.email || '').toLowerCase()
+        : key === 'reviewed_at' ? (row.reviewed_at || '')
+        : row[key];
+
       return this.usage.slice().sort((a, b) => {
-        const valA = key === 'email' ? (a.email || '').toLowerCase() : a[key];
-        const valB = key === 'email' ? (b.email || '').toLowerCase() : b[key];
+        const valA = value(a);
+        const valB = value(b);
 
         return valA < valB ? -direction : valA > valB ? direction : 0;
       });
@@ -494,7 +518,8 @@ export default {
       if(key === this.usageSortKey){
         this.usageSortDir = this.usageSortDir === 'asc' ? 'desc' : 'asc';
       } else {
-        this.usageSortDir = key === 'email' ? 'asc' : 'desc';
+        // Oldest review first, so whoever is overdue a look is at the top.
+        this.usageSortDir = key === 'email' || key === 'reviewed_at' ? 'asc' : 'desc';
       }
 
       this.usageSortKey = key;
@@ -643,6 +668,7 @@ export default {
 
         this.detail.enforcement = response.data.enforcement;
         this.detail.history = response.data.history;
+        this.detail.last_review = response.data.last_review;
         this.clearAction();
 
         this.notice = {
@@ -670,8 +696,37 @@ export default {
 
         this.detail.enforcement = response.data.enforcement;
         this.detail.history = response.data.history;
+        this.detail.last_review = response.data.last_review;
         this.actionNotes = '';
         this.notice = 'Note saved. Nothing was sent.';
+      } catch (error) {
+        this.error = this.messageFrom(error);
+      } finally {
+        this.busy = false;
+      }
+    },
+    async markReviewed(){
+      this.busy = true;
+      this.error = null;
+      this.notice = null;
+
+      try {
+        const id = this.detail.account.id;
+        const response = await this.$axios.post('/api/v1/admin/accounts/' + id + '/review', {
+          notes: this.actionNotes.trim() || null,
+        });
+
+        this.detail.enforcement = response.data.enforcement;
+        this.detail.history = response.data.history;
+        this.detail.last_review = response.data.last_review;
+        this.actionNotes = '';
+        this.notice = 'Marked as reviewed. Nothing was sent.';
+
+        const row = this.usage.find(u => u.id === id);
+
+        if(row && response.data.last_review){
+          row.reviewed_at = response.data.last_review.at;
+        }
       } catch (error) {
         this.error = this.messageFrom(error);
       } finally {
