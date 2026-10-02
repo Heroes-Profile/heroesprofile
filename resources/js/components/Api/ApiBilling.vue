@@ -22,6 +22,16 @@
         </p>
       </div>
 
+      <div v-if="!twitchlive" class="bg-lighten border-l-4 border-yellow p-4 mb-8">
+        <p class="text-sm">
+          <strong>The Twitch extension is not live yet.</strong>
+          It is waiting on review by Twitch. Please do not subscribe just for the extension
+          until we announce it, or until its settings appear on your
+          <a href="/Api/Account" class="underline hover:text-lteal">account page</a>.
+          Once it is live it comes with a free trial, so you can try it there before paying.
+        </p>
+      </div>
+
       <div class="bg-lighten p-6 mb-8">
         <h2 class="text-lg mb-4">Payment Method</h2>
 
@@ -212,6 +222,10 @@ export default {
       default: null,
     },
     projectmissing: {
+      type: Boolean,
+      default: false,
+    },
+    twitchlive: {
       type: Boolean,
       default: false,
     },

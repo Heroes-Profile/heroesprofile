@@ -13,6 +13,7 @@
     :servesfixtures="{{ json_encode($servesFixtures) }}"
     :subscriptionissue="{{ json_encode($subscriptionIssue) }}"
     :projectmissing="{{ json_encode($projectMissing) }}"
+    :twitchlive="{{ json_encode($twitchLive) }}"
   >
   </api-billing>
 @endsection

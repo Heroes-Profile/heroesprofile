@@ -7,6 +7,7 @@ use App\Models\Api\ApiAccount;
 use App\Services\Api\ApiKeyResolver;
 use App\Services\Api\PlanService;
 use App\Services\Api\UsageService;
+use App\Services\Twitch\TwitchAccess;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -57,6 +58,7 @@ class BillingController extends Controller
             // 403 inside their own integration, where nobody is looking.
             'subscriptionIssue' => $context?->unresolvedMessage(),
             'projectMissing' => ! $account->hasProjectDetails(),
+            'twitchLive' => TwitchAccess::visible(),
         ]);
     }
 
