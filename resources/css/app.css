@@ -672,3 +672,12 @@ thead{border-color:transparent;}
 :is(.void-stage-4, .void-stage-5) .border-teal{ border-color: #7b3fe4; }
 :is(.void-stage-4, .void-stage-5) .bg-blue{ background-color: #3a1470; }
 :is(.void-stage-4, .void-stage-5) .text-teal{ color: #c084fc; }
+/* What an API account is told on a warning or suspension: the console editor,
+   and the same HTML shown back in the console and on their account page. */
+.standing-text p { margin-bottom: 0.5rem; }
+.standing-text p:last-child { margin-bottom: 0; }
+.standing-text ul { list-style: disc; margin: 0 0 0.5rem 1.5rem; }
+.standing-text ol { list-style: decimal; margin: 0 0 0.5rem 1.5rem; }
+.standing-text a { text-decoration: underline; }
+.standing-editor .ProseMirror { min-height: 5rem; outline: none; }
+.standing-editor-expanded .ProseMirror { min-height: 100%; }

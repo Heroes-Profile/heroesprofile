@@ -14,6 +14,7 @@ use App\Services\Api\ApiKeyResolver;
 use App\Services\Api\PlanService;
 use App\Services\Api\UsageService;
 use App\Support\ApiCost;
+use App\Support\StandingText;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -28,6 +29,9 @@ class AdminConsoleController extends Controller
     private const ACTIVITY_LIMIT = 50;
 
     private const HISTORY_LIMIT = 50;
+
+    /** Raw editor HTML, so well above what anyone would actually write. */
+    private const REASON_MAX = 10000;
 
     public function show()
     {
@@ -161,7 +165,7 @@ class AdminConsoleController extends Controller
     public function warn(Request $request, int $id, AccountEnforcementService $enforcement)
     {
         $validated = $request->validate([
-            'reason' => ['required', 'string', 'max:2000'],
+            'reason' => ['required', 'string', 'max:'.self::REASON_MAX],
             'notes' => ['nullable', 'string', 'max:2000'],
             'respond_by' => ['nullable', 'date', 'after:today'],
         ]);
@@ -172,9 +176,15 @@ class AdminConsoleController extends Controller
             return $account;
         }
 
+        $reason = $this->reason($validated['reason']);
+
+        if ($reason instanceof JsonResponse) {
+            return $reason;
+        }
+
         $enforcement->warn(
             $account,
-            $validated['reason'],
+            $reason,
             $validated['notes'] ?? null,
             isset($validated['respond_by']) ? Carbon::parse($validated['respond_by']) : null,
             $this->actorId(),
@@ -187,7 +197,7 @@ class AdminConsoleController extends Controller
     public function suspend(Request $request, int $id, AccountEnforcementService $enforcement)
     {
         $validated = $request->validate([
-            'reason' => ['required', 'string', 'max:2000'],
+            'reason' => ['required', 'string', 'max:'.self::REASON_MAX],
             'notes' => ['nullable', 'string', 'max:2000'],
         ]);
 
@@ -197,7 +207,13 @@ class AdminConsoleController extends Controller
             return $account;
         }
 
-        $enforcement->suspend($account, $validated['reason'], $validated['notes'] ?? null, $this->actorId());
+        $reason = $this->reason($validated['reason']);
+
+        if ($reason instanceof JsonResponse) {
+            return $reason;
+        }
+
+        $enforcement->suspend($account, $reason, $validated['notes'] ?? null, $this->actorId());
 
         return response()->json($this->standing($account->refresh()));
     }
@@ -209,7 +225,7 @@ class AdminConsoleController extends Controller
     public function terminate(Request $request, int $id, AccountEnforcementService $enforcement)
     {
         $validated = $request->validate([
-            'reason' => ['required', 'string', 'max:2000'],
+            'reason' => ['required', 'string', 'max:'.self::REASON_MAX],
             'notes' => ['nullable', 'string', 'max:2000'],
         ]);
 
@@ -219,7 +235,31 @@ class AdminConsoleController extends Controller
             return $account;
         }
 
-        $enforcement->terminate($account, $validated['reason'], $validated['notes'] ?? null, $this->actorId());
+        $reason = $this->reason($validated['reason']);
+
+        if ($reason instanceof JsonResponse) {
+            return $reason;
+        }
+
+        $enforcement->terminate($account, $reason, $validated['notes'] ?? null, $this->actorId());
+
+        return response()->json($this->standing($account->refresh()));
+    }
+
+    /** Records a note on the account's history. Nothing is sent and standing is untouched. */
+    public function note(Request $request, int $id, AccountEnforcementService $enforcement)
+    {
+        $validated = $request->validate([
+            'notes' => ['required', 'string', 'max:2000'],
+        ]);
+
+        $account = $this->target($id);
+
+        if (! $account instanceof ApiAccount) {
+            return $account;
+        }
+
+        $enforcement->note($account, trim($validated['notes']), $this->actorId());
 
         return response()->json($this->standing($account->refresh()));
     }
@@ -265,6 +305,18 @@ class AdminConsoleController extends Controller
         return $account;
     }
 
+    /** The editor's HTML, cleaned. An editor left with only empty paragraphs says nothing. */
+    private function reason(string $html): string|JsonResponse
+    {
+        $reason = StandingText::clean($html);
+
+        if (StandingText::plain($reason) === '') {
+            return response()->json(['error' => 'Say what they are being told.'], 422);
+        }
+
+        return $reason;
+    }
+
     /** The admin pressing the button, recorded on every action. */
     private function actorId(): ?int
     {
@@ -291,12 +343,12 @@ class AdminConsoleController extends Controller
             'enforcement' => [
                 'suspended' => $account->isSuspended(),
                 'terminated' => $account->isTerminated(),
-                'reason' => $account->suspension_reason,
+                'reason' => StandingText::html($account->suspension_reason),
                 'since' => $account->suspended_at?->toDateTimeString(),
                 // Open means sent and not yet dismissed. Overdue is informational —
                 // nothing escalates without someone pressing a button.
                 'open_warning' => $warning === null ? null : [
-                    'reason' => $warning->reason,
+                    'reason' => StandingText::html($warning->reason),
                     'respond_by' => $warning->respond_by?->toDateString(),
                     'overdue' => $warning->isOverdue(),
                     'sent_at' => $warning->created_at?->toDateTimeString(),
@@ -305,7 +357,7 @@ class AdminConsoleController extends Controller
             'history' => $history->map(fn (ApiAccountAction $row) => [
                 'id' => $row->id,
                 'action' => $row->action,
-                'reason' => $row->reason,
+                'reason' => StandingText::html($row->reason),
                 'notes' => $row->notes,
                 'respond_by' => $row->respond_by?->toDateString(),
                 'acknowledged_at' => $row->acknowledged_at?->toDateTimeString(),

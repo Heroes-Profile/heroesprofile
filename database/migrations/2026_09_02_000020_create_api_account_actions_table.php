@@ -25,7 +25,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->unsignedInteger('api_account_id');
 
-            // warn, suspend, terminate, reinstate.
+            // warn, suspend, terminate, reinstate, note.
             $table->string('action', 20);
 
             // What the customer is told. Required for every action but reinstate.

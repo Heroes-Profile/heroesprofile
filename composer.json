@@ -20,7 +20,8 @@
         "socialiteproviders/patreon": "^5.0",
         "spatie/laravel-google-cloud-storage": "^2.3",
         "spatie/laravel-ignition": "^2.3",
-        "symfony/css-selector": "^7.3"
+        "symfony/css-selector": "^7.3",
+        "symfony/html-sanitizer": "~7.4.20"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.16",

@@ -24,13 +24,14 @@ class AccountSuspended extends Notification
 
     public function toMail($notifiable): MailMessage
     {
-        return (new MailMessage)
-            ->subject('Your Heroes Profile API access has been suspended')
-            ->greeting('Your API access is suspended')
-            ->line('Your API keys have stopped working. Here is why:')
-            ->line($this->reason)
-            ->line('This is a suspension, not a closure. Your subscription is still running and your account, keys and usage history are all intact — access comes straight back once this is resolved.')
-            ->action('View your account', url('/Api/Account'))
-            ->line('You can still sign in to read this and reply. Write to zemill@heroesprofile.com and we will sort it out.');
+        return StandingMail::make(
+            subject: 'Your Heroes Profile API access has been suspended',
+            headline: 'Your API access is suspended',
+            intro: ['Your API keys have stopped working. Here is why:'],
+            reason: $this->reason,
+            outro: ['This is a suspension, not a closure. Your subscription is still running and your account, keys and usage history are all intact — access comes straight back once this is resolved.'],
+            button: ['text' => 'View your account', 'url' => url('/Api/Account')],
+            closing: 'You can still sign in to read this. Reply to this email and we will sort it out.',
+        );
     }
 }

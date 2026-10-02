@@ -12,7 +12,7 @@
       >
         <h2 class="text-lg mb-2">{{ standingHeading }}</h2>
 
-        <p class="text-sm mb-3">{{ currentStanding.reason }}</p>
+        <div class="text-sm mb-3 standing-text" v-html="currentStanding.reason"></div>
 
         <p v-if="currentStanding.respond_by" class="text-sm text-yellow mb-3">
           Please sort this out by {{ currentStanding.respond_by }}.

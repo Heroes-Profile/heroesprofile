@@ -126,6 +126,17 @@ class AccountEnforcementService
         return $action;
     }
 
+    /** Evidence gathered before deciding whether to act. The customer never sees it. */
+    public function note(ApiAccount $account, string $notes, ?int $performedBy = null): ApiAccountAction
+    {
+        return ApiAccountAction::create([
+            'api_account_id' => $account->id,
+            'action' => ApiAccountAction::NOTE,
+            'notes' => $notes,
+            'performed_by' => $performedBy,
+        ]);
+    }
+
     /** Dismissing the banner. The timestamp is what proves the warning landed. */
     public function acknowledgeWarning(ApiAccount $account): ?ApiAccountAction
     {
