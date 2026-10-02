@@ -4,6 +4,7 @@ namespace App\Services\Api;
 
 use App\Models\Api\ApiAccount;
 use App\Models\Api\ApiAccountAction;
+use App\Notifications\Api\AccountInfoRequested;
 use App\Notifications\Api\AccountReinstated;
 use App\Notifications\Api\AccountSuspended;
 use App\Notifications\Api\AccountTerminated;
@@ -122,6 +123,28 @@ class AccountEnforcementService
         $this->keys->forgetAccount($account->id);
 
         $this->notify($account, new AccountReinstated($wasTerminated));
+
+        return $action;
+    }
+
+    /** Asking what they are doing before deciding whether anything needs fixing. */
+    public function info(
+        ApiAccount $account,
+        string $message,
+        ?string $notes = null,
+        ?Carbon $respondBy = null,
+        ?int $performedBy = null,
+    ): ApiAccountAction {
+        $action = ApiAccountAction::create([
+            'api_account_id' => $account->id,
+            'action' => ApiAccountAction::INFO,
+            'reason' => $message,
+            'notes' => $notes,
+            'respond_by' => $respondBy,
+            'performed_by' => $performedBy,
+        ]);
+
+        $this->notify($account, new AccountInfoRequested($message, $respondBy));
 
         return $action;
     }

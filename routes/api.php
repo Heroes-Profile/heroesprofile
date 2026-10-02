@@ -105,6 +105,7 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
         // The enforcement ladder. Separate routes rather than one action parameter:
         // terminating cancels a subscription, and that is not something a mistyped
         // string should be able to reach.
+        Route::post('accounts/{id}/info', [AdminConsoleController::class, 'info']);
         Route::post('accounts/{id}/warn', [AdminConsoleController::class, 'warn']);
         Route::post('accounts/{id}/suspend', [AdminConsoleController::class, 'suspend']);
         Route::post('accounts/{id}/terminate', [AdminConsoleController::class, 'terminate']);

@@ -18,6 +18,9 @@ class ApiAccountAction extends Model
 
     public const REINSTATE = 'reinstate';
 
+    /** A question sent by email. Not a warning: no banner, and standing does not change. */
+    public const INFO = 'info';
+
     /** Internal only. Nothing is sent and standing does not change. */
     public const NOTE = 'note';
 
