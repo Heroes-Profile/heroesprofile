@@ -25,7 +25,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->unsignedInteger('api_account_id');
 
-            // warn, suspend, terminate, reinstate, note.
+            // info, warn, suspend, terminate, reinstate, note.
             $table->string('action', 20);
 
             // What the customer is told. Required for every action but reinstate.
@@ -35,8 +35,9 @@ return new class extends Migration
             // call volumes, what was said where.
             $table->text('notes')->nullable();
 
-            // Warnings only. Stated in the email and the banner, and used by the
-            // console to list what has gone unanswered. Nothing escalates on its own.
+            // Warnings and info requests. Stated in the email and a warning's banner,
+            // and used by the console to list what has gone unanswered. Nothing
+            // escalates on its own.
             $table->date('respond_by')->nullable();
 
             // Warnings only, set when they dismiss the banner. This timestamp is the

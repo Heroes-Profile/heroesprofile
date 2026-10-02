@@ -268,11 +268,18 @@
           </button>
 
           <label class="block text-sm mb-1">
-            Fix by <span class="text-gray-medium">— warnings only, optional</span>
+            Fix or reply by <span class="text-gray-medium">— info requests and warnings, optional</span>
           </label>
           <input v-model="actionRespondBy" type="date" class="p-2 bg-darken mb-4 block" />
 
           <div class="flex flex-wrap gap-3">
+            <button
+              @click="act('info')"
+              :disabled="busy"
+              class="transition-colors text-white rounded bg-teal hover:bg-lteal py-2 px-4 disabled:bg-gray-medium"
+            >
+              Request info
+            </button>
             <button
               @click="act('warn')"
               :disabled="busy"
@@ -306,7 +313,8 @@
           </div>
 
           <p class="text-xs text-gray-medium mt-3">
-            A warning changes nothing about their access. Suspending stops their keys on both
+            An info request only sends them an email asking about their project. A warning
+            changes nothing about their access either. Suspending stops their keys on both
             sites and leaves billing running. Closing the account also cancels their
             subscription, and that cannot be restarted for them — they would have to subscribe
             again themselves.
@@ -586,6 +594,10 @@ export default {
     // Every rung takes effect the moment it is pressed, and closing an account
     // cancels a subscription nobody here can restart — so each one asks first.
     confirmationFor(action){
+      if(action === 'info'){
+        return 'Send this question? They get an email only. No banner, and nothing about their access changes.';
+      }
+
       if(action === 'warn'){
         return 'Send this warning? They get an email and a banner. Nothing about their access changes.';
       }
@@ -622,7 +634,7 @@ export default {
         payload.reason = reason;
       }
 
-      if(action === 'warn' && this.actionRespondBy){
+      if((action === 'warn' || action === 'info') && this.actionRespondBy){
         payload.respond_by = this.actionRespondBy;
       }
 
@@ -634,6 +646,7 @@ export default {
         this.clearAction();
 
         this.notice = {
+          info: 'Question sent.',
           warn: 'Warning sent.',
           suspend: 'Account suspended and told why.',
           terminate: 'Account closed.',

@@ -193,6 +193,38 @@ class AdminConsoleController extends Controller
         return response()->json($this->standing($account->refresh()));
     }
 
+    /** A question by email. No banner, and nothing about their access changes. */
+    public function info(Request $request, int $id, AccountEnforcementService $enforcement)
+    {
+        $validated = $request->validate([
+            'reason' => ['required', 'string', 'max:'.self::REASON_MAX],
+            'notes' => ['nullable', 'string', 'max:2000'],
+            'respond_by' => ['nullable', 'date', 'after:today'],
+        ]);
+
+        $account = $this->target($id);
+
+        if (! $account instanceof ApiAccount) {
+            return $account;
+        }
+
+        $message = $this->reason($validated['reason']);
+
+        if ($message instanceof JsonResponse) {
+            return $message;
+        }
+
+        $enforcement->info(
+            $account,
+            $message,
+            $validated['notes'] ?? null,
+            isset($validated['respond_by']) ? Carbon::parse($validated['respond_by']) : null,
+            $this->actorId(),
+        );
+
+        return response()->json($this->standing($account->refresh()));
+    }
+
     /** Reversible. Keys stop working on both sites; the subscription keeps running. */
     public function suspend(Request $request, int $id, AccountEnforcementService $enforcement)
     {
