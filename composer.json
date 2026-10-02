@@ -16,6 +16,7 @@
         "laravel/socialite": "^5.8",
         "laravel/tinker": "^2.8",
         "laravel/ui": "^4.2",
+        "phpseclib/phpseclib": "~3.0.56",
         "socialiteproviders/battlenet": "^4.1",
         "socialiteproviders/patreon": "^5.0",
         "spatie/laravel-google-cloud-storage": "^2.3",
