@@ -24,6 +24,9 @@ class ApiAccountAction extends Model
     /** Internal only. Nothing is sent and standing does not change. */
     public const NOTE = 'note';
 
+    /** Internal only. An admin has looked over the account; the date is the point. */
+    public const REVIEW = 'review';
+
     /** Actions that withdraw access. Both set `users.suspended_at`. */
     public const ENFORCEMENT = [self::SUSPEND, self::TERMINATE];
 

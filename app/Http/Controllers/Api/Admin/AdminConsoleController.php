@@ -278,6 +278,26 @@ class AdminConsoleController extends Controller
         return response()->json($this->standing($account->refresh()));
     }
 
+    /** Marks the account as looked over today, with any note typed alongside. Nothing is sent. */
+    public function review(Request $request, int $id, AccountEnforcementService $enforcement)
+    {
+        $validated = $request->validate([
+            'notes' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $account = $this->target($id);
+
+        if (! $account instanceof ApiAccount) {
+            return $account;
+        }
+
+        $notes = trim($validated['notes'] ?? '');
+
+        $enforcement->review($account, $notes === '' ? null : $notes, $this->actorId());
+
+        return response()->json($this->standing($account->refresh()));
+    }
+
     /** Records a note on the account's history. Nothing is sent and standing is untouched. */
     public function note(Request $request, int $id, AccountEnforcementService $enforcement)
     {
@@ -371,7 +391,19 @@ class AdminConsoleController extends Controller
 
         $warning = $account->unacknowledgedWarning();
 
+        // Usually already in the history above. The fallback is for accounts with
+        // more rows than that holds; its reviewer name may then be missing.
+        $review = $history->firstWhere('action', ApiAccountAction::REVIEW)
+            ?? ApiAccountAction::where('api_account_id', $account->id)
+                ->where('action', ApiAccountAction::REVIEW)
+                ->latest('created_at')
+                ->first();
+
         return [
+            'last_review' => $review === null ? null : [
+                'at' => $review->created_at?->toDateString(),
+                'by' => $actors[$review->performed_by] ?? null,
+            ],
             'enforcement' => [
                 'suspended' => $account->isSuspended(),
                 'terminated' => $account->isTerminated(),
@@ -456,8 +488,14 @@ class AdminConsoleController extends Controller
             ->get()
             ->keyBy('id');
 
+        $reviewed = ApiAccountAction::whereIn('api_account_id', $rows->pluck('api_account_id'))
+            ->where('action', ApiAccountAction::REVIEW)
+            ->groupBy('api_account_id')
+            ->selectRaw('api_account_id, max(created_at) as reviewed_at')
+            ->pluck('reviewed_at', 'api_account_id');
+
         return response()->json([
-            'usage' => $rows->map(function ($row) use ($accounts) {
+            'usage' => $rows->map(function ($row) use ($accounts, $reviewed) {
                 $account = $accounts->get($row->api_account_id);
                 $calls = (int) $row->calls;
                 $bytes = (int) $row->egress_bytes;
@@ -471,6 +509,9 @@ class AdminConsoleController extends Controller
                     'egress_bytes' => $bytes,
                     'compute_ms' => $computeMs,
                     'cost_usd' => round(ApiCost::total($bytes, $computeMs, $calls), 6),
+                    'reviewed_at' => isset($reviewed[$row->api_account_id])
+                        ? substr((string) $reviewed[$row->api_account_id], 0, 10)
+                        : null,
                 ];
             })->values()->all(),
         ]);

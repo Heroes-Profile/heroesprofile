@@ -23,6 +23,11 @@ class PlayerLobbyStatsService
 {
     private const CACHE_SECONDS = 21600;
 
+    /** Recent form is read right before a game, so it can't sit for six hours. */
+    private const RECENT_GAMES_CACHE_SECONDS = 900;
+
+    private const RECENT_GAMES_PER_MODE = 10;
+
     public function __construct(private readonly GlobalDataService $globalDataService) {}
 
     /**
@@ -92,6 +97,95 @@ class PlayerLobbyStatsService
         ];
     }
 
+    /**
+     * Last ten games per ranked mode, newest first. Pre-match page only — the
+     * Twitch extension doesn't show recent form.
+     *
+     * @param  Collection<int, object>  $players  each with `blizz_id` and `region`, hidden players already removed
+     * @return array<string, array{qm: array, sl: array, ar: array}> keyed by "blizz_id|region"
+     */
+    public function recentGames(Collection $players): array
+    {
+        $recentGames = [];
+        $missedPlayers = collect();
+
+        foreach ($players as $player) {
+            $key = self::key($player);
+            $cached = Cache::get('prematch_recent_games|'.$key);
+
+            if (! is_null($cached)) {
+                $recentGames[$key] = $cached;
+            } else {
+                $missedPlayers->push($player);
+            }
+        }
+
+        if ($missedPlayers->isEmpty()) {
+            return $recentGames;
+        }
+
+        $blizzIds = $missedPlayers->pluck('blizz_id')->unique()->values()->all();
+        $regions = $missedPlayers->pluck('region')->unique()->values()->all();
+
+        $ranked = DB::table('replay')
+            ->join('player', 'player.replayID', '=', 'replay.replayID')
+            ->select([
+                'player.blizz_id AS blizz_id',
+                'replay.region AS region',
+                'replay.game_type AS game_type',
+                'replay.replayID AS replayID',
+                'replay.game_date AS game_date',
+                'replay.game_map AS game_map',
+                'player.hero AS hero',
+                'player.winner AS winner',
+                DB::raw('ROW_NUMBER() OVER (PARTITION BY player.blizz_id, replay.region, replay.game_type ORDER BY replay.replayID DESC) AS row_num'),
+            ])
+            ->whereIn('player.blizz_id', $blizzIds)
+            ->whereIn('replay.region', $regions)
+            ->whereIn('replay.game_type', [1, 5, 6]);
+
+        $rows = DB::query()
+            ->fromSub($ranked, 'ranked')
+            ->where('row_num', '<=', self::RECENT_GAMES_PER_MODE)
+            ->orderByDesc('replayID')
+            ->get()
+            ->groupBy(function ($row) {
+                return $row->blizz_id.'|'.$row->region;
+            });
+
+        $heroes = $this->globalDataService->getHeroesByID();
+        $maps = $this->globalDataService->getAllMapsKeyed();
+
+        foreach ($missedPlayers as $player) {
+            $key = self::key($player);
+            $playerRows = $rows->get($key, collect());
+
+            $games = [];
+            foreach ([1 => 'qm', 5 => 'sl', 6 => 'ar'] as $gameType => $prefix) {
+                $games[$prefix] = $playerRows->where('game_type', $gameType)
+                    ->map(function ($row) use ($heroes, $maps) {
+                        $hero = $heroes->get($row->hero);
+                        $map = $maps->get($row->game_map);
+
+                        return [
+                            'replayID' => $row->replayID,
+                            'game_date' => $row->game_date,
+                            'winner' => (int) $row->winner === 1,
+                            'hero' => $hero ? ['id' => $hero->id, 'name' => $hero->name, 'short_name' => $hero->short_name] : null,
+                            'game_map' => $map ? ['name' => $map->name, 'sanitized_map_name' => $map->sanitized_map_name] : null,
+                        ];
+                    })
+                    ->values()
+                    ->all();
+            }
+
+            Cache::put('prematch_recent_games|'.$key, $games, self::RECENT_GAMES_CACHE_SECONDS);
+            $recentGames[$key] = $games;
+        }
+
+        return $recentGames;
+    }
+
     public static function key(object $player): string
     {
         return $player->blizz_id.'|'.$player->region;
@@ -158,7 +252,7 @@ class PlayerLobbyStatsService
                 return $row->blizz_id.'|'.$row->region;
             });
 
-        $accountLevels = Battletag::select('blizz_id', 'region', 'account_level', 'latest_game')
+        $latestBattletags = Battletag::select('blizz_id', 'region', 'account_level', 'latest_game')
             ->whereIn('blizz_id', $blizzIds)
             ->whereIn('region', $regions)
             ->get()
@@ -166,7 +260,7 @@ class PlayerLobbyStatsService
                 return $row->blizz_id.'|'.$row->region;
             })
             ->map(function ($rows) {
-                return $rows->sortByDesc('latest_game')->first()->account_level;
+                return $rows->sortByDesc('latest_game')->first();
             });
 
         $heroData = $this->globalDataService->getHeroes()->keyBy('id');
@@ -227,7 +321,8 @@ class PlayerLobbyStatsService
             $stats = [
                 'blizz_id' => $player->blizz_id,
                 'region' => $player->region,
-                'account_level' => $accountLevels->get($key),
+                'account_level' => $latestBattletags->get($key)?->account_level,
+                'last_played' => $latestBattletags->get($key)?->latest_game,
 
                 'qm_mmr' => $qm_mmr == 1800 ? null : $qm_mmr,
                 'qm_games_played' => $modeStats['qm']['games_played'],

@@ -86,12 +86,14 @@ export default {
       required: true,
     },
     optOut: Boolean,
+    // Page-level default: starts minimized and leaves the visitor's saved choice alone.
+    startMinimized: Boolean,
   },
   data() {
     return {
       expanded: false,
       // Read before first render so a minimized bar never flashes open.
-      minimized: readMinimized(),
+      minimized: this.startMinimized || readMinimized(),
       displayed: {},
       live: this.event,
       pollTimer: null,
@@ -191,10 +193,12 @@ export default {
     },
     setMinimized(value) {
       this.minimized = value;
-      try {
-        localStorage.setItem(MINIMIZED_KEY, value ? '1' : '0');
-      } catch (e) {
-        // storage blocked; just applies to this page view
+      if (!this.startMinimized) {
+        try {
+          localStorage.setItem(MINIMIZED_KEY, value ? '1' : '0');
+        } catch (e) {
+          // storage blocked; just applies to this page view
+        }
       }
       if (!value) {
         this.displayed = {};

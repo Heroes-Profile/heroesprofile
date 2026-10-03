@@ -13,7 +13,7 @@
       :ispatreon="ispatreon"
       :voideye="voideye"
       :mobileClick="mobileClick"
-      popupsize="large"
+      :popupsize="popupsize || 'fit'"
     >
       <slot>
         <div v-if="!hasSlotContent">

@@ -14,7 +14,7 @@
         <!-- Hero Section -->
         <a v-if="!esport && match && playerlink && item.hero && !item.check" class="cursor-pointer" @click="this.$redirectToProfile(item.battletag, item.blizz_id, item.region, false)" :href="`/Player/${item.battletag}/${item.blizz_id}/${item.region}`">
           <span>
-            <hero-image-wrapper :size="'big'" :hero="item.hero" :award="item.match_award" :winner="winner" :hpowner="item.hp_owner" :party="item.party" :ispatreon="item.patreon_subscriber" :voideye="hasVoidEye(item.blizz_id, item.region)" popupsize="large">
+            <hero-image-wrapper :size="'big'" :hero="item.hero" :award="item.match_award" :winner="winner" :hpowner="item.hp_owner" :party="item.party" :ispatreon="item.patreon_subscriber" :voideye="hasVoidEye(item.blizz_id, item.region)">
               <image-hover-box 
                 :title="item.hero.name" 
                 :played-by="item.battletag" 

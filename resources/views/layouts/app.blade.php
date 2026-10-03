@@ -133,7 +133,7 @@
     @endif
 
     @if($xalatathEvent)
-      <xalatath-scoreboard :event="{{ json_encode($xalatathEvent) }}" :opt-out="{{ json_encode($voidOptOut) }}"></xalatath-scoreboard>
+      <xalatath-scoreboard :event="{{ json_encode($xalatathEvent) }}" :opt-out="{{ json_encode($voidOptOut) }}" :start-minimized="{{ json_encode(request()->is('PreMatch/*')) }}"></xalatath-scoreboard>
       @if(! $voidOptOut)
         {{-- Mounted at every stage so a live stage-up can switch them on without a reload. --}}
         <void-glitch :stage="{{ json_encode($voidStage) }}"></void-glitch>

@@ -1360,7 +1360,7 @@ class EsportsController extends Controller
                 'round' => $group[0]->round,
                 'team_0_name' => $team_0_name,
                 'team_1_name' => $team_1_name,
-                'winner' => 1,
+                'winner' => $group[0]->winner,
                 'heroes' => $heroes,
             ];
         })->sortByDesc('game_date')->take(10)->values()->all();
