@@ -72,9 +72,10 @@
       <div v-if="showTooltip" @mouseover="handleMouseOver" @mouseleave="scheduleHide" :style="tooltipStyle" :class="[
           'fixed text-xs z-50',
         {
-          'w-[12em]' : popupsize != 'large' && popupsize != 'xlarge',
+          'w-[12em]' : popupsize != 'large' && popupsize != 'xlarge' && popupsize != 'fit',
           'w-[20em]' : popupsize == 'large',
-          'w-[28em]' : popupsize == 'xlarge'
+          'w-[28em]' : popupsize == 'xlarge',
+          'w-max max-w-[20em]' : popupsize == 'fit'
         }
         ]" >
         <div v-if="!excludehover" :class="['popup-text block  bg-gray-dark  text-s p-1   text-white  drop-shadow-md  rounded-md px-2 text-center  m-t-auto z-30 ', {
@@ -180,7 +181,7 @@ export default {
       if (!this.$refs.container) return;
 
       const rect = this.$refs.container.getBoundingClientRect();
-      const tooltipWidth = this.popupsize === 'xlarge' ? 448 : this.popupsize === 'large' ? 320 : 192;
+      const tooltipWidth = this.popupsize === 'xlarge' ? 448 : (this.popupsize === 'large' || this.popupsize === 'fit') ? 320 : 192;
       const tooltipHeight = 120; // approximate height of tooltip popup
       const halfTooltip = tooltipWidth / 2;
       const screenWidth = window.innerWidth;

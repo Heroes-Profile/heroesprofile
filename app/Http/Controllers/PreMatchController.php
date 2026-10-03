@@ -31,6 +31,8 @@ class PreMatchController extends Controller
         'ar_games_played' => null,
         'ar_win_rate' => null,
         'top_heroes' => [],
+        'last_played' => null,
+        'recent_games' => ['qm' => [], 'sl' => [], 'ar' => []],
     ];
 
     public function show(Request $request, $prematchID)
@@ -83,12 +85,15 @@ class PreMatchController extends Controller
 
         // Private and banned players keep their slot and show nothing else — the
         // same rule as their profile pages, owner included.
-        ['stats' => $playerStats, 'hidden' => $hidden] = app(PlayerLobbyStatsService::class)->forPlayers($data, Auth::user());
+        $lobbyStats = app(PlayerLobbyStatsService::class);
+        ['stats' => $playerStats, 'hidden' => $hidden] = $lobbyStats->forPlayers($data, Auth::user());
+
+        $recentGames = $lobbyStats->recentGames($data->reject(fn ($player) => isset($hidden[PlayerLobbyStatsService::key($player)])));
 
         // Group the data by team and use the rankTiers variables in the closure
-        $groupedData = $data->groupBy('team')->map(function ($teamData, $team) use ($rankTiersQM, $rankTiersSL, $rankTiersAR, $playerStats, $hidden) {
+        $groupedData = $data->groupBy('team')->map(function ($teamData, $team) use ($rankTiersQM, $rankTiersSL, $rankTiersAR, $playerStats, $hidden, $recentGames) {
             return [
-                'players' => $teamData->map(function ($player) use ($rankTiersQM, $rankTiersSL, $rankTiersAR, $playerStats, $hidden) {
+                'players' => $teamData->map(function ($player) use ($rankTiersQM, $rankTiersSL, $rankTiersAR, $playerStats, $hidden, $recentGames) {
                     if (isset($hidden[$player->blizz_id.'|'.$player->region])) {
                         return self::EMPTY_SLOT;
                     }
@@ -117,6 +122,9 @@ class PreMatchController extends Controller
                         'ar_win_rate' => $stats['ar_win_rate'],
 
                         'top_heroes' => $stats['top_heroes'],
+                        // Entries cached before last_played existed lack it until they expire.
+                        'last_played' => $stats['last_played'] ?? null,
+                        'recent_games' => $recentGames[$player->blizz_id.'|'.$player->region] ?? self::EMPTY_SLOT['recent_games'],
                     ];
                 }),
             ];

@@ -14,8 +14,10 @@
       ">{{ getCaptions() }}</div>
       <div
         :class="[
-          'flex border border-white border-2 bg-cover bg-no-repeat bg-center  rounded-2xl border-red  md:pl-10',
+          'flex border border-2 bg-cover bg-no-repeat bg-center  rounded-2xl border-red  md:pl-10',
           {
+            'border-white': !esport || data.winner !== 0,
+            'border-hred': esport && data.winner === 0,
             'border-teal': data.winner === 1,
             'md:pl-[6em] ': esport != true
           }
