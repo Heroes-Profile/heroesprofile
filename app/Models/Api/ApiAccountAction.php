@@ -24,7 +24,7 @@ class ApiAccountAction extends Model
     /** Internal only. Nothing is sent and standing does not change. */
     public const NOTE = 'note';
 
-    /** Internal only. An admin has looked over the account; the date is the point. */
+    /** Retired: the console's Mark reviewed button, replaced by approvals. Old rows remain. */
     public const REVIEW = 'review';
 
     /** Actions that withdraw access. Both set `users.suspended_at`. */

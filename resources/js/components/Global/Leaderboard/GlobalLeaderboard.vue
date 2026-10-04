@@ -170,8 +170,9 @@
                     <td><div class="flex gap-1"><div v-if="rankchange" class="bg-blue text-white min-w-[2em] p-1 rounded-md text-center"><span v-if="sortDir == 'desc'">{{  index+1 }}</span><span v-if="sortDir == 'asc'">{{  group.rows.length - index }}</span></div><span class="p-1">{{ row.rank }}</span></div></td>
                     <td>
                       <div class="flex items-center">
+                        <a class="link mr-2" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id, false)" :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`" >{{ row.split_battletag }}</a>
                         <div class="" v-if="row.hp_owner">
-                          <icon-with-hover class="mt-2"  size="small"    icon="fas fa-crown"   title="info"  popupsize="small" style="color:rgba(216, 184, 0, 0.719);">
+                          <icon-with-hover class="mt-3"  size="small"    icon="fas fa-crown"   title="info"  popupsize="small" style="color:rgba(216, 184, 0, 0.719);">
                             <slot>
                               <div>
                                 <p class="max-sm:text-xs">Site Owner</p>
@@ -181,7 +182,7 @@
          
                         </div>
                         <div class="" v-else-if="row.patreon">
-                          <icon-with-hover class="mt-2"  size="small"    icon="fas fa-star"   title="info"  popupsize="small" style="color:rgba(216, 184, 0, 0.719);">
+                          <icon-with-hover class="mt-3"  size="small"    icon="fas fa-star"   title="info"  popupsize="small" style="color:rgba(216, 184, 0, 0.719);">
                               <slot>
                                 <div>
                                   <p class="max-sm:text-xs">Patreon Subscriber</p>
@@ -189,8 +190,7 @@
                               </slot>
                         </icon-with-hover>
                         </div>
-                        <void-eye-flair class="mt-2" :blizz-id="row.blizz_id" :region="row.region_id"></void-eye-flair>
-                        <a class="link" @click="this.$redirectToProfile(row.split_battletag, row.blizz_id, row.region_id, false)" :href="`/Player/${row.split_battletag}/${row.blizz_id}/${row.region_id}`" >{{ row.split_battletag }}</a>
+                        <void-eye-flair class="mt-3 -ml-1 -translate-y-[0.45em]" :blizz-id="row.blizz_id" :region="row.region_id"></void-eye-flair>
                       </div>
                     </td>
                     <td>{{ row.region }}</td>

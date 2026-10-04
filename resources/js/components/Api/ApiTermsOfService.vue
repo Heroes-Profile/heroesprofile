@@ -49,10 +49,15 @@
         our <a class="link" href="/Api/Privacy">privacy policy</a>.
       </p>
       <p class="mb-3">
-        A paid subscription is required in order to use the API. Pricing is listed on the
+        A subscription is required in order to use the API, apart from the keyless replay upload
+        endpoints described in section 1. Pricing is listed on the
         <a class="link" href="/Api">API home page</a>. We may change pricing or features of pricing
         tiers at any time, but will give you advance notice of 30 days via email if changes will
         affect your monthly subscription costs.
+      </p>
+      <p class="mb-3">
+        Access we grant directly, or through a Patreon pledge, counts as a subscription for these
+        terms. It starts when we grant it and ends when we withdraw it or the pledge stops.
       </p>
       <p class="mb-3">
         Before subscribing you must describe, on your account page, the project you will use the
@@ -113,18 +118,31 @@
           derived from it, behind a paywall, subscription, paid tier or any other fee requires our
           written agreement.
         </li>
+        <li>
+          Use it to build a competing data source. You may store the data in your own database to run
+          the project you registered, but you may not use it to build, seed or fill a match database,
+          replay collection or statistics service that offers features similar to Heroes Profile's.
+          That includes combining our data with replays you collect yourself or through your own
+          uploader, whether or not the result is ever made public. Research projects and personal
+          projects that keep their own database for their own analysis are not affected.
+        </li>
       </ul>
-      <p class="mb-6">
+      <p class="mb-3">
         Statistics and analysis you compute from our data — win rates, tier lists, builds, matchups,
         ratings and the like — are covered by this licence in the same way as the data itself. You
-        may display them while the licence is in force, and not after it ends. Your own commentary
+        may display them while the licence is in force, and must stop as set out in section 9. Your own commentary
         and opinions remain yours. Research projects have different rules for published results,
         set out in section 10.
+      </p>
+      <p class="mb-6">
+        Values Heroes Profile computes — MMR, hero and role MMR, league tiers and anything else
+        produced by our rating and ranking systems — are covered in the same way. You may display
+        them, but you may not use them to calibrate or seed a rating or ranking system of your own.
       </p>
 
       <h3 class="text-xl mb-2">4. Attribution</h3>
       <p class="mb-3">
-        Every page, screen, dataset, visualisation or other output that uses Heroes Profile data must
+        Every page, screen, visualisation or other output that uses Heroes Profile data must
         be attributed to Heroes Profile. Attribution must:
       </p>
       <ul class="list-disc ml-6 mb-3 space-y-1">
@@ -174,7 +192,8 @@
           returns.
         </li>
         <li>
-          Within 24 hours of a player becoming private, you must stop displaying their data on every
+          Within 24 hours of the privacy change feed reporting that a player has gone private, you
+          must stop displaying their data on every
           surface you operate and remove it from your caches, stores and derived records that
           identify them.
         </li>
@@ -196,8 +215,8 @@
       <p class="mb-3">In order to use our API, you also agree to the following:</p>
       <ul class="list-disc ml-6 mb-6 space-y-1">
         <li>
-          You will not abuse our data or server resources. Each plan sets a limit on calls per minute
-          and on calls per week by endpoint category; if you abuse this, your account may be
+          You will not abuse our data or server resources. Each plan sets a limit on calls per minute,
+          and a weekly allowance for each endpoint; if you abuse this, your account may be
           terminated.
         </li>
         <li>
@@ -205,27 +224,42 @@
           it count against your allowance and are your responsibility.
         </li>
         <li>
-          Our public endpoints are provided for general informational use only and are not intended
-          for mass data aggregation, bulk extraction, or dataset mirroring.
+          The keyless endpoints are provided for the Heroes Profile uploader and similar replay
+          upload tools. They are not for collecting data, mass aggregation or mirroring; collecting
+          data requires a subscription.
         </li>
-        <li>If you need large-scale or ongoing data aggregation, you must use an appropriate paid API tier.</li>
         <li>
-          Direct endpoint integration is only allowable with the developer subscription. Any accounts
-          found to be violating this may be subject to termination without refund.
+          Cache what you retrieve and serve your own users from your cache. Unless you are on
+          Developer Tier, you may not call our API each time one of your users loads a page or
+          clicks a button, passing their requests straight through to us. Accounts doing this may
+          be terminated without refund.
         </li>
         <li>
           Developer Tier is intended for large dataset-driven analysis and similar high-scale use
           cases. Access requires independent
           <a class="link" href="/Api/DeveloperTier">review and approval of your project</a>
-          by Heroes Profile.
+          by Heroes Profile. Approval is for the project described on your account page (section 2).
+          A significant change to that project needs approval again, and we may ask you how you
+          store and use the data.
         </li>
         <li>
-          Your project may not directly compete with Heroes Profile — that is, it may not use our
-          data to reproduce Heroes Profile itself as a substitute for it. For Developer Tier we
-          reserve the right to deny, suspend, or remove access at any time, including after approval.
+          Your project may not compete with Heroes Profile. It may not be a website, app or service
+          whose main purpose is to offer, in place of Heroes Profile, the statistics, profiles, match
+          history or analysis Heroes Profile offers, using our data. That covers reproducing the site
+          as a whole, and also presenting our statistics in a different way as a stats site of its
+          own. Bots, overlays, tools and other projects that use our data as one part of something
+          else are not affected. Projects that fall within this restriction need our agreement. We
+          may give it informally, and we may withdraw it at any time by giving you 30 days' notice,
+          after which you must stop the parts of your project that compete with Heroes Profile.
+          For Developer Tier we reserve the right to deny, suspend, or remove access at any time,
+          including after approval.
         </li>
         <li>Don't bully or harass others with our data.</li>
-        <li>Do not reproduce our code or reverse-engineer our API — our code and database are our property.</li>
+        <li>
+          Do not reverse-engineer the API beyond its published documentation. The Heroes Profile
+          site code is covered by its own licence, and our data is licensed to you only as set out
+          in section 3.
+        </li>
       </ul>
 
       <h3 class="text-xl mb-2">7. Your Users</h3>
@@ -254,12 +288,21 @@
         terminated by Heroes Profile (Skill Tree Development, LLC) at any time. It also ends when
         your subscription ends, whether you cancel it or we do.
       </p>
-      <p class="mb-6">
+      <p class="mb-3">
         Within 30 days of the licence ending you must stop displaying Heroes Profile data, and the
         statistics and analysis derived from it, on every surface you operate, and delete the data
-        you retrieved from our API from your systems, including caches and backups, so far as your
-        systems allow. Research projects may keep their data as set out in section 10. Sections 5,
-        8, 10, 11, 12 and 13 survive termination.
+        you retrieved from our API from your systems, including caches. Backups must be deleted or
+        allowed to expire within a further 30 days. If our data has been combined with data from
+        other sources and cannot be separated, the combined data must be deleted. On request you
+        must confirm in writing that the deletion is complete. Research projects may keep their
+        data as set out in section 10.
+      </p>
+      <p class="mb-6">
+        Sections 5, 8, 10, 11, 12 and 13 survive termination, except that once the licence ends you
+        no longer have to poll the privacy change feed. Instead, you must not display any player's
+        data, as set out above. The restriction on building a
+        competing data source in section 3 and the restriction on competing with Heroes Profile in
+        section 6 continue to apply for 12 months after the licence ends.
       </p>
 
       <h3 class="text-xl mb-2">10. Research Use</h3>
@@ -371,12 +414,16 @@
       </p>
 
       <h3 class="text-xl mb-2">16. Modifications</h3>
-      <p class="mb-6">
+      <p class="mb-3">
         Heroes Profile (Skill Tree Development, LLC) may revise these terms of service at any time
         without notice. By using the API you are agreeing to be bound by the then current version of
         these terms of service. Where the change is material we may require you to accept the revised
         terms in the developer portal before you can carry on using your account, and calls made with
         your API keys will be refused until you have.
+      </p>
+      <p class="mb-6">
+        If we don't enforce any part of these terms, or allow a project for a time, that is not a
+        waiver of our right to enforce it later, against you or anyone else.
       </p>
 
       <h3 class="text-xl mb-2">17. Governing Law</h3>

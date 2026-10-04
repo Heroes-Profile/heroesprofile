@@ -120,7 +120,7 @@
                 <td class="py-2 px-3">{{ formatBytes(row.egress_bytes) }}</td>
                 <td class="py-2 px-3">{{ formatDuration(row.compute_ms) }}</td>
                 <td class="py-2 px-3">{{ formatCost(row.cost_usd) }}</td>
-                <td class="py-2 px-3" :class="{ 'text-gray-medium': !row.reviewed_at }">{{ row.reviewed_at || 'Never' }}</td>
+                <td class="py-2 px-3" :class="{ 'text-gray-medium': !row.approved_at }">{{ row.approved_at || 'Never' }}</td>
               </tr>
             </tbody>
           </table>
@@ -222,6 +222,111 @@
         </div>
 
         <div class="bg-lighten p-6 mb-8">
+          <h2 class="text-lg mb-1">Approval</h2>
+          <p class="text-sm text-gray-medium mb-4">
+            Records your approval of the project as described above, with your notes. Nothing is
+            sent and their access is unchanged — grant access with the Comped Access checkboxes.
+          </p>
+
+          <p class="text-sm mb-4">
+            <template v-if="detail.last_approval">
+              Last approved {{ detail.last_approval.at }}<template v-if="detail.last_approval.by"> by {{ detail.last_approval.by }}</template>.
+            </template>
+            <span v-else class="text-gray-medium">Never approved.</span>
+          </p>
+
+          <label class="block text-sm mb-1">
+            Approval notes <span class="text-gray-medium">— never shown to them</span>
+          </label>
+          <textarea
+            v-model="approveNotes"
+            rows="3"
+            maxlength="2000"
+            placeholder="What you checked and what you agreed to."
+            class="w-full p-2 bg-darken mb-2"
+          ></textarea>
+          <button
+            @click="approve"
+            :disabled="busy"
+            class="transition-colors text-white rounded bg-blue hover:bg-lblue py-1 px-3 text-sm mb-4 disabled:bg-gray-medium"
+          >
+            Approve
+          </button>
+
+          <h3 class="text-base mt-2 mb-2">Approval History</h3>
+          <p class="text-sm text-gray-medium mb-3">
+            Approvals and Comped Access changes, each with the project description as it read at the time.
+          </p>
+
+          <p v-if="!detail.approvals.length" class="text-sm text-gray-medium">Nothing on record.</p>
+
+          <table v-else class="min-w-0 w-full responsive-table">
+            <thead>
+              <tr>
+                <th class="py-2 px-3 text-left text-sm">When</th>
+                <th class="py-2 px-3 text-left text-sm">What</th>
+                <th class="py-2 px-3 text-left text-sm">Project at the time</th>
+                <th class="py-2 px-3 text-left text-sm">Notes</th>
+                <th class="py-2 px-3 text-left text-sm">By</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="row in detail.approvals" :key="row.id">
+                <td class="py-2 px-3">{{ row.at }}</td>
+                <td class="py-2 px-3">
+                  <strong v-if="row.type === 'approval'">Approved</strong>
+                  <template v-else>
+                    {{ row.flag }}
+                    <span class="text-gray-medium">— {{ row.granted ? 'granted' : 'removed' }}</span>
+                  </template>
+                </td>
+                <td class="py-2 px-3">
+                  <template v-if="row.project_name || row.project_description">
+                    <strong v-if="row.project_name">{{ row.project_name }}</strong>
+                    <div class="whitespace-pre-line">{{ row.project_description }}</div>
+                    <div v-if="row.project_updated_at" class="text-sm text-gray-medium">Description last edited {{ row.project_updated_at }}</div>
+                  </template>
+                  <span v-else class="text-gray-medium">No description</span>
+                </td>
+                <td class="py-2 px-3">
+                  <template v-if="editingApprovalId === row.id">
+                    <textarea v-model="approvalNotes" rows="3" maxlength="2000" class="w-full p-2 bg-darken"></textarea>
+                    <div class="flex gap-2 mt-1">
+                      <button type="button" class="underline text-sm" :disabled="busy" @click="saveApprovalNotes(row.id)">Save</button>
+                      <button type="button" class="underline text-sm" :disabled="busy" @click="editingApprovalId = null">Cancel</button>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div class="whitespace-pre-line">{{ row.notes || '—' }}</div>
+                    <button type="button" class="underline text-sm" :disabled="busy" @click="editApprovalNotes(row)">Edit</button>
+                  </template>
+                </td>
+                <td class="py-2 px-3">{{ row.by || '—' }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="bg-lighten p-6 mb-8">
+          <h2 class="text-lg mb-1">Comped Access</h2>
+          <p class="text-sm text-gray-medium mb-4">
+            Granted by hand, per partner or esports org. Takes effect on the next API call.
+          </p>
+
+          <div class="flex flex-wrap gap-x-6 gap-y-3">
+            <label v-for="(value, flag) in detail.flags" :key="flag" class="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                :checked="value"
+                :disabled="busy"
+                @change="setFlag(flag, $event.target.checked)"
+              />
+              {{ flag }}
+            </label>
+          </div>
+        </div>
+
+        <div class="bg-lighten p-6 mb-8">
           <h2 class="text-lg mb-1">Standing</h2>
           <p class="text-sm text-gray-medium mb-4">
             Warn first. A suspension with nothing on record behind it is our word against theirs.
@@ -247,23 +352,6 @@
           </div>
 
           <p v-else class="text-sm mb-4">In good standing.</p>
-
-          <div class="flex flex-wrap items-center gap-3 mb-4">
-            <span class="text-sm">
-              <template v-if="detail.last_review">
-                Last reviewed {{ detail.last_review.at }}<template v-if="detail.last_review.by"> by {{ detail.last_review.by }}</template>.
-              </template>
-              <span v-else class="text-gray-medium">Never reviewed.</span>
-            </span>
-            <button
-              @click="markReviewed"
-              :disabled="busy"
-              title="Records today's date. Anything in Internal notes is saved with it. Nothing is sent."
-              class="transition-colors text-white rounded bg-blue hover:bg-lblue py-1 px-3 text-sm disabled:bg-gray-medium"
-            >
-              Mark reviewed
-            </button>
-          </div>
 
           <label class="block text-sm mb-1">What they are told</label>
           <standing-editor v-model="actionReason"></standing-editor>
@@ -371,25 +459,6 @@
         </div>
 
         <div class="bg-lighten p-6 mb-8">
-          <h2 class="text-lg mb-1">Comped Access</h2>
-          <p class="text-sm text-gray-medium mb-4">
-            Granted by hand, per partner or esports org. Takes effect on the next API call.
-          </p>
-
-          <div class="flex flex-wrap gap-x-6 gap-y-3">
-            <label v-for="(value, flag) in detail.flags" :key="flag" class="flex items-center gap-2 text-sm">
-              <input
-                type="checkbox"
-                :checked="value"
-                :disabled="busy"
-                @change="setFlag(flag, $event.target.checked)"
-              />
-              {{ flag }}
-            </label>
-          </div>
-        </div>
-
-        <div class="bg-lighten p-6 mb-8">
           <h2 class="text-lg mb-4">Endpoint Limits</h2>
           <api-usage-table :usage="detail.usage"></api-usage-table>
         </div>
@@ -455,7 +524,7 @@ export default {
         { key: 'egress_bytes', label: 'Egress' },
         { key: 'compute_ms', label: 'Compute' },
         { key: 'cost_usd', label: 'Cost' },
-        { key: 'reviewed_at', label: 'Reviewed' },
+        { key: 'approved_at', label: 'Approved' },
       ],
       usageSortKey: 'cost_usd',
       usageSortDir: 'desc',
@@ -467,6 +536,9 @@ export default {
       actionReason: '',
       actionNotes: '',
       actionRespondBy: '',
+      approveNotes: '',
+      editingApprovalId: null,
+      approvalNotes: '',
     }
   },
   computed: {
@@ -483,9 +555,9 @@ export default {
       const key = this.usageSortKey;
       const direction = this.usageSortDir === 'asc' ? 1 : -1;
 
-      // Never reviewed sorts as oldest.
+      // Never approved sorts as oldest.
       const value = (row) => key === 'email' ? (row.email || '').toLowerCase()
-        : key === 'reviewed_at' ? (row.reviewed_at || '')
+        : key === 'approved_at' ? (row.approved_at || '')
         : row[key];
 
       return this.usage.slice().sort((a, b) => {
@@ -518,8 +590,8 @@ export default {
       if(key === this.usageSortKey){
         this.usageSortDir = this.usageSortDir === 'asc' ? 'desc' : 'asc';
       } else {
-        // Oldest review first, so whoever is overdue a look is at the top.
-        this.usageSortDir = key === 'email' || key === 'reviewed_at' ? 'asc' : 'desc';
+        // Oldest approval first, so whoever has never been approved is at the top.
+        this.usageSortDir = key === 'email' || key === 'approved_at' ? 'asc' : 'desc';
       }
 
       this.usageSortKey = key;
@@ -580,6 +652,29 @@ export default {
         if(this.loadingId === id){
           this.loadingId = null;
         }
+      }
+    },
+    editApprovalNotes(row){
+      this.editingApprovalId = row.id;
+      this.approvalNotes = row.notes || '';
+    },
+    async saveApprovalNotes(approvalId){
+      this.busy = true;
+      this.error = null;
+      this.notice = null;
+
+      try {
+        const response = await this.$axios.post('/api/v1/admin/accounts/' + this.detail.account.id + '/approvals/' + approvalId + '/notes', {
+          notes: this.approvalNotes.trim() || null,
+        });
+
+        this.detail.approvals = response.data.approvals;
+        this.editingApprovalId = null;
+        this.notice = 'Approval notes saved.';
+      } catch (error) {
+        this.error = this.messageFrom(error);
+      } finally {
+        this.busy = false;
       }
     },
     async impersonate(){
@@ -668,7 +763,6 @@ export default {
 
         this.detail.enforcement = response.data.enforcement;
         this.detail.history = response.data.history;
-        this.detail.last_review = response.data.last_review;
         this.clearAction();
 
         this.notice = {
@@ -696,7 +790,6 @@ export default {
 
         this.detail.enforcement = response.data.enforcement;
         this.detail.history = response.data.history;
-        this.detail.last_review = response.data.last_review;
         this.actionNotes = '';
         this.notice = 'Note saved. Nothing was sent.';
       } catch (error) {
@@ -705,27 +798,30 @@ export default {
         this.busy = false;
       }
     },
-    async markReviewed(){
+    async approve(){
+      if(!confirm('Record your approval of this project as currently described? Nothing is sent and their access does not change.')){
+        return;
+      }
+
       this.busy = true;
       this.error = null;
       this.notice = null;
 
       try {
         const id = this.detail.account.id;
-        const response = await this.$axios.post('/api/v1/admin/accounts/' + id + '/review', {
-          notes: this.actionNotes.trim() || null,
+        const response = await this.$axios.post('/api/v1/admin/accounts/' + id + '/approve', {
+          notes: this.approveNotes.trim() || null,
         });
 
-        this.detail.enforcement = response.data.enforcement;
-        this.detail.history = response.data.history;
-        this.detail.last_review = response.data.last_review;
-        this.actionNotes = '';
-        this.notice = 'Marked as reviewed. Nothing was sent.';
+        this.detail.approvals = response.data.approvals;
+        this.detail.last_approval = response.data.last_approval;
+        this.approveNotes = '';
+        this.notice = 'Approval recorded. Nothing was sent.';
 
         const row = this.usage.find(u => u.id === id);
 
-        if(row && response.data.last_review){
-          row.reviewed_at = response.data.last_review.at;
+        if(row && response.data.last_approval){
+          row.approved_at = response.data.last_approval.at;
         }
       } catch (error) {
         this.error = this.messageFrom(error);
@@ -737,6 +833,9 @@ export default {
       this.actionReason = '';
       this.actionNotes = '';
       this.actionRespondBy = '';
+      this.approveNotes = '';
+      this.editingApprovalId = null;
+      this.approvalNotes = '';
     },
     messageFrom(error){
       return (error.response && error.response.data && error.response.data.error)

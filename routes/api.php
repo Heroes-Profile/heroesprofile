@@ -101,6 +101,8 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
         Route::post('accounts/search', [AdminConsoleController::class, 'search']);
         Route::get('accounts/{id}', [AdminConsoleController::class, 'account']);
         Route::post('accounts/{id}/flag', [AdminConsoleController::class, 'setFlag']);
+        Route::post('accounts/{id}/approvals/{approvalId}/notes', [AdminConsoleController::class, 'approvalNotes'])
+            ->whereNumber(['id', 'approvalId']);
 
         // The enforcement ladder. Separate routes rather than one action parameter:
         // terminating cancels a subscription, and that is not something a mistyped
@@ -111,7 +113,7 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
         Route::post('accounts/{id}/terminate', [AdminConsoleController::class, 'terminate']);
         Route::post('accounts/{id}/reinstate', [AdminConsoleController::class, 'reinstate']);
         Route::post('accounts/{id}/note', [AdminConsoleController::class, 'note']);
-        Route::post('accounts/{id}/review', [AdminConsoleController::class, 'review']);
+        Route::post('accounts/{id}/approve', [AdminConsoleController::class, 'approve']);
         Route::get('activity', [AdminConsoleController::class, 'activity']);
         Route::get('metrics', [AdminConsoleController::class, 'metrics']);
         Route::get('usage', [AdminConsoleController::class, 'usage']);

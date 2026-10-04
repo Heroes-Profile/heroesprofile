@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Account\ApiKeyController;
 use App\Http\Controllers\Controller;
 use App\Models\Api\ApiAccount;
 use App\Models\Api\ApiAccountAction;
+use App\Models\Api\ApiAccountApproval;
 use App\Models\Api\ApiKey;
 use App\Models\Api\ApiUsage;
 use App\Models\Api\CashierSubscription;
@@ -119,6 +120,8 @@ class AdminConsoleController extends Controller
             // The flags are the reason this page exists: they are granted by hand and
             // have had no UI at all, only direct database edits.
             'flags' => $this->flagsFor($account),
+            'approvals' => $this->approvalsFor($account),
+            'last_approval' => $this->lastApproval($account),
             'granted' => $plans->present($plans->grantedTo($account)),
             'keys' => ApiKey::where('api_account_id', $account->id)
                 ->active()
@@ -148,13 +151,71 @@ class AdminConsoleController extends Controller
             return response()->json(['error' => 'No such account.'], 404);
         }
 
-        $account->forceFill([$validated['flag'] => $validated['value']])->save();
+        $account->forceFill([$validated['flag'] => $validated['value']]);
+
+        if ($account->isDirty($validated['flag'])) {
+            DB::connection('heroesprofile_api')->transaction(function () use ($account, $validated) {
+                $account->save();
+
+                $this->recordApproval($account, ApiAccountApproval::FLAG, [
+                    'flag' => $validated['flag'],
+                    'granted' => $validated['value'],
+                ]);
+            });
+        }
 
         // Entitlement is cached alongside the key, so the grant would not take effect
         // until the entry aged out.
         $keys->forgetAccount($account->id);
 
-        return response()->json(['flags' => $this->flagsFor($account)]);
+        return response()->json([
+            'flags' => $this->flagsFor($account),
+            'approvals' => $this->approvalsFor($account),
+        ]);
+    }
+
+    /** Records the approval against the project as it reads now. Access is unchanged and nothing is sent. */
+    public function approve(Request $request, int $id)
+    {
+        $validated = $request->validate([
+            'notes' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $account = $this->target($id);
+
+        if (! $account instanceof ApiAccount) {
+            return $account;
+        }
+
+        $notes = trim($validated['notes'] ?? '');
+
+        $this->recordApproval($account, ApiAccountApproval::APPROVAL, [
+            'notes' => $notes === '' ? null : $notes,
+        ]);
+
+        return response()->json([
+            'approvals' => $this->approvalsFor($account),
+            'last_approval' => $this->lastApproval($account),
+        ]);
+    }
+
+    public function approvalNotes(Request $request, int $id, int $approvalId)
+    {
+        $validated = $request->validate([
+            'notes' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $approval = ApiAccountApproval::where('api_account_id', $id)->find($approvalId);
+
+        if ($approval === null) {
+            return response()->json(['error' => 'No such approval.'], 404);
+        }
+
+        $notes = trim($validated['notes'] ?? '');
+
+        $approval->update(['notes' => $notes === '' ? null : $notes]);
+
+        return response()->json(['approvals' => $this->approvalsFor($approval->account)]);
     }
 
     /**
@@ -278,26 +339,6 @@ class AdminConsoleController extends Controller
         return response()->json($this->standing($account->refresh()));
     }
 
-    /** Marks the account as looked over today, with any note typed alongside. Nothing is sent. */
-    public function review(Request $request, int $id, AccountEnforcementService $enforcement)
-    {
-        $validated = $request->validate([
-            'notes' => ['nullable', 'string', 'max:2000'],
-        ]);
-
-        $account = $this->target($id);
-
-        if (! $account instanceof ApiAccount) {
-            return $account;
-        }
-
-        $notes = trim($validated['notes'] ?? '');
-
-        $enforcement->review($account, $notes === '' ? null : $notes, $this->actorId());
-
-        return response()->json($this->standing($account->refresh()));
-    }
-
     /** Records a note on the account's history. Nothing is sent and standing is untouched. */
     public function note(Request $request, int $id, AccountEnforcementService $enforcement)
     {
@@ -391,19 +432,7 @@ class AdminConsoleController extends Controller
 
         $warning = $account->unacknowledgedWarning();
 
-        // Usually already in the history above. The fallback is for accounts with
-        // more rows than that holds; its reviewer name may then be missing.
-        $review = $history->firstWhere('action', ApiAccountAction::REVIEW)
-            ?? ApiAccountAction::where('api_account_id', $account->id)
-                ->where('action', ApiAccountAction::REVIEW)
-                ->latest('created_at')
-                ->first();
-
         return [
-            'last_review' => $review === null ? null : [
-                'at' => $review->created_at?->toDateString(),
-                'by' => $actors[$review->performed_by] ?? null,
-            ],
             'enforcement' => [
                 'suspended' => $account->isSuspended(),
                 'terminated' => $account->isTerminated(),
@@ -488,14 +517,14 @@ class AdminConsoleController extends Controller
             ->get()
             ->keyBy('id');
 
-        $reviewed = ApiAccountAction::whereIn('api_account_id', $rows->pluck('api_account_id'))
-            ->where('action', ApiAccountAction::REVIEW)
+        $approved = ApiAccountApproval::whereIn('api_account_id', $rows->pluck('api_account_id'))
+            ->where('type', ApiAccountApproval::APPROVAL)
             ->groupBy('api_account_id')
-            ->selectRaw('api_account_id, max(created_at) as reviewed_at')
-            ->pluck('reviewed_at', 'api_account_id');
+            ->selectRaw('api_account_id, max(created_at) as approved_at')
+            ->pluck('approved_at', 'api_account_id');
 
         return response()->json([
-            'usage' => $rows->map(function ($row) use ($accounts, $reviewed) {
+            'usage' => $rows->map(function ($row) use ($accounts, $approved) {
                 $account = $accounts->get($row->api_account_id);
                 $calls = (int) $row->calls;
                 $bytes = (int) $row->egress_bytes;
@@ -509,8 +538,8 @@ class AdminConsoleController extends Controller
                     'egress_bytes' => $bytes,
                     'compute_ms' => $computeMs,
                     'cost_usd' => round(ApiCost::total($bytes, $computeMs, $calls), 6),
-                    'reviewed_at' => isset($reviewed[$row->api_account_id])
-                        ? substr((string) $reviewed[$row->api_account_id], 0, 10)
+                    'approved_at' => isset($approved[$row->api_account_id])
+                        ? substr((string) $approved[$row->api_account_id], 0, 10)
                         : null,
                 ];
             })->values()->all(),
@@ -614,5 +643,58 @@ class AdminConsoleController extends Controller
         }
 
         return $flags;
+    }
+
+    private function approvalsFor(ApiAccount $account): array
+    {
+        $rows = ApiAccountApproval::where('api_account_id', $account->id)
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->get();
+
+        $actors = ApiAccount::whereIn('id', $rows->pluck('performed_by')->filter()->unique())
+            ->pluck('name', 'id');
+
+        return $rows->map(fn (ApiAccountApproval $row) => [
+            'id' => $row->id,
+            'type' => $row->type,
+            'flag' => $row->flag,
+            'granted' => $row->granted,
+            'project_name' => $row->project_name,
+            'project_description' => $row->project_description,
+            'project_updated_at' => $row->project_updated_at?->toDateTimeString(),
+            'notes' => $row->notes,
+            'by' => $actors[$row->performed_by] ?? null,
+            'at' => $row->created_at?->toDateTimeString(),
+        ])->all();
+    }
+
+    private function recordApproval(ApiAccount $account, string $type, array $attributes): ApiAccountApproval
+    {
+        return ApiAccountApproval::create([
+            'api_account_id' => $account->id,
+            'type' => $type,
+            'project_name' => $account->project_name,
+            'project_description' => $account->project_description,
+            'project_updated_at' => $account->project_updated_at,
+            'performed_by' => $this->actorId(),
+        ] + $attributes);
+    }
+
+    private function lastApproval(ApiAccount $account): ?array
+    {
+        $approval = ApiAccountApproval::where('api_account_id', $account->id)
+            ->where('type', ApiAccountApproval::APPROVAL)
+            ->latest('created_at')
+            ->first();
+
+        if ($approval === null) {
+            return null;
+        }
+
+        return [
+            'at' => $approval->created_at?->toDateString(),
+            'by' => $approval->performed_by === null ? null : ApiAccount::whereKey($approval->performed_by)->value('name'),
+        ];
     }
 }
