@@ -25,10 +25,13 @@
       </div>
 
       <div v-if="expanded" class="bg-lighten p-3 text-left">
-        <h4 class="text-xs uppercase text-gray-medium mb-2">
-          Last {{ games.length }} {{ modelabel }} games<span v-if="games.length"> · {{ wins }}–{{ games.length - wins }}</span>
-        </h4>
-        <div v-if="!games.length" class="text-gray-medium">No games</div>
+        <div v-if="recentloading" class="text-gray-medium">Loading most recent {{ modelabel }} games…</div>
+        <template v-else>
+          <h4 class="text-xs uppercase text-gray-medium mb-2">
+            Last {{ games.length }} {{ modelabel }} games<span v-if="games.length"> · {{ wins }}–{{ games.length - wins }}</span>
+          </h4>
+          <div v-if="!games.length" class="text-gray-medium">No games</div>
+        </template>
         <div v-for="game in games" :key="game.replayID" class="flex items-center gap-2 py-1 border-t border-lighten">
           <hero-image-wrapper v-if="game.hero" :size="'small'" :hero="game.hero"></hero-image-wrapper>
           <span class="flex-1 min-w-0 truncate">{{ game.hero ? game.hero.name : '' }} <span class="text-gray-medium">· {{ game.game_map ? game.game_map.name : '' }}</span></span>
@@ -56,6 +59,7 @@ export default {
     modelabel: String,
     color: String,
     expanded: Boolean,
+    recentloading: Boolean,
   },
   emits: ['toggle'],
   computed: {
