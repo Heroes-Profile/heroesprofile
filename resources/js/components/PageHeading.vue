@@ -15,9 +15,10 @@
     <h1 v-else class="text-xl md:text-3xl max-md:w-full">
       <div>
       <div class="flex items-center max-md:flex-col text-sm">
+        <a v-if="battletag" :href="`/Player/${battletag}/${blizzid}/${region}`" class="text-lg link md:mr-2">{{ battletag }}({{ regionstring  }}) </a>
         <div v-if="isOwner && !ownerHidden" class="text-[20px] height-auto">
           <!-- Owner -->
-          <icon-with-hover class="mt-2"  size="small"    icon="fas fa-crown"   title="info"  popupsize="small" style="color:gold">
+          <icon-with-hover class="mt-3"  size="small"    icon="fas fa-crown"   title="info"  popupsize="small" style="color:gold">
                 <slot>
                   <div>
                     <p class="max-sm:text-xs">Site Owner</p>
@@ -28,7 +29,7 @@
         </div>
         <div v-else-if="isPatreon" class="text-[20px] height-auto">
          <!-- Patreon Subscriber -->
-         <icon-with-hover class="md:mt-2"  size="small"    icon="fas fa-star"   title="info"  popupsize="small" style="color:gold">
+         <icon-with-hover class="md:mt-3"  size="small"    icon="fas fa-star"   title="info"  popupsize="small" style="color:gold">
                 <slot>
                   <div>
                     <p class="max-sm:text-xs">Patreon Subscriber</p>
@@ -37,11 +38,10 @@
           </icon-with-hover>
 
         </div>
-        <div v-if="battletag && !esport && voidEye" class="text-[20px] height-auto md:mr-1">
-          <void-eye-flair class="mt-2" :force="true"></void-eye-flair>
+        <div v-if="battletag && !esport && voidEye" class="flex text-[20px] height-auto">
+          <void-eye-flair class="mt-3 -ml-1 -translate-y-[0.45em]" :force="true"></void-eye-flair>
         </div>
 
-        <a v-if="battletag" :href="`/Player/${battletag}/${blizzid}/${region}`" class="text-lg link ">{{ battletag }}({{ regionstring  }}) </a>
         </div>
         <slot name="aboveHeading"></slot>
         <div class="heading">{{ heading }}</div>

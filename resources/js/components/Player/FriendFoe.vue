@@ -52,14 +52,14 @@
             <tr v-for="row in sortedDataFriends" :key="row.blizz_id">
               <td class="py-2 px-3 ">
                 <div class="flex items-center">
+                  <a class="link mr-2" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
                   <div class="" v-if="row.hp_owner">
                     <i class="fas fa-crown text" style="color:gold;"></i>
                   </div>
                   <div class="" v-else-if="row.patreon">
                     <i class="fas fa-star" style="color:gold"></i>
                   </div>
-                  <void-eye-flair class="mr-1" :blizz-id="row.blizz_id" :region="row.region" :tooltip="false"></void-eye-flair>
-                  <a class="link" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
+                  <void-eye-flair :blizz-id="row.blizz_id" :region="row.region" :tooltip="false"></void-eye-flair>
 
                 </div>
               </td>
@@ -105,14 +105,14 @@
               <td class="py-2 px-3 ">
 
                 <div class="flex items-center">
+                  <a class="link mr-2" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
                   <div class="" v-if="row.hp_owner">
                     <i class="fas fa-crown text" style="color:gold;"></i>
                   </div>
                   <div class="" v-else-if="row.patreon">
                     <i class="fas fa-star" style="color:gold"></i>
                   </div>
-                  <void-eye-flair class="mr-1" :blizz-id="row.blizz_id" :region="row.region" :tooltip="false"></void-eye-flair>
-                  <a class="link" @click="this.$redirectToProfile(row.battletag, row.blizz_id, row.region, false)" :href="`/Player/${row.battletag}/${row.blizz_id}/${row.region}`" >{{ row.battletag }}</a>
+                  <void-eye-flair :blizz-id="row.blizz_id" :region="row.region" :tooltip="false"></void-eye-flair>
 
                 </div>
               </td>

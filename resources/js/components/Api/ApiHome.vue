@@ -26,7 +26,15 @@
             </div>
 
             <ul class="text-sm text-left space-y-2 mb-6 flex-grow">
-              <li v-for="(feature, index) in features[plan.key]" :key="index">{{ feature }}</li>
+              <li v-for="(feature, index) in features[plan.key]" :key="index">
+                <span v-if="feature.startsWith('Direct endpoint')" class="inline-flex items-center gap-2">
+                  {{ feature }}
+                  <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                    <slot><p class="text-sm p-2 text-left">{{ directIntegrationInfo }}</p></slot>
+                  </round-image>
+                </span>
+                <template v-else>{{ feature }}</template>
+              </li>
             </ul>
 
             <custom-button
@@ -56,7 +64,14 @@
           </tr>
 
           <tr>
-            <td>Direct endpoint integration</td>
+            <td>
+              <span class="inline-flex items-center gap-2">
+                Direct endpoint integration
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <slot><p class="text-sm p-2 text-left">{{ directIntegrationInfo }}</p></slot>
+                </round-image>
+              </span>
+            </td>
             <td class="text-center">&#10007;</td>
             <td class="text-center">&#10007;</td>
             <td class="text-center">&#10004;</td>
@@ -117,6 +132,7 @@ export default {
   data(){
     return {
       infoText: "Hero statistics, talent builds, match data, player profiles and MMR — the same data that powers www.heroesprofile.com.",
+      directIntegrationInfo: "Calling the API live each time one of your users loads a page or clicks a button. Without it, your project must store what it retrieves and serve its users from that copy, so their activity never reaches our API.",
       features: {
         basic: [
           'Ideal for an individual player looking to keep track of data in an outside spreadsheet',
@@ -133,7 +149,7 @@ export default {
         developer: [
           'Ideal for developers looking to build an app or website',
           'More calls per week, allowing consistent data return',
-          'Direct endpoint available',
+          'Direct endpoint integration available',
         ],
       },
     }
