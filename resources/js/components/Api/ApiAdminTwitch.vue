@@ -1,6 +1,5 @@
 <template>
-  <div class="bg-lighten p-6">
-    <h2 class="text-lg mb-1">Twitch Extension Channels</h2>
+  <api-admin-card title="Twitch Extension Channels" storage-key="twitch" tight>
     <p class="text-sm text-gray-medium mb-4">
       Hiding a listing only removes the channel from /Twitch. Suspending switches the extension off
       for the channel. Neither affects the API account or its billing.
@@ -55,7 +54,7 @@
         </tbody>
       </table>
     </div>
-  </div>
+  </api-admin-card>
 </template>
 
 <script>

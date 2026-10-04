@@ -117,6 +117,7 @@ Route::prefix('v1')->middleware(['web', 'ensureApiAccountAuth'])->group(function
         Route::get('activity', [AdminConsoleController::class, 'activity']);
         Route::get('metrics', [AdminConsoleController::class, 'metrics']);
         Route::get('usage', [AdminConsoleController::class, 'usage']);
+        Route::get('approvals/pending', [AdminConsoleController::class, 'pendingApprovals']);
 
         // Twitch extension channels: listing moderation, suspension and comps.
         Route::get('twitch', [TwitchAdminController::class, 'index']);
