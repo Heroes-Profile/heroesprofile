@@ -125,6 +125,25 @@ export default {
       }finally {
         this.isLoading = false;
       }
+      if (this.data) {
+        this.getRecentGames();
+      }
+    },
+    async getRecentGames(){
+      try{
+        const response = await this.$axios.post("/api/v1/prematch/recent", {
+          prematchid: this.prematchid,
+        });
+        Object.values(this.data).forEach(team => {
+          team.players.forEach(player => {
+            if (player.blizz_id) {
+              player.recent_games = response.data[player.blizz_id + '|' + player.region];
+            }
+          });
+        });
+      }catch(error){
+      // No squares if this fails
+      }
     },
     toggle(key) {
       this.expanded = this.expanded === key ? null : key;

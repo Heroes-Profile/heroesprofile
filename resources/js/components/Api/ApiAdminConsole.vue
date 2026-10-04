@@ -6,8 +6,7 @@
       <div v-if="error" class="bg-red p-3 mb-4">{{ error }}</div>
       <div v-if="notice" class="bg-teal p-3 mb-4">{{ notice }}</div>
 
-      <div class="bg-lighten p-6 mb-8">
-        <h2 class="text-lg mb-4">At a Glance</h2>
+      <api-admin-card title="At a Glance" storage-key="glance">
 
         <div v-if="metrics" class="flex flex-wrap gap-6 text-sm">
           <div>
@@ -37,10 +36,9 @@
         </div>
 
         <p v-else class="text-sm text-gray-medium">Loading.</p>
-      </div>
+      </api-admin-card>
 
-      <div class="bg-lighten p-6 mb-8">
-        <h2 class="text-lg mb-4">Find an Account</h2>
+      <api-admin-card title="Find an Account" storage-key="search">
 
         <div class="flex flex-wrap gap-2 mb-4">
           <input
@@ -79,10 +77,9 @@
         <p v-if="truncated" class="text-sm text-gray-medium mt-3">
           Showing the first {{ results.length }} matches. Narrow the search to see the rest.
         </p>
-      </div>
+      </api-admin-card>
 
-      <div class="bg-lighten p-6 mb-8">
-        <h2 class="text-lg mb-1">Usage This Window</h2>
+      <api-admin-card title="Usage This Window" storage-key="usage" tight>
         <p class="text-sm text-gray-medium mb-4">
           Each account's current 7-day window, summed across endpoints. Cost is an upper-bound estimate.
         </p>
@@ -125,11 +122,49 @@
             </tbody>
           </table>
         </div>
-      </div>
+      </api-admin-card>
+
+      <api-admin-card title="Awaiting Approval" storage-key="pending" tight>
+        <p class="text-sm text-gray-medium mb-4">
+          Accounts with access that have never been approved, or whose project description changed
+          after their last approval. Click one to open it.
+        </p>
+
+        <p v-if="!pending.length" class="text-sm text-gray-medium">Nothing waiting.</p>
+
+        <div v-else class="overflow-x-auto">
+          <table class="min-w-0 w-full responsive-table">
+            <thead>
+              <tr>
+                <th class="py-2 px-3 text-left text-sm">Email</th>
+                <th class="py-2 px-3 text-left text-sm">Project</th>
+                <th class="py-2 px-3 text-left text-sm">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                v-for="row in pending"
+                :key="row.id"
+                @click="load(row.id, true)"
+                class="cursor-pointer"
+                :class="{ '!bg-teal !text-white': selectedUsageId === row.id }"
+              >
+                <td class="py-2 px-3">{{ row.email || 'id ' + row.id }}</td>
+                <td class="py-2 px-3">{{ row.project_name || 'Not described' }}</td>
+                <td class="py-2 px-3">
+                  <template v-if="row.approved_at">
+                    Description changed {{ row.project_updated_at }}, last approved {{ row.approved_at }}
+                  </template>
+                  <template v-else>Never approved</template>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </api-admin-card>
 
       <template v-if="detail">
-        <div ref="detail" class="bg-lighten p-6 mb-8">
-          <h2 class="text-lg mb-1">{{ detail.account.email }}</h2>
+        <api-admin-card ref="detail" :title="detail.account.email" storage-key="account" tight>
           <p class="text-sm text-gray-medium mb-4">{{ detail.account.name }} &middot; id {{ detail.account.id }}</p>
 
           <div v-if="detail.subscription_issue" class="border-l-4 border-red p-3 mb-4">
@@ -219,10 +254,9 @@
               </tr>
             </tbody>
           </table>
-        </div>
+        </api-admin-card>
 
-        <div class="bg-lighten p-6 mb-8">
-          <h2 class="text-lg mb-1">Approval</h2>
+        <api-admin-card title="Approval" storage-key="approval" tight>
           <p class="text-sm text-gray-medium mb-4">
             Records your approval of the project as described above, with your notes. Nothing is
             sent and their access is unchanged — grant access with the Comped Access checkboxes.
@@ -305,10 +339,9 @@
               </tr>
             </tbody>
           </table>
-        </div>
+        </api-admin-card>
 
-        <div class="bg-lighten p-6 mb-8">
-          <h2 class="text-lg mb-1">Comped Access</h2>
+        <api-admin-card title="Comped Access" storage-key="comped" tight>
           <p class="text-sm text-gray-medium mb-4">
             Granted by hand, per partner or esports org. Takes effect on the next API call.
           </p>
@@ -324,10 +357,9 @@
               {{ flag }}
             </label>
           </div>
-        </div>
+        </api-admin-card>
 
-        <div class="bg-lighten p-6 mb-8">
-          <h2 class="text-lg mb-1">Standing</h2>
+        <api-admin-card title="Standing" storage-key="standing" tight>
           <p class="text-sm text-gray-medium mb-4">
             Warn first. A suspension with nothing on record behind it is our word against theirs.
           </p>
@@ -456,18 +488,16 @@
               </tr>
             </tbody>
           </table>
-        </div>
+        </api-admin-card>
 
-        <div class="bg-lighten p-6 mb-8">
-          <h2 class="text-lg mb-4">Endpoint Limits</h2>
+        <api-admin-card title="Endpoint Limits" storage-key="limits">
           <api-usage-table :usage="detail.usage"></api-usage-table>
-        </div>
+        </api-admin-card>
       </template>
 
-      <api-admin-twitch class="mb-8"></api-admin-twitch>
+      <api-admin-twitch></api-admin-twitch>
 
-      <div class="bg-lighten p-6">
-        <h2 class="text-lg mb-4">Recent Subscription Activity</h2>
+      <api-admin-card title="Recent Subscription Activity" storage-key="activity">
 
         <p v-if="!activity.length" class="text-sm text-gray-medium">Nothing yet.</p>
 
@@ -493,7 +523,7 @@
             </tbody>
           </table>
         </div>
-      </div>
+      </api-admin-card>
     </div>
   </div>
 </template>
@@ -518,6 +548,7 @@ export default {
       detail: null,
       activity: [],
       usage: [],
+      pending: [],
       usageColumns: [
         { key: 'email', label: 'Email' },
         { key: 'calls', label: 'Calls' },
@@ -571,6 +602,7 @@ export default {
   mounted(){
     this.loadMetrics();
     this.loadUsage();
+    this.loadPending();
     this.loadActivity();
   },
   methods: {
@@ -582,6 +614,14 @@ export default {
       try {
         const response = await this.$axios.get('/api/v1/admin/usage');
         this.usage = response.data.usage;
+      } catch (error) {
+        // As with metrics.
+      }
+    },
+    async loadPending(){
+      try {
+        const response = await this.$axios.get('/api/v1/admin/approvals/pending');
+        this.pending = response.data.pending;
       } catch (error) {
         // As with metrics.
       }
@@ -643,7 +683,7 @@ export default {
 
         // The usage list can be long enough to push the detail off screen.
         if(scroll){
-          this.$nextTick(() => this.$refs.detail?.scrollIntoView({ behavior: 'smooth' }));
+          this.$nextTick(() => this.$refs.detail?.$el.scrollIntoView({ behavior: 'smooth' }));
         }
       } catch (error) {
         this.error = this.messageFrom(error);
@@ -823,6 +863,8 @@ export default {
         if(row && response.data.last_approval){
           row.approved_at = response.data.last_approval.at;
         }
+
+        this.pending = this.pending.filter(p => p.id !== id);
       } catch (error) {
         this.error = this.messageFrom(error);
       } finally {

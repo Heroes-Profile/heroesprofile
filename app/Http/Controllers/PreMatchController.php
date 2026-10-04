@@ -32,7 +32,6 @@ class PreMatchController extends Controller
         'ar_win_rate' => null,
         'top_heroes' => [],
         'last_played' => null,
-        'recent_games' => ['qm' => [], 'sl' => [], 'ar' => []],
     ];
 
     public function show(Request $request, $prematchID)
@@ -88,12 +87,10 @@ class PreMatchController extends Controller
         $lobbyStats = app(PlayerLobbyStatsService::class);
         ['stats' => $playerStats, 'hidden' => $hidden] = $lobbyStats->forPlayers($data, Auth::user());
 
-        $recentGames = $lobbyStats->recentGames($data->reject(fn ($player) => isset($hidden[PlayerLobbyStatsService::key($player)])));
-
         // Group the data by team and use the rankTiers variables in the closure
-        $groupedData = $data->groupBy('team')->map(function ($teamData, $team) use ($rankTiersQM, $rankTiersSL, $rankTiersAR, $playerStats, $hidden, $recentGames) {
+        $groupedData = $data->groupBy('team')->map(function ($teamData, $team) use ($rankTiersQM, $rankTiersSL, $rankTiersAR, $playerStats, $hidden) {
             return [
-                'players' => $teamData->map(function ($player) use ($rankTiersQM, $rankTiersSL, $rankTiersAR, $playerStats, $hidden, $recentGames) {
+                'players' => $teamData->map(function ($player) use ($rankTiersQM, $rankTiersSL, $rankTiersAR, $playerStats, $hidden) {
                     if (isset($hidden[$player->blizz_id.'|'.$player->region])) {
                         return self::EMPTY_SLOT;
                     }
@@ -124,7 +121,6 @@ class PreMatchController extends Controller
                         'top_heroes' => $stats['top_heroes'],
                         // Entries cached before last_played existed lack it until they expire.
                         'last_played' => $stats['last_played'] ?? null,
-                        'recent_games' => $recentGames[$player->blizz_id.'|'.$player->region] ?? self::EMPTY_SLOT['recent_games'],
                     ];
                 }),
             ];
@@ -169,5 +165,30 @@ class PreMatchController extends Controller
         });
 
         return $groupedDataWithAverages;
+    }
+
+    /** Loaded after the main payload so the teams render without waiting on it. */
+    public function getRecentGames(Request $request)
+    {
+        $validationRules = [
+            'prematchid' => ['required', 'integer', new PrematchIDValidation],
+        ];
+
+        $validator = Validator::make($request->all(), $validationRules);
+
+        if ($validator->fails()) {
+            return [
+                'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        $data = Prematch::select('blizz_id', 'region')->where('prematch_replayID', $request['prematchid'])->get();
+
+        $lobbyStats = app(PlayerLobbyStatsService::class);
+        $hidden = $lobbyStats->hiddenKeys($data, Auth::user());
+
+        return $lobbyStats->recentGames($data->reject(fn ($player) => isset($hidden[PlayerLobbyStatsService::key($player)])));
     }
 }

@@ -10,6 +10,7 @@ use App\Models\Api\ApiAccountApproval;
 use App\Models\Api\ApiKey;
 use App\Models\Api\ApiUsage;
 use App\Models\Api\CashierSubscription;
+use App\Models\PatreonAccount;
 use App\Services\Api\AccountEnforcementService;
 use App\Services\Api\ApiKeyResolver;
 use App\Services\Api\PlanService;
@@ -544,6 +545,63 @@ class AdminConsoleController extends Controller
                 ];
             })->values()->all(),
         ]);
+    }
+
+    /**
+     * Accounts with access today — Stripe, comped flag or Patreon pledge — that have
+     * never been approved, or whose project description changed after the last approval.
+     */
+    public function pendingApprovals(PlanService $plans)
+    {
+        $ids = $this->entitled()->pluck('user_id')
+            ->merge(ApiAccount::where(function (Builder $query) {
+                foreach (array_keys(config('api_plans.comped_flags')) as $flag) {
+                    $query->orWhere($flag, 1);
+                }
+            })->pluck('id'));
+
+        // Patreon lives on the main site's connection, so no join.
+        $linked = ApiAccount::whereNotNull('patreon_accounts_id')->pluck('patreon_accounts_id', 'id');
+        $pledges = PatreonAccount::whereIn('patreon_accounts_id', $linked->values()->unique())
+            ->pluck('currently_entitled_amount_cents', 'patreon_accounts_id');
+
+        foreach ($linked as $accountId => $patreonId) {
+            if ($plans->planIdForPatreonCents($pledges[$patreonId] ?? null) !== null) {
+                $ids->push($accountId);
+            }
+        }
+
+        $ids = $ids->unique()->values();
+
+        $approved = ApiAccountApproval::whereIn('api_account_id', $ids)
+            ->where('type', ApiAccountApproval::APPROVAL)
+            ->groupBy('api_account_id')
+            ->selectRaw('api_account_id, max(created_at) as approved_at')
+            ->pluck('approved_at', 'api_account_id');
+
+        $pending = ApiAccount::whereIn('id', $ids)->get()
+            ->map(function (ApiAccount $account) use ($approved) {
+                $approvedAt = isset($approved[$account->id]) ? Carbon::parse($approved[$account->id]) : null;
+
+                if ($approvedAt !== null && ($account->project_updated_at === null || $account->project_updated_at->lte($approvedAt))) {
+                    return null;
+                }
+
+                return [
+                    'id' => $account->id,
+                    'email' => $account->email,
+                    'project_name' => $account->project_name,
+                    'project_updated_at' => $account->project_updated_at?->toDateString(),
+                    'approved_at' => $approvedAt?->toDateString(),
+                ];
+            })
+            ->filter()
+            // Never approved first, then whoever has waited longest.
+            ->sortBy(fn (array $row) => [$row['approved_at'] !== null, $row['project_updated_at'] ?? ''])
+            ->values()
+            ->all();
+
+        return response()->json(['pending' => $pending]);
     }
 
     /** Headline counts. Cheap aggregates only — nothing here scans a replay table. */
