@@ -201,6 +201,7 @@ Route::prefix('v1')->middleware('web')->group(function () {
 
     Route::post('match/single', [SingleMatchController::class, 'getData']);
     Route::post('prematch', [PreMatchController::class, 'getData']);
+    Route::post('prematch/recent', [PreMatchController::class, 'getRecentGames']);
 
     Route::post('profile/save/settings', [ProfileController::class, 'saveSettings']);
     Route::post('profile/remove/patreon', [ProfileController::class, 'removePatreon']);

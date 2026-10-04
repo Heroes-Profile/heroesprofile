@@ -7,6 +7,7 @@ use App\Models\Battletag;
 use App\Models\MasterMMRDataAR;
 use App\Models\MasterMMRDataQM;
 use App\Models\MasterMMRDataSL;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -28,6 +29,9 @@ class PlayerLobbyStatsService
 
     private const RECENT_GAMES_PER_MODE = 10;
 
+    /** No index serves "latest games for a player", so the scan is bounded by date instead. */
+    private const RECENT_GAMES_DAYS = 90;
+
     public function __construct(private readonly GlobalDataService $globalDataService) {}
 
     /**
@@ -40,17 +44,12 @@ class PlayerLobbyStatsService
         $playerStats = [];
         $missedPlayers = collect();
 
-        // Private and banned players keep their slot and show nothing else — the
-        // same rule as their profile pages, owner included.
-        $hidden = [];
+        $hidden = $this->hiddenKeys($players, $viewer);
 
         foreach ($players as $player) {
             $key = self::key($player);
 
-            if ($this->globalDataService->isRestrictedAccount($player->blizz_id, $player->region)
-                && ! ($viewer !== null && ($viewer->blizz_id.'|'.$viewer->region) === $key && ! BannedAccount::where('blizz_id', $player->blizz_id)->where('region', $player->region)->exists())) {
-                $hidden[$key] = true;
-
+            if (isset($hidden[$key])) {
                 continue;
             }
 
@@ -68,6 +67,29 @@ class PlayerLobbyStatsService
         }
 
         return ['stats' => $playerStats, 'hidden' => $hidden];
+    }
+
+    /**
+     * Private and banned players keep their slot and show nothing else — the
+     * same rule as their profile pages, owner included.
+     *
+     * @param  Collection<int, object>  $players
+     * @return array<string, bool> keyed by "blizz_id|region"
+     */
+    public function hiddenKeys(Collection $players, ?object $viewer = null): array
+    {
+        $hidden = [];
+
+        foreach ($players as $player) {
+            $key = self::key($player);
+
+            if ($this->globalDataService->isRestrictedAccount($player->blizz_id, $player->region)
+                && ! ($viewer !== null && ($viewer->blizz_id.'|'.$viewer->region) === $key && ! BannedAccount::where('blizz_id', $player->blizz_id)->where('region', $player->region)->exists())) {
+                $hidden[$key] = true;
+            }
+        }
+
+        return $hidden;
     }
 
     /**
@@ -126,6 +148,7 @@ class PlayerLobbyStatsService
 
         $blizzIds = $missedPlayers->pluck('blizz_id')->unique()->values()->all();
         $regions = $missedPlayers->pluck('region')->unique()->values()->all();
+        $startReplayID = $this->recentWindowStartReplayID();
 
         $ranked = DB::table('replay')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
@@ -142,7 +165,9 @@ class PlayerLobbyStatsService
             ])
             ->whereIn('player.blizz_id', $blizzIds)
             ->whereIn('replay.region', $regions)
-            ->whereIn('replay.game_type', [1, 5, 6]);
+            ->whereIn('replay.game_type', [1, 5, 6])
+            ->where('replay.replayID', '>=', $startReplayID)
+            ->where('player.replayID', '>=', $startReplayID);
 
         $rows = DB::query()
             ->fromSub($ranked, 'ranked')
@@ -192,6 +217,22 @@ class PlayerLobbyStatsService
     }
 
     /**
+     * Lowest replayID among games in the recent window. Taken from the window's
+     * first week only: later games are uploaded later, so their replayIDs are higher.
+     */
+    private function recentWindowStartReplayID(): int
+    {
+        $windowStart = now()->subDays(self::RECENT_GAMES_DAYS)->toDateString();
+
+        return (int) Cache::remember('prematch_recent_window_start_replay|'.$windowStart, 86400, function () use ($windowStart) {
+            return DB::table('replay')
+                ->where('game_date', '>=', $windowStart)
+                ->where('game_date', '<', Carbon::parse($windowStart)->addDays(7)->toDateString())
+                ->min('replayID') ?? 0;
+        });
+    }
+
+    /**
      * @param  Collection<int, object>  $missedPlayers
      * @return array<string, array<string, mixed>>
      */
@@ -202,55 +243,23 @@ class PlayerLobbyStatsService
         $blizzIds = $missedPlayers->pluck('blizz_id')->unique()->values()->all();
         $regions = $missedPlayers->pluck('region')->unique()->values()->all();
 
-        $historyStats = DB::table('replay')
-            ->join('player', 'player.replayID', '=', 'replay.replayID')
-            ->select([
-                'player.blizz_id AS blizz_id',
-                'replay.region AS region',
-                'replay.game_type AS game_type',
-                'player.hero AS hero',
-                DB::raw('SUM(player.winner = 1) AS wins'),
-                DB::raw('SUM(player.winner = 0) AS losses'),
-                DB::raw('COUNT(*) AS games'),
-            ])
-            ->whereIn('player.blizz_id', $blizzIds)
-            ->whereIn('replay.region', $regions)
-            ->whereIn('replay.game_type', [1, 5, 6])
-            ->groupBy('player.blizz_id', 'replay.region', 'replay.game_type', 'player.hero')
-            ->get()
-            ->groupBy(function ($row) {
-                return $row->blizz_id.'|'.$row->region;
-            });
+        $heroData = $this->globalDataService->getHeroes()->keyBy('id');
 
-        $qmMMRData = MasterMMRDataQM::select('blizz_id', 'region', 'conservative_rating')
-            ->where('type_value', 10000)
-            ->where('game_type', 1)
-            ->whereIn('blizz_id', $blizzIds)
-            ->whereIn('region', $regions)
-            ->get()
-            ->keyBy(function ($row) {
-                return $row->blizz_id.'|'.$row->region;
-            });
+        // Lifetime totals (10000) and per-hero rows, the same source as the profile pages.
+        $typeValues = array_merge([10000], $heroData->keys()->all());
 
-        $slMMRData = MasterMMRDataSL::select('blizz_id', 'region', 'conservative_rating')
-            ->where('type_value', 10000)
-            ->where('game_type', 5)
-            ->whereIn('blizz_id', $blizzIds)
-            ->whereIn('region', $regions)
-            ->get()
-            ->keyBy(function ($row) {
-                return $row->blizz_id.'|'.$row->region;
-            });
-
-        $arMMRData = MasterMMRDataAR::select('blizz_id', 'region', 'conservative_rating')
-            ->where('type_value', 10000)
-            ->where('game_type', 6)
-            ->whereIn('blizz_id', $blizzIds)
-            ->whereIn('region', $regions)
-            ->get()
-            ->keyBy(function ($row) {
-                return $row->blizz_id.'|'.$row->region;
-            });
+        $mmrData = [];
+        foreach ([1 => MasterMMRDataQM::class, 5 => MasterMMRDataSL::class, 6 => MasterMMRDataAR::class] as $gameType => $model) {
+            $mmrData[$gameType] = $model::select('type_value', 'blizz_id', 'region', 'conservative_rating', 'win', 'loss')
+                ->whereIn('type_value', $typeValues)
+                ->where('game_type', $gameType)
+                ->whereIn('blizz_id', $blizzIds)
+                ->whereIn('region', $regions)
+                ->get()
+                ->groupBy(function ($row) {
+                    return $row->blizz_id.'|'.$row->region;
+                });
+        }
 
         $latestBattletags = Battletag::select('blizz_id', 'region', 'account_level', 'latest_game')
             ->whereIn('blizz_id', $blizzIds)
@@ -263,28 +272,27 @@ class PlayerLobbyStatsService
                 return $rows->sortByDesc('latest_game')->first();
             });
 
-        $heroData = $this->globalDataService->getHeroes()->keyBy('id');
-
         foreach ($missedPlayers as $player) {
             $key = self::key($player);
-            $playerHistory = $historyStats->get($key, collect());
 
             $modeStats = [];
             foreach ([1 => 'qm', 5 => 'sl', 6 => 'ar'] as $gameType => $prefix) {
-                $modeRows = $playerHistory->where('game_type', $gameType);
-                $wins = (int) $modeRows->sum('wins');
-                $losses = (int) $modeRows->sum('losses');
-                $gamesPlayed = $wins + $losses;
+                $modeRows = $mmrData[$gameType]->get($key, collect());
+                $totalRow = $modeRows->firstWhere('type_value', 10000);
+                $gamesPlayed = $totalRow ? $totalRow->win + $totalRow->loss : 0;
+                $mmr = $totalRow ? round(1800 + ($totalRow->conservative_rating * 40)) : 1800;
 
                 $modeStats[$prefix] = [
+                    'mmr' => $mmr == 1800 ? null : $mmr,
                     'games_played' => $gamesPlayed,
-                    'win_rate' => $gamesPlayed > 0 ? round(($wins / $gamesPlayed) * 100, 2) : null,
-                    'top_heroes' => $modeRows->map(function ($row) {
-                        return [
-                            'hero' => $row->hero,
-                            'count' => (int) $row->games,
-                        ];
-                    })
+                    'win_rate' => $gamesPlayed > 0 ? round(($totalRow->win / $gamesPlayed) * 100, 2) : null,
+                    'top_heroes' => $modeRows->where('type_value', '!=', 10000)
+                        ->map(function ($row) {
+                            return [
+                                'hero' => $row->type_value,
+                                'count' => $row->win + $row->loss,
+                            ];
+                        })
                         ->sortByDesc('count')
                         ->take(3)
                         ->values(),
@@ -310,29 +318,21 @@ class PlayerLobbyStatsService
                     ];
                 });
 
-            $qmMMRRow = $qmMMRData->get($key);
-            $slMMRRow = $slMMRData->get($key);
-            $arMMRRow = $arMMRData->get($key);
-
-            $qm_mmr = $qmMMRRow ? round(1800 + ($qmMMRRow->conservative_rating * 40)) : 1800;
-            $sl_mmr = $slMMRRow ? round(1800 + ($slMMRRow->conservative_rating * 40)) : 1800;
-            $ar_mmr = $arMMRRow ? round(1800 + ($arMMRRow->conservative_rating * 40)) : 1800;
-
             $stats = [
                 'blizz_id' => $player->blizz_id,
                 'region' => $player->region,
                 'account_level' => $latestBattletags->get($key)?->account_level,
                 'last_played' => $latestBattletags->get($key)?->latest_game,
 
-                'qm_mmr' => $qm_mmr == 1800 ? null : $qm_mmr,
+                'qm_mmr' => $modeStats['qm']['mmr'],
                 'qm_games_played' => $modeStats['qm']['games_played'],
                 'qm_win_rate' => $modeStats['qm']['win_rate'],
 
-                'sl_mmr' => $sl_mmr == 1800 ? null : $sl_mmr,
+                'sl_mmr' => $modeStats['sl']['mmr'],
                 'sl_games_played' => $modeStats['sl']['games_played'],
                 'sl_win_rate' => $modeStats['sl']['win_rate'],
 
-                'ar_mmr' => $ar_mmr == 1800 ? null : $ar_mmr,
+                'ar_mmr' => $modeStats['ar']['mmr'],
                 'ar_games_played' => $modeStats['ar']['games_played'],
                 'ar_win_rate' => $modeStats['ar']['win_rate'],
 
