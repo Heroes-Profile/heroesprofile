@@ -51,6 +51,7 @@
             :modelabel="modeLabel"
             :color="teamColors[team]"
             :expanded="expanded === team + '-' + index"
+            :recentloading="recentLoading"
             @toggle="toggle(team + '-' + index)"
           ></prematch-player-row>
         </div>
@@ -73,6 +74,7 @@ export default {
   data(){
     return {
       isLoading: false,
+      recentLoading: false,
       data: null,
       mode: 'qm',
       expanded: null,
@@ -130,6 +132,7 @@ export default {
       }
     },
     async getRecentGames(){
+      this.recentLoading = true;
       try{
         const response = await this.$axios.post("/api/v1/prematch/recent", {
           prematchid: this.prematchid,
@@ -143,6 +146,8 @@ export default {
         });
       }catch(error){
       // No squares if this fails
+      }finally {
+        this.recentLoading = false;
       }
     },
     toggle(key) {
