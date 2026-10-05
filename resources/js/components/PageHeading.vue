@@ -19,22 +19,18 @@
         <div v-if="isOwner && !ownerHidden" class="text-[20px] height-auto">
           <!-- Owner -->
           <icon-with-hover class="mt-3"  size="small"    icon="fas fa-crown"   title="info"  popupsize="small" style="color:gold">
-                <slot>
-                  <div>
-                    <p class="max-sm:text-xs">Site Owner</p>
-                  </div>
-                </slot>
+                <div>
+                  <p class="max-sm:text-xs">Site Owner</p>
+                </div>
               </icon-with-hover>
          
         </div>
         <div v-else-if="isPatreon" class="text-[20px] height-auto">
          <!-- Patreon Subscriber -->
          <icon-with-hover class="md:mt-3"  size="small"    icon="fas fa-star"   title="info"  popupsize="small" style="color:gold">
-                <slot>
-                  <div>
-                    <p class="max-sm:text-xs">Patreon Subscriber</p>
-                  </div>
-                </slot>
+                <div>
+                  <p class="max-sm:text-xs">Patreon Subscriber</p>
+                </div>
           </icon-with-hover>
 
         </div>
