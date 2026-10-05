@@ -1,0 +1,47 @@
+{
+  "version": "2.57.0.98348",
+  "date": "October 5, 2026",
+  "title": "Hotfix",
+  "blizzard_url": "https://news.blizzard.com/en-us/article/24303007/heroes-of-the-storm-live-patch-notes-september-28-2026",
+  "general": [],
+  "maps": [],
+  "heroes": [
+    {
+      "name": "Xal'atath",
+      "short_name": "xalatath",
+      "type": "mixed",
+      "notes": [
+        "Shadow Mark [Q]: Void Orb speed slightly increased.",
+        "Void Step [E]: Targeting range reduced from 5 to 2. Distance between teleport points reduced from 7 to 6.5. Now prevented and interrupted by Immobilize.",
+        "Void Volley [Trait]: Base damage per missile reduced from 90 to 72. Now generates 1 charge for every Basic Attack against enemy Heroes and every 2 Basic Attacks against non-Heroes.",
+        "Void Eruption [R]: Uncharged damage reduced by 20%. Fully charged damage reduced by 5%.",
+        "Anchored Core (Level 1): Radius bonus reduced from 50% to 25%.",
+        "Dark Barrier (Level 4): Now only triggers when enemy Heroes are hit.",
+        "Silence of the Lamb (Level 7): Silence duration increased from 1 to 1.5 seconds.",
+        "Dark Heart's Protection (Level 13): Detonating the Dark Heart on a target affected by Shadow Mark now Silences all enemies hit. Previously Silenced on cast.",
+        "Rift Invasion (Level 20): Portals now have non-lethal Health decay, stopping at 4 Health."
+      ]
+    }
+  ],
+  "bug_fixes": {
+    "general": ["Fixed an issue where certain Maskless skins were not appearing in the game."],
+    "maps": [],
+    "heroes": [
+      {
+        "name": "Xal'atath",
+        "short_name": "xalatath",
+        "notes": [
+          "Orbiting orbs now pause during Time Stop and resume afterward.",
+          "Fixed issues that prevented orbiting orbs from correctly following the missile or continuing to orbit after a release queued during Time Stop.",
+          "Fixed an issue where Xal'atath was appearing brighter than intended in the game.",
+          "Void Volley: fixed an issue that caused impact visual effects to appear at the cursor location instead of where missiles hit.",
+          "Void Volley: fixed an issue that prevented the charge indicator from immediately displaying 1 charge upon reaching the second milestone.",
+          "Void Eruption: can now be queued to cast or release during Time Stop. Casting enters targeting immediately and charging begins when Time Stop ends; releasing queues the release and greys out the Ability button.",
+          "Void Eruption: issuing another Ability, movement, or attack order during Time Stop cancels the pending cast or queued release. Casting it again during Time Stop clears earlier queued orders.",
+          "Void Eruption: fixed issues that could allow an additional charge to begin while already charging or during Void Step.",
+          "Void Eruption: orb growth and the flight damage timer now pause while Xal'atath is affected by Time Stop."
+        ]
+      }
+    ]
+  }
+}
