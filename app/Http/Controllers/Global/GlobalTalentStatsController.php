@@ -254,7 +254,8 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
         $timeframeType = $this->globalDataService->getDefaultTimeframeType();
         $timeframe = [$this->globalDataService->getDefaultTimeframe()];
 
-        $allCacheKey = 'GlobalHeroTalentStatsBuildsAll|'.hash('sha256', json_encode([
+        // Top build only: the page shows nothing else. Renamed so the full 7-build payload isn't served from cache.
+        $allCacheKey = 'GlobalHeroTalentStatsBuildsAllTop|'.hash('sha256', json_encode([
             'timeframe_type' => $timeframeType,
             'timeframe' => $timeframe,
             'talentbuildtype' => $talentbuildType,
@@ -297,7 +298,7 @@ class GlobalTalentStatsController extends GlobalsInputValidationController
                 $cacheKey = $this->globalCacheKey('GlobalHeroTalentStatsBuilds', $versionIds, $heroRequest->all());
 
                 $cached = $cache->get($cacheKey);
-                $result[$heroModel->name][$gameType] = $cached;
+                $result[$heroModel->name][$gameType] = $cached === null ? null : collect($cached)->take(1)->values();
 
                 // Stale is served like a hit but refreshed like a miss, and keeps the
                 // combined result uncached until the refresh lands.
