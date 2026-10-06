@@ -15,6 +15,7 @@ use App\Rules\SeasonInputValidation;
 use App\Services\GlobalQueryService;
 use App\Support\GlobalCacheKey;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -236,13 +237,53 @@ class PlayerMatchHistory extends Controller
         $pagination_page = $request['pagination_page'];
         $perPage = 100;
 
-        $result = DB::table('replay')
+        // Sorting needs every one of the player's games, so it runs on the narrow
+        // tables; scores and talents are only read for the page being returned.
+        $games = DB::table('replay')
             ->join('player', 'player.replayID', '=', 'replay.replayID')
-            ->join('scores', function ($join) {
+            ->join('heroes', 'heroes.id', '=', 'player.hero')
+            ->where('player.blizz_id', $blizz_id)
+            ->whereIn('replay.game_type', $game_type)
+            ->where('replay.region', $region)
+            ->tap(function ($query) use ($season, $startDate, $endDate) {
+                $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate, 'replay.game_date');
+            })
+            ->when(! is_null($game_map), function ($query) use ($game_map) {
+                return $query->whereIn('replay.game_map', $game_map);
+            })
+            ->when(! is_null($role), function ($query) use ($role) {
+                return $query->where('heroes.new_role', $role);
+            })
+            ->when(! is_null($hero), function ($query) use ($hero) {
+                return $query->where('player.hero', $hero);
+            })
+            ->when(! is_null($stack_size), function ($query) use ($stack_size) {
+                return is_array($stack_size)
+                    ? $query->whereIn('player.stack_size', $stack_size)
+                    : $query->where('player.stack_size', $stack_size);
+            })
+            ->when($ff_blizzid && $ff_region, function ($query) use ($ff_blizzid, $ff_region) {
+                return $query->where('replay.region', $ff_region)
+                    ->whereExists(fn ($sub) => $sub->select(DB::raw(1))
+                        ->from('player as ff')
+                        ->whereColumn('ff.replayID', 'replay.replayID')
+                        ->where('ff.blizz_id', $ff_blizzid));
+            });
+
+        $total = (clone $games)->count();
+
+        $replayIds = $games
+            ->orderByDesc('replay.game_date')
+            ->forPage($pagination_page, $perPage)
+            ->pluck('replay.replayID');
+
+        $rows = $replayIds->isEmpty() ? collect() : DB::table('replay')
+            ->join('player', 'player.replayID', '=', 'replay.replayID')
+            ->leftJoin('scores', function ($join) {
                 $join->on('scores.replayID', '=', 'replay.replayID')
                     ->on('scores.battletag', '=', 'player.battletag');
             })
-            ->join('talents', function ($join) {
+            ->leftJoin('talents', function ($join) {
                 $join->on('talents.replayID', '=', 'replay.replayID')
                     ->on('talents.battletag', '=', 'player.battletag');
             })
@@ -270,35 +311,12 @@ class PlayerMatchHistory extends Controller
                 'talents.level_twenty AS level_twenty',
                 ...self::scoreColumns(),
             ])
-            ->where('blizz_id', $blizz_id)
-            ->whereIn('game_type', $game_type)
-            ->where('region', $region)
-            ->tap(function ($query) use ($season, $startDate, $endDate) {
-                $this->globalDataService->applySeasonsOrDateRange($query, $season, $startDate, $endDate);
-            })
-            ->when(! is_null($game_map), function ($query) use ($game_map) {
-                return $query->whereIn('game_map', $game_map);
-            })
-            ->when(! is_null($role), function ($query) use ($role) {
-                return $query->where('new_role', $role);
-            })
-            ->when(! is_null($hero), function ($query) use ($hero) {
-                return $query->where('hero', $hero);
-            })
-            ->when(! is_null($stack_size), function ($query) use ($stack_size) {
-                return is_array($stack_size)
-                    ? $query->whereIn('stack_size', $stack_size)
-                    : $query->where('stack_size', $stack_size);
-            })
-            ->when($ff_blizzid && $ff_region, function ($query) use ($ff_blizzid, $ff_region) {
-                return $query->where('replay.region', $ff_region)
-                    ->whereExists(fn ($sub) => $sub->select(DB::raw(1))
-                        ->from('player as ff')
-                        ->whereColumn('ff.replayID', 'replay.replayID')
-                        ->where('ff.blizz_id', $ff_blizzid));
-            })
-            ->orderByDesc('game_date')
-            ->paginate($perPage, ['*'], 'page', $pagination_page);
+            ->whereIn('replay.replayID', $replayIds)
+            ->where('player.blizz_id', $blizz_id)
+            ->orderByDesc('replay.game_date')
+            ->get();
+
+        $result = new LengthAwarePaginator($rows, $total, $perPage, $pagination_page, ['pageName' => 'page']);
 
         $heroData = $this->globalDataService->getHeroes();
         $heroData = $heroData->keyBy('id');
