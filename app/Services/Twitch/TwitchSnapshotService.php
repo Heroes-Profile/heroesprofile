@@ -53,7 +53,7 @@ class TwitchSnapshotService
         $channel->startTrialIfUnstarted();
         $this->touchLastSeen($channel);
 
-        $players = $this->players($channel, $gameId, $snapshot);
+        ['players' => $players, 'streamer_team' => $streamerTeam] = $this->players($channel, $gameId, $snapshot);
 
         $this->reportMissingFromExtension($channel, $players);
 
@@ -66,6 +66,7 @@ class TwitchSnapshotService
             players: $players,
             maxBytes: (int) config('twitch.max_payload_bytes'),
             channelName: $channel->twitch_display_name ?: $channel->twitch_login,
+            streamerTeam: $streamerTeam,
         );
 
         Cache::put(self::liveKey($channel), [
@@ -94,7 +95,7 @@ class TwitchSnapshotService
      * Normalised players with heroes and talents for this snapshot. Identity and
      * stats come from the per-game cache after the first snapshot of a game.
      *
-     * @return array<int, array<string, mixed>>
+     * @return array{players: array<int, array<string, mixed>>, streamer_team: int|null}
      */
     private function players(TwitchChannel $channel, string $gameId, array $snapshot): array
     {
@@ -114,8 +115,8 @@ class TwitchSnapshotService
             $hidden = (bool) ($known['hidden'] ?? false);
 
             $players[] = [
-                // Flipped so the streamer's team is always first.
-                'team' => $roster['flip'] ? 1 - (int) $player['team'] : (int) $player['team'],
+                // The side of the map: 0 left, 1 right.
+                'team' => (int) $player['team'],
                 'name' => $hidden ? null : $player['name'],
                 'blizz_id' => $hidden ? null : ($known['blizz_id'] ?? null),
                 'region' => $hidden ? null : ($known['region'] ?? null),
@@ -126,10 +127,10 @@ class TwitchSnapshotService
             ];
         }
 
-        // Streamer's team first, then the order the game lists them in.
+        // Left team first, then the order the game lists them in.
         usort($players, fn ($a, $b) => $a['team'] <=> $b['team']);
 
-        return $players;
+        return ['players' => $players, 'streamer_team' => $roster['streamer_team'] ?? null];
     }
 
     /**
@@ -138,7 +139,7 @@ class TwitchSnapshotService
      * is on. A lobby does not change mid-game, so every later snapshot reuses this.
      *
      * @param  array<int, array<string, mixed>>  $players
-     * @return array{flip: bool, players: array<int, array<string, mixed>>}
+     * @return array{streamer_team: int|null, players: array<int, array<string, mixed>>}
      */
     private function roster(TwitchChannel $channel, string $gameId, array $players): array
     {
@@ -171,7 +172,7 @@ class TwitchSnapshotService
             ? ['stats' => [], 'hidden' => []]
             : $this->lobbyStats->forPlayers($known);
 
-        $roster = ['flip' => false, 'players' => []];
+        $roster = ['streamer_team' => null, 'players' => []];
 
         foreach ($identities as $identity) {
             $key = PlayerLobbyStatsService::key($identity);
@@ -189,7 +190,7 @@ class TwitchSnapshotService
             if ($channel->hasPlayerLinked()
                 && $identity->blizz_id === $channel->blizz_id
                 && $identity->region === $channel->region) {
-                $roster['flip'] = $identity->team === 1;
+                $roster['streamer_team'] = $identity->team;
             }
         }
 
