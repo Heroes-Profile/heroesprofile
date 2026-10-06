@@ -11,7 +11,8 @@ namespace App\Services\Twitch;
  *
  * Shape (version 1):
  *
- *   { v: 1, g: game_id, s: seq, p: phase, t: game mode, m: map, c: channel name, pl: [player…] }
+ *   { v: 1, g: game_id, s: seq, p: phase, t: game mode, m: map, c: channel name,
+ *     st: streamer's team|null, pl: [player…] }
  *
  *   player: [team, name|null, blizz_id|null, region|null, hero_id|null,
  *            [7 talent ids, 0 = not picked yet], stats|null, 1 if an A.I.]
@@ -20,7 +21,8 @@ namespace App\Services\Twitch;
  *   stats:  { l: account level, q|s|a: [mmr, rank, win rate, games] }  (quick match,
  *           storm league, aram; a mode the player has no rating in is omitted)
  *
- * The streamer's team is always team 0.
+ * Team is the side of the map: 0 left, 1 right. st is null when the channel's
+ * linked player is not in the lobby.
  */
 final class TwitchPayload
 {
@@ -29,7 +31,7 @@ final class TwitchPayload
     /**
      * @param  array<int, array<string, mixed>>  $players  normalised players, see TwitchSnapshotService
      */
-    public static function encode(string $gameId, int $seq, string $phase, ?string $mode, ?string $map, array $players, int $maxBytes, ?string $channelName = null): string
+    public static function encode(string $gameId, int $seq, string $phase, ?string $mode, ?string $map, array $players, int $maxBytes, ?string $channelName = null, ?int $streamerTeam = null): string
     {
         $message = [
             'v' => self::VERSION,
@@ -40,6 +42,7 @@ final class TwitchPayload
             'm' => $map,
             // Names the streamer's team in the extension.
             'c' => $channelName,
+            'st' => $streamerTeam,
             'pl' => array_map(fn ($player) => array_merge([
                 $player['team'],
                 $player['name'],
