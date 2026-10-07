@@ -426,6 +426,10 @@ class BuildApiSpec extends Command
             array_push($invalid, 'timeframe_unavailable', 'timeframe_too_wide', 'group_by_map_unsupported');
         }
 
+        if ($async) {
+            $invalid[] = 'query_too_large';
+        }
+
         $responses = [
             '401' => $this->errorResponse('No key, or a key that is not recognised.', ['unauthenticated']),
             '403' => $this->errorResponse('The key is valid but may not make this call.', $forbidden),
@@ -439,7 +443,8 @@ class BuildApiSpec extends Command
 
         // Polling runs no key checks: the job id is what identifies the work.
         if ($isJob) {
-            unset($responses['401'], $responses['403'], $responses['422']);
+            unset($responses['401'], $responses['403']);
+            $responses['422'] = $this->errorResponse('The query ran past 45 minutes and was stopped. Narrow the original call and make it again.', ['query_too_large']);
         }
 
         return $responses;

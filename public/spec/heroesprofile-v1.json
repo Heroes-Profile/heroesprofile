@@ -503,7 +503,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1181,7 +1181,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1590,7 +1590,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2113,7 +2113,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2802,7 +2802,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3898,7 +3898,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -4365,7 +4365,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -5492,7 +5492,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -6145,7 +6145,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -7107,7 +7107,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -59750,7 +59750,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -60961,7 +60961,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -61037,6 +61037,16 @@
                     },
                     "404": {
                         "description": "Nothing found for what was asked. Codes: `not_found`, `job_not_found`.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "The query ran past 45 minutes and was stopped. Narrow the original call and make it again. Codes: `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -80176,7 +80186,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `timeframe_unavailable`, `timeframe_too_wide`, `group_by_map_unsupported`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -82608,7 +82618,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -83476,7 +83486,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -84694,7 +84704,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -87268,7 +87278,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -88290,7 +88300,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -91028,7 +91038,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -92024,7 +92034,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -95811,7 +95821,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -98687,7 +98697,7 @@
                         }
                     },
                     "422": {
-                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`.",
+                        "description": "A parameter is missing or not accepted. Codes: `invalid_parameters`, `missing_*`, `unknown_*`, `query_too_large`.",
                         "content": {
                             "application/json": {
                                 "schema": {

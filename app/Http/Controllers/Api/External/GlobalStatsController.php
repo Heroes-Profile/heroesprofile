@@ -336,6 +336,9 @@ class GlobalStatsController extends Controller
             404 => response()->json([
                 'error' => ['code' => 'job_not_found', 'message' => 'No job with that id. Jobs expire once collected or after they age out.'],
             ], 404),
+            422 => response()->json([
+                'error' => ['code' => 'query_too_large', 'message' => GlobalQueryService::TOO_LARGE_MESSAGE],
+            ], 422),
             500 => response()->json([
                 'error' => ['code' => 'job_failed', 'message' => 'The query behind this job failed. Make the original call again to start a new one.'],
             ], 500),

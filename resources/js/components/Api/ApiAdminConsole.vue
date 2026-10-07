@@ -2,7 +2,7 @@
   <div>
     <page-heading :infoText1="infoText" heading="Admin"></page-heading>
 
-    <div class="mx-auto max-w-[1000px] p-4">
+    <div class="mx-auto max-w-[1600px] p-4">
       <div v-if="error" class="bg-red p-3 mb-4">{{ error }}</div>
       <div v-if="notice" class="bg-teal p-3 mb-4">{{ notice }}</div>
 

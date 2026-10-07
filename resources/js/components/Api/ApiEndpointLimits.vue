@@ -29,6 +29,12 @@
           polling don't count towards this limit.
         </p>
         <p class="text-sm mt-2">
+          A job's query can run for at most 45 minutes. One that runs longer is stopped and
+          answers <code class="text-lteal">422</code> with the code
+          <code class="text-lteal">query_too_large</code>; narrow the call and try again. The same
+          call is refused straight away for the next 24 hours.
+        </p>
+        <p class="text-sm mt-2">
           Responses carry
           <code class="text-lteal">X-HP-Quota-Limit</code>,
           <code class="text-lteal">X-HP-Quota-Remaining</code> and
