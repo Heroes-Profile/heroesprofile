@@ -3,6 +3,7 @@
 namespace App\Models\Api;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class ApiUsage extends Model
 {
@@ -23,6 +24,7 @@ class ApiUsage extends Model
         'calls',
         'egress_bytes',
         'compute_ms',
+        'db_ms',
         'window_started_at',
     ];
 
@@ -30,8 +32,28 @@ class ApiUsage extends Model
         'calls' => 'integer',
         'egress_bytes' => 'integer',
         'compute_ms' => 'integer',
+        'db_ms' => 'integer',
         'window_started_at' => 'datetime',
     ];
+
+    /** Adds time to an account's row for an endpoint, if it has one. */
+    public static function addTime(int $accountId, string $endpoint, int $computeMs, int $dbMs): void
+    {
+        $computeMs = max(0, $computeMs);
+        $dbMs = max(0, $dbMs);
+
+        if ($computeMs === 0 && $dbMs === 0) {
+            return;
+        }
+
+        static::query()
+            ->where('api_account_id', $accountId)
+            ->where('endpoint', $endpoint)
+            ->update([
+                'compute_ms' => DB::raw('compute_ms + '.$computeMs),
+                'db_ms' => DB::raw('db_ms + '.$dbMs),
+            ]);
+    }
 
     public function windowHasExpired(): bool
     {

@@ -116,6 +116,8 @@
                 <td class="py-2 px-3">{{ formatNumber(row.calls) }}</td>
                 <td class="py-2 px-3">{{ formatBytes(row.egress_bytes) }}</td>
                 <td class="py-2 px-3">{{ formatDuration(row.compute_ms) }}</td>
+                <td class="py-2 px-3">{{ formatDuration(row.db_ms) }}</td>
+                <td class="py-2 px-3">{{ formatCost(row.db_cost_usd) }}</td>
                 <td class="py-2 px-3">{{ formatCost(row.cost_usd) }}</td>
                 <td class="py-2 px-3" :class="{ 'text-gray-medium': !row.approved_at }">{{ row.approved_at || 'Never' }}</td>
               </tr>
@@ -554,6 +556,8 @@ export default {
         { key: 'calls', label: 'Calls' },
         { key: 'egress_bytes', label: 'Egress' },
         { key: 'compute_ms', label: 'Compute' },
+        { key: 'db_ms', label: 'DB Time' },
+        { key: 'db_cost_usd', label: 'DB Cost' },
         { key: 'cost_usd', label: 'Cost' },
         { key: 'approved_at', label: 'Approved' },
       ],

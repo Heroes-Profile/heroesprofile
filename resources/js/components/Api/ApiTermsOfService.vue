@@ -216,8 +216,13 @@
       <ul class="list-disc ml-6 mb-6 space-y-1">
         <li>
           You will not abuse our data or server resources. Each plan sets a limit on calls per minute,
-          and a weekly allowance for each endpoint; if you abuse this, your account may be
-          terminated.
+          a weekly allowance for each endpoint, and how many uncached queries your account can have
+          running at once; if you abuse this, your account may be terminated.
+        </li>
+        <li>
+          We measure the server and database time your calls use, including queries that keep
+          running after a call has answered <code>202</code>. Usage that puts sustained load on the
+          service may be treated as abuse even when it stays within your plan's limits.
         </li>
         <li>
           You will keep your API key private. It authenticates as your account, and calls made with

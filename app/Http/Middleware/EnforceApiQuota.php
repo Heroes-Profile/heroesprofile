@@ -6,6 +6,7 @@ use App\Auth\ApiKeyGuard;
 use App\Models\Api\ApiEndpoint;
 use App\Models\Api\ApiUsage;
 use App\Support\ApiTermsDeadline;
+use App\Support\DatabaseTimer;
 use App\Support\ResponseBytes;
 use Closure;
 use Illuminate\Http\Request;
@@ -34,6 +35,21 @@ class EnforceApiQuota
 
     /** Where handle() leaves what terminate() needs. */
     private const TIMING_ATTRIBUTE = 'apiQuotaTiming';
+
+    /**
+     * Who a call is being charged to, or null when it isn't metered — not an API
+     * call, or one the admin bypass or fixtures answered.
+     *
+     * @return array{account_id: int, endpoint: string}|null
+     */
+    public static function meteredAs(Request $request): ?array
+    {
+        $timing = $request->attributes->get(self::TIMING_ATTRIBUTE);
+
+        return is_array($timing)
+            ? ['account_id' => $timing['account_id'], 'endpoint' => $timing['endpoint']]
+            : null;
+    }
 
     public function handle(Request $request, Closure $next, string $endpoint): Response
     {
@@ -167,7 +183,11 @@ class EnforceApiQuota
             'since' => microtime(true),
         ]);
 
+        $dbMark = DatabaseTimer::mark();
+
         $response = $next($request);
+
+        $dbMs = DatabaseTimer::since($dbMark);
 
         // Charged only for an answer: a 200, or a 202 whose job will deliver one.
         // A refused or failed call costs nothing.
@@ -182,6 +202,9 @@ class EnforceApiQuota
         }
 
         $this->recordEgress($context->account->id, $endpoint, $response);
+
+        // A cold call's job is charged when it runs. See GlobalQueryService::chargeJob().
+        ApiUsage::addTime($context->account->id, $endpoint, 0, $dbMs);
 
         // Time spent building the answer, banked here rather than left to terminate().
         // Not every call reaches terminate(): the docs Try It console dispatches
@@ -244,6 +267,7 @@ class EnforceApiQuota
                 'calls' => 0,
                 'egress_bytes' => 0,
                 'compute_ms' => 0,
+                'db_ms' => 0,
                 'window_started_at' => now(),
             ]);
         }
@@ -253,6 +277,7 @@ class EnforceApiQuota
                 'calls' => 0,
                 'egress_bytes' => 0,
                 'compute_ms' => 0,
+                'db_ms' => 0,
                 'window_started_at' => now(),
             ])->save();
         }

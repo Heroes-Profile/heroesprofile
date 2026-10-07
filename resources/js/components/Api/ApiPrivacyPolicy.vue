@@ -3,7 +3,7 @@
     <page-heading heading="API Privacy Policy" :infoText1="infoText"></page-heading>
 
     <div class="mx-auto max-w-[1000px] px-4 mt-6 pb-16">
-      <p class="text-sm text-gray-medium mb-6">Last updated: September 2026</p>
+      <p class="text-sm text-gray-medium mb-6">Last updated: October 2026</p>
 
       <p class="mb-6">
         Skill Tree Development, LLC (referred to as Heroes Profile in this document) operates the
@@ -40,6 +40,11 @@
         was made with, the endpoint, the time, and the calling IP address. IP addresses are recorded
         because rate limiting and abuse handling cannot work without them, including for
         unauthenticated callers who have no key.
+      </p>
+      <p class="mb-3">
+        For each account we also total, per endpoint, how much data we sent and how much server and
+        database time the calls used, including queries that ran in the background. We use these
+        totals to estimate what serving your usage costs and to spot load that hurts the service.
       </p>
       <p class="mb-6">
         Usage records are kept for 90 days, other than aggregate counts, which we keep for longer so

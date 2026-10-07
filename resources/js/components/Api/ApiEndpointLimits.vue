@@ -18,6 +18,15 @@
           far fewer.
         </p>
         <p class="text-sm mt-2">
+          A call that isn't cached answers <code class="text-lteal">202</code> and runs as a job,
+          which can take several minutes. Each account can have 3 of these running at once on
+          Basic, 5 on Intermediate and 10 on Developer. Starting another while you're at the limit
+          returns <code class="text-lteal">429</code> with the code
+          <code class="text-lteal">too_many_open_jobs</code> and isn't charged. Collect a running
+          job from <code class="text-lteal">/v1/jobs</code> and try again. Cached answers and job
+          polling don't count towards this limit.
+        </p>
+        <p class="text-sm mt-2">
           Responses carry
           <code class="text-lteal">X-HP-Quota-Limit</code>,
           <code class="text-lteal">X-HP-Quota-Remaining</code> and

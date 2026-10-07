@@ -58,6 +58,10 @@
             <div class="text-lteal">{{ formatDuration(totals.computeMs) }}</div>
           </div>
           <div>
+            <div class="text-xs text-gray-medium">Database Time</div>
+            <div class="text-lteal">{{ formatDuration(totals.dbMs) }}</div>
+          </div>
+          <div>
             <div class="text-xs text-gray-medium">Estimated Cost</div>
             <div class="text-lteal">{{ formatCost(totals.cost) }}</div>
           </div>
@@ -67,7 +71,9 @@
           <span class="text-lteal">Beta</span> — cost reporting is new and may not be
           accurate. Across the current window, and a generous estimate at that: server
           time is counted per request, but requests share a container, so the real figure
-          is lower. A guide to what the usage costs to serve, not a bill.
+          is lower. Database time is what your queries held our database for, including
+          queries that ran in the background after a <code>202</code>. A guide to what the
+          usage costs to serve, not a bill.
         </p>
       </div>
 
@@ -140,8 +146,9 @@ export default {
         .reduce((carry, row) => ({
           bytes: carry.bytes + (row.egress_bytes || 0),
           computeMs: carry.computeMs + (row.compute_ms || 0),
+          dbMs: carry.dbMs + (row.db_ms || 0),
           cost: carry.cost + (row.cost_usd || 0),
-        }), { bytes: 0, computeMs: 0, cost: 0 });
+        }), { bytes: 0, computeMs: 0, dbMs: 0, cost: 0 });
     },
   },
   methods: {
