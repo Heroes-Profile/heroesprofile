@@ -33,7 +33,8 @@ class RouteServiceProvider extends ServiceProvider
         'api.external.replays.fingerprint',
         'api.external.replays.parsed',
         'api.external.prematch',
-        // The same four under their old paths, for clients that never updated.
+        'api.external.prematch.mode',
+        // The first four under their old paths, for clients that never updated.
         'api.legacy.*',
     ];
 

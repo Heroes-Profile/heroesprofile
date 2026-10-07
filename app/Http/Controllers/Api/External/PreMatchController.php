@@ -48,6 +48,26 @@ class PreMatchController extends Controller
         return $this->text((string) $prematchReplayID);
     }
 
+    /**
+     * The game's mode, sent once the game has started. The uploader only logs the
+     * answer, and treats any 4xx as final rather than retrying on the next save.
+     */
+    public function mode(Request $request, PreMatchService $prematch, string $prematchID): Response
+    {
+        $mode = $request->input('mode');
+
+        if (! is_string($mode) || $mode === '' || strlen($mode) > 32) {
+            return $this->text('Missing mode', 400);
+        }
+
+        return match ($prematch->setGameMode((int) $prematchID, $mode)) {
+            'set' => response()->noContent(),
+            'unknown_mode' => $this->text('Unknown mode', 422),
+            'already_set' => $this->text('Mode already set', 409),
+            default => $this->text('No such prematch', 404),
+        };
+    }
+
     private function text(string $body, int $status = 200): Response
     {
         return response($body, $status, ['Content-Type' => 'text/plain']);

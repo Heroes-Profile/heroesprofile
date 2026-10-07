@@ -46,6 +46,7 @@ class BuildApiSpec extends Command
     /** Routed for the uploader, but not part of the documented API. */
     private const UNDOCUMENTED = [
         'api.external.prematch',
+        'api.external.prematch.mode',
         'api.external.rank-samples',
         // Promotes the replay's source to desktop on every read, so only the desktop client may call it.
         'api.external.replays.fingerprint',
