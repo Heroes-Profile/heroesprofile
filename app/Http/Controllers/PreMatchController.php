@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GameType;
 use App\Models\Prematch;
 use App\Rules\PrematchIDValidation;
 use App\Services\PlayerLobbyStatsService;
@@ -165,6 +166,33 @@ class PreMatchController extends Controller
         });
 
         return $groupedDataWithAverages;
+    }
+
+    /**
+     * The game's mode, once the uploader has sent it from the first storm save, as a
+     * game type short name (`qm`, `sl`, `ar`, ...). Null until then; the page polls.
+     */
+    public function getMode(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'prematchid' => ['required', 'integer', new PrematchIDValidation],
+        ]);
+
+        if ($validator->fails()) {
+            return [
+                'data' => $request->all(),
+                'errors' => $validator->errors()->all(),
+                'status' => 'failure to validate inputs',
+            ];
+        }
+
+        $gameType = Prematch::where('prematch_replayID', $request['prematchid'])
+            ->whereNotNull('game_type')
+            ->value('game_type');
+
+        return [
+            'mode' => $gameType === null ? null : GameType::where('type_id', $gameType)->value('short_name'),
+        ];
     }
 
     /** Loaded after the main payload so the teams render without waiting on it. */

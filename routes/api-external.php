@@ -384,6 +384,12 @@ Route::post('prematch', [PreMatchController::class, 'store'])
     ->middleware('throttle:prematch')
     ->name('api.external.prematch');
 
+// The mode, from the game's first storm save. Shares the lobby call's ceiling.
+Route::post('prematch/{prematchID}/mode', [PreMatchController::class, 'mode'])
+    ->whereNumber('prematchID')
+    ->middleware('throttle:prematch')
+    ->name('api.external.prematch.mode');
+
 /*
 | Loading-screen samples from the uploader's opt-in rank reader (its "Ranks"
 | build), only while that reader is being built. Private storage, strict

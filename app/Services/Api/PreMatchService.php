@@ -3,6 +3,7 @@
 namespace App\Services\Api;
 
 use App\Models\Battletag;
+use App\Models\GameType;
 use App\Models\Prematch;
 use Illuminate\Support\Facades\DB;
 
@@ -58,6 +59,38 @@ class PreMatchService
 
             return $prematchReplayID;
         });
+    }
+
+    /**
+     * Records which mode a pre-match game turned out to be. The lobby the page was
+     * made from has no mode; the uploader reads it from the game's first storm save
+     * and sends it here, and the page switches its filter to match.
+     *
+     * Write-once: the first answer for a game stands, so a stray call cannot flip
+     * the filter on a page someone is already looking at.
+     *
+     * @param  string  $mode  a `game_types.no_space_name`, as the client's GameMode enum spells it
+     * @return string `set`, `unknown_mode`, `not_found` or `already_set`
+     */
+    public function setGameMode(int $prematchReplayID, string $mode): string
+    {
+        // Matchmade modes only: Brawl is -1, which the unsigned column cannot hold,
+        // and Custom has no filter to switch to.
+        $gameType = GameType::where('no_space_name', $mode)->where('type_id', '>=', 1)->value('type_id');
+
+        if ($gameType === null) {
+            return 'unknown_mode';
+        }
+
+        $updated = Prematch::where('prematch_replayID', $prematchReplayID)
+            ->whereNull('game_type')
+            ->update(['game_type' => $gameType]);
+
+        if ($updated > 0) {
+            return 'set';
+        }
+
+        return Prematch::where('prematch_replayID', $prematchReplayID)->exists() ? 'already_set' : 'not_found';
     }
 
     /**

@@ -14,7 +14,7 @@
             'bg-gray-dark hover:bg-gray-light': mode !== item.key,
           }
         ]"
-        @click="mode = item.key"
+        @click="selectMode(item.key)"
       >
         {{ item.label }}
       </a>
@@ -66,6 +66,8 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie';
+
 export default {
   name: 'Prematch',
   props: {
@@ -77,6 +79,10 @@ export default {
       recentLoading: false,
       data: null,
       mode: 'qm',
+      // Set once the viewer picks a mode themselves; the game's own mode no longer overrides it.
+      modePicked: false,
+      modePollTimer: null,
+      modePollsLeft: 60,
       expanded: null,
       modes: [
         { key: 'qm', label: 'Quick Match', short: 'QM' },
@@ -87,7 +93,14 @@ export default {
     }
   },
   created(){
+    const savedMode = Cookies.get('prematchMode');
+    if (this.modes.some(item => item.key === savedMode)) {
+      this.mode = savedMode;
+    }
     this.getData();
+  },
+  beforeUnmount() {
+    clearTimeout(this.modePollTimer);
   },
   computed: {
     modeLabel() {
@@ -129,7 +142,38 @@ export default {
       }
       if (this.data) {
         this.getRecentGames();
+        this.pollGameMode();
       }
+    },
+    // The page opens at the loading screen, before the game's mode is known. The uploader
+    // sends it once the game starts, so check every few seconds for a while.
+    async pollGameMode(){
+      if (this.modePicked) {
+        return;
+      }
+      try{
+        const response = await this.$axios.post("/api/v1/prematch/mode", {
+          prematchid: this.prematchid,
+        });
+        const gameMode = response.data.mode;
+        if (gameMode) {
+          if (!this.modePicked && this.modes.some(item => item.key === gameMode)) {
+            this.mode = gameMode;
+          }
+          return;
+        }
+      }catch(error){
+      // Try again on the next round
+      }
+      if (--this.modePollsLeft > 0) {
+        this.modePollTimer = setTimeout(this.pollGameMode, 5000);
+      }
+    },
+    selectMode(key) {
+      this.mode = key;
+      this.modePicked = true;
+      clearTimeout(this.modePollTimer);
+      Cookies.set('prematchMode', key, { expires: 365, path: '/' });
     },
     async getRecentGames(){
       this.recentLoading = true;
