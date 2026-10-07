@@ -85,7 +85,14 @@
           </tr>
 
           <tr>
-            <td>Uncached queries running at once</td>
+            <td>
+              <span class="inline-flex items-center gap-2">
+                Active jobs
+                <round-image size="small" icon="fas fa-info" title="info" popupsize="large" mobileClick="true" :hidedelay="1000">
+                  <slot><p class="text-sm p-2 text-left">{{ activeJobsInfo }}</p></slot>
+                </round-image>
+              </span>
+            </td>
             <td class="text-center">3</td>
             <td class="text-center">5</td>
             <td class="text-center">10</td>
@@ -140,6 +147,7 @@ export default {
     return {
       infoText: "Hero statistics, talent builds, match data, player profiles and MMR — the same data that powers www.heroesprofile.com.",
       directIntegrationInfo: "Calling the API live each time one of your users loads a page or clicks a button. Without it, your project must store what it retrieves and serve its users from that copy, so their activity never reaches our API.",
+      activeJobsInfo: "A call that isn't cached starts a job and answers 202. That job is active until it finishes, and this is how many your account can have active at once. Cached answers come straight back and don't count.",
       features: {
         basic: [
           'Ideal for an individual player looking to keep track of data in an outside spreadsheet',

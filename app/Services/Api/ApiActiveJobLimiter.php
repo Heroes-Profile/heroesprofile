@@ -12,13 +12,13 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Caps how many cold jobs one API account can have queued or running at once.
+ * Caps an API account's active jobs: cold jobs it has queued or running at once.
  *
  * Counted from the jobs' own records rather than a counter, so a job that
  * finishes, runs out of retries or ages out frees its slot without anything
  * having to release it.
  */
-class ApiOpenJobLimiter
+class ApiActiveJobLimiter
 {
     private const LOCK_SECONDS = 15;
 
@@ -46,12 +46,12 @@ class ApiOpenJobLimiter
         $cache = Cache::store('database');
 
         try {
-            return $cache->lock('api_open_jobs_lock:'.$accountId, self::LOCK_SECONDS)
+            return $cache->lock('api_active_jobs_lock:'.$accountId, self::LOCK_SECONDS)
                 ->block(self::LOCK_WAIT_SECONDS, function () use ($start, $limit, $accountId, $cache) {
-                    $open = $this->openJobIds($accountId);
+                    $active = $this->activeJobIds($accountId);
 
-                    if (count($open) >= $limit) {
-                        Log::info('API open job limit reached', [
+                    if (count($active) >= $limit) {
+                        Log::info('API active job limit reached', [
                             'account_id' => $accountId,
                             'limit' => $limit,
                         ]);
@@ -61,8 +61,8 @@ class ApiOpenJobLimiter
 
                     [$jobId, $response] = $start();
 
-                    $open[] = $jobId;
-                    $cache->put($this->listKey($accountId), $open, self::LIST_TTL_SECONDS);
+                    $active[] = $jobId;
+                    $cache->put($this->listKey($accountId), $active, self::LIST_TTL_SECONDS);
 
                     return $response;
                 });
@@ -81,7 +81,7 @@ class ApiOpenJobLimiter
             return null;
         }
 
-        $limits = config('api.open_jobs.limits');
+        $limits = config('api.active_jobs.limits');
         $limit = 0;
 
         foreach ($context->planIds as $planId) {
@@ -96,7 +96,7 @@ class ApiOpenJobLimiter
     }
 
     /** @return array<int, string> */
-    private function openJobIds(int $accountId): array
+    private function activeJobIds(int $accountId): array
     {
         $jobIds = Cache::store('database')->get($this->listKey($accountId));
 
@@ -118,17 +118,17 @@ class ApiOpenJobLimiter
     {
         return response()->json([
             'error' => [
-                'code' => 'too_many_open_jobs',
-                'message' => 'Your account already has '.$limit.' queries running, the most your plan allows at once.'
+                'code' => 'too_many_active_jobs',
+                'message' => 'Your account already has '.$limit.' active jobs, the most your plan allows.'
                     .' Collect one from /v1/jobs before starting another. Cached answers are not affected.',
             ],
         ], 429)
-            ->header('Retry-After', (string) config('api.open_jobs.retry_after'))
-            ->header('X-HP-Open-Jobs-Limit', (string) $limit);
+            ->header('Retry-After', (string) config('api.active_jobs.retry_after'))
+            ->header('X-HP-Active-Jobs-Limit', (string) $limit);
     }
 
     private function listKey(int $accountId): string
     {
-        return 'api_open_jobs:'.$accountId;
+        return 'api_active_jobs:'.$accountId;
     }
 }

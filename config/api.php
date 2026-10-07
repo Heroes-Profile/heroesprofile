@@ -205,13 +205,13 @@ return [
     ],
 
     /*
-    | Cold jobs one account can have queued or running at once, by plan id. The
+    | Active jobs: cold jobs one account can have queued or running at once, by plan id. The
     | per-minute limit can't see these: a cache miss answers 202 in milliseconds
     | and its query runs for up to half an hour. Plans not listed are uncapped,
-    | and so is any account holding one. See ApiOpenJobLimiter.
+    | and so is any account holding one. See ApiActiveJobLimiter.
     */
 
-    'open_jobs' => [
+    'active_jobs' => [
         'limits' => [
             1 => 3,  // Basic
             2 => 5,  // Intermediate

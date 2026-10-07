@@ -432,7 +432,7 @@ class BuildApiSpec extends Command
             '404' => $this->errorResponse('Nothing found for what was asked.', $notFound),
             '422' => $this->errorResponse('A parameter is missing or not accepted.', $invalid),
             '429' => $async
-                ? $this->errorResponse('Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`.', ['rate_limited', 'quota_exceeded', 'too_many_open_jobs'])
+                ? $this->errorResponse('Too many requests: the per-minute limit, the weekly allowance, or the account\'s active job limit (uncached calls still running). See `Retry-After`.', ['rate_limited', 'quota_exceeded', 'too_many_active_jobs'])
                 : $this->errorResponse('Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`.', ['rate_limited', 'quota_exceeded']),
             '500' => $this->errorResponse('Failed on our side. Not charged.', $isJob ? ['server_error', 'job_failed'] : ['server_error']),
         ];
