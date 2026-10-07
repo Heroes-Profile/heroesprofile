@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Http\Middleware\EnforceApiQuota;
 use App\Http\Middleware\TrackSlowRequests;
 use App\Models\Api\ApiUsage;
-use App\Services\Api\ApiOpenJobLimiter;
+use App\Services\Api\ApiActiveJobLimiter;
 use App\Support\DatabaseCacheReader;
 use App\Support\DatabaseTimer;
 use App\Support\GlobalCacheFreshness;
@@ -79,7 +79,7 @@ class GlobalQueryService
             return $this->acceptedResponse($existing['job_id'], $existing['status']);
         }
 
-        return app(ApiOpenJobLimiter::class)->guard(function () use ($cache, $cacheKey, $cacheIndexKey, $handlerClass, $handlerMethod, $requestData, $cacheTtlSeconds, $bypassCache) {
+        return app(ApiActiveJobLimiter::class)->guard(function () use ($cache, $cacheKey, $cacheIndexKey, $handlerClass, $handlerMethod, $requestData, $cacheTtlSeconds, $bypassCache) {
             $jobId = (string) Str::uuid();
 
             $jobPayload = [
@@ -131,7 +131,7 @@ class GlobalQueryService
             return $this->acceptedResponse($existing['job_id'], $existing['status']);
         }
 
-        return app(ApiOpenJobLimiter::class)->guard(function () use ($cache, $cacheKey, $cacheIndexKey, $handlerClass, $handlerMethod, $requestData, $cacheTtlSeconds) {
+        return app(ApiActiveJobLimiter::class)->guard(function () use ($cache, $cacheKey, $cacheIndexKey, $handlerClass, $handlerMethod, $requestData, $cacheTtlSeconds) {
             $jobId = (string) Str::uuid();
 
             $jobPayload = [
@@ -273,7 +273,7 @@ class GlobalQueryService
         }
 
         // The batch takes one slot, not one per child.
-        return app(ApiOpenJobLimiter::class)->guard(function () use ($parentCacheKey, $children, $handlerClass, $handlerMethod, $window, $bypassCache) {
+        return app(ApiActiveJobLimiter::class)->guard(function () use ($parentCacheKey, $children, $handlerClass, $handlerMethod, $window, $bypassCache) {
             $jobId = $this->startBatch($parentCacheKey, $children, $handlerClass, $handlerMethod, $window->ttl, null);
 
             return [$jobId, $this->withBypassHeader($this->batchAccepted($jobId), $bypassCache)];

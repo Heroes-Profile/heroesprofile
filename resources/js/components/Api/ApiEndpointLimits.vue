@@ -12,17 +12,19 @@
           <code class="text-lteal">403</code> on that tier.
         </p>
         <p class="text-sm mt-2">
-          Every tier also allows 60 requests a minute, or 120 on Developer. A few endpoints
+          Every tier also allows 60 calls a minute, or 120 on Developer, and a number of
+          active jobs (below). A few endpoints
           differ from that, noted against them below — the ones answering a single replay
           allow far more, and the ones that fan a single call out into many queries allow
           far fewer.
         </p>
         <p class="text-sm mt-2">
-          A call that isn't cached answers <code class="text-lteal">202</code> and runs as a job,
-          which can take several minutes. Each account can have 3 of these running at once on
-          Basic, 5 on Intermediate and 10 on Developer. Starting another while you're at the limit
+          <strong>Active jobs.</strong> A call that isn't cached answers
+          <code class="text-lteal">202</code> and starts a job, which can take several minutes.
+          The job is active until it finishes. Each account can have 3 active jobs on Basic,
+          5 on Intermediate and 10 on Developer. Starting another while you're at the limit
           returns <code class="text-lteal">429</code> with the code
-          <code class="text-lteal">too_many_open_jobs</code> and isn't charged. Collect a running
+          <code class="text-lteal">too_many_active_jobs</code> and isn't charged. Collect a running
           job from <code class="text-lteal">/v1/jobs</code> and try again. Cached answers and job
           polling don't count towards this limit.
         </p>

@@ -216,8 +216,9 @@
       <ul class="list-disc ml-6 mb-6 space-y-1">
         <li>
           You will not abuse our data or server resources. Each plan sets a limit on calls per minute,
-          a weekly allowance for each endpoint, and how many uncached queries your account can have
-          running at once; if you abuse this, your account may be terminated.
+          a weekly allowance for each endpoint, and a limit on active jobs (uncached calls your
+          account has still running); if you abuse this, your account may be
+          terminated.
         </li>
         <li>
           We measure the server and database time your calls use, including queries that keep

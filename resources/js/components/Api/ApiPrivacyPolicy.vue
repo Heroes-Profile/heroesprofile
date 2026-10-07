@@ -35,8 +35,8 @@
 
       <h3 class="text-xl mb-2">3. Usage Tracking</h3>
       <p class="mb-3">
-        We record the calls made by each key in order to enforce the per-minute and per-week limits
-        of your plan, and to see which endpoints are under load. For each call we record the key it
+        We record the calls made by each key in order to enforce the per-minute, per-week and
+        active job limits of your plan, and to see which endpoints are under load. For each call we record the key it
         was made with, the endpoint, the time, and the calling IP address. IP addresses are recorded
         because rate limiting and abuse handling cannot work without them, including for
         unauthenticated callers who have no key.

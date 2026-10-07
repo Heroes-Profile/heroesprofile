@@ -228,8 +228,8 @@
       <code class="text-lteal">401</code> no key, <code class="text-lteal">403</code> not in
       your plan, <code class="text-lteal">404</code> nothing found,
       <code class="text-lteal">422</code> a bad parameter (with an <code>errors</code> list saying what),
-      <code class="text-lteal">429</code> out of quota, rate limited, or too many uncached queries
-      running at once (<code>too_many_open_jobs</code>). A call that answers with an
+      <code class="text-lteal">429</code> out of quota, rate limited, or at your active job
+      limit (<code>too_many_active_jobs</code>). A call that answers with an
       error is not charged against your allowance.
     </p>
 
@@ -311,7 +311,7 @@ HTTP/1.1 200 OK              done — this is the data
       <li>Follow <code>Location</code> rather than building the job URL yourself.</li>
       <li>Respect <code>Retry-After</code>. Polling every 10 seconds is free; polling every 100ms is a rate limit waiting to happen — the per-key limiter still applies to job polls.</li>
       <li>Give up after a sensible ceiling. A cold query is minutes, not hours.</li>
-      <li>Don't start every query at once. Each account can have 3 jobs running on Basic, 5 on Intermediate and 10 on Developer; past that a new cold call answers <code>429 too_many_open_jobs</code>. Start more as earlier ones finish.</li>
+      <li>Don't start every query at once. Each account can have 3 active jobs on Basic, 5 on Intermediate and 10 on Developer; past that a new cold call answers <code>429 too_many_active_jobs</code>. Start more as earlier ones finish.</li>
       <li>Once one caller has warmed a patch, everyone gets <code>200</code> for it. In steady use the 202 path is uncommon.</li>
     </ul>
 

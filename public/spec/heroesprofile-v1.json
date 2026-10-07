@@ -513,7 +513,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1191,7 +1191,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1600,7 +1600,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2123,7 +2123,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2812,7 +2812,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3908,7 +3908,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -4375,7 +4375,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -5502,7 +5502,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -6155,7 +6155,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -7117,7 +7117,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -59760,7 +59760,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -60971,7 +60971,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -80186,7 +80186,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -82618,7 +82618,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -83486,7 +83486,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -84704,7 +84704,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -87278,7 +87278,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -88300,7 +88300,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -91038,7 +91038,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -92034,7 +92034,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -95821,7 +95821,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -98697,7 +98697,7 @@
                         }
                     },
                     "429": {
-                        "description": "Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_open_jobs`.",
+                        "description": "Too many requests: the per-minute limit, the weekly allowance, or the account's active job limit (uncached calls still running). See `Retry-After`. Codes: `rate_limited`, `quota_exceeded`, `too_many_active_jobs`.",
                         "content": {
                             "application/json": {
                                 "schema": {
