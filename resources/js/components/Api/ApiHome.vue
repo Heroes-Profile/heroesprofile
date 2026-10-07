@@ -85,6 +85,13 @@
           </tr>
 
           <tr>
+            <td>Uncached queries running at once</td>
+            <td class="text-center">3</td>
+            <td class="text-center">5</td>
+            <td class="text-center">10</td>
+          </tr>
+
+          <tr>
             <td colspan="4"><strong>Calls per week by endpoint category:</strong></td>
           </tr>
 

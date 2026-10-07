@@ -99,6 +99,7 @@ class UsageService
 
         $bytes = $counted ? (int) $usage->egress_bytes : 0;
         $computeMs = $counted ? (int) $usage->compute_ms : 0;
+        $dbMs = $counted ? (int) $usage->db_ms : 0;
 
         return [
             'endpoint' => $endpoint->endpoint,
@@ -116,7 +117,8 @@ class UsageService
             // megabytes a call where the rest are kilobytes.
             'egress_bytes' => $bytes,
             'compute_ms' => $computeMs,
-            'cost_usd' => round(ApiCost::total($bytes, $computeMs, $used), 6),
+            'db_ms' => $dbMs,
+            'cost_usd' => round(ApiCost::total($bytes, $computeMs, $used, $dbMs), 6),
         ];
     }
 }

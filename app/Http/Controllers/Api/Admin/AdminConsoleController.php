@@ -510,8 +510,9 @@ class AdminConsoleController extends Controller
                 DB::raw('sum(calls) as calls'),
                 DB::raw('sum(egress_bytes) as egress_bytes'),
                 DB::raw('sum(compute_ms) as compute_ms'),
+                DB::raw('sum(db_ms) as db_ms'),
             )
-            ->havingRaw('sum(calls) > 0 or sum(egress_bytes) > 0 or sum(compute_ms) > 0')
+            ->havingRaw('sum(calls) > 0 or sum(egress_bytes) > 0 or sum(compute_ms) > 0 or sum(db_ms) > 0')
             ->get();
 
         $accounts = ApiAccount::whereIn('id', $rows->pluck('api_account_id'))
@@ -530,6 +531,7 @@ class AdminConsoleController extends Controller
                 $calls = (int) $row->calls;
                 $bytes = (int) $row->egress_bytes;
                 $computeMs = (int) $row->compute_ms;
+                $dbMs = (int) $row->db_ms;
 
                 return [
                     'id' => (int) $row->api_account_id,
@@ -538,7 +540,9 @@ class AdminConsoleController extends Controller
                     'calls' => $calls,
                     'egress_bytes' => $bytes,
                     'compute_ms' => $computeMs,
-                    'cost_usd' => round(ApiCost::total($bytes, $computeMs, $calls), 6),
+                    'db_ms' => $dbMs,
+                    'db_cost_usd' => round(ApiCost::database($dbMs), 6),
+                    'cost_usd' => round(ApiCost::total($bytes, $computeMs, $calls, $dbMs), 6),
                     'approved_at' => isset($approved[$row->api_account_id])
                         ? substr((string) $approved[$row->api_account_id], 0, 10)
                         : null,

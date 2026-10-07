@@ -5,10 +5,12 @@ namespace App\Support;
 /**
  * What an account's API usage cost us, in dollars.
  *
- * Two halves. Egress is what leaves the network; compute is the Cloud Run instance
- * time the app spent producing it. For most endpoints compute is rounding error, but
- * the replay download streams the file through the container, so the container is
- * held for as long as the client takes to receive it — there, compute is real.
+ * Three parts. Egress is what leaves the network; compute is the Cloud Run instance
+ * time the app spent producing it; database is the time its queries held Cloud SQL.
+ * For most endpoints compute is rounding error, but the replay download streams the
+ * file through the container, so the container is held for as long as the client
+ * takes to receive it — there, compute is real. On a cold global query it's the
+ * database time that dominates.
  *
  * Rates and the service's shape come from `config('api.costs')`.
  *
@@ -55,8 +57,24 @@ class ApiCost
         return $instance + $requests;
     }
 
-    public static function total(int $bytes, int $computeMs, int $calls = 0): float
+    /** A query-second's share of the Cloud SQL instance. See `db_*` in the config. */
+    public static function database(int $dbMs): float
     {
-        return self::egress($bytes) + self::compute($computeMs, $calls);
+        if ($dbMs <= 0) {
+            return 0.0;
+        }
+
+        $costs = config('api.costs');
+        $vcpus = max(1.0, (float) $costs['db_vcpus']);
+
+        $perHour = ($vcpus * (float) $costs['db_per_vcpu_hour'])
+            + ((float) $costs['db_memory_gib'] * (float) $costs['db_per_gib_hour']);
+
+        return $dbMs / 1000 * ($perHour / $vcpus / 3600);
+    }
+
+    public static function total(int $bytes, int $computeMs, int $calls = 0, int $dbMs = 0): float
+    {
+        return self::egress($bytes) + self::compute($computeMs, $calls) + self::database($dbMs);
     }
 }

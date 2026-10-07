@@ -97,6 +97,18 @@ return [
         | somewhere in 1..80 and only the invoice knows where.
         */
         'assumed_concurrency' => (float) env('API_COST_ASSUMED_CONCURRENCY', 1),
+
+        /*
+        | Cloud SQL `heroesprofile-v2`: db-custom-4-16384, Enterprise, us-east1.
+        | Billed for the instance, not per query, so a query-second is priced as
+        | its share: a MySQL query runs on one vCPU, so the instance's hourly
+        | vCPU + memory cost divided by its vCPUs (~$0.069 an hour). Disk is left
+        | out as fixed overhead.
+        */
+        'db_vcpus' => (float) env('API_COST_DB_VCPUS', 4),
+        'db_memory_gib' => (float) env('API_COST_DB_MEMORY_GIB', 16),
+        'db_per_vcpu_hour' => (float) env('API_COST_DB_PER_VCPU_HOUR', 0.0413),
+        'db_per_gib_hour' => (float) env('API_COST_DB_PER_GIB_HOUR', 0.007),
     ],
 
     'rate_limits' => [
@@ -190,6 +202,22 @@ return [
             // or three games; this only stops floods.
             'rank_samples_per_hour' => 60,
         ],
+    ],
+
+    /*
+    | Cold jobs one account can have queued or running at once, by plan id. The
+    | per-minute limit can't see these: a cache miss answers 202 in milliseconds
+    | and its query runs for up to half an hour. Plans not listed are uncapped,
+    | and so is any account holding one. See ApiOpenJobLimiter.
+    */
+
+    'open_jobs' => [
+        'limits' => [
+            1 => 3,  // Basic
+            2 => 5,  // Intermediate
+            3 => 10, // Developer
+        ],
+        'retry_after' => 30,
     ],
 
     /*

@@ -2,8 +2,12 @@
 
 namespace App\Services;
 
+use App\Http\Middleware\EnforceApiQuota;
 use App\Http\Middleware\TrackSlowRequests;
+use App\Models\Api\ApiUsage;
+use App\Services\Api\ApiOpenJobLimiter;
 use App\Support\DatabaseCacheReader;
+use App\Support\DatabaseTimer;
 use App\Support\GlobalCacheFreshness;
 use App\Support\GlobalCacheWindow;
 use Illuminate\Http\JsonResponse;
@@ -75,38 +79,41 @@ class GlobalQueryService
             return $this->acceptedResponse($existing['job_id'], $existing['status']);
         }
 
-        $jobId = (string) Str::uuid();
+        return app(ApiOpenJobLimiter::class)->guard(function () use ($cache, $cacheKey, $cacheIndexKey, $handlerClass, $handlerMethod, $requestData, $cacheTtlSeconds, $bypassCache) {
+            $jobId = (string) Str::uuid();
 
-        $jobPayload = [
-            'status' => 'pending',
-            'cache_key' => $cacheKey,
-            'handler_class' => $handlerClass,
-            'handler_method' => $handlerMethod,
-            'request' => $requestData,
-            'cache_ttl_seconds' => $cacheTtlSeconds,
-            'origin' => $this->origin(),
-            'error' => null,
-        ];
+            $jobPayload = [
+                'status' => 'pending',
+                'cache_key' => $cacheKey,
+                'handler_class' => $handlerClass,
+                'handler_method' => $handlerMethod,
+                'request' => $requestData,
+                'cache_ttl_seconds' => $cacheTtlSeconds,
+                'origin' => $this->origin(),
+                'billed_to' => EnforceApiQuota::meteredAs(request()),
+                'error' => null,
+            ];
 
-        $cache->put($this->jobKey($jobId), $jobPayload, self::STATUS_TTL_SECONDS);
-        $cache->put($cacheIndexKey, [
-            'job_id' => $jobId,
-            'status' => 'pending',
-        ], self::STATUS_TTL_SECONDS);
-
-        try {
-            app(CloudTasksDispatcher::class)->dispatch($jobId);
-        } catch (\Throwable $e) {
-            $cache->forget($this->jobKey($jobId));
-            $cache->forget($cacheIndexKey);
-            Log::error('Failed to enqueue Cloud Task after retries', [
+            $cache->put($this->jobKey($jobId), $jobPayload, self::STATUS_TTL_SECONDS);
+            $cache->put($cacheIndexKey, [
                 'job_id' => $jobId,
-                'error' => $e->getMessage(),
-            ]);
-            throw $e;
-        }
+                'status' => 'pending',
+            ], self::STATUS_TTL_SECONDS);
 
-        return $this->withBypassHeader($this->acceptedResponse($jobId, 'pending'), $bypassCache);
+            try {
+                app(CloudTasksDispatcher::class)->dispatch($jobId);
+            } catch (\Throwable $e) {
+                $cache->forget($this->jobKey($jobId));
+                $cache->forget($cacheIndexKey);
+                Log::error('Failed to enqueue Cloud Task after retries', [
+                    'job_id' => $jobId,
+                    'error' => $e->getMessage(),
+                ]);
+                throw $e;
+            }
+
+            return [$jobId, $this->withBypassHeader($this->acceptedResponse($jobId, 'pending'), $bypassCache)];
+        });
     }
 
     public function dispatchAsync(
@@ -124,35 +131,38 @@ class GlobalQueryService
             return $this->acceptedResponse($existing['job_id'], $existing['status']);
         }
 
-        $jobId = (string) Str::uuid();
+        return app(ApiOpenJobLimiter::class)->guard(function () use ($cache, $cacheKey, $cacheIndexKey, $handlerClass, $handlerMethod, $requestData, $cacheTtlSeconds) {
+            $jobId = (string) Str::uuid();
 
-        $jobPayload = [
-            'status' => 'pending',
-            'cache_key' => $cacheKey,
-            'handler_class' => $handlerClass,
-            'handler_method' => $handlerMethod,
-            'request' => $requestData,
-            'cache_ttl_seconds' => $cacheTtlSeconds,
-            'origin' => $this->origin(),
-            'error' => null,
-        ];
+            $jobPayload = [
+                'status' => 'pending',
+                'cache_key' => $cacheKey,
+                'handler_class' => $handlerClass,
+                'handler_method' => $handlerMethod,
+                'request' => $requestData,
+                'cache_ttl_seconds' => $cacheTtlSeconds,
+                'origin' => $this->origin(),
+                'billed_to' => EnforceApiQuota::meteredAs(request()),
+                'error' => null,
+            ];
 
-        $cache->put($this->jobKey($jobId), $jobPayload, self::STATUS_TTL_SECONDS);
-        $cache->put($cacheIndexKey, ['job_id' => $jobId, 'status' => 'pending'], self::STATUS_TTL_SECONDS);
+            $cache->put($this->jobKey($jobId), $jobPayload, self::STATUS_TTL_SECONDS);
+            $cache->put($cacheIndexKey, ['job_id' => $jobId, 'status' => 'pending'], self::STATUS_TTL_SECONDS);
 
-        try {
-            app(CloudTasksDispatcher::class)->dispatch($jobId);
-        } catch (\Throwable $e) {
-            $cache->forget($this->jobKey($jobId));
-            $cache->forget($cacheIndexKey);
-            Log::error('Failed to enqueue Cloud Task (dispatchAsync)', [
-                'job_id' => $jobId,
-                'error' => $e->getMessage(),
-            ]);
-            throw $e;
-        }
+            try {
+                app(CloudTasksDispatcher::class)->dispatch($jobId);
+            } catch (\Throwable $e) {
+                $cache->forget($this->jobKey($jobId));
+                $cache->forget($cacheIndexKey);
+                Log::error('Failed to enqueue Cloud Task (dispatchAsync)', [
+                    'job_id' => $jobId,
+                    'error' => $e->getMessage(),
+                ]);
+                throw $e;
+            }
 
-        return $this->acceptedResponse($jobId, 'pending');
+            return [$jobId, $this->acceptedResponse($jobId, 'pending')];
+        });
     }
 
     public function dispatchIfNotPending(
@@ -262,9 +272,12 @@ class GlobalQueryService
             return $this->runBatchInline($parentCacheKey, $children, $handlerClass, $handlerMethod, $window->ttl, $bypassCache);
         }
 
-        $jobId = $this->startBatch($parentCacheKey, $children, $handlerClass, $handlerMethod, $window->ttl, null);
+        // The batch takes one slot, not one per child.
+        return app(ApiOpenJobLimiter::class)->guard(function () use ($parentCacheKey, $children, $handlerClass, $handlerMethod, $window, $bypassCache) {
+            $jobId = $this->startBatch($parentCacheKey, $children, $handlerClass, $handlerMethod, $window->ttl, null);
 
-        return $this->withBypassHeader($this->batchAccepted($jobId), $bypassCache);
+            return [$jobId, $this->withBypassHeader($this->batchAccepted($jobId), $bypassCache)];
+        });
     }
 
     /**
@@ -330,6 +343,8 @@ class GlobalQueryService
             'origin' => $this->origin(),
             'cache_ttl_seconds' => $cacheTtlSeconds,
             'refresh_before' => $refreshBefore,
+            // A background refresh is nobody's to pay for.
+            'billed_to' => $refreshBefore === null ? EnforceApiQuota::meteredAs(request()) : null,
             'error' => null,
         ], self::STATUS_TTL_SECONDS);
 
@@ -544,6 +559,7 @@ class GlobalQueryService
         Flare::context('job_attempt', $attempt);
 
         $start = microtime(true);
+        $dbMark = DatabaseTimer::mark();
 
         try {
             $handler = app($job['handler_class']);
@@ -571,11 +587,13 @@ class GlobalQueryService
             ]);
 
             $this->markFailed($jobId, $job, $exception->getMessage(), $attempt);
+            $this->chargeJob($job, $start, $dbMark);
             $this->topUpParent($job);
 
             throw $exception;
         }
 
+        $this->chargeJob($job, $start, $dbMark);
         $this->topUpParent($job);
 
         // Outside the try: the job is already complete, and a reporting failure must
@@ -586,6 +604,34 @@ class GlobalQueryService
                 "Slow job ({$seconds}s): ".class_basename($job['handler_class']).'@'.$job['handler_method'],
                 'warning'
             );
+        }
+    }
+
+    /**
+     * Charges a run's worker and database time to the account that started the
+     * job. Every attempt is charged, since every attempt held both. Never allowed
+     * to fail the job.
+     */
+    private function chargeJob(array $job, float $start, float $dbMark): void
+    {
+        $billedTo = $job['billed_to'] ?? null;
+
+        if (! is_array($billedTo)) {
+            return;
+        }
+
+        try {
+            ApiUsage::addTime(
+                (int) $billedTo['account_id'],
+                (string) $billedTo['endpoint'],
+                (int) round((microtime(true) - $start) * 1000),
+                DatabaseTimer::since($dbMark)
+            );
+        } catch (\Throwable $exception) {
+            Log::warning('Charging job usage failed', [
+                'account_id' => $billedTo['account_id'] ?? null,
+                'error' => $exception->getMessage(),
+            ]);
         }
     }
 
@@ -602,6 +648,27 @@ class GlobalQueryService
         }
 
         return str_starts_with($request->route()?->getName() ?? '', 'api.external.') ? 'api' : 'site';
+    }
+
+    /**
+     * Whether a job is still queued or running. A failed job with an attempt still
+     * coming counts, and so does a batch until it has been assembled.
+     */
+    public function isOpen(mixed $job): bool
+    {
+        if (! is_array($job)) {
+            return false;
+        }
+
+        if (($job['type'] ?? null) === 'batch') {
+            return $job['status'] !== 'complete';
+        }
+
+        return match ($job['status']) {
+            'pending', 'processing' => true,
+            'failed' => ($job['attempts'] ?? self::MAX_ATTEMPTS) < self::MAX_ATTEMPTS,
+            default => false,
+        };
     }
 
     public function jobKey(string $jobId): string
@@ -853,6 +920,7 @@ class GlobalQueryService
             'cache_ttl_seconds' => $parent['cache_ttl_seconds'],
             'origin' => $parent['origin'] ?? null,
             'parent_job_id' => $parentJobId,
+            'billed_to' => $parent['billed_to'] ?? null,
             'label' => $label,
             'attempts' => 0,
             'error' => null,

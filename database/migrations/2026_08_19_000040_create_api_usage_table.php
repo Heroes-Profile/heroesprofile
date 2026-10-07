@@ -36,6 +36,8 @@ return new class extends Migration
             // time, and on the replay download that time is mostly the client pulling
             // bytes — so egress alone understates what an account costs.
             $table->unsignedBigInteger('compute_ms')->default(0);
+            // Time spent in database queries, the jobs a call started included.
+            $table->unsignedBigInteger('db_ms')->default(0);
             $table->timestamp('window_started_at')->nullable();
 
             $table->decimal('egress_mb', 12, 4)

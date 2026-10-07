@@ -207,7 +207,7 @@ class BuildApiSpec extends Command
 
         // Declared responses win; errors fill in whatever a config entry did not say.
         if (! in_array($name, self::KEYLESS, true)) {
-            $responses += $this->errorResponses($name);
+            $responses += $this->errorResponses($name, (bool) ($endpoint['async'] ?? false));
             ksort($responses);
         }
 
@@ -368,7 +368,7 @@ class BuildApiSpec extends Command
      *
      * @return array<string, array<string, mixed>>
      */
-    private function errorResponses(string $name): array
+    private function errorResponses(string $name, bool $async = false): array
     {
         $isPlayer = str_starts_with($name, 'api.external.players.') || $name === 'api.external.players';
         $isReplay = str_starts_with($name, 'api.external.replay.');
@@ -431,7 +431,9 @@ class BuildApiSpec extends Command
             '403' => $this->errorResponse('The key is valid but may not make this call.', $forbidden),
             '404' => $this->errorResponse('Nothing found for what was asked.', $notFound),
             '422' => $this->errorResponse('A parameter is missing or not accepted.', $invalid),
-            '429' => $this->errorResponse('Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`.', ['rate_limited', 'quota_exceeded']),
+            '429' => $async
+                ? $this->errorResponse('Too many requests: the per-minute limit, the weekly allowance, or too many cold queries running at once on the account. See `Retry-After`.', ['rate_limited', 'quota_exceeded', 'too_many_open_jobs'])
+                : $this->errorResponse('Too many requests: the per-minute limit, or the weekly allowance. See `Retry-After`.', ['rate_limited', 'quota_exceeded']),
             '500' => $this->errorResponse('Failed on our side. Not charged.', $isJob ? ['server_error', 'job_failed'] : ['server_error']),
         ];
 
