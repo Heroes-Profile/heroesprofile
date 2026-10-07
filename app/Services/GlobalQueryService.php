@@ -10,10 +10,15 @@ use App\Support\DatabaseCacheReader;
 use App\Support\DatabaseTimer;
 use App\Support\GlobalCacheFreshness;
 use App\Support\GlobalCacheWindow;
+use Illuminate\Database\Connection;
+use Illuminate\Database\Events\ConnectionEstablished;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Spatie\LaravelIgnition\Facades\Flare;
@@ -41,6 +46,31 @@ class GlobalQueryService
 
     /** Worker jobs past this are reported to Flare as a warning. */
     private const SLOW_JOB_SECONDS = 600;
+
+    /** An attempt that ran longer than this is never retried, whatever stopped it. */
+    private const NO_RETRY_AFTER_SECONDS = 600;
+
+    /** MySQL stops any one SELECT of an API job past this. */
+    private const API_QUERY_LIMIT_SECONDS = 2700;
+
+    /** Cloud Run's request timeout on the worker. Nothing runs longer. */
+    private const WORKER_LIFETIME_SECONDS = 3600;
+
+    /** Cloud Tasks' `maxRetryDuration`: a retry that hasn't come by then won't. */
+    private const RETRY_WINDOW_SECONDS = 3600;
+
+    /** Slack before a job past its deadline is taken for dead. */
+    private const DEAD_GRACE_SECONDS = 120;
+
+    /** How long inputs that ran past the API limit are refused without running. */
+    private const TOO_LARGE_REMEMBER_SECONDS = 86400;
+
+    public const TOO_LARGE_MESSAGE = 'This query ran for more than 45 minutes and was stopped. Narrow it'
+        .' — a shorter timeframe, or fewer game types, leagues, maps or heroes — and try again.'
+        .' The same request is refused for 24 hours.';
+
+    /** Set while an API job runs, so connections opened mid-job get the limit too. */
+    private static ?int $queryLimitMs = null;
 
     /** Children of one batch running at once. See `config/global.php`. */
     private function batchMaxInFlight(): int
@@ -75,8 +105,12 @@ class GlobalQueryService
 
         $existing = $cache->get($cacheIndexKey);
 
-        if ($existing && in_array($existing['status'], ['pending', 'processing'], true)) {
+        if ($this->stillRunning($existing)) {
             return $this->acceptedResponse($existing['job_id'], $existing['status']);
+        }
+
+        if ($refusal = $this->tooLargeRefusal($cacheKey)) {
+            return $refusal;
         }
 
         return app(ApiActiveJobLimiter::class)->guard(function () use ($cache, $cacheKey, $cacheIndexKey, $handlerClass, $handlerMethod, $requestData, $cacheTtlSeconds, $bypassCache) {
@@ -127,8 +161,12 @@ class GlobalQueryService
         $cacheIndexKey = $this->cacheIndexKey($cacheKey);
 
         $existing = $cache->get($cacheIndexKey);
-        if ($existing && in_array($existing['status'], ['pending', 'processing'], true)) {
+        if ($this->stillRunning($existing)) {
             return $this->acceptedResponse($existing['job_id'], $existing['status']);
+        }
+
+        if ($refusal = $this->tooLargeRefusal($cacheKey)) {
+            return $refusal;
         }
 
         return app(ApiActiveJobLimiter::class)->guard(function () use ($cache, $cacheKey, $cacheIndexKey, $handlerClass, $handlerMethod, $requestData, $cacheTtlSeconds) {
@@ -176,7 +214,7 @@ class GlobalQueryService
         $cacheIndexKey = $this->cacheIndexKey($cacheKey);
 
         $existing = $cache->get($cacheIndexKey);
-        if ($existing && in_array($existing['status'], ['pending', 'processing'], true)) {
+        if ($this->stillRunning($existing)) {
             return;
         }
 
@@ -505,6 +543,25 @@ class GlobalQueryService
                 ->header('X-Global-Cache-Status', 'fresh');
         }
 
+        if ($job['status'] === 'failed' && ($job['error_code'] ?? null) === 'query_too_large') {
+            return response()->json([
+                'async' => true,
+                'status' => 'failed',
+                'job_id' => $jobId,
+                'error_code' => 'query_too_large',
+                'error' => self::TOO_LARGE_MESSAGE,
+            ], 422);
+        }
+
+        if ($this->isDead($job)) {
+            return response()->json([
+                'async' => true,
+                'status' => 'failed',
+                'job_id' => $jobId,
+                'error' => 'The query stopped without finishing.',
+            ], 500);
+        }
+
         if ($job['status'] === 'failed') {
             // Cloud Tasks has another attempt coming, so the job is still running.
             if (($job['attempts'] ?? self::MAX_ATTEMPTS) < self::MAX_ATTEMPTS) {
@@ -548,7 +605,15 @@ class GlobalQueryService
             return;
         }
 
-        $this->markProcessing($jobId, $job);
+        // An earlier attempt still marked processing, started over ten minutes ago, is
+        // not rerun: it may yet finish, and if its worker died the job closes once
+        // past its deadline. See isDead().
+        if ($attempt > 1 && $job['status'] === 'processing'
+            && time() - (int) ($job['started_at'] ?? time()) > self::NO_RETRY_AFTER_SECONDS) {
+            return;
+        }
+
+        $job = $this->markProcessing($jobId, $job);
 
         // The worker's own request body is only the job id. Set before running so a
         // crash, out-of-memory included, is reported with what was actually asked.
@@ -560,6 +625,11 @@ class GlobalQueryService
 
         $start = microtime(true);
         $dbMark = DatabaseTimer::mark();
+        $limited = ($job['origin'] ?? null) === 'api';
+
+        if ($limited) {
+            $this->limitQueries(self::API_QUERY_LIMIT_SECONDS);
+        }
 
         try {
             $handler = app($job['handler_class']);
@@ -580,17 +650,45 @@ class GlobalQueryService
                 'cache_key' => $job['cache_key'],
             ]);
         } catch (\Throwable $exception) {
+            $tooLarge = $limited && $this->isQueryTimeout($exception);
+            $ranTooLong = microtime(true) - $start > self::NO_RETRY_AFTER_SECONDS;
+
             Log::error('Global query job failed', [
                 'job_id' => $jobId,
                 'cache_key' => $job['cache_key'],
+                'too_large' => $tooLarge,
                 'error' => $exception->getMessage(),
             ]);
 
-            $this->markFailed($jobId, $job, $exception->getMessage(), $attempt);
+            if ($tooLarge) {
+                $this->markTooLarge($jobId, $job);
+            } else {
+                $this->markFailed($jobId, $job, $exception->getMessage(), $ranTooLong ? self::MAX_ATTEMPTS : $attempt);
+            }
+
             $this->chargeJob($job, $start, $dbMark);
             $this->topUpParent($job);
 
+            if ($tooLarge) {
+                foreach (array_keys(DB::getConnections()) as $name) {
+                    DB::purge($name);
+                }
+
+                return;
+            }
+
+            // Answered 200 so Cloud Tasks doesn't retry it.
+            if ($ranTooLong) {
+                report($exception);
+
+                return;
+            }
+
             throw $exception;
+        } finally {
+            if ($limited) {
+                $this->liftQueryLimit();
+            }
         }
 
         $this->chargeJob($job, $start, $dbMark);
@@ -636,6 +734,130 @@ class GlobalQueryService
     }
 
     /**
+     * Sets MySQL's per-statement limit on every connection, open or opened later,
+     * until liftQueryLimit(). MySQL stops the SELECT itself, so it ends even if
+     * this worker has already been killed.
+     */
+    private function limitQueries(int $seconds): void
+    {
+        $milliseconds = $seconds * 1000;
+        $listening = self::$queryLimitMs !== null;
+        self::$queryLimitMs = $milliseconds;
+
+        foreach (DB::getConnections() as $connection) {
+            $this->applyQueryLimit($connection, $milliseconds);
+        }
+
+        if (! $listening) {
+            Event::listen(ConnectionEstablished::class, function (ConnectionEstablished $event) {
+                if (self::$queryLimitMs !== null) {
+                    $this->applyQueryLimit($event->connection, self::$queryLimitMs);
+                }
+            });
+        }
+    }
+
+    private function liftQueryLimit(): void
+    {
+        self::$queryLimitMs = null;
+
+        foreach (DB::getConnections() as $connection) {
+            if ($connection->getRawPdo() instanceof \PDO) {
+                $this->applyQueryLimit($connection, 0);
+            }
+        }
+    }
+
+    private function applyQueryLimit(Connection $connection, int $milliseconds): void
+    {
+        if ($connection->getDriverName() !== 'mysql') {
+            return;
+        }
+
+        try {
+            $connection->statement('SET SESSION max_execution_time = '.$milliseconds);
+        } catch (\Throwable $exception) {
+            Log::warning('Setting the query time limit failed', [
+                'connection' => $connection->getName(),
+                'error' => $exception->getMessage(),
+            ]);
+        }
+    }
+
+    /** MySQL's "maximum statement execution time exceeded", anywhere in the chain. */
+    private function isQueryTimeout(\Throwable $exception): bool
+    {
+        for ($e = $exception; $e !== null; $e = $e->getPrevious()) {
+            if ($e instanceof QueryException && (int) ($e->errorInfo[1] ?? 0) === 3024) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function markTooLarge(string $jobId, array $job): void
+    {
+        $job['error_code'] = 'query_too_large';
+        $this->markFailed($jobId, $job, self::TOO_LARGE_MESSAGE, self::MAX_ATTEMPTS);
+
+        Cache::store('database')->put($this->tooLargeKey($job['cache_key']), true, self::TOO_LARGE_REMEMBER_SECONDS);
+    }
+
+    /** An API request for inputs already stopped as too large, answered without running. */
+    private function tooLargeRefusal(string $cacheKey): ?JsonResponse
+    {
+        if ($this->origin() !== 'api' || ! Cache::store('database')->has($this->tooLargeKey($cacheKey))) {
+            return null;
+        }
+
+        return response()->json([
+            'error' => ['code' => 'query_too_large', 'message' => self::TOO_LARGE_MESSAGE],
+        ], 422);
+    }
+
+    private function tooLargeKey(string $cacheKey): string
+    {
+        return 'global_too_large:'.hash('sha256', $cacheKey);
+    }
+
+    /** Whether a cache index entry points at a job that is really still going. */
+    private function stillRunning(mixed $existing): bool
+    {
+        if (! is_array($existing) || ! in_array($existing['status'] ?? null, ['pending', 'processing'], true)) {
+            return false;
+        }
+
+        $job = Cache::store('database')->get($this->jobKey($existing['job_id']));
+
+        return ! is_array($job) || ! $this->isDead($job);
+    }
+
+    /**
+     * A job whose worker was killed, so nothing will ever mark it finished: still
+     * processing past the longest it could run, or failed and waiting on a retry
+     * that is past the queue's retry window.
+     */
+    private function isDead(array $job): bool
+    {
+        $startedAt = $job['started_at'] ?? null;
+
+        if ($startedAt === null) {
+            return false;
+        }
+
+        $deadline = match (true) {
+            $job['status'] === 'processing' => ($job['origin'] ?? null) === 'api'
+                ? self::API_QUERY_LIMIT_SECONDS
+                : self::WORKER_LIFETIME_SECONDS,
+            $job['status'] === 'failed' && ($job['attempts'] ?? self::MAX_ATTEMPTS) < self::MAX_ATTEMPTS => self::RETRY_WINDOW_SECONDS,
+            default => null,
+        };
+
+        return $deadline !== null && time() - (int) $startedAt > $deadline + self::DEAD_GRACE_SECONDS;
+    }
+
+    /**
      * Who created the job. Keys are shared, so anyone asking the same question
      * afterwards waits on this job rather than starting their own.
      */
@@ -664,6 +886,10 @@ class GlobalQueryService
             return $job['status'] !== 'complete';
         }
 
+        if ($this->isDead($job)) {
+            return false;
+        }
+
         return match ($job['status']) {
             'pending', 'processing' => true,
             'failed' => ($job['attempts'] ?? self::MAX_ATTEMPTS) < self::MAX_ATTEMPTS,
@@ -681,16 +907,19 @@ class GlobalQueryService
         return 'global_job_by_cache:'.hash('sha256', $cacheKey);
     }
 
-    private function markProcessing(string $jobId, array $job): void
+    private function markProcessing(string $jobId, array $job): array
     {
         $cache = Cache::store('database');
 
         $job['status'] = 'processing';
+        $job['started_at'] = time();
         $cache->put($this->jobKey($jobId), $job, self::STATUS_TTL_SECONDS);
         $cache->put($this->cacheIndexKey($job['cache_key']), [
             'job_id' => $jobId,
             'status' => 'processing',
         ], self::STATUS_TTL_SECONDS);
+
+        return $job;
     }
 
     private function markComplete(string $jobId, array $job, mixed $data): void
@@ -883,6 +1112,10 @@ class GlobalQueryService
             return ['status' => 'queued'];
         }
 
+        if ($this->isDead($childJob)) {
+            return ['status' => 'failed', 'error' => 'The query stopped without finishing.'];
+        }
+
         if ($childJob['status'] === 'failed') {
             return ($childJob['attempts'] ?? 0) >= self::MAX_ATTEMPTS
                 ? ['status' => 'failed', 'error' => $childJob['error'] ?? 'Query failed.']
@@ -905,11 +1138,26 @@ class GlobalQueryService
         $cacheIndexKey = $this->cacheIndexKey($child['cache_key']);
 
         $existing = $cache->get($cacheIndexKey);
-        if ($existing && in_array($existing['status'], ['pending', 'processing'], true)) {
+        if ($this->stillRunning($existing)) {
             return $existing['job_id'];
         }
 
         $jobId = (string) Str::uuid();
+
+        // Already stopped as too large: record the child as failed rather than run it.
+        if (($parent['origin'] ?? null) === 'api' && $cache->has($this->tooLargeKey($child['cache_key']))) {
+            $cache->put($this->jobKey($jobId), [
+                'status' => 'failed',
+                'cache_key' => $child['cache_key'],
+                'parent_job_id' => $parentJobId,
+                'label' => $label,
+                'attempts' => self::MAX_ATTEMPTS,
+                'error' => self::TOO_LARGE_MESSAGE,
+                'error_code' => 'query_too_large',
+            ], self::STATUS_TTL_SECONDS);
+
+            return $jobId;
+        }
 
         $cache->put($this->jobKey($jobId), [
             'status' => 'pending',

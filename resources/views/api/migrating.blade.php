@@ -282,7 +282,7 @@ HTTP/1.1 200 OK              done — this is the data
       endpoint documents — there is no envelope to unwrap.
     </p>
 
-    <h4 class="text-sm uppercase tracking-wider text-lteal mb-2">3. Handle the two failure cases</h4>
+    <h4 class="text-sm uppercase tracking-wider text-lteal mb-2">3. Handle the failure cases</h4>
     <table class="min-w-0 w-full responsive-table mb-4">
       <thead>
         <tr>
@@ -301,6 +301,11 @@ HTTP/1.1 200 OK              done — this is the data
           <td class="py-2 px-3">500</td>
           <td class="py-2 px-3"><code>status: failed</code></td>
           <td class="py-2 px-3">The query itself failed, with a reason in <code>error</code>. Retrying the original call is reasonable; retrying the job id is not.</td>
+        </tr>
+        <tr>
+          <td class="py-2 px-3">422</td>
+          <td class="py-2 px-3"><code>query_too_large</code></td>
+          <td class="py-2 px-3">The query ran for more than 45 minutes and was stopped. Narrow the call — a shorter timeframe, or fewer game types, leagues, maps or heroes. The same call is refused straight away for 24 hours.</td>
         </tr>
       </tbody>
     </table>
