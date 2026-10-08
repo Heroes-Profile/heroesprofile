@@ -21,7 +21,7 @@
           post-match analysis. Games uploaded this way count towards the leaderboards.
         </p>
 
-        <div class="mb-4">
+        <div class="mb-4 flex flex-wrap gap-2">
           <custom-button
             :href="windowsInstaller"
             text="Download for Windows"
@@ -29,10 +29,22 @@
             color="teal"
             :targetblank="true"
           ></custom-button>
+          <custom-button
+            :href="linuxAppImage"
+            text="Download for Linux"
+            alt="Download the Linux replay uploader (AppImage)"
+            color="teal"
+            :targetblank="true"
+          ></custom-button>
         </div>
 
+        <p class="text-sm mb-4">
+          Linux is also available as a <a class="link" :href="linuxTarball" target="_blank" rel="noopener">tar.gz</a>,
+          which includes the headless CLI.
+        </p>
+
         <p class="text-sm mb-2">
-          macOS and Linux
+          macOS
           <a class="link block" :href="electronRelease" target="_blank" rel="noopener">{{ electronRelease }}</a>
         </p>
 
@@ -65,6 +77,8 @@ export default {
   data() {
     return {
       windowsInstaller: 'https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploaderSetup.exe',
+      linuxAppImage: 'https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploader-linux-x86_64.AppImage',
+      linuxTarball: 'https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploader-linux-x64.tar.gz',
       electronRelease: 'https://github.com/Heroes-Profile/heroesprofile-electron-uploader/releases',
       repository: 'https://github.com/Heroes-Profile/HeroesProfile.Uploader',
     }

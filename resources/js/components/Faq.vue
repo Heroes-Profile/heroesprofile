@@ -260,7 +260,7 @@ export default {
             },
             {
               q: 'Does the uploader work on macOS or Linux?',
-              a: 'Yes. We have an Electron-based uploader that supports macOS and Linux. See our <a href="https://github.com/Heroes-Profile/heroesprofile-electron-uploader" target="_blank" class="link">electron uploader on GitHub</a> for downloads and instructions.',
+              a: 'Yes. Linux has a native uploader, available as an <a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploader-linux-x86_64.AppImage" class="link">AppImage</a> or a <a href="https://github.com/Heroes-Profile/HeroesProfile.Uploader/releases/latest/download/HeroesProfileUploader-linux-x64.tar.gz" class="link">tar.gz</a> that includes a headless CLI. For macOS, use our <a href="https://github.com/Heroes-Profile/heroesprofile-electron-uploader" target="_blank" class="link">Electron uploader on GitHub</a>.',
             },
             {
               q: 'How do I make my profile private?',
