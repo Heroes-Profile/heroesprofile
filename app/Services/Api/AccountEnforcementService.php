@@ -232,9 +232,8 @@ class AccountEnforcementService
     }
 
     /**
-     * No admin copy, unlike the subscription mails: an admin pressed the button and
-     * the action row is the record. A failing customer address must not throw back
-     * into the console after the action has already taken effect.
+     * StandingMail BCCs the admin address. A failing customer address must not throw
+     * back into the console after the action has already taken effect.
      */
     private function notify(ApiAccount $account, $notification): void
     {
