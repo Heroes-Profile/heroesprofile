@@ -1,24 +1,6 @@
 <template>
   <div v-if="data" class="mx-4 text-sm">
-    <div class="flex justify-center mb-4">
-      <a
-        v-for="(item, index) in modes"
-        :key="item.key"
-        role="button"
-        :class="[
-          'transition-colors text-white inline-block py-2 px-4 max-sm:px-2 max-sm:text-xs',
-          {
-            'rounded-l': index === 0,
-            'rounded-r': index === modes.length - 1,
-            'bg-blue hover:bg-lblue ring-inset ring-lblue ring-2': mode === item.key,
-            'bg-gray-dark hover:bg-gray-light': mode !== item.key,
-          }
-        ]"
-        @click="selectMode(item.key)"
-      >
-        {{ item.label }}
-      </a>
-    </div>
+    <multi-tab-button class="mb-4" :options="modes" :model-value="mode" @update:model-value="selectMode"></multi-tab-button>
 
     <div v-if="mmrSplit" class="max-w-[1500px] mx-auto mb-4">
       <div class="flex justify-between items-baseline mb-1">

@@ -644,6 +644,89 @@ thead{border-color:transparent;}
   backdrop-filter: blur(12px);
 }
 
+/* Xal'atath recap page (permanent, outlives the live event CSS) */
+.xalatath-recap-card{
+  background: rgba(58, 20, 112, 0.35);
+  border: 1px solid #5b21b6;
+  border-radius: 0.375rem;
+}
+/* The Void Gazette front page on the recap */
+.void-gazette{
+  background: #f3eee2;
+  color: #1a1a1a;
+  font-family: Georgia, 'Times New Roman', serif;
+  letter-spacing: normal;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+}
+.void-gazette-masthead{
+  font-family: 'Old English Text MT', 'UnifrakturMaguntia', Georgia, serif;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+.void-gazette-headline{
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  letter-spacing: normal;
+}
+.void-gazette-body{
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-align: justify;
+}
+.void-gazette-photo{
+  filter: grayscale(1) contrast(1.15) brightness(1.05);
+  border: 1px solid #1a1a1a;
+}
+.void-gazette-columns{
+  column-gap: 2rem;
+  column-rule: 1px solid #1a1a1a;
+}
+.xalatath-recap [data-index]{ scroll-margin-top: 90px; }
+.xalatath-recap summary::-webkit-details-marker{ display: none; }
+.xalatath-mode-bar{
+  background: rgba(8, 3, 18, 0.92);
+  border-bottom: 1px solid #5b21b6;
+}
+/* Recap tables, tabs and buttons in the Void palette, in light and dark mode alike.
+   Scoped to the recap so the shared components look normal everywhere else. */
+.xalatath-recap table{
+  background-color: #150a2b;
+  color: #ffffff;
+  border: 1px solid #5b21b6;
+}
+.xalatath-recap thead{ background-color: #3a1470; color: #ffffff; }
+.xalatath-recap th{ border-bottom-color: #7b3fe4; }
+.xalatath-recap td{ border-right-color: rgba(123, 63, 228, 0.35); }
+.xalatath-recap tbody tr:nth-child(odd){ background-color: transparent; }
+.xalatath-recap tbody tr:nth-child(even){ background-color: rgba(91, 33, 182, 0.18); }
+.xalatath-recap .bg-blue{ background-color: #5b21b6; }
+.xalatath-recap .hover\:bg-lblue:hover{ background-color: #7b3fe4; }
+.xalatath-recap .ring-lblue{ --tw-ring-color: #c084fc; }
+.xalatath-recap .bg-gray-dark{ background-color: #1d0f38; }
+.xalatath-recap .hover\:bg-gray-light:hover{ background-color: #3a1470; }
+.void-gazette-index{ column-gap: 2.5rem; }
+.void-gazette-index li{ padding: 0.15rem 0; }
+@media (min-width: 768px){ .void-gazette-index{ column-count: 2; } }
+@media (min-width: 1024px){ .void-gazette-index{ column-count: 3; } }
+@media (min-width: 768px){ .void-gazette-columns{ column-count: 2; } }
+@media (min-width: 1024px){ .void-gazette-columns{ column-count: 3; } }
+.void-contribution-card{
+  background: radial-gradient(circle at 50% 40%, #3a1470 0%, #08030f 85%);
+  border: 1px solid #5b21b6;
+  box-shadow: 0 0 30px rgba(91, 33, 182, 0.45);
+}
+.void-palette-mock, .void-palette-mock *{ transition: background-color 0.8s ease, color 0.8s ease, opacity 0.8s ease, box-shadow 0.8s ease; }
+.void-glyph-text{
+  color: #d9c2ff;
+  text-shadow: 0 0 6px #7b3fe4, 0 0 14px rgba(123, 63, 228, 0.7);
+}
+.xalatath-recap .recap-heading{
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #c9a8ff;
+  margin-bottom: 0.75rem;
+}
+
 /* Stage 1+: glow */
 :is(.void-stage-1, .void-stage-2, .void-stage-3, .void-stage-4, .void-stage-5) nav.bg-gray-dark{
   box-shadow: 0 4px 22px rgba(123, 63, 228, 0.45);

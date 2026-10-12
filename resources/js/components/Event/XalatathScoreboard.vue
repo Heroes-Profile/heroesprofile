@@ -64,6 +64,7 @@
 
 <script>
 import Cookies from 'js-cookie';
+import { mainTiles, extraTiles, formatNumber } from './xalatathTiles';
 
 const MINIMIZED_KEY = 'xalatathScoreboardMinimized';
 
@@ -103,30 +104,11 @@ export default {
     totals() {
       return this.live.totals || {};
     },
-    gamesPlayed() {
-      return this.stat('games_played');
-    },
     tiles() {
-      return [
-        { label: 'Minds Consumed', value: this.stat('takedowns'), info: 'Takedowns (kills + assists) by Xal\'atath.' },
-        { label: 'Void Damage Unleashed', value: this.stat('spell_damage'), info: 'Total spell damage dealt by Xal\'atath.' },
-        { label: 'Realms Shattered', value: Math.floor(this.stat('siege_damage') / 12900), info: 'Total siege damage by Xal\'atath, divided by 12,900.' },
-        { label: 'Mass Consumptions', value: this.stat('multikill'), info: 'Multikills by Xal\'atath.' },
-        { label: 'Banished to the Void', value: this.stat('deaths'), info: 'Xal\'atath deaths.' },
-        { label: 'Sealed Away', value: this.stat('bans'), info: 'Times Xal\'atath was banned in draft.' },
-        { label: 'Cold Feet', value: this.stat('escapes'), info: 'Escapes by Xal\'atath (surviving at low health).' },
-      ];
+      return mainTiles(this.totals);
     },
     extraTiles() {
-      return [
-        { label: 'Games Played', value: this.gamesPlayed, info: 'Games played as Xal\'atath.' },
-        { label: 'Victories', value: this.stat('wins'), info: 'Games won as Xal\'atath.' },
-        { label: 'Void Unleashed in Battle', value: this.stat('teamfight_hero_damage'), info: 'Team fight hero damage by Xal\'atath.' },
-        { label: 'Hours Ablaze', value: this.hours(this.stat('on_fire_time')), info: 'Time spent on fire, in hours.' },
-        { label: 'Longest Rampage', value: this.stat('highest_kill_streak'), info: 'Highest kill streak in a single game.' },
-        { label: 'Outnumbered & Undone', value: this.stat('outnumbered_deaths'), info: 'Deaths while outnumbered.' },
-        { label: 'Hours Sealed in the Dagger', value: this.hours(this.stat('time_spent_dead')), info: 'Time spent dead, in hours.' },
-      ];
+      return extraTiles(this.totals);
     },
     progress() {
       if (!this.live.nextThreshold) {
@@ -145,15 +127,7 @@ export default {
     clearInterval(this.pollTimer);
   },
   methods: {
-    stat(column) {
-      return Number(this.totals[column] || 0);
-    },
-    hours(seconds) {
-      return Math.floor(seconds / 3600);
-    },
-    format(value) {
-      return Number(value || 0).toLocaleString('en-US');
-    },
+    format: formatNumber,
     async poll() {
       if (document.hidden) {
         return;
