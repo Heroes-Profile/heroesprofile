@@ -66,6 +66,7 @@ use App\Http\Controllers\Tools\RandomizeMeController;
 use App\Http\Controllers\TwitchPageController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\XalatathEventController;
+use App\Http\Controllers\XalatathRecapController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -101,6 +102,10 @@ Route::middleware(['logIpAndUserAgent'])->group(function () {
     Route::get('/Terms/Of/Service', [TermsOfServiceController::class, 'show']);
 
     Route::get('/FAQ', [FaqController::class, 'show']);
+    Route::get('/Event/Xalatath', [XalatathRecapController::class, 'show']);
+    Route::get('/Event/Xalatath/Card/{battletag}/{blizz_id}/{region}', [XalatathRecapController::class, 'showCard'])
+        ->whereNumber('blizz_id')
+        ->whereNumber('region');
 
     // Streamers using the Twitch extension, and the code of conduct they agree to.
     Route::get('/Twitch', [TwitchPageController::class, 'index']);
@@ -345,3 +350,4 @@ Route::get('/Animation/Tassadar', [AnimationsController::class, 'showTassadar'])
 Route::get('/Event/Xalatath/Totals', [XalatathEventController::class, 'totals'])->middleware('throttle:xalatath-totals');
 Route::get('/Flair/State', [XalatathEventController::class, 'flairState'])->middleware('throttle:flair-state');
 Route::post('/Event/Xalatath/Eye', [XalatathEventController::class, 'claimEye'])->middleware('throttle:xalatath-eye');
+Route::post('/Event/Xalatath/Card', [XalatathRecapController::class, 'uploadCard'])->middleware('throttle:xalatath-card');

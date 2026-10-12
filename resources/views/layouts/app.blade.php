@@ -71,14 +71,14 @@
     <meta property="og:url" content="{{ url()->current() }}">
     <meta property="og:title" content="@yield('title') | Heroes Profile">
     <meta property="og:description" content="@yield('meta_description')">
-    <meta property="og:image" content="{{ asset('images/logo/heroesprofilelogo.png') }}">
+    <meta property="og:image" content="@yield('og_image', asset('images/logo/heroesprofilelogo.png'))">
     <meta property="og:site_name" content="Heroes Profile">
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="@yield('title') | Heroes Profile">
     <meta name="twitter:description" content="@yield('meta_description')">
-    <meta name="twitter:image" content="{{ asset('images/logo/heroesprofilelogo.png') }}">
+    <meta name="twitter:image" content="@yield('og_image', asset('images/logo/heroesprofilelogo.png'))">
 
     <!-- Canonical URL -->
     <link rel="canonical" href="{{ url()->current() }}">
@@ -140,6 +140,11 @@
         <void-fallen-splash :stage="{{ json_encode($voidStage) }}"></void-fallen-splash>
         <void-stage-up :stage="{{ json_encode($voidStage) }}"></void-stage-up>
       @endif
+    @endif
+
+    @if(! empty($bladeGlobals['xalatathEnding']))
+      <xalatath-final-banner :ending="{{ json_encode($bladeGlobals['xalatathEnding']) }}"></xalatath-final-banner>
+      <void-ending-splash></void-ending-splash>
     @endif
 
     {{-- Hidden Xal'atath eye: shown to everyone, including opted-out visitors. --}}

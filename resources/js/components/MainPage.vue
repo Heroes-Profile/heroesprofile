@@ -15,6 +15,8 @@
       </div>
       <img v-else class="block m-4 mr-auto ml-auto max-md:px-4 md:w-2/5 md:max-w-6xl pl-25" :src="logoSrc" alt="Heroes Profile Logo"/>
 
+      <a v-if="xalatathEnding" href="/Event/Xalatath" class="inline-block mb-6 xalatath-title underline hover:opacity-80">The Void has receded. See what Xal'atath left behind <i class="fas fa-chevron-right ml-1"></i></a>
+
       <div class="block text-center mx-auto align-items-center justify-center flex">
         <search-component :type="'alt'" :buttonText="'Find Player'" :labelText="'Enter a battletag'"></search-component>
 
@@ -97,6 +99,7 @@ import Cookies from 'js-cookie';
       latestpatch: String,
       latestgamedate: String,
       xalatathEvent: Boolean,
+      xalatathEnding: Boolean,
       voidStage: {
         type: Number,
         default: 0,
